@@ -12,7 +12,7 @@
         <%= image_tag "heart-plus-active.svg", aria_hidden: true, height: 24, width: 24 %>
       </span>
       <span class="crayons-reaction__count" id="reaction_total_count">
-        <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
+        <span class="bg-base-40 opacity-25 inline-block radius-default" style="height: 16px; width: 16px;"></span>
       </span>
       <span class="crayons-tooltip__content">
         <%= t("views.reactions.drawer_button") %>
@@ -45,7 +45,7 @@
       <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
     </span>
     <span class="crayons-reaction__count" id="reaction-number-comment" data-count="<%= @comments_count %>">
-      <span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span>
+      <span class="bg-base-40 opacity-25 inline-block radius-default" style="height: 16px; width: 16px;"></span>
     </span>
 
     <span data-testid="tooltip" class="crayons-tooltip__content">

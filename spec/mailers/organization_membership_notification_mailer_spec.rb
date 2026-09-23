@@ -51,6 +51,7 @@ RSpec.describe OrganizationMembershipNotificationMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -72,6 +73,7 @@ RSpec.describe OrganizationMembershipNotificationMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }

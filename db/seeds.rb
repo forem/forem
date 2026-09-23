@@ -300,12 +300,26 @@ seeder.create_if_none(Badge) do
   end
 end
 
-unless Badge.exists?(slug: Badges::AwardCommunityFavorite::BADGE_SLUG)
+unless Badge.exists?(slug: "community-favorite")
   Badge.create!(
     title: "Community Favorite",
-    description: "Awarded to authors whose post or comment was made a favorite.",
+    slug: "community-favorite",
+    description: "Awarded to authors whose posts or comments have been picked as gems.",
     badge_image: Rails.root.join("app/assets/images/community-favorite-badge.png").open,
-    allow_multiple_awards: true,
+    allow_multiple_awards: false,
+  )
+end
+
+Badges::AwardCommunityFavorite::MILESTONES.each do |milestone|
+  slug = "community-favorite-#{milestone}-gems"
+  next if Badge.exists?(slug: slug)
+
+  Badge.create!(
+    title: "Community Favorite - #{milestone} Gems",
+    slug: slug,
+    description: "Awarded to authors whose posts or comments have been picked as gems #{milestone} times.",
+    badge_image: Rails.root.join("app/assets/images/community-favorite-badge.png").open,
+    allow_multiple_awards: false,
   )
 end
 ##############################################################################
@@ -1301,6 +1315,43 @@ seeder.create_if_none(Event) do
 
   sample_events.each do |event|
     event.billboards.update_all(approved: true)
+  end
+end
+
+# TEMPORARY: fixtures matching MLH Core's local development users, so the
+# account-switch interstitial can be exercised end to end against Core.
+# Only seeded when the Core bridge is configured; see Authentication::MlhCoreBridge.
+if Authentication::MlhCoreBridge.enabled?
+  seeder.create_if_doesnt_exist(User, "email", "bob.devrelay@mlh.test") do
+    User.create!(
+      name: "Bob Devrelay",
+      username: "bob_devrelay",
+      email: "bob.devrelay@mlh.test",
+      profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+      confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
+      saw_onboarding: true,
+      checked_code_of_conduct: true,
+      checked_terms_and_conditions: true,
+      password: "password",
+      password_confirmation: "password",
+    )
+  end
+
+  seeder.create_if_doesnt_exist(User, "email", "carol.devrelay@mlh.test") do
+    carol = User.create!(
+      name: "Carol Devrelay",
+      username: "carol_devrelay",
+      email: "carol.devrelay@mlh.test",
+      profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+      confirmed_at: Time.current,
+      registered_at: Time.current,
+      registered: true,
+      password: "password",
+      password_confirmation: "password",
+    )
+    carol.add_role(:suspended)
   end
 end
 

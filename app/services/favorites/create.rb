@@ -22,6 +22,7 @@ module Favorites
       log_audit
       grant_earned_favorite
       award_badge
+      favoritable.async_score_calc if favoritable.respond_to?(:async_score_calc)
       Result.new(success?: true, favoritable: favoritable)
     end
 
@@ -70,6 +71,8 @@ module Favorites
     # made, and updates it for regular users.
     # Returns true on valid and successful spend, or false otherwise.
     def can_afford_claim?
+      # Unmetered curators never spend from an allowance, so skip the row lock.
+      return true if user.unlimited_favorites?
       return spend_earned_favorite == 1 unless user.community_leader?
 
       # For community leaders, lock to serialize the allowance check for the

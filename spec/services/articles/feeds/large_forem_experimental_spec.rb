@@ -29,6 +29,17 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       expect(stories).to include(min_score_article)
     end
 
+    it "includes favorited articles even if their score is below the home feed minimum score" do
+      favorited_low_score_article = create(:article, score: -100, favorited_by_user: create(:user),
+                                                     favorited_at: Time.current)
+      expect(stories).to include(favorited_low_score_article)
+    end
+
+    it "includes featured articles even if their score is below the home feed minimum score" do
+      featured_low_score_article = create(:article, score: -100, featured: true)
+      expect(stories).to include(featured_low_score_article)
+    end
+
     context "when user logged in" do
       let(:result) { feed.featured_story_and_default_home_feed(user_signed_in: true) }
       let(:featured_story) { result.first }

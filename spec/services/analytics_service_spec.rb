@@ -287,6 +287,28 @@ RSpec.describe AnalyticsService, type: :service do
     end
   end
 
+  describe "activity cache lookup" do
+    it "uses an existing activity for a string article ID without enqueueing a backfill" do
+      ArticleActivity.create!(article: article, total_page_views: 42,
+                              daily_page_views: { "2019-04-01" => { "total" => 42 } })
+      allow(Articles::BackfillActivitiesWorker).to receive(:perform_async)
+
+      service = described_class.new(user, article_id: article.id.to_s)
+
+      expect(service.totals[:page_views][:total]).to eq(42)
+      expect(Articles::BackfillActivitiesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues missing article IDs in canonical order" do
+      articles = create_list(:article, 2, user: user, published: true)
+      allow(Articles::BackfillActivitiesWorker).to receive(:perform_async)
+
+      described_class.new(user).totals
+
+      expect(Articles::BackfillActivitiesWorker).to have_received(:perform_async).with(articles.map(&:id).sort)
+    end
+  end
+
   describe "#grouped_by_day" do
     it "returns stats grouped by day" do
       stats = described_class.new(

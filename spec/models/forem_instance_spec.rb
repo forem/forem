@@ -162,6 +162,33 @@ RSpec.describe ForemInstance do
     end
   end
 
+  describe ".customerio_broadcast_passthrough?" do
+    after { FeatureFlag.remove(Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG) }
+
+    it "is true when CUSTOMERIO_APP_KEY is present and the passthrough flag is enabled" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG)
+
+      expect(described_class.customerio_broadcast_passthrough?).to be(true)
+    end
+
+    it "is false when the passthrough flag has never been enabled" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+
+      expect(described_class.customerio_broadcast_passthrough?).to be(false)
+    end
+
+    it "is false when CUSTOMERIO_APP_KEY is absent even if the flag is enabled" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return(nil)
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG)
+
+      expect(described_class.customerio_broadcast_passthrough?).to be(false)
+    end
+  end
+
   describe ".contact_email" do
     let(:email) { "contact@dev.to" }
 

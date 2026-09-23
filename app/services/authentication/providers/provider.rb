@@ -29,6 +29,14 @@ module Authentication
         raise SubclassResponsibility
       end
 
+      # Whether Forem may hold this provider's OAuth credentials outside the
+      # callback request itself, e.g. while an account switch awaits
+      # confirmation. Providers whose upstream proxies API access on Forem's
+      # behalf override this so bearer material never leaves the callback.
+      def self.persist_credentials?
+        true
+      end
+
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)
         @info = auth_payload.info

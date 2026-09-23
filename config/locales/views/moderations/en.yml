@@ -160,8 +160,8 @@ en:
         set_to_min_indexing: Set to min indexing
         edit: Edit
         featured: Featured
-        favorited_by: Favorited by
-        unfavorite: Unfavorite
+        favorited_by: Picked as gem by
+        unfavorite: Remove gem
         likes: likes
         notes:
           user_notes: user notes

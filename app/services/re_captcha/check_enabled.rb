@@ -19,6 +19,8 @@ module ReCaptcha
       return false unless keys_configured?
       # recaptcha will always be enabled when not logged in
       return true if @user.nil?
+
+      @user.roles.load
       # recaptcha will not be enabled for tag moderator/trusted/admin users
       return false if @user.tag_moderator? || @user.trusted? || @user.any_admin?
       # recaptcha will be enabled if the user has been suspended

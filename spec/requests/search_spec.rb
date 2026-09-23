@@ -60,6 +60,18 @@ RSpec.describe "Search", :proper_status do
       expect(response.parsed_body["result"]).to be_present
     end
 
+    it "returns empty result without querying articles when page exceeds MAX_PAGE" do
+      create(:article)
+      allow(Homepage::FetchArticles).to receive(:call)
+      allow(Search::Article).to receive(:search_documents)
+
+      get search_feed_content_path(homepage_params.merge(page: 100))
+
+      expect(response.parsed_body["result"]).to eq([])
+      expect(Homepage::FetchArticles).not_to have_received(:call)
+      expect(Search::Article).not_to have_received(:search_documents)
+    end
+
     it "parses published_at correctly", :aggregate_failures do
       article = create(:article)
       get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))

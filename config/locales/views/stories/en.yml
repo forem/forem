@@ -31,6 +31,7 @@ en:
       feed:
         discover: Discover
         following: Following
+        curated: Curated
         top_this_week: Top this week
         top_this_month: Top this month
         top_this_year: Top this year
@@ -44,6 +45,11 @@ en:
           following:
             title: "No posts from people you follow"
             description: "Follow some members to see their latest posts in your feed."
+            action_text: "Back to discover tab"
+            action_href: "/discover"
+          curated:
+            title: "No curated posts found"
+            description: "Check back later to see posts favorited by the community!"
             action_text: "Back to discover tab"
             action_href: "/discover"
           default:

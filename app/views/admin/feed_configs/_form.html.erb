@@ -74,6 +74,11 @@
         <%= f.number_field :featured_weight, step: "any", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
+        <%= f.label :favorited_weight, "Favorited (Gem) Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Boost given to articles marked as a community favorite / gem.</p>
+        <%= f.number_field :favorited_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
         <%= f.label :compellingness_score_weight, "Compellingness Score Weight", class: "crayons-field__label" %>
         <%= f.number_field :compellingness_score_weight, step: "any", class: "crayons-textfield" %>
       </div>

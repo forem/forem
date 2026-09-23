@@ -159,8 +159,8 @@ fr:
         set_to_min_indexing: Définir sur l'indexation minimale
         edit: Modifier
         featured: Mis en exergue
-        favorited_by: Mis en favori par
-        unfavorite: Retirer des favoris
+        favorited_by: Choisi comme pépite par
+        unfavorite: Retirer la pépite
         likes: aime
         notes:
           user_notes: notes d'utilisateur

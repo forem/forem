@@ -65,6 +65,7 @@ module Admin
         :comment_recency_weight,
         :comment_score_weight,
         :compellingness_score_weight,
+        :favorited_weight,
         :featured_weight,
         :feed_success_weight,
         :follow_status_weight,

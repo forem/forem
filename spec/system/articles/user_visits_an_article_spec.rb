@@ -217,7 +217,19 @@ RSpec.describe "Views an article" do
       let(:query_params) { "" }
       let(:article_user) { user }
 
-      it "raises ActiveRecord::RecordNotFound" do
+      it "redirects the authorized author to the preview URL" do
+        visit article_path
+        expect(page).to have_current_path(article.path + "?preview=#{article.password}")
+      end
+
+      it "raises ActiveRecord::RecordNotFound when the user is not logged in" do
+        sign_out user
+        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises ActiveRecord::RecordNotFound when the user is not authorized to edit" do
+        sign_out user
+        sign_in create(:user)
         expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end

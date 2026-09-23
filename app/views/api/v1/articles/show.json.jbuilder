@@ -20,3 +20,7 @@ flare_tag = FlareTag.new(@article).tag
 if flare_tag
   json.partial! "flare_tag", flare_tag: flare_tag
 end
+
+if @warnings.present?
+  json.warnings @warnings
+end

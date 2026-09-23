@@ -13,7 +13,7 @@ class Survey < ApplicationRecord
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
   
-  enum :type_of, { community_pulse: 0, industry: 1, fun: 2 }
+  enum :type_of, { community_pulse: 0, industry: 1, fun: 2, beta_testing: 3 }
 
   accepts_nested_attributes_for :polls, allow_destroy: true
   validates_associated :polls
@@ -82,6 +82,15 @@ class Survey < ApplicationRecord
 
   def target_based?
     target_response_count.to_i > 0 && target_completion_date.present?
+  end
+
+  def extra_email_context_html
+    return if extra_email_context_paragraph.blank?
+
+    MarkdownProcessor::Parser.new(extra_email_context_paragraph).evaluate_markdown(
+      allowed_tags: MarkdownProcessor::AllowedTags::EMAIL_SURVEY,
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::EMAIL_SURVEY,
+    )&.strip
   end
 
   private

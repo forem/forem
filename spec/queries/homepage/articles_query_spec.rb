@@ -187,6 +187,18 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
 
         expect(described_class.call(page: 1, per_page: 1).size).to eq(1)
       end
+
+      it "returns an empty relation when page exceeds MAX_PAGE" do
+        create(:article)
+
+        expect(described_class.call(page: Homepage::ArticlesQuery::MAX_PAGE)).to be_empty
+      end
+
+      it "returns an empty relation when offset exceeds MAX_OFFSET" do
+        create(:article)
+
+        expect(described_class.call(page: 101, per_page: 100)).to be_empty
+      end
     end
 
     describe "sorting" do

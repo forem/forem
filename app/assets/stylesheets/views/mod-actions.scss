@@ -826,4 +826,8 @@
 
 body.trusted-status-true .only-mobile-menu-item.trusted-visible-block {
   display: block !important;
+
+  @media (min-width: $breakpoint-s) {
+    display: none !important;
+  }
 }

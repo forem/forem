@@ -1,20 +1,36 @@
 <div class="grid l:grid-cols-2 gap-6 mb-4">
-    <div class="crayons-field">
+  <div>
     <div class="crayons-field">
       <%= form.label :type_of, "Type:", class: "crayons-field__label" %>
       <%= form.select :type_of, options_for_select(Email.type_ofs.keys, selected: @email.type_of), {}, { class: "crayons-textfield", autocomplete: "off" } %>
     </div>
 
     <div class="crayons-field">
-      <%= form.label :user_query_id, "User Query:", class: "crayons-field__label" %>
-      <%= form.select :user_query_id, options_for_select([["Select a user query", nil]] + @user_queries.map { |q| [q.name, q.id]}), {}, { class: "crayons-textfield", autocomplete: "off", id: "user_query_select" }  %>
+      <div class="flex justify-between items-center mb-1">
+        <%= form.label :audience_segment_id, "Audience Segment:", class: "crayons-field__label mb-0" %>
+        <%= link_to "Manage segments", admin_audience_segments_path, target: "_blank", class: "crayons-link text-xs" %>
+      </div>
+      <%= form.select :audience_segment_id, options_for_select([["Select an audience segment", ""]] + (@audience_segments || []).map { |s| ["#{s.display_name} (#{pluralize(s.user_count, 'user')})", s.id] }, selected: @email.audience_segment_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "audience_segment_select" } %>
+      <p class="crayons-field__description">Target a custom audience segment of users</p>
+    </div>
+
+    <div class="crayons-field">
+      <div class="flex justify-between items-center mb-1">
+        <%= form.label :user_query_id, "User Query:", class: "crayons-field__label mb-0" %>
+        <%= link_to "Manage user queries", admin_user_queries_path, target: "_blank", class: "crayons-link text-xs" %>
+      </div>
+      <%= form.select :user_query_id, options_for_select([["Select a user query", ""]] + (@user_queries || []).map { |q| [q.name, q.id] }, selected: @email.user_query_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "user_query_select" }  %>
       <p class="crayons-field__description">Choose a user query to target specific users</p>
     </div>
 
     <div class="crayons-field">
       <%= form.label :event_id, "Event Target:", class: "crayons-field__label" %>
-      <%= form.select :event_id, options_for_select([["Select an event", nil]] + (@events || []).map { |e| [e.title, e.id] }, selected: @email.event_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "event_select" } %>
+      <%= form.select :event_id, options_for_select([["Select an event", ""]] + (@events || []).map { |e| [e.title, e.id] }, selected: @email.event_id), {}, { class: "crayons-textfield", autocomplete: "off", id: "event_select" } %>
       <p class="crayons-field__description">Target users who signed up for a specific event</p>
+    </div>
+
+    <div id="target_status_box" class="crayons-notice crayons-notice--warning mb-4">
+      <span id="target_status_text">⚠️ No target filter selected. This email will be sent to ALL registered email-eligible users.</span>
     </div>
 
     <div class="crayons-field" id="variables_section" style="display: none;">
@@ -42,6 +58,24 @@
       <%= form.label :body, "Body Content:", class: "crayons-field__label" %>
       <%= form.text_area :body, size: "100x5", class: "crayons-textfield" %>
     </div>
+
+    <div class="crayons-field">
+      <div class="flex items-center">
+        <%= form.check_box :override_footer_html, class: "crayons-checkbox", id: "email_override_footer_html" %>
+        <%= form.label :override_footer_html, t("admin.emails.override_footer_html"), class: "crayons-field__label ml-2" %>
+      </div>
+      <p class="crayons-field__description">
+        <%= t("admin.emails.override_footer_description") %>
+      </p>
+    </div>
+
+    <div class="crayons-field" id="custom_footer_section" style="display: none;">
+      <%= form.label :custom_footer_html, t("admin.emails.custom_footer_html"), class: "crayons-field__label" %>
+      <%= form.text_area :custom_footer_html, rows: 4, class: "crayons-textfield font-mono", placeholder: t("admin.emails.custom_footer_placeholder") %>
+      <p class="crayons-field__description">
+        <%= t("admin.emails.custom_footer_description") %>
+      </p>
+    </div>
   </div>
 
   <div>
@@ -50,8 +84,21 @@
         <h2 class="crayons-title mb-2">Preview</h2>
         <p><strong>Subject:</strong><%= Email.replace_merge_tags(@email.subject, current_user) %> </p>
         <p><strong>Body:</strong></p>
-        <div class="crayons-article__body text-styles">
+        <div class="crayons-article__body text-styles mb-4">
           <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
+        </div>
+        <p><strong><%= t("admin.emails.footer") %></strong></p>
+        <div class="crayons-article__body text-styles">
+          <% if @email.errors[:custom_footer_html].present? %>
+            <span class="text-sm italic text-red-500"><%= t("admin.emails.invalid_footer_preview") %></span>
+          <% else %>
+            <% preview_footer = @email.footer_html_to_render %>
+            <% if preview_footer.present? %>
+              <%= sanitize(Email.replace_merge_tags(preview_footer, current_user), tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
+            <% else %>
+              <span class="text-sm italic text-gray-500"><%= t("admin.emails.no_footer") %></span>
+            <% end %>
+          <% end %>
         </div>
       <% else %>
         <div class="flex flex-col gap-3">
@@ -77,21 +124,114 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  const audienceSegmentSelect = document.getElementById('audience_segment_select');
   const userQuerySelect = document.getElementById('user_query_select');
+  const eventSelect = document.getElementById('event_select');
   const variablesSection = document.getElementById('variables_section');
-  
-  function toggleVariablesSection() {
-    if (userQuerySelect.value && userQuerySelect.value !== '') {
-      variablesSection.style.display = 'block';
+  const targetStatusBox = document.getElementById('target_status_box');
+  const targetStatusText = document.getElementById('target_status_text');
+  const statusSelect = document.getElementById('email_status');
+
+  function updateTargetStatus() {
+    if (audienceSegmentSelect && audienceSegmentSelect.value) {
+      const selectedOption = audienceSegmentSelect.options[audienceSegmentSelect.selectedIndex];
+      targetStatusBox.className = 'crayons-notice crayons-notice--info mb-4';
+      targetStatusText.textContent = '🎯 Target: ' + selectedOption.text;
+    } else if (userQuerySelect && userQuerySelect.value) {
+      const selectedOption = userQuerySelect.options[userQuerySelect.selectedIndex];
+      targetStatusBox.className = 'crayons-notice crayons-notice--info mb-4';
+      targetStatusText.textContent = '🎯 Target: User Query "' + selectedOption.text + '"';
+    } else if (eventSelect && eventSelect.value) {
+      const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+      targetStatusBox.className = 'crayons-notice crayons-notice--info mb-4';
+      targetStatusText.textContent = '🎯 Target: Event "' + selectedOption.text + '"';
     } else {
+      targetStatusBox.className = 'crayons-notice crayons-notice--warning mb-4';
+      targetStatusText.textContent = '⚠️ Warning: No target filter selected. This email will be sent to ALL registered email-eligible users on the platform!';
+    }
+  }
+
+  function toggleVariablesSection() {
+    if (userQuerySelect && userQuerySelect.value && userQuerySelect.value !== '') {
+      variablesSection.style.display = 'block';
+    } else if (variablesSection) {
       variablesSection.style.display = 'none';
     }
   }
-  
-  // Show/hide variables section based on user query selection
-  userQuerySelect.addEventListener('change', toggleVariablesSection);
-  
+
+  if (audienceSegmentSelect) {
+    audienceSegmentSelect.addEventListener('change', function() {
+      if (this.value) {
+        if (userQuerySelect) userQuerySelect.value = '';
+        if (eventSelect) eventSelect.value = '';
+      }
+      toggleVariablesSection();
+      updateTargetStatus();
+    });
+  }
+
+  if (userQuerySelect) {
+    userQuerySelect.addEventListener('change', function() {
+      if (this.value) {
+        if (audienceSegmentSelect) audienceSegmentSelect.value = '';
+        if (eventSelect) eventSelect.value = '';
+      }
+      toggleVariablesSection();
+      updateTargetStatus();
+    });
+  }
+
+  if (eventSelect) {
+    eventSelect.addEventListener('change', function() {
+      if (this.value) {
+        if (audienceSegmentSelect) audienceSegmentSelect.value = '';
+        if (userQuerySelect) userQuerySelect.value = '';
+      }
+      toggleVariablesSection();
+      updateTargetStatus();
+    });
+  }
+
+  // Intercept form submit for all-user broadcast confirmation when active
+  const emailForm = audienceSegmentSelect ? audienceSegmentSelect.closest('form') : null;
+  if (emailForm) {
+    emailForm.addEventListener('submit', function(e) {
+      const isBroadcastingToAll = (!audienceSegmentSelect || !audienceSegmentSelect.value) &&
+                                  (!userQuerySelect || !userQuerySelect.value) &&
+                                  (!eventSelect || !eventSelect.value);
+      const isActivating = statusSelect && statusSelect.value === 'active';
+
+      if (isActivating && isBroadcastingToAll) {
+        const confirmed = window.confirm(
+          'WARNING: This email is set to "Active" with no audience segment, user query, or event filter selected.\n\n' +
+          'It will be sent to ALL registered users across the entire platform immediately upon saving.\n\n' +
+          'Are you absolutely sure you want to broadcast to everyone?'
+        );
+        if (!confirmed) {
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
   // Initialize on page load
   toggleVariablesSection();
+  updateTargetStatus();
+
+  const overrideFooterCheckbox = document.getElementById('email_override_footer_html');
+  const customFooterSection = document.getElementById('custom_footer_section');
+
+  function toggleCustomFooterSection() {
+    if (overrideFooterCheckbox && overrideFooterCheckbox.checked) {
+      customFooterSection.style.display = 'block';
+    } else if (customFooterSection) {
+      customFooterSection.style.display = 'none';
+    }
+  }
+
+  if (overrideFooterCheckbox) {
+    overrideFooterCheckbox.addEventListener('change', toggleCustomFooterSection);
+    toggleCustomFooterSection();
+  }
 });
 </script>

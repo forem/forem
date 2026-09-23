@@ -71,6 +71,24 @@ describe Rack, ".attack", throttle: true, type: :request do
         expect(new_ip_response).not_to eq(429)
       end
     end
+
+    it "throttles /search/feed_content/ with trailing slash" do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        params = { feed_params: { class_name: "Article", sort_by: "hotness_score" } }
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/search/feed_content/", params: params, headers: headers
+        end
+        Timecop.travel(start_time + 11.seconds)
+        throttled_response = get "/search/feed_content/", params: params, headers: headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
   end
 
   describe "api_throttle" do

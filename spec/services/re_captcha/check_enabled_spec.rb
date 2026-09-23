@@ -36,6 +36,20 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
         expect(described_class.call(older_user)).to be(false)
       end
 
+      it "loads roles once when evaluating all role exemptions" do
+        older_user
+        role_queries = []
+        subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+          role_queries << payload[:sql] if payload[:sql].include?('FROM "roles"')
+        end
+
+        ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+          expect(described_class.call(older_user)).to be(false)
+        end
+
+        expect(role_queries.size).to eq(1)
+      end
+
       it "marks ReCaptcha as not enabled when admin is logged in" do
         sign_in admin
         expect(described_class.call(admin)).to be(false)

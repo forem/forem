@@ -75,6 +75,51 @@
               <iframe id="chat-frame" width="100%" height="100%" src="<%= chat_url %>" frameborder="0" title="Event Chat" loading="lazy">
               </iframe>
           </div>
+          <script>
+            (function() {
+              const chatFrame = document.getElementById("chat-frame");
+              if (!chatFrame) return;
+
+              function isDark() {
+                return document.body.classList.contains("dark-theme") ||
+                  (localStorage.getItem("config_body_class") || "").includes("dark-theme");
+              }
+
+              function applyThemeToChatUrl() {
+                try {
+                  const url = new URL(chatFrame.src);
+                  const dark = isDark();
+
+                  if (url.hostname.includes("youtube.com")) {
+                    if (dark) {
+                      url.searchParams.set("dark_theme", "1");
+                    } else {
+                      url.searchParams.delete("dark_theme");
+                    }
+                  } else if (url.hostname.includes("twitch.tv")) {
+                    if (dark) {
+                      url.searchParams.set("darkpopout", "");
+                    } else {
+                      url.searchParams.delete("darkpopout");
+                    }
+                  }
+
+                  if (url.toString() !== chatFrame.src) {
+                    chatFrame.src = url.toString();
+                  }
+                } catch (e) {
+                  // ignore invalid URLs
+                }
+              }
+
+              applyThemeToChatUrl();
+
+              const observer = new MutationObserver(function() {
+                applyThemeToChatUrl();
+              });
+              observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+            })();
+          </script>
         <% end %>
     </div>
 

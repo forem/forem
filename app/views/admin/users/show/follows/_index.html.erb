@@ -1,0 +1,62 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.follows_tab.title") %></h3>
+  </div>
+
+  <nav class="mb-4" aria-label="Follows filters">
+    <ul class="crayons-navigation crayons-navigation--horizontal">
+      <li><%= link_to t("views.admin.users.follows_tab.followers"),
+              admin_user_path(@user.id, tab: :follows, filter: :followers),
+              class: "crayons-navigation__item #{'crayons-navigation__item--current' if @follows_filter == 'followers'}",
+              aria: @follows_filter == "followers" ? { current: "page" } : {} %></li>
+      <li><%= link_to t("views.admin.users.follows_tab.following"),
+              admin_user_path(@user.id, tab: :follows, filter: :following),
+              class: "crayons-navigation__item #{'crayons-navigation__item--current' if @follows_filter == 'following'}",
+              aria: @follows_filter == "following" ? { current: "page" } : {} %></li>
+    </ul>
+  </nav>
+
+  <% if @follows.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.follows_tab.empty") %></p>
+    </div>
+  <% else %>
+    <%= paginate @follows if respond_to?(:paginate) %>
+
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.follows_tab.table.user") %></th>
+            <th scope="col"><%= t("views.admin.users.follows_tab.table.username") %></th>
+            <th scope="col"><%= t("views.admin.users.follows_tab.table.followed_at") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @follows.each do |follow| %>
+            <% target_user = @follows_filter == 'following' ? follow.followable : follow.follower %>
+            <tr>
+              <td>
+                <% if target_user.is_a?(User) %>
+                  <%= link_to target_user.name, admin_user_path(target_user.id), class: "c-link" %>
+                <% else %>
+                  <span><%= target_user.try(:name) || target_user.to_s %></span>
+                <% end %>
+              </td>
+              <td>
+                <% if target_user.is_a?(User) %>
+                  <span class="color-secondary">@<%= target_user.username %></span>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td class="whitespace-nowrap"><%= l(follow.created_at, format: :short_with_yy) rescue follow.created_at.to_s %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @follows if respond_to?(:paginate) %>
+  <% end %>
+</div>

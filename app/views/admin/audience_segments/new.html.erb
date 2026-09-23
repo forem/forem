@@ -1,0 +1,10 @@
+<% content_for :title, "New Audience Segment" %>
+
+<div class="crayons-card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="crayons-title">New Custom Audience Segment</h1>
+    <%= link_to "Back to Segments", admin_audience_segments_path, class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+
+  <%= render "form", audience_segment: @audience_segment %>
+</div>

@@ -22,7 +22,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         headers: {
           "Accept" => "*/*",
           "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-          "User-Agent" => "DEV(local) (http://forem.test)"
+          "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})"
         },
       )
       .to_return(
@@ -186,7 +186,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
           headers: {
             "Accept" => "*/*",
             "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-            "User-Agent" => "DEV(local) (http://forem.test)"
+            "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})"
           },
         )
         .to_return(status: 200, body: "", headers: {})
@@ -215,7 +215,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
           headers: {
             "Accept" => "*/*",
             "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-            "User-Agent" => "DEV(local) (http://forem.test)"
+            "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})"
           },
         )
         .to_return(status: 200, body: "", headers: {})
@@ -231,7 +231,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
           headers: {
             "Accept" => "*/*",
             "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-            "User-Agent" => "DEV(local) (http://forem.test)"
+            "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})"
           },
         )
         .to_return(status: 200, body: "", headers: {})
@@ -280,10 +280,10 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         expect(described_class.private_ip?("internal.company.com")).to be_truthy
       end
 
-      it "allows domains that fail to resolve" do
+      it "denies domains that fail to resolve (SocketError treated as private)" do
         allow(Addrinfo).to receive(:getaddrinfo).and_raise(SocketError.new("Name resolution failure"))
-        
-        expect(described_class.private_ip?("nonexistent.domain")).to be_falsy
+
+        expect(described_class.private_ip?("nonexistent.domain")).to be_truthy
       end
     end
 
@@ -421,6 +421,87 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         allow(IPAddr).to receive(:new).with("93.184.216.34").and_call_original
 
         expect(described_class.private_ip?(link_host)).to be_falsey
+      end
+    end
+  end
+
+  # Regression tests for CVE-2026-GHSA-v8wj-4j4p-c2gc:
+  # SSRF bypass via HTTP redirect in OpenGraph#fetch_html.
+  describe "SSRF redirect bypass regression (GHSA-v8wj-4j4p-c2gc)" do
+    describe "#blocked_ip?" do
+      it "blocks 0.0.0.0 (unspecified/wildcard)" do
+        expect(described_class.blocked_ip?(IPAddr.new("0.0.0.0"))).to be_truthy
+      end
+
+      it "blocks other addresses in 0.0.0.0/8" do
+        expect(described_class.blocked_ip?(IPAddr.new("0.255.255.255"))).to be_truthy
+      end
+
+      it "blocks IPv4-mapped IPv6 for private IPv4 (::ffff:127.0.0.1)" do
+        expect(described_class.blocked_ip?(IPAddr.new("::ffff:127.0.0.1"))).to be_truthy
+      end
+
+      it "blocks IPv4-mapped IPv6 for RFC1918 (::ffff:192.168.1.1)" do
+        expect(described_class.blocked_ip?(IPAddr.new("::ffff:192.168.1.1"))).to be_truthy
+      end
+
+      it "blocks IPv6 unique-local fc00::/7" do
+        expect(described_class.blocked_ip?(IPAddr.new("fc00::1"))).to be_truthy
+        expect(described_class.blocked_ip?(IPAddr.new("fd00::1"))).to be_truthy
+      end
+
+      it "blocks IPv6 unspecified :: (::/128)" do
+        expect(described_class.blocked_ip?(IPAddr.new("::"))).to be_truthy
+      end
+
+      it "blocks IPv4-compatible IPv6 addresses (::/96)" do
+        expect(described_class.blocked_ip?(IPAddr.new("::127.0.0.1"))).to be_truthy
+        expect(described_class.blocked_ip?(IPAddr.new("::10.0.0.1"))).to be_truthy
+      end
+
+      it "blocks Carrier-Grade NAT range 100.64.0.0/10" do
+        expect(described_class.blocked_ip?(IPAddr.new("100.64.0.1"))).to be_truthy
+        expect(described_class.blocked_ip?(IPAddr.new("100.127.255.254"))).to be_truthy
+      end
+
+      it "allows public IPv4" do
+        expect(described_class.blocked_ip?(IPAddr.new("8.8.8.8"))).to be_falsy
+      end
+
+      it "allows public IPv6" do
+        expect(described_class.blocked_ip?(IPAddr.new("2001:4860:4860::8888"))).to be_falsy
+      end
+
+      # Documents intentional defensive behavior: public IPv4-mapped IPv6
+      # addresses (e.g., ::ffff:8.8.8.8) are also blocked because the
+      # ::ffff:0:0/96 catch-all is needed to prevent private IPv4 tunneling
+      # through IPv6 literals on Ruby versions where IPAddr#private?/loopback?
+      # don't natively handle IPv4-mapped forms.
+      it "blocks public IPv4-mapped IPv6 (intentional defense-in-depth)" do
+        expect(described_class.blocked_ip?(IPAddr.new("::ffff:8.8.8.8"))).to be_truthy
+      end
+    end
+
+    describe "#private_ip? nil/blank hostname deny-by-default" do
+      it "denies nil hostname (prevents TypeError from IPAddr.new(nil))" do
+        expect(described_class.private_ip?(nil)).to be_truthy
+      end
+
+      it "denies empty string hostname" do
+        expect(described_class.private_ip?("")).to be_truthy
+      end
+
+      it "denies whitespace-only hostname" do
+        expect(described_class.private_ip?("  ")).to be_truthy
+      end
+    end
+
+    describe "#private_ip? SocketError deny-by-default" do
+      it "treats SocketError during resolution as private (deny)" do
+        allow(Addrinfo).to receive(:getaddrinfo)
+          .and_raise(SocketError.new("getaddrinfo: Name or service not known"))
+
+        expect(described_class.private_ip?("unresolvable-host.internal")).to be_truthy
       end
     end
   end

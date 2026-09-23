@@ -1,4 +1,6 @@
 class EventSignup < ApplicationRecord
+  include ActivityTrackable
+
   belongs_to :user
   belongs_to :event
 
@@ -8,6 +10,23 @@ class EventSignup < ApplicationRecord
 
   before_validation :initialize_notification_flags, on: :create
   after_create_commit :auto_follow_challenge_tags, if: -> { event&.challenge? }
+
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # Challenges only; the :updated phase is reminder-flag bookkeeping.
+
+  def trackable_activity_payload
+    event.challenge_trackable_properties
+  end
+
+  def trackable_activity_event(phase)
+    return unless event&.challenge?
+
+    case phase
+    when :created then "challenge_signed_up"
+    when :destroyed then "challenge_unregistered"
+    end
+  end
+  private :trackable_activity_payload, :trackable_activity_event
 
   private
 

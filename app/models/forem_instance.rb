@@ -67,6 +67,15 @@ class ForemInstance
     customerio_enabled? && FeatureFlag.enabled?(Deliverable::CUSTOMERIO_FLAG)
   end
 
+  # Rollout-only: send broadcast email to the CUSTOMERIO_FLAG cohort over the
+  # Customer.io passthrough path rather than skipping them. See
+  # Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG. Never applies after full
+  # cutover -- customerio_email_cutover? returns before any of this is reached.
+  def self.customerio_broadcast_passthrough?
+    customerio_enabled? &&
+      FeatureFlag.enabled?(Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG)
+  end
+
   def self.sendgrid_enabled?
     ENV["SENDGRID_API_KEY"].present?
   end

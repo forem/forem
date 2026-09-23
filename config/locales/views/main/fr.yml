@@ -32,8 +32,8 @@ fr:
         placeholder: "..."
         list: Liste de lecture
         moderator_center: Centre de modération
-        leadership: Leadership communautaire
-        other: Other
+        leadership: Curation communautaire
+        other: Autre
         settings: Paramètres
         account: Compte
       nav_name:

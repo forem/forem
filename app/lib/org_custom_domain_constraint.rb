@@ -30,7 +30,7 @@ class OrgCustomDomainConstraint
 
   def self.platform_path?(first_segment, path)
     return true if PLATFORM_FIRST_SEGMENTS.include?(first_segment)
-    return true if path.start_with?("/robots") || path.start_with?("/sitemap")
+    return true if path.start_with?("/robots", "/sitemap", "/llms.")
 
     false
   end
@@ -39,7 +39,7 @@ class OrgCustomDomainConstraint
     path = request.path.to_s
     first_segment = path.split("/")[1]
 
-    if platform_path?(first_segment, path) && request.params[:i] != "i"
+    if platform_path?(first_segment, path) && (request.params[:i] != "i" && !request.params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/))
       return nil
     end
 

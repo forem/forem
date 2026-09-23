@@ -145,6 +145,31 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(email["from"].value).to eq(expected_from)
       end
     end
+
+    # Signup-time confirmations race the mlh identity link; Deliverable holds
+    # them rather than mint an email-keyed Customer.io person. DeviseMailer is
+    # not parameterized, so the replay must carry its positional args.
+    context "when routed through Customer.io before the mlh identity exists" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "holds the email and sends it by MLH uid once linked" do
+        held = described_class.confirmation_instructions(user, "faketoken").message
+        expect(held.perform_deliveries).to be(false)
+
+        omniauth_mock_mlh_payload
+        create(:identity, provider: "mlh", user: user, uid: "core-7")
+        replay = described_class.with(customerio_link_hold: 1).confirmation_instructions(user, "faketoken").message
+
+        expect(replay.perform_deliveries).to be(true)
+        expect(replay.delivery_method.settings[:identifiers]).to eq(id: "core-7")
+      end
+    end
   end
 
   describe "#invitation_instructions" do
@@ -255,6 +280,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -272,6 +298,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }

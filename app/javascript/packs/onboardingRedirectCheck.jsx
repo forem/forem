@@ -9,6 +9,8 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function redirectableLocation() {
+  if (document.querySelector('[data-account-switch-confirmation]')) return false;
+
   return ![
     '/onboarding',
     '/signout_confirm',

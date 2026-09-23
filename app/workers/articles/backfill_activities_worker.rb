@@ -16,14 +16,8 @@ module Articles
 
     def perform(article_ids)
       Array(article_ids).each_slice(100) do |chunk|
-        existing = ArticleActivity.where(article_id: chunk).pluck(:article_id).to_set
-        missing = chunk.reject { |id| existing.include?(id) }
-        next if missing.empty?
-
-        Article.where(id: missing).find_each do |article|
-          activity = ArticleActivity.find_or_create_by!(article_id: article.id)
-          activity.recompute_all!
-        end
+        missing = chunk - ArticleActivity.where(article_id: chunk).pluck(:article_id)
+        ArticleActivity.bulk_backfill!(missing) if missing.any?
       end
     end
   end

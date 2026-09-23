@@ -199,5 +199,10 @@ pt:
       field_job_title: Cargo
       name_email_required: Nome e e-mail são obrigatórios.
       wrong_organization: Este formulário de leads não pertence a esta organização.
+    org_lead_gate_tag:
+      invalid_id: "ID de formulário de leads inválido. Use: {% org_lead_gate ID %}...{% endorg_lead_gate %}"
+      sign_in_required: Entre com sua conta %{community} para enviar este formulário e desbloquear o conteúdo.
+      sign_in: Entrar para desbloquear
+      data_shared: "Compartilha seu nome, e-mail, nome de usuário, empresa e cargo com esta organização."
     youtube_tag:
       invalid_youtube_id: ID do YouTube inválido

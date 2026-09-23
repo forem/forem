@@ -703,4 +703,13 @@ RSpec.describe ApplicationHelper do
       expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
     end
   end
+
+  describe "#main_stylesheets_fingerprint" do
+    it "returns a deterministic hash based on minimal, views, and crayons stylesheet paths" do
+      fingerprint = helper.main_stylesheets_fingerprint
+      expect(fingerprint).to be_a(String)
+      expect(fingerprint.length).to eq(10)
+      expect(fingerprint).to eq(helper.main_stylesheets_fingerprint)
+    end
+  end
 end

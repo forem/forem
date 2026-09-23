@@ -39,6 +39,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag reading_time_minutes language subforem_id
+        ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -469,7 +470,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
-        language subforem_id
+        language subforem_id ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -1769,6 +1770,11 @@ RSpec.describe "Api::V1::Articles" do
       expect(json).to eq([])
     end
 
+    it "allows requesting up to 100 articles with per_page" do
+      get "/api/articles/semantic_search", params: { q: "testing query", per_page: 100 }, headers: auth_headers
+      expect(response).to be_successful
+    end
+
     context "when Algolia is available" do
       before do
         allow(ApplicationConfig).to receive(:[]).and_call_original
@@ -1807,6 +1813,64 @@ RSpec.describe "Api::V1::Articles" do
         expect(response).to be_successful
         json = JSON.parse(response.body)
         expect(json).to eq([])
+      end
+
+      it "verifies that articles returned still exist and are published, discarding drifted or deleted results" do
+        valid_article = create(:article, title: "Valid Published Fable", published: true)
+        valid_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        future_article = create(:article, title: "Scheduled Future Fable", published: true)
+        future_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 1.day.from_now)
+
+        deleted_article = create(:article, title: "Deleted Fable", published: true)
+        deleted_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+        deleted_id = deleted_article.id
+        deleted_article.destroy!
+
+        hits = [
+          { "objectID" => valid_article.id.to_s },
+          { "objectID" => future_article.id.to_s },
+          { "objectID" => deleted_id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.length).to eq(1)
+        expect(response.parsed_body[0]["id"]).to eq(valid_article.id)
+      end
+
+      it "passes advanced contextual query parameters to Algolia raw_search" do
+        allow(Article).to receive(:raw_search)
+          .with("fable", hash_including(
+            removeStopWords: true,
+            ignorePlurals: true,
+            advancedSyntax: true,
+            distinct: true,
+            typoTolerance: true,
+          ))
+          .and_return({ "hits" => [] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+      end
+
+      it "contextually boosts slightly more recent articles in Algolia search results" do
+        older_article = create(:article, title: "Older Algolia Fable", published: true)
+        older_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 180.days.ago)
+
+        recent_article = create(:article, title: "Recent Algolia Fable", published: true)
+        recent_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 2.days.ago)
+
+        hits = [
+          { "objectID" => older_article.id.to_s },
+          { "objectID" => recent_article.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.first["id"]).to eq(recent_article.id)
       end
 
       it "falls back to DB hybrid search if Algolia search fails" do
@@ -1857,6 +1921,61 @@ RSpec.describe "Api::V1::Articles" do
 
       matching_item = json.find { |item| item["id"] == keyword_article.id }
       expect(matching_item).to be_present
+    end
+  end
+
+  describe "AI disclosure visibility for automated clients" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:auth_headers) do
+      { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json",
+        "content-type" => "application/json" }
+    end
+
+    context "when ai disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "returns the disclosure level and label so a client can verify it" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        get api_article_path(article.id), headers: auth_headers
+
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_label"]).to be_present
+      end
+
+      it "warns when updating an undisclosed article" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["warnings"].first).to include("not_disclosed")
+      end
+
+      it "omits warnings when the article is already disclosed" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
+    end
+
+    context "when ai disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "does not attach warnings on update" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
     end
   end
 end

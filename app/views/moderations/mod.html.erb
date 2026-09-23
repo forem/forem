@@ -70,9 +70,11 @@
     <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
       <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
-  <% elsif current_user.super_admin? && @moderatable.class.name == "Comment" %>
-    <h3> <a href="/admin/content_manager/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
-      <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
+  <% elsif (current_user.super_admin? || current_user.support_admin?) && @moderatable.class.name == "Comment" %>
+    <h3> <a href="/admin/content_manager/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a>
+      <% if current_user.super_admin? %>
+        | <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a>
+      <% end %></h3>
   <% end %>
   <p>
     <b style="font-size:1em"><%= t("views.moderations.actions.hint.subtitle") %></b>
