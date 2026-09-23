@@ -85,3 +85,7 @@ check again
 ---
 
 do i need to manually run it or will it go automatically
+
+---
+
+/Users/jonmarkgo/Downloads/build-containers_build_26276_hammer-build-containers.log
