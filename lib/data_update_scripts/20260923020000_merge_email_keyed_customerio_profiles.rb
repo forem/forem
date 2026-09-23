@@ -20,7 +20,9 @@ module DataUpdateScripts
 
       # Batch from the first post-rollout id: in_batches walks the primary key,
       # so a created_at filter alone scans every older user and times out.
-      start_id = User.where(created_at: ROLLOUT_DATE..).minimum(:id)
+      # Not minimum(:id) -- Postgres plans that as the same filtered primary
+      # key walk; ordering by created_at reads the created_at index instead.
+      start_id = User.where(created_at: ROLLOUT_DATE..).order(:created_at).pick(:id)
       return unless start_id
 
       User.where(id: start_id..).where.not(email: [nil, ""]).in_batches(of: BATCH_SIZE) do |users|
