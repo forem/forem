@@ -1,0 +1,19 @@
+config/fastly/snippets/safe_params_list.vcl
+  s_1f0ef0afa958d1::t_5bb5b3dbf5d338 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c86ec9256b1b97583fa087c0213cb5587d5a63db",
+  "prompts": {},
+  "sessions": {
+    "s_1f0ef0afa958d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "30b0a1d3-2de5-4bfd-abc2-973b13619dd3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

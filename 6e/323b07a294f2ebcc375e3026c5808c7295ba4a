@@ -1,0 +1,24 @@
+app/lib/black_box.rb
+  h_f968154a99632d 15,30,43-48
+app/models/article.rb
+  h_f968154a99632d 575-577,579
+spec/lib/black_box_spec.rb
+  h_f968154a99632d 26-47
+spec/models/article_spec.rb
+  h_f968154a99632d 1782-1809
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 176-186
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_f968154a99632d 32-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6e323b07a294f2ebcc375e3026c5808c7295ba4a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

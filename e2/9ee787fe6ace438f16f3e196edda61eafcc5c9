@@ -1,0 +1,37 @@
+config/environments/development.rb
+  s_f3e4747c7760b6::t_1fd8f9df5d6fec 111
+app/views/layouts/_main_side_bar.html.erb
+  s_f3e4747c7760b6::t_b9fe3b10547e03 6
+app/lib/url.rb
+  s_f3e4747c7760b6::t_8d7d12707158d4 40
+  s_f3e4747c7760b6::t_1a1a28c232a75e 7-14
+spec/lib/url_spec.rb
+  s_f3e4747c7760b6::t_f0438382025fc0 17-30
+  s_f3e4747c7760b6::t_79879539df8e27 90-112
+app/models/subforem.rb
+  s_f3e4747c7760b6::t_0a13c7832177d3 84
+app/mailers/application_mailer.rb
+  s_f3e4747c7760b6::t_be0ef00babdcb2 99-100
+app/mailers/devise_mailer.rb
+  s_f3e4747c7760b6::t_f0085cfa17d458 84-85
+.env_sample
+  s_f3e4747c7760b6::t_d5f74005efc3b4 7-8
+app/services/liquid_embed_extractor.rb
+  s_f3e4747c7760b6::t_e09cbdf2027eba 53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "e29ee787fe6ace438f16f3e196edda61eafcc5c9",
+  "prompts": {},
+  "sessions": {
+    "s_f3e4747c7760b6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "458812df-36ed-4f6c-9ebd-f8a0b065c0e9",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Jon Gottfried <jon@majorleaguehacking.com>"
+    }
+  }
+}
