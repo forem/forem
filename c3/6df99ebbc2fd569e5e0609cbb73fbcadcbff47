@@ -1,0 +1,46 @@
+app/models/async_info.rb
+  h_c527e33bbdbde8 49
+app/controllers/favorites_controller.rb
+  h_c527e33bbdbde8 6
+spec/requests/favorites_spec.rb
+  h_c527e33bbdbde8 57-58,60-61,63-64,69-79
+  h_c527e33bbdbde8 80-82
+app/policies/favorite_policy.rb
+  h_c527e33bbdbde8 5
+spec/models/async_info_spec.rb
+  h_c527e33bbdbde8 34-41
+spec/policies/favorite_policy_spec.rb
+  h_c527e33bbdbde8 17-18,22-23,42-44
+  h_c527e33bbdbde8 45-49
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_c527e33bbdbde8 13-16,19,46-52,54,69,115
+spec/services/favorites/create_spec.rb
+  h_c527e33bbdbde8 34-35,38,147-207,211-212,216,218,220-234
+  h_c527e33bbdbde8 84-146,208-210,213-215,217,219,235
+app/services/favorites/create.rb
+  h_c527e33bbdbde8 4-6,10,22,27,46,52-56,59,66-71,86-91,97-105,110-113
+  s_1e049bdc81f15e::t_9b242c2d2288fc 43-45,47-51,57-58,60-65,72-85,92-96,106-109
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_c527e33bbdbde8 115-117
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "c36df99ebbc2fd569e5e0609cbb73fbcadcbff47",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
