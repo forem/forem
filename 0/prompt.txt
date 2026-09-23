@@ -1,1 +1,5 @@
 do we send a segment/customerio event when someone pre-registers/signs up for a challenge?
+
+---
+
+let's do it in a new pr off main. ideally we can also see when someone actually DOES submit to a new challenge by making a new post
