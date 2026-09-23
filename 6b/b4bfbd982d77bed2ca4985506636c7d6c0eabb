@@ -1,0 +1,16 @@
+app/views/events/show.html.erb
+  h_f968154a99632d 78-122
+spec/requests/events_spec.rb
+  h_f968154a99632d 55-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6bb4bfbd982d77bed2ca4985506636c7d6c0eabb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

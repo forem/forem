@@ -1,0 +1,42 @@
+app/models/feed_config.rb
+  h_f968154a99632d 158-168
+app/services/articles/feeds/article_score_calculator_for_user.rb
+  h_f968154a99632d 23-25,76-96
+app/services/articles/feeds/basic.rb
+  h_f968154a99632d 25-27,35,40,58
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 56-57,90-93
+app/services/articles/feeds/large_forem_experimental.rb
+  h_f968154a99632d 62,71,81-83,91-93
+app/services/articles/feeds/variant_query.rb
+  h_f968154a99632d 256-259,301-303
+config/locales/views/settings/en.yml
+  h_f968154a99632d 82
+config/locales/views/settings/fr.yml
+  h_f968154a99632d 82
+config/locales/views/settings/pt.yml
+  h_f968154a99632d 96
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 474,486-521
+spec/services/articles/feeds/article_score_calculator_for_user_spec.rb
+  h_f968154a99632d 201-247
+spec/services/articles/feeds/basic_spec.rb
+  h_f968154a99632d 66-100
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 613-651
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_f968154a99632d 190-213
+spec/services/articles/feeds/variant_query_spec.rb
+  h_f968154a99632d 79-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "65441a12d95b6e91d0f94bc4a122b7d21b0c3287",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
