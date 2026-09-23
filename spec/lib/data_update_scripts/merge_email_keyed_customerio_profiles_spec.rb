@@ -1,39 +1,27 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20260923020000_merge_email_keyed_customerio_profiles.rb",
+  "lib/data_update_scripts/20260923030000_merge_email_keyed_customerio_profiles.rb",
 )
 
 describe DataUpdateScripts::MergeEmailKeyedCustomerioProfiles do
-  let(:track_client) { instance_double(Customerio::Client, batch: nil) }
+  before { allow(ForemInstance).to receive(:customerio_track_enabled?).and_return(true) }
 
-  before do
-    stub_const("CUSTOMERIO_TRACK_API", track_client)
-    allow(ForemInstance).to receive(:customerio_track_enabled?).and_return(true)
-    omniauth_mock_mlh_payload
-  end
-
-  def link(user, uid, at:)
-    create(:identity, provider: "mlh", user: user, uid: uid, created_at: at)
-  end
-
-  it "merges the email-keyed profile of a user linked after signup into the linked person" do
+  it "enqueues a merge worker for the id range of users created since the rollout" do
+    create(:user, created_at: Time.zone.parse("2026-07-01"))
     user = create(:user, created_at: 1.day.ago)
-    link(user, "core-1", at: user.created_at + 30.seconds)
 
     described_class.new.run
 
-    expect(track_client).to have_received(:batch).with(
-      [{ type: "person", action: "merge", primary: { id: "core-1" }, secondary: { id: user.email } }],
-    )
+    expect(Emails::MergeEmailKeyedCustomerioProfilesWorker.jobs.pluck("args"))
+      .to eq([[user.id, user.id + described_class::RANGE_SIZE - 1]])
   end
 
-  it "skips users linked before the rollout or not linked after signup" do
-    old_user = create(:user, created_at: Time.zone.parse("2026-07-01"))
-    link(old_user, "core-old", at: old_user.created_at + 30.seconds)
+  it "enqueues nothing without Track API credentials" do
+    allow(ForemInstance).to receive(:customerio_track_enabled?).and_return(false)
     create(:user, created_at: 1.day.ago)
 
     described_class.new.run
 
-    expect(track_client).not_to have_received(:batch)
+    expect(Emails::MergeEmailKeyedCustomerioProfilesWorker.jobs).to be_empty
   end
 end
