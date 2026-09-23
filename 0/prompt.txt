@@ -1,0 +1,1 @@
+do we send a segment/customerio event when someone pre-registers/signs up for a challenge?
