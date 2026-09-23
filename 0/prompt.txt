@@ -1,0 +1,184 @@
+why did these two profiles not auto merge? https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba0197cb01f894d602 https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba0198cb01f994d602 i also don't see the link to his account in DEV admin
+
+---
+
+i see the same thing here https://fly.customer.io/workspaces/152482/journeys/people/a2a70961da238bf2b101 https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba01aec8018f92d602
+
+---
+
+i thought we have forem passing in dev_user_id as the anonymous identifier? verify the flow here and in ../mlh-core
+
+---
+
+can't we make forem pass the dev user id like we do for track events, for emails too, so we can auto merge with the same criteria?
+
+---
+
+got it ok let's just do option 1 of the id and cleanup jobfor existing profiles
+
+---
+
+we should not have dev set temporary primary ids like that
+
+---
+
+we should not have dev set temporary primary ids like that - look at how core does first email login ids before someone has an account
+
+---
+
+how long would it be in between them requesting the email and core updating the id and then it sending?
+
+---
+
+i do not want to make email keyed orphans at all if we can help it
+
+---
+
+no smtp allowed either - only customerio
+
+---
+
+link me to the PRs you opened on each repo
+
+---
+
+open em
+
+---
+
+tell me more about this OAuth signups no longer get a confirmation email. User#confirmation_required? returned ForemInstance.smtp_enabled? and dropped Devise's !confirmed?. Users confirmed at creation via skip_confirmation! (82% of signups) were still sent "confirm your DEV Community account". This is what minted both orphans reported.
+
+---
+
+so do we not email the oauth accounts anymore at all? or do we do it after we get the core callback
+
+---
+
+how do we know it's confirmed? is it just done via core?
+
+---
+
+got it ok
+
+---
+
+monitor the deploy for me - i merged it in. how do i run lib/data_update_scripts/20260922120000_merge_email_keyed_customerio_profiles.rb
+
+---
+
+check on it
+
+---
+
+<task-notification>
+<task-id>bcfd3z7q0</task-id>
+<tool-use-id>toolu_01FbVikDZq3oLwjwyjyApjBu</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bcfd3z7q0.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CD workflow on merge commit" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+check again
+
+---
+
+do i need to manually run it or will it go automatically
+
+---
+
+/Users/jonmarkgo/Downloads/build-containers_build_26276_hammer-build-containers.log
+
+---
+
+<task-notification>
+<task-id>bxxyz1twm</task-id>
+<tool-use-id>toolu_015tEaiYJkktHx8Fq7Knmrr8</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bxxyz1twm.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait ~12 minutes for the delayed data update worker" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+check deploy again
+
+---
+
+check now
+
+---
+
+<task-notification>
+<task-id>bi7lfslk8</task-id>
+<tool-use-id>toolu_019BrrfdzN2XBrUHuQAX9ayd</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bi7lfslk8.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CD on the fix merge" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b18ys4uko</task-id>
+<tool-use-id>toolu_01X3tf7JVX1LBjgZuJW1Vyzc</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/b18ys4uko.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait ~13 minutes for the delayed data update worker" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+merging this
+
+---
+
+<task-notification>
+<task-id>bi5e6o11q</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bi5e6o11q.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for merge and CD of the second fix" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+hows it going
+
+---
+
+<task-notification>
+<task-id>buu897nc0</task-id>
+<tool-use-id>toolu_01D8KqEq5r1X4TRLXvgXFbgp</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/buu897nc0.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait ~13 minutes for the delayed data update worker" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>be8p2hltv</task-id>
+<tool-use-id>toolu_01MxPcJo9mdemTd1EGZMSCpJ</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/be8p2hltv.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait 15 minutes before rechecking merges" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+it does not belong to a different workspace, i promise
+
+---
+
+check datadog for what happened with the script too
+
+---
+
+<pasted_content id="aac1">
+practical-developer(prod)> CUSTOMERIO_TRACK_API.merge_customers("id", "01a0c55a-6041-4642-1e7d-77aa73dbf708", "id", "siyadyusuf@outlook.com")
+=> #<Net::HTTPOK 200 OK readbody=true>
+E, [2026-09-23T01:31:45.295296 #2] ERROR -- ddtrace: [ddtrace] (/app/vendor/bundle/ruby/3.3.0/gems/ddtrace-1.16.2/lib/datadog/tracing/transport/http/client.rb:41:in `rescue in send_request') Internal error during Datadog::Tracing::Transport::HTTP::Client request. Cause: Errno::ECONNREFUSED Failed to open TCP connection to 127.0.0.1:8126 (Connection refused - connect(2) for "127.0.0.1" port 8126) Location: /app/vendor/bundle/ruby/3.3.0/gems/net-http-0.9.1/lib/net/http.rb:1792:in `initialize'
+practical-developer(prod)> 
+</pasted_content id="aac1">
