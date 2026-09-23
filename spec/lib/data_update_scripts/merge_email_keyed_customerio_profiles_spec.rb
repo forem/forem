@@ -1,6 +1,6 @@
 require "rails_helper"
 require Rails.root.join(
-  "lib/data_update_scripts/20260922120000_merge_email_keyed_customerio_profiles.rb",
+  "lib/data_update_scripts/20260923010000_merge_email_keyed_customerio_profiles.rb",
 )
 
 describe DataUpdateScripts::MergeEmailKeyedCustomerioProfiles do

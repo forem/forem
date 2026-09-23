@@ -1,6 +1,6 @@
 module DataUpdateScripts
-  # Before Deliverable keyed unlinked recipients as "dev:<id>", mail sent to a
-  # new user before their mlh identity landed was keyed by email. Customer.io
+  # Before Deliverable held mail for users without an mlh identity, mail sent
+  # to a new user before that link landed was keyed by email. Customer.io
   # stored that address as the person's id, leaving an orphan profile beside
   # the one keyed by the MLH uid that nothing ever merges. Merge each orphan
   # into its linked person.
@@ -18,7 +18,12 @@ module DataUpdateScripts
     def run
       return unless ForemInstance.customerio_track_enabled?
 
-      User.where(created_at: ROLLOUT_DATE..).where.not(email: [nil, ""]).in_batches(of: BATCH_SIZE) do |users|
+      # Batch from the first post-rollout id: in_batches walks the primary key,
+      # so a created_at filter alone scans every older user and times out.
+      start_id = User.where(created_at: ROLLOUT_DATE..).minimum(:id)
+      return unless start_id
+
+      User.where(id: start_id..).where.not(email: [nil, ""]).in_batches(of: BATCH_SIZE) do |users|
         ops = users.joins(:identities)
           .where(identities: { provider: "mlh" })
           .where("identities.created_at > users.created_at")
