@@ -109,6 +109,28 @@ RSpec.describe "/admin/content_manager/organizations" do
       expect(flash[:notice]).to eq(I18n.t("admin.organizations_controller.name_updated"))
     end
 
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "strips whitespace and records a note and audit log" do
+        expect do
+          patch update_name_admin_organization_path(organization), params: { name: "  Updated Name  " }
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
+
+        expect(organization.reload.name).to eq("Updated Name")
+        expect(Note.last.content).to include("Original Name", "Updated Name")
+        expect(AuditLog.last.data).to include("old_name" => "Original Name", "new_name" => "Updated Name")
+      end
+
+      it "does not record a note or audit log when the name is unchanged" do
+        expect do
+          patch update_name_admin_organization_path(organization), params: { name: "Original Name" }
+        end.to not_change(Note, :count).and not_change(AuditLog, :count)
+      end
+    end
+
     it "shows errors for invalid name" do
       patch update_name_admin_organization_path(organization), params: { name: "" }
 
