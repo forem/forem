@@ -1890,8 +1890,22 @@ class Article < ApplicationRecord
     type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
     id if type == "Article"
   end
+
+  # Going live also reports each challenge the post enters, as its own event so
+  # Customer.io can trigger on it without parsing tag_list. Challenge tags added
+  # to an already-published post don't emit.
+  def emit_activity_event(phase, **)
+    super
+    return unless published?
+    return unless phase == :created || (phase == :updated && trackable_changed_keys.include?("published"))
+
+    tag_names = cached_tag_list.to_s.split(",").map(&:strip).compact_blank
+    Event.challenges_entered_by(tag_names, at: published_at || Time.current).each do |challenge|
+      enqueue_trackable_event("challenge_submitted", properties_override: challenge.challenge_trackable_properties)
+    end
+  end
   private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event,
-          :publication_event, :boosted_article_id
+          :publication_event, :boosted_article_id, :emit_activity_event
 
   private
 
