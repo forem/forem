@@ -39,6 +39,19 @@ class Event < ApplicationRecord
   scope :elevated, -> { where(elevated: true) }
 
   DEFAULT_HEX_COLORS = ["#3B49DF", "#0D9488", "#7C3AED", "#DB2777", "#D97706"].freeze
+
+  # Challenges a post enters: published challenges running at `at` whose every
+  # tag the post carries. Recurring series (weekend challenges) reuse the same
+  # tags, so the time window is what tells their runs apart.
+  def self.challenges_entered_by(tag_names, at:)
+    return none if tag_names.blank?
+
+    published.challenge
+      .where.not(tags_array: [])
+      .where("tags_array <@ ARRAY[?]::text[]", tag_names)
+      .where("start_time <= :at AND end_time >= :at", at: at)
+  end
+
   def self.active_broadcast_events
     Rails.cache.fetch("active_broadcast_events", expires_in: 30.seconds) do
       published
@@ -143,6 +156,15 @@ class Event < ApplicationRecord
     else
       "Are you sure you want to cancel your interest?"
     end
+  end
+
+  # Shared by the challenge_signed_up and challenge_submitted CDP events.
+  def challenge_trackable_properties
+    {
+      "challenge_id" => id,
+      "challenge_slug" => event_variation_slug,
+      "challenge_title" => title
+    }
   end
 
   private

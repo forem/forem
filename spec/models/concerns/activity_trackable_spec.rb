@@ -195,6 +195,85 @@ RSpec.describe ActivityTrackable do
     end
   end
 
+  describe "Article challenge submissions" do
+    let!(:challenge) do
+      create(:event, type_of: :challenge, tag_list: "devchallenge, weekendchallenge",
+                     start_time: 1.day.ago, end_time: 1.day.from_now)
+    end
+
+    def publish_tagged(tags, **attrs)
+      create(:article, user: user, tags: tags, **attrs)
+    end
+
+    it "emits challenge_submitted alongside article_published for a post carrying every challenge tag" do
+      result = emitted { publish_tagged("devchallenge, weekendchallenge, javascript") }
+
+      expect(names(result)).to eq(%w[article_published challenge_submitted])
+      expect(result.last[:properties]).to include(
+        "challenge_id" => challenge.id,
+        "challenge_slug" => challenge.event_variation_slug,
+        "user_id" => user.id,
+      )
+    end
+
+    it "emits challenge_submitted when a tagged draft goes live" do
+      article = publish_tagged("devchallenge, weekendchallenge", published: false)
+
+      result = emitted do
+        article.update!(body_markdown: article.body_markdown.sub("published: false", "published: true"))
+      end
+
+      expect(names(result)).to eq(%w[article_published challenge_submitted])
+    end
+
+    it "stays silent on challenge_submitted when the post carries only some of the tags" do
+      result = emitted { publish_tagged("devchallenge") }
+
+      expect(names(result)).to eq(["article_published"])
+    end
+
+    it "ignores a finished run of a recurring challenge sharing the same tags" do
+      challenge.update!(start_time: 10.days.ago, end_time: 5.days.ago)
+
+      result = emitted { publish_tagged("devchallenge, weekendchallenge") }
+
+      expect(names(result)).to eq(["article_published"])
+    end
+
+    it "does not re-emit when a submitted post is edited" do
+      article = publish_tagged("devchallenge, weekendchallenge")
+
+      result = emitted { article.update!(body_markdown: article.body_markdown.sub(article.title, "Renamed")) }
+
+      expect(names(result)).to eq(["article_updated"])
+    end
+  end
+
+  describe "EventSignup" do
+    let(:challenge) { create(:event, type_of: :challenge) }
+
+    it "emits challenge_signed_up with the challenge in the payload" do
+      result = emitted { create(:event_signup, user: user, event: challenge) }
+
+      expect(names(result)).to eq(["challenge_signed_up"])
+      expect(result.first[:properties]).to include("challenge_id" => challenge.id, "user_id" => user.id)
+    end
+
+    it "emits challenge_unregistered when the signup is removed" do
+      signup = create(:event_signup, user: user, event: challenge)
+
+      result = emitted { signup.destroy }
+
+      expect(names(result)).to eq(["challenge_unregistered"])
+    end
+
+    it "stays silent for non-challenge events" do
+      result = emitted { create(:event_signup, user: user, event: create(:event)) }
+
+      expect(result).to be_empty
+    end
+  end
+
   describe "Comment" do
     let!(:article) { create(:article) }
 
