@@ -74,6 +74,16 @@
 </header>
 
 <div class="crayons-card p-6 mb-6">
+  <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.name.heading") %></h3>
+  <p class="fs-s color-base-60 mb-4"><%= t("views.admin.organizations.name.description") %></p>
+  <%= form_tag update_name_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
+    <%= label_tag :name, t("views.admin.organizations.name.label"), class: "sr-only" %>
+    <%= text_field_tag :name, @organization.name, required: true, maxlength: 50, class: "crayons-textfield w-100", aria: { label: t("views.admin.organizations.name.label") } %>
+    <%= submit_tag t("views.admin.organizations.name.submit"), class: "crayons-btn" %>
+  <% end %>
+</div>
+
+<div class="crayons-card p-6 mb-6">
   <h3 class="crayons-subtitle-2 mb-4">Organization Settings</h3>
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">

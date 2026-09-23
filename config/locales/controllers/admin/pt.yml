@@ -116,6 +116,7 @@ pt:
       removed: Usuário foi removido com sucesso de %{org}
       updated: Usuário foi atualizado com sucesso para %{type}
     organizations_controller:
+      name_updated: Nome da organização atualizado com sucesso.
       credit_updated: Créditos atualizados com sucesso
       deletion_scheduled: 'Exclusão da organização "%{organization_name}" está agendada.'
       error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
