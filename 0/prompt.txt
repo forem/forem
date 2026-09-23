@@ -182,3 +182,14 @@ practical-developer(prod)> CUSTOMERIO_TRACK_API.merge_customers("id", "01a0c55a-
 E, [2026-09-23T01:31:45.295296 #2] ERROR -- ddtrace: [ddtrace] (/app/vendor/bundle/ruby/3.3.0/gems/ddtrace-1.16.2/lib/datadog/tracing/transport/http/client.rb:41:in `rescue in send_request') Internal error during Datadog::Tracing::Transport::HTTP::Client request. Cause: Errno::ECONNREFUSED Failed to open TCP connection to 127.0.0.1:8126 (Connection refused - connect(2) for "127.0.0.1" port 8126) Location: /app/vendor/bundle/ruby/3.3.0/gems/net-http-0.9.1/lib/net/http.rb:1792:in `initialize'
 practical-developer(prod)> 
 </pasted_content id="aac1">
+
+---
+
+<pasted_content id="aac1">
+practical-developer(prod)> CUSTOMERIO_TRACK_API.merge_customers("id", "01a0c55a-6041-4642-1e7d-77aa73dbf708", "id", "siyadyusuf@outlook.com")
+=> #<Net::HTTPOK 200 OK readbody=true>
+E, [2026-09-23T01:31:45.295296 #2] ERROR -- ddtrace: [ddtrace] (/app/vendor/bundle/ruby/3.3.0/gems/ddtrace-1.16.2/lib/datadog/tracing/transport/http/client.rb:41:in `rescue in send_request') Internal error during Datadog::Tracing::Transport::HTTP::Client request. Cause: Errno::ECONNREFUSED Failed to open TCP connection to 127.0.0.1:8126 (Connection refused - connect(2) for "127.0.0.1" port 8126) Location: /app/vendor/bundle/ruby/3.3.0/gems/net-http-0.9.1/lib/net/http.rb:1792:in `initialize'
+practical-developer(prod)> CUSTOMERIO_TRACK_API.merge_customers("id", "01a0c55a-6041-4642-1e7d-77aa73dbf708", "id", "siyadyusuf@outlook.com")
+=> #<Net::HTTPOK 200 OK readbody=true>
+practical-developer(prod)> 
+</pasted_content id="aac1">
