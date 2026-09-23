@@ -502,6 +502,11 @@ pt:
             created_at: Criado Em
             actions: Ações
       organizations:
+        name:
+          heading: Nome da organização
+          description: Atualize o nome de exibição desta organização.
+          label: Nome da organização
+          submit: Atualizar nome
         profile:
           id: ID %{organizationid}
           since_html: Organização desde %{time}

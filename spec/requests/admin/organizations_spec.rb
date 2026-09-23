@@ -97,4 +97,24 @@ RSpec.describe "/admin/content_manager/organizations" do
       expect(flash[:notice]).to include("disabled")
     end
   end
+
+  describe "PATCH /admin/organizations/:id/update_name" do
+    let(:organization) { create(:organization, name: "Original Name") }
+
+    it "updates organization name" do
+      patch update_name_admin_organization_path(organization), params: { name: "Updated Name" }
+
+      expect(organization.reload.name).to eq("Updated Name")
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to eq(I18n.t("admin.organizations_controller.name_updated"))
+    end
+
+    it "shows errors for invalid name" do
+      patch update_name_admin_organization_path(organization), params: { name: "" }
+
+      expect(organization.reload.name).to eq("Original Name")
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:error]).to include("Name")
+    end
+  end
 end
