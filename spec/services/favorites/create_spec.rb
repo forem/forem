@@ -13,6 +13,14 @@ RSpec.describe Favorites::Create, type: :service do
     expect(article.favorited_at).to be_present
   end
 
+  it "triggers async_score_calc on the favorited article" do
+    allow(article).to receive(:async_score_calc)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:async_score_calc)
+  end
+
   it "creates an audit log entry" do
     allow(Audit::Logger).to receive(:log).and_call_original
 
@@ -38,6 +46,15 @@ RSpec.describe Favorites::Create, type: :service do
 
     expect(result.success?).to be true
     expect(comment.reload.favorited_by_user_id).to eq(leader.id)
+  end
+
+  it "triggers async_score_calc on the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(comment).to receive(:async_score_calc)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(comment).to have_received(:async_score_calc)
   end
 
   it "rejects an already-favorited record" do
@@ -97,6 +114,33 @@ RSpec.describe Favorites::Create, type: :service do
       expect(result.error).to eq(:no_allowance)
       expect(article.reload.favorited_by_user_id).to be_nil
       expect(article.reload.favorited_at).to be_nil
+    end
+  end
+
+  describe "favoriting by admin curators" do
+    let(:admin_curator) { create(:user, :admin, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience)
+        .to receive(:community_leader_l1_favorite_allowance).and_return(1)
+    end
+
+    it "keeps favoriting past the leader budget" do
+      described_class.call(favoritable: create(:article, user: author), user: admin_curator)
+
+      result = described_class.call(favoritable: article, user: admin_curator)
+
+      expect(result.success?).to be true
+      expect(article.reload.favorited_by_user_id).to eq(admin_curator.id)
+    end
+
+    it "leaves an admin who does not curate metered" do
+      admin = create(:user, :admin)
+
+      result = described_class.call(favoritable: article, user: admin)
+
+      expect(result.error).to eq(:no_allowance)
+      expect(article.reload.favorited_by_user_id).to be_nil
     end
   end
 

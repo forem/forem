@@ -3,6 +3,16 @@ FROM ghcr.io/forem/ruby:3.3.0@sha256:9cda49a45931e9253d58f7d561221e43bd0d47676b8
 # HOTFIX: Remove broken nodesource list from base image to unblock apt update
 RUN rm -f /etc/apt/sources.list.d/nodesource.list
 
+# HOTFIX: bullseye LTS ended 2026-08-31 and the bullseye-security pool is
+# being purged from deb.debian.org / security.debian.org (their CDN edges 404
+# on .deb files the index still lists) while archive.debian.org has not
+# picked the suite up yet. snapshot.debian.org keeps every package forever, so
+# pin the security source to a snapshot from the last LTS day until the base
+# image moves to a supported Debian release.
+RUN find /etc/apt -type f \( -name "sources.list" -o -name "*.list" -o -name "*.sources" \) \
+      -exec sed -i "s|http://[a-z.]*debian.org/debian-security|http://snapshot.debian.org/archive/debian-security/20260831T000000Z|g" {} + \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99snapshot
+
 FROM base as builder
 
 # This is provided by BuildKit

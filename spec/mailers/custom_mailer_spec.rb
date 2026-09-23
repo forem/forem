@@ -172,6 +172,7 @@ RSpec.describe CustomMailer, type: :mailer do
         allow(ForemInstance).to receive_messages(smtp_enabled?: true, customerio_enabled?: true)
         allow(FeatureFlag).to receive(:enabled_for_user?)
           .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+        link_mlh_identity(user)
       end
 
       it "sends nothing -- Customer.io is already sending this broadcast" do
@@ -204,6 +205,54 @@ RSpec.describe CustomMailer, type: :mailer do
       end
     end
 
+    # Rollout window: nothing on the Customer.io side duplicates the broadcast
+    # yet, so the backstop stands down and the send goes out over the
+    # Customer.io body-passthrough path.
+    context "when the broadcast passthrough flag is enabled" do
+      let(:email) { create(:email, type_of: "newsletter") }
+      let(:broadcast_subject) { "Test Email Subject for *|name|*" }
+      let(:api_client) { instance_double(Customerio::APIClient, send_email: { "delivery_id" => "dev-123" }) }
+
+      before do
+        allow(ForemInstance).to receive_messages(
+          smtp_enabled?: true,
+          customerio_enabled?: true,
+          customerio_broadcast_passthrough?: true,
+        )
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+        link_mlh_identity(user)
+        stub_const("CUSTOMERIO_API", api_client)
+      end
+
+      it "sends the broadcast through Customer.io rather than dropping it" do
+        described_class.with(
+          user: user, content: content, subject: broadcast_subject, email_id: email.id,
+        ).custom_email.deliver_now
+
+        expect(api_client).to have_received(:send_email)
+      end
+
+      it "records an ahoy message so the send is not invisible" do
+        expect do
+          described_class.with(
+            user: user, content: content, subject: broadcast_subject, email_id: email.id,
+          ).custom_email.deliver_now
+        end.to change(EmailMessage, :count).by(1)
+      end
+
+      it "sends a body passthrough, not a transactional template" do
+        described_class.with(
+          user: user, content: content, subject: broadcast_subject, email_id: email.id,
+        ).custom_email.deliver_now
+
+        expect(api_client).to have_received(:send_email) do |request|
+          expect(request.message[:transactional_message_id]).to be_nil
+          expect(request.message[:body]).to include(content.sub("*|name|*", user.name))
+        end
+      end
+    end
+
     context "when SendGrid is disabled" do
       before do
         allow(ForemInstance).to receive(:sendgrid_enabled?).and_return(false)
@@ -223,6 +272,64 @@ RSpec.describe CustomMailer, type: :mailer do
         expect(mail.from).to eq(["no-reply@example.com"])
         expect(mail.body.encoded).to include(expected_content)
         expect(mail.body.encoded).to include(unsubscribe_token)
+      end
+    end
+
+    context "when footer override functionality is used" do
+      let(:app_wide_footer) { "<p>This is the app-wide footer</p>" }
+
+      before do
+        allow(Settings::General).to receive(:custom_email_footer).and_return(app_wide_footer)
+      end
+
+      it "renders the app-wide footer when override is not enabled" do
+        email = create(:email, override_footer_html: false, custom_footer_html: "<p>Custom footer</p>")
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).to include(app_wide_footer)
+        expect(mailer.body.encoded).not_to include("Custom footer")
+      end
+
+      it "renders the custom footer and replaces merge tags when override is enabled" do
+        custom_footer = "<p>Special footer for *|name|* (*|email|*)</p>"
+        email = create(:email, override_footer_html: true, custom_footer_html: custom_footer)
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+        expect(mailer.body.encoded).to include("Special footer for #{user.name} (#{user.email})")
+      end
+
+      it "suppresses footer completely when override is enabled with blank custom footer" do
+        email = create(:email, override_footer_html: true, custom_footer_html: "")
+        mailer = described_class.with(user: user, content: content, subject: subject, email_id: email.id).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+      end
+
+      it "respects footer override parameters passed directly via .with" do
+        mailer = described_class.with(
+          user: user,
+          content: content,
+          subject: subject,
+          override_footer_html: true,
+          custom_email_footer: "<p>Param-based footer for *|name|*</p>",
+        ).custom_email
+
+        expect(mailer.body.encoded).not_to include(app_wide_footer)
+        expect(mailer.body.encoded).to include("Param-based footer for #{user.name}")
+      end
+
+      it "sanitizes disallowed HTML markup like iframes in the custom footer" do
+        mailer = described_class.with(
+          user: user,
+          content: content,
+          subject: subject,
+          override_footer_html: true,
+          custom_email_footer: '<p>Safe footer</p><iframe src="https://evil.example"></iframe>',
+        ).custom_email
+
+        expect(mailer.body.encoded).to include("<p>Safe footer</p>")
+        expect(mailer.body.encoded).not_to include("<iframe")
       end
     end
   end

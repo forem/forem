@@ -1,5 +1,7 @@
 module Admin
   class CommentsController < Admin::ApplicationController
+    SUPPORT_ADMIN_ACTIONS = %i[index show].freeze
+
     around_action :skip_bullet, if: -> { defined?(Bullet) }
 
     layout "admin"
@@ -40,8 +42,15 @@ module Admin
 
     private
 
+    # Support admins are allowed to view comments here so they can invalidate
+    # flags on downvoted comments. Every other role (and every other action)
+    # keeps the existing InternalPolicy check.
     def authorize_admin
-      authorize Comment, :access?, policy_class: InternalPolicy
+      if SUPPORT_ADMIN_ACTIONS.include?(action_name.to_sym) && current_user&.support_admin?
+        authorize Comment, :admin_access?, policy_class: CommentPolicy
+      else
+        authorize Comment, :access?, policy_class: InternalPolicy
+      end
     end
 
     def calculate_flags_for_single_comment(comment)

@@ -41,6 +41,8 @@ module Emails
                                 Ahoy::Message.connection.select_values(sql).map(&:to_i).to_set
                               end
 
+      email = Email.find_by(id: email_id) if email_id.present?
+
       user_ids.each do |id|
         user = users_by_id[id]
         next unless user
@@ -54,7 +56,9 @@ module Emails
             content: content,
             type_of: type_of,
             email_id: email_id,
-            from_name: from_name
+            from_name: from_name,
+            override_footer_html: email&.override_footer_html?,
+            custom_email_footer: email&.custom_footer_html,
           )
           .custom_email
           .deliver_now
@@ -73,8 +77,13 @@ module Emails
     #
     # Test sends are exempt (see #perform): nothing on the Customer.io side
     # duplicates them, and admins still need the preview during the rollout.
+    #
+    # Until Customer.io actually owns the campaign there is nothing to duplicate
+    # either, and skipping would just drop the broadcast. CUSTOMERIO_BROADCAST_
+    # PASSTHROUGH_FLAG turns the skip off for that window.
     def customerio_managed_user_ids(users)
       return Set.new unless ForemInstance.customerio_enabled?
+      return Set.new if ForemInstance.customerio_broadcast_passthrough?
 
       users.each_with_object(Set.new) do |user, ids|
         ids << user.id if FeatureFlag.enabled_for_user?(Deliverable::CUSTOMERIO_FLAG, user)

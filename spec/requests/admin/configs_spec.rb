@@ -45,6 +45,16 @@ RSpec.describe "/admin/customization/config" do
         end.to change(Settings::General, :admin_action_taken_at)
       end
 
+      it "expires cached agent guidance after a settings change" do
+        allow(EdgeCache::Bust).to receive(:call)
+
+        post admin_settings_general_settings_path, params: {
+          settings_general: { health_check_token: "token" }
+        }
+
+        expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
+      end
+
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
@@ -169,6 +179,16 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Community Content" do
+        it "expires cached agent guidance after a community setting changes" do
+          allow(EdgeCache::Bust).to receive(:call)
+
+          post admin_settings_communities_path, params: {
+            settings_community: { community_name: "Updated community" }
+          }
+
+          expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
+        end
+
         it "updates the community_description" do
           allow(Settings::Community).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"

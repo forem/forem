@@ -181,6 +181,24 @@ RSpec.describe Article do
       end
     end
 
+    describe "#before_destroy_actions" do
+      include ActiveSupport::Testing::TimeHelpers
+      let(:user) { create(:user) }
+      let(:article) { create(:article, user: user, published: true, type_of: "full_post") }
+
+      it "touches the author's last_article_at when the article is destroyed" do
+        old_last_article_at = user.reload.last_article_at
+        travel_to 1.minute.from_now do
+          expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
+        end
+      end
+
+      it "does not raise an error when the article has no associated user" do
+        article.update_column(:user_id, nil)
+        expect { article.reload.destroy }.not_to raise_error
+      end
+    end
+
     describe "#validate_video" do
       let(:new_user) { create(:user, created_at: 1.week.ago) }
       let(:old_user) { create(:user, created_at: 3.weeks.ago) }
@@ -1765,6 +1783,48 @@ RSpec.describe Article do
     end
   end
 
+  describe "#favorited?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns true when favorited_by_user_id is present" do
+      article = build(:article, favorited_by_user: leader)
+      expect(article.favorited?).to be true
+    end
+
+    it "returns false when favorited_by_user_id is nil" do
+      article = build(:article, favorited_by_user_id: nil)
+      expect(article.favorited?).to be false
+    end
+  end
+
+  describe ".with_at_least_home_feed_minimum_score" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
+    end
+
+    it "includes articles with score at or above the minimum score" do
+      article = create(:article, score: 10, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "excludes articles with score below the minimum score when not featured or favorited" do
+      article = create(:article, score: 5, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).not_to include(article)
+    end
+
+    it "includes featured articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: true, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "includes favorited (gemmed) articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: false, favorited_by_user: leader, favorited_at: Time.current)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+  end
+
   describe ".cached_admin_published_with" do
     let(:admin) { create(:user, :admin) }
     let(:cache_store) { ActiveSupport::Cache::MemoryStore.new }
@@ -2443,6 +2503,14 @@ RSpec.describe Article do
       article.organization = org
       article.update_score
       expect(article.reload.score).to eq(22)
+    end
+
+    it "includes the favorite bonus of +10 points and 10% multiple on base score" do
+      favoriter = create(:user)
+      article.update_columns(favorited_by_user_id: favoriter.id, favorited_at: Time.current)
+      # reactions sum is 10; raw score = 10; (10 * 1.1).to_i + 10 = 21
+      article.update_score
+      expect(article.reload.score).to eq(21)
     end
 
     context "when max_score is set" do
