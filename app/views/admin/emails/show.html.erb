@@ -12,17 +12,39 @@
 <% end %>
 <div class="crayons-card p-6 mb-4">
   <p>Type: <%= @email.type_of %></p>
-  <p>User Query: <%= @email.user_query&.name || "No query selected" %></p>
-  <p>Event Target: <%= @email.event&.title || "No event selected" %></p>
+  <p>
+    Audience Target:
+    <% if @email.audience_segment.present? %>
+      <%= link_to @email.audience_segment.display_name, admin_audience_segment_path(@email.audience_segment), class: "crayons-link font-medium" %>
+      <span class="text-xs text-gray-500">(<%= pluralize(@email.audience_segment.user_count, "user") %>)</span>
+    <% elsif @email.user_query.present? %>
+      <%= link_to @email.user_query.name, admin_user_query_path(@email.user_query), class: "crayons-link font-medium" %>
+    <% elsif @email.event.present? %>
+      <%= @email.event.title %>
+    <% else %>
+      <span class="crayons-tag crayons-tag--warning">All Users (Broadcast)</span>
+    <% end %>
+  </p>
   <% if @email.variables.present? %>
     <p>Variables: <code><%= @email.variables %></code></p>
+  <% end %>
+  <p><%= t("admin.emails.override_footer_label") %> <%= @email.override_footer_html? ? t("admin.emails.status_yes") : t("admin.emails.status_no") %></p>
+  <% if @email.override_footer_html? && @email.custom_footer_html.present? %>
+    <p><%= t("admin.emails.custom_footer_label") %> <code><%= @email.custom_footer_html %></code></p>
   <% end %>
 </div>
 <div class="crayons-card p-6 mb-4">
   <h2 class="crayons-title mb-4">Rendered Email</h2>
-  <div>
+  <div class="mb-4">
     <%= Email.replace_merge_tags(@email.body, current_user).html_safe %>
   </div>
+  <% footer = @email.footer_html_to_render %>
+  <% if footer.present? %>
+    <hr class="my-4" />
+    <div class="text-styles">
+      <%= sanitize(Email.replace_merge_tags(footer, current_user), tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
+    </div>
+  <% end %>
 </div>
 
 <div class="crayons-card p-6">

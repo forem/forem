@@ -173,10 +173,16 @@ export const renderFeed = async (timeFrame, afterRender) => {
     if (feedItems.length === 0 || !hasActualContent) {
       // Determine feed type from localStorage or URL
       let feedTypeOf = localStorage?.getItem('current_feed');
-      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+      if (window.location.pathname === '/curated') {
+        feedTypeOf = 'curated';
+      } else if (window.location.pathname === '/following' || window.location.pathname === '/following/latest') {
+        feedTypeOf = 'following';
+      } else if (window.location.pathname === '/discover') {
+        feedTypeOf = 'discover';
+      } else if (feedTypeOf !== 'discover' && feedTypeOf !== 'following' && feedTypeOf !== 'curated') {
         feedTypeOf = 'discover';
       }
-      const feedType = feedTypeOf === 'following' ? 'following' : 'discover';
+      const feedType = feedTypeOf === 'following' ? 'following' : (feedTypeOf === 'curated' ? 'curated' : 'discover');
 
       return (
         <NoResults

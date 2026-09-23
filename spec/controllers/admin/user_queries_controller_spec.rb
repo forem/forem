@@ -249,9 +249,6 @@ RSpec.describe Admin::UserQueriesController, type: :controller do
     end
 
     it "handles execution errors gracefully" do
-      # Skip this test due to database transaction issues in the test environment
-      skip "Database transaction issues with failed queries in test environment"
-
       invalid_query = create(:user_query, name: "Invalid Query",
                                           query: "SELECT id FROM users WHERE nonexistent_column = 'test'", created_by: admin_user)
       post :test_execute, params: { id: invalid_query.id }

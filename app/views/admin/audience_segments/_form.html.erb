@@ -1,0 +1,48 @@
+<%= form_with model: [:admin, audience_segment], local: true, class: "space-y-6" do |f| %>
+  <% if audience_segment.errors.any? %>
+    <div class="crayons-notice crayons-notice--danger mb-4">
+      <h4><%= pluralize(audience_segment.errors.count, "error") %> prohibited this segment from being saved:</h4>
+      <ul class="list-disc list-inside">
+        <% audience_segment.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="crayons-field">
+    <%= f.label :name, "Segment Name", class: "crayons-field__label" %>
+    <%= f.text_field :name, class: "crayons-textfield", placeholder: "e.g. Early Beta Testers, Workshop Attendees, Core Contributors", required: true %>
+    <p class="crayons-field__description">A unique and descriptive name for this custom segment.</p>
+  </div>
+
+  <% unless audience_segment.persisted? %>
+    <div class="crayons-card crayons-card--secondary p-4 mt-6">
+      <h3 class="crayons-subtitle-2 mb-3">Add Initial Members (Optional)</h3>
+      <p class="text-sm text-gray-600 mb-4">
+        You can add users now or manage them anytime after creating the segment. All inputs are safely validated against existing user accounts.
+      </p>
+
+      <div class="crayons-field mb-4">
+        <%= label_tag :user_identifiers, "Usernames, Emails, or User IDs:", class: "crayons-field__label" %>
+        <%= text_area_tag :user_identifiers, params[:user_identifiers], rows: 5, class: "crayons-textfield font-mono", placeholder: "@alice, bob, charlie@example.com, 1024" %>
+        <p class="crayons-field__description">
+          Separate multiple entries with commas, newlines, or spaces. Leading <code>@</code> is automatically handled. Unrecognized usernames or emails will be reported back so you can fix typos.
+        </p>
+      </div>
+
+      <% if @active_user_queries&.any? %>
+        <div class="crayons-field">
+          <%= label_tag :user_query_id, "Or Populate from Saved User Query:", class: "crayons-field__label" %>
+          <%= select_tag :user_query_id, options_for_select([["None", nil]] + @active_user_queries.map { |q| [q.name, q.id] }, params[:user_query_id]), class: "crayons-select" %>
+          <p class="crayons-field__description">Select an active user query to import matching users into this segment.</p>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="flex items-center gap-3 mt-6">
+    <%= f.submit audience_segment.persisted? ? "Update Segment" : "Create Segment", class: "crayons-btn crayons-btn--primary" %>
+    <%= link_to "Cancel", admin_audience_segments_path, class: "crayons-btn crayons-btn--ghost" %>
+  </div>
+<% end %>

@@ -1,0 +1,59 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.identities_tab.title") %></h3>
+  </div>
+
+  <% if @identities.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.identities_tab.empty") %></p>
+    </div>
+  <% else %>
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.identities_tab.table.provider") %></th>
+            <th scope="col"><%= t("views.admin.users.identities_tab.table.uid") %></th>
+            <th scope="col"><%= t("views.admin.users.identities_tab.table.username") %></th>
+            <th scope="col"><%= t("views.admin.users.identities_tab.table.email") %></th>
+            <th scope="col"><%= t("views.admin.users.identities_tab.table.created_at") %></th>
+            <th scope="col" class="align-right"><%= t("views.admin.users.identities_tab.table.actions") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @identities.each do |identity| %>
+            <% nickname = identity.auth_data_dump.present? ? (identity.auth_data_dump.dig("info", "nickname") || identity.auth_data_dump.dig("info", "name")) : nil %>
+            <tr>
+              <td>
+                <div class="flex items-center gap-2">
+                  <%= crayons_icon_tag(identity.provider, class: "shrink-0", width: 20, height: 20) rescue crayons_icon_tag(:user, width: 20, height: 20) %>
+                  <strong><%= t("views.admin.users.identities.#{identity.provider}", default: identity.provider.titleize) %></strong>
+                </div>
+              </td>
+              <td class="font-mono fs-s"><%= identity.uid %></td>
+              <td><%= nickname.presence || "-" %></td>
+              <td>
+                <% if identity.email.present? && identity.email != I18n.t("models.identity.no_email_msg", provider: identity.provider) %>
+                  <a href="mailto:<%= identity.email %>" class="c-link"><%= identity.email %></a>
+                <% else %>
+                  <span class="color-secondary">-</span>
+                <% end %>
+              </td>
+              <td class="whitespace-nowrap"><%= l(identity.created_at, format: :short_with_yy) rescue identity.created_at.to_s %></td>
+              <td class="align-right">
+                <%= form_for(@user, url: remove_identity_admin_user_path(@user),
+                                    html: { method: :delete, onsubmit: "return confirm('#{j t('views.admin.users.social.onsubmit')}')", class: "inline-block", id: nil }) do |f| %>
+                  <%= f.hidden_field :identity_id, value: identity.id %>
+                  <%= f.button class: "c-btn c-btn--destructive c-btn--s", type: "submit" do %>
+                    <%= crayons_icon_tag(:bin, class: "c-btn__icon", width: 16, height: 16) %>
+                    <%= t("views.admin.users.identities_tab.remove") %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

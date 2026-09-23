@@ -76,7 +76,7 @@
                   <div class="print-hidden">
                     <button
                       class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100"
-                      data-info='<%= story.user_data_info_to_json %>'>
+                      data-info='<%= story.respond_to?(:user_data_info_to_json) ? story.user_data_info_to_json : story.decorate.user_data_info_to_json %>'>
                       <%= t("views.users.follow") %>
                     </button>
                   </div>
@@ -97,6 +97,18 @@
             <% end %>
           </div>
           <a href="<%= URL.article(story) %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
+          <% if local_assigns[:curation_view] && story.favorited_by_user_id.present? %>
+            <span class="inline-flex items-center fs-xs fw-medium ml-2" style="color: var(--reaction-favorite-color);">
+              <%= crayons_icon_tag("favorite-checked", native: true, width: 14, height: 14, class: "mr-1") %>
+              <% if user_signed_in? && story.favorited_by_user_id == current_user.id %>
+                <%= t("views.leadership.cards.picked_by_you") %>
+              <% elsif story.favorited_by_user.present? %>
+                <%= t("views.leadership.cards.picked_by_user", username: story.favorited_by_user.username) %>
+              <% else %>
+                <%= t("favorites.favorited") %>
+              <% end %>
+            </span>
+          <% end %>
         </div>
       </div>
 
@@ -154,7 +166,7 @@
             </div>
           </a>
           <% end %>
-          <% if should_render_favorited_marker?(story) %>
+          <% if should_render_favorited_marker?(story) && !local_assigns[:curation_view] %>
             <span
               class="crayons-story__favorited"
               data-favorited-marker
@@ -169,7 +181,31 @@
               </span>
             </span>
           <% end %>
-          <% if story.comments_count > 0 %>
+          <% if local_assigns[:curation_view] %>
+            <% if story.comments_count == 0 %>
+              <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--danger fs-xs fw-bold flex items-center" aria-label="<%= t("views.leadership.cards.start_discussion") %>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" class="crayons-icon mr-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <%= t("views.leadership.cards.start_discussion") %>
+              </a>
+            <% elsif story.comments_count < 3 %>
+              <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--danger fs-xs fw-bold flex items-center" aria-label="<%= t("views.leadership.cards.further_discussion") %>">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" class="crayons-icon mr-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <%= t("views.leadership.cards.further_discussion") %> (<%= t("views.leadership.cards.comments_count", count: story.comments_count) %>)
+              </a>
+            <% else %>
+              <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+                <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
+                <%= t("views.comments.summary.count_html",
+                      count: story.comments_count,
+                      start: tag("span", { class: %w[hidden s:inline] }, true),
+                      end: "</span>".html_safe) %>
+              </a>
+            <% end %>
+          <% elsif story.comments_count > 0 %>
             <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",

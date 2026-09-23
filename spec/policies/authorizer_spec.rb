@@ -140,6 +140,36 @@ RSpec.describe Authorizer, type: :policy do
     end
   end
 
+  describe "with preloaded roles" do
+    let(:tag) { create(:tag) }
+    let(:subforem) { create(:subforem) }
+
+    before do
+      user.add_role(:admin)
+      user.add_role(:tag_moderator, tag)
+      user.add_role(:subforem_moderator, subforem)
+      user.reload
+      user.roles.load
+    end
+
+    it "answers global and resource role questions without more role queries" do
+      role_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        role_queries << payload[:sql] if payload[:sql].include?('FROM "roles"')
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        expect(authorizer.any_admin?).to be(true)
+        expect(authorizer.tag_moderator?).to be(true)
+        expect(authorizer.tag_moderator?(tag: tag)).to be(true)
+        expect(authorizer.subforem_moderator?).to be(true)
+        expect(authorizer.subforem_moderator?(subforem: subforem)).to be(true)
+      end
+
+      expect(role_queries).to be_empty
+    end
+  end
+
   describe "#vomited_on?" do
     subject(:method_call) { authorizer.vomited_on? }
 
