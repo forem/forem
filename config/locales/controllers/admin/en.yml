@@ -151,6 +151,7 @@ en:
       removed: User was successfully removed from %{org}
       updated: User was successfully updated to %{type}
     organizations_controller:
+      name_updated: Organization name updated successfully.
       credit_updated: Successfully updated credits
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
