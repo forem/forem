@@ -1,0 +1,119 @@
+why did these two profiles not auto merge? https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba0197cb01f894d602 https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba0198cb01f994d602 i also don't see the link to his account in DEV admin
+
+---
+
+i see the same thing here https://fly.customer.io/workspaces/152482/journeys/people/a2a70961da238bf2b101 https://fly.customer.io/workspaces/152482/journeys/people/a2a709ba01aec8018f92d602
+
+---
+
+i thought we have forem passing in dev_user_id as the anonymous identifier? verify the flow here and in ../mlh-core
+
+---
+
+can't we make forem pass the dev user id like we do for track events, for emails too, so we can auto merge with the same criteria?
+
+---
+
+got it ok let's just do option 1 of the id and cleanup jobfor existing profiles
+
+---
+
+we should not have dev set temporary primary ids like that
+
+---
+
+we should not have dev set temporary primary ids like that - look at how core does first email login ids before someone has an account
+
+---
+
+how long would it be in between them requesting the email and core updating the id and then it sending?
+
+---
+
+i do not want to make email keyed orphans at all if we can help it
+
+---
+
+no smtp allowed either - only customerio
+
+---
+
+link me to the PRs you opened on each repo
+
+---
+
+open em
+
+---
+
+tell me more about this OAuth signups no longer get a confirmation email. User#confirmation_required? returned ForemInstance.smtp_enabled? and dropped Devise's !confirmed?. Users confirmed at creation via skip_confirmation! (82% of signups) were still sent "confirm your DEV Community account". This is what minted both orphans reported.
+
+---
+
+so do we not email the oauth accounts anymore at all? or do we do it after we get the core callback
+
+---
+
+how do we know it's confirmed? is it just done via core?
+
+---
+
+got it ok
+
+---
+
+monitor the deploy for me - i merged it in. how do i run lib/data_update_scripts/20260922120000_merge_email_keyed_customerio_profiles.rb
+
+---
+
+check on it
+
+---
+
+<task-notification>
+<task-id>bcfd3z7q0</task-id>
+<tool-use-id>toolu_01FbVikDZq3oLwjwyjyApjBu</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bcfd3z7q0.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CD workflow on merge commit" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+check again
+
+---
+
+do i need to manually run it or will it go automatically
+
+---
+
+/Users/jonmarkgo/Downloads/build-containers_build_26276_hammer-build-containers.log
+
+---
+
+<task-notification>
+<task-id>bxxyz1twm</task-id>
+<tool-use-id>toolu_015tEaiYJkktHx8Fq7Knmrr8</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bxxyz1twm.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait ~12 minutes for the delayed data update worker" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+check deploy again
+
+---
+
+check now
+
+---
+
+<task-notification>
+<task-id>bi7lfslk8</task-id>
+<tool-use-id>toolu_019BrrfdzN2XBrUHuQAX9ayd</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/b6961385-84f2-410e-87d1-75974e7139b7/tasks/bi7lfslk8.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for CD on the fix merge" completed (exit code 0)</summary>
+</task-notification>
