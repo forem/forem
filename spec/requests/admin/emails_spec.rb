@@ -23,7 +23,39 @@ RSpec.describe "/admin/emails" do
   describe "GET /admin/emails/new" do
     it "renders the new template with a form" do
       get new_admin_email_path
-      expect(response.body).to include('name="email[subject]"', 'name="email[body]"', 'name="email[user_query_id]"')
+      expect(response.body).to include(
+        'name="email[subject]"',
+        'name="email[body]"',
+        'name="email[audience_segment_id]"',
+        'name="email[user_query_id]"',
+        'name="email[event_id]"',
+        'name="email[override_footer_html]"',
+        'name="email[custom_footer_html]"',
+      )
+    end
+
+    it "pre-populates event_id when event_id param is provided" do
+      event = create(:event)
+      get new_admin_email_path(event_id: event.id)
+      doc = Nokogiri::HTML(response.body)
+      selected_option = doc.at_css("select#event_select option[selected][value='#{event.id}']")
+      expect(selected_option&.text).to eq(event.title)
+    end
+
+    it "pre-populates audience_segment_id when audience_segment_id param is provided" do
+      segment = create(:audience_segment, name: "Early Adopters")
+      get new_admin_email_path(audience_segment_id: segment.id)
+      doc = Nokogiri::HTML(response.body)
+      selected_option = doc.at_css("select#audience_segment_select option[selected][value='#{segment.id}']")
+      expect(selected_option&.text).to include("Early Adopters")
+    end
+
+    it "includes automatic audience segments using display_name in the options" do
+      auto_segment = create(:audience_segment, type_of: :trusted, name: nil)
+      get new_admin_email_path
+      doc = Nokogiri::HTML(response.body)
+      option = doc.at_css("select#audience_segment_select option[value='#{auto_segment.id}']")
+      expect(option&.text).to include(auto_segment.display_name)
     end
   end
 
@@ -41,8 +73,41 @@ RSpec.describe "/admin/emails" do
           post admin_emails_path, params: valid_attributes
         end.to change(Email, :count).by(1)
         expect(response).to redirect_to(admin_email_path(Email.last))
+        expect(Email.last.audience_segment_id).to eq(audience_segment.id)
         follow_redirect!
         expect(flash[:success]).to eq(I18n.t("admin.emails_controller.drafted"))
+      end
+
+      it "creates a new email targeting an event" do
+        event = create(:event)
+        valid_attributes = {
+          email: {
+            subject: "Event Email Subject",
+            body: "Event Email Body",
+            event_id: event.id
+          }
+        }
+        expect do
+          post admin_emails_path, params: valid_attributes
+        end.to change(Email, :count).by(1)
+        expect(Email.last.event_id).to eq(event.id)
+      end
+
+      it "creates a new email with custom footer override" do
+        valid_attributes = {
+          email: {
+            subject: "Custom Footer Email",
+            body: "Email body",
+            override_footer_html: true,
+            custom_footer_html: "<p>Special footer</p>"
+          }
+        }
+        expect do
+          post admin_emails_path, params: valid_attributes
+        end.to change(Email, :count).by(1)
+        created_email = Email.last
+        expect(created_email.override_footer_html).to be(true)
+        expect(created_email.custom_footer_html).to eq("<p>Special footer</p>")
       end
     end
 
@@ -60,6 +125,37 @@ RSpec.describe "/admin/emails" do
         end.not_to change(Email, :count)
         expect(response.body).to include(">Subject can&#39;t be blank")
         expect(flash[:danger]).to be_present
+      end
+
+      it "rejects custom footer with unsafe script tags" do
+        invalid_attributes = {
+          email: {
+            subject: "Bad Email",
+            body: "Email body",
+            override_footer_html: true,
+            custom_footer_html: "<script>alert('xss')</script>"
+          }
+        }
+        expect do
+          post admin_emails_path, params: invalid_attributes
+        end.not_to change(Email, :count)
+        expect(flash[:danger]).to include("JavaScript")
+      end
+
+      it "rejects creating an email with conflicting targets" do
+        user_query = create(:user_query, created_by: admin_user)
+        invalid_attributes = {
+          email: {
+            subject: "Conflicting Email",
+            body: "Body",
+            audience_segment_id: audience_segment.id,
+            user_query_id: user_query.id
+          }
+        }
+        expect do
+          post admin_emails_path, params: invalid_attributes
+        end.not_to change(Email, :count)
+        expect(response.body).to include("Please select only one recipient target")
       end
     end
   end
@@ -88,6 +184,26 @@ RSpec.describe "/admin/emails" do
       expect(response.body).to include CGI.escapeHTML(email.subject)
       expect(response.body).to include CGI.escapeHTML(email.body)
     end
+
+    it "displays custom footer override details when enabled" do
+      email = create(
+        :email,
+        subject: "Footer Test",
+        body: "Body",
+        override_footer_html: true,
+        custom_footer_html: "<p>Unique footer for *|name|*</p>",
+      )
+      get admin_email_path(email)
+      expect(response.body).to include("Override Footer: Yes")
+      expect(response.body).to include("Unique footer for #{admin_user.name}")
+    end
+
+    it "displays audience segment display_name" do
+      auto_segment = create(:audience_segment, type_of: :trusted, name: nil)
+      email = create(:email, audience_segment: auto_segment)
+      get admin_email_path(email)
+      expect(response.body).to include(auto_segment.display_name)
+    end
   end
 
   describe "PATCH /admin/emails/:id" do
@@ -113,6 +229,19 @@ RSpec.describe "/admin/emails" do
         expect(email.subject).to eq("Updated Subject")
         expect(email.body).to eq("Updated Body")
       end
+
+      it "updates the footer override settings" do
+        patch admin_email_path(email), params: {
+          email: {
+            override_footer_html: true,
+            custom_footer_html: "<p>Updated footer</p>"
+          }
+        }
+        expect(response).to redirect_to(admin_email_path(email))
+        email.reload
+        expect(email.override_footer_html).to be(true)
+        expect(email.custom_footer_html).to eq("<p>Updated footer</p>")
+      end
     end
 
     context "with invalid parameters" do
@@ -132,6 +261,17 @@ RSpec.describe "/admin/emails" do
         email.reload
         expect(email.subject).to eq("Old Subject")
         expect(email.body).to eq("Old Body")
+      end
+
+      it "safely handles invalid custom footer HTML without rendering raw script in preview" do
+        patch admin_email_path(email), params: {
+          email: {
+            override_footer_html: true,
+            custom_footer_html: "<script>alert('xss')</script>"
+          }
+        }
+        expect(response.body).not_to include("<script>alert('xss')</script>")
+        expect(response.body).to include(I18n.t("admin.emails.invalid_footer_preview"))
       end
     end
 
@@ -153,6 +293,41 @@ RSpec.describe "/admin/emails" do
         follow_redirect!
         expect(flash[:success]).to eq("Test email delivering to test@example.com,another@example.com")
       end
+    end
+  end
+
+  describe "when Customer.io email cutover is active" do
+    before do
+      allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+    end
+
+    it "redirects GET /admin/emails/new to the index page" do
+      get new_admin_email_path
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects GET /admin/emails/:id/edit to the index page" do
+      email = create(:email)
+      get edit_admin_email_path(email)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects POST /admin/emails to the index page without creating one" do
+      expect do
+        post admin_emails_path, params: { email: { subject: "Test", body: "Test" } }
+      end.not_to change(Email, :count)
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+    end
+
+    it "redirects PATCH /admin/emails/:id to the index page without updating one" do
+      email = create(:email, subject: "Original")
+      patch admin_email_path(email), params: { email: { subject: "Changed" } }
+      expect(response).to redirect_to(admin_emails_path)
+      expect(flash[:danger]).to eq(I18n.t("admin.emails.customerio_cutover_notice"))
+      expect(email.reload.subject).to eq("Original")
     end
   end
 end

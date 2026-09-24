@@ -18,6 +18,7 @@ module Users
       resource = resource_id ? resource_type.find(resource_id) : resource_type
       if resource && user.remove_role(role, resource)
         response.success = true
+        resource.touch if resource.respond_to?(:touch)
       elsif user.remove_role(role)
         response.success = true
       end

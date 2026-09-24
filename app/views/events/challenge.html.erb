@@ -1,6 +1,18 @@
+<% content_for :title, @event.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta name="description" content="<%= @event.description %>">
+  <meta property="og:title" content="<%= @event.title %>" />
+  <meta property="og:description" content="<%= @event.description %>" />
+  <meta property="og:url" content="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= @event.social_image_url %>" />
+  <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
 <div class="crayons-layout event-show-layout container">
   <!-- Banner Image -->
-  <% banner_image = @event.data&.dig('banner_image_url') %>
+  <% banner_image = @event.cover_image.presence&.url || @event.data&.dig('banner_image_url') %>
   <% if banner_image.present? %>
     <div class="crayons-card mb-6 overflow-hidden">
       <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">

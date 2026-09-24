@@ -17,6 +17,80 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
       allow(Rails.logger).to receive(:error)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not send any emails and no-ops" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+        expect(CustomMailer).not_to have_received(:with)
+      end
+    end
+
+    # The cutover guard above is global, but the flag rolls out per actor: the
+    # enabled cohort already gets the broadcast from Customer.io, so sending it
+    # from here too would double-send to exactly those people.
+    context "when some recipients have the Customer.io delivery flag enabled" do
+      before do
+        allow(ForemInstance).to receive(:customerio_enabled?).and_return(true)
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, anything).and_return(false)
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+      end
+
+      it "skips them and still sends to everyone else" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).once
+        expect(CustomMailer).to have_received(:with).with(hash_including(user: user2))
+      end
+
+      it "still sends test emails so admins can preview during the rollout" do
+        worker.perform(user_ids, "[TEST] Subject", content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).twice
+      end
+    end
+
+    # Rollout window: Customer.io does not own the campaign yet, so skipping the
+    # cohort would drop the broadcast rather than avoid a duplicate.
+    context "when the broadcast passthrough flag is enabled" do
+      before do
+        allow(ForemInstance).to receive_messages(
+          customerio_enabled?: true, customerio_broadcast_passthrough?: true,
+        )
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+          .with(Deliverable::CUSTOMERIO_FLAG, anything).and_return(true)
+      end
+
+      it "sends to flag-enabled recipients instead of skipping them" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(CustomMailer).to have_received(:with).twice
+      end
+
+      it "does not consult the delivery flag at all" do
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(FeatureFlag).not_to have_received(:enabled_for_user?)
+      end
+    end
+
+    context "when Customer.io is not configured" do
+      before { allow(ForemInstance).to receive(:customerio_enabled?).and_return(false) }
+
+      it "does not consult the flag at all" do
+        allow(FeatureFlag).to receive(:enabled_for_user?)
+
+        worker.perform(user_ids, subject_line, content, type_of, email_id)
+
+        expect(FeatureFlag).not_to have_received(:enabled_for_user?)
+        expect(CustomMailer).to have_received(:with).twice
+      end
+    end
+
     context "when testing the async call" do
       it "queues the job with the correct arguments regardless of user ID order" do
         # Stub the class method perform_async
@@ -161,6 +235,23 @@ RSpec.describe Emails::BatchCustomSendWorker, type: :worker do
           worker.perform([user.id], subject_line, content, type_of, email_id)
           expect(CustomMailer).to have_received(:with).once
         end
+      end
+    end
+
+    context "when email record has footer override settings" do
+      let(:email_with_override) do
+        create(:email, override_footer_html: true, custom_footer_html: "<p>Batch custom footer</p>")
+      end
+
+      it "passes override_footer_html and custom_email_footer to CustomMailer" do
+        worker.perform([user.id], subject_line, content, type_of, email_with_override.id)
+
+        expect(CustomMailer).to have_received(:with).with(
+          hash_including(
+            override_footer_html: true,
+            custom_email_footer: "<p>Batch custom footer</p>",
+          ),
+        )
       end
     end
   end

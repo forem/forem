@@ -26,6 +26,13 @@ RSpec.describe TagModerators::Add, type: :service do
     expect(unsupported_tag.reload.supported?).to be true
   end
 
+  it "touches the tag to bust caches" do
+    tag.update_columns(updated_at: 1.day.ago)
+    expect do
+      described_class.call(user.id, tag.id)
+    end.to(change { tag.reload.updated_at })
+  end
+
   it "returns success when needed" do
     result = described_class.call(user.id, tag.id)
     expect(result.success?).to be true

@@ -45,7 +45,7 @@ export const NoResults = ({
 };
 
 NoResults.propTypes = {
-  feedType: PropTypes.oneOf(['discover', 'following', 'default']),
+  feedType: PropTypes.oneOf(['discover', 'following', 'curated', 'default']),
   title: PropTypes.string,
   description: PropTypes.string,
   actionText: PropTypes.string,

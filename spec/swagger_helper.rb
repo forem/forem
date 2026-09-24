@@ -23,7 +23,10 @@ RSpec.configure do |config|
         description: "Access Forem articles, users and other resources via API.
         For a real-world example of Forem in action, check out [DEV](https://www.dev.to).
         All endpoints can be accessed with the 'api-key' header and a accept header, but
-        some of them are accessible publicly without authentication.
+        some of them are accessible publicly without authentication. Instances that
+        enable delegated access additionally accept an `Authorization: Bearer` token
+        issued by their configured delegation service on every endpoint that accepts
+        an api-key.
 
         Dates and date times, unless otherwise specified, must be in
         the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
@@ -35,7 +38,7 @@ RSpec.configure do |config|
           description: "Production server"
         },
       ],
-      security: [{ "api-key": [] }],
+      security: [{ "api-key": [] }, { bearer_auth: [] }],
       components: {
         securitySchemes: {
           "api-key": {
@@ -61,6 +64,12 @@ To obtain one, please follow these steps:
 
   - You'll see the newly generated key in the same view
     ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+          },
+          bearer_auth: {
+            type: :http,
+            scheme: :bearer,
+            bearerFormat: "JWT",
+            description: "Short-lived RS256 RFC 9068 access token issued by the configured delegation service and verified against its configured JWKS. The issuer authorizes the client and requested operation before minting the token; Forem validates the token and resolves its subject and owner to a local user. An invalid token returns 401; an unavailable trust dependency with no usable cached key returns 503."
           }
         },
         parameters: {
@@ -196,6 +205,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               published_timestamp: { description: "Crossposting or published date time", type: :string,
                                      format: "date-time" },
               reading_time_minutes: { description: "Reading time, in minutes", type: :integer, format: :int32 },
+              ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" },
+              ai_disclosure_label: { type: :string, description: "Human-readable label of AI disclosure" },
               user: { "$ref": "#/components/schemas/SharedUser" },
               flare_tag: { "$ref": "#/components/schemas/ArticleFlareTag" },
               organization: { "$ref": "#/components/schemas/SharedOrganization" }
@@ -241,8 +252,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   main_image: { type: :string, nullable: true },
                   canonical_url: { type: :string, nullable: true },
                   description: { type: :string },
-                  tags: { type: :string },
-                  organization_id: { type: :integer, nullable: true }
+                  tags: { type: :array, items: { type: :string }, description: "Up to 4 tags, as an array of strings" },
+                  organization_id: { type: :integer, nullable: true },
+                  ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" }
                 }
               }
             }
@@ -382,7 +394,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               summary: { type: :string, nullable: true },
               twitter_username: { type: :string },
               github_username: { type: :string },
-              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              email: { type: :string, nullable: true, description: "Email (requires authentication and if user allows displaying email on their profile) or nil" },
               website_url: { type: :string, nullable: true },
               location: { type: :string, nullable: true },
               joined_at: { type: :string },
@@ -403,7 +415,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               summary: { type: :string, nullable: true },
               twitter_username: { type: :string },
               github_username: { type: :string },
-              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              email: { type: :string, nullable: true, description: "Authenticated user's own email address, always returned regardless of display_email_on_profile setting" },
               website_url: { type: :string, nullable: true },
               location: { type: :string, nullable: true },
               joined_at: { type: :string },
@@ -430,7 +442,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               type_of: { type: :string },
               id_code: { type: :string },
               created_at: { type: :string, format: "date-time" },
-              image_url: { description: "Podcast image url", type: :string, format: :url }
+              image_url: { description: "Podcast image url", type: :string, format: :url },
+              ai_disclosure_level: { type: :string, enum: %w[not_disclosed no_ai some_ai fully_autonomous], description: "Level of AI tooling usage disclosure" },
+              ai_disclosure_label: { type: :string, description: "Human-readable label of AI disclosure" }
             }
           },
           UserInviteParam: {
@@ -587,6 +601,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               active: { type: :boolean, nullable: true, description: "Whether the survey is currently active" },
               display_title: { type: :boolean, description: "Whether to show the title to respondents" },
               allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
+              daily_email_distributions: { type: :integer, format: :int32, description: "Daily email distributions count" },
+              extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
+              target_response_count: { type: :integer, format: :int32, description: "Target response count" },
+              target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in the future" },
               created_at: { type: :string, format: "date-time" },
               updated_at: { type: :string, format: "date-time" }
             },
@@ -608,6 +626,57 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 required: %w[polls]
               },
             ]
+          },
+          SurveyInput: {
+            description: "Parameters for creating or updating a survey",
+            type: :object,
+            properties: {
+              survey: {
+                type: :object,
+                properties: {
+                  title: { type: :string, description: "Title of the survey" },
+                  survey_type_of: { type: :string, enum: Survey.type_ofs.keys, description: "Survey category" },
+                  type_of: { type: :string, enum: Survey.type_ofs.keys, description: "Survey category (alias of survey_type_of)" },
+                  active: { type: :boolean, description: "Whether the survey is active" },
+                  display_title: { type: :boolean, description: "Whether to show the title to respondents" },
+                  allow_resubmission: { type: :boolean, description: "Whether users can submit multiple times" },
+                  daily_email_distributions: { type: :integer, format: :int32, description: "Daily email distributions count" },
+                  extra_email_context_paragraph: { type: :string, nullable: true, description: "Optional context paragraph for emails" },
+                  target_response_count: { type: :integer, format: :int32, description: "Target response count" },
+                  target_completion_date: { type: :string, format: "date-time", nullable: true, description: "Target completion date in the future" },
+                  polls: {
+                    type: :array,
+                    items: {
+                      type: :object,
+                      properties: {
+                        id: { type: :integer, format: :int64, description: "ID of the poll to update, omit for new polls" },
+                        prompt_markdown: { type: :string, description: "Question text in markdown" },
+                        poll_type_of: { type: :string, enum: Poll.type_ofs.keys, description: "Poll type" },
+                        type_of: { type: :string, enum: Poll.type_ofs.keys, description: "Poll type (alias of poll_type_of)" },
+                        position: { type: :integer, format: :int32, description: "Display order within survey" },
+                        scale_min: { type: :integer, format: :int32, description: "Minimum value for scale polls" },
+                        scale_max: { type: :integer, format: :int32, description: "Maximum value for scale polls" },
+                        _destroy: { type: :boolean, description: "Set to true to destroy this poll" },
+                        poll_options: {
+                          type: :array,
+                          items: {
+                            type: :object,
+                            properties: {
+                              id: { type: :integer, format: :int64, description: "ID of the option to update, omit for new options" },
+                              markdown: { type: :string, description: "Option markdown text" },
+                              supplementary_text: { type: :string, description: "Optional supplementary text" },
+                              position: { type: :integer, format: :int32, description: "Display order within poll" },
+                              _destroy: { type: :boolean, description: "Set to true to destroy this option" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            required: %w[survey]
           },
           PollVote: {
             description: "Representation of a single poll vote cast by a user",
@@ -661,6 +730,193 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               updated_at: { type: :string, format: "date-time" }
             },
             required: %w[type_of id name slug key_questions score articles_count first_observed_at last_observed_at created_at updated_at]
+          },
+          Concept: {
+            description: "Representation of a concept",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              slug: { type: :string },
+              description: { type: :string, nullable: true },
+              parent_id: { type: :integer, format: :int64, nullable: true },
+              score: { type: :number, format: :float },
+              similarity_threshold: { type: :number, format: :float, nullable: true },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" },
+              daily_metrics: {
+                type: :array,
+                items: { "$ref": "#/components/schemas/ConceptDailyMetric" }
+              },
+              top_articles: {
+                type: :array,
+                items: {
+                  type: :object,
+                  properties: {
+                    id: { type: :integer, format: :int64 },
+                    title: { type: :string },
+                    slug: { type: :string },
+                    score: { type: :number, format: :float },
+                    published_at: { type: :string, format: "date-time" }
+                  }
+                }
+              }
+            },
+            required: %w[id name slug created_at updated_at]
+          },
+          ConceptDailyMetric: {
+            description: "Representation of daily metrics for a concept",
+            type: :object,
+            properties: {
+              date: { type: :string, format: :date },
+              articles_count: { type: :integer },
+              comments_count: { type: :integer },
+              page_views: { type: :integer },
+              reactions_count: { type: :integer },
+              popularity_score: { type: :number, format: :float }
+            },
+            required: %w[date articles_count comments_count page_views reactions_count popularity_score]
+          },
+          RequestRedirect: {
+            description: "Representation of a request redirect",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              original_url: { type: :string },
+              destination_url: { type: :string },
+              request_domain: { type: :string },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id original_url destination_url request_domain created_at updated_at]
+          },
+          Badge: {
+            description: "Representation of a badge",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              slug: { type: :string },
+              description: { type: :string },
+              badge_image: {
+                type: :object,
+                properties: {
+                  url: { type: :string }
+                },
+                nullable: true
+              },
+              credits_awarded: { type: :integer },
+              allow_multiple_awards: { type: :boolean },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id title slug description created_at updated_at]
+          },
+          BadgeAchievement: {
+            description: "Representation of a badge achievement",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              user_id: { type: :integer, format: :int64 },
+              badge_id: { type: :integer, format: :int64 },
+              rewarding_context_message_markdown: { type: :string, nullable: true },
+              include_default_description: { type: :boolean },
+              metadata: {
+                type: :object,
+                description: "Key/value data supplied for context",
+                additionalProperties: true
+              },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id user_id badge_id created_at updated_at]
+          },
+          RecommendedArticlesList: {
+            description: "Representation of a recommended articles list",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              name: { type: :string },
+              placement_area: { type: :string },
+              expires_at: { type: :string, format: "date-time", nullable: true },
+              user_id: { type: :integer, format: :int64 },
+              article_ids: {
+                type: :array,
+                items: { type: :integer }
+              },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id name placement_area user_id article_ids created_at updated_at]
+          },
+          Subforem: {
+            description: "Representation of a subforem",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              domain: { type: :string },
+              root: { type: :boolean },
+              name: { type: :string },
+              description: { type: :string },
+              logo_image_url: { type: :string },
+              cover_image_url: { type: :string }
+            },
+            required: %w[id domain root name description logo_image_url cover_image_url]
+          },
+          Event: {
+            description: "Representation of an event",
+            type: :object,
+            properties: {
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              event_name_slug: { type: :string },
+              event_variation_slug: { type: :string },
+              description: { type: :string, nullable: true },
+              full_details: { type: :string, nullable: true, description: "Full text dump of all event details, intended for agent and API consumption." },
+              type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+              start_time: { type: :string, format: "date-time" },
+              end_time: { type: :string, format: "date-time" },
+              published: { type: :boolean },
+              primary_stream_url: { type: :string, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              broadcast_config: { type: :string, enum: %w[no_broadcast tagged_broadcast global_broadcast] },
+              broadcast_ended_at: { type: :string, format: "date-time", nullable: true },
+              user_id: { type: :integer, format: :int64, nullable: true },
+              organization_id: { type: :integer, format: :int64, nullable: true },
+              page_id: { type: :integer, format: :int64, nullable: true },
+              data: { type: :object, nullable: true },
+              tags_array: { type: :array, items: { type: :string } },
+              cached_tag_list: { type: :string, nullable: true },
+              created_at: { type: :string, format: "date-time" },
+              updated_at: { type: :string, format: "date-time" }
+            },
+            required: %w[id title event_name_slug event_variation_slug type_of start_time end_time published created_at updated_at]
+          },
+          EventInput: {
+            description: "Representation of an Event to be created/updated",
+            type: :object,
+            properties: {
+              event: {
+                type: :object,
+                properties: {
+                  title: { type: :string },
+                  event_name_slug: { type: :string },
+                  event_variation_slug: { type: :string },
+                  description: { type: :string, nullable: true },
+                  full_details: { type: :string, nullable: true, description: "Full text dump of all event details." },
+                  primary_stream_url: { type: :string, nullable: true },
+                  published: { type: :boolean, default: false },
+                  start_time: { type: :string, format: "date-time" },
+                  end_time: { type: :string, format: "date-time" },
+                  type_of: { type: :string, enum: %w[live_stream takeover other challenge] },
+                  organization_id: { type: :integer, nullable: true },
+                  tag_list: { type: :string, nullable: true },
+                  data: { type: :object, nullable: true }
+                },
+                required: %w[title event_name_slug event_variation_slug start_time end_time]
+              }
+            },
+            required: %w[event]
           }
         }
       }

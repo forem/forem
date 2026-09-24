@@ -26,6 +26,14 @@ RSpec.describe DescriptTag, type: :liquid_tag do
   end
 
   describe "rendering" do
+    before do
+      allow(Addrinfo).to receive(:getaddrinfo).and_call_original
+      %w[www.share.descript.com share.descript.com descript.com].each do |host|
+        allow(Addrinfo).to receive(:getaddrinfo).with(host, nil, nil, :STREAM)
+          .and_return([instance_double(Addrinfo, ip_address: "34.95.113.47")])
+      end
+    end
+
     it "returns StandardError for invalid Descript URL", :aggregate_failures do
       invalid_descript_urls.each do |invalid_url|
         stub_network_request(url: invalid_url, status_code: 404)
