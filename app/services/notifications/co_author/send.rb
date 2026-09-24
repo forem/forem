@@ -17,7 +17,7 @@ module Notifications
 
       def call
         return unless article.is_a?(Article)
-        return unless article.published? && article.type_of == "full_post"
+return unless article.published? && !article.scheduled? && article.type_of == "full_post"
 
         recipient_ids = Array.wrap(article.co_author_ids).map(&:to_i) - [article.user_id]
         return if recipient_ids.empty?
