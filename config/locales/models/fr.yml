@@ -26,6 +26,11 @@ fr:
       mention_too_many:
         one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un article !
         other: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un message !
+      ai_disclosure:
+        not_disclosed: Non divulgué
+        no_ai: Sans IA
+        some_ai: Assisté par IA
+        fully_autonomous: Entièrement autonome
     audience_segment:
       type_ofs:
         manual: Managed elsewhere
@@ -53,6 +58,11 @@ fr:
       is_not_valid: n'est pas valide.
       locked: la discussion est verrouillée sur ce message
       published_article: n'est pas un article publié
+      ai_disclosure:
+        not_disclosed: Non divulgué
+        no_ai: Sans IA
+        some_ai: Assisté par IA
+        fully_autonomous: Entièrement autonome
       type:
         Article: Article
         item: élément

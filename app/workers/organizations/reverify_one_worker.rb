@@ -11,7 +11,7 @@ module Organizations
       result = Organizations::VerifyLinkback.call(organization)
       return if result.success?
 
-      organization.update_columns(verified: false, verified_at: nil)
+      organization.update_columns(verified: false, verified_at: nil, baseline_score: 0)
       Notifications::OrganizationDeverificationWorker.perform_async(organization.id)
     end
   end

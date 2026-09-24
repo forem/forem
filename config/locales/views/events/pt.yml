@@ -1,0 +1,9 @@
+---
+pt:
+  views:
+    events:
+      meta:
+        title: Próximos Eventos
+        description: Descubra os próximos eventos virtuais, desafios, transmissões e hackathons.
+      view_on_calendar: Ver no calendário
+      no_events: Nenhum evento agendado no momento. Volte em breve!

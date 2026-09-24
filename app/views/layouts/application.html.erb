@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <% if user_signed_in? && current_page?(root_path) %>
+    <% if user_signed_in? && (current_page?(root_path) || @home_page) %>
       <% if params[:feed_type] == "discover" || params[:feed_type].blank? %>
         <link rel="preload" href="/stories/feed/?page=1&type_of=discover" as="fetch" crossorigin="same-origin">
       <% elsif params[:feed_type] == "following" %>
         <link rel="preload" href="/stories/feed/?page=1&type_of=following" as="fetch" crossorigin="same-origin">
+      <% elsif params[:feed_type] == "curated" %>
+        <link rel="preload" href="/stories/feed/?page=1&type_of=curated" as="fetch" crossorigin="same-origin">
       <% end %>
       <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_first" as="fetch" crossorigin="same-origin">
       <link rel="preload" href="/<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>/feed_second" as="fetch" crossorigin="same-origin">
@@ -30,6 +32,7 @@
       <% else %>
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
+      <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -49,6 +52,9 @@
       <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
       <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
       <link rel="search" href="<%= URL.url("open-search.xml") %>" type="application/opensearchdescription+xml" title="<%= community_name %>" />
+
+      <%# Machine-readable guidance for AI agents and other automated clients. %>
+      <link rel="describedby" href="<%= app_url("llms.txt") %>" type="text/plain" title="Guidance for AI agents" />
 
       <meta property="forem:name" content="<%= community_name %>" />
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
@@ -74,6 +80,7 @@
       data-side-nav-visible="<%= Subforem.cached_discoverable_ids.size > 1 %>"
       data-community-name="<%= j(community_name) %>"
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
+      data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
       data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
@@ -86,7 +93,8 @@
       data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
       data-dynamic-url-component="<%= ENV.fetch("BILLBOARD_URL_COMPONENT", "bb") %>"
       data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
-      data-global-feature-flags-enabled="<%= j(enabled_global_feature_flags) %>">
+      data-global-feature-flags-enabled="<%= j(enabled_global_feature_flags) %>"
+      data-style-fingerprint="<%= main_stylesheets_fingerprint %>">
       <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
       
       <%# First script to run no matter what %>
@@ -166,7 +174,7 @@
     <div id="cookie-consent"></div>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? %>
+  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

@@ -64,4 +64,19 @@ RSpec.describe RenderedMarkdownScrubber, type: :permit_scrubber do
       expect(output).not_to include("javascript")
     end
   end
+
+  describe "mermaid diagram blocks" do
+    it "keeps data-lang on a pre" do
+      html = %(<pre data-lang="mermaid"><code>graph TD;</code></pre>)
+      expect(clean(html)).to include('data-lang="mermaid"')
+    end
+
+    it "strips class from a pre, which is why data-lang is the hook" do
+      html = %(<pre class="mermaid"><code>graph TD;</code></pre>)
+      output = clean(html)
+
+      expect(output).not_to include("class")
+      expect(output).to include("<pre>")
+    end
+  end
 end

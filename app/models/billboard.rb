@@ -476,7 +476,7 @@ class Billboard < ApplicationRecord
   end
 
   def update_exclude_article_ids
-    return if body_markdown.blank? || !body_markdown_changed?
+    return unless body_markdown_changed?
 
     old_paths = extract_internal_article_paths(processed_html_was)
     new_paths = extract_internal_article_paths(processed_html)
@@ -498,10 +498,12 @@ class Billboard < ApplicationRecord
     doc = Nokogiri::HTML("<html><body>#{html}</body></html>")
     
     internal_hosts = [
-      nil,
       ApplicationConfig["APP_DOMAIN"],
+      Settings::General.app_domain,
       URI.parse(URL.url).host
-    ].compact.uniq
+    ]
+    internal_hosts += Subforem.cached_domains if defined?(Subforem)
+    internal_hosts = internal_hosts.compact.map { |h| h.downcase.delete_prefix("www.") }.uniq
 
     doc.css("a").each do |link|
       href = link["href"]
@@ -509,7 +511,8 @@ class Billboard < ApplicationRecord
 
       begin
         uri = URI.parse(href)
-        next unless internal_hosts.include?(uri.host)
+        host = uri.host&.downcase&.delete_prefix("www.")
+        next unless host.nil? || internal_hosts.include?(host)
 
         path = uri.path
         paths << path.chomp("/").downcase if path.present? && path != "/"
@@ -568,12 +571,16 @@ class Billboard < ApplicationRecord
     reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
     reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
 
-    if reprocess_body && body_markdown.present?
-      if render_mode == "forem_markdown"
-        self.processed_html = extracted_process_markdown(body_markdown)
-      else # raw
-        self.processed_html = Html::Parser.new(body_markdown)
-          .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+    if reprocess_body
+      if body_markdown.present?
+        if render_mode == "forem_markdown"
+          self.processed_html = extracted_process_markdown(body_markdown)
+        else # raw
+          self.processed_html = Html::Parser.new(body_markdown)
+            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
+        end
+      else
+        self.processed_html = nil
       end
     end
 

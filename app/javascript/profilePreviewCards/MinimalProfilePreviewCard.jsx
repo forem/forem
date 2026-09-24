@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { ButtonNew as Button } from '@crayons';
+import { globalFeatureFlagEnabled } from '@utilities/featureFlags';
 
 export const MinimalProfilePreviewCard = ({
   triggerId,
@@ -9,6 +10,7 @@ export const MinimalProfilePreviewCard = ({
   profileImage,
   userId,
   subscriber,
+  communityLeader,
 }) => (
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:inline-block">
     <button
@@ -18,6 +20,7 @@ export const MinimalProfilePreviewCard = ({
       aria-label={`${name} profile details`}
     >
       {name} {subscriber === 'true' ? <img class='subscription-icon' src={document.body.dataset.subscriptionIcon} alt='Subscriber' /> : ''}
+      {communityLeader === 'true' && globalFeatureFlagEnabled('community_favorites') ? <img class='community-leader-icon' src={document.body.dataset.communityLeaderIcon} alt='Community Leader' /> : ''}
     </button>
 
     <div
@@ -45,15 +48,14 @@ export const MinimalProfilePreviewCard = ({
           <Button
             variant="primary"
             className="follow-action-button follow-user w-100"
+            aria-label={`Follow ${name}`}
             data-info={JSON.stringify({
               id: userId,
               className: 'User',
               name,
               style: 'full',
             })}
-          >
-            Follow
-          </Button>
+          />
         </div>
         <div
           class="author-preview-metadata-container"

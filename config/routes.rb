@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     get "/enter", to: "registrations#new", as: :sign_up
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
+    post "/users/auth/account_switch/confirm",
+         to: "omniauth_callbacks#confirm_account_switch", as: :user_account_switch_confirm
+    post "/users/auth/account_switch/cancel",
+         to: "omniauth_callbacks#cancel_account_switch", as: :user_account_switch_cancel
   end
 
   # This route makes default Ahoy Email redirect URLs available to us
@@ -30,21 +34,24 @@ Rails.application.routes.draw do
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
+  get "/a/:code", to: "articles#short_link", as: :article_short, constraints: { code: /[0-9a-pA-P]+/ }
 
   constraints OrgCustomDomainConstraint.new do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+},
+          org_slug: %r{[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users)\z)[^/.]+}
+          slug: %r{[^/.]+}
         }
   end
 
@@ -123,7 +130,14 @@ Rails.application.routes.draw do
         # shared config/routes/api.rb) because Api::V0::Admin::* controllers do
         # not implement these actions; placing the routes here scopes them to
         # callers using the application/vnd.forem.api-v1+json Accept header.
-        resources :concepts, only: %i[index show]
+        resources :concepts, only: %i[index show update] do
+          get :articles, on: :member
+          get :search, on: :collection
+        end
+
+        resources :articles, only: [] do
+          get :semantic_search, on: :collection
+        end
 
         namespace :admin do
           resources :users, only: %i[index show update] do
@@ -212,6 +226,7 @@ Rails.application.routes.draw do
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
+    resources :favorites, only: %i[create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
     resources :organizations, only: %i[update create destroy]
@@ -354,6 +369,8 @@ Rails.application.routes.draw do
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
     get "email_subscriptions/unsubscribe"
+    # RFC 8058 one-click unsubscribe: mailbox providers POST to the same URL.
+    post "email_subscriptions/unsubscribe", to: "email_subscriptions#unsubscribe"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
@@ -409,6 +426,24 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
+    get "/llms.:format", to: "pages#llms"
+
+    # Canonical location of the generated OpenAPI description, plus redirects from the
+    # paths automated clients commonly probe for a spec before falling back to guessing.
+    get "/api/v1/openapi.json", to: "pages#openapi", defaults: { format: "json" }
+    %w[
+      /openapi.json
+      /api-docs
+      /api_docs
+      /api/docs
+      /api/v1/docs
+      /api/v1/docs/api_v1.json
+      /api_docs/v1.json
+      /swagger/v1/api_v1.json
+      /.well-known/openapi.json
+    ].each do |probe_path|
+      get probe_path, to: redirect("/api/v1/openapi.json"), format: false
+    end
     get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
@@ -428,6 +463,15 @@ Rails.application.routes.draw do
     post "/:slug/settings/verify", to: "organization_settings#request_verification",
                                    as: :organization_request_verification
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
+    get "/:slug/settings/pages", to: "organization_pages#index", as: :organization_pages
+    get "/:slug/settings/pages/new", to: "organization_pages#new", as: :new_organization_page
+    post "/:slug/settings/pages", to: "organization_pages#create"
+    get "/:slug/settings/pages/:id/edit", to: "organization_pages#edit", as: :edit_organization_page
+    patch "/:slug/settings/pages/:id", to: "organization_pages#update", as: :update_organization_page
+    patch "/:slug/settings/pages/:id/reorder", to: "organization_pages#reorder",
+                                                 as: :reorder_organization_page
+    delete "/:slug/settings/pages/:id", to: "organization_pages#destroy", as: :organization_page
+    post "/:slug/settings/pages/preview", to: "organization_pages#preview", as: :organization_pages_preview
     get "/:slug/settings/lead_forms", to: "organization_lead_forms#index", as: :organization_lead_forms
     post "/:slug/settings/lead_forms", to: "organization_lead_forms#create"
     get "/:slug/settings/lead_forms/:id/edit", to: "organization_lead_forms#edit", as: :edit_organization_lead_form
@@ -497,6 +541,11 @@ Rails.application.routes.draw do
                                      }
     get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
+    get "/leadership", to: "leadership_dashboards#show", as: :leadership
+    get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+    get "/curation", to: "leadership_dashboards#show", as: :curation
+    get "/curation/:section", to: "leadership_dashboards#show", as: :curation_section
+
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
       get "/rails/mailers/*path", to: "rails/mailers#preview"
@@ -547,7 +596,7 @@ Rails.application.routes.draw do
                                   constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
-    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
+    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following|curated/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"
@@ -580,6 +629,8 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
+    get "/:username/p/:page_suffix", to: "stories#index", as: "organization_custom_page",
+                                     constraints: { format: /html/ }
     get "/:username", to: "stories#index", as: "user_profile", # No txt format
                       constraints: { format: /html/ }
     get "/:slug", to: "pages#show",

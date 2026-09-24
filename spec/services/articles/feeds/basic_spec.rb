@@ -63,5 +63,40 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
         expect(result).to include(visible)
       end
     end
+
+    context "with AI disclosure preferences" do
+      let!(:no_ai_post) { create(:article, hotness_score: 50, ai_disclosure_level: :no_ai) }
+      let!(:some_ai_post) { create(:article, hotness_score: 50, ai_disclosure_level: :some_ai) }
+      let!(:autonomous_post) { create(:article, hotness_score: 50, ai_disclosure_level: :fully_autonomous) }
+
+      context "when feed_ai_preference is show_all" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "includes all articles" do
+          result = feed.feed
+          expect(result).to include(no_ai_post, some_ai_post, autonomous_post)
+        end
+      end
+
+      context "when feed_ai_preference is minimize_ai" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "ranks human/no_ai content higher than AI disclosed content with same baseline" do
+          result = feed.feed
+          expect(result.index(no_ai_post)).to be < result.index(some_ai_post)
+          expect(result.index(some_ai_post)).to be < result.index(autonomous_post)
+        end
+      end
+
+      context "when feed_ai_preference is hide_fully_autonomous" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "completely excludes fully autonomous articles" do
+          result = feed.feed
+          expect(result).to include(no_ai_post, some_ai_post)
+          expect(result).not_to include(autonomous_post)
+        end
+      end
+    end
   end
 end

@@ -1,0 +1,43 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.mlh.com/v4/users/me?expand%5B%5D=address&expand%5B%5D=education&expand%5B%5D=professional_experience
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v2.9.0
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8
+    body:
+      encoding: UTF-8
+      string: '{"created_at": 1765033681, "updated_at": 1784812643, "id": "00000000-0000-0000-0000-000000000001",
+        "first_name": "Alex", "last_name": "Johnson", "time_zone": null, "email":
+        "mlh-user@example.com", "phone_number": null, "suspended": false, "address":
+        {"created_at": 1784812643, "updated_at": 1784812643, "id": "00000000-0000-0000-0000-000000000002",
+        "nickname": null, "line1": "1 Example Street", "line2": null, "line3": null,
+        "city": "Brooklyn", "state": "NY", "postal_code": "11201", "country": "United
+        States of America", "country_code": "US"}, "profile": {"created_at": 1765033718,
+        "updated_at": 1784812643, "country_of_residence": "US", "race_or_ethnicity": "Caucasian",
+        "gender": "female", "pronouns": "she/her", "newsletter_subscriptions": [], "topic_subscriptions":
+        [], "age": null, "birthdate": null, "dietary_preferences": null, "clothing_sizes":
+        null, "custom_fields": {"not_a_student": "2026-07-23T13:15:58Z", "tos_accepted_at":
+        "2025-12-06T15:08:53.020Z", "no_work_experience": "2026-07-23T13:15:54Z",
+        "privacy_policy_accepted_at": "2025-12-06T15:08:53.020Z"}}, "professional_experience":
+        [{"created_at": 1784816638, "updated_at": 1784816638, "id": "00000000-0000-0000-0000-000000000004",
+        "title": "Software Engineer", "current": true, "company": "00000000-0000-0000-0000-000000000005",
+        "type": "Full-Time", "start_date": 1717171200, "end_date": 1816272000, "unsafe_this_will_change_employer_name":
+        "Example Corp"}], "education": [{"created_at": 1784816573, "updated_at": 1784816573,
+        "id": "00000000-0000-0000-0000-000000000003", "current": true, "major": "Computer
+        Science", "school_name": "Acadia University", "school_type": "university",
+        "start_date": 1693497600, "end_date": null}]}'
+    http_version:
+  recorded_at: Thu, 23 Jul 2026 14:00:00 GMT
+recorded_with: VCR 6.2.0

@@ -12,6 +12,21 @@ module Admin
       options
     end
 
+    # Human label for the content a flag was left on, e.g. Post "Foo" or
+    # Comment on "Foo". Used by the content flags list on a member's Flags tab.
+    def flag_reaction_target_label(reaction)
+      reactable = reaction.reactable
+
+      case reaction.reactable_type
+      when "Article"
+        I18n.t("views.admin.users.flags.type.article", title: reactable.title)
+      when "Comment"
+        I18n.t("views.admin.users.flags.type.comment", title: reactable.commentable&.title)
+      else
+        I18n.t("views.admin.users.flags.type.profile")
+      end
+    end
+
     def format_last_activity_timestamp(timestamp)
       return if timestamp.blank?
 

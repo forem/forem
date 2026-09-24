@@ -2,7 +2,8 @@ module Articles
   class Attributes
     ATTRIBUTES = %i[archived body_markdown canonical_url description compellingness_score labels
                     edited_at main_image organization_id user_id published clickbait_score
-                    title video_thumbnail_url published_at co_author_ids_list video_source_url].freeze
+                    title video_thumbnail_url published_at co_author_ids_list video_source_url
+                    ai_disclosure_level].freeze
 
     attr_reader :attributes, :article_user, :organization
 
@@ -13,7 +14,9 @@ module Articles
     end
 
     def for_update(update_edited_at: false)
-      hash = attributes.slice(*ATTRIBUTES)
+      allowed_attributes = ATTRIBUTES
+      allowed_attributes = allowed_attributes - [:ai_disclosure_level] unless Settings::General.enable_ai_disclosure
+      hash = attributes.slice(*allowed_attributes)
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)
       hash[:tag_list] = tag_list if !attributes[:tag_list].nil? || !attributes[:tags].nil?

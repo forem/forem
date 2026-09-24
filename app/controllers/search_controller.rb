@@ -80,6 +80,12 @@ class SearchController < ApplicationController
 
   # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def feed_content
+    requested_page = (feed_params[:page] || params[:page]).to_i
+    if requested_page >= Homepage::ArticlesQuery::MAX_PAGE
+      render json: { result: [] }
+      return
+    end
+
     class_name = feed_params[:class_name].to_s.inquiry
 
     is_homepage_search = (

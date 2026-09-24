@@ -61,6 +61,33 @@ RSpec.describe EdgeCache::Bust, type: :service do
         expect(fastly_provider_class).to have_received(:call)
       end
 
+      it "strips protocol before calling Fastly purge API endpoint" do
+        allow(HTTParty).to receive(:post)
+
+        fastly_provider_class.call(path)
+
+        expected_url = URL.url(path).sub(%r{\Ahttps?://}, "")
+        expect(HTTParty).to have_received(:post).with(
+          "https://api.fastly.com/purge/#{expected_url}",
+          headers: hash_including("Fastly-Key" => "fake-key")
+        )
+      end
+
+      it "preserves custom domain in absolute URLs and strips protocol" do
+        allow(HTTParty).to receive(:post)
+
+        fastly_provider_class.call("https://blog.example.com/custom-post")
+
+        expect(HTTParty).to have_received(:post).with(
+          "https://api.fastly.com/purge/blog.example.com/custom-post",
+          headers: hash_including("Fastly-Key" => "fake-key")
+        )
+        expect(HTTParty).to have_received(:post).with(
+          "https://api.fastly.com/purge/blog.example.com/custom-post?i=i",
+          headers: hash_including("Fastly-Key" => "fake-key")
+        )
+      end
+
       it "gracefully ignores malformed URLs without raising an error or calling HTTParty" do
         allow(HTTParty).to receive(:post)
         

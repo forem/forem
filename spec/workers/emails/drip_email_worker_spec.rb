@@ -103,11 +103,16 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
     it "sends the default template to users with nil onboarding_subforem_id" do
       worker.perform
       expect(CustomMailer).to have_received(:with).with(
-        user:     @user_day_1_in_window,
-        subject:  default_email_day_1.subject,
-        content:  default_email_day_1.body,
-        type_of:  default_email_day_1.type_of,
-        email_id: default_email_day_1.id
+        hash_including(
+          user:                 @user_day_1_in_window,
+          subject:              default_email_day_1.subject,
+          content:              default_email_day_1.body,
+          type_of:              default_email_day_1.type_of,
+          email_id:             default_email_day_1.id,
+          from_name:            "Onboarding",
+          override_footer_html: false,
+          custom_email_footer:  nil,
+        ),
       ).once
     end
 
@@ -119,11 +124,16 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
     it "sends custom template to users with their own onboarding_subforem_id" do
       worker.perform
       expect(CustomMailer).to have_received(:with).with(
-        user:     @user_day_1_custom,
-        subject:  custom_email_day_1.subject,
-        content:  custom_email_day_1.body,
-        type_of:  custom_email_day_1.type_of,
-        email_id: custom_email_day_1.id
+        hash_including(
+          user:                 @user_day_1_custom,
+          subject:              custom_email_day_1.subject,
+          content:              custom_email_day_1.body,
+          type_of:              custom_email_day_1.type_of,
+          email_id:             custom_email_day_1.id,
+          from_name:            "Onboarding",
+          override_footer_html: false,
+          custom_email_footer:  nil,
+        ),
       ).once
     end
 
@@ -131,30 +141,23 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       # stubbed_default_id users should receive the nil template (first in default group)
       worker.perform
       expect(CustomMailer).to have_received(:with).with(
-        user:     @user_day_1_stubbed,
-        subject:  default_email_day_1.subject,
-        content:  default_email_day_1.body,
-        type_of:  default_email_day_1.type_of,
-        email_id: default_email_day_1.id
+        hash_including(
+          user:                 @user_day_1_stubbed,
+          subject:              default_email_day_1.subject,
+          content:              default_email_day_1.body,
+          type_of:              default_email_day_1.type_of,
+          email_id:             default_email_day_1.id,
+          from_name:            "Onboarding",
+          override_footer_html: false,
+          custom_email_footer:  nil,
+        ),
       ).once
     end
 
     it "does not send emails to users registered outside the drip window" do
       worker.perform
-      expect(CustomMailer).not_to have_received(:with).with(
-        user: @user_day_1_out_of_window,
-        subject: default_email_day_1.subject,
-        content: default_email_day_1.body,
-        type_of: default_email_day_1.type_of,
-        email_id: default_email_day_1.id
-      )
-      expect(CustomMailer).not_to have_received(:with).with(
-        user: @user_day_2_out_of_window,
-        subject: default_email_day_2.subject,
-        content: default_email_day_2.body,
-        type_of: default_email_day_2.type_of,
-        email_id: default_email_day_2.id
-      )
+      expect(CustomMailer).not_to have_received(:with).with(hash_including(user: @user_day_1_out_of_window))
+      expect(CustomMailer).not_to have_received(:with).with(hash_including(user: @user_day_2_out_of_window))
     end
 
     it "does not send emails to users unsubscribed or recently emailed" do
@@ -166,6 +169,46 @@ RSpec.describe Emails::DripEmailWorker, type: :worker do
       worker.perform
       expect(CustomMailer).not_to have_received(:with).with(hash_including(user: unsub))
       expect(CustomMailer).not_to have_received(:with).with(hash_including(user: @user_recent_email))
+    end
+
+    it "passes custom footer override settings to CustomMailer when template has them" do
+      default_email_day_1.update!(
+        override_footer_html: true,
+        custom_footer_html: "<p>Drip footer</p>",
+      )
+
+      worker.perform
+      expect(CustomMailer).to have_received(:with).with(
+        hash_including(
+          override_footer_html: true,
+          custom_email_footer:  "<p>Drip footer</p>",
+        ),
+      ).at_least(:once)
+    end
+
+    context "when Customer.io cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not send any drip emails, even with a matching template and eligible user" do
+        worker.perform
+
+        expect(CustomMailer).not_to have_received(:with)
+      end
+    end
+
+    context "when Customer.io cutover is not active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(false)
+      end
+
+      it "sends drip emails as before" do
+        worker.perform
+
+        expect(CustomMailer)
+          .to have_received(:with).with(hash_including(subject: default_email_day_1.subject)).at_least(:once)
+      end
     end
   end
 end

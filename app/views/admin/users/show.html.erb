@@ -46,6 +46,12 @@
       <%= render "admin/users/show/emails/index" %>
     </div>
   </section>
+<% elsif @current_tab == "security" %>
+  <section class="flex flex-col m:flex-row gap-4">
+    <div class="crayons-card p-3 s:p-4 m:p-7 flex-1">
+      <%= render "admin/users/show/security/password" %>
+    </div>
+  </section>
 <% elsif @current_tab == "reports" %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/reports/index" %>
@@ -69,5 +75,33 @@
 <% elsif @current_tab == 'comments' %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/comments/index" %>
+  </section>
+<% elsif @current_tab == 'identities' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/identities/index" %>
+  </section>
+<% elsif @current_tab == 'badges' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/badges/index" %>
+  </section>
+<% elsif @current_tab == 'reactions' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/reactions/index" %>
+  </section>
+<% elsif @current_tab == 'agent_sessions' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/agent_sessions/index" %>
+  </section>
+<% elsif @current_tab == 'collections' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/collections/index" %>
+  </section>
+<% elsif @current_tab == 'follows' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/follows/index" %>
+  </section>
+<% elsif @current_tab == 'blocks' %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/blocks/index" %>
   </section>
 <% end %>

@@ -1,34 +1,94 @@
-<main id="main-content" class="crayons-layout crayons-layout--header-inside">
-  <header class="crayons-page-header">
-    <h1 class="crayons-title">Upcoming Events</h1>
+<% content_for :title, t("views.events.meta.title") %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(events_path) %>" />
+  <meta name="description" content="<%= t("views.events.meta.description") %>">
+  <meta property="og:title" content="<%= t("views.events.meta.title") %>" />
+  <meta property="og:description" content="<%= t("views.events.meta.description") %>" />
+  <meta property="og:url" content="<%= app_url(events_path) %>" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--header-inside events-landing">
+  <header class="crayons-page-header flex items-center justify-between flex-wrap gap-3 mb-6">
+    <h1 class="events-year-header m-0"><%= Time.current.year %></h1>
+
+    <div class="flex items-center gap-2">
+      <%= link_to calendar_path, class: "crayons-btn crayons-btn--secondary flex items-center gap-2" do %>
+        <svg class="c-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span><%= t("views.events.view_on_calendar") %></span>
+      <% end %>
+    </div>
   </header>
   
   <% if @events.any? %>
-    <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-7">
+    <div class="events-grid">
       <% @events.each do |event| %>
-        <div class="crayons-card p-4 flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="fs-s fw-bold color-base-50"><%= event.type_of.to_s.titleize %></span>
-              <% if event.start_time <= Time.current && event.end_time >= Time.current %>
-                <span class="c-indicator c-indicator--error fw-bold">LIVE</span>
-              <% else %>
-                <span class="fs-s color-base-50"><%= event.start_time.to_fs(:short) %></span>
-              <% end %>
-            </div>
-            <h2 class="crayons-subtitle-2 mb-2">
-              <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
-              <%= link_to event.title, link_target, class: "crayons-link" %>
-            </h2>
-            <p class="fs-s color-base-70 mb-4"><%= event.description %></p>
+        <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
+        <a href="<%= link_target %>" class="event-card">
+          <div class="event-card-banner" <% unless event.cover_image.present? %>style="background: <%= event.gradient_background_css %>;"<% end %>>
+            <% if event.cover_image.present? %>
+              <img src="<%= event.cover_image.url %>" alt="<%= event.title %> Cover" loading="lazy" />
+            <% end %>
           </div>
-          <%= link_to "View Event", link_target, class: "c-btn w-100 text-center" %>
-        </div>
+
+          <div class="event-card-body">
+            <div>
+              <h2 class="event-card-title mb-3">
+                <%= event.title %>
+              </h2>
+
+              <div class="event-card-meta">
+                <div class="meta-item">
+                  <svg class="c-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <span><%= event.formatted_date_range %></span>
+                </div>
+
+                <div class="meta-item">
+                  <svg class="c-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                  </svg>
+                  <span><%= event.location_display %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="event-card-footer">
+              <% pill_label = event.format_pill_label %>
+              <% pill_class = case pill_label.downcase
+                              when "digital", "live stream"
+                                "event-pill--digital"
+                              when "in-person", "in person"
+                                "event-pill--in-person"
+                              when "challenge"
+                                "event-pill--challenge"
+                              when "takeover"
+                                "event-pill--takeover"
+                              else
+                                "event-pill--default"
+                              end %>
+              <span class="event-pill <%= pill_class %>"><%= pill_label %></span>
+            </div>
+          </div>
+        </a>
       <% end %>
     </div>
   <% else %>
     <div class="p-9 align-center crayons-card">
-      <p class="text-center color-base-60 py-8">No upcoming events scheduled right now. Check back soon!</p>
+      <p class="text-center color-base-60 py-8"><%= t("views.events.no_events") %></p>
     </div>
   <% end %>
 </main>

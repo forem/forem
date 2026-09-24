@@ -1,6 +1,8 @@
 json.type_of "comment"
 json.id_code comment.id_code_generated
 json.created_at utc_iso_timestamp(comment.created_at)
+json.ai_disclosure_level comment.ai_disclosure_level
+json.ai_disclosure_label comment.ai_disclosure_label
 
 if comment.deleted?
   json.body_html "<p>#{Comment.title_deleted}</p>"

@@ -14,13 +14,16 @@ RSpec.describe "Api::V1::Docs::ProfileImages" do
       get "A Users or organizations profile image" do
         tags "profile images"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a user or organization profile image information by its
-        corresponding username.
+        Retrieve the profile image URL and configuration for a user or organization by username.
+
+        ### Integration Details:
+        - Bypasses authentication.
+        - Convenient for quickly displaying avatars/icons in comments lists, headers, or sidebar elements without requesting the full user profile model.
         DESCRIBE
         operationId "getProfileImage"
         produces "application/json"
         parameter name: :username, in: :path, required: true,
-                  description: "The parameter is the username of the user or the username of the organization.",
+                  description: "The unique username of the target user or organization.",
                   schema: { type: :string },
                   example: "janedoe"
 

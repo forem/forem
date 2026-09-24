@@ -348,6 +348,11 @@ RSpec.describe "/api/admin/users" do
 
     let!(:target) { create(:user) }
 
+    it "uses the same Core-synced consent allowlist as the event emitter" do
+      expect(Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS)
+        .to equal(Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS)
+    end
+
     def put_settings(body, id: target.id)
       put "/api/admin/users/#{id}/notification_settings",
           params: body.to_json,
@@ -384,9 +389,9 @@ RSpec.describe "/api/admin/users" do
     end
 
     # Core pushes ITS OWN consent state through this endpoint; if the write
-    # emitted the CDP newsletter events, Core would consume its own push as
-    # a user consent change (destroying the layered global-unsubscribe /
-    # list-preference distinction).
+    # emitted the CDP newsletter/digest events, Core would consume its own
+    # push as a user consent change (destroying the layered
+    # global-unsubscribe / list-preference distinction).
     it "does not emit CDP newsletter events for admin-API writes" do
       allow(Trackable::Registry).to receive(:active_names).and_return([:any])
       allow(Trackable::DispatchWorker).to receive(:perform_async)
@@ -401,6 +406,48 @@ RSpec.describe "/api/admin/users" do
       expect(target.notification_setting.reload.email_newsletter).to be(false)
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
         .with(anything, /user_newsletter/, anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    # Same suppression, driven by the OTHER independent consent this endpoint
+    # can write: the digest events must not fire back at Core either, or a
+    # digest-only admin-API write would be consumed as a user-originated
+    # digest change.
+    it "does not emit CDP digest events for admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+      target.notification_setting.update!(email_digest_periodic: true)
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_digest_periodic: false } })
+      end
+
+      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, /user_digest/, anything, anything, anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
+    end
+
+    # Same suppression again, for the five per-notification consents. These now
+    # emit their own DEV → Core events, so an admin-API write of them must stay
+    # silent too or Core would consume its own push straight back.
+    it "does not emit CDP events for the per-notification consents on admin-API writes" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[target])
+
+      with_trackable_events do
+        put_settings({ notification_setting: { email_comment_notifications: false,
+                                               email_badge_notifications: false } })
+      end
+
+      expect(target.notification_setting.reload.email_comment_notifications).to be(false)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
     ensure
       FeatureFlag.remove(:dev_core_user_sync)
     end
@@ -423,6 +470,53 @@ RSpec.describe "/api/admin/users" do
       put_settings({ notification_setting: { email_newsletter: false } }, id: 999_999)
 
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "updates email_digest_periodic" do
+      target.notification_setting.update!(email_digest_periodic: true)
+
+      put_settings({ notification_setting: { email_digest_periodic: false } })
+
+      expect(response).to have_http_status(:ok)
+      expect(target.notification_setting.reload.email_digest_periodic).to be(false)
+    end
+
+    it "updates several allowlisted keys in one call" do
+      target.notification_setting.update!(email_newsletter: true, email_digest_periodic: true)
+
+      put_settings({ notification_setting: { email_newsletter: false,
+                                             email_digest_periodic: false } })
+
+      setting = target.notification_setting.reload
+      expect(setting.email_newsletter).to be(false)
+      expect(setting.email_digest_periodic).to be(false)
+    end
+
+    it "returns every allowlisted key in the response" do
+      put_settings({ notification_setting: { email_digest_periodic: true } })
+
+      body = response.parsed_body["notification_setting"]
+      expect(body.keys).to match_array(
+        Api::Admin::UsersController::ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s),
+      )
+    end
+
+    it "rejects a payload of only unknown keys" do
+      put_settings({ notification_setting: { mobile_comment_notifications: false } })
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(target.notification_setting.reload.mobile_comment_notifications).to be(true)
+    end
+
+    it "audits digest changes too" do
+      target.notification_setting.update!(email_digest_periodic: true)
+
+      expect do
+        put_settings({ notification_setting: { email_digest_periodic: false } })
+      end.to change(AuditLog, :count).by(1)
+
+      audit = AuditLog.last
+      expect(audit.data["changes"]).to eq("email_digest_periodic" => [true, false])
     end
   end
 

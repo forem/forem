@@ -23,6 +23,7 @@ module Users
     enum :config_homepage_feed, { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          suffix: :feed
     enum :feed_status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
+    enum :feed_ai_preference, { show_all: 0, minimize_ai: 1, hide_fully_autonomous: 2 }, suffix: :feed_ai
 
     validates :brand_color1,
               format: { with: HEX_COLOR_REGEXP,
