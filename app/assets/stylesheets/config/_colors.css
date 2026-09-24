@@ -43,7 +43,7 @@
   ***********************************************/
 
   /* Main colors */
-  --body-bg: rgb(var(--grey-100));
+  --body-bg: rgb(var(--grey-50));
   --body-color: rgb(var(--grey-900));
   --body-color-inverted: rgb(var(--white));
 
