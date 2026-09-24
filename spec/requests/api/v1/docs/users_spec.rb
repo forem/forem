@@ -11,6 +11,14 @@ RSpec.describe "Api::V1::Docs::Users" do
   let(:user) { api_secret.user }
 
   let(:banned_user) { create(:user) }
+  let(:token) do
+    JWT.encode(
+      { "iss" => "https://issuer.example.test", "aud" => "https://community.example.test", "sub" => "core-1",
+        "iat" => Time.current.to_i, "nbf" => Time.current.to_i, "exp" => 30.seconds.from_now.to_i,
+        "jti" => SecureRandom.uuid, "https://issuer.example.test/claims/user_id" => user.id.to_s },
+      OpenSSL::PKey::RSA.generate(2048), "RS256", { kid: "k1", typ: "at+jwt" }
+    )
+  end
   let(:article) { create(:article, user: banned_user, published: true) }
   let(:comment) { create(:comment, user: banned_user, article: article) }
 
@@ -25,7 +33,7 @@ RSpec.describe "Api::V1::Docs::Users" do
         description "This endpoint allows the client to retrieve information about the authenticated user.
 
 ### Usage Tips:
-- Requires a valid `api-key` header to identify the user.
+- Requires a valid `api-key` header or a configured delegated Bearer token.
 - Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings."
         operationId "getUserMe"
         produces "application/json"
@@ -40,6 +48,32 @@ RSpec.describe "Api::V1::Docs::Users" do
 
         response "401", "Unauthorized" do
           let(:"api-key") { "bad_api_secret" }
+          add_examples
+          run_test!
+        end
+
+        response "503", "Delegated access unavailable" do
+          description "Returned only for delegated Bearer tokens, on any Bearer-capable endpoint, when the " \
+                      "configured JWKS endpoint cannot be reached or returns an unusable key set and no cached " \
+                      "keys remain. Invalid tokens are 401, never 503."
+          let(:Authorization) { "Bearer #{token}" }
+
+          before do
+            jwks_client = instance_double(DelegatedAccess::JwksClient)
+            allow(jwks_client).to receive(:fetch).and_raise(DelegatedAccess::JwksClient::Error)
+            verifier = DelegatedAccess::Verifier.new(
+              issuer: "https://issuer.example.test", audience: "https://community.example.test",
+              owner_claim: "https://issuer.example.test/claims/user_id", jwks_client: jwks_client,
+              maximum_token_lifetime: 60, jwks_cache_lifetime: 60
+            )
+            config = ActiveSupport::OrderedOptions.new.tap do |c|
+              c.enabled = true
+              c.identity_provider = "github"
+              c.verifier = verifier
+            end.freeze
+            allow(Rails.application.config.x).to receive(:delegated_access).and_return(config)
+          end
+
           add_examples
           run_test!
         end
@@ -343,7 +377,7 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/admin/users/{id}/notification_settings" do
       put "Update user notification settings (Admin)" do
         tags "users", "admin"
-        description "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials."
+        description "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter or the periodic digest). Any subset of the listed properties may be supplied; at least one is required. Requires Super Admin credentials."
         consumes "application/json"
         produces "application/json"
         parameter name: :id, in: :path, required: true,
@@ -357,7 +391,13 @@ RSpec.describe "Api::V1::Docs::Users" do
                       notification_setting: {
                         type: :object,
                         properties: {
-                          email_newsletter: { type: :boolean }
+                          email_newsletter: { type: :boolean },
+                          email_digest_periodic: { type: :boolean },
+                          email_comment_notifications: { type: :boolean },
+                          email_follower_notifications: { type: :boolean },
+                          email_mention_notifications: { type: :boolean },
+                          email_unread_notifications: { type: :boolean },
+                          email_badge_notifications: { type: :boolean }
                         }
                       }
                     },
@@ -371,12 +411,25 @@ RSpec.describe "Api::V1::Docs::Users" do
           add_examples
           run_test!
         end
+
+        response "200", "successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { banned_user.id }
+          let(:settings_params) do
+            { notification_setting: { email_newsletter: false, email_digest_periodic: false } }
+          end
+          add_examples
+          run_test!
+        end
       end
     end
   end
 
   describe "POST /api/admin/users/{id}/merge" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Moderator::MergeUser).to receive(:call)
+    end
 
     path "/api/admin/users/{id}/merge" do
       post "Merge user into another (Admin)" do
@@ -408,10 +461,6 @@ RSpec.describe "Api::V1::Docs::Users" do
           let(:id) { user.id }
           let(:another_user) { create(:user) }
           let(:merge_params) { { merge_user_id: another_user.id } }
-
-          before do
-            allow(Moderator::MergeUser).to receive(:call)
-          end
 
           add_examples
           run_test!
@@ -504,7 +553,10 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "POST /api/admin/users/{user_id}/identities" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Authentication::Providers).to receive(:enabled?).and_return(true)
+    end
 
     path "/api/admin/users/{user_id}/identities" do
       post "Link an identity to a user (Admin)" do
@@ -531,10 +583,6 @@ RSpec.describe "Api::V1::Docs::Users" do
                     },
                     required: %w[provider uid]
                   }
-
-        before do
-          allow(Authentication::Providers).to receive(:enabled?).and_return(true)
-        end
 
         response "201", "created" do
           let(:"api-key") { api_secret.secret }
@@ -575,7 +623,10 @@ RSpec.describe "Api::V1::Docs::Users" do
   end
 
   describe "POST /api/admin/users/identities/bulk" do
-    before { user.add_role(:super_admin) }
+    before do
+      user.add_role(:super_admin)
+      allow(Authentication::Providers).to receive(:enabled?).and_return(true)
+    end
 
     path "/api/admin/users/identities/bulk" do
       post "Bulk link identities (Admin)" do
@@ -603,10 +654,6 @@ RSpec.describe "Api::V1::Docs::Users" do
                     },
                     required: %w[provider identities]
                   }
-
-        before do
-          allow(Authentication::Providers).to receive(:enabled?).and_return(true)
-        end
 
         response "200", "successful" do
           let(:"api-key") { api_secret.secret }

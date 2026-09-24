@@ -9,7 +9,7 @@
 
   <article class="js-individual-article crayons-card p-6 flex flex-col gap-4">
     <header>
-      <% if decorated_article.pinned? || article.featured || article.approved || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
+      <% if decorated_article.pinned? || article.featured || article.approved || article.favorited_by_user_id? || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
         <div class="flex gap-1 mb-1">
           <% if !article.published? && article.published_from_feed? %>
             <span class="c-indicator c-indicator--danger"><%= t("views.moderations.article.unplublished") %></span>
@@ -22,6 +22,12 @@
           <% end %>
           <% if article.approved %>
             <span class="c-indicator c-indicator--info"><%= t("views.moderations.article.approved") %></span>
+          <% end %>
+          <% if article.favorited_by_user_id? %>
+            <span class="c-indicator c-indicator--warning">
+              <%= t("views.moderations.article.favorited_by") %>
+              <a href="<%= article.favorited_by_user&.path %>" target="_blank" rel="noopener" class="shrink-0 c-link c-link--branded fw-bold"><%= article.favorited_by_user&.username %></a>
+            </span>
           <% end %>
           <% if article.video %>
             <span class="c-indicator"><%= t("views.moderations.article.contains_video") %></span>
@@ -124,6 +130,13 @@
               </button>
             </form>
           <% end %>
+          <% if article.favorited_by_user_id? %>
+            <form method="post" action="<%= unfavorite_admin_article_path(article.id) %>" class="inline">
+              <input type="hidden" name="_method" value="delete" />
+              <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+              <button type="submit" class="c-btn"><%= t("views.moderations.article.unfavorite") %></button>
+            </form>
+          <% end %>
           <a class="c-link c-link--block" href="<%= admin_user_path(article.user_id) %>" target="_blank" rel="noopener"><%= t("views.moderations.article.user") %></a>
           <a href="<%= article.path %>/edit" target="_blank" rel="noopener" class="c-link c-link--block"><%= t("views.moderations.article.edit") %></a>
         </div>
@@ -188,7 +201,6 @@
             </button>
           </div>
         </div>
-        </div>
       </div>
       <% if article.context_notes.any? %>
         <div class="flex">
@@ -251,9 +263,9 @@
 
       <nav class="mt-4 pt-1 pb-2 px-3 member-data-heading" aria-label="Member details">
         <ul class="crayons-navigation crayons-navigation--horizontal">
-          <li><%= link_to "Flags", admin_article_path(tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'flags' || params[:tab].blank?}", aria: @current_tab == "flags" ? { current: "" } : {} %></li></li>
+          <li><%= link_to "Flags", admin_article_path(tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'flags' || params[:tab].blank?}", aria: @current_tab == "flags" ? { current: "" } : {} %></li>
           <li><%= link_to "Quality reactions", admin_article_path(tab: :quality_reactions), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'quality_reactions'}",
-                                                                                            aria: @current_tab == "quality_reactions" ? { current: "" } : {} %></li></li>
+                                                                                            aria: @current_tab == "quality_reactions" ? { current: "" } : {} %></li>
         </ul>
       </nav>
 
@@ -280,7 +292,7 @@
             </div>
           <% end %>
         <% end %>
-      <div>
+      </div>
     </article>
   <% end %>
 </div>

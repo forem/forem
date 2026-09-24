@@ -49,6 +49,13 @@ RSpec.describe Users::RemoveRole, type: :service do
       user.reload
       expect(user.tag_moderator?(tag: tag)).to be true
     end
+
+    it "touches the resource" do
+      tag.update_columns(updated_at: 1.day.ago)
+      expect do
+        described_class.call(user: user, role: "tag_moderator", resource_type: "Tag", resource_id: tag.id)
+      end.to(change { tag.reload.updated_at })
+    end
   end
 
   it "returns an error if there is an issue removing the role" do

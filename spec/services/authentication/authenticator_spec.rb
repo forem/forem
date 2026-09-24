@@ -1069,8 +1069,10 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
         identity.reload
         expect(identity.uid).to eq("a-placeholder-id")
-        tags = hash_including(tags: array_including("error:ActiveRecord::RecordNotUnique"))
-        expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags)
+expect(ForemStatsClient).to have_received(:increment).with(
+  "identity.errors",
+  tags: match_array(["error:ActiveRecord::RecordNotUnique", "provider:mlh"]),
+)
       end
 
       it "does not repoint a link the user established themselves" do

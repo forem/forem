@@ -5,6 +5,29 @@ RSpec.describe "LeadSubmissions" do
   let(:lead_form) { create(:organization_lead_form, organization: organization) }
   let(:user) { create(:user) }
 
+  describe "GET /lead_submissions/check" do
+    before { sign_in user }
+
+    it "requires a signed-in user" do
+      sign_out user
+
+      get "/lead_submissions/check", params: { form_ids: lead_form.id }, as: :json
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns the current user's submissions in the existing shape and a fresh CSRF token" do
+      submission = create(:lead_submission, organization_lead_form: lead_form, user: user)
+
+      get "/lead_submissions/check", params: { form_ids: lead_form.id }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body[lead_form.id.to_s]).to eq(submission.created_at.iso8601)
+      expect(response.parsed_body["csrf_token"]).to be_present
+      expect(response.parsed_body).not_to have_key("submissions")
+    end
+  end
+
   describe "POST /lead_submissions" do
     context "when signed in" do
       before { sign_in user }

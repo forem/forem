@@ -1,4 +1,8 @@
 class Email < ApplicationRecord
+  # Test sends are the same broadcast with a marked subject. Several guards key
+  # off it, so keep the marker in one place.
+  TEST_SUBJECT_PREFIX = "[TEST] ".freeze
+
   belongs_to :audience_segment, optional: true
   belongs_to :user_query, optional: true
   belongs_to :event, optional: true
@@ -8,6 +12,29 @@ class Email < ApplicationRecord
 
   validates :subject, presence: true
   validates :body, presence: true
+  validates :custom_footer_html, email_safe_html: true, if: -> { custom_footer_html.present? }
+  validate :only_one_target_specified
+  validate :audience_segment_must_have_users, if: -> { active? && audience_segment_id.present? }
+
+  def target_type_label
+    if audience_segment.present?
+      "Audience Segment: #{audience_segment.display_name}"
+    elsif user_query.present?
+      "User Query: #{user_query.name}"
+    elsif event.present?
+      "Event: #{event.title}"
+    else
+      "All Users (Broadcast)"
+    end
+  end
+
+  def footer_html_to_render
+    if override_footer_html?
+      custom_footer_html.presence
+    else
+      Settings::General.custom_email_footer.presence
+    end
+  end
 
   enum :type_of, { one_off: 0, newsletter: 1, onboarding_drip: 2 }
   enum :status, { draft: 0, active: 1, delivered: 2 } # Not implemented yet anywhere
@@ -90,8 +117,8 @@ class Email < ApplicationRecord
     users_batch = User.where(email: email_array)
     return if users_batch.empty?
 
-    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), "[TEST] #{subject}", body, type_of, id,
-                                                default_from_name_based_on_type)
+    Emails::BatchCustomSendWorker.perform_async(users_batch.map(&:id), "#{TEST_SUBJECT_PREFIX}#{subject}", body,
+                                                type_of, id, default_from_name_based_on_type)
   end
 
   def deliver_to_users
@@ -114,5 +141,20 @@ class Email < ApplicationRecord
     end
 
     update_columns(status: "delivered")
+  end
+
+  private
+
+  def only_one_target_specified
+    targets = [audience_segment_id.present?, user_query_id.present?, event_id.present?]
+    return unless targets.count(true) > 1
+
+    errors.add(:base, "Please select only one recipient target (Audience Segment, User Query, or Event).")
+  end
+
+  def audience_segment_must_have_users
+    return unless audience_segment&.manual? && audience_segment.segmented_users.none?
+
+    errors.add(:audience_segment_id, "selected segment has no users")
   end
 end

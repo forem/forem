@@ -26,4 +26,18 @@ class ReactionPolicy < ApplicationPolicy
 
     false
   end
+
+  # Setting any status on any reaction stays admin-only. Confirming a flag has
+  # consequences well beyond the reaction itself: confirmed comment vomits feed
+  # Reaction.user_has_been_given_too_many_spammy_comment_reactions?, which can
+  # suspend the author via Spam::Handler.
+  def admin_update?
+    user_any_admin?
+  end
+
+  # Support staff may additionally invalidate flags on comments, which zeroes
+  # the reaction's points and restores the score of a downvoted comment.
+  def admin_invalidate?
+    admin_update? || (support_admin? && record.reactable_type == "Comment")
+  end
 end

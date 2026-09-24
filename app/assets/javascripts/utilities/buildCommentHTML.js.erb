@@ -14,6 +14,7 @@ function buildCommentHTML(comment) {
   var commentAvatar = "";
   var commentBody = "";
   var subscriptionIcon = "";
+  var communityLeaderIcon = "";
 
   if ( comment.depth == 0 ) {
     depthClass += "root ";
@@ -31,6 +32,9 @@ function buildCommentHTML(comment) {
 
   if (comment.user.cached_base_subscriber) {
     subscriptionIcon = ` <img class='subscription-icon' src='${document.body.dataset.subscriptionIcon}' alt='Subscriber' />`;
+  }
+  if (comment.user.cached_community_leader && globalFeatureFlagEnabled('community_favorites')) {
+    communityLeaderIcon = ` <img class='community-leader-icon' src='${document.body.dataset.communityLeaderIcon}' alt='Community Leader' />`;
   }
 
   if (comment.depth < 3) {
@@ -56,7 +60,7 @@ function buildCommentHTML(comment) {
       <span class="js-comment-username">${ comment.user.name }</span>
     </a>
     <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
-      <button id="comment-profile-preview-trigger-${comment.id}" aria-controls="comment-profile-preview-content-${comment.id}" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="${comment.user.name} profile details">${comment.user.name}${subscriptionIcon}</button>
+      <button id="comment-profile-preview-trigger-${comment.id}" aria-controls="comment-profile-preview-content-${comment.id}" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="${comment.user.name} profile details">${comment.user.name}${subscriptionIcon}${communityLeaderIcon}</button>
       <span data-js-comment-user-id="${comment.user.id}" data-js-dropdown-content-id="comment-profile-preview-content-${comment.id}" class="preview-card-placeholder"></span>
     </div>
     <span class="color-base-30 px-2 m:pl-0" role="presentation">&bull;</span>

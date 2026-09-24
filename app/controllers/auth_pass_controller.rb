@@ -5,9 +5,11 @@ class AuthPassController < ApplicationController
   # Use the iframe session store for specific actions
   before_action :allow_cross_origin_requests, only: [:iframe, :token_login]
   before_action :use_iframe_session_store, only: [:iframe]
+  before_action :set_iframe_csp, only: [:iframe]
 
   def iframe
-    unless Subforem.cached_all_domains.include?(request.host)
+    allowed_hosts = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.uniq
+    unless allowed_hosts.include?(request.host)
       render plain: "Unauthorized", status: :unauthorized
       return
     end
@@ -92,6 +94,27 @@ class AuthPassController < ApplicationController
   end
   private
 
+  def set_iframe_csp
+    parent_origin = params[:passed_domain].presence || params[:parent_origin].presence || request.headers["Referer"].presence
+    return if parent_origin.blank?
+
+    uri = URI.parse(parent_origin) rescue nil
+    origin_host = uri&.host&.downcase || parent_origin.gsub(/https?:\/\//, "").split(":").first&.downcase
+    return if origin_host.blank?
+
+    is_allowed = (Subforem.cached_all_domains + [Settings::General.app_domain]).compact.map(&:downcase).include?(origin_host) ||
+                 OrgCustomDomainConstraint.custom_domain_org_for_host(origin_host).present?
+
+    if is_allowed
+      scheme = (uri&.scheme || "https").downcase
+      scheme = "https" unless %w[http https].include?(scheme)
+      host = (uri&.host || origin_host).downcase
+      port_suffix = uri&.port && ![80, 443].include?(uri.port) ? ":#{uri.port}" : ""
+      normalized_origin = "#{scheme}://#{host}#{port_suffix}"
+      response.headers["Content-Security-Policy"] = "frame-ancestors 'self' #{normalized_origin}"
+    end
+  end
+
   def use_iframe_session_store
     return if Rails.env.test? # Skip Redis session setup in test environment
 
@@ -112,10 +135,17 @@ class AuthPassController < ApplicationController
   end
 
   def allow_cross_origin_requests
-    allowed_domains = (Subforem.cached_domains + [Settings::General.app_domain]).compact
     requesting_origin = request.headers["Origin"]
+    return if requesting_origin.blank?
 
-    if allowed_domains.present? && allowed_domains.include?(requesting_origin&.gsub(/https?:\/\//, ""))
+    uri = URI.parse(requesting_origin) rescue nil
+    origin_host = uri&.host&.downcase || requesting_origin.gsub(/https?:\/\//, "").split(":").first&.downcase
+    return if origin_host.blank?
+
+    is_allowed = (Subforem.cached_domains + [Settings::General.app_domain]).compact.map(&:downcase).include?(origin_host) ||
+                 OrgCustomDomainConstraint.custom_domain_org_for_host(origin_host).present?
+
+    if is_allowed
       headers["Access-Control-Allow-Origin"] = requesting_origin
       headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
       headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"

@@ -371,6 +371,8 @@ RSpec.describe "Pages" do
 
       before do
         allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
         FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
@@ -378,6 +380,81 @@ RSpec.describe "Pages" do
         get "http://blog.mlh.com/robots.txt"
 
         expect(response.body).to include("Sitemap: http://blog.mlh.com/sitemap-index.xml")
+      end
+
+      it "serves agent guidance with links on the requested domain" do
+        get "http://blog.mlh.com/llms.txt"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("http://blog.mlh.com/api/v1/openapi.json")
+        expect(response.body).to include("http://forem.com/code-of-conduct")
+      end
+    end
+  end
+
+  describe "GET /.well-known/ai.txt" do
+    it "does not publish an experimental policy document" do
+      expect { get "/.well-known/ai.txt" }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe "GET /api/v1/openapi.json" do
+    it "serves the generated OpenAPI description" do
+      get "/api/v1/openapi.json"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body["paths"]).to be_present
+    end
+
+    it "redirects the paths automated clients probe for a spec" do
+      %w[/openapi.json /api-docs /api_docs /api/docs /api/v1/docs
+         /api/v1/docs/api_v1.json /api_docs/v1.json /swagger/v1/api_v1.json
+         /.well-known/openapi.json].each do |probe_path|
+        get probe_path
+        expect(response).to redirect_to("/api/v1/openapi.json")
+      end
+    end
+  end
+
+  describe "GET /llms.txt" do
+    it "renders the agent guidance" do
+      get "/llms.txt"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/plain")
+      expect(response.body).to include("# #{Settings::Community.community_name}")
+      expect(response.body).to include("## API")
+      expect(response.body).to include(URL.url("api/v1/openapi.json"))
+      expect(response.body).not_to include(".well-known/ai.txt")
+    end
+
+    context "when AI disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "documents nuanced disclosure requirements before its file lists" do
+        get "/llms.txt"
+
+        disclosure_position = response.body.index("ai_disclosure_level")
+        api_position = response.body.index("## API")
+
+        expect(disclosure_position).to be < api_position
+        expect(response.body).not_to include("## AI disclosure")
+        expect(response.body).to include("AI-assisted and fully autonomous articles are allowed")
+        expect(response.body).to include("some_ai")
+        expect(response.body).to include("fully_autonomous")
+        expect(response.body).to include("human remains accountable")
+        expect(response.body).not_to include("comment[ai_disclosure_level]")
+      end
+    end
+
+    context "when AI disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "omits the disclosure instructions" do
+        get "/llms.txt"
+
+        expect(response.body).not_to include("ai_disclosure_level")
       end
     end
   end
