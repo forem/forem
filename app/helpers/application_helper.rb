@@ -573,5 +573,16 @@ module ApplicationHelper
 
     URL.url("#{main_path}#{query}")
   end
+
+  def main_stylesheets_fingerprint
+    @main_stylesheets_fingerprint ||= begin
+      combined = [
+        stylesheet_path("minimal"),
+        stylesheet_path("views"),
+        stylesheet_path("crayons")
+      ].join
+      Digest::MD5.hexdigest(combined)[0..9]
+    end
+  end
 end
 

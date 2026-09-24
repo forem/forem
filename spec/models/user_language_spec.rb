@@ -19,4 +19,30 @@ RSpec.describe UserLanguage do
       expect(lang.errors[:language]).to be_present
     end
   end
+
+  describe "caching" do
+    let(:user) { create(:user) }
+    let(:cache_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+
+    around do |example|
+      original_cache = Rails.cache
+      Rails.cache = cache_store
+      example.run
+    ensure
+      Rails.cache = original_cache
+    end
+
+    it "caches user languages and clears cache after commit" do
+      create(:user_language, user: user, language: "en")
+      expect(user.cached_languages).to eq(["en"])
+
+      # Should be cached
+      expect(Rails.cache.exist?("user-#{user.id}/languages")).to be true
+
+      # Creating another language clears the cache
+      create(:user_language, user: user, language: "es")
+      expect(Rails.cache.exist?("user-#{user.id}/languages")).to be false
+      expect(user.cached_languages).to contain_exactly("en", "es")
+    end
+  end
 end

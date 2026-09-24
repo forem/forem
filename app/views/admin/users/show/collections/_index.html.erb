@@ -1,0 +1,46 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.collections_tab.title") %></h3>
+  </div>
+
+  <% if @collections.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.collections_tab.empty") %></p>
+    </div>
+  <% else %>
+    <%= paginate @collections if respond_to?(:paginate) %>
+
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.collections_tab.table.title") %></th>
+            <th scope="col"><%= t("views.admin.users.collections_tab.table.description") %></th>
+            <th scope="col"><%= t("views.admin.users.collections_tab.table.articles_count") %></th>
+            <th scope="col"><%= t("views.admin.users.collections_tab.table.created_at") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @collections.each do |collection| %>
+            <tr>
+              <td>
+                <strong>
+                  <%= link_to collection.title, collection.path, class: "c-link", target: "_blank", rel: "noopener" %>
+                </strong>
+              </td>
+              <td>
+                <p class="fs-s"><%= collection.description.presence || "-" %></p>
+              </td>
+              <td>
+                <%= collection.articles.count %>
+              </td>
+              <td class="whitespace-nowrap"><%= l(collection.created_at, format: :short_with_yy) rescue collection.created_at.to_s %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @collections if respond_to?(:paginate) %>
+  <% end %>
+</div>

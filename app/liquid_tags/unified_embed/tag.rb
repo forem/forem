@@ -6,6 +6,25 @@ module UnifiedEmbed
     MAX_REDIRECTION_COUNT = 3
     MINIMAL_ALLOWLIST = [LinkTag].freeze
 
+    # Additional blocked ranges beyond what Ruby's IPAddr#private?, #loopback?,
+    # and #link_local? cover. Hoisted to frozen constants to avoid allocating
+    # new IPAddr objects on every call to blocked_ip?.
+    BLOCKED_UNSPECIFIED_RANGE = IPAddr.new("0.0.0.0/8").freeze        # wildcard / unspecified IPv4
+    BLOCKED_CGNAT_RANGE       = IPAddr.new("100.64.0.0/10").freeze    # Carrier-Grade NAT (RFC 6598)
+    BLOCKED_IPV4_MAPPED_RANGE = IPAddr.new("::ffff:0:0/96").freeze    # IPv4-mapped IPv6
+    BLOCKED_IPV4_COMPAT_RANGE = IPAddr.new("::/96").freeze            # IPv4-compatible IPv6 (deprecated RFC 4291)
+    BLOCKED_IPV6_UNSPECIFIED  = IPAddr.new("::/128").freeze           # IPv6 unspecified address (::)
+    BLOCKED_IPV6_ULA_RANGE    = IPAddr.new("fc00::/7").freeze         # IPv6 unique-local
+
+    BLOCKED_RANGES = [
+      BLOCKED_UNSPECIFIED_RANGE,
+      BLOCKED_CGNAT_RANGE,
+      BLOCKED_IPV4_MAPPED_RANGE,
+      BLOCKED_IPV4_COMPAT_RANGE,
+      BLOCKED_IPV6_UNSPECIFIED,
+      BLOCKED_IPV6_ULA_RANGE,
+    ].freeze
+
     def self.new(tag_name, input, parse_context)
       stripped_input = ActionController::Base.helpers.strip_tags(input).strip
 
@@ -101,29 +120,52 @@ module UnifiedEmbed
       agent.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
     end
 
-    # Prevent SSRF attacks by blocking requests to private IP ranges
+    # Prevent SSRF attacks by blocking requests to private IP ranges.
+    # Covers:
+    #   - Loopback / localhost literals
+    #   - RFC 1918 private ranges (10/8, 172.16/12, 192.168/16)
+    #   - IPv4 loopback (127/8)
+    #   - Link-local (169.254/16, fe80::/10)
+    #   - Wildcard / unspecified (0.0.0.0/8)
+    #   - IPv4-mapped IPv6 (::ffff:0:0/96) which could otherwise tunnel private IPv4
+    #   - IPv6 unique-local (fc00::/7)
+    # Resolution failure is treated as DENY: if we cannot confirm a host is public,
+    # we must not fetch it.
     def self.private_ip?(hostname)
+      # Deny nil, empty, or blank hostnames — if we cannot identify the host,
+      # we must not fetch it. This also prevents TypeError from IPAddr.new(nil)
+      # and Addrinfo.getaddrinfo(nil, ...) when URI.parse yields a nil host.
+      return true if hostname.blank?
+
       return true if %w[localhost 127.0.0.1 ::1].include?(hostname)
-      
+
       # First try to parse as IP address directly
       begin
         ip = IPAddr.new(hostname)
-        return ip.private? || ip.loopback? || ip.link_local?
+        return blocked_ip?(ip)
       rescue IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
-        # Not an IP address (or family unspecified), try to resolve hostname
+        # Not a bare IP literal; fall through to DNS resolution
       end
-      
-      # Resolve hostname to IP addresses and check each one
+
+      # Resolve hostname to IP addresses and check each one.
+      # Deny on resolution failure — an unresolvable host's IP range is unknown.
       begin
         Addrinfo.getaddrinfo(hostname, nil, nil, :STREAM).each do |addr|
           ip = IPAddr.new(addr.ip_address)
-          return true if ip.private? || ip.loopback? || ip.link_local?
+          return true if blocked_ip?(ip)
         end
         false
       rescue SocketError, IPAddr::InvalidAddressError, IPAddr::AddressFamilyError
-        # If hostname resolution fails, allow it (will fail during HTTP request anyway)
-        false
+        # Cannot resolve: treat as private/blocked to be safe
+        true
       end
+    end
+
+    # Returns true for any IP address that should be blocked from outbound fetches.
+    def self.blocked_ip?(ip)
+      return true if ip.loopback? || ip.private? || ip.link_local?
+
+      BLOCKED_RANGES.any? { |range| range.include?(ip) }
     end
   end
 

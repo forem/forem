@@ -246,8 +246,12 @@ html.is-twitter-in-app {
   &__count {
     color: var(--base-70);
     font-size: var(--fs-s);
+    line-height: 18px;
+    height: 18px;
+    min-height: 18px;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     margin-left: 0px;
     // padding-right: var(--su-1);
     min-width: var(--su-6);
@@ -255,7 +259,14 @@ html.is-twitter-in-app {
     @media (min-width: $breakpoint-m) {
       min-width: auto;
       margin-left: 0;
-      display: block;
+      display: flex;
+    }
+
+    > span {
+      height: 16px;
+      width: 16px;
+      padding: 0 !important;
+      display: inline-block;
     }
   }
 
@@ -364,16 +375,34 @@ html.is-twitter-in-app {
 
 .only-sidebar-menu-item {
   display: none !important;
+}
 
-  @media (min-width: $breakpoint-s) {
+@media (min-width: $breakpoint-s) {
+  body.community-leader-status-true .only-sidebar-menu-item.community-leader-visible-block {
+    display: block !important;
+  }
+  body.trusted-status-true .only-sidebar-menu-item.trusted-visible-block {
     display: block !important;
   }
 }
 
 .only-mobile-menu-item {
-  display: block !important;
+  display: none !important;
+}
 
-  @media (min-width: $breakpoint-s) {
+body.community-leader-status-true .only-mobile-menu-item.community-leader-visible-block {
+  display: block !important;
+}
+
+body.trusted-status-true .only-mobile-menu-item.trusted-visible-block {
+  display: block !important;
+}
+
+@media (min-width: $breakpoint-s) {
+  body.community-leader-status-true .only-mobile-menu-item.community-leader-visible-block {
+    display: none !important;
+  }
+  body.trusted-status-true .only-mobile-menu-item.trusted-visible-block {
     display: none !important;
   }
 }

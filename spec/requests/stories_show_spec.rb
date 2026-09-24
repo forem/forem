@@ -287,6 +287,144 @@ RSpec.describe "StoriesShow" do
     end
   end
 
+  describe "GET /:username/:slug (unpublished or scheduled preview redirect)" do
+    let(:unpublished_article) { create(:article, user: user, published: false) }
+    let(:scheduled_article) { create(:article, user: user, published: true, published_at: 1.day.from_now) }
+    let(:other_user) { create(:user) }
+    let(:admin_user) { create(:user, :admin) }
+
+    context "when user is not signed in" do
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for unpublished article with invalid preview param" do
+        expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for scheduled article without preview param" do
+        expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "allows viewing unpublished article with valid preview param without edge caching headers" do
+        get "#{unpublished_article.path}?preview=#{unpublished_article.password}"
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is signed in without edit permissions" do
+      before { sign_in other_user }
+
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for unpublished article with invalid preview param" do
+        expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for scheduled article without preview param" do
+        expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when user is signed in as the author" do
+      before { sign_in user }
+
+      it "redirects unpublished article without preview param to the preview URL with 302 Found" do
+        get unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+
+      it "redirects unpublished article with invalid preview param to the correct preview URL" do
+        get "#{unpublished_article.path}?preview=wrong_token"
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+
+      it "preserves additional query parameters on redirect" do
+        get "#{unpublished_article.path}?i=i"
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?i=i&preview=#{unpublished_article.password}")
+      end
+
+      it "redirects scheduled article without preview param to the preview URL" do
+        get scheduled_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{scheduled_article.path}?preview=#{scheduled_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is signed in as an admin" do
+      before { sign_in admin_user }
+
+      it "redirects unpublished article without preview param to preview URL" do
+        get unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is an organization admin for an org unpublished article" do
+      let(:org_admin) { create(:user) }
+      let(:org_unpublished_article) { create(:article, user: user, organization: org, published: false) }
+
+      before do
+        create(:organization_membership, user: org_admin, organization: org, type_of_user: :admin)
+        sign_in org_admin
+      end
+
+      it "redirects unpublished article to preview URL" do
+        get org_unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{org_unpublished_article.path}?preview=#{org_unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when author is suspended" do
+      before do
+        user.add_role(:suspended)
+        sign_in user
+      end
+
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when on a custom domain" do
+      let(:custom_org) { create(:organization, custom_domain: "custom.example.com") }
+      let(:custom_article) { create(:article, user: user, organization: custom_org, published: false) }
+
+      before do
+        sign_in user
+      end
+
+      it "redirects to custom domain preview URL for authorized user" do
+        get "/#{custom_article.slug}",
+            headers: { "Host" => "custom.example.com" },
+            env: { "forem.custom_domain_org" => custom_org }
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("/#{custom_article.slug}?preview=#{custom_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+  end
+
   describe "GET /:username (org)" do
     it "redirects to the appropriate page if given an organization's old slug" do
       original_slug = org.slug

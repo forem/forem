@@ -8,11 +8,15 @@
   <div class="crayons-card flex flex-col gap-4 p-6">
     <div class="crayons-field">
       <%= form.label :title, "Title", class: "crayons-field__label" %>
-      <p class="crayons-field__description">
-        Badge's link is auto-generated based on the title:
-        <%= link_to @badge.path, @badge.path %>
-      </p>
       <%= form.text_field :title, class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= form.label :slug, "Slug", class: "crayons-field__label" %>
+      <p class="crayons-field__description">
+        Badge's page: <%= link_to @badge.path, @badge.path %>. If left blank, it will be auto-generated from the title.
+      </p>
+      <%= form.text_field :slug, class: "crayons-textfield" %>
     </div>
 
     <div class="crayons-field">

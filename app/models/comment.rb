@@ -135,6 +135,11 @@ class Comment < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
   scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
+  def favorited?
+    favorited_by_user_id.present?
+  end
+
   scope :good_quality, -> { where("comments.score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
@@ -237,6 +242,7 @@ class Comment < ApplicationRecord
   def calculate_score
     Comments::CalculateScoreWorker.perform_async(id)
   end
+  alias async_score_calc calculate_score
 
   def processed_html_final
     processed_html = replace_legacy_code_html(self.processed_html)

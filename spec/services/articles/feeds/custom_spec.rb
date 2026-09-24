@@ -649,4 +649,20 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
     end
   end
+
+  describe "performance optimizations" do
+    it "preloads the requested comments_variant to prevent downstream N+1 queries" do
+      result = feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments")
+      first_article = result.first
+      expect(first_article.association(:more_inclusive_recent_good_comments)).to be_loaded
+    end
+
+    it "uses limited_column_select avoiding heavy text and vector columns" do
+      result = feed.default_home_feed.to_a
+      first_article = result.first
+      expect(first_article.has_attribute?(:title)).to be true
+      expect(first_article.has_attribute?(:body_markdown)).to be false
+      expect(first_article.has_attribute?(:semantic_embedding)).to be false
+    end
+  end
 end

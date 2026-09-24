@@ -173,6 +173,17 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include(CGI.escapeHTML(article.title))
     end
 
+    it "renders a favorited (gemmed) article even if below home feed minimum score" do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(50)
+      favorited_article = create(:article, score: 5, favorited_by_user: create(:user), favorited_at: Time.current)
+      unfavorited_low_score = create(:article, score: 5, featured: false, favorited_by_user: nil)
+
+      get "/"
+
+      expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(unfavorited_low_score.title))
+    end
+
     def renders_proper_description
       expect(response.body).to include(Settings::Community.community_description)
     end
@@ -445,6 +456,31 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(expected_tag)
       end
     end
+
+    describe "/curated" do
+      let(:leader) { create(:user) }
+      let!(:favorited_article) { create(:article, favorited_by_user: leader, favorited_at: Time.current) }
+
+      it "renders the curated feed with 200 OK and sidebar containers" do
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+      end
+
+      it "renders preload tags for curated feed and sidebar when signed in" do
+        sign_in leader
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+        expect(response.body).to include('href="/stories/feed/?page=1&type_of=curated"')
+        expect(response.body).to include('href="/sidebars/home"')
+      end
+    end
   end
 
   describe "GET locale index" do
@@ -527,7 +563,7 @@ RSpec.describe "StoriesIndex" do
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
-               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
                template: "full_within_layout")
         FeatureFlag.add(:org_readme)
         FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
@@ -546,6 +582,28 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
         expect(response.body).to include("Showcase")
         expect(response.body).to include("All Posts")
+      end
+
+      it "uses the editable page title for the showcase tab" do
+        organization.main_page.update!(title: "✨ Showcase")
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+        expect(showcase_tab["data-text"]).to eq("✨ Showcase")
+
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+      end
+
+      it "falls back to the translated label for a legacy page without a title" do
+        organization.main_page.update_column(:title, nil)
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq(I18n.t("views.organizations.showcase"))
+        expect(showcase_tab["data-text"]).to eq(I18n.t("views.organizations.showcase"))
       end
 
       it "renders the classic feed template with all posts tab active when mode is all-posts" do
@@ -633,28 +691,29 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
-  describe "InstantClick stylesheet alignment" do
-    it "does not render the alignment script under normal navigation" do
+  describe "InstantClick stylesheet fingerprinting and layout behavior" do
+    it "renders data-style-fingerprint and outer shell link tags under normal navigation" do
       get "/"
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-style-fingerprint=")
       expect(response.body).not_to include("expectedStyles")
       # Expect outer shell link tags
       expect(response.body).to include('id="main-minimal-stylesheet"')
     end
 
-    it "renders the alignment script with correct asset paths under internal navigation" do
+    it "renders internal navigation fragment without alignment script or outer shell links" do
       get "/", params: { i: "i" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("expectedStyles")
-      expected_minimal = ActionController::Base.helpers.stylesheet_path("minimal")
-      expected_views = ActionController::Base.helpers.stylesheet_path("views")
-      expected_crayons = ActionController::Base.helpers.stylesheet_path("crayons")
-      expect(response.body).to include(%("minimal": "#{expected_minimal}"))
-      expect(response.body).to include(%("views": "#{expected_views}"))
-      expect(response.body).to include(%("crayons": "#{expected_crayons}"))
-      expect(response.body).to include("pendingHref")
-      expect(response.body).to include("replaceChild")
+      expect(response.body).not_to include("expectedStyles")
+      expect(response.body).not_to include("pendingHref")
       # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
+    end
+
+    it "supports fingerprinted internal navigation params" do
+      get "/", params: { i: "cc9ed033eb" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end

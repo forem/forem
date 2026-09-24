@@ -9,8 +9,9 @@ module Favorites
       new(...).call
     end
 
-    def initialize(user: nil, page: 1, per_page: DEFAULT_PER_PAGE)
+    def initialize(user: nil, since: nil, page: 1, per_page: DEFAULT_PER_PAGE)
       @user = user
+      @since = since
       @page = page
       @per_page = per_page
     end
@@ -28,7 +29,7 @@ module Favorites
 
     private
 
-    attr_reader :user, :page, :per_page
+    attr_reader :user, :since, :page, :per_page
 
     def favorited_refs
       favorited(Article).union_all(favorited(Comment))
@@ -43,6 +44,7 @@ module Favorites
               else
                 model.where.not(favorited_by_user_id: nil)
               end
+      scope = scope.where("favorited_at >= ?", since) if since.present?
 
       scope.select(
         ActiveRecord::Base.sanitize_sql_array(["? AS favoritable_type", model.name]),
@@ -54,9 +56,9 @@ module Favorites
     def hydrate(refs)
       grouped = refs.group_by(&:favoritable_type)
       articles = Article.where(id: Array(grouped["Article"]).map(&:favoritable_id))
-        .includes(:user).index_by(&:id)
+        .includes(:user, :favorited_by_user).index_by(&:id)
       comments = Comment.where(id: Array(grouped["Comment"]).map(&:favoritable_id))
-        .includes(:user, :commentable).index_by(&:id)
+        .includes(:user, :favorited_by_user, :commentable).index_by(&:id)
 
       refs.filter_map do |ref|
         (ref.favoritable_type == "Article" ? articles : comments)[ref.favoritable_id]

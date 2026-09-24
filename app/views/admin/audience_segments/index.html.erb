@@ -1,0 +1,117 @@
+<% content_for :title, "Audience Segments" %>
+
+<div class="crayons-card p-6 mb-6">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="crayons-title">Audience Segments</h1>
+      <p class="text-sm text-gray-600 mt-1">
+        Manage custom user segments for targeted emails and billboard placements.
+      </p>
+    </div>
+    <div class="flex items-center gap-3">
+      <%= link_to "New Custom Segment", new_admin_audience_segment_path, class: "crayons-btn crayons-btn--primary" %>
+    </div>
+  </div>
+
+  <!-- Search form -->
+  <div class="flex gap-4 mb-6">
+    <%= form_with url: admin_audience_segments_path, method: :get, local: true, class: "flex gap-4 items-end" do |f| %>
+      <div class="flex flex-col">
+        <%= f.label :search, "Search Custom Segments", class: "crayons-field__label" %>
+        <%= f.text_field :search, value: params[:search], placeholder: "Search by segment name", class: "crayons-textfield" %>
+      </div>
+      <%= f.submit "Search", class: "crayons-btn crayons-btn--secondary" %>
+      <% if params[:search].present? %>
+        <%= link_to "Clear", admin_audience_segments_path, class: "crayons-btn crayons-btn--ghost" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <h2 class="crayons-subtitle-2 mb-3">Custom Segments (<%= @audience_segments.total_count %>)</h2>
+
+  <% if @audience_segments.any? %>
+    <div class="overflow-x-auto">
+      <table class="crayons-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Members</th>
+            <th>Created At</th>
+            <th>Emails</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @audience_segments.each do |segment| %>
+            <tr>
+              <td>
+                <%= link_to segment.name, admin_audience_segment_path(segment), class: "crayons-link font-medium" %>
+              </td>
+              <td>
+                <span class="crayons-tag crayons-tag--secondary">
+                  <%= pluralize(segment.user_count, "user") %>
+                </span>
+              </td>
+              <td>
+                <%= segment.created_at.strftime("%Y-%m-%d %H:%M") %>
+              </td>
+              <td>
+                <%= segment.emails.count %>
+              </td>
+              <td>
+                <div class="flex gap-2">
+                  <%= link_to "View", admin_audience_segment_path(segment), class: "crayons-btn crayons-btn--s" %>
+                  <%= link_to "Edit", edit_admin_audience_segment_path(segment), class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+                  <%= link_to "Email", new_admin_email_path(audience_segment_id: segment.id), class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @audience_segments %>
+  <% else %>
+    <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg">
+      <p class="mb-3">No custom audience segments found.</p>
+      <%= link_to "Create your first segment", new_admin_audience_segment_path, class: "crayons-btn crayons-btn--primary" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="crayons-card p-6">
+  <h2 class="crayons-subtitle-2 mb-2">System Automatic Segments</h2>
+  <p class="text-sm text-gray-600 mb-4">
+    These segments are dynamically maintained by the platform based on user activity and attributes.
+  </p>
+
+  <div class="overflow-x-auto">
+    <table class="crayons-table">
+      <thead>
+        <tr>
+          <th>System Segment</th>
+          <th>Type</th>
+          <th>Cached Users</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @system_segments.each do |segment| %>
+          <tr>
+            <td>
+              <span class="font-medium"><%= segment.display_name %></span>
+            </td>
+            <td>
+              <code><%= segment.type_of %></code>
+            </td>
+            <td>
+              <span class="crayons-tag crayons-tag--secondary">
+                <%= segment.user_count %>
+              </span>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
