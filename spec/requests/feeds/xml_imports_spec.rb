@@ -3,52 +3,104 @@ require "rails_helper"
 RSpec.describe "Feeds::XmlImports" do
   let(:user) { create(:user) }
 
+  let(:valid_rss) do
+    <<~XML
+      <?xml version="1.0" encoding="UTF-8"?>
+      <rss version="2.0">
+        <channel>
+          <title>Test Blog</title>
+          <link>https://example.com</link>
+          <description>Test blog description</description>
+          <item>
+            <title>My First Post</title>
+            <link>https://example.com/posts/first-post</link>
+            <description><![CDATA[<p>Hello world post content</p>]]></description>
+            <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
+          </item>
+        </channel>
+      </rss>
+    XML
+  end
+
   describe "POST /feeds/xml_imports" do
     context "when not signed in" do
       it "redirects to sign in" do
-        post feeds_xml_imports_path, params: { xml_content: "<rss/>" }
+        post feeds_xml_imports_path, params: { xml_content: valid_rss }
         expect(response).to redirect_to("/magic_links/new")
       end
     end
 
-    context "when signed in" do
+    context "when user is suspended" do
+      before do
+        user.add_role(:suspended)
+        sign_in user
+      end
+
+      it "raises Pundit::NotAuthorizedError and denies import" do
+        expect do
+          post feeds_xml_imports_path, params: { xml_content: valid_rss }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when user lacks article creation permission" do
+      before do
+        allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true)
+        sign_in user
+      end
+
+      it "raises Pundit::NotAuthorizedError and denies import" do
+        expect do
+          post feeds_xml_imports_path, params: { xml_content: valid_rss }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when signed in and authorized" do
       before { sign_in user }
 
-      it "redirects to feed imports dashboard on success" do
-        allow(Feeds::ImportFromXml).to receive(:call).and_return({ imported: 2 })
-
-        post feeds_xml_imports_path, params: { xml_content: "<rss/>" }
+      it "imports articles, sets notice flash, and redirects to dashboard" do
+        expect do
+          post feeds_xml_imports_path, params: { xml_content: valid_rss }
+        end.to change(user.articles, :count).by(1)
 
         expect(response).to redirect_to(dashboard_feed_imports_path)
-      end
-
-      it "shows success flash with import count" do
-        allow(Feeds::ImportFromXml).to receive(:call).and_return({ imported: 3 })
-
-        post feeds_xml_imports_path, params: { xml_content: "<rss/>" }
-
         follow_redirect!
-        expect(flash[:notice]).to include("3")
+        expect(flash[:notice]).to eq(I18n.t("feeds.xml_imports.success", count: 1))
       end
 
-      it "shows error flash when import fails" do
-        allow(Feeds::ImportFromXml).to receive(:call).and_return({ error: "Could not parse XML" })
+      it "shows warning flash when all items are duplicates (0 imported)" do
+        # First import
+        post feeds_xml_imports_path, params: { xml_content: valid_rss }
+        expect(user.articles.count).to eq(1)
 
-        post feeds_xml_imports_path, params: { xml_content: "not xml" }
+        # Second import with identical items
+        expect do
+          post feeds_xml_imports_path, params: { xml_content: valid_rss }
+        end.not_to change(user.articles, :count)
 
+        expect(response).to redirect_to(dashboard_feed_imports_path)
         follow_redirect!
-        expect(flash[:error]).to eq("Could not parse XML")
+        expect(flash[:warning]).to eq(I18n.t("feeds.xml_imports.none_imported"))
+        expect(flash[:notice]).to be_nil
+        expect(response.body).to include("crayons-notice crayons-notice--warning")
+        expect(response.body).to include(I18n.t("feeds.xml_imports.none_imported"))
       end
 
-      it "passes xml_content and current user to service" do
-        allow(Feeds::ImportFromXml).to receive(:call).and_return({ imported: 0 })
+      it "shows error flash when XML is invalid" do
+        post feeds_xml_imports_path, params: { xml_content: "not-xml-at-all" }
 
-        post feeds_xml_imports_path, params: { xml_content: "<rss/>" }
+        expect(response).to redirect_to(dashboard_feed_imports_path)
+        follow_redirect!
+        expect(flash[:error]).to eq(I18n.t("feeds.xml_imports.invalid_xml"))
+      end
 
-        expect(Feeds::ImportFromXml).to have_received(:call).with(
-          xml_content: "<rss/>",
-          user: user,
-        )
+      it "shows error flash when XML content is blank" do
+        post feeds_xml_imports_path, params: { xml_content: "" }
+
+        expect(response).to redirect_to(dashboard_feed_imports_path)
+        follow_redirect!
+        expect(flash[:error]).to eq(I18n.t("feeds.xml_imports.blank"))
       end
     end
   end

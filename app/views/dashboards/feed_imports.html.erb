@@ -8,6 +8,9 @@
       <% if flash[:notice].present? %>
         <div class="crayons-notice crayons-notice--success mb-4"><%= flash[:notice] %></div>
       <% end %>
+      <% if flash[:warning].present? %>
+        <div class="crayons-notice crayons-notice--warning mb-4"><%= flash[:warning] %></div>
+      <% end %>
       <% if flash[:error].present? %>
         <div class="crayons-notice crayons-notice--danger mb-4"><%= flash[:error] %></div>
       <% end %>
@@ -280,12 +283,12 @@
         </div>
         <%= form_with url: feeds_xml_imports_path, method: :post do |f| %>
           <%= f.text_area :xml_content,
-              placeholder: t("views.dashboard.feed_imports.xml_import.placeholder"),
-              rows: 12,
-              class: "crayons-textfield w-100 mb-3",
-              style: "font-family: monospace; font-size: 0.8rem;" %>
+                          placeholder: t("views.dashboard.feed_imports.xml_import.placeholder"),
+                          rows: 12,
+                          class: "crayons-textfield w-100 mb-3",
+                          style: "font-family: monospace; font-size: 0.8rem;" %>
           <%= f.submit t("views.dashboard.feed_imports.xml_import.submit"),
-              class: "crayons-btn" %>
+                       class: "crayons-btn" %>
         <% end %>
       </div>
 

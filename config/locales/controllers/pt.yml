@@ -51,10 +51,19 @@ pt:
       created: Sua fonte de feed foi adicionada e uma importação foi iniciada.
       updated: Sua fonte de feed foi atualizada.
       deleted: Sua fonte de feed foi removida.
+    validate_url:
+      bot_protection: "Não foi possível recuperar a URL do feed — ela pode estar protegida por detecção de bots ou temporariamente indisponível"
+      not_found: "Não foi possível recuperar a URL do feed — o servidor retornou um 404 (Não Encontrado)"
+      server_error: "Não foi possível recuperar a URL do feed — o servidor retornou um 500 (Erro Interno do Servidor)"
+      status_error: "Não foi possível recuperar a URL do feed — o servidor retornou o código de status %{code}"
+      network_error: "Não foi possível alcançar a URL do feed — verifique a URL ou sua conexão de rede"
     xml_imports:
       success: "%{count} artigo(s) importado(s) do XML colado."
       blank: "O conteúdo XML não pode estar em branco."
       too_large: "O conteúdo XML é muito grande (máx. 500 KB)."
+      too_many_entries: "O feed contém muitas entradas (máx. %{max}). Importe em lotes menores ou adicione como fonte de feed."
+      no_entries: "O feed não contém entradas para importar."
+      none_imported: "Nenhum artigo novo foi importado (os itens já podem existir ou não são válidos)."
       invalid_xml: "Não foi possível analisar o XML — certifique-se de que é um feed RSS ou Atom válido."
   feedback_messages_controller:
     error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros erros possíveis: %{errors}"

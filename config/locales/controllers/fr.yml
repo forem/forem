@@ -51,10 +51,19 @@ fr:
       created: Votre source de flux a été ajoutée et un import a été déclenché.
       updated: Votre source de flux a été mise à jour.
       deleted: Votre source de flux a été supprimée.
+    validate_url:
+      bot_protection: "L'URL du flux n'a pas pu être récupérée — elle est peut-être protégée par une détection de bot ou temporairement indisponible"
+      not_found: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé une erreur 404 (Introuvable)"
+      server_error: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé une erreur 500 (Erreur interne du serveur)"
+      status_error: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé le code d'état %{code}"
+      network_error: "Impossible de joindre l'URL du flux — veuillez vérifier l'URL ou votre connexion réseau"
     xml_imports:
       success: "%{count} article(s) importé(s) depuis le XML collé."
       blank: "Le contenu XML ne peut pas être vide."
       too_large: "Le contenu XML est trop volumineux (max 500 Ko)."
+      too_many_entries: "Le flux contient trop d'entrées (max %{max}). Veuillez importer par lots plus petits ou l'ajouter comme source de flux."
+      no_entries: "Le flux ne contient aucune entrée à importer."
+      none_imported: "Aucun nouvel article n'a été importé (les éléments existent peut-être déjà ou ne sont pas valides)."
       invalid_xml: "Impossible d'analyser le XML — assurez-vous qu'il s'agit d'un flux RSS ou Atom valide."
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
