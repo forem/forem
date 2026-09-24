@@ -606,6 +606,11 @@ en:
             created_at: Created At
             actions: Actions
       organizations:
+        name:
+          heading: Organization Name
+          description: Update this organization's display name.
+          label: Organization name
+          submit: Update Name
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}

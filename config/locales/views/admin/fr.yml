@@ -597,6 +597,11 @@ fr:
             created_at: Créé le
             actions: Actions
       organizations:
+        name:
+          heading: Nom de l'organisation
+          description: Mettre à jour le nom affiché de cette organisation.
+          label: Nom de l'organisation
+          submit: Mettre à jour le nom
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}

@@ -194,6 +194,57 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
   end
 
+  it "removes video_source_url and video embed when passed empty string" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.reload.video).to be_present
+
+    put "/articles/#{article.id}", params: {
+      article: { video_source_url: "" }
+    }
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to be_nil
+    expect(article.video).to be_nil
+  end
+
+  it "removes video_source_url and video embed when passed null via JSON" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.reload.video).to be_present
+
+    put "/articles/#{article.id}",
+        params: { article: { video_source_url: nil } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to be_nil
+    expect(article.video).to be_nil
+  end
+
+  it "keeps video_source_url when the key is absent from the payload" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+    put "/articles/#{article.id}",
+        params: { article: { title: "New title" } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.video).to be_present
+  end
+
+  it "ignores an unsupported video_source_url" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+    put "/articles/#{article.id}",
+        params: { article: { video_source_url: "https://vimeo.com/123456" } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    expect(article.reload.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+  end
+
   context "when setting published_at in editor v2" do
     let(:tomorrow) { 1.day.from_now }
     let(:published_at) { "#{tomorrow.strftime('%d.%m.%Y')} 18:00" }
