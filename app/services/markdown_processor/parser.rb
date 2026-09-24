@@ -1,7 +1,7 @@
 module MarkdownProcessor
   class Parser
     BAD_XSS_REGEX = [
-      /src=["'](data|&amp;)/i,
+/src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
     ].freeze
 
