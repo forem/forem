@@ -11,13 +11,20 @@ module Feeds
     def call
       return false if feed_url.blank?
 
-      xml = HTTParty.get(feed_url,
-                         timeout: 20,
-                         headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT }).body
-      Feedjira.parse(xml)
+      response = HTTParty.get(
+        feed_url,
+        timeout: 20,
+        headers: { "User-Agent" => Feeds::Import::FEED_USER_AGENT }
+      )
 
+      return false unless response.success?
+
+      xml = response.body.to_s
+      return false if xml.blank?
+
+      Feedjira.parse(xml)
       true
-    rescue Feedjira::NoParserAvailable
+    rescue Feedjira::NoParserAvailable, StandardError
       false
     end
 
