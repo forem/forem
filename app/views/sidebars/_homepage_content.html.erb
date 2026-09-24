@@ -1,5 +1,5 @@
 <% @billboards = get_homepage_sidebar_billboards %>
-<aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
+<aside class="side-bar sidebar-additional sidebar-sticky-container showing grid gap-4" id="sidebar-additional">
   <% if user_signed_in? && @onboarding_checklist %>
     <%= render "sidebars/onboarding_progress" %>
   <% end %>

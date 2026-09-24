@@ -11,7 +11,7 @@
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: var(--shadow-1);
-  border-radius: var(--radius);
+  border-radius: var(--radius-card);
 
   @media (min-width: $breakpoint-s) {
     max-width: 360px;

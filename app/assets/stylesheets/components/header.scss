@@ -8,7 +8,7 @@
 .crayons-header {
   height: var(--header-height);
   background: var(--header-bg);
-  box-shadow: 0 1px 1px var(--header-shadow);
+  box-shadow: 0 1px 0 var(--header-border, var(--header-shadow));
   z-index: var(--z-sticky);
 
   .default-header & {

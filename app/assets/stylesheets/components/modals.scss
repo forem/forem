@@ -226,7 +226,7 @@
 
   &__box {
     background: var(--card-bg);
-    border-radius: 12px;
+    border-radius: var(--radius-large);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
     border: 1px solid var(--card-border);
     overflow: hidden;
@@ -252,7 +252,7 @@
     background: none;
     border: none;
     padding: 0.5rem;
-    border-radius: 6px;
+    border-radius: var(--radius);
     cursor: pointer;
     color: var(--base-60);
     transition: all 0.2s ease;
@@ -285,7 +285,7 @@
   &__option {
     background: none;
     border: 1px solid var(--base-20);
-    border-radius: 8px;
+    border-radius: var(--radius-card);
     padding: 0;
     cursor: pointer;
     transition: all 0.1s ease;
@@ -323,7 +323,7 @@
   &__option-logo {
     width: 2rem;
     height: 2rem;
-    border-radius: 6px;
+    border-radius: var(--radius);
     object-fit: cover;
     flex-shrink: 0;
   }
