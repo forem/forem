@@ -49,7 +49,7 @@
           <%= render "articles/quickie_form", expanded: false %>
         <% end %>
       <% end %>
-      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
+      <%= render(partial: "onboardings/task_card") if user_signed_in? && !FeatureFlag.enabled?(:hide_onboarding_task_card) %>
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
