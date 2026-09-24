@@ -20,6 +20,7 @@ class NotifyMailer < ApplicationMailer
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_comment_notifications)
+    add_unsubscribe_headers(@unsubscribe)
 
     # Don't send the email if there's no visible contents
     # Placed here to allow the preview to continue to work
@@ -33,6 +34,7 @@ class NotifyMailer < ApplicationMailer
         "comment_html" => @truncated_comment,
         "comment_url" => URL.comment(@comment),
         "article_or_parent_title" => @comment.commentable&.title || "Content No Longer Available",
+        "community_name" => Settings::Community.community_name(subforem_id: @subforem_id),
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
@@ -51,12 +53,19 @@ class NotifyMailer < ApplicationMailer
 
     @follower = follow.follower
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_follower_notifications)
+    add_unsubscribe_headers(@unsubscribe)
 
     customerio_delivery_options(
       transactional_message_id: "dev_new_follower_email",
       message_data: {
         "follower_name" => @follower.name,
         "follower_profile_url" => URL.user(@follower),
+        # Mirrors the avatar and follower count new_follower_email.html.erb renders.
+        "follower_profile_image_url" => ApplicationController.helpers.optimized_image_url(
+          URL.local_image(@follower.profile_image), width: 150
+        ),
+        "followers_count" => @user.good_standing_followers_count,
+        "community_name" => Settings::Community.community_name(subforem_id: @subforem_id),
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
@@ -74,13 +83,21 @@ class NotifyMailer < ApplicationMailer
     @mentionable_type = @mention.decorate.formatted_mentionable_type
 
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_mention_notifications)
+    add_unsubscribe_headers(@unsubscribe)
 
     customerio_delivery_options(
       transactional_message_id: "dev_new_mention_email",
       message_data: {
         "mentioner_name" => @mentioner.name,
+        # new_mention_email.html.erb links the mentioner's name to their profile.
+        "mentioner_profile_url" => URL.user(@mentioner),
         "mentionable_type" => @mentionable_type,
         "mention_url" => URL.url(@mention.mentionable.path, RequestStore.store[:subforem_domain]),
+        # new_mention_email.html.erb quotes the comment itself for comment
+        # mentions and links straight out for anything else; nil here is what
+        # tells the Customer.io template which of the two it is looking at.
+        "comment_html" => (@mentionable.processed_html if @mentionable.is_a?(Comment)),
+        "community_name" => Settings::Community.community_name(subforem_id: @subforem_id),
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )
@@ -95,6 +112,7 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
+    add_unsubscribe_headers(@unsubscribe)
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
     subject = I18n.t("mailers.notify_mailer.unread_notifications", count: @unread_notifications_count,
                                                                    community: community_name)
@@ -132,6 +150,7 @@ class NotifyMailer < ApplicationMailer
     @user = @badge_achievement.user
     @badge = @badge_achievement.badge
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
+    add_unsubscribe_headers(@unsubscribe)
     badge_description = @badge.description if @badge_achievement.include_default_description
 
     customerio_delivery_options(
@@ -140,6 +159,11 @@ class NotifyMailer < ApplicationMailer
         "badge_name" => @badge.title,
         "badge_description" => badge_description,
         "badge_image_url" => @badge.badge_image_url,
+        # Already-rendered HTML (BadgeAchievement#render_rewarding_context_message_html),
+        # italicised by new_badge_email.html.erb when a rewarder left a note.
+        "rewarding_context_message_html" => @badge_achievement.rewarding_context_message.presence,
+        # Target of the "Check out your profile" CTA, the email's only call to action.
+        "profile_url" => URL.user(@user),
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe)
       },
     )

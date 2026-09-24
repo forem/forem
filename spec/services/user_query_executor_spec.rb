@@ -126,18 +126,55 @@ RSpec.describe UserQueryExecutor do
       expect(executor.estimated_count).to eq(0)
     end
 
-    it "handles query execution errors gracefully", :skip => "Database transaction issues in test environment" do
+    it "handles query execution errors gracefully" do
       invalid_query = create(:user_query, query: "SELECT id FROM users", created_by: user)
       invalid_query.update_column(:query, "SELECT id FROM nonexistent_table")
       executor = UserQueryExecutor.new(invalid_query)
 
       expect(executor.estimated_count).to eq(0)
     end
+
+    it "parses postgresql json explain string to extract plan rows" do
+      create_list(:user, 5)
+      executor = described_class.new(user_query)
+      expect(executor.estimated_count).to be > 0
+    end
+  end
+
+  describe "#execute!" do
+    before do
+      create_list(:user, 5)
+    end
+
+    it "executes query successfully and returns user records" do
+      executor = described_class.new(user_query)
+      result = executor.execute!
+      expect(result).to be_a(ActiveRecord::Relation)
+      expect(result.count).to be > 0
+    end
+
+    it "raises QueryValidationError on invalid query" do
+      invalid_query = create(:user_query, query: "SELECT id FROM users", created_by: user)
+      invalid_query.update_column(:query, "UPDATE users SET name = 'test'")
+      executor = described_class.new(invalid_query)
+      expect { executor.execute! }.to raise_error(UserQuery::QueryValidationError)
+    end
+
+    it "raises QueryTimeoutError on timeout" do
+      allow_any_instance_of(described_class).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
+      executor = described_class.new(user_query)
+      expect { executor.execute! }.to raise_error(UserQuery::QueryTimeoutError)
+    end
+
+    it "raises QueryExecutionError on database failure" do
+      allow_any_instance_of(described_class).to receive(:execute_with_timeout).and_raise(PG::Error.new("database error"))
+      executor = described_class.new(user_query)
+      expect { executor.execute! }.to raise_error(UserQuery::QueryExecutionError)
+    end
   end
 
   describe "error handling" do
     it "handles timeout errors" do
-      user_query.update!(max_execution_time_ms: 1)
       allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
 
       executor = UserQueryExecutor.new(user_query)
@@ -148,7 +185,8 @@ RSpec.describe UserQueryExecutor do
     end
 
     it "handles syntax errors" do
-      invalid_query = create(:user_query, query: "SELECT id FRM users", created_by: user)
+      invalid_query = create(:user_query, query: "SELECT id FROM users", created_by: user)
+      invalid_query.update_column(:query, "SELECT id FRM users")
       allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::SyntaxError.new("syntax error"))
 
       executor = UserQueryExecutor.new(invalid_query)
@@ -297,6 +335,18 @@ RSpec.describe UserQueryExecutor do
       end
 
       expect(yielded_ids).to eq([2])
+    end
+
+    it "raises QueryValidationError for invalid query" do
+      invalid_query = create(:user_query, query: "SELECT id FROM users", created_by: user)
+      invalid_query.update_column(:query, "UPDATE users SET name = 'test'")
+      bad_executor = described_class.new(invalid_query)
+      expect { bad_executor.each_id_batch { |b| b } }.to raise_error(UserQuery::QueryValidationError)
+    end
+
+    it "raises QueryTimeoutError on timeout" do
+      allow(executor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
+      expect { executor.each_id_batch { |b| b } }.to raise_error(UserQuery::QueryTimeoutError)
     end
   end
 

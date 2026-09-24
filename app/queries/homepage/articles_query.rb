@@ -5,6 +5,7 @@ module Homepage
       comments_count
       crossposted_at
       displayed_comments_count
+      favorited_by_user_id
       id
       organization_id
       path
@@ -19,6 +20,8 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
+    MAX_PAGE = 100
+    MAX_OFFSET = 10_000
 
     SORT_PARAMS = %i[hotness_score public_reactions_count published_at].freeze
     DEFAULT_SORT_DIRECTION = :desc
@@ -58,6 +61,8 @@ module Homepage
     end
 
     def call
+      return Article.none if beyond_max_offset?
+
       filter.merge(sort).merge(paginate)
     end
 
@@ -89,6 +94,10 @@ module Homepage
 
     def paginate
       relation.page(page).per(per_page)
+    end
+
+    def beyond_max_offset?
+      page > MAX_PAGE || ((page - 1) * per_page) >= MAX_OFFSET
     end
   end
 end

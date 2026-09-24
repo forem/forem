@@ -3,7 +3,12 @@
 <div class="crayons-card p-6">
   <div class="flex justify-between items-center mb-6">
     <h1 class="crayons-title">User Queries</h1>
-    <%= link_to "New User Query", new_admin_user_query_path, class: "crayons-btn crayons-btn--primary" %>
+    <div class="flex items-center gap-3">
+      <span class="text-sm <%= ReadOnlyDatabaseService.available? ? 'text-green-700 bg-green-50 border border-green-200' : 'text-gray-600 bg-gray-100' %> px-2 py-1 rounded">
+        <%= ReadOnlyDatabaseService.available? ? '⚡ Read-Only Replica Active' : 'Primary Database' %>
+      </span>
+      <%= link_to "New User Query", new_admin_user_query_path, class: "crayons-btn crayons-btn--primary" %>
+    </div>
   </div>
 
   <!-- Search and Filter -->
@@ -32,6 +37,7 @@
           <th>Description</th>
           <th>Created By</th>
           <th>Status</th>
+          <th>Estimated Users</th>
           <th>Executions</th>
           <th>Last Executed</th>
           <th>Actions</th>
@@ -53,6 +59,9 @@
               <span class="crayons-tag crayons-tag--<%= user_query.active? ? 'success' : 'secondary' %>">
                 <%= user_query.active? ? 'Active' : 'Inactive' %>
               </span>
+            </td>
+            <td>
+              <%= number_with_delimiter(user_query.estimated_user_count) %>
             </td>
             <td>
               <%= user_query.execution_count %>

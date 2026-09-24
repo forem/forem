@@ -23,6 +23,28 @@ RSpec.describe BlackBox, type: :lib do
       score = described_class.article_hotness_score(article)
       expect(score).to eq(0)
     end
+
+    it "adds a 200 point bonus for featured articles" do
+      now = Time.current
+      article = build_stubbed(:article, score: 99, published_at: now, featured: false)
+      featured_article = build_stubbed(:article, score: 99, published_at: now, featured: true)
+
+      base_score = described_class.article_hotness_score(article)
+      featured_score = described_class.article_hotness_score(featured_article)
+
+      expect(featured_score - base_score).to eq(200)
+    end
+
+    it "adds a 200 point bonus for favorited (gemmed) articles" do
+      now = Time.current
+      article = build_stubbed(:article, score: 99, published_at: now, favorited_by_user_id: nil)
+      favorited_article = build_stubbed(:article, score: 99, published_at: now, favorited_by_user_id: 123)
+
+      base_score = described_class.article_hotness_score(article)
+      favorited_score = described_class.article_hotness_score(favorited_article)
+
+      expect(favorited_score - base_score).to eq(200)
+    end
   end
 
   describe "#comment_quality_score" do

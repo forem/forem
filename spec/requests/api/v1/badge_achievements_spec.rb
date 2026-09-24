@@ -51,16 +51,52 @@ RSpec.describe "/api/badge_achievements", type: :request do
       expect(new_achievement.include_default_description).to be(false)
     end
 
-    it "does not create a duplicate achievement for a single-award badge" do
-      duplicate_params = {
-        badge_achievement: { user_id: user.id, badge_id: single_award_badge.id }
-      }
+    it "creates an achievement with metadata" do
+      params_with_metadata = valid_params.deep_merge(
+        badge_achievement: { metadata: { "entitlement_id" => "abc-123", "source" => "core" } },
+      )
 
-      expect do
+      post api_badge_achievements_path, params: params_with_metadata, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(BadgeAchievement.last.metadata).to eq("entitlement_id" => "abc-123", "source" => "core")
+      expect(response.parsed_body["metadata"]).to eq("entitlement_id" => "abc-123", "source" => "core")
+    end
+
+    it "defaults metadata to an empty hash when omitted" do
+      post api_badge_achievements_path, params: valid_params, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(BadgeAchievement.last.metadata).to eq({})
+    end
+
+    context "when the user already holds a single-award badge" do
+      let(:duplicate_params) do
+        { badge_achievement: { user_id: user.id, badge_id: single_award_badge.id } }
+      end
+
+      it "does not create a duplicate achievement" do
+        expect do
+          post api_badge_achievements_path, params: duplicate_params, headers: headers
+        end.not_to change(BadgeAchievement, :count)
+      end
+
+      it "returns 409 with the id of the achievement that blocked it" do
         post api_badge_achievements_path, params: duplicate_params, headers: headers
-      end.not_to change(BadgeAchievement, :count)
+
+        expect(response).to have_http_status(:conflict)
+        expect(response.parsed_body["errors"]).to be_present
+        expect(response.parsed_body["achievement_id"]).to eq(badge_achievement.id)
+      end
+    end
+
+    it "returns 422 for a payload that is invalid for other reasons" do
+      invalid_params = { badge_achievement: { user_id: user.id, badge_id: nil } }
+
+      post api_badge_achievements_path, params: invalid_params, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body).not_to have_key("achievement_id")
     end
   end
 

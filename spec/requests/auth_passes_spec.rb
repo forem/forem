@@ -95,4 +95,77 @@ RSpec.describe "AuthPassController", type: :request do
       end
     end
   end
+
+  describe "GET /auth_pass/iframe" do
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+    end
+
+    context "when requested on an unauthorized host" do
+      it "returns 401 unauthorized" do
+        host! "unauthorized-domain.com"
+        get "/auth_pass/iframe"
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.body).to eq("Unauthorized")
+      end
+    end
+
+    context "when user is signed in" do
+      before do
+        sign_in user
+      end
+
+      it "renders the iframe view with authentication token" do
+        host! "forem.com"
+        get "/auth_pass/iframe"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("authenticated: true")
+        expect(response.body).to include("window.parent.postMessage")
+      end
+    end
+
+    context "when user is not signed in" do
+      it "renders empty html with status ok" do
+        host! "forem.com"
+        get "/auth_pass/iframe"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to eq("<html><body></body></html>")
+      end
+    end
+
+    context "with passed_domain from a custom organization domain" do
+      let!(:organization) { create(:organization, custom_domain: "blog.myorg.com") }
+
+      context "when org_custom_domain feature flag is enabled" do
+        before do
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "sets CSP frame-ancestors header with the passed custom domain" do
+          host! "forem.com"
+          get "/auth_pass/iframe", params: { passed_domain: "https://blog.myorg.com" }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.headers["Content-Security-Policy"]).to eq("frame-ancestors 'self' https://blog.myorg.com")
+        end
+      end
+
+      context "when org_custom_domain feature flag is disabled" do
+        before do
+          FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "does not set CSP frame-ancestors for the custom domain" do
+          host! "forem.com"
+          get "/auth_pass/iframe", params: { passed_domain: "https://blog.myorg.com" }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.headers["Content-Security-Policy"]).not_to include("blog.myorg.com")
+        end
+      end
+    end
+  end
 end

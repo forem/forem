@@ -215,13 +215,18 @@ function search(query, filters, sortBy, sortDirection) {
       content.result.forEach((story) => {
         resultDivs.push(buildArticleHTML(story, currentUserId));
       });
-      document.getElementById('substories').innerHTML = resultDivs.join('');
+      const substoriesElement = document.getElementById('substories');
+      substoriesElement.innerHTML = resultDivs.join('');
       initializeReadingListIcons();
-      document
-        .getElementById('substories')
-        .classList.add('search-results-loaded');
+
+      // Format dates in search results using user's local timezone
+      if (typeof formatAllTimeElements === 'function') {
+        formatAllTimeElements(substoriesElement);
+      }
+
+      substoriesElement.classList.add('search-results-loaded');
       if (content.result.length === 0) {
-        document.getElementById('substories').innerHTML =
+        substoriesElement.innerHTML =
           '<div class="p-9 align-center crayons-card">No results match that query</div>';
       }
     });
@@ -251,11 +256,16 @@ function algoliaSearch(searchParams) {
         // Add profile_image_90 to story object from profile image if profile_image_90 is not present
         resultDivs.push(buildArticleHTML(story, currentUserId));
       });
-      document.getElementById('substories').innerHTML = resultDivs.join('');
+      const substoriesElement = document.getElementById('substories');
+      substoriesElement.innerHTML = resultDivs.join('');
       initializeReadingListIcons();
-      document
-        .getElementById('substories')
-        .classList.add('search-results-loaded');
+
+      // Format dates in search results using user's local timezone
+      if (typeof formatAllTimeElements === 'function') {
+        formatAllTimeElements(substoriesElement);
+      }
+
+      substoriesElement.classList.add('search-results-loaded');
       if (hits.length === 0) {
         document.getElementById('substories').innerHTML =
           '<div class="p-9 align-center crayons-card">No results match that query</div>';

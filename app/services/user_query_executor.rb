@@ -26,14 +26,14 @@ class UserQueryExecutor
   end
 
   def execute
-    return [] unless valid?
+    return User.none unless valid?
 
     # Validate variables if provided
     if user_query.has_variables?
       substitutor = UserQueryVariableSubstitutor.new(user_query, variables)
       unless substitutor.valid?
         @errors.concat(substitutor.error_messages)
-        return []
+        return User.none
       end
     end
 
@@ -42,48 +42,56 @@ class UserQueryExecutor
     validator = UserQueryValidator.new(final_query)
     unless validator.valid?
       @errors.concat(validator.error_messages)
-      return []
+      return User.none
     end
 
-    # Execute the query safely
     execute_safe_query
   end
 
-  def each_id_batch(batch_size: 1000)
-    return unless block_given?
-    return [] unless valid?
+  def execute!
+    validate_query_and_variables!
+
+    users = execute_safe_query
+    if @errors.any?
+      error_class = if @errors.any? { |m| m.include?("maximum time limit") }
+                      UserQuery::QueryTimeoutError
+                    else
+                      UserQuery::QueryExecutionError
+                    end
+      raise error_class, @errors.join("; ")
+    end
+
+    users
+  end
+
+  def each_id_batch(batch_size: 1000, &block)
+    return unless block
+
+    validate_query_and_variables!
+
+    final_query = user_query.substitute_variables(variables)
+    executed_successfully = false
 
     ReadOnlyDatabaseService.with_connection do |conn|
       setup_execution_environment(conn)
-      final_query = user_query.substitute_variables(variables)
       safe_query = build_safe_query(final_query)
 
       begin
         result = execute_with_timeout(conn, safe_query)
-        return unless result.is_a?(PG::Result)
-
-        current_batch = []
-        result.each do |row|
-          user_id = row["id"] || row["user_id"] || row["users.id"]
-          next unless user_id
-
-          current_batch << user_id.to_i
-
-          if current_batch.size >= batch_size
-            yield current_batch
-            current_batch = []
-          end
+        if result.is_a?(PG::Result)
+          process_id_batches(result, batch_size, &block)
+          executed_successfully = true
         end
-
-        yield current_batch if current_batch.any?
-
-        update_execution_tracking
       rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
         handle_timeout_error(e)
+        raise UserQuery::QueryTimeoutError, "Query execution exceeded maximum time limit of #{timeout_ms}ms"
       rescue StandardError => e
         handle_execution_error(e)
+        raise UserQuery::QueryExecutionError, "Query execution failed: #{e.message}"
       end
     end
+
+    update_execution_tracking if executed_successfully
   end
 
   def test_execute(limit: MAX_TEST_USER_LIMIT)
@@ -97,8 +105,6 @@ class UserQueryExecutor
     begin
       explain_query = build_explain_query
       result = execute_explain_query(explain_query)
-
-      # Extract estimated rows from the query plan
       extract_estimated_rows(result)
     rescue StandardError => e
       Rails.logger.warn("Could not estimate user count for query #{user_query.name}: #{e.message}")
@@ -137,65 +143,46 @@ class UserQueryExecutor
   end
 
   def execute_safe_query
-    connection = nil
+    user_ids = []
 
-    # Use read-only database if available, otherwise fall back to main database
     ReadOnlyDatabaseService.with_connection do |conn|
-      connection = conn
-
-      # Set up execution environment
       setup_execution_environment(conn)
-
-      # Build the safe query with variable substitution
       final_query = user_query.substitute_variables(variables)
       safe_query = build_safe_query(final_query)
 
       begin
-        # Execute the query with timeout protection
-        result = execute_with_timeout(conn, safe_query)
-
-        # Extract user IDs from the result
-        user_ids = extract_user_ids(result)
-
-        # Update execution tracking (this still uses the main database)
-        update_execution_tracking
-
-        # Return User objects for the found IDs (this still uses the main database)
-        User.where(id: user_ids)
+        conn.transaction(requires_new: true) do
+          result = execute_with_timeout(conn, safe_query)
+          user_ids = extract_user_ids(result)
+        end
       rescue PG::QueryCanceled, ActiveRecord::QueryCanceled => e
         handle_timeout_error(e)
-        []
+        return User.none
       rescue PG::SyntaxError => e
         handle_syntax_error(e)
-        []
+        return User.none
       rescue StandardError => e
         handle_execution_error(e)
-        []
+        return User.none
       end
     end
+
+    update_execution_tracking if @errors.empty?
+    User.where(id: user_ids)
   end
 
   def setup_execution_environment(connection)
-    # Set statement timeout
     connection.execute("SET statement_timeout = #{timeout_ms}")
-
-    # Set other safety parameters
     connection.execute("SET lock_timeout = #{timeout_ms}")
     connection.execute("SET idle_in_transaction_session_timeout = #{timeout_ms * 2}")
-
-    # Disable potentially dangerous functions
     connection.execute("SET row_security = on")
   end
 
   def build_safe_query(base_query = nil)
-    query_text = base_query || user_query.query.strip
-
-    # Ensure query ends with semicolon
+    query_text = (base_query || user_query.query).to_s.strip
     query_text += ";" unless query_text.end_with?(";")
 
-    # Add LIMIT if specified
     if limit
-      # Remove any existing LIMIT clause and add our limit
       query_text = query_text.gsub(/\s+LIMIT\s+\d+;?$/i, "")
       query_text = query_text.chomp(";") + " LIMIT #{[limit, MAX_USER_LIMIT].min};"
     end
@@ -204,7 +191,8 @@ class UserQueryExecutor
   end
 
   def build_explain_query
-    base_query = build_safe_query
+    final_query = user_query.substitute_variables(variables)
+    base_query = build_safe_query(final_query)
     "EXPLAIN (FORMAT JSON) #{base_query.chomp(';')}"
   end
 
@@ -213,9 +201,14 @@ class UserQueryExecutor
   end
 
   def execute_explain_query(explain_query)
-    ActiveRecord::Base.connection_pool.with_connection do |conn|
-      conn.execute(explain_query)
+    ReadOnlyDatabaseService.with_connection do |conn|
+      conn.transaction(requires_new: true) do
+        conn.execute(explain_query)
+      end
     end
+  rescue StandardError => e
+    Rails.logger.warn("EXPLAIN query failed: #{e.message}")
+    nil
   end
 
   def extract_user_ids(result)
@@ -223,41 +216,73 @@ class UserQueryExecutor
 
     user_ids = []
     result.each do |row|
-      # Handle different possible column names for user ID
       user_id = row["id"] || row["user_id"] || row["users.id"]
-      if user_id
-        user_ids << user_id.to_i
-      end
+      user_ids << user_id.to_i if user_id
     end
 
     user_ids.uniq
   end
 
   def extract_estimated_rows(result)
-    return 0 unless result.is_a?(PG::Result) && result.ntuples > 0
+    return 0 unless result.is_a?(PG::Result) && result.ntuples.positive?
 
-    plan_data = result.first["QUERY PLAN"]
+    raw_plan = result.first["QUERY PLAN"]
+    plan_data = if raw_plan.is_a?(String)
+                  JSON.parse(raw_plan)
+                else
+                  raw_plan
+                end
+
     return 0 unless plan_data.is_a?(Array) && plan_data.first.is_a?(Hash)
 
-    plan = plan_data.first
-    extract_rows_from_plan(plan)
+    root_plan = plan_data.first["Plan"]
+    return 0 unless root_plan.is_a?(Hash)
+
+    plan_rows = root_plan["Plan Rows"]
+    return 0 unless plan_rows
+
+    [plan_rows.to_i, 0].max
+  rescue StandardError => e
+    Rails.logger.warn("Failed to parse EXPLAIN plan: #{e.message}")
+    0
   end
 
-  def extract_rows_from_plan(plan)
-    # Recursively extract the maximum estimated rows from the query plan
-    max_rows = 0
-
-    if plan["Plan Rows"]
-      max_rows = [max_rows, plan["Plan Rows"].to_i].max
+  def validate_query_and_variables!
+    unless valid?
+      raise UserQuery::QueryValidationError, "Invalid user query: #{error_messages.join(', ')}"
     end
 
-    if plan["Plans"] && plan["Plans"].is_a?(Array)
-      plan["Plans"].each do |sub_plan|
-        max_rows = [max_rows, extract_rows_from_plan(sub_plan)].max
+    if user_query.has_variables?
+      substitutor = UserQueryVariableSubstitutor.new(user_query, variables)
+      unless substitutor.valid?
+        @errors.concat(substitutor.error_messages)
+        raise UserQuery::QueryValidationError, "Invalid variables: #{substitutor.error_messages.join(', ')}"
       end
     end
 
-    max_rows
+    final_query = user_query.substitute_variables(variables)
+    validator = UserQueryValidator.new(final_query)
+    return if validator.valid?
+
+    @errors.concat(validator.error_messages)
+    raise UserQuery::QueryValidationError, "Query validation failed: #{validator.error_messages.join(', ')}"
+  end
+
+  def process_id_batches(result, batch_size)
+    current_batch = []
+    result.each do |row|
+      user_id = row["id"] || row["user_id"] || row["users.id"]
+      next unless user_id
+
+      current_batch << user_id.to_i
+
+      if current_batch.size >= batch_size
+        yield current_batch
+        current_batch = []
+      end
+    end
+
+    yield current_batch if current_batch.any?
   end
 
   def update_execution_tracking
