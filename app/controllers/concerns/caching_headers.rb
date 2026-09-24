@@ -26,6 +26,11 @@ module CachingHeaders
     # Only public forems should be edge-cached based on current functionality.
     return unless Settings::UserExperience.public
 
+    if auth_state_desynced_with_fastly?
+      unset_cache_control_headers
+      return
+    end
+
     request.session_options[:skip] = true # no cookies
 
     RequestStore.store[:edge_caching_in_place] = true # To be observed downstream.
@@ -57,6 +62,10 @@ module CachingHeaders
   end
 
   private
+
+  def auth_state_desynced_with_fastly?
+    request.cookies.key?("remember_user_token") != user_signed_in?
+  end
 
   def build_surrogate_control(max_age, stale_while_revalidate: nil, stale_if_error: 26_400)
     surrogate_control = "max-age=#{max_age}"

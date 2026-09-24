@@ -21,7 +21,7 @@ class OrganizationPagesController < ApplicationController
     
     if is_first_page
       @page.slug = "#{@organization.slug}/readme"
-      @page.title = @organization.name if @page.title.blank?
+      @page.title = I18n.t("views.organizations.showcase") if @page.title.blank?
     else
       suffix = params.dig(:page, :slug_suffix).to_s.strip.downcase.gsub(/[^a-z0-9\-]/, "-").gsub(/-+/, "-").gsub(/\A-+|-+\z/, "")
       if suffix.blank?
@@ -75,7 +75,7 @@ class OrganizationPagesController < ApplicationController
 
   def reorder
     if reorder_page(params[:direction].to_s)
-      Pages::BustCacheWorker.perform_async(@page.slug)
+      Pages::BustCacheWorker.perform_async(@page.slug, @organization.id)
       flash[:settings_notice] = I18n.t("views.organization_settings.pages.reordered")
     end
 

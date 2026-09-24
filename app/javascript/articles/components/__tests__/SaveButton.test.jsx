@@ -15,7 +15,7 @@ it('should not show bookmark button when saveable is false', () => {
 
 it('should have no a11y violations', async () => {
   const article = { class_name: 'Article', id: 1 };
-  const { container } = render(<SaveButton article={article} />);
+  const { container } = render(<SaveButton article={article} saveable />);
   const results = await axe(container);
 
   expect(results).toHaveNoViolations();
@@ -23,7 +23,7 @@ it('should have no a11y violations', async () => {
 
 it('should render button as bookmarked', () => {
   const article = { class_name: 'Article', id: 1, title: 'Article' };
-  const { queryByRole } = render(<SaveButton article={article} isBookmarked />);
+  const { queryByRole } = render(<SaveButton article={article} isBookmarked saveable />);
   const saveButton = queryByRole('button', {
     name: `Save post ${article.title} to reading list`,
     pressed: true,
@@ -35,7 +35,7 @@ it('should render button as bookmarked', () => {
 it('should button as not being bookmarked', () => {
   const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { queryByRole } = render(
-    <SaveButton article={article} isBookmarked={false} />,
+    <SaveButton article={article} isBookmarked={false} saveable />,
   );
   const saveButton = queryByRole('button', {
     name: `Save post ${article.title} to reading list`,
@@ -48,7 +48,7 @@ it('should button as not being bookmarked', () => {
 it('should bookmark when it previously was not', async () => {
   const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { getByRole, findByRole } = render(
-    <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} saveable />,
   );
   const saveButton = getByRole('button', {
     name: `Save post ${article.title} to reading list`,
@@ -66,7 +66,7 @@ it('should bookmark when it previously was not', async () => {
 it('should unbookmark when it previously was bookmarked', async () => {
   const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { getByRole, findByRole } = render(
-    <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
+    <SaveButton onClick={jest.fn()} article={article} isBookmarked saveable />,
   );
 
   const savedButton = getByRole('button', {

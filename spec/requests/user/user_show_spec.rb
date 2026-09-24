@@ -22,7 +22,6 @@ RSpec.describe "UserShow" do
     end
 
     it "renders the proper JSON-LD for a user" do
-      user.setting.update(display_email_on_profile: true)
       get user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
@@ -41,9 +40,16 @@ RSpec.describe "UserShow" do
         ],
         "image" => user.profile_image_url_for(length: 320),
         "name" => user.name,
-        "email" => user.email,
         "description" => user.tag_line,
       )
+    end
+
+    it "does not include email in JSON-LD structured data even when display_email_on_profile is enabled" do
+      user.setting.update(display_email_on_profile: true)
+      get user.path
+      text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
+      response_json = JSON.parse(text)
+      expect(response_json.key?("email")).to be(false)
     end
 
     it "includes a subscription icon if user is subscribed" do

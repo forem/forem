@@ -40,6 +40,9 @@ en:
       saved: Article saved!
       pinned: Article Pinned!
       unpinned: Article Unpinned!
+      favorite_removed: Gem removed.
+    comments_controller:
+      favorite_removed: Gem removed.
     badge_achievements_controller:
       deleted: Badge achievement has been deleted!
       rewarded: Badges are being rewarded. The task will finish shortly.
@@ -70,6 +73,18 @@ en:
       wrong: Something went wrong with deleting the Billboard.
     emails:
       customerio_cutover_notice: Email sending has moved to Customer.io. Records below are historical; compose new broadcasts and newsletters in the Customer.io workspace.
+      override_footer_html: Override email footer HTML
+      override_footer_description: Enable to override the app-wide email footer for this email.
+      custom_footer_html: "Custom Footer HTML:"
+      custom_footer_placeholder: '<p style="text-align: center; color: #666;">Custom footer text for this email</p>'
+      custom_footer_description: Provide custom HTML for this email's footer. Leave blank if you want no footer to appear.
+      footer: "Footer:"
+      no_footer: "(No footer)"
+      invalid_footer_preview: "(Cannot preview invalid footer)"
+      override_footer_label: "Override Footer:"
+      custom_footer_label: "Custom Footer HTML:"
+      status_yes: "Yes"
+      status_no: "No"
     emails_controller:
       created: Emails has been created!
       drafted: Email has been drafted!
@@ -77,6 +92,29 @@ en:
       deleted: Email has been deleted!
       updated: Email has been updated!
       wrong: Something went wrong with deleting the Email.
+    user_queries_controller:
+      created: User query was successfully created.
+      updated: User query was successfully updated.
+      deleted: User query was successfully deleted.
+      activated: User query was successfully activated.
+      deactivated: User query was successfully deactivated.
+    audience_segments_controller:
+      created: Audience segment was successfully created.
+      updated: Audience segment was successfully updated.
+      deleted: Audience segment was successfully deleted.
+      cannot_delete_in_use: Audience segment cannot be deleted while in use by emails or billboards.
+      users_added: "%{count} user(s) successfully added to segment."
+      user_removed: User removed from segment.
+      users_removed: "%{count} user(s) removed from segment."
+      system_segment_protected: System audience segments cannot be modified.
+      no_valid_users_found: No valid users found from the provided input.
+      no_users_selected: No users selected for removal.
+      no_users_removed: No matching users found in this segment to remove.
+      user_not_in_segment: User could not be removed because they were not in this segment.
+      segment_created_with_users: "Segment created with %{count} user(s)."
+      could_not_resolve: "Could not resolve: %{unresolved}."
+      already_in_segment: "%{count} user(s) were already in this segment."
+      ineligible_users_warning: "Warning: %{count} user(s) in this segment are not currently email eligible."
     gdpr_delete_requests_controller:
       deleted: Successfully marked as deleted
     extensions_controller:
@@ -113,6 +151,7 @@ en:
       removed: User was successfully removed from %{org}
       updated: User was successfully updated to %{type}
     organizations_controller:
+      name_updated: Organization name updated successfully.
       credit_updated: Successfully updated credits
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
@@ -124,6 +163,12 @@ en:
       org_feature_enabled: "%{feature} has been enabled for this organization."
       org_feature_disabled: "%{feature} has been disabled for this organization."
       org_feature_invalid: "Invalid org feature specified."
+      bulk_add_users:
+        added: "Successfully added %{count} user(s) (%{usernames}) to the organization."
+        already_members: "Already member(s): %{usernames}."
+        not_found: "User(s) not found: %{usernames}."
+        failed: "Failed to add %{count} user(s): %{errors}."
+        empty_input: "Please provide at least one username."
     org_features_controller:
       invalid_feature: "Invalid feature specified."
       global_enabled: "%{feature} has been enabled for all organizations."

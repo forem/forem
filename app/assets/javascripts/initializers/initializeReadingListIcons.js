@@ -38,10 +38,15 @@ function addReadingListCountToHomePage() {
   );
   if (user && user.reading_list_ids && readingListContainers) {
     readingListContainers.forEach(function (e) {
-      const readingListCount =
-        user.reading_list_ids.length > 0 ? user.reading_list_ids.length : '';
+      const count = user.reading_list_ids.length;
+      let readingListCount = '';
+      if (count > 999) {
+        readingListCount = '999+';
+      } else if (count > 0) {
+        readingListCount = count;
+      }
       e.innerHTML = readingListCount;
-      e.dataset.count = user.reading_list_ids.length;
+      e.dataset.count = count;
     });
   }
 }
@@ -100,7 +105,11 @@ function renderNewSidebarCount(button, json) {
         newCount = count - 1;
       }
       e.dataset.count = newCount;
-      e.innerHTML = newCount > 0 ? newCount : '';
+      if (newCount > 999) {
+        e.innerHTML = '999+';
+      } else {
+        e.innerHTML = newCount > 0 ? newCount : '';
+      }
     });
   }
 }

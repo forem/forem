@@ -150,4 +150,6 @@ class ArticleDecorator < ApplicationDecorator
   delegate :skip_indexing?, to: :object
   delegate :displayable_published_at, to: :object
   delegate :title_for_metadata, to: :object
+  delegate :ai_disclosure_label, to: :object
+  delegate :ai_disclosed?, to: :object
 end

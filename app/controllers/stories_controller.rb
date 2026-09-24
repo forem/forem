@@ -374,8 +374,18 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     assign_article_show_variables
-    user_keys = @article.user&.profile_identity_cache_keys
-    set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    return if performed?
+
+    if !@article.published || @article.scheduled?
+      unset_cache_control_headers
+      response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+      response.headers["Pragma"] = "no-cache"
+      response.headers["Expires"] = "0"
+    else
+      user_keys = @article.user&.profile_identity_cache_keys
+      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    end
+
     redirect_if_appropriate
     return if performed?
 
@@ -388,6 +398,8 @@ class StoriesController < ApplicationController
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:feed_type] == "curated"
+      @stories = Articles::Feeds::Curated.call(page: @page)
     elsif params[:timeframe] == "latest_less_filtered"
       @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -410,7 +422,17 @@ class StoriesController < ApplicationController
   end
 
   def assign_article_show_variables
-    not_found if permission_denied?
+    if permission_denied?
+      if user_signed_in?
+        unset_cache_control_headers
+        if can_edit_article?
+          redirect_to_preview
+          return
+        end
+      end
+      not_found
+    end
+
     not_found unless @article.user
 
     check_admin_access if @article.user.spam?
@@ -446,6 +468,25 @@ class StoriesController < ApplicationController
     @context_note = @article.context_notes.first
   end
 
+  def redirect_to_preview
+    unset_cache_control_headers
+    response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    params_hash = request.query_parameters.merge("preview" => @article.password)
+    redirect_to "#{request.path}?#{params_hash.to_query}", status: :found
+  end
+
+  def can_edit_article?
+    return false unless user_signed_in?
+
+    record = @article.respond_to?(:to_model) ? @article.to_model : @article
+    policy(record).edit?
+  rescue Pundit::NotAuthorizedError, Pundit::NotDefinedError
+    false
+  end
+
   def permission_denied?
     (!@article.published || @article.scheduled?) && params[:preview] != @article.password
   end
@@ -459,14 +500,24 @@ class StoriesController < ApplicationController
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
-    return unless user_signed_in? && @user.comments_count.positive?
+    @user_profile_comments_count = 0
+    return unless @user.comments_count.positive?
 
-    @comments = @user.comments.good_quality.where(deleted: false)
-      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
-      .merge(Article.from_subforem)
+    @user_profile_comments = user_profile_comments
+    @user_profile_comments_count = @user_profile_comments.count
+    return unless user_signed_in?
+
+    @comments = @user_profile_comments
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
+  end
+
+  def user_profile_comments
+    @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
+      .merge(Article.published)
   end
 
   def assign_user_stories
@@ -515,7 +566,6 @@ class StoriesController < ApplicationController
       sameAs: user_same_as,
       image: @user.profile_image_url_for(length: 320),
       name: @user.name,
-      email: decorated_user.profile_email,
       description: decorated_user.profile_summary
     }.compact_blank
   end
