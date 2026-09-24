@@ -786,6 +786,54 @@ RSpec.describe "NotificationsIndex" do
       end
     end
 
+    context "when a user has a new co-author notification" do
+      let(:co_author) { create(:user) }
+      let(:article) { create(:article, user_id: user.id, co_author_ids: [co_author.id]) }
+
+      before do
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_to_co_authors(article)
+        end
+        sign_in co_author
+      end
+
+      it "renders the proper message in GET /notifications", :aggregate_failures do
+        get "/notifications"
+
+        expect(response.body).to include "published a post you are credited on"
+        renders_article_path(article)
+        renders_authors_name(article)
+        renders_article_published_at(article)
+      end
+
+      it "renders cleanly in GET /notifications/posts filter", :aggregate_failures do
+        get "/notifications/posts"
+
+        expect(response.body).to include "published a post you are credited on"
+        renders_article_path(article)
+        renders_authors_name(article)
+      end
+
+      # rubocop:disable RSpec/NestedGroups
+      context "when the article belongs to an organization" do
+        let(:organization) { create(:organization) }
+        let(:article) do
+          create(:organization_membership, user: co_author, organization: organization)
+          create(:article, user_id: user.id, organization_id: organization.id, co_author_ids: [co_author.id])
+        end
+
+        it "renders the organization credit", :aggregate_failures do
+          get "/notifications"
+
+          expect(response.body).to include(
+            "under <a class=\"crayons-link fw-bold\" href=\"#{organization.path}\">" \
+            "#{CGI.escapeHTML(organization.name)}</a>",
+          )
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
+    end
+
     context "when a user is an admin" do
       let(:admin) { create(:user, :super_admin) }
       let(:user2)    { create(:user) }

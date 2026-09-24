@@ -21,7 +21,7 @@ module Notifications
           notifiable_id: article_id,
           notifiable_type: "Article",
           action: Notifications::CoAuthor::Send::ACTION,
-        ).destroy_all
+        ).delete_all
       end
 
       private

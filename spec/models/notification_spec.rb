@@ -559,6 +559,21 @@ RSpec.describe Notification do
         expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
         expect(expected_notification_organization_id).to eq(organization.id)
       end
+
+      it "updates CoAuthor notifications with the new article title" do
+        co_author = create(:user)
+        article.update(co_author_ids: [co_author.id])
+        sidekiq_perform_enqueued_jobs { described_class.send_to_co_authors(article) }
+
+        new_title = "Brand New Co-Authored Title"
+        new_body_markdown = article.body_markdown.gsub(article.title, new_title)
+        article.update(title: new_title, body_markdown: new_body_markdown)
+        described_class.update_notifications(article, %w[Published CoAuthor])
+        sidekiq_perform_enqueued_jobs
+
+        co_author_notification = co_author.notifications.find_by(action: "CoAuthor")
+        expect(co_author_notification.json_data["article"]["title"]).to eq(new_title)
+      end
     end
   end
 

@@ -1479,7 +1479,7 @@ class Article < ApplicationRecord
   end
 
   def update_notifications
-    Notification.update_notifications(self, I18n.t("models.article.published"))
+    Notification.update_notifications(self, %w[Published CoAuthor])
   end
 
   def update_notification_subscriptions
