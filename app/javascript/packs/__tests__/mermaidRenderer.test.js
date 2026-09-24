@@ -66,6 +66,19 @@ describe('renderMermaidDiagrams', () => {
     expect(innerHTML).toContain('<marker');
   });
 
+  it('makes edge label backgrounds opaque', async () => {
+    addDiagram();
+    mermaid.render.mockResolvedValue({
+      svg: '<svg><g class="edgeLabel"><rect style="fill: red; opacity: 0.5"></rect></g></svg>',
+    });
+
+    await renderMermaidDiagrams();
+
+    const rect = renderedFigure().querySelector('.edgeLabel rect');
+    expect(rect.style.fill).toBe('red');
+    expect(rect.style.opacity).toBe('1');
+  });
+
   it('leaves the original code block in place when rendering fails', async () => {
     addDiagram();
     mermaid.render.mockRejectedValue(new Error('bad diagram'));

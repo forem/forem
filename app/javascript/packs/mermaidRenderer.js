@@ -45,6 +45,12 @@ function renderWithTimeout(id, source) {
   );
 }
 
+function opacifyEdgeLabels(figure) {
+  figure.querySelectorAll('.edgeLabel rect').forEach((rect) => {
+    rect.style.setProperty('opacity', '1');
+  });
+}
+
 async function renderDiagram(element) {
   const source = element.textContent.trim();
 
@@ -63,6 +69,7 @@ async function renderDiagram(element) {
     figure.className = 'mermaid-diagram';
     figure.setAttribute('data-mermaid-state', 'rendered');
     figure.innerHTML = DOMPurify.sanitize(svg, SANITIZE_CONFIG);
+    opacifyEdgeLabels(figure);
     element.replaceWith(figure);
   } catch (error) {
     element.setAttribute('data-mermaid-state', 'error');
