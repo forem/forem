@@ -40,6 +40,9 @@ fr:
       saved: Article sauvegardé !
       pinned: Article épinglé !
       unpinned: Article désépinglé !
+      favorite_removed: Pépite retirée.
+    comments_controller:
+      favorite_removed: Pépite retirée.
     badge_achievements_controller:
       deleted: La réalisation du badge a été supprimée !
       rewarded: Les badges sont en train d'être récompensés. La tâche sera bientôt terminée.
@@ -68,6 +71,20 @@ fr:
       deleted: L'annonce a été supprimée !
       updated: L'annonce publicitaire a été mise à jour !
       wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
+    emails:
+      customerio_cutover_notice: L'envoi d'e-mails a été transféré à Customer.io. Les enregistrements ci-dessous sont historiques ; composez les nouvelles diffusions et infolettres dans l'espace de travail Customer.io.
+      override_footer_html: Remplacer le code HTML du pied de page de l'e-mail
+      override_footer_description: Activer pour remplacer le pied de page d'e-mail global pour cet e-mail.
+      custom_footer_html: "HTML du pied de page personnalisé :"
+      custom_footer_placeholder: '<p style="text-align: center; color: #666;">Texte de pied de page personnalisé ici</p>'
+      custom_footer_description: Fournissez du code HTML personnalisé pour le pied de page de cet e-mail. Laissez vide si vous ne souhaitez aucun pied de page.
+      footer: "Pied de page :"
+      no_footer: "(Aucun pied de page)"
+      invalid_footer_preview: "(Impossible de prévisualiser un pied de page invalide)"
+      override_footer_label: "Remplacement du pied de page :"
+      custom_footer_label: "HTML du pied de page personnalisé :"
+      status_yes: "Oui"
+      status_no: "Non"
     emails_controller:
       created: Emails are being sent!
       drafted: Email has been drafted!
@@ -75,6 +92,29 @@ fr:
       deleted: Email has been deleted!
       updated: Email has been updated!
       wrong: Something went wrong with deleting the Email.
+    user_queries_controller:
+      created: La requête utilisateur a été créée avec succès.
+      updated: La requête utilisateur a été mise à jour avec succès.
+      deleted: La requête utilisateur a été supprimée avec succès.
+      activated: La requête utilisateur a été activée avec succès.
+      deactivated: La requête utilisateur a été désactivée avec succès.
+    audience_segments_controller:
+      created: Le segment d'audience a été créé avec succès.
+      updated: Le segment d'audience a été mis à jour avec succès.
+      deleted: Le segment d'audience a été supprimé avec succès.
+      cannot_delete_in_use: Le segment d'audience ne peut pas être supprimé lorsqu'il est utilisé par des emails ou des panneaux publicitaires.
+      users_added: "%{count} utilisateur(s) ajouté(s) avec succès au segment."
+      user_removed: Utilisateur retiré du segment.
+      users_removed: "%{count} utilisateur(s) retiré(s) du segment."
+      system_segment_protected: Les segments d'audience système ne peuvent pas être modifiés.
+      no_valid_users_found: Aucun utilisateur valide trouvé à partir des informations fournies.
+      no_users_selected: Aucun utilisateur sélectionné pour la suppression.
+      no_users_removed: Aucun utilisateur correspondant trouvé dans ce segment à retirer.
+      user_not_in_segment: L'utilisateur n'a pas pu être retiré car il ne faisait pas partie de ce segment.
+      segment_created_with_users: "Segment créé avec %{count} utilisateur(s)."
+      could_not_resolve: "Impossible de résoudre : %{unresolved}."
+      already_in_segment: "%{count} utilisateur(s) étaient déjà dans ce segment."
+      ineligible_users_warning: "Attention : %{count} utilisateur(s) de ce segment ne sont pas actuellement éligibles aux e-mails."
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:
@@ -111,6 +151,7 @@ fr:
       removed: L'utilisateur a été supprimé avec succès de %{org}
       updated: L'utilisateur a été mis à jour avec succès vers %{type}
     organizations_controller:
+      name_updated: Le nom de l'organisation a été mis à jour avec succès.
       credit_updated: Crédits actualisés avec succès
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
@@ -122,6 +163,12 @@ fr:
       org_feature_enabled: "%{feature} a été activé pour cette organisation."
       org_feature_disabled: "%{feature} a été désactivé pour cette organisation."
       org_feature_invalid: "Fonctionnalité d'organisation spécifiée invalide."
+      bulk_add_users:
+        added: "%{count} utilisateur(s) (%{usernames}) ont été ajoutés avec succès à l'organisation."
+        already_members: "Déjà membre(s) : %{usernames}."
+        not_found: "Utilisateur(s) non trouvé(s) : %{usernames}."
+        failed: "Échec de l'ajout de %{count} utilisateur(s) : %{errors}."
+        empty_input: "Veuillez fournir au moins un nom d'utilisateur."
     org_features_controller:
       invalid_feature: "Fonctionnalité spécifiée invalide."
       global_enabled: "%{feature} a été activé pour toutes les organisations."
@@ -197,6 +244,8 @@ fr:
       article_busted: "L'article #%{article} a été bloqué avec succès."
       user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
       link_busted: "%{link} a été cassé avec succès"
+      social_images_queued: "Régénération des images sociales mise en file d'attente pour @%{user}"
+      user_not_found: 'Utilisateur introuvable'
     users_controller:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !

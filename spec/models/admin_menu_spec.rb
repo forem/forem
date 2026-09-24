@@ -53,6 +53,22 @@ RSpec.describe AdminMenu do
     it { is_expected.to be_visible }
   end
 
+  describe "scope :content_managers's user queries item" do
+    subject(:user_queries) { content_manager.children.detect { |child| child.name == "user queries" } }
+
+    let(:content_manager) { described_class.navigation_items.fetch(:content_manager) }
+
+    it { is_expected.to be_visible }
+  end
+
+  describe "scope :content_managers's audience segments item" do
+    subject(:audience_segments) { content_manager.children.detect { |child| child.name == "audience segments" } }
+
+    let(:content_manager) { described_class.navigation_items.fetch(:content_manager) }
+
+    it { is_expected.to be_visible }
+  end
+
   describe "scope :customization" do
     subject(:content_manager) { described_class.navigation_items.fetch(:customization) }
 

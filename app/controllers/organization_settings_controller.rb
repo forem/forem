@@ -52,13 +52,8 @@ class OrganizationSettingsController < ApplicationController
       return
     end
 
-    raw_page_markdown = params.dig(:organization, :page_markdown)
-
     was_verified = @organization.verified?
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
-      if FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
-        sync_org_page(raw_page_markdown) if params[:organization].key?(:page_markdown)
-      end
       @organization.users.touch_all(:organization_info_updated_at)
       notice = I18n.t("organizations_controller.updated")
       if was_verified && !@organization.verified?
@@ -82,36 +77,21 @@ class OrganizationSettingsController < ApplicationController
     )
   end
 
-  def sync_org_page(markdown)
-    if markdown.present?
-      page = @organization.main_page || @organization.pages.new
-      page.assign_attributes(
-        title: @organization.name,
-        body_markdown: markdown,
-        description: @organization.summary.presence || @organization.name,
-        slug: "#{@organization.slug}/readme",
-        template: "full_within_layout",
-      )
-      page.save!
-    elsif @organization.main_page
-      @organization.main_page.destroy!
-    end
-  rescue ActiveRecord::RecordInvalid, StandardError => e
-    flash[:error] = I18n.t("organizations_controller.page_save_error", message: e.message)
-  end
-
   def organization_params
     permitted = params.require(:organization).permit(
       :name, :summary, :tag_line, :slug, :url, :proof, :profile_image,
       :location, :company_size, :tech_stack, :email, :story,
       :bg_color_hex, :text_color_hex, :twitter_username, :github_username,
       :cta_button_text, :cta_button_url, :cta_body_markdown,
-      :cover_image,
+      :cover_image, :remove_cover_image,
       social_links: Organization::SOCIAL_LINK_PLATFORMS,
       header_cta: [:text, :url, links: [:text, :url, :logo_url]],
     )
 
-    permitted.delete(:cover_image) unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+    unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization])
+      permitted.delete(:cover_image)
+      permitted.delete(:remove_cover_image)
+    end
 
     result = permitted.to_h
     result.transform_values! do |value|

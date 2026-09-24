@@ -19,10 +19,14 @@ RSpec.describe "Api::V1::Docs::Trends" do
       get "Trends" do
         security []
         tags "trends"
-        description "This endpoint allows the client to retrieve a list of active trends.
+        description "Retrieve a list of active trends.
 
-Trends represent topics or themes that are currently hot and heavily discussed in the community.
-It will return trends ordered by score and recency.
+### Trends Overview & Score Calculation:
+- Trends represent hot topics or semantic themes currently being heavily discussed in the community.
+- They are computed by clustering semantic concept embeddings of recently published articles.
+- The `score` reflects the volume and engagement (views, comments, reactions) of articles associated with the trend.
+- Returned trends are ordered by score and recency.
+- Publicly accessible without authentication.
 
 It supports pagination, each page will contain 10 trends by default."
         operationId "getTrends"
@@ -46,7 +50,10 @@ It supports pagination, each page will contain 10 trends by default."
       get "A Trend" do
         security []
         tags "trends"
-        description "This endpoint allows the client to retrieve details of a single trend using either its numeric ID or unique slug."
+        description "Retrieve details of a single trend using either its numeric ID or unique slug.
+
+### Usage Guidance:
+- Useful for loading details of a trending topic (description, score, and slug details) to render header sections on trending tag or topic pages."
         operationId "getTrend"
         produces "application/json"
         parameter name: :id_or_slug, in: :path, type: :string, required: true,
@@ -77,10 +84,12 @@ It supports pagination, each page will contain 10 trends by default."
       get "Articles in a Trend" do
         security []
         tags "trends"
-        description "This endpoint allows the client to retrieve a list of published articles belonging to a trend.
+        description "Retrieve a list of published articles belonging to a trend.
 
-Articles will be ordered by their proximity (distance) to the trend's centroid, then by article score.
-It supports pagination, each page will contain 10 articles by default."
+### Article Ordering & Proximity:
+- Articles are mapped to trends based on their embedding distance to the trend's centroid.
+- Returned articles are ordered by proximity/similarity (distance) first (most relevant posts first), and then by overall article engagement score.
+- Supports pagination, each page will contain 10 articles by default."
         operationId "getTrendArticles"
         produces "application/json"
         parameter name: :trend_id_or_slug, in: :path, type: :string, required: true,

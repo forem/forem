@@ -1,0 +1,164 @@
+<% content_for :title, @audience_segment.name %>
+
+<div class="crayons-card p-6 mb-6">
+  <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+    <div>
+      <div class="flex items-center gap-2">
+        <h1 class="crayons-title"><%= @audience_segment.name %></h1>
+        <span class="crayons-tag crayons-tag--primary">Custom Segment</span>
+      </div>
+      <p class="text-sm text-gray-600 mt-1">
+        Created on <%= @audience_segment.created_at.strftime("%B %d, %Y") %>
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2">
+      <%= link_to "Compose Email for Segment", new_admin_email_path(audience_segment_id: @audience_segment.id), class: "crayons-btn crayons-btn--primary" %>
+      <%= link_to "Edit Name", edit_admin_audience_segment_path(@audience_segment), class: "crayons-btn crayons-btn--secondary" %>
+      <%= link_to "Delete Segment", admin_audience_segment_path(@audience_segment), method: :delete, data: { confirm: "Are you sure you want to delete this segment? This action cannot be undone." }, class: "crayons-btn crayons-btn--danger" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <span class="text-xs uppercase font-semibold text-gray-500">Total Members</span>
+      <p class="text-2xl font-bold mt-1"><%= @audience_segment.user_count %></p>
+    </div>
+    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <span class="text-xs uppercase font-semibold text-gray-500">Email Eligible</span>
+      <p class="text-2xl font-bold mt-1 text-green-700"><%= @audience_segment.email_eligible_users.count %></p>
+    </div>
+    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+      <span class="text-xs uppercase font-semibold text-gray-500">Targeted Emails</span>
+      <p class="text-2xl font-bold mt-1 text-indigo-700"><%= @linked_emails.count %></p>
+    </div>
+  </div>
+
+  <% if @linked_emails.any? %>
+    <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <h3 class="font-semibold text-blue-900 mb-2">Emails Targeting This Segment</h3>
+      <ul class="list-disc list-inside text-sm text-blue-800">
+        <% @linked_emails.each do |email| %>
+          <li>
+            <%= link_to email.subject, admin_email_path(email), class: "underline font-medium" %>
+            <span class="text-xs text-blue-600">(<%= email.status.humanize %>, <%= email.type_of.humanize %>)</span>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <!-- Add Users Form -->
+  <div class="crayons-card crayons-card--secondary p-4 mb-6">
+    <h3 class="crayons-subtitle-2 mb-3">Add Users to this Segment</h3>
+    <%= form_with url: add_users_admin_audience_segment_path(@audience_segment), method: :post, local: true do |f| %>
+      <div class="crayons-field mb-4">
+        <%= label_tag :user_identifiers, "Usernames, Emails, or User IDs:", class: "crayons-field__label" %>
+        <%= text_area_tag :user_identifiers, "", rows: 3, class: "crayons-textfield font-mono", placeholder: "@user1, user2@example.com, 42" %>
+        <p class="crayons-field__description">
+          Add users by username, email, or ID. Multi-line and comma-separated formats supported.
+        </p>
+      </div>
+
+      <% if @active_user_queries&.any? %>
+        <div class="crayons-field mb-4">
+          <%= label_tag :user_query_id, "Or Import Users from Saved User Query:", class: "crayons-field__label" %>
+          <%= select_tag :user_query_id, options_for_select([["None", nil]] + @active_user_queries.map { |q| [q.name, q.id] }), class: "crayons-select" %>
+        </div>
+      <% end %>
+
+      <%= f.submit "Add Users to Segment", class: "crayons-btn crayons-btn--primary" %>
+    <% end %>
+  </div>
+
+  <!-- Search Members -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="crayons-subtitle-2">Segment Members (<%= @segmented_users.total_count %>)</h2>
+    <%= form_with url: admin_audience_segment_path(@audience_segment), method: :get, local: true, class: "flex gap-2 items-center" do |f| %>
+      <%= f.text_field :search, value: params[:search], placeholder: "Search members", class: "crayons-textfield crayons-textfield--s" %>
+      <%= f.submit "Search", class: "crayons-btn crayons-btn--s crayons-btn--secondary" %>
+      <% if params[:search].present? %>
+        <%= link_to "Clear", admin_audience_segment_path(@audience_segment), class: "crayons-btn crayons-btn--s crayons-btn--ghost" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% if @segmented_users.any? %>
+    <%= form_with url: remove_users_admin_audience_segment_path(@audience_segment), method: :put, local: true, id: "bulk_remove_users_form" do %>
+      <div class="flex items-center gap-2 mb-3">
+        <%= submit_tag "Remove Selected", class: "crayons-btn crayons-btn--danger crayons-btn--s", data: { confirm: "Are you sure you want to remove the selected users from this segment?" } %>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="crayons-table">
+          <thead>
+            <tr>
+              <th class="w-8">
+                <input type="checkbox" id="select_all_users" title="Select all on this page" aria-label="Select all on this page" />
+              </th>
+              <th>User</th>
+              <th>Email</th>
+              <th>Email Eligible?</th>
+              <th>Added At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @segmented_users.each do |su| %>
+              <% user = su.user %>
+              <tr>
+                <td>
+                  <%= check_box_tag "user_ids[]", user.id, false, class: "user-select-checkbox", id: "user_ids_#{user.id}", aria: { label: "Select #{user.username}" } %>
+                </td>
+                <td>
+                  <div class="flex items-center gap-2">
+                    <% if user.profile_image.present? %>
+                      <img src="<%= user.profile_image %>" class="w-6 h-6 rounded-full" alt="" />
+                    <% end %>
+                    <div>
+                      <span class="font-medium"><%= user.name %></span>
+                      <span class="text-xs text-gray-500">(@<%= user.username %>)</span>
+                    </div>
+                  </div>
+                </td>
+                <td><%= user.email %></td>
+                <td>
+                  <% if user.respond_to?(:base_email_eligible?) && user.base_email_eligible? %>
+                    <span class="crayons-tag crayons-tag--success">Eligible</span>
+                  <% else %>
+                    <span class="crayons-tag crayons-tag--danger">Ineligible</span>
+                  <% end %>
+                </td>
+                <td><%= su.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+                <td>
+                  <%= link_to "Remove", remove_user_admin_audience_segment_path(@audience_segment, user_id: user.id), method: :delete, data: { confirm: "Remove @#{user.username} from this segment?" }, class: "crayons-btn crayons-btn--danger crayons-btn--s" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% end %>
+
+    <%= paginate @segmented_users %>
+  <% else %>
+    <div class="p-6 text-center text-gray-500 bg-gray-50 rounded-lg">
+      <p>No members currently in this segment.</p>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const selectAll = document.getElementById('select_all_users');
+  const userCheckboxes = document.querySelectorAll('.user-select-checkbox');
+
+  if (selectAll) {
+    selectAll.addEventListener('change', function() {
+      userCheckboxes.forEach(cb => {
+        cb.checked = selectAll.checked;
+      });
+    });
+  }
+});
+</script>

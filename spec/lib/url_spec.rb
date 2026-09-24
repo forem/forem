@@ -16,15 +16,35 @@ RSpec.describe URL, type: :lib do
 
   describe ".dev_port" do
     it "defaults to 3000 when the PORT env var is not set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(false)
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3000")
       expect(described_class.dev_port).to eq("3000")
     end
 
     it "returns the value of the PORT env var when set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(false)
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3005")
       expect(described_class.dev_port).to eq("3005")
+    end
+
+    it "prefers URL_PORT over PORT when URL_PORT is set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(true)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("URL_PORT").and_return("8443")
+      expect(described_class.dev_port).to eq("8443")
+    end
+
+    it "returns an empty string when URL_PORT is set but blank" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(true)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("URL_PORT").and_return("")
+      expect(described_class.dev_port).to eq("")
     end
   end
 
@@ -109,6 +129,11 @@ RSpec.describe URL, type: :lib do
         allow(Settings::General).to receive(:app_domain).and_return("localhost:3005")
         expect(described_class.url).to eq("https://localhost:3005")
       end
+
+      it "omits the port entirely when dev_port is blank, for a TLS proxy in front of the app" do
+        allow(described_class).to receive(:dev_port).and_return("")
+        expect(described_class.url).to eq("https://localhost")
+      end
     end
   end
 
@@ -117,6 +142,54 @@ RSpec.describe URL, type: :lib do
 
     it "returns the correct URL for an article" do
       expect(described_class.article(article)).to eq("https://dev.to#{article.path}")
+    end
+
+    it "does not raise MissingAttributeError when article is queried without organization_id" do
+      created_article = create(:article, path: "/username1/slug")
+      partial_article = Article.select(:id, :path).find(created_article.id)
+
+      expect { described_class.article(partial_article) }.not_to raise_error
+      expect(described_class.article(partial_article)).to eq("https://dev.to#{created_article.path}")
+    end
+
+    it "handles organization custom domain when present for anonymous users" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      expect(described_class.article(org_article, user_signed_in: false)).to eq("https://org.custom.dev/my-org-post")
+    end
+
+    it "returns the dev.to platform path for signed-in users" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      expect(described_class.article(org_article, user_signed_in: true)).to eq("https://dev.to/myorg/my-org-post")
+    end
+
+    it "returns the dev.to platform path when RequestStore indicates user is signed in" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      RequestStore.store[:user_signed_in] = true
+      expect(described_class.article(org_article)).to eq("https://dev.to/myorg/my-org-post")
+    ensure
+      RequestStore.store[:user_signed_in] = nil
+    end
+
+    it "returns the custom domain path when signed in but browsing directly on the custom domain" do
+      org = create(:organization, custom_domain: "org.custom.dev", slug: "myorg")
+      org_article = create(:article, organization: org, slug: "my-org-post")
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor[org])
+
+      RequestStore.store[:user_signed_in] = true
+      RequestStore.store[:custom_domain_org] = org
+      expect(described_class.article(org_article)).to eq("https://org.custom.dev/my-org-post")
+    ensure
+      RequestStore.store[:user_signed_in] = nil
+      RequestStore.store[:custom_domain_org] = nil
     end
   end
 
@@ -165,13 +238,53 @@ RSpec.describe URL, type: :lib do
         expect(described_class.user(user)).to eq("https://community.example.com/#{user.username}")
       end
     end
+
+    context "when an organization is passed" do
+      let(:organization) { create(:organization, custom_domain: "blog.example.com") }
+
+      context "when the org_custom_domain feature flag is enabled" do
+        before do
+          FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the custom domain URL" do
+          expect(described_class.user(organization)).to eq("https://blog.example.com")
+        end
+      end
+
+      context "when the org_custom_domain feature flag is disabled" do
+        before do
+          FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+        end
+
+        it "returns the default app domain URL" do
+          expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
+        end
+      end
+    end
   end
 
   describe ".organization" do
-    let(:organization) { build(:organization) }
+    let(:organization) { create(:organization, custom_domain: "blog.example.com") }
 
-    it "returns the correct URL for a user" do
-      expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
+    context "when the org_custom_domain feature flag is enabled" do
+      before do
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "returns the custom domain URL" do
+        expect(described_class.organization(organization)).to eq("https://blog.example.com")
+      end
+    end
+
+    context "when the org_custom_domain feature flag is disabled" do
+      before do
+        FeatureFlag.disable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+      end
+
+      it "returns the default app domain URL" do
+        expect(described_class.organization(organization)).to eq("https://dev.to/#{organization.slug}")
+      end
     end
   end
 

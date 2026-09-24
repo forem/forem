@@ -109,6 +109,14 @@ body.subforem-moderator-status-true .subforem-moderator-visible-block {
   display: block !important;
 }
 
+.community-leader-visible-block {
+  display: none !important;
+}
+
+body.community-leader-status-true .community-leader-visible-block {
+  display: block !important;
+}
+
 // The .admin-help-button class is included in this file since it
 // is referenced in both the admin and application layout.
 
@@ -127,4 +135,20 @@ body.subforem-moderator-status-true .subforem-moderator-visible-block {
   margin-bottom: 0.05em;
   max-height:22px;
   aspect-ratio: 166 / 102;
+}
+
+.community-leader-icon {
+  height: 0.95em;
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 0.05em;
+  max-height: 22px;
+  aspect-ratio: 1 / 1;
+}
+
+.favorited-marker {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  color: var(--reaction-favorite-color);
 }

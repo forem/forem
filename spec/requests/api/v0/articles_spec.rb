@@ -31,7 +31,7 @@ RSpec.describe "Api::V0::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag reading_time_minutes
-        language subforem_id
+        language subforem_id ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -72,6 +72,19 @@ RSpec.describe "Api::V0::Articles" do
         expect(response.parsed_body.length).to eq(2)
         get api_articles_path, params: { page: 2, per_page: 2 }
         expect(response.parsed_body.length).to eq(1)
+      end
+
+      it "rejects requests with page greater than 1000 without an API key" do
+        get api_articles_path, params: { page: 1001 }
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+      end
+
+      it "allows requests with page greater than 1000 with a valid API key" do
+        user = create(:user)
+        api_secret = create(:api_secret, user: user)
+        get api_articles_path, params: { page: 1001 }, headers: { "api-key" => api_secret.secret }
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns flare tag in the response" do
@@ -453,7 +466,7 @@ RSpec.describe "Api::V0::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
-        language subforem_id
+        language subforem_id ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -999,6 +1012,50 @@ RSpec.describe "Api::V0::Articles" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to be_present
       end
+
+      it "creates an article with ai_disclosure_level when enable_ai_disclosure is true" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "AI Post Body",
+            ai_disclosure_level: "some_ai",
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.ai_disclosure_level).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_label"]).to eq("AI-assisted")
+      end
+
+      it "ignores ai_disclosure_level param when enable_ai_disclosure is false" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "AI Post Body",
+            ai_disclosure_level: "some_ai",
+          )
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.ai_disclosure_level).to eq("not_disclosed")
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("not_disclosed")
+      end
+
+      it "creates an article with ai_disclosure_level in front matter when enable_ai_disclosure is true" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+        body_markdown = "---\ntitle: Front Matter AI\nai_disclosure_level: fully_autonomous\n---\nPost content"
+        expect do
+          post_article(body_markdown: body_markdown)
+          expect(response).to have_http_status(:created)
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.ai_disclosure_level).to eq("fully_autonomous")
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("fully_autonomous")
+        expect(response.parsed_body["ai_disclosure_label"]).to eq("Fully Autonomous")
+      end
     end
   end
 
@@ -1266,6 +1323,26 @@ RSpec.describe "Api::V0::Articles" do
         expect(article.reload.organization).to eq(organization)
       end
 
+      it "updates the ai_disclosure_level when enable_ai_disclosure is true" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+        expect do
+          put_article(ai_disclosure_level: "some_ai")
+          article.reload
+        end.to change(article, :ai_disclosure_level).from("not_disclosed").to("some_ai")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_label"]).to eq("AI-assisted")
+      end
+
+      it "does not update ai_disclosure_level when enable_ai_disclosure is false" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+        expect do
+          put_article(ai_disclosure_level: "some_ai")
+          article.reload
+        end.not_to change(article, :ai_disclosure_level)
+        expect(response).to have_http_status(:ok)
+      end
+
       it "fails if params are not a Hash" do
         # Not using the nifty put_article helper method because it expects a Hash
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
@@ -1308,7 +1385,7 @@ RSpec.describe "Api::V0::Articles" do
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
           published_timestamp user organization flare_tag reading_time_minutes body_markdown
-          language subforem_id
+          language subforem_id ai_disclosure_level ai_disclosure_label
         ]
 
         expect(response.parsed_body.first.keys).to match_array index_keys
@@ -1328,7 +1405,7 @@ RSpec.describe "Api::V0::Articles" do
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
           published_timestamp user organization flare_tag reading_time_minutes
-          language subforem_id
+          language subforem_id ai_disclosure_level ai_disclosure_label
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys
@@ -1341,6 +1418,19 @@ RSpec.describe "Api::V0::Articles" do
       expect(response.parsed_body.length).to eq(2)
       get "/api/articles/search", params: { page: 2, per_page: 2 }
       expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "rejects requests with page greater than 1000 without an API key" do
+      get "/api/articles/search", params: { page: 1001 }
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+    end
+
+    it "allows requests with page greater than 1000 with a valid API key" do
+      user = create(:user)
+      api_secret = create(:api_secret, user: user)
+      get "/api/articles/search", params: { page: 1001 }, headers: { "api-key" => api_secret.secret }
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns flare tag in the response" do

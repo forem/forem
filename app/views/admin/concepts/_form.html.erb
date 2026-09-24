@@ -24,6 +24,12 @@
     <p class="fs-xs color-base-60 mt-1"><%= t("views.admin.concepts.form.similarity_threshold_help") %></p>
   </div>
 
+  <div class="crayons-field mt-3">
+    <%= f.label :score, t("views.admin.concepts.form.score"), class: "crayons-field__label" %>
+    <%= f.number_field :score, step: :any, class: "crayons-textfield", placeholder: t("views.admin.concepts.form.score_placeholder") %>
+    <p class="fs-xs color-base-60 mt-1"><%= t("views.admin.concepts.form.score_help") %></p>
+  </div>
+
   <div class="flex items-center gap-4 mt-6">
     <%= f.submit class: "crayons-btn" %>
     <%= link_to "Cancel", admin_concepts_path, class: "crayons-btn crayons-btn--outlined" %>

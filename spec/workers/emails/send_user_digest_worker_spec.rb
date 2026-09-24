@@ -31,6 +31,46 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority"
 
   describe "perform" do
+    # force_send exists to bypass the digest consent check for manual and retry
+    # sends. It must not become a way to email a moderated account.
+    context "with a moderated user" do
+      before do
+        user.follow(author)
+        user.follow(tag)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+      end
+
+      it "does not send to a suspended user" do
+        user.add_role(:suspended)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "does not send to a spam user" do
+        user.add_role(:spam)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "does not send to a suspended user even when forced" do
+        user.add_role(:suspended)
+
+        worker.perform(user.id, true)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "still sends to a user in good standing" do
+        worker.perform(user.id)
+
+        expect(message_delivery).to have_received(:deliver_now)
+      end
+    end
+
     context "when there's articles to be sent" do
       before do
         user.follow(author)

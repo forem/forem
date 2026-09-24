@@ -145,14 +145,15 @@ module MarkdownProcessor
       (word_count / WORDS_READ_PER_MINUTE).ceil
     end
 
-    def evaluate_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT)
+    def evaluate_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT,
+                          allowed_attributes: MarkdownProcessor::AllowedAttributes::MARKDOWN_PROCESSOR)
       return if @content.blank?
 
       renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
       ActionController::Base.helpers.sanitize(markdown.render(@content),
                                               tags: allowed_tags,
-                                              attributes: MarkdownProcessor::AllowedAttributes::MARKDOWN_PROCESSOR)
+                                              attributes: allowed_attributes)
     end
 
     def evaluate_limited_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_LIMITED)
