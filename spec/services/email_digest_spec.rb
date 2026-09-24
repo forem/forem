@@ -26,6 +26,12 @@ RSpec.describe EmailDigest, type: :service do
       expect(Emails::SendUserDigestWorker).not_to have_received(:perform_async)
       expect(worker).to have_received(:perform).with(user.id)
     end
+
+    it "wraps batch queries in a configured statement timeout" do
+      allow(ApplicationRecord).to receive(:with_statement_timeout).and_call_original
+      described_class.send_periodic_digest_email
+      expect(ApplicationRecord).to have_received(:with_statement_timeout).with(described_class::STATEMENT_TIMEOUT)
+    end
   end
 
   describe "eligibility" do

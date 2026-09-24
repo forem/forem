@@ -172,6 +172,7 @@ RSpec.describe CustomMailer, type: :mailer do
         allow(ForemInstance).to receive_messages(smtp_enabled?: true, customerio_enabled?: true)
         allow(FeatureFlag).to receive(:enabled_for_user?)
           .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+        link_mlh_identity(user)
       end
 
       it "sends nothing -- Customer.io is already sending this broadcast" do
@@ -220,6 +221,7 @@ RSpec.describe CustomMailer, type: :mailer do
         )
         allow(FeatureFlag).to receive(:enabled_for_user?)
           .with(Deliverable::CUSTOMERIO_FLAG, having_attributes(id: user.id)).and_return(true)
+        link_mlh_identity(user)
         stub_const("CUSTOMERIO_API", api_client)
       end
 

@@ -86,6 +86,38 @@ RSpec.describe "MLH OAuth callbacks" do
       expect(signed_in_user_id).to eq(target.id)
     end
 
+    context "when signed in as an account linked to a different MLH identity" do
+      let(:session_user) { create(:user) }
+
+      before do
+        create(:identity, user: session_user, provider: "mlh", uid: "910010")
+        sign_in session_user
+      end
+
+      it "signs out and returns a new account for an unclaimed identity", :aggregate_failures do
+        omniauth_sign_in(:mlh, mlh_payload(uid: "910011", email: "new-core-user@example.com"),
+                         params: { continuation: "cont-token_1" })
+
+        new_user = Identity.find_by!(provider: "mlh", uid: "910011").user
+        expect(new_user).not_to eq(session_user)
+        expect(new_user.email).to eq("new-core-user@example.com")
+        expect(response).to redirect_to("https://www.mlh.test/oauth/dev?continuation=cont-token_1")
+        expect(signed_in_user_id).to eq(new_user.id)
+      end
+
+      it "offers the switch interstitial for an identity another account owns", :aggregate_failures do
+        owner = create(:user)
+        create(:identity, user: owner, provider: "mlh", uid: "910012")
+
+        omniauth_sign_in(:mlh, mlh_payload(uid: "910012", email: owner.email),
+                         params: { continuation: "cont-token_1" })
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("data-account-switch-confirmation")
+        expect(signed_in_user_id).to eq(session_user.id)
+      end
+    end
+
     it "ignores a malformed continuation" do
       user = create(:user)
 
