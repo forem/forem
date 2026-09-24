@@ -199,6 +199,57 @@ RSpec.describe Feeds::ImportFromXml, type: :service do
       end.not_to change(user.articles, :count)
     end
 
+    it "prevents duplicate drafts under concurrent or repeated submissions via per-user locking" do
+      allow(user).to receive(:with_lock).and_call_original
+
+      first_result = described_class.call(xml_content: valid_rss_xml, user: user)
+      expect(first_result[:imported]).to eq(1)
+
+      expect do
+        second_result = described_class.call(xml_content: valid_rss_xml, user: user)
+        expect(second_result[:imported]).to eq(0)
+      end.not_to change(user.articles, :count)
+
+      expect(user).to have_received(:with_lock).twice
+    end
+
+    it "prevents SSRF and never performs HTTP head requests for iframes during import" do
+      allow(HTTParty).to receive(:head)
+
+      ssrf_xml = <<~XML
+        <?xml version="1.0" encoding="UTF-8"?>
+        <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+          <channel>
+            <title>SSRF Test Blog</title>
+            <link>https://medium.com/@attacker</link>
+            <description>Testing SSRF</description>
+            <item>
+              <title>SSRF Attempt</title>
+              <link>https://medium.com/@attacker/post-1</link>
+              <category>security</category>
+              <content:encoded><![CDATA[
+                <p>Post body</p>
+                <iframe src="http://169.254.169.254/medium.com/media/x/href">
+                  <a href="http://169.254.169.254/medium.com/media/x/href">http://169.254.169.254/medium.com/media/x/href</a>
+                </iframe>
+                <iframe src="http://localhost/medium.com/media/x/href">
+                  <a href="http://localhost/medium.com/media/x/href">http://localhost/medium.com/media/x/href</a>
+                </iframe>
+              ]]></content:encoded>
+              <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+            </item>
+          </channel>
+        </rss>
+      XML
+
+      expect do
+        result = described_class.call(xml_content: ssrf_xml, user: user)
+        expect(result[:imported]).to eq(1)
+      end.to change(user.articles, :count).by(1)
+
+      expect(HTTParty).not_to have_received(:head)
+    end
+
     it "skips Medium comment replies via Feeds::CheckItemMediumReply" do
       allow(Feeds::CheckItemMediumReply).to receive(:call).and_return(true)
 

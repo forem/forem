@@ -23,7 +23,9 @@ module Feeds
       feed_error = validate_feed(feed)
       return feed_error if feed_error
 
-      { imported: import_entries(feed) }
+      user.with_lock do
+        { imported: import_entries(feed) }
+      end
     end
 
     private
@@ -72,7 +74,13 @@ module Feeds
 
       normalized_url = item.url.to_s.strip.split("?source=")[0]
       cleaned_title = item.title.to_s.strip
-      markdown = Feeds::AssembleArticleMarkdown.call(item, user, feed, normalized_url)
+      markdown = Feeds::AssembleArticleMarkdown.call(
+        item,
+        user,
+        feed,
+        normalized_url,
+        remote_fetches: false,
+      )
 
       create_article_with_subscription(normalized_url, markdown)
 

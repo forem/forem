@@ -22,6 +22,20 @@ RSpec.describe "Feeds::XmlImports" do
     XML
   end
 
+  describe "GET /dashboard/feed_imports" do
+    context "when signed in" do
+      before { sign_in user }
+
+      it "renders the XML content textarea with an accessible label" do
+        get dashboard_feed_imports_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to match(/<label[^>]*for="xml_content"/)
+        expect(response.body).to include(I18n.t("views.dashboard.feed_imports.xml_import.textarea_label"))
+      end
+    end
+  end
+
   describe "POST /feeds/xml_imports" do
     context "when not signed in" do
       it "redirects to sign in" do

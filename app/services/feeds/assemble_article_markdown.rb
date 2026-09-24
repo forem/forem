@@ -1,10 +1,10 @@
 module Feeds
   class AssembleArticleMarkdown
-    def self.call(item, user, feed, feed_source_url, feed_source: nil)
-      new(item, user, feed, feed_source_url, feed_source: feed_source).call
+    def self.call(item, user, feed, feed_source_url, feed_source: nil, remote_fetches: true)
+      new(item, user, feed, feed_source_url, feed_source: feed_source, remote_fetches: remote_fetches).call
     end
 
-    def initialize(item, user, feed, feed_source_url, feed_source: nil)
+    def initialize(item, user, feed, feed_source_url, feed_source: nil, remote_fetches: true)
       @item = item
       @title = item.title.strip
       @categories = item.categories || []
@@ -12,6 +12,7 @@ module Feeds
       @feed = feed
       @feed_source_url = feed_source_url
       @feed_source = feed_source
+      @remote_fetches = remote_fetches
     end
 
     def call
@@ -78,7 +79,9 @@ module Feeds
     def resolve_relative_image_urls(content)
       # Fix relative src attributes in inline <img> tags
       content = content.gsub(/(<img\s[^>]*?src=["'])([^"']+)(["'])/) do
-        prefix, path, suffix = Regexp.last_match(1), Regexp.last_match(2), Regexp.last_match(3)
+        prefix = Regexp.last_match(1)
+        path = Regexp.last_match(2)
+        suffix = Regexp.last_match(3)
         if path.match?(%r{\Ahttps?://})
           "#{prefix}#{path}#{suffix}"
         else
@@ -89,7 +92,8 @@ module Feeds
 
       # Fix relative URLs in markdown image syntax ![alt](/path)
       content.gsub(/!\[([^\]]*)\]\(([^)]+)\)/) do
-        alt, path = Regexp.last_match(1), Regexp.last_match(2)
+        alt = Regexp.last_match(1)
+        path = Regexp.last_match(2)
         if path.match?(%r{\Ahttps?://})
           "![#{alt}](#{path})"
         else
@@ -117,8 +121,8 @@ module Feeds
       find_and_replace_possible_links!(html_doc) if referential_link?
       find_and_replace_picture_tags_with_img!(html_doc)
 
-      if feed_url&.include?("medium.com")
-        parse_and_translate_gist_iframe!(html_doc)
+      if medium_host?(feed_url)
+        parse_and_translate_gist_iframe!(html_doc) if @remote_fetches
         parse_and_translate_youtube_iframe!(html_doc)
         parse_and_translate_tweet!(html_doc)
         parse_liquid_variable!(html_doc)
@@ -129,6 +133,18 @@ module Feeds
       html_doc.to_html
     end
 
+    def medium_host?(url)
+      return false if url.blank?
+
+      host = begin
+        URI.parse(url).host&.downcase
+      rescue URI::InvalidURIError
+        nil
+      end
+
+      host == "medium.com" || host.to_s.end_with?(".medium.com")
+    end
+
     def parse_and_translate_gist_iframe!(html_doc)
       html_doc.css("iframe").each do |iframe|
         a_tag = iframe.css("a")
@@ -136,6 +152,14 @@ module Feeds
 
         possible_link = a_tag[0].inner_html
         next unless %r{medium\.com/media/.+/href}.match?(possible_link)
+
+        uri = begin
+          URI.parse(possible_link)
+        rescue URI::InvalidURIError
+          nil
+        end
+        next unless uri&.scheme.in?(%w[http https])
+        next unless uri.host&.match?(/\A([a-z0-9-]+\.)*medium\.com\z/i)
 
         real_link = HTTParty.head(possible_link).request.last_uri.to_s
         return nil unless real_link.include?("gist.github.com")

@@ -230,5 +230,6 @@ pt:
           url_blocked_link: Cole seu XML diretamente
           note_label: "Importação única:"
           note: "Artigos publicados após esta colagem não aparecerão automaticamente — cole novamente o XML atualizado para importar novos artigos."
+          textarea_label: "Conteúdo XML RSS/Atom"
           placeholder: Cole o XML RSS/Atom aqui...
           submit: Importar do XML

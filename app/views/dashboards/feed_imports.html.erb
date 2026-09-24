@@ -282,6 +282,7 @@
           <%= t("views.dashboard.feed_imports.xml_import.note") %>
         </div>
         <%= form_with url: feeds_xml_imports_path, method: :post do |f| %>
+          <%= f.label :xml_content, t("views.dashboard.feed_imports.xml_import.textarea_label"), class: "crayons-field__label mb-1" %>
           <%= f.text_area :xml_content,
                           placeholder: t("views.dashboard.feed_imports.xml_import.placeholder"),
                           rows: 12,

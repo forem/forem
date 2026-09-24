@@ -281,6 +281,7 @@ en:
           url_blocked_link: Paste your XML directly
           note_label: "One-time only:"
           note: Articles published after this paste will not appear automatically — re-paste updated XML to import new posts.
+          textarea_label: "RSS/Atom XML Content"
           placeholder: Paste RSS/Atom XML here...
           submit: Import from XML
       summary:
