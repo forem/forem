@@ -188,13 +188,10 @@ module Api
       ]
       allowed_params << :ai_disclosure_level if Settings::General.enable_ai_disclosure
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
-      # allow if a youtube.com, mux.com, or twitch.tv URL
-      video_url = params.dig("article", "video_source_url")
-      if video_url.present?
-        youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-        mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-        twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-        allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+      # allow video_source_url only for supported hosts; a blank value removes the cover video
+      if params["article"]&.key?("video_source_url") &&
+          Article.permitted_video_source_url?(params["article"]["video_source_url"])
+        allowed_params << :video_source_url
       end
       if @user.super_admin?
         allowed_params << :clickbait_score
