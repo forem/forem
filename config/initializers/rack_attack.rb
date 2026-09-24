@@ -46,7 +46,21 @@ module Rack
       end
     end
 
+    throttle("api_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
     throttle("api_key_throttle", limit: 3, period: 1) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
+      end
+    end
+
+    throttle("api_key_throttle_per_minute", limit: 30, period: 1.minute) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
         request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
@@ -98,7 +112,7 @@ module Rack
     end
 
     throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
-      if request.path == "/search/feed_content"
+      if request.path.chomp("/") == "/search/feed_content"
         request.track_and_return_ip
       end
     end

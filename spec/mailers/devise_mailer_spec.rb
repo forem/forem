@@ -39,6 +39,20 @@ RSpec.describe DeviseMailer, type: :mailer do
       expect(email.to_s).not_to include("ahoy_click=true")
       expect(email.to_s).not_to include("/ahoy/click")
     end
+
+    context "when triggered by an admin" do
+      let(:admin_email) { described_class.reset_password_instructions(user, "test", admin_triggered_by: "AdminUser") }
+
+      it "includes the admin-triggered explanation in the email body" do
+        expect(admin_email.body.encoded).to include("An admin (AdminUser) requested this password reset")
+      end
+    end
+
+    context "when not triggered by an admin" do
+      it "does not include the admin-triggered explanation" do
+        expect(email.body.encoded).not_to include("An admin (")
+      end
+    end
   end
 
   describe "#confirmation_instructions" do
@@ -131,6 +145,31 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(email["from"].value).to eq(expected_from)
       end
     end
+
+    # Signup-time confirmations race the mlh identity link; Deliverable holds
+    # them rather than mint an email-keyed Customer.io person. DeviseMailer is
+    # not parameterized, so the replay must carry its positional args.
+    context "when routed through Customer.io before the mlh identity exists" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "holds the email and sends it by MLH uid once linked" do
+        held = described_class.confirmation_instructions(user, "faketoken").message
+        expect(held.perform_deliveries).to be(false)
+
+        omniauth_mock_mlh_payload
+        create(:identity, provider: "mlh", user: user, uid: "core-7")
+        replay = described_class.with(customerio_link_hold: 1).confirmation_instructions(user, "faketoken").message
+
+        expect(replay.perform_deliveries).to be(true)
+        expect(replay.delivery_method.settings[:identifiers]).to eq(id: "core-7")
+      end
+    end
   end
 
   describe "#invitation_instructions" do
@@ -219,7 +258,7 @@ RSpec.describe DeviseMailer, type: :mailer do
     end
 
     context "when domain already includes port number" do
-      let!(:subforem) { create(:subforem, domain: "dev.example.com:3000") }
+      let!(:subforem) { create(:subforem, domain: "dev.example.com:#{URL.dev_port}") }
       let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
 
       before do
@@ -229,11 +268,10 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it "doesn't add :3000 port twice" do
+      it "doesn't add the development port twice" do
         email = described_class.confirmation_instructions(user_with_subforem, "token")
-        # Should not have :3000:3000 in the body
-        expect(email.body.to_s).not_to include(":3000:3000")
-        expect(email.body.to_s).to include("dev.example.com:3000")
+        expect(email.body.to_s).not_to include(":#{URL.dev_port}:#{URL.dev_port}")
+        expect(email.body.to_s).to include("dev.example.com:#{URL.dev_port}")
       end
     end
 
@@ -242,6 +280,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -259,6 +298,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -275,7 +315,7 @@ RSpec.describe DeviseMailer, type: :mailer do
       end
 
       it "routes #reset_password_instructions through the Customer.io reset password template", :aggregate_failures do
-        email = described_class.reset_password_instructions(user, "resettoken")
+        email = described_class.reset_password_instructions(user, "resettoken", admin_triggered_by: "AdminUser")
         settings = email.message.delivery_method.settings
 
         expect(settings[:transactional_message_id]).to eq("dev_reset_password_instructions")
@@ -283,6 +323,7 @@ RSpec.describe DeviseMailer, type: :mailer do
         expect(settings[:message_data]["reset_url"]).to include("reset_password_token=resettoken")
         expect(settings[:message_data]["name"]).to eq(user.name)
         expect(settings[:message_data]["community_name"]).to eq(community_name)
+        expect(settings[:message_data]["admin_triggered_by"]).to eq("AdminUser")
       end
 
       it "routes #unlock_instructions through the Customer.io unlock template", :aggregate_failures do

@@ -8,7 +8,14 @@ module URL
   # to preserve historical behavior, but can be overridden by setting the
   # PORT environment variable to match the actual server port (useful when
   # Forem runs alongside other Rails apps that also default to 3000).
+  #
+  # URL_PORT, when set, wins over PORT: it names the port the public URL
+  # should carry rather than the one Puma listens on. Set it to an empty value
+  # when a TLS proxy such as Caddy fronts the app on the standard port, so
+  # OAuth callbacks and other absolute URLs carry no port at all.
   def self.dev_port
+    return ENV["URL_PORT"] if ENV.key?("URL_PORT")
+
     ENV.fetch("PORT", "3000")
   end
 
@@ -37,16 +44,43 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
+    port = dev_port
+    base_url += ":#{port}" if Rails.env.development? && port.present? && base_url.exclude?(":#{port}")
     return base_url unless uri
+
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
 
   # Creates an article URL
   #
   # @param article [Article] the article to create the URL for
-  def self.article(article)
-    return url(article.path) unless article.respond_to?(:subforem_id)
+  # @param user_signed_in [Boolean, nil] whether the viewer is signed in (defaults to checking RequestStore)
+  def self.article(article, user_signed_in: nil)
+    is_signed_in = user_signed_in.nil? ? RequestStore.store[:user_signed_in] : user_signed_in
+    is_on_custom_domain = RequestStore.store[:custom_domain_org].present?
+
+    unless is_signed_in && !is_on_custom_domain
+      has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
+      if has_org_attr && (org = article.try(:organization))
+        if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          return url("/#{article.slug}", org.custom_domain)
+        end
+      elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
+        org_id = article.organization_id
+        custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
+          Organization.where(id: org_id).pick(:custom_domain).to_s
+        end
+        if custom_domain.present?
+          org = Organization.find_by(id: org_id)
+          if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+            return url("/#{article.slug}", custom_domain)
+          end
+        end
+      end
+    end
+
+    has_subforem_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
+    return url(article.path) unless has_subforem_attr
     
     # Use cached lookup to avoid N+1 queries
     subforem_id = article.subforem_id || RequestStore.store[:default_subforem_id]
@@ -121,6 +155,13 @@ module URL
   #
   # @param user [User] the user to create the URL for
   def self.user(user)
+    if user.respond_to?(:custom_domain) && user.custom_domain.present?
+      org = user.respond_to?(:to_model) ? user.to_model : user
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, user.custom_domain)
+      end
+    end
+
     # Use cached lookup to avoid N+1 queries
     subforem_id = RequestStore.store[:subforem_id]
     
@@ -154,6 +195,12 @@ module URL
   end
 
   def self.organization(organization)
+    if organization.respond_to?(:custom_domain) && organization.custom_domain.present?
+      org = organization.respond_to?(:to_model) ? organization.to_model : organization
+      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        return url(nil, organization.custom_domain)
+      end
+    end
     url(organization.slug)
   end
 end

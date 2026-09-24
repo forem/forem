@@ -21,7 +21,9 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
   ['/latest_less_filtered', 'latest_less_filtered'],
   ['/following', ''],
-  ['/following/latest', 'latest']
+  ['/following/latest', 'latest'],
+  ['/following/latest_less_filtered', 'latest_less_filtered'],
+  ['/curated', ''],
 ]);
 
 /**
@@ -93,7 +95,7 @@ function renderSidebar() {
   if (
     sidebarContainer &&
     screen.width >= 640 &&
-    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/') || pathname.includes('/discover') || pathname.includes('/following'))
+    (pathname === '/' || pathname === '/latest' || pathname.includes('/top/') || pathname.includes('/discover') || pathname.includes('/following') || pathname.includes('/curated'))
   ) {
     window
       .fetch('/sidebars/home')

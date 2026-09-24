@@ -71,6 +71,24 @@ describe Rack, ".attack", throttle: true, type: :request do
         expect(new_ip_response).not_to eq(429)
       end
     end
+
+    it "throttles /search/feed_content/ with trailing slash" do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        params = { feed_params: { class_name: "Article", sort_by: "hotness_score" } }
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/search/feed_content/", params: params, headers: headers
+        end
+        Timecop.travel(start_time + 11.seconds)
+        throttled_response = get "/search/feed_content/", params: params, headers: headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
   end
 
   describe "api_throttle" do
@@ -153,6 +171,62 @@ describe Rack, ".attack", throttle: true, type: :request do
 
         valid_responses.each { |r| expect(r).not_to eq(429) }
         # Admin users bypass throttling, so no Honeycomb calls expected
+      end
+    end
+  end
+
+  describe "api_throttle_per_minute" do
+    it "throttles api get endpoints after 30 requests per minute based on IP" do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..30).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        Timecop.travel(start_time + 46.seconds)
+        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "doesn't throttle when API key provided belongs to admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => admin_api_key.secret }
+        valid_responses = (1..35).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get api_articles_path, headers: headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
+  end
+
+  describe "api_key_throttle_per_minute" do
+    it "throttles api get endpoints after 30 requests per minute based on API key across different IPs" do
+      api_secret = create(:api_secret)
+      another_api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..30).map do |i|
+          Timecop.travel(start_time + (i * 1.5).seconds)
+          get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.#{i}", "api-key" => api_secret.secret }
+        end
+        Timecop.travel(start_time + 46.seconds)
+        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.99", "api-key" => api_secret.secret }
+        new_key_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.100", "api-key" => another_api_secret.secret }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_key_response).not_to eq(429)
       end
     end
   end
