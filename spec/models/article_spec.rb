@@ -1664,6 +1664,88 @@ RSpec.describe Article do
         expect(article.video).to be_nil
       end
     end
+
+    context "when clearing video_source_url" do
+      it "clears video and video_source_url when set to blank" do
+        saved_article = create(:article, user: user, video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(saved_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+
+        saved_article.video_source_url = ""
+        saved_article.valid?
+        expect(saved_article.video_source_url).to be_nil
+        expect(saved_article.video).to be_nil
+      end
+
+      it "clears video_thumbnail_url for Mux video when cleared" do
+        saved_article = create(:article, user: user, video_source_url: "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+        expect(saved_article.video_thumbnail_url).to be_present
+
+        saved_article.video_source_url = nil
+        saved_article.valid?
+        expect(saved_article.video_source_url).to be_nil
+        expect(saved_article.video).to be_nil
+        expect(saved_article.video_thumbnail_url).to be_nil
+      end
+
+      it "does not clear an existing video embed on unrelated updates when video_source_url is untouched" do
+        saved_article = create(:article, user: user, video_source_url: nil)
+        saved_article.update_column(:video, "https://www.youtube.com/embed/dQw4w9WgXcQ")
+
+        saved_article.title = "Updated title"
+        saved_article.valid?
+        expect(saved_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+      end
+
+      it "does not clear a legacy uploaded video on unrelated updates" do
+        saved_article = create(:article, :video, user: user)
+        expect(saved_article.video).to be_present
+        expect(saved_article.video_source_url).to include(".m3u8")
+
+        saved_article.title = "Updated title"
+        saved_article.valid?
+        expect(saved_article.video).to be_present
+        expect(saved_article.video_thumbnail_url).to be_present
+      end
+
+      it "keeps a user-provided thumbnail when a non-Mux video is cleared" do
+        saved_article = create(:article, user: user,
+                                         video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                                         video_thumbnail_url: "https://i.imgur.com/HPiu7N4.jpg")
+
+        saved_article.video_source_url = ""
+        saved_article.valid?
+        expect(saved_article.video).to be_nil
+        expect(saved_article.video_thumbnail_url).to eq("https://i.imgur.com/HPiu7N4.jpg")
+      end
+
+      it "does not clear video on a new record with a blank video_source_url" do
+        new_article = build(:article, user: user, video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                                      video_source_url: "")
+        new_article.valid?
+        expect(new_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+        expect(new_article.video_source_url).to be_nil
+      end
+    end
+  end
+
+  describe ".permitted_video_source_url?" do
+    it "permits blank values so the cover video can be removed" do
+      expect(described_class.permitted_video_source_url?(nil)).to be(true)
+      expect(described_class.permitted_video_source_url?("")).to be(true)
+    end
+
+    it "permits YouTube, Mux and Twitch video URLs" do
+      expect(described_class.permitted_video_source_url?("https://www.youtube.com/watch?v=dQw4w9WgXcQ")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://youtu.be/dQw4w9WgXcQ")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://player.mux.com/abc123")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://www.twitch.tv/videos/1234567890")).to be(true)
+    end
+
+    it "rejects other URLs" do
+      expect(described_class.permitted_video_source_url?("https://example.com/video")).to be(false)
+      expect(described_class.permitted_video_source_url?("https://www.twitch.tv/somechannel")).to be(false)
+      expect(described_class.permitted_video_source_url?("javascript:alert(1)")).to be(false)
+    end
   end
 
   describe "#fetch_video_duration" do

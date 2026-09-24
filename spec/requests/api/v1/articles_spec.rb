@@ -1209,6 +1209,38 @@ RSpec.describe "Api::V1::Articles" do
         expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
+      it "removes video_source_url when given an empty string" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.reload.video).to be_present
+
+        put_article(video_source_url: "")
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to be_nil
+        expect(article.video).to be_nil
+      end
+
+      it "removes video_source_url when given nil" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.reload.video).to be_present
+
+        put_article(video_source_url: nil)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to be_nil
+        expect(article.video).to be_nil
+      end
+
+      it "does not touch video_source_url when the key is absent" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+        put_article(title: "New title")
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.video).to be_present
+      end
+
       it "updates the tags" do
         expect do
           put_article(
