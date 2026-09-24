@@ -161,11 +161,14 @@ class ArticlesController < ApplicationController
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
 
+          ai_disclosure_level = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
+
           render json: {
             processed_html: processed_html,
             title: front_matter["title"],
             tags: tags,
-            cover_image: cover_image
+            cover_image: cover_image,
+            ai_disclosure_level: ai_disclosure_level
           }, status: :ok
         end
       end
@@ -346,17 +349,14 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id ai_disclosure_level
                        ]
                      end
 
-    # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
-    video_url = params.dig("article", "video_source_url")
-    if video_url.present?
-      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+    # Allow video_source_url only for supported hosts; a blank value removes the cover video
+    if params["article"].key?("video_source_url") &&
+        Article.permitted_video_source_url?(params["article"]["video_source_url"])
+      allowed_params << :video_source_url
     end
 
     # NOTE: the organization logic is still a little counter intuitive but this should

@@ -1,0 +1,62 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.blocks_tab.title") %></h3>
+  </div>
+
+  <nav class="mb-4" aria-label="Blocks filters">
+    <ul class="crayons-navigation crayons-navigation--horizontal">
+      <li><%= link_to t("views.admin.users.blocks_tab.blocking"),
+              admin_user_path(@user.id, tab: :blocks, filter: :blocking),
+              class: "crayons-navigation__item #{'crayons-navigation__item--current' if @blocks_filter == 'blocking'}",
+              aria: @blocks_filter == "blocking" ? { current: "page" } : {} %></li>
+      <li><%= link_to t("views.admin.users.blocks_tab.blocked_by"),
+              admin_user_path(@user.id, tab: :blocks, filter: :blocked_by),
+              class: "crayons-navigation__item #{'crayons-navigation__item--current' if @blocks_filter == 'blocked_by'}",
+              aria: @blocks_filter == "blocked_by" ? { current: "page" } : {} %></li>
+    </ul>
+  </nav>
+
+  <% if @blocks.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.blocks_tab.empty") %></p>
+    </div>
+  <% else %>
+    <%= paginate @blocks if respond_to?(:paginate) %>
+
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.blocks_tab.table.user") %></th>
+            <th scope="col"><%= t("views.admin.users.blocks_tab.table.username") %></th>
+            <th scope="col"><%= t("views.admin.users.blocks_tab.table.blocked_at") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @blocks.each do |block| %>
+            <% target_user = @blocks_filter == 'blocked_by' ? block.blocker : block.blocked %>
+            <tr>
+              <td>
+                <% if target_user %>
+                  <%= link_to target_user.name, admin_user_path(target_user.id), class: "c-link" %>
+                <% else %>
+                  <span class="color-secondary">-</span>
+                <% end %>
+              </td>
+              <td>
+                <% if target_user %>
+                  <span class="color-secondary">@<%= target_user.username %></span>
+                <% else %>
+                  -
+                <% end %>
+              </td>
+              <td class="whitespace-nowrap"><%= l(block.created_at, format: :short_with_yy) rescue block.created_at.to_s %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @blocks if respond_to?(:paginate) %>
+  <% end %>
+</div>

@@ -9,7 +9,7 @@ RSpec.describe "/admin/content_manager/organizations verified" do
   end
 
   describe "PATCH /admin/organizations/:id/update_verified" do
-    it "enables verified status" do
+    it "enables verified status and sets baseline_score" do
       expect do
         patch update_verified_admin_organization_path(organization),
               params: { verified: "true" }
@@ -17,12 +17,14 @@ RSpec.describe "/admin/content_manager/organizations verified" do
 
       expect(organization.verified_at).to be_present
       expect(organization.verification_status).to eq(Organization::VERIFICATION_STATUS_ADMIN)
+      expect(organization.baseline_score).to eq(Settings::UserExperience.index_minimum_score.to_i)
       expect(response).to redirect_to(admin_organization_path(organization))
       expect(flash[:notice]).to include("verified")
     end
 
-    it "disables verified status" do
+    it "disables verified status and resets baseline_score to 0" do
       organization.update(verified: true, verified_at: Time.current)
+      expect(organization.reload.baseline_score).to eq(Settings::UserExperience.index_minimum_score.to_i)
 
       expect do
         patch update_verified_admin_organization_path(organization),
@@ -31,6 +33,7 @@ RSpec.describe "/admin/content_manager/organizations verified" do
 
       expect(organization.verified_at).to be_nil
       expect(organization.verification_url).to be_nil
+      expect(organization.baseline_score).to eq(0)
       expect(response).to redirect_to(admin_organization_path(organization))
     end
 

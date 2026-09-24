@@ -62,12 +62,13 @@ RSpec.describe UserQuery, type: :model do
       it "rejects queries with suspicious patterns" do
         subject.query = "SELECT id FROM users -- comment"
         expect(subject).not_to be_valid
-        expect(subject.errors[:query]).to include("contains suspicious pattern: (?-mix:--)")
+        expect(subject.errors[:query]).to include("contains suspicious pattern: /--/")
       end
 
-      it "accepts queries with unbalanced parentheses (not validated by model)" do
+      it "rejects queries with unbalanced parentheses" do
         subject.query = "SELECT id FROM users WHERE (created_at > '2023-01-01'"
-        expect(subject).to be_valid
+        expect(subject).not_to be_valid
+        expect(subject.errors[:query]).to include("contains unbalanced parentheses")
       end
 
       it "accepts valid queries" do
@@ -140,19 +141,17 @@ RSpec.describe UserQuery, type: :model do
       expect(result).to be_empty
     end
 
-    it "handles query timeout", :skip => "Database isolation issues in test environment" do
-      # Create a simple user query for testing
-      test_user_query = create(:user_query, 
+    it "handles query timeout" do
+      test_user_query = create(
+        :user_query,
         name: "Timeout Test Query #{SecureRandom.hex(4)}",
         query: "SELECT id FROM users LIMIT 1",
-        max_execution_time_ms: 1
+        max_execution_time_ms: 1,
       )
-      
-      # Mock the database connection to raise a timeout error
-      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).to receive(:execute).and_raise(PG::QueryCanceled.new("timeout"))
 
-      result = test_user_query.execute_safely
-      expect(result).to be_empty
+      allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))
+
+      expect { test_user_query.execute_safely }.to raise_error(UserQuery::QueryTimeoutError)
     end
   end
 

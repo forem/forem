@@ -40,7 +40,9 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
 ### Integration Tips:
 - **user_id**: The numeric ID of the user receiving the badge.
 - **badge_id**: The numeric ID of the badge being awarded.
-- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge."
+- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.
+- **metadata**: Optional key/value data stored with the achievement for context.
+- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors."
         consumes "application/json"
         produces "application/json"
         parameter name: :achievement_params, in: :body,
@@ -54,7 +56,8 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
                           user_id: { type: :integer },
                           badge_id: { type: :integer },
                           rewarding_context_message_markdown: { type: :string },
-                          include_default_description: { type: :boolean }
+                          include_default_description: { type: :boolean },
+                          metadata: { type: :object, additionalProperties: true }
                         },
                         required: %w[user_id badge_id]
                       }
@@ -67,6 +70,30 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
           let(:another_badge) { create(:badge) }
           let(:achievement_params) { { badge_achievement: { user_id: another_user.id, badge_id: another_badge.id, rewarding_context_message_markdown: "Nice job", include_default_description: true } } }
           schema "$ref": "#/components/schemas/BadgeAchievement"
+          add_examples
+          run_test!
+        end
+
+        response "409", "conflict" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:existing_achievement) { create(:badge_achievement) }
+          let(:achievement_params) { { badge_achievement: { user_id: existing_achievement.user_id, badge_id: existing_achievement.badge_id } } }
+          schema type: :object,
+                 properties: {
+                   errors: { type: :array, items: { type: :string } },
+                   achievement_id: {
+                     type: :integer,
+                     description: "ID of the conflicting achievement awarding the badge to the user."
+                   }
+                 },
+                 required: %w[errors achievement_id]
+          add_examples
+          run_test!
+        end
+
+        response "422", "unprocessable" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:achievement_params) { { badge_achievement: { user_id: nil, badge_id: nil } } }
           add_examples
           run_test!
         end

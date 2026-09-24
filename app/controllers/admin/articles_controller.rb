@@ -92,6 +92,15 @@ module Admin
       end
     end
 
+    def unfavorite
+      article = Article.find(params[:id])
+
+      Favorites::Remove.call(favoritable: article, admin: current_user)
+
+      flash[:success] = I18n.t("admin.articles_controller.favorite_removed")
+      redirect_to admin_article_path(article.id)
+    end
+
     private
 
     def articles_top(months_ago)

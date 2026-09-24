@@ -139,6 +139,19 @@ RSpec.describe CommentPolicy, type: :policy do
     end
   end
 
+  context "when user is a support admin" do
+    let(:user) { create(:user, :support_admin) }
+
+    it { is_expected.to permit_actions(%i[admin_access]) }
+    it { is_expected.to forbid_actions(%i[admin_delete]) }
+  end
+
+  context "when user is an admin" do
+    let(:user) { create(:user, :admin) }
+
+    it { is_expected.to permit_actions(%i[admin_access admin_delete]) }
+  end
+
   context "when user is commentable author" do
     subject(:comment_policy) { described_class.new(commentable_author, comment) }
 

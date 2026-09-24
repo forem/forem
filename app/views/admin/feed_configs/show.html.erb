@@ -1,0 +1,62 @@
+<header class="flex items-center mb-6">
+  <div>
+    <h1 class="crayons-title">Feed Config #<%= @feed_config.id %></h1>
+    <p class="color-base-60 text-sm">Created on <%= @feed_config.created_at.strftime("%B %d, %Y at %H:%M UTC") %></p>
+  </div>
+  <div class="ml-auto flex gap-2">
+    <%= link_to "Clone & Modify as New", new_admin_feed_config_path(clone_from_id: @feed_config.id), class: "crayons-btn crayons-btn--primary" %>
+    <%= link_to "Back to Feed Configs", admin_feed_configs_path, class: "crayons-btn crayons-btn--outlined" %>
+    <%= link_to "Delete", admin_feed_config_path(@feed_config), data: { turbo_method: :delete, confirm: "Are you sure you want to delete this Feed Config?" }, class: "crayons-btn crayons-btn--danger" %>
+  </div>
+</header>
+
+<div class="grid grid-cols-1 m:grid-cols-2 gap-6 mb-6">
+  <div class="crayons-card p-6">
+    <h2 class="fs-base fw-bold mb-4">Performance Metrics</h2>
+    <dl class="grid grid-cols-2 gap-4">
+      <div>
+        <dt class="fs-xs color-base-60">Success Score</dt>
+        <dd class="fs-l fw-bold color-base-90"><%= @feed_config.feed_success_score.round(4) %></dd>
+      </div>
+      <div>
+        <dt class="fs-xs color-base-60">Impressions Count</dt>
+        <dd class="fs-l fw-bold color-base-90"><%= number_with_delimiter(@feed_config.feed_impressions_count) %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="crayons-card p-6">
+    <h2 class="fs-base fw-bold mb-4">AI Disclosure Weights</h2>
+    <dl class="grid grid-cols-2 gap-4">
+      <div>
+        <dt class="fs-xs color-base-60">AI Disclosure Matching Weight</dt>
+        <dd class="fs-l fw-bold color-base-90"><%= @feed_config.ai_disclosure_matching_weight %></dd>
+      </div>
+      <div>
+        <dt class="fs-xs color-base-60">Autonomous AI Penalty Weight</dt>
+        <dd class="fs-l fw-bold color-base-90"><%= @feed_config.autonomous_ai_penalty_weight %></dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<div class="crayons-card p-6">
+  <h2 class="fs-base fw-bold mb-4">All Configured Weights & Parameters</h2>
+  <table class="crayons-table">
+    <thead>
+      <tr>
+        <th scope="col">Parameter</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @feed_config.attributes.sort.each do |key, value| %>
+        <% next if key.in?(%w[id created_at updated_at]) %>
+        <tr>
+          <td class="font-mono text-sm"><code><%= key %></code></td>
+          <td class="fw-bold"><%= value %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

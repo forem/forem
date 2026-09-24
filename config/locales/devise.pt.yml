@@ -16,6 +16,7 @@ pt:
         subject: "Instruções de confirmação"
       reset_password_instructions:
         subject: "Instruções para redefinir senha"
+        admin_triggered_html: "Um administrador (%{admin}) solicitou esta redefinição de senha para ajudar você a recuperar o acesso à sua conta."
     passwords:
       send_instructions: "Você receberá um e-mail com instruções para redefinir sua senha em alguns minutos."
       updated: "Sua senha foi alterada com sucesso. Você está logado agora."

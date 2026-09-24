@@ -60,6 +60,7 @@ gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
+gem "jwt", "2.10.3" # Verify delegated access tokens
 gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
@@ -73,7 +74,7 @@ gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 9.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 2.0" # OmniAuth strategy for GitHub
 gem "omniauth-google-oauth2", "~> 1.0" # OmniAuth strategy for Google OAuth2
-gem "omniauth-mlh", "~> 4.1"
+gem "omniauth-mlh", "~> 4.2"
 gem "omniauth-rails_csrf_protection", "~> 2.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.22" # Run any kind of code in parallel processes

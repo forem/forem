@@ -29,6 +29,17 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       expect(stories).to include(min_score_article)
     end
 
+    it "includes favorited articles even if their score is below the home feed minimum score" do
+      favorited_low_score_article = create(:article, score: -100, favorited_by_user: create(:user),
+                                                     favorited_at: Time.current)
+      expect(stories).to include(favorited_low_score_article)
+    end
+
+    it "includes featured articles even if their score is below the home feed minimum score" do
+      featured_low_score_article = create(:article, score: -100, featured: true)
+      expect(stories).to include(featured_low_score_article)
+    end
+
     context "when user logged in" do
       let(:result) { feed.featured_story_and_default_home_feed(user_signed_in: true) }
       let(:featured_story) { result.first }
@@ -184,6 +195,30 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
+      end
+    end
+  end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :no_ai) }
+    let!(:autonomous_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :fully_autonomous) }
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article)
+        expect(stories).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article, autonomous_article)
       end
     end
   end

@@ -152,19 +152,38 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         end
 
         context "when the tag has moderators" do
-          let(:six_badge_mod) { create(:user, badge_achievements_count: 6) }
-          let(:three_badge_mod) { create(:user, badge_achievements_count: 3) }
-          let(:ten_badge_mod) { create(:user, badge_achievements_count: 10) }
-          let(:two_badge_mod) { create(:user, badge_achievements_count: 2) }
-          let(:eight_badge_mod) { create(:user, badge_achievements_count: 8) }
-          let(:mods) { [six_badge_mod, three_badge_mod, ten_badge_mod, two_badge_mod, eight_badge_mod] }
+          let(:mod_user) { create(:user, username: "tag_mod_alpha") }
+          let(:new_mod_user) { create(:user, username: "tag_mod_beta") }
 
           before do
-            mods.each { |mod| mod.add_role(:tag_moderator, tag) }
+            sign_in user
+            TagModerators::Add.call(mod_user.id, tag.id)
           end
 
-          def nth_avatar(user_position)
-            ".widget-user-pic:nth-child(#{user_position})"
+          it "renders the moderator in the sidebar" do
+            get "/t/#{tag.name}"
+            expect(response.body).to include(mod_user.username)
+          end
+
+          it "updates the cached sidebar when a new moderator is added" do
+            get "/t/#{tag.name}"
+            expect(response.body).to include(mod_user.username)
+            expect(response.body).not_to include(new_mod_user.username)
+
+            TagModerators::Add.call(new_mod_user.id, tag.id)
+
+            get "/t/#{tag.name}"
+            expect(response.body).to include(new_mod_user.username)
+          end
+
+          it "updates the cached sidebar when a moderator is removed" do
+            get "/t/#{tag.name}"
+            expect(response.body).to include(mod_user.username)
+
+            TagModerators::Remove.call(mod_user, tag)
+
+            get "/t/#{tag.name}"
+            expect(response.body).not_to include(mod_user.username)
           end
         end
 
@@ -200,7 +219,9 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           it "does not render pagination even with many posts" do
+            # rubocop:disable FactoryBot/ExcessiveCreateList
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+            # rubocop:enable FactoryBot/ExcessiveCreateList
             get "/t/#{tag.name}"
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
           end
@@ -214,6 +235,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
         end
 
+        # rubocop:disable FactoryBot/ExcessiveCreateList
         context "without user signed in" do
           let(:tag) { create(:tag) }
 
@@ -291,6 +313,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include(expected_tag)
           end
         end
+        # rubocop:enable FactoryBot/ExcessiveCreateList
       end
     end
   end

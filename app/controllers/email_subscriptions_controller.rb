@@ -1,4 +1,9 @@
 class EmailSubscriptionsController < ApplicationController
+  # RFC 8058 one-click unsubscribe requests are POSTed by the mailbox provider
+  # (Gmail, Yahoo, ...) and cannot carry a CSRF token. The signed `ut` token is
+  # what authenticates the request.
+  skip_before_action :verify_authenticity_token, only: %i[unsubscribe]
+
   def unsubscribe
     verified_params = Rails.application.message_verifier(:unsubscribe).verify(params[:ut]).with_indifferent_access
 

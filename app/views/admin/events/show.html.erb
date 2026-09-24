@@ -3,6 +3,7 @@
     <h1 class="crayons-title">Event Configuration: <%= @event.title %></h1>
     <div class="flex gap-2">
       <%= link_to "Edit Event", edit_admin_event_path(@event), class: "c-btn c-btn--primary" %>
+      <%= link_to t("views.admin.events.fork_event"), new_admin_event_path(fork_from_id: @event.id), class: "c-btn c-btn--secondary" %>
       <%= link_to "Public View", event_path(@event.event_name_slug, @event.event_variation_slug), target: "_blank", class: "c-btn c-btn--secondary" %>
     </div>
   </div>
@@ -14,8 +15,25 @@
         <li><strong>Title:</strong> <%= @event.title %></li>
         <li><strong>Event Name Slug:</strong> <%= @event.event_name_slug %></li>
         <li><strong>Event Variation Slug:</strong> <%= @event.event_variation_slug %></li>
-        <li><strong>Description:</strong> <%= @event.description %></li>
         <li><strong>Tags:</strong> <%= @event.tag_list.join(", ") %></li>
+        <li>
+          <strong>Background Color:</strong>
+          <span style="display:inline-block; width:16px; height:16px; background-color:<%= @event.background_hex_color %>; vertical-align:middle; border-radius:3px; margin-right:4px; border: 1px solid var(--card-border);"></span>
+          <%= @event.background_hex_color %>
+          <% if @event.bg_color_hex.present? %>
+            <span class="text-xs opacity-75">(stored)</span>
+          <% else %>
+            <span class="text-xs opacity-75">(dynamic fallback)</span>
+          <% end %>
+        </li>
+        <% if @event.cover_image.present? %>
+          <li>
+            <strong>Cover Image:</strong>
+            <div class="mt-2">
+              <img src="<%= @event.cover_image.url %>" alt="Cover Image" style="max-width: 320px; border-radius: var(--radius); border: 1px solid var(--card-border);" />
+            </div>
+          </li>
+        <% end %>
       </ul>
     </div>
     
@@ -67,6 +85,17 @@
     </ul>
   </div>
 
+  <div class="mb-8">
+    <h2 class="text-xl font-bold mb-4">Full Details (API Only / Agent Context)</h2>
+    <% if @event.full_details.present? %>
+      <div class="p-4 bg-base-10 rounded border border-base-20" style="white-space: pre-wrap; font-family: monospace; font-size: var(--fs-s); line-height: 1.6; max-height: 400px; overflow-y: auto;">
+        <%= @event.full_details %>
+      </div>
+    <% else %>
+      <p class="color-base-60 italic">No full details dump provided yet.</p>
+    <% end %>
+  </div>
+
   <hr class="my-8" />
 
   <div class="flex items-center justify-between mb-6">
@@ -112,7 +141,12 @@
 
   <hr class="my-8" />
 
-  <h2 class="text-2xl font-bold mb-4"><%= t("views.admin.events.show.signups_title") %></h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-2xl font-bold"><%= t("views.admin.events.show.signups_title") %></h2>
+    <% unless ForemInstance.customerio_email_cutover? %>
+      <%= link_to "Email All Signups", new_admin_email_path(event_id: @event.id), class: "c-btn c-btn--secondary c-btn--sm" %>
+    <% end %>
+  </div>
 
   <% if @event_signups.any? %>
     <div class="mb-4">

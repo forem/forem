@@ -64,5 +64,15 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
       described_class.call(article)
       expect(organization).to have_received(:purge).once
     end
+
+    it "busts the custom domain article URL when org custom domain is enabled" do
+      organization = create(:organization, custom_domain: "blog.example.com")
+      article.organization = organization
+      allow(organization).to receive(:purge)
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+
+      described_class.call(article)
+      expect(cache_bust).to have_received(:call).with(URL.url("/#{article.slug}", organization.custom_domain))
+    end
   end
 end

@@ -4,8 +4,8 @@ class YoutubeTag < LiquidTagBase
 
   def self.extract_video_id(str)
     match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
-            str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
-            str.match(/\A([a-zA-Z0-9_-]{11})\z/)
+      str.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
+      str.match(/\A([a-zA-Z0-9_-]{11})\z/)
     match[1] if match
   end
 
@@ -14,10 +14,20 @@ class YoutubeTag < LiquidTagBase
     @input = CGI.unescape_html(strip_tags(input.strip))
     @id = extract_video_id_and_start_time || raise(StandardError, "Invalid YouTube URL")
     @shorts = shorts_url?
+    @width = @shorts ? 315 : 710
+    @height = @shorts ? 560 : 399
   end
 
   def render(_context)
-    ApplicationController.render(partial: PARTIAL, locals: { id: @id, shorts: @shorts })
+    ApplicationController.render(
+      partial: PARTIAL,
+      locals: {
+        id: @id,
+        shorts: @shorts,
+        width: @width,
+        height: @height
+      },
+    )
   end
 
   private
@@ -31,14 +41,14 @@ class YoutubeTag < LiquidTagBase
   end
 
   def shorts_url?
-    @input.match?(%r{youtube\.com/shorts/})
+    @input.include?("youtube.com/shorts/")
   end
 
   def find_video_id(str)
     match = str.match(%r{youtu\.be/([a-zA-Z0-9_-]{11})}) ||
-            str.match(%r{youtube\.com/(?:shorts|live)/([a-zA-Z0-9_-]{11})}) ||
-            str.match(%r{[?&]v=([a-zA-Z0-9_-]{11})}) ||
-            str.match(/\A([a-zA-Z0-9_-]{11})\z/)
+      str.match(%r{youtube\.com/(?:shorts|live)/([a-zA-Z0-9_-]{11})}) ||
+      str.match(/[?&]v=([a-zA-Z0-9_-]{11})/) ||
+      str.match(/\A([a-zA-Z0-9_-]{11})\z/)
     match[1] if match
   end
 

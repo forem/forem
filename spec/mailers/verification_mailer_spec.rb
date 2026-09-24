@@ -58,6 +58,7 @@ RSpec.describe VerificationMailer do
       allow(ApplicationConfig).to receive(:[]).and_call_original
       allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
       FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+      link_mlh_identity(user)
     end
 
     after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -68,6 +69,7 @@ RSpec.describe VerificationMailer do
       expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
       expect(email.message.delivery_method.settings[:tracked]).to be(false)
     end
+
     it "routes through the Customer.io account ownership verification template", :aggregate_failures do
       email = described_class.with(user_id: user.id).account_ownership_verification_email
       settings = email.message.delivery_method.settings

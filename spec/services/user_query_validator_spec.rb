@@ -168,5 +168,60 @@ RSpec.describe UserQueryValidator do
       expect(validator.send(:balanced_parentheses?)).to be true
     end
   end
-end
 
+  describe "#validate!" do
+    it "returns true for valid query" do
+      validator = described_class.new("SELECT id FROM users")
+      expect(validator.validate!).to be true
+    end
+
+    it "raises QueryValidationError for invalid query" do
+      validator = described_class.new("UPDATE users SET name = 'test'")
+      expect { validator.validate! }.to raise_error(UserQuery::QueryValidationError, /Query must start with SELECT/)
+    end
+  end
+
+  describe "AST security validation" do
+    it "rejects SELECT INTO statements" do
+      validator = described_class.new("SELECT id INTO new_users FROM users")
+      expect(validator.valid?).to be false
+      expect(validator.error_messages).to include("Query cannot modify data - read-only queries only")
+    end
+
+    it "rejects FOR UPDATE locking clauses" do
+      validator = described_class.new("SELECT id FROM users FOR UPDATE")
+      expect(validator.valid?).to be false
+      expect(validator.error_messages).to include("Query cannot use locking clauses (FOR UPDATE/SHARE)")
+    end
+
+    it "rejects UNION set operations" do
+      validator = described_class.new("SELECT id FROM users UNION SELECT id FROM users")
+      expect(validator.valid?).to be false
+      expect(validator.error_messages).to include("Query cannot use set operations (UNION, INTERSECT, EXCEPT)")
+    end
+
+    it "rejects multi-statement queries" do
+      validator = described_class.new("SELECT id FROM users; SELECT id FROM users")
+      expect(validator.valid?).to be false
+      expect(validator.error_messages).to include("Query must contain only a single statement")
+    end
+
+    it "allows template variables by safely stubbing them for syntax parsing" do
+      validator = described_class.new("SELECT id FROM users WHERE created_at > {{cutoff_date}}")
+      expect(validator.valid?).to be true
+      expect(validator.error_messages).to be_empty
+    end
+
+    it "allows expanded tables: events, event_signups, poll_votes, page_views" do
+      query = <<~SQL.squish
+        SELECT users.id FROM users
+        JOIN events ON users.id = events.user_id
+        JOIN event_signups ON events.id = event_signups.event_id
+        JOIN poll_votes ON users.id = poll_votes.user_id
+        JOIN page_views ON users.id = page_views.user_id
+      SQL
+      validator = described_class.new(query)
+      expect(validator.valid?).to be true
+    end
+  end
+end

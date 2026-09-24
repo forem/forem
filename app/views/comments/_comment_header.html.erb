@@ -23,6 +23,7 @@
         </span>
       <% end %>
       <%= subscription_icon(comment.user) %>
+      <%= community_leader_icon(comment.user) %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>
     <% if commentable_author_is_op?(commentable, comment) %>
@@ -34,6 +35,14 @@
   </div>
 
   <%= render "comments/comment_date", decorated_comment: decorated_comment %>
+
+  <% if comment.ai_disclosed? %>
+    <span class="crayons-hover-tooltip inline-flex items-center ai-disclosure-tag fs-xs color-base-60 ml-2" data-tooltip="<%= t("views.comments.ai_disclosure.#{comment.ai_disclosure_level}_description") %>">
+      <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2">
+        <%= comment.ai_disclosure_label %>
+      </span>
+    </span>
+  <% end %>
 
   <div class="comment__dropdown" data-tracking-name="comment_dropdown">
     <button id="comment-dropdown-trigger-<%= comment.id %>" aria-controls="comment-dropdown-<%= comment.id %>" aria-expanded="false"

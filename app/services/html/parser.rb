@@ -67,7 +67,11 @@ module Html
       doc.search("p img").each do |image|
         next if image.parent.name == "a"
 
-        image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
+        link = doc.document.create_element("a")
+        link["href"] = image.attr("src").to_s
+        link["class"] = "article-body-image-wrapper"
+        image.replace(link)
+        link.add_child(image)
       end
 
       @html = doc.to_html

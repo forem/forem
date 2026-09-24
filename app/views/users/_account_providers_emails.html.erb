@@ -8,9 +8,22 @@
 
     <% @user.identities_enabled.each do |identity| %>
       <% provider = authentication_provider(identity.provider) %>
+      <% identity_email = identity.auth_data_dump&.info&.email %>
       <li class="mb-2">
         <strong class="color-base-60"><%= t("views.settings.account.provider_email", provider: provider.official_name) %></strong>
-        <span class="pl-2"><%= identity.email %></span>
+        <%# An identity created through the admin API rather than a completed OAuth flow has no auth
+            payload, and therefore no email. For MLH, signing in at my.mlh.com with this address is what
+            connects the two accounts, so link there instead of showing the generic "relink" error. %>
+        <% if identity.provider == "mlh" && identity_email.blank? %>
+          <span class="pl-2">
+            <%= t(
+                  "views.settings.account.mlh_sign_in_html",
+                  link: link_to(t("views.settings.account.mlh_sign_in_link"), "https://my.mlh.com/", class: "c-link", target: "_blank", rel: "noopener noreferrer"),
+                ) %>
+          </span>
+        <% else %>
+          <span class="pl-2"><%= identity.email %></span>
+        <% end %>
       </li>
     <% end %>
   </ul>

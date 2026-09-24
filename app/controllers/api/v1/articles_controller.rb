@@ -17,7 +17,7 @@ module Api
           return
         end
 
-        per_page = [params.fetch(:per_page, 10).to_i, 50].min
+        per_page = [params.fetch(:per_page, 30).to_i, 100].min
         per_page = [per_page, 1].max
         page = [params[:page].to_i, 1].max
 
@@ -49,8 +49,13 @@ module Api
           algolia_ids = []
           begin
             search_params = {
-              hitsPerPage: 100,
-              facetFilters: []
+              hitsPerPage: [per_page * 2, 100].max,
+              facetFilters: [],
+              removeStopWords: true,
+              ignorePlurals: true,
+              advancedSyntax: true,
+              distinct: true,
+              typoTolerance: true
             }
             subforem_id = RequestStore.store[:subforem_id]
             if subforem_id.present?
@@ -74,20 +79,46 @@ module Api
               @articles = @articles.select("articles.*, (semantic_embedding <=> #{quoted_vector}) AS distance")
             end
 
-            indexed_articles = @articles.index_by(&:id)
-            ordered_articles = algolia_ids.map { |id| indexed_articles[id] }.compact
+            threshold_val = params[:threshold].present? ? params[:threshold].to_f : nil
+            now = Time.current
+            k = 60
+            scored_articles = []
 
-            # Apply threshold filter if present
-            if params[:threshold].present? && quoted_vector.present?
-              threshold_val = params[:threshold].to_f
-              ordered_articles = ordered_articles.select do |article|
-                distance = article.respond_to?(:distance) && article.distance ? article.distance.to_f : nil
-                distance.nil? || distance <= threshold_val
-              end
+            indexed_articles = @articles.index_by(&:id)
+            algolia_ids.each_with_index do |id, index|
+              article = indexed_articles[id]
+              next unless article
+
+              distance = article.respond_to?(:distance) && article.distance ? article.distance.to_f : nil
+              next if threshold_val && distance && distance > threshold_val
+
+              # Algolia text relevance rank (RRF)
+              algolia_rrf = 1.0 / (k + index + 1)
+
+              # Semantic similarity multiplier (when vector distance is present)
+              semantic_multiplier = distance ? (1.0 + [1.0 - distance, 0.0].max) : 1.0
+
+              # Recency boost (smooth decay over 30-day half-life scale)
+              published_at = article.published_at || now
+              days_ago = [(now - published_at) / 1.day, 0.0].max
+              recency_score = 1.0 / ((days_ago / 30.0) + 1.0)
+              recency_multiplier = 1.0 + (0.6 * recency_score)
+
+              # Quality boost (logarithmic scale)
+              score_val = [article.score.to_f, 0.0].max
+              quality_multiplier = 1.0 + (0.1 * Math.log(score_val + 1.0))
+
+              composite_score = algolia_rrf * semantic_multiplier * recency_multiplier * quality_multiplier
+              scored_articles << [article, composite_score]
             end
+
+            ordered_articles = scored_articles.sort_by { |_art, score| -score }.map(&:first)
 
             # Paginate validated results
             paginated_articles = ordered_articles[((page - 1) * per_page)...(page * per_page)] || []
+
+            # Final verification step: ensure returned articles exist and are currently published
+            paginated_articles = verify_published_articles(paginated_articles)
 
             serialized_articles = paginated_articles.map do |article|
               distance = article.respond_to?(:distance) && article.distance ? article.distance.to_f : nil
@@ -109,32 +140,33 @@ module Api
           return
         end
 
-        # 1. Retrieve top 100 keyword search candidate metadata
+        # 1. Retrieve top keyword search candidate metadata
+        candidate_limit = [per_page * 2, 100].max
         cleaned_query = clean_keyword_query(query_text)
         keyword_relation = Article.published.from_subforem
           .where("score >= ?", Settings::UserExperience.index_minimum_score)
           .search_articles(cleaned_query)
-          .limit(100)
+          .limit(candidate_limit)
         keyword_data = keyword_relation.pluck(:id, :score, :published_at)
 
-        # 2. Retrieve top 100 semantic search candidate metadata
+        # 2. Retrieve top semantic search candidate metadata
         semantic_relation = Article.published.from_subforem
           .where.not(semantic_embedding: nil)
           .where("score >= ?", Settings::UserExperience.index_minimum_score)
           .order(Arel.sql("semantic_embedding <=> #{quoted_vector}"))
-          .limit(100)
+          .limit(candidate_limit)
         semantic_data = semantic_relation.pluck(:id, :score, :published_at)
 
         # 3. Combine rankings using Reciprocal Rank Fusion (RRF) and apply boosts
         keyword_ids = []
         article_metadata = {}
-        keyword_data.each_with_index do |(id, score, published_at), index|
+        keyword_data.each_with_index do |(id, score, published_at), _index|
           keyword_ids << id
           article_metadata[id] = { score: score, published_at: published_at }
         end
 
         semantic_ids = []
-        semantic_data.each_with_index do |(id, score, published_at), index|
+        semantic_data.each_with_index do |(id, score, published_at), _index|
           semantic_ids << id
           article_metadata[id] ||= { score: score, published_at: published_at }
         end
@@ -157,16 +189,16 @@ module Api
           meta = article_metadata[id]
           next unless meta
 
-          # Recency Boost (reciprocal decay over time)
+          # Recency Boost (smooth decay over 30-day half-life scale)
           published_at = meta[:published_at] || now
-          days_ago = [ (now - published_at) / 1.day, 0.0 ].max
-          recency_score = 1.0 / (days_ago + 1.0)
-          recency_multiplier = 1.0 + 1.0 * recency_score
+          days_ago = [(now - published_at) / 1.day, 0.0].max
+          recency_score = 1.0 / ((days_ago / 30.0) + 1.0)
+          recency_multiplier = 1.0 + (0.6 * recency_score)
 
           # Quality Boost (logarithmic scale)
-          score_val = [ meta[:score].to_f, 0.0 ].max
+          score_val = [meta[:score].to_f, 0.0].max
           quality_score = Math.log(score_val + 1.0)
-          quality_multiplier = 1.0 + 0.1 * quality_score
+          quality_multiplier = 1.0 + (0.1 * quality_score)
 
           boosted_scores[id] = rrf_score * recency_multiplier * quality_multiplier
         end
@@ -192,6 +224,9 @@ module Api
         indexed_articles = @articles.index_by(&:id)
         ordered_articles = paginated_ids.map { |id| indexed_articles[id] }.compact
 
+        # Final verification step: ensure returned articles exist and are currently published
+        ordered_articles = verify_published_articles(ordered_articles)
+
         serialized_articles = ordered_articles.map do |article|
           distance = article.respond_to?(:distance) && article.distance ? article.distance.to_f : nil
           similarity = distance ? (1.0 - distance).round(6) : nil
@@ -203,8 +238,6 @@ module Api
 
         render json: serialized_articles
       end
-
-      private
 
       STOP_WORDS = Set.new(%w[
         a about above after again against all am an and any are aren't as at be because been before being below
@@ -219,6 +252,8 @@ module Api
         you're you've your yours yourself yourselves
       ]).freeze
 
+      private
+
       def clean_keyword_query(query_text)
         return "" if query_text.blank?
 
@@ -230,6 +265,18 @@ module Api
         cleaned_words = words.reject { |w| w.length <= 1 || STOP_WORDS.include?(w) }
 
         cleaned_words.empty? ? query_text : cleaned_words.join(" ")
+      end
+
+      # Efficient final verification step to ensure candidate articles still exist
+      # in the database and are currently published (guards against external index drift).
+      def verify_published_articles(articles)
+        return [] if articles.blank?
+
+        candidate_ids = articles.filter_map(&:id)
+        return [] if candidate_ids.blank?
+
+        valid_ids = Article.published.from_subforem.where(id: candidate_ids).ids.to_set
+        articles.select { |article| valid_ids.include?(article.id) && article.published? }
       end
     end
   end

@@ -114,6 +114,13 @@ RSpec.describe Middlewares::SetSubforem do
         expect(RequestStore.store[:subforem_id]).to eq(subforem.id)
         expect(RequestStore.store[:subforem_domain]).to eq("override.example.com")
       end
+
+      it "correctly parses and uses passed_domain when provided as a full URL" do
+        url_env = Rack::MockRequest.env_for("https://actual.example.com/articles?passed_domain=https://override.example.com")
+        middleware.call(url_env)
+        expect(RequestStore.store[:subforem_id]).to eq(subforem.id)
+        expect(RequestStore.store[:subforem_domain]).to eq("override.example.com")
+      end
     end
 
     context "when a request has an empty body and a multipart Content-Type header" do

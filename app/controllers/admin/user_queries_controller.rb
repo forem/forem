@@ -12,7 +12,7 @@ module Admin
       @user_queries = @user_queries.where(active: params[:active]) if params[:active].present?
 
       # Search by name or description
-      return unless params[:search].present?
+      return if params[:search].blank?
 
       search_term = "%#{params[:search]}%"
       @user_queries = @user_queries.where(
@@ -30,8 +30,7 @@ module Admin
       @user_query = UserQuery.new
     end
 
-    def edit
-    end
+    def edit; end
 
     def create
       @user_query = UserQuery.new(user_query_params)
@@ -39,7 +38,7 @@ module Admin
 
       if @user_query.save
         redirect_to admin_user_query_path(@user_query),
-                    notice: "User query was successfully created."
+                    notice: I18n.t("admin.user_queries_controller.created")
       else
         render :new, status: :unprocessable_entity
       end
@@ -48,7 +47,7 @@ module Admin
     def update
       if @user_query.update(user_query_params)
         redirect_to admin_user_query_path(@user_query),
-                    notice: "User query was successfully updated."
+                    notice: I18n.t("admin.user_queries_controller.updated")
       else
         render :edit, status: :unprocessable_entity
       end
@@ -57,7 +56,7 @@ module Admin
     def destroy
       @user_query.destroy
       redirect_to admin_user_queries_path,
-                  notice: "User query was successfully deleted."
+                  notice: I18n.t("admin.user_queries_controller.deleted")
     end
 
     def test_execute
@@ -78,6 +77,7 @@ module Admin
         flash.now[:alert] = "Query execution failed: #{e.message}"
       end
 
+      @estimated_count = @user_query.estimated_user_count
       render :show
     end
 
@@ -86,7 +86,7 @@ module Admin
 
       status = @user_query.active? ? "activated" : "deactivated"
       redirect_to admin_user_query_path(@user_query),
-                  notice: "User query was successfully #{status}."
+                  notice: I18n.t("admin.user_queries_controller.#{status}")
     end
 
     def validate

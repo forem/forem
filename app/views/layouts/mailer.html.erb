@@ -20,10 +20,11 @@
             </td>
           </tr>
         <% end %>
-        <% if @user && Settings::General.custom_email_footer.present? %>
+        <% footer_html = @override_footer_html ? @custom_email_footer : Settings::General.custom_email_footer %>
+        <% if @user && footer_html.present? %>
           <tr>
             <td style="padding:2%;font-size:18px;line-height:22px;color:#202121">
-              <%= Settings::General.custom_email_footer.html_safe %>
+              <%= sanitize(footer_html, tags: EmailSafeHtmlValidator::ALLOWED_TAGS, attributes: EmailSafeHtmlValidator::ALLOWED_ATTRIBUTES) %>
             </td>
           </tr>
         <% end %>
