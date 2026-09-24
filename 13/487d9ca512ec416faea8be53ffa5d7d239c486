@@ -1,0 +1,23 @@
+lib/reengagement.rb
+  s_14fb3b87418d89::t_19bde15aff0cfc 1-34
+lib/tasks/reengagement.rake
+  s_14fb3b87418d89::t_2bad9deb0fe521 1-7
+spec/lib/tasks/reengagement_cohort_spec.rb
+  s_14fb3b87418d89::t_9e3b1386aa63d9 1-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "13487d9ca512ec416faea8be53ffa5d7d239c486",
+  "prompts": {},
+  "sessions": {
+    "s_14fb3b87418d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "248ae081-42f9-4561-80cf-a05803a765b5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

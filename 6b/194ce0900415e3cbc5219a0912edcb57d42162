@@ -1,0 +1,26 @@
+app/services/ai/org_page_generator.rb
+  3b300d9ee498e98c 1-196
+spec/services/ai/org_page_generator_spec.rb
+  3b300d9ee498e98c 1-156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "6b194ce0900415e3cbc5219a0912edcb57d42162",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 352,
+      "total_deletions": 0,
+      "accepted_lines": 352,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/4e2f4e64785731a5b3e424e6c0c8eff1940bc0236baabfd06d2efefa393a3061"
+    }
+  }
+}

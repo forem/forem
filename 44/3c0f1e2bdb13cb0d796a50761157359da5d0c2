@@ -1,0 +1,35 @@
+spec/services/delegated_access/jwks_client_spec.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 30,37-43,48
+app/services/delegated_access/configuration.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 77-78
+config/initializers/delegated_access.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 5,7
+  s_e2c0a862c0c53d::t_9a2c9d11ff8ffc 1-4,6
+app/services/delegated_access/jwks_client.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 7-10,58,64-65
+spec/services/delegated_access/verifier_spec.rb
+  s_e2c0a862c0c53d::t_9a2c9d11ff8ffc 215,220,222-224
+  s_e2c0a862c0c53d::t_f62797230c3efc 216-219,221,225-228
+app/services/delegated_access/verifier.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 12-15,22,92-93
+spec/services/delegated_access/configuration_spec.rb
+  s_e2c0a862c0c53d::t_f62797230c3efc 42-43
+.env_sample
+  s_e2c0a862c0c53d::t_0089c1b507c9b3 83-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "443c0f1e2bdb13cb0d796a50761157359da5d0c2",
+  "prompts": {},
+  "sessions": {
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

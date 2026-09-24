@@ -1,0 +1,26 @@
+app/models/settings/user_experience.rb
+  h_c527e33bbdbde8 57
+app/models/user.rb
+  h_c527e33bbdbde8 240-243
+app/services/community_leaders/prune_inactive.rb
+  h_c527e33bbdbde8 1-72
+app/workers/community_leaders/prune_inactive_worker.rb
+  h_c527e33bbdbde8 1-14
+config/schedule.yml
+  h_c527e33bbdbde8 109-112
+spec/services/community_leaders/prune_inactive_spec.rb
+  h_c527e33bbdbde8 1-180
+spec/workers/community_leaders/prune_inactive_worker_spec.rb
+  h_c527e33bbdbde8 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1aa9c1b7b6f2947179aaef81b936238673e9505a",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

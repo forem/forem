@@ -1,0 +1,32 @@
+app/controllers/admin/events_controller.rb
+  h_f968154a99632d 76
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 81
+app/views/admin/events/_form.html.erb
+  h_f968154a99632d 43-52
+app/views/admin/events/show.html.erb
+  h_f968154a99632d 88-98
+db/migrate/20260825100500_add_full_details_to_events.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,788
+spec/requests/admin/events_spec.rb
+  h_f968154a99632d 75-84,171-181,198,201-206,213,259,267
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 84-88,90-92,121,141,146-177
+spec/swagger_helper.rb
+  h_f968154a99632d 866,897
+swagger/v1/api_v1.json
+  h_f968154a99632d 7950-7954,8067-8071,8125
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "97eff7de4151b842ccc8dbf3f45238b19395dfa0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

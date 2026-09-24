@@ -1,0 +1,16 @@
+spec/liquid_tags/descript_tag_spec.rb
+  h_f968154a99632d 29-36
+spec/services/liquid_embed_extractor_spec.rb
+  h_f968154a99632d 77-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "07349c8ce7c8a8dff5bd981375bef697413931ab",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

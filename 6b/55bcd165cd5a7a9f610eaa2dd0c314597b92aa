@@ -1,0 +1,36 @@
+app/models/user.rb
+  s_1e049bdc81f15e::t_2330646405dfe5 591-592
+  s_1e049bdc81f15e::t_18a603f4fb62dd 590
+app/models/role.rb
+  s_1e049bdc81f15e::t_15658ad389b62e 23-24
+app/policies/authorizer.rb
+  s_1e049bdc81f15e::t_8bf7e3f86311d6 36
+  s_1e049bdc81f15e::t_27284eee60c6ca 75-78,82,85-86
+  s_1e049bdc81f15e::t_bbf94cc968d83c 79-81,83-84
+  s_1e049bdc81f15e::t_ad30eb9defbe5e 166-167
+spec/models/role_spec.rb
+  s_1e049bdc81f15e::t_abde455a7fd403 13
+spec/policies/authorizer_spec.rb
+  s_1e049bdc81f15e::t_7cf19854f456ca 101-111,113-115,117-127,129-135,137-139
+  s_1e049bdc81f15e::t_6b4187aec997b3 85-100,112,116,128,136,140-142
+spec/factories/users.rb
+  s_1e049bdc81f15e::t_c47f697d6fd0f6 113-120
+app/policies/application_policy.rb
+  s_1e049bdc81f15e::t_a55ad15da5efee 202
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "6b55bcd165cd5a7a9f610eaa2dd0c314597b92aa",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
