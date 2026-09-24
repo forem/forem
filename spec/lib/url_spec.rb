@@ -16,15 +16,35 @@ RSpec.describe URL, type: :lib do
 
   describe ".dev_port" do
     it "defaults to 3000 when the PORT env var is not set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(false)
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3000")
       expect(described_class.dev_port).to eq("3000")
     end
 
     it "returns the value of the PORT env var when set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(false)
       allow(ENV).to receive(:fetch).and_call_original
       allow(ENV).to receive(:fetch).with("PORT", "3000").and_return("3005")
       expect(described_class.dev_port).to eq("3005")
+    end
+
+    it "prefers URL_PORT over PORT when URL_PORT is set" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(true)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("URL_PORT").and_return("8443")
+      expect(described_class.dev_port).to eq("8443")
+    end
+
+    it "returns an empty string when URL_PORT is set but blank" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("URL_PORT").and_return(true)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("URL_PORT").and_return("")
+      expect(described_class.dev_port).to eq("")
     end
   end
 
@@ -108,6 +128,11 @@ RSpec.describe URL, type: :lib do
         allow(described_class).to receive(:dev_port).and_return("3005")
         allow(Settings::General).to receive(:app_domain).and_return("localhost:3005")
         expect(described_class.url).to eq("https://localhost:3005")
+      end
+
+      it "omits the port entirely when dev_port is blank, for a TLS proxy in front of the app" do
+        allow(described_class).to receive(:dev_port).and_return("")
+        expect(described_class.url).to eq("https://localhost")
       end
     end
   end

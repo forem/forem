@@ -1,30 +1,23 @@
-<% sections = [
-     ["curation", leadership_path],
-     ["discussion", leadership_section_path(:discussion)],
-   ] %>
+<%
+  base_path = request.path.start_with?("/curation") ? "/curation" : "/leadership"
+  sections = [
+    ["community", base_path, t("views.leadership.nav.community")],
+    ["yours", "#{base_path}/yours", t("views.leadership.nav.yours")],
+  ]
+%>
 
-<nav class="hidden m:block" aria-label="<%= t("views.leadership.nav.aria_label") %>">
-  <% sections.each do |section, path| %>
-    <a
-      class="crayons-link crayons-link--block <%= "crayons-link--current" if @section == section %>"
-      href="<%= path %>"
-      aria-current="<%= "page" if @section == section %>">
-      <%= t("views.leadership.#{section}.heading") %>
-    </a>
-  <% end %>
-</nav>
-
-<nav class="block m:hidden px-3" aria-label="<%= t("views.leadership.nav.aria_label") %>">
-  <div class="crayons-tabs">
-    <ul class="crayons-tabs__list">
-      <% sections.each do |section, path| %>
-        <li>
+<nav class="mb-4" aria-label="<%= t("views.leadership.nav.aria_label") %>">
+  <div class="crayons-tabs crayons-tabs--wrapped">
+    <ul class="crayons-tabs__list inline-flex gap-2" style="width: auto;">
+      <% sections.each do |section, path, label| %>
+        <li style="width: auto;">
           <a
-            data-text="<%= t("views.leadership.#{section}.heading") %>"
+            data-text="<%= label %>"
             class="crayons-tabs__item <%= "crayons-tabs__item--current" if @section == section %>"
             href="<%= path %>"
-            aria-current="<%= "page" if @section == section %>">
-            <%= t("views.leadership.#{section}.heading") %>
+            aria-current="<%= "page" if @section == section %>"
+            style="width: auto;">
+            <%= label %>
           </a>
         </li>
       <% end %>

@@ -9,6 +9,20 @@ RSpec.describe "Comments" do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
 
+  describe "agent guidance discovery" do
+    before { sign_in user }
+
+    it "links to site guidance without advertising an unlaunched comment workflow" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+
+      get article.path
+
+      expect(response.body).to include('rel="describedby"')
+      expect(response.body).not_to include("data-agent-posting-policy")
+      expect(response.body).not_to include("Review our AI disclosure policy")
+    end
+  end
+
   describe "GET comment index" do
     it "returns 200" do
       get comment.path

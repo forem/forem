@@ -1,24 +1,57 @@
 <% if FeatureFlag.enabled?("discover_and_following_tabs") && user_signed_in? %>
   <% params[:feed_type] ||= "discover" %>
-  <nav class="pl-1 s:pl-0 -mx-3 m:mx-0 s:flex items-center justify-between" aria-label="<%= t("views.stories.sort.aria_label") %>">
-  <ul class="flex justify-between items-center w-100">
+  <nav class="w-100 flex items-center justify-between mx-0 px-0" aria-label="<%= t("views.stories.sort.aria_label") %>">
+  <ul class="flex justify-between items-center w-100 m-0 p-0">
     <style>
+      .feed-pill-nav {
+        display: inline-flex;
+        align-items: center;
+        background: var(--body-bg);
+        border-radius: 9999px;
+        box-shadow: 0 0 0 1px var(--base-20), 0 2px 5px rgba(0,0,0,0.05);
+        margin: 6px 0 3px;
+        padding: 2px;
+        gap: 2px;
+        max-width: 100%;
+      }
+      .pill-nav-item {
+        color: var(--base-70);
+        white-space: nowrap;
+        border-radius: 9999px;
+        transition: all 0.2s ease;
+        font-size: 0.8125rem;
+        padding: 0.25rem 0.5rem;
+        line-height: 1.25;
+      }
+      @media (min-width: 640px) {
+        .pill-nav-item {
+          font-size: 0.875rem;
+          padding: 0.25rem 0.75rem;
+        }
+        .feed-pill-nav {
+          padding: 3px;
+          gap: 4px;
+        }
+      }
+      @media (min-width: 1280px) {
+        .pill-nav-item {
+          font-size: 0.9375rem;
+          padding: 0.35rem 1rem;
+        }
+      }
       .pill-nav-item.crayons-navigation__item--current {
         background: var(--accent-brand, #3b49df) !important;
         color: #ffffff !important;
         box-shadow: 0 1px 3px rgba(0,0,0,0.15) !important;
       }
-      .pill-nav-item {
-        color: var(--base-70);
-      }
       .pill-nav-item:hover {
         color: var(--base-90);
       }
     </style>
-    <div class="flex gap-1 p-1" style="background: var(--body-bg); border-radius: 9999px; box-shadow: 0 0 0 1px var(--base-20), 0 2px 5px rgba(0,0,0,0.05);margin: 6px 0 3px;">
+    <div class="feed-pill-nav">
       <li>
-        <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" && !params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("discover", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="discover" href="/discover" class="crayons-navigation__item pill-nav-item flex items-center gap-1.5 xl:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "discover" && !params[:timeframe].to_s.start_with?("latest") %>">
+          <%= crayons_icon_tag("discover", width: 16, height: 16, class: "hidden xl:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.discover") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.discover") %></span>
@@ -26,8 +59,8 @@
         </a>
       </li>
       <li>
-        <a data-feed-nav="following" href="/following" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("people", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="following" href="/following" class="crayons-navigation__item pill-nav-item flex items-center gap-1.5 xl:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "following" %>">
+          <%= crayons_icon_tag("people", width: 16, height: 16, class: "hidden xl:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.following") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.feed.following") %></span>
@@ -35,8 +68,17 @@
         </a>
       </li>
       <li>
-        <a data-feed-nav="latest" href="/latest" class="crayons-navigation__item pill-nav-item px-2 s:px-4 text-sm s:text-base flex items-center gap-2 <%= "crayons-navigation__item--current" if params[:timeframe].to_s.start_with?("latest") %>" style="border-radius: 9999px; transition: all 0.2s ease;">
-          <%= crayons_icon_tag("latest", width: 18, height: 18, class: "hidden s:block") %>
+        <a data-feed-nav="curated" href="/curated" class="crayons-navigation__item pill-nav-item flex items-center gap-1.5 xl:gap-2 <%= "crayons-navigation__item--current" if params[:feed_type] == "curated" %>">
+          <%= crayons_icon_tag("gem", native: true, width: 16, height: 16, class: "hidden xl:block") %>
+          <span style="display: grid; place-items: center start;">
+            <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.feed.curated") %></span>
+            <span style="grid-area: 1/1;"><%= t("views.stories.feed.curated") %></span>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a data-feed-nav="latest" href="/latest" class="crayons-navigation__item pill-nav-item flex items-center gap-1.5 xl:gap-2 <%= "crayons-navigation__item--current" if params[:timeframe].to_s.start_with?("latest") %>">
+          <%= crayons_icon_tag("latest", width: 16, height: 16, class: "hidden xl:block") %>
           <span style="display: grid; place-items: center start;">
             <span aria-hidden="true" style="grid-area: 1/1; visibility: hidden; font-weight: bold;"><%= t("views.stories.sort.latest") %></span>
             <span style="grid-area: 1/1;"><%= t("views.stories.sort.latest") %></span>
@@ -94,11 +136,11 @@
   </nav>
   <script>
     (function() {
-      function initializeFeedNavigation() {
+      function updateFeedNavActiveState() {
         var currentPath = window.location.pathname;
         var currentFeedNav = "";
 
-        if (currentPath === "/following" || currentPath === "/following/latest" || currentPath === "/discover" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
+        if (currentPath === "/following" || currentPath === "/following/latest" || currentPath === "/discover" || currentPath === "/curated" || currentPath === "/latest" || currentPath === "/latest_less_filtered") {
           if (currentPath === "/following/latest") {
             currentFeedNav = "following";
           } else {
@@ -107,13 +149,13 @@
           }
           
           var feedToCache = currentFeedNav === "latest" ? "discover" : currentFeedNav;
-          if (feedToCache !== "discover" && feedToCache !== "following") {
+          if (feedToCache !== "discover" && feedToCache !== "following" && feedToCache !== "curated") {
             feedToCache = "discover";
           }
           localStorage.setItem("current_feed", feedToCache);
         } else {
           currentFeedNav = localStorage.getItem("current_feed");
-          if (currentFeedNav !== "discover" && currentFeedNav !== "following") {
+          if (currentFeedNav !== "discover" && currentFeedNav !== "following" && currentFeedNav !== "curated") {
             currentFeedNav = "discover";
             localStorage.setItem("current_feed", "discover");
           }
@@ -127,6 +169,11 @@
             item.classList.remove("crayons-navigation__item--current");
           }
         });
+      }
+
+      function initializeFeedNavigation() {
+        window._feedLastPath = window.location.pathname;
+        updateFeedNavActiveState();
 
         // Setup soft navigations
         var feedLinks = document.querySelectorAll(".pill-nav-item");
@@ -137,6 +184,7 @@
             if (window.location.pathname === targetHref) return;
             
             e.preventDefault();
+            window._feedLastPath = targetHref;
             window.history.pushState({}, "", targetHref);
             handleFeedSoftNavigation(targetHref);
           });
@@ -144,13 +192,19 @@
 
         if (!window.feedPopstateHandler) {
           window.feedPopstateHandler = function() {
-            // Only fire soft SPA reloads if we are currently on the feed view layout.
-            // If popping back from an Article, the DOM is still Article markup, so we let InstantClick natively restore!
-            if (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed")) {
-              handleFeedSoftNavigation(window.location.pathname);
+            var currentPath = window.location.pathname;
+            var lastPath = window._feedLastPath || currentPath;
+            window._feedLastPath = currentPath;
+            updateFeedNavActiveState();
+            // If navigating between different feed tabs via browser back/forward, soft navigate
+            if (currentPath !== lastPath && (document.getElementById("homepage-feed") || document.getElementById("rendered-article-feed"))) {
+              handleFeedSoftNavigation(currentPath);
             }
           };
           window.addEventListener("popstate", window.feedPopstateHandler);
+          if (window.InstantClick) {
+            window.InstantClick.on("restore", updateFeedNavActiveState);
+          }
         }
       }
 
@@ -163,7 +217,7 @@
         }
 
         var cacheTarget = newFeedNav === "latest" ? "discover" : newFeedNav;
-        if (cacheTarget === "discover" || cacheTarget === "following") {
+        if (cacheTarget === "discover" || cacheTarget === "following" || cacheTarget === "curated") {
           localStorage.setItem("current_feed", cacheTarget);
         }
 

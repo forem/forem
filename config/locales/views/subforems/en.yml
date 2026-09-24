@@ -181,7 +181,7 @@ en:
         community_bots:
           heading: Community Bots
           manage_button: Manage Bots
-          moderator_notice_html: "<strong>Note:</strong> Community bot management is currently only available to site admins. This feature will be coming to community leaders soon."
+          moderator_notice_html: "<strong>Note:</strong> Community bot management is currently only available to site admins. This feature will be coming to community curators soon."
           created_label: Created
           api_secrets_label: API Secrets
           view_button: View
