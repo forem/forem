@@ -106,6 +106,17 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(Reaction, :count).by(-1)
   end
 
+  it "does not delete favorited content but nullifies references" do
+    article = create(:article, favorited_by_user: user, favorited_at: Time.current)
+    comment = create(:comment, commentable: create(:article), favorited_by_user: user,
+                               favorited_at: Time.current)
+
+    described_class.call(user)
+
+    expect(article.reload.favorited_by_user_id).to be_nil
+    expect(comment.reload.favorited_by_user_id).to be_nil
+  end
+
   # check that all the associated records are being destroyed,
   # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
@@ -117,6 +128,8 @@ RSpec.describe Users::Delete, type: :service do
         banished_users
         billboard_events
         created_podcasts
+        favorited_articles
+        favorited_comments
         feed_events
         offender_feedback_messages
         page_views

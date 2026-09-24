@@ -10,12 +10,12 @@ RSpec.describe "Viewing a comment", js: true do
     ENV["DESYNC_TIMEZONE"] = "true"
     mock_user_tz = ActiveSupport::TimeZone[Zonebie.random_timezone].tzinfo.name
     ENV["TZ"] = mock_user_tz
+    page.driver.browser.page.command("Emulation.setTimezoneOverride", timezoneId: mock_user_tz)
   end
 
   after do
     ENV["TZ"] = Time.zone.tzinfo.name
     ENV["DESYNC_TIMEZONE"] = nil
-    Capybara.current_session.quit
     Timecop.return
   end
 

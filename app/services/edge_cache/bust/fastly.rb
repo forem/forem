@@ -11,7 +11,8 @@ module EdgeCache
                     "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
 
         urls(path).map do |url|
-          HTTParty.post("https://api.fastly.com/purge/#{url}", headers: headers)
+          clean_url = url.to_s.sub(%r{\Ahttps?://}, "")
+          HTTParty.post("https://api.fastly.com/purge/#{clean_url}", headers: headers)
         rescue HTTParty::Error, SocketError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Timeout::Error => e
           ForemStatsClient.increment(
             "edgecache_bust.provider_error",
@@ -32,17 +33,29 @@ module EdgeCache
       private_class_method :fastly_purge
 
       def self.urls(path)
-        urls = [URL.url(path)]
+        urls = [formatted_url(path)]
         urls << if path.include?("?")
-                  URL.url("#{path}&i=i")
+                  formatted_url("#{path}&i=i")
                 else
-                  URL.url("#{path}?i=i")
+                  formatted_url("#{path}?i=i")
                 end
         urls
       rescue Addressable::URI::InvalidURIError
         []
       end
       private_class_method :urls
+
+      def self.formatted_url(path)
+        if path.to_s.start_with?("http://", "https://")
+          uri = Addressable::URI.parse(path)
+          raise Addressable::URI::InvalidURIError if uri.host.blank?
+
+          uri.normalize.to_s
+        else
+          URL.url(path)
+        end
+      end
+      private_class_method :formatted_url
     end
   end
 end

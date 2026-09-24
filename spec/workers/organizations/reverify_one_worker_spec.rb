@@ -16,7 +16,8 @@ RSpec.describe Organizations::ReverifyOneWorker, type: :worker do
       expect(organization.reload.verified?).to be true
     end
 
-    it "revokes verification when linkback is not found" do
+    it "revokes verification and resets baseline_score to 0 when linkback is not found" do
+      organization.update_columns(baseline_score: 25)
       allow(Organizations::VerifyLinkback).to receive(:call)
         .and_return(Organizations::VerifyLinkback::Result.new("success?": false, error: "Not found"))
 
@@ -24,6 +25,7 @@ RSpec.describe Organizations::ReverifyOneWorker, type: :worker do
       organization.reload
       expect(organization.verified?).to be false
       expect(organization.verified_at).to be_nil
+      expect(organization.baseline_score).to eq(0)
     end
 
     it "enqueues a deverification notification when verification is revoked" do

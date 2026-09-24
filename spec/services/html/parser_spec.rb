@@ -99,9 +99,31 @@ RSpec.describe Html::Parser, type: :service do
     end
 
     it "wraps image in link" do
-      html = "<p><img src='https://image.com/image.jpg'></p"
+      html = "<p><img src='https://image.com/image.jpg'></p>"
       parsed_html = described_class.new(html).wrap_all_images_in_links.html
-      expect(parsed_html).to include("<a")
+      expected = "<a href=\"https://image.com/image.jpg\" class=\"article-body-image-wrapper\">" \
+                 "<img src=\"https://image.com/image.jpg\"></a>"
+      expect(parsed_html).to include(expected)
+    end
+
+    it "does not wrap images already inside a link" do
+      html = "<p><a href='https://example.com'><img src='https://image.com/image.jpg'></a></p>"
+      parsed_html = described_class.new(html).wrap_all_images_in_links.html
+      doc = Nokogiri::HTML.fragment(parsed_html)
+      expect(doc.css("a").size).to eq(1)
+      expect(doc.at_css("a")["href"]).to eq("https://example.com")
+    end
+
+    it "safely escapes src attributes containing quotes without injecting event handlers" do
+      html = "<p><img src=\"https://github.com/any/repo/badge.svg?x=&#x27;onmouseover=&#x27;alert(1)\" alt=\"B\"></p>"
+      parsed_html = described_class.new(html).wrap_all_images_in_links.html
+      doc = Nokogiri::HTML.fragment(parsed_html)
+
+      link = doc.at_css("a")
+      expect(link).to be_present
+      expect(link["onmouseover"]).to be_nil
+      expect(link["class"]).to eq("article-body-image-wrapper")
+      expect(doc.xpath("//*[@onmouseover]")).to be_empty
     end
   end
 

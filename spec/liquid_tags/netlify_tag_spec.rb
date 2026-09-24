@@ -11,8 +11,10 @@ RSpec.describe NetlifyTag, type: :liquid_tag do
   describe "valid URLs" do
     it "renders an iframe for a basic netlify.app URL" do
       result = generate_tag("https://cld-api-x.netlify.app/iframe.html").render
-      expect(result).to include("<iframe")
-      expect(result).to include('src="https://cld-api-x.netlify.app/iframe.html"')
+      iframe = Nokogiri::HTML.fragment(result).at_css(".ltag-netlify iframe")
+
+      expect(iframe["src"]).to eq("https://cld-api-x.netlify.app/iframe.html")
+      expect(iframe["style"]).to be_nil
     end
 
     it "renders an iframe for a URL with query params" do

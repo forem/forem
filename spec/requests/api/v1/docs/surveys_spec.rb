@@ -235,6 +235,158 @@ RSpec.describe "Api::V1::Docs::Surveys" do
       end
     end
   end
+
+  describe "POST /api/surveys" do
+    path "/api/surveys" do
+      post "Create a survey" do
+        tags "surveys"
+        description "Create a new survey with optional nested polls and poll options. Requires Administrator privileges."
+        consumes "application/json"
+        produces "application/json"
+        parameter name: :survey_input, in: :body,
+                  description: "Survey properties to create.",
+                  schema: { "$ref": "#/components/schemas/SurveyInput" }
+
+        response "201", "Created" do
+          let(:"api-key") { api_secret.secret }
+          let(:survey_input) do
+            {
+              survey: {
+                title: "RSWAG Survey",
+                type_of: "fun",
+                polls: [
+                  {
+                    prompt_markdown: "What is your favorite pet?",
+                    type_of: "single_choice",
+                    poll_options: [
+                      { markdown: "Dog" },
+                      { markdown: "Cat" }
+                    ]
+                  }
+                ]
+              }
+            }
+          end
+
+          schema "$ref": "#/components/schemas/SurveyWithPolls"
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:survey_input) { { survey: { title: "" } } }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:survey_input) { { survey: { title: "RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "PATCH /api/surveys/{id_or_slug}" do
+    let(:survey) { create(:survey) }
+
+    path "/api/surveys/{id_or_slug}" do
+      patch "Update a survey" do
+        tags "surveys"
+        description "Update an existing survey, including its polls and options. Requires Administrator privileges."
+        consumes "application/json"
+        produces "application/json"
+        parameter name: :id_or_slug, in: :path, required: true,
+                  description: "The ID or slug of the survey.",
+                  schema: { type: :string }
+        parameter name: :survey_input, in: :body,
+                  description: "Survey properties to update.",
+                  schema: { "$ref": "#/components/schemas/SurveyInput" }
+
+        response "200", "Successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "Updated RSWAG Survey" } } }
+
+          schema "$ref": "#/components/schemas/SurveyWithPolls"
+          add_examples
+          run_test!
+        end
+
+        response "404", "Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { "nonexistent" }
+          let(:survey_input) { { survey: { title: "Update" } } }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "Updated RSWAG Survey" } } }
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          let(:survey_input) { { survey: { title: "" } } }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "DELETE /api/surveys/{id_or_slug}" do
+    let!(:survey) { create(:survey) }
+
+    path "/api/surveys/{id_or_slug}" do
+      delete "Delete a survey" do
+        tags "surveys"
+        description "Delete an existing survey. Requires Administrator privileges."
+        produces "application/json"
+        parameter name: :id_or_slug, in: :path, required: true,
+                  description: "The ID or slug of the survey.",
+                  schema: { type: :string }
+
+        response "204", "No Content" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          run_test!
+        end
+
+        response "404", "Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { "nonexistent" }
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "invalid" }
+          let(:id_or_slug) { survey.id }
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id_or_slug) { survey.id }
+          before do
+            allow_any_instance_of(Survey).to receive(:destroy) do |s|
+              s.errors.add(:base, "Could not delete")
+              false
+            end
+          end
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable RSpec/VariableName

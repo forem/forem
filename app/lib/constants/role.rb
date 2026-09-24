@@ -18,6 +18,8 @@ module Constants
       "Admin" => { name: "admin", resource_type: nil },
       "Tech Admin" => { name: "tech_admin", resource_type: nil },
       "Super Admin" => { name: "super_admin", resource_type: nil },
+      "Community Leader Level 1" => { name: "community_leader_level_1", resource_type: nil },
+      "Community Leader Level 2" => { name: "community_leader_level_2", resource_type: nil },
       "Resource Admin: Article" => { name: "single_resource_admin", resource_type: "Article" },
       "Resource Admin: Badge" => { name: "single_resource_admin", resource_type: "Badge" },
       "Resource Admin: BadgeAchievement" => { name: "single_resource_admin", resource_type: "BadgeAchievement" },

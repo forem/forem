@@ -18,6 +18,7 @@
 .ltag-col {
   flex: 1;
   min-width: 0;
+  background-color: var(--ltag-col-background, transparent);
 
   > br { display: none; }
 
@@ -28,6 +29,14 @@
   > :last-child {
     margin-bottom: 0;
   }
+}
+
+.ltag-col-background-default {
+  --ltag-col-background: var(--card-bg);
+}
+
+.ltag-col-background-subtle {
+  --ltag-col-background: var(--card-secondary-bg);
 }
 
 .ltag-col-span-2 {

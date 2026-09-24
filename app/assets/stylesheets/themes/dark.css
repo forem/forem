@@ -176,6 +176,8 @@
   --reaction-custom-bg: rgb(var(--green-600), 0.1);
   --reaction-save-color: rgb(var(--indigo-500));
   --reaction-save-bg: rgba(var(--indigo-500), 0.1);
+  --reaction-favorite-color: rgb(var(--yellow-400));
+  --reaction-favorite-bg: rgba(var(--yellow-400), 0.1);
   --reaction-comment-color: rgb(var(--yellow-500));
   --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
 

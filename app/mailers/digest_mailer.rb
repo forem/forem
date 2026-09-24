@@ -8,24 +8,36 @@ class DigestMailer < ApplicationMailer
     @articles = params[:articles]
     @billboards = params[:billboards]
     @smart_summary = params[:smart_summary]
+    @smart_summary_html = ContentRenderer.new(@smart_summary).process.processed_html if @smart_summary.present?
     @feed_config_id = params[:feed_config_id]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+    add_unsubscribe_headers(@unsubscribe)
     @user_follows_any_subforems = user_follows_any_subforems?
 
     subject = generate_title
 
+    # The digest goes to an event-triggered campaign rather than a transactional
+    # message: campaigns are what carry conversion goals, and the digest is the
+    # one email whose own targeting depends on measuring engagement. With the
+    # Track-event flag off this payload still reaches Customer.io -- the App API
+    # renders the ActionMailer body instead, since no transactional message id
+    # is declared.
     customerio_delivery_options(
-      transactional_message_id: "dev_digest_email",
+      # Bare name: DeliveryMethods::CustomerIoEvent namespaces it with APP_NAME
+      # at send time, so this reaches Customer.io as "dev_prod_digest_ready".
+      customerio_event_name: "digest_ready",
       message_data: {
         "subject" => subject,
         "articles" => @articles.map { |article| digest_article_payload(article) },
-        # Raw Markdown -- the SMTP view runs this through ContentRenderer before
-        # display, so the CIO template needs to render it too.
-        "smart_summary" => @smart_summary,
+        # Rendered HTML so Customer.io templates output clickable <a> links instead of unparsed Markdown text
+        "smart_summary" => @smart_summary_html,
         "billboards_html" => digest_billboards_html,
         "email_end_phrase" => email_end_phrase,
         "unsubscribe_url" => email_subscriptions_unsubscribe_url(ut: @unsubscribe),
-        "user_follows_any_subforems" => @user_follows_any_subforems
+        "user_follows_any_subforems" => @user_follows_any_subforems,
+        # digest_email.html.erb only offers the "update your experience level"
+        # tip to people who have not set one.
+        "experience_level_set" => @user.setting&.experience_level.present?
       },
     )
 
@@ -56,11 +68,20 @@ class DigestMailer < ApplicationMailer
   # truncated-description fallback), so the Customer.io template can
   # reproduce the article list without duplicating selection logic.
   def digest_article_payload(article)
+    article_url = ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence)
+    article_url = URL.article(article) if article_url.blank?
+    ai_summary_text = article.has_attribute?(:ai_summary) ? article.ai_summary : nil
+    description_text = article.has_attribute?(:description) ? article.description : nil
+
     {
       "title" => article.title.strip,
-      "url" => ApplicationController.helpers.article_url(article, context: "digest", fc: @feed_config_id.presence),
-      "summary" => article.ai_summary.presence ||
-        ApplicationController.helpers.truncate(article.description, length: 180)
+      "url" => article_url,
+      "path" => article_url,
+      "link" => article_url,
+      "article_url" => article_url,
+      "canonical_url" => article_url,
+      "summary" => ai_summary_text.presence ||
+        ApplicationController.helpers.truncate(description_text, length: 180)
     }
   end
 

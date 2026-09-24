@@ -186,6 +186,8 @@ pt:
             description: Exibir a lista de primeiros passos na barra lateral direita para novos usuários.
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
+          enable_ai_disclosure:
+            description: "Permitir que os autores divulguem o uso de ferramentas de IA ao publicar ou editar artigos."
           video:
             description: Video settings
           payment:

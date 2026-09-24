@@ -76,6 +76,28 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           end
           # rubocop:enable Performance/CollectionLiteralInLoop
         end
+
+        context "with AI disclosure preferences" do
+          let!(:no_ai_article) { create(:article, ai_disclosure_level: :no_ai) }
+          let!(:autonomous_article) { create(:article, ai_disclosure_level: :fully_autonomous) }
+
+          context "when user has hide_fully_autonomous preference" do
+            before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+            it "filters out fully autonomous articles" do
+              expect(query_call.to_a).to include(no_ai_article)
+              expect(query_call.to_a).not_to include(autonomous_article)
+            end
+          end
+
+          context "when user has show_all preference" do
+            before { user.setting.update(feed_ai_preference: :show_all) }
+
+            it "includes all articles" do
+              expect(query_call.to_a).to include(no_ai_article, autonomous_article)
+            end
+          end
+        end
       end
 
       describe "#featured_story_and_default_home_feed" do

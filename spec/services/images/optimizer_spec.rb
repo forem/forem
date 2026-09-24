@@ -21,6 +21,14 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(nil)).to be_nil
     end
 
+    it "does not optimize urls with agent_sessions path" do
+      session_url = "https://dev-to-uploads.s3.amazonaws.com/agent_sessions/1/abc-123.jsonl"
+      expect(described_class.call(session_url)).to eq(session_url)
+      expect(described_class).not_to have_received(:cloudinary)
+      expect(described_class).not_to have_received(:cloudflare)
+      expect(described_class).not_to have_received(:imgproxy)
+    end
+
     it "returns the image if neither cloudinary nor imgproxy are enabled", :aggregate_failures do
       allow(described_class).to receive_messages(cloudinary_enabled?: false, imgproxy_enabled?: false)
 
@@ -50,8 +58,7 @@ RSpec.describe Images::Optimizer, type: :service do
 
     context "when cloudflare is contextually preferred" do
       before do
-        allow(described_class).to receive(:cloudflare_contextually_preferred?).and_return(true)
-        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(described_class).to receive_messages(cloudflare_contextually_preferred?: true, cloudflare_enabled?: true)
         allow(described_class).to receive(:cloudflare)
       end
 
@@ -65,7 +72,6 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#cloudinary", :cloudinary do
-
     it "performs exactly like cl_image_path" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
@@ -157,6 +163,54 @@ RSpec.describe Images::Optimizer, type: :service do
                              flags: "progressive",
                              fetch_format: "jpg")
       expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cl_url)
+    end
+
+    it "generates correct options for animated GIF" do
+      gif_url = "https://i.imgur.com/animated.gif"
+      cloudinary_url = cl_image_path(gif_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(gif_url)).to eq(cloudinary_url)
+    end
+
+    it "generates correct options for animated WebP" do
+      webp_url = "https://i.imgur.com/animated.webp"
+      cloudinary_url = cl_image_path(webp_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(webp_url)).to eq(cloudinary_url)
+    end
+
+    it "generates correct options for animated GIF with query parameters" do
+      gif_url = "https://i.imgur.com/animated.gif?v=123"
+      cloudinary_url = cl_image_path(gif_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(gif_url)).to eq(cloudinary_url)
+    end
+
+    it "generates correct options for animated WebP with query parameters" do
+      webp_url = "https://i.imgur.com/animated.webp?width=500"
+      cloudinary_url = cl_image_path(webp_url,
+                                     type: "fetch",
+                                     quality: 66,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "animated",
+                                     fetch_format: nil)
+      expect(described_class.call(webp_url)).to eq(cloudinary_url)
     end
   end
 
@@ -276,6 +330,24 @@ RSpec.describe Images::Optimizer, type: :service do
         width: 821, height: 420,
       )
       expect(cloudflare_url).to eq("https://images.example.com/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}")
+    end
+
+    it "omits format=auto for animated GIF" do
+      gif_url = "https://example.com/animated.gif"
+      cloudflare_url = described_class.cloudflare(gif_url, width: 821, height: 420)
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto/#{CGI.escape(gif_url)}")
+    end
+
+    it "omits format=auto for animated WebP" do
+      webp_url = "https://example.com/animated.webp"
+      cloudflare_url = described_class.cloudflare(webp_url, width: 821, height: 420)
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto/#{CGI.escape(webp_url)}")
+    end
+
+    it "omits format=auto for animated WebP with query params" do
+      webp_url = "https://example.com/animated.webp?v=1"
+      cloudflare_url = described_class.cloudflare(webp_url, width: 821, height: 420)
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto/#{CGI.escape(webp_url)}")
     end
   end
 

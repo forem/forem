@@ -53,6 +53,29 @@ class ForemInstance
     ApplicationConfig["CUSTOMERIO_APP_KEY"].present?
   end
 
+  # The Track API (DeliveryMethods::CustomerIoEvent) authenticates with the site
+  # id and track api key, not the App API key customerio_enabled? checks.
+  def self.customerio_track_enabled?
+    ApplicationConfig["CUSTOMERIO_SITE_ID"].present? &&
+      ApplicationConfig["CUSTOMERIO_TRACK_API_KEY"].present?
+  end
+
+  # Full cutover: Customer.io handles campaign/broadcast email (drip, admin
+  # one-offs/newsletters) only when the integration is on AND the delivery
+  # flag is enabled globally, not just for rollout batches.
+  def self.customerio_email_cutover?
+    customerio_enabled? && FeatureFlag.enabled?(Deliverable::CUSTOMERIO_FLAG)
+  end
+
+  # Rollout-only: send broadcast email to the CUSTOMERIO_FLAG cohort over the
+  # Customer.io passthrough path rather than skipping them. See
+  # Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG. Never applies after full
+  # cutover -- customerio_email_cutover? returns before any of this is reached.
+  def self.customerio_broadcast_passthrough?
+    customerio_enabled? &&
+      FeatureFlag.enabled?(Deliverable::CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG)
+  end
+
   def self.sendgrid_enabled?
     ENV["SENDGRID_API_KEY"].present?
   end

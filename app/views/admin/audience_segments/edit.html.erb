@@ -1,0 +1,10 @@
+<% content_for :title, "Edit #{@audience_segment.name}" %>
+
+<div class="crayons-card p-6">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="crayons-title">Edit Audience Segment</h1>
+    <%= link_to "Back to Segment", admin_audience_segment_path(@audience_segment), class: "crayons-btn crayons-btn--secondary" %>
+  </div>
+
+  <%= render "form", audience_segment: @audience_segment %>
+</div>
