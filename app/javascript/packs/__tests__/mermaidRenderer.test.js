@@ -75,7 +75,7 @@ describe('renderMermaidDiagrams', () => {
     await renderMermaidDiagrams();
 
     const rect = renderedFigure().querySelector('.edgeLabel rect');
-    expect(rect.style.fill).toBe('red');
+    expect(rect.style.fill).toBe('var(--body-bg)');
     expect(rect.style.opacity).toBe('1');
   });
 

@@ -47,6 +47,7 @@ function renderWithTimeout(id, source) {
 
 function opacifyEdgeLabels(figure) {
   figure.querySelectorAll('.edgeLabel rect').forEach((rect) => {
+    rect.style.setProperty('fill', 'var(--body-bg)');
     rect.style.setProperty('opacity', '1');
   });
 }
