@@ -191,7 +191,6 @@ module OmniauthHelpers
       info: {
         email: "mlh@example.com",
         name: "MLH User",
-        nickname: "mlhuser",
         image: "https://dummyimage.com/400x400.jpg",
       },
       credentials: {
@@ -312,5 +311,12 @@ module OmniauthHelpers
 
   def omniauth_mock_mlh_payload
     OmniAuth.config.mock_auth[:mlh] = OMNIAUTH_PAYLOAD_MLH.dup
+  end
+
+  # Customer.io delivery holds mail for users without an mlh identity, so a
+  # spec that expects a Customer.io send must link its recipient first.
+  def link_mlh_identity(user)
+    omniauth_mock_mlh_payload
+    create(:identity, provider: "mlh", user: user, uid: "core-#{user.id}")
   end
 end

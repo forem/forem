@@ -17,8 +17,13 @@ RSpec.describe "Api::V1::Docs::Readinglist" do
       get "Readinglist" do
         tags "readinglist"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.
-        It supports pagination, each page will contain `30` articles by default
+        Retrieve the list of articles saved to the authenticated user's reading list.
+
+        ### Integration Guidance:
+        - Requires authentication.
+        - Under the hood, this endpoint retrieves articles that the user has reacted to with the `"save"` reaction category.
+        - Supports pagination, defaulting to 30 articles per page.
+        - Returned objects conform to the standard `ArticleIndex` schema.
         DESCRIBE
         operationId "getReadinglist"
         produces "application/json"

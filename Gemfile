@@ -28,6 +28,7 @@ gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "countries", "~> 5.5" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
+gem "customerio", "~> 6.1" # Customer.io App API client; transactional email delivery (see DeliveryMethods::CustomerIo)
 gem "ddtrace", "~> 1.16.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
@@ -59,6 +60,7 @@ gem "jbuilder", "~> 2.11" # Create JSON structures via a Builder-style DSL
 gem "js-routes", "~> 2.2" # Brings Rails named routes to javascript
 gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
+gem "jwt", "2.10.3" # Verify delegated access tokens
 gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
@@ -72,7 +74,7 @@ gem "omniauth-apple", "~> 1.0" # OmniAuth strategy for Sign In with Apple
 gem "omniauth-facebook", "~> 9.0" # OmniAuth strategy for Facebook
 gem "omniauth-github", "~> 2.0" # OmniAuth strategy for GitHub
 gem "omniauth-google-oauth2", "~> 1.0" # OmniAuth strategy for Google OAuth2
-gem "omniauth-mlh", "~> 4.1"
+gem "omniauth-mlh", "~> 4.2"
 gem "omniauth-rails_csrf_protection", "~> 2.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.22" # Run any kind of code in parallel processes

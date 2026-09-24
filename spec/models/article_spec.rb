@@ -14,10 +14,48 @@ RSpec.describe Article do
   it_behaves_like "UserSubscriptionSourceable"
   it_behaves_like "Taggable"
 
+  describe "ai_disclosure_level" do
+    it "defines expected enum values" do
+      expect(Article.ai_disclosure_levels).to eq({
+        "not_disclosed" => 0,
+        "no_ai" => 1,
+        "some_ai" => 3,
+        "fully_autonomous" => 5
+      })
+    end
+
+    it "defaults to not_disclosed" do
+      new_article = build(:article)
+      expect(new_article.ai_disclosure_level).to eq("not_disclosed")
+      expect(new_article.ai_disclosed?).to be false
+    end
+
+    it "correctly identifies when AI usage is disclosed" do
+      some_ai_article = build(:article, ai_disclosure_level: :some_ai)
+      autonomous_article = build(:article, ai_disclosure_level: :fully_autonomous)
+
+      expect(some_ai_article.ai_disclosed?).to be true
+      expect(autonomous_article.ai_disclosed?).to be true
+    end
+
+    it "returns the proper human-readable label" do
+      not_disclosed_article = build(:article, ai_disclosure_level: :not_disclosed)
+      no_ai_article = build(:article, ai_disclosure_level: :no_ai)
+      some_ai_article = build(:article, ai_disclosure_level: :some_ai)
+      autonomous_article = build(:article, ai_disclosure_level: :fully_autonomous)
+
+      expect(not_disclosed_article.ai_disclosure_label).to eq("Not Disclosed")
+      expect(no_ai_article.ai_disclosure_label).to eq("No AI")
+      expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
+      expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
+    end
+  end
+
   describe "validations" do
     it { is_expected.to belong_to(:collection).optional }
     it { is_expected.to belong_to(:organization).optional }
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:favorited_by_user).class_name("User").optional }
 
     it { is_expected.to have_one(:discussion_lock).dependent(:delete) }
 
@@ -52,6 +90,8 @@ RSpec.describe Article do
     # Regression test for Issue #22803: Prevent negative reaction counts
     it { is_expected.to validate_numericality_of(:public_reactions_count).is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:previous_public_reactions_count).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:max_score).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:baseline_score).is_greater_than_or_equal_to(0) }
 
     it { is_expected.to validate_uniqueness_of(:slug).scoped_to(:user_id) }
 
@@ -138,6 +178,24 @@ RSpec.describe Article do
           expect(article).not_to be_valid
           expect(article.errors[:collection_id]).to include(I18n.t("models.article.series_unpermitted"))
         end
+      end
+    end
+
+    describe "#before_destroy_actions" do
+      include ActiveSupport::Testing::TimeHelpers
+      let(:user) { create(:user) }
+      let(:article) { create(:article, user: user, published: true, type_of: "full_post") }
+
+      it "touches the author's last_article_at when the article is destroyed" do
+        old_last_article_at = user.reload.last_article_at
+        travel_to 1.minute.from_now do
+          expect { article.destroy }.to change { user.reload.last_article_at }.from(old_last_article_at)
+        end
+      end
+
+      it "does not raise an error when the article has no associated user" do
+        article.update_column(:user_id, nil)
+        expect { article.reload.destroy }.not_to raise_error
       end
     end
 
@@ -979,6 +1037,59 @@ RSpec.describe Article do
       end
     end
 
+    describe "#ai_disclosure_level from front_matter" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "parses ai_disclosure_level standard string values" do
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: some_ai\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("some_ai")
+        expect(article.some_ai?).to be(true)
+      end
+
+      it "does not set ai_disclosure_level from front matter when enable_ai_disclosure is false" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: some_ai\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("not_disclosed")
+      end
+
+      it "parses ai_disclosure key alias" do
+        article = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure: fully_autonomous\n---\nHello")
+        expect(article.ai_disclosure_level).to eq("fully_autonomous")
+        expect(article.fully_autonomous?).to be(true)
+      end
+
+      it "parses numeric levels" do
+        article1 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 1\n---\nHello")
+        expect(article1.ai_disclosure_level).to eq("no_ai")
+
+        article3 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 3\n---\nHello")
+        expect(article3.ai_disclosure_level).to eq("some_ai")
+
+        article5 = build_and_validate_article(body_markdown: "---\ntitle: AI Post\nai_disclosure_level: 5\n---\nHello")
+        expect(article5.ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "parses user-friendly alias strings" do
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: hand_written\n---\nHi").ai_disclosure_level).to eq("no_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: assisted\n---\nHi").ai_disclosure_level).to eq("some_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_disclosure: autonomous\n---\nHi").ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "parses boolean flags ai_assisted and ai_generated" do
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_assisted: true\n---\nHi").ai_disclosure_level).to eq("some_ai")
+        expect(build_and_validate_article(body_markdown: "---\ntitle: Post\nai_generated: true\n---\nHi").ai_disclosure_level).to eq("fully_autonomous")
+      end
+
+      it "updates ai_disclosure_level when front matter changes" do
+        user = create(:user)
+        art = create(:article, user: user, body_markdown: "---\ntitle: Post\nai_disclosure_level: no_ai\n---\nOriginal")
+        expect(art.ai_disclosure_level).to eq("no_ai")
+
+        art.update(body_markdown: "---\ntitle: Post\nai_disclosure_level: some_ai\n---\nUpdated")
+        expect(art.reload.ai_disclosure_level).to eq("some_ai")
+      end
+    end
+
     describe "#reading_time" do
       it "produces a correct reading time" do
         expect(test_article.reading_time).to eq(1)
@@ -1553,6 +1664,88 @@ RSpec.describe Article do
         expect(article.video).to be_nil
       end
     end
+
+    context "when clearing video_source_url" do
+      it "clears video and video_source_url when set to blank" do
+        saved_article = create(:article, user: user, video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(saved_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+
+        saved_article.video_source_url = ""
+        saved_article.valid?
+        expect(saved_article.video_source_url).to be_nil
+        expect(saved_article.video).to be_nil
+      end
+
+      it "clears video_thumbnail_url for Mux video when cleared" do
+        saved_article = create(:article, user: user, video_source_url: "https://player.mux.com/nw5QrgIQS02FEx5BJEQH8CdcLmXXRvCNACZKQ01kLoKEI")
+        expect(saved_article.video_thumbnail_url).to be_present
+
+        saved_article.video_source_url = nil
+        saved_article.valid?
+        expect(saved_article.video_source_url).to be_nil
+        expect(saved_article.video).to be_nil
+        expect(saved_article.video_thumbnail_url).to be_nil
+      end
+
+      it "does not clear an existing video embed on unrelated updates when video_source_url is untouched" do
+        saved_article = create(:article, user: user, video_source_url: nil)
+        saved_article.update_column(:video, "https://www.youtube.com/embed/dQw4w9WgXcQ")
+
+        saved_article.title = "Updated title"
+        saved_article.valid?
+        expect(saved_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+      end
+
+      it "does not clear a legacy uploaded video on unrelated updates" do
+        saved_article = create(:article, :video, user: user)
+        expect(saved_article.video).to be_present
+        expect(saved_article.video_source_url).to include(".m3u8")
+
+        saved_article.title = "Updated title"
+        saved_article.valid?
+        expect(saved_article.video).to be_present
+        expect(saved_article.video_thumbnail_url).to be_present
+      end
+
+      it "keeps a user-provided thumbnail when a non-Mux video is cleared" do
+        saved_article = create(:article, user: user,
+                                         video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+                                         video_thumbnail_url: "https://i.imgur.com/HPiu7N4.jpg")
+
+        saved_article.video_source_url = ""
+        saved_article.valid?
+        expect(saved_article.video).to be_nil
+        expect(saved_article.video_thumbnail_url).to eq("https://i.imgur.com/HPiu7N4.jpg")
+      end
+
+      it "does not clear video on a new record with a blank video_source_url" do
+        new_article = build(:article, user: user, video: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+                                      video_source_url: "")
+        new_article.valid?
+        expect(new_article.video).to eq("https://www.youtube.com/embed/dQw4w9WgXcQ")
+        expect(new_article.video_source_url).to be_nil
+      end
+    end
+  end
+
+  describe ".permitted_video_source_url?" do
+    it "permits blank values so the cover video can be removed" do
+      expect(described_class.permitted_video_source_url?(nil)).to be(true)
+      expect(described_class.permitted_video_source_url?("")).to be(true)
+    end
+
+    it "permits YouTube, Mux and Twitch video URLs" do
+      expect(described_class.permitted_video_source_url?("https://www.youtube.com/watch?v=dQw4w9WgXcQ")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://youtu.be/dQw4w9WgXcQ")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://player.mux.com/abc123")).to be(true)
+      expect(described_class.permitted_video_source_url?("https://www.twitch.tv/videos/1234567890")).to be(true)
+    end
+
+    it "rejects other URLs" do
+      expect(described_class.permitted_video_source_url?("https://example.com/video")).to be(false)
+      expect(described_class.permitted_video_source_url?("https://www.twitch.tv/somechannel")).to be(false)
+      expect(described_class.permitted_video_source_url?("javascript:alert(1)")).to be(false)
+    end
   end
 
   describe "#fetch_video_duration" do
@@ -1657,6 +1850,60 @@ RSpec.describe Article do
       articles = described_class.active_help
       expect(articles).to include(high_score_article)
       expect(articles).not_to include(low_score_article)
+    end
+  end
+
+  describe ".favorited" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns only articles that have been favorited" do
+      favorited = create(:article, favorited_by_user: leader, favorited_at: Time.current)
+      create(:article)
+
+      expect(described_class.favorited).to include(favorited)
+      expect(described_class.favorited.count).to eq(1)
+    end
+  end
+
+  describe "#favorited?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns true when favorited_by_user_id is present" do
+      article = build(:article, favorited_by_user: leader)
+      expect(article.favorited?).to be true
+    end
+
+    it "returns false when favorited_by_user_id is nil" do
+      article = build(:article, favorited_by_user_id: nil)
+      expect(article.favorited?).to be false
+    end
+  end
+
+  describe ".with_at_least_home_feed_minimum_score" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
+    end
+
+    it "includes articles with score at or above the minimum score" do
+      article = create(:article, score: 10, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "excludes articles with score below the minimum score when not featured or favorited" do
+      article = create(:article, score: 5, featured: false, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).not_to include(article)
+    end
+
+    it "includes featured articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: true, favorited_by_user: nil)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
+    end
+
+    it "includes favorited (gemmed) articles even if score is below the minimum score" do
+      article = create(:article, score: -5, featured: false, favorited_by_user: leader, favorited_at: Time.current)
+      expect(described_class.with_at_least_home_feed_minimum_score).to include(article)
     end
   end
 
@@ -2332,6 +2579,22 @@ RSpec.describe Article do
       expect(article.reload.score).to eq(22)
     end
 
+    it "includes the verified organization baseline bonus" do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
+      org = create(:organization, verified: true)
+      article.organization = org
+      article.update_score
+      expect(article.reload.score).to eq(22)
+    end
+
+    it "includes the favorite bonus of +10 points and 10% multiple on base score" do
+      favoriter = create(:user)
+      article.update_columns(favorited_by_user_id: favoriter.id, favorited_at: Time.current)
+      # reactions sum is 10; raw score = 10; (10 * 1.1).to_i + 10 = 21
+      article.update_score
+      expect(article.reload.score).to eq(21)
+    end
+
     context "when max_score is set" do
       it "uses the max score if the natural score exceeds max_score" do
         article.update_column(:max_score, 2)
@@ -2352,6 +2615,36 @@ RSpec.describe Article do
 
         article.update_score
         expect(article.reload.score).to eq(10)
+      end
+    end
+
+    context "when baseline_score is set" do
+      it "uses the baseline score if the natural score is lower than baseline_score" do
+        article.update_column(:baseline_score, 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(15)
+      end
+
+      it "uses the natural score if it is higher than baseline_score" do
+        article.update_column(:baseline_score, 5)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "uses the natural score if baseline_score is 0" do
+        article.update_column(:baseline_score, 0)
+
+        article.update_score
+        expect(article.reload.score).to eq(10)
+      end
+
+      it "still respects max_score when baseline_score is higher" do
+        article.update_columns(max_score: 12, baseline_score: 15)
+
+        article.update_score
+        expect(article.reload.score).to eq(12)
       end
     end
 

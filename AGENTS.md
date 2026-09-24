@@ -61,3 +61,8 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Embeddings**: Forem uses Google's `gemini-embedding-2` model for semantic embeddings.
 - **Database Vector Indexes**: We use `pgvector` version `0.8.0+` to support HNSW (Hierarchical Navigable Small World) indexing for high-performance cosine distance queries (`<=>`).
 - **Data Integrity**: Vector columns (like `semantic_embedding`) are expensive to compute. Migrations that roll back or drop these columns must raise `ActiveRecord::IrreversibleMigration` to prevent destructive data loss.
+
+## API Changes & Specification Enforcement
+- **Document All API Changes**: Any time you modify or add any routes, controller actions, or parameters under `/api/*` (such as adding semantic or fuzzy search endpoints), you **MUST** update or create the corresponding RSWAG documentation specs in `spec/requests/api/v1/docs/*_spec.rb` (or matching version).
+- **Regenerate OpenAPI Schema**: After updating the swagger spec files, you **MUST** run the Swagger generation rake task (`bundle exec rake rswag:specs:swaggerize`) to regenerate the `swagger/v1/api_v1.json` file.
+- **Do Not Leave Specs Outdated**: Outdated API specifications cause integration failures for external services, gateway clients, and LLM MCP servers. Always treat specs as part of the core delivery.

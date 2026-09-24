@@ -1,4 +1,5 @@
 import { locale } from '@utilities/locale';
+import { initializeMermaidDiagrams } from '@utilities/mermaidDiagrams';
 
 function getAndShowPreview(preview, editor) {
   function attachTwitterTimelineScript() {
@@ -16,6 +17,7 @@ function getAndShowPreview(preview, editor) {
     if (body.processed_html.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
     }
+    initializeMermaidDiagrams(preview);
   }
 
   const payload = JSON.stringify({

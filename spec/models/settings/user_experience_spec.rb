@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Settings::UserExperience do
+  before { described_class.clear_cache }
+  after { described_class.clear_cache }
+
   describe "validating hex string format" do
     it "allows 3 character hex strings" do
       expect do

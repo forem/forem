@@ -34,8 +34,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
@@ -59,6 +57,7 @@ jobs:
     needs: [build]
     timeout-minutes: 20
     env:
+      CYPRESS_INSTALL_BINARY: "0"
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
@@ -141,13 +140,23 @@ jobs:
           bin/rails javascript:build
 
       - name: RSpec
+        id: rspec
         run: bin/knapsack_pro_rspec
+      - name: Upload recovered RSpec retries
+        uses: actions/upload-artifact@v4
+        if: ${{ steps.rspec.outcome == 'success' && hashFiles('tmp/rspec-retries/*.csv') != '' }}
+        with:
+          name: rspec-retries-${{ matrix.ci_node_index }}
+          path: tmp/rspec-retries
       - name: Upload RSpec artifacts
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: rspec-artifacts-${{ matrix.ci_node_index }}
-          path: tmp/capybara
+          path: |
+            tmp/capybara
+            tmp/csvs
+            tmp/rspec*.xml
       - name: Rename folder
         run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
       - name: Upload test coverage result

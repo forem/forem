@@ -38,6 +38,13 @@ RSpec.describe OrgLeadFormTag, type: :liquid_tag do
       expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_company"))
       expect(rendered).to include(I18n.t("liquid_tags.org_lead_form_tag.field_job_title"))
     end
+
+    it "marks successful submissions with the server timestamp" do
+      liquid = parse_tag(lead_form.id.to_s)
+      rendered = liquid.render
+
+      expect(rendered).to include("markFormSubmitted(button, data.submitted_at)")
+    end
   end
 
   context "when given an invalid form ID" do

@@ -1,0 +1,56 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.badges_tab.title") %></h3>
+    <%= link_to t("views.admin.users.badges_tab.manage_badges"), admin_badges_path, class: "c-btn c-btn--secondary c-btn--s" %>
+  </div>
+
+  <% if @badge_achievements.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.badges_tab.empty") %></p>
+    </div>
+  <% else %>
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.badges_tab.table.badge") %></th>
+            <th scope="col"><%= t("views.admin.users.badges_tab.table.description") %></th>
+            <th scope="col"><%= t("views.admin.users.badges_tab.table.awarded_by") %></th>
+            <th scope="col"><%= t("views.admin.users.badges_tab.table.awarded_at") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @badge_achievements.each do |achievement| %>
+            <% badge = achievement.badge %>
+            <tr>
+              <td>
+                <div class="flex items-center gap-3">
+                  <% if badge.badge_image.present? %>
+                    <img src="<%= badge.badge_image_url %>" alt="<%= badge.title %>" class="w-8 h-8 object-contain shrink-0" width="32" height="32">
+                  <% end %>
+                  <div>
+                    <strong><%= link_to badge.title, badge.path, class: "c-link", target: "_blank", rel: "noopener" %></strong>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <p class="fs-s"><%= badge.description %></p>
+                <% if achievement.rewarding_context_message.present? %>
+                  <p class="fs-xs color-secondary mt-1"><em><%= sanitize achievement.rewarding_context_message %></em></p>
+                <% end %>
+              </td>
+              <td>
+                <% if achievement.rewarder %>
+                  <%= link_to achievement.rewarder.name, admin_user_path(achievement.rewarder_id), class: "c-link" %>
+                <% else %>
+                  <span class="color-secondary"><%= t("views.admin.users.badges_tab.system") %></span>
+                <% end %>
+              </td>
+              <td class="whitespace-nowrap"><%= l(achievement.created_at, format: :short_with_yy) rescue achievement.created_at.to_s %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>

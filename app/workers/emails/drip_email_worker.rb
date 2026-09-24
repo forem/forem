@@ -8,6 +8,8 @@ module Emails
     # Treat nil or zero as default grouping
 
     def perform
+      # After full cutover, drip runs as a CIO Journeys campaign triggered by the user_created CDP event.
+      return if ForemInstance.customerio_email_cutover?
       return unless FeatureFlag.enabled?("onboarding_drip_emails")
 
       last_drip_day = Email.where(type_of: "onboarding_drip").maximum(:drip_day)
@@ -51,11 +53,14 @@ module Emails
           next unless email_template
 
           CustomMailer.with(
-            user:       user,
-            subject:    email_template.subject,
-            content:    email_template.body,
-            type_of:    email_template.type_of,
-            email_id:   email_template.id
+            user:                 user,
+            subject:              email_template.subject,
+            content:              email_template.body,
+            type_of:              email_template.type_of,
+            email_id:             email_template.id,
+            from_name:            email_template.default_from_name_based_on_type,
+            override_footer_html: email_template.override_footer_html?,
+            custom_email_footer:  email_template.custom_footer_html,
           )
           .custom_email
           .deliver_now

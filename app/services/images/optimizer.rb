@@ -1,7 +1,12 @@
 module Images
   module Optimizer
+    DISALLOWED_PATH_PATTERNS = [
+      %r{/agent_sessions/},
+    ].freeze
+
     def self.call(img_src, **kwargs)
       return img_src if img_src.blank? || img_src.starts_with?("/")
+      return img_src if disallowed_image_source?(img_src)
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
@@ -12,6 +17,10 @@ module Images
       else
         img_src
       end
+    end
+
+    def self.disallowed_image_source?(img_src)
+      DISALLOWED_PATH_PATTERNS.any? { |pattern| img_src.to_s.match?(pattern) }
     end
 
     # Each service has different ways of describing image cropping.
@@ -36,16 +45,21 @@ module Images
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+
+      options = {
+        width: kwargs[:width],
+        height: kwargs[:height],
+        fit: fit,
+        gravity: "auto"
+      }
+      # Preserve animation for GIFs and animated WebPs
+      is_animated = img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
+      options[:format] = "auto" unless is_animated
+
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         directory: CLOUDFLARE_DIRECTORY,
-        options: {
-          width: kwargs[:width],
-          height: kwargs[:height],
-          fit: fit,
-          gravity: "auto",
-          format: "auto"
-        },
+        options: options,
         src: extract_suffix_url(img_src),
       ).to_s
     end
@@ -60,8 +74,10 @@ module Images
                        else
                          "limit"
                        end
-      if img_src&.include?(".gif")
+      if img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
         options[:quality] = 66
+        options[:fetch_format] = nil
+        options[:flags] = "animated"
       end
 
       ActionController::Base.helpers.cl_image_path(img_src, options)
@@ -128,11 +144,12 @@ module Images
       return full_url unless full_url&.starts_with?(cloudflare_prefix)
 
       uri = URI.parse(full_url)
-      match = uri.path.match(%r{https?.+})
+      match = uri.path.match(/https?.+/)
       CGI.unescape(match[0]) if match
     end
 
-    # This is a feature-flagged Cloudflare preference for hosted images only — works specifically with S3-hosted image sources.
+    # This is a feature-flagged Cloudflare preference for hosted images only —
+    # works specifically with S3-hosted image sources.
     def self.cloudflare_contextually_preferred?(img_src)
       return false unless cloudflare_enabled?
       return false unless FeatureFlag.enabled?(:cloudflare_preferred_for_hosted_images)

@@ -10,7 +10,7 @@ export const SaveButton = ({
   article,
   isBookmarked: isBookmarkedProps,
   onClick,
-  saveable = true,
+  saveable = false,
 }) => {
   const [isBookmarked, setIsBookmarked] = useState(isBookmarkedProps);
 

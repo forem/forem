@@ -62,9 +62,8 @@ module Ai
     end
 
     def prompt
-      base_url = "https://#{Settings::General.app_domain}"
       article_list = @articles.map do |a|
-        "- Title: #{a.title}\n  URL: #{base_url}#{a.path}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
+        "- Title: #{a.title}\n  URL: #{URL.article(a)}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
       end.join("\n\n")
 
       <<~PROMPT

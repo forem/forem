@@ -13,6 +13,8 @@ module Emails
     BATCH_SIZE = Rails.env.production? ? 1000 : 10
 
     def perform(email_id, min_id = nil, max_id = nil)
+      return if ForemInstance.customerio_email_cutover?
+
       email = Email.find_by(id: email_id)
       return unless email
 
@@ -27,8 +29,12 @@ module Emails
         # It automatically resets when the transaction commits/rollbacks.
         User.connection.execute("SET LOCAL statement_timeout TO #{batch_timeout_ms}")
 
-        if email.user_query.present?
+        if email.event.present?
+          process_event_signups(email, min_id, max_id)
+        elsif email.user_query.present?
           process_custom_query(email, min_id, max_id)
+        elsif email.audience_segment.present?
+          process_audience_segment(email, min_id, max_id)
         else
           process_standard_scope(email, min_id, max_id)
         end
@@ -36,6 +42,20 @@ module Emails
     end
 
     private
+
+    def process_event_signups(email, min_id = nil, max_id = nil)
+      base_scope = User.email_eligible
+                       .joins(:event_signups)
+                       .where(event_signups: { event_id: email.event_id })
+
+      base_scope = base_scope.where("users.id >= ?", min_id) if min_id
+      base_scope = base_scope.where("users.id <= ?", max_id) if max_id
+
+      base_scope.in_batches(of: BATCH_SIZE) do |relation|
+        user_ids = relation.ids
+        enqueue_batch(email, user_ids, "Event Signups")
+      end
+    end
 
     def process_custom_query(email, min_id = nil, max_id = nil)
       variables = extract_email_variables(email)
@@ -64,6 +84,27 @@ module Emails
       end
     end
 
+    def process_audience_segment(email, min_id = nil, max_id = nil)
+      base_scope = User.email_eligible
+
+      base_scope = base_scope.where("users.id >= ?", min_id) if min_id
+      base_scope = base_scope.where("users.id <= ?", max_id) if max_id
+
+      segment_scope = if email.audience_segment.manual?
+                        email.audience_segment.users
+                      else
+                        email.audience_segment.all_users_in_segment
+                      end
+
+      user_scope = base_scope.merge(segment_scope)
+      label = "Audience Segment (#{email.audience_segment.display_name})"
+
+      user_scope.in_batches(of: BATCH_SIZE) do |relation|
+        user_ids = relation.ids
+        enqueue_batch(email, user_ids, label)
+      end
+    end
+
     def process_standard_scope(email, min_id = nil, max_id = nil)
       base_scope = User.email_eligible
 
@@ -71,7 +112,7 @@ module Emails
       base_scope = base_scope.where("users.id <= ?", max_id) if max_id
 
       user_scope = if email.audience_segment
-                     base_scope.merge(email.audience_segment.users)
+                     return process_audience_segment(email, min_id, max_id)
                    else
                      base_scope
                    end
@@ -80,7 +121,7 @@ module Emails
       # it effectively reuses the same connection (and timeout) for every batch.
       user_scope.in_batches(of: BATCH_SIZE) do |relation|
         user_ids = relation.ids
-        enqueue_batch(email, user_ids, "Segment/Default")
+        enqueue_batch(email, user_ids, "Broadcast (All Users)")
       end
     end
 

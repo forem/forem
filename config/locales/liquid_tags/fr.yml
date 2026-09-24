@@ -62,6 +62,9 @@ fr:
       no_source_found: Aucune source trouvée
     listing_tag:
       invalid_url_or_slug: URL ou slug non valide. Liste non trouvée.
+    livecodes_tag:
+      invalid_livecodes_url: URL LiveCodes non valide
+      invalid_option: "Option non valide : %{option}. Options prises en charge : height (ex. height=500)"
     lovable_tag:
       invalid_url: URL Lovable non valide
     loom_tag:
@@ -144,6 +147,8 @@ fr:
     row_tag:
       no_args: "La balise row n'accepte aucun argument"
     col_tag:
+      invalid_background: "L’arrière-plan doit être l’un des suivants : default, subtle"
+      invalid_option: "Option '%{option}' non valide pour la balise col"
       invalid_span: "Le span doit être compris entre 1 et 4"
     org_posts_tag:
       invalid_slug: Slug de l'organisation non valide
@@ -168,11 +173,16 @@ fr:
       missing_author: "La balise quote nécessite une option author"
       invalid_rating: "La note doit être comprise entre 1 et 5"
       learn_more: "En savoir plus"
+    quotes_tag:
+      no_args: "La balise quotes n'accepte aucun argument"
     slide_tag:
       missing_image: "La balise slide nécessite une option image"
       missing_content: "La balise slide nécessite au moins l'un des éléments suivants : image, video ou link"
     slides_tag:
       invalid_mode: "Le mode slides doit être 'default' ou 'carousel'"
+      gallery_label: Galerie multimédia
+      previous: Diapositive précédente
+      next: Diapositive suivante
     org_lead_form_tag:
       not_found: Formulaire de leads non trouvé
       inactive: Ce formulaire de leads n'est plus actif
@@ -189,5 +199,10 @@ fr:
       field_job_title: Poste
       name_email_required: Le nom et l'e-mail sont obligatoires.
       wrong_organization: Ce formulaire de leads n'appartient pas à cette organisation.
+    org_lead_gate_tag:
+      invalid_id: "ID de formulaire de leads non valide. Utilisez : {% org_lead_gate ID %}...{% endorg_lead_gate %}"
+      sign_in_required: Connectez-vous avec votre compte %{community} pour envoyer ce formulaire et déverrouiller le contenu.
+      sign_in: Se connecter pour déverrouiller
+      data_shared: "Partage votre nom, e-mail, nom d’utilisateur, entreprise et poste avec cette organisation."
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

@@ -20,7 +20,9 @@ module Articles
         followed_tag_weight: 1,
         not_followed_tag_score: 0,
         followed_org_score: 1,
-        not_followed_org_score: 0
+        not_followed_org_score: 0,
+        some_ai_penalty: -10,
+        fully_autonomous_penalty: -25
       }.freeze
 
       # @param user [User] the user for whom we're calculating the article score.
@@ -69,6 +71,27 @@ module Articles
       # @api private
       def score_comments(article)
         article.comments_count * @comment_weight
+      end
+
+      # @api private
+      def score_ai_disclosure(article)
+        return 0 unless @user&.setting
+
+        case @user.setting.feed_ai_preference
+        when "minimize_ai"
+          case article.ai_disclosure_level
+          when "some_ai" then @some_ai_penalty
+          when "fully_autonomous" then @fully_autonomous_penalty
+          else 0
+          end
+        when "hide_fully_autonomous"
+          case article.ai_disclosure_level
+          when "some_ai" then @some_ai_penalty
+          else 0
+          end
+        else
+          0
+        end
       end
 
       private

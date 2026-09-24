@@ -1,5 +1,16 @@
 <!-- Forem Event Show Page -->
 <% content_for :title, @event.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta name="description" content="<%= @event.description %>">
+  <meta property="og:title" content="<%= @event.title %>" />
+  <meta property="og:description" content="<%= @event.description %>" />
+  <meta property="og:url" content="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= @event.social_image_url %>" />
+  <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
 <div class="container crayons-layout event-show-layout">
     <% if !@event.published? %>
       <div class="crayons-notice crayons-notice--warning mb-8 p-4 text-center">
@@ -64,6 +75,51 @@
               <iframe id="chat-frame" width="100%" height="100%" src="<%= chat_url %>" frameborder="0" title="Event Chat" loading="lazy">
               </iframe>
           </div>
+          <script>
+            (function() {
+              const chatFrame = document.getElementById("chat-frame");
+              if (!chatFrame) return;
+
+              function isDark() {
+                return document.body.classList.contains("dark-theme") ||
+                  (localStorage.getItem("config_body_class") || "").includes("dark-theme");
+              }
+
+              function applyThemeToChatUrl() {
+                try {
+                  const url = new URL(chatFrame.src);
+                  const dark = isDark();
+
+                  if (url.hostname.includes("youtube.com")) {
+                    if (dark) {
+                      url.searchParams.set("dark_theme", "1");
+                    } else {
+                      url.searchParams.delete("dark_theme");
+                    }
+                  } else if (url.hostname.includes("twitch.tv")) {
+                    if (dark) {
+                      url.searchParams.set("darkpopout", "");
+                    } else {
+                      url.searchParams.delete("darkpopout");
+                    }
+                  }
+
+                  if (url.toString() !== chatFrame.src) {
+                    chatFrame.src = url.toString();
+                  }
+                } catch (e) {
+                  // ignore invalid URLs
+                }
+              }
+
+              applyThemeToChatUrl();
+
+              const observer = new MutationObserver(function() {
+                applyThemeToChatUrl();
+              });
+              observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+            })();
+          </script>
         <% end %>
     </div>
 

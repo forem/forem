@@ -16,6 +16,7 @@ RSpec.describe "Editing with an editor", js: true do
 
   it "user previews their changes" do
     visit "/#{user.username}/#{article.slug}/edit"
+    expect(page).to have_selector("body[data-loaded='true']")
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("Preview")
     expect(page).to have_text("Yooo")
@@ -23,6 +24,7 @@ RSpec.describe "Editing with an editor", js: true do
 
   it "user updates their post" do
     visit "/#{user.username}/#{article.slug}/edit"
+    expect(page).to have_selector("body[data-loaded='true']")
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("Save changes")
     expect(page).to have_text("Yooo")
@@ -30,6 +32,7 @@ RSpec.describe "Editing with an editor", js: true do
 
   it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
+    expect(page).to have_selector("body[data-loaded='true']")
     fill_in("article_body_markdown", with: template.gsub("true", "false"), fill_options: { clear: :backspace })
     click_button("Save changes")
     expect(page).to have_text("Unpublished Post.")
@@ -49,6 +52,7 @@ RSpec.describe "Editing with an editor", js: true do
 
     it "displays a rate limit warning", :flaky, js: true do
       visit "/#{user.username}/#{article.slug}/edit"
+      expect(page).to have_selector("body[data-loaded='true']")
       fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
       click_button "Save changes"
       expect(page).to have_text("Rate limit reached")
