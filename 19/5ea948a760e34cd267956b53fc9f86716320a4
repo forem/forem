@@ -1,0 +1,35 @@
+app/services/authentication/providers/mlh.rb
+  s_23f6c094633eb2::t_5f1ede89f68458 33
+  s_2717fea812dfa4::t_0065e6dc05b354 22-24,28
+spec/models/user_spec.rb
+  s_2717fea812dfa4::t_8463b7b6991d51 674-677,697-698,716-726
+  s_2717fea812dfa4::t_212408cfa068c8 841-842
+spec/services/authentication/providers/mlh_spec.rb
+  s_2717fea812dfa4::t_a830802c2f935b 40,42
+  s_23f6c094633eb2::t_5d716e799dcf70 47
+  s_2717fea812dfa4::t_f2f6a4a31e88a9 15,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "195ea948a760e34cd267956b53fc9f86716320a4",
+  "prompts": {},
+  "sessions": {
+    "s_23f6c094633eb2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0169883c-bfbd-4aa4-8654-c2061ad9faec",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
