@@ -23,7 +23,10 @@ Bundler.require(*Rails.groups)
 # (see config/initializers/betterstack.rb).
 require "logtail-rails" if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
 # Same for the Better Stack errors pilot (see config/initializers/sentry.rb).
-require "sentry-rails" if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
+if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
+  require "sentry-rails"
+  require "sentry-sidekiq"
+end
 
 if defined?(Anyway)
   Anyway.loaders.delete(:secrets)
