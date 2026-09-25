@@ -9,24 +9,20 @@
   }
 </div>
 <div id="user-prestyle"></div>
+<%# Inlined so the color mode is resolved before first paint. %>
+<script>
+  <%= Rails.application.assets["utilities/applyColorMode.js"].to_s.html_safe %>
+</script>
 <script>
   try {
     const bodyClass = localStorage.getItem('config_body_class');
     const userString = localStorage.getItem('current_user');
 
+    watchColorModeChanges();
+
     if (bodyClass) {
       document.body.className = bodyClass;
-
-      if (bodyClass.includes('dark-theme')) {
-        document.getElementById('body-styles').innerHTML = '<style>'+document.getElementById('dark-mode-style').innerHTML+'</style>';
-        if (window && window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'update_color_mode', value: 'dark' }));
-        }
-      } else {
-        if (window && window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ action: 'update_color_mode', value: 'light' }));
-        }
-      }
+      applyColorMode(bodyClass);
 
       if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
         const link = document.createElement('link');
