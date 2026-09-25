@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.11.2",
+  "checkpoint_id": "01M3D46MQTZVJKJAKPMMYVW5WV",
+  "session_id": "d9c0f553-ea3a-4dc1-a378-89aacafdcf95",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-25T20:30:43.454749Z",
+  "branch": "betterstack-logtail-rails",
+  "checkpoints_count": 1,
+  "save_step_count": 2,
+  "files_touched": [
+    ".mise.toml"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5[1m]",
+  "turn_id": "5a0977d6b3c9",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 84477,
+    "cache_read_tokens": 2474844,
+    "output_tokens": 15092,
+    "api_call_count": 29
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-09-25T20:30:43.442848Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 2370,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 2371,
+    "total_lines_changed": 2559,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    }
+  ]
+}
