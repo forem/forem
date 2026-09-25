@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.11.2",
+  "checkpoint_id": "01M3D45E16WRRNV1X4P6ZKJTCE",
+  "strategy": "manual-commit",
+  "branch": "betterstack-logtail-rails",
+  "checkpoints_count": 12,
+  "files_touched": [
+    "Gemfile",
+    "Gemfile.lock",
+    "config/application.rb",
+    "config/initializers/betterstack.rb",
+    "spec/initializers/betterstack_spec.rb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 316,
+    "cache_creation_tokens": 430793,
+    "cache_read_tokens": 23118872,
+    "output_tokens": 94375,
+    "api_call_count": 149
+  }
+}
