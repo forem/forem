@@ -96,6 +96,36 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when an article without links goes through the escalation check" do
+      let(:labeler) do
+        instance_double(Ai::ContentModerationLabeler,
+                        evaluate: { label: "no_moderation_label", compellingness_score: 0.5 })
+      end
+
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(article).to receive(:processed_html).and_return("<p>DM me on Telegram @seller</p>")
+        allow(Ai::ArticleCheck).to receive(:new).with(article)
+          .and_return(instance_double(Ai::ArticleCheck, spam?: true))
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(labeler)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "runs the Gemini check when the escalation check flags it" do
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: true))
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+      end
+
+      it "skips the Gemini check when the escalation check doesn't flag it" do
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: false))
+        expect(handler).to eq(:not_spam)
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+    end
+
     context "when spam is triggered by linked domain net_score check" do
       let(:spam_domain) { "bad-seo-site.com" }
       let!(:linked_domain) { LinkedDomain.create!(host: spam_domain, net_score: -2000) }
@@ -549,6 +579,19 @@ RSpec.describe Spam::Handler, type: :service do
       context "for a multiple offender" do
         it_behaves_like "comment multiple spam offender"
       end
+    end
+
+    context "when a comment without links is flagged by the escalation check" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(comment).to receive(:processed_html).and_return("<p>WhatsApp +1 555 0100 for verified accounts</p>")
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: true))
+        allow(Ai::CommentCheck).to receive(:new).with(comment)
+          .and_return(instance_double(Ai::CommentCheck, spam?: true))
+      end
+
+      it_behaves_like "comment first-time spam offender"
     end
   end
 
