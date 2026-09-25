@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1218,6 +1218,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.integer "articles_count", default: 0, null: false
     t.integer "baseline_score", default: 0
     t.string "bg_color_hex"
+    t.string "cloudflare_custom_hostname_id"
     t.string "company_size"
     t.string "cover_image"
     t.datetime "created_at", precision: nil, null: false
@@ -1228,6 +1229,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.text "cta_processed_html"
     t.boolean "currently_paused_promotional_billboards", default: false, null: false
     t.string "custom_domain"
+    t.string "custom_domain_error"
     t.string "email"
     t.boolean "fully_trusted", default: false, null: false
     t.string "github_username"

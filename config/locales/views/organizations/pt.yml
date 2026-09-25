@@ -127,6 +127,49 @@ pt:
         status_pending: A verificação está em andamento. Atualize esta página em alguns segundos para ver o resultado.
         status_failed: A verificação falhou
         reset_on_domain_change: O domínio do seu site mudou, então sua verificação foi redefinida. Por favor, verifique novamente com seu novo domínio.
+      custom_domain:
+        heading: Domínio personalizado
+        description: Exiba a página e as publicações da sua organização no seu próprio domínio, como blog.example.com. Nós cuidamos do certificado SSL.
+        how_it_works: "Como funciona:"
+        step_1: Digite abaixo um domínio ou subdomínio que você controla.
+        step_2_html: "Adicione no seu provedor de DNS um registro CNAME que aponte para <code>%{target}</code>."
+        step_3: Verificamos o registro e emitimos um certificado SSL automaticamente. Isso geralmente leva alguns minutos.
+        label: Domínio personalizado
+        placeholder: blog.example.com
+        help: "Digite apenas o domínio, sem https:// nem caminho. Um subdomínio como blog.example.com funciona com qualquer provedor de DNS."
+        submit: Adicionar domínio personalizado
+        update: Atualizar domínio
+        domain_required: Por favor, digite um domínio.
+        saved: Domínio personalizado salvo. Adicione o registro DNS abaixo para concluir a configuração.
+        removed: Domínio personalizado removido. Sua organização voltou a ser exibida no site principal.
+        status_live: Seu domínio personalizado está ativo
+        status_live_desc_html: "Sua organização é exibida em <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>. Mantenha o registro DNS."
+        status_pending: Aguardando o DNS
+        status_pending_desc: Estamos aguardando seu registro DNS e o certificado SSL. Até a configuração terminar, os links para sua organização continuam usando o site principal.
+        status_failed: Falha na configuração
+        status_failed_desc: Não conseguimos verificar seu domínio. Confira o registro DNS abaixo e tente novamente.
+        details: "Detalhes: %{message}"
+        dns_heading: Adicione este registro DNS
+        dns_intro_html: "No provedor de DNS de <strong>%{domain}</strong>, crie este registro:"
+        dns_type: Tipo
+        dns_name: Nome
+        dns_target: Destino
+        dns_cloudflare_tip: Se o seu DNS estiver na Cloudflare, configure o registro como "Somente DNS" (nuvem cinza), e não como proxy.
+        dns_apex_tip: A maioria dos provedores de DNS não permite um registro CNAME em um domínio raiz. Use CNAME flattening, ALIAS ou ANAME se o seu provedor oferecer, ou use um subdomínio como blog.
+        dns_conflict_tip: Remova antes quaisquer registros A, AAAA ou CNAME existentes para este nome.
+        dns_timing_tip: Alterações de DNS podem levar de alguns minutos a algumas horas. Verificamos automaticamente.
+        check: Verificar status agora
+        retry: Tentar configurar novamente
+        check_started: A configuração está em andamento. Volte em um minuto.
+        check_live: Seu domínio personalizado está ativo.
+        check_pending: Ainda aguardando o DNS. Continuaremos verificando automaticamente.
+        check_throttled: Acabamos de verificar. Aguarde alguns segundos antes de verificar novamente.
+        check_error: Não foi possível verificar seu domínio agora. Tente novamente em alguns minutos.
+        retry_started: Tentando configurar novamente. Volte em um minuto.
+        change_heading: Alterar ou remover domínio
+        change_warning: As alterações entram em vigor imediatamente. Os links voltam para o site principal até que um novo domínio termine a configuração.
+        remove: Remover domínio personalizado
+        remove_confirm: "Remover %{domain}? Os visitantes desse domínio não verão mais sua organização."
       sidebar:
         invitations: Convites
       social_links:

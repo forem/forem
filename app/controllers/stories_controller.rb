@@ -780,9 +780,8 @@ class StoriesController < ApplicationController
 
   def redirect_organization_to_custom_domain_if_needed
     return if user_signed_in?
-    return if @organization.custom_domain.blank?
+    return unless @organization.custom_domain_live?
     return if request.host&.downcase == @organization.custom_domain&.downcase
-    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
 
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
     redirect_to "#{request.protocol}#{@organization.custom_domain}/#{query_string}",
@@ -793,9 +792,8 @@ class StoriesController < ApplicationController
   def redirect_article_to_custom_domain_if_needed
     return if user_signed_in?
     return unless @organization
-    return if @organization.custom_domain.blank?
+    return unless @organization.custom_domain_live?
     return if request.host&.downcase == @organization.custom_domain&.downcase
-    return unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(@organization))
 
     query_string = request.query_string.present? ? "?#{request.query_string}" : ""
     redirect_to "#{request.protocol}#{@organization.custom_domain}/#{@article.slug}#{query_string}",

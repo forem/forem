@@ -127,6 +127,49 @@ fr:
         status_pending: La vérification est en cours. Actualisez cette page dans quelques secondes pour voir le résultat.
         status_failed: La vérification a échoué
         reset_on_domain_change: Le domaine de votre site web a changé, votre vérification a donc été réinitialisée. Veuillez re-vérifier avec votre nouveau domaine.
+      custom_domain:
+        heading: Domaine personnalisé
+        description: Diffusez la page et les articles de votre organisation sur votre propre domaine, comme blog.example.com. Nous nous occupons du certificat SSL.
+        how_it_works: "Comment ça marche :"
+        step_1: Saisissez ci-dessous un domaine ou un sous-domaine que vous contrôlez.
+        step_2_html: "Ajoutez chez votre fournisseur DNS un enregistrement CNAME qui pointe vers <code>%{target}</code>."
+        step_3: Nous vérifions l'enregistrement et émettons automatiquement un certificat SSL. Cela prend généralement quelques minutes.
+        label: Domaine personnalisé
+        placeholder: blog.example.com
+        help: "Saisissez uniquement le domaine, sans https:// ni chemin. Un sous-domaine comme blog.example.com fonctionne avec tous les fournisseurs DNS."
+        submit: Ajouter le domaine personnalisé
+        update: Mettre à jour le domaine
+        domain_required: Veuillez saisir un domaine.
+        saved: Domaine personnalisé enregistré. Ajoutez l'enregistrement DNS ci-dessous pour terminer la configuration.
+        removed: Domaine personnalisé supprimé. Votre organisation est de nouveau diffusée sur le site principal.
+        status_live: Votre domaine personnalisé est actif
+        status_live_desc_html: "Votre organisation est diffusée sur <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>. Conservez l'enregistrement DNS."
+        status_pending: En attente du DNS
+        status_pending_desc: Nous attendons votre enregistrement DNS et votre certificat SSL. Tant que la configuration n'est pas terminée, les liens vers votre organisation utilisent le site principal.
+        status_failed: Échec de la configuration
+        status_failed_desc: Nous n'avons pas pu vérifier votre domaine. Vérifiez l'enregistrement DNS ci-dessous, puis réessayez.
+        details: "Détails : %{message}"
+        dns_heading: Ajoutez cet enregistrement DNS
+        dns_intro_html: "Chez le fournisseur DNS de <strong>%{domain}</strong>, créez cet enregistrement :"
+        dns_type: Type
+        dns_name: Nom
+        dns_target: Cible
+        dns_cloudflare_tip: Si votre DNS est hébergé chez Cloudflare, configurez l'enregistrement en « DNS uniquement » (nuage gris) plutôt qu'en proxy.
+        dns_apex_tip: La plupart des fournisseurs DNS n'autorisent pas d'enregistrement CNAME sur un domaine racine. Utilisez l'aplatissement CNAME, ALIAS ou ANAME si votre fournisseur le permet, ou utilisez plutôt un sous-domaine comme blog.
+        dns_conflict_tip: Supprimez d'abord tout enregistrement A, AAAA ou CNAME existant pour ce nom.
+        dns_timing_tip: Les modifications DNS peuvent prendre de quelques minutes à quelques heures. Nous vérifions automatiquement.
+        check: Vérifier le statut
+        retry: Relancer la configuration
+        check_started: La configuration est en cours. Revenez dans une minute.
+        check_live: Votre domaine personnalisé est actif.
+        check_pending: Toujours en attente du DNS. Nous continuons à vérifier automatiquement.
+        check_throttled: Nous venons de vérifier. Veuillez patienter quelques secondes avant de vérifier à nouveau.
+        check_error: Nous n'avons pas pu vérifier votre domaine pour le moment. Veuillez réessayer dans quelques minutes.
+        retry_started: Nouvelle tentative de configuration. Revenez dans une minute.
+        change_heading: Modifier ou supprimer le domaine
+        change_warning: Les modifications prennent effet immédiatement. Les liens utilisent le site principal jusqu'à ce qu'un nouveau domaine soit configuré.
+        remove: Supprimer le domaine personnalisé
+        remove_confirm: "Supprimer %{domain} ? Les visiteurs de ce domaine ne verront plus votre organisation."
       sidebar:
         invitations: Invitations
       social_links:

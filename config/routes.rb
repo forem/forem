@@ -463,6 +463,11 @@ Rails.application.routes.draw do
     patch "/:slug/settings", to: "organization_settings#update"
     post "/:slug/settings/verify", to: "organization_settings#request_verification",
                                    as: :organization_request_verification
+    patch "/:slug/settings/custom_domain", to: "organization_settings#update_custom_domain",
+                                           as: :organization_custom_domain
+    delete "/:slug/settings/custom_domain", to: "organization_settings#remove_custom_domain"
+    post "/:slug/settings/custom_domain/check", to: "organization_settings#check_custom_domain",
+                                                as: :organization_custom_domain_check
     post "/:slug/settings/preview", to: "organization_settings#preview", as: :organization_settings_preview
     get "/:slug/settings/pages", to: "organization_pages#index", as: :organization_pages
     get "/:slug/settings/pages/new", to: "organization_pages#new", as: :new_organization_page

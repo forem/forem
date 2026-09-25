@@ -83,6 +83,7 @@
   #section-sidebar-cta,
   #section-members,
   #section-verification,
+  #section-custom-domain,
   #section-invitations,
   #section-danger {
     overflow-x: hidden;
@@ -131,6 +132,9 @@
         <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
         <% if FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization]) %>
           <a href="#section-verification"><%= t("views.organization_settings.verification.heading") %></a>
+        <% end %>
+        <% if custom_domain_settings_enabled? %>
+          <a href="#section-custom-domain"><%= t("views.organization_settings.custom_domain.heading") %></a>
         <% end %>
         <a href="#section-invitations"><%= t("views.organization_settings.sidebar.invitations") %></a>
         <a href="#section-danger"><%= t("views.settings.danger") %></a>
@@ -666,6 +670,10 @@
           <% end %>
         <% end %>
       </div>
+      <% end %>
+
+      <% if custom_domain_settings_enabled? %>
+        <%= render "organization_settings/custom_domain", organization: @organization %>
       <% end %>
 
       <%# ── Invitations ── %>

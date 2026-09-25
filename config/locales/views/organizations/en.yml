@@ -127,6 +127,49 @@ en:
         status_pending: Verification is in progress. Refresh this page in a few seconds to see the result.
         status_failed: Verification failed
         reset_on_domain_change: Your website domain changed, so your verification has been reset. Please re-verify with your new domain.
+      custom_domain:
+        heading: Custom Domain
+        description: Serve your organization's page and posts from your own domain, like blog.example.com. We take care of the SSL certificate.
+        how_it_works: "How it works:"
+        step_1: Enter a domain or subdomain you control below.
+        step_2_html: "Add a CNAME record at your DNS provider that points to <code>%{target}</code>."
+        step_3: We verify the record and issue an SSL certificate automatically. This usually takes a few minutes.
+        label: Custom domain
+        placeholder: blog.example.com
+        help: "Enter only the domain, without https:// or a path. A subdomain like blog.example.com works with any DNS provider."
+        submit: Add custom domain
+        update: Update domain
+        domain_required: Please enter a domain.
+        saved: Custom domain saved. Add the DNS record below to finish setup.
+        removed: Custom domain removed. Your organization is served from the main site again.
+        status_live: Your custom domain is live
+        status_live_desc_html: "Your organization is served at <a href=\"%{url}\" target=\"_blank\" rel=\"noopener\" class=\"crayons-link\">%{url}</a>. Keep the DNS record in place."
+        status_pending: Waiting for DNS
+        status_pending_desc: We're waiting for your DNS record and SSL certificate. Until setup is complete, links to your organization keep using the main site.
+        status_failed: Setup failed
+        status_failed_desc: We couldn't verify your domain. Check the DNS record below, then retry.
+        details: "Details: %{message}"
+        dns_heading: Add this DNS record
+        dns_intro_html: "At the DNS provider for <strong>%{domain}</strong>, create this record:"
+        dns_type: Type
+        dns_name: Name
+        dns_target: Target
+        dns_cloudflare_tip: If your DNS is hosted on Cloudflare, set the record to "DNS only" (grey cloud) rather than proxied.
+        dns_apex_tip: Most DNS providers don't allow a CNAME record on a root domain. Use CNAME flattening, ALIAS, or ANAME if your provider supports it, or use a subdomain such as blog instead.
+        dns_conflict_tip: Remove any existing A, AAAA, or CNAME records for this name first.
+        dns_timing_tip: DNS changes can take anywhere from a few minutes to a few hours. We check automatically.
+        check: Check status now
+        retry: Retry setup
+        check_started: Setup is in progress. Check back in a minute.
+        check_live: Your custom domain is live.
+        check_pending: Still waiting for DNS. We'll keep checking automatically.
+        check_throttled: We just checked. Please wait a few seconds before checking again.
+        check_error: We couldn't check your domain right now. Please try again in a few minutes.
+        retry_started: Retrying setup. Check back in a minute.
+        change_heading: Change or remove domain
+        change_warning: Changes take effect immediately. Links go back to the main site until a new domain finishes setup.
+        remove: Remove custom domain
+        remove_confirm: "Remove %{domain}? Visitors to that domain will no longer see your organization."
       sidebar:
         invitations: Invitations
       social_links:

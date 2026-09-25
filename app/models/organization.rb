@@ -39,6 +39,7 @@ class Organization < ApplicationRecord
   before_save :generate_secret
   before_save :reset_verification_on_domain_change
   before_save :set_baseline_score_on_verification_change
+  before_save :reset_custom_domain_status, if: :will_save_change_to_custom_domain?
 
 
   after_save :bust_cache
@@ -46,8 +47,9 @@ class Organization < ApplicationRecord
 
   after_update_commit :conditionally_update_articles
   after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
-  after_save_commit :manage_fastly_tls_subscription
+  after_save_commit :manage_custom_domain
   after_destroy_commit :bust_cache
+  after_destroy_commit :release_custom_domain
 
   pg_search_scope :search_organizations, against: :name
 
@@ -124,6 +126,10 @@ class Organization < ApplicationRecord
 
   def self.find_by_slug_or_legacy(slug)
     find_by(slug: slug) || find_by(old_slug: slug) || find_by(old_old_slug: slug)
+  end
+
+  def self.custom_domain_provisioning_enabled?
+    CloudflareSaas.enabled? || ApplicationConfig["FASTLY_API_KEY"].present?
   end
 
   def check_for_slug_change
@@ -210,6 +216,41 @@ class Organization < ApplicationRecord
 
   def header_cta_dropdown?
     header_cta? && header_cta["links"].is_a?(Array) && header_cta["links"].any?
+  end
+
+  # Whether visitors should be sent to the organization's custom domain.
+  #
+  # A domain that is still being provisioned (or whose provisioning failed) has no
+  # working certificate yet, so links and redirects keep using the main app domain
+  # until it is issued. Domains configured outside the automated flow stay in
+  # "not_started" and are treated as live, which preserves their existing behavior.
+  def custom_domain_live?
+    return false if custom_domain.blank?
+    return false unless FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor[self])
+    return true unless has_attribute?(:tls_status)
+
+    !(pending? || failed?)
+  end
+
+  # Starts Cloudflare provisioning over from scratch, e.g. after the organization
+  # fixed its DNS following a failed or timed-out validation. The previous custom
+  # hostname is deleted first so the new one does not adopt its failed state.
+  def restart_custom_domain_provisioning!
+    return false if custom_domain.blank? || !CloudflareSaas.enabled?
+
+    if cloudflare_custom_hostname_id.present?
+      CloudflareSaas::Client.delete_custom_hostname(cloudflare_custom_hostname_id)
+    end
+    Organizations::DeleteCustomDomainWorker.perform_async(tls_subscription_id) if tls_subscription_id.present?
+
+    update_columns(
+      cloudflare_custom_hostname_id: nil,
+      tls_subscription_id: nil,
+      tls_status: Organization.tls_statuses[:pending],
+      custom_domain_error: nil,
+    )
+    Organizations::ProvisionCustomDomainWorker.perform_async(id)
+    true
   end
 
   def flipper_id
@@ -380,23 +421,56 @@ class Organization < ApplicationRecord
     end
   end
 
-  def manage_fastly_tls_subscription
+  def reset_custom_domain_status
+    self.custom_domain_error = nil
+    self.tls_status = if custom_domain.present? && self.class.custom_domain_provisioning_enabled?
+                        :pending
+                      else
+                        :not_started
+                      end
+  end
+
+  def manage_custom_domain
     return unless saved_change_to_custom_domain?
 
     old_domain, new_domain = saved_change_to_custom_domain
-    fastly_api_key_present = ApplicationConfig["FASTLY_API_KEY"].present?
+    clear_custom_domain_lookup_cache(old_domain, new_domain)
+    release_previous_custom_domain_resources if old_domain.present?
 
-    if old_domain.present? && tls_subscription_id.present?
-      previous_tls_subscription_id = tls_subscription_id
-      update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
-      
-      if fastly_api_key_present
-        Organizations::DeleteCustomDomainWorker.perform_async(previous_tls_subscription_id)
-      end
+    return if new_domain.blank? || !self.class.custom_domain_provisioning_enabled?
+
+    Organizations::ProvisionCustomDomainWorker.perform_async(id)
+  end
+
+  def release_previous_custom_domain_resources
+    previous_subscription_id = tls_subscription_id
+    previous_hostname_id = cloudflare_custom_hostname_id
+    return if previous_subscription_id.blank? && previous_hostname_id.blank?
+
+    update_columns(tls_subscription_id: nil, cloudflare_custom_hostname_id: nil)
+    enqueue_custom_domain_deletion(previous_subscription_id, previous_hostname_id)
+  end
+
+  def release_custom_domain
+    clear_custom_domain_lookup_cache(custom_domain)
+    enqueue_custom_domain_deletion(tls_subscription_id, cloudflare_custom_hostname_id)
+  end
+
+  def enqueue_custom_domain_deletion(subscription_id, hostname_id)
+    if subscription_id.present? && ApplicationConfig["FASTLY_API_KEY"].present?
+      Organizations::DeleteCustomDomainWorker.perform_async(subscription_id)
     end
 
-    if new_domain.present? && fastly_api_key_present && tls_subscription_id.blank? && tls_status == "not_started"
-      Organizations::ProvisionCustomDomainWorker.perform_async(id)
+    return unless hostname_id.present? && CloudflareSaas.enabled?
+
+    Organizations::DeleteCloudflareCustomHostnameWorker.perform_async(hostname_id)
+  end
+
+  # Host lookups cache misses too, so a domain that was requested before it was
+  # saved would otherwise keep resolving to nothing until the cache expires.
+  def clear_custom_domain_lookup_cache(*domains)
+    domains.compact_blank.each do |domain|
+      MemoryFirstCache.delete("org_custom_domain_id:#{domain.to_s.downcase}")
     end
   end
 

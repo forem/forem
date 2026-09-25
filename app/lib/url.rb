@@ -62,7 +62,7 @@ module URL
     unless is_signed_in && !is_on_custom_domain
       has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
       if has_org_attr && (org = article.try(:organization))
-        if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+        if custom_domain_live?(org)
           return url("/#{article.slug}", org.custom_domain)
         end
       elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
@@ -72,7 +72,7 @@ module URL
         end
         if custom_domain.present?
           org = Organization.find_by(id: org_id)
-          if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          if custom_domain_live?(org)
             return url("/#{article.slug}", custom_domain)
           end
         end
@@ -157,9 +157,7 @@ module URL
   def self.user(user)
     if user.respond_to?(:custom_domain) && user.custom_domain.present?
       org = user.respond_to?(:to_model) ? user.to_model : user
-      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-        return url(nil, user.custom_domain)
-      end
+      return url(nil, user.custom_domain) if custom_domain_live?(org)
     end
 
     # Use cached lookup to avoid N+1 queries
@@ -197,10 +195,17 @@ module URL
   def self.organization(organization)
     if organization.respond_to?(:custom_domain) && organization.custom_domain.present?
       org = organization.respond_to?(:to_model) ? organization.to_model : organization
-      if FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-        return url(nil, organization.custom_domain)
-      end
+      return url(nil, organization.custom_domain) if custom_domain_live?(org)
     end
     url(organization.slug)
+  end
+
+  # Whether links for this organization should use its custom domain. Domains
+  # that are still being provisioned keep using the main app domain.
+  def self.custom_domain_live?(org)
+    return false unless org.respond_to?(:custom_domain) && org.custom_domain.present?
+    return org.custom_domain_live? if org.respond_to?(:custom_domain_live?)
+
+    FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
   end
 end

@@ -3,6 +3,10 @@ class OrganizationSettingsController < ApplicationController
   include OrganizationAdminScoped
 
   before_action :check_org_verification_feature, only: [:request_verification]
+  before_action :check_org_custom_domain_feature,
+                only: %i[update_custom_domain remove_custom_domain check_custom_domain]
+
+  CUSTOM_DOMAIN_CHECK_THROTTLE = 10.seconds
 
   def edit
     load_membership_data
@@ -35,6 +39,66 @@ class OrganizationSettingsController < ApplicationController
 
     flash[:verification_notice] = I18n.t("views.organization_settings.verification.check_started")
     redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
+  end
+
+  def update_custom_domain
+    domain = normalized_custom_domain_param
+
+    if domain.blank?
+      flash[:custom_domain_error] = I18n.t("views.organization_settings.custom_domain.domain_required")
+    elsif @organization.update(custom_domain: domain)
+      flash[:custom_domain_notice] = I18n.t("views.organization_settings.custom_domain.saved")
+    else
+      flash[:custom_domain_error] = @organization.errors.full_messages.to_sentence
+    end
+
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
+  end
+
+  def remove_custom_domain
+    if @organization.update(custom_domain: nil)
+      flash[:custom_domain_notice] = I18n.t("views.organization_settings.custom_domain.removed")
+    else
+      flash[:custom_domain_error] = @organization.errors.full_messages.to_sentence
+    end
+
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
+  end
+
+  def check_custom_domain
+    if @organization.custom_domain.blank?
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
+      return
+    end
+
+    throttle_key = "org_custom_domain_check:#{@organization.id}"
+    unless Rails.cache.write(throttle_key, true, expires_in: CUSTOM_DOMAIN_CHECK_THROTTLE, unless_exist: true)
+      flash[:custom_domain_notice] = I18n.t("views.organization_settings.custom_domain.check_throttled")
+      redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
+      return
+    end
+
+    if @organization.failed?
+      @organization.restart_custom_domain_provisioning!
+      flash[:custom_domain_notice] = I18n.t("views.organization_settings.custom_domain.retry_started")
+    elsif @organization.cloudflare_custom_hostname_id.blank? && @organization.tls_subscription_id.blank?
+      Organizations::ProvisionCustomDomainWorker.perform_async(@organization.id) if @organization.pending?
+      flash[:custom_domain_notice] = I18n.t("views.organization_settings.custom_domain.check_started")
+    else
+      Organizations::VerifyCustomDomainWorker.new.perform(@organization.id)
+      @organization.reload
+      flash[:custom_domain_notice] = if @organization.issued?
+                                       I18n.t("views.organization_settings.custom_domain.check_live")
+                                     else
+                                       I18n.t("views.organization_settings.custom_domain.check_pending")
+                                     end
+    end
+
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
+  rescue CloudflareSaas::Client::Error, FastlyTls::Client::Error => e
+    Rails.logger.error("[OrganizationSettings] Custom domain check failed for org #{@organization.id}: #{e.message}")
+    flash[:custom_domain_error] = I18n.t("views.organization_settings.custom_domain.check_error")
+    redirect_to organization_settings_path(@organization.slug, anchor: "section-custom-domain")
   end
 
   def preview
@@ -150,5 +214,21 @@ class OrganizationSettingsController < ApplicationController
 
   def check_org_verification_feature
     not_found unless FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization])
+  end
+
+  def check_org_custom_domain_feature
+    not_found unless custom_domain_settings_enabled?
+  end
+
+  def custom_domain_settings_enabled?
+    CloudflareSaas.enabled? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor[@organization])
+  end
+  helper_method :custom_domain_settings_enabled?
+
+  # Accept pasted URLs like "https://blog.example.com/" by keeping only the host.
+  def normalized_custom_domain_param
+    value = params.dig(:organization, :custom_domain).to_s.strip.downcase
+    value = value.sub(%r{\A[a-z][a-z0-9+.-]*://}, "")
+    value.split(%r{[/?#]}).first.to_s.chomp(".")
   end
 end

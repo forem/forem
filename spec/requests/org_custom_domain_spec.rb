@@ -205,6 +205,23 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         end
       end
 
+      it "does not redirect signed-out visitors while the custom domain is still being provisioned" do
+        organization.update_columns(tls_status: "pending")
+
+        get "http://forem.com/#{organization.slug}"
+        expect(response).to have_http_status(:success)
+
+        get "http://forem.com/#{organization.slug}/#{article.slug}"
+        expect(response).to have_http_status(:success)
+      end
+
+      it "does not redirect signed-out visitors when custom domain provisioning failed" do
+        organization.update_columns(tls_status: "failed")
+
+        get "http://forem.com/#{organization.slug}/#{article.slug}"
+        expect(response).to have_http_status(:success)
+      end
+
       context "when user is signed in" do
         let(:logged_in_user) { create(:user) }
 
