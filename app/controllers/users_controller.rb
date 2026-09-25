@@ -208,8 +208,12 @@ class UsersController < ApplicationController
 
     not_authorized unless current_user.org_admin?(org) && unadminable.org_admin?(org)
 
-    OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id).update(type_of_user: "member")
-    flash[:settings_notice] = I18n.t("users_controller.removed_admin", name: unadminable.name)
+    membership = OrganizationMembership.find_by(user_id: unadminable.id, organization_id: org.id)
+    if membership.update(type_of_user: "member")
+      flash[:settings_notice] = I18n.t("users_controller.removed_admin", name: unadminable.name)
+    else
+      flash[:error] = I18n.t("users_controller.cannot_remove_last_admin")
+    end
     redirect_to organization_settings_path(org.slug)
   end
 
@@ -220,8 +224,11 @@ class UsersController < ApplicationController
 
     not_authorized unless current_user.org_admin?(org) && removable_org_membership
 
-    removable_org_membership.delete
-    flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
+    if removable_org_membership.destroy
+      flash[:settings_notice] = I18n.t("users_controller.removed_member", name: removable.name)
+    else
+      flash[:error] = I18n.t("users_controller.cannot_remove_last_admin")
+    end
     redirect_to organization_settings_path(org.slug)
   end
 
