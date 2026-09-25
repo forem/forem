@@ -1,0 +1,53 @@
+how do i turn on betterstack logging for DEV/forem alongside the existing honeybadger/datadog logging?
+
+---
+
+how do i turn on betterstack logging and alerting for DEV/forem alongside the existing honeybadger/datadog logging?
+
+---
+
+Connect Ruby • Ruby on Rails to Better Stack by following the integration guide at https://betterstack.com/docs/logs/ruby-and-rails.md. Use 2MA44z7U9r6WUXrhsdgfR9hn as $SOURCE_TOKEN and s2773094.eu-central-1a.betterstackdata.com as $INGESTING_HOST wherever the guide references them.
+
+---
+
+are we doing sampling?
+
+---
+
+monitor it for me
+
+---
+
+<task-notification>
+<task-id>bjritmygt</task-id>
+<summary>Monitor event: "practicaldev releases: v19516 config release + next deploy"</summary>
+<event>v19516 pending Set BETTERSTACK_SOURCE_TOKEN, BETTERSTACK_INGESTING_HOST config vars</event>
+If this event is something the user would act on now, send a PushNotification. Routine or benign output doesn't need one.
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bjritmygt</task-id>
+<summary>Monitor event: "practicaldev releases: v19516 config release + next deploy"</summary>
+<event>v19516 succeeded Set BETTERSTACK_SOURCE_TOKEN, BETTERSTACK_INGESTING_HOST config vars</event>
+If this event is something the user would act on now, send a PushNotification. Routine or benign output doesn't need one.
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b7rae825o</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/bf9fb0a8-fe46-4a1d-a775-84fde1733cdb/tasks/b7rae825o.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait for dynos to finish starting" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+what is the logtail code? do we have a pr open? is that needed? why doesn't forem/dev use that currently
+
+---
+
+open the pr for me to review

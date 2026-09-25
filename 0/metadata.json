@@ -1,0 +1,60 @@
+{
+  "cli_version": "0.11.2",
+  "checkpoint_id": "01M3CN5M7D0HHQ5YCR6D853D5J",
+  "session_id": "bf9fb0a8-fe46-4a1d-a775-84fde1733cdb",
+  "strategy": "manual-commit",
+  "created_at": "2026-09-25T16:07:59.167149Z",
+  "branch": "betterstack-logs",
+  "checkpoints_count": 1,
+  "save_step_count": 2,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "f8741e4fc42c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 130,
+    "cache_creation_tokens": 193361,
+    "cache_read_tokens": 6097506,
+    "output_tokens": 29377,
+    "api_call_count": 61
+  },
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 3890,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1676,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.json": 90,
+        ".claude/settings.local.json": 40,
+        ".claude/skills/crit-cli/SKILL.md": 209,
+        ".claude/skills/crit-story/SKILL.md": 67,
+        ".claude/skills/crit/SKILL.md": 131,
+        "docs/superpowers/plans/2026-08-17-consent-sync-phase-1-ledger.md": 407,
+        "docs/superpowers/plans/2026-08-17-consent-sync-phase-1.md": 1246,
+        "docs/superpowers/runbooks/build_drip.py": 240,
+        "docs/superpowers/runbooks/build_drip_content.py": 260,
+        "docs/superpowers/runbooks/build_footer_component.py": 135,
+        "docs/superpowers/runbooks/customerio-dev-digest-campaign-body.html": 86,
+        "docs/superpowers/runbooks/customerio-dev-email-layout.html": 137,
+        "docs/superpowers/runbooks/customerio-dev-footer-component-before-props.txt": 3,
+        "docs/superpowers/runbooks/customerio-dev-layout-v1.0.0-deleted-2026-08-16.html": 137,
+        "docs/superpowers/runbooks/customerio-dev-onboarding-drip.md": 134,
+        "docs/superpowers/runbooks/customerio-dev-transactional-templates.md": 346,
+        "docs/superpowers/specs/2026-08-17-dev-email-consent-sync.md": 222
+      }
+    }
+  ]
+}
