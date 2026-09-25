@@ -1,0 +1,36 @@
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 380-393,396
+app/javascript/articles/Article.jsx
+  h_f968154a99632d 172
+app/javascript/articles/__tests__/Article.test.jsx
+  h_f968154a99632d 303,305
+app/javascript/articles/components/SaveButton.jsx
+  h_f968154a99632d 13
+app/javascript/articles/components/__tests__/SaveButton.test.jsx
+  h_f968154a99632d 18,26,38,51,69
+app/javascript/packs/homePageFeed.jsx
+  h_f968154a99632d 97
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 175
+app/views/collections/show.html.erb
+  h_f968154a99632d 20
+app/views/organizations/show.html.erb
+  h_f968154a99632d 37
+app/views/stories/tagged_articles/index.html.erb
+  h_f968154a99632d 163
+app/views/users/show.html.erb
+  h_f968154a99632d 176
+spec/views/articles/_single_story.html.erb_spec.rb
+  h_f968154a99632d 1-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "fb7225a8a7f64d0f69bbce6e7bc04b909ed86045",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
