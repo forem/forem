@@ -332,3 +332,7 @@ tell me more about the 3 open issues
 ---
 
 we should only be workign on DEV.to right now, not core
+
+---
+
+do #3 first - that's easy on claude in chrome
