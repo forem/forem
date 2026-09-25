@@ -89,18 +89,48 @@
         <% @comment = Comment.new %>
         <%= form_for(@comment,
                      authenticity_token: false,
-                     html: { id: "comment-form-for-#{notification.comment_id}", onsubmit: "handleCommentSubmit.bind(this)(event)", onkeydown: "handleKeyDown(event)", class: "p-2 pb-1 pt-3 hidden" }) do |f| %>
+                     html: { id: "comment-form-for-#{notification.comment_id}", onsubmit: "handleCommentSubmit.bind(this)(event)", onkeydown: "handleKeyDown(event)", class: "comment-form hidden" }) do |f| %>
           <%= f.hidden_field :commentable_id, value: notification.commentable_id %>
           <%= f.hidden_field :commentable_type, value: notification.commentable_class_name %>
           <%= f.hidden_field :parent_id, value: notification.comment_id %>
-          <%= f.text_area :body_markdown,
-                          id: "comment-textarea-for-#{notification.comment_id}",
-                          class: "comment-textarea crayons-textfield mb-2 resize-y",
-                          placeholder: t("views.comments.footer.reply.placeholder"),
-                          "aria-label": t("views.comments.footer.reply.aria_label"),
-                          onfocus: "handleFocus(event)" %>
-          <div class="actions">
-            <button type="submit" class="crayons-btn comment-action-button" onclick="validateField(event)"><%= t("views.comments.write.submit") %></button>
+          
+          <div class="comment-form__inner">
+            <div class="comment-form__field" data-tracking-name="comment_form_textfield">
+              <%= f.text_area :body_markdown,
+                              id: "comment-textarea-for-#{notification.comment_id}",
+                              class: "comment-textarea crayons-textfield crayons-textfield--ghost",
+                              placeholder: t("views.comments.footer.reply.placeholder"),
+                              "aria-label": t("views.comments.footer.reply.aria_label"),
+                              onfocus: "handleFocus(event)",
+                              onkeyup: "handleKeyUp(event)",
+                              oninput: "handleChange(event)",
+                              required: true %>
+            </div>
+            
+            <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 comment-form__templates fs-base hidden">
+              <header class="mb-3">
+                <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment"><%= t("views.comments.write.template.personal") %></button>
+                <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment"><%= t("views.comments.write.template.moderator") %></button>
+              </header>
+              <div class="personal-responses-container">
+                <%# filled by JS %>
+              </div>
+              <div class="moderator-responses-container hidden">
+                <%# filled by JS %>
+              </div>
+              <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>">
+                <%= t("views.comments.write.template.create.subtitle") %>
+              </a>
+              <p><%= t("views.comments.write.template.create.desc") %></p>
+            </div>
+            
+            <div class="comment-form__preview text-styles text-styles--secondary"></div>
+            
+            <div class="comment-form__buttons mb-4 flex items-center">
+              <button type="submit" class="crayons-btn mr-2 js-btn-enable comment-action-button" onclick="validateField(event)" data-tracking-name="comment_reply_submit_button" disabled><%= t("views.comments.write.submit") %></button>
+              <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview mr-2 js-btn-enable" data-tracking-name="comment_reply_preview_button" onclick="handleCommentPreview(event)" disabled><%= t("views.comments.write.preview") %></button>
+              <button type="button" class="crayons-btn crayons-btn--ghost ml-auto" data-tracking-name="comment_reply_dismiss_button" onclick="handleFormClose(event)"><%= t("views.comments.write.cancel") %></button>
+            </div>
           </div>
         <% end %>
       </footer>
