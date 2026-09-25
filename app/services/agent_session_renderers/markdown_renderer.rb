@@ -1,15 +1,31 @@
 module AgentSessionRenderers
   class MarkdownRenderer
     ALLOWED_TAGS = %w[p br strong em b i code pre span a ul ol li h1 h2 h3 h4 h5 h6 blockquote div table thead tbody tr th td hr].freeze
-    ALLOWED_ATTRS = %w[class href target rel].freeze
+    # `id` is only ever emitted by HeadingRenderer below, always prefixed with
+    # the embed scope: raw HTML in transcripts is escaped (escape_html: true).
+    ALLOWED_ATTRS = %w[class href target rel id].freeze
 
-    def self.render(text)
+    # Adds scoped ids to headings when given a HeadingAnchors instance.
+    class HeadingRenderer < Redcarpet::Render::HTML
+      attr_accessor :heading_anchors
+
+      def header(text, header_level)
+        id = heading_anchors&.register(text)
+        id_attr = id ? %( id="#{ERB::Util.html_escape(id)}") : ""
+        "<h#{header_level}#{id_attr}>#{text}</h#{header_level}>\n"
+      end
+    end
+
+    # heading_anchors: an AgentSessionRenderers::HeadingAnchors scoped to the
+    # message being rendered. Without it headings get no ids, as before.
+    def self.render(text, heading_anchors: nil)
       return "".html_safe if text.blank?
 
-      renderer = Redcarpet::Render::HTML.new(
+      renderer = HeadingRenderer.new(
         hard_wrap: true,
         escape_html: true,
       )
+      renderer.heading_anchors = heading_anchors
       markdown = Redcarpet::Markdown.new(renderer,
                                          fenced_code_blocks: true,
                                          autolink: true,
@@ -18,6 +34,9 @@ module AgentSessionRenderers
                                          tables: true)
 
       html = markdown.render(text)
+
+      # Point the message's own "#slug" links (e.g. a table of contents) at its headings
+      html = heading_anchors.link_fragments(html) if heading_anchors
 
       # Syntax-highlight fenced code blocks via Rouge
       html = highlight_code_blocks(html)

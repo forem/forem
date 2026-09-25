@@ -50,6 +50,7 @@
       <% prev_model = current_model if current_model.present? %>
       <% prev_index = current_index %>
       <% is_user = message['role'] == 'user' %>
+      <% heading_anchors = AgentSessionRenderers::HeadingAnchors.new("agent-session-#{agent_session.id}-#{current_index}") %>
 
       <div class="agent-session-message agent-session-<%= message['role'] %>">
         <div class="agent-session-role-badge agent-session-role-<%= message['role'] %>">
@@ -63,13 +64,13 @@
               <% if text.length > 600 %>
                 <div data-collapsible>
                   <div class="agent-session-text agent-session-text-collapse">
-                    <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                    <%= AgentSessionRenderers::MarkdownRenderer.render(text, heading_anchors: heading_anchors) %>
                   </div>
                   <button class="agent-session-expand-btn" type="button">Show more</button>
                 </div>
               <% else %>
                 <div class="agent-session-text">
-                  <%= AgentSessionRenderers::MarkdownRenderer.render(text) %>
+                  <%= AgentSessionRenderers::MarkdownRenderer.render(text, heading_anchors: heading_anchors) %>
                 </div>
               <% end %>
             <% when 'tool_call' %>
