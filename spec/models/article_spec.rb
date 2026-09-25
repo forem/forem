@@ -1235,6 +1235,47 @@ RSpec.describe Article do
       expect(scheduled_draft).to be_valid
     end
 
+    describe "scheduled cache invalidation" do
+      let(:scheduled_at) { 1.hour.from_now }
+      let(:scheduled_article) do
+        create(:article, user: user, published: true, published_at: scheduled_at)
+      end
+
+      before do
+        allow(Articles::BustCacheWorker).to receive(:perform_async)
+        allow(Articles::BustCacheWorker).to receive(:perform_at)
+      end
+
+      it "registers the cache scheduling callback" do
+        callback_names = described_class._commit_callbacks
+          .select { |callback| callback.kind == :after }
+          .map(&:filter)
+
+        expect(callback_names).to include(:schedule_cache_bust)
+      end
+
+      it "schedules a cache bust for the publication time" do
+        scheduled_article
+        allow(Articles::BustCacheWorker).to receive(:perform_at)
+
+        scheduled_article.send(:schedule_cache_bust)
+
+        expect(Articles::BustCacheWorker).to have_received(:perform_at).with(
+          scheduled_article.published_at,
+          scheduled_article.id,
+        )
+      end
+
+      it "does not schedule a cache bust for a published article" do
+        article
+        allow(Articles::BustCacheWorker).to receive(:perform_at)
+
+        article.send(:schedule_cache_bust)
+
+        expect(Articles::BustCacheWorker).not_to have_received(:perform_at)
+      end
+    end
+
     context "when unpublishing" do
       let!(:published_at_was) { article.published_at }
 
