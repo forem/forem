@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.11.2",
+  "checkpoint_id": "01M3D7GD03KRTQBATV6Z11S3TE",
+  "strategy": "manual-commit",
+  "branch": "spam-repeat-offender-fixes",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "app/models/article.rb",
+    "app/services/spam/handler.rb",
+    "spec/services/spam/handler_spec.rb"
+  ],
+  "sessions": [
+    {
+      "metadata": "/0/metadata.json",
+      "transcript": "/0/full.jsonl",
+      "compact_transcript": "/0/transcript.jsonl",
+      "content_hash": "/0/content_hash.txt",
+      "prompt": "/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 228,
+    "cache_creation_tokens": 239905,
+    "cache_read_tokens": 20178609,
+    "output_tokens": 73248,
+    "api_call_count": 114
+  }
+}
