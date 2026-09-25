@@ -2,7 +2,13 @@
 # alongside ddtrace (Datadog). Head-sampled: set
 # OTEL_TRACES_SAMPLER=parentbased_traceidratio OTEL_TRACES_SAMPLER_ARG=0.1
 # alongside the vars below. Remove BETTER_STACK_OTLP_TOKEN to disable entirely.
-if ENV["BETTER_STACK_OTLP_TOKEN"].present?
+otlp_token = ENV["BETTER_STACK_OTLP_TOKEN"].presence
+otlp_host = ENV["BETTER_STACK_OTLP_HOST"].presence
+
+if otlp_token && otlp_host.nil?
+  # Tracing is optional; a half-configured pilot must not stop the app from booting.
+  Rails.logger.warn("BETTER_STACK_OTLP_TOKEN is set without BETTER_STACK_OTLP_HOST; OpenTelemetry export is disabled")
+elsif otlp_token
   require "opentelemetry/sdk"
   require "opentelemetry/exporter/otlp"
   # Individual instrumentation gems must be required so they register before `c.use`.
@@ -23,8 +29,8 @@ if ENV["BETTER_STACK_OTLP_TOKEN"].present?
     c.add_span_processor(
       OpenTelemetry::SDK::Trace::Export::BatchSpanProcessor.new(
         OpenTelemetry::Exporter::OTLP::Exporter.new(
-          endpoint: "https://#{ENV.fetch('BETTER_STACK_OTLP_HOST')}/v1/traces",
-          headers: { "Authorization" => "Bearer #{ENV.fetch('BETTER_STACK_OTLP_TOKEN')}" },
+          endpoint: "https://#{otlp_host}/v1/traces",
+          headers: { "Authorization" => "Bearer #{otlp_token}" },
           compression: "gzip",
         ),
       ),

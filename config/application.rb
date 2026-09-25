@@ -22,6 +22,8 @@ Bundler.require(*Rails.groups)
 # Better Stack's Rails integration has to load before the app boots; only load it when configured
 # (see config/initializers/betterstack.rb).
 require "logtail-rails" if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
+# Same for the Better Stack errors pilot (see config/initializers/sentry.rb).
+require "sentry-rails" if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
 
 if defined?(Anyway)
   Anyway.loaders.delete(:secrets)
