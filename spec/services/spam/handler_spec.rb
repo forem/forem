@@ -679,5 +679,38 @@ RSpec.describe Spam::Handler, type: :service do
         expect { handler }.not_to(change { Reaction.count })
       end
     end
+
+    context "when no AI provider is available for profile moderation" do
+      before { stub_const("Ai::Base::DEFAULT_KEY", nil) }
+
+      it "skips without labeling" do
+        allow(Ai::ProfileModerationLabeler).to receive(:new)
+
+        expect(handler).to eq(:skipped)
+        expect(Ai::ProfileModerationLabeler).not_to have_received(:new)
+      end
+    end
+
+    context "when profile moderation runs on Jev without a Gemini key" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:profile_moderation)
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
+      end
+
+      it "labels through TypeSafe and acts on a clear violation" do
+        stub_jev(keyword_stuffed_identity: 0.95)
+
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_spam
+      end
+
+      it "does not act on an uncertain signal" do
+        stub_jev(keyword_stuffed_identity: 0.7)
+
+        expect(handler).to eq(:not_spam)
+        expect(user.reload).not_to be_spam
+      end
+    end
   end
 end

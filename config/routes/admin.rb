@@ -35,6 +35,7 @@ namespace :admin do
   resources :creator_settings, only: %i[create new]
 
   namespace :settings do
+    resources :ai_functions, only: [:create]
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
     resources :communities, only: [:create]

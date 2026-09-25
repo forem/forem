@@ -21,9 +21,8 @@ module Articles
     private
 
     def enhance_article(article)
-      # Create AI client for dependency injection
-      ai_client = Ai::Base.new
-      enhancer = Ai::ArticleEnhancer.new(article, ai_client: ai_client)
+      # The enhancer resolves the model for each capability (see Ai::FunctionConfig).
+      enhancer = Ai::ArticleEnhancer.new(article)
 
       # Calculate and update clickbait score
       clickbait_score = enhancer.calculate_clickbait_score

@@ -195,4 +195,73 @@ RSpec.describe Ai::ArticleEnhancer, type: :service do
       end
     end
   end
+
+  describe "with Jev selected" do
+    describe "#calculate_clickbait_score" do
+      before { enable_jev_for(:clickbait_score) }
+
+      it "normalizes the clickbait Score to 0-1 without calling Gemini" do
+        requests = stub_jev(clickbait: 2.0)
+
+        expect(described_class.new(article).calculate_clickbait_score).to eq(0.667)
+        expect(Ai::Base).not_to have_received(:new)
+        expect(requests.first[:state]).to eq(title: article.title)
+      end
+
+      it "returns 0.0 when TypeSafe fails" do
+        client = instance_double(Ai::TypeSafe::Client)
+        allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+        allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+
+        expect(described_class.new(article).calculate_clickbait_score).to eq(0.0)
+      end
+
+      it "leaves tag suggestion on its own configured model" do
+        allow(ai_client).to receive(:call).and_return("")
+        stub_jev
+
+        described_class.new(article).generate_tags
+
+        expect(Ai::Base).to have_received(:new)
+      end
+    end
+
+    describe "#generate_tags" do
+      let(:tags) { %w[javascript ruby discuss career webdev].map { |name| create(:tag, name: name, supported: true) } }
+
+      before do
+        enable_jev_for(:article_tag_suggestion)
+        allow(Tag).to receive(:from_subforem).and_return(Tag.where(id: tags.map(&:id)))
+      end
+
+      it "asks one Noul per candidate and keeps the strongest few above the threshold" do
+        requests = stub_jev(
+          "tag::javascript" => 0.95, "tag::webdev" => 0.8, "tag::discuss" => 0.65, "tag::career" => 0.61,
+          "tag::ruby" => 0.4
+        )
+
+        suggested = described_class.new(article).generate_tags
+
+        expect(suggested).to eq(%w[javascript webdev discuss career])
+        expect(requests.first[:questions].keys).to include("tag::ruby", :unsuitable)
+        expect(requests.first[:questions]["tag::discuss"][:instructions][:tag])
+          .to include(usage: described_class::TAG_USAGE_GUIDANCE["discuss"])
+      end
+
+      it "returns nothing for unsuitable articles" do
+        stub_jev("tag::javascript" => 0.95, "unsuitable" => 0.9)
+
+        expect(described_class.new(article).generate_tags).to eq([])
+      end
+
+      it "uses an injected Gemini client instead of Jev" do
+        allow(ai_client).to receive(:call).and_return("javascript")
+        allow(Ai::TypeSafe::Client).to receive(:new)
+
+        described_class.new(article, ai_client: ai_client).generate_tags
+
+        expect(Ai::TypeSafe::Client).not_to have_received(:new)
+      end
+    end
+  end
 end

@@ -1814,7 +1814,7 @@ class Article < ApplicationRecord
   end
 
   def detect_code_block_languages
-    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless Ai::FunctionConfig.available?(:code_block_language_detection)
     return unless saved_change_to_body_markdown?
     return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
 

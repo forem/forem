@@ -4,7 +4,8 @@ module Concepts
 
     def initialize(concept)
       @concept = concept
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: @concept)
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:concept_description), wrapper: self,
+                                affected_content: @concept)
     end
 
     def call

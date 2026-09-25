@@ -5,7 +5,8 @@ module Ai
     def initialize(user, history: [])
       @user = user
       @history = history
-      @ai_client = Ai::Base.new(wrapper: self, affected_user: user)
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:chat_assistant), wrapper: self,
+                                affected_user: user)
     end
 
     def generate_response(user_message)

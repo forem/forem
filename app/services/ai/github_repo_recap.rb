@@ -33,7 +33,8 @@ module Ai
       @days_ago = days_ago
       @since = days_ago.days.ago
       @github_client = github_client || Github::OauthClient.new
-      @ai_client = ai_client || Ai::Base.new(wrapper: self)
+      @ai_client = ai_client ||
+        Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:github_repo_recap), wrapper: self)
     end
 
     ##

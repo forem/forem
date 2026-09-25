@@ -5,7 +5,7 @@ module Articles
     sidekiq_options queue: :high_priority, retry: 5, lock: :until_executing
 
     def perform(article_id)
-      return if Ai::Base::DEFAULT_KEY.blank?
+      return unless Ai::FunctionConfig.available?(:code_block_language_detection)
 
       article = Article.find_by(id: article_id)
       return unless article

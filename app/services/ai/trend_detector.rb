@@ -3,7 +3,7 @@ module Ai
     VERSION = "1.0".freeze
 
     def initialize
-      @ai_client = Ai::Base.new(wrapper: self)
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:trend_metadata), wrapper: self)
     end
 
     def call(days_lookback: 7, similarity_threshold: 0.89, match_threshold: 0.97, min_articles: 10, min_score: nil, min_unique_authors: 4)
