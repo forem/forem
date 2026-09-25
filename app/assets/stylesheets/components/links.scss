@@ -14,6 +14,8 @@
   text-decoration: none;
   color: var(--color);
   max-width: 100%;
+  transition: background-color var(--transition-props),
+    color var(--transition-props);
 
   &--block {
     display: flex;
@@ -38,6 +40,12 @@
   }
 
   &--block {
+    // Block links already get a background on hover, so an underline on top
+    // of it is redundant visual noise.
+    &:hover {
+      text-decoration: none;
+    }
+
     .js-focus-visible &.focus-visible:focus {
       background-color: var(--bg-hover);
     }

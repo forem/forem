@@ -47,10 +47,17 @@
 
 .crayons-story {
   background: var(--card-bg);
-  box-shadow: 0 0 0 1px var(--card-secondary-border);
+  box-shadow: var(--card-shadow);
   margin: 0 0 var(--su-2);
   position: relative;
   border-radius: var(--radius-auto);
+  transition: box-shadow var(--transition-props);
+
+  @media (hover: hover) {
+    &:hover {
+      box-shadow: var(--card-shadow-hover);
+    }
+  }
 
   &:focus-within {
     outline: none;
@@ -114,7 +121,7 @@
     height: auto;
 
     @media (min-width: $breakpoint-s) {
-      border-radius: var(--radius) var(--radius) 0 0;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
     }
   }
 
@@ -207,6 +214,7 @@
     color: var(--card-color);
     line-height: var(--lh-tight);
     font-size: var(--title-font-size);
+    letter-spacing: -0.01em;
 
     // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
     overflow-wrap: break-word;
@@ -231,6 +239,7 @@
   &__title-status {
     font-weight: var(--fw-normal);
     font-size: var(--fs-l);
+    letter-spacing: normal;
     a {
       &:hover {
         color: var(--card-color);
