@@ -239,6 +239,54 @@ RSpec.describe Spam::Handler, type: :service do
           expect(handler).to eq(:spam)
         end
       end
+
+      context "with a low-trust author whose earlier posts were already auto-flagged" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: article.user, include_user_profile: false).and_return(false)
+          create_list(:article, 2, user: article.user).each do |earlier|
+            earlier.update_column(:automod_label, "clear_and_obvious_spam")
+            create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+          end
+        end
+
+        it "marks the author as spam without waiting for moderator confirmation" do
+          handler
+          expect(article.user.reload).to be_spam
+          expect(article.user).not_to be_suspended
+        end
+
+        it "leaves authors with 4 or more badges alone" do
+          article.user.update_column(:badge_achievements_count, 4)
+          handler
+          expect(article.user.reload).not_to be_spam
+        end
+
+        it "ignores auto-flags that moderators have invalidated" do
+          Reaction.where(user: mascot_user).update_all(status: "invalid")
+          handler
+          expect(article.user.reload).not_to be_spam
+        end
+      end
+
+      context "when the mascot's reaction isn't created" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+          allow(Rails.logger).to receive(:warn)
+        end
+
+        it "logs a warning when the reaction fails validation" do
+          allow(article).to receive(:published).and_return(false)
+          handler
+          expect(Rails.logger).to have_received(:warn).with(/Spam reaction not created for Article #{article.id}/)
+        end
+
+        it "stays quiet when the mascot has already reacted" do
+          create(:reaction, user: mascot_user, reactable: article, category: "vomit")
+          handler
+          expect(Rails.logger).not_to have_received(:warn).with(/Spam reaction not created/)
+        end
+      end
     end
 
     context "when content moderation labeler identifies clear and obvious harmful content" do
