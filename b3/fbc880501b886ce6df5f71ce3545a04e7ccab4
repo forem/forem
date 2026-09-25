@@ -1,0 +1,20 @@
+app/mailers/survey_mailer.rb
+  h_f968154a99632d 8,29-31
+app/services/markdown_processor.rb
+  h_f968154a99632d 93
+app/views/mailers/survey_mailer/pulse_survey.html.erb
+  h_f968154a99632d 11-12
+spec/models/survey_spec.rb
+  h_f968154a99632d 345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b3fbc880501b886ce6df5f71ce3545a04e7ccab4",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
