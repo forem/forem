@@ -47,3 +47,7 @@ If this event is something the user would act on now, send a PushNotification. R
 ---
 
 what is the logtail code? do we have a pr open? is that needed? why doesn't forem/dev use that currently
+
+---
+
+open the pr for me to review
