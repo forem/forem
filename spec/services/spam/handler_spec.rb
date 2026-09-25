@@ -261,6 +261,31 @@ RSpec.describe Spam::Handler, type: :service do
           handler
           expect(article.user.reload).not_to be_spam
         end
+
+        it "ignores auto-flags that moderators have invalidated" do
+          Reaction.where(user: mascot_user).update_all(status: "invalid")
+          handler
+          expect(article.user.reload).not_to be_spam
+        end
+      end
+
+      context "when the mascot's reaction isn't created" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+          allow(Rails.logger).to receive(:warn)
+        end
+
+        it "logs a warning when the reaction fails validation" do
+          allow(article).to receive(:published).and_return(false)
+          handler
+          expect(Rails.logger).to have_received(:warn).with(/Spam reaction not created for Article #{article.id}/)
+        end
+
+        it "stays quiet when the mascot has already reacted" do
+          create(:reaction, user: mascot_user, reactable: article, category: "vomit")
+          handler
+          expect(Rails.logger).not_to have_received(:warn).with(/Spam reaction not created/)
+        end
       end
     end
 

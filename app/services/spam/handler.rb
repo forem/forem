@@ -218,13 +218,12 @@ module Spam
     def self.repeat_auto_flagged_author?(user:, threshold: 2)
       return false if user.badge_achievements_count >= 4
 
-      flagged_article_ids = user.articles.published
+      flagged_articles = user.articles.published
         .where("published_at > ?", 1.month.ago)
         .where(automod_label: CLEAR_VIOLATION_LABELS)
-        .ids
-      Reaction.article_vomits
-        .where(user_id: Settings::General.mascot_user_id, reactable_id: flagged_article_ids)
-        .size > threshold
+      Reaction.article_vomits.valid_or_confirmed
+        .where(user_id: Settings::General.mascot_user_id, reactable_id: flagged_articles.select(:id))
+        .count > threshold
     end
 
     # NEW/private: Helper method to check for extensive domain-based spam.
