@@ -1197,7 +1197,7 @@ DEPENDENCIES
   launchy (~> 2.5)
   liquid (~> 5.4)
   listen (~> 3.7)
-  logtail (~> 0.1)
+  logtail (~> 0.1.17)
   memory_profiler (~> 1.0)
   metainspector (~> 5.12)
   mini_magick (~> 4.13)
