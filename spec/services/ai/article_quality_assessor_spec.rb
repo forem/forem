@@ -300,4 +300,58 @@ RSpec.describe Ai::ArticleQualityAssessor, type: :service do
       end
     end
   end
+
+  describe "#assess with Jev selected" do
+    let(:articles) { Array.new(4) { |index| create(:article, user: create(:user), title: "Jev article #{index}") } }
+
+    before { enable_jev_for(:article_quality_ranking) }
+
+    # Dimension Scores run 0-3. Each article is scored in its own request.
+    def stub_scores(by_title)
+      stub_jev do |state|
+        position = by_title.fetch(state[:article][:title])
+        { human_connection: position, community_value: position, engagement: position, authenticity: position }
+          .merge(by_title.fetch("#{state[:article][:title]} flags", {}))
+      end
+    end
+
+    it "scores each article separately and ranks them in code" do
+      requests = stub_scores(
+        "Jev article 0" => 1.0, "Jev article 1" => 3.0, "Jev article 2" => 0.5, "Jev article 3" => 2.0,
+      )
+
+      result = described_class.new(articles).assess
+
+      expect(Ai::Base).not_to have_received(:new)
+      expect(requests.size).to eq(4)
+      expect(requests.map { |request| request[:state][:article][:title] }).to match_array(articles.map(&:title))
+      expect(result).to eq(best: articles[1], worst: articles[2])
+    end
+
+    it "sinks articles with a clear red flag" do
+      stub_scores(
+        "Jev article 0" => 3.0, "Jev article 0 flags" => { dishonest_promotion: 0.9 },
+        "Jev article 1" => 3.0, "Jev article 2" => 2.0, "Jev article 3" => 2.5
+      )
+
+      result = described_class.new(articles).assess
+
+      expect(result).to eq(best: articles[1], worst: articles[0])
+    end
+
+    it "does not pick a trusted author as worst without a red flag" do
+      articles[2].user.add_role(:trusted)
+      stub_scores("Jev article 0" => 1.0, "Jev article 1" => 3.0, "Jev article 2" => 0.5, "Jev article 3" => 2.0)
+
+      expect(described_class.new(articles).assess[:worst]).to eq(articles[0])
+    end
+
+    it "skips articles whose evaluation fails and falls back when too few remain" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+
+      expect(described_class.new(articles).assess).to eq(best: nil, worst: nil)
+    end
+  end
 end

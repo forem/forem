@@ -1,8 +1,19 @@
 require "json"
 
 module Articles
+  #
+  # When the :code_block_language_detection function is set to Jev (see Ai::FunctionConfig),
+  # each unlabeled block gets its own TypeSafe Choice over the supported Rouge tags. Each block
+  # is its own small state, so other blocks never act as distractors, and low-confidence
+  # answers fall back to "plaintext".
   class DetectCodeBlockLanguages
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
+    FUNCTION_KEY = :code_block_language_detection
+    # Similar languages (e.g. javascript/jsx/typescript) legitimately share probability, so the
+    # bar is low; below it plain text is the safer rendering.
+    MIN_JEV_CONFIDENCE = 0.3
     FENCED_CODE_BLOCK_REGEX = /
       (?<leading>\A|\n)
       (?<indent>[ ]{0,3})
@@ -27,6 +38,16 @@ module Articles
       end
     end
 
+    # Rouge tag => human-readable name for the Jev Choice options, e.g. "ruby" => "Ruby".
+    def self.language_criteria
+      @language_criteria ||= begin
+        titles = Rouge::Lexer.all.each_with_object({}) { |lexer, memo| memo[lexer.tag] ||= lexer.title if lexer.tag }
+        SUPPORTED_LANGUAGE_TAGS.index_with do |tag|
+          tag == "plaintext" ? "Plain text, console output, or no specific language" : titles[tag] || tag
+        end
+      end
+    end
+
     def initialize(article, ai_client: nil)
       @article = article
       @ai_client = ai_client
@@ -39,7 +60,11 @@ module Articles
       return false if unlabeled_blocks.blank?
       return false if ai_client_unconfigured?
 
-      detected_languages = parse_response(ai_client.call(build_prompt(unlabeled_blocks)), unlabeled_blocks.count)
+      detected_languages = if use_jev?
+                             detect_languages_via_jev(unlabeled_blocks)
+                           else
+                             parse_response(ai_client.call(build_prompt(unlabeled_blocks)), unlabeled_blocks.count)
+                           end
       updated_markdown = apply_languages(detected_languages)
       return false if updated_markdown == article.body_markdown
 
@@ -57,13 +82,46 @@ module Articles
     attr_reader :ai_client, :article
 
     def ai_client
-      @ai_client ||= Ai::Base.new(model: Ai::Base::DEFAULT_LITE_MODEL, wrapper: self,
+      @ai_client ||= Ai::Base.new(model: selection.gemini_model(Ai::Base::DEFAULT_LITE_MODEL), wrapper: self,
                                   affected_content: article, affected_user: article.user)
     end
 
-    def ai_client_unconfigured?
-      @ai_client.blank? && Ai::Base::DEFAULT_KEY.blank?
+    def selection
+      @selection ||= Ai::FunctionConfig.selection_for(FUNCTION_KEY)
     end
+
+    # An injected client always wins so callers and specs can force the Gemini path.
+    def use_jev?
+      @ai_client.blank? && selection.jev?
+    end
+
+    def ai_client_unconfigured?
+      @ai_client.blank? && !Ai::FunctionConfig.available?(FUNCTION_KEY)
+    end
+
+    # --- Jev (TypeSafe System One) ---
+
+    def detect_languages_via_jev(unlabeled_blocks)
+      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: article,
+                                        affected_user: article.user)
+      unlabeled_blocks.map do |code|
+        answer = client.evaluate(state: { code: code.to_s.strip.first(MAX_BLOCK_CHARS) },
+                                 questions: { language: language_question }).choice(:language)
+        answer.confidence >= MIN_JEV_CONFIDENCE ? normalize_language(answer.choice) : "plaintext"
+      rescue StandardError => e
+        Rails.logger.error("Jev code block language detection failed for article #{article.id}: #{e}")
+        "plaintext"
+      end
+    end
+
+    def language_question
+      @language_question ||= choice(
+        "Which syntax-highlighting language is `code` written in?",
+        self.class.language_criteria,
+      )
+    end
+
+    # --- Gemini ---
 
     def extract_unlabeled_blocks
       article.body_markdown.to_enum(:scan, FENCED_CODE_BLOCK_REGEX).filter_map do

@@ -115,5 +115,47 @@ RSpec.describe Ai::CommentHelpfulnessAssessor, type: :service do
       end
     end
   end
-end
 
+  describe "#helpful? with Jev selected" do
+    before { enable_jev_for(:comment_helpfulness) }
+
+    context "with a top-level comment" do
+      it "qualifies substantive help for newcomers" do
+        requests = stub_jev(helps_newcomers: 0.9)
+
+        expect(assessor.helpful?).to be(true)
+        expect(requests.first[:questions].keys).to contain_exactly(:low_effort, :spam_or_promotion, :helps_newcomers)
+        expect(requests.first[:state]).not_to have_key(:replying_to)
+      end
+
+      it "rejects low-effort comments even when they are welcoming" do
+        stub_jev(helps_newcomers: 0.9, low_effort: 0.6)
+
+        expect(assessor.helpful?).to be(false)
+      end
+
+      it "rejects uncertain help" do
+        stub_jev(helps_newcomers: 0.6)
+
+        expect(assessor.helpful?).to be(false)
+      end
+    end
+
+    context "with a reply" do
+      let(:parent) { create(:comment, commentable: welcome_thread, body_markdown: "Hi! I'm new to Rust, any tips?") }
+      let(:comment) do
+        create(:comment, commentable: welcome_thread, parent: parent, body_markdown: "Try the Rust book, it's great!")
+      end
+
+      it "requires the reply to engage with its parent and add value" do
+        requests = stub_jev(engages_with_parent: 0.9, adds_value: 0.9)
+
+        expect(assessor.helpful?).to be(true)
+        expect(requests.first[:state][:replying_to]).to eq(parent.body_markdown)
+
+        stub_jev(engages_with_parent: 0.9, adds_value: 0.3)
+        expect(described_class.new(comment, welcome_thread).helpful?).to be(false)
+      end
+    end
+  end
+end
