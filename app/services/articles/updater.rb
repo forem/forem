@@ -83,6 +83,8 @@ module Articles
     def remove_all_notifications
       Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
                                                       action: "Published")
+      Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
+                                                      action: "CoAuthor")
       ContextNotification.delete_by(context_id: article.id, context_type: "Article",
                                     action: "Published")
 
