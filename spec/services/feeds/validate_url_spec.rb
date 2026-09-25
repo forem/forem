@@ -9,6 +9,14 @@ RSpec.describe Feeds::ValidateUrl, :vcr, type: :service do
     expect(described_class.call("")).to be(false)
   end
 
+  it "returns false for nil URL" do
+    expect(described_class.call(nil)).to be(false)
+  end
+
+  it "strips whitespace from URL", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
+    expect(described_class.call("  #{valid_feed_url}  ")).to be(true)
+  end
+
   it "returns false for an invalid feed URL", vcr: { cassette_name: "feeds_validate_url_invalid" } do
     expect(described_class.call(invalid_feed_url)).to be(false)
   end

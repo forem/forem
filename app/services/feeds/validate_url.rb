@@ -18,7 +18,7 @@ module Feeds
     end
 
     def initialize(feed_url)
-      @feed_url = feed_url
+      @feed_url = feed_url.to_s.strip
     end
 
     def call
