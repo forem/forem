@@ -66,5 +66,11 @@ RSpec.describe "articles/_single_story.html.erb", type: :view do
       expect(rendered).not_to have_css("#article-save-button-#{story.id}")
       expect(rendered).not_to have_css(".bookmark-button")
     end
+
+    it "adds a failure handler to cover images" do
+      render partial: "articles/single_story", locals: { story: story, featured: true, feed_style_preference: "basic" }
+
+      expect(rendered).to have_css("img.crayons-article__cover__image__feed[onerror]")
+    end
   end
 end

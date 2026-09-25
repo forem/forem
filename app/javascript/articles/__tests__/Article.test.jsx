@@ -1,6 +1,6 @@
 /* eslint-disable no-irregular-whitespace */
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { fireEvent, render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import '@testing-library/jest-dom';
 import { Article } from '..';
@@ -92,6 +92,24 @@ describe('<Article /> component', () => {
       exact: false,
     });
     expect(queryByAltText('Emil99 profile')).toExist();
+  });
+
+  it('removes the cover when its image fails to load', () => {
+    const { container } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={article}
+        currentTag="javascript"
+      />,
+    );
+    const cover = container.querySelector('.crayons-article__cover');
+    const image = cover.querySelector('img');
+
+    fireEvent.error(image);
+
+    expect(cover).not.toBeInTheDocument();
   });
 
   it('should render a rich feed', () => {
