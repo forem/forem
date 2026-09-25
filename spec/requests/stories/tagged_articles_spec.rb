@@ -88,6 +88,14 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
+        it "returns not found past the last page we serve" do
+          max_page = Stories::TaggedArticlesController::MAX_PAGE
+
+          expect { get "/t/#{tag.name}/page/#{max_page}" }.not_to raise_error
+          expect { get "/t/#{tag.name}/page/#{max_page + 1}" }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { get "/t/#{tag.name}", params: { page: max_page + 1 } }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
         it "handles non-basic feed strategy" do
           allow(Settings::UserExperience).to receive(:feed_strategy).and_return("rich")
           allow(Rails.cache).to receive(:fetch).and_call_original
