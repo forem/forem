@@ -51,3 +51,7 @@ what is the logtail code? do we have a pr open? is that needed? why doesn't fore
 ---
 
 open the pr for me to review
+
+---
+
+since forem is an open source project that people can self deploy we need to omake sure we're not forcing EVERYONE to move to betterstack when we want to - it needs to be configurable if they use datadog, honeybadger, betterstack, etc
