@@ -813,25 +813,26 @@ RSpec.describe "NotificationsIndex" do
         renders_article_path(article)
         renders_authors_name(article)
       end
+    end
 
-      # rubocop:disable RSpec/NestedGroups
-      context "when the article belongs to an organization" do
-        let(:organization) { create(:organization) }
-        let(:article) do
-          create(:organization_membership, user: co_author, organization: organization)
-          create(:article, user_id: user.id, organization_id: organization.id, co_author_ids: [co_author.id])
-        end
-
-        it "renders the organization credit", :aggregate_failures do
-          get "/notifications"
-
-          expect(response.body).to include(
-            "under <a class=\"crayons-link fw-bold\" href=\"#{organization.path}\">" \
-            "#{CGI.escapeHTML(organization.name)}</a>",
-          )
-        end
+    context "when a user has a new co-author notification with an organization" do
+      let(:co_author) { create(:user) }
+      let(:article) do
+        create(:organization_membership, user: co_author, organization: organization)
+        create(:article, user_id: user.id, organization_id: organization.id, co_author_ids: [co_author.id])
       end
-      # rubocop:enable RSpec/NestedGroups
+
+      it "renders the organization credit", :aggregate_failures do
+        sidekiq_perform_enqueued_jobs { Notification.send_to_co_authors(article) }
+        sign_in co_author
+
+        get "/notifications"
+
+        expect(response.body).to include(
+          "under <a class=\"crayons-link fw-bold\" href=\"#{organization.path}\">" \
+          "#{CGI.escapeHTML(organization.name)}</a>",
+        )
+      end
     end
 
     context "when a user is an admin" do
