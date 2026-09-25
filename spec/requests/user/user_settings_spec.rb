@@ -37,6 +37,21 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("User")
       end
 
+      it "offers profile image removal when the user has one" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[remove_profile_image]")
+      end
+
+      it "renders the Profile tab without the removal checkbox when there is no profile image" do
+        sign_in create(:user, profile_image: nil)
+
+        get user_settings_path(:profile)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("user[remove_profile_image]")
+      end
+
       it "displays profile groups content on Profile tab" do
         profile_field = create(:profile_field)
 
