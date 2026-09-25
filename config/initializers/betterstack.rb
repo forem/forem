@@ -2,6 +2,7 @@
 # Off unless BETTERSTACK_SOURCE_TOKEN is set; logtail-rails is only loaded then (config/application.rb).
 if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
   require Rails.root.join("lib/betterstack/log_device")
+  require Rails.root.join("lib/betterstack/request_context")
 
   betterstack_logger = Logtail::Logger.new(
     Betterstack::LogDevice.new(
@@ -23,7 +24,10 @@ if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
     Logtail::Integrations::ActiveRecord,
     Logtail::Integrations::Rails::RackLogger,
     Logtail::Integrations::Rails::ErrorEvent,
+    Logtail::Integrations::Rack::HTTPContext,
   ].each { |integration| integration.enabled = false }
+  # Above DebugExceptions, so unhandled exceptions carry the request too (see RequestContext).
+  Rails.application.config.middleware.insert_after ActionDispatch::RequestId, Betterstack::RequestContext
   # Only the user's id: logtail-rack would otherwise send names and emails.
   Logtail::Integrations::Rack::UserContext.custom_user_hash = lambda do |env|
     (user = env["warden"]&.user) && { id: user.id }
