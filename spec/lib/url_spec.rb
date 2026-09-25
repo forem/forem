@@ -130,6 +130,12 @@ RSpec.describe URL, type: :lib do
         expect(described_class.url).to eq("https://localhost:3005")
       end
 
+      it "does not append dev_port when the domain already contains a different port" do
+        allow(described_class).to receive(:dev_port).and_return("3100")
+        allow(Settings::General).to receive(:app_domain).and_return("localhost:3000")
+        expect(described_class.url).to eq("https://localhost:3000")
+      end
+
       it "omits the port entirely when dev_port is blank, for a TLS proxy in front of the app" do
         allow(described_class).to receive(:dev_port).and_return("")
         expect(described_class.url).to eq("https://localhost")
