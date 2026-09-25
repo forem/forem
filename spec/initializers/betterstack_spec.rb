@@ -19,6 +19,8 @@ RSpec.describe "Better Stack initializer" do # rubocop:disable RSpec/DescribeCla
     allow(ENV).to receive(:fetch).with("BETTERSTACK_SOURCE_TOKEN").and_return("token")
     allow(Betterstack::LogDevice).to receive(:new).and_return(device)
     allow(device).to receive(:write).and_return(true)
+    # The app's middleware stack is frozen after boot.
+    allow(Rails.application.config.middleware).to receive(:insert_after)
   end
 
   it "adds a Better Stack logger at the Rails log level" do
@@ -48,6 +50,8 @@ RSpec.describe "Better Stack initializer" do # rubocop:disable RSpec/DescribeCla
     expect(Logtail.config.logger).to be(rails_logger.broadcasts.last)
     expect(Logtail::Integrations::ActionController).not_to be_enabled
     expect(Logtail::Integrations::Rails::ErrorEvent).not_to be_enabled
+    expect(Rails.application.config.middleware).to have_received(:insert_after)
+      .with(ActionDispatch::RequestId, Betterstack::RequestContext)
     user = instance_double(User, id: 7, name: "Ada", email: "ada@example.com")
     env = { "warden" => instance_double(Warden::Proxy, user: user) }
     expect(Logtail::Integrations::Rack::UserContext.custom_user_hash.call(env)).to eq(id: 7)
