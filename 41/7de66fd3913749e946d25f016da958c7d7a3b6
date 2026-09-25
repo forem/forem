@@ -1,0 +1,52 @@
+db/migrate/20260309174600_update_lead_submissions_for_anonymous_support.rb
+  b172f74f607742a2 1-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "417de66fd3913749e946d25f016da958c7d7a3b6",
+  "prompts": {
+    "36dd4faacfee16e8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f02539d9-fd1d-4517-a180-2d0b9122a153",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 1,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/955fe956f2f5a5db956a051ce919df9e8735881a883b0eb32be2566da3bde244"
+    },
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 129,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1cb5133f04596544f42dc61493aa739683e0391a9438a22058b0bf0098e1ce82"
+    },
+    "b172f74f607742a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c1a2e06b-87bc-4819-8425-5e24e6858795",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 32,
+      "total_deletions": 11,
+      "accepted_lines": 21,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/b74c9ac0b2c5b3af6d80c162476120e728b68bb5dbb61cb3618df087002366ea"
+    }
+  }
+}
