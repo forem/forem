@@ -190,16 +190,7 @@ RSpec.describe Feeds::ImportFromXml, type: :service do
       expect(subscription).to be_present
     end
 
-    it "skips previously imported items without duplicate creation" do
-      described_class.call(xml_content: valid_rss_xml, user: user)
-
-      expect do
-        result = described_class.call(xml_content: valid_rss_xml, user: user)
-        expect(result[:imported]).to eq(0)
-      end.not_to change(user.articles, :count)
-    end
-
-    it "prevents duplicate drafts under concurrent or repeated submissions via per-user locking" do
+    it "skips previously imported items and prevents duplicate drafts via per-user locking" do
       allow(user).to receive(:with_lock).and_call_original
 
       first_result = described_class.call(xml_content: valid_rss_xml, user: user)

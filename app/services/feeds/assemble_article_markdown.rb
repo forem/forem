@@ -136,12 +136,14 @@ module Feeds
     def medium_host?(url)
       return false if url.blank?
 
-      host = begin
-        URI.parse(url).host&.downcase
+      uri = begin
+        URI.parse(url)
       rescue URI::InvalidURIError
         nil
       end
+      return false unless uri&.scheme.in?(%w[http https])
 
+      host = uri.host&.downcase
       host == "medium.com" || host.to_s.end_with?(".medium.com")
     end
 
@@ -152,14 +154,7 @@ module Feeds
 
         possible_link = a_tag[0].inner_html
         next unless %r{medium\.com/media/.+/href}.match?(possible_link)
-
-        uri = begin
-          URI.parse(possible_link)
-        rescue URI::InvalidURIError
-          nil
-        end
-        next unless uri&.scheme.in?(%w[http https])
-        next unless uri.host&.match?(/\A([a-z0-9-]+\.)*medium\.com\z/i)
+        next unless medium_host?(possible_link)
 
         real_link = HTTParty.head(possible_link).request.last_uri.to_s
         return nil unless real_link.include?("gist.github.com")

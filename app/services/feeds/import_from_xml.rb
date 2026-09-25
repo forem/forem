@@ -23,9 +23,7 @@ module Feeds
       feed_error = validate_feed(feed)
       return feed_error if feed_error
 
-      user.with_lock do
-        { imported: import_entries(feed) }
-      end
+      user.with_lock { { imported: import_entries(feed) } }
     end
 
     private
