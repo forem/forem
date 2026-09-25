@@ -1,0 +1,33 @@
+config/application.rb
+  s_f87acf2c327fab::t_09265ed805720e 25-26
+config/initializers/sentry.rb
+  s_f87acf2c327fab::t_09265ed805720e 3-20,22,29,31-42
+Gemfile
+  s_f7e5a6d659ad5c::t_d8d52147d685cb 124-125
+config/initializers/opentelemetry.rb
+  s_f7e5a6d659ad5c::t_db4674ff64482a 5-11,32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1d49ac0158c6b1484a92f1ded5c0c92f4589661b",
+  "prompts": {},
+  "sessions": {
+    "s_f7e5a6d659ad5c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "01fd3c38-acb8-468b-801f-c78aeee89309",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_f87acf2c327fab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf9fb0a8-fe46-4a1d-a775-84fde1733cdb",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
