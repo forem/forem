@@ -115,6 +115,20 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  # Also ship logs to Better Stack, keeping the stdout logger above. The Better Stack
+  # logger must not respond to #tagged, or BroadcastLogger runs tagged blocks
+  # (e.g. ActiveJob#perform_now) once per logger.
+  if ENV["BETTERSTACK_SOURCE_TOKEN"].present?
+    require "logtail"
+    betterstack_logger = Logtail::Logger.new(
+      Logtail::LogDevices::HTTP.new(
+        ENV.fetch("BETTERSTACK_SOURCE_TOKEN"),
+        ingesting_host: ENV.fetch("BETTERSTACK_INGESTING_HOST"),
+      ),
+    )
+    config.logger = ActiveSupport::BroadcastLogger.new(*[config.logger, betterstack_logger].compact)
+  end
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
