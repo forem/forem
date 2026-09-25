@@ -2365,6 +2365,20 @@ RSpec.describe Article do
         article.save
       end.not_to change(Collection, :count)
     end
+
+    it "invalidates the author profile cache when an article leaves a series" do
+      series = create(:collection, user: user)
+      series_article = create(:article, user: user, with_collection: series)
+      original_cache_key = user.reload.cache_key_with_version
+
+      Timecop.travel(1.minute.from_now) do
+        series_article.update!(
+          body_markdown: series_article.body_markdown.gsub("series: #{series.slug}", ""),
+        )
+      end
+
+      expect(user.reload.cache_key_with_version).not_to eq(original_cache_key)
+    end
   end
 
   describe "#top_comments" do
