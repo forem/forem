@@ -327,6 +327,25 @@ RSpec.describe "StoriesIndex" do
       end
     end
 
+    context "with the onboarding task card" do
+      before { sign_in create(:user) }
+
+      it "renders the task card by default" do
+        get "/"
+
+        expect(response.body).to include("onboarding-task-card")
+      end
+
+      it "does not render the task card when :hide_onboarding_task_card is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:hide_onboarding_task_card).and_return(true)
+
+        get "/"
+
+        expect(response.body).not_to include("onboarding-task-card")
+      end
+    end
+
     def sets_fastly_headers
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
