@@ -1256,9 +1256,6 @@ RSpec.describe Article do
 
       it "schedules a cache bust for the publication time" do
         scheduled_article
-        allow(Articles::BustCacheWorker).to receive(:perform_at)
-
-        scheduled_article.send(:schedule_cache_bust)
 
         expect(Articles::BustCacheWorker).to have_received(:perform_at).with(
           scheduled_article.published_at,
