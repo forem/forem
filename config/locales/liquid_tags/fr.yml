@@ -167,6 +167,7 @@ fr:
       no_args: "La balise features n'accepte aucun argument"
     feature_tag:
       missing_title: "La balise feature nécessite une option title"
+      invalid_icon: "Icône '%{icon}' non valide pour la balise feature. Utilisez un emoji ou l'une des icônes suivantes : %{valid_icons}"
     offer_tag:
       default_button: "En savoir plus"
     quote_tag:

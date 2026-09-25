@@ -95,9 +95,12 @@
     <h4>Features</h4>
     <p>Display a grid of feature cards:</p>
     <pre>{% features %}
-  {% feature title="Fast" icon="rocket" %}Optimized for speed.{% endfeature %}
-  {% feature title="Secure" %}Built with security in mind.{% endfeature %}
+  {% feature title="Fast" icon="lightning" %}Optimized for speed.{% endfeature %}
+  {% feature title="Secure" icon="🔒" %}Built with security in mind.{% endfeature %}
+  {% feature title="Simple" %}No icon needed.{% endfeature %}
 {% endfeatures %}</pre>
+    <p class="fs-s"><code>title</code> is required. <code>icon</code> is optional and accepts either an emoji or one of the supported icon names below.</p>
+    <p class="fs-s">Supported icons: <%= safe_join(FeatureTag::ICONS.map { |icon_name| content_tag(:code, icon_name) }, ", ") %>.</p>
 
     <h4>Quote</h4>
     <p>Display a testimonial or quote:</p>
