@@ -26,6 +26,7 @@ module Spam
       "forex signals",
       "loan shark",
     ].freeze
+    CLEAR_VIOLATION_LABELS = %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -54,15 +55,9 @@ module Spam
       end
 
       # Handle clear and obvious violations immediately
-      if %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(article.automod_label)
+      if CLEAR_VIOLATION_LABELS.include?(article.automod_label)
         issue_spam_reaction_for!(reactable: article)
-
-        if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
-          user: article.user,
-          include_user_profile: more_rigorous_user_profile_spam_checking?,
-        )
-          suspend!(user: article.user)
-        end
+        escalate_clear_violation_author!(user: article.user)
 
         return :spam
       end
@@ -196,11 +191,40 @@ module Spam
     #
     # @param reactable [ActiveRecord::Base]
     def self.issue_spam_reaction_for!(reactable:)
-      Reaction.create(
+      reaction = Reaction.create(
         user_id: Settings::General.mascot_user_id,
         reactable: reactable,
         category: "vomit",
       )
+      return if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+
+      Rails.logger.warn("Spam reaction not created for #{reactable.class.name} #{reactable.id}: " \
+                        "#{reaction.errors.full_messages.to_sentence}")
+    end
+
+    def self.escalate_clear_violation_author!(user:)
+      if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+        user: user,
+        include_user_profile: more_rigorous_user_profile_spam_checking?,
+      )
+        suspend!(user: user)
+      elsif repeat_auto_flagged_author?(user: user)
+        user.add_role(:spam)
+      end
+    end
+
+    # Low-trust authors whose recent posts keep earning clear-violation labels (and the mascot's
+    # vomit) are treated as spammers without waiting for a moderator to confirm each reaction.
+    def self.repeat_auto_flagged_author?(user:, threshold: 2)
+      return false if user.badge_achievements_count >= 4
+
+      flagged_article_ids = user.articles.published
+        .where("published_at > ?", 1.month.ago)
+        .where(automod_label: CLEAR_VIOLATION_LABELS)
+        .ids
+      Reaction.article_vomits
+        .where(user_id: Settings::General.mascot_user_id, reactable_id: flagged_article_ids)
+        .size > threshold
     end
 
     # NEW/private: Helper method to check for extensive domain-based spam.
@@ -292,7 +316,7 @@ module Spam
 
     # NEW/private: Determine if a profile label is a clear violation.
     def self.clear_profile_violation_label?(label)
-      %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(label)
+      CLEAR_VIOLATION_LABELS.include?(label)
     end
 
     # NEW/private: Skip profile checks for established accounts.
@@ -365,6 +389,7 @@ module Spam
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
-                         :article_linked_domain_spam?, :extract_all_domains_from
+                         :article_linked_domain_spam?, :extract_all_domains_from,
+                         :escalate_clear_violation_author!, :repeat_auto_flagged_author?
   end
 end
