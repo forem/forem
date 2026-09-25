@@ -1,0 +1,174 @@
+branching off main - how might we utilize jev alongside our existing gemini integration for spam detection? look at ../forem-tools too
+
+---
+
+why are these articles not flagged https://dev.to/evercoolnb/2026-guide-to-10-verified-china-12v-car-fridge-exporters-for-road-trip-creators-3c23 https://dev.to/viktoriia_humen_bdaacfa19/fixed-price-spreadsheet-rescue-2j0f https://dev.to/marc_clefas_78e1f2c76e776/complete-guide-to-massage-training-in-brussels-be1
+
+---
+
+monitor and see if/when they're checked
+
+---
+
+how about now
+
+---
+
+go through the 100 most recent ai audited posts and help me see if any got missed by our spam detection
+
+---
+
+<pasted_content id="ca4e">
+Re: FOLLOW-UP: Active Fraud Marketplace on DEV.to — 3 accounts, 34 articles, still live
+External
+Inbox
+
+
+DEV Community security@dev.to via majorleaguehacking.com 
+Sat, May 23, 12:16 PM
+to gnomeman4201, security, abuse
+
+Hey GnomeMan4201,
+Thank you for the report about the three fraud accounts. We have removed their posts and suspended their accounts.
+
+I do see your earlier report as well about additional suspected bot accounts. You had offered to share your methodology for detecting and auditing those accounts - we would be happy to take a look at that if you're open to sharing it.
+-DEV Team
+
+Gnome Man gnomeman4201@gmail.com via majorleaguehacking.com 
+Sat, May 23, 3:47 PM
+to DEV, security, abuse
+
+Subject: Re: FOLLOW-UP: Active Fraud Marketplace on DEV.to — 3 accounts, 34 articles, still live
+
+Hey DEV Team,
+
+Thanks for the quick action on those three accounts — glad that got cleaned up.
+
+Happy to share the methodology. I built a small Python audit tool that pulls my follower list via the DEV.to API and scores each account against a set of bot heuristics:
+
+- Auto-generated or hash-style username patterns
+- Empty bio
+- Zero published articles
+- Default profile image
+- Disproportionate following/follower ratio (following many, followed by almost no one)
+- Account creation date clustering (large numbers of accounts created on the same day)
+
+Each signal adds to a heuristic score. Accounts scoring 3 or above are flagged as likely bots, 1-2 as suspicious. On my account, out of 1,393 followers, 75% had zero posts and no bio, with 497 flagged as likely bots and 896 as suspicious — and 0 scoring as likely real.
+
+The spike went from roughly 600 followers to 1,393 in a matter of days following a post with above-average traction. My GitHub follower count didn't reflect any of this, which is a strong signal it was artificial.
+
+I'm currently finishing a clean re-run of the tool with join date tracking added, which will show account creation clustering. Once that's done I'll send over:
+
+- The audit script (Python, uses the public DEV.to API)
+- A full summary report with stats
+- The flagged username list (497 accounts)
+
+Let me know if there's a preferred format or anything specific you'd want included. Happy to help however I can.
+
+Best,
+GnomeMan4201
+
+Gnome Man gnomeman4201@gmail.com via majorleaguehacking.com 
+Attachments
+Sat, May 23, 3:53 PM
+to DEV, security, abuse
+
+Subject: Re: FOLLOW-UP: Active Fraud Marketplace on DEV.to — 3 accounts, 34 articles, still live
+
+Hey DEV Team,
+
+Following up as promised — audit is complete. Attaching the full results.
+
+Key findings (1,409 followers audited):
+
+- 899 flagged as likely bots (63.8%)
+- 510 flagged as suspicious (36.2%)
+- 0 scored as likely real
+- 898 accounts have zero posts and no bio
+- 615 accounts were created across just 4 days: May 13–14 and May 18–19 — coinciding exactly with my follower spike from ~600 to 1,409
+
+The date clustering is the strongest signal. 194 accounts created on May 14 alone. This isn't organic growth — it's a coordinated network.
+
+Attached:
+- devto_audit_core.py — the audit script (uses the DEV.to public API)
+- devto_bot_audit_report.md — full summary report
+- flagged_usernames.txt — 899 flagged accounts
+- devto_bot_audit_full.csv — raw data for all 1,409 accounts
+
+The script is straightforward to run against any account with an API key. Happy to walk through it or answer any questions about the methodology.
+
+Best,
+GnomeMan4201
+ 4 Attachments
+  •  Scanned by Gmail
+
+Gnome Man gnomeman4201@gmail.com via majorleaguehacking.com 
+Attachments
+Sat, May 23, 5:36 PM
+to DEV, security, abuse
+
+Subject: Re: FOLLOW-UP: Active Fraud Marketplace on DEV.to — 3 accounts, 34 articles, still live
+
+Hey DEV Team,
+
+Continuing from my last message — I've gone deeper on this since sending the initial audit. Several new findings worth flagging.
+
+NEW FINDINGS SINCE LAST EMAIL
+
+1. FOLLOWING=1 ACROSS ALL 1,409 ACCOUNTS
+Every single audited account follows exactly one person: me. No exceptions. This is the operator's product signature — pure follower inflation with zero organic behavior. A platform query for (Following=1, PostCount=0, joined in batch wave) would catch the entire network in one pass.
+
+2. WAREHOUSED AGED-ACCOUNT INVENTORY
+The 218 accounts from the November 2025 wave (created Nov 13–14) sat completely dormant for 187 days — following nobody, zero activity — then activated in May 2026 specifically targeting my account one day after I published botnet research. This isn't recycled infrastructure from a prior campaign. These were pre-staged and held in reserve, consistent with a paid service selling aged accounts on demand.
+
+3. S3 USER ID SEQUENCING CONFIRMS BATCH CREATION
+By decoding the media2.dev.to proxy URLs (urllib.parse.unquote), I extracted the underlying S3 user IDs from avatar URLs. The November wave clusters tightly at IDs 3,610,947–3,619,885 — a span of only 8,938 across ~5 days, with zero significant sequence gaps. Known anchor accounts (e.g. @johnmaveric, S3 ID 3,611,242) fall squarely inside this batch, confirming they are part of the network.
+
+4. ILLUSTRATION PACK — CURATED ASSET LIBRARY
+Of 895 downloaded avatars, 74 are real images (320x320 RGBA, transparent background) vs 821 default letter avatars. The real images are all vintage natural history engravings — insects, fish, bears, mushrooms, botanical illustrations — identical crosshatch style, EXIF stripped. 21 of 55 duplicate groups are backed by these illustrations, meaning the operator is drawing from a single commercial clipart pack. I'm still working on identifying the specific pack via reverse image search.
+
+5. ZERO GITHUB CROSSOVER
+None of the 899 flagged DEV.to accounts appear in my 88 GitHub followers — confirming separate infrastructure per platform, not a single botnet operating across both.
+
+UPDATED ATTACHMENTS
+
+- november_target_report.txt — S3 ID sequence analysis, batch reconstruction, dormancy timeline
+- duplicate_image_report.txt — 55 exact duplicate image groups (131 accounts), 21 backed by real illustrations
+- avatar_clusters.txt — 56 perceptual similarity clusters
+
+The previously sent flagged_usernames.txt and devto_bot_audit_full.csv remain the primary action list.
+
+On publication: I'm planning a full research writeup on DEV.to covering this entire investigation — methodology, findings, and detection techniques. I want to be transparent about this because I think it matters. Other developers on this platform deserve to know what these campaigns look like, what signals to watch for, and how to audit their own follower lists. The more people understand these techniques, the harder it becomes for operators to run them quietly. A safer, more trustworthy community benefits everyone here.
+
+I'm happy to hold publication until you've had time to act on the flagged list, or coordinate timing however works best for your team. I have no interest in making your job harder — the goal is the same.
+
+Best,
+GnomeMan4201
+https://dev.to/gnomeman4201
+ 3 Attachments
+  •  Scanned by Gmail
+</pasted_content id="ca4e">
+
+ /Users/jonmarkgo/Downloads/avatar_clusters.txt /Users/jonmarkgo/Downloads/duplicate_image_report.txt /Users/jonmarkgo/Downloads/november_target_report.txt /Users/jonmarkgo/Downloads/devto_bot_audit_report.md /Users/jonmarkgo/Downloads/devto_audit_core\ \(1\).py /Users/jonmarkgo/Downloads/flagged_usernames.txt what about these examples someone emailed in a few months ago?
+
+---
+
+help me look at his fraud accounts, and the spam content we found ourselves - what can we do to improve spam flags and repeat offender detection
+
+---
+
+<task-notification>
+<task-id>bduzy2hmk</task-id>
+<tool-use-id>toolu_01KCh8cRzeDoXaDTcocL9rQ2</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-jonmarkgo-Documents-GitHub-forem/96def48d-85a8-4d0d-b638-a9e54e6b4826/tasks/bduzy2hmk.output</output-file>
+<status>completed</status>
+<summary>Background command "Wait until 21:08 UTC, after the cleanup cron" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+let's do #1, #2, #5, #6, and #7. tell me more about how jev would ehlp in #5
+
+---
+
+open a pr with the first batch of things, and do a second pr for jev as a escalation flagger
