@@ -217,3 +217,7 @@ If this event is something the user would act on now, send a PushNotification. R
 <status>completed</status>
 <summary>Background command "Wait for post-deploy data to accumulate" completed (exit code 0)</summary>
 </task-notification>
+
+---
+
+we should use the forwarded ip - also why do we have core configured as heroku in betterstack and DEV configured as ruby on rails - what's the configuration difference? also tell me more about carrying the request context
