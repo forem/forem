@@ -1,0 +1,14 @@
+app/models/article.rb
+  h_f968154a99632d 520,860,966
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "482bcc5bd6b68f4ce918ea10a56f8f7c26b1ea78",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

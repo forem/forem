@@ -1,0 +1,21 @@
+app/services/delivery_methods/customer_io.rb
+  s_f4363ad408023d::t_7cedfb544736a4 36-43
+spec/services/delivery_methods/customer_io_spec.rb
+  s_f4363ad408023d::t_cc06864442f2d6 42-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "4117ee1fc357add67104bbd9cd35e4faae9b3d8a",
+  "prompts": {},
+  "sessions": {
+    "s_f4363ad408023d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d01fffaf-58e3-4345-9482-3e3a5cfd0fed",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

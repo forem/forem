@@ -1,0 +1,14 @@
+spec/models/comment_spec.rb
+  h_f968154a99632d 381,383-384
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9e5b59ac9dde46e186c4d69fbbb2f056187a5b2d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
