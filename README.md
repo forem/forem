@@ -18,6 +18,9 @@
   <a href="https://gitpod.io/#https://github.com/forem/forem">
     <img src="https://img.shields.io/badge/setup-automated-blue?logo=gitpod" alt="GitPod badge">
   </a>
+  <a href="https://repocloud.io/details/Forem/">
+    <img src="https://dnk92k33or340.cloudfront.net/deploy-20px.png" alt="Deploy on RepoCloud" height="20">
+  </a>
 </p>
 
 Welcome to the [Forem](https://forem.com) codebase, the platform that powers
