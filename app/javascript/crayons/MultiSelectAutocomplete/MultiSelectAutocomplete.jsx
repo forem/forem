@@ -226,7 +226,7 @@ export const MultiSelectAutocomplete = ({
     // If we couldn't select any valid input, and search is terminated, clear the input
     if (!keepSelecting) {
       inputRef.current.value = '';
-      dispatch('setSuggestions', { payload: [] });
+      dispatch({ type: 'setSuggestions', payload: [] });
     }
   };
 
@@ -628,7 +628,7 @@ export const MultiSelectAutocomplete = ({
                 className="c-autocomplete--multi__input"
                 aria-activedescendant={
                   activeDescendentIndex !== null
-                    ? suggestions[activeDescendentIndex]
+                    ? suggestions[activeDescendentIndex].name
                     : null
                 }
                 aria-autocomplete="list"
