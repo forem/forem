@@ -63,6 +63,19 @@ RSpec.describe "UserShow" do
       expect(response.body).not_to include('class="subscription-icon"')
     end
 
+    it "does not render an empty icon wrapper next to the name when the user has no icons" do
+      get user.path
+      title = Nokogiri::HTML(response.body).at(".js-username-container h1")
+      expect(title.css("span.ml-2")).to be_empty
+    end
+
+    it "wraps the name icons in a spaced span when the user has an icon" do
+      user.add_role("base_subscriber")
+      get user.path
+      title = Nokogiri::HTML(response.body).at(".js-username-container h1")
+      expect(title.at("span.ml-2 .subscription-icon")).to be_present
+    end
+
     it "does not render a key if no value is given" do
       incomplete_user = create(:user)
       get incomplete_user.path
