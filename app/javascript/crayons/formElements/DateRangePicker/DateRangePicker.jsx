@@ -64,7 +64,7 @@ const MonthYearPicker = ({
     latestYear === selectedYear ? latestMoment.month() : 11;
   const availableMonths = MONTH_NAMES.slice(0, latestMonthIndex + 1);
 
-  const yearsDiff = latestMoment.diff(earliestMoment, 'years');
+  const yearsDiff = latestMoment.year() - earliestMoment.year();
 
   const years = [...Array(yearsDiff).keys()].map(
     (key) => latestMoment.year() - key,
