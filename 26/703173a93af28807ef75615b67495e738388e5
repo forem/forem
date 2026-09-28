@@ -1,0 +1,183 @@
+app/services/ai/github_repo_recap.rb
+  s_2474751e3c16b0::t_82a08132108e48 36-37
+spec/services/ai/content_moderation_labeler_spec.rb
+  s_2474751e3c16b0::t_542b4fcf736c55 199-273
+app/services/ai/email_digest_summary.rb
+  s_2474751e3c16b0::t_82a08132108e48 6-7
+spec/support/jev_helpers.rb
+  s_2474751e3c16b0::t_77e9c495524056 1-10,17,20-24,26-27,29-35,37-39,41-68
+  s_2474751e3c16b0::t_ddbe5270f17a7b 16,18-19,28
+  s_2474751e3c16b0::t_f0c9891e3c091b 11-15,36,40
+  s_2474751e3c16b0::t_60448aef1fd7a1 25
+app/services/ai/chat_service.rb
+  s_2474751e3c16b0::t_82a08132108e48 8-9
+db/migrate/20260924120000_create_settings_ai_functions.rb
+  s_2474751e3c16b0::t_c1d87621ac62f0 1-15
+app/services/ai/forem_tags.rb
+  s_2474751e3c16b0::t_340fb10043f398 2-5,7-8,12-15,76-77,220-222,227,236-247
+  s_2474751e3c16b0::t_d55789f784e6b7 9,248-249
+app/services/ai/type_safe/client.rb
+  s_2474751e3c16b0::t_303a63c3f2e687 1-15,17-18,21-92,95-160
+  s_2474751e3c16b0::t_aa725b63f35fc7 16
+  s_2474751e3c16b0::t_ec6bb8cfa264df 19-20
+  s_2474751e3c16b0::t_74ebff31a4e657 93-94
+app/models/article.rb
+  s_2474751e3c16b0::t_798b254b65cc57 1817
+spec/services/ai/article_quality_assessor_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 303-319,321-333,335-356
+  s_2474751e3c16b0::t_d423a3166b8e4d 320
+  s_2474751e3c16b0::t_60448aef1fd7a1 334
+app/services/ai/profile_moderation_labeler.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 98
+  s_2474751e3c16b0::t_e96647bc861d09 5-7,30-34,36,39-43,51-52,62-97,99-127,129-130,132-149
+  s_2474751e3c16b0::t_0fb35fb4a9f73c 9-11,128,131,150
+app/services/ai/comment_check.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 71
+  s_2474751e3c16b0::t_2c682390c9f3dc 104-108,113-115
+  s_2474751e3c16b0::t_749202612df766 7-10,12,15-19,25-29,37-38,49-70,72-103,109-112,116-127
+  s_2474751e3c16b0::t_7232fa79e469e5 13-14,128
+app/workers/articles/handle_spam_worker.rb
+  s_2474751e3c16b0::t_27d66ab3e7c26e 24-25
+app/services/concepts/anchor_generator.rb
+  s_2474751e3c16b0::t_82a08132108e48 7-8
+app/workers/articles/detect_code_block_languages_worker.rb
+  s_2474751e3c16b0::t_798b254b65cc57 8
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_2474751e3c16b0::t_6cc6ccf02bd2e2 39
+  s_2474751e3c16b0::t_353d0d4eacbb95 1-38,40-61
+app/services/ai/trend_detector.rb
+  s_2474751e3c16b0::t_82a08132108e48 6
+app/views/admin/settings/show.html.erb
+  s_2474751e3c16b0::t_7c690365387abf 30
+app/services/ai/type_safe/result.rb
+  s_2474751e3c16b0::t_72b0cb69066540 1-76
+app/services/ai/concept_article_evaluator.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 56
+  s_2474751e3c16b0::t_5ec46b8426650f 3-6,8-15,22-26,33,44-45,47-55,57-67
+  s_2474751e3c16b0::t_1a03aaa2a74236 32,46,68
+app/services/ai/context_note_generator.rb
+  s_2474751e3c16b0::t_82a08132108e48 8-9
+spec/services/ai/article_enhancer_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 198-239,241-251,253-266
+  s_2474751e3c16b0::t_60448aef1fd7a1 240,252
+spec/services/ai/function_config_spec.rb
+  s_2474751e3c16b0::t_60448aef1fd7a1 30-31
+  s_2474751e3c16b0::t_ba511a4a5a30cc 1-29,32-105
+.env_sample
+  s_2474751e3c16b0::t_72c78c77e1cce5 225-227,229-230,232
+  s_2474751e3c16b0::t_aa363b7ce0df79 228
+  s_2474751e3c16b0::t_6b836eb7de637c 231
+  s_2474751e3c16b0::t_6705313329a64f 233
+app/services/ai/function_registry.rb
+  s_2474751e3c16b0::t_57e689ab587eb2 1-140
+app/services/ai/survey_context_generator.rb
+  s_2474751e3c16b0::t_82a08132108e48 8-9
+app/controllers/admin/settings/ai_functions_controller.rb
+  s_2474751e3c16b0::t_7c690365387abf 1-32
+spec/services/ai/comment_helpfulness_assessor_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 119-161
+spec/services/ai/profile_moderation_labeler_spec.rb
+  s_2474751e3c16b0::t_542b4fcf736c55 1-65
+app/services/ai/type_safe/questions.rb
+  s_2474751e3c16b0::t_0b7e8920556bd6 1-17,21,23-48
+  s_2474751e3c16b0::t_ef62865c2b54c7 18-20,22
+app/services/ai/badge_criteria_assessor.rb
+  s_2474751e3c16b0::t_5ec46b8426650f 6-9,11,14-19,26-30,38-39,51-88
+  s_2474751e3c16b0::t_70a36f393dedb7 12-13,89
+spec/services/ai/comment_check_spec.rb
+  s_2474751e3c16b0::t_542b4fcf736c55 1-66
+spec/services/spam/handler_spec.rb
+  s_2474751e3c16b0::t_7dce5b59f76a2e 682-714,716
+app/services/ai/article_enhancer.rb
+  s_2474751e3c16b0::t_27d66ab3e7c26e 6-11,13,16-29,32-33,36,45-47,79,81,113-191
+  s_2474751e3c16b0::t_de7011624ebbff 14-15,192
+app/services/articles/detect_code_block_languages.rb
+  s_2474751e3c16b0::t_6b4ceb2d0c0ef8 4-8,10-11,13-16,41-50,63-67,85,89-97,99,102-124
+  s_2474751e3c16b0::t_7aee1a6d9a388b 12,125
+spec/rails_helper.rb
+  s_2474751e3c16b0::t_77e9c495524056 129
+  s_2474751e3c16b0::t_657a955e5c9a49 209
+spec/services/ai/article_check_spec.rb
+  s_2474751e3c16b0::t_542b4fcf736c55 53-120
+spec/services/ai/type_safe/client_spec.rb
+  s_2474751e3c16b0::t_60448aef1fd7a1 78-81
+  s_2474751e3c16b0::t_ba511a4a5a30cc 1-77,82-116
+app/models/settings/ai_functions.rb
+  s_2474751e3c16b0::t_2f025a41b9cbb6 1-39
+spec/requests/admin/settings/ai_functions_spec.rb
+  s_2474751e3c16b0::t_f4b225a5d4dfc7 1-68
+app/services/ai/content_moderation_labeler.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 138,143,150
+  s_2474751e3c16b0::t_14a13d211dfca4 6-12,14,17-41,47-52,68-69,97-106,108-137,139-142,144-149,151-247,249-286
+  s_2474751e3c16b0::t_69400f3b3aa8bb 15-16,107,248,287
+app/services/ai/article_quality_assessor.rb
+  s_2474751e3c16b0::t_1b648aea011cea 7-12,14,17-28,35-38,48,61-74,76-141,143-174
+  s_2474751e3c16b0::t_a3c9c12dd4c120 142
+  s_2474751e3c16b0::t_c4651ec2bc7042 15-16,75,175
+app/helpers/admin/settings_helper.rb
+  s_2474751e3c16b0::t_6cc6ccf02bd2e2 11-26
+spec/services/articles/detect_code_block_languages_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 88-124
+app/services/ai/freeform_context_note_generator.rb
+  s_2474751e3c16b0::t_82a08132108e48 8-9
+spec/services/ai/forem_tags_spec.rb
+  s_2474751e3c16b0::t_60448aef1fd7a1 432,436,444
+  s_2474751e3c16b0::t_38b4000638932a 426-431,433-435,437-443,445-447
+app/services/ai/community_copy.rb
+  s_2474751e3c16b0::t_82a08132108e48 125,135,141
+app/services/ai/function_config.rb
+  s_2474751e3c16b0::t_fe64e7a760d76e 66-71
+  s_2474751e3c16b0::t_6deb64fe181cfe 1-65,72-76,78-139
+  s_2474751e3c16b0::t_f4f739b801a24d 77
+app/services/ai/article_check.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 84
+  s_2474751e3c16b0::t_95ec88b6f6edc4 8-11,13,16-22,28-32,40-41,52-83,85-153
+  s_2474751e3c16b0::t_ad5748ee31a600 14-15,154
+config/routes/admin.rb
+  s_2474751e3c16b0::t_7c690365387abf 38
+spec/services/ai/concept_article_evaluator_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 68-91
+spec/models/settings/ai_functions_spec.rb
+  s_2474751e3c16b0::t_ba511a4a5a30cc 1-25
+app/services/ai/editor_helper_service.rb
+  s_2474751e3c16b0::t_82a08132108e48 9-10
+app/services/ai/comment_helpfulness_assessor.rb
+  s_2474751e3c16b0::t_a3c9c12dd4c120 94
+  s_2474751e3c16b0::t_5ec46b8426650f 11-13,15,18-22,29-33,41-42,54-93,95-119
+  s_2474751e3c16b0::t_77c6924f231548 16-17,120
+spec/services/ai/badge_criteria_assessor_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 66-89
+db/schema.rb
+  s_2474751e3c16b0::t_49c351d61a14c1 13,1647-1654
+  s_2474751e3c16b0::t_c0819ff2ad1e9d 1655-1656
+spec/services/ai/subforem_finder_spec.rb
+  s_2474751e3c16b0::t_38b4000638932a 1-33,35-43,45-49,51-55,57-61
+  s_2474751e3c16b0::t_60448aef1fd7a1 34,44,50,56
+app/services/ai/article_summary_generator.rb
+  s_2474751e3c16b0::t_82a08132108e48 11-12
+app/services/ai/subforem_finder.rb
+  s_2474751e3c16b0::t_7c0d364a638036 5-9,11,14-20,25-29,74,87-90,92-145
+  s_2474751e3c16b0::t_2c40e9576d57e0 12-13,91,146
+spec/services/ai/type_safe/questions_spec.rb
+  s_2474751e3c16b0::t_ba511a4a5a30cc 1-34
+app/services/spam/handler.rb
+  s_2474751e3c16b0::t_798b254b65cc57 84,121-122,161,249,283
+app/services/ai/about_page_generator.rb
+  s_2474751e3c16b0::t_37936d7a25a85e 68-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "26703173a93af28807ef75615b67495e738388e5",
+  "prompts": {},
+  "sessions": {
+    "s_2474751e3c16b0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "28ce711e-8008-418a-83b6-4951b525f7af",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
