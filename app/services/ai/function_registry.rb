@@ -10,12 +10,19 @@ module Ai
   # Functions that write text (summaries, copy, chat replies, trend names) stay on
   # generative models: System One models return typed judgments, not prose.
   #
+  # `jev_only: true` marks functions that exist only as a Jev pass and have no Gemini
+  # behavior. Their "default" option means the function is off.
+  #
   # `configurable: false` marks functions whose model cannot be swapped safely at runtime
   # (e.g. embeddings, where a different model would invalidate every stored vector).
   class FunctionRegistry
-    Function = Struct.new(:key, :name, :description, :group, :jev, :configurable, keyword_init: true) do
+    Function = Struct.new(:key, :name, :description, :group, :jev, :jev_only, :configurable, keyword_init: true) do
       def jev?
         jev
+      end
+
+      def jev_only?
+        jev_only
       end
 
       def configurable?
@@ -34,10 +41,17 @@ module Ai
       # Moderation & spam
       { key: :article_spam_check, group: :moderation, jev: true,
         name: "Article spam check",
-        description: "Decides whether a linked article from a newer account is clearly spam (Ai::ArticleCheck)." },
+        description: "Decides whether an article from a newer account is clearly spam, when it has a link or " \
+                     "the spam escalation check flags it (Ai::ArticleCheck)." },
       { key: :comment_spam_check, group: :moderation, jev: true,
         name: "Comment spam check",
-        description: "Decides whether a comment containing a link is clearly spam (Ai::CommentCheck)." },
+        description: "Decides whether a comment is clearly spam, when it has a link or the spam escalation " \
+                     "check flags it (Ai::CommentCheck)." },
+      { key: :spam_escalation, group: :moderation, jev: true, jev_only: true,
+        name: "Spam escalation for content without links",
+        description: "Sends articles and comments without links to the spam checks above when they look like " \
+                     "spam, such as Telegram or WhatsApp contacts written as text (Ai::SpamEscalationCheck). " \
+                     "Off keeps link-only escalation." },
       { key: :profile_moderation, group: :moderation, jev: true,
         name: "Profile moderation label",
         description: "Flags clear and obvious spam or abuse in new profiles (Ai::ProfileModerationLabeler)." },
@@ -115,7 +129,7 @@ module Ai
       { key: :image_generation, group: :fixed, jev: false, configurable: false,
         name: "Image generation",
         description: "Generates cover and profile images (Ai::ImageGenerator) with a dedicated image model." },
-    ].map { |attrs| Function.new(configurable: true, **attrs).freeze }.index_by(&:key).freeze
+    ].map { |attrs| Function.new(configurable: true, jev_only: false, **attrs).freeze }.index_by(&:key).freeze
 
     class UnknownFunctionError < ArgumentError; end
 

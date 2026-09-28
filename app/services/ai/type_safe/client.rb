@@ -9,6 +9,12 @@ module Ai
     # callers should batch every question they might need into a single #evaluate call.
     #
     # Every call is recorded as an AiAudit row, mirroring Ai::Base.
+    #
+    # Outages: callers on latency-sensitive queues (the high-priority spam and moderation jobs)
+    # pass FAIL_FAST so one call can hold a worker for at most one short attempt. A circuit
+    # breaker shared across processes (via Rails.cache) also stops calling TypeSafe for
+    # CIRCUIT_COOLDOWN after CIRCUIT_FAILURE_THRESHOLD outage failures within CIRCUIT_WINDOW,
+    # raising CircuitOpenError immediately instead. Every caller fails open on errors.
     class Client
       include HTTParty
       base_uri "https://api.typesafe.ai/v1"
@@ -18,10 +24,22 @@ module Ai
       # (e.g. "jev-1.13.0") via TYPESAFE_API_MODEL once thresholds are tuned against it.
       # `presence` so a blank value from a copied .env file does not become the model name.
       DEFAULT_MODEL = (ENV["TYPESAFE_API_MODEL"].presence || "jev-latest").freeze
-      TIMEOUT_SECONDS = 20
+      # Matches the TypeSafe SDKs' default per-request timeout.
+      TIMEOUT_SECONDS = 10
       MAX_RETRIES = 3
+      # For calls inside high-priority jobs: one short attempt and no retries, the same as the
+      # Gemini calls on those paths. A missed answer only means the caller falls back.
+      FAIL_FAST = { timeout: 5, max_retries: 0 }.freeze
       # 429: rate limited, 529: overloaded. Both are documented as retryable with backoff.
       RETRYABLE_STATUS_CODES = [429, 500, 502, 503, 504, 529].freeze
+      NETWORK_ERRORS = [Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Errno::ECONNRESET,
+                        Errno::ECONNREFUSED].freeze
+
+      CIRCUIT_FAILURE_THRESHOLD = 5
+      CIRCUIT_WINDOW = 1.minute
+      CIRCUIT_COOLDOWN = 2.minutes
+      CIRCUIT_FAILURES_KEY = "ai:type_safe:circuit:failures".freeze
+      CIRCUIT_OPEN_KEY = "ai:type_safe:circuit:open".freeze
 
       class Error < StandardError
         attr_reader :status_code
@@ -32,10 +50,33 @@ module Ai
         end
       end
 
+      # Raised without calling TypeSafe while the circuit breaker is open.
+      class CircuitOpenError < Error; end
+
+      class << self
+        def circuit_open?
+          Rails.cache.exist?(CIRCUIT_OPEN_KEY)
+        end
+
+        # Counts an outage-type failure (timeout, connection error, 429 or 5xx) and opens the
+        # circuit once there are enough of them in the window.
+        def record_outage_failure
+          failures = Rails.cache.increment(CIRCUIT_FAILURES_KEY, 1, expires_in: CIRCUIT_WINDOW)
+          return unless failures.to_i >= CIRCUIT_FAILURE_THRESHOLD
+
+          Rails.cache.write(CIRCUIT_OPEN_KEY, true, expires_in: CIRCUIT_COOLDOWN)
+          Rails.cache.delete(CIRCUIT_FAILURES_KEY)
+          Rails.logger.warn("TypeSafe circuit breaker opened for #{CIRCUIT_COOLDOWN.inspect} after " \
+                            "#{failures} failures")
+        rescue StandardError => e
+          Rails.logger.error("TypeSafe circuit breaker failed to record a failure: #{e}")
+        end
+      end
+
       attr_reader :model, :last_response
 
       def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL, wrapper: nil, affected_user: nil,
-                     affected_content: nil)
+                     affected_content: nil, timeout: TIMEOUT_SECONDS, max_retries: MAX_RETRIES)
         raise ArgumentError, "TypeSafe API key cannot be nil" if api_key.blank? && !Rails.env.test?
 
         @api_key = api_key
@@ -43,6 +84,8 @@ module Ai
         @wrapper = wrapper
         @affected_user = affected_user
         @affected_content = affected_content
+        @timeout = timeout
+        @max_retries = max_retries
       end
 
       ##
@@ -55,6 +98,7 @@ module Ai
       # @return [Ai::TypeSafe::Result]
       def evaluate(state:, questions:)
         raise ArgumentError, "At least one question is required" if questions.blank?
+        raise CircuitOpenError, "TypeSafe circuit breaker is open; skipping the call" if self.class.circuit_open?
 
         body = { model: @model, state: state, questions: questions.transform_keys(&:to_s) }.to_json
         attempt = 0
@@ -62,20 +106,21 @@ module Ai
         begin
           start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           @last_response = nil
-          @last_response = self.class.post("/systemone", body: body, headers: headers, timeout: TIMEOUT_SECONDS)
+          @last_response = self.class.post("/systemone", body: body, headers: headers, timeout: @timeout)
           result = handle_response(@last_response)
           log_audit(body, retry_count: attempt, latency_ms: elapsed_ms(start_time))
           result
-        rescue Error, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
+        rescue Error, *NETWORK_ERRORS => e
           log_audit(body, retry_count: attempt, latency_ms: elapsed_ms(start_time), error_message: e.message)
 
-          if retryable?(e) && attempt < MAX_RETRIES
-            attempt += 1
-            sleep(backoff_seconds(attempt)) unless Rails.env.test?
-            retry
-          end
+          raise unless retryable?(e)
 
-          raise
+          self.class.record_outage_failure
+          raise if attempt >= @max_retries || self.class.circuit_open?
+
+          attempt += 1
+          sleep(backoff_seconds(attempt)) unless Rails.env.test?
+          retry
         end
       end
 

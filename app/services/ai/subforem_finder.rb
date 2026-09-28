@@ -90,7 +90,7 @@ module Ai
       candidates = available_subforems.first(Ai::TypeSafe::Questions::MAX_CHOICE_OPTIONS - 1)
         .index_by { |subforem| "subforem_#{subforem.id}" }
       client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: article,
-                                        affected_user: article.user)
+                                        affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: jev_state, questions: jev_questions(candidates))
 
       pick = result.choice(:best_home)

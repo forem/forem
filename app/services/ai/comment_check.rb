@@ -50,7 +50,7 @@ module Ai
 
     def spam_via_jev?
       client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @comment,
-                                        affected_user: @comment.user)
+                                        affected_user: @comment.user, **Ai::TypeSafe::Client::FAIL_FAST)
       spam_from_jev?(client.evaluate(state: jev_state, questions: jev_questions))
     end
 
