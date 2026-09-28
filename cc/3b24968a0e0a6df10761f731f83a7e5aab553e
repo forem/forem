@@ -1,0 +1,36 @@
+spec/system/admin/admin_manages_organizations_spec.rb
+  0b7024d90e1e090a 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "cc3b24968a0e0a6df10761f731f83a7e5aab553e",
+  "prompts": {
+    "0b7024d90e1e090a": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "411ca823-242d-4b62-a2bb-4cbd7ed4c58e",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    },
+    "d3a3c723dc97b952": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "38094813-f615-4c36-bae5-37a44c004db2",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 95,
+      "overriden_lines": 0
+    }
+  }
+}
