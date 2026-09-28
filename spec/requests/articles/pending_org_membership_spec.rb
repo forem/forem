@@ -117,6 +117,17 @@ RSpec.describe "Organization membership and article privileges" do
 
       expect(article.reload.organization_id).to be_nil
     end
+
+    it "attaches the organization on update for an accepted member" do
+      membership("member")
+      article = create(:article, user: user)
+
+      put api_article_path(article.id),
+          params: { article: { organization_id: organization.id } }.to_json,
+          headers: headers
+
+      expect(article.reload.organization_id).to eq(organization.id)
+    end
   end
 
   # `guest` is excluded from the `member` scope that backs User#org_member?, so it is
