@@ -212,7 +212,7 @@ module Spam
       )
         suspend!(user: user)
       elsif repeat_auto_flagged_author?(user: user)
-        user.add_role(:spam)
+        mark_repeat_auto_flagged_author_as_spam!(user: user)
       end
     end
 
@@ -221,12 +221,32 @@ module Spam
     def self.repeat_auto_flagged_author?(user:, threshold: 2)
       return false if user.badge_achievements_count >= 4
 
+      recent_auto_flagged_article_count(user: user) > threshold
+    end
+
+    def self.recent_auto_flagged_article_count(user:)
       flagged_articles = user.articles.published
         .where("published_at > ?", 1.month.ago)
         .where(automod_label: CLEAR_VIOLATION_LABELS)
       Reaction.article_vomits.valid_or_confirmed
         .where(user_id: Settings::General.mascot_user_id, reactable_id: flagged_articles.select(:id))
-        .count > threshold
+        .count
+    end
+
+    # Leave a note so moderators can see why the account was marked as spam. Skipped when the
+    # author is already spam so queued jobs for the same author don't pile up duplicate notes.
+    def self.mark_repeat_auto_flagged_author_as_spam!(user:)
+      return if user.spam?
+
+      user.add_role(:spam)
+
+      Note.create(
+        author_id: Settings::General.mascot_user_id,
+        noteable: user,
+        reason: "automatic_spam",
+        content: I18n.t("services.spam.article_handler.marked_spam_repeat_auto_flags",
+                        count: recent_auto_flagged_article_count(user: user)),
+      )
     end
 
     # NEW/private: Helper method to check for extensive domain-based spam.
@@ -400,6 +420,7 @@ module Spam
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
                          :article_linked_domain_spam?, :extract_all_domains_from,
-                         :escalate_clear_violation_author!, :repeat_auto_flagged_author?
+                         :escalate_clear_violation_author!, :repeat_auto_flagged_author?,
+                         :recent_auto_flagged_article_count, :mark_repeat_auto_flagged_author_as_spam!
   end
 end
