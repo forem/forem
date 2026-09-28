@@ -81,7 +81,7 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
-        (Ai::Base::DEFAULT_KEY.present? &&
+        (Ai::FunctionConfig.available?(:article_spam_check) &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
          link_or_escalated?(html: article.processed_html, text: text, content: article) &&
          Ai::ArticleCheck.new(article).spam?)
@@ -119,7 +119,7 @@ module Spam
 
       # Return if neither of the spam conditions are met.
       return :not_spam unless rate_limit_spam ||
-        (Ai::Base::DEFAULT_KEY.present? &&
+        (Ai::FunctionConfig.available?(:comment_spam_check) &&
          link_or_escalated?(html: comment.processed_html, text: comment.body_markdown, content: comment) &&
          Ai::CommentCheck.new(comment).spam?)
 
@@ -160,7 +160,7 @@ module Spam
     def self.handle_profile_update!(user:)
       return :skipped if user.spam_or_suspended?
       return :skipped unless eligible_for_profile_spam_check?(user: user)
-      return :skipped unless Ai::Base::DEFAULT_KEY.present?
+      return :skipped unless Ai::FunctionConfig.available?(:profile_moderation)
 
       label = Ai::ProfileModerationLabeler.new(user).label
       return :not_spam unless clear_profile_violation_label?(label)
@@ -255,7 +255,7 @@ module Spam
 
     # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:content_moderation)
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
@@ -289,7 +289,7 @@ module Spam
 
     # NEW/private: Check if article should be reassigned to a different subforem
     def self.check_subforem_reassignment(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:subforem_matching)
       return if ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes"
 
       begin

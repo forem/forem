@@ -3,15 +3,53 @@ module Ai
   # Analyzes an article to determine its content moderation label.
   # This assesses articles based on quality, relevance, and spam indicators
   # to provide appropriate moderation labels for automated handling.
+  #
+  # When the :content_moderation function is set to Jev (see Ai::FunctionConfig), the single
+  # "pick a label and a number" prompt is decomposed into independent TypeSafe questions
+  # (safety, spam, quality, relevance, and three compellingness dimensions) asked in one
+  # request. The label and score are then composed in code by #label_from_jev and
+  # #compellingness_from_jev, using the same precedence as the prompt: safety, then spam,
+  # then quality, then relevance.
   class ContentModerationLabeler
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
+    FUNCTION_KEY = :content_moderation
+
+    # Jev policy thresholds. "clear_and_obvious" labels require a high probability; "likely"
+    # labels cover the uncertain band. Validate against moderator decisions before tuning.
+    CLEAR = 0.85
+    LIKELY = 0.6
+    SUPPORTING = 0.5
+
+    # Upper bounds on the quality Score position (0-4) for each quality tier.
+    QUALITY_TIERS = [
+      [0.75, :clear_low],
+      [1.5, :likely_low],
+      [2.5, :okay],
+      [3.5, :very_good],
+      [Float::INFINITY, :great],
+    ].freeze
+
+    JEV_FALLBACK = { label: "no_moderation_label", compellingness_score: 0.0 }.freeze
+
+    # Weights for composing compellingness from its dimensions. They sum to 1.
+    COMPELLINGNESS_WEIGHTS = {
+      originality: 0.35,
+      personal_voice: 0.35,
+      discussion_potential: 0.30
+    }.freeze
 
     # @param article [Article] The article to be labeled.
     def initialize(article)
       @article = article
       @is_negative = @article.score.to_i.negative?
-      model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
-      @ai_client = Ai::Base.new(model: model, wrapper: self, affected_content: article, affected_user: article.user)
+      @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
+      return if @selection.jev?
+
+      builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
+      @ai_client = Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
+                                affected_content: article, affected_user: article.user)
     end
 
     ##
@@ -27,6 +65,8 @@ module Ai
     #
     # @return [Hash] Hash with :label and :compellingness_score.
     def evaluate
+      return evaluate_via_jev if @selection.jev?
+
       attempt = 0
       max_retries = 2
 
@@ -53,6 +93,197 @@ module Ai
     end
 
     private
+
+    # --- Jev (TypeSafe System One) ---
+
+    # The client already retries transient failures (429/529/5xx) with backoff.
+    def evaluate_via_jev
+      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @article,
+                                        affected_user: @article.user)
+      result = client.evaluate(state: jev_state, questions: jev_questions)
+      { label: label_from_jev(result), compellingness_score: compellingness_from_jev(result) }
+    rescue StandardError => e
+      Rails.logger.error("Content Moderation Labeling via Jev failed, falling back to default: #{e}")
+      JEV_FALLBACK.dup
+    end
+
+    def jev_state
+      user = @article.user
+      limit = @is_negative ? 2000 : 5000
+      state = {
+        community: { description: community_description.presence || "No specific community description provided." },
+        author: {
+          member_since: user.created_at.strftime("%B %Y"),
+          badge_achievements: user.badge_achievements_count,
+          published_articles: user.articles.published.count,
+          comments: user.comments.count,
+          profile_summary: user.profile&.summary.presence || "No summary provided"
+        },
+        article: {
+          format: @article.status? ? "status post: a short, casual update or thought" : "full post",
+          title: @article.title,
+          tags: @article.cached_tag_list,
+          body: @article.body_markdown.to_s.truncate(limit)
+        }
+      }
+      state[:community][:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
+      state
+    end
+
+    def jev_questions
+      questions = {
+        harmful: noul(
+          "Does `article` involve human trafficking, doxing, exploitation, or calls for violence or harm " \
+          "against people?",
+          no: { includes: "Discussing security incidents, crime, or conflict in a factual or educational way." },
+        ),
+        inciting: noul(
+          "Is `article` written with over-the-top aggression or rage designed to incite violence or extreme " \
+          "hostility?",
+          no: { includes: "Strong but civil opinions, criticism, or rants that do not target people with hostility." },
+        ),
+        promotional_spam: noul(
+          {
+            question: "Is `article` spam whose main purpose is to promote a product, service, or link?",
+            rules: "Apply `community.tag_moderation_instructions` where they are relevant."
+          },
+          no: { includes: "An honest launch announcement or a tutorial that uses a product the author mentions." },
+        ),
+        malicious: noul(
+          "Does `article` contain phishing, scams, or malicious links?",
+        ),
+        auto_generated: noul(
+          "Does `article` read as generic, impersonal, mass-produced text with no real author perspective?",
+        ),
+        quality: score(
+          {
+            question: "How good is `article` as a contribution to this community?",
+            status_posts: "If `article.format` is a status post, judge it as a short, casual update, " \
+                          "not against long-form articles.",
+            rules: "Apply `community.tag_moderation_instructions` where they are relevant."
+          },
+          [
+            "Low-effort or uninformative: careless, unreadable, or says nothing of substance.",
+            "Weak: some substance, but generic, thin, disorganized, or padded with filler.",
+            "Acceptable: a readable, reasonable contribution with modest depth.",
+            "Very good: clear, well-structured and informative, with real insight or experience.",
+            "Exceptional: original and deep; the kind of post members share and cite.",
+          ],
+        ),
+        on_topic: noul(
+          "Does the subject of `article` fit the purpose described in `community.description`?",
+        ),
+        originality: score(
+          "How original is the perspective or content of `article`?",
+          [
+            "Rehashes common material with nothing new.",
+            "Mostly familiar material with a small new angle.",
+            "A fresh angle, example, or finding.",
+            "A distinctive idea or experience readers are unlikely to find elsewhere.",
+          ],
+        ),
+        personal_voice: score(
+          "How much does `article` carry the author's own voice and lived experience?",
+          [
+            "Impersonal; could have been written by anyone.",
+            "Occasional personal touches.",
+            "Clearly the author's own voice, with personal experience.",
+            "Vivid, personal, and emotionally resonant.",
+          ],
+        ),
+        discussion_potential: score(
+          "How likely is `article` to spark discussion among community members?",
+          [
+            "Unlikely; nothing to respond to.",
+            "Might draw a few polite replies.",
+            "Raises points or questions members will want to weigh in on.",
+            "Very likely to start a lively, substantive thread.",
+          ],
+        )
+      }
+      if tag_instructions.any?
+        questions[:violates_tag_rules] = noul(
+          "Does `article` break a rule in `community.tag_moderation_instructions`?",
+        )
+      end
+      questions
+    end
+
+    def label_from_jev(result)
+      safety_label(result) || spam_label(result) || quality_label(result)
+    end
+
+    def safety_label(result)
+      harmful = result.noul(:harmful)
+      inciting = result.noul(:inciting)
+      return "clear_and_obvious_harmful" if harmful >= CLEAR
+      return "clear_and_obvious_inciting" if inciting >= CLEAR
+      return "likely_harmful" if harmful >= LIKELY
+
+      "likely_inciting" if inciting >= LIKELY
+    end
+
+    def spam_label(result)
+      promotional = result.noul(:promotional_spam)
+      spam = [result.noul(:malicious), promotional].max
+      # Generic, machine-like text is a spam signal only when it is also promotional.
+      spam = CLEAR if result.noul(:auto_generated) >= CLEAR && promotional >= SUPPORTING
+      return "clear_and_obvious_spam" if spam >= CLEAR
+
+      "likely_spam" if spam >= LIKELY
+    end
+
+    def quality_label(result)
+      tier = quality_tier(result.score(:quality).score)
+      tier = :likely_low if tag_rule_violation?(result) && %i[okay very_good great].include?(tier)
+      tier = :okay if @is_negative && %i[very_good great].include?(tier)
+
+      return "clear_and_obvious_low_quality" if tier == :clear_low
+      return "likely_low_quality" if tier == :likely_low
+
+      relevance_label(tier, on_topic: result.noul(:on_topic) >= SUPPORTING)
+    end
+
+    def quality_tier(position)
+      QUALITY_TIERS.detect { |upper_bound, _tier| position < upper_bound }.last
+    end
+
+    def tag_rule_violation?(result)
+      result.key?(:violates_tag_rules) && result.noul(:violates_tag_rules) >= CLEAR
+    end
+
+    def relevance_label(tier, on_topic:)
+      case tier
+      when :okay then on_topic ? "okay_and_on_topic" : "ok_but_offtopic_for_subforem"
+      when :very_good then on_topic ? "very_good_and_on_topic" : "very_good_but_offtopic_for_subforem"
+      when :great then on_topic ? "great_and_on_topic" : "great_but_off_topic_for_subforem"
+      end
+    end
+
+    # Weighted blend of normalized dimension Scores, rounded for storage. Used for ranking
+    # in feeds, not as an exact magnitude.
+    def compellingness_from_jev(result)
+      COMPELLINGNESS_WEIGHTS.sum { |dimension, weight| weight * result.score(dimension).normalized }
+        .clamp(0.0, 1.0).round(3)
+    end
+
+    def community_description
+      if @article.subforem_id
+        Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) ||
+          Settings::Community.community_description(subforem_id: @article.subforem_id)
+      else
+        Settings::RateLimit.internal_content_description_spec ||
+          Settings::Community.community_description
+      end
+    end
+
+    def tag_instructions
+      @tag_instructions ||= @article.tags.where.not(moderation_instructions: [nil, ""])
+        .pluck(:name, :moderation_instructions)
+        .map { |name, instructions| { tag: name, instructions: instructions } }
+    end
+
+    # --- Gemini ---
 
     ##
     # Builds a detailed prompt for the AI to assess article content.
