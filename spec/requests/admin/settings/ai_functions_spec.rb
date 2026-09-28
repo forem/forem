@@ -62,6 +62,7 @@ RSpec.describe "/admin/settings/ai_functions" do
       expect(response.body).to include("AI Models")
       expect(response.body).to include("settings_ai_functions[function_models][content_moderation]")
       expect(response.body).to include("TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}")
+      expect(response.body).to include("settings_ai_functions[function_models][spam_escalation]")
       expect(response.body).not_to include("settings_ai_functions[function_models][embeddings]")
     end
   end

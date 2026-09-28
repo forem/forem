@@ -236,8 +236,9 @@ module Spam
       end
     end
 
-    # Content with a link always goes to the Gemini spam check. Without a link, it goes only
-    # when the cheaper Jev check flags it (e.g. Telegram/WhatsApp contacts written as text).
+    # Content with a link always goes to the spam check. Without a link, it goes only when the
+    # cheaper Jev escalation check flags it (e.g. Telegram/WhatsApp contacts written as text).
+    # That check is off unless :spam_escalation is set to Jev in Ai::FunctionConfig.
     def self.link_or_escalated?(html:, text:, content:)
       html.include?("<a") || Ai::SpamEscalationCheck.new(text: text, content: content).escalate?
     end

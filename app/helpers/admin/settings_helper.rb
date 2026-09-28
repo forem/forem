@@ -13,13 +13,15 @@ module Admin
     def ai_function_model_options(function, current)
       options = Ai::FunctionConfig.options_for(function)
       labeled = options.map do |option|
-        label = Ai::FunctionConfig.option_label(option)
-        unless Ai::FunctionConfig.option_available?(option)
+        label = Ai::FunctionConfig.option_label(option, function)
+        unless Ai::FunctionConfig.option_available?(option, function)
           label = "#{label} (requires #{Ai::FunctionConfig.missing_key_for(option)})"
         end
         [label, option]
       end
-      disabled = options.reject { |option| option == current || Ai::FunctionConfig.option_available?(option) }
+      disabled = options.reject do |option|
+        option == current || Ai::FunctionConfig.option_available?(option, function)
+      end
 
       options_for_select(labeled, selected: current, disabled: disabled)
     end

@@ -112,17 +112,58 @@ RSpec.describe Spam::Handler, type: :service do
         allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
       end
 
-      it "runs the Gemini check when the escalation check flags it" do
+      it "runs the spam check when the escalation check flags it" do
         allow(Ai::SpamEscalationCheck).to receive(:new)
           .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: true))
         expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
       end
 
-      it "skips the Gemini check when the escalation check doesn't flag it" do
+      it "skips the spam check when the escalation check doesn't flag it" do
         allow(Ai::SpamEscalationCheck).to receive(:new)
           .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: false))
         expect(handler).to eq(:not_spam)
         expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "skips the spam check while :spam_escalation is off, even with a TypeSafe key" do
+        stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
+        allow(Ai::TypeSafe::Client).to receive(:new)
+
+        expect(handler).to eq(:not_spam)
+        expect(Ai::TypeSafe::Client).not_to have_received(:new)
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "escalates to the spam check when Jev flags off-platform contact" do
+        enable_jev_for(:spam_escalation)
+        requests = stub_jev(offplatform_contact: 0.9)
+
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(requests.first[:state][:content]).to eq(text_to_check)
+      end
+    end
+
+    context "when escalation and the article spam check both run on Jev without a Gemini key" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:spam_escalation, :article_spam_check)
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(article).to receive(:processed_html).and_return("<p>DM me on Telegram @seller</p>")
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "flags the article when both checks agree" do
+        requests = stub_jev(offplatform_contact: 0.9, malicious: 0.95)
+
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(requests.size).to eq(2)
+      end
+
+      it "does not flag the article when the spam check disagrees" do
+        requests = stub_jev(offplatform_contact: 0.9, good_faith: 0.9)
+
+        expect(handler).to eq(:not_spam)
+        expect(requests.size).to eq(2)
       end
     end
 
