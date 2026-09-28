@@ -1800,7 +1800,8 @@ class Article < ApplicationRecord
                   saved_change_to_published? ||
                   published_at > 1.minute.ago
 
-    Articles::HandleSpamWorker.perform_async(id)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
   def async_bust
