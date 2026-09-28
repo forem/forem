@@ -99,7 +99,7 @@ module Ai
     # The client already retries transient failures (429/529/5xx) with backoff.
     def evaluate_via_jev
       client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @article,
-                                        affected_user: @article.user)
+                                        affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: jev_state, questions: jev_questions)
       { label: label_from_jev(result), compellingness_score: compellingness_from_jev(result) }
     rescue StandardError => e

@@ -8,10 +8,29 @@ RSpec.describe Ai::SpamEscalationCheck do
   context "when :spam_escalation is set to Jev" do
     before { enable_jev_for(:spam_escalation) }
 
-    it "escalates when any question is at or above the threshold" do
-      stub_jev(offplatform_contact: described_class::THRESHOLD)
+    it "escalates when any question is at or above the default threshold of 0.3" do
+      stub_jev(offplatform_contact: 0.3)
 
       expect(check.escalate?).to be(true)
+    end
+
+    it "uses the threshold set in admin" do
+      Settings::AiFunctions.set_global_spam_escalation_threshold(0.6)
+
+      stub_jev(spam: 0.5)
+      expect(check.escalate?).to be(false)
+
+      stub_jev(spam: 0.6)
+      expect(check.escalate?).to be(true)
+    end
+
+    it "makes one short attempt so an outage cannot hold a high-priority worker" do
+      stub_jev
+
+      check.escalate?
+
+      expect(Ai::TypeSafe::Client).to have_received(:new)
+        .with(hash_including(timeout: 5, max_retries: 0))
     end
 
     it "does not escalate when every answer is below the threshold" do

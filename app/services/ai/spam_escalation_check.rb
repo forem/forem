@@ -11,9 +11,6 @@ module Ai
     VERSION = "1.1".freeze
     FUNCTION_KEY = :spam_escalation
 
-    # Favors recall, since a false escalation only costs one spam check. Tune it from the
-    # probabilities logged in AiAudit against which escalations the spam check confirms.
-    THRESHOLD = 0.3
     MAX_TEXT_LENGTH = 3_000
 
     QUESTIONS = {
@@ -44,12 +41,21 @@ module Ai
       return false unless selection.jev?
 
       client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: @content,
-                                        affected_user: @content.user)
+                                        affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
       result = client.evaluate(state: { content: @text }, questions: QUESTIONS)
-      QUESTIONS.keys.any? { |id| result.noul(id) >= THRESHOLD }
+      QUESTIONS.keys.any? { |id| result.noul(id) >= threshold }
     rescue StandardError => e
       Rails.logger.error("Spam escalation check failed: #{e}")
       false
+    end
+
+    private
+
+    # Admin-tunable (Settings::AiFunctions). The default favors recall, since a false escalation
+    # only costs one spam check. Tune it from the probabilities logged in AiAudit against which
+    # escalations the spam check confirms.
+    def threshold
+      Settings::AiFunctions.global_spam_escalation_threshold
     end
   end
 end

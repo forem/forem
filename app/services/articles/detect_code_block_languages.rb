@@ -103,11 +103,14 @@ module Articles
 
     def detect_languages_via_jev(unlabeled_blocks)
       client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: article,
-                                        affected_user: article.user)
+                                        affected_user: article.user, **Ai::TypeSafe::Client::FAIL_FAST)
       unlabeled_blocks.map do |code|
         answer = client.evaluate(state: { code: code.to_s.strip.first(MAX_BLOCK_CHARS) },
                                  questions: { language: language_question }).choice(:language)
         answer.confidence >= MIN_JEV_CONFIDENCE ? normalize_language(answer.choice) : "plaintext"
+      rescue Ai::TypeSafe::Client::CircuitOpenError
+        # TypeSafe is down: abort rather than write "plaintext" for every remaining block.
+        raise
       rescue StandardError => e
         Rails.logger.error("Jev code block language detection failed for article #{article.id}: #{e}")
         "plaintext"

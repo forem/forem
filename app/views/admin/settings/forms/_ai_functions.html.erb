@@ -45,6 +45,22 @@
         <% end %>
       <% end %>
 
+      <fieldset class="grid gap-4 mb-6">
+        <legend class="crayons-subtitle-3 mb-2">Tuning</legend>
+        <div class="crayons-field">
+          <%= f.label :spam_escalation_threshold, "Spam escalation threshold", class: "crayons-field__label" %>
+          <%= admin_config_description "When Spam escalation is set to Jev, content without links goes to the spam " \
+                                       "checks once Jev's probability that it is spam, or that it asks readers to " \
+                                       "make contact off-platform to buy something, reaches this value (0-1). Lower " \
+                                       "catches more spam but runs more spam checks. Tune it against the " \
+                                       "Ai::SpamEscalationCheck rows in AI audits." %>
+          <%= f.number_field :spam_escalation_threshold,
+                             class: "crayons-textfield",
+                             value: Settings::AiFunctions.global_spam_escalation_threshold,
+                             min: 0.01, max: 1, step: 0.01 %>
+        </div>
+      </fieldset>
+
       <fieldset class="grid gap-2">
         <legend class="crayons-subtitle-3 mb-2"><%= Ai::FunctionRegistry::GROUPS.fetch(:fixed) %></legend>
         <% Ai::FunctionRegistry.all.reject(&:configurable?).each do |function| %>

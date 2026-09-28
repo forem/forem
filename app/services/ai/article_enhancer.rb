@@ -126,7 +126,7 @@ module Ai
 
     def jev_client(function_key)
       Ai::TypeSafe::Client.new(model: selection(function_key).model, wrapper: self, affected_content: @article,
-                               affected_user: @article.user)
+                               affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
     # --- Jev (TypeSafe System One) ---
