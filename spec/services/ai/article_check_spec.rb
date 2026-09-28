@@ -50,4 +50,72 @@ RSpec.describe Ai::ArticleCheck, type: :service do
       end
     end
   end
+
+  describe "#spam? with Jev selected" do
+    before { enable_jev_for(:article_spam_check) }
+
+    it "sends one batched request of narrow questions instead of calling Gemini" do
+      requests = stub_jev
+
+      expect(described_class.new(article).spam?).to be(false)
+      expect(Ai::Base).not_to have_received(:new)
+      expect(requests.size).to eq(1)
+      expect(requests.first[:questions].keys)
+        .to include(:advertisement, :malicious, :gibberish, :link_vehicle, :off_topic, :good_faith)
+      expect(requests.first[:state][:article]).to include(title: article.title)
+      expect(requests.first[:state][:community][:description]).to eq("A community for developers.")
+    end
+
+    it "flags clearly malicious articles" do
+      stub_jev(malicious: 0.95)
+
+      expect(described_class.new(article).spam?).to be(true)
+    end
+
+    it "flags clear advertisements that are not good-faith contributions" do
+      stub_jev(advertisement: 0.9, good_faith: 0.2)
+
+      expect(described_class.new(article).spam?).to be(true)
+    end
+
+    it "does not flag promotional content that is still a good-faith contribution" do
+      stub_jev(advertisement: 0.9, good_faith: 0.8)
+
+      expect(described_class.new(article).spam?).to be(false)
+    end
+
+    it "flags off-topic promotion but not off-topic content alone" do
+      stub_jev(off_topic: 0.95, advertisement: 0.1, good_faith: 0.9)
+      expect(described_class.new(article).spam?).to be(false)
+
+      stub_jev(off_topic: 0.95, advertisement: 0.6, good_faith: 0.9)
+      expect(described_class.new(article).spam?).to be(true)
+    end
+
+    it "does not flag borderline signals" do
+      stub_jev(advertisement: 0.7, link_vehicle: 0.7, gibberish: 0.7, good_faith: 0.3)
+
+      expect(described_class.new(article).spam?).to be(false)
+    end
+
+    it "asks about tag rules only when tags carry moderation instructions" do
+      requests = stub_jev
+      described_class.new(article).spam?
+      expect(requests.last[:questions]).not_to have_key(:violates_tag_rules)
+
+      article.tags << create(:tag, name: "jevtag", moderation_instructions: "No recruiting posts.")
+      described_class.new(article).spam?
+      expect(requests.last[:questions]).to have_key(:violates_tag_rules)
+      expect(requests.last[:state][:community][:tag_moderation_instructions])
+        .to eq([{ tag: "jevtag", instructions: "No recruiting posts." }])
+    end
+
+    it "returns false when TypeSafe fails" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+
+      expect(described_class.new(article).spam?).to be(false)
+    end
+  end
 end

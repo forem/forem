@@ -423,4 +423,26 @@ RSpec.describe Ai::ForemTags do
       expect(service.send(:output_meets_expectations?, [{ name: "test", description: "test" }])).to be true
     end
   end
+
+  describe "tag similarity with Jev selected" do
+    before { enable_jev_for(:tag_similarity) }
+
+    it "requires a confident yes" do
+      requests = stub_jev(same_topic: 0.9)
+      expect(service.__send__(:tags_have_similar_meaning?, "Web development", "Building websites")).to be(true)
+      expect(requests.first[:state]).to eq(description_1: "Web development", description_2: "Building websites")
+
+      stub_jev(same_topic: 0.7)
+      expect(service.__send__(:tags_have_similar_meaning?, "Web development", "Building websites")).to be(false)
+    end
+
+    it "falls back to word overlap when TypeSafe fails" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+
+      expect(service.__send__(:tags_have_similar_meaning?, "Web development topics", "Web development topics and more"))
+        .to be(true)
+    end
+  end
 end

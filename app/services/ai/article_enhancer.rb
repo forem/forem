@@ -3,14 +3,37 @@ module Ai
   # Enhances articles by calculating clickbait scores and generating tags.
   # This service provides AI-powered analysis to improve article metadata
   # and content quality assessment.
+  #
+  # Each capability is its own AI function (see Ai::FunctionRegistry), so :clickbait_score and
+  # :article_tag_suggestion can run on different models. On Jev:
+  # - Clickbait is a TypeSafe Score over concrete levels, normalized to 0-1.
+  # - Tags are one absolute Noul per candidate tag, all in one request, because several tags
+  #   can apply at once; code keeps the strongest few above a threshold.
   class ArticleEnhancer
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
+    CLICKBAIT_FUNCTION_KEY = :clickbait_score
+    TAGS_FUNCTION_KEY = :article_tag_suggestion
+
+    # Jev policy for tag suggestion.
+    TAG_MIN_PROBABILITY = 0.6
+    MAX_SUGGESTED_TAGS = 4
+    UNSUITABLE_THRESHOLD = 0.7
+    # Usage guidance for tags whose meaning is a community convention rather than a topic.
+    TAG_USAGE_GUIDANCE = {
+      "discuss" => "For posts that start a conversation or ask the community for opinions.",
+      "watercooler" => "For posts that are not about software development.",
+      "career" => "For posts about jobs, hiring, growth, or professional life.",
+      "productivity" => "For posts about working more effectively."
+    }.freeze
 
     # @param article [Article] The article to be enhanced.
-    # @param ai_client [Ai::Base] Optional AI client for dependency injection (useful for testing).
+    # @param ai_client [Ai::Base] Optional Gemini client for dependency injection (useful for testing).
+    #   When given, it is used for every capability, bypassing per-function model selection.
     def initialize(article, ai_client: nil)
       @article = article
-      @ai_client = ai_client || Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
+      @injected_client = ai_client
     end
 
     ##
@@ -19,6 +42,9 @@ module Ai
     #
     # @return [Float] The clickbait score between 0.0 and 1.0.
     def calculate_clickbait_score
+      return clickbait_score_via_jev if jev?(CLICKBAIT_FUNCTION_KEY)
+
+      @ai_client = gemini_client(CLICKBAIT_FUNCTION_KEY)
       attempt = 0
       max_retries = 1
 
@@ -50,7 +76,9 @@ module Ai
     # @return [Array<String>] Array of suggested tag names.
     def generate_tags
       return [] if @article.cached_tag_list.present?
+      return generate_tags_via_jev if jev?(TAGS_FUNCTION_KEY)
 
+      @ai_client = gemini_client(TAGS_FUNCTION_KEY)
       attempt = 0
       max_retries = 1
 
@@ -81,6 +109,86 @@ module Ai
     end
 
     private
+
+    def selection(function_key)
+      @selections ||= {}
+      @selections[function_key] ||= Ai::FunctionConfig.selection_for(function_key)
+    end
+
+    def jev?(function_key)
+      @injected_client.nil? && selection(function_key).jev?
+    end
+
+    def gemini_client(function_key)
+      @injected_client || Ai::Base.new(model: selection(function_key).gemini_model, wrapper: self,
+                                       affected_content: @article, affected_user: @article.user)
+    end
+
+    def jev_client(function_key)
+      Ai::TypeSafe::Client.new(model: selection(function_key).model, wrapper: self, affected_content: @article,
+                               affected_user: @article.user)
+    end
+
+    # --- Jev (TypeSafe System One) ---
+
+    def clickbait_score_via_jev
+      question = score(
+        "How much is `title` written as clickbait rather than an honest description of the article?",
+        [
+          "Plain and descriptive: says what the article covers.",
+          "Mildly catchy: some hype or a teaser, but still descriptive.",
+          {
+            what: "Clickbait: a listicle hook, curiosity gap, or exaggerated promise.",
+            examples: ["11 free and fun APIs you must use in your side project", "You won't believe this CSS trick"]
+          },
+          {
+            what: "Egregious clickbait: sensationalist or all-caps shock claims.",
+            examples: ["RAILS IS DEAD", "The most amazing thing you will ever see in your life"]
+          },
+        ],
+      )
+      result = jev_client(CLICKBAIT_FUNCTION_KEY).evaluate(state: { title: @article.title },
+                                                           questions: { clickbait: question })
+      result.score(:clickbait).normalized.round(3)
+    rescue StandardError => e
+      Rails.logger.error("Clickbait score calculation via Jev failed, falling back to default: #{e}")
+      0.0
+    end
+
+    def generate_tags_via_jev
+      candidates = get_candidate_tags.to_a
+      return [] if candidates.empty?
+
+      questions = {
+        unsuitable: noul("Is `article` offensive, hostile, or too poorly written to be worth tagging?")
+      }
+      candidates.each do |tag|
+        questions["tag::#{tag.name}"] = noul(
+          {
+            tag: {
+              name: tag.name,
+              summary: tag.short_summary.presence&.truncate(300),
+              usage: TAG_USAGE_GUIDANCE[tag.name]
+            }.compact,
+            question: "Is `tag` an accurate label for the main topic or format of `article`?"
+          },
+        )
+      end
+      state = { article: { title: @article.title, body: @article.body_markdown.to_s.first(2_000) } }
+      result = jev_client(TAGS_FUNCTION_KEY).evaluate(state: state, questions: questions)
+      return [] if result.noul(:unsuitable) >= UNSUITABLE_THRESHOLD
+
+      result.nouls_with_prefix("tag::")
+        .select { |_name, probability| probability >= TAG_MIN_PROBABILITY }
+        .sort_by { |_name, probability| -probability }
+        .first(MAX_SUGGESTED_TAGS)
+        .map(&:first)
+    rescue StandardError => e
+      Rails.logger.error("Tag generation via Jev failed, falling back to default: #{e}")
+      []
+    end
+
+    # --- Gemini ---
 
     ##
     # Delivers a chat result using the AI client with system and user prompts.

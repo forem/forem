@@ -81,7 +81,7 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
-        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? &&
+        (article.processed_html.include?("<a") && Ai::FunctionConfig.available?(:article_spam_check) &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
          Ai::ArticleCheck.new(article).spam?)
 
@@ -118,7 +118,8 @@ module Spam
 
       # Return if neither of the spam conditions are met.
       return :not_spam unless rate_limit_spam ||
-        (comment.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && Ai::CommentCheck.new(comment).spam?)
+        (comment.processed_html.include?("<a") && Ai::FunctionConfig.available?(:comment_spam_check) &&
+         Ai::CommentCheck.new(comment).spam?)
 
       issue_spam_reaction_for!(reactable: comment)
       suspend_if_user_is_repeat_offender(user: comment.user)
@@ -157,7 +158,7 @@ module Spam
     def self.handle_profile_update!(user:)
       return :skipped if user.spam_or_suspended?
       return :skipped unless eligible_for_profile_spam_check?(user: user)
-      return :skipped unless Ai::Base::DEFAULT_KEY.present?
+      return :skipped unless Ai::FunctionConfig.available?(:profile_moderation)
 
       label = Ai::ProfileModerationLabeler.new(user).label
       return :not_spam unless clear_profile_violation_label?(label)
@@ -245,7 +246,7 @@ module Spam
 
     # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:content_moderation)
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
@@ -279,7 +280,7 @@ module Spam
 
     # NEW/private: Check if article should be reassigned to a different subforem
     def self.check_subforem_reassignment(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:subforem_matching)
       return if ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes"
 
       begin
