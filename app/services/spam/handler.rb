@@ -81,8 +81,9 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
-        (article.processed_html.include?("<a") && Ai::FunctionConfig.available?(:article_spam_check) &&
+        (Ai::FunctionConfig.available?(:article_spam_check) &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
+         link_or_escalated?(html: article.processed_html, text: text, content: article) &&
          Ai::ArticleCheck.new(article).spam?)
 
       return :not_spam unless should_check
@@ -118,7 +119,8 @@ module Spam
 
       # Return if neither of the spam conditions are met.
       return :not_spam unless rate_limit_spam ||
-        (comment.processed_html.include?("<a") && Ai::FunctionConfig.available?(:comment_spam_check) &&
+        (Ai::FunctionConfig.available?(:comment_spam_check) &&
+         link_or_escalated?(html: comment.processed_html, text: comment.body_markdown, content: comment) &&
          Ai::CommentCheck.new(comment).spam?)
 
       issue_spam_reaction_for!(reactable: comment)
@@ -233,6 +235,14 @@ module Spam
         nil
       end
     end
+
+    # Content with a link always goes to the spam check. Without a link, it goes only when the
+    # cheaper Jev escalation check flags it (e.g. Telegram/WhatsApp contacts written as text).
+    # That check is off unless :spam_escalation is set to Jev in Ai::FunctionConfig.
+    def self.link_or_escalated?(html:, text:, content:)
+      html.include?("<a") || Ai::SpamEscalationCheck.new(text: text, content: content).escalate?
+    end
+    private_class_method :link_or_escalated?
 
     # NEW/private: Refactored suspension logic into a helper method for clarity.
     def self.suspend_if_user_is_repeat_offender(user:)

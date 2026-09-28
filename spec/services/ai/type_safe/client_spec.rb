@@ -103,6 +103,82 @@ RSpec.describe Ai::TypeSafe::Client do
     expect(a_request(:post, endpoint)).to have_been_made.times(described_class::MAX_RETRIES + 1)
   end
 
+  it "does not retry when asked to fail fast" do
+    stub_request(:post, endpoint).to_return(status: 529, body: "{}", headers: { "Content-Type" => "application/json" })
+    fast_client = described_class.new(api_key: "ts-key", **described_class::FAIL_FAST)
+
+    expect { fast_client.evaluate(state: state, questions: questions) }.to raise_error(described_class::Error, /529/)
+    expect(a_request(:post, endpoint)).to have_been_made.once
+  end
+
+  it "passes the per-request timeout to HTTParty" do
+    allow(described_class).to receive(:post).and_raise(Net::ReadTimeout)
+
+    expect do
+      described_class.new(api_key: "ts-key", timeout: 5, max_retries: 0).evaluate(state: state, questions: questions)
+    end.to raise_error(Net::ReadTimeout)
+    expect(described_class).to have_received(:post).with("/systemone", hash_including(timeout: 5)).once
+  end
+
+  context "with the circuit breaker" do
+    let(:fast_client) { described_class.new(api_key: "ts-key", **described_class::FAIL_FAST) }
+
+    before { allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new) }
+
+    def fail_outage_calls(count)
+      count.times do
+        fast_client.evaluate(state: state, questions: questions)
+      rescue described_class::Error, *described_class::NETWORK_ERRORS
+        nil
+      end
+    end
+
+    it "opens after repeated outage failures and then skips calls without a request" do
+      stub_request(:post, endpoint)
+        .to_return(status: 503, body: "{}", headers: { "Content-Type" => "application/json" })
+      fail_outage_calls(described_class::CIRCUIT_FAILURE_THRESHOLD)
+
+      expect(described_class).to be_circuit_open
+      expect { fast_client.evaluate(state: state, questions: questions) }
+        .to raise_error(described_class::CircuitOpenError)
+      expect(a_request(:post, endpoint)).to have_been_made.times(described_class::CIRCUIT_FAILURE_THRESHOLD)
+    end
+
+    it "counts timeouts as outage failures" do
+      stub_request(:post, endpoint).to_timeout
+      fail_outage_calls(described_class::CIRCUIT_FAILURE_THRESHOLD)
+
+      expect(described_class).to be_circuit_open
+    end
+
+    it "stops retrying once the circuit opens mid-call" do
+      stub_request(:post, endpoint)
+        .to_return(status: 529, body: "{}", headers: { "Content-Type" => "application/json" })
+      fail_outage_calls(described_class::CIRCUIT_FAILURE_THRESHOLD - 1)
+
+      expect { client.evaluate(state: state, questions: questions) }.to raise_error(described_class::Error, /529/)
+      expect(a_request(:post, endpoint)).to have_been_made.times(described_class::CIRCUIT_FAILURE_THRESHOLD)
+    end
+
+    it "does not open on validation errors" do
+      stub_request(:post, endpoint).to_return(status: 422, body: { detail: "bad question" }.to_json,
+                                              headers: { "Content-Type" => "application/json" })
+      fail_outage_calls(described_class::CIRCUIT_FAILURE_THRESHOLD)
+
+      expect(described_class).not_to be_circuit_open
+    end
+
+    it "closes again after the cooldown" do
+      stub_request(:post, endpoint)
+        .to_return(status: 503, body: "{}", headers: { "Content-Type" => "application/json" })
+      fail_outage_calls(described_class::CIRCUIT_FAILURE_THRESHOLD)
+
+      Timecop.travel(described_class::CIRCUIT_COOLDOWN.from_now + 1.second)
+
+      expect(described_class).not_to be_circuit_open
+    end
+  end
+
   it "rejects a response without answers" do
     stub_request(:post, endpoint).to_return(status: 200, body: { model: "jev-1.13.0" }.to_json,
                                             headers: { "Content-Type" => "application/json" })

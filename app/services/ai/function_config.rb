@@ -4,7 +4,8 @@ module Ai
   #
   # Admins choose a model option per function in Settings::AiFunctions. Resolution:
   #   1. Use the configured option when the function allows it and its API key is present.
-  #   2. Otherwise use "default": the function's built-in Gemini behavior, unchanged.
+  #   2. Otherwise use "default": the function's built-in Gemini behavior, unchanged. For
+  #      Jev-only functions (see Ai::FunctionRegistry) "default" means the function is off.
   #
   # With nothing configured every function resolves to "default", so behavior is identical
   # to before this config existed.
@@ -73,11 +74,15 @@ module Ai
       def options_for(function)
         function = Ai::FunctionRegistry.fetch(function) unless function.is_a?(Ai::FunctionRegistry::Function)
         return [] unless function.configurable?
+        return %w[default jev] if function.jev_only?
 
         OPTIONS.values.filter_map { |option| option.key if function.jev? || !option.jev_only }
       end
 
-      def option_available?(option_key)
+      # "Off" (the default of a Jev-only function) needs no key.
+      def option_available?(option_key, function = nil)
+        return true if option_key.to_s == "default" && function&.jev_only?
+
         case OPTIONS[option_key.to_s]&.provider
         when :gemini then Ai::Base::DEFAULT_KEY.present?
         when :typesafe then Ai::TypeSafe::Client::DEFAULT_KEY.present?
@@ -85,9 +90,9 @@ module Ai
         end
       end
 
-      def option_label(option_key)
+      def option_label(option_key, function = nil)
         case option_key.to_s
-        when "default" then "Default (built-in Gemini behavior)"
+        when "default" then function&.jev_only? ? "Off" : "Default (built-in Gemini behavior)"
         when "gemini_pro" then "Gemini: #{Ai::Base::DEFAULT_MODEL}"
         when "gemini_lite" then "Gemini: #{Ai::Base::DEFAULT_LITE_MODEL}"
         when "jev" then "TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}"

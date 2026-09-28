@@ -39,6 +39,30 @@ RSpec.describe "/admin/settings/ai_functions" do
       expect(Settings::AiFunctions.global_function_models).to eq({})
     end
 
+    it "saves the spam escalation threshold alongside the selections" do
+      sign_in super_admin
+
+      post admin_settings_ai_functions_path, params: {
+        settings_ai_functions: { spam_escalation_threshold: "0.5", function_models: { spam_escalation: "jev" } }
+      }
+
+      expect(response).to have_http_status(:ok)
+      expect(Settings::AiFunctions.global_spam_escalation_threshold).to eq(0.5)
+      expect(Ai::FunctionConfig.jev?(:spam_escalation)).to be(true)
+    end
+
+    it "rejects an invalid threshold without saving the selections" do
+      sign_in super_admin
+
+      post admin_settings_ai_functions_path, params: {
+        settings_ai_functions: { spam_escalation_threshold: "2", function_models: { spam_escalation: "jev" } }
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(Settings::AiFunctions.global_function_models).to eq({})
+      expect(Settings::AiFunctions.global_spam_escalation_threshold).to eq(0.3)
+    end
+
     it "is only available to super admins" do
       sign_in create(:user, :admin)
 
@@ -62,6 +86,8 @@ RSpec.describe "/admin/settings/ai_functions" do
       expect(response.body).to include("AI Models")
       expect(response.body).to include("settings_ai_functions[function_models][content_moderation]")
       expect(response.body).to include("TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}")
+      expect(response.body).to include("settings_ai_functions[function_models][spam_escalation]")
+      expect(response.body).to include("settings_ai_functions[spam_escalation_threshold]")
       expect(response.body).not_to include("settings_ai_functions[function_models][embeddings]")
     end
   end

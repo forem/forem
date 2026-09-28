@@ -77,8 +77,22 @@ RSpec.describe Ai::FunctionConfig do
       expect(described_class.options_for(:article_summary)).to eq(%w[default gemini_pro gemini_lite])
     end
 
+    it "offers only Off and Jev for Jev-only functions" do
+      expect(described_class.options_for(:spam_escalation)).to eq(%w[default jev])
+      expect(described_class.option_label("default", Ai::FunctionRegistry.fetch(:spam_escalation))).to eq("Off")
+    end
+
     it "offers nothing for fixed-model functions" do
       expect(described_class.options_for(:embeddings)).to eq([])
+    end
+  end
+
+  describe ".option_available?" do
+    it "needs no key to turn a Jev-only function off" do
+      stub_const("Ai::Base::DEFAULT_KEY", nil)
+
+      expect(described_class.option_available?("default")).to be(false)
+      expect(described_class.option_available?("default", Ai::FunctionRegistry.fetch(:spam_escalation))).to be(true)
     end
   end
 
@@ -90,6 +104,7 @@ RSpec.describe Ai::FunctionConfig do
         "context_note" => "gemini_lite",
         "comment_spam_check" => "default",
         "embeddings" => "gemini_pro",
+        "spam_escalation" => "gemini_lite",
         "not_a_function" => "jev",
       )
 

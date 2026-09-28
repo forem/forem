@@ -58,7 +58,7 @@ module Ai
 
     def jev_client
       Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @article.user,
-                               affected_content: @article)
+                               affected_content: @article, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
     def jev_state

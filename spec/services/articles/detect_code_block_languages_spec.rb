@@ -115,6 +115,15 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
       expect(described_class.language_criteria.keys).to match_array(described_class::SUPPORTED_LANGUAGE_TAGS)
     end
 
+    it "leaves the article unchanged when the TypeSafe circuit breaker is open" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::CircuitOpenError, "open")
+
+      expect { expect(service.call).to be(false) }.not_to(change { article.reload.body_markdown })
+      expect(client).to have_received(:evaluate).once
+    end
+
     it "runs without a Gemini key" do
       stub_const("Ai::Base::DEFAULT_KEY", nil)
       stub_jev(language: ["ruby", 0.9])
