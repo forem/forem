@@ -23,4 +23,14 @@ Datadog.configure do |c|
   c.tracing.instrument :redis, service_name: "#{service_name}-redis"
 end
 
-ForemStatsClient = Datadog::Statsd.new
+stats_client = Datadog::Statsd.new
+# Also send metrics to Better Stack when BETTERSTACK_METRICS_SOURCE_TOKEN is set.
+if Rails.env.production? && ENV["BETTERSTACK_METRICS_SOURCE_TOKEN"].present?
+  require Rails.root.join("lib/betterstack/stats_client")
+  stats_client = Betterstack::StatsClient.new(
+    ENV.fetch("BETTERSTACK_METRICS_SOURCE_TOKEN"),
+    ingesting_host: ENV["BETTERSTACK_METRICS_INGESTING_HOST"].presence,
+    forward_to: stats_client,
+  )
+end
+ForemStatsClient = stats_client # rubocop:disable Naming/ConstantName
