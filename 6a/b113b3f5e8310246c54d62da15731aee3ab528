@@ -1,0 +1,56 @@
+app/views/admin/favorites/index.html.erb
+  s_1e049bdc81f15e::t_8475974b62130b 1-35
+app/controllers/admin/favorites_controller.rb
+  s_1e049bdc81f15e::t_bb45d2c4511e51 2-6
+  s_1e049bdc81f15e::t_5a0c8732f7f60b 1
+  s_1e049bdc81f15e::t_98c44776c6a864 7-9
+  s_1e049bdc81f15e::t_7708d670702332 10-15
+config/routes/admin.rb
+  s_1e049bdc81f15e::t_68b612c0a9450b 88
+  s_1e049bdc81f15e::t_d72486c3ad98f5 87
+spec/requests/admin/favorites_spec.rb
+  s_1e049bdc81f15e::t_765276e381ed31 7,23-30
+  s_1e049bdc81f15e::t_c388bd56b3910c 4
+  s_1e049bdc81f15e::t_6da9ba14dc6372 10
+  s_1e049bdc81f15e::t_8475974b62130b 33
+  s_1e049bdc81f15e::t_1b8a28e4ef085e 1-3,5-6,8-9,11-22,31-32,34-36
+config/locales/views/admin/pt.yml
+  s_1e049bdc81f15e::t_6cf1f749316c6c 455
+  s_1e049bdc81f15e::t_3aede2683f072c 451-453,456-461
+  s_1e049bdc81f15e::t_c16b2b880f6e79 454
+app/models/admin_menu.rb
+  s_1e049bdc81f15e::t_400e5020e5db6d 12
+spec/services/favorites/impact_data_spec.rb
+  s_1e049bdc81f15e::t_f78b3390b1d98c 3
+  s_1e049bdc81f15e::t_e8f739096381a5 1-2
+  s_1e049bdc81f15e::t_4df72c51245c33 4-6
+  s_1e049bdc81f15e::t_63eda43dc012c6 7-101
+config/locales/views/admin/en.yml
+  s_1e049bdc81f15e::t_113a366c8d9f0c 568
+  s_1e049bdc81f15e::t_fe8c5dc9261776 565-567,570-575
+  s_1e049bdc81f15e::t_6fddd42c09df38 569
+app/services/favorites/impact_data.rb
+  s_1e049bdc81f15e::t_4e6c60117cfa75 1-69,86
+  s_1e049bdc81f15e::t_6ccfe6abf9a77c 70-72,83-85
+  s_1e049bdc81f15e::t_da750447b2dcef 87-88
+config/locales/views/admin/fr.yml
+  s_1e049bdc81f15e::t_55019657be3ab2 557
+  s_1e049bdc81f15e::t_674ebb4fa7fb48 554-556,559-564
+  s_1e049bdc81f15e::t_09c0f1a414030f 558
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "6ab113b3f5e8310246c54d62da15731aee3ab528",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
