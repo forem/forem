@@ -395,7 +395,7 @@ class ArticlesController < ApplicationController
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
     potential_org_id = requested_organization_id || @article&.organization_id
-    OrganizationMembership.active.exists?(user: potential_user, organization_id: potential_org_id) ||
+    OrganizationMembership.member.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
 
@@ -404,7 +404,8 @@ class ArticlesController < ApplicationController
       # if current_user is an org admin of the article's org
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
-      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+      OrganizationMembership.member.exists?(user_id: params[:article][:user_id],
+                                            organization_id: @article.organization_id)
   end
 
   def allowed_to_manage_org_co_authors?
