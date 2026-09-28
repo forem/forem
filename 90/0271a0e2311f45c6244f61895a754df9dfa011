@@ -1,0 +1,22 @@
+app/controllers/concerns/api/admin/users_controller.rb
+  s_d61821b145c511::t_325d148f2e93db 128,147,150
+  s_d61821b145c511::t_6e5dc85e846f8b 14-25
+spec/requests/api/v1/admin/users_spec.rb
+  s_d61821b145c511::t_b47465de188c2b 427-473
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "900271a0e2311f45c6244f61895a754df9dfa011",
+  "prompts": {},
+  "sessions": {
+    "s_d61821b145c511": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6459e182-5069-47bb-a6c9-c33a81595270",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
