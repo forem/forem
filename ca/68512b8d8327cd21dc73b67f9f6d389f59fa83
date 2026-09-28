@@ -1,0 +1,22 @@
+app/mailers/survey_mailer.rb
+  h_f968154a99632d 16-18,34
+app/models/survey.rb
+  h_f968154a99632d 16
+app/views/mailers/survey_mailer/pulse_survey.html.erb
+  h_f968154a99632d 7-8,24-25
+spec/mailers/survey_mailer_spec.rb
+  h_f968154a99632d 57-72,171-189
+swagger/v1/api_v1.json
+  h_f968154a99632d 7323-7324,7422-7423,7432-7433
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ca68512b8d8327cd21dc73b67f9f6d389f59fa83",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+db/migrate/20260814130100_add_index_to_articles_and_comments_ai_disclosure_level.rb
+  h_f968154a99632d 5-9,11-13,15-20,24-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "02aff46cd171980744597f331b2484ee21d24835",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

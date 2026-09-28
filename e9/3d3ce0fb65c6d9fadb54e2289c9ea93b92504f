@@ -1,0 +1,102 @@
+app/assets/stylesheets/views/article.scss
+  h_f968154a99632d 249-251,254,262-269,378,380-384,390-393,395,397-405
+app/assets/stylesheets/views/mod-actions.scss
+  h_f968154a99632d 829-832
+app/controllers/leadership_dashboards_controller.rb
+  h_f968154a99632d 5,11-12,14-15,17
+app/helpers/favorites_helper.rb
+  h_f968154a99632d 2,8-64,73,79-81
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 12,24-28,42,50,62,65,110-126,176-190
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 26-28,79,82,96,103,111,117,121,131,137,139,142,155,174,185,195-218
+app/services/favorites/fetch.rb
+  h_f968154a99632d 12,14,32,47,59,61
+app/views/articles/_actions.html.erb
+  h_f968154a99632d 7-62,69-71,73-81,90-92
+app/views/articles/_multiple_reactions.html.erb
+  h_f968154a99632d 15,48
+app/views/articles/_reaction_button.html.erb
+  h_f968154a99632d 15
+app/views/articles/_single_story.html.erb
+  h_f968154a99632d 79,100-111,169,184-208
+app/views/leadership_dashboards/_favorited_row.html.erb
+  h_f968154a99632d 1-38,40-54,56
+app/views/leadership_dashboards/_feed.html.erb
+  h_f968154a99632d 1-20
+app/views/leadership_dashboards/_nav_menu.html.erb
+  h_f968154a99632d 1-7,9-13,15,18-20
+app/views/leadership_dashboards/_sidebar.html.erb
+  h_f968154a99632d 1-37
+app/views/leadership_dashboards/show.html.erb
+  h_f968154a99632d 5-8,12,16
+config/locales/controllers/admin/en.yml
+  h_f968154a99632d 43,45
+config/locales/controllers/admin/fr.yml
+  h_f968154a99632d 43,45
+config/locales/controllers/admin/pt.yml
+  h_f968154a99632d 8,10
+config/locales/controllers/en.yml
+  h_f968154a99632d 46-48
+config/locales/controllers/fr.yml
+  h_f968154a99632d 46-48
+config/locales/controllers/pt.yml
+  h_f968154a99632d 46-48
+config/locales/en.yml
+  h_f968154a99632d 11-13
+config/locales/fr.yml
+  h_f968154a99632d 11-13
+config/locales/pt.yml
+  h_f968154a99632d 11-13
+config/locales/services/en.yml
+  h_f968154a99632d 18-19
+config/locales/services/fr.yml
+  h_f968154a99632d 18-19
+config/locales/services/pt.yml
+  h_f968154a99632d 18-19
+config/locales/views/admin/en.yml
+  h_f968154a99632d 519-520,664-665,667-668
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 510-511,655-656,658-659
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 50-51,560-561,563-564
+config/locales/views/leadership/en.yml
+  h_f968154a99632d 4-5,7,10-37
+config/locales/views/leadership/fr.yml
+  h_f968154a99632d 4-5,7,10-37
+config/locales/views/leadership/pt.yml
+  h_f968154a99632d 5-6,8,11-38
+config/locales/views/main/en.yml
+  h_f968154a99632d 36
+config/locales/views/main/fr.yml
+  h_f968154a99632d 35-36
+config/locales/views/main/pt.yml
+  h_f968154a99632d 35
+config/locales/views/moderations/en.yml
+  h_f968154a99632d 163-164
+config/locales/views/moderations/fr.yml
+  h_f968154a99632d 162-163
+config/locales/views/moderations/pt.yml
+  h_f968154a99632d 163-164
+config/locales/views/subforems/en.yml
+  h_f968154a99632d 184
+config/locales/views/subforems/fr.yml
+  h_f968154a99632d 184
+config/locales/views/subforems/pt.yml
+  h_f968154a99632d 184
+config/routes.rb
+  h_f968154a99632d 524-525
+spec/requests/leadership_dashboards_spec.rb
+  h_f968154a99632d 3,6,10-11,14-16,19-22,24-25,27,30-31,34-36,38,41,44-46,48,51,54-56,58-60,62,65-67,75,83,89-101
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e93d3ce0fb65c6d9fadb54e2289c9ea93b92504f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
