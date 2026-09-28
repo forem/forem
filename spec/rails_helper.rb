@@ -126,6 +126,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include EmbedsHelpers, type: :liquid_tag
   config.include FactoryBot::Syntax::Methods
+  config.include JevHelpers
   config.include OmniauthHelpers
   config.include RpushHelpers
   config.include SidekiqTestHelpers
@@ -205,6 +206,7 @@ RSpec.configure do |config|
 
   config.after do
     Settings::General.clear_cache
+    Settings::AiFunctions.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys

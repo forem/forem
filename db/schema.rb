@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_24_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1642,6 +1642,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
     t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
     t.index ["user_id"], name: "index_segmented_users_on_user_id"
+  end
+
+  create_table "settings_ai_functions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subforem_id"
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_ai_functions_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_ai_functions_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_authentications", force: :cascade do |t|

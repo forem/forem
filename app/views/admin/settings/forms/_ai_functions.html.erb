@@ -1,0 +1,61 @@
+<% configured_models = Settings::AiFunctions.global_function_models %>
+<%= form_for(Settings::AiFunctions.new,
+             url: admin_settings_ai_functions_path,
+             html: { data: {
+               action: "submit->config#updateConfigurationSettings",
+               testid: "aiFunctionsForm"
+             } }) do |f| %>
+  <details class="crayons-card" id="ai-functions-section">
+    <summary class="crayons-subtitle-2 p-6">AI Models</summary>
+
+    <div class="p-6 pt-0">
+      <p class="crayons-field__description mb-4">
+        Choose the model that powers each AI function. "Default" keeps the function's built-in Gemini behavior.
+        TypeSafe Jev is offered only for judgment functions (yes/no decisions, picking from a known set, or scoring
+        on a scale), where it returns calibrated probabilities instead of generated text. If a selected model's API key
+        is missing, the function falls back to its default.
+      </p>
+
+      <ul class="mb-4">
+        <li>
+          <code>GEMINI_API_KEY</code>: <%= Ai::FunctionConfig.option_available?("default") ? "configured" : "missing" %>
+        </li>
+        <li>
+          <code>TYPESAFE_API_KEY</code>: <%= Ai::FunctionConfig.option_available?("jev") ? "configured" : "missing" %>
+        </li>
+      </ul>
+
+      <%= f.fields_for :function_models do |models_field| %>
+        <% Ai::FunctionRegistry.configurable.group_by(&:group).each do |group, functions| %>
+          <fieldset class="grid gap-4 mb-6">
+            <legend class="crayons-subtitle-3 mb-2"><%= Ai::FunctionRegistry::GROUPS.fetch(group) %></legend>
+
+            <% functions.each do |function| %>
+              <% current = configured_models[function.key].presence || "default" %>
+              <div class="crayons-field">
+                <%= models_field.label function.key, function.name, class: "crayons-field__label" %>
+                <%= admin_config_description function.description %>
+                <%= models_field.select function.key,
+                                        ai_function_model_options(function, current),
+                                        {},
+                                        class: "crayons-select" %>
+              </div>
+            <% end %>
+          </fieldset>
+        <% end %>
+      <% end %>
+
+      <fieldset class="grid gap-2">
+        <legend class="crayons-subtitle-3 mb-2"><%= Ai::FunctionRegistry::GROUPS.fetch(:fixed) %></legend>
+        <% Ai::FunctionRegistry.all.reject(&:configurable?).each do |function| %>
+          <div>
+            <strong><%= function.name %></strong>
+            <%= admin_config_description function.description %>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <%= render "update_setting_button", f: f %>
+    </div>
+  </details>
+<% end %>

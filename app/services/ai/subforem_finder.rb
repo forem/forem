@@ -2,13 +2,31 @@ module Ai
   ##
   # Analyzes an article and finds the most appropriate subforem for it
   # based on content description specs of available subforems.
+  #
+  # When the :subforem_matching function is set to Jev (see Ai::FunctionConfig), one TypeSafe
+  # request asks a Choice over every candidate (plus "none") to pick the best home, and one
+  # absolute Noul per candidate to check that the pick genuinely fits. The Choice settles
+  # *which* subforem; the Nouls settle *whether* to move the article at all.
   class SubforemFinder
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
+    FUNCTION_KEY = :subforem_matching
+    NONE_OPTION = "none".freeze
+    # Jev policy thresholds. Moving an article is visible to its author, so require both a
+    # reasonably confident pick and a clear absolute fit.
+    MIN_CHOICE_CONFIDENCE = 0.5
+    MIN_FIT = 0.7
+    SPEC_CHARS = 1_000
 
     # @param article [Article] The article to find an appropriate subforem for.
     def initialize(article)
       @article = article
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: article, affected_user: article.user)
+      @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
+      return if @selection.jev?
+
+      @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: article,
+                                affected_user: article.user)
     end
 
     ##
@@ -53,6 +71,7 @@ module Ai
     # @return [Integer, nil] The ID of the best matching subforem, or nil if none suitable
     def find_best_match(available_subforems)
       return if available_subforems.empty?
+      return find_best_match_via_jev(available_subforems) if @selection.jev?
 
       prompt = build_subforem_matching_prompt(available_subforems)
 
@@ -64,6 +83,66 @@ module Ai
         nil
       end
     end
+
+    # --- Jev (TypeSafe System One) ---
+
+    def find_best_match_via_jev(available_subforems)
+      candidates = available_subforems.first(Ai::TypeSafe::Questions::MAX_CHOICE_OPTIONS - 1)
+        .index_by { |subforem| "subforem_#{subforem.id}" }
+      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: article,
+                                        affected_user: article.user)
+      result = client.evaluate(state: jev_state, questions: jev_questions(candidates))
+
+      pick = result.choice(:best_home)
+      return if pick.choice == NONE_OPTION || pick.confidence < MIN_CHOICE_CONFIDENCE
+      return if result.noul("fits::#{pick.choice}") < MIN_FIT
+
+      subforem = candidates.fetch(pick.choice)
+      Rails.logger.info("Jev recommended subforem #{subforem.domain} for article #{article.id}")
+      subforem.id
+    rescue StandardError => e
+      Rails.logger.error("Jev subforem matching failed: #{e}")
+      nil
+    end
+
+    def jev_state
+      {
+        article: {
+          title: article.title,
+          tags: article.cached_tag_list,
+          body: article.body_markdown.to_s.truncate(3000)
+        },
+        note: "The article was marked off-topic for the community it was posted in."
+      }
+    end
+
+    def jev_questions(candidates)
+      descriptions = candidates.transform_values { |subforem| subforem_description(subforem) }
+
+      questions = {
+        best_home: choice(
+          "Which community's content guidelines is `article` genuinely on-topic for?",
+          descriptions.merge(NONE_OPTION => "None of these communities is a genuine fit for `article`."),
+        )
+      }
+      descriptions.each do |key, description|
+        questions["fits::#{key}"] = noul(
+          { community: description, question: "Is `article` genuinely on-topic for `community`?" },
+        )
+      end
+      questions
+    end
+
+    def subforem_description(subforem)
+      spec = Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id) ||
+        Settings::Community.community_description(subforem_id: subforem.id)
+      {
+        domain: subforem.domain,
+        content_guidelines: spec.to_s.truncate(SPEC_CHARS).presence || "No content description available"
+      }
+    end
+
+    # --- Gemini ---
 
     ##
     # Builds the prompt for AI to match the article with appropriate subforems.

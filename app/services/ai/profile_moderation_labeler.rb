@@ -2,8 +2,13 @@ module Ai
   ##
   # Analyzes a user's profile and recent articles to determine a moderation label.
   # This is intended for detecting clear and obvious spam or abuse.
+  #
+  # When the :profile_moderation function is set to Jev (see Ai::FunctionConfig), the label
+  # is composed in #label_from_jev from narrow TypeSafe Noul questions.
   class ProfileModerationLabeler
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
     LABELS = %w[
       no_moderation_label
       clear_and_obvious_spam
@@ -22,10 +27,20 @@ module Ai
       great_but_off_topic_for_subforem
     ].freeze
 
+    FUNCTION_KEY = :profile_moderation
+    # Jev policy thresholds. Only clear_* labels trigger action in Spam::Handler.
+    CLEAR = 0.85
+    LIKELY = 0.6
+
     # @param user [User] The user whose profile we are labeling.
+    # @param ai_client [Ai::Base, nil] Optional Gemini client (forces the Gemini path).
     def initialize(user, ai_client: nil)
       @user = user
-      @ai_client = ai_client || Ai::Base.new(wrapper: self, affected_user: user)
+      @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
+      @use_jev = ai_client.nil? && @selection.jev?
+      return if @use_jev
+
+      @ai_client = ai_client || Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_user: user)
     end
 
     ##
@@ -33,6 +48,8 @@ module Ai
     #
     # @return [String] The moderation label for the profile.
     def label
+      return label_via_jev if @use_jev
+
       response = @ai_client.call(build_prompt)
       parse_response(response)
     rescue StandardError => e
@@ -41,6 +58,95 @@ module Ai
     end
 
     private
+
+    # --- Jev (TypeSafe System One) ---
+
+    def label_via_jev
+      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @user)
+      label_from_jev(client.evaluate(state: jev_state, questions: jev_questions))
+    end
+
+    def jev_state
+      state = {
+        community: { description: default_community_description.presence || "No community description provided." },
+        profile: {
+          name: @user.name,
+          username: @user.username,
+          summary: @user.profile&.summary,
+          website_url: @user.profile&.website_url,
+          location: @user.profile&.location
+        }
+      }
+      state[:recent_articles] = recent_articles_context if recent_articles_context.any?
+      state
+    end
+
+    def jev_questions
+      questions = {
+        keyword_stuffed_identity: noul(
+          "Is `profile.name` or `profile.username` a keyword-stuffed or promotional phrase rather than the name " \
+          "of a person or organization?",
+          yes: { examples: ["Best Cheap SEO Services Delhi", "buy-followers-fast-2024"] },
+          no: { examples: ["Jane Doe", "Acme Cloud", "jdoe_dev"] },
+        ),
+        promotional_profile: noul(
+          {
+            question: "Do `profile.summary` and `profile.website_url` exist mainly to advertise or drive search " \
+                      "traffic to an unrelated business?"
+          },
+          no: {
+            includes: "A legitimate person, company, or organization describing itself, even with a link " \
+                      "to its own site."
+          },
+        ),
+        harmful: noul(
+          "Does the profile or its recent articles show exploitation, trafficking, doxing, or other clearly " \
+          "harmful activity?",
+        ),
+        inciting: noul(
+          "Does the profile or its recent articles call for violence or incite extreme hostility toward people?",
+        )
+      }
+      if recent_articles_context.any?
+        questions[:spam_articles] = noul(
+          "Are the posts in `recent_articles` spam or promotional abuse rather than good-faith contributions?",
+        )
+      end
+      questions
+    end
+
+    # Safety labels take precedence over spam, matching the label priority used for articles.
+    def label_from_jev(result)
+      spam = [result.noul(:keyword_stuffed_identity), result.noul(:promotional_profile)]
+      spam << result.noul(:spam_articles) if result.key?(:spam_articles)
+      signals = {
+        "harmful" => result.noul(:harmful),
+        "inciting" => result.noul(:inciting),
+        "spam" => spam.max
+      }
+
+      clear = signals.detect { |_kind, probability| probability >= CLEAR }
+      return "clear_and_obvious_#{clear.first}" if clear
+
+      likely = signals.detect { |_kind, probability| probability >= LIKELY }
+      return "likely_#{likely.first}" if likely
+
+      "no_moderation_label"
+    end
+
+    def default_community_description
+      default_subforem_id = Subforem.cached_default_id
+      Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id) ||
+        Settings::Community.community_description(subforem_id: default_subforem_id)
+    end
+
+    def recent_articles_context
+      @recent_articles_context ||= @user.articles.published.order(published_at: :desc).limit(2).map do |article|
+        { title: article.title, body: article.body_markdown.to_s.truncate(1_200) }
+      end
+    end
+
+    # --- Gemini ---
 
     def build_prompt
       # Use default subforem instructions/community description for context
