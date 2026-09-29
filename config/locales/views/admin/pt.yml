@@ -12,6 +12,8 @@ pt:
         reports: Relatórios
         settings: Configurações
       users:
+        delete:
+          notice: Somente administradores podem excluir usuários.
         content_flags:
           description: Sinalizações feitas nas publicações e comentários deste membro, incluindo as geradas automaticamente pela moderação. Marcar uma como inválida restaura a pontuação do conteúdo.
           no_flags: Nenhuma sinalização recebida nas publicações ou comentários deste usuário até o momento.
