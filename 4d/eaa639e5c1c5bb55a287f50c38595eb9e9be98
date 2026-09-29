@@ -1,0 +1,25 @@
+spec/requests/ahoy/email_clicks_spec.rb
+  s_7d090fe663c96a::t_d64002563f6bed 59-60,62,72-74,91-93,120,124
+  s_7d090fe663c96a::t_d732595d642536 99-119,121-123,125-129,150-163
+  s_7d090fe663c96a::t_4ff7da7fb5d4ec 130-149
+spec/services/emails/ahoy_link_tracking_parity_spec.rb
+  s_7d090fe663c96a::t_54256fda190e4d 26,30-32,38
+  s_7d090fe663c96a::t_799ac32354d6d8 53
+  s_7d090fe663c96a::t_6cc16820a8bd1d 1-25,27-29,33-37,39-52,54-60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4deaa639e5c1c5bb55a287f50c38595eb9e9be98",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
