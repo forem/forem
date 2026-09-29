@@ -32,6 +32,7 @@ class Event < ApplicationRecord
 
   before_validation :set_default_bg_color_hex
   before_save :format_stream_urls
+  before_save :evaluate_markdown, if: :body_markdown_changed?
   after_commit :ensure_broadcast_billboards_and_workers, on: %i[create update]
   after_commit :bust_upcoming_events_cache, on: %i[create update destroy]
 
@@ -107,6 +108,21 @@ class Event < ApplicationRecord
     end
   end
 
+  # Keep the rendered page body out of the public events API responses.
+  def serializable_hash(options = nil)
+    options = (options || {}).dup
+    options[:except] = Array(options[:except]) + %i[body_markdown processed_html]
+    super
+  end
+
+  # The event page shows the rendered markdown body when present, and falls
+  # back to the short description otherwise.
+  def body_html
+    return processed_html.html_safe if body_markdown.present? && processed_html.present? # rubocop:disable Rails/OutputSafety
+
+    ActionController::Base.helpers.simple_format(description)
+  end
+
   def formatted_date_range
     return "" if start_time.blank?
 
@@ -168,6 +184,19 @@ class Event < ApplicationRecord
   end
 
   private
+
+  def evaluate_markdown
+    if body_markdown.blank?
+      self.processed_html = nil
+      return
+    end
+
+    renderer = ContentRenderer.new(body_markdown, source: organization, user: user)
+    self.processed_html = renderer.process.processed_html
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:body_markdown, ErrorMessages::Clean.call(e.message))
+    throw :abort
+  end
 
   def end_time_after_start_time
     return if end_time.blank? || start_time.blank?
