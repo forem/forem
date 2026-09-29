@@ -91,6 +91,9 @@ module Spam
       )
 
       suspend!(user: article.user)
+    rescue Ai::Base::ProhibitedContentError
+      article.update_column(:automod_label, "clear_and_obvious_harmful")
+      spam_block!(reactable: article, user: article.user)
     end
 
     # Test the comment for spamminess.  If it's not spammy, don't do anything.
@@ -120,6 +123,8 @@ module Spam
 
       issue_spam_reaction_for!(reactable: comment)
       suspend_if_user_is_repeat_offender(user: comment.user)
+    rescue Ai::Base::ProhibitedContentError
+      spam_block!(reactable: comment, user: comment.user)
     end
 
     # Test the user for spamminess.  If it's not spammy, don't do anything.
@@ -168,6 +173,16 @@ module Spam
         suspend!(user: user)
       end
 
+      :spam
+    rescue Ai::Base::ProhibitedContentError
+      spam_block!(reactable: user, user: user)
+    end
+
+    # Gemini won't even read prohibited content (e.g. sexual content involving minors), so
+    # its refusal is treated as a clear violation: flag the content and mark the author as spam.
+    def self.spam_block!(reactable:, user:)
+      issue_spam_reaction_for!(reactable: reactable)
+      user.add_role(:spam) unless user.spam?
       :spam
     end
 
@@ -315,6 +330,8 @@ module Spam
         if offtopic_label?(label)
           check_subforem_reassignment(article)
         end
+      rescue Ai::Base::ProhibitedContentError
+        raise
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
@@ -421,6 +438,7 @@ module Spam
                          :published_articles_over_limit?, :published_comments_over_limit?,
                          :article_linked_domain_spam?, :extract_all_domains_from,
                          :escalate_clear_violation_author!, :repeat_auto_flagged_author?,
+                         :spam_block!,
                          :recent_auto_flagged_article_count, :mark_repeat_auto_flagged_author_as_spam!
   end
 end

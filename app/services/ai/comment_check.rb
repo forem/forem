@@ -39,12 +39,29 @@ module Ai
       prompt = build_prompt
       response = @ai_client.call(prompt)
       parse_response(response)
+    rescue Ai::Base::ProhibitedContentError
+      spam_in_isolation?
     rescue StandardError => e
       Rails.logger.error(e)
       false
     end
 
     private
+
+    # The full prompt includes the parent post, which may be someone else's. Re-ask about the
+    # comment alone, so a PROHIBITED_CONTENT block only reaches its author if the comment caused it.
+    def spam_in_isolation?
+      parse_response(@ai_client.call(<<~PROMPT))
+        Is the following comment CLEARLY spam? Answer only with YES or NO.
+        ---
+        #{@comment.body_markdown}
+      PROMPT
+    rescue Ai::Base::ProhibitedContentError
+      raise
+    rescue StandardError => e
+      Rails.logger.error(e)
+      false
+    end
 
     # --- Jev (TypeSafe System One) ---
 
