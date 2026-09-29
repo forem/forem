@@ -2159,6 +2159,12 @@ RSpec.describe Article do
         end
       end
 
+      it "refreshes notifications when crossposted_at changes (it drives readable_publish_date)" do
+        sidekiq_assert_enqueued_jobs(1, only: Notifications::UpdateWorker) do
+          article.update(crossposted_at: 1.day.ago)
+        end
+      end
+
       it "does not refresh notifications when only last_comment_at is touched" do
         sidekiq_assert_no_enqueued_jobs(only: Notifications::UpdateWorker) do
           article.touch(:last_comment_at)

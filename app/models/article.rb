@@ -69,6 +69,11 @@ class Article < ApplicationRecord
     %r{\Ahttps?://(www\.)?twitch\.tv/videos/},
   ].freeze
 
+  # Fields embedded in Published/CoAuthor notifications (see Notifications.article_data).
+  # crossposted_at feeds readable_publish_date via displayable_published_at.
+  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at crossposted_at reading_time
+                                    user_id organization_id].freeze
+
   # Author-visible edits, for the article_updated CDP event. Rows churn on score
   # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
   TRACKABLE_UPDATE_KEYS = %w[
@@ -162,9 +167,6 @@ class Article < ApplicationRecord
     some_ai: 3,
     fully_autonomous: 5
   }
-
-  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at reading_time user_id
-                                    organization_id].freeze
 
   enum :automod_label, {
     no_moderation_label: 0,
