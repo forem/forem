@@ -76,6 +76,10 @@ class UserPolicy < ApplicationPolicy
 
   alias request_destroy? edit?
 
+  def admin_delete?
+    user_any_admin?
+  end
+
   def join_org?
     !user.spam_or_suspended?
   end
