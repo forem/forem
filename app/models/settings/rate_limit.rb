@@ -22,6 +22,10 @@ module Settings
     setting :reaction_creation, type: :integer, default: 10
     setting :send_email_confirmation, type: :integer, default: 2
     setting :spam_trigger_terms, type: :array, default: []
+    # Magnitude of negative net_score a LinkedDomain must reach before new
+    # posts linking to it (from low-score authors) are auto-flagged as spam.
+    setting :linked_domain_spam_score_threshold, type: :integer, default: 2000,
+                                                 validates: { numericality: { only_integer: true, greater_than: 0 } }
     setting :user_considered_new_days, type: :integer, default: 3
     setting :user_subscription_creation, type: :integer, default: 3
     setting :user_update, type: :integer, default: 15
