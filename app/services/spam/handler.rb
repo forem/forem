@@ -233,10 +233,14 @@ module Spam
 
     # Low-trust authors whose recent posts keep earning clear-violation labels (and the mascot's
     # vomit) are treated as spammers without waiting for a moderator to confirm each reaction.
-    def self.repeat_auto_flagged_author?(user:, threshold: 2)
+    # The flags must also be most of their recent posts: authors of self-promotional but useful
+    # posts collect a few clear-spam labels among many good ones.
+    def self.repeat_auto_flagged_author?(user:, threshold: 2, min_share: 0.75)
       return false if user.badge_achievements_count >= 4
 
-      recent_auto_flagged_article_count(user: user) > threshold
+      flagged_count = recent_auto_flagged_article_count(user: user)
+      flagged_count > threshold &&
+        flagged_count >= min_share * user.articles.published.where("published_at > ?", 1.month.ago).count
     end
 
     def self.recent_auto_flagged_article_count(user:)

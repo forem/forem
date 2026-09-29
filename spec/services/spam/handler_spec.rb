@@ -355,6 +355,12 @@ RSpec.describe Spam::Handler, type: :service do
           expect(author).not_to be_suspended
         end
 
+        it "leaves the author alone when flagged posts are under 75% of their recent posts" do
+          create_list(:article, 2, user: author)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
         it "leaves a note from the mascot explaining why the author was marked as spam" do
           expect { handler }.to change(auto_spam_notes, :count).by(1)
 
