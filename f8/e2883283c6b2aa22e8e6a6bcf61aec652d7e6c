@@ -1,0 +1,16 @@
+app/models/feedback_message.rb
+  h_ce58fdd005af23 16,89-95,122-127
+spec/requests/admin/feedback_messages_spec.rb
+  h_ce58fdd005af23 63-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.10",
+  "base_commit_sha": "f8e2883283c6b2aa22e8e6a6bcf61aec652d7e6c",
+  "prompts": {},
+  "humans": {
+    "h_ce58fdd005af23": {
+      "author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    }
+  }
+}
