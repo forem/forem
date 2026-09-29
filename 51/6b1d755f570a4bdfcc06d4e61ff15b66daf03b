@@ -1,0 +1,24 @@
+docs/plans/2026-03-09-org-page-wizard-design.md
+  3b300d9ee498e98c 1-221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "516b1d755f570a4bdfcc06d4e61ff15b66daf03b",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 238,
+      "total_deletions": 17,
+      "accepted_lines": 221,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/457bbe076420733c5a7137bcbbde4ffe37ad322340e3fdf996660db1a2590195"
+    }
+  }
+}
