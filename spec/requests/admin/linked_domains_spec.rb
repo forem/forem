@@ -102,6 +102,13 @@ RSpec.describe "Admin::LinkedDomains", type: :request do
         expect(Settings::RateLimit.linked_domain_spam_score_threshold).to eq(2000)
       end
 
+      it "rejects non-integer values instead of coercing them" do
+        patch spam_threshold_admin_linked_domains_path, params: { linked_domain_spam_score_threshold: "1e3" }
+        expect(response).to redirect_to(admin_linked_domains_path)
+        expect(flash[:alert]).to eq("Threshold must be a whole number.")
+        expect(Settings::RateLimit.linked_domain_spam_score_threshold).to eq(2000)
+      end
+
       it "shows the threshold explanation on the index" do
         get admin_linked_domains_path
         expect(response.body).to include("Domain abuse score threshold")

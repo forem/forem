@@ -17,10 +17,13 @@ module Admin
     end
 
     def update_spam_threshold
-      result = ::Settings::Upsert.call(
-        { linked_domain_spam_score_threshold: params[:linked_domain_spam_score_threshold] },
-        ::Settings::RateLimit,
-      )
+      threshold = Integer(params[:linked_domain_spam_score_threshold].to_s, 10, exception: false)
+      unless threshold
+        redirect_to admin_linked_domains_path, alert: "Threshold must be a whole number."
+        return
+      end
+
+      result = ::Settings::Upsert.call({ linked_domain_spam_score_threshold: threshold.to_s }, ::Settings::RateLimit)
 
       if result.success?
         Audit::Logger.log(:internal, current_user, params.dup)

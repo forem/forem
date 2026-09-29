@@ -26,7 +26,7 @@
     <ul class="mb-3 pl-6" style="list-style: disc;">
       <li>
         A post by a spam-flagged author scores about -<%= @spam_post_score %>, so a domain reaches the threshold after
-        roughly <strong><%= pluralize((@spam_score_threshold / @spam_post_score.to_f).ceil, "spam post") %></strong> link to it.
+        roughly <strong><%= pluralize((@spam_score_threshold / @spam_post_score.to_f).ceil, "spam post") %></strong> linking to it.
       </li>
       <li>
         Posts that are merely downvoted or auto-labeled as spam (without a spam-flagged author) usually score in the
