@@ -813,6 +813,14 @@ RSpec.describe Spam::Handler, type: :service do
         expect(Reaction.where(reactable: comment, category: "vomit", user: mascot_user)).to exist
         expect(comment.user.reload).to be_spam
       end
+
+      it "leaves the comment alone when only the surrounding context was blocked" do
+        answer = { "candidates" => [{ "content" => { "parts" => [{ "text" => "NO" }] } }] }
+        allowed_response = instance_double(HTTParty::Response, success?: true, code: 200, parsed_response: answer)
+        allow(Ai::Base).to receive(:post).and_return(blocked_response, allowed_response)
+        expect(handler).to eq(:not_spam)
+        expect(comment.user.reload).not_to be_spam
+      end
     end
 
     context "when a comment without links is flagged by the escalation check" do
