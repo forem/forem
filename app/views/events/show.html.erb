@@ -124,8 +124,8 @@
     </div>
 
     <div class="info-section crayons-card p-6 mt-4">
-        <div class="mb-4 text-lg">
-            <%= simple_format(@event.description) %>
+        <div class="mb-4 text-lg crayons-article__body">
+            <%= @event.body_html %>
         </div>
 
         <% if @event.organization %>

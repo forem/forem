@@ -352,4 +352,36 @@ RSpec.describe Event do
       expect(event.format_pill_label).to eq("CHALLENGE")
     end
   end
+
+  describe "#body_html" do
+    it "renders body_markdown to processed_html on save and uses it" do
+      event = create(:event, description: "Short summary.", body_markdown: "## Agenda\n\n**Bold** plan")
+      expect(event.processed_html).to include("<h2")
+      expect(event.body_html).to include("<strong>Bold</strong>")
+      expect(event.body_html).not_to include("Short summary.")
+    end
+
+    it "falls back to the description when body_markdown is blank" do
+      event = create(:event, description: "Short summary.", body_markdown: "")
+      expect(event.processed_html).to be_nil
+      expect(event.body_html).to include("<p>Short summary.</p>")
+    end
+
+    it "does not save and reports an error when the markdown fails to parse" do
+      event = build(:event, body_markdown: "hello {% gist 123 %}")
+      expect(event.save).to be(false)
+      expect(event.errors[:body_markdown].join).to include("Invalid Gist link")
+    end
+
+    it "excludes body fields from JSON serialization" do
+      event = create(:event, body_markdown: "Hello")
+      expect(event.as_json.keys).not_to include("body_markdown", "processed_html")
+    end
+
+    it "clears processed_html when body_markdown is removed" do
+      event = create(:event, body_markdown: "Hello **world**")
+      event.update!(body_markdown: "")
+      expect(event.reload.processed_html).to be_nil
+    end
+  end
 end
