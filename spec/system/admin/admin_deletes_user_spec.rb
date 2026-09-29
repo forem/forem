@@ -11,7 +11,7 @@ RSpec.describe "Admin deletes user" do
 
   it "enqueues a job for deleting the user" do
     sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
-      click_button "Delete now"
+      click_on "Delete now"
     end
 
     message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) is being deleted. " \
@@ -24,7 +24,7 @@ RSpec.describe "Admin deletes user" do
     user.update(email: nil)
 
     sidekiq_perform_enqueued_jobs do
-      click_button "Delete now"
+      click_on "Delete now"
     end
 
     message = "@#{user.username} (email: no email, user_id: #{user.id}) is being deleted."

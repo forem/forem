@@ -94,6 +94,39 @@ RSpec.describe Users::DeleteComments, type: :service do
     expect(EdgeCache::BustComment).to have_received(:call).with(article)
   end
 
+  it "keeps a batch's comments when its purge can't be enqueued, so a retry purges them", :aggregate_failures do
+    comments = user.comments.order(:id).to_a
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in).and_raise(Redis::CannotConnectError)
+
+    expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+    expect(Comment.where(id: comments.map(&:id)).count).to eq(comments.size)
+
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in).and_call_original
+    sidekiq_assert_enqueued_with(
+      job: EdgeCache::PurgeByKeyWorker,
+      args: [comments.map(&:record_key), comments.map(&:path)],
+    ) do
+      described_class.call(user)
+    end
+    expect(Comment.where(id: comments.map(&:id))).to be_empty
+  end
+
+  it "keeps a batch's comments when its commentable bust can't be enqueued" do
+    allow(Comments::BustCommentableCacheWorker).to receive(:perform_in).and_raise(Redis::CannotConnectError)
+
+    expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+    expect(user.comments.count).to eq(2)
+  end
+
+  it "delays the purges until the batch's deletion is committed" do
+    described_class.call(user)
+
+    comment_purge = EdgeCache::PurgeByKeyWorker.jobs.detect { |job| job["args"].first.first.start_with?("comments/") }
+    commentable_bust = Comments::BustCommentableCacheWorker.jobs.first
+    expect(comment_purge["at"]).to be > Time.current.to_f
+    expect(commentable_bust["at"]).to be > Time.current.to_f
+  end
+
   it "does nothing when the user has no comments" do
     user.comments.delete_all
 

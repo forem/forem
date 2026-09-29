@@ -85,6 +85,39 @@ RSpec.describe Users::DeleteArticles, type: :service do
     expect(EdgeCache::BustArticle).to have_received(:call).with(an_object_having_attributes(id: article2.id))
   end
 
+  it "keeps an article when its cache bust can't be enqueued, so a retry busts it", :aggregate_failures do
+    allow(Articles::BustDeletedArticleCacheWorker).to receive(:perform_in).and_raise(Redis::CannotConnectError)
+
+    expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+    expect(Article.where(id: [article.id, article2.id]).count).to eq(2)
+
+    allow(Articles::BustDeletedArticleCacheWorker).to receive(:perform_in).and_call_original
+    sidekiq_assert_enqueued_jobs(2, only: Articles::BustDeletedArticleCacheWorker) do
+      described_class.call(user)
+    end
+    expect(Article.where(id: [article.id, article2.id])).to be_empty
+  end
+
+  it "only keeps the article whose cache bust couldn't be enqueued" do
+    calls = 0
+    allow(Articles::BustDeletedArticleCacheWorker).to receive(:perform_in).and_wrap_original do |original, *args|
+      calls += 1
+      raise Redis::CannotConnectError if calls == 2
+
+      original.call(*args)
+    end
+
+    expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+    expect(Article.where(id: [article.id, article2.id]).count).to eq(1)
+    expect(Articles::BustDeletedArticleCacheWorker.jobs.size).to eq(1)
+  end
+
+  it "delays the article cache busts until the deletion is committed" do
+    described_class.call(user)
+
+    expect(Articles::BustDeletedArticleCacheWorker.jobs).to all(include("at" => be > Time.current.to_f))
+  end
+
   it "does nothing when the user has no articles" do
     sidekiq_assert_no_enqueued_jobs do
       described_class.call(user2.tap { |u| u.articles.delete_all })
@@ -178,6 +211,14 @@ RSpec.describe Users::DeleteArticles, type: :service do
       ) do
         described_class.call(user)
       end
+    end
+
+    it "keeps the article's comments when their purge can't be enqueued", :aggregate_failures do
+      allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in).and_raise(Redis::CannotConnectError)
+
+      expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+      expect(Comment.where(id: comments.map(&:id)).count).to eq(3)
+      expect(Article.exists?(article.id)).to be(true)
     end
 
     it "enqueues one profile cache bust per distinct commenter" do

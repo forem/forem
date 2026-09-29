@@ -48,6 +48,67 @@ RSpec.describe Moderator::MergeUser, type: :service do
       expect(GDPRDeleteRequest.where(user_id: delete_user_id)).to be_empty
     end
 
+    describe "locking the merged-away account until it's deleted" do
+      before do
+        delete_user.update!(password: "password-123", password_confirmation: "password-123")
+        create(:api_secret, user: delete_user)
+      end
+
+      def merge
+        described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
+        delete_user.reload
+      end
+
+      it "locks the account" do
+        merge
+
+        expect(delete_user).to be_access_locked
+        expect(delete_user).not_to be_active_for_authentication
+      end
+
+      it "stops the old password from working" do
+        merge
+
+        expect(delete_user.valid_password?("password-123")).to be(false)
+      end
+
+      it "invalidates existing sessions and remember-me cookies" do
+        session_salt = delete_user.authenticatable_salt
+        expect(User.serialize_from_session(delete_user.id, session_salt)).to eq(delete_user)
+
+        merge
+
+        expect(User.serialize_from_session(delete_user.id, session_salt)).to be_nil
+      end
+
+      it "revokes the account's API keys" do
+        expect { merge }.to change { delete_user.api_secrets.count }.from(1).to(0)
+      end
+
+      it "leaves the account alone when the merge is rejected", :aggregate_failures do
+        omniauth_mock_github_payload
+        omniauth_mock_twitter_payload
+        create(:identity, user: delete_user, provider: "github")
+        create(:identity, user: delete_user, provider: "twitter")
+
+        expect { merge }.to raise_error(StandardError)
+
+        delete_user.reload
+        expect(delete_user).not_to be_access_locked
+        expect(delete_user.valid_password?("password-123")).to be(true)
+        expect(delete_user.api_secrets.count).to eq(1)
+      end
+
+      it "leaves keep_user alone" do
+        keep_user.update!(password: "password-456", password_confirmation: "password-456")
+
+        merge
+
+        expect(keep_user.reload).not_to be_access_locked
+        expect(keep_user.valid_password?("password-456")).to be(true)
+      end
+    end
+
     it "updates badge_achievements_count" do
       create_list(:badge_achievement, 2, user: delete_user)
 

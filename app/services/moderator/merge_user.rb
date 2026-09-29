@@ -16,6 +16,7 @@ module Moderator
       raise StandardError, I18n.t("services.moderator.merge_user.same_user") if @delete_user.id == @keep_user.id
 
       handle_identities
+      revoke_delete_user_access
       merge_content
       merge_follows
       merge_mentions
@@ -33,6 +34,18 @@ module Moderator
     end
 
     private
+
+    # The merged-away account is deleted in the background, so it's locked
+    # first: with a random password (which also invalidates its sessions and
+    # remember-me cookies) and no API keys, it can't create content in the
+    # meantime that the deletion would then remove.
+    def revoke_delete_user_access
+      @delete_user.update_columns(
+        locked_at: Time.current,
+        encrypted_password: Devise::Encryptor.digest(User, SecureRandom.hex(32)),
+      )
+      @delete_user.api_secrets.delete_all
+    end
 
     def handle_identities
       raise StandardError, I18n.t("services.moderator.merge_user.multiple") if @delete_user.identities.count >= 2

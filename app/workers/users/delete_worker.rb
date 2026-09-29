@@ -11,21 +11,26 @@ module Users
       user = User.find_by(id: user_id)
       return unless user
 
-      Users::Delete.call(user)
-      if reason == "gdpr"
-        # notify admins internally that they need to delete gdpr data
-        GDPRDeleteRequest.create(user_id: user.id, email: user.email, username: user.username)
-        # tell MLH Core so it can erase the DEV-derived data it holds (the user
-        # object is destroyed, but its in-memory attributes still feed the payload)
-        user.track!("user_gdpr_deleted")
+      # These run in the same transaction as the destroy, so if one fails the
+      # user is kept and the retry does it all again instead of skipping it.
+      Users::Delete.call(user) do
+        if reason == "gdpr"
+          # notify admins internally that they need to delete gdpr data (a
+          # request needs an email, users without one never got a record)
+          if user.email.present?
+            GDPRDeleteRequest.create!(user_id: user.id, email: user.email, username: user.username)
+          end
+          # tell MLH Core so it can erase the DEV-derived data it holds (the user
+          # object is destroyed, but its in-memory attributes still feed the payload)
+          user.track!("user_gdpr_deleted")
+        end
+
+        # the user is destroyed by now, so the email gets the data it renders
+        # rather than the whole object
+        unless admin_delete || user.email.blank?
+          Users::SendAccountDeletedEmailWorker.perform_async(user.name, user.email)
+        end
       end
-
-      return if admin_delete || user.email.blank?
-
-      # at this point the user object is already destroyed on the DB,
-      # thus we pass the data we need to render to deliver the email, not the
-      # whole object
-      NotifyMailer.with(name: user.name, email: user.email).account_deleted_email.deliver_now
     rescue StandardError
       ForemStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user_id}"])
       Honeybadger.context({ user_id: user_id })

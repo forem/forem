@@ -45,14 +45,28 @@ RSpec.describe Users::DeleteWorker, type: :worker do
 
       it "sends the notification" do
         expect do
-          worker.perform(user.id)
+          sidekiq_perform_enqueued_jobs { worker.perform(user.id) }
         end.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
 
       it "doesn't send a notification for admin triggered deletion" do
         expect do
-          worker.perform(user.id, true)
+          sidekiq_perform_enqueued_jobs { worker.perform(user.id, true) }
         end.not_to change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "doesn't send a notification to users without an email" do
+        user.update_columns(email: nil)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SendAccountDeletedEmailWorker) do
+          worker.perform(user.id)
+        end
+      end
+
+      it "enqueues the notification with the details it renders" do
+        sidekiq_assert_enqueued_with(job: Users::SendAccountDeletedEmailWorker, args: [user.name, user.email]) do
+          worker.perform(user.id)
+        end
       end
 
       it "sends the correct notification" do
@@ -60,11 +74,20 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         allow(mailer).to receive(:account_deleted_email).and_return(message_delivery)
         allow(message_delivery).to receive(:deliver_now)
 
-        worker.perform(user.id)
+        sidekiq_perform_enqueued_jobs { worker.perform(user.id) }
 
         expect(mailer_class).to have_received(:with).with(name: user.name, email: user.email)
         expect(mailer).to have_received(:account_deleted_email)
         expect(message_delivery).to have_received(:deliver_now)
+      end
+
+      it "deletes users without an email without a gdpr-delete record" do
+        user.update_columns(email: nil)
+
+        expect do
+          worker.perform(user.id, true)
+        end.not_to change(GDPRDeleteRequest, :count)
+        expect(User.exists?(user.id)).to be(false)
       end
 
       it "creates a gdpr-delete record" do
@@ -148,6 +171,55 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         worker.perform(user.id, true)
       end.to change(GDPRDeleteRequest, :count).by(1)
       expect(User.exists?(user.id)).to be(false)
+    end
+
+    describe "steps that follow the destroy" do
+      it "keeps the user when the gdpr-delete record can't be created, so the retry creates it" do
+        allow(GDPRDeleteRequest).to receive(:create!).and_raise(ActiveRecord::QueryCanceled)
+
+        expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect(User.exists?(user.id)).to be(true)
+
+        allow(GDPRDeleteRequest).to receive(:create!).and_call_original
+        expect { worker.perform(user.id, true) }.to change(GDPRDeleteRequest, :count).by(1)
+        expect(User.exists?(user.id)).to be(false)
+      end
+
+      it "keeps the user when the Core sync event can't be enqueued, so the retry sends it" do
+        allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+        allow(Trackable::DispatchWorker).to receive(:perform_async).and_raise(Redis::CannotConnectError)
+        Settings::General.customerio_cdp_enabled = true
+        FeatureFlag.enable(:dev_core_user_sync)
+
+        with_trackable_events do
+          expect { worker.perform(user.id, true) }.to raise_error(Redis::CannotConnectError)
+        end
+        expect(User.exists?(user.id)).to be(true)
+        expect(GDPRDeleteRequest.where(user_id: user.id)).to be_empty
+
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+        with_trackable_events { worker.perform(user.id, true) }
+
+        # the failed attempt and the retry
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_gdpr_deleted", [user.id], anything, anything).twice
+        expect(User.exists?(user.id)).to be(false)
+      ensure
+        FeatureFlag.remove(:dev_core_user_sync)
+      end
+
+      it "keeps the user when the notification can't be enqueued, so the retry sends it" do
+        allow(Users::SendAccountDeletedEmailWorker).to receive(:perform_async).and_raise(Redis::CannotConnectError)
+
+        expect { worker.perform(user.id) }.to raise_error(Redis::CannotConnectError)
+        expect(User.exists?(user.id)).to be(true)
+
+        allow(Users::SendAccountDeletedEmailWorker).to receive(:perform_async).and_call_original
+        sidekiq_assert_enqueued_with(job: Users::SendAccountDeletedEmailWorker, args: [user.name, user.email]) do
+          worker.perform(user.id)
+        end
+        expect(User.exists?(user.id)).to be(false)
+      end
     end
 
     it "is retried by Sidekiq" do
