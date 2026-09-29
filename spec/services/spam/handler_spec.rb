@@ -223,6 +223,23 @@ RSpec.describe Spam::Handler, type: :service do
         end
       end
 
+      context "when the admin threshold is customized" do
+        before do
+          allow(Settings::RateLimit).to receive(:linked_domain_spam_score_threshold).and_return(500)
+          article.user.update!(score: 0)
+        end
+
+        it "flags posts linking to domains at the custom threshold" do
+          linked_domain.update!(net_score: -500)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+
+        it "does not flag posts linking to domains above the custom threshold" do
+          linked_domain.update!(net_score: -499)
+          expect(handler).to eq(:not_spam)
+        end
+      end
+
       context "when user score is 50" do
         before { article.user.update!(score: 50) }
 

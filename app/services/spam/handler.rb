@@ -402,12 +402,21 @@ module Spam
       score = article.user.score
       return false if score > 50
 
-      threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
+      threshold = linked_domain_spam_net_score_threshold(score)
 
       domains = extract_all_domains_from(html, limit: 25)
       return false if domains.empty?
 
       LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
+    end
+
+    # The (negative) net_score at or below which a linked domain flags a post
+    # by an author with the given score. Higher-score authors get more slack:
+    # the base threshold is multiplied by 1 + (score / 10).
+    def self.linked_domain_spam_net_score_threshold(author_score)
+      base = Settings::RateLimit.linked_domain_spam_score_threshold.to_i
+      multiplier = author_score <= 0 ? 1 : 1 + (author_score / 10)
+      -(base * multiplier)
     end
 
     # NEW/private: Extract all domains from processed HTML
