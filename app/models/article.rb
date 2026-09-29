@@ -163,6 +163,9 @@ class Article < ApplicationRecord
     fully_autonomous: 5
   }
 
+  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at reading_time user_id
+                                    organization_id].freeze
+
   enum :automod_label, {
     no_moderation_label: 0,
     clear_and_obvious_spam: 1,
@@ -357,9 +360,11 @@ class Article < ApplicationRecord
     article.published? && article.saved_change_to_co_author_ids?
   }
 
+  # Notifications embed these fields (see Notifications.article_data and user/organization data),
+  # so refresh them only when one changes, not on every touch (e.g. last_comment_at on each comment).
   after_update_commit :update_notifications, if: proc { |article|
-                                                   article.notifications.any? && !article.saved_changes.empty?
-                                                 }
+    article.saved_changes.keys.intersect?(NOTIFICATION_DATA_ATTRIBUTES) && article.notifications.any?
+  }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }

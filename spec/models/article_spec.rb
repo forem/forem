@@ -2149,6 +2149,23 @@ RSpec.describe Article do
       end
     end
 
+    describe "notification updates" do
+      before { create(:notification, notifiable: article, action: "Published") }
+
+      it "refreshes notifications when a field they show changes" do
+        new_title = "A brand new title"
+        sidekiq_assert_enqueued_jobs(1, only: Notifications::UpdateWorker) do
+          article.update(title: new_title, body_markdown: article.body_markdown.gsub(article.title, new_title))
+        end
+      end
+
+      it "does not refresh notifications when only last_comment_at is touched" do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::UpdateWorker) do
+          article.touch(:last_comment_at)
+        end
+      end
+    end
+
     describe "spam" do
       it "enqueues Articles::HandleSpamWorker on save" do
         sidekiq_assert_enqueued_jobs(1, only: Articles::HandleSpamWorker) do
