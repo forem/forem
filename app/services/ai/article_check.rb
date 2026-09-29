@@ -42,6 +42,8 @@ module Ai
       prompt = build_prompt
       response = @ai_client.call(prompt)
       parse_response(response)
+    rescue Ai::Base::ProhibitedContentError
+      raise
     rescue StandardError => e
       Rails.logger.error("Article Spam Check failed: #{e}")
       false
