@@ -24,7 +24,7 @@ module Users
       end
 
       paths.each do |path|
-        EdgeCache::BustPodcast.call(path)
+        Podcasts::BustCacheWorker.perform_async(path)
       end
     end
   end

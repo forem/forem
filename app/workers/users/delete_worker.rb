@@ -26,10 +26,13 @@ module Users
       # thus we pass the data we need to render to deliver the email, not the
       # whole object
       NotifyMailer.with(name: user.name, email: user.email).account_deleted_email.deliver_now
-    rescue StandardError => e
-      ForemStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
-      Honeybadger.context({ user_id: user.id })
-      Honeybadger.notify(e)
+    rescue StandardError
+      ForemStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user_id}"])
+      Honeybadger.context({ user_id: user_id })
+      # Re-raise so Sidekiq retries: every deletion step is safe to re-run, so a
+      # retry picks up where a failed (e.g. timed out) attempt left off.
+      # Honeybadger reports the failure once retries are exhausted.
+      raise
     end
   end
 end

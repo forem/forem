@@ -23,6 +23,31 @@ RSpec.describe Moderator::MergeUser, type: :service do
       expect(User.find_by(id: keep_user.id)).not_to be_nil
     end
 
+    it "deletes the merged-away user in the background as a merge (not GDPR) deletion" do
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [delete_user_id, true, "merge"]) do
+        described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
+      end
+      expect(User.exists?(delete_user_id)).to be(true)
+    end
+
+    it "moves the content to keep_user before the merged-away user is deleted", :aggregate_failures do
+      related_records
+
+      described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
+
+      expect(article.reload.user_id).to eq(keep_user.id)
+      expect(comment.reload.user_id).to eq(keep_user.id)
+      expect(reaction.reload.user_id).to eq(keep_user.id)
+
+      sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
+
+      expect(User.exists?(delete_user_id)).to be(false)
+      expect(Article.exists?(article.id)).to be(true)
+      expect(Comment.exists?(comment.id)).to be(true)
+      expect(Reaction.exists?(reaction.id)).to be(true)
+      expect(GDPRDeleteRequest.where(user_id: delete_user_id)).to be_empty
+    end
+
     it "updates badge_achievements_count" do
       create_list(:badge_achievement, 2, user: delete_user)
 
@@ -57,7 +82,10 @@ RSpec.describe Moderator::MergeUser, type: :service do
       # not a GDPR erasure — the person's content now lives on keep_user, and
       # Core must merge rather than erase.
       it "does not emit user_gdpr_deleted for the merged-away account" do
-        described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
+        sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker) do
+          described_class.call(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
+        end
+        expect(User.exists?(delete_user_id)).to be(false)
 
         expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
           .with(anything, "user_gdpr_deleted", anything, anything, anything)

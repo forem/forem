@@ -31,5 +31,14 @@ RSpec.describe Users::DeletePodcasts do
         end.to change(Podcast, :count).by(-1)
       end.to change(PodcastOwnership, :count).by(-1)
     end
+
+    it "busts the deleted podcast's cache in the background" do
+      allow(EdgeCache::BustPodcast).to receive(:call)
+
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: [podcast.path]) do
+        described_class.call(user)
+      end
+      expect(EdgeCache::BustPodcast).not_to have_received(:call)
+    end
   end
 end

@@ -14,7 +14,8 @@ RSpec.describe "Admin deletes user" do
       click_button "Delete now"
     end
 
-    message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) has been fully deleted."
+    message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) is being deleted. " \
+              "Their account and content are being removed in the background"
     expect(page).to have_content(message)
   end
 
@@ -26,7 +27,7 @@ RSpec.describe "Admin deletes user" do
       click_button "Delete now"
     end
 
-    message = "@#{user.username} (email: no email, user_id: #{user.id}) has been fully deleted."
+    message = "@#{user.username} (email: no email, user_id: #{user.id}) is being deleted."
     expect(page).to have_content(message)
     expect(User.find_by(id: user.id)).to be_nil
   end

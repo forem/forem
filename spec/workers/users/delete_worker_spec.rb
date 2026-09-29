@@ -102,6 +102,58 @@ RSpec.describe Users::DeleteWorker, type: :worker do
       end
     end
 
+    context "when the deletion fails" do
+      before do
+        allow(ForemStatsClient).to receive(:count)
+        allow(delete).to receive(:call).and_raise(ActiveRecord::QueryCanceled, "statement timeout")
+      end
+
+      it "re-raises the error so Sidekiq retries the deletion" do
+        expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::QueryCanceled)
+      end
+
+      it "records the failure" do
+        expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::QueryCanceled)
+
+        expect(ForemStatsClient).to have_received(:count)
+          .with("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
+      end
+
+      it "doesn't create a gdpr-delete record or notify the user" do
+        expect do
+          expect { worker.perform(user.id) }.to raise_error(ActiveRecord::QueryCanceled)
+        end.to not_change(GDPRDeleteRequest, :count).and not_change(ActionMailer::Base.deliveries, :count)
+      end
+
+      it "records the failure even when looking the user up fails" do
+        allow(User).to receive(:find_by).and_raise(ActiveRecord::ConnectionTimeoutError)
+
+        expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::ConnectionTimeoutError)
+        expect(ForemStatsClient).to have_received(:count)
+          .with("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
+      end
+    end
+
+    it "finishes the deletion when a failed attempt is retried", :aggregate_failures do
+      article = create(:article, user: user)
+      allow(Users::DeletePodcasts).to receive(:call).and_raise(ActiveRecord::QueryCanceled)
+
+      expect { worker.perform(user.id, true) }.to raise_error(ActiveRecord::QueryCanceled)
+      expect(User.exists?(user.id)).to be(true)
+      expect(Article.exists?(article.id)).to be(false)
+
+      allow(Users::DeletePodcasts).to receive(:call).and_call_original
+
+      expect do
+        worker.perform(user.id, true)
+      end.to change(GDPRDeleteRequest, :count).by(1)
+      expect(User.exists?(user.id)).to be(false)
+    end
+
+    it "is retried by Sidekiq" do
+      expect(described_class.get_sidekiq_options["retry"]).to eq(10)
+    end
+
     context "when user is not found" do
       it "doesn't fail" do
         worker.perform(-1)

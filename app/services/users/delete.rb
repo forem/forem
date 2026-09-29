@@ -9,13 +9,16 @@ module Users
     end
 
     def call
+      # captured up front, the profile can only be purged once the user is gone
+      profile_cache_keys = user.profile_cache_keys
+      profile_cache_bust_paths = user.profile_cache_bust_paths
+
       delete_comments
       delete_articles
       delete_podcasts
       delete_user_activity
       cancel_stripe_subscriptions
-      user.remove_from_mailchimp_newsletters
-      EdgeCache::BustUser.call(user)
+      # Mailchimp removal happens in User's before_destroy callback
       Users::SuspendedUsername.create_from_user(user) if user.spam_or_suspended?
 
       begin
@@ -29,6 +32,7 @@ module Users
       end
 
       Rails.cache.delete("user-destroy-token-#{user.id}")
+      EdgeCache::PurgeByKeyWorker.perform_async(profile_cache_keys, profile_cache_bust_paths)
     end
 
     private

@@ -28,9 +28,76 @@ RSpec.describe Users::Delete, type: :service do
     expect(attempts).to eq(2)
   end
 
-  it "busts user profile page" do
-    described_class.new(user).call
-    expect(EdgeCache::BustUser).to have_received(:call).with(user)
+  it "enqueues a purge of the user's profile" do
+    sidekiq_assert_enqueued_with(
+      job: EdgeCache::PurgeByKeyWorker,
+      args: [user.profile_cache_keys, user.profile_cache_bust_paths],
+    ) do
+      described_class.call(user)
+    end
+  end
+
+  it "only enqueues the final profile purge once the user is gone" do
+    profile_purge_args = [user.profile_cache_keys, user.profile_cache_bust_paths]
+    user_existed_when_enqueued = nil
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_async).and_wrap_original do |original, *args|
+      user_existed_when_enqueued = User.exists?(user.id) if args == profile_purge_args
+      original.call(*args)
+    end
+
+    described_class.call(user)
+
+    expect(user_existed_when_enqueued).to be(false)
+  end
+
+  it "purges the user's profile when the enqueued jobs run" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+    keys = user.profile_cache_keys
+    paths = user.profile_cache_bust_paths
+
+    sidekiq_perform_enqueued_jobs { described_class.call(user) }
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(keys, fallback_paths: paths)
+  end
+
+  it "doesn't bust edge caches inline" do
+    create(:article, user: user)
+    create(:comment, user: user)
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+    allow(EdgeCache::Bust).to receive(:call)
+    allow(EdgeCache::BustArticle).to receive(:call)
+    allow(EdgeCache::BustComment).to receive(:call)
+
+    described_class.call(user)
+
+    expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    expect(EdgeCache::Bust).not_to have_received(:call)
+    expect(EdgeCache::BustArticle).not_to have_received(:call)
+    expect(EdgeCache::BustComment).not_to have_received(:call)
+    expect(EdgeCache::BustUser).not_to have_received(:call)
+  end
+
+  it "removes the user from Mailchimp exactly once" do
+    allow(user).to receive(:remove_from_mailchimp_newsletters)
+
+    described_class.call(user)
+
+    expect(user).to have_received(:remove_from_mailchimp_newsletters).once
+  end
+
+  it "can be re-run to finish a deletion that failed part way through" do
+    article = create(:article, user: user)
+    create(:comment, user: user)
+    allow(Users::DeletePodcasts).to receive(:call).and_raise(ActiveRecord::QueryCanceled)
+
+    expect { described_class.call(user) }.to raise_error(ActiveRecord::QueryCanceled)
+    expect(User.exists?(user.id)).to be(true)
+    expect(Article.exists?(article.id)).to be(false)
+
+    allow(Users::DeletePodcasts).to receive(:call).and_call_original
+    described_class.call(User.find(user.id))
+
+    expect(User.exists?(user.id)).to be(false)
   end
 
   it "deletes user's follows" do
