@@ -8,6 +8,10 @@ module Ai
     DEFAULT_KEY = ENV["GEMINI_API_KEY"].freeze
     attr_reader :model, :last_response
 
+    # Gemini refused the request because the content itself is prohibited (blockReason or
+    # finishReason PROHIBITED_CONTENT). Spam checks treat this as a clear violation.
+    class ProhibitedContentError < StandardError; end
+
     def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL, wrapper: nil, affected_user: nil, affected_content: nil)
       raise ArgumentError, "API key cannot be nil" if api_key.nil? && !Rails.env.test?
 
@@ -97,6 +101,10 @@ module Ai
       end
 
       parsed_response = response.parsed_response
+      if parsed_response.dig("promptFeedback", "blockReason") == "PROHIBITED_CONTENT" ||
+          parsed_response.dig("candidates", 0, "finishReason") == "PROHIBITED_CONTENT"
+        raise ProhibitedContentError, "Gemini blocked the content as PROHIBITED_CONTENT"
+      end
       raise 'Malformed response: "candidates" key not found.' unless parsed_response.key?("candidates")
 
       candidate = parsed_response["candidates"].first

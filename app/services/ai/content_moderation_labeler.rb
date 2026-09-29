@@ -76,6 +76,8 @@ module Ai
         # Pass json format request if the wrapper supports it, though explicit instructions might suffice.
         response = @ai_client.call(prompt, retry_count: attempt - 1, response_mime_type: "application/json")
         parse_response(response)
+      rescue Ai::Base::ProhibitedContentError
+        raise
       rescue StandardError => e
         Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
 
