@@ -108,10 +108,17 @@ class Event < ApplicationRecord
     end
   end
 
+  # Keep the rendered page body out of the public events API responses.
+  def serializable_hash(options = nil)
+    options = (options || {}).dup
+    options[:except] = Array(options[:except]) + %i[body_markdown processed_html]
+    super
+  end
+
   # The event page shows the rendered markdown body when present, and falls
   # back to the short description otherwise.
   def body_html
-    return processed_html.html_safe if body_markdown.present? && processed_html.present?
+    return processed_html.html_safe if body_markdown.present? && processed_html.present? # rubocop:disable Rails/OutputSafety
 
     ActionController::Base.helpers.simple_format(description)
   end

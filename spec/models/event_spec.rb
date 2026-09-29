@@ -367,6 +367,17 @@ RSpec.describe Event do
       expect(event.body_html).to include("<p>Short summary.</p>")
     end
 
+    it "does not save and reports an error when the markdown fails to parse" do
+      event = build(:event, body_markdown: "hello {% gist 123 %}")
+      expect(event.save).to be(false)
+      expect(event.errors[:body_markdown].join).to include("Invalid Gist link")
+    end
+
+    it "excludes body fields from JSON serialization" do
+      event = create(:event, body_markdown: "Hello")
+      expect(event.as_json.keys).not_to include("body_markdown", "processed_html")
+    end
+
     it "clears processed_html when body_markdown is removed" do
       event = create(:event, body_markdown: "Hello **world**")
       event.update!(body_markdown: "")
