@@ -19,6 +19,7 @@ module Favorites
       return failure(error) if error
 
       favoritable.reload
+      bust_cache
       log_audit
       grant_earned_favorite
       award_badge
@@ -88,6 +89,20 @@ module Favorites
       User.where(id: user.id)
         .where(earned_favorites_count: 1..)
         .update_all("earned_favorites_count = earned_favorites_count - 1, updated_at = NOW()")
+    end
+
+    # The claim uses update_all, which skips the model's cache busting
+    # callbacks, so pages rendering the favorite control must be busted here.
+    def bust_cache
+      case favoritable
+      when Article
+        favoritable.purge
+      when Comment
+        # Comment trees are fragment cached by their root comment, so touch the
+        # comment and its ancestors without re-running save callbacks.
+        Comment.where(id: favoritable.path_ids).update_all(updated_at: Time.current)
+        Comments::BustCacheWorker.perform_async(favoritable.id)
+      end
     end
 
     def grant_earned_favorite
