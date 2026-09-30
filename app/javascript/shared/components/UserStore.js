@@ -32,7 +32,7 @@ export class UserStore {
     for (const aUser of allUsers) {
       if (
         aUser.id != except &&
-        (aUser.name.search(term) >= 0 || aUser.username.search(term) >= 0)
+        (aUser.name.includes(term) || aUser.username.includes(term))
       ) {
         results.push(aUser);
       }
