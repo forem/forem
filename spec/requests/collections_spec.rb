@@ -19,8 +19,12 @@ RSpec.describe "Collections" do
 
     it "paginates the articles in the series", :aggregate_failures do
       stub_const("CollectionsController::ARTICLES_PER_PAGE", 2)
-      articles = collection.articles.published
-        .order(Arel.sql("COALESCE(crossposted_at, published_at) ASC, articles.id ASC")).to_a
+      # Tie the publish times so ordering across pages depends on the id tiebreaker
+      tied_time = 1.day.ago
+      collection.articles.update_all(published_at: tied_time, crossposted_at: nil)
+      articles = collection.articles.order(:id).to_a
+      # Rewrite the lowest-id row so its physical position no longer matches id order
+      articles.first.update_column(:title, "#{articles.first.title} (edited)")
 
       get collection.path
       expect(response).to have_http_status(:ok)
