@@ -253,7 +253,7 @@ fr:
       confirm_sent: Courriel de Confirmation Envoyé!
       verify_sent: E-mail de vérification envoyé !
       manual_verification_sent: E-mail vérifié manuellement !
-      full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
+      full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) est en cours de suppression. Son compte et son contenu sont supprimés en arrière-plan, ce qui peut prendre quelques minutes pour les comptes très actifs. S'il s'agit d'une suppression GDPR, une fois la suppression terminée, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
       no_email: Aucun e-mail
       parameter_missing: Le sujet et le corps sont tous deux requis !
       role_removed: "Le rôle : %{role} a été supprimé avec succès de l'utilisateur !"
