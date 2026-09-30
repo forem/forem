@@ -1,0 +1,30 @@
+config/boot.rb
+  49a1221e0420c165 3
+spec/spec_helper.rb
+  49a1221e0420c165 2
+Gemfile
+  49a1221e0420c165 31
+config/application.rb
+  49a1221e0420c165 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "d252358baffe406ba8da9f66cbe0d1cc33b49fcc",
+  "prompts": {
+    "49a1221e0420c165": {
+      "agent_id": {
+        "tool": "gemini",
+        "id": "212dbd47-c59f-4825-8e0d-330f806360b5",
+        "model": "gemini-3-flash-preview"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 1,
+      "accepted_lines": 4,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f573e639c9047b976e965d4421aa4ba5d8dfd9f06b1c82d9a5ae7f659a09972f"
+    }
+  }
+}

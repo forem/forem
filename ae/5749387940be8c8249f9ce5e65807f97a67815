@@ -1,0 +1,19 @@
+spec/requests/user/user_settings_spec.rb
+  s_ccc774f7c6a6f9::t_7afcd82a2c56f9 220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "ae5749387940be8c8249f9ce5e65807f97a67815",
+  "prompts": {},
+  "sessions": {
+    "s_ccc774f7c6a6f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b589ed8-f2ba-45ae-b490-4338ce662be5",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
