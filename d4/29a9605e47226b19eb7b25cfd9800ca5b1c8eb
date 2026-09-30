@@ -1,0 +1,27 @@
+app/mailers/custom_mailer.rb
+  s_f4363ad408023d::t_23c9a1ea57b651 23-31,53-63
+app/models/email.rb
+  s_f4363ad408023d::t_f37fc42a174323 2-5,97-98
+app/workers/emails/batch_custom_send_worker.rb
+  s_f4363ad408023d::t_2ed5a72eb2b9b7 21-25,29,48,65-82
+spec/mailers/custom_mailer_spec.rb
+  s_f4363ad408023d::t_eb8fd7f5616208 166-206
+spec/workers/emails/batch_custom_send_worker_spec.rb
+  s_f4363ad408023d::t_487effde4bd864 31-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "d429a9605e47226b19eb7b25cfd9800ca5b1c8eb",
+  "prompts": {},
+  "sessions": {
+    "s_f4363ad408023d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d01fffaf-58e3-4345-9482-3e3a5cfd0fed",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

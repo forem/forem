@@ -1,0 +1,23 @@
+spec/models/user_spec.rb
+  a8d75fdefd51c402 80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "59b1d16d038c1e7b8c3d933f49a53e2056e20363",
+  "prompts": {
+    "a8d75fdefd51c402": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1dc0fdac-d08c-4175-b74a-0772e9e89f70",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 102,
+      "overriden_lines": 0
+    }
+  }
+}

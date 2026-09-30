@@ -1,0 +1,54 @@
+app/controllers/favorites_controller.rb
+  h_f968154a99632d 24
+app/controllers/leadership_dashboards_controller.rb
+  h_f968154a99632d 12-13
+app/helpers/favorites_helper.rb
+  h_f968154a99632d 93
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 100,126-127,132-136,290-294
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 150-189
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 30,54
+app/models/async_info.rb
+  h_f968154a99632d 49
+app/models/user.rb
+  h_f968154a99632d 646-653,655,664,666,677-685
+app/services/favorites/create.rb
+  h_f968154a99632d 74-75
+app/views/leadership_dashboards/_sidebar.html.erb
+  h_f968154a99632d 11-15,18
+config/locales/en.yml
+  h_f968154a99632d 20
+config/locales/fr.yml
+  h_f968154a99632d 20
+config/locales/pt.yml
+  h_f968154a99632d 20
+config/locales/views/leadership/en.yml
+  h_f968154a99632d 15-16
+config/locales/views/leadership/fr.yml
+  h_f968154a99632d 15-16
+config/locales/views/leadership/pt.yml
+  h_f968154a99632d 16-17
+spec/models/async_info_spec.rb
+  h_f968154a99632d 42-48
+spec/models/user_spec.rb
+  h_f968154a99632d 1813-1830,1836-1840,1883-1906
+spec/requests/favorites_spec.rb
+  h_f968154a99632d 59-77
+spec/requests/leadership_dashboards_spec.rb
+  h_f968154a99632d 71-84
+spec/services/favorites/create_spec.rb
+  h_f968154a99632d 120-146
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d5cebd68d94d7276b9af32d747dc5abe2d87d0ee",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

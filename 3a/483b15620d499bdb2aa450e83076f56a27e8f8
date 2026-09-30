@@ -1,0 +1,66 @@
+app/controllers/omniauth_callbacks_controller.rb
+  s_7899be4d028552::t_5b07550805abd9 69,79,84-85,87-91,98-99,102-103,130-136
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 36,64-67,70-78,80-83,86,92-97,100-101,104-108,115-122,188,197,201-202
+  s_e2c0a862c0c53d::t_cdd4de7b91d999 61-63,68,109-110,113-114,123-129
+  s_e2c0a862c0c53d::t_0765f13049d3f9 203-204
+app/javascript/packs/onboardingRedirectCheck.jsx
+  s_7899be4d028552::t_d4b8c549eb2d7b 12-13
+app/services/authentication/authenticator.rb
+  s_7899be4d028552::t_45a262abeb9f54 28,32,55,192-198
+app/views/omniauth_callbacks/account_switch.html.erb
+  s_7899be4d028552::t_3305abdabb2191 1
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 2-18
+config/locales/controllers/fr.yml
+  s_7899be4d028552::t_c394a88784d3ce 77-81
+config/locales/controllers/pt.yml
+  s_7899be4d028552::t_86051481da3848 77-81
+config/locales/services/fr.yml
+  s_7899be4d028552::t_f84d66c9853f0a 10
+config/locales/services/pt.yml
+  s_7899be4d028552::t_d8aab8fd96e880 10
+app/services/authentication/providers/provider.rb
+  s_e2c0a862c0c53d::t_cdd4de7b91d999 32-39
+config/routes.rb
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 19-20
+spec/services/authentication/providers/mlh_spec.rb
+  s_e2c0a862c0c53d::t_5a3099a3faaa40 25-30
+app/services/authentication/providers/mlh.rb
+  s_e2c0a862c0c53d::t_cdd4de7b91d999 18-23
+spec/support/omniauth_session_helpers.rb
+  s_e2c0a862c0c53d::t_0765f13049d3f9 1-35
+config/locales/controllers/en.yml
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 79-83
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 1-2,6,8-27,29-34,37-38,41-51
+  s_e2c0a862c0c53d::t_0765f13049d3f9 5,7,36
+  s_e2c0a862c0c53d::t_5a3099a3faaa40 3-4,28,35,39-40
+spec/requests/account_switch_interstitial_spec.rb
+  s_e2c0a862c0c53d::t_5a3099a3faaa40 1-4,6,8-13,15-33,35-51,53-61,63-70,72-81,83-89,91-100,102-118,120-133,135-140
+  s_e2c0a862c0c53d::t_0765f13049d3f9 5,7,14,34,52,62,71,82,90,101,119,134
+spec/services/authentication/providers/github_spec.rb
+  s_e2c0a862c0c53d::t_5a3099a3faaa40 16-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3a483b15620d499bdb2aa450e83076f56a27e8f8",
+  "prompts": {},
+  "sessions": {
+    "s_7899be4d028552": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09262-d70a-7662-af92-87c1b64fc6ef",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    },
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
