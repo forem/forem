@@ -1,0 +1,38 @@
+app/controllers/admin/organizations_controller.rb
+  h_f968154a99632d 5,48,74,173-186,210-267
+app/services/organizations/bulk_add_users.rb
+  h_f968154a99632d 1-96
+app/views/admin/organizations/show.html.erb
+  h_f968154a99632d 246-265
+config/locales/controllers/admin/en.yml
+  h_f968154a99632d 130-135
+config/locales/controllers/admin/fr.yml
+  h_f968154a99632d 130-135
+config/locales/controllers/admin/pt.yml
+  h_f968154a99632d 95-100
+config/locales/views/admin/en.yml
+  h_f968154a99632d 565-573
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 554-562
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 451-459
+config/routes/admin.rb
+  h_f968154a99632d 123
+spec/requests/admin/organizations_bulk_add_users_spec.rb
+  h_f968154a99632d 1-97
+spec/services/organizations/bulk_add_users_spec.rb
+  h_f968154a99632d 1-111
+spec/system/admin/admin_manages_organizations_spec.rb
+  h_f968154a99632d 26-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "82eab6937c9c30162bc5f8a4d034e02e4c20ccbf",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

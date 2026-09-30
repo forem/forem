@@ -1,0 +1,31 @@
+app/views/users/_main_feed.html.erb
+  s_f87acf2c327fab::t_01193b4660eec0 16-17,21-22
+spec/views/users/main_feed_digest_spec.rb
+  s_51ba84eed8ea03::t_8dc976162390df 7
+  s_f87acf2c327fab::t_f250c4e79c686c 1-2,4-6,8-10
+  s_f87acf2c327fab::t_3a954ac9b37962 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2e7fe393fcef2756073e2fddcc5ed27d4254d6b8",
+  "prompts": {},
+  "sessions": {
+    "s_51ba84eed8ea03": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96def48d-85a8-4d0d-b638-a9e54e6b4826",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_f87acf2c327fab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf9fb0a8-fe46-4a1d-a775-84fde1733cdb",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
