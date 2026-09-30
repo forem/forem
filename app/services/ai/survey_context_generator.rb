@@ -5,7 +5,8 @@ module Ai
     # @param survey [Survey] The survey to generate email context for.
     def initialize(survey)
       @survey = survey
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: (survey.persisted? ? survey : nil))
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:survey_email_context), wrapper: self,
+                                affected_content: (survey.persisted? ? survey : nil))
     end
 
     # Calls the Gemini API to generate the email context paragraph.

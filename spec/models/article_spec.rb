@@ -2149,6 +2149,29 @@ RSpec.describe Article do
       end
     end
 
+    describe "notification updates" do
+      before { create(:notification, notifiable: article, action: "Published") }
+
+      it "refreshes notifications when a field they show changes" do
+        new_title = "A brand new title"
+        sidekiq_assert_enqueued_jobs(1, only: Notifications::UpdateWorker) do
+          article.update(title: new_title, body_markdown: article.body_markdown.gsub(article.title, new_title))
+        end
+      end
+
+      it "refreshes notifications when crossposted_at changes (it drives readable_publish_date)" do
+        sidekiq_assert_enqueued_jobs(1, only: Notifications::UpdateWorker) do
+          article.update(crossposted_at: 1.day.ago)
+        end
+      end
+
+      it "does not refresh notifications when only last_comment_at is touched" do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::UpdateWorker) do
+          article.touch(:last_comment_at)
+        end
+      end
+    end
+
     describe "spam" do
       it "enqueues Articles::HandleSpamWorker on save" do
         sidekiq_assert_enqueued_jobs(1, only: Articles::HandleSpamWorker) do
@@ -2247,6 +2270,53 @@ RSpec.describe Article do
             draft.save
             draft.update(title: "still draft")
           end
+        end
+      end
+
+      # The worker runs on another connection, so it must not be enqueued before the save commits.
+      context "when saved inside a transaction" do
+        it "waits for the outermost transaction to commit before enqueueing" do
+          new_article = nil
+          sidekiq_assert_enqueued_jobs(1, only: worker) do
+            described_class.transaction do
+              new_article = create(:article, published: true)
+              expect(worker.jobs.pluck("args")).not_to include([new_article.id])
+            end
+          end
+          expect(worker.jobs.pluck("args")).to include([new_article.id])
+        end
+
+        it "does not enqueue when the transaction is rolled back" do
+          sidekiq_assert_no_enqueued_jobs(only: worker) do
+            described_class.transaction do
+              article.update(title: "rolled back title")
+              raise ActiveRecord::Rollback
+            end
+          end
+        end
+      end
+
+      context "when a draft is published" do
+        let(:mascot_user) { create(:user) }
+        let(:draft) { create(:article, published: false) }
+
+        before do
+          allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+          stub_const("Ai::Base::DEFAULT_KEY", "present")
+          labeler = instance_double(Ai::ContentModerationLabeler,
+                                    evaluate: { label: "clear_and_obvious_spam", compellingness_score: 0.5 })
+          allow(Ai::ContentModerationLabeler).to receive(:new).and_return(labeler)
+        end
+
+        it "lets the worker issue the mascot's vomit on the now-published article" do
+          sidekiq_assert_enqueued_with(job: worker, args: [draft.id]) do
+            draft.update!(body_markdown: draft.body_markdown.sub("published: false", "published: true"))
+          end
+
+          sidekiq_perform_enqueued_jobs(only: worker)
+
+          expect(draft.reload.automod_label).to eq("clear_and_obvious_spam")
+          expect(Reaction.where(user: mascot_user, reactable: draft, category: "vomit")).to exist
         end
       end
     end
