@@ -6927,8 +6927,11 @@
               "page_fixed_bottom",
               "post_fixed_bottom",
               "post_body_bottom",
+              "post_body_bottom_secondary",
               "post_sidebar",
+              "post_sidebar_secondary",
               "post_comments",
+              "post_comments_secondary",
               "post_comments_mid",
               "digest_first",
               "digest_second"
