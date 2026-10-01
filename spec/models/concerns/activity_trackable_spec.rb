@@ -159,7 +159,7 @@ RSpec.describe ActivityTrackable do
       article = create(:article, user: user)
 
       expect(article.trackable_payload.keys).to contain_exactly(
-        "id", "title", "path", "type_of", "published_at", "tag_list",
+        "id", "title", "description", "path", "type_of", "published_at", "tag_list",
         "organization_id", "subforem_id", "user_id"
       )
       expect(article.trackable_payload.keys).to all(be_a(String))
@@ -213,6 +213,7 @@ RSpec.describe ActivityTrackable do
         "challenge_id" => challenge.id,
         "challenge_slug" => challenge.event_variation_slug,
         "user_id" => user.id,
+        "description" => Article.last.description,
       )
     end
 
