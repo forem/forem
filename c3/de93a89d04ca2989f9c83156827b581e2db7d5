@@ -1,0 +1,52 @@
+config/locales/views/settings/fr.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 9,14-15
+config/locales/views/settings/pt.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 8-15
+config/locales/misc/pt.yml
+  s_ccc774f7c6a6f9::t_18a5b33fc1c958 22
+app/services/authentication/authenticator.rb
+  s_ccc774f7c6a6f9::t_dcb6b559341435 118-119
+  s_ccc774f7c6a6f9::t_749c156589b864 39
+  s_ccc774f7c6a6f9::t_43a799d5034df4 40-43,116-117,123-133
+  s_ccc774f7c6a6f9::t_2e74bb49ea1a11 120-122
+config/locales/misc/fr.yml
+  s_ccc774f7c6a6f9::t_18a5b33fc1c958 22
+spec/requests/user/user_settings_spec.rb
+  s_ccc774f7c6a6f9::t_28d80427e4b692 210-211
+  s_ccc774f7c6a6f9::t_b60f6901196fb3 256
+  s_ccc774f7c6a6f9::t_43a799d5034df4 209,212-255,257
+app/views/users/_account_providers_emails.html.erb
+  s_ccc774f7c6a6f9::t_34d3805af5c0aa 11,14-17
+  s_ccc774f7c6a6f9::t_43a799d5034df4 18-26
+config/locales/views/settings/en.yml
+  s_ccc774f7c6a6f9::t_43a799d5034df4 9,14-15
+spec/services/authentication/providers/mlh_spec.rb
+  s_ccc774f7c6a6f9::t_d405cccaa7e0d9 20-21
+config/locales/misc/en.yml
+  s_ccc774f7c6a6f9::t_d9698c8d9746ef 22
+app/services/authentication/providers/mlh.rb
+  s_ccc774f7c6a6f9::t_40b831a2c81008 5-7
+spec/services/authentication/authenticator_spec.rb
+  s_ccc774f7c6a6f9::t_7543025c081948 1052
+  s_ccc774f7c6a6f9::t_43a799d5034df4 996,999-1051,1053-1054
+  s_ccc774f7c6a6f9::t_984acdc1ac578c 997-998
+app/views/users/_additional_authentication.html.erb
+  s_ccc774f7c6a6f9::t_8fa454aa051e3c 5-8,14-15,21,25-26
+  s_ccc774f7c6a6f9::t_43a799d5034df4 1-4,9-13,16-19,22-24,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "c3de93a89d04ca2989f9c83156827b581e2db7d5",
+  "prompts": {},
+  "sessions": {
+    "s_ccc774f7c6a6f9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b589ed8-f2ba-45ae-b490-4338ce662be5",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    }
+  }
+}
