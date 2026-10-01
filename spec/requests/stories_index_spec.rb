@@ -555,6 +555,19 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username with a non-HTML Accept header" do
+    let(:user) { create(:user) }
+
+    it "returns a 404 that cannot be edge cached for browsers" do
+      get "/#{user.username}", headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.headers["Cache-Control"]).to include("no-store")
+      expect(response.headers["Surrogate-Control"]).to be_nil
+      expect(response.headers["Vary"]).to include("Accept")
+    end
+  end
+
   describe "GET /:slug (organization page)" do
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }
