@@ -84,4 +84,21 @@ RSpec.describe GlitchTag, type: :liquid_tag do
       expect(template.render(nil)).to include(expected)
     end
   end
+
+  describe "#url" do
+    def generate_tag(id)
+      Liquid::Template.register_tag("glitch", GlitchTag)
+      Liquid::Template.parse("{% glitch #{id} %}")
+    end
+
+    it "extracts the slug from a full editor URL" do
+      template = generate_tag("https://glitch.com/edit/#!/some-id")
+      expect(template.render(nil)).to include("src=\"#{base_uri}some-id?")
+    end
+
+    it "extracts the slug from a subdomain URL" do
+      template = generate_tag("https://some-id.glitch.me")
+      expect(template.render(nil)).to include("src=\"#{base_uri}some-id?")
+    end
+  end
 end

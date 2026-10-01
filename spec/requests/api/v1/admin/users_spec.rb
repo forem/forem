@@ -601,6 +601,20 @@ RSpec.describe "/api/admin/users" do
       expect(comment.reload.user_id).to eq(keeper.id)
     end
 
+    it "deletes the merged-away user in the background" do
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [loser.id, true, "merge"]) do
+        post "/api/admin/users/#{keeper.id}/merge",
+             params: { merge_user_id: loser.id },
+             headers: admin_api_headers
+      end
+      expect(response).to have_http_status(:ok)
+
+      sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
+
+      expect(User.exists?(loser.id)).to be(false)
+      expect(User.exists?(keeper.id)).to be(true)
+    end
+
     it "returns 409 cannot_merge_user_into_itself when ids match" do
       post "/api/admin/users/#{keeper.id}/merge",
            params: { merge_user_id: keeper.id }, headers: admin_api_headers

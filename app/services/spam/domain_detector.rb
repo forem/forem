@@ -80,8 +80,10 @@ module Spam
 
     private
 
+    # Already-blocked domains are skipped so the bulk suspension in
+    # BlockDomainAndSuspendUsersWorker doesn't re-scan the domain per user.
     def should_skip_domain?
-      POPULAR_SHARED_DOMAINS.include?(@email_domain)
+      POPULAR_SHARED_DOMAINS.include?(@email_domain) || BlockedEmailDomain.exists?(domain: @email_domain)
     end
 
     def spam_pattern_detected?

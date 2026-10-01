@@ -17,6 +17,11 @@ describe ArticlesHelper do
       expect(host).to eq "Medium"
     end
 
+    it "does not brand unrelated hosts that merely contain 'medium.com'" do
+      host = helper.get_host_without_www("https://premedium.com")
+      expect(host).to eq "premedium.com"
+    end
+
     it "can handle urls without schemes" do
       host = helper.get_host_without_www("www.example.com")
       expect(host).to eq "example.com"
