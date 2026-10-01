@@ -1,5 +1,5 @@
 class AgentSession < ApplicationRecord
-  TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot opencode pi].freeze
+  TOOL_NAMES = %w[antigravity_cli claude_code codex gemini_cli github_copilot opencode pi].freeze
   MAX_CURATED_DATA_SIZE = 10.megabytes
   RAW_FILE_RETENTION_DAYS = 90
 
@@ -14,6 +14,7 @@ class AgentSession < ApplicationRecord
   validate :s3_key_format_and_ownership
 
   before_validation :generate_slug
+  before_validation :assign_message_indices
   after_destroy :delete_s3_object
 
   scope :published, -> { where(published: true) }
@@ -87,6 +88,16 @@ class AgentSession < ApplicationRecord
     truncated = title.length > 100 ? title[0..100].split[0...-1].join(" ") : title
     base = Sterile.sluggerize(truncated)
     self.slug = "#{base}-#{SecureRandom.alphanumeric(6).downcase}"
+  end
+
+  # Curation, slices, and embeds address messages by "index". The browser
+  # parsers set it, but sessions submitted pre-normalized via the API
+  # (e.g. Antigravity CLI through MCP) often omit it.
+  def assign_message_indices
+    msgs = curated_data.is_a?(Hash) ? curated_data["messages"] : nil
+    return unless msgs.is_a?(Array)
+
+    msgs.each_with_index { |msg, i| msg["index"] ||= i if msg.is_a?(Hash) }
   end
 
   def data_has_messages

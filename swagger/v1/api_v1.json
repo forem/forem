@@ -83,6 +83,7 @@
                     "type": "string",
                     "description": "Tool that produced the session (e.g. claude_code, codex).",
                     "enum": [
+                      "antigravity_cli",
                       "claude_code",
                       "codex",
                       "gemini_cli",
