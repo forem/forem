@@ -76,6 +76,27 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       expect(response.body).to include("#topbar { background: #1ab394 !important; }")
     end
 
+    describe "non-HTML Accept headers on the root path" do
+      it "returns a 404 that cannot be edge cached for browsers" do
+        get "http://custom.org/", headers: { "Accept" => "application/json" }
+
+        expect(response).to have_http_status(:not_found)
+        expect(response.headers["Cache-Control"]).to include("no-store")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Vary"]).to include("Accept")
+      end
+
+      it "still renders the organization profile for a browser after a non-HTML request" do
+        get "http://custom.org/", headers: { "Accept" => "application/rss+xml" }
+        expect(response).to have_http_status(:not_found)
+
+        get "http://custom.org/", headers: { "Accept" => "text/html" }
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(organization.name)
+        expect(response.headers["Surrogate-Control"]).to be_present
+      end
+    end
+
     describe "API routing" do
       it "does not intercept /api endpoints on a custom domain" do
         get "http://custom.org/api/articles"
