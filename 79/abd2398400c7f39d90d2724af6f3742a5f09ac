@@ -1,0 +1,19 @@
+spec/views/agent_sessions/new.html.erb_spec.rb
+  s_7e652f0621a938::t_6d92a637fce480 4-7,14-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "79abd2398400c7f39d90d2724af6f3742a5f09ac",
+  "prompts": {},
+  "sessions": {
+    "s_7e652f0621a938": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11cb4f1e-df77-4b19-a0f1-418e52e73e40",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
