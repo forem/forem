@@ -1,0 +1,217 @@
+app/models/notification.rb
+  h_f968154a99632d 16
+app/services/articles/updater.rb
+  h_f968154a99632d 86-87
+app/services/moderator/unpublish_all_articles.rb
+  h_f968154a99632d 59-61
+app/services/notifications/co_author/send.rb
+  h_f968154a99632d 22,47
+app/services/notifications/notifiable_action/send.rb
+  h_f968154a99632d 37
+spec/models/article_spec.rb
+  h_f968154a99632d 4282-4312
+spec/models/notification_spec.rb
+  h_f968154a99632d 713-755
+spec/services/articles/updater_spec.rb
+  h_f968154a99632d 303-309
+spec/services/notifications/co_author/send_spec.rb
+  h_f968154a99632d 72-88
+spec/services/notifications/notifiable_action/send_spec.rb
+  h_f968154a99632d 25-30
+spec/workers/notifications/co_author_worker_spec.rb
+  h_f968154a99632d 1-35
+app/mailers/concerns/deliverable.rb
+  s_4d1c87620deff9::t_bbf5aa804a5cb7 6-19
+app/mailers/custom_mailer.rb
+  s_4d1c87620deff9::t_28d34cbc32d1cb 29-31,64
+  h_f968154a99632d 38-40,69-70,72-88,90-100
+app/models/forem_instance.rb
+  s_4d1c87620deff9::t_7d2855702c1f89 70-78
+app/workers/emails/batch_custom_send_worker.rb
+  s_4d1c87620deff9::t_70e29af96aadc5 80-83,86
+  h_f968154a99632d 44-45,59-61
+spec/mailers/custom_mailer_spec.rb
+  s_4d1c87620deff9::t_d4be40991c934b 208-223,225-255
+  h_f968154a99632d 277-320,334
+spec/models/forem_instance_spec.rb
+  s_4d1c87620deff9::t_ce6cf6b5dd61d4 165-191
+spec/workers/emails/batch_custom_send_worker_spec.rb
+  s_4d1c87620deff9::t_a20234a0456f97 57-80
+  h_f968154a99632d 240-256
+.env_sample
+  s_7899be4d028552::t_25954ee54ee6a3 212,222,224
+  s_eb2685879a6b8a::t_d7557f052a115d 76-82,85-87
+app/controllers/omniauth_callbacks_controller.rb
+  s_7899be4d028552::t_5b07550805abd9 65,73-75,77-78,140-146
+app/javascript/packs/onboardingRedirectCheck.jsx
+  s_7899be4d028552::t_d4b8c549eb2d7b 12-13
+app/services/authentication/authenticator.rb
+  s_7899be4d028552::t_45a262abeb9f54 28,32,55,192-198
+app/services/authentication/external_return.rb
+  s_7899be4d028552::t_4f57cc55189e08 16,42,44-45,47,52-60,62
+app/views/omniauth_callbacks/account_switch.html.erb
+  s_7899be4d028552::t_3305abdabb2191 1
+config/locales/controllers/fr.yml
+  s_7899be4d028552::t_c394a88784d3ce 91-95
+config/locales/controllers/pt.yml
+  s_7899be4d028552::t_86051481da3848 91-95
+config/locales/services/fr.yml
+  s_7899be4d028552::t_f84d66c9853f0a 10
+config/locales/services/pt.yml
+  s_7899be4d028552::t_d8aab8fd96e880 10
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_7899be4d028552::t_ab3834ac4d30c5 22-38,40-43
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_7899be4d028552::t_60a75af678b963 63-64,68,71,74-75,80,82-84,87-88,138-139,141-144,147-149
+spec/services/authentication/external_return_spec.rb
+  s_7899be4d028552::t_d8ea85913a29af 4-6,9-17,33-35,38,40,47,54,58-60
+spec/services/delegated_access/configuration_spec.rb
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 22
+  s_e08e701c3762b3::t_6d1dd67964d81b 10
+  s_eb2685879a6b8a::t_2fec53d3f80559 11
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-9,12-21,23-41,44-79
+app/services/delegated_access/verifier.rb
+  s_eb2685879a6b8a::t_3362de72adda26 1,2-11,16-21,23-91,94-193
+app/services/delegated_access/configuration.rb
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 8,58
+  s_eb2685879a6b8a::t_e14c027013a75d 1-5,7,9-11,15-41,43,45-57,59-76,79-111
+  s_eb2685879a6b8a::t_6b12f14bd06507 6,42,44
+  s_eb2685879a6b8a::t_2fec53d3f80559 12-14
+app/services/delegated_access/errors.rb
+  s_eb2685879a6b8a::t_e14c027013a75d 1,6
+  s_eb2685879a6b8a::t_a94f0be0b62d48 2-5
+spec/services/delegated_access/verifier_spec.rb
+  s_eb2685879a6b8a::t_a093e6bf8257a1 10,19,43-44,53-57,74,77-78,82-84,90,100,113-115,125,133,209
+  s_eb2685879a6b8a::t_a94f0be0b62d48 97,132,146,148,158,186
+  s_e08e701c3762b3::t_6d1dd67964d81b 9
+  s_eb2685879a6b8a::t_5dbc515ddfe128 52,70-71,118-119,121-122,187-193,195-200,202,204-208,210-211
+  s_eb2685879a6b8a::t_46c188dc26cd21 201
+  s_eb2685879a6b8a::t_8376bcef3a3fb1 60-61,63,67,81,92,96,106,110,120,126-129,131,147,157,161,185,230,232
+  s_eb2685879a6b8a::t_a74082c442d1fc 194,203
+  s_eb2685879a6b8a::t_3c946e3de37592 173
+  s_eb2685879a6b8a::t_2fec53d3f80559 32
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-8,11-18,20-31,33-42,45-51,58-59,62,64-66,68-69,72-73,75-76,79-80,85-89,91,93-95,98-99,101-105,107-109,111-112,116-117,123-124,130,134-145,149-156,159-160,162-172,174-184,212-214,229,231,233-236
+spec/services/delegated_access/jwks_client_spec.rb
+  s_eb2685879a6b8a::t_3c946e3de37592 5,15
+  s_eb2685879a6b8a::t_1fb5358d0a8bd4 1-4,6-9,11-14,17-18,22-23,26-29,32-33,35-36,45-47,49-65,72-80
+  s_eb2685879a6b8a::t_2fec53d3f80559 19-21
+  s_eb2685879a6b8a::t_59979de00df560 66-71
+  s_eb2685879a6b8a::t_48ccab88097341 10,16,24-25,31,34,44
+app/services/delegated_access/jwks_client.rb
+  s_eb2685879a6b8a::t_3362de72adda26 1-6,11-57,59-63,66-78
+app/controllers/api/v1/api_controller.rb
+  s_eb2685879a6b8a::t_ca983437202e01 22-25,41-44,60,64-66,67-95,133-134,136-138,166-168
+  s_e2c0a862c0c53d::t_ba07300207e260 56-59,61-63
+spec/requests/api/v1/users_spec.rb
+  s_eb2685879a6b8a::t_67d5e85a2ecc59 109-217,244
+  s_e2c0a862c0c53d::t_ba07300207e260 227,230,234,237,239-240
+  s_e2c0a862c0c53d::t_d2efcbe87ddcca 218-226,228-229,231-233,235-236,238,241-242
+  s_e2c0a862c0c53d::t_ab05e4737672f5 243
+spec/swagger_helper.rb
+  s_eb2685879a6b8a::t_990c91c266d04e 67-72
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 26-29,41
+spec/requests/api/v1/docs/followers_spec.rb
+  s_eb2685879a6b8a::t_67b73e851da9f2 38-40
+docs/delegated_access.md
+  s_eb2685879a6b8a::t_6c4d6b9a816668 1-33,40-72,75-91
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 34-39,73-74
+spec/requests/api/v1/docs/users_spec.rb
+  s_eb2685879a6b8a::t_67b73e851da9f2 429-432,556-559,626-629
+  s_eb2685879a6b8a::t_56b9b9873b46bc 36
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 14-21,54-66,68-76
+  s_e2c0a862c0c53d::t_0dd9f6b894a697 67
+  s_e2c0a862c0c53d::t_3513c5e929a3df 77-79
+swagger/v1/api_v1.json
+  s_eb2685879a6b8a::t_e7ccfe0234dd90 6031-6036
+  s_e2c0a862c0c53d::t_f3d0f32630ebd9 6,5247,5265-5267,6016-6019
+  s_e2c0a862c0c53d::t_20db4e868226b5 6020
+spec/requests/api/v1/docs/articles_spec.rb
+  s_eb2685879a6b8a::t_67b73e851da9f2 588,609-610
+app/models/admin_menu.rb
+  s_466a0b955e0e8c::t_c9126179fbcddd 28
+app/controllers/admin/emails_controller.rb
+  h_f968154a99632d 84,86-87
+app/models/email.rb
+  h_f968154a99632d 15,30-37
+app/views/admin/emails/_form.html.erb
+  h_f968154a99632d 61-63,66-67,69-72,75,77-78,87,91,94,101-102,220,222-235
+app/views/admin/emails/show.html.erb
+  h_f968154a99632d 32,34,38,41-44,46-47
+app/views/layouts/mailer.html.erb
+  h_f968154a99632d 23-24
+db/migrate/20260915160000_add_footer_override_to_emails.rb
+  h_f968154a99632d 1-2,5-6
+db/schema.rb
+  h_f968154a99632d 13,745,749
+spec/factories/emails.rb
+  h_f968154a99632d 6-15
+spec/models/email_spec.rb
+  h_f968154a99632d 227-304
+spec/requests/admin/emails_spec.rb
+  h_f968154a99632d 32-33,95-111,129-143,187-199,232-244
+  s_466a0b955e0e8c::t_3b5aaa30769afd 265-275
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9b9cc69c7c7e1152919000c1e0160763b21f25e4",
+  "prompts": {},
+  "humans": {
+    "h_ce58fdd005af23": {
+      "author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    },
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_466a0b955e0e8c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "0273f7e6-6eef-4b6e-9c27-0ec6228e6bab",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_4d1c87620deff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1ddd523-4d80-4132-b311-c3e9bd014571",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_7899be4d028552": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a09262-d70a-7662-af92-87c1b64fc6ef",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    },
+    "s_e08e701c3762b3": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a080a5-6b85-7480-8fd2-8f10b1c19e57",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    },
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_eb2685879a6b8a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0822e-e625-7990-a6af-8e45849e14e1",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Erin Osher <4386583+erinosher@users.noreply.github.com>"
+    }
+  }
+}

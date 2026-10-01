@@ -1,0 +1,29 @@
+app/lib/url.rb
+  s_2ae01dca757052::t_d9645c2db6b8ce 11-15,17-18,47-48,50
+spec/lib/url_spec.rb
+  s_ec285cf8bfbe3c::t_f0c6b429e4aacf 19-20,27-28,33-48,132-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "7c0b99d6473f1179d83fa3b60683bb27e5083b70",
+  "prompts": {},
+  "sessions": {
+    "s_2ae01dca757052": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d978348-102a-4451-9c1c-5ac3cb2486bd",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_ec285cf8bfbe3c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9afc755-9ef0-48ac-b827-a88d542dd5af",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
