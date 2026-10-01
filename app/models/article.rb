@@ -1883,6 +1883,7 @@ class Article < ApplicationRecord
   def trackable_activity_payload
     {
       "title" => title,
+      "description" => description,
       "path" => path,
       "type_of" => type_of,
       "published_at" => published_at&.iso8601,
