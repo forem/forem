@@ -46,7 +46,7 @@ class GlitchTag < LiquidTagBase
   end
 
   def get_slug(match)
-    if match_has_named_capture_group?(match, "subdomain")
+    if match_has_named_capture_group?(match, "subdomain") && match[:subdomain].present?
       match[:subdomain]
     else
       match[:slug]

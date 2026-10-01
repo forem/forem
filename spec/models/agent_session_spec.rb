@@ -45,6 +45,13 @@ RSpec.describe AgentSession do
       end
     end
 
+    it "assigns positional indices to messages submitted without them" do
+      unindexed = { "messages" => curated_data["messages"].map { |m| m.except("index") } }
+      session = described_class.create!(user: user, title: "Agy", tool_name: "antigravity_cli",
+                                        curated_data: unindexed)
+      expect(session.reload.messages.pluck("index")).to eq([0, 1, 2, 3])
+    end
+
     it "validates curated_data has messages when present" do
       session = described_class.new(user: user, title: "Test", tool_name: "claude_code",
                                     curated_data: { "not_messages" => [] })

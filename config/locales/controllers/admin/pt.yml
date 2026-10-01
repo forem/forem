@@ -215,7 +215,7 @@ pt:
       exported: 'Dados exportados para %{receiver}. O trabalho será concluído em breve.'
       banished: Este usuário está sendo banido em segundo plano. O trabalho será concluído em breve.
       the_page: a página
-      full_delete_html: '@%{user} (e-mail: %{email}, ID do usuário: %{id}) foi completamente excluído. Se for uma exclusão GDPR, exclua-os do Mailchimp e Google Analytics e confirme em %{the_page}.'
+      full_delete_html: '@%{user} (e-mail: %{email}, ID do usuário: %{id}) está sendo excluído. A conta e o conteúdo estão sendo removidos em segundo plano, o que pode levar alguns minutos para contas com muita atividade. Se for uma exclusão GDPR, quando a exclusão terminar, exclua-os do Mailchimp e Google Analytics e confirme em %{the_page}.'
       no_email: sem e-mail
       unpublished: As postagens estão sendo despublicadas em segundo plano. O trabalho será concluído em breve.
       identity_removed: 'A identidade %{provider} foi excluída com sucesso e respaldada.'
