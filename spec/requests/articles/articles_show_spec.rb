@@ -409,6 +409,23 @@ RSpec.describe "ArticlesShow" do
         get article.path
         expect(response.body).to include("body-billboard-container")
       end
+
+      it "renders the secondary below post billboard slot alongside the primary" do
+        article.update_column(:body_markdown, "a" * 901)
+        get article.path
+        expect(response.body).to include("/bb/post_body_bottom\"")
+        expect(response.body).to include("/bb/post_body_bottom_secondary\"")
+      end
+    end
+
+    context "when rendering secondary billboard placements" do
+      it "renders the primary and secondary sidebar and comments slots in shuffle groups" do
+        get article.path
+        expect(response.body.scan("js-bb-shuffle-group").size).to be >= 2
+        %w[post_sidebar post_sidebar_secondary post_comments post_comments_secondary].each do |area|
+          expect(response.body).to include("/bb/#{area}\"")
+        end
+      end
     end
 
     context "when a mid-comments billboard exists" do

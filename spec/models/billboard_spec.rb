@@ -129,6 +129,18 @@ RSpec.describe Billboard do
       expect(billboard.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
     end
 
+    it "allows secondary post placement areas" do
+      %w[post_body_bottom_secondary post_sidebar_secondary post_comments_secondary].each do |area|
+        billboard.placement_area = area
+        expect(billboard).to be_valid
+      end
+    end
+
+    it "returns human readable names for secondary post placement areas" do
+      billboard.placement_area = "post_comments_secondary"
+      expect(billboard.human_readable_placement_area).to eq("Below the comment section (Secondary)")
+    end
+
     it "allows creator_id to be set" do
       billboard.creator = build(:user)
       expect(billboard).to be_valid
