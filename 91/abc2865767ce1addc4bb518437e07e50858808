@@ -1,0 +1,21 @@
+spec/models/audit_log_spec.rb
+  s_c93a97359c028b::t_9f5dea67950e8b 59-70
+app/models/audit_log.rb
+  s_c93a97359c028b::t_9f5dea67950e8b 13,16,20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "91abc2865767ce1addc4bb518437e07e50858808",
+  "prompts": {},
+  "sessions": {
+    "s_c93a97359c028b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "47f4910a-8948-412b-a7c1-d704a2716c86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
