@@ -27,6 +27,8 @@ module Spam
       "loan shark",
     ].freeze
     CLEAR_VIOLATION_LABELS = %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].freeze
+    HIGH_QUALITY_LABELS = %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
+                             great_but_off_topic_for_subforem].freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -46,7 +48,7 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
-      if article_linked_domain_spam?(article)
+      if article_linked_domain_spam?(article) || repeated_title_spam?(article)
         article.update_column(:automod_label, "clear_and_obvious_spam")
         article.automod_label = "clear_and_obvious_spam"
       else
@@ -57,14 +59,13 @@ module Spam
       # Handle clear and obvious violations immediately
       if CLEAR_VIOLATION_LABELS.include?(article.automod_label)
         issue_spam_reaction_for!(reactable: article)
-        escalate_clear_violation_author!(user: article.user)
+        escalate_flagged_author!(user: article.user)
 
         return :spam
       end
 
       # High quality content bypasses spam checks entirely
-      if %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
-            great_but_off_topic_for_subforem].include?(article.automod_label)
+      if HIGH_QUALITY_LABELS.include?(article.automod_label)
         return :not_spam
       end
 
@@ -84,13 +85,7 @@ module Spam
       return :not_spam unless should_check
 
       issue_spam_reaction_for!(reactable: article)
-
-      return unless Reaction.user_has_been_given_too_many_spammy_article_reactions?(
-        user: article.user,
-        include_user_profile: more_rigorous_user_profile_spam_checking?,
-      )
-
-      suspend!(user: article.user)
+      escalate_flagged_author!(user: article.user)
     rescue Ai::Base::ProhibitedContentError
       article.update_column(:automod_label, "clear_and_obvious_harmful")
       spam_block!(reactable: article, user: article.user)
@@ -220,7 +215,7 @@ module Spam
                         "#{reaction.errors.full_messages.to_sentence}")
     end
 
-    def self.escalate_clear_violation_author!(user:)
+    def self.escalate_flagged_author!(user:)
       if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
         user: user,
         include_user_profile: more_rigorous_user_profile_spam_checking?,
@@ -231,24 +226,26 @@ module Spam
       end
     end
 
-    # Low-trust authors whose recent posts keep earning clear-violation labels (and the mascot's
-    # vomit) are treated as spammers without waiting for a moderator to confirm each reaction.
-    # The flags must also be most of their recent posts: authors of self-promotional but useful
-    # posts collect a few clear-spam labels among many good ones.
+    # Low-trust authors whose recent posts keep earning the mascot's vomit (from a clear-violation
+    # label or the spam check) are treated as spammers without waiting for a moderator to confirm
+    # each reaction. The flags must also be most of their recent posts, and any post labeled high
+    # quality spares them: content marketers collect a few flags among many good posts.
     def self.repeat_auto_flagged_author?(user:, threshold: 2, min_share: 0.75)
       return false if user.badge_achievements_count >= 4
 
+      recent_articles = user.articles.published.where("published_at > ?", 1.month.ago)
+      return false if recent_articles.exists?(automod_label: HIGH_QUALITY_LABELS)
+
       flagged_count = recent_auto_flagged_article_count(user: user)
-      flagged_count > threshold &&
-        flagged_count >= min_share * user.articles.published.where("published_at > ?", 1.month.ago).count
+      flagged_count > threshold && flagged_count >= min_share * recent_articles.count
     end
 
+    # On-topic posts the spam check flagged as promotion don't count: that's content marketing.
     def self.recent_auto_flagged_article_count(user:)
-      flagged_articles = user.articles.published
-        .where("published_at > ?", 1.month.ago)
-        .where(automod_label: CLEAR_VIOLATION_LABELS)
+      recent_articles = user.articles.published.where("published_at > ?", 1.month.ago)
+        .where.not(automod_label: "okay_and_on_topic")
       Reaction.article_vomits.valid_or_confirmed
-        .where(user_id: Settings::General.mascot_user_id, reactable_id: flagged_articles.select(:id))
+        .where(user_id: Settings::General.mascot_user_id, reactable_id: recent_articles.select(:id))
         .count
     end
 
@@ -394,6 +391,19 @@ module Spam
       PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
     end
 
+    # Spam farms publish the same post over and over. The third copy of a title in a day is spam
+    # whatever it says, and whatever the author's badges. Only this copy and the ones before it
+    # count, so a late or repeated check never flags an earlier copy.
+    def self.repeated_title_spam?(article, limit: 3)
+      return false unless article.published_at
+
+      article.user.articles.published
+        .where(title: article.title)
+        .where(published_at: (article.published_at - 1.day)..article.published_at)
+        .where("articles.published_at < ? OR articles.id <= ?", article.published_at, article.id)
+        .count >= limit
+    end
+
     # NEW/private: Check if article links to highly negative domains
     def self.article_linked_domain_spam?(article)
       html = article.processed_html
@@ -449,8 +459,8 @@ module Spam
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
-                         :article_linked_domain_spam?, :extract_all_domains_from,
-                         :escalate_clear_violation_author!, :repeat_auto_flagged_author?,
+                         :article_linked_domain_spam?, :extract_all_domains_from, :repeated_title_spam?,
+                         :escalate_flagged_author!, :repeat_auto_flagged_author?,
                          :spam_block!,
                          :recent_auto_flagged_article_count, :mark_repeat_auto_flagged_author_as_spam!
   end
