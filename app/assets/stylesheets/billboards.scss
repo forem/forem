@@ -248,3 +248,12 @@ body[data-side-nav-visible='true']:not(.hidden-shell) {
     transform: translateY(0);
   }
 }
+.below-post-bb {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &:has([data-display-unit]) {
+    margin-top: 50px;
+  }
+}
