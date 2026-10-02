@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
-import { handleURLPasted } from './pasteURLHelpers';
+import { handleURLPasted, URL_REGEX } from './pasteURLHelpers';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
@@ -53,16 +53,65 @@ export const EditorBody = ({
       setElement(textAreaRef.current);
       setPasteElement(textAreaRef.current);
     }
-  });
+  }, [setElement, setPasteElement]);
 
-  // Attach URL paste handler for embed prompt
+  // If it's a URL, embed as a URL. Otherwise paste as plain text
   useEffect(() => {
+    // Make sure we are in the editor
     const textarea = textAreaRef.current;
     if (!textarea) return;
 
-    const handler = handleURLPasted(textAreaRef);
-    textarea.addEventListener('paste', handler);
-    return () => textarea.removeEventListener('paste', handler);
+    const urlHandler = handleURLPasted(textAreaRef);
+
+    // Handle text that was pasted into the editor
+    const onPaste = (e) => {
+      // If files are present in the clipboard, let the image paste handler deal with it
+      const types = e.clipboardData?.types;
+      if (types && (types.includes?.('Files') || types.contains?.('Files'))) {
+        return;
+      }
+
+      // Get the clipboard data
+      const dt = e.clipboardData || window.clipboardData;
+      const pastedText = dt?.getData?.('text/plain') ?? '';
+
+      if (!pastedText) return; // If no text, do not proceed
+
+      const trimmed = pastedText.trim();
+
+      // If it's a URL, treat it as a URL
+      const isProbablyURL = URL_REGEX.test(trimmed);
+      if (isProbablyURL) {
+        urlHandler(e);
+        return;
+      }
+
+      // Otherwise, paste as plain text, but neutralize '@' in mention-like contexts so it won't trigger mentions
+      // Insert a zero-width space right after '@' when it appears at the start of the text or after whitespace
+      const neutralized = pastedText.replace(/(^|\s)@(\w+)/g, '$1@\u200B$2');
+
+      e.preventDefault();
+
+      // get the cursor index from start to end
+      const el = textarea;
+      const start = el.selectionStart;
+      const end = el.selectionEnd;
+
+      if (typeof el.setRangeText === 'function') {
+        el.setRangeText(neutralized, start, end, 'end'); // move to end of inserted text
+      } else {
+        // Fallback for very old browsers
+        const before = el.value.slice(0, start);
+        const after = el.value.slice(end);
+        el.value = before + neutralized + after;
+        el.selectionStart = el.selectionEnd = (before + neutralized).length;
+      }
+
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    };
+
+    textarea.addEventListener('paste', onPaste);
+    return () => textarea.removeEventListener('paste', onPaste);
   }, []);
 
   return (
