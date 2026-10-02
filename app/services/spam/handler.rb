@@ -162,10 +162,14 @@ module Spam
 
       issue_spam_reaction_for!(reactable: user)
 
+      # Snapshot the profile: users often clear it after being blocked, leaving moderators nothing to review.
+      details = { reason: "profile_moderation", label: label, name: user.name, summary: user.profile&.summary,
+                  website_url: user.profile&.website_url, location: user.profile&.location }
       if label == "clear_and_obvious_spam"
         user.add_role(:spam)
+        audit_automatic_block!(user: user, role: :spam, **details)
       else
-        suspend!(user: user)
+        suspend!(user: user, **details)
       end
 
       :spam
@@ -173,20 +177,39 @@ module Spam
       spam_block!(reactable: user, user: user)
     end
 
+    # Every automated spam or suspended role is audited so moderators can see why an account was
+    # blocked. Shows up under the user's admin "on user" audit log tab.
+    #
+    # @param role [Symbol] :spam or :suspended
+    # @param reason [String] which automated check blocked the user
+    def self.audit_automatic_block!(user:, role:, reason:, **details)
+      AuditLog.create(
+        user_id: Settings::General.mascot_user_id,
+        category: "spam.automatic_block",
+        slug: "automatic_#{role}",
+        data: { action: "automatic_#{role}", target_user_id: user.id, reason: reason, **details },
+      )
+    end
+
     # Gemini won't even read prohibited content (e.g. sexual content involving minors), so
     # its refusal is treated as a clear violation: flag the content and mark the author as spam.
     def self.spam_block!(reactable:, user:)
       issue_spam_reaction_for!(reactable: reactable)
-      user.add_role(:spam) unless user.spam?
+      unless user.spam?
+        user.add_role(:spam)
+        audit_automatic_block!(user: user, role: :spam, reason: "prohibited_content",
+                               reactable_type: reactable.class.name, reactable_id: reactable.id)
+      end
       :spam
     end
 
     # Suspend the given user because of too many spammy actions.
     #
     # @param user [User]
-    #
-    def self.suspend!(user:)
+    # @param reason [String] which automated check suspended the user, for the audit log
+    def self.suspend!(user:, reason: "too_many_spam_reactions", **details)
       user.add_role(:suspended)
+      audit_automatic_block!(user: user, role: :suspended, reason: reason, **details)
 
       Note.create(
         author_id: Settings::General.mascot_user_id,
@@ -255,6 +278,8 @@ module Spam
       return if user.spam?
 
       user.add_role(:spam)
+      audit_automatic_block!(user: user, role: :spam, reason: "repeat_auto_flagged_articles",
+                             flagged_article_count: recent_auto_flagged_article_count(user: user))
 
       Note.create(
         author_id: Settings::General.mascot_user_id,
