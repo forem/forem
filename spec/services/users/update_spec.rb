@@ -76,6 +76,51 @@ RSpec.describe Users::Update, type: :service do
     expect(service.errors_as_sentence).to eq "filename too long - the max is 250 characters."
   end
 
+  describe "removing the profile image" do
+    it "clears the profile image" do
+      expect(user.profile_image_url).to be_present
+
+      service = described_class.call(user, profile: {}, user: { remove_profile_image: "1" })
+
+      expect(service.success?).to be true
+      expect(user.reload.profile_image_url).to be_blank
+    end
+
+    it "falls back to the default avatar once removed" do
+      described_class.call(user, profile: {}, user: { remove_profile_image: "1" })
+
+      expect(user.reload.profile_image_url_for(length: 90)).to include(Images::Profile::BACKUP_LINK)
+    end
+
+    it "does nothing when the checkbox is left unchecked" do
+      expect do
+        described_class.call(user, profile: {}, user: { remove_profile_image: "0" })
+      end.not_to change { user.reload.profile_image_url }
+    end
+
+    it "succeeds for a user that has no profile image" do
+      user = create(:user, profile_image: nil)
+
+      service = described_class.call(user, profile: {}, user: { remove_profile_image: "1" })
+
+      expect(service.success?).to be true
+      expect(user.reload.profile_image_url).to be_blank
+    end
+
+    it "keeps a newly uploaded image when removal is also requested" do
+      profile_image = fixture_file_upload("800x600.png", "image/png")
+
+      service = described_class.call(
+        user,
+        profile: {},
+        user: { profile_image: profile_image, remove_profile_image: "1" },
+      )
+
+      expect(service.success?).to be true
+      expect(user.reload.profile_image_url).to be_present
+    end
+  end
+
   context "when changing username" do
     let(:new_username) { "#{user.username}_changed" }
 
