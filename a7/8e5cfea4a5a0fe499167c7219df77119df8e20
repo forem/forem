@@ -1,0 +1,52 @@
+app/javascript/orgPageEditor/OrgPageEditor.jsx
+  cdf961d01143ac46 123-131
+config/locales/views/organizations/en.yml
+  cdf961d01143ac46 8
+spec/policies/organization_policy_spec.rb
+  cdf961d01143ac46 53-64
+app/views/organizations/_header.html.erb
+  cdf961d01143ac46 16-21,32,34,38-39,46-51,63,66-80,179,182,191
+app/views/liquids/_quote.html.erb
+  cdf961d01143ac46 5
+app/assets/stylesheets/ltags/QuoteTag.scss
+  cdf961d01143ac46 2,9,12-20,22-24,26-29,32-34,36-40,42-46,48-51,53-58,60-63,65-67,69-76,78-83,85-89,91-99,101-104,106-108,110-114,116-127
+config/locales/views/organizations/fr.yml
+  cdf961d01143ac46 8
+app/liquid_tags/col_tag.rb
+  cdf961d01143ac46 2-3,8-10,13-15,21
+spec/services/markdown_processor/parser_spec.rb
+  cdf961d01143ac46 531-546
+app/policies/organization_policy.rb
+  cdf961d01143ac46 7
+app/liquid_tags/quote_tag.rb
+  cdf961d01143ac46 24,36-41
+app/controllers/admin/organizations_controller.rb
+  cdf961d01143ac46 104
+app/views/organization_settings/edit.html.erb
+  cdf961d01143ac46 117,120-127,206,210
+spec/requests/admin/organizations_org_features_spec.rb
+  cdf961d01143ac46 11,17,69-88
+config/locales/views/organizations/pt.yml
+  cdf961d01143ac46 8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "a78e5cfea4a5a0fe499167c7219df77119df8e20",
+  "prompts": {
+    "cdf961d01143ac46": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e69502a6-bdd0-4768-88a0-89870ff05e49",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jonathan Gottfried",
+      "messages": [],
+      "total_additions": 22,
+      "total_deletions": 1,
+      "accepted_lines": 227,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/03ce276304417bcef15da226823880452892fcf916a3df1e7fdffe2db1fae60f"
+    }
+  }
+}
