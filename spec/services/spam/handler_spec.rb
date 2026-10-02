@@ -46,6 +46,8 @@ RSpec.describe Spam::Handler, type: :service do
         expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
         expect(article.user.reload).to be_suspended
         expect(Note.where(noteable: article.user, reason: "automatic_suspend").count).to eq(1)
+        expect(AuditLog.on_user(article.user).find_by(slug: "automatic_suspended").data)
+          .to include("reason" => "too_many_spam_reactions")
       end
 
       it "creates a reaction, notes, suspends, and unpublishes all posts when applicable" do
@@ -171,6 +173,8 @@ RSpec.describe Spam::Handler, type: :service do
         expect(Reaction.where(reactable: article, category: "vomit", user: mascot_user)).to exist
         expect(article.reload.automod_label).to eq("clear_and_obvious_harmful")
         expect(article.user.reload).to be_spam
+        expect(AuditLog.on_user(article.user).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "prohibited_content", "reactable_type" => "Article", "reactable_id" => article.id)
       end
     end
 
@@ -434,6 +438,13 @@ RSpec.describe Spam::Handler, type: :service do
           create_list(:article, 2, user: author)
           handler
           expect(author.reload).not_to be_spam
+        end
+
+        it "records an audit log on the author" do
+          handler
+
+          expect(AuditLog.on_user(author).find_by(slug: "automatic_spam").data)
+            .to include("reason" => "repeat_auto_flagged_articles", "flagged_article_count" => 3)
         end
 
         it "leaves a note from the mascot explaining why the author was marked as spam" do
@@ -1033,6 +1044,18 @@ RSpec.describe Spam::Handler, type: :service do
       it "adds spam role and reaction" do
         expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
         expect(user.reload).to be_spam
+      end
+
+      it "records an audit log on the user with the flagged profile" do
+        user.profile.update_columns(summary: "I turn your online presence into revenue.")
+
+        handler
+
+        log = AuditLog.on_user(user).find_by(category: "spam.automatic_block")
+        expect(log.user_id).to eq(mascot_user.id)
+        expect(log.data).to include("action" => "automatic_spam", "reason" => "profile_moderation",
+                                    "label" => "clear_and_obvious_spam",
+                                    "summary" => "I turn your online presence into revenue.")
       end
     end
 
