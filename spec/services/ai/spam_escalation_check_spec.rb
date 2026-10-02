@@ -33,6 +33,12 @@ RSpec.describe Ai::SpamEscalationCheck do
         .with(hash_including(timeout: 5, max_retries: 0))
     end
 
+    it "escalates off-topic promotion of a non-technical business" do
+      stub_jev(offtopic_promotion: 0.7)
+
+      expect(check.escalate?).to be(true)
+    end
+
     it "does not escalate when every answer is below the threshold" do
       stub_jev(spam: 0.1, offplatform_contact: 0.1)
 
@@ -44,7 +50,7 @@ RSpec.describe Ai::SpamEscalationCheck do
       described_class.new(text: "a" * 5_000, content: article).escalate?
 
       expect(requests.first[:state]).to eq(content: "a" * described_class::MAX_TEXT_LENGTH)
-      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact])
+      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact offtopic_promotion])
     end
 
     it "does not escalate when the TypeSafe API fails" do

@@ -8,7 +8,7 @@ module Ai
   # Runs only when the :spam_escalation function is set to Jev (see Ai::FunctionConfig);
   # otherwise content without links is never escalated, as before.
   class SpamEscalationCheck
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :spam_escalation
 
     MAX_TEXT_LENGTH = 3_000
@@ -25,6 +25,12 @@ module Ai
         yes: "It gives a Telegram, WhatsApp, Discord, phone number, email, or similar contact for readers " \
              "to buy, order, or get a service.",
         no: "It makes no such request.",
+      ),
+      offtopic_promotion: Ai::TypeSafe::Questions.noul(
+        "Does `content` promote a business, product, or service unrelated to software development?",
+        yes: "It markets something outside tech, such as a local service, retail goods, travel, health, " \
+             "real estate, or a non-technical course.",
+        no: "It is about software or technology, even if it promotes the author's own developer product.",
       )
     }.freeze
 
