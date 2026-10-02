@@ -119,8 +119,10 @@ RSpec.describe Spam::Handler, type: :service do
       end
 
       # The model rejects a repeated title within five minutes, so farms space their copies out.
-      def publish_copies(count)
-        create_list(:article, count, user: article.user).each { |copy| copy.update_column(:title, article.title) }
+      def publish_copies(count, published_at: article.published_at - 1.hour)
+        create_list(:article, count, user: article.user).each do |copy|
+          copy.update_columns(title: article.title, published_at: published_at)
+        end
       end
 
       it "flags it as clear spam without asking the labeler, even for a high-badge author" do
@@ -140,7 +142,13 @@ RSpec.describe Spam::Handler, type: :service do
       end
 
       it "ignores copies published more than a day ago" do
-        publish_copies(2).each { |copy| copy.update_column(:published_at, 2.days.ago) }
+        publish_copies(2, published_at: article.published_at - 2.days)
+
+        expect(handler).to eq(:not_spam)
+      end
+
+      it "does not flag an earlier copy when it is checked again after later copies" do
+        publish_copies(2, published_at: article.published_at + 1.hour)
 
         expect(handler).to eq(:not_spam)
       end

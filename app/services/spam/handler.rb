@@ -392,11 +392,15 @@ module Spam
     end
 
     # Spam farms publish the same post over and over. The third copy of a title in a day is spam
-    # whatever it says, and whatever the author's badges.
+    # whatever it says, and whatever the author's badges. Only this copy and the ones before it
+    # count, so a late or repeated check never flags an earlier copy.
     def self.repeated_title_spam?(article, limit: 3)
+      return false unless article.published_at
+
       article.user.articles.published
         .where(title: article.title)
-        .where("published_at > ?", 1.day.ago)
+        .where(published_at: (article.published_at - 1.day)..article.published_at)
+        .where("articles.published_at < ? OR articles.id <= ?", article.published_at, article.id)
         .count >= limit
     end
 

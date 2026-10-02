@@ -50,8 +50,9 @@
         <div class="crayons-field">
           <%= f.label :spam_escalation_threshold, "Spam escalation threshold", class: "crayons-field__label" %>
           <%= admin_config_description "When Spam escalation is set to Jev, content without links goes to the spam " \
-                                       "checks once Jev's probability that it is spam, or that it asks readers to " \
-                                       "make contact off-platform to buy something, reaches this value (0-1). Lower " \
+                                       "checks once Jev's probability that it is spam, that it asks readers to " \
+                                       "make contact off-platform to buy something, or that it promotes a business " \
+                                       "unrelated to software development, reaches this value (0-1). Lower " \
                                        "catches more spam but runs more spam checks. Tune it against the " \
                                        "Ai::SpamEscalationCheck rows in AI audits." %>
           <%= f.number_field :spam_escalation_threshold,
