@@ -1,7 +1,7 @@
 <div class="ltag-feature">
   <% if icon.present? %>
     <div class="ltag-feature__icon">
-      <% if icon.match?(/\A[a-z0-9-]+\z/) %>
+      <% if FeatureTag::ICONS.include?(icon) %>
         <% begin %>
           <%= crayons_icon_tag(icon, width: 32, height: 32) %>
         <% rescue StandardError %>

@@ -167,6 +167,7 @@ pt:
       no_args: "A tag features não aceita argumentos"
     feature_tag:
       missing_title: "A tag feature requer uma opção title"
+      invalid_icon: "Ícone '%{icon}' inválido para a tag feature. Use um emoji ou um dos seguintes: %{valid_icons}"
     offer_tag:
       default_button: "Saiba Mais"
     quote_tag:
