@@ -43,24 +43,20 @@ class ArticleApiIndexService
   end
 
   def username_articles
-    num = if @state == "all"
-            per_page_max
-          else
-            DEFAULT_PER_PAGE
-          end
+    articles_per_page = @state == "all" ? per_page_max : per_page
 
     if (user = User.includes(:profile).find_by(username: username))
       user.articles.published.from_subforem
         .includes(:organization)
         .order(published_at: :desc)
         .page(page)
-        .per(per_page || num)
+        .per(articles_per_page)
     elsif (organization = Organization.find_by(slug: username))
       organization.articles.published.from_subforem
         .includes(user: :profile)
         .order(published_at: :desc)
         .page(page)
-        .per(per_page || num)
+        .per(articles_per_page)
     else
       Article.none
     end
