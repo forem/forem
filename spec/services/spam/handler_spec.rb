@@ -525,6 +525,12 @@ RSpec.describe Spam::Handler, type: :service do
           expect(author.reload).to be_spam
         end
 
+        it "does not count flagged posts the labeler rated on topic" do
+          earlier_articles.first.update_column(:automod_label, "okay_and_on_topic")
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
         it "leaves authors alone when any recent post is labeled high quality" do
           create(:article, user: author).update_column(:automod_label, "very_good_and_on_topic")
           handler

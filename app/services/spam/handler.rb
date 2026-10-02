@@ -240,8 +240,10 @@ module Spam
       flagged_count > threshold && flagged_count >= min_share * recent_articles.count
     end
 
+    # On-topic posts the spam check flagged as promotion don't count: that's content marketing.
     def self.recent_auto_flagged_article_count(user:)
       recent_articles = user.articles.published.where("published_at > ?", 1.month.ago)
+        .where.not(automod_label: "okay_and_on_topic")
       Reaction.article_vomits.valid_or_confirmed
         .where(user_id: Settings::General.mascot_user_id, reactable_id: recent_articles.select(:id))
         .count
