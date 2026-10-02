@@ -130,6 +130,11 @@ pt:
         update: Atualizar
         delete: Excluir
         confirm: Confirmar
+      custom:
+        themes:
+          dark_theme: Tema Escuro
+          light_theme: Tema Claro
+          system_theme: Tema do Sistema
       org:
         admin:
           members: Membros da Organização
