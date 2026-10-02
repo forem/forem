@@ -6,10 +6,10 @@
 <br>
 <p align="center">
   <a href="https://github.com/forem/forem/actions/workflows/ci.yml">
-    <img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+    <img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="CI Build Status">
   </a>
   <a href="https://github.com/forem/forem/actions/workflows/cd.yml">
-    <img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status">
+    <img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="CD Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
@@ -90,101 +90,3 @@ A more complete overview of our stack is available in
 
 To **launch Forem in Gitpod**, please navigate to
 [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
-
-To **launch Forem in Ona** (formerly Gitpod), the project is fully configured for Ona development environments. Simply open the project in Ona and the environment will be automatically configured with all necessary services and dependencies.
-
-### Installation Documentation
-
-Please see our installation guides:
-
-- [macOS, without containers](https://developers.forem.com/getting-started/installation/mac)
-- [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
-
-## Developer Documentation
-
-[Check out our dedicated docs page for more technical documentation](https://developers.forem.com). Please note that while the documentation is a great place to start, some parts may be out of date as the project evolves.
-
-## Deployment with Kamal (Beta)
-
-Forem is equipped with [Kamal 2](https://kamal-deploy.org/) to allow you to easily deploy the application to any cloud provider or bare metal server.
-
-For a comprehensive guide, including cloud provider setups (AWS, DigitalOcean, Hetzner, GCP), secrets management, and Forem-specific production gotchas, see the [Kamal Deployment Guide](docs/kamal-deployment.md).
-
-### Prerequisites
-
-Before deploying, ensure you have:
-1. SSH access to your target server(s).
-2. Docker installed on your local machine and target server(s).
-3. A Docker container registry account (e.g., GitHub Container Registry, Docker Hub).
-
-### Configuration
-
-1. **Deployment Configuration**: Open [config/deploy.yml](config/deploy.yml) and update:
-   - Your registry username/credentials.
-   - Your domain name in the `proxy` section.
-2. **Environment & Secrets Configuration**: Set the following environment variables on your local machine:
-   - `KAMAL_WEB_IP` / `KAMAL_JOB_IP` / `KAMAL_DB_IP` / `KAMAL_REDIS_IP`: The IP addresses of your servers (default to `192.168.0.1`).
-   - `KAMAL_REGISTRY_PASSWORD`: Access token for your Docker container registry.
-   - `RAILS_MASTER_KEY`: Your Rails master key.
-   - `DATABASE_URL`: Connection string for PostgreSQL. This is always required. If you are using the Kamal postgres accessory, set it to the accessory hostname (e.g. `postgresql://postgres:password@forem-postgres:5432/forem_production`).
-   - `POSTGRES_PASSWORD`: Root password for the PostgreSQL accessory (if using it).
-
-### Deploying the Application
-
-Run the following commands to set up and deploy the application:
-
-```bash
-# 1. Verify your configuration is valid
-bundle exec kamal config
-
-# 2. Boot accessories, build & push the docker image, and deploy the application
-bundle exec kamal setup
-
-# 3. Subsequent deploys (rolling updates)
-bundle exec kamal deploy
-```
-
-For more options, refer to the [Kamal documentation](https://kamal-deploy.org/docs/).
-
-
-## Vulnerability Disclosure
-
-Forem is the open source software which powers [DEV](https://dev.to).
-
-We welcome security research on DEV under the terms of our
-[vulnerability disclosure policy](https://dev.to/security).
-
-## Acknowledgements
-
-Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
-usage of their emojis.
-
-## License
-
-This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU Affero General Public License as published by the Free
-Software Foundation, either version 3 of the License, or (at your option) any
-later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
-the full text.
-
-Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the Forem project,
-you are granting us a right to use that code under the terms of the CLA.
-
-Our version of the CLA was adapted from the Microsoft Contributor License
-Agreement, which they generously made available to the public domain under
-Creative Commons CC0 1.0 Universal.
-
-Any questions, please refer to our
-[license FAQ](https://developers.forem.com/licensing/) doc or email
-support@dev.to.
-
-<br>
-
-<p align="center">
-  <img alt="Sloan, the sloth mascot" width="250px" src="https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg">
-  <br>
-  <strong>Happy Coding</strong> ❤️
-</p>
-
-[⬆ Back to Top](#table-of-contents)
