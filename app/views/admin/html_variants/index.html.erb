@@ -23,11 +23,11 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col">Name</th>
+      <th scope="col"><%= sort_link(@q, :name, { aria: { label: "Sort by Name" } }) %></th>
       <th scope="col">User</th>
-      <th scope="col">Group</th>
-      <th scope="col">Published</th>
-      <th scope="col">Approved</th>
+      <th scope="col"><%= sort_link(@q, :group, { aria: { label: "Sort by Group" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :published, { aria: { label: "Sort by Published" } }) %></th>
+      <th scope="col"><%= sort_link(@q, :approved, { aria: { label: "Sort by Approved" } }) %></th>
       <th scope="col">Actions</th>
     </tr>
   </thead>

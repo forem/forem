@@ -14,7 +14,9 @@ module Admin
                  end
 
       relation = relation.includes(:user) unless params[:state] == "mine"
-      @html_variants = relation.order(created_at: :desc).page(params[:page]).per(30)
+      @q = relation.ransack(params[:q])
+      @q.sorts = 'created_at desc' if @q.sorts.empty?
+      @html_variants = @q.result.page(params[:page]).per(30)
     end
 
     def show

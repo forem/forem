@@ -11,6 +11,19 @@ RSpec.describe "/admin/advanced/response_templates" do
       expect(response).to have_http_status :ok
     end
 
+    it "renders sort links in table headers" do
+      create(:response_template)
+      get admin_response_templates_path
+      expect(response.body).to include("Sort by Title")
+      expect(response.body).to include("Sort by Type")
+    end
+
+    it "sorts by title descending when requested" do
+      create(:response_template)
+      get admin_response_templates_path, params: { q: { s: "title desc" } }
+      expect(response).to have_http_status(:ok)
+    end
+
     context "when there are response templates to render" do
       it "renders with status 200" do
         create(:response_template)
