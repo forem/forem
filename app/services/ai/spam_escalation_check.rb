@@ -27,10 +27,11 @@ module Ai
         no: "It makes no such request.",
       ),
       offtopic_promotion: Ai::TypeSafe::Questions.noul(
-        "Does `content` promote a business, product, or service unrelated to software development?",
-        yes: "It markets something outside tech, such as a local service, retail goods, travel, health, " \
-             "real estate, or a non-technical course.",
-        no: "It is about software or technology, even if it promotes the author's own developer product.",
+        "Does `content` promote a business, product, or service unrelated to the community described in " \
+        "`community`?",
+        yes: "It markets something outside the community's subject, such as a local service, retail goods, " \
+             "travel, health, real estate, or a course unrelated to that subject.",
+        no: "It is about the community's subject, even if it promotes the author's own relevant product.",
       )
     }.freeze
 
@@ -48,7 +49,7 @@ module Ai
 
       client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self, affected_content: @content,
                                         affected_user: @content.user, **Ai::TypeSafe::Client::FAIL_FAST)
-      result = client.evaluate(state: { content: @text }, questions: QUESTIONS)
+      result = client.evaluate(state: { content: @text, community: community_description }, questions: QUESTIONS)
       QUESTIONS.keys.any? { |id| result.noul(id) >= threshold }
     rescue StandardError => e
       Rails.logger.error("Spam escalation check failed: #{e}")
@@ -56,6 +57,20 @@ module Ai
     end
 
     private
+
+    # The same description of what belongs on the (sub)forem that Ai::ContentModerationLabeler uses,
+    # so "off-topic" means off-topic for this community rather than a hardcoded subject.
+    def community_description
+      subforem_id = @content.subforem_id
+      description = if subforem_id
+                      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+                        Settings::Community.community_description(subforem_id: subforem_id)
+                    else
+                      Settings::RateLimit.internal_content_description_spec.presence ||
+                        Settings::Community.community_description
+                    end
+      description.to_s.first(MAX_TEXT_LENGTH)
+    end
 
     # Admin-tunable (Settings::AiFunctions). The default favors recall, since a false escalation
     # only costs one spam check. Tune it from the probabilities logged in AiAudit against which
