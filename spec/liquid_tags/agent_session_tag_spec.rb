@@ -212,4 +212,59 @@ RSpec.describe AgentSessionTag, type: :liquid_tag do
     expect(html).to include("Read")
     expect(html).to include("/src/app.js")
   end
+
+  context "when a message contains a table of contents" do
+    let(:toc_text) do
+      <<~MARKDOWN
+        - [Introduction](#introduction)
+        - [What's New in v2.0?](#whats-new-in-v20)
+
+        ## Introduction
+
+        Intro.
+
+        ## What's New in v2.0?
+
+        Changes.
+      MARKDOWN
+    end
+    let(:toc_session) do
+      AgentSession.create!(
+        user: user,
+        title: "TOC Session",
+        tool_name: "claude_code",
+        published: true,
+        curated_data: {
+          "messages" => [
+            { "index" => 0, "role" => "assistant", "content" => [{ "type" => "text", "text" => toc_text }] },
+            { "index" => 1, "role" => "assistant", "content" => [{ "type" => "text", "text" => toc_text }] },
+          ],
+          "metadata" => {}
+        },
+      )
+    end
+
+    it "links every table of contents entry to a heading in the same message" do
+      html = generate_tag(toc_session.id).render
+      prefix = "agent-session-#{toc_session.id}"
+
+      [0, 1].each do |index|
+        expect(html).to include(%(<h2 id="#{prefix}-#{index}-introduction">))
+        expect(html).to include(%(<h2 id="#{prefix}-#{index}-whats-new-in-v20">))
+        expect(html).to include(%(href="##{prefix}-#{index}-introduction"))
+        expect(html).to include(%(href="##{prefix}-#{index}-whats-new-in-v20"))
+      end
+    end
+
+    it "keeps the ids and links when embedded in an article" do
+      article = create(:article, user: user, body_markdown: "---\ntitle: TOC\npublished: true\n---\n\n" \
+                                                            "{% agent_session #{toc_session.id} %}")
+      html = article.processed_html
+      ids = html.scan(/<h2 id="(agent-session-[^"]+)"/).flatten
+      hrefs = html.scan(/href="#(agent-session-[^"]+)"/).flatten
+
+      expect(hrefs.size).to eq(4)
+      expect(hrefs - ids).to be_empty
+    end
+  end
 end
