@@ -1,0 +1,44 @@
+app/controllers/favorites_controller.rb
+  h_c527e33bbdbde8 6
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_c527e33bbdbde8 115-117
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_c527e33bbdbde8 13-16,19,46-52,54,69,115
+app/models/async_info.rb
+  h_c527e33bbdbde8 49
+app/policies/favorite_policy.rb
+  h_c527e33bbdbde8 5
+app/services/badges/award_community_favorite.rb
+  h_c527e33bbdbde8 1-55
+app/services/favorites/create.rb
+  h_c527e33bbdbde8 4-6,10,22,27-28,44-91,100-105
+config/locales/services/en.yml
+  h_c527e33bbdbde8 17-19
+config/locales/services/fr.yml
+  h_c527e33bbdbde8 17-19
+config/locales/services/pt.yml
+  h_c527e33bbdbde8 17-19
+db/seeds.rb
+  h_c527e33bbdbde8 304-318
+spec/models/async_info_spec.rb
+  h_c527e33bbdbde8 34-41
+spec/policies/favorite_policy_spec.rb
+  h_c527e33bbdbde8 17-18,22-23,42-49
+spec/requests/favorites_spec.rb
+  h_c527e33bbdbde8 57-58,60-61,63-64,69-82
+spec/services/badges/award_community_favorite_spec.rb
+  h_c527e33bbdbde8 1-83
+spec/services/favorites/create_spec.rb
+  h_c527e33bbdbde8 26-51,60-61,64,110-192
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "985d7074384651e138ddc814d391cf55fbfdc51e",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

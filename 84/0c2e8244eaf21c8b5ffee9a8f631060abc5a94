@@ -1,0 +1,34 @@
+app/assets/javascripts/initializers/initializeReadingListIcons.js
+  h_f968154a99632d 41-47,49,108-112
+app/models/reaction.rb
+  h_f968154a99632d 70,218-225
+app/models/user.rb
+  h_f968154a99632d 497-501
+app/models/user_activity.rb
+  h_f968154a99632d 31-37
+app/workers/users/update_user_reading_list_activity_worker.rb
+  h_f968154a99632d 1-13
+db/migrate/20260812141500_add_alltime_reading_list_articles_to_user_activities.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,144,1892
+spec/models/reaction_spec.rb
+  h_f968154a99632d 534-561
+spec/models/user_activity_spec.rb
+  h_f968154a99632d 176-181,224-250
+spec/models/user_spec.rb
+  h_f968154a99632d 1212-1221
+spec/workers/users/update_user_reading_list_activity_worker_spec.rb
+  h_f968154a99632d 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "840c2e8244eaf21c8b5ffee9a8f631060abc5a94",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
