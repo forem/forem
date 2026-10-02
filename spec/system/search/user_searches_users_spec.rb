@@ -13,7 +13,7 @@ RSpec.describe "User searches users" do
     not_followed_user
   end
 
-  xit "shows the correct follow buttons", js: true do
+  it "shows the correct follow buttons", js: true do
     visit "/search?q=&filters=class_name:User"
 
     expect(page).to have_css("button.follow-action-button")
@@ -31,5 +31,12 @@ RSpec.describe "User searches users" do
     expect(page).to have_css("button.follow-action-button")
     follow_back_button_info = find_button(I18n.t("core.follow_back"))['data-info']
     expect(JSON.parse(follow_back_button_info)["id"]).to eq(follow_back_user.id)
+
+    # Regression from #14357: Follow-back button should toggle between "Following" and "Follow back"
+    find_button(I18n.t("core.follow_back")).click
+    expect(page).to have_content(I18n.t("core.following"))
+
+    find_button(I18n.t("core.following")).click
+    expect(page).to have_content(I18n.t("core.follow_back"))
   end
 end
