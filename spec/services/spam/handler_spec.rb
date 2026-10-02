@@ -1069,6 +1069,16 @@ RSpec.describe Spam::Handler, type: :service do
         expect(user.reload).to be_suspended
         expect(Note.where(noteable: user, reason: "automatic_suspend").count).to eq(1)
       end
+
+      it "records the profile moderation label and profile snapshot in the audit log" do
+        user.profile.update_columns(summary: "Harmful summary")
+
+        handler
+
+        expect(AuditLog.on_user(user).find_by(slug: "automatic_suspended").data)
+          .to include("reason" => "profile_moderation", "label" => "clear_and_obvious_harmful",
+                      "summary" => "Harmful summary")
+      end
     end
 
     context "when label is not a clear violation" do
