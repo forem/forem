@@ -94,6 +94,64 @@ RSpec.describe Spam::Handler, type: :service do
       context "for a multiple offender" do
         it_behaves_like "multiple spam offender"
       end
+
+      it "marks the author as spam once most of their recent posts are flagged" do
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+        create_list(:article, 2, user: article.user).each do |earlier|
+          create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+        end
+
+        handler
+        expect(article.user.reload).to be_spam
+      end
+    end
+
+    context "when the author publishes the same title for the third time in a day" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(
+          instance_double(Ai::ContentModerationLabeler,
+                          evaluate: { label: "okay_and_on_topic", compellingness_score: 0.5 }),
+        )
+        allow(Ai::ArticleCheck).to receive(:new).and_return(instance_double(Ai::ArticleCheck, spam?: false))
+      end
+
+      # The model rejects a repeated title within five minutes, so farms space their copies out.
+      def publish_copies(count, published_at: article.published_at - 1.hour)
+        create_list(:article, count, user: article.user).each do |copy|
+          copy.update_columns(title: article.title, published_at: published_at)
+        end
+      end
+
+      it "flags it as clear spam without asking the labeler, even for a high-badge author" do
+        article.user.update_column(:badge_achievements_count, 10)
+        publish_copies(2)
+
+        expect { expect(handler).to eq(:spam) }
+          .to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        expect(Ai::ContentModerationLabeler).not_to have_received(:new)
+      end
+
+      it "leaves a second copy alone" do
+        publish_copies(1)
+
+        expect(handler).to eq(:not_spam)
+      end
+
+      it "ignores copies published more than a day ago" do
+        publish_copies(2, published_at: article.published_at - 2.days)
+
+        expect(handler).to eq(:not_spam)
+      end
+
+      it "does not flag an earlier copy when it is checked again after later copies" do
+        publish_copies(2, published_at: article.published_at + 1.hour)
+
+        expect(handler).to eq(:not_spam)
+      end
     end
 
     context "when Gemini blocks the article as PROHIBITED_CONTENT" do
@@ -469,10 +527,23 @@ RSpec.describe Spam::Handler, type: :service do
           expect(author.reload).not_to be_spam
         end
 
-        it "does not count posts whose label is no longer a clear violation" do
+        it "counts posts the spam check flagged without a clear-violation label" do
           earlier_articles.first.update_column(:automod_label, "likely_spam")
           handler
+          expect(author.reload).to be_spam
+        end
+
+        it "does not count flagged posts the labeler rated on topic" do
+          earlier_articles.first.update_column(:automod_label, "okay_and_on_topic")
+          handler
           expect(author.reload).not_to be_spam
+        end
+
+        it "leaves authors alone when any recent post is labeled high quality" do
+          create(:article, user: author).update_column(:automod_label, "very_good_and_on_topic")
+          handler
+          expect(author.reload).not_to be_spam
+          expect(auto_spam_notes).to be_empty
         end
 
         it "does not count vomits from users other than the mascot" do

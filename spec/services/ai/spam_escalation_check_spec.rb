@@ -33,6 +33,35 @@ RSpec.describe Ai::SpamEscalationCheck do
         .with(hash_including(timeout: 5, max_retries: 0))
     end
 
+    it "escalates off-topic promotion of a non-technical business" do
+      stub_jev(offtopic_promotion: 0.7)
+
+      expect(check.escalate?).to be(true)
+    end
+
+    it "sends the internal content description spec as the community for the off-topic question" do
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+        .with(subforem_id: article.subforem_id).and_return("A community for woodworkers.")
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+        .with(no_args).and_return("A community for woodworkers.")
+      requests = stub_jev
+
+      check.escalate?
+
+      expect(requests.first[:state][:community]).to eq("A community for woodworkers.")
+      expect(requests.first[:questions][:offtopic_promotion].to_s).to include("`community`")
+    end
+
+    it "falls back to the community description when no internal spec is set" do
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
+      allow(Settings::Community).to receive(:community_description).and_return("A place for coders.")
+      requests = stub_jev
+
+      check.escalate?
+
+      expect(requests.first[:state][:community]).to eq("A place for coders.")
+    end
+
     it "does not escalate when every answer is below the threshold" do
       stub_jev(spam: 0.1, offplatform_contact: 0.1)
 
@@ -43,8 +72,8 @@ RSpec.describe Ai::SpamEscalationCheck do
       requests = stub_jev
       described_class.new(text: "a" * 5_000, content: article).escalate?
 
-      expect(requests.first[:state]).to eq(content: "a" * described_class::MAX_TEXT_LENGTH)
-      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact])
+      expect(requests.first[:state]).to include(content: "a" * described_class::MAX_TEXT_LENGTH)
+      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact offtopic_promotion])
     end
 
     it "does not escalate when the TypeSafe API fails" do
