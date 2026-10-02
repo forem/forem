@@ -1,0 +1,22 @@
+app/lib/org_custom_domain_constraint.rb
+  h_f968154a99632d 2-21,23-24,26
+config/routes.rb
+  h_f968154a99632d 42,48
+spec/lib/org_custom_domain_constraint_spec.rb
+  h_f968154a99632d 60-115
+spec/requests/custom_domain_redirect_spec.rb
+  h_f968154a99632d 86,88,90-91,94,96,98-99
+spec/requests/org_custom_domain_spec.rb
+  h_f968154a99632d 101-107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4fa9455fc64467af273909db4c2e7460e0118ecc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
