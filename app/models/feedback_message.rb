@@ -59,7 +59,7 @@ class FeedbackMessage < ApplicationRecord
               in: STATUSES
             }
   validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: reporter_uniqueness_msg },
-                          if: :abuse_report? && :reporter_id
+                          if: -> { abuse_report? && reporter_id.present? }
 
   def abuse_report?
     feedback_type == "abuse-reports"
