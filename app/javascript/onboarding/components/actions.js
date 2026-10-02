@@ -29,10 +29,17 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
         try {
           json = text ? JSON.parse(text) : {};
         } catch (e) {
-          throw new Error(locale('image_uploads_controller.server_error') || 'A server error has occurred!');
+          throw new Error(
+            locale('core.image_upload_server_error') ||
+              'A server error has occurred!',
+          );
         }
         if (!response.ok) {
-           throw new Error(json.error || locale('image_uploads_controller.server_error') || 'A server error has occurred!');
+          throw new Error(
+            json.error ||
+              locale('core.image_upload_server_error') ||
+              'A server error has occurred!',
+          );
         }
         if (json.error) {
           throw new Error(json.error);
@@ -43,8 +50,16 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
         return successCb(json.user.profile_image.url);
       })
       .catch((error) => {
-        const message = error instanceof Error ? error.message : String(error);
-        failureCb(message);
+        const normalizedError =
+          error instanceof Error
+            ? error
+            : new Error(
+                error?.message ||
+                  (typeof error === 'string'
+                    ? error
+                    : 'A server error has occurred!'),
+              );
+        failureCb(normalizedError);
       });
   }
 }
