@@ -46,6 +46,8 @@ RSpec.describe Spam::Handler, type: :service do
         expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
         expect(article.user.reload).to be_suspended
         expect(Note.where(noteable: article.user, reason: "automatic_suspend").count).to eq(1)
+        expect(AuditLog.on_user(article.user).find_by(slug: "automatic_suspended").data)
+          .to include("reason" => "too_many_spam_reactions")
       end
 
       it "creates a reaction, notes, suspends, and unpublishes all posts when applicable" do
@@ -94,6 +96,157 @@ RSpec.describe Spam::Handler, type: :service do
       context "for a multiple offender" do
         it_behaves_like "multiple spam offender"
       end
+
+      it "marks the author as spam once most of their recent posts are flagged" do
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+        create_list(:article, 2, user: article.user).each do |earlier|
+          create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+        end
+
+        handler
+        expect(article.user.reload).to be_spam
+      end
+    end
+
+    context "when the author publishes the same title for the third time in a day" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(
+          instance_double(Ai::ContentModerationLabeler,
+                          evaluate: { label: "okay_and_on_topic", compellingness_score: 0.5 }),
+        )
+        allow(Ai::ArticleCheck).to receive(:new).and_return(instance_double(Ai::ArticleCheck, spam?: false))
+      end
+
+      # The model rejects a repeated title within five minutes, so farms space their copies out.
+      def publish_copies(count, published_at: article.published_at - 1.hour)
+        create_list(:article, count, user: article.user).each do |copy|
+          copy.update_columns(title: article.title, published_at: published_at)
+        end
+      end
+
+      it "flags it as clear spam without asking the labeler, even for a high-badge author" do
+        article.user.update_column(:badge_achievements_count, 10)
+        publish_copies(2)
+
+        expect { expect(handler).to eq(:spam) }
+          .to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        expect(Ai::ContentModerationLabeler).not_to have_received(:new)
+      end
+
+      it "leaves a second copy alone" do
+        publish_copies(1)
+
+        expect(handler).to eq(:not_spam)
+      end
+
+      it "ignores copies published more than a day ago" do
+        publish_copies(2, published_at: article.published_at - 2.days)
+
+        expect(handler).to eq(:not_spam)
+      end
+
+      it "does not flag an earlier copy when it is checked again after later copies" do
+        publish_copies(2, published_at: article.published_at + 1.hour)
+
+        expect(handler).to eq(:not_spam)
+      end
+    end
+
+    context "when Gemini blocks the article as PROHIBITED_CONTENT" do
+      let(:blocked_response) do
+        instance_double(HTTParty::Response,
+                        success?: true, code: 200,
+                        parsed_response: { "promptFeedback" => { "blockReason" => "PROHIBITED_CONTENT" } })
+      end
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Ai::Base).to receive(:post).and_return(blocked_response)
+      end
+
+      it "flags the article, labels it harmful, and marks the author as spam" do
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: article, category: "vomit", user: mascot_user)).to exist
+        expect(article.reload.automod_label).to eq("clear_and_obvious_harmful")
+        expect(article.user.reload).to be_spam
+        expect(AuditLog.on_user(article.user).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "prohibited_content", "reactable_type" => "Article", "reactable_id" => article.id)
+      end
+    end
+
+    context "when an article without links goes through the escalation check" do
+      let(:labeler) do
+        instance_double(Ai::ContentModerationLabeler,
+                        evaluate: { label: "no_moderation_label", compellingness_score: 0.5 })
+      end
+
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(article).to receive(:processed_html).and_return("<p>DM me on Telegram @seller</p>")
+        allow(Ai::ArticleCheck).to receive(:new).with(article)
+          .and_return(instance_double(Ai::ArticleCheck, spam?: true))
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(labeler)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "runs the spam check when the escalation check flags it" do
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: true))
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+      end
+
+      it "skips the spam check when the escalation check doesn't flag it" do
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: false))
+        expect(handler).to eq(:not_spam)
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "skips the spam check while :spam_escalation is off, even with a TypeSafe key" do
+        stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
+        allow(Ai::TypeSafe::Client).to receive(:new)
+
+        expect(handler).to eq(:not_spam)
+        expect(Ai::TypeSafe::Client).not_to have_received(:new)
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "escalates to the spam check when Jev flags off-platform contact" do
+        enable_jev_for(:spam_escalation)
+        requests = stub_jev(offplatform_contact: 0.9)
+
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(requests.first[:state][:content]).to eq(text_to_check)
+      end
+    end
+
+    context "when escalation and the article spam check both run on Jev without a Gemini key" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:spam_escalation, :article_spam_check)
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(article).to receive(:processed_html).and_return("<p>DM me on Telegram @seller</p>")
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "flags the article when both checks agree" do
+        requests = stub_jev(offplatform_contact: 0.9, malicious: 0.95)
+
+        expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        expect(requests.size).to eq(2)
+      end
+
+      it "does not flag the article when the spam check disagrees" do
+        requests = stub_jev(offplatform_contact: 0.9, good_faith: 0.9)
+
+        expect(handler).to eq(:not_spam)
+        expect(requests.size).to eq(2)
+      end
     end
 
     context "when spam is triggered by linked domain net_score check" do
@@ -129,6 +282,23 @@ RSpec.describe Spam::Handler, type: :service do
           linked_domain.update!(net_score: -2000)
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
           expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        end
+      end
+
+      context "when the admin threshold is customized" do
+        before do
+          allow(Settings::RateLimit).to receive(:linked_domain_spam_score_threshold).and_return(500)
+          article.user.update!(score: 0)
+        end
+
+        it "flags posts linking to domains at the custom threshold" do
+          linked_domain.update!(net_score: -500)
+          expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+
+        it "does not flag posts linking to domains above the custom threshold" do
+          linked_domain.update!(net_score: -499)
+          expect(handler).to eq(:not_spam)
         end
       end
 
@@ -237,6 +407,185 @@ RSpec.describe Spam::Handler, type: :service do
           expect { handler }.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
           expect(article.user.reload).to be_suspended
           expect(handler).to eq(:spam)
+        end
+      end
+
+      # Two earlier flags plus the mascot's vomit on the current article make three, which is enough
+      # to mark the author. Each "does not count" example breaks exactly one of the earlier flags.
+      context "with a low-trust author whose earlier posts were already auto-flagged" do
+        let(:author) { article.user }
+        let(:earlier_articles) { create_list(:article, 2, user: author) }
+        let(:earlier_flags) { Reaction.where(user: mascot_user, reactable: earlier_articles) }
+        let(:auto_spam_notes) { Note.where(noteable: author, reason: "automatic_spam") }
+        let(:other_user) { create(:user) }
+
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: author, include_user_profile: false).and_return(false)
+          earlier_articles.each do |earlier|
+            earlier.update_column(:automod_label, "clear_and_obvious_spam")
+            create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+          end
+        end
+
+        it "marks the author as spam without waiting for moderator confirmation" do
+          handler
+          expect(author.reload).to be_spam
+          expect(author).not_to be_suspended
+        end
+
+        it "leaves the author alone when flagged posts are under 75% of their recent posts" do
+          create_list(:article, 2, user: author)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
+        it "records an audit log on the author" do
+          handler
+
+          expect(AuditLog.on_user(author).find_by(slug: "automatic_spam").data)
+            .to include("reason" => "repeat_auto_flagged_articles", "flagged_article_count" => 3)
+        end
+
+        it "leaves a note from the mascot explaining why the author was marked as spam" do
+          expect { handler }.to change(auto_spam_notes, :count).by(1)
+
+          note = auto_spam_notes.last
+          expect(note.author_id).to eq(mascot_user.id)
+          expect(note.content).to eq(
+            I18n.t("services.spam.article_handler.marked_spam_repeat_auto_flags", count: 3),
+          )
+        end
+
+        it "does not leave an automatic_suspend note" do
+          handler
+          expect(Note.where(noteable: author, reason: "automatic_suspend")).to be_empty
+        end
+
+        it "does not add another note when the author is already marked as spam" do
+          author.add_role(:spam)
+          expect { handler }.not_to change(auto_spam_notes, :count)
+          expect(author.reload).to be_spam
+        end
+
+        it "leaves a single note when another flagged post is handled afterwards" do
+          handler
+          later_article = create(:article, user: author)
+          described_class.handle_article!(article: later_article)
+
+          expect(later_article.reload.automod_label).to eq("clear_and_obvious_spam")
+          expect(auto_spam_notes.count).to eq(1)
+        end
+
+        it "suspends instead when the author already has too many confirmed flags" do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?)
+            .with(user: author, include_user_profile: false).and_return(true)
+          handler
+          expect(author.reload).to be_suspended
+          expect(author).not_to be_spam
+          expect(auto_spam_notes).to be_empty
+        end
+
+        it "marks authors with 3 badges" do
+          author.update_column(:badge_achievements_count, 3)
+          handler
+          expect(author.reload).to be_spam
+        end
+
+        it "leaves authors with 4 or more badges alone" do
+          author.update_column(:badge_achievements_count, 4)
+          handler
+          expect(author.reload).not_to be_spam
+          expect(auto_spam_notes).to be_empty
+        end
+
+        it "counts auto-flags that moderators have confirmed" do
+          earlier_flags.update_all(status: "confirmed")
+          handler
+          expect(author.reload).to be_spam
+        end
+
+        it "counts posts labeled harmful or inciting" do
+          earlier_articles.first.update_column(:automod_label, "clear_and_obvious_harmful")
+          earlier_articles.second.update_column(:automod_label, "clear_and_obvious_inciting")
+          handler
+          expect(author.reload).to be_spam
+        end
+
+        it "ignores auto-flags that moderators have invalidated" do
+          earlier_flags.update_all(status: "invalid")
+          handler
+          expect(author.reload).not_to be_spam
+          expect(auto_spam_notes).to be_empty
+        end
+
+        it "does not mark the author with only two auto-flags" do
+          earlier_flags.first.destroy
+          handler
+          expect(author.reload).not_to be_spam
+          expect(auto_spam_notes).to be_empty
+        end
+
+        it "does not count posts published more than a month ago" do
+          earlier_articles.first.update_column(:published_at, 2.months.ago)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
+        it "does not count posts that are no longer published" do
+          earlier_articles.first.update_column(:published, false)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
+        it "counts posts the spam check flagged without a clear-violation label" do
+          earlier_articles.first.update_column(:automod_label, "likely_spam")
+          handler
+          expect(author.reload).to be_spam
+        end
+
+        it "does not count flagged posts the labeler rated on topic" do
+          earlier_articles.first.update_column(:automod_label, "okay_and_on_topic")
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
+        it "leaves authors alone when any recent post is labeled high quality" do
+          create(:article, user: author).update_column(:automod_label, "very_good_and_on_topic")
+          handler
+          expect(author.reload).not_to be_spam
+          expect(auto_spam_notes).to be_empty
+        end
+
+        it "does not count vomits from users other than the mascot" do
+          earlier_flags.first.update_column(:user_id, other_user.id)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+
+        it "does not count auto-flags on other authors' posts" do
+          earlier_articles.first.update_column(:user_id, other_user.id)
+          handler
+          expect(author.reload).not_to be_spam
+        end
+      end
+
+      context "when the mascot's reaction isn't created" do
+        before do
+          allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+          allow(Rails.logger).to receive(:warn)
+        end
+
+        it "logs a warning when the reaction fails validation" do
+          allow(article).to receive(:published).and_return(false)
+          handler
+          expect(Rails.logger).to have_received(:warn).with(/Spam reaction not created for Article #{article.id}/)
+        end
+
+        it "stays quiet when the mascot has already reacted" do
+          create(:reaction, user: mascot_user, reactable: article, category: "vomit")
+          handler
+          expect(Rails.logger).not_to have_received(:warn).with(/Spam reaction not created/)
         end
       end
     end
@@ -550,6 +899,47 @@ RSpec.describe Spam::Handler, type: :service do
         it_behaves_like "comment multiple spam offender"
       end
     end
+
+    context "when Gemini blocks the comment as PROHIBITED_CONTENT" do
+      let(:blocked_response) do
+        instance_double(HTTParty::Response,
+                        success?: true, code: 200,
+                        parsed_response: { "promptFeedback" => { "blockReason" => "PROHIBITED_CONTENT" } })
+      end
+
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(comment).to receive(:processed_html).and_return("<a href=\"spam.com\">spam</a>")
+        allow(Ai::Base).to receive(:post).and_return(blocked_response)
+      end
+
+      it "flags the comment and marks the author as spam" do
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: comment, category: "vomit", user: mascot_user)).to exist
+        expect(comment.user.reload).to be_spam
+      end
+
+      it "leaves the comment alone when only the surrounding context was blocked" do
+        answer = { "candidates" => [{ "content" => { "parts" => [{ "text" => "NO" }] } }] }
+        allowed_response = instance_double(HTTParty::Response, success?: true, code: 200, parsed_response: answer)
+        allow(Ai::Base).to receive(:post).and_return(blocked_response, allowed_response)
+        expect(handler).to eq(:not_spam)
+        expect(comment.user.reload).not_to be_spam
+      end
+    end
+
+    context "when a comment without links is flagged by the escalation check" do
+      before do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(comment).to receive(:processed_html).and_return("<p>WhatsApp +1 555 0100 for verified accounts</p>")
+        allow(Ai::SpamEscalationCheck).to receive(:new)
+          .and_return(instance_double(Ai::SpamEscalationCheck, escalate?: true))
+        allow(Ai::CommentCheck).to receive(:new).with(comment)
+          .and_return(instance_double(Ai::CommentCheck, spam?: true))
+      end
+
+      it_behaves_like "comment first-time spam offender"
+    end
   end
 
   # No changes to .handle_user! tests
@@ -655,6 +1045,18 @@ RSpec.describe Spam::Handler, type: :service do
         expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
         expect(user.reload).to be_spam
       end
+
+      it "records an audit log on the user with the flagged profile" do
+        user.profile.update_columns(summary: "I turn your online presence into revenue.")
+
+        handler
+
+        log = AuditLog.on_user(user).find_by(category: "spam.automatic_block")
+        expect(log.user_id).to eq(mascot_user.id)
+        expect(log.data).to include("action" => "automatic_spam", "reason" => "profile_moderation",
+                                    "label" => "clear_and_obvious_spam",
+                                    "summary" => "I turn your online presence into revenue.")
+      end
     end
 
     context "when label is clear_and_obvious_harmful" do
@@ -667,6 +1069,16 @@ RSpec.describe Spam::Handler, type: :service do
         expect(user.reload).to be_suspended
         expect(Note.where(noteable: user, reason: "automatic_suspend").count).to eq(1)
       end
+
+      it "records the profile moderation label and profile snapshot in the audit log" do
+        user.profile.update_columns(summary: "Harmful summary")
+
+        handler
+
+        expect(AuditLog.on_user(user).find_by(slug: "automatic_suspended").data)
+          .to include("reason" => "profile_moderation", "label" => "clear_and_obvious_harmful",
+                      "summary" => "Harmful summary")
+      end
     end
 
     context "when label is not a clear violation" do
@@ -677,6 +1089,39 @@ RSpec.describe Spam::Handler, type: :service do
       it "returns :not_spam without reactions" do
         expect(handler).to eq(:not_spam)
         expect { handler }.not_to(change { Reaction.count })
+      end
+    end
+
+    context "when no AI provider is available for profile moderation" do
+      before { stub_const("Ai::Base::DEFAULT_KEY", nil) }
+
+      it "skips without labeling" do
+        allow(Ai::ProfileModerationLabeler).to receive(:new)
+
+        expect(handler).to eq(:skipped)
+        expect(Ai::ProfileModerationLabeler).not_to have_received(:new)
+      end
+    end
+
+    context "when profile moderation runs on Jev without a Gemini key" do
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:profile_moderation)
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
+      end
+
+      it "labels through TypeSafe and acts on a clear violation" do
+        stub_jev(keyword_stuffed_identity: 0.95)
+
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).to be_spam
+      end
+
+      it "does not act on an uncertain signal" do
+        stub_jev(keyword_stuffed_identity: 0.7)
+
+        expect(handler).to eq(:not_spam)
+        expect(user.reload).not_to be_spam
       end
     end
   end

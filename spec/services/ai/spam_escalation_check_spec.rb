@@ -1,0 +1,120 @@
+require "rails_helper"
+
+RSpec.describe Ai::SpamEscalationCheck do
+  subject(:check) { described_class.new(text: "DM me on Telegram @seller for verified accounts", content: article) }
+
+  let(:article) { create(:article) }
+
+  context "when :spam_escalation is set to Jev" do
+    before { enable_jev_for(:spam_escalation) }
+
+    it "escalates when any question is at or above the default threshold of 0.3" do
+      stub_jev(offplatform_contact: 0.3)
+
+      expect(check.escalate?).to be(true)
+    end
+
+    it "uses the threshold set in admin" do
+      Settings::AiFunctions.set_global_spam_escalation_threshold(0.6)
+
+      stub_jev(spam: 0.5)
+      expect(check.escalate?).to be(false)
+
+      stub_jev(spam: 0.6)
+      expect(check.escalate?).to be(true)
+    end
+
+    it "makes one short attempt so an outage cannot hold a high-priority worker" do
+      stub_jev
+
+      check.escalate?
+
+      expect(Ai::TypeSafe::Client).to have_received(:new)
+        .with(hash_including(timeout: 5, max_retries: 0))
+    end
+
+    it "escalates off-topic promotion of a non-technical business" do
+      stub_jev(offtopic_promotion: 0.7)
+
+      expect(check.escalate?).to be(true)
+    end
+
+    it "sends the internal content description spec as the community for the off-topic question" do
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+        .with(subforem_id: article.subforem_id).and_return("A community for woodworkers.")
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+        .with(no_args).and_return("A community for woodworkers.")
+      requests = stub_jev
+
+      check.escalate?
+
+      expect(requests.first[:state][:community]).to eq("A community for woodworkers.")
+      expect(requests.first[:questions][:offtopic_promotion].to_s).to include("`community`")
+    end
+
+    it "falls back to the community description when no internal spec is set" do
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return(nil)
+      allow(Settings::Community).to receive(:community_description).and_return("A place for coders.")
+      requests = stub_jev
+
+      check.escalate?
+
+      expect(requests.first[:state][:community]).to eq("A place for coders.")
+    end
+
+    it "does not escalate when every answer is below the threshold" do
+      stub_jev(spam: 0.1, offplatform_contact: 0.1)
+
+      expect(check.escalate?).to be(false)
+    end
+
+    it "sends the truncated text as the state" do
+      requests = stub_jev
+      described_class.new(text: "a" * 5_000, content: article).escalate?
+
+      expect(requests.first[:state]).to include(content: "a" * described_class::MAX_TEXT_LENGTH)
+      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact offtopic_promotion])
+    end
+
+    it "does not escalate when the TypeSafe API fails" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error.new("boom", status_code: 400))
+
+      expect(check.escalate?).to be(false)
+    end
+
+    it "logs the call to AiAudit under this check" do
+      allow(Ai::TypeSafe::Client).to receive(:post).and_return(
+        instance_double(HTTParty::Response, success?: true, code: 200, parsed_response: {
+                          "model" => "jev-1.13.0",
+                          "answers" => { "spam" => { "type" => "noul", "noul" => 0.1 },
+                                         "offplatform_contact" => { "type" => "noul", "noul" => 0.1 } },
+                          "usage" => { "input_tokens" => 42, "output_tokens" => 0 }
+                        }),
+      )
+
+      expect { check.escalate? }.to change(AiAudit, :count).by(1)
+      expect(AiAudit.last).to have_attributes(ai_model: "jev-1.13.0", wrapper_object_class: described_class.name,
+                                              wrapper_object_version: described_class::VERSION,
+                                              affected_content: article, prompt_token_count: 42)
+    end
+  end
+
+  it "does not escalate or call Jev when :spam_escalation is off, even with a TypeSafe key" do
+    stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", "test-typesafe-key")
+    allow(Ai::TypeSafe::Client).to receive(:new)
+
+    expect(check.escalate?).to be(false)
+    expect(Ai::TypeSafe::Client).not_to have_received(:new)
+  end
+
+  it "does not escalate when Jev is selected but the TypeSafe key is missing" do
+    enable_jev_for(:spam_escalation)
+    stub_const("Ai::TypeSafe::Client::DEFAULT_KEY", nil)
+    allow(Ai::TypeSafe::Client).to receive(:new)
+
+    expect(check.escalate?).to be(false)
+    expect(Ai::TypeSafe::Client).not_to have_received(:new)
+  end
+end

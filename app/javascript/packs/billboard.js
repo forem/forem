@@ -5,7 +5,22 @@ import {
   implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 
+// Primary and secondary placements share a group (e.g. post_sidebar and
+// post_sidebar_secondary). Randomize their order so neither is always on top.
+export function shuffleBillboardGroups() {
+  document.querySelectorAll('.js-bb-shuffle-group').forEach((group) => {
+    if (group.dataset.shuffled === 'true') return;
+
+    group.dataset.shuffled = 'true';
+    const slots = [...group.children];
+    if (slots.length === 2 && Math.random() < 0.5) {
+      group.insertBefore(slots[1], slots[0]);
+    }
+  });
+}
+
 export async function getBillboard() {
+  shuffleBillboardGroups();
   const placeholderElements = document.querySelectorAll(
     '.js-bb-c, .js-billboard-container, .new-bb-container, .sidebar-bb, .below-post-bb, .feed-bb-c'
   );

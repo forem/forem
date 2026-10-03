@@ -357,6 +357,29 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is post_body_bottom_secondary" do
+      it "renders with the below-post body billboard styling" do
+        billboard = create_billboard(placement_area: "post_body_bottom_secondary", body_markdown: "a " * 800)
+        get article_billboard_path(username: article.username, slug: article.slug,
+                                   placement_area: "post_body_bottom_secondary")
+        expect(response.body).to include("body-billboard")
+        expect(response.body).to include("text-styles--billboard long-bb-body")
+        expect(response.body).to include(%(data-id="#{billboard.id}"))
+      end
+    end
+
+    %w[post_sidebar_secondary post_comments_secondary].each do |area|
+      context "when the placement area is #{area}" do
+        it "returns only billboards for the secondary area" do
+          primary = create_billboard(placement_area: area.delete_suffix("_secondary"))
+          secondary = create_billboard(placement_area: area)
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+          expect(response.body).to include(%(data-id="#{secondary.id}"))
+          expect(response.body).not_to include(%(data-id="#{primary.id}"))
+        end
+      end
+    end
+
     context "when the placement area is page_fixed_bottom" do
       let(:page) { create(:page) }
 

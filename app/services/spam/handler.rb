@@ -26,6 +26,9 @@ module Spam
       "forex signals",
       "loan shark",
     ].freeze
+    CLEAR_VIOLATION_LABELS = %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].freeze
+    HIGH_QUALITY_LABELS = %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
+                             great_but_off_topic_for_subforem].freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -45,7 +48,7 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
-      if article_linked_domain_spam?(article)
+      if article_linked_domain_spam?(article) || repeated_title_spam?(article)
         article.update_column(:automod_label, "clear_and_obvious_spam")
         article.automod_label = "clear_and_obvious_spam"
       else
@@ -54,22 +57,15 @@ module Spam
       end
 
       # Handle clear and obvious violations immediately
-      if %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(article.automod_label)
+      if CLEAR_VIOLATION_LABELS.include?(article.automod_label)
         issue_spam_reaction_for!(reactable: article)
-
-        if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
-          user: article.user,
-          include_user_profile: more_rigorous_user_profile_spam_checking?,
-        )
-          suspend!(user: article.user)
-        end
+        escalate_flagged_author!(user: article.user)
 
         return :spam
       end
 
       # High quality content bypasses spam checks entirely
-      if %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
-            great_but_off_topic_for_subforem].include?(article.automod_label)
+      if HIGH_QUALITY_LABELS.include?(article.automod_label)
         return :not_spam
       end
 
@@ -81,20 +77,18 @@ module Spam
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
-        (article.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? &&
+        (Ai::FunctionConfig.available?(:article_spam_check) &&
          (bypass_restrictions || article.user.badge_achievements_count < 4) &&
+         link_or_escalated?(html: article.processed_html, text: text, content: article) &&
          Ai::ArticleCheck.new(article).spam?)
 
       return :not_spam unless should_check
 
       issue_spam_reaction_for!(reactable: article)
-
-      return unless Reaction.user_has_been_given_too_many_spammy_article_reactions?(
-        user: article.user,
-        include_user_profile: more_rigorous_user_profile_spam_checking?,
-      )
-
-      suspend!(user: article.user)
+      escalate_flagged_author!(user: article.user)
+    rescue Ai::Base::ProhibitedContentError
+      article.update_column(:automod_label, "clear_and_obvious_harmful")
+      spam_block!(reactable: article, user: article.user)
     end
 
     # Test the comment for spamminess.  If it's not spammy, don't do anything.
@@ -118,10 +112,14 @@ module Spam
 
       # Return if neither of the spam conditions are met.
       return :not_spam unless rate_limit_spam ||
-        (comment.processed_html.include?("<a") && Ai::Base::DEFAULT_KEY.present? && Ai::CommentCheck.new(comment).spam?)
+        (Ai::FunctionConfig.available?(:comment_spam_check) &&
+         link_or_escalated?(html: comment.processed_html, text: comment.body_markdown, content: comment) &&
+         Ai::CommentCheck.new(comment).spam?)
 
       issue_spam_reaction_for!(reactable: comment)
       suspend_if_user_is_repeat_offender(user: comment.user)
+    rescue Ai::Base::ProhibitedContentError
+      spam_block!(reactable: comment, user: comment.user)
     end
 
     # Test the user for spamminess.  If it's not spammy, don't do anything.
@@ -157,28 +155,61 @@ module Spam
     def self.handle_profile_update!(user:)
       return :skipped if user.spam_or_suspended?
       return :skipped unless eligible_for_profile_spam_check?(user: user)
-      return :skipped unless Ai::Base::DEFAULT_KEY.present?
+      return :skipped unless Ai::FunctionConfig.available?(:profile_moderation)
 
       label = Ai::ProfileModerationLabeler.new(user).label
       return :not_spam unless clear_profile_violation_label?(label)
 
       issue_spam_reaction_for!(reactable: user)
 
+      # Snapshot the profile: users often clear it after being blocked, leaving moderators nothing to review.
+      details = { reason: "profile_moderation", label: label, name: user.name, summary: user.profile&.summary,
+                  website_url: user.profile&.website_url, location: user.profile&.location }
       if label == "clear_and_obvious_spam"
         user.add_role(:spam)
+        audit_automatic_block!(user: user, role: :spam, **details)
       else
-        suspend!(user: user)
+        suspend!(user: user, **details)
       end
 
+      :spam
+    rescue Ai::Base::ProhibitedContentError
+      spam_block!(reactable: user, user: user)
+    end
+
+    # Every automated spam or suspended role is audited so moderators can see why an account was
+    # blocked. Shows up under the user's admin "on user" audit log tab.
+    #
+    # @param role [Symbol] :spam or :suspended
+    # @param reason [String] which automated check blocked the user
+    def self.audit_automatic_block!(user:, role:, reason:, **details)
+      AuditLog.create(
+        user_id: Settings::General.mascot_user_id,
+        category: "spam.automatic_block",
+        slug: "automatic_#{role}",
+        data: { action: "automatic_#{role}", target_user_id: user.id, reason: reason, **details },
+      )
+    end
+
+    # Gemini won't even read prohibited content (e.g. sexual content involving minors), so
+    # its refusal is treated as a clear violation: flag the content and mark the author as spam.
+    def self.spam_block!(reactable:, user:)
+      issue_spam_reaction_for!(reactable: reactable)
+      unless user.spam?
+        user.add_role(:spam)
+        audit_automatic_block!(user: user, role: :spam, reason: "prohibited_content",
+                               reactable_type: reactable.class.name, reactable_id: reactable.id)
+      end
       :spam
     end
 
     # Suspend the given user because of too many spammy actions.
     #
     # @param user [User]
-    #
-    def self.suspend!(user:)
+    # @param reason [String] which automated check suspended the user, for the audit log
+    def self.suspend!(user:, reason: "too_many_spam_reactions", **details)
       user.add_role(:suspended)
+      audit_automatic_block!(user: user, role: :suspended, reason: reason, **details)
 
       Note.create(
         author_id: Settings::General.mascot_user_id,
@@ -196,10 +227,66 @@ module Spam
     #
     # @param reactable [ActiveRecord::Base]
     def self.issue_spam_reaction_for!(reactable:)
-      Reaction.create(
+      reaction = Reaction.create(
         user_id: Settings::General.mascot_user_id,
         reactable: reactable,
         category: "vomit",
+      )
+      return if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+
+      Rails.logger.warn("Spam reaction not created for #{reactable.class.name} #{reactable.id}: " \
+                        "#{reaction.errors.full_messages.to_sentence}")
+    end
+
+    def self.escalate_flagged_author!(user:)
+      if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+        user: user,
+        include_user_profile: more_rigorous_user_profile_spam_checking?,
+      )
+        suspend!(user: user)
+      elsif repeat_auto_flagged_author?(user: user)
+        mark_repeat_auto_flagged_author_as_spam!(user: user)
+      end
+    end
+
+    # Low-trust authors whose recent posts keep earning the mascot's vomit (from a clear-violation
+    # label or the spam check) are treated as spammers without waiting for a moderator to confirm
+    # each reaction. The flags must also be most of their recent posts, and any post labeled high
+    # quality spares them: content marketers collect a few flags among many good posts.
+    def self.repeat_auto_flagged_author?(user:, threshold: 2, min_share: 0.75)
+      return false if user.badge_achievements_count >= 4
+
+      recent_articles = user.articles.published.where("published_at > ?", 1.month.ago)
+      return false if recent_articles.exists?(automod_label: HIGH_QUALITY_LABELS)
+
+      flagged_count = recent_auto_flagged_article_count(user: user)
+      flagged_count > threshold && flagged_count >= min_share * recent_articles.count
+    end
+
+    # On-topic posts the spam check flagged as promotion don't count: that's content marketing.
+    def self.recent_auto_flagged_article_count(user:)
+      recent_articles = user.articles.published.where("published_at > ?", 1.month.ago)
+        .where.not(automod_label: "okay_and_on_topic")
+      Reaction.article_vomits.valid_or_confirmed
+        .where(user_id: Settings::General.mascot_user_id, reactable_id: recent_articles.select(:id))
+        .count
+    end
+
+    # Leave a note so moderators can see why the account was marked as spam. Skipped when the
+    # author is already spam so queued jobs for the same author don't pile up duplicate notes.
+    def self.mark_repeat_auto_flagged_author_as_spam!(user:)
+      return if user.spam?
+
+      user.add_role(:spam)
+      audit_automatic_block!(user: user, role: :spam, reason: "repeat_auto_flagged_articles",
+                             flagged_article_count: recent_auto_flagged_article_count(user: user))
+
+      Note.create(
+        author_id: Settings::General.mascot_user_id,
+        noteable: user,
+        reason: "automatic_spam",
+        content: I18n.t("services.spam.article_handler.marked_spam_repeat_auto_flags",
+                        count: recent_auto_flagged_article_count(user: user)),
       )
     end
 
@@ -233,6 +320,14 @@ module Spam
       end
     end
 
+    # Content with a link always goes to the spam check. Without a link, it goes only when the
+    # cheaper Jev escalation check flags it (e.g. Telegram/WhatsApp contacts written as text).
+    # That check is off unless :spam_escalation is set to Jev in Ai::FunctionConfig.
+    def self.link_or_escalated?(html:, text:, content:)
+      html.include?("<a") || Ai::SpamEscalationCheck.new(text: text, content: content).escalate?
+    end
+    private_class_method :link_or_escalated?
+
     # NEW/private: Refactored suspension logic into a helper method for clarity.
     def self.suspend_if_user_is_repeat_offender(user:)
       return unless Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
@@ -245,7 +340,7 @@ module Spam
 
     # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:content_moderation)
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
@@ -261,6 +356,8 @@ module Spam
         if offtopic_label?(label)
           check_subforem_reassignment(article)
         end
+      rescue Ai::Base::ProhibitedContentError
+        raise
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
@@ -279,7 +376,7 @@ module Spam
 
     # NEW/private: Check if article should be reassigned to a different subforem
     def self.check_subforem_reassignment(article)
-      return unless Ai::Base::DEFAULT_KEY.present?
+      return unless Ai::FunctionConfig.available?(:subforem_matching)
       return if ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes"
 
       begin
@@ -292,7 +389,7 @@ module Spam
 
     # NEW/private: Determine if a profile label is a clear violation.
     def self.clear_profile_violation_label?(label)
-      %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].include?(label)
+      CLEAR_VIOLATION_LABELS.include?(label)
     end
 
     # NEW/private: Skip profile checks for established accounts.
@@ -319,6 +416,19 @@ module Spam
       PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
     end
 
+    # Spam farms publish the same post over and over. The third copy of a title in a day is spam
+    # whatever it says, and whatever the author's badges. Only this copy and the ones before it
+    # count, so a late or repeated check never flags an earlier copy.
+    def self.repeated_title_spam?(article, limit: 3)
+      return false unless article.published_at
+
+      article.user.articles.published
+        .where(title: article.title)
+        .where(published_at: (article.published_at - 1.day)..article.published_at)
+        .where("articles.published_at < ? OR articles.id <= ?", article.published_at, article.id)
+        .count >= limit
+    end
+
     # NEW/private: Check if article links to highly negative domains
     def self.article_linked_domain_spam?(article)
       html = article.processed_html
@@ -327,12 +437,21 @@ module Spam
       score = article.user.score
       return false if score > 50
 
-      threshold = score <= 0 ? -2000 : -2000 - ((score / 10) * 2000)
+      threshold = linked_domain_spam_net_score_threshold(score)
 
       domains = extract_all_domains_from(html, limit: 25)
       return false if domains.empty?
 
       LinkedDomain.where(host: domains).where("net_score <= ?", threshold).exists?
+    end
+
+    # The (negative) net_score at or below which a linked domain flags a post
+    # by an author with the given score. Higher-score authors get more slack:
+    # the base threshold is multiplied by 1 + (score / 10).
+    def self.linked_domain_spam_net_score_threshold(author_score)
+      base = Settings::RateLimit.linked_domain_spam_score_threshold.to_i
+      multiplier = author_score <= 0 ? 1 : 1 + (author_score / 10)
+      -(base * multiplier)
     end
 
     # NEW/private: Extract all domains from processed HTML
@@ -365,6 +484,9 @@ module Spam
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
-                         :article_linked_domain_spam?, :extract_all_domains_from
+                         :article_linked_domain_spam?, :extract_all_domains_from, :repeated_title_spam?,
+                         :escalate_flagged_author!, :repeat_auto_flagged_author?,
+                         :spam_block!,
+                         :recent_auto_flagged_article_count, :mark_repeat_auto_flagged_author_as_spam!
   end
 end
