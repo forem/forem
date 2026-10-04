@@ -75,10 +75,9 @@ module Settings
           type: type || :string
         }
 
-        # Getter that supports passing subforem_id or falling back to RequestStore
+        # Getter that supports passing subforem_id or falling back to the current subforem context
         define_singleton_method(key) do |subforem_id: nil|
-          # Fall back to the currently set subforem_id in the request if none provided
-          subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
+          subforem_id = __send__(:resolve_read_subforem_id, subforem_id)
           result = __send__(:value_of, key, subforem_id)
 
           if result.nil?
@@ -176,9 +175,43 @@ module Settings
         end
       end
 
+      # Resolves which subforem a read without an explicit subforem_id applies to.
+      #
+      # Web requests get the request's subforem (or the default one) from Middlewares::SetSubforem.
+      # Outside a request (Sidekiq, console, rake, runner) RequestStore is empty, so without the final
+      # fallback reads would only see global (subforem_id: nil) rows and silently miss everything an
+      # admin saved for the default subforem — which is where the web UI writes. Falling back to the
+      # default subforem makes those contexts read exactly what a request on the default subforem reads
+      # (its rows, then global rows).
+      #
+      # Setters intentionally keep their RequestStore-only behavior: a write outside a request still goes
+      # to the global row, so it applies to every subforem but is shadowed on the default subforem if that
+      # subforem has its own row for the same setting.
+      def resolve_read_subforem_id(subforem_id)
+        subforem_id.presence ||
+          RequestStore.store[:subforem_id].presence ||
+          RequestStore.store[:default_subforem_id].presence ||
+          fallback_default_subforem_id
+      end
+
+      # Memoized per RequestStore lifetime (a request, or a Sidekiq job via
+      # Sidekiq::RequestStoreMiddleware) so a forem without subforems doesn't query on every read.
+      def fallback_default_subforem_id
+        RequestStore.store.fetch(:settings_fallback_subforem_id) do
+          RequestStore.store[:settings_fallback_subforem_id] = lookup_default_subforem_id
+        end
+      end
+
+      def lookup_default_subforem_id
+        Subforem.cached_default_id
+      rescue ActiveRecord::NoDatabaseError, ActiveRecord::ConnectionNotEstablished, ActiveRecord::StatementInvalid
+        # No database (e.g. assets:precompile) or no subforems table yet (fresh install, early migrations):
+        # read global settings only, as before.
+        nil
+      end
+
       def value_of(var_name, subforem_id = nil)
-        # Ensure we fallback to the request store if not provided
-        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
+        subforem_id = resolve_read_subforem_id(subforem_id)
         all = all_settings(subforem_id)
         all[var_name]
       end

@@ -214,6 +214,7 @@ RSpec.describe Settings::Base do
 
       it "can store and retrieve a subforem-specific setting" do
         expect(TestSetting.host).to eq("http://example.com")
+        create(:subforem) # the default subforem, which context-free reads fall back to
         RequestStore.store[:subforem_id] = create(:subforem).id
         TestSetting.host = "http://subforem.example.com"
 
@@ -302,6 +303,118 @@ RSpec.describe Settings::Base do
         
         # Verify cache was cleared
         expect(RequestStore[cache_key]).to be_nil
+      end
+    end
+  end
+
+  # Sidekiq jobs, the console, rake and runner have no request, so RequestStore has no subforem context.
+  describe "reading without a subforem context" do
+    context "when a default subforem exists" do
+      let!(:default_subforem) { create(:subforem) }
+      let!(:other_subforem) { create(:subforem) }
+
+      it "reads the default subforem's value, as a request on the default subforem would" do
+        TestSetting.set_host("http://global.example.com", subforem_id: nil)
+        TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+
+        expect(TestSetting.host).to eq("http://default.example.com")
+      end
+
+      it "treats an explicit nil subforem_id (e.g. an article with no subforem) the same way" do
+        TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+
+        expect(TestSetting.host(subforem_id: nil)).to eq("http://default.example.com")
+      end
+
+      it "falls back to the global value when the default subforem has no row of its own" do
+        TestSetting.set_host("http://global.example.com", subforem_id: nil)
+
+        expect(TestSetting.host).to eq("http://global.example.com")
+      end
+
+      it "falls back to the setting's default when there is no row at all" do
+        expect(TestSetting.host).to eq("http://example.com")
+      end
+
+      it "does not pick up another subforem's value" do
+        TestSetting.set_host("http://other.example.com", subforem_id: other_subforem.id)
+
+        expect(TestSetting.host).to eq("http://example.com")
+      end
+
+      it "still lets an explicit subforem_id win" do
+        TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+        TestSetting.set_host("http://other.example.com", subforem_id: other_subforem.id)
+
+        expect(TestSetting.host(subforem_id: other_subforem.id)).to eq("http://other.example.com")
+      end
+
+      it "still lets the request's subforem win" do
+        TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+        TestSetting.set_host("http://other.example.com", subforem_id: other_subforem.id)
+        RequestStore.store[:subforem_id] = other_subforem.id
+
+        expect(TestSetting.host).to eq("http://other.example.com")
+      end
+
+      it "applies to typed settings and to_h" do
+        TestSetting.set_user_limits(42, subforem_id: default_subforem.id)
+
+        expect(TestSetting.user_limits).to eq(42)
+        expect(TestSetting.to_h[:user_limits]).to eq(42)
+      end
+
+      it "keeps writes without a context global" do
+        TestSetting.host = "http://global.example.com"
+
+        expect(TestSetting.find_by(var: "host").subforem_id).to be_nil
+        expect(TestSetting.host).to eq("http://global.example.com")
+      end
+
+      it "sees an update made after a previous read in the same context" do
+        TestSetting.set_host("http://before.example.com", subforem_id: default_subforem.id)
+        expect(TestSetting.host).to eq("http://before.example.com")
+
+        TestSetting.set_host("http://after.example.com", subforem_id: default_subforem.id)
+
+        expect(TestSetting.host).to eq("http://after.example.com")
+      end
+    end
+
+    context "when there are no subforems" do
+      it "reads global values only, as before" do
+        TestSetting.set_host("http://global.example.com", subforem_id: nil)
+
+        expect(TestSetting.host).to eq("http://global.example.com")
+      end
+
+      it "looks up the default subforem only once per RequestStore lifetime" do
+        allow(Subforem).to receive(:cached_default_id).and_call_original
+
+        3.times { TestSetting.host }
+        TestSetting.user_limits
+
+        expect(Subforem).to have_received(:cached_default_id).once
+      end
+
+      it "looks it up again once RequestStore is cleared (e.g. the next Sidekiq job)" do
+        allow(Subforem).to receive(:cached_default_id).and_call_original
+
+        TestSetting.host
+        RequestStore.clear!
+        TestSetting.host
+
+        expect(Subforem).to have_received(:cached_default_id).twice
+      end
+    end
+
+    context "when the default subforem cannot be looked up" do
+      it "reads global values instead of raising" do
+        TestSetting.set_host("http://global.example.com", subforem_id: nil)
+        allow(Subforem).to receive(:cached_default_id)
+          .and_raise(ActiveRecord::StatementInvalid, "relation \"subforems\" does not exist")
+
+        expect(TestSetting.host).to eq("http://global.example.com")
       end
     end
   end
