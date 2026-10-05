@@ -1,0 +1,19 @@
+app/views/articles/show.html.erb
+  s_1d2b0ade435325::t_96f674a521d71f 17,19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "4c730903525517bfad33519ae2ccd9fe6bbe5b87",
+  "prompts": {},
+  "sessions": {
+    "s_1d2b0ade435325": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f579f748-a564-428f-995d-a3d8160c80f4",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+spec/models/user_spec.rb
+  s_0192b25a49feab::t_ea587662ef7c0f 42-109,118-119
+  s_0192b25a49feab::t_f5cb557c924086 110-117
+app/models/user.rb
+  s_0192b25a49feab::t_ca81ade6052d6d 9
+  s_0192b25a49feab::t_af95a69ad08a7e 845
+  s_0192b25a49feab::t_2409d12b6121c2 846-852
+  s_0192b25a49feab::t_2a562d71acfac3 816-844,853
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "c1ee25e088a9b0a83c990e52928b88b1319d2912",
+  "prompts": {},
+  "sessions": {
+    "s_0192b25a49feab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d9c11a62-ccb3-46a3-b898-39bcb6105a91",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    }
+  }
+}
