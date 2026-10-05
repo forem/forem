@@ -86,7 +86,7 @@ Sidekiq.configure_server do |config|
     # `Sidekiq.configure_server` block (see the gem's `lib/sidekiq/throttled.rb`).
 
     # First in our chain so the middlewares below and the job all see a fresh RequestStore.
-    chain.add Sidekiq::RequestStoreMiddleware
+    chain.prepend Sidekiq::RequestStoreMiddleware
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
