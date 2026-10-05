@@ -1,0 +1,19 @@
+app/assets/stylesheets/billboards.scss
+  s_d126305079cdce::t_bf1a8be79b981d 250-259
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3627672f916a529d3687fd3982a5addf86519934",
+  "prompts": {},
+  "sessions": {
+    "s_d126305079cdce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d3a2b4d-1ed2-439a-b526-2dc3de0cdace",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

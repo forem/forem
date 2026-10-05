@@ -1,0 +1,27 @@
+spec/models/user_spec.rb
+  s_1e049bdc81f15e::t_596010f49286bc 1730-1732
+  s_1e049bdc81f15e::t_42e5a8abc0fc5e 1740-1742
+  s_1e049bdc81f15e::t_7cb3861dd975fb 1700-1729,1733-1739,1743-1748
+spec/services/favorites/create_spec.rb
+  s_1e049bdc81f15e::t_1fe5ab28ed93ed 1-84
+app/models/settings/user_experience.rb
+  s_1e049bdc81f15e::t_53095cd8a3b1a7 54-57
+app/services/favorites/create.rb
+  s_1e049bdc81f15e::t_20b5c7bd729f82 1-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.19",
+  "base_commit_sha": "e9cc6f719a7afb616d2c513f1f69614985107c0c",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
