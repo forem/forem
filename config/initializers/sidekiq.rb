@@ -6,6 +6,7 @@ require "sidekiq/sidekiq_connection_cleanup"
 require "sidekiq/transaction_safe_rescue"
 require "sidekiq/throttled"
 require "sidekiq/memory_killer"
+require "sidekiq/request_store_middleware"
 
 module Sidekiq
   module Cron
@@ -83,6 +84,9 @@ Sidekiq.configure_server do |config|
     # sidekiq-throttled wires itself up when `require "sidekiq/throttled"` is loaded:
     # it registers `Sidekiq::Throttled::Middlewares::Server` via its own
     # `Sidekiq.configure_server` block (see the gem's `lib/sidekiq/throttled.rb`).
+
+    # First in our chain so the middlewares below and the job all see a fresh RequestStore.
+    chain.add Sidekiq::RequestStoreMiddleware
     chain.add Sidekiq::TransactionSafeRescue
     chain.add Sidekiq::HoneycombMiddleware
     chain.add SidekiqUniqueJobs::Middleware::Client
