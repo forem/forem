@@ -9,6 +9,8 @@ module Betterstack
   class StatsClient
     def initialize(source_token, ingesting_host: nil, forward_to: nil)
       @logger = Logtail::Logger.new(LogDevice.new(source_token, ingesting_host: ingesting_host))
+      # Logtail::Logger defaults to ENV["LOG_LEVEL"], which drops these info events in production.
+      @logger.level = :info
       @forward_to = forward_to
     end
 
