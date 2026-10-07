@@ -94,13 +94,15 @@ RSpec.describe "Api::V0::ApiController" do
 
       it "includes appeal_url in the unauthorized JSON response payload" do
         controller.instance_variable_set(:@user, user)
-        expect(controller).to receive(:render).with(
+        allow(controller).to receive(:render)
+
+        controller.__send__(:error_unauthorized)
+
+        expect(controller).to have_received(:render).with(
           json: { error: "unauthorized", status: 401, appeal_url: "/appeal" },
           status: :unauthorized,
         )
-        controller.send(:error_unauthorized)
       end
     end
   end
 end
-

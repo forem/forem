@@ -22,18 +22,16 @@ module Admin
     def show; end
 
     def update
-      if @appeal.approved? || @appeal.rejected?
-        flash[:alert] = I18n.t("admin.flag_appeals_controller.already_resolved")
-        return redirect_to admin_flag_appeals_path(status: @appeal.status)
-      end
+      return already_resolved_redirect if @appeal.approved? || @appeal.rejected?
 
-      resolution = params[:resolution]
+      case params[:resolution]
+      when "approve"
+        return already_resolved_redirect unless Appeals::Resolver.approve(appeal: @appeal, admin: current_user)
 
-      if resolution == "approve"
-        Appeals::Resolver.approve(appeal: @appeal, admin: current_user)
         flash[:notice] = I18n.t("admin.flag_appeals_controller.approved")
-      elsif resolution == "reject"
-        Appeals::Resolver.reject(appeal: @appeal, admin: current_user)
+      when "reject"
+        return already_resolved_redirect unless Appeals::Resolver.reject(appeal: @appeal, admin: current_user)
+
         flash[:notice] = I18n.t("admin.flag_appeals_controller.rejected")
       else
         flash[:alert] = I18n.t("admin.flag_appeals_controller.invalid_action")
@@ -44,6 +42,11 @@ module Admin
     end
 
     private
+
+    def already_resolved_redirect
+      flash[:alert] = I18n.t("admin.flag_appeals_controller.already_resolved")
+      redirect_to admin_flag_appeals_path(status: @appeal.status)
+    end
 
     def set_appeal
       @appeal = FlagAppeal.find(params[:id])

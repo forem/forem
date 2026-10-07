@@ -14,3 +14,7 @@ fr:
       already_pending: Vous avez déjà un recours en attente d'examen pour cet élément.
       appealing_comment_heading: Recours pour le signalement de votre commentaire
       appealing_article_heading: Recours pour le signalement de votre article
+      errors_heading:
+        one: "1 erreur a empêché l'envoi de ce recours :"
+        other: "%{count} erreurs ont empêché l'envoi de ce recours :"
+      on_post: "Sur : %{title}"

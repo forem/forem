@@ -1,18 +1,21 @@
 <div class="crayons-card p-4">
   <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-border">
-    <h1 class="crayons-title text-xl">Flag Appeals Queue</h1>
+    <h1 class="crayons-title text-xl"><%= t("views.admin.flag_appeals.title") %></h1>
 
     <div class="flex items-center gap-3">
       <div class="crayons-navigation border-0 m-0">
         <div class="crayons-navigation__content">
-          <%= link_to "Pending", admin_flag_appeals_path(status: "pending"), class: "crayons-navigation__item #{@status == 'pending' ? 'crayons-navigation__item--current' : ''}" %>
-          <%= link_to "Approved", admin_flag_appeals_path(status: "approved"), class: "crayons-navigation__item #{@status == 'approved' ? 'crayons-navigation__item--current' : ''}" %>
-          <%= link_to "Rejected", admin_flag_appeals_path(status: "rejected"), class: "crayons-navigation__item #{@status == 'rejected' ? 'crayons-navigation__item--current' : ''}" %>
+          <% %w[pending approved rejected].each do |status| %>
+            <%= link_to t("views.admin.flag_appeals.tabs.#{status}"), admin_flag_appeals_path(status: status), class: "crayons-navigation__item #{@status == status ? 'crayons-navigation__item--current' : ''}" %>
+          <% end %>
         </div>
       </div>
 
       <% if @flag_appeals.any? %>
-        <button id="toggleAllAppeals" class="crayons-btn crayons-btn--secondary crayons-btn--s">Expand All</button>
+        <button id="toggleAllAppeals" type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s"
+                data-expand-label="<%= t("views.admin.flag_appeals.expand_all") %>"
+                data-collapse-label="<%= t("views.admin.flag_appeals.collapse_all") %>"
+                data-expanded="false"><%= t("views.admin.flag_appeals.expand_all") %></button>
       <% end %>
     </div>
   </div>
@@ -28,19 +31,20 @@
       <%= paginate @flag_appeals %>
     </div>
   <% else %>
-    <p class="color-base-60 p-4 text-center">No flag appeals found matching this status.</p>
+    <p class="color-base-60 p-4 text-center"><%= t("views.admin.flag_appeals.empty") %></p>
   <% end %>
 </div>
 
 <script>
   document.getElementById('toggleAllAppeals')?.addEventListener('click', function() {
     const detailsElements = document.querySelectorAll('details[id^="accordion-"]');
-    const shouldExpand = this.textContent.includes('Expand');
+    const shouldExpand = this.dataset.expanded !== 'true';
 
     detailsElements.forEach(details => {
       details.open = shouldExpand;
     });
 
-    this.textContent = shouldExpand ? 'Collapse All' : 'Expand All';
+    this.dataset.expanded = String(shouldExpand);
+    this.textContent = shouldExpand ? this.dataset.collapseLabel : this.dataset.expandLabel;
   });
 </script>

@@ -1,0 +1,67 @@
+pt:
+  views:
+    admin:
+      flag_appeals:
+        title: Fila de recursos
+        tabs:
+          pending: Pendentes
+          approved: Aprovados
+          rejected: Rejeitados
+        expand_all: Expandir tudo
+        collapse_all: Recolher tudo
+        empty: Nenhum recurso encontrado para este status.
+        back_to_queue: "← Voltar para a fila de recursos"
+        appeal_number: "Recurso nº %{id}"
+        submitted_html: "Enviado há %{time} por %{user} (@%{username})"
+        link_to_appeal: Link para o recurso
+        not_available: N/D
+        system: Sistema
+        status:
+          open: Aberto
+          ai_reviewed: Analisado pela IA
+          approved: Aprovado
+          rejected: Rejeitado
+        recommendation:
+          auto_unflag: Remover sinalização automaticamente
+          human_review: Revisão humana
+          confirm_flag: Confirmar sinalização
+        target:
+          comment: Comentário em "%{title}"
+          article: 'Artigo: "%{title}"'
+          user: "Conta: @%{username}"
+          other: "%{type} nº %{id}"
+        types:
+          Article: Artigo
+          Comment: Comentário
+          User: Usuário
+        post_fallback: Publicação
+        discussion_fallback: Discussão
+        appealing_user: Usuário que enviou o recurso
+        user_id: "ID: %{id}"
+        user_score: "Pontuação do usuário: %{score}"
+        account_flagged: Suspenso / Sinalizado como spam
+        account_active: Ativo
+        flagged_item: "Item sinalizado (%{type})"
+        comment_on: "Comentário em:"
+        open_comment: Abrir comentário no site ↗
+        comment_score_html: "Pontuação do comentário: <strong>%{score}</strong>"
+        article_score_html: "Pontuação do artigo: <strong>%{score}</strong>"
+        deleted: "%{type} nº %{id} (excluído do banco de dados)"
+        flagged_content_text: "Texto do conteúdo sinalizado:"
+        empty_comment: "(Comentário vazio)"
+        account_moderation: "Moderação da conta de @%{username}"
+        user_statement: "Declaração de recurso do usuário:"
+        ai:
+          badge: "IA: %{recommendation} (%{score})"
+          heading: Reavaliação pela IA
+          recommendation: "Recomendação: %{recommendation}"
+          confidence: Pontuação de confiança
+          summary: Resumo da IA
+          pending: Avaliação da IA pendente em segundo plano...
+        approve_button: Aprovar e remover sinalização
+        reject_button: Rejeitar recurso
+        confirm_approve_article: "Isso aprovará o recurso nº %{id}, restabelecerá a conta de @%{username} (removendo o status de suspenso/spam), limpará as sinalizações automáticas de moderação do artigo nº %{target_id} e removerá as reações de spam do mascote. Tem certeza de que deseja continuar?"
+        confirm_approve_comment: "Isso aprovará o recurso nº %{id}, restabelecerá a conta de @%{username}, removerá as reações de spam do mascote no comentário nº %{target_id} e recalculará a pontuação do comentário. Tem certeza de que deseja continuar?"
+        confirm_approve_user: "Isso aprovará o recurso nº %{id} e restabelecerá a conta de @%{username} (removendo o status de suspenso/spam). Tem certeza de que deseja continuar?"
+        confirm_reject: "Isso rejeitará o recurso nº %{id} e manterá todas as restrições ativas na conta de @%{username}. Tem certeza de que deseja continuar?"
+        resolved_by_html: "Resolvido por: <strong>%{name}</strong> em %{date}"

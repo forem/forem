@@ -10,7 +10,7 @@
       <%= form_with(model: @flag_appeal, url: appeal_path, local: true, class: "flex flex-col gap-6") do |f| %>
         <% if @flag_appeal.errors.any? %>
           <div class="crayons-notice crayons-notice--danger mb-4" role="alert">
-            <h2 class="font-bold mb-1"><%= pluralize(@flag_appeal.errors.count, "error") %> prohibited this appeal from being submitted:</h2>
+            <h2 class="font-bold mb-1"><%= t("views.flag_appeals.errors_heading", count: @flag_appeal.errors.count) %></h2>
             <ul class="list-disc pl-5">
               <% @flag_appeal.errors.full_messages.each do |msg| %>
                 <li><%= msg %></li>
@@ -27,7 +27,7 @@
             <span class="fs-xs font-bold uppercase color-base-60 block mb-1"><%= t("views.flag_appeals.appealing_comment_heading") %></span>
             <p class="fs-sm italic mb-1">"<%= comment.body_markdown.truncate(200) %>"</p>
             <% if comment.commentable.respond_to?(:title) %>
-              <span class="fs-xs color-base-60">On: <%= comment.commentable.title %></span>
+              <span class="fs-xs color-base-60"><%= t("views.flag_appeals.on_post", title: comment.commentable.title) %></span>
             <% end %>
           </div>
         <% elsif @flag_appeal.appealable_type == "Article" && (article = current_user.articles.find_by(id: @flag_appeal.appealable_id)) %>

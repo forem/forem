@@ -40,15 +40,62 @@ RSpec.describe "Admin::FlagAppeals", type: :request do
 
     it "blocks re-resolution when the appeal is already resolved" do
       appeal.update!(status: :approved, resolved_by: admin)
-
-      expect(Appeals::Resolver).not_to receive(:approve)
-      expect(Appeals::Resolver).not_to receive(:reject)
+      allow(Appeals::Resolver).to receive(:approve)
+      allow(Appeals::Resolver).to receive(:reject)
 
       patch admin_flag_appeal_path(appeal), params: { resolution: "reject" }
 
+      expect(Appeals::Resolver).not_to have_received(:approve)
+      expect(Appeals::Resolver).not_to have_received(:reject)
       expect(response).to redirect_to(admin_flag_appeals_path(status: "approved"))
       expect(flash[:alert]).to eq(I18n.t("admin.flag_appeals_controller.already_resolved"))
       expect(appeal.reload.approved?).to be true
+    end
+
+    it "reports already-resolved when another resolution wins the race after the status check" do
+      allow(Appeals::Resolver).to receive(:approve).and_return(false)
+
+      patch admin_flag_appeal_path(appeal), params: { resolution: "approve" }
+
+      expect(response).to redirect_to(admin_flag_appeals_path(status: "open"))
+      expect(flash[:alert]).to eq(I18n.t("admin.flag_appeals_controller.already_resolved"))
+      expect(flash[:notice]).to be_nil
+    end
+
+    it "rejects unknown resolutions without resolving the appeal" do
+      patch admin_flag_appeal_path(appeal), params: { resolution: "delete_everything" }
+
+      expect(flash[:alert]).to eq(I18n.t("admin.flag_appeals_controller.invalid_action"))
+      expect(appeal.reload.open?).to be true
+    end
+  end
+
+  describe "authorization" do
+    before { sign_in create(:user) }
+
+    it "does not let a regular user view the queue" do
+      expect { get admin_flag_appeals_path }.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "does not let a regular user resolve an appeal" do
+      expect do
+        patch admin_flag_appeal_path(appeal), params: { resolution: "approve" }
+      end.to raise_error(Pundit::NotAuthorizedError)
+
+      expect(appeal.reload.open?).to be true
+    end
+  end
+
+  describe "when the appealed content was deleted" do
+    it "still renders the queue" do
+      article = create(:article, user: user)
+      create(:flag_appeal, user: user, appealable: article)
+      article.delete
+
+      get admin_flag_appeals_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Deleted from database")
     end
   end
 end

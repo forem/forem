@@ -19,6 +19,25 @@ RSpec.describe "FlagAppeals" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Submit a Moderation Appeal")
       end
+
+      it "does not expose another user's article through appealable_id" do
+        other_article = create(:article, user: create(:user), title: "Someone Else's Private Draft Title")
+
+        get appeal_path(appealable_type: "Article", appealable_id: other_article.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(other_article.title)
+        expect(response.body).to include("value=\"User\"")
+      end
+
+      it "does not expose another user's comment through appealable_id" do
+        other_comment = create(:comment, user: create(:user), body_markdown: "Someone else's secret comment body")
+
+        get appeal_path(appealable_type: "Comment", appealable_id: other_comment.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("secret comment body")
+      end
     end
   end
 

@@ -1,0 +1,67 @@
+fr:
+  views:
+    admin:
+      flag_appeals:
+        title: File d'attente des recours
+        tabs:
+          pending: En attente
+          approved: Approuvés
+          rejected: Rejetés
+        expand_all: Tout développer
+        collapse_all: Tout réduire
+        empty: Aucun recours ne correspond à ce statut.
+        back_to_queue: "← Retour à la file d'attente des recours"
+        appeal_number: "Recours n° %{id}"
+        submitted_html: "Soumis il y a %{time} par %{user} (@%{username})"
+        link_to_appeal: Lien vers le recours
+        not_available: N/D
+        system: Système
+        status:
+          open: Ouvert
+          ai_reviewed: Examiné par l'IA
+          approved: Approuvé
+          rejected: Rejeté
+        recommendation:
+          auto_unflag: Désignalement automatique
+          human_review: Examen humain
+          confirm_flag: Confirmer le signalement
+        target:
+          comment: Commentaire sur « %{title} »
+          article: "Article : « %{title} »"
+          user: "Compte : @%{username}"
+          other: "%{type} n° %{id}"
+        types:
+          Article: Article
+          Comment: Commentaire
+          User: Utilisateur
+        post_fallback: Publication
+        discussion_fallback: Discussion
+        appealing_user: Utilisateur à l'origine du recours
+        user_id: "ID : %{id}"
+        user_score: "Score de l'utilisateur : %{score}"
+        account_flagged: Suspendu / Signalé comme spam
+        account_active: Actif
+        flagged_item: "Élément signalé (%{type})"
+        comment_on: "Commentaire sur :"
+        open_comment: Ouvrir le commentaire sur le site ↗
+        comment_score_html: "Score du commentaire : <strong>%{score}</strong>"
+        article_score_html: "Score de l'article : <strong>%{score}</strong>"
+        deleted: "%{type} n° %{id} (supprimé de la base de données)"
+        flagged_content_text: "Texte du contenu signalé :"
+        empty_comment: "(Commentaire vide)"
+        account_moderation: "Modération du compte de @%{username}"
+        user_statement: "Déclaration de recours de l'utilisateur :"
+        ai:
+          badge: "IA : %{recommendation} (%{score})"
+          heading: Réévaluation par l'IA
+          recommendation: "Recommandation : %{recommendation}"
+          confidence: Score de confiance
+          summary: Résumé de l'IA
+          pending: Évaluation de l'IA en cours en arrière-plan...
+        approve_button: Approuver et désignaler
+        reject_button: Rejeter le recours
+        confirm_approve_article: "Cela approuvera le recours n° %{id}, rétablira le compte de @%{username} (suppression du statut suspendu/spam), effacera les signalements automatiques de modération sur l'article n° %{target_id} et supprimera les réactions spam de la mascotte. Voulez-vous vraiment continuer ?"
+        confirm_approve_comment: "Cela approuvera le recours n° %{id}, rétablira le compte de @%{username}, supprimera les réactions spam de la mascotte sur le commentaire n° %{target_id} et recalculera le score du commentaire. Voulez-vous vraiment continuer ?"
+        confirm_approve_user: "Cela approuvera le recours n° %{id} et rétablira le compte de @%{username} (suppression du statut suspendu/spam). Voulez-vous vraiment continuer ?"
+        confirm_reject: "Cela rejettera le recours n° %{id} et maintiendra toutes les restrictions actives sur le compte de @%{username}. Voulez-vous vraiment continuer ?"
+        resolved_by_html: "Résolu par : <strong>%{name}</strong> le %{date}"

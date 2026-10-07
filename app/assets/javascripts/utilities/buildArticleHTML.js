@@ -410,10 +410,7 @@ function buildArticleHTML(article, currentUserId = null) {
       '/following/latest',
       '/following/latest_less_filtered',
     ];
-    const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
-    const isHomeFeed =
-      !window.location.pathname.startsWith('/search') &&
-      homeFeedPaths.includes(currentPath);
+    const isHomeFeed = homeFeedPaths.includes(window.location.pathname);
 
     // "!=" instead of "!==" used to compare user_id and currentUserId because
     // currentUserId is a String while user_id is an Integer

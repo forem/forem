@@ -18,6 +18,9 @@ module Ai
     # Asks the AI to re-assess the appeal and returns a structured result.
     # @return [Hash] Hash with :recommendation, :confidence_score, and :summary.
     def evaluate
+      # The target may have been deleted while the appeal was pending; never auto-resolve in that case.
+      return missing_target_result if @target.nil?
+
       model = ENV.fetch("GEMINI_API_LITE_MODEL", Ai::Base::DEFAULT_LITE_MODEL)
       ai_client = Ai::Base.new(
         model: model,
@@ -54,7 +57,7 @@ module Ai
         </target_content_context>
 
         <user_appeal_statement>
-        #{@appeal.reason}
+        #{escape(@appeal.reason)}
         </user_appeal_statement>
 
         **Task:**
@@ -75,9 +78,15 @@ module Ai
       PROMPT
     end
 
+    # Everything interpolated into the prompt that a user can influence goes through this, so it can't
+    # contain a literal closing tag (e.g. </user_appeal_statement>) and break out of its XML boundary.
+    def escape(text)
+      text.to_s.gsub("&", "&amp;").gsub("<", "&lt;").gsub(">", "&gt;")
+    end
+
     def build_user_context
       <<~USER_CONTEXT
-        Name: #{@user.name} (@#{@user.username})
+        Name: #{escape(@user.name)} (@#{escape(@user.username)})
         Member since: #{@user.created_at.strftime('%B %Y')}
         Badges count: #{@user.badge_achievements_count}
         Articles published: #{@user.articles.published.count}
@@ -91,9 +100,9 @@ module Ai
       when Article
         <<~ARTICLE_CONTEXT
           Type: Article
-          Title: #{@target.title}
-          Automod Label: #{@target.automod_label || 'none'}
-          Body Snippet: #{@target.body_markdown.to_s.truncate(1500)}
+          Title: #{escape(@target.title)}
+          Automod Label: #{escape(@target.automod_label || 'none')}
+          Body Snippet: #{escape(@target.body_markdown.to_s.truncate(1500))}
         ARTICLE_CONTEXT
       when Comment
         parent_title = if @target.commentable.respond_to?(:title)
@@ -103,16 +112,16 @@ module Ai
                        end
         <<~COMMENT_CONTEXT
           Type: Comment
-          Parent Post/Article: #{parent_title}
+          Parent Post/Article: #{escape(parent_title)}
           Current Quality Score: #{@target.score}
-          Body Snippet: #{@target.body_markdown.to_s.truncate(1500)}
+          Body Snippet: #{escape(@target.body_markdown.to_s.truncate(1500))}
         COMMENT_CONTEXT
       when User
         <<~USER_TARGET
           Type: User Account Profile
-          Username: #{@target.username}
-          Summary: #{@target.profile&.summary || 'No summary'}
-          Website: #{@target.profile&.website_url || 'None'}
+          Username: #{escape(@target.username)}
+          Summary: #{escape(@target.profile&.summary || 'No summary')}
+          Website: #{escape(@target.profile&.website_url || 'None')}
         USER_TARGET
       else
         "Type: #{@target.class.name} (ID: #{@target.id})"
@@ -142,6 +151,14 @@ module Ai
         recommendation: "human_review",
         confidence_score: 0.5,
         summary: "Automated AI re-assessment encountered an error; routed for human admin review."
+      }
+    end
+
+    def missing_target_result
+      {
+        recommendation: "human_review",
+        confidence_score: 0.0,
+        summary: "The appealed content no longer exists; routed for human admin review."
       }
     end
   end

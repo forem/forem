@@ -1,12 +1,14 @@
 class FlagAppeal < ApplicationRecord
   belongs_to :user
-  belongs_to :appealable, polymorphic: true
+  # Optional so an appeal can still be resolved after its target was deleted; presence is enforced on create.
+  belongs_to :appealable, polymorphic: true, optional: true
   belongs_to :resolved_by, class_name: "User", optional: true
 
   enum :status, { open: 0, ai_reviewed: 1, approved: 2, rejected: 3 }
   enum :ai_recommendation, { auto_unflag: 0, human_review: 1, confirm_flag: 2 }
 
   validates :reason, presence: true, length: { maximum: 3000 }
+  validates :appealable, presence: true, on: :create
   validates :status, :ai_recommendation, presence: true
   validate :must_not_have_pending_appeal, on: :create
 

@@ -1,5 +1,4 @@
 module CommentsHelper
-  ORGANIZATION_ROLE_TYPES = %w[admin member].freeze
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
   MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED = 75
@@ -95,16 +94,19 @@ module CommentsHelper
   end
 
   def commenter_organization_membership(comment, commentable)
-    return unless commentable.respond_to?(:organization)
+    return unless commentable&.respond_to?(:organization)
     return unless commentable.organization
 
     # Use preloaded organization_memberships if available to avoid N+1 queries
     if comment.user.organization_memberships.loaded?
-      is_org_member = comment.user.organization_memberships.any? do |membership|
+      if comment.user.organization_memberships.any? do |membership|
         membership.organization_id == commentable.organization.id &&
-          ORGANIZATION_ROLE_TYPES.include?(membership.type_of_user)
+            %w[admin member].include?(membership.type_of_user)
       end
-      is_org_member ? commentable.organization.name : nil
+        commentable.organization.name
+      else
+        nil
+      end
     else
       # Fallback to the original method if not preloaded
       comment.user.org_member?(commentable.organization) ? commentable.organization.name : nil
@@ -115,11 +117,10 @@ module CommentsHelper
 
   def limit_descendants(sub_hash, limit)
     count = 0
-    traverse = lambda do |hash|
+    traverse = ->(hash) do
       new_hash = {}
       hash.each do |c, children|
         break if count >= limit
-
         count += 1
         new_hash[c] = traverse.call(children)
       end

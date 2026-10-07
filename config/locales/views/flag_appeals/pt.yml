@@ -14,3 +14,7 @@ pt:
       already_pending: Você já tem um recurso aberto pendente de análise para este item.
       appealing_comment_heading: Recurso sobre a sinalização do seu comentário
       appealing_article_heading: Recurso sobre a sinalização do seu artigo
+      errors_heading:
+        one: "1 erro impediu o envio deste recurso:"
+        other: "%{count} erros impediram o envio deste recurso:"
+      on_post: "Em: %{title}"

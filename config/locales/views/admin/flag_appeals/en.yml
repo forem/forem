@@ -1,0 +1,67 @@
+en:
+  views:
+    admin:
+      flag_appeals:
+        title: Flag Appeals Queue
+        tabs:
+          pending: Pending
+          approved: Approved
+          rejected: Rejected
+        expand_all: Expand All
+        collapse_all: Collapse All
+        empty: No flag appeals found matching this status.
+        back_to_queue: "← Back to Appeals Queue"
+        appeal_number: "Flag Appeal #%{id}"
+        submitted_html: "Submitted %{time} ago by %{user} (@%{username})"
+        link_to_appeal: Link to Appeal
+        not_available: N/A
+        system: System
+        status:
+          open: Open
+          ai_reviewed: AI reviewed
+          approved: Approved
+          rejected: Rejected
+        recommendation:
+          auto_unflag: Auto unflag
+          human_review: Human review
+          confirm_flag: Confirm flag
+        target:
+          comment: Comment on "%{title}"
+          article: 'Article: "%{title}"'
+          user: "Account: @%{username}"
+          other: "%{type} #%{id}"
+        types:
+          Article: Article
+          Comment: Comment
+          User: User
+        post_fallback: Post
+        discussion_fallback: Discussion
+        appealing_user: Appealing User
+        user_id: "ID: %{id}"
+        user_score: "User Score: %{score}"
+        account_flagged: Suspended / Spam Flagged
+        account_active: Active
+        flagged_item: "Flagged Item (%{type})"
+        comment_on: "Comment on:"
+        open_comment: Open Comment on Site ↗
+        comment_score_html: "Comment Score: <strong>%{score}</strong>"
+        article_score_html: "Article Score: <strong>%{score}</strong>"
+        deleted: "%{type} #%{id} (Deleted from database)"
+        flagged_content_text: "Flagged Content Text:"
+        empty_comment: "(Empty comment)"
+        account_moderation: "Account moderation for @%{username}"
+        user_statement: "User's Appeal Statement:"
+        ai:
+          badge: "AI: %{recommendation} (%{score})"
+          heading: AI Re-Assessment Evaluation
+          recommendation: "Recommendation: %{recommendation}"
+          confidence: Confidence Score
+          summary: AI Summary
+          pending: Pending AI background evaluation...
+        approve_button: Approve & Unflag
+        reject_button: Reject Appeal
+        confirm_approve_article: "This will approve Appeal #%{id}, reinstate @%{username}'s account (removing suspended/spam status), clear automod flags on Article #%{target_id}, and remove spam mascot reactions. Are you sure you want to proceed?"
+        confirm_approve_comment: "This will approve Appeal #%{id}, reinstate @%{username}'s account, remove spam mascot reactions on Comment #%{target_id}, and recalculate the comment score. Are you sure you want to proceed?"
+        confirm_approve_user: "This will approve Appeal #%{id} and reinstate @%{username}'s account (removing suspended/spam status). Are you sure you want to proceed?"
+        confirm_reject: "This will reject Appeal #%{id} and maintain all active restrictions on @%{username}'s account. Are you sure you want to proceed?"
+        resolved_by_html: "Resolved by: <strong>%{name}</strong> on %{date}"

@@ -25,11 +25,25 @@ RSpec.describe FlagAppeal, type: :model do
       expect(duplicate).not_to be_valid
       expect(duplicate.errors[:base]).to include("You already have an open appeal pending review for this item.")
     end
+
+    it "requires an appealable target on create" do
+      flag_appeal.appealable = nil
+      expect(flag_appeal).not_to be_valid
+    end
+
+    it "can still be resolved after its target was deleted" do
+      article = create(:article, user: user)
+      appeal = create(:flag_appeal, user: user, appealable: article)
+      article.delete
+
+      expect(described_class.find(appeal.id).update(status: :rejected)).to be true
+    end
   end
 
   describe "associations" do
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:appealable) }
+    it { expect(described_class.reflect_on_association(:appealable)).to be_polymorphic }
+    it { is_expected.to validate_presence_of(:appealable).on(:create) }
     it { is_expected.to belong_to(:resolved_by).class_name("User").optional }
   end
 

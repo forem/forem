@@ -65,5 +65,29 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
 
       expect(Ai::AppealAssessor).not_to have_received(:new)
     end
+
+    context "when the appealed content was deleted while the appeal was pending" do
+      let(:article) { create(:article, user: user) }
+      let(:appeal) { create(:flag_appeal, user: user, appealable: article, status: :open) }
+
+      before do
+        # Use the real assessor, even if the AI would have wanted to auto-unflag.
+        allow(Ai::AppealAssessor).to receive(:new).and_call_original
+        allow(Ai::Base).to receive(:new)
+      end
+
+      it "routes to human review without raising and never auto-resolves" do
+        appeal_id = appeal.id
+        article.delete
+
+        expect { described_class.new.perform(appeal_id) }.not_to raise_error
+
+        orphaned = FlagAppeal.find(appeal_id)
+        expect(orphaned.status).to eq("ai_reviewed")
+        expect(orphaned.ai_recommendation).to eq("human_review")
+        expect(Ai::Base).not_to have_received(:new)
+        expect(Appeals::Resolver).not_to have_received(:approve)
+      end
+    end
   end
 end
