@@ -105,6 +105,15 @@ RSpec.describe "Api::V1::Comments" do
       )
     end
 
+    it "returns the AI disclosure fields" do
+      root_comment.update!(ai_disclosure_level: :some_ai)
+      get api_comments_path(a_id: article.id), headers: headers
+
+      comment = find_root_comment(response)
+      expect(comment).to include("ai_disclosure_level" => "some_ai")
+      expect(comment).to have_key("ai_disclosure_label")
+    end
+
     context "when a comment is deleted" do
       before do
         child_comment.update(deleted: true)

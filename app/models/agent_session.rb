@@ -13,11 +13,23 @@ class AgentSession < ApplicationRecord
   validate :data_not_too_large
   validate :s3_key_format_and_ownership
 
+  before_validation :strip_null_bytes
   before_validation :generate_slug
   before_validation :assign_message_indices
   after_destroy :delete_s3_object
 
   scope :published, -> { where(published: true) }
+
+  # Postgres jsonb rejects \u0000 ("cannot be converted to text"), and raw
+  # tool output (e.g. `find -print0`, binary file reads) can contain it.
+  def self.strip_null_bytes(value)
+    case value
+    when String then value.delete("\u0000")
+    when Hash then value.to_h { |k, v| [strip_null_bytes(k), strip_null_bytes(v)] }
+    when Array then value.map { |v| strip_null_bytes(v) }
+    else value
+    end
+  end
 
   def messages
     curated_data.fetch("messages", [])
@@ -80,6 +92,13 @@ class AgentSession < ApplicationRecord
   end
 
   private
+
+  def strip_null_bytes
+    self.title = self.class.strip_null_bytes(title)
+    self.curated_data = self.class.strip_null_bytes(curated_data)
+    self.session_metadata = self.class.strip_null_bytes(session_metadata)
+    self.slices = self.class.strip_null_bytes(slices)
+  end
 
   def generate_slug
     return if slug.present?
