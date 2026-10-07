@@ -207,6 +207,7 @@ class Article < ApplicationRecord
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
@@ -350,6 +351,7 @@ class Article < ApplicationRecord
   before_save :set_caches
   before_save :detect_language
   before_create :create_password
+  after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -1665,8 +1667,13 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
+  # Co-authors who accepted an invitation consented to the credit themselves, so they don't need
+  # to be members of the organization (e.g. a co-authored personal post moved under an org).
   def validate_co_authors_belong_to_organization
-    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
+    org_credited_ids = co_author_ids - co_author_invitations.accepted.pluck(:user_id)
+    org_member_count = OrganizationMembership.active
+      .where(organization_id: organization_id, user_id: org_credited_ids).count
+    return if org_member_count == org_credited_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
@@ -2055,6 +2062,12 @@ class Article < ApplicationRecord
     removed_user_ids = Array.wrap(before).map(&:to_i) - Array.wrap(after).map(&:to_i)
 
     Notification.send_to_co_authors(self, removed_user_ids)
+  end
+
+  # Keeps accepted invitations in step with co_author_ids when the credit list is edited directly
+  # (org co-author picker, admin tools), so an accepted invitation always means a credited co-author.
+  def remove_uncredited_co_author_invitations
+    co_author_invitations.accepted.where.not(user_id: co_author_ids).destroy_all
   end
 
   def cleanup_memberships_if_unpublished

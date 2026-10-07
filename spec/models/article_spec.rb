@@ -4380,4 +4380,56 @@ RSpec.describe Article do
       expect(Notification).not_to have_received(:send_to_co_authors)
     end
   end
+
+  describe "co-author invitations" do
+    let(:author) { create(:user) }
+    let(:article) { create(:article, user: author) }
+    let(:invitee) { create(:user) }
+
+    it "removes an accepted invitation when its co-author is dropped from co_author_ids", :aggregate_failures do
+      invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+      pending_invitation = create(:co_author_invitation, article: article)
+
+      article.reload.update!(co_author_ids: [])
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(CoAuthorInvitation.exists?(pending_invitation.id)).to be(true)
+    end
+
+    it "keeps accepted invitations whose co-author is still credited" do
+      invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+
+      article.reload.update!(title: "A new title")
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(true)
+    end
+
+    it "destroys its invitations and their notifications along with the article", :aggregate_failures do
+      invitation = create(:co_author_invitation, article: article, user: invitee)
+      Notifications::CoAuthorInvitations::Send.call(invitation)
+
+      article.destroy
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(Notification.where(notifiable: invitation)).to be_empty
+    end
+
+    describe "organization membership" do
+      let(:organization) { create(:organization) }
+
+      it "allows a co-author who accepted an invitation even if they're not an org member" do
+        create(:co_author_invitation, :accepted, article: article, user: invitee)
+        create(:organization_membership, user: author, organization: organization)
+
+        expect(article.reload.update(organization: organization)).to be(true)
+      end
+
+      it "still requires org membership for co-authors credited without an invitation" do
+        create(:organization_membership, user: author, organization: organization)
+        article.update_columns(co_author_ids: [invitee.id])
+
+        expect(article.reload.update(organization: organization)).to be(false)
+      end
+    end
+  end
 end

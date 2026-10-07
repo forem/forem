@@ -45,9 +45,22 @@ export function processPayload(payload) {
     organizations,
     authorId,
     coAuthorsData,
+    coAuthorInvitations,
+    coAuthorInvitationsMax,
     /* eslint-enable no-unused-vars */
+    coAuthorInvitationsEnabled,
+    coAuthorInvitees,
     ...neededPayload
   } = payload;
+
+  // Invitations only apply to personal posts. Leaving the list out (rather than sending it
+  // empty) tells the server not to touch the post's invitations.
+  if (coAuthorInvitationsEnabled && !neededPayload.organizationId) {
+    neededPayload.coAuthorInviteeIds = (coAuthorInvitees || []).map(
+      ({ id }) => id,
+    );
+  }
+
   return neededPayload;
 }
 

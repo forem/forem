@@ -51,6 +51,12 @@ en:
     article_form_co_authors: Co-authors
     article_form_co_authors_description: Add up to 4 co-authors from %{org_name}.
     article_form_co_authors_placeholder: Add up to 4...
+    article_form_co_author_invitations_description: Invite people who follow you. They'll be credited once they accept from their notifications.
+    article_form_co_author_invitations_placeholder: Search your followers...
+    article_form_co_author_invitations_declined: 'Declined: %{names}'
+    article_form_co_author_invitation_new: Invite on save
+    article_form_co_author_invitation_pending: Pending
+    article_form_co_author_invitation_accepted: Accepted
     comments_preview: Preview
     comments_continue_editing: Continue editing
     survey_enter_response: Enter your response here...

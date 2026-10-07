@@ -98,12 +98,25 @@ export class ArticleForm extends Component {
     coverImageCrop: PropTypes.string.isRequired,
     aiAvailable: PropTypes.bool.isRequired,
     aiDisclosureEnabled: PropTypes.bool,
+    coAuthorInvitationsEnabled: PropTypes.bool,
+    coAuthorInvitations: PropTypes.string,
+    coAuthorInvitationsMax: PropTypes.string,
   };
 
   static defaultProps = {
     organizations: '[]',
     aiDisclosureEnabled: false,
+    coAuthorInvitationsEnabled: false,
+    coAuthorInvitations: '[]',
+    coAuthorInvitationsMax: '4',
   };
+
+  // Everyone invited or credited through an invitation, as the co-author picker's selection.
+  static activeCoAuthorInvitees(invitations) {
+    return invitations
+      .filter(({ status }) => status !== 'declined')
+      .map(({ user }) => user);
+  }
 
   constructor(props) {
     super(props);
@@ -116,9 +129,13 @@ export class ArticleForm extends Component {
       coverImageCrop,
       aiAvailable,
       aiDisclosureEnabled,
+      coAuthorInvitationsEnabled,
+      coAuthorInvitations,
+      coAuthorInvitationsMax,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
+    this.coAuthorInvitations = JSON.parse(coAuthorInvitations || '[]');
     organizations = organizations ? JSON.parse(organizations) : null;
     this.url = window.location.href;
 
@@ -179,6 +196,12 @@ export class ArticleForm extends Component {
       authorId: this.article.user_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
+      coAuthorInvitationsEnabled,
+      coAuthorInvitationsMax: parseInt(coAuthorInvitationsMax, 10),
+      coAuthorInvitations: this.coAuthorInvitations,
+      coAuthorInvitees: ArticleForm.activeCoAuthorInvitees(
+        this.coAuthorInvitations,
+      ),
       aiDisclosureLevel: this.article.ai_disclosure_level || 'not_disclosed',
       errors: null,
       edited: false,
@@ -448,6 +471,9 @@ export class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
+      coAuthorInvitees: ArticleForm.activeCoAuthorInvitees(
+        this.coAuthorInvitations,
+      ),
       errors: null,
       edited: false,
       helpFor: null,

@@ -179,7 +179,7 @@ class ArticlesController < ApplicationController
     authorize Article
     @user = current_user
     article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
-    article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(@user, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     if article.persisted?
       if article.type_of == "status"
@@ -196,7 +196,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user || current_user
 
-    updated = Articles::Updater.call(@user, @article, article_params_json)
+    updated = Articles::Updater.call(@user, @article, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     respond_to do |format|
       format.html do
@@ -375,6 +375,18 @@ class ArticlesController < ApplicationController
     manage_published_at_params
 
     @article_params_json = params.require(:article).permit(allowed_params)
+  end
+
+  # The editor's co-author invitee list, or nil to leave the article's invitations untouched (the
+  # list wasn't sent, or invitations aren't enabled). Invitees must follow the author, so only the
+  # author manages them; an admin editing someone else's post leaves them alone.
+  def co_author_invitee_ids
+    article_params_json # normalizes the editor's camelCased keys
+    return unless params["article"].key?("co_author_invitee_ids")
+    return if @article && @article.user_id != current_user.id
+    return unless feature_flag_enabled?(:co_author_invitations)
+
+    params.require(:article).permit(co_author_invitee_ids: [])[:co_author_invitee_ids] || []
   end
 
   def manage_published_at_params
