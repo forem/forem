@@ -4424,6 +4424,19 @@ RSpec.describe Article do
         expect(article.reload.update(organization: organization)).to be(true)
       end
 
+      it "withdraws pending invitations when the post moves under the organization", :aggregate_failures do
+        pending_invitation = create(:co_author_invitation, article: article)
+        accepted_invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+        Notifications::CoAuthorInvitations::Send.call(pending_invitation)
+        create(:organization_membership, user: author, organization: organization)
+
+        article.reload.update!(organization: organization)
+
+        expect(CoAuthorInvitation.exists?(pending_invitation.id)).to be(false)
+        expect(Notification.where(notifiable: pending_invitation)).to be_empty
+        expect(CoAuthorInvitation.exists?(accepted_invitation.id)).to be(true)
+      end
+
       it "still requires org membership for co-authors credited without an invitation" do
         create(:organization_membership, user: author, organization: organization)
         article.update_columns(co_author_ids: [invitee.id])

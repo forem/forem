@@ -352,6 +352,9 @@ class Article < ApplicationRecord
   before_save :detect_language
   before_create :create_password
   after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
+  after_update :withdraw_pending_co_author_invitations, if: lambda {
+    saved_change_to_organization_id? && organization_id.present?
+  }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -2068,6 +2071,12 @@ class Article < ApplicationRecord
   # (org co-author picker, admin tools), so an accepted invitation always means a credited co-author.
   def remove_uncredited_co_author_invitations
     co_author_invitations.accepted.where.not(user_id: co_author_ids).destroy_all
+  end
+
+  # Invitations are only for personal posts, so any still pending lapse when the post moves under
+  # an organization. Co-authors who already accepted stay credited.
+  def withdraw_pending_co_author_invitations
+    co_author_invitations.pending.destroy_all
   end
 
   def cleanup_memberships_if_unpublished

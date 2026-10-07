@@ -36,8 +36,11 @@ module CoAuthorInvitations
 
     # Persists the reconciled invitations. The article must have been saved.
     def apply
-      CoAuthorInvitation.transaction do
-        withdrawn_invitations.each(&:destroy!)
+      # Lock the article row the way Accept and Decline do, so a response that landed after
+      # #prepare is seen here. A separate instance is locked because reloading the caller's article
+      # would discard the saved_changes its caller still checks.
+      Article.transaction do
+        withdraw(Article.lock.find(article.id))
         # Eligibility was checked in #prepare; if it changed in the moment since (an unfollow,
         # a concurrent save of the same post), no invitation is sent rather than failing the save.
         new_invitations.each(&:save)
@@ -57,6 +60,17 @@ module CoAuthorInvitations
         .each do |invitation|
           errors << I18n.t("models.co_author_invitation.declined", username: invitation.user.username)
         end
+    end
+
+    # Re-reads the withdrawn invitations under the lock: anyone who accepted since #prepare loses
+    # the credit they just gained, and anyone who declined keeps their invitation as declined.
+    def withdraw(locked_article)
+      invitations = CoAuthorInvitation.where(id: withdrawn_invitations.map(&:id)).reject(&:declined?)
+      credited_ids = invitations.filter_map { |invitation| invitation.user_id if invitation.accepted? }
+      credited_ids &= locked_article.co_author_ids
+
+      invitations.each(&:destroy!)
+      locked_article.update!(co_author_ids: locked_article.co_author_ids - credited_ids) if credited_ids.any?
     end
 
     def existing_invitations

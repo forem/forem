@@ -57,6 +57,8 @@ pt:
     article_form_co_author_invitation_new: Convite ao salvar
     article_form_co_author_invitation_pending: Pendente
     article_form_co_author_invitation_accepted: Aceito
+    article_form_co_author_invitation_edit: Editar %{name}
+    article_form_co_author_invitation_remove: Remover %{name}
     comments_preview: Visualizar
     comments_continue_editing: Continuar editando
     survey_enter_response: Digite sua resposta aqui...

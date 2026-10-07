@@ -35,6 +35,26 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
+  it('namespaces its internal ids by inputId so instances can share a page', () => {
+    const { container, getByLabelText } = render(
+      <div>
+        <MultiSelectAutocomplete labelText="Tags" fetchSuggestions={() => {}} />
+        <MultiSelectAutocomplete
+          labelText="Co-authors"
+          inputId="co-authors"
+          fetchSuggestions={() => {}}
+        />
+      </div>,
+    );
+
+    const ids = [...container.querySelectorAll('[id]')].map(({ id }) => id);
+    expect(new Set(ids).size).toEqual(ids.length);
+    expect(getByLabelText('Co-authors', { selector: 'input' })).toHaveAttribute(
+      'id',
+      'co-authors',
+    );
+  });
+
   it('renders with default values', () => {
     const { container } = render(
       <MultiSelectAutocomplete

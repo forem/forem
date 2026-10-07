@@ -17,6 +17,9 @@ module CoAuthorInvitations
       accepted = article.with_lock do
         invitation.reload
         next false unless invitation.pending?
+        # Invitations are for personal posts; pending ones lapse when a post moves under an
+        # organization (see Article), so a response racing that move is turned away here.
+        next false if article.organization_id.present?
 
         invitation.update!(status: :accepted, responded_at: Time.current)
         article.update!(co_author_ids: article.co_author_ids | [invitation.user_id])
@@ -25,7 +28,7 @@ module CoAuthorInvitations
 
       Notifications::CoAuthorInvitations::Update.call(invitation) if accepted
       accepted
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound # withdrawn in the meantime
       false
     end
 

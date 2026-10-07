@@ -20,6 +20,8 @@ jest.mock('@utilities/locale', () => ({
       'core.article_form_co_author_invitation_new': 'Invite on save',
       'core.article_form_co_author_invitation_pending': 'Pending',
       'core.article_form_co_author_invitation_accepted': 'Accepted',
+      'core.article_form_co_author_invitation_edit': `Edit ${params?.name}`,
+      'core.article_form_co_author_invitation_remove': `Remove ${params?.name}`,
     })[key] || key,
 }));
 
@@ -66,12 +68,30 @@ describe('<CoAuthorInvitationSelector />', () => {
       />,
     );
 
-    expect(screen.getByRole('group', { name: 'ada' })).toHaveTextContent(
-      'Ada LovelacePending',
+    expect(
+      screen.getByRole('group', { name: 'Ada Lovelace' }),
+    ).toHaveTextContent('Ada LovelacePending');
+    expect(
+      screen.getByRole('group', { name: 'Grace Hopper' }),
+    ).toHaveTextContent('Grace HopperAccepted');
+  });
+
+  it('labels the selection actions with the localized display name', () => {
+    render(
+      <CoAuthorInvitationSelector
+        invitees={[ada]}
+        invitations={[]}
+        maxSelections={4}
+        onConfigChange={jest.fn()}
+      />,
     );
-    expect(screen.getByRole('group', { name: 'grace' })).toHaveTextContent(
-      'Grace HopperAccepted',
-    );
+
+    expect(
+      screen.getByRole('button', { name: 'Edit Ada Lovelace' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Remove Ada Lovelace' }),
+    ).toBeInTheDocument();
   });
 
   it('lists people who declined', () => {
@@ -136,9 +156,9 @@ describe('<CoAuthorInvitationSelector />', () => {
       />,
     );
 
-    expect(screen.getByRole('group', { name: 'ada' })).toHaveTextContent(
-      'Invite on save',
-    );
+    expect(
+      screen.getByRole('group', { name: 'Ada Lovelace' }),
+    ).toHaveTextContent('Invite on save');
   });
 
   it('removes an invitee', async () => {
@@ -153,7 +173,9 @@ describe('<CoAuthorInvitationSelector />', () => {
       />,
     );
 
-    await userEvent.click(screen.getByRole('button', { name: 'Remove ada' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove Ada Lovelace' }),
+    );
 
     expect(onConfigChange).toHaveBeenCalledWith(
       expect.objectContaining({

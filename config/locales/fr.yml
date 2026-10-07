@@ -57,6 +57,8 @@ fr:
     article_form_co_author_invitation_new: Invitation à l'enregistrement
     article_form_co_author_invitation_pending: En attente
     article_form_co_author_invitation_accepted: Acceptée
+    article_form_co_author_invitation_edit: Modifier %{name}
+    article_form_co_author_invitation_remove: Retirer %{name}
     comments_preview: Aperçu
     comments_continue_editing: Continuer l'édition
     survey_enter_response: Entrez votre réponse ici...

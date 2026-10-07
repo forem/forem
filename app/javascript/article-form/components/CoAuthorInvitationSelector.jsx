@@ -45,7 +45,6 @@ const CandidateSuggestion = ({ name, fullName, profileImage }) => (
 );
 
 const InviteeSelection = ({
-  name,
   fullName,
   profileImage,
   status,
@@ -53,11 +52,13 @@ const InviteeSelection = ({
   onEdit,
   onDeselect,
 }) => (
-  <div role="group" aria-label={name} className="flex mr-1 mb-1 w-max">
+  <div role="group" aria-label={fullName} className="flex mr-1 mb-1 w-max">
     <Button
       variant={buttonVariant}
       className="c-autocomplete--multi__selected p-1 cursor-text flex items-center"
-      aria-label={`Edit ${name}`}
+      aria-label={locale('core.article_form_co_author_invitation_edit', {
+        name: fullName,
+      })}
       onClick={onEdit}
     >
       <Avatar src={profileImage} />
@@ -72,7 +73,9 @@ const InviteeSelection = ({
     <Button
       variant={buttonVariant}
       className="c-autocomplete--multi__selected p-1"
-      aria-label={`Remove ${name}`}
+      aria-label={locale('core.article_form_co_author_invitation_remove', {
+        name: fullName,
+      })}
       onClick={onDeselect}
     >
       <Icon src={Close} />

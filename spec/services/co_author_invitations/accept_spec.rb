@@ -40,6 +40,21 @@ RSpec.describe CoAuthorInvitations::Accept, type: :service do
     expect(article.reload.co_author_ids).to eq([])
   end
 
+  it "turns away a response once the post is under an organization", :aggregate_failures do
+    article.update_columns(organization_id: create(:organization).id)
+
+    expect(described_class.call(invitation)).to be(false)
+    expect(invitation.reload).to be_pending
+    expect(article.reload.co_author_ids).to eq([])
+  end
+
+  it "does nothing for an invitation that was withdrawn in the meantime" do
+    stale_invitation = CoAuthorInvitation.find(invitation.id)
+    invitation.destroy
+
+    expect(described_class.call(stale_invitation)).to be(false)
+  end
+
   it "rolls back when the article can't be saved", :aggregate_failures do
     # Listing the author as their own co-author makes the article invalid.
     article.update_columns(co_author_ids: [author.id])

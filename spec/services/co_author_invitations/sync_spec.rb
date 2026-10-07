@@ -71,6 +71,31 @@ RSpec.describe CoAuthorInvitations::Sync, type: :service do
     expect(article.co_author_invitations.pluck(:user_id)).to contain_exactly(*invitees.drop(1).map(&:id), follower.id)
   end
 
+  context "when the invitee responds between #prepare and #apply" do
+    let!(:invitation) { create(:co_author_invitation, article: article, user: follower) }
+
+    def withdraw_while
+      result = described_class.new(article, [])
+      result.prepare
+      yield CoAuthorInvitation.find(invitation.id)
+      article.save
+      result.apply
+    end
+
+    it "still removes the credit of someone who just accepted", :aggregate_failures do
+      withdraw_while { |fresh_invitation| CoAuthorInvitations::Accept.call(fresh_invitation) }
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(article.reload.co_author_ids).to eq([])
+    end
+
+    it "keeps the invitation of someone who just declined" do
+      withdraw_while { |fresh_invitation| CoAuthorInvitations::Decline.call(fresh_invitation) }
+
+      expect(invitation.reload).to be_declined
+    end
+  end
+
   describe "#prepare" do
     it "rejects users who don't follow the author", :aggregate_failures do
       stranger = create(:user)

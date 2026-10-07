@@ -28,7 +28,7 @@ module CoAuthorInvitations
 
       Notifications::CoAuthorInvitations::Update.call(invitation) if declined
       declined
-    rescue ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotFound # withdrawn in the meantime
       false
     end
 
