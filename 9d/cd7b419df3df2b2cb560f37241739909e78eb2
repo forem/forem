@@ -1,0 +1,167 @@
+spec/services/notifications/co_author_invitations/send_spec.rb
+  s_26a269fa3c3c7f::t_eb4dc1584f9a02 1-31
+app/policies/co_author_invitation_policy.rb
+  s_26a269fa3c3c7f::t_a35baadeaab5b4 1-25
+config/locales/pt.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 54-59
+app/javascript/article-form/articleForm.jsx
+  s_26a269fa3c3c7f::t_2474c2f33a3d9d 101-103,109-111,114-120,132-134,138,199-201
+  s_26a269fa3c3c7f::t_397d1a38ac8115 202-204,474-476
+app/javascript/article-form/__tests__/actions.test.js
+  s_26a269fa3c3c7f::t_ab2048ec3b8e4c 75-139
+app/services/notifications/co_author_invitations/send.rb
+  s_26a269fa3c3c7f::t_7003420b1deed0 1-15,18-28
+  s_26a269fa3c3c7f::t_24c5e11a2a2558 16-17
+db/schema.rb
+  s_26a269fa3c3c7f::t_05db71e4141e21 13,459-469,2246-2247
+app/javascript/article-form/components/__tests__/CoAuthorInvitationSelector.test.jsx
+  s_26a269fa3c3c7f::t_6a811c30c0365c 1-117,119-184
+  s_26a269fa3c3c7f::t_da72d0668090c2 118
+spec/requests/articles/articles_update_spec.rb
+  s_26a269fa3c3c7f::t_3ae70cb38bfdbf 167
+  s_26a269fa3c3c7f::t_b390ef6a90a996 117-166,168-176
+config/locales/models/en.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 75-81
+config/locales/controllers/en.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+spec/services/co_author_invitations/accept_spec.rb
+  s_26a269fa3c3c7f::t_81925708f877a5 1-43,46-48,50-51
+  s_26a269fa3c3c7f::t_e35e63da69a9be 44-45,49
+config/locales/controllers/pt.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+app/models/notification.rb
+  s_26a269fa3c3c7f::t_fd4c3b0dfa90dd 88-91
+app/services/co_author_invitations/accept.rb
+  s_26a269fa3c3c7f::t_b38f00360a546e 1-40
+spec/policies/co_author_invitation_policy_spec.rb
+  s_26a269fa3c3c7f::t_7e568564b3d258 21-22,24
+  s_26a269fa3c3c7f::t_288f4522400a08 1-12,14-20,25-33
+  s_26a269fa3c3c7f::t_4a1d1cfb4a47a8 13
+  s_26a269fa3c3c7f::t_e4894c7c777891 23
+app/views/articles/_v2_form.html.erb
+  s_26a269fa3c3c7f::t_fe93cace849c55 70-75
+spec/lib/data_update_scripts/add_co_author_invitations_feature_flag_spec.rb
+  s_26a269fa3c3c7f::t_41a9ad67afe41b 7
+  s_26a269fa3c3c7f::t_605ac0f07301d1 1-6,8-13
+config/locales/views/notifications/pt.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/services/notifications/co_author_invitations/update.rb
+  s_26a269fa3c3c7f::t_c930911b4f2406 1-49
+spec/requests/editor_spec.rb
+  s_26a269fa3c3c7f::t_ce3538d44248e2 42,45-90
+  s_26a269fa3c3c7f::t_82f8148b11d21b 43-44
+app/controllers/articles_controller.rb
+  s_26a269fa3c3c7f::t_3d18fef12c3546 381-382,386-387
+  s_26a269fa3c3c7f::t_daaee3fd62a601 182
+  s_26a269fa3c3c7f::t_7e38218c6dd478 199
+  s_26a269fa3c3c7f::t_4c2885760d03c7 380,383-385,388-391
+spec/services/co_author_invitations/decline_spec.rb
+  s_26a269fa3c3c7f::t_e45a9aa27d3ff1 1-35
+spec/workers/notifications/co_author_invitation_worker_spec.rb
+  s_26a269fa3c3c7f::t_3a585b56b3e84a 1-29
+app/javascript/article-form/components/CoAuthorInvitationSelector.jsx
+  s_26a269fa3c3c7f::t_a165758e1f50a4 1-204
+app/javascript/article-form/actions.js
+  s_26a269fa3c3c7f::t_7f343b94838da1 48-49,51-52,55-63
+app/services/notifications/co_author_invitations.rb
+  s_26a269fa3c3c7f::t_5df7aaefc1a330 1-21
+config/locales/views/notifications/fr.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/models/article.rb
+  s_26a269fa3c3c7f::t_397d1a38ac8115 354,1674-1675
+  s_26a269fa3c3c7f::t_9000d6ca2a6233 210
+  s_26a269fa3c3c7f::t_e6022de7fc0dc8 1670-1671,1673
+  s_26a269fa3c3c7f::t_f1c62b25928321 1676
+  s_26a269fa3c3c7f::t_58fa7f8bf0dded 2067-2072
+spec/services/notifications/co_author/send_spec.rb
+  s_26a269fa3c3c7f::t_76937afff647c3 96-97,99,107-108
+  s_26a269fa3c3c7f::t_ef47c581652fbc 94-95,98,100-106,109-114
+config/locales/models/pt.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 74-80
+app/controllers/co_author_invitations_controller.rb
+  s_26a269fa3c3c7f::t_9ab260801bf239 19
+  s_26a269fa3c3c7f::t_0e27c6f4eee71c 1-18,20-54
+config/locales/controllers/fr.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+app/javascript/article-form/components/__tests__/Options.test.jsx
+  s_26a269fa3c3c7f::t_aeaba75c3f7cfa 3,135,144-147,151-153,164-166,170,174,178,182
+  s_26a269fa3c3c7f::t_3d6d7cc3cc20af 134,136-143,148-150,154-163,167-169,171-173,175-177,179-181,183-185
+spec/factories/co_author_invitations.rb
+  s_26a269fa3c3c7f::t_fe30edd294d888 1-27
+spec/models/co_author_invitation_spec.rb
+  s_26a269fa3c3c7f::t_b1feec96a234fd 1-109
+app/javascript/packs/articleForm.jsx
+  s_26a269fa3c3c7f::t_7f343b94838da1 48-50,63-65
+spec/services/co_author_invitations/sync_spec.rb
+  s_26a269fa3c3c7f::t_b970f1cbba1a2a 1-116
+spec/requests/notifications_spec.rb
+  s_26a269fa3c3c7f::t_655db683d5e3b9 818-866
+config/locales/fr.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 54-59
+app/services/articles/creator.rb
+  s_26a269fa3c3c7f::t_1637a3a1ca4eea 92,98,103-114
+  s_26a269fa3c3c7f::t_58d3f9d3c7ee8c 41
+  s_26a269fa3c3c7f::t_8b96b04e905ca8 21-23,26
+  s_26a269fa3c3c7f::t_32bb89b97d9fe2 115
+app/helpers/co_author_invitations_helper.rb
+  s_26a269fa3c3c7f::t_724d11dc29cc27 1-22
+lib/data_update_scripts/20261007120001_add_co_author_invitations_feature_flag.rb
+  s_26a269fa3c3c7f::t_2b4af4b0417111 1-9
+config/locales/views/notifications/en.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/services/articles/updater.rb
+  s_26a269fa3c3c7f::t_972c5557bbf704 9-11,20,23
+  s_26a269fa3c3c7f::t_2e0a34277b91db 15,41,53-58
+  s_26a269fa3c3c7f::t_f7d78f7f7f48d1 42-52,59
+app/javascript/article-form/components/Options.jsx
+  s_26a269fa3c3c7f::t_7f343b94838da1 7,34-37,292-301,336-339
+app/services/co_author_invitations/sync.rb
+  s_26a269fa3c3c7f::t_a2db413863e693 1-31,33-78
+  s_26a269fa3c3c7f::t_4f1d3f7662a030 32
+config/locales/models/fr.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 74-80
+app/workers/notifications/co_author_invitation_worker.rb
+  s_26a269fa3c3c7f::t_8ff6139abbf835 1-15
+app/views/notifications/_coauthorinvitation.html.erb
+  s_26a269fa3c3c7f::t_0138d92aac1b78 1-39
+spec/models/article_spec.rb
+  s_26a269fa3c3c7f::t_912e80574db9f3 4383-4434
+config/locales/en.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 54-59
+app/models/co_author_invitation.rb
+  s_26a269fa3c3c7f::t_2a0922e4079a8e 1-10,12-65
+  s_26a269fa3c3c7f::t_a3569ddae256ca 11
+app/services/notifications/co_author/send.rb
+  s_26a269fa3c3c7f::t_a85d9db370449d 66-71
+  s_26a269fa3c3c7f::t_fa83b5cb3855b3 22
+spec/requests/co_author_invitations_spec.rb
+  s_26a269fa3c3c7f::t_e7e043f28a880a 1-89,91-124
+  s_26a269fa3c3c7f::t_4bb3fa588ae236 90
+app/models/user.rb
+  s_26a269fa3c3c7f::t_94d5afc91f8eb6 97
+app/services/co_author_invitations/decline.rb
+  s_26a269fa3c3c7f::t_617ab9f3627653 1-43
+config/routes.rb
+  s_26a269fa3c3c7f::t_d2799072d0cba7 252-258
+db/migrate/20261007120000_create_co_author_invitations.rb
+  s_26a269fa3c3c7f::t_5190b4b3008584 1-15
+spec/requests/articles/articles_create_spec.rb
+  s_26a269fa3c3c7f::t_226b868cae6659 83-111,116-129
+  s_26a269fa3c3c7f::t_4b40ef5341e6bd 112-115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9dcd7b419df3df2b2cb560f37241739909e78eb2",
+  "prompts": {},
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
