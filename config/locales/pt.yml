@@ -32,6 +32,7 @@ pt:
     follow: Seguir
     follow_back: Seguir de volta
     following: Seguindo
+    image_upload_server_error: Ocorreu um erro no servidor!
     like: Curtir
     loading: carregando...
     reaction: Reação
