@@ -2,6 +2,12 @@
 @import 'variables';
 @import '_mixins';
 
+// Collapse an empty primary/secondary slot so its padding and grid gap
+// don't leave stray whitespace when only one placement returns a billboard.
+.bb-shuffle-group > :not(:has([data-display-unit])) {
+  display: none;
+}
+
 .crayons-layout__comments-billboard {
 
   .crayons-bb,
@@ -240,5 +246,14 @@ body[data-side-nav-visible='true']:not(.hidden-shell) {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+.below-post-bb {
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &:has([data-display-unit]) {
+    margin-top: 50px;
   }
 }

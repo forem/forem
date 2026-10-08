@@ -121,7 +121,7 @@ class ArticlesController < ApplicationController
 
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
 
@@ -131,7 +131,7 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @discussion_lock = @article.discussion_lock
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
   end
@@ -302,7 +302,7 @@ class ArticlesController < ApplicationController
   def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
@@ -395,7 +395,7 @@ class ArticlesController < ApplicationController
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
     potential_org_id = requested_organization_id || @article&.organization_id
-    OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
+    OrganizationMembership.member.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
 
@@ -404,7 +404,8 @@ class ArticlesController < ApplicationController
       # if current_user is an org admin of the article's org
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
-      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+      OrganizationMembership.member.exists?(user_id: params[:article][:user_id],
+                                            organization_id: @article.organization_id)
   end
 
   def allowed_to_manage_org_co_authors?

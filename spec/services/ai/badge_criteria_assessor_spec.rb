@@ -63,4 +63,28 @@ RSpec.describe Ai::BadgeCriteriaAssessor do
       end
     end
   end
+
+  describe "#qualifies? with Jev selected" do
+    before { enable_jev_for(:badge_criteria) }
+
+    it "passes the admin's criteria as structured data" do
+      requests = stub_jev(meets_criteria: 0.9)
+
+      expect(assessor.qualifies?).to be(true)
+      expect(requests.first[:questions][:meets_criteria][:instructions])
+        .to include(badge_criteria: criteria, question: a_string_including("`badge_criteria`"))
+    end
+
+    it "requires a confident yes" do
+      stub_jev(meets_criteria: 0.6)
+
+      expect(assessor.qualifies?).to be(false)
+    end
+
+    it "excludes spam and low-effort articles" do
+      stub_jev(meets_criteria: 0.95, spam_or_low_effort: 0.7)
+
+      expect(assessor.qualifies?).to be(false)
+    end
+  end
 end

@@ -20,8 +20,11 @@ class Billboard < ApplicationRecord
                                page_fixed_bottom
                                post_fixed_bottom
                                post_body_bottom
+                               post_body_bottom_secondary
                                post_sidebar
+                               post_sidebar_secondary
                                post_comments
+                               post_comments_secondary
                                post_comments_mid
                                digest_first
                                digest_second].freeze
@@ -38,8 +41,11 @@ class Billboard < ApplicationRecord
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
                                             "Below the post body",
+                                            "Below the post body (Secondary)",
                                             "Sidebar Right (Individual Post)",
+                                            "Sidebar Right (Individual Post, Secondary)",
                                             "Below the comment section",
+                                            "Below the comment section (Secondary)",
                                             "Midway through the comment section",
                                             "Digest Email First",
                                             "Digest Email Second"].freeze

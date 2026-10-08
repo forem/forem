@@ -69,6 +69,11 @@ class Article < ApplicationRecord
     %r{\Ahttps?://(www\.)?twitch\.tv/videos/},
   ].freeze
 
+  # Fields embedded in Published/CoAuthor notifications (see Notifications.article_data).
+  # crossposted_at feeds readable_publish_date via displayable_published_at.
+  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at crossposted_at reading_time
+                                    user_id organization_id].freeze
+
   # Author-visible edits, for the article_updated CDP event. Rows churn on score
   # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
   TRACKABLE_UPDATE_KEYS = %w[
@@ -353,9 +358,15 @@ class Article < ApplicationRecord
   after_save :generate_social_image
   after_save :generate_context_notes
 
+  after_update_commit :notify_co_author_changes, if: proc { |article|
+    article.published? && article.saved_change_to_co_author_ids?
+  }
+
+  # Notifications embed these fields (see Notifications.article_data and user/organization data),
+  # so refresh them only when one changes, not on every touch (e.g. last_comment_at on each comment).
   after_update_commit :update_notifications, if: proc { |article|
-                                                   article.notifications.any? && !article.saved_changes.empty?
-                                                 }
+    article.saved_changes.keys.intersect?(NOTIFICATION_DATA_ATTRIBUTES) && article.notifications.any?
+  }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }
@@ -1475,7 +1486,7 @@ class Article < ApplicationRecord
   end
 
   def update_notifications
-    Notification.update_notifications(self, I18n.t("models.article.published"))
+    Notification.update_notifications(self, %w[Published CoAuthor])
   end
 
   def update_notification_subscriptions
@@ -1796,7 +1807,8 @@ class Article < ApplicationRecord
                   saved_change_to_published? ||
                   published_at > 1.minute.ago
 
-    Articles::HandleSpamWorker.perform_async(id)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
   def async_bust
@@ -1814,7 +1826,7 @@ class Article < ApplicationRecord
   end
 
   def detect_code_block_languages
-    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless Ai::FunctionConfig.available?(:code_block_language_detection)
     return unless saved_change_to_body_markdown?
     return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
 
@@ -1871,6 +1883,7 @@ class Article < ApplicationRecord
   def trackable_activity_payload
     {
       "title" => title,
+      "description" => description,
       "path" => path,
       "type_of" => type_of,
       "published_at" => published_at&.iso8601,
@@ -2035,6 +2048,13 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def notify_co_author_changes
+    before, after = saved_change_to_co_author_ids
+    removed_user_ids = Array.wrap(before).map(&:to_i) - Array.wrap(after).map(&:to_i)
+
+    Notification.send_to_co_authors(self, removed_user_ids)
   end
 
   def cleanup_memberships_if_unpublished

@@ -45,6 +45,30 @@ RSpec.describe Ai::Base do
       expect(audit.error_message).to be_nil
     end
 
+    context "when Gemini blocks the prompt as PROHIBITED_CONTENT" do
+      let(:mock_response) do
+        instance_double(HTTParty::Response,
+                        success?: true, code: 200,
+                        parsed_response: { "promptFeedback" => { "blockReason" => "PROHIBITED_CONTENT" } })
+      end
+
+      it "raises ProhibitedContentError" do
+        expect { client.call(prompt) }.to raise_error(described_class::ProhibitedContentError)
+      end
+    end
+
+    context "when only the generated candidate finished with PROHIBITED_CONTENT" do
+      let(:mock_response) do
+        instance_double(HTTParty::Response,
+                        success?: true, code: 200,
+                        parsed_response: { "candidates" => [{ "finishReason" => "PROHIBITED_CONTENT" }] })
+      end
+
+      it "does not treat the input as prohibited" do
+        expect(client.call(prompt)).to be_nil
+      end
+    end
+
     context "with wrapper and affected user/content" do
       let(:user) { create(:user) }
       let(:wrapper) { DummyAiWrapper.new }

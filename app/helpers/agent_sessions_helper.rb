@@ -1,5 +1,6 @@
 module AgentSessionsHelper
   TOOL_INFO = {
+    "antigravity_cli" => { bg: "#3186FF", label: "Antigravity CLI", svg: "agent-antigravity-cli.svg" },
     "claude_code" => { bg: "#D97706", label: "Claude Code", svg: "agent-claude-code.svg" },
     "codex" => { bg: "#10A37F", label: "Codex", svg: "agent-codex.svg" },
     "gemini_cli" => { bg: "#4285F4", label: "Gemini CLI", svg: "agent-gemini-cli.svg" },

@@ -66,7 +66,7 @@ export const ProfileImage = ({
   const onUploadError = (error) => {
     setUploadingImage(false);
     setUploadError(true);
-    setUploadErrorMessage(error.message);
+    setUploadErrorMessage(error?.message || String(error));
   };
 
   return (

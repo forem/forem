@@ -55,5 +55,8 @@
   <% end %>
 </div>
 
-<div class="crayons-article-sticky grid gap-4 break-word sidebar-bb" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_sidebar) %>"></div>
+<div class="crayons-article-sticky grid gap-4 break-word bb-shuffle-group js-bb-shuffle-group">
+  <div class="grid gap-4 sidebar-bb" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_sidebar) %>"></div>
+  <div class="grid gap-4 sidebar-bb" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_sidebar_secondary) %>"></div>
+</div>
 

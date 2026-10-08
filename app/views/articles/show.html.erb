@@ -270,15 +270,19 @@
                         articles: @collection_articles %>
             <% end %>
             <% if @article.long_markdown? %>
-              <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
+              <div class="bb-shuffle-group js-bb-shuffle-group">
+                <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
+                <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom_secondary) %>"></div>
+              </div>
             <% end %>
           </div>
           <%= render "articles/full_comment_area" %>
 
         </article>
 
-        <div class="pb-4 crayons-layout__comments-billboard">
+        <div class="pb-4 crayons-layout__comments-billboard bb-shuffle-group js-bb-shuffle-group">
           <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
+          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments_secondary) %>"></div>
         </div>
 
         <% if ApplicationConfig["SKIP_BOTTOM_CONTENT"] == "yes" %>

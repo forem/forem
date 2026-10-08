@@ -31,5 +31,28 @@ RSpec.describe Users::DeletePodcasts do
         end.to change(Podcast, :count).by(-1)
       end.to change(PodcastOwnership, :count).by(-1)
     end
+
+    it "keeps the podcast when its cache bust can't be enqueued, so a retry busts it", :aggregate_failures do
+      allow(Podcasts::BustCacheWorker).to receive(:perform_in).and_raise(Redis::CannotConnectError)
+
+      expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+      expect(Podcast.exists?(podcast.id)).to be(true)
+      expect(PodcastOwnership.where(owner: user)).to exist
+
+      allow(Podcasts::BustCacheWorker).to receive(:perform_in).and_call_original
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: [podcast.path]) do
+        described_class.call(user)
+      end
+      expect(Podcast.exists?(podcast.id)).to be(false)
+    end
+
+    it "busts the deleted podcast's cache in the background" do
+      allow(EdgeCache::BustPodcast).to receive(:call)
+
+      sidekiq_assert_enqueued_with(job: Podcasts::BustCacheWorker, args: [podcast.path]) do
+        described_class.call(user)
+      end
+      expect(EdgeCache::BustPodcast).not_to have_received(:call)
+    end
   end
 end

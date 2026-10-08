@@ -83,6 +83,7 @@
                     "type": "string",
                     "description": "Tool that produced the session (e.g. claude_code, codex).",
                     "enum": [
+                      "antigravity_cli",
                       "claude_code",
                       "codex",
                       "gemini_cli",
@@ -5692,7 +5693,7 @@
           "users",
           "admin"
         ],
-        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account once the merge completes successfully.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
+        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account in the background once its content has been transferred, so it may still exist briefly after this request returns.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -6927,8 +6928,11 @@
               "page_fixed_bottom",
               "post_fixed_bottom",
               "post_body_bottom",
+              "post_body_bottom_secondary",
               "post_sidebar",
+              "post_sidebar_secondary",
               "post_comments",
+              "post_comments_secondary",
               "post_comments_mid",
               "digest_first",
               "digest_second"
