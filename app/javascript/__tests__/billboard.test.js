@@ -1,4 +1,4 @@
-import { getBillboard } from '../packs/billboard';
+import { getBillboard, shuffleBillboardGroups } from '../packs/billboard';
 import { executeBBScripts } from '../packs/billboardAfterRenderActions';
 
 describe('getBillboard', () => {
@@ -265,5 +265,50 @@ describe('executeBBScripts', () => {
     const middleChild = container.children[1];
     expect(middleChild.tagName).toBe('SCRIPT');
     expect(middleChild.textContent).toBe('window.someGlobalVar = "executed";');
+  });
+});
+
+describe('shuffleBillboardGroups', () => {
+  const groupHTML = `
+    <div class="js-bb-shuffle-group">
+      <div id="primary" data-async-url="/bb/post_sidebar"></div>
+      <div id="secondary" data-async-url="/bb/post_sidebar_secondary"></div>
+    </div>
+  `;
+  const order = () =>
+    [...document.querySelector('.js-bb-shuffle-group').children].map(
+      (el) => el.id,
+    );
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  test('swaps primary and secondary slots when the coin flip is low', () => {
+    document.body.innerHTML = groupHTML;
+    jest.spyOn(Math, 'random').mockReturnValue(0.1);
+
+    shuffleBillboardGroups();
+
+    expect(order()).toEqual(['secondary', 'primary']);
+  });
+
+  test('keeps the original order when the coin flip is high', () => {
+    document.body.innerHTML = groupHTML;
+    jest.spyOn(Math, 'random').mockReturnValue(0.9);
+
+    shuffleBillboardGroups();
+
+    expect(order()).toEqual(['primary', 'secondary']);
+  });
+
+  test('only shuffles a group once', () => {
+    document.body.innerHTML = groupHTML;
+    jest.spyOn(Math, 'random').mockReturnValue(0.1);
+
+    shuffleBillboardGroups();
+    shuffleBillboardGroups();
+
+    expect(order()).toEqual(['secondary', 'primary']);
   });
 });

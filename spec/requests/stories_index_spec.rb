@@ -327,6 +327,25 @@ RSpec.describe "StoriesIndex" do
       end
     end
 
+    context "with the onboarding task card" do
+      before { sign_in create(:user) }
+
+      it "renders the task card by default" do
+        get "/"
+
+        expect(response.body).to include("onboarding-task-card")
+      end
+
+      it "does not render the task card when :hide_onboarding_task_card is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:hide_onboarding_task_card).and_return(true)
+
+        get "/"
+
+        expect(response.body).not_to include("onboarding-task-card")
+      end
+    end
+
     def sets_fastly_headers
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
@@ -533,6 +552,19 @@ RSpec.describe "StoriesIndex" do
         expect(response.headers["Set-Cookie"].to_s).not_to include(ENV["SESSION_KEY"])
         expect(response.headers["Set-Cookie"].to_s).not_to include("remember_user_token")
       end
+    end
+  end
+
+  describe "GET /:username with a non-HTML Accept header" do
+    let(:user) { create(:user) }
+
+    it "returns a 404 that cannot be edge cached for browsers" do
+      get "/#{user.username}", headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.headers["Cache-Control"]).to include("no-store")
+      expect(response.headers["Surrogate-Control"]).to be_nil
+      expect(response.headers["Vary"]).to include("Accept")
     end
   end
 

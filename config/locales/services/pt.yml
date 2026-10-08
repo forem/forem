@@ -124,3 +124,4 @@ pt:
     spam:
       article_handler:
         suspended_too_many: Muitos artigos suspensos
+        marked_spam_repeat_auto_flags: Usuário marcado como spam depois que %{count} de seus artigos do último mês foram sinalizados automaticamente como spam ou violações claras, acionado por autovomit.

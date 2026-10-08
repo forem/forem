@@ -12,7 +12,9 @@ module EdgeCache
 
         urls(path).map do |url|
           clean_url = url.to_s.sub(%r{\Ahttps?://}, "")
-          HTTParty.post("https://api.fastly.com/purge/#{clean_url}", headers: headers)
+          response = HTTParty.post("https://api.fastly.com/purge/#{clean_url}", headers: headers)
+          log_failed_purge(path, url, response) if response && !response.success?
+          response
         rescue HTTParty::Error, SocketError, Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNREFUSED, Timeout::Error => e
           ForemStatsClient.increment(
             "edgecache_bust.provider_error",
@@ -31,6 +33,25 @@ module EdgeCache
         end
       end
       private_class_method :fastly_purge
+
+      # Fastly answers some purges with an error instead of raising, e.g. 404 "Cannot find
+      # service" for a host it can't map to a service. Record those so they don't go unnoticed.
+      def self.log_failed_purge(path, url, response)
+        ForemStatsClient.increment(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:EdgeCache::Bust::Fastly", "status:#{response.code}"],
+        )
+        Rails.logger.warn(
+          {
+            message: "EdgeCache::Bust::Fastly purge was rejected",
+            path: path,
+            url: url,
+            status: response.code,
+            response_body: response.body.to_s.truncate(200)
+          },
+        )
+      end
+      private_class_method :log_failed_purge
 
       def self.urls(path)
         urls = [formatted_url(path)]

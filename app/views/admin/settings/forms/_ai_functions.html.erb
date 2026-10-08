@@ -1,0 +1,78 @@
+<% configured_models = Settings::AiFunctions.global_function_models %>
+<%= form_for(Settings::AiFunctions.new,
+             url: admin_settings_ai_functions_path,
+             html: { data: {
+               action: "submit->config#updateConfigurationSettings",
+               testid: "aiFunctionsForm"
+             } }) do |f| %>
+  <details class="crayons-card" id="ai-functions-section">
+    <summary class="crayons-subtitle-2 p-6">AI Models</summary>
+
+    <div class="p-6 pt-0">
+      <p class="crayons-field__description mb-4">
+        Choose the model that powers each AI function. "Default" keeps the function's built-in Gemini behavior.
+        TypeSafe Jev is offered only for judgment functions (yes/no decisions, picking from a known set, or scoring
+        on a scale), where it returns calibrated probabilities instead of generated text. If a selected model's API key
+        is missing, the function falls back to its default.
+      </p>
+
+      <ul class="mb-4">
+        <li>
+          <code>GEMINI_API_KEY</code>: <%= Ai::FunctionConfig.option_available?("default") ? "configured" : "missing" %>
+        </li>
+        <li>
+          <code>TYPESAFE_API_KEY</code>: <%= Ai::FunctionConfig.option_available?("jev") ? "configured" : "missing" %>
+        </li>
+      </ul>
+
+      <%= f.fields_for :function_models do |models_field| %>
+        <% Ai::FunctionRegistry.configurable.group_by(&:group).each do |group, functions| %>
+          <fieldset class="grid gap-4 mb-6">
+            <legend class="crayons-subtitle-3 mb-2"><%= Ai::FunctionRegistry::GROUPS.fetch(group) %></legend>
+
+            <% functions.each do |function| %>
+              <% current = configured_models[function.key].presence || "default" %>
+              <div class="crayons-field">
+                <%= models_field.label function.key, function.name, class: "crayons-field__label" %>
+                <%= admin_config_description function.description %>
+                <%= models_field.select function.key,
+                                        ai_function_model_options(function, current),
+                                        {},
+                                        class: "crayons-select" %>
+              </div>
+            <% end %>
+          </fieldset>
+        <% end %>
+      <% end %>
+
+      <fieldset class="grid gap-4 mb-6">
+        <legend class="crayons-subtitle-3 mb-2">Tuning</legend>
+        <div class="crayons-field">
+          <%= f.label :spam_escalation_threshold, "Spam escalation threshold", class: "crayons-field__label" %>
+          <%= admin_config_description "When Spam escalation is set to Jev, content without links goes to the spam " \
+                                       "checks once Jev's probability that it is spam, that it asks readers to " \
+                                       "make contact off-platform to buy something, or that it promotes a business " \
+                                       "unrelated to the Internal Content Description Spec, reaches this value (0-1). Lower " \
+                                       "catches more spam but runs more spam checks. Tune it against the " \
+                                       "Ai::SpamEscalationCheck rows in AI audits." %>
+          <%= f.number_field :spam_escalation_threshold,
+                             class: "crayons-textfield",
+                             value: Settings::AiFunctions.global_spam_escalation_threshold,
+                             min: 0.01, max: 1, step: 0.01 %>
+        </div>
+      </fieldset>
+
+      <fieldset class="grid gap-2">
+        <legend class="crayons-subtitle-3 mb-2"><%= Ai::FunctionRegistry::GROUPS.fetch(:fixed) %></legend>
+        <% Ai::FunctionRegistry.all.reject(&:configurable?).each do |function| %>
+          <div>
+            <strong><%= function.name %></strong>
+            <%= admin_config_description function.description %>
+          </div>
+        <% end %>
+      </fieldset>
+
+      <%= render "update_setting_button", f: f %>
+    </div>
+  </details>
+<% end %>

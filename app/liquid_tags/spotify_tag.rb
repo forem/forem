@@ -4,7 +4,8 @@ class SpotifyTag < LiquidTagBase
   REGISTRY_REGEXP = %r{https?://(?:open\.spotify\.com/)(?<type>track|artist|playlist|album|episode|show)/(?<id>\w{,22})(?:\?si=[\w-]+)?}
   # rubocop:enable Layout/LineLength
   URI_REGEXP = /\A(?:spotify):(?<type>track|artist|playlist|album|episode|show):(?<id>\w{22})\Z/
-  URI_PLAYLIST_REGEXP = /\A(?:spotify):(?:user):(?<type>[a-zA-Z0-9]+):(?:playlist):(?<id>\w{22})\Z/ # legacy support
+  # legacy support: spotify:user:<username>:playlist:<id>
+  URI_PLAYLIST_REGEXP = /\A(?:spotify):(?:user):(?<username>[a-zA-Z0-9]+):(?<type>playlist):(?<id>\w{22})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, URI_REGEXP, URI_PLAYLIST_REGEXP].freeze
   TYPE_HEIGHT = {
     track: 80,

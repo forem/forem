@@ -244,4 +244,42 @@ describe OpenGraph, :vcr, type: :service do
       expect(a_request(:any, "ftp://internal.example/file")).not_to have_been_made
     end
   end
+
+  describe "#preferred_desc" do
+    def open_graph_for(html)
+      og = described_class.allocate # bypass initialize / live HTTP
+      page = MetaInspector.new("https://example.com", document: html, download_images: false)
+      og.instance_variable_set(:@page, page)
+      og.instance_variable_set(:@tags, page.meta_tags)
+      og
+    end
+
+    it "falls back to the meta description when og:description is absent" do
+      html = <<~HTML
+        <html><head>
+          <meta property="og:title" content="Title">
+          <meta property="og:url" content="https://example.com">
+          <meta name="description" content="Plain description">
+        </head><body></body></html>
+      HTML
+
+      og = open_graph_for(html)
+
+      expect(og.main_properties_present?).to be(true)
+      expect(og.preferred_desc).to eq("Plain description")
+    end
+
+    it "prefers og:description when it is present" do
+      html = <<~HTML
+        <html><head>
+          <meta property="og:title" content="Title">
+          <meta property="og:url" content="https://example.com">
+          <meta property="og:description" content="OG description">
+          <meta name="description" content="Plain description">
+        </head><body></body></html>
+      HTML
+
+      expect(open_graph_for(html).preferred_desc).to eq("OG description")
+    end
+  end
 end
