@@ -57,12 +57,13 @@
       <% end %>
 
       <div class="comments" id="comment-trees-container">
-        <% if @article.displayed_comments_count.to_i > 0 || (user_signed_in? && @comments_count.to_i > 0) %>
+        <%# Signed in readers also get appeal placeholders for hidden comments, which are not counted as displayed. %>
+        <% if @article.displayed_comments_count.to_i > 0 || (user_signed_in? && @article.comments_count.to_i > 0) %>
           <% @current_comment_index = 0 %>
           <%= render partial: "articles/comment_tree",
                      collection: article_comment_tree(@article, @comments_to_show_count, @comments_order),
                      as: :comment_node,
-                     cached: proc { |comment, _sub_comments| [comment, @comments_order, user_signed_in?, current_user&.id == comment.user_id] } %>
+                     cached: proc { |comment, _sub_comments| [comment, @comments_order, user_signed_in?] } %>
         <% end %>
       </div>
     </div>

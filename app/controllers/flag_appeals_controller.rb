@@ -7,8 +7,10 @@ class FlagAppealsController < ApplicationController
   end
 
   def new
-    appealable_type = params[:appealable_type].presence || "User"
-    appealable_id = params[:appealable_id].presence || current_user.id
+    # source_* because Fastly strips GET params missing from config/fastly/snippets/safe_params_list.vcl;
+    # appealable_* is still honored for links that never pass through the edge.
+    appealable_type = params[:source_type].presence || params[:appealable_type].presence || "User"
+    appealable_id = params[:source_id].presence || params[:appealable_id].presence || current_user.id
 
     case appealable_type
     when "Article"

@@ -38,6 +38,26 @@ RSpec.describe "FlagAppeals" do
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include("secret comment body")
       end
+
+      it "pre-fills the target from the Fastly-safe source_type and source_id params" do
+        comment = create(:comment, user: user)
+
+        get appeal_path(source_type: "Comment", source_id: comment.id)
+
+        page = Nokogiri::HTML(response.body)
+        expect(page.at_css("input[name='flag_appeal[appealable_type]']")["value"]).to eq("Comment")
+        expect(page.at_css("input[name='flag_appeal[appealable_id]']")["value"]).to eq(comment.id.to_s)
+      end
+
+      it "does not expose another user's comment through source_id" do
+        other_comment = create(:comment, user: create(:user), body_markdown: "Someone else's secret comment body")
+
+        get appeal_path(source_type: "Comment", source_id: other_comment.id)
+
+        page = Nokogiri::HTML(response.body)
+        expect(page.at_css("input[name='flag_appeal[appealable_type]']")["value"]).to eq("User")
+        expect(page.at_css("input[name='flag_appeal[appealable_id]']")["value"]).to eq(user.id.to_s)
+      end
     end
   end
 
