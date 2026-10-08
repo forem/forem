@@ -85,6 +85,26 @@ export class ArticleForm extends Component {
           btn.textContent = expanded ? 'Show less' : 'Show more';
         });
       });
+
+      // In-transcript fragment links (e.g. an agent's table of contents):
+      // expand the collapsed text holding the heading and scroll the embed, not the page
+      embed.addEventListener('click', function(event) {
+        var link = event.target.closest('a[href^="#agent-session-"]');
+        if (!link) return;
+        var target = embed.querySelector('[id="' + CSS.escape(link.getAttribute('href').slice(1)) + '"]');
+        if (!target) return;
+        event.preventDefault();
+        var collapsed = target.closest('.agent-session-text-collapse');
+        if (collapsed && !collapsed.classList.contains('expanded')) {
+          collapsed.classList.add('expanded');
+          var expandBtn = collapsed.parentNode.querySelector('.agent-session-expand-btn');
+          if (expandBtn) expandBtn.textContent = 'Show less';
+        }
+        var scroller = embed.querySelector('.agent-session-scroll');
+        if (scroller) {
+          scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+        }
+      });
     });
   }
 
