@@ -1,0 +1,27 @@
+app/views/api/v1/admin/user_identities/bulk_create.json.jbuilder
+  s_5b319532a74600::t_32a2a0cdf86c14 1
+config/locales/en.yml
+  s_5b319532a74600::t_8552beb0e98537 204
+config/routes.rb
+  s_5b319532a74600::t_8bc00568ea8a9a 41-42,47,130-133,182-183,242,246,427-428,435-438,545-546
+app/controllers/concerns/api/admin/user_identities_controller.rb
+  s_5b319532a74600::t_7109b4bb05474c 11-12,18,68-88,91-124
+spec/requests/api/v1/admin/user_identities_spec.rb
+  s_5b319532a74600::t_29e54464d47276 172-271
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "31a75a8bbaee1c012548acfa9c3cde39322a2135",
+  "prompts": {},
+  "sessions": {
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

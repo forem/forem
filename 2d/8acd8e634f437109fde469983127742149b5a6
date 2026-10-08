@@ -1,0 +1,22 @@
+spec/services/emails/ahoy_link_tracking_parity_spec.rb
+  s_7d090fe663c96a::t_799ac32354d6d8 93
+  s_7d090fe663c96a::t_54256fda190e4d 26,30-32,38
+  s_7d090fe663c96a::t_6cc16820a8bd1d 1-25,27-29,33-37,39-50,91-92,94-100
+  s_7d090fe663c96a::t_b1a12b13d4710a 51-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "2d8acd8e634f437109fde469983127742149b5a6",
+  "prompts": {},
+  "sessions": {
+    "s_7d090fe663c96a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5b6eaee2-ac02-4908-babd-8881c6a6886f",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
