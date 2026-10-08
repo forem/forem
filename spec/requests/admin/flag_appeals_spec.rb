@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin::FlagAppeals", type: :request do
+RSpec.describe "Admin::FlagAppeals" do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
   let!(:appeal) { create(:flag_appeal, user: user, appealable: user) }
@@ -29,6 +29,17 @@ RSpec.describe "Admin::FlagAppeals", type: :request do
 
       expect(response).to redirect_to(admin_flag_appeals_path(status: "approved"))
       expect(appeal.reload.approved?).to be true
+    end
+
+    it "creates a moderator audit log for the resolution" do
+      Audit::Subscribe.listen(:moderator)
+
+      expect do
+        patch admin_flag_appeal_path(appeal), params: { resolution: "approve" }
+      end.to change(AuditLog, :count).by(1)
+      expect(AuditLog.last.data).to include("id" => appeal.id.to_s, "resolution" => "approve")
+
+      Audit::Subscribe.forget(:moderator)
     end
 
     it "rejects the appeal when resolution=reject" do

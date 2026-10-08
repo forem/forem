@@ -3,6 +3,10 @@ module Admin
     layout "admin"
     before_action :set_appeal, only: %i[show update]
 
+    after_action only: %i[update] do
+      Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
     def index
       @status = params[:status].presence || "pending"
       @flag_appeals = FlagAppeal.includes(:user, :appealable, :resolved_by).recent_first

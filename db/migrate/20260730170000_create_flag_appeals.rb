@@ -3,14 +3,14 @@ class CreateFlagAppeals < ActiveRecord::Migration[8.0]
 
   def change
     create_table :flag_appeals do |t|
-      t.references :user, null: false, foreign_key: true
+      t.references :user, null: false, foreign_key: { on_delete: :cascade }
       t.references :appealable, polymorphic: true, null: false
       t.text :reason, null: false
       t.integer :status, default: 0, null: false
       t.integer :ai_recommendation, default: 1, null: false
       t.text :ai_summary
       t.float :ai_confidence_score
-      t.references :resolved_by, foreign_key: { to_table: :users }
+      t.references :resolved_by, foreign_key: { to_table: :users, on_delete: :nullify }
 
       t.timestamps
     end

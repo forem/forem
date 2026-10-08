@@ -140,6 +140,42 @@ RSpec.describe Appeals::Resolver do
       expect(user.reload.spam_or_suspended?).to be true
     end
 
+    it "recalculates the scores of all the author's content once the restriction is lifted" do
+      other_article = create(:article, user: user)
+      comment = create(:comment, user: user)
+      allow(Articles::ScoreCalcWorker).to receive(:perform_async)
+      allow(Comments::CalculateScoreWorker).to receive(:perform_async)
+
+      described_class.approve(appeal: appeal, admin: admin)
+
+      # The spam role took 500 points off every one of these, and nothing else would restore them.
+      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(article.id)
+      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(other_article.id)
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
+    end
+
+    it "only recalculates the appealed content when the author was not restricted" do
+      user.remove_role(:suspended)
+      user.remove_role(:spam)
+      other_comment = create(:comment, user: user)
+      comment = create(:comment, user: user)
+      comment_appeal = create(:flag_appeal, user: user, appealable: comment)
+      allow(Comments::CalculateScoreWorker).to receive(:perform_async)
+
+      described_class.approve(appeal: comment_appeal, admin: admin)
+
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
+      expect(Comments::CalculateScoreWorker).not_to have_received(:perform_async).with(other_comment.id)
+    end
+
+    it "leaves a note on the user recording who approved the appeal" do
+      described_class.approve(appeal: appeal, admin: admin)
+
+      note = Note.find_by(noteable: user, reason: "flag_appeal_approved")
+      expect(note.author).to eq(admin)
+      expect(note.content).to include("##{appeal.id}", admin.username)
+    end
+
     it "still reinstates the user when the appealed content was deleted" do
       appeal_id = appeal.id
       article.delete
@@ -305,6 +341,12 @@ RSpec.describe Appeals::Resolver do
       appeal.reload
       expect(appeal.status).to eq("rejected")
       expect(appeal.resolved_by).to eq(admin)
+    end
+
+    it "does not leave a reinstatement note" do
+      described_class.reject(appeal: appeal, admin: admin)
+
+      expect(Note.where(noteable: user, reason: "flag_appeal_approved")).to be_empty
     end
 
     it "does not overwrite an appeal that was already approved" do

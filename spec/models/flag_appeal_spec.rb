@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe FlagAppeal, type: :model do
+RSpec.describe FlagAppeal do
   let(:user) { create(:user) }
   let(:flag_appeal) { build(:flag_appeal, user: user, appealable: user) }
 
@@ -45,6 +45,15 @@ RSpec.describe FlagAppeal, type: :model do
     it { expect(described_class.reflect_on_association(:appealable)).to be_polymorphic }
     it { is_expected.to validate_presence_of(:appealable).on(:create) }
     it { is_expected.to belong_to(:resolved_by).class_name("User").optional }
+
+    it "keeps the appeal but clears resolved_by when the resolving admin is deleted" do
+      admin = create(:user, :super_admin)
+      appeal = create(:flag_appeal, user: user, appealable: user, status: :rejected, resolved_by: admin)
+
+      Users::Delete.call(admin)
+
+      expect(appeal.reload.resolved_by_id).to be_nil
+    end
   end
 
   describe "enums" do

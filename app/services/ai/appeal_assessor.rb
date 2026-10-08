@@ -4,6 +4,7 @@ module Ai
   # Incorporates target context, user history, original automod labels, and user's appeal statement.
   class AppealAssessor
     VERSION = "1.0".freeze
+    FUNCTION_KEY = :appeal_assessment
 
     VALID_RECOMMENDATIONS = %w[auto_unflag human_review confirm_flag].freeze
 
@@ -20,8 +21,10 @@ module Ai
     def evaluate
       # The target may have been deleted while the appeal was pending; never auto-resolve in that case.
       return missing_target_result if @target.nil?
+      # Forems without a Gemini key still get the appeals queue, just without an AI assessment.
+      return unavailable_result unless Ai::FunctionConfig.available?(FUNCTION_KEY)
 
-      model = ENV.fetch("GEMINI_API_LITE_MODEL", Ai::Base::DEFAULT_LITE_MODEL)
+      model = Ai::FunctionConfig.gemini_model_for(FUNCTION_KEY, Ai::Base::DEFAULT_LITE_MODEL)
       ai_client = Ai::Base.new(
         model: model,
         wrapper: self,
@@ -159,6 +162,14 @@ module Ai
         recommendation: "human_review",
         confidence_score: 0.0,
         summary: "The appealed content no longer exists; routed for human admin review."
+      }
+    end
+
+    def unavailable_result
+      {
+        recommendation: "human_review",
+        confidence_score: 0.0,
+        summary: "AI re-assessment is not configured for this Forem; routed for human admin review."
       }
     end
   end

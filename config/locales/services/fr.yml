@@ -3,6 +3,10 @@ fr:
   services:
     analytics_service:
       no_stats: Vous ne pouvez pas voir les statistiques de cet article.
+    appeals:
+      resolver:
+        approved_note: "Recours n° %{id} approuvé par %{resolver}."
+        automatic: "l'examen automatique par l'IA"
     article_with_video_creation_service:
       unpublished_video: Vidéo non publiée ~ %{rand}
     authentication:

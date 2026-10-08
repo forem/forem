@@ -10,7 +10,29 @@ RSpec.describe Ai::AppealAssessor do
     let(:ai_client_double) { instance_double(Ai::Base) }
 
     before do
+      allow(Ai::FunctionConfig).to receive(:available?).and_call_original
+      allow(Ai::FunctionConfig).to receive(:available?).with(:appeal_assessment).and_return(true)
       allow(Ai::Base).to receive(:new).and_return(ai_client_double)
+    end
+
+    it "uses the model selected for the appeal_assessment function, defaulting to the lite model" do
+      allow(Ai::FunctionConfig).to receive(:gemini_model_for)
+        .with(:appeal_assessment, Ai::Base::DEFAULT_LITE_MODEL).and_return("configured-model")
+      allow(ai_client_double).to receive(:call).and_return({ recommendation: "human_review" }.to_json)
+
+      assessor.evaluate
+
+      expect(Ai::Base).to have_received(:new).with(hash_including(model: "configured-model"))
+    end
+
+    it "routes to human review without calling the AI when no model is available" do
+      allow(Ai::FunctionConfig).to receive(:available?).with(:appeal_assessment).and_return(false)
+
+      result = assessor.evaluate
+
+      expect(result[:recommendation]).to eq("human_review")
+      expect(result[:summary]).to include("not configured")
+      expect(Ai::Base).not_to have_received(:new)
     end
 
     it "parses valid JSON response from Gemini" do

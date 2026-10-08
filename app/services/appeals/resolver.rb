@@ -64,6 +64,7 @@ module Appeals
       @admin = admin
       @reset_article_ids = []
       @republished_article_ids = []
+      @restriction_lifted = false
     end
 
     # Automated approvals (no admin) are refused when a human moderator applied the ban.
@@ -75,6 +76,7 @@ module Appeals
         remove_restriction_roles
         reset_flagged_article_labels
         destroy_mascot_vomit_reactions
+        create_approval_note
       end
       return false unless resolved
 
@@ -102,8 +104,22 @@ module Appeals
     end
 
     def remove_restriction_roles
+      @restriction_lifted = @user.spam_or_suspended?
       @user.remove_role(:suspended) if @user.suspended?
       @user.remove_role(:spam) if @user.spam?
+    end
+
+    # Every other path that adds or lifts these roles leaves a note, so moderators looking at the
+    # user can see why they are no longer restricted.
+    def create_approval_note
+      Note.create(
+        author_id: @admin&.id || Settings::General.mascot_user_id,
+        noteable: @user,
+        reason: "flag_appeal_approved",
+        content: I18n.t("services.appeals.resolver.approved_note",
+                        id: @appeal.id,
+                        resolver: @admin&.username || I18n.t("services.appeals.resolver.automatic")),
+      )
     end
 
     # Republishes the appealed article, or for an account appeal, the posts the automatic
@@ -152,15 +168,29 @@ module Appeals
     end
 
     def enqueue_follow_up_jobs
-      case @target
-      when Comment then Comments::CalculateScoreWorker.perform_async(@target.id)
-      when Article then Articles::ScoreCalcWorker.perform_async(@target.id)
-      end
+      enqueue_score_recalculation
 
       # Label resets use update_all (no callbacks), so purge the edge cache for the profile and posts.
       Users::BustCacheWorker.perform_async(@user.id)
       busted_article_ids = @reset_article_ids | @republished_article_ids
       Articles::BustMultipleCachesWorker.perform_async(busted_article_ids) if busted_article_ids.any?
+    end
+
+    # Spam and suspended roles lower the scores of all the author's articles and comments, directly or
+    # through the author's own score (Article#calculate_score, Comments::CalculateScore). Lifting one
+    # means recalculating all of them, as Moderator::ManageActivityAndRoles does. Otherwise only the
+    # appealed content needs it.
+    def enqueue_score_recalculation
+      if @restriction_lifted
+        @user.articles.published.find_each(&:async_score_calc)
+        @user.comments.find_each(&:calculate_score)
+        return
+      end
+
+      case @target
+      when Comment then Comments::CalculateScoreWorker.perform_async(@target.id)
+      when Article then Articles::ScoreCalcWorker.perform_async(@target.id)
+      end
     end
   end
 end

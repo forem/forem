@@ -29,7 +29,7 @@ module Appeals
       end
     rescue StandardError => e
       Rails.logger.error("Appeals::AiReviewWorker failed for appeal ##{appeal_id}: #{e}")
-      raise e
+      raise
     end
   end
 end

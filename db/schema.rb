@@ -976,8 +976,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.index ["appealable_type", "appealable_id"], name: "index_flag_appeals_on_appealable"
     t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
     t.index ["status"], name: "index_flag_appeals_on_status"
+    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "(status = ANY (ARRAY[0, 1]))"
     t.index ["user_id"], name: "index_flag_appeals_on_user_id"
-    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "status IN (0, 1)"
   end
 
   create_table "flipper_features", force: :cascade do |t|
@@ -2291,8 +2291,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
-  add_foreign_key "flag_appeals", "users"
-  add_foreign_key "flag_appeals", "users", column: "resolved_by_id"
+  add_foreign_key "flag_appeals", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users", on_delete: :cascade
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
