@@ -1,0 +1,74 @@
+app/views/dashboards/_heatmap.html.erb
+  s_f0eae6a24f98aa::t_b04b760ffc2ddd 1-2,10-11,31-37,56-64
+  h_a5e25bc086eb00 3,9
+  s_f0eae6a24f98aa::t_49f5daeb27a3df 4-5,12-15,18-30
+  s_f0eae6a24f98aa::t_59c772bc5b2a6a 6-8,16-17
+  s_f0eae6a24f98aa::t_28174bf1d2659e 38-55
+spec/requests/api/v1/analytics_spec.rb
+  h_a5e25bc086eb00 160-191,209
+  s_f0eae6a24f98aa::t_d13e7bf1ad5308 192-208
+config/locales/views/dashboard/fr.yml
+  s_f0eae6a24f98aa::t_72ec2d1b27be8d 44-46
+  s_f0eae6a24f98aa::t_2eac3cb11a77cf 52-66
+  s_f0eae6a24f98aa::t_eb25225fb5d428 41-43,47-51
+app/controllers/concerns/api/analytics_controller.rb
+  s_f0eae6a24f98aa::t_0bde1a4819c7c1 176-181,185-187
+  s_f0eae6a24f98aa::t_ee019adc4fb249 182-184
+  s_f0eae6a24f98aa::t_734a65c4f5a462 96-103,106-107
+  s_f0eae6a24f98aa::t_bdad4950839350 93-95,104-105,108-110
+app/services/user_activity_heatmap_service.rb
+  s_f0eae6a24f98aa::t_496fbe75b962a8 1-9,16-18,20-24,26-30,35-63,65-68,70-93
+  h_a5e25bc086eb00 10-15,19,25,31-34
+  s_f0eae6a24f98aa::t_259dfbcdc80115 69
+  s_f0eae6a24f98aa::t_810cc349c43cdd 64
+app/assets/stylesheets/views/dashboard.scss
+  s_f0eae6a24f98aa::t_4d3d526d179528 78-82,86-89,100-144
+  s_f0eae6a24f98aa::t_67b1a1d6ae8f6e 366-368,370-373
+  s_f0eae6a24f98aa::t_00ba1afcabea23 272-277,294-298,309-310,324-325
+  s_f0eae6a24f98aa::t_7a472757bcbf0f 278-284
+  s_f0eae6a24f98aa::t_31e25a6c528eb4 313-320,335-340
+  s_f0eae6a24f98aa::t_3c68ef066a60b2 268-269
+  s_f0eae6a24f98aa::t_76c03b13633563 64
+  s_f0eae6a24f98aa::t_389662edd1afae 65-77,83-85,90-99,145-267,270-271,285-293,299-308,311-312,321-323,326-334,341-364,369,374-391
+  s_f0eae6a24f98aa::t_343b399560e5c4 365
+config/locales/views/dashboard/en.yml
+  s_f0eae6a24f98aa::t_37a70b642943bf 43-45,49-53
+  s_f0eae6a24f98aa::t_72ec2d1b27be8d 46-48
+  s_f0eae6a24f98aa::t_7130b396d8afe8 54-68
+spec/services/user_activity_heatmap_service_spec.rb
+  h_a5e25bc086eb00 1-17,27-38,47-48,50,52-53,56-59,63-67,69-71,90-97,99,101-109,111-162
+  s_f0eae6a24f98aa::t_83d9ca30b12329 73
+  s_f0eae6a24f98aa::t_fe98ee35286d3f 18-26,49,51,54-55,60-62,98,100,110
+  s_f0eae6a24f98aa::t_6e526135ae0a4d 68
+  s_f0eae6a24f98aa::t_43e3013ec7d91f 39-46
+app/javascript/dashboardHeatmap/heatmap.js
+  s_f0eae6a24f98aa::t_b3432343eeea87 349-350
+  s_f0eae6a24f98aa::t_343b399560e5c4 241,243
+  s_f0eae6a24f98aa::t_b05409d73ca7b0 354-355
+  s_f0eae6a24f98aa::t_7f97221501490f 1-240,242,244-348,351-353,356
+app/models/reaction.rb
+  s_f0eae6a24f98aa::t_1aa113db949c13 77-78,108-109
+config/locales/views/dashboard/pt.yml
+  s_f0eae6a24f98aa::t_eb25225fb5d428 41-43,47-51
+  s_f0eae6a24f98aa::t_2eac3cb11a77cf 52-66
+  s_f0eae6a24f98aa::t_72ec2d1b27be8d 44-46
+app/javascript/packs/dashboardHeatmap.js
+  s_f0eae6a24f98aa::t_6403d51cc441e6 1-28,31,34-144
+  h_a5e25bc086eb00 29-30,32-33
+app/javascript/dashboardHeatmap/__tests__/heatmap.test.js
+  h_a5e25bc086eb00 1-71
+spec/services/analytics_service_spec.rb
+  s_f0eae6a24f98aa::t_acef740df379be 19-25,28-31
+config/routes/api.rb
+  s_f0eae6a24f98aa::t_bdad4950839350 45
+app/views/dashboards/analytics.erb
+  s_f0eae6a24f98aa::t_73782fd54d0b45 30-31,36
+spec/models/reaction_spec.rb
+  s_f0eae6a24f98aa::t_5ac822923ae39a 155-165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "965e094709b4cabd6ea3cec873a0958a3ac1a88a",
+  "prompts": {}
+}

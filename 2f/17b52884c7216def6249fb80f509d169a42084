@@ -1,0 +1,25 @@
+app/controllers/stories/tagged_articles_controller.rb
+  s_f747b314b5f30e::t_897fd838f93cd7 84-85
+spec/requests/stories/tagged_articles_spec.rb
+  s_f747b314b5f30e::t_08fa88d5d42f2a 117-123
+spec/services/articles/feeds/timeframe_spec.rb
+  s_f747b314b5f30e::t_c15c673a01261d 22-27
+app/services/articles/feeds/timeframe.rb
+  s_f747b314b5f30e::t_14dd7709a3f170 8-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.0",
+  "base_commit_sha": "2f17b52884c7216def6249fb80f509d169a42084",
+  "prompts": {},
+  "sessions": {
+    "s_f747b314b5f30e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6d1f6d7d-eaaf-42d9-b5fb-fc61ef73e444",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

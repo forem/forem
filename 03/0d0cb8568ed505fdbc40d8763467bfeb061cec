@@ -1,0 +1,23 @@
+app/views/dashboards/_heatmap.html.erb
+  s_f0eae6a24f98aa::t_2c583550d650e6 53
+app/javascript/dashboardHeatmap/heatmap.js
+  s_f0eae6a24f98aa::t_2c583550d650e6 242-244
+app/assets/stylesheets/views/dashboard.scss
+  s_f0eae6a24f98aa::t_2c583550d650e6 165
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.11",
+  "base_commit_sha": "030d0cb8568ed505fdbc40d8763467bfeb061cec",
+  "prompts": {},
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

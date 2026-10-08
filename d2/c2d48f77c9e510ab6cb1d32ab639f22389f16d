@@ -1,0 +1,19 @@
+config/initializers/sidekiq.rb
+  s_f0eae6a24f98aa::t_5f06ad72534936 110-128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.4",
+  "base_commit_sha": "d2c2d48f77c9e510ab6cb1d32ab639f22389f16d",
+  "prompts": {},
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

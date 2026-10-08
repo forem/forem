@@ -1,0 +1,21 @@
+app/views/videos/new.html.erb
+  s_453fa138d842db::t_64212bc0c26f6f 29,55,65,71
+spec/requests/videos_spec.rb
+  s_453fa138d842db::t_2c644c545065ac 76,84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "3061e4cfa26fe2933eae377e951b6f8cec6b91b4",
+  "prompts": {},
+  "sessions": {
+    "s_453fa138d842db": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3f83ae5c-325d-45d4-a6a5-13af64b5fd47",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+app/services/analytics_service.rb
+  s_f0eae6a24f98aa::t_23d22f7367d37a 44-60
+app/javascript/analytics/dashboard.js
+  s_f0eae6a24f98aa::t_23d22f7367d37a 749-753
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "c501769a8968ca6279317a2206136a6581853547",
+  "prompts": {},
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
