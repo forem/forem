@@ -208,4 +208,20 @@ RSpec.describe "FlagAppeals" do
       expect(response).to redirect_to(root_path)
     end
   end
+
+  describe "the forbidden page shown to restricted users" do
+    before do
+      user.add_role(:suspended)
+      sign_in user
+    end
+
+    it "links to the appeal form inside the standard page container" do
+      get new_path
+
+      page = Nokogiri::HTML(response.body)
+      expect(response).to have_http_status(:forbidden)
+      expect(page.css("main#main-content.crayons-layout .crayons-card h1").text).to eq("Forbidden")
+      expect(page.at_css("main#main-content a[href='#{appeal_path}']")).to be_present
+    end
+  end
 end
