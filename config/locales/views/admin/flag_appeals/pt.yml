@@ -60,8 +60,8 @@ pt:
           pending: Avaliação da IA pendente em segundo plano...
         approve_button: Aprovar e remover sinalização
         reject_button: Rejeitar recurso
-        confirm_approve_article: "Isso aprovará o recurso nº %{id}, restabelecerá a conta de @%{username} (removendo o status de suspenso/spam), limpará as sinalizações automáticas de moderação do artigo nº %{target_id} e removerá as reações de spam do mascote. Tem certeza de que deseja continuar?"
+        confirm_approve_article: "Isso aprovará o recurso nº %{id}, restabelecerá a conta de @%{username} (removendo o status de suspenso/spam), limpará as sinalizações automáticas de moderação do artigo nº %{target_id} (republicando-o se não estiver publicado) e removerá as reações de spam do mascote. Tem certeza de que deseja continuar?"
         confirm_approve_comment: "Isso aprovará o recurso nº %{id}, restabelecerá a conta de @%{username}, removerá as reações de spam do mascote no comentário nº %{target_id} e recalculará a pontuação do comentário. Tem certeza de que deseja continuar?"
-        confirm_approve_user: "Isso aprovará o recurso nº %{id} e restabelecerá a conta de @%{username} (removendo o status de suspenso/spam). Tem certeza de que deseja continuar?"
+        confirm_approve_user: "Isso aprovará o recurso nº %{id} e restabelecerá a conta de @%{username} (removendo o status de suspenso/spam e republicando as publicações ocultadas pela suspensão automática). Tem certeza de que deseja continuar?"
         confirm_reject: "Isso rejeitará o recurso nº %{id} e manterá todas as restrições ativas na conta de @%{username}. Tem certeza de que deseja continuar?"
         resolved_by_html: "Resolvido por: <strong>%{name}</strong> em %{date}"

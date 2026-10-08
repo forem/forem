@@ -60,8 +60,8 @@ en:
           pending: Pending AI background evaluation...
         approve_button: Approve & Unflag
         reject_button: Reject Appeal
-        confirm_approve_article: "This will approve Appeal #%{id}, reinstate @%{username}'s account (removing suspended/spam status), clear automod flags on Article #%{target_id}, and remove spam mascot reactions. Are you sure you want to proceed?"
+        confirm_approve_article: "This will approve Appeal #%{id}, reinstate @%{username}'s account (removing suspended/spam status), clear automod flags on Article #%{target_id} (republishing it if unpublished), and remove spam mascot reactions. Are you sure you want to proceed?"
         confirm_approve_comment: "This will approve Appeal #%{id}, reinstate @%{username}'s account, remove spam mascot reactions on Comment #%{target_id}, and recalculate the comment score. Are you sure you want to proceed?"
-        confirm_approve_user: "This will approve Appeal #%{id} and reinstate @%{username}'s account (removing suspended/spam status). Are you sure you want to proceed?"
+        confirm_approve_user: "This will approve Appeal #%{id} and reinstate @%{username}'s account (removing suspended/spam status and republishing posts hidden by the automatic suspension). Are you sure you want to proceed?"
         confirm_reject: "This will reject Appeal #%{id} and maintain all active restrictions on @%{username}'s account. Are you sure you want to proceed?"
         resolved_by_html: "Resolved by: <strong>%{name}</strong> on %{date}"

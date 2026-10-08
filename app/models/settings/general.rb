@@ -11,7 +11,9 @@ module Settings
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
     setting :article_published_slack_channel, type: :string, default: "activity"
-    setting :appeal_auto_unflag_threshold, type: :float, default: 0.90
+    # AI confidence needed to auto-approve an appeal. Scores are capped at 1.0, so the 1.01 default
+    # disables auto-approval and routes every appeal to human review; lower it to opt in.
+    setting :appeal_auto_unflag_threshold, type: :float, default: 1.01
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current

@@ -149,6 +149,155 @@ RSpec.describe Appeals::Resolver do
     end
   end
 
+  describe "automated approval (no admin)" do
+    def automatic_block!(at:, slug: "automatic_suspended", **data)
+      create(:audit_log, user_id: mascot.id, category: "spam.automatic_block", slug: slug,
+                         data: { action: slug, target_user_id: user.id, reason: "test", **data }, created_at: at)
+    end
+
+    def human_note!(reason, at:)
+      Note.create!(noteable: user, author: admin, reason: reason, content: "by a moderator", created_at: at)
+    end
+
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
+      user.add_role(:suspended)
+    end
+
+    it "approves when only the automation restricted the user" do
+      automatic_block!(at: 1.day.ago)
+
+      expect(described_class.auto_approvable?(appeal)).to be true
+      expect(described_class.approve(appeal: appeal)).to be true
+      expect(user.reload.suspended?).to be false
+    end
+
+    it "refuses when a moderator banned the user after the automation did" do
+      automatic_block!(at: 2.days.ago)
+      human_note!("Suspended", at: 1.day.ago)
+
+      expect(described_class.approve(appeal: appeal)).to be false
+      expect(user.reload.suspended?).to be true
+      expect(appeal.reload.status).to eq("open")
+    end
+
+    it "refuses when a moderator banned the user before the automation re-flagged them" do
+      human_note!("Spam", at: 2.days.ago)
+      automatic_block!(at: 1.day.ago)
+
+      expect(described_class.approve(appeal: appeal)).to be false
+      expect(user.reload.suspended?).to be true
+    end
+
+    it "refuses when there is no record of an automatic block" do
+      expect(described_class.approve(appeal: appeal)).to be false
+      expect(user.reload.suspended?).to be true
+    end
+
+    it "ignores a manual ban from a restriction that was already lifted" do
+      human_note!("Suspended", at: 3.days.ago)
+      human_note!("Good standing", at: 2.days.ago)
+      automatic_block!(at: 1.day.ago)
+
+      expect(described_class.approve(appeal: appeal)).to be true
+      expect(user.reload.suspended?).to be false
+    end
+
+    it "still lets an admin approve an appeal against a manual ban" do
+      human_note!("Suspended", at: 1.day.ago)
+
+      expect(described_class.approve(appeal: appeal, admin: admin)).to be true
+      expect(user.reload.suspended?).to be false
+    end
+
+    it "approves users that no longer have a restriction" do
+      user.remove_role(:suspended)
+
+      expect(described_class.auto_approvable?(appeal)).to be true
+    end
+  end
+
+  describe "republishing on approval" do
+    before do
+      allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
+      allow(Articles::BustMultipleCachesWorker).to receive(:perform_async)
+      user.add_role(:suspended)
+    end
+
+    def unpublished_article(**attrs)
+      create(:article, user: user).tap { |a| a.update_columns(published: false, **attrs) }
+    end
+
+    context "when the target is an Article" do
+      it "republishes it without re-running the spam checks" do
+        article.update_columns(published: false)
+
+        # update_all skips the publish callbacks that would re-run the spam checks.
+        sidekiq_assert_no_enqueued_jobs(only: Articles::HandleSpamWorker) do
+          described_class.approve(appeal: appeal, admin: admin)
+        end
+
+        expect(article.reload.published).to be true
+        expect(Articles::BustMultipleCachesWorker).to have_received(:perform_async).with(array_including(article.id))
+      end
+
+      it "leaves a never-published draft unpublished" do
+        article.update_columns(published: false, published_at: nil)
+
+        described_class.approve(appeal: appeal, admin: admin)
+
+        expect(article.reload.published).to be false
+      end
+    end
+
+    context "when the target is the User" do
+      let(:user_appeal) { create(:flag_appeal, user: user, appealable: user) }
+      let!(:hidden) { unpublished_article }
+      let!(:also_hidden) { unpublished_article }
+      let!(:author_unpublished) { unpublished_article }
+      let!(:draft) { unpublished_article(published_at: nil) }
+
+      def suspension_log!(ids, at: 1.day.ago)
+        create(:audit_log, user_id: mascot.id, category: "spam.automatic_block", slug: "automatic_suspended",
+                           data: { target_user_id: user.id, unpublished_article_ids: ids }, created_at: at)
+      end
+
+      it "restores only the posts recorded by the automatic suspensions" do
+        suspension_log!([hidden.id], at: 2.days.ago)
+        suspension_log!([also_hidden.id, draft.id])
+
+        sidekiq_assert_no_enqueued_jobs(only: Articles::HandleSpamWorker) do
+          described_class.approve(appeal: user_appeal, admin: admin)
+        end
+
+        expect(hidden.reload.published).to be true
+        expect(also_hidden.reload.published).to be true
+        expect(author_unpublished.reload.published).to be false
+        expect(draft.reload.published).to be false
+        expect(Articles::BustMultipleCachesWorker).to have_received(:perform_async)
+          .with(array_including(hidden.id, also_hidden.id))
+      end
+
+      it "ignores suspensions that an earlier approved appeal already resolved" do
+        suspension_log!([author_unpublished.id], at: 3.days.ago)
+        create(:flag_appeal, user: user, appealable: article, status: :approved, updated_at: 2.days.ago)
+        suspension_log!([hidden.id])
+
+        described_class.approve(appeal: user_appeal, admin: admin)
+
+        expect(hidden.reload.published).to be true
+        expect(author_unpublished.reload.published).to be false
+      end
+
+      it "republishes nothing when the suspension recorded no posts" do
+        described_class.approve(appeal: user_appeal, admin: admin)
+
+        expect(hidden.reload.published).to be false
+        expect(user.reload.suspended?).to be false
+      end
+    end
+  end
+
   describe ".reject" do
     it "marks the appeal as rejected" do
       expect(described_class.reject(appeal: appeal, admin: admin)).to be true

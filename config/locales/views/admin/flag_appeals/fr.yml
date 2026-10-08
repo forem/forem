@@ -60,8 +60,8 @@ fr:
           pending: Évaluation de l'IA en cours en arrière-plan...
         approve_button: Approuver et désignaler
         reject_button: Rejeter le recours
-        confirm_approve_article: "Cela approuvera le recours n° %{id}, rétablira le compte de @%{username} (suppression du statut suspendu/spam), effacera les signalements automatiques de modération sur l'article n° %{target_id} et supprimera les réactions spam de la mascotte. Voulez-vous vraiment continuer ?"
+        confirm_approve_article: "Cela approuvera le recours n° %{id}, rétablira le compte de @%{username} (suppression du statut suspendu/spam), effacera les signalements automatiques de modération sur l'article n° %{target_id} (en le republiant s'il est dépublié) et supprimera les réactions spam de la mascotte. Voulez-vous vraiment continuer ?"
         confirm_approve_comment: "Cela approuvera le recours n° %{id}, rétablira le compte de @%{username}, supprimera les réactions spam de la mascotte sur le commentaire n° %{target_id} et recalculera le score du commentaire. Voulez-vous vraiment continuer ?"
-        confirm_approve_user: "Cela approuvera le recours n° %{id} et rétablira le compte de @%{username} (suppression du statut suspendu/spam). Voulez-vous vraiment continuer ?"
+        confirm_approve_user: "Cela approuvera le recours n° %{id} et rétablira le compte de @%{username} (suppression du statut suspendu/spam et republication des articles masqués par la suspension automatique). Voulez-vous vraiment continuer ?"
         confirm_reject: "Cela rejettera le recours n° %{id} et maintiendra toutes les restrictions actives sur le compte de @%{username}. Voulez-vous vraiment continuer ?"
         resolved_by_html: "Résolu par : <strong>%{name}</strong> le %{date}"

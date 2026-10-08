@@ -21,9 +21,10 @@ module Appeals
         status: :ai_reviewed,
       )
 
-      # Optional auto-resolution for high-confidence false positives
-      threshold = Settings::General.appeal_auto_unflag_threshold || 0.90
-      if results[:recommendation] == "auto_unflag" && results[:confidence_score] >= threshold
+      # Optional auto-resolution for high-confidence false positives. Without an admin, the resolver
+      # also refuses to lift a ban a human moderator applied, leaving the appeal for human review.
+      threshold = Settings::General.appeal_auto_unflag_threshold
+      if threshold && results[:recommendation] == "auto_unflag" && results[:confidence_score] >= threshold
         Appeals::Resolver.approve(appeal: appeal)
       end
     rescue StandardError => e

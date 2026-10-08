@@ -11,6 +11,7 @@ module Settings
     setting :comment_creation, type: :integer, default: 9
     setting :email_recipient, type: :integer, default: 5
     setting :feedback_message_creation, type: :integer, default: 5
+    setting :flag_appeal_creation, type: :integer, default: 3
     setting :follow_count_daily, type: :integer, default: 500
     setting :image_upload, type: :integer, default: 9
     setting :listing_creation, type: :integer, default: 1

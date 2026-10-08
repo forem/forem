@@ -34,16 +34,23 @@ class FlagAppealsController < ApplicationController
 
   def create
     @flag_appeal = current_user.flag_appeals.build(appeal_params)
-
     validate_and_sanitize_appealable
 
+    # Every appeal triggers a paid AI review, so cap how fast a user can file them across targets.
+    rate_limit!(:flag_appeal_creation)
+
     if @flag_appeal.save
+      rate_limiter.track_limit_by_action(:flag_appeal_creation)
       Appeals::AiReviewWorker.perform_async(@flag_appeal.id)
       flash[:notice] = I18n.t("flag_appeals.submitted_success")
       redirect_to appeal_success_path(id: @flag_appeal.id)
     else
       render :new, status: :unprocessable_entity
     end
+  rescue RateLimitChecker::LimitReached => e
+    response.headers["Retry-After"] = e.retry_after.to_s
+    @flag_appeal.errors.add(:base, e.message)
+    render :new, status: :too_many_requests
   rescue ActiveRecord::RecordNotUnique
     msg = I18n.t(
       "flag_appeals.already_pending",

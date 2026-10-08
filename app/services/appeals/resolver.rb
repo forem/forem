@@ -11,6 +11,42 @@ module Appeals
                               %w[likely_spam likely_harmful likely_inciting]).freeze
     RESET_AUTOMOD_LABEL = "no_moderation_label".freeze
 
+    # Written by Spam::Handler.audit_automatic_block! for every role the automation applies.
+    AUTOMATIC_BLOCK_CATEGORY = "spam.automatic_block".freeze
+    # Moderator::ManageActivityAndRoles records the role name as the note reason when a human
+    # bans ("Suspended"/"Spam") or reinstates ("Good standing"/"Trusted") a user.
+    MANUAL_BAN_NOTE_REASONS = %w[Suspended Spam].freeze
+    MANUAL_CLEAR_NOTE_REASONS = ["Good standing", "Trusted"].freeze
+
+    # Whether the appeal may be approved without a human. Only restrictions the automation applied
+    # are eligible: if a moderator banned the user during the current restriction (before or after
+    # the automation did), the appeal is left for human review.
+    #
+    # @return [Boolean]
+    def self.auto_approvable?(appeal)
+      user = appeal.user
+      return true unless user.spam? || user.suspended?
+
+      since = restriction_started_after(appeal)
+      return false unless within(AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY).on_user(user), since).exists?
+
+      !within(Note.where(noteable: user, reason: MANUAL_BAN_NOTE_REASONS), since).exists?
+    end
+
+    # The last time the user's restrictions were lifted (an approved appeal or a human reinstating
+    # them). Anything older belongs to a previous, already resolved restriction.
+    def self.restriction_started_after(appeal)
+      user = appeal.user
+      [
+        FlagAppeal.approved.where(user_id: user.id).where.not(id: appeal.id).maximum(:updated_at),
+        Note.where(noteable: user, reason: MANUAL_CLEAR_NOTE_REASONS).maximum(:created_at),
+      ].compact.max
+    end
+
+    def self.within(relation, since)
+      since ? relation.where("#{relation.table_name}.created_at > ?", since) : relation
+    end
+
     # @return [Boolean] false when the appeal was already resolved
     def self.approve(appeal:, admin: nil)
       new(appeal: appeal, admin: admin).approve
@@ -27,10 +63,15 @@ module Appeals
       @target = appeal.appealable
       @admin = admin
       @reset_article_ids = []
+      @republished_article_ids = []
     end
 
+    # Automated approvals (no admin) are refused when a human moderator applied the ban.
     def approve
+      return false if @admin.nil? && !self.class.auto_approvable?(@appeal)
+
       resolved = resolve!(:approved) do
+        republish_articles
         remove_restriction_roles
         reset_flagged_article_labels
         destroy_mascot_vomit_reactions
@@ -65,6 +106,31 @@ module Appeals
       @user.remove_role(:spam) if @user.spam?
     end
 
+    # Republishes the appealed article, or for an account appeal, the posts the automatic
+    # suspension hid (as recorded by Spam::Handler.suspend!). Drafts (no published_at) stay drafts.
+    #
+    # update_all skips callbacks on purpose: Article's publish callbacks re-run the spam checks
+    # (Articles::HandleSpamWorker), which could re-flag the author right after reinstatement.
+    def republish_articles
+      ids = case @target
+            when Article then [@target.id]
+            when User then automatically_unpublished_article_ids
+            else []
+            end
+      return if ids.empty?
+
+      articles = @user.articles.where(id: ids, published: false).where.not(published_at: nil)
+      @republished_article_ids = articles.ids
+      Article.where(id: @republished_article_ids).update_all(published: true)
+    end
+
+    # Union across the current restriction's suspension logs, since suspend! can run more than once.
+    def automatically_unpublished_article_ids
+      since = self.class.restriction_started_after(@appeal)
+      logs = AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY, slug: "automatic_suspended").on_user(@user)
+      self.class.within(logs, since).flat_map { |log| Array(log.data["unpublished_article_ids"]) }.uniq
+    end
+
     def reset_flagged_article_labels
       articles = @user.articles.where(automod_label: FLAGGED_AUTOMOD_LABELS)
       articles = articles.or(@user.articles.where(id: @target.id)) if @target.is_a?(Article)
@@ -93,7 +159,8 @@ module Appeals
 
       # Label resets use update_all (no callbacks), so purge the edge cache for the profile and posts.
       Users::BustCacheWorker.perform_async(@user.id)
-      Articles::BustMultipleCachesWorker.perform_async(@reset_article_ids) if @reset_article_ids.any?
+      busted_article_ids = @reset_article_ids | @republished_article_ids
+      Articles::BustMultipleCachesWorker.perform_async(busted_article_ids) if busted_article_ids.any?
     end
   end
 end

@@ -27,7 +27,8 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
       expect(appeal.status).to eq("ai_reviewed")
     end
 
-    it "auto-resolves appeal when AI recommends auto_unflag with high confidence" do
+    it "auto-resolves appeal when AI recommends auto_unflag above a lowered threshold" do
+      allow(Settings::General).to receive(:appeal_auto_unflag_threshold).and_return(0.9)
       allow(assessor_double).to receive(:evaluate).and_return(
         summary: "High confidence false positive.",
         confidence_score: 0.95,
@@ -39,6 +40,36 @@ RSpec.describe Appeals::AiReviewWorker, type: :worker do
       appeal.reload
       expect(appeal.status).to eq("ai_reviewed")
       expect(Appeals::Resolver).to have_received(:approve).with(appeal: appeal)
+    end
+
+    it "routes even a fully confident auto_unflag to human review under the default threshold" do
+      expect(Settings::General.appeal_auto_unflag_threshold).to eq(1.01)
+      allow(assessor_double).to receive(:evaluate).and_return(
+        summary: "Certain false positive.",
+        confidence_score: 1.0,
+        recommendation: "auto_unflag",
+      )
+
+      described_class.new.perform(appeal.id)
+
+      appeal.reload
+      expect(appeal.status).to eq("ai_reviewed")
+      expect(appeal.ai_summary).to eq("Certain false positive.")
+      expect(appeal.ai_recommendation).to eq("auto_unflag")
+      expect(Appeals::Resolver).not_to have_received(:approve)
+    end
+
+    it "never auto-resolves when the threshold is unset" do
+      allow(Settings::General).to receive(:appeal_auto_unflag_threshold).and_return(nil)
+      allow(assessor_double).to receive(:evaluate).and_return(
+        summary: "Certain false positive.",
+        confidence_score: 1.0,
+        recommendation: "auto_unflag",
+      )
+
+      described_class.new.perform(appeal.id)
+
+      expect(Appeals::Resolver).not_to have_received(:approve)
     end
 
     it "does not update or resolve if appeal is no longer open after evaluation (reload guard)" do
