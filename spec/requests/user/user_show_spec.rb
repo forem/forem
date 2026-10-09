@@ -63,17 +63,34 @@ RSpec.describe "UserShow" do
       expect(response.body).not_to include('class="subscription-icon"')
     end
 
-    it "does not render an empty icon wrapper next to the name when the user has no icons" do
-      get user.path
-      title = Nokogiri::HTML(response.body).at(".js-username-container h1")
-      expect(title.css("span.ml-2")).to be_empty
-    end
+    context "when rendering the icons next to the profile name" do
+      let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
 
-    it "wraps the name icons in a spaced span when the user has an icon" do
-      user.add_role("base_subscriber")
-      get user.path
-      title = Nokogiri::HTML(response.body).at(".js-username-container h1")
-      expect(title.at("span.ml-2 .subscription-icon")).to be_present
+      after { FeatureFlag.remove(:community_favorites) }
+
+      it "does not render an icon wrapper when the user has no icons" do
+        get user.path
+        expect(title).not_to be_nil
+        expect(title.at_css("span.ml-2")).to be_nil
+      end
+
+      it "wraps a subscription icon in a spaced span" do
+        user.add_role("base_subscriber")
+        get user.path
+        expect(title.at_css("span.ml-2 .subscription-icon")).not_to be_nil
+      end
+
+      it "renders every icon inside a single spaced span" do
+        FeatureFlag.add(:community_favorites)
+        FeatureFlag.enable(:community_favorites)
+        user.add_role("base_subscriber")
+        user.add_role(:community_leader_level_1)
+        get user.path
+        wrapper = title.css("span.ml-2")
+        expect(wrapper.size).to eq(1)
+        expect(wrapper.first.at_css(".subscription-icon")).not_to be_nil
+        expect(wrapper.first.at_css(".community-leader-icon")).not_to be_nil
+      end
     end
 
     it "does not render a key if no value is given" do
