@@ -754,3 +754,11 @@ en:
             day_before: "1 Day Before"
             hour_before: "1 Hour Before"
             none: "None"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibility
+          hidden_by_default: Hidden by default
+          visible: Visible
+        edit:
+          hidden_by_default: Hidden by default
+          hidden_by_default_desc_html: Billboards are still delivered to this placement area but render hidden, and record no impressions, until frontend logic reveals them with %{reveal_call}. Rendered billboards carry %{placement_attribute}.

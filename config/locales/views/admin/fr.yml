@@ -745,3 +745,11 @@ fr:
             day_before: "1 jour avant"
             hour_before: "1 heure avant"
             none: "Aucune"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibilité
+          hidden_by_default: Masqué par défaut
+          visible: Visible
+        edit:
+          hidden_by_default: Masqué par défaut
+          hidden_by_default_desc_html: Les panneaux publicitaires sont toujours diffusés dans cet emplacement, mais s'affichent masqués et n'enregistrent aucune impression jusqu'à ce que la logique frontend les révèle avec %{reveal_call}. Les panneaux affichés portent %{placement_attribute}.

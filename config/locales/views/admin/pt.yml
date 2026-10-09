@@ -650,3 +650,11 @@ pt:
             day_before: "1 dia antes"
             hour_before: "1 hora antes"
             none: "Nenhuma"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibilidade
+          hidden_by_default: Oculto por padrão
+          visible: Visível
+        edit:
+          hidden_by_default: Oculto por padrão
+          hidden_by_default_desc_html: Os painéis publicitários continuam sendo entregues a esta área de posicionamento, mas são exibidos ocultos e não registram impressões até que a lógica do frontend os revele com %{reveal_call}. Os painéis renderizados incluem %{placement_attribute}.

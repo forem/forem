@@ -307,6 +307,89 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is not hidden by default" do
+      it "tags the billboard with its placement area without hiding it" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.body).to include('data-placement-area="post_comments"')
+        expect(response.body).not_to include("data-placement-hidden")
+      end
+    end
+
+    # rubocop:disable RSpec/NestedGroups
+    context "when the placement area is hidden by default" do
+      before do
+        BillboardPlacementAreaConfig.create!(placement_area: "post_comments", hidden_by_default: true)
+      end
+
+      it "still delivers the billboard, rendered hidden and tagged with its placement area" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.body).to include(billboard.processed_html)
+        expect(response.body).to include('data-placement-area="post_comments"')
+        expect(response.body).to include('data-placement-hidden="true"')
+      end
+
+      it "hides the plain template" do
+        billboard.update_column(:template, "plain")
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.body).to include('data-placement-hidden="true"')
+      end
+
+      it "hides the minimized version of a persistent billboard too" do
+        create_billboard(placement_area: "post_fixed_bottom", special_behavior: "persistent",
+                         minimized_body_markdown: "Minimized content")
+        BillboardPlacementAreaConfig.create!(placement_area: "post_fixed_bottom", hidden_by_default: true)
+
+        get article_billboard_path(username: article.username, slug: article.slug,
+                                   placement_area: "post_fixed_bottom")
+
+        expect(response.body).to include("js-minimized-template")
+        expect(response.body.scan('data-placement-hidden="true"').size).to eq(2)
+      end
+
+      %w[feed_first post_fixed_bottom post_body_bottom post_sidebar].each do |area|
+        it "hides the #{area} template" do
+          create_billboard(placement_area: area)
+          BillboardPlacementAreaConfig.create!(placement_area: area, hidden_by_default: true)
+
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+
+          expect(response.body).to include("data-placement-area=\"#{area}\"")
+          expect(response.body).to include('data-placement-hidden="true"')
+        end
+      end
+
+      context "with fragment caching enabled" do
+        around do |example|
+          original_cache_store = ActionController::Base.cache_store
+          original_perform_caching = ActionController::Base.perform_caching
+
+          ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+          ActionController::Base.perform_caching = true
+
+          example.run
+        ensure
+          ActionController::Base.perform_caching = original_perform_caching
+          ActionController::Base.cache_store = original_cache_store
+        end
+
+        it "reflects a visibility change without waiting for the billboard cache to expire" do
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+          expect(response.body).to include('data-placement-hidden="true"')
+
+          BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(hidden_by_default: false)
+
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+          expect(response.body).to include(billboard.processed_html)
+          expect(response.body).not_to include("data-placement-hidden")
+        end
+      end
+    end
+    # rubocop:enable RSpec/NestedGroups
+
     context "when billboard template is authorship_box" do
       before do
         billboard.update_column(:template, "authorship_box")

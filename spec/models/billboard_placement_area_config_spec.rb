@@ -237,6 +237,39 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
     end
   end
 
+  describe ".hidden_by_default_for" do
+    it "returns true when the placement area is configured as hidden by default" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(true)
+    end
+
+    it "returns false when the placement area is not hidden by default" do
+      described_class.create!(placement_area: "sidebar_left")
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+
+    it "only applies to the configured placement area" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      expect(described_class.hidden_by_default_for("sidebar_left_2")).to be(false)
+    end
+
+    it "returns false for a placement area without a config" do
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+
+    it "returns false for nil placement area" do
+      expect(described_class.hidden_by_default_for(nil)).to be(false)
+    end
+
+    it "returns false for a cached config that predates the column" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      config = described_class.select(:id, :placement_area).find_by(placement_area: "sidebar_left")
+      allow(described_class).to receive(:config_for_placement_area).with("sidebar_left").and_return(config)
+
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+  end
+
   describe ".selection_weights_for" do
     let!(:config) do
       described_class.create!(
