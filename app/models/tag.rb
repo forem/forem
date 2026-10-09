@@ -273,6 +273,10 @@ class Tag < ActsAsTaggableOn::Tag
   attr_writer :points
   attr_writer :subforem_ids
 
+  def published_articles_count
+    articles.published.from_subforem.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
+  end
+
   private
 
   def tidy_short_summary
