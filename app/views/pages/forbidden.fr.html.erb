@@ -1,8 +1,12 @@
-<h2>Forbidden</h2>
+<main id="main-content" class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Accès interdit</h1>
 
-<p>
-  Your account has been suspended and has limited access.
-  Your ability to post and comment may be limited.
-</p>
+    <p>
+      Votre compte a été suspendu et son accès est limité.
+      Vous ne pourrez peut-être pas publier ni commenter.
+    </p>
 
-<p>For more information, you may send a message to <%= contact_link %>.</p>
+    <p class="mb-0">Pour en savoir plus, vous pouvez envoyer un message à <%= contact_link %> ou <%= link_to "soumettre un recours", appeal_path %>.</p>
+  </div>
+</main>

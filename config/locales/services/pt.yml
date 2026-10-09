@@ -3,6 +3,10 @@ pt:
   services:
     analytics_service:
       no_stats: Você não pode visualizar as estatísticas deste artigo
+    appeals:
+      resolver:
+        approved_note: "Recurso nº %{id} aprovado por %{resolver}."
+        automatic: "revisão automática por IA"
     article_with_video_creation_service:
       unpublished_video: Vídeo Não Publicado ~ %{rand}
     authentication:

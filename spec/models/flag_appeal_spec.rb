@@ -1,0 +1,68 @@
+require "rails_helper"
+
+RSpec.describe FlagAppeal do
+  let(:user) { create(:user) }
+  let(:flag_appeal) { build(:flag_appeal, user: user, appealable: user) }
+
+  describe "validations" do
+    it "is valid with valid attributes" do
+      expect(flag_appeal).to be_valid
+    end
+
+    it "is invalid without a reason" do
+      flag_appeal.reason = nil
+      expect(flag_appeal).not_to be_valid
+    end
+
+    it "is invalid if reason exceeds 3000 characters" do
+      flag_appeal.reason = "a" * 3001
+      expect(flag_appeal).not_to be_valid
+    end
+
+    it "is invalid if a pending appeal already exists for the target" do
+      flag_appeal.save!
+      duplicate = build(:flag_appeal, user: user, appealable: user)
+      expect(duplicate).not_to be_valid
+      expect(duplicate.errors[:base]).to include("You already have an open appeal pending review for this item.")
+    end
+
+    it "requires an appealable target on create" do
+      flag_appeal.appealable = nil
+      expect(flag_appeal).not_to be_valid
+    end
+
+    it "can still be resolved after its target was deleted" do
+      article = create(:article, user: user)
+      appeal = create(:flag_appeal, user: user, appealable: article)
+      article.delete
+
+      expect(described_class.find(appeal.id).update(status: :rejected)).to be true
+    end
+  end
+
+  describe "associations" do
+    it { is_expected.to belong_to(:user) }
+    it { expect(described_class.reflect_on_association(:appealable)).to be_polymorphic }
+    it { is_expected.to validate_presence_of(:appealable).on(:create) }
+    it { is_expected.to belong_to(:resolved_by).class_name("User").optional }
+
+    it "keeps the appeal but clears resolved_by when the resolving admin is deleted" do
+      admin = create(:user, :super_admin)
+      appeal = create(:flag_appeal, user: user, appealable: user, status: :rejected, resolved_by: admin)
+
+      Users::Delete.call(admin)
+
+      expect(appeal.reload.resolved_by_id).to be_nil
+    end
+  end
+
+  describe "enums" do
+    it "defines status enum" do
+      expect(described_class.statuses).to include("open", "ai_reviewed", "approved", "rejected")
+    end
+
+    it "defines ai_recommendation enum" do
+      expect(described_class.ai_recommendations).to include("auto_unflag", "human_review", "confirm_flag")
+    end
+  end
+end

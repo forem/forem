@@ -130,18 +130,51 @@ module CommentsHelper
   end
 
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
-    comments = tree.filter_map do |comment, sub_comments|
-      subtree_html = nested_comments(tree: sub_comments, commentable: commentable, is_admin: is_admin)
+    visible_html, appeal_notices = render_comment_tree(
+      tree: tree, commentable: commentable, is_view_root: is_view_root, is_admin: is_admin,
+    )
+    safe_join([visible_html, *appeal_notices])
+  end
+
+  # @return [Array(ActiveSupport::SafeBuffer, Array<ActiveSupport::SafeBuffer>)] the rendered
+  #   visible comments, and the appeal placeholders for hidden comments in this (sub)tree.
+  #
+  # Placeholders are kept apart from the visible comments so they never count as replies: a hidden
+  # comment must not change whether its parent is itself shown or hidden.
+  def render_comment_tree(tree:, commentable:, is_view_root:, is_admin:)
+    visible = []
+    appeal_notices = []
+
+    tree.each do |comment, sub_comments|
+      subtree_html, subtree_notices = render_comment_tree(
+        tree: sub_comments, commentable: commentable, is_view_root: false, is_admin: is_admin,
+      )
       is_childless = subtree_html.blank?
       # hide childless comments if they are low quality or soft-deleted (but show for admins)
       hide = is_childless && (comment.decorate.super_low_quality || comment.deleted?)
+
       if is_admin || !hide
-        render("comments/comment", comment: comment, commentable: commentable,
-                                   is_view_root: is_view_root, is_childless: is_childless,
-                                   is_admin: is_admin,
-                                   subtree_html: subtree_html)
+        visible << render("comments/comment", comment: comment, commentable: commentable,
+                                              is_view_root: is_view_root, is_childless: is_childless,
+                                              is_admin: is_admin,
+                                              subtree_html: safe_join([subtree_html, *subtree_notices]))
+      else
+        appeal_notices.concat(subtree_notices)
+        appeal_notices << hidden_comment_appeal_notice(comment) if appealable_hidden_comment?(comment)
       end
     end
-    safe_join(comments)
+
+    [safe_join(visible), appeal_notices]
+  end
+
+  # Only signed in readers get placeholders, and only the browser decides whose they are (see
+  # initializeBaseUserData.js). Rendering based on current_user would leak between viewers, because
+  # the edge cache serves one copy of the page to every signed in user.
+  def appealable_hidden_comment?(comment)
+    user_signed_in? && !comment.deleted? && comment.decorate.super_low_quality
+  end
+
+  def hidden_comment_appeal_notice(comment)
+    render("comments/hidden_comment_appeal_notice", comment: comment)
   end
 end

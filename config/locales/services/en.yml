@@ -3,6 +3,10 @@ en:
   services:
     analytics_service:
       no_stats: You can't view this article's stats
+    appeals:
+      resolver:
+        approved_note: "Flag appeal #%{id} approved by %{resolver}."
+        automatic: "automatic AI review"
     article_with_video_creation_service:
       unpublished_video: Unpublished Video ~ %{rand}
     authentication:

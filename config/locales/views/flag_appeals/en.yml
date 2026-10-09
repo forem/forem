@@ -1,0 +1,20 @@
+---
+en:
+  views:
+    flag_appeals:
+      heading: Submit a Moderation Appeal
+      intro: If you believe your account or content was restricted or flagged by mistake, please explain below. Our automated safety checks and community moderation team will review your request.
+      reason_label: Why do you believe this restriction or flag was a mistake?
+      reason_placeholder: Provide context on your activity, intentional use case, or restricted content...
+      reason_help: Maximum 3,000 characters. Please be concise and accurate.
+      submit: Submit Appeal
+      cancel: Cancel
+      submitted_heading: Thank you for your appeal submission
+      home_link: "%{community} Home"
+      already_pending: You already have an open appeal pending review for this item.
+      appealing_comment_heading: Appealing flag on your comment
+      appealing_article_heading: Appealing flag on your article
+      errors_heading:
+        one: "1 error prohibited this appeal from being submitted:"
+        other: "%{count} errors prohibited this appeal from being submitted:"
+      on_post: "On: %{title}"
