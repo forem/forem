@@ -215,6 +215,34 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
   });
 
+  it('sets aria-activedescendant to the active option id when navigating suggestions', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    userEvent.type(input, 'a');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    userEvent.type(input, '{arrowdown}');
+
+    await waitFor(() =>
+      expect(input).toHaveAttribute('aria-activedescendant', 'option1'),
+    );
+  });
+
   it('should select current text on spacebar press, when it matches a suggestion', async () => {
     const mockFetchSuggestions = jest.fn(async () => [
       { name: 'option1' },
@@ -502,6 +530,37 @@ describe('<MultiSelectAutocomplete />', () => {
 
     // Input should be cleared
     expect(input).toHaveValue('');
+  });
+
+  it('closes the open suggestions list on blur when the input matches no suggestion', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    await userEvent.type(input, 'opt');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    input.blur();
+
+    await waitFor(() => {
+      expect(input).toHaveValue('');
+      expect(
+        queryByRole('option', { name: 'option1' }),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('clears input and selects current text on blur if no matching suggestion and user-defined selections are permitted', async () => {
