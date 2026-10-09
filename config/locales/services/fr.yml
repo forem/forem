@@ -53,6 +53,12 @@ fr:
         parse_error: Il y a eu un problème pour analyser la matière première YAML. Vous devez peut-être échapper une citation, un deux-points ou autre chose. Envoyez un e-mail à %{email} si vous avez des problèmes.
     html:
       parser:
+        alerts:
+          caution: Attention
+          important: Important
+          note: Note
+          tip: Astuce
+          warning: Avertissement
         enter_fullscreen_mode: Passer en mode plein écran
         exit_fullscreen_mode: Sortir du mode en plein écran
     markdown_processor:
