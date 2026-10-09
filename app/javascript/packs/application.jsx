@@ -21,6 +21,11 @@ Document.prototype.ready = new Promise((resolve) => {
   return null;
 });
 
+// Reveals requested by server-rendered billboard scripts before this deferred
+// pack ran, queued by the stub in layouts/application.html.erb.
+const queuedBillboardPlacementReveals =
+  window.Forem?.queuedBillboardPlacementReveals || [];
+
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   audioInitialized: false,
@@ -66,6 +71,8 @@ window.Forem = {
   revealBillboardPlacement,
   Runtime,
 };
+
+queuedBillboardPlacementReveals.forEach(revealBillboardPlacement);
 
 if (document.location.pathname.startsWith('/dashboard')) {
   import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {
