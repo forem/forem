@@ -1,0 +1,14 @@
+app/javascript/analytics/dashboard.js
+  h_b2f6efe2daa9cd 14-17,165-167,173,246-248,250,415-416
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "6ebc710d61a95ce7a67b093b30fc662a7f580fc3",
+  "prompts": {},
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

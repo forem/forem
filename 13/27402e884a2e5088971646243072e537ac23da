@@ -1,0 +1,36 @@
+spec/requests/api/v1/docs/users_spec.rb
+  s_d61821b145c511::t_63b67051a4fdd1 381
+spec/requests/api/v1/admin/users_spec.rb
+  s_d61821b145c511::t_52a6d53306a763 387-389,408-425
+  s_d61821b145c511::t_74dae95224590a 426-428
+  s_b9553d0e008547::t_74a8a0b9cb5548 429
+app/controllers/concerns/api/admin/users_controller.rb
+  s_d61821b145c511::t_8114bcbd735edb 138-144
+  s_d61821b145c511::t_6b9b01a3bcab6b 118-123
+swagger/v1/api_v1.json
+  s_d61821b145c511::t_9360e3c8fa35de 5298
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1327402e884a2e5088971646243072e537ac23da",
+  "prompts": {},
+  "sessions": {
+    "s_b9553d0e008547": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-ac82b952e1df83918",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_d61821b145c511": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6459e182-5069-47bb-a6c9-c33a81595270",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

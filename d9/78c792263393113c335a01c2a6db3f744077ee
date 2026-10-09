@@ -1,0 +1,54 @@
+app/mailers/concerns/deliverable.rb
+  s_6b97fb5f790bb3::t_633bbc09e3dbe0 32,154-156,158-176,180-181,183-185
+  s_6b97fb5f790bb3::t_523e00e52356c2 177-179
+  s_6b97fb5f790bb3::t_a0a4fd0b584aef 61-62
+  s_6b97fb5f790bb3::t_430f087112dec8 20-22,28-31
+  s_6b97fb5f790bb3::t_bf25ccc81e9818 33
+spec/lib/data_update_scripts/merge_email_keyed_customerio_profiles_spec.rb
+  s_6b97fb5f790bb3::t_0eb1ab4ccc8f9c 1-39
+spec/mailers/verification_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 61
+spec/models/user_spec.rb
+  s_6b97fb5f790bb3::t_a6859463300928 1908-1923
+spec/mailers/concerns/deliverable_spec.rb
+  s_6b97fb5f790bb3::t_1459b8e6bf0707 33-37,48,52-53,55,57-76,150
+spec/mailers/custom_mailer_spec.rb
+  s_6b97fb5f790bb3::t_55a87057385d36 175,224
+app/models/user.rb
+  s_6b97fb5f790bb3::t_98ef28aa774693 1214-1215,1217
+spec/mailers/devise_mailer_spec.rb
+  s_6b97fb5f790bb3::t_5394ca7c879626 148-172
+  s_6b97fb5f790bb3::t_01c57291ebb753 283,301
+spec/mailers/organization_membership_notification_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 54,76
+spec/mailers/digest_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 120
+spec/mailers/organization_invitation_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 50,72
+spec/mailers/survey_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 102,144,163,182
+lib/data_update_scripts/20260922120000_merge_email_keyed_customerio_profiles.rb
+  s_6b97fb5f790bb3::t_c698c5f5bb795f 1-9,13-20,27-31
+  s_6b97fb5f790bb3::t_61c9e4b27ec022 21-26
+  s_6b97fb5f790bb3::t_bf234a3918fb07 10-12
+spec/support/omniauth_helpers.rb
+  s_6b97fb5f790bb3::t_a63974cecb00ac 315-321
+spec/mailers/notify_mailer_spec.rb
+  s_6b97fb5f790bb3::t_01c57291ebb753 40,83,139,181,241,292,460,498,539,601,634,676,726,769,809,873,893,945
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d978c792263393113c335a01c2a6db3f744077ee",
+  "prompts": {},
+  "sessions": {
+    "s_6b97fb5f790bb3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b6961385-84f2-410e-87d1-75974e7139b7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

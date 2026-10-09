@@ -1,0 +1,45 @@
+app/controllers/concerns/api/analytics_controller.rb
+  f0eae6a24f98aab0 60-65,67-68,73-76,82,91-92,110-112,116-125
+app/services/analytics_service.rb
+  f0eae6a24f98aab0 7-11,18-21,35-36,40-44,54,56,268,273,280,289,311,315,345-402
+spec/services/analytics_service_spec.rb
+  f0eae6a24f98aab0 42-77
+db/migrate/20260423180002_add_index_on_page_views_article_and_created_at.rb
+  h_b2f6efe2daa9cd 1-12
+spec/requests/api/v1/analytics_spec.rb
+  f0eae6a24f98aab0 101,105,108-109,118-123,131
+db/migrate/20260423180001_add_index_on_comments_commentable_and_created_at.rb
+  h_b2f6efe2daa9cd 1-12
+db/schema.rb
+  f0eae6a24f98aab0 13,476,1175,1436
+db/migrate/20260423180000_add_index_on_reactions_reactable_and_created_at.rb
+  f0eae6a24f98aab0 1-14
+app/javascript/analytics/dashboard.js
+  f0eae6a24f98aab0 690-694,736-742
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "3cd2709b485385cb80ddb8a14f116b211449e209",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 320,
+      "total_deletions": 156,
+      "accepted_lines": 4043,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5350c3b435a7f0b8f5aae8b4499751f533dc9e7c4f9ef5d7d0577c193c2a4fc6"
+    }
+  },
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

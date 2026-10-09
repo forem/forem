@@ -1,0 +1,18 @@
+app/controllers/api/v0/events_controller.rb
+  h_f968154a99632d 24,30-31,35,62-64,68-86,91,94-104,106-112
+app/models/event.rb
+  h_f968154a99632d 132-143
+spec/requests/api/v0/events_spec.rb
+  h_f968154a99632d 3,20-21,30,38,81-83,99,101,103-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "701267c4530213a0de2c4de210d753da5ea45350",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,19 @@
+spec/models/article_spec.rb
+  s_453fa138d842db::t_ace9e7efb6464d 1469
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "9f74ade2d5a1bd281577a3415d2e52826f992d97",
+  "prompts": {},
+  "sessions": {
+    "s_453fa138d842db": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3f83ae5c-325d-45d4-a6a5-13af64b5fd47",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
