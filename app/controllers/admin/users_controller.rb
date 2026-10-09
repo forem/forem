@@ -375,6 +375,8 @@ new_email = user_params[:email].to_s.strip.presence
 
     def full_delete
       @user = User.find(params[:id])
+      authorize(@user, :admin_delete?)
+
       begin
         Moderator::DeleteUser.call(user: @user)
         link = helpers.tag.a(I18n.t("admin.users_controller.the_page"), href: admin_gdpr_delete_requests_path,
