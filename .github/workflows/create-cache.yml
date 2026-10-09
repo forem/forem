@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-cache:
-    runs-on: ubuntu-latest
+    runs-on: blacksmith-4vcpu-ubuntu-2404
     env:
       E2E: true
       RAILS_ENV: test
