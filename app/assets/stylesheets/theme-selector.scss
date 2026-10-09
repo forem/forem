@@ -87,7 +87,7 @@
   }
 }
 
-.theme-selector--light-theme {
+@mixin theme-preview-light {
   --preview-body-bg: #f9f9fa;
   --preview-body-color: #0a0a0a;
   --preview-header: #fdf9f3;
@@ -96,13 +96,29 @@
   --preview-border: rgba(0, 0, 0, 0.1);
 }
 
-.theme-selector--dark-theme {
+@mixin theme-preview-dark {
   --preview-body-bg: #0d1219;
   --preview-body-color: #fff;
   --preview-header: #1c2938;
   --preview-form: #424a54;
   --preview-card: #202c3d;
   --preview-border: rgba(0, 0, 0, 0.1);
+}
+
+.theme-selector--light-theme {
+  @include theme-preview-light;
+}
+
+.theme-selector--dark-theme {
+  @include theme-preview-dark;
+}
+
+.theme-selector--system-theme {
+  @include theme-preview-light;
+
+  @media (prefers-color-scheme: dark) {
+    @include theme-preview-dark;
+  }
 }
 
 .rich-selector-radio {
