@@ -12,10 +12,13 @@
   }
 </style>
 
+<% hidden_by_default = local_assigns.fetch(:hidden_by_default) { BillboardPlacementAreaConfig.hidden_by_default_for(billboard.placement_area) } %>
+<% placement_attributes = tag.attributes(data: { placement_area: billboard.placement_area, placement_hidden: (true if hidden_by_default) }) %>
 <% if billboard.template == "plain" %>
   <div
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -28,6 +31,7 @@
   <div class="crayons-story crayons-story__billboard bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -56,6 +60,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb crayons-story__billboard hero-billboard js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -78,6 +83,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -110,6 +116,7 @@
         <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
           style="<%= billboard.style_string.gsub('border-bottom: none;', '') %>"
           data-display-unit data-id="<%= billboard.id %>"
+          <%= placement_attributes %>
           data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
           data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
           data-context-type="<%= data_context_type %>"
@@ -129,6 +136,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -161,6 +169,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= placement_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"

@@ -88,6 +88,17 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     config.cache_expiry_seconds.nil? ? DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS : config.cache_expiry_seconds
   end
 
+  # Whether billboards delivered to this placement area render hidden until
+  # frontend logic reveals the placement (window.Forem.revealBillboardPlacement).
+  # Hidden billboards record no impressions until they are revealed.
+  def self.hidden_by_default_for(placement_area)
+    config = config_for_placement_area(placement_area)
+    return false if config.blank?
+
+    # Configs cached before the column existed won't carry the attribute
+    config.has_attribute?(:hidden_by_default) && config.hidden_by_default
+  end
+
   # Get selection weights for a specific placement area
   # Returns weights merged with defaults so missing keys get default values
   def self.selection_weights_for(placement_area)

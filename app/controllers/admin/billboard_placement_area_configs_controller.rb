@@ -46,6 +46,7 @@ module Admin
         :signed_in_rate,
         :signed_out_rate,
         :cache_expiry_seconds,
+        :hidden_by_default,
         selection_weights: [
           :random_selection,
           :new_and_priority,

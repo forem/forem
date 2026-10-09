@@ -37,6 +37,18 @@
         </p>
       </div>
 
+      <% unless @config.placement_area.start_with?("digest_") %>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :hidden_by_default, class: "crayons-checkbox" %>
+          <%= f.label :hidden_by_default, t("views.admin.billboard_placement_area_configs.edit.hidden_by_default"), class: "crayons-field__label" %>
+          <p class="crayons-field__description">
+            <%= t("views.admin.billboard_placement_area_configs.edit.hidden_by_default_desc_html",
+                  reveal_call: tag.code("window.Forem.revealBillboardPlacement(\"#{@config.placement_area}\")"),
+                  placement_attribute: tag.code("data-placement-area=\"#{@config.placement_area}\"")) %>
+          </p>
+        </div>
+      <% end %>
+
       <hr class="my-4">
 
       <h2 class="crayons-subtitle-2">Selection Strategy Weights</h2>
