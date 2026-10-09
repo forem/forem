@@ -242,6 +242,24 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(ad.processed_html)
     end
 
+    it "renders billboards hidden when their placement area is hidden by default" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
+      BillboardPlacementAreaConfig.create!(placement_area: "sidebar_right", hidden_by_default: true)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+      expect(response.body).to include('data-placement-area="sidebar_right" data-placement-hidden="true"')
+    end
+
+    it "lets server-rendered billboard scripts queue placement reveals before the application pack loads" do
+      get "/"
+      queue_stub_position = response.body.index("window.Forem.queuedBillboardPlacementReveals")
+
+      expect(queue_stub_position).to be_present
+      expect(queue_stub_position).to be < response.body.index('id="page-content"')
+    end
+
     it "does not render billboards when not approved" do
       ad = create(:billboard, published: true, approved: false, placement_area: "sidebar_right",
                               organization: org)

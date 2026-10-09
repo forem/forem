@@ -11,6 +11,7 @@ import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
+import { revealBillboardPlacement } from './billboardAfterRenderActions';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -19,6 +20,11 @@ Document.prototype.ready = new Promise((resolve) => {
   document.addEventListener('DOMContentLoaded', () => resolve());
   return null;
 });
+
+// Reveals requested by server-rendered billboard scripts before this deferred
+// pack ran, queued by the stub in layouts/application.html.erb.
+const queuedBillboardPlacementReveals =
+  window.Forem?.queuedBillboardPlacementReveals || [];
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
@@ -62,8 +68,11 @@ window.Forem = {
   },
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
+  revealBillboardPlacement,
   Runtime,
 };
+
+queuedBillboardPlacementReveals.forEach(revealBillboardPlacement);
 
 if (document.location.pathname.startsWith('/dashboard')) {
   import('./initializers/initializeDashboardSort').then(({ initializeDashboardSort }) => {

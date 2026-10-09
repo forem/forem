@@ -32,6 +32,7 @@ en:
     follow: Follow
     follow_back: Follow back
     following: Following
+    image_upload_server_error: A server error has occurred!
     like: Like
     loading: loading...
     reaction: Reaction
