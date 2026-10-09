@@ -37,6 +37,19 @@
         </p>
       </div>
 
+      <% unless @config.placement_area.start_with?("digest_") %>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :hidden_by_default, class: "crayons-checkbox" %>
+          <%= f.label :hidden_by_default, "Hidden by default", class: "crayons-field__label" %>
+          <p class="crayons-field__description">
+            Billboards are still delivered to this placement area but render hidden, and record no impressions,
+            until frontend logic reveals them with
+            <code>window.Forem.revealBillboardPlacement("<%= @config.placement_area %>")</code>.
+            Rendered billboards carry <code>data-placement-area="<%= @config.placement_area %>"</code>.
+          </p>
+        </div>
+      <% end %>
+
       <hr class="my-4">
 
       <h2 class="crayons-subtitle-2">Selection Strategy Weights</h2>

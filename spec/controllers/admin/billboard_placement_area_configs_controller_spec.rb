@@ -81,6 +81,21 @@ RSpec.describe Admin::BillboardPlacementAreaConfigsController, type: :controller
       get :edit, params: { id: config.id }
       expect(assigns(:human_readable_area)).to eq("Sidebar Left (First Position)")
     end
+
+    context "when rendering the form" do
+      render_views
+
+      it "offers the hidden by default option" do
+        get :edit, params: { id: config.id }
+        expect(response.body).to include("billboard_placement_area_config[hidden_by_default]")
+      end
+
+      it "does not offer the hidden by default option for email digest placements" do
+        digest_config = BillboardPlacementAreaConfig.create!(placement_area: "digest_first")
+        get :edit, params: { id: digest_config.id }
+        expect(response.body).not_to include("billboard_placement_area_config[hidden_by_default]")
+      end
+    end
   end
 
   describe "PATCH #update" do
@@ -113,6 +128,14 @@ RSpec.describe Admin::BillboardPlacementAreaConfigsController, type: :controller
         patch :update, params: valid_params
         expect(response).to redirect_to(admin_billboard_placement_area_configs_path)
         expect(flash[:success]).to eq("Placement area config updated successfully")
+      end
+
+      it "updates whether the placement area is hidden by default" do
+        patch :update, params: { id: config.id, billboard_placement_area_config: { hidden_by_default: "1" } }
+        expect(config.reload.hidden_by_default).to be(true)
+
+        patch :update, params: { id: config.id, billboard_placement_area_config: { hidden_by_default: "0" } }
+        expect(config.reload.hidden_by_default).to be(false)
       end
     end
 

@@ -16,6 +16,7 @@
         <th scope="col">Placement Area</th>
         <th scope="col">Signed In Rate (%)</th>
         <th scope="col">Signed Out Rate (%)</th>
+        <th scope="col">Visibility</th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -25,6 +26,7 @@
           <td><strong><%= config.human_readable_placement_area %></strong></td>
           <td><%= config.signed_in_rate %>%</td>
           <td><%= config.signed_out_rate %>%</td>
+          <td><%= config.hidden_by_default? ? "Hidden by default" : "Visible" %></td>
           <td>
             <%= link_to "Edit Configuration", edit_admin_billboard_placement_area_config_path(config), class: "crayons-btn crayons-btn--secondary" %>
           </td>

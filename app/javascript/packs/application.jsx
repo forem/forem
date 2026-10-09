@@ -11,6 +11,7 @@ import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
+import { revealBillboardPlacement } from './billboardAfterRenderActions';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -62,6 +63,7 @@ window.Forem = {
   },
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
+  revealBillboardPlacement,
   Runtime,
 };
 
