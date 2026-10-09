@@ -67,7 +67,12 @@
   data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
   data-scheduling-enabled="true"
   data-ai-available="<%= ::AI_AVAILABLE %>"
-  data-ai-disclosure-enabled="<%= Settings::General.enable_ai_disclosure %>">
+  data-ai-disclosure-enabled="<%= Settings::General.enable_ai_disclosure %>"
+  <% if co_author_invitations_enabled_for?(article) %>
+    data-co-author-invitations-enabled="true"
+    data-co-author-invitations="<%= co_author_invitations_editor_data(article).to_json %>"
+    data-co-author-invitations-max="<%= CoAuthorInvitation::MAX_PER_ARTICLE %>"
+  <% end %>>
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">

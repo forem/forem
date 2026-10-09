@@ -457,6 +457,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_09_120000) do
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
+  create_table "co_author_invitations", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "responded_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_id", "user_id"], name: "index_co_author_invitations_on_article_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_co_author_invitations_on_user_id"
+  end
+
   create_table "collections", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "description"
@@ -2233,6 +2244,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_09_120000) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "articles", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", column: "favorited_by_user_id", on_delete: :nullify

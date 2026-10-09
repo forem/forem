@@ -249,6 +249,13 @@ Rails.application.routes.draw do
     resources :ai_image_generations, only: [:create]
     resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
+    resources :co_author_invitations, only: [] do
+      get :candidates, on: :collection, defaults: { format: :json }
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }

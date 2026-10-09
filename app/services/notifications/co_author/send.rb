@@ -19,7 +19,7 @@ module Notifications
         return unless article.is_a?(Article)
         return unless article.published? && !article.scheduled? && article.type_of == "full_post"
 
-        recipient_ids = Array.wrap(article.co_author_ids).map(&:to_i) - [article.user_id]
+        recipient_ids = Array.wrap(article.co_author_ids).map(&:to_i) - [article.user_id] - accepted_while_live_ids
         return if recipient_ids.empty?
 
         # Skip anyone already notified so re-publishing or an unrelated edit
@@ -62,6 +62,12 @@ module Notifications
       private
 
       attr_reader :article
+
+      # Co-authors who accepted an invitation to an already-published post learned about it from
+      # the invitation itself, so a "published" notification on top would be redundant.
+      def accepted_while_live_ids
+        article.co_author_invitations.accepted.where(responded_at: article.published_at..).pluck(:user_id)
+      end
 
       def json_data
         data = {

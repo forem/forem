@@ -71,6 +71,13 @@ fr:
       mention_too_many:
         one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un commentaire !
         other:  Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un commentaire !
+    co_author_invitation:
+      declined: "@%{username} a décliné votre invitation à co-écrire cet article."
+      must_follow_author: "@%{username} doit vous suivre pour que vous puissiez l'inviter comme co-auteur."
+      personal_posts_only: Les invitations de co-auteur ne sont disponibles que pour les articles personnels.
+      too_many:
+        one: Vous pouvez inviter jusqu'à %{count} co-auteur.
+        other: Vous pouvez inviter jusqu'à %{count} co-auteurs.
     feedback_message:
       reported: "(vous) avez déjà signalé cette URL."
     github_issue:
