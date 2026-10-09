@@ -12,7 +12,9 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def leave_org?
-    part_of_org?
+    return false unless part_of_org?
+
+    !(user.org_admin?(record) && record.organization_memberships.where(type_of_user: "admin").count == 1)
   end
 
   def part_of_org?
