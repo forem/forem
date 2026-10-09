@@ -41,6 +41,21 @@ RSpec.describe "/admin/customization/html_variants" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
+
+      it "renders sort links in table headers" do
+        create(:html_variant, published: true, approved: true)
+        get admin_html_variants_path
+        expect(response.body).to include("Sort by Name")
+        expect(response.body).to include("Sort by Group")
+        expect(response.body).to include("Sort by Published")
+        expect(response.body).to include("Sort by Approved")
+      end
+
+      it "sorts by name ascending when requested" do
+        create(:html_variant, published: true, approved: true)
+        get admin_html_variants_path, params: { q: { s: "name asc" } }
+        expect(response).to have_http_status(:ok)
+      end
     end
 
     describe "POST /admin/customization/html_variants" do
