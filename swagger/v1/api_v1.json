@@ -566,7 +566,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
         "operationId": "createArticle",
         "parameters": [
 
@@ -3237,6 +3237,132 @@
         "responses": {
           "200": {
             "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/images": {
+      "post": {
+        "summary": "upload an image",
+        "tags": [
+          "images"
+        ],
+        "description": "Upload an image and get back a URL hosted by this Forem.\n\n### Using the URL:\n- Embed it in an article's `body_markdown`, e.g. `![A description](URL)`.\n- Set it as an article's cover image by passing it as `main_image` when creating or updating an article.\n\n### Limits:\n- One image per request, sent as `multipart/form-data` in the `image` field.\n- Allowed types: jpg, jpeg, jpe, gif, png, ico, bmp, dng, webp. Max 25MB.\n- Rate limited per user to a configurable number of uploads per configurable window (by default 10 per hour). Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable this endpoint.",
+        "operationId": "uploadImage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUrl"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          },
+          "429": {
+            "description": "too many requests"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The image file to upload."
+                  }
+                },
+                "required": [
+                  "image"
+                ]
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/images/generate": {
+      "post": {
+        "summary": "generate an image with AI",
+        "tags": [
+          "images"
+        ],
+        "description": "Generate an image from a text prompt and get back a URL hosted by this Forem.\n\nThe image follows this Forem's cover image style and, unless `aspect_ratio` is given, is sized for its cover images. Use the URL in `body_markdown` or as an article's `main_image`, just like an uploaded image.\n\n### Limits:\n- `prompt` is required and may be up to 1000 characters.\n- Rate limited per user to a configurable number of generations per configurable window (by default 3 per day). Every attempt counts, including failed ones. Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable this endpoint.\n- Returns `503` if AI image generation is not configured on this Forem.",
+        "operationId": "generateImage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUrl"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          },
+          "429": {
+            "description": "too many requests"
+          },
+          "503": {
+            "description": "AI image generation unavailable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "description": "A description of the image to generate."
+                  },
+                  "aspect_ratio": {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "2:3",
+                      "3:2",
+                      "3:4",
+                      "4:3",
+                      "4:5",
+                      "5:4",
+                      "9:16",
+                      "16:9",
+                      "21:9"
+                    ],
+                    "description": "Aspect ratio of the image. Defaults to this Forem's cover image shape."
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
           }
         }
       }
@@ -6126,6 +6252,19 @@
       }
     },
     "schemas": {
+      "ImageUrl": {
+        "description": "An image hosted by this Forem, usable in body_markdown or as an article's main_image",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
       "ArticleFlareTag": {
         "description": "Flare tag of the article",
         "type": "object",
