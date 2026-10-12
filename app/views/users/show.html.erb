@@ -58,7 +58,7 @@
                     <%= t("views.users.#{@user.spam? ? 'unspam' : 'spam'}", user: @user.username) %>
                   </a>
                   <span
-                    id="user-profile-dropdownmenu-admin-link-wrapper"
+                    class="admin-actions hidden"
                     data-path="<%= admin_user_path(@user) %>"
                     data-text="<%= t("views.users.view_admin_profile") %>"></span>
                 <% end %>
