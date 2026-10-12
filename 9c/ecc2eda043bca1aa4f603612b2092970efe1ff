@@ -1,0 +1,40 @@
+app/views/users/show.html.erb
+  s_6d90ed72f10959::t_585bb46d153174 60-63
+config/locales/views/users/pt.yml
+  s_6d90ed72f10959::t_695897d755e4c6 5
+config/locales/views/comments/en.yml
+  s_6d90ed72f10959::t_695897d755e4c6 132-134
+spec/system/user/admin_views_admin_profile_link_spec.rb
+  s_6d90ed72f10959::t_2095fff7ac0d73 1-2,4-12,14-21,23-24,26-29,31,33-43,45-52,54-55,57-59
+  s_6d90ed72f10959::t_d64086f0b29fcf 3,13,22,25,30,32,44,53,56
+app/assets/javascripts/initializers/initializeBaseUserData.js
+  s_6d90ed72f10959::t_56932be25c205a 104-122
+config/locales/views/users/en.yml
+  s_6d90ed72f10959::t_218c4a503593c4 98
+config/locales/views/users/fr.yml
+  s_6d90ed72f10959::t_218c4a503593c4 98
+app/javascript/packs/profileDropdown.js
+  s_6d90ed72f10959::t_56932be25c205a 4,13
+app/views/comments/_comment_header.html.erb
+  s_6d90ed72f10959::t_585bb46d153174 75
+app/javascript/profileDropdown/adminProfileLink.js
+  s_6d90ed72f10959::t_e3ad0d64c00a3c 1-33
+config/locales/views/comments/fr.yml
+  s_6d90ed72f10959::t_695897d755e4c6 132-134
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9cecc2eda043bca1aa4f603612b2092970efe1ff",
+  "prompts": {},
+  "sessions": {
+    "s_6d90ed72f10959": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2716733-a560-4851-b8b7-e8d6a2c1d223",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
