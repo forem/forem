@@ -55,5 +55,13 @@ RSpec.describe "Admin profile link in user context menus", :js do
       expect(page).to have_link("Moderate")
       expect(page).to have_no_link(link_text)
     end
+
+    it "does not show the admin profile link when logged out" do
+      visit article.path
+      find_button(id: "comment-dropdown-trigger-#{comment.id}").click
+
+      expect(page).to have_link("Copy link")
+      expect(page).to have_no_link(link_text)
+    end
   end
 end

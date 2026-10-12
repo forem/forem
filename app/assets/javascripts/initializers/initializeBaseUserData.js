@@ -114,6 +114,7 @@ function addRelevantButtonsToComments(user) {
         link.className = 'crayons-link crayons-link--block';
         link.dataset.noInstant = '';
         link.textContent = butt.dataset.text;
+        link.setAttribute('aria-label', butt.getAttribute('aria-label'));
         butt.appendChild(link);
         butt.classList.remove('hidden');
         butt.classList.add('block');

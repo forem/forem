@@ -2,7 +2,8 @@ import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToke
 
 /**
  * Adds a "View Admin Profile" link visible only to admin users on profile pages.
- * The link is built client side so the admin URL isn't rendered for crawlers.
+ * The anchor is only built client side for admins, so no crawlable link to the
+ * admin page is rendered (the path itself is still present in a data attribute).
  * @function initAdminProfileLink
  * @returns {(void|undefined)} This function has no useable return value.
  */
