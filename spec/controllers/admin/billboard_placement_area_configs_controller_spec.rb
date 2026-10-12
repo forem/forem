@@ -95,6 +95,15 @@ RSpec.describe Admin::BillboardPlacementAreaConfigsController, type: :controller
         get :edit, params: { id: digest_config.id }
         expect(response.body).not_to include("billboard_placement_area_config[hidden_by_default]")
       end
+
+      it "offers the fully cached option, except for email digest placements" do
+        get :edit, params: { id: config.id }
+        expect(response.body).to include("billboard_placement_area_config[fully_cached]")
+
+        digest_config = BillboardPlacementAreaConfig.create!(placement_area: "digest_first")
+        get :edit, params: { id: digest_config.id }
+        expect(response.body).not_to include("billboard_placement_area_config[fully_cached]")
+      end
     end
   end
 
@@ -136,6 +145,14 @@ RSpec.describe Admin::BillboardPlacementAreaConfigsController, type: :controller
 
         patch :update, params: { id: config.id, billboard_placement_area_config: { hidden_by_default: "0" } }
         expect(config.reload.hidden_by_default).to be(false)
+      end
+
+      it "updates whether the placement area is fully cached" do
+        patch :update, params: { id: config.id, billboard_placement_area_config: { fully_cached: "1" } }
+        expect(config.reload.fully_cached).to be(true)
+
+        patch :update, params: { id: config.id, billboard_placement_area_config: { fully_cached: "0" } }
+        expect(config.reload.fully_cached).to be(false)
       end
     end
 

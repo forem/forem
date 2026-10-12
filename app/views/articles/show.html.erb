@@ -95,6 +95,7 @@
           id="article-show-container"
           data-article-id="<%= @article.id %>"
           data-article-slug="<%= @article.slug %>"
+          data-article-tags="<%= @article.cached_tag_list_array.join(",") %>"
           data-author-id="<%= @article.user_id %>"
           data-author-name="<%= @article.cached_user_name %>"
           data-author-username="<%= @article.username %>"
@@ -271,8 +272,8 @@
             <% end %>
             <% if @article.long_markdown? %>
               <div class="bb-shuffle-group js-bb-shuffle-group">
-                <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
-                <div class="below-post-bb body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom_secondary) %>"></div>
+                <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom, article: @article) %>"></div>
+                <div class="below-post-bb body-billboard-container" data-async-url="<%= billboard_async_path(:post_body_bottom_secondary, article: @article) %>"></div>
               </div>
             <% end %>
           </div>
@@ -281,8 +282,8 @@
         </article>
 
         <div class="pb-4 crayons-layout__comments-billboard bb-shuffle-group js-bb-shuffle-group">
-          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
-          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments_secondary) %>"></div>
+          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments, article: @article) %>"></div>
+          <div class="new-bb-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_comments_secondary, article: @article) %>"></div>
         </div>
 
         <% if ApplicationConfig["SKIP_BOTTOM_CONTENT"] == "yes" %>
@@ -347,7 +348,7 @@
       <%== EventTag.script %>
     <% end %>
   </script>
-  <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_fixed_bottom) %>"></div>
+  <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_async_path(:post_fixed_bottom, article: @article) %>"></div>
 
   <% if user_signed_in? %>
     <div id="quickie-wrapper" class="hidden">

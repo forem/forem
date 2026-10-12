@@ -232,8 +232,10 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
       end
 
-      it "sets the surrogate key header equal to params for article" do
-        expect(response.headers["Surrogate-Key"]).to eq("display_ads/#{billboard.id}")
+      it "sets surrogate keys for the billboard and the placement area's cached responses" do
+        expect(response.headers["Surrogate-Key"].split).to eq(
+          ["display_ads/#{billboard.id}", "billboard_responses", "billboard_responses/post_comments"],
+        )
       end
 
       it "sets the x-accel-expires header equal to max-age for article" do
@@ -579,6 +581,227 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(billboard.processed_html)
+      end
+    end
+  end
+
+  describe "GET /:username/:slug/billboards/:placement_area viewer country and anonymous tracking" do
+    let!(:billboard) { create_billboard(placement_area: "post_comments") }
+    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    def get_billboard(headers)
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments"),
+          headers: headers
+    end
+
+    context "when signed in" do
+      before do
+        allow(Settings::General).to receive(:geos_with_allowed_anonymous_tracking).and_return(["CA"])
+        sign_in user
+        get_billboard("X-Client-Geo" => "CA-AB", "X-Cacheable-Client-Geo" => "")
+      end
+
+      it "sends the country from the viewer's precise location" do
+        expect(billboard_element["data-id"]).to eq(billboard.id.to_s)
+        expect(billboard_element["data-viewer-country"]).to eq("CA")
+      end
+
+      it "never allows anonymous tracking" do
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+    end
+
+    context "when signed out without location targeting or anonymous tracking regions" do
+      it "neither varies the edge cache on location nor sends location data" do
+        get_billboard("X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US")
+
+        expect(response.headers["Vary"].to_s).not_to include("X-Cacheable-Client-Geo")
+        expect(billboard_element["data-id"]).to eq(billboard.id.to_s)
+        expect(billboard_element["data-viewer-country"]).to be_nil
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+    end
+
+    context "when signed out with location targeting enabled" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(Geolocation::FEATURE_FLAG).and_return(true)
+      end
+
+      it "sends the country from the cacheable location the response varies on" do
+        get_billboard("X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US-CA")
+
+        expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
+        expect(billboard_element["data-viewer-country"]).to eq("US")
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+    end
+
+    context "when signed out with anonymous tracking regions" do
+      before do
+        allow(Settings::General).to receive(:geos_with_allowed_anonymous_tracking).and_return(%w[us GB-SCT])
+      end
+
+      it "varies on location and sends the country even with location targeting disabled" do
+        get_billboard("X-Client-Geo" => "FR", "X-Cacheable-Client-Geo" => "FR")
+
+        expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
+        expect(billboard_element["data-viewer-country"]).to eq("FR")
+      end
+
+      it "allows anonymous tracking in an allowed country, including its regions" do
+        get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "US-NY")
+
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
+      end
+
+      it "allows anonymous tracking in an allowed region" do
+        get_billboard("X-Client-Geo" => "GB-SCT", "X-Cacheable-Client-Geo" => "GB-SCT")
+
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
+      end
+
+      it "does not allow anonymous tracking outside the allowed regions" do
+        get_billboard("X-Client-Geo" => "FR", "X-Cacheable-Client-Geo" => "FR")
+
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+
+      it "does not allow a whole country when only one of its regions is allowed" do
+        get_billboard("X-Client-Geo" => "GB-ENG", "X-Cacheable-Client-Geo" => "GB")
+
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+
+      it "does not allow anonymous tracking when the edge has no cacheable location" do
+        # Fastly leaves this blank for countries outside its active_geofencing_regions dictionary
+        get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "")
+
+        expect(billboard_element["data-viewer-country"]).to be_nil
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+    end
+  end
+
+  describe "GET /bb/:placement_area for a fully cached placement area" do
+    let!(:billboard) { create_billboard(placement_area: "post_comments") }
+    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    before do
+      BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
+    end
+
+    context "when signed in" do
+      before do
+        # Like a returning signed-in browser: the user is restored from their session rather than
+        # freshly logged in, and the request carries the remember-me cookie Fastly uses to keep
+        # signed-in and signed-out copies of every response apart.
+        login_as(user, scope: :user, run_callbacks: false)
+        cookies["remember_user_token"] = "token"
+      end
+
+      it "caches the response at the edge without setting any cookies" do
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.body).to include(billboard.processed_html)
+        expect(response.headers.to_hash).to include(
+          "Cache-Control" => "public, no-cache",
+          "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
+        )
+        expect(response.headers["Surrogate-Key"].split).to include(billboard.record_key)
+        expect(response.headers["Set-Cookie"]).to be_blank
+      end
+
+      it "does not cache a response that sets cookies, like a refreshed remember-me cookie" do
+        # A fresh login (as from the remember-me cookie after a session expires) makes Devise
+        # refresh that cookie, which must never reach other visitors through a cached response.
+        login_as(user, scope: :user, event: :authentication)
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.headers["Set-Cookie"]).to include("remember_user_token")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to include("public")
+        expect(response.body).to include(billboard.processed_html)
+      end
+
+      it "does not serve billboards that target something about the individual request" do
+        billboard.update!(tag_list: "ruby")
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.body).to be_empty
+      end
+
+      it "still respects whether the visitor is signed in" do
+        billboard.update!(display_to: :logged_out)
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.body).to be_empty
+      end
+
+      it "uses the same cacheable location as signed-out visitors and varies on it" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(Geolocation::FEATURE_FLAG).and_return(true)
+
+        get billboard_path(placement_area: "post_comments"),
+            headers: { "X-Client-Geo" => "CA-AB", "X-Cacheable-Client-Geo" => "US" }
+
+        expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
+        expect(billboard_element["data-viewer-country"]).to eq("US")
+        expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
+      end
+
+      it "serves requests that carry article context as before, uncached" do
+        billboard.update!(tag_list: "ruby")
+
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.body).to be_empty # article isn't tagged ruby, so the article context applied
+      end
+
+      it "keeps serving article areas requested without an article as shared once no longer fully cached" do
+        # Such requests come from pages rendered while the area was fully cached, which can
+        # outlive the switch. They have no article, so article-targeted billboards must stay out.
+        BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(fully_cached: false)
+        billboard.update!(tag_list: "ruby")
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=#{max_age}, stale-if-error=#{stale_if_error}")
+        expect(response.body).to be_empty
+      end
+
+      it "serves other placement areas requested without context as before when not fully cached" do
+        sidebar_billboard = create_billboard(placement_area: "sidebar_left", tag_list: "ruby")
+
+        get billboard_path(placement_area: "sidebar_left")
+
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.body).to include(sidebar_billboard.processed_html)
+      end
+    end
+
+    context "when signed out" do
+      it "tags even an empty response so the placement area's cached responses can be purged" do
+        billboard.update!(tag_list: "ruby")
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.body).to be_empty
+        expect(response.headers["Surrogate-Key"].split).to eq(%w[billboard_responses billboard_responses/post_comments])
+      end
+
+      it "caches the response without varying on location when nothing depends on it" do
+        get billboard_path(placement_area: "post_comments"),
+            headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US" }
+
+        expect(response.body).to include(billboard.processed_html)
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=#{max_age}, stale-if-error=#{stale_if_error}")
+        expect(response.headers["Vary"].to_s).not_to include("X-Cacheable-Client-Geo")
+        expect(billboard_element["data-viewer-country"]).to be_nil
       end
     end
   end
