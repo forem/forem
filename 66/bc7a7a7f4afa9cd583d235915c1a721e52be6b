@@ -1,0 +1,21 @@
+app/services/moderator/banish_user.rb
+  s_2717fea812dfa4::t_f828497f9d1168 20-26
+spec/services/moderator/banish_user_spec.rb
+  s_2717fea812dfa4::t_39ae3a9bb1fa5d 31-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "66bc7a7a7f4afa9cd583d235915c1a721e52be6b",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

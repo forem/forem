@@ -1,0 +1,27 @@
+spec/services/community_leaders/prune_inactive_spec.rb
+  s_1e049bdc81f15e::t_aa8f783977d781 28,42,46,50,58,67,70-127,132
+  s_1e049bdc81f15e::t_3e7bef7dd9bd4c 1-27,29-41,43-45,47-49,51-57,59-66,68-69,128-131,133-134
+app/services/community_leaders/prune_inactive.rb
+  s_1e049bdc81f15e::t_aa8f783977d781 2-51
+  s_1e049bdc81f15e::t_152d0beb9b5805 1
+  s_1e049bdc81f15e::t_0a34590e0d6baf 52-54
+app/models/user.rb
+  s_1e049bdc81f15e::t_aa8f783977d781 302-303
+  s_1e049bdc81f15e::t_0595dac1e64d60 304
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "3aa77eacd0c1db9fde0d424d6734f0ea8edd3c89",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
