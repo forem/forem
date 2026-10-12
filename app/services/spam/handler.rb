@@ -101,10 +101,16 @@ module Spam
       return :not_spam if comment.user.badge_achievements_count > 6
       return :not_spam if comment.user.base_subscriber?
 
+      if (count = new_account_comment_flood_count(user: comment.user))
+        mark_as_spam!(user: comment.user, reason: "new_account_comment_flood", commented_post_count: count,
+                      note: I18n.t("services.spam.comment_handler.marked_spam_comment_flood", count: count))
+        return :spam
+      end
+
       if (domain = extract_first_domain_from(comment.processed_html)) && extensive_domain_spam?(domain: domain,
                                                                                                 current_comment: comment)
         issue_spam_reaction_for!(reactable: comment)
-        suspend_if_user_is_repeat_offender(user: comment.user)
+        escalate_flagged_commenter!(user: comment.user)
         return :spam # Return early as it's confirmed spam.
       end
 
@@ -117,7 +123,7 @@ module Spam
          Ai::CommentCheck.new(comment).spam?)
 
       issue_spam_reaction_for!(reactable: comment)
-      suspend_if_user_is_repeat_offender(user: comment.user)
+      escalate_flagged_commenter!(user: comment.user)
     rescue Ai::Base::ProhibitedContentError
       spam_block!(reactable: comment, user: comment.user)
     end
@@ -245,7 +251,9 @@ module Spam
       )
         suspend!(user: user)
       elsif repeat_auto_flagged_author?(user: user)
-        mark_repeat_auto_flagged_author_as_spam!(user: user)
+        count = recent_auto_flagged_article_count(user: user)
+        mark_as_spam!(user: user, reason: "repeat_auto_flagged_articles", flagged_article_count: count,
+                      note: I18n.t("services.spam.article_handler.marked_spam_repeat_auto_flags", count: count))
       end
     end
 
@@ -272,21 +280,61 @@ module Spam
         .count
     end
 
+    # Same rule for comments, without the share of recent comments: the mascot only vomits
+    # comments the spam check confirmed, and a phishing bot posting hundreds of comments gets
+    # most of them past the escalation check, so its flags never reach a majority.
+    def self.repeat_auto_flagged_commenter?(user:, threshold: 2)
+      return false if user.badge_achievements_count >= 4
+
+      recent_auto_flagged_comment_count(user: user) > threshold
+    end
+
+    def self.recent_auto_flagged_comment_count(user:)
+      Reaction.comment_vomits.valid_or_confirmed
+        .where(user_id: Settings::General.mascot_user_id,
+               reactable_id: user.comments.where("created_at > ?", 1.month.ago).select(:id))
+        .count
+    end
+
+    # Moderator-confirmed flags suspend the commenter; the mascot's own flags mark them as spam.
+    def self.escalate_flagged_commenter!(user:)
+      if Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
+        user: user,
+        include_user_profile: more_rigorous_user_profile_spam_checking?,
+      )
+        suspend!(user: user)
+      elsif repeat_auto_flagged_commenter?(user: user)
+        count = recent_auto_flagged_comment_count(user: user)
+        mark_as_spam!(user: user, reason: "repeat_auto_flagged_comments", flagged_comment_count: count,
+                      note: I18n.t("services.spam.comment_handler.marked_spam_repeat_auto_flags", count: count))
+      end
+    end
+
+    # Comment farms sign up fresh accounts that comment on dozens of posts a day with on-topic,
+    # AI-written text that no content check flags. Newcomers rarely comment on more than 15
+    # posts in a day.
+    #
+    # @return [Integer, nil] how many posts a new account commented on in the last day, when over the limit
+    def self.new_account_comment_flood_count(user:, limit: 20)
+      return unless user.registered_at&.after?(3.days.ago)
+
+      count = user.comments.where("created_at > ?", 24.hours.ago).distinct.count(:commentable_id)
+      count if count > limit
+    end
+
     # Leave a note so moderators can see why the account was marked as spam. Skipped when the
-    # author is already spam so queued jobs for the same author don't pile up duplicate notes.
-    def self.mark_repeat_auto_flagged_author_as_spam!(user:)
+    # user is already spam so queued jobs for the same user don't pile up duplicate notes.
+    def self.mark_as_spam!(user:, reason:, note:, **details)
       return if user.spam?
 
       user.add_role(:spam)
-      audit_automatic_block!(user: user, role: :spam, reason: "repeat_auto_flagged_articles",
-                             flagged_article_count: recent_auto_flagged_article_count(user: user))
+      audit_automatic_block!(user: user, role: :spam, reason: reason, **details)
 
       Note.create(
         author_id: Settings::General.mascot_user_id,
         noteable: user,
         reason: "automatic_spam",
-        content: I18n.t("services.spam.article_handler.marked_spam_repeat_auto_flags",
-                        count: recent_auto_flagged_article_count(user: user)),
+        content: note,
       )
     end
 
@@ -327,16 +375,6 @@ module Spam
       html.include?("<a") || Ai::SpamEscalationCheck.new(text: text, content: content).escalate?
     end
     private_class_method :link_or_escalated?
-
-    # NEW/private: Refactored suspension logic into a helper method for clarity.
-    def self.suspend_if_user_is_repeat_offender(user:)
-      return unless Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
-        user: user,
-        include_user_profile: more_rigorous_user_profile_spam_checking?,
-      )
-
-      suspend!(user: user)
-    end
 
     # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
@@ -480,13 +518,15 @@ module Spam
 
     private_class_method :suspend!, :issue_spam_reaction_for!,
                          :extensive_domain_spam?, :extract_first_domain_from,
-                         :suspend_if_user_is_repeat_offender, :label_article_content!,
+                         :escalate_flagged_commenter!, :label_article_content!,
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,
                          :article_linked_domain_spam?, :extract_all_domains_from, :repeated_title_spam?,
                          :escalate_flagged_author!, :repeat_auto_flagged_author?,
                          :spam_block!,
-                         :recent_auto_flagged_article_count, :mark_repeat_auto_flagged_author_as_spam!
+                         :recent_auto_flagged_article_count, :mark_as_spam!,
+                         :repeat_auto_flagged_commenter?, :recent_auto_flagged_comment_count,
+                         :new_account_comment_flood_count
   end
 end
