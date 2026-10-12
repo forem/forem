@@ -39,6 +39,12 @@ RSpec.describe Ai::SpamEscalationCheck do
       expect(check.escalate?).to be(true)
     end
 
+    it "escalates a fake account-verification notice" do
+      stub_jev(phishing: 0.8)
+
+      expect(check.escalate?).to be(true)
+    end
+
     it "sends the internal content description spec as the community for the off-topic question" do
       allow(Settings::RateLimit).to receive(:internal_content_description_spec)
         .with(subforem_id: article.subforem_id).and_return("A community for woodworkers.")
@@ -73,7 +79,7 @@ RSpec.describe Ai::SpamEscalationCheck do
       described_class.new(text: "a" * 5_000, content: article).escalate?
 
       expect(requests.first[:state]).to include(content: "a" * described_class::MAX_TEXT_LENGTH)
-      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact offtopic_promotion])
+      expect(requests.first[:questions].keys).to eq(%i[spam offplatform_contact offtopic_promotion phishing])
     end
 
     it "does not escalate when the TypeSafe API fails" do

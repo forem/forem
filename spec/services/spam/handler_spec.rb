@@ -940,6 +940,106 @@ RSpec.describe Spam::Handler, type: :service do
 
       it_behaves_like "comment first-time spam offender"
     end
+
+    # Two earlier flags plus the mascot's vomit on the current comment make three.
+    context "with a low-trust commenter whose earlier comments were already auto-flagged" do
+      let(:commenter) { comment.user }
+      let(:auto_spam_notes) { Note.where(noteable: commenter, reason: "automatic_spam") }
+
+      before do
+        allow(comment).to receive(:processed_html).and_return("<a href=\"spam.com\">spam</a>")
+        allow(Ai::CommentCheck).to receive(:new).with(comment)
+          .and_return(instance_double(Ai::CommentCheck, spam?: true))
+        create_list(:comment, 2, user: commenter).each do |earlier|
+          create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+        end
+      end
+
+      it "marks the commenter as spam without waiting for moderator confirmation" do
+        handler
+        expect(commenter.reload).to be_spam
+        expect(commenter).not_to be_suspended
+        expect(AuditLog.on_user(commenter).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "repeat_auto_flagged_comments", "flagged_comment_count" => 3)
+        expect(auto_spam_notes.last.content)
+          .to eq(I18n.t("services.spam.comment_handler.marked_spam_repeat_auto_flags", count: 3))
+      end
+
+      it "leaves the commenter alone with only two flags" do
+        Reaction.where(user: mascot_user).first.destroy
+        handler
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "does not count flags a moderator marked invalid" do
+        Reaction.where(user: mascot_user).first.update_column(:status, "invalid")
+        handler
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves commenters with 4 badges alone" do
+        commenter.update_column(:badge_achievements_count, 4)
+        handler
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves active commenters alone when the flags are under half of their recent comments" do
+        create_list(:comment, 4, user: commenter)
+        handler
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "marks the commenter as spam at 10 flags whatever their share" do
+        create_list(:comment, 7, user: commenter).each do |earlier|
+          create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+        end
+        11.times { create(:comment, user: commenter) } # 10 flags on 21 comments
+        handler
+        expect(commenter.reload).to be_spam
+      end
+    end
+
+    context "when a new account comments on more than 20 posts in a day" do
+      let(:commenter) { create(:user, registered_at: 1.day.ago) }
+      let!(:comment) { create(:comment, user: commenter) }
+
+      before do
+        20.times { create(:comment, user: commenter) }
+        allow(Ai::CommentCheck).to receive(:new)
+      end
+
+      it "marks the account as spam without running the content checks" do
+        expect(handler).to eq(:spam)
+        expect(commenter.reload).to be_spam
+        expect(AuditLog.on_user(commenter).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "new_account_comment_flood", "commented_post_count" => 21)
+        expect(Ai::CommentCheck).not_to have_received(:new)
+      end
+
+      it "leaves accounts older than 3 days alone" do
+        commenter.update_column(:registered_at, 4.days.ago)
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves trusted accounts alone" do
+        commenter.add_role(:trusted)
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves admins alone" do
+        commenter.add_role(:admin)
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "counts each post once" do
+        Comment.where(user: commenter).where.not(id: comment.id).first
+          .update_columns(commentable_id: comment.commentable_id, commentable_type: comment.commentable_type)
+        expect(handler).to eq(:not_spam)
+      end
+    end
   end
 
   # No changes to .handle_user! tests
