@@ -1,0 +1,50 @@
+app/assets/stylesheets/config/_colors.css
+  s_fee9952e8048f4::t_350e146facc868 404
+  s_fee9952e8048f4::t_b81bbc0554bf71 61-62,67,409-410
+  s_fee9952e8048f4::t_815ae8d83fc1a9 411
+app/assets/stylesheets/components/dropdowns.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 14
+app/assets/stylesheets/config/_variables.scss
+  s_fee9952e8048f4::t_156a5c3505b3cf 37-41,48,56-57
+app/assets/stylesheets/base/typography.scss
+  s_fee9952e8048f4::t_2fda69fb2014ed 47-58
+app/assets/stylesheets/components/header.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 11
+app/assets/stylesheets/components/stories.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 50,54-60,124,217,242
+app/assets/stylesheets/components/links.scss
+  s_fee9952e8048f4::t_b6e46f8131c35c 17-18,45-48
+  s_fee9952e8048f4::t_9539fd37c79e92 43-44
+app/assets/stylesheets/themes/dark.css
+  s_fee9952e8048f4::t_3e4c5add0e44b7 404
+  s_fee9952e8048f4::t_b81bbc0554bf71 77-78,83
+  s_fee9952e8048f4::t_350e146facc868 400
+app/assets/stylesheets/components/forms.scss
+  s_fee9952e8048f4::t_350e146facc868 22
+app/assets/stylesheets/components/modals.scss
+  s_fee9952e8048f4::t_c63e3ce36a70a8 229,255,288,326
+app/assets/stylesheets/components/cards.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 7,15
+app/assets/stylesheets/views/article.scss
+  s_fee9952e8048f4::t_48c9e8403935ea 36-38
+app/assets/stylesheets/base/reset.scss
+  s_fee9952e8048f4::t_2fda69fb2014ed 40-42
+app/assets/stylesheets/components/ctas.scss
+  s_fee9952e8048f4::t_b6e46f8131c35c 23-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6cd57375e4e2f97be35d4813359145280b393ac6",
+  "prompts": {},
+  "sessions": {
+    "s_fee9952e8048f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5bc6aa76-d7ec-40dc-90c5-498a7b21b853",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

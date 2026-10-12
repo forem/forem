@@ -1,0 +1,21 @@
+config/fastly/snippets/check_for_remember_user_token_in_cookie_to_set_header.vcl
+  s_edd2ba4c41e31f::t_ae09816128bef7 28,31
+  s_edd2ba4c41e31f::t_a066659154ad54 44
+  s_edd2ba4c41e31f::t_88654325728641 8-14,24-27,29-30,32-39,42-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e4f51752c71528537b981d64ff868b5b5b0f1457",
+  "prompts": {},
+  "sessions": {
+    "s_edd2ba4c41e31f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d23b6411-b5e2-40fb-b256-4226b1fcf922",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
