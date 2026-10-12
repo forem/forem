@@ -1,0 +1,53 @@
+app/controllers/api/v1/analytics_controller.rb
+  f0eae6a24f98aab0 14
+app/javascript/analytics/__tests__/dashboard.retry.test.js
+  f0eae6a24f98aab0 1-179
+app/javascript/analytics/__tests__/dashboard.test.js
+  f0eae6a24f98aab0 26,64-74,101-105,107,115,222-223,248-249,257,260-261,266,269-270,275-279,283-287,289-291,293-295,299-300,303,308,314-315,320-323,325-326,330,339-343,346,348,350-351,359,371-373,383-392,407,420-429,434-436
+spec/requests/api/v0/analytics_spec.rb
+  f0eae6a24f98aab0 53-56
+app/javascript/analytics/client.js
+  f0eae6a24f98aab0 3-20,31-35,92-107
+app/javascript/utilities/http/errors.js
+  f0eae6a24f98aab0 8-15,17-18
+spec/requests/api/v1/analytics_spec.rb
+  f0eae6a24f98aab0 81-129
+app/javascript/utilities/http/__tests__/errors.test.js
+  f0eae6a24f98aab0 1-63
+app/controllers/api/v0/analytics_controller.rb
+  f0eae6a24f98aab0 14
+app/javascript/analytics/dashboard.js
+  f0eae6a24f98aab0 1,631-646,652,654,660-664,679-684,688-690,692-698,702,708-709,717-718,726-727
+app/javascript/analytics/__tests__/client.test.js
+  f0eae6a24f98aab0 1-167
+config/routes/api.rb
+  f0eae6a24f98aab0 44
+app/controllers/concerns/api/analytics_controller.rb
+  f0eae6a24f98aab0 55-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "a3ffa166325b1d93991e47c06c5335f30e0b906f",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 6170,
+      "total_deletions": 947,
+      "accepted_lines": 5247,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/850f2f8dd7d5d1e755b0bec68ec591a03c63cbd26cdbd6c87c789e0385ee173d"
+    }
+  },
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

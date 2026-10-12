@@ -1,0 +1,32 @@
+app/controllers/admin/favorites_controller.rb
+  h_c527e33bbdbde8 1-15
+app/models/admin_menu.rb
+  h_c527e33bbdbde8 12
+app/services/favorites/impact_data.rb
+  h_c527e33bbdbde8 1-88
+app/views/admin/favorites/index.html.erb
+  h_c527e33bbdbde8 1-35
+config/locales/views/admin/en.yml
+  h_c527e33bbdbde8 565-575
+config/locales/views/admin/fr.yml
+  h_c527e33bbdbde8 554-564
+config/locales/views/admin/pt.yml
+  h_c527e33bbdbde8 451-461
+config/routes/admin.rb
+  h_c527e33bbdbde8 87-88
+spec/requests/admin/favorites_spec.rb
+  h_c527e33bbdbde8 1-36
+spec/services/favorites/impact_data_spec.rb
+  h_c527e33bbdbde8 1-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "941e5dd33de9b9393a47a423968bdbba6fb7d519",
+  "prompts": {},
+  "humans": {
+    "h_c527e33bbdbde8": {
+      "author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}
