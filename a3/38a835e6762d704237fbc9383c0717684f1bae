@@ -1,0 +1,24 @@
+app/models/organization_membership.rb
+  s_f747b314b5f30e::t_d276aebade9912 16-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.0",
+  "base_commit_sha": "a338a835e6762d704237fbc9383c0717684f1bae",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f747b314b5f30e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6d1f6d7d-eaaf-42d9-b5fb-fc61ef73e444",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
