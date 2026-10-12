@@ -1,0 +1,104 @@
+app/queries/homepage/articles_query.rb
+  s_1e049bdc81f15e::t_845407c5be7ea9 8
+app/javascript/packs/homePageFeed.jsx
+  s_1e049bdc81f15e::t_d906a2fd89f87e 97
+app/assets/javascripts/initializers/initializeFavoritedMarkers.js
+  s_1e049bdc81f15e::t_c7f6794a83af05 1-28
+app/javascript/articles/components/CommentsCount.jsx
+  s_1e049bdc81f15e::t_d906a2fd89f87e 52
+app/assets/stylesheets/components/stories.scss
+  s_1e049bdc81f15e::t_194983ba6d5380 318-323
+app/assets/javascripts/initializePage.js
+  s_1e049bdc81f15e::t_290652e7c2adf9 33
+app/javascript/favoriteControl/FavoriteControl.jsx
+  s_1e049bdc81f15e::t_e64d3537e4509e 98-99
+  s_1e049bdc81f15e::t_4f654c41562b12 97
+app/assets/javascripts/initializers/initScrolling.js
+  s_1e049bdc81f15e::t_290652e7c2adf9 359,488
+app/views/articles/_single_story.html.erb
+  s_1e049bdc81f15e::t_b41eaf8beb9d23 157
+  s_1e049bdc81f15e::t_5e753375f40bdd 171
+  s_1e049bdc81f15e::t_194983ba6d5380 159
+  s_1e049bdc81f15e::t_d30a222266ea22 158,160-162,169-170
+  s_1e049bdc81f15e::t_39564aeb69c213 163-164
+  s_1e049bdc81f15e::t_5e14dafddb5095 165-168
+app/javascript/articles/components/Meta.jsx
+  s_1e049bdc81f15e::t_d906a2fd89f87e 70
+app/javascript/articles/components/FavoritedMarker.jsx
+  s_1e049bdc81f15e::t_fd60dd5ed19a41 16
+  s_1e049bdc81f15e::t_ebb2bdeb685f9a 17-19
+  s_1e049bdc81f15e::t_484d73b26ae865 13-15
+  s_1e049bdc81f15e::t_9da8bf8d996ee0 10-12
+  s_1e049bdc81f15e::t_dca78d2c60549d 20-22
+app/javascript/articles/components/index.js
+  s_1e049bdc81f15e::t_d906a2fd89f87e 5
+app/assets/javascripts/utilities/buildArticleHTML.js
+  s_1e049bdc81f15e::t_efa9d78791fb69 190
+  s_1e049bdc81f15e::t_a7fe4f3fa4b0d6 176,187-189,191-203,253-255,475
+app/assets/javascripts/initializers/initializeLocalStorageRender.js
+  s_1e049bdc81f15e::t_290652e7c2adf9 8
+app/javascript/utilities/featureFlags.js
+  s_1e049bdc81f15e::t_008132a2a0eca0 1-4
+app/assets/javascripts/utilities/featureFlags.js
+  s_1e049bdc81f15e::t_e52c66aacfc710 1-5
+app/views/layouts/application.html.erb
+  s_1e049bdc81f15e::t_5422f978e02ce0 77
+app/javascript/packs/favoriteControls.jsx
+  s_1e049bdc81f15e::t_0b441d86473af6 3
+  s_1e049bdc81f15e::t_70087cb9e92aef 49-53
+  s_1e049bdc81f15e::t_c235547d03124f 47-48
+app/views/stories/feeds/show.json.jbuilder
+  s_1e049bdc81f15e::t_682834e6a2fb72 26
+  s_1e049bdc81f15e::t_ab824d17c5e0dd 6
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  s_1e049bdc81f15e::t_b1d9ce13018195 42
+  s_1e049bdc81f15e::t_1e50bf7fdd6df6 160,168-198
+spec/serializers/homepage/article_serializer_spec.rb
+  s_1e049bdc81f15e::t_dc1feb3c013f53 19-33
+app/assets/javascripts/.eslintrc.js
+  s_1e049bdc81f15e::t_8d0e89b3925814 26
+  s_1e049bdc81f15e::t_290652e7c2adf9 29
+app/javascript/articles/Article.jsx
+  s_1e049bdc81f15e::t_d906a2fd89f87e 9,22,49-50,53-55,95-104,106-108,133-135,137-144,152,155-158,168-176,210
+spec/requests/community_leader_indicators_spec.rb
+  s_1e049bdc81f15e::t_72d870a2ebab9e 72-74
+  s_1e049bdc81f15e::t_e4a85b2f32812f 64-68
+  s_1e049bdc81f15e::t_8cac8d1e7b5c41 8-42,69
+  s_1e049bdc81f15e::t_a10ea834077883 43-50,75
+  s_1e049bdc81f15e::t_a8a5ccdd400424 5-7
+  s_1e049bdc81f15e::t_e0df96e67650ec 51-63,71
+  s_1e049bdc81f15e::t_be877c58b74e5f 70
+  s_1e049bdc81f15e::t_c2b587c9bdafb0 2-4
+  s_1e049bdc81f15e::t_51aef12400b052 76
+spec/helpers/application_helper_spec.rb
+  s_1e049bdc81f15e::t_5ac7b0fa0fc8a4 649
+  s_1e049bdc81f15e::t_740b7298ccfe45 589,611-619
+  s_1e049bdc81f15e::t_8cac8d1e7b5c41 595-610,625-630,648
+  s_1e049bdc81f15e::t_25df4437eaa0d8 592-594
+  s_1e049bdc81f15e::t_57087dc27c70db 621-624
+  s_1e049bdc81f15e::t_fbbdbade99ad90 631
+  s_1e049bdc81f15e::t_b59cbd5e53896d 620,632-647,650-654,656
+  s_1e049bdc81f15e::t_6cc4319a7c0012 590-591
+spec/requests/stories/feeds_spec.rb
+  s_1e049bdc81f15e::t_54aeefadb92cd9 863-872,874-894,897-920
+  s_1e049bdc81f15e::t_9d4981bc65b45b 873
+  s_1e049bdc81f15e::t_24c11d2746d68b 895-896
+app/serializers/homepage/article_serializer.rb
+  s_1e049bdc81f15e::t_845407c5be7ea9 23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "4ad17a61276d9db4ab8a19ccd613afd7e2eeaaad",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}
