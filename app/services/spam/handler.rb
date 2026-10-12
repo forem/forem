@@ -209,6 +209,10 @@ module Spam
     # @param reason [String] which automated check suspended the user, for the audit log
     def self.suspend!(user:, reason: "too_many_spam_reactions", **details)
       user.add_role(:suspended)
+      unpublish = unpublish_all_posts_when_user_auto_suspended?
+      # Recorded so an approved appeal (Appeals::Resolver) can restore exactly the posts hidden here.
+      # Not the `published` scope: scheduled posts must be hidden too.
+      details[:unpublished_article_ids] = user.articles.where(published: true).ids if unpublish
       audit_automatic_block!(user: user, role: :suspended, reason: reason, **details)
 
       Note.create(
@@ -218,9 +222,9 @@ module Spam
         content: I18n.t("models.comment.suspended_too_many"),
       )
 
-      return unless unpublish_all_posts_when_user_auto_suspended?
+      return unless unpublish
 
-      user.articles.update_all(published: false)
+      user.articles.where(id: details[:unpublished_article_ids]).update_all(published: false)
     end
 
     # Have the mascot of this Forem react negatively to this reactable.

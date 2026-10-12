@@ -49,6 +49,22 @@ RSpec.describe RateLimitChecker, type: :service do
       end
     end
 
+    context "when filing flag appeals" do
+      it "limits with Settings::RateLimit.flag_appeal_creation and a five minute retry window" do
+        allow(Settings::RateLimit).to receive(:flag_appeal_creation).and_return(3)
+        allow(Rails.cache).to receive(:read).with(cache_key(:flag_appeal_creation), raw: true).and_return(4)
+
+        expect(described_class::ACTION_LIMITERS.dig(:flag_appeal_creation, :retry_after)).to eq(300)
+        expect(rate_limit_checker.limit_by_action(:flag_appeal_creation)).to be(true)
+        expect { rate_limit_checker.check_limit!(:flag_appeal_creation) }
+          .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(300) }
+      end
+
+      it "defaults to 3 appeals per window" do
+        expect(Settings::RateLimit.flag_appeal_creation).to eq(3)
+      end
+    end
+
     context "when creating comments" do
       before do
         allow(Settings::RateLimit).to receive(:comment_creation).and_return(1)

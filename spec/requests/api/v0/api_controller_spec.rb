@@ -12,23 +12,23 @@ end
 RSpec.describe "Api::V0::ApiController" do
   let(:path) { "/api/tests" }
 
-  before do
-    # Dynamically add a route to our testing V0::ApiController subclass
-    Rails.application.routes.draw do
-      namespace :api, defaults: { format: "json" } do
-        scope module: :v0 do
-          resources :tests
+  context "when API V1 is requested" do
+    before do
+      # Dynamically add a route to our testing V0::ApiController subclass
+      Rails.application.routes.draw do
+        namespace :api, defaults: { format: "json" } do
+          scope module: :v0 do
+            resources :tests
+          end
         end
       end
     end
-  end
 
-  after do
-    # Clean up the route we added!
-    Rails.application.reload_routes!
-  end
+    after do
+      # Clean up the route we added!
+      Rails.application.reload_routes!
+    end
 
-  context "when API V1 is requested" do
     context "when request header is v0 and does not include an api key" do
       let(:headers) { { Accept: "application/v0+json" } }
 
@@ -82,6 +82,26 @@ RSpec.describe "Api::V0::ApiController" do
         expect(response.headers["Warning"])
           .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
+      end
+    end
+  end
+
+  describe "#error_unauthorized" do
+    let(:controller) { Api::V0::ApiController.new }
+
+    context "when user is spam or suspended" do
+      let(:user) { create(:user, :suspended) }
+
+      it "includes appeal_url in the unauthorized JSON response payload" do
+        controller.instance_variable_set(:@user, user)
+        allow(controller).to receive(:render)
+
+        controller.__send__(:error_unauthorized)
+
+        expect(controller).to have_received(:render).with(
+          json: { error: "unauthorized", status: 401, appeal_url: "/appeal" },
+          status: :unauthorized,
+        )
       end
     end
   end

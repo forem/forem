@@ -77,6 +77,7 @@ class User < ApplicationRecord
   has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
+  has_many :flag_appeals, dependent: :destroy
   has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :event_signups, dependent: :destroy

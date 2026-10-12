@@ -104,6 +104,19 @@ function addRelevantButtonsToComments(user) {
   }
 }
 
+// Moderation-hidden comments are rendered as an identical, hidden placeholder for every signed in
+// reader (the edge cache serves them all one copy). Only the comment's author gets to see it.
+function showHiddenCommentAppealNotices(user) {
+  var notices = document.getElementsByClassName('hidden-comment-appeal-notice');
+
+  for (let i = 0; i < notices.length; i += 1) {
+    let notice = notices[i];
+    if (parseInt(notice.dataset.hiddenCommentAuthorId, 10) === user.id) {
+      notice.classList.remove('hidden');
+    }
+  }
+}
+
 function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
@@ -125,4 +138,5 @@ function initializeBaseUserData() {
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
+  showHiddenCommentAppealNotices(user);
 }

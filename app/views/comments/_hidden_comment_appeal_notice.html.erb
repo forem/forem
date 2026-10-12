@@ -1,0 +1,14 @@
+<%# Placeholder for a comment that moderation hides from everyone. It is identical for every signed in
+    reader (the edge cache serves one copy of the page to all of them) and stays hidden until
+    initializeBaseUserData.js un-hides it for the comment's author. It carries no comment content. %>
+<div
+  class="hidden-comment-appeal-notice hidden p-4 mb-2 rounded border border-danger-tint bg-danger-tint fs-s"
+  data-hidden-comment-author-id="<%= comment.user_id %>"
+  data-hidden-comment-id="<%= comment.id %>">
+  <p class="font-bold mb-1"><%= t("views.comments.hidden_by_moderation.title") %></p>
+  <p class="mb-2"><%= t("views.comments.hidden_by_moderation.description") %></p>
+  <%# source_* because Fastly strips query params that are not in config/fastly/snippets/safe_params_list.vcl %>
+  <%= link_to t("views.comments.hidden_by_moderation.appeal_link"),
+              appeal_path(source_type: "Comment", source_id: comment.id),
+              class: "c-link font-bold text-underline" %>
+</div>
