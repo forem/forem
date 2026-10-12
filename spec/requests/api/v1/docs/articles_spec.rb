@@ -35,7 +35,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.
 - **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.
 - **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
-- **main_image**: Absolute URL of the cover image for the article.
+- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
 - **description**: A short summary of the article used for previews and SEO meta description.
 - **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."

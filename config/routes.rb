@@ -114,6 +114,10 @@ Rails.application.routes.draw do
 
         resources :feedback_messages, only: :update
 
+        resources :images, only: :create do
+          post :generate, on: :collection
+        end
+
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do

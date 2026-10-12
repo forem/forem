@@ -161,6 +161,52 @@ RSpec.describe RateLimitChecker, type: :service do
     end
   end
 
+  describe "#consume!" do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before { allow(Rails).to receive(:cache).and_return(cache) }
+
+    it "allows exactly the configured number of attempts per window" do
+      allow(Settings::RateLimit).to receive(:api_image_upload).and_return(2)
+
+      2.times { expect(rate_limit_checker.consume!(:api_image_upload)).to be_nil }
+      expect { rate_limit_checker.consume!(:api_image_upload) }
+        .to raise_error(described_class::LimitReached)
+    end
+
+    it "blocks every attempt when the limit is 0" do
+      allow(Settings::RateLimit).to receive(:api_ai_image_generation).and_return(0)
+
+      expect { rate_limit_checker.consume!(:api_ai_image_generation) }
+        .to raise_error(described_class::LimitReached)
+    end
+
+    it "uses the configured window for the cache expiry and retry_after" do
+      allow(Settings::RateLimit).to receive_messages(api_ai_image_generation: 0,
+                                                     api_ai_image_generation_window_seconds: 7200)
+      allow(cache).to receive(:increment).and_call_original
+
+      expect { rate_limit_checker.consume!(:api_ai_image_generation) }
+        .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(7200) }
+      expect(cache).to have_received(:increment)
+        .with(cache_key(:api_ai_image_generation), 1, expires_in: 7200.seconds, raw: true)
+    end
+
+    it "tracks limits separately per action" do
+      allow(Settings::RateLimit).to receive_messages(api_image_upload: 1, api_ai_image_generation: 1)
+
+      rate_limit_checker.consume!(:api_image_upload)
+      expect(rate_limit_checker.consume!(:api_ai_image_generation)).to be_nil
+    end
+
+    it "does nothing when running in end to end tests" do
+      allow(ApplicationConfig).to receive(:[]).with("E2E").and_return("true")
+      allow(Settings::RateLimit).to receive(:api_image_upload).and_return(0)
+
+      expect(rate_limit_checker.consume!(:api_image_upload)).to be_nil
+    end
+  end
+
   describe "#limit_by_email_recipient_address" do
     before do
       allow(Settings::RateLimit).to receive(:email_recipient).and_return(1)
