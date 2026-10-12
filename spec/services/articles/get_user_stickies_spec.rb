@@ -29,6 +29,12 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect(sticky.decorate.cached_tag_list_array).to be_a(Array)
     end
 
+    it "returns at most two articles" do
+      result = described_class.call(article, user)
+      expect(other_articles.size).to eq(3)
+      expect(result.size).to eq(2)
+    end
+
     it "excludes the current article" do
       result = described_class.call(article, user)
       expect(result.map(&:id)).not_to include(article.id)
