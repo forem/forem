@@ -47,6 +47,14 @@
                   placement_attribute: tag.code("data-placement-area=\"#{@config.placement_area}\"")) %>
           </p>
         </div>
+
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :fully_cached, class: "crayons-checkbox" %>
+          <%= f.label :fully_cached, t("views.admin.billboard_placement_area_configs.edit.fully_cached"), class: "crayons-field__label" %>
+          <p class="crayons-field__description">
+            <%= t("views.admin.billboard_placement_area_configs.edit.fully_cached_desc") %>
+          </p>
+        </div>
       <% end %>
 
       <hr class="my-4">

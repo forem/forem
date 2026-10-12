@@ -385,6 +385,15 @@ RSpec.describe "/admin/customization/config" do
           expect(Settings::General.stripe_api_key).to eq("sk_live_yo")
           expect(Settings::General.stripe_publishable_key).to eq("pk_live_haha")
         end
+
+        it "updates the regions that allow anonymous tracking" do
+          expect(Settings::General.geos_with_allowed_anonymous_tracking).to eq([])
+
+          post admin_settings_general_settings_path, params: {
+            settings_general: { geos_with_allowed_anonymous_tracking: "US, CA-ON" }
+          }
+          expect(Settings::General.geos_with_allowed_anonymous_tracking).to eq(%w[US CA-ON])
+        end
       end
 
       describe "Newsletter" do

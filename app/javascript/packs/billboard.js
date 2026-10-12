@@ -4,6 +4,7 @@ import {
   executeBBScripts,
   implementSpecialBehavior,
 } from './billboardAfterRenderActions';
+import { syncAnonymousVisitor } from '../utilities/anonymousVisitor';
 
 // Primary and secondary placements share a group (e.g. post_sidebar and
 // post_sidebar_secondary). Randomize their order so neither is always on top.
@@ -27,6 +28,10 @@ export async function getBillboard() {
 
   const promises = [...placeholderElements].map(generateBillboard);
   await Promise.all(promises);
+
+  // Billboards tell us whether the visitor's region allows an anonymous ID.
+  // See utilities/anonymousVisitor.js for what this does and when it's allowed.
+  syncAnonymousVisitor();
 }
 
 async function generateBillboard(element) {

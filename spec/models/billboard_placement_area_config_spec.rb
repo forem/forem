@@ -270,6 +270,32 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
     end
   end
 
+  describe ".fully_cached_for" do
+    it "returns true when the placement area is configured as fully cached" do
+      described_class.create!(placement_area: "post_comments", fully_cached: true)
+      expect(described_class.fully_cached_for("post_comments")).to be(true)
+      expect(described_class.fully_cached_for("post_sidebar")).to be(false)
+    end
+
+    it "returns false when the placement area is not fully cached" do
+      described_class.create!(placement_area: "post_comments")
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
+    end
+
+    it "returns false for a placement area without a config, or nil" do
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
+      expect(described_class.fully_cached_for(nil)).to be(false)
+    end
+
+    it "returns false for a cached config that predates the column" do
+      described_class.create!(placement_area: "post_comments", fully_cached: true)
+      config = described_class.select(:id, :placement_area).find_by(placement_area: "post_comments")
+      allow(described_class).to receive(:config_for_placement_area).with("post_comments").and_return(config)
+
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
+    end
+  end
+
   describe ".selection_weights_for" do
     let!(:config) do
       described_class.create!(

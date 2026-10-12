@@ -99,6 +99,19 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     config.has_attribute?(:hidden_by_default) && config.hidden_by_default
   end
 
+  # Whether this placement area's billboards are served from one edge-cached response per
+  # location, shared by every article and page and by signed-in and signed-out visitors alike
+  # (Fastly still keeps signed-in and signed-out copies apart, as it does for every response).
+  # Only billboards that don't target anything about the individual request can be served here.
+  # See BillboardsController#fully_cached_request? and Billboards::FilteredAdsQuery.
+  def self.fully_cached_for(placement_area)
+    config = config_for_placement_area(placement_area)
+    return false if config.blank?
+
+    # Configs cached before the column existed won't carry the attribute
+    config.has_attribute?(:fully_cached) && config.fully_cached
+  end
+
   # Get selection weights for a specific placement area
   # Returns weights merged with defaults so missing keys get default values
   def self.selection_weights_for(placement_area)

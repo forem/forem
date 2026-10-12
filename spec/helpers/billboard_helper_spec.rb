@@ -51,4 +51,37 @@ describe BillboardHelper do
       end
     end
   end
+
+  describe "#billboard_async_path" do
+    let(:article) { create(:article) }
+    let(:article_path) do
+      article_billboard_path(username: article.username, slug: article.slug, placement_area: :post_comments)
+    end
+
+    it "loads billboards in the context of the article or page by default" do
+      expect(helper.billboard_async_path(:post_comments, article: article)).to eq(article_path)
+      expect(helper.billboard_async_path(:page_fixed_bottom, page_id: 5))
+        .to eq(billboard_path(page_id: 5, placement_area: :page_fixed_bottom))
+    end
+
+    context "when the placement area is fully cached" do
+      before do
+        BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
+        BillboardPlacementAreaConfig.create!(placement_area: "page_fixed_bottom", fully_cached: true)
+      end
+
+      it "loads billboards from one URL shared by every article and page" do
+        expect(helper.billboard_async_path(:post_comments, article: article))
+          .to eq(billboard_path(placement_area: :post_comments))
+        expect(helper.billboard_async_path(:page_fixed_bottom, page_id: 5))
+          .to eq(billboard_path(placement_area: :page_fixed_bottom))
+      end
+
+      it "keeps the article's own URL when its author opts out of adjacent sponsors" do
+        article.user.setting.update!(permit_adjacent_sponsors: false)
+
+        expect(helper.billboard_async_path(:post_comments, article: article)).to eq(article_path)
+      end
+    end
+  end
 end
