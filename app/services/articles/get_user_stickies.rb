@@ -12,7 +12,7 @@ module Articles
         .select(:id, :path, :title, :cached_tag_list, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav and path generation
         .where.not(id: article.id)
         .order(published_at: :desc)
-        .limit(3)
+        .limit(2)
     end
   end
 end

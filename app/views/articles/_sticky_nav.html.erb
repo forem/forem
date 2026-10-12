@@ -8,7 +8,7 @@
     <% if (user_stickies = Articles::GetUserStickies.call(@article, @actor)).present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-2">
+          <h3 class="crayons-subtitle-3">
             <%= t("views.sticky.more_from_html", actor: link_to(@actor.name, @actor.path)) %>
           </h3>
         </header>
