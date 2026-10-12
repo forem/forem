@@ -1,9 +1,9 @@
 class SidebarsController < ApplicationController
   ACTIVE_DISCUSSION_LIMIT = 8
+  RECENTLY_VIEWED_ARTICLE_LIMIT = 30
   layout false
 
   def show
-    get_latest_campaign_articles
     if user_signed_in?
       get_active_discussions
       set_onboarding_checklist
@@ -19,11 +19,6 @@ class SidebarsController < ApplicationController
     end
   end
 
-  def get_latest_campaign_articles
-    @campaign_articles_count = Campaign.current.count
-    @latest_campaign_articles = Campaign.current.plucked_article_attributes
-  end
-
   def get_active_discussions
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
@@ -37,7 +32,7 @@ class SidebarsController < ApplicationController
       .where(language: languages)
       .or(Article.featured.published.from_subforem.where("published_at > ?", 1.week.ago)
         .with_at_least_home_feed_minimum_score)
-      .or(Article.where(id: cached_recent_pageview_article_ids).published.from_subforem
+      .or(Article.where(id: recently_viewed_article_ids).published.from_subforem
         .where("published_at > ?", 1.week.ago)
         .where("comments_count > ?", 1)
           .with_at_least_home_feed_minimum_score)
@@ -61,10 +56,12 @@ class SidebarsController < ApplicationController
     @onboarding_checklist = checklist
   end
 
-  def cached_recent_pageview_article_ids
-    Rails.cache.fetch("recent_pageviews_#{current_user.id}", expires_in: 1.hour) do
-      PageView.where(user_id: current_user.id)
-        .order("created_at DESC").limit(30).pluck(:article_id)
-    end
+  # UserActivity keeps the user's latest page views (newest first) as [article_id, created_at, seconds],
+  # refreshed in the background after each page view. Reading it avoids querying page_views directly,
+  # which has no (user_id, created_at) index and is slow for users with a long viewing history.
+  def recently_viewed_article_ids
+    UserActivity.where(user_id: current_user.id).pick(:recently_viewed_articles).to_a
+      .first(RECENTLY_VIEWED_ARTICLE_LIMIT)
+      .filter_map(&:first)
   end
 end
