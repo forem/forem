@@ -32,9 +32,7 @@ class BillboardsController < ApplicationController
 
       @billboard = fully_cached_request? ? fully_cached_billboard : contextual_billboard
 
-      if @billboard && edge_cached_response?
-        set_surrogate_key_header @billboard.record_key
-      end
+      set_surrogate_key_header(*billboard_surrogate_keys) if edge_cached_response?
     end
 
     render layout: false
@@ -86,13 +84,26 @@ class BillboardsController < ApplicationController
   # Requests that still carry context, such as articles whose authors opt out of adjacent
   # sponsors, test billboard previews, or pages cached before the area was switched, are
   # served exactly as before.
+  #
+  # Article and page areas requested without their context are served the same way even once
+  # the area is no longer fully cached: those requests come from pages rendered while it was,
+  # which can stay cached for a while, and have no article or page to target billboards at.
   def fully_cached_request?
     return @fully_cached_request if defined?(@fully_cached_request)
 
     @fully_cached_request = placement_area.present? &&
       params[:username].blank? && params[:slug].blank? && params[:page_id].blank? &&
       params[:bb_test_placement_area].blank? &&
-      BillboardPlacementAreaConfig.fully_cached_for(placement_area)
+      (BillboardPlacementAreaConfig.fully_cached_for(placement_area) ||
+        Billboard::CONTEXTUAL_PLACEMENTS.include?(placement_area))
+  end
+
+  def billboard_surrogate_keys
+    [
+      @billboard&.record_key,
+      BillboardPlacementAreaConfig::RESPONSES_SURROGATE_KEY,
+      BillboardPlacementAreaConfig.responses_surrogate_key_for(placement_area),
+    ].compact
   end
 
   # A fully cached response is shared by every signed-in visitor in a location, so it must never

@@ -51,6 +51,17 @@ class Billboard < ApplicationRecord
                                             "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  # Placement areas that pages load in the context of the article or page they're on
+  # (see BillboardHelper#billboard_async_path)
+  CONTEXTUAL_PLACEMENTS = %w[page_fixed_bottom
+                             post_fixed_bottom
+                             post_body_bottom
+                             post_body_bottom_secondary
+                             post_sidebar
+                             post_sidebar_secondary
+                             post_comments
+                             post_comments_secondary
+                             post_comments_mid].freeze
   HOME_PAGE_PLACEMENTS = %w[feed_first
                             feed_second
                             feed_third

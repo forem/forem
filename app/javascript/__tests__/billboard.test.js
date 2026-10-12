@@ -235,6 +235,25 @@ describe('getBillboard', () => {
     ).toEqual(['javascript', 'webdev']);
   });
 
+  test('attributes every billboard, including plain-template ones, to the article on the page', async () => {
+    document.body.innerHTML = `
+      <article id="article-show-container" data-article-id="42"></article>
+      <div class="js-billboard-container" data-async-url="/bb/post_comments"></div>
+    `;
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<div data-display-unit data-id="1" data-article-id="">Plain template billboard</div>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    expect(document.querySelector('[data-display-unit]').dataset.articleId).toBe('42');
+  });
+
   test('does not create an anonymous visitor ID when no billboard allows it', async () => {
     localStorage.clear();
     document.body.innerHTML = `

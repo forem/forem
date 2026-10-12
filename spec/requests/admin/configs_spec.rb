@@ -386,13 +386,20 @@ RSpec.describe "/admin/customization/config" do
           expect(Settings::General.stripe_publishable_key).to eq("pk_live_haha")
         end
 
-        it "updates the regions that allow anonymous tracking" do
+        it "updates the regions that allow anonymous tracking and purges cached billboard responses" do
+          allow(EdgeCache::PurgeByKey).to receive(:call)
           expect(Settings::General.geos_with_allowed_anonymous_tracking).to eq([])
 
           post admin_settings_general_settings_path, params: {
             settings_general: { geos_with_allowed_anonymous_tracking: "US, CA-ON" }
           }
           expect(Settings::General.geos_with_allowed_anonymous_tracking).to eq(%w[US CA-ON])
+          expect(EdgeCache::PurgeByKey).to have_received(:call).with("billboard_responses").once
+
+          post admin_settings_general_settings_path, params: {
+            settings_general: { geos_with_allowed_anonymous_tracking: "US, CA-ON", stripe_api_key: "sk_live_yo" }
+          }
+          expect(EdgeCache::PurgeByKey).to have_received(:call).with("billboard_responses").once
         end
       end
 

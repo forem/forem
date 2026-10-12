@@ -232,8 +232,10 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
       end
 
-      it "sets the surrogate key header equal to params for article" do
-        expect(response.headers["Surrogate-Key"]).to eq("display_ads/#{billboard.id}")
+      it "sets surrogate keys for the billboard and the placement area's cached responses" do
+        expect(response.headers["Surrogate-Key"].split).to eq(
+          ["display_ads/#{billboard.id}", "billboard_responses", "billboard_responses/post_comments"],
+        )
       end
 
       it "sets the x-accel-expires header equal to max-age for article" do
@@ -705,8 +707,8 @@ RSpec.describe "Billboards" do
         expect(response.headers.to_hash).to include(
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
-          "Surrogate-Key" => billboard.record_key,
         )
+        expect(response.headers["Surrogate-Key"].split).to include(billboard.record_key)
         expect(response.headers["Set-Cookie"]).to be_blank
       end
 
@@ -760,18 +762,38 @@ RSpec.describe "Billboards" do
         expect(response.body).to be_empty # article isn't tagged ruby, so the article context applied
       end
 
-      it "serves signed-in visitors as before once the placement area is no longer fully cached" do
+      it "keeps serving article areas requested without an article as shared once no longer fully cached" do
+        # Such requests come from pages rendered while the area was fully cached, which can
+        # outlive the switch. They have no article, so article-targeted billboards must stay out.
         BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(fully_cached: false)
         billboard.update!(tag_list: "ruby")
 
         get billboard_path(placement_area: "post_comments")
 
+        expect(response.headers["Surrogate-Control"]).to eq("max-age=#{max_age}, stale-if-error=#{stale_if_error}")
+        expect(response.body).to be_empty
+      end
+
+      it "serves other placement areas requested without context as before when not fully cached" do
+        sidebar_billboard = create_billboard(placement_area: "sidebar_left", tag_list: "ruby")
+
+        get billboard_path(placement_area: "sidebar_left")
+
         expect(response.headers["Surrogate-Control"]).to be_nil
-        expect(response.body).to include(billboard.processed_html)
+        expect(response.body).to include(sidebar_billboard.processed_html)
       end
     end
 
     context "when signed out" do
+      it "tags even an empty response so the placement area's cached responses can be purged" do
+        billboard.update!(tag_list: "ruby")
+
+        get billboard_path(placement_area: "post_comments")
+
+        expect(response.body).to be_empty
+        expect(response.headers["Surrogate-Key"].split).to eq(%w[billboard_responses billboard_responses/post_comments])
+      end
+
       it "caches the response without varying on location when nothing depends on it" do
         get billboard_path(placement_area: "post_comments"),
             headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US" }
