@@ -1,0 +1,14 @@
+db/schema.rb
+  h_b2f6efe2daa9cd 13,127-139,2079
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "1b28766171e79c797b67f8862c96c6423eb2136b",
+  "prompts": {},
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}
