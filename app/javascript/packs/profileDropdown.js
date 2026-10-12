@@ -1,6 +1,7 @@
 import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
 import { initSpam } from '../profileDropdown/spamButton';
+import { initAdminProfileLink } from '../profileDropdown/adminProfileLink';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData */
@@ -9,6 +10,7 @@ function initButtons() {
   initBlock();
   initFlag();
   initSpam();
+  initAdminProfileLink();
 }
 
 function initDropdown() {
