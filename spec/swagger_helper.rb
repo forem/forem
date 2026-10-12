@@ -167,6 +167,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           }
         },
         schemas: {
+          ImageUrl: {
+            description: "An image hosted by this Forem, usable in body_markdown or as an article's main_image",
+            type: :object,
+            properties: {
+              url: { type: :string, format: :url }
+            },
+            required: %w[url]
+          },
           ArticleFlareTag: {
             description: "Flare tag of the article",
             type: :object,
