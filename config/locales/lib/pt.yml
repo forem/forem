@@ -164,6 +164,9 @@ pt:
           onboarding_newsletter_opt_in_subhead:
             description: Onboarding newsletter opt-in subheadline
             placeholder: Onboarding newsletter opt-in subheadline
+          geos_with_allowed_anonymous_tracking:
+            description: 'Países ou regiões (ex. US, CA, US-CA) onde visitantes não conectados recebem um identificador anônimo no navegador, junto com um registro das tags que leem, para que possamos oferecer um conteúdo melhor. Liste apenas locais onde armazenar isso sem consentimento prévio é permitido (ex. não a UE nem o Reino Unido). Se esses dados forem usados para anúncios, isso também precisa ser permitido para publicidade nesses locais e/ou ser compatível com o seu banner de cookies. Deixe vazio para desativar em todos os lugares.'
+            placeholder: 'Códigos de país ou região separados por vírgula, ex. US,CA'
           geos_with_allowed_default_email_opt_in:
             description: Geos with allowed default email opt-in
             placeholder: Geos with allowed default email opt-in

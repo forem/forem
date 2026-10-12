@@ -146,6 +146,36 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when the placement area is fully cached" do
+    let!(:untargeted) { create_billboard }
+
+    it "only offers billboards that don't target anything about the individual request" do
+      tagged = create_billboard(cached_tag_list: "ruby")
+      excludes_article = create_billboard(exclude_article_ids: "11")
+      for_segment = create_billboard(audience_segment: create(:audience_segment))
+      for_page = create_billboard(page_id: create(:page).id)
+      for_role = create_billboard(target_role_names: ["editor"])
+      excludes_role = create_billboard(exclude_role_names: ["editor"])
+      excludes_survey_takers = create_billboard(exclude_survey_completions: true, exclude_survey_ids: [1])
+      desktop_only = create_billboard(browser_context: :desktop)
+
+      expect(filter_billboards(user_signed_in: true, fully_cached: true)).to contain_exactly(untargeted)
+
+      # Without that filtering, a response shared by every signed-in visitor would include these
+      expect(filter_billboards(user_signed_in: true)).to include(
+        tagged, excludes_article, for_page, excludes_role, excludes_survey_takers, desktop_only
+      )
+      expect(filter_billboards(user_signed_in: true)).not_to include(for_segment, for_role)
+    end
+
+    it "still respects whether the visitor is signed in" do
+      logged_out_only = create_billboard(display_to: :logged_out)
+
+      expect(filter_billboards(user_signed_in: true, fully_cached: true)).not_to include(logged_out_only)
+      expect(filter_billboards(user_signed_in: false, fully_cached: true)).to include(logged_out_only)
+    end
+  end
+
   context "when considering page_id" do
     let(:page) { create(:page) }
     let(:page_bb) { create_billboard page_id: page.id }

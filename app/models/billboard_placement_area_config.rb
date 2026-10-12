@@ -33,8 +33,13 @@ class BillboardPlacementAreaConfig < ApplicationRecord
     "evenly_distributed" => 0          # Serves billboards with minimum impressions for even distribution (0% by default)
   }.freeze
 
+  # Surrogate keys on every edge-cached billboard response, so responses rendered under an old
+  # configuration can be purged when it changes instead of lingering until they expire.
+  RESPONSES_SURROGATE_KEY = "billboard_responses".freeze
+
   after_destroy :bust_cache
   after_save :bust_cache
+  after_commit :purge_cached_responses, on: :update, if: :saved_change_to_fully_cached?
 
   # Get delivery rate for a specific placement area and user state
   def self.delivery_rate_for(placement_area:, user_signed_in:)
@@ -97,6 +102,23 @@ class BillboardPlacementAreaConfig < ApplicationRecord
 
     # Configs cached before the column existed won't carry the attribute
     config.has_attribute?(:hidden_by_default) && config.hidden_by_default
+  end
+
+  # Whether this placement area's billboards are served from one edge-cached response per
+  # location, shared by every article and page and by signed-in and signed-out visitors alike
+  # (Fastly still keeps signed-in and signed-out copies apart, as it does for every response).
+  # Only billboards that don't target anything about the individual request can be served here.
+  # See BillboardsController#fully_cached_request? and Billboards::FilteredAdsQuery.
+  def self.fully_cached_for(placement_area)
+    config = config_for_placement_area(placement_area)
+    return false if config.blank?
+
+    # Configs cached before the column existed won't carry the attribute
+    config.has_attribute?(:fully_cached) && config.fully_cached
+  end
+
+  def self.responses_surrogate_key_for(placement_area)
+    "#{RESPONSES_SURROGATE_KEY}/#{placement_area}"
   end
 
   # Get selection weights for a specific placement area
@@ -171,6 +193,12 @@ class BillboardPlacementAreaConfig < ApplicationRecord
 
   def bust_cache
     self.class.bust_cache
+  end
+
+  # Responses cached before the switch were selected under the other mode: a shared response
+  # cached in standard mode can hold a billboard targeted at someone else's article or page.
+  def purge_cached_responses
+    EdgeCache::PurgeByKey.call(self.class.responses_surrogate_key_for(placement_area))
   end
 
   def validate_selection_weights

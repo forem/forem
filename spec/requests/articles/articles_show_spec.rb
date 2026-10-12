@@ -22,6 +22,11 @@ RSpec.describe "ArticlesShow" do
       expect(response).to have_http_status(:ok)
     end
 
+    it "exposes the article's tags for anonymous tag tracking" do
+      tags = doc.at_css("#article-show-container")["data-article-tags"].split(",")
+      expect(tags).to match_array(%w[javascript html])
+    end
+
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(
         "@context" => "http://schema.org",
@@ -415,6 +420,22 @@ RSpec.describe "ArticlesShow" do
         get article.path
         expect(response.body).to include("/bb/post_body_bottom\"")
         expect(response.body).to include("/bb/post_body_bottom_secondary\"")
+      end
+    end
+
+    context "when a billboard placement area is fully cached" do
+      it "loads that placement area from the shared URL and the others in the article's context" do
+        BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
+
+        get article.path
+
+        expect(response.body).to include("\"#{billboard_path(placement_area: :post_comments)}\"")
+        article_path = lambda do |area|
+          article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+        end
+        expect(response.body).not_to include("\"#{article_path.call(:post_comments)}\"")
+        expect(response.body).to include("\"#{article_path.call(:post_comments_secondary)}\"")
+        expect(response.body).to include("\"#{article_path.call(:post_sidebar)}\"")
       end
     end
 

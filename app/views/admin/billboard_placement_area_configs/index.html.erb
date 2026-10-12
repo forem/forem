@@ -17,6 +17,7 @@
         <th scope="col">Signed In Rate (%)</th>
         <th scope="col">Signed Out Rate (%)</th>
         <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.visibility") %></th>
+        <th scope="col"><%= t("views.admin.billboard_placement_area_configs.index.caching") %></th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -31,6 +32,13 @@
               <%= t("views.admin.billboard_placement_area_configs.index.hidden_by_default") %>
             <% else %>
               <%= t("views.admin.billboard_placement_area_configs.index.visible") %>
+            <% end %>
+          </td>
+          <td>
+            <% if config.fully_cached? %>
+              <%= t("views.admin.billboard_placement_area_configs.index.fully_cached") %>
+            <% else %>
+              <%= t("views.admin.billboard_placement_area_configs.index.standard_caching") %>
             <% end %>
           </td>
           <td>
