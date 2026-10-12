@@ -280,20 +280,28 @@ module Spam
         .count
     end
 
-    # Same rule for comments, without the share of recent comments: the mascot only vomits
-    # comments the spam check confirmed, and a phishing bot posting hundreds of comments gets
-    # most of them past the escalation check, so its flags never reach a majority.
-    def self.repeat_auto_flagged_commenter?(user:, threshold: 2)
+    # Same rule for comments. The flags must cover a share of the user's recent comments, so an
+    # active commenter whose links were misflagged a few times isn't caught. A phishing bot posting
+    # hundreds of comments gets most of them past the escalation check, so its flags never reach
+    # that share; a high flag count alone is enough for it.
+    def self.repeat_auto_flagged_commenter?(user:, threshold: 2, min_share: 0.5, volume_threshold: 10)
       return false if user.badge_achievements_count >= 4
 
-      recent_auto_flagged_comment_count(user: user) > threshold
+      flagged_count = recent_auto_flagged_comment_count(user: user)
+      return false unless flagged_count > threshold
+      return true if flagged_count >= volume_threshold
+
+      flagged_count >= min_share * recent_comments(user: user).count
     end
 
     def self.recent_auto_flagged_comment_count(user:)
       Reaction.comment_vomits.valid_or_confirmed
-        .where(user_id: Settings::General.mascot_user_id,
-               reactable_id: user.comments.where("created_at > ?", 1.month.ago).select(:id))
+        .where(user_id: Settings::General.mascot_user_id, reactable_id: recent_comments(user: user).select(:id))
         .count
+    end
+
+    def self.recent_comments(user:)
+      user.comments.where("created_at > ?", 1.month.ago)
     end
 
     # Moderator-confirmed flags suspend the commenter; the mascot's own flags mark them as spam.
@@ -317,6 +325,8 @@ module Spam
     # @return [Integer, nil] how many posts a new account commented on in the last day, when over the limit
     def self.new_account_comment_flood_count(user:, limit: 20)
       return unless user.registered_at&.after?(3.days.ago)
+      # Staff and trusted accounts may seed discussions on a new Forem.
+      return if user.auditable? || user.super_moderator?
 
       count = user.comments.where("created_at > ?", 24.hours.ago).distinct.count(:commentable_id)
       count if count > limit
@@ -526,7 +536,7 @@ module Spam
                          :escalate_flagged_author!, :repeat_auto_flagged_author?,
                          :spam_block!,
                          :recent_auto_flagged_article_count, :mark_as_spam!,
-                         :repeat_auto_flagged_commenter?, :recent_auto_flagged_comment_count,
+                         :repeat_auto_flagged_commenter?, :recent_auto_flagged_comment_count, :recent_comments,
                          :new_account_comment_flood_count
   end
 end

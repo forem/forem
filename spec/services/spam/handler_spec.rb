@@ -982,6 +982,21 @@ RSpec.describe Spam::Handler, type: :service do
         handler
         expect(commenter.reload).not_to be_spam
       end
+
+      it "leaves active commenters alone when the flags are under half of their recent comments" do
+        create_list(:comment, 4, user: commenter)
+        handler
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "marks the commenter as spam at 10 flags whatever their share" do
+        create_list(:comment, 7, user: commenter).each do |earlier|
+          create(:reaction, user: mascot_user, reactable: earlier, category: "vomit")
+        end
+        11.times { create(:comment, user: commenter) } # 10 flags on 21 comments
+        handler
+        expect(commenter.reload).to be_spam
+      end
     end
 
     context "when a new account comments on more than 20 posts in a day" do
@@ -1003,6 +1018,18 @@ RSpec.describe Spam::Handler, type: :service do
 
       it "leaves accounts older than 3 days alone" do
         commenter.update_column(:registered_at, 4.days.ago)
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves trusted accounts alone" do
+        commenter.add_role(:trusted)
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+
+      it "leaves admins alone" do
+        commenter.add_role(:admin)
         expect(handler).to eq(:not_spam)
         expect(commenter.reload).not_to be_spam
       end
