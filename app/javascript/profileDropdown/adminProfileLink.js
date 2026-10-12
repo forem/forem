@@ -1,4 +1,5 @@
 import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
+import { waitOnBaseData } from '@utilities/waitOnBaseData';
 
 /**
  * Adds a "View Admin Profile" link visible only to admin users on profile pages.
@@ -17,18 +18,22 @@ export function initAdminProfileLink() {
     return;
   }
 
-  getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
-    if (!currentUser || !currentUser.admin) {
-      linkWrapper.remove();
-      return;
-    }
+  // Wait for fresh base data so a stale cached user (e.g. from before a role
+  // change or a different sign-in) doesn't decide whether the link is shown.
+  waitOnBaseData()
+    .then(() => getUserDataAndCsrfTokenSafely())
+    .then(({ currentUser }) => {
+      if (!currentUser || !currentUser.admin) {
+        linkWrapper.remove();
+        return;
+      }
 
-    const { path, text } = linkWrapper.dataset;
-    const link = document.createElement('a');
-    link.href = path;
-    link.className = 'crayons-link crayons-link--block';
-    link.dataset.noInstant = '';
-    link.textContent = text;
-    linkWrapper.replaceChildren(link);
-  });
+      const { path, text } = linkWrapper.dataset;
+      const link = document.createElement('a');
+      link.href = path;
+      link.className = 'crayons-link crayons-link--block';
+      link.dataset.noInstant = '';
+      link.textContent = text;
+      linkWrapper.replaceChildren(link);
+    });
 }
