@@ -302,7 +302,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { description: "Tag id", type: :integer, format: :int64 },
               name: { type: :string },
               bg_color_hex: { type: :string, nullable: true },
-              text_color_hex: { type: :string, nullable: true }
+              text_color_hex: { type: :string, nullable: true },
+              short_summary: { type: :string, nullable: true }
             }
           },
           Page: {

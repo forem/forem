@@ -6640,6 +6640,10 @@
           "text_color_hex": {
             "type": "string",
             "nullable": true
+          },
+          "short_summary": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

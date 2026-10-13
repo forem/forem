@@ -107,9 +107,7 @@ class Tag < ActsAsTaggableOn::Tag
 
   # Purges the edge-cached list of supported tags (e.g. /api/tags/supported).
   def self.purge_supported_tags
-    return unless fastly
-
-    service.purge_by_key(SUPPORTED_TAGS_SURROGATE_KEY)
+    EdgeCache::PurgeByKey.call(SUPPORTED_TAGS_SURROGATE_KEY)
   end
 
   def self.valid_categories
