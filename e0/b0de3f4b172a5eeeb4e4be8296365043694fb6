@@ -1,0 +1,19 @@
+app/assets/stylesheets/config/_colors.css
+  s_fee9952e8048f4::t_1a372ec81886ef 46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e0b0de3f4b172a5eeeb4e4be8296365043694fb6",
+  "prompts": {},
+  "sessions": {
+    "s_fee9952e8048f4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5bc6aa76-d7ec-40dc-90c5-498a7b21b853",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

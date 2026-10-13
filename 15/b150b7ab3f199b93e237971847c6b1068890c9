@@ -1,0 +1,50 @@
+config/locales/views/articles/fr.yml
+  fb60aa29d378273f 29-33
+app/javascript/packs/commentCuePopup.jsx
+  fb60aa29d378273f 1-61
+spec/helpers/articles_helper_spec.rb
+  fb60aa29d378273f 72-97
+spec/helpers/application_helper_spec.rb
+  fb60aa29d378273f 569-591
+app/helpers/application_helper.rb
+  fb60aa29d378273f 505-509
+app/assets/stylesheets/views/comments.scss
+  fb60aa29d378273f 310-400
+config/locales/views/articles/pt.yml
+  fb60aa29d378273f 29-33
+app/helpers/articles_helper.rb
+  fb60aa29d378273f 76-86
+app/views/articles/show.html.erb
+  fb60aa29d378273f 17,19,229-232
+app/javascript/commentCue/CommentCuePopup.jsx
+  fb60aa29d378273f 1-51
+app/javascript/commentCue/__tests__/CommentCuePopup.test.jsx
+  fb60aa29d378273f 1-67
+app/views/layouts/application.html.erb
+  fb60aa29d378273f 88-89
+config/locales/views/articles/en.yml
+  fb60aa29d378273f 29-33
+app/javascript/packs/__tests__/commentCuePopup.test.jsx
+  fb60aa29d378273f 1-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "15b150b7ab3f199b93e237971847c6b1068890c9",
+  "prompts": {
+    "fb60aa29d378273f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f667b451-a0f9-4b65-9c7a-e483573fdd21",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "Paolo Veñegas",
+      "messages": [],
+      "total_additions": 895,
+      "total_deletions": 469,
+      "accepted_lines": 454,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/65ca1d97cd5c71553dd7c59e8016eb726b86eef027cd0aa22ed8193307aba1f8"
+    }
+  }
+}
