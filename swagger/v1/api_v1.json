@@ -4998,6 +4998,34 @@
         }
       }
     },
+    "/api/tags/supported": {
+      "get": {
+        "summary": "Supported tags",
+        "tags": [
+          "tags"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve every tag supported on the platform (or current subforem), ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Not paginated: returns the complete list of supported tags in a single response.\n- Edge cached; changes to a tag's supported status are purged from the cache automatically.",
+        "operationId": "getSupportedTags",
+        "responses": {
+          "200": {
+            "description": "A List of all supported tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/trends": {
       "get": {
         "summary": "Trends",

@@ -32,6 +32,7 @@ class Tag < ActsAsTaggableOn::Tag
   include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  SUPPORTED_TAGS_SURROGATE_KEY = "supported_tags".freeze
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
 
   belongs_to :badge, optional: true
@@ -103,6 +104,13 @@ class Tag < ActsAsTaggableOn::Tag
   }
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
+
+  # Purges the edge-cached list of supported tags (e.g. /api/tags/supported).
+  def self.purge_supported_tags
+    return unless fastly
+
+    service.purge_by_key(SUPPORTED_TAGS_SURROGATE_KEY)
+  end
 
   def self.valid_categories
     ALLOWED_CATEGORIES
