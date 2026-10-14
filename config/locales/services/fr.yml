@@ -115,6 +115,9 @@ fr:
       article_handler:
         suspended_too_many: Utilisateur suspendu pour trop d'articles spam, déclenché par autovomit.
         marked_spam_repeat_auto_flags: Utilisateur marqué comme spam après que %{count} de ses articles du dernier mois ont été signalés automatiquement comme spam ou comme des violations évidentes, déclenché par autovomit.
+      comment_handler:
+        marked_spam_repeat_auto_flags: Utilisateur marqué comme spam après que %{count} de ses commentaires du dernier mois ont été signalés automatiquement comme spam, déclenché par autovomit.
+        marked_spam_comment_flood: Nouveau compte marqué comme spam après avoir commenté %{count} articles en une journée, déclenché par autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source non trouvée.

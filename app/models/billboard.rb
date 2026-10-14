@@ -51,6 +51,17 @@ class Billboard < ApplicationRecord
                                             "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  # Placement areas that pages load in the context of the article or page they're on
+  # (see BillboardHelper#billboard_async_path)
+  CONTEXTUAL_PLACEMENTS = %w[page_fixed_bottom
+                             post_fixed_bottom
+                             post_body_bottom
+                             post_body_bottom_secondary
+                             post_sidebar
+                             post_sidebar_secondary
+                             post_comments
+                             post_comments_secondary
+                             post_comments_mid].freeze
   HOME_PAGE_PLACEMENTS = %w[feed_first
                             feed_second
                             feed_third
@@ -125,7 +136,7 @@ class Billboard < ApplicationRecord
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
-                       role_names: nil, prefer_paired_with_billboard_id: nil)
+                       role_names: nil, prefer_paired_with_billboard_id: nil, fully_cached: false)
     # Check delivery rate configuration first - return nil early if rate check fails
     return unless BillboardPlacementAreaConfig.should_fetch_billboard?(
       placement_area: area,
@@ -149,6 +160,7 @@ class Billboard < ApplicationRecord
       cookies_allowed: cookies_allowed,
       user_agent: user_agent,
       role_names: role_names,
+      fully_cached: fully_cached,
     )
 
     # if prefer_paired_with_billboard_id then return
