@@ -92,6 +92,10 @@ module Ai
         name: "Code block language detection",
         description: "Picks a syntax-highlighting language for unlabeled code blocks " \
                      "(Articles::DetectCodeBlockLanguages)." },
+      { key: :semantic_search_reranking, group: :classification, jev: true, jev_only: true,
+        name: "Semantic search Jev re-ranking",
+        description: "Re-ranks top semantic search shortlist candidates against the user query " \
+                     "(Ai::SearchReranker). Off keeps lexical + vector hybrid pre-ranking." },
       # Text generation
       { key: :article_summary, group: :generation, jev: false,
         name: "Article summary", description: "Writes article summaries (Ai::ArticleSummaryGenerator)." },
