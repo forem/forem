@@ -307,6 +307,23 @@ RSpec.describe Event do
     end
   end
 
+  describe "#live?" do
+    it "returns true when current time is between start_time and end_time" do
+      event = build(:event, start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      expect(event.live?).to be(true)
+    end
+
+    it "returns false when start_time is in the future" do
+      event = build(:event, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      expect(event.live?).to be(false)
+    end
+
+    it "returns false when end_time is in the past" do
+      event = build(:event, start_time: 2.hours.ago, end_time: 1.hour.ago)
+      expect(event.live?).to be(false)
+    end
+  end
+
   describe "#formatted_date_range" do
     it "formats same-month date ranges as 'MMM D - D'" do
       event = build(

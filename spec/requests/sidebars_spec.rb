@@ -200,6 +200,44 @@ RSpec.describe "Sidebars" do
         get "/sidebars/home"
         expect(response.body).not_to include("Unpublished Elevated Event")
       end
+
+      it "renders the event type badge and contextual headline for upcoming livestream" do
+        get "/sidebars/home"
+        expect(response.body).to include("Upcoming Livestreams")
+        expect(response.body).to include("Live Stream")
+        expect(response.body).not_to include("sidebar-event-item__cover")
+      end
+
+      it "renders the cover image when attached to an elevated event" do
+        elevated_upcoming_event.update!(
+          cover_image: Rack::Test::UploadedFile.new(
+            Rails.root.join("spec/fixtures/files/800x600.png"),
+            "image/png",
+          ),
+        )
+        get "/sidebars/home"
+        expect(response.body).to include("sidebar-event-item__cover")
+        expect(response.body).to include(elevated_upcoming_event.cover_image.url)
+      end
+
+      it "renders contextual headline 'Live and Upcoming Challenges' when both live and upcoming challenges exist" do
+        elevated_upcoming_event.update!(type_of: "challenge")
+        create(:event, title: "Live Challenge Event", type_of: "challenge", elevated: true, published: true,
+                       start_time: 1.hour.ago, end_time: 1.day.from_now)
+        get "/sidebars/home"
+        expect(response.body).to include("Live and Upcoming Challenges")
+        expect(response.body).to include("Challenge")
+        expect(response.body).to include("LIVE")
+      end
+
+      it "renders contextual headline 'Live and Upcoming Events' when different event types exist with one live" do
+        create(:event, title: "Live Challenge Event", type_of: "challenge", elevated: true, published: true,
+                       start_time: 1.hour.ago, end_time: 1.day.from_now)
+        get "/sidebars/home"
+        expect(response.body).to include("Live and Upcoming Events")
+        expect(response.body).to include("Challenge")
+        expect(response.body).to include("Live Stream")
+      end
     end
 
     context "with query caching enabled" do
