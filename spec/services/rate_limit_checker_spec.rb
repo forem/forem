@@ -31,6 +31,7 @@ RSpec.describe RateLimitChecker, type: :service do
     described_class::ACTION_LIMITERS
       .except(:published_article_creation,
               :published_article_antispam_creation,
+              :comment_creation,
               :comment_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
@@ -140,6 +141,12 @@ RSpec.describe RateLimitChecker, type: :service do
     it "raises an error if limit_by_action is true" do
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
       expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(described_class::LimitReached)
+    end
+
+    it "raises LimitReached with retry_after for comment_creation" do
+      allow(rate_limit_checker).to receive(:limit_by_action).with(:comment_creation).and_return(true)
+      expect { rate_limit_checker.check_limit!(:comment_creation) }
+        .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(30) }
     end
 
     it "returns nil if running in end to end tests" do
