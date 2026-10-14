@@ -10,6 +10,8 @@ class RateLimitChecker
     api_ai_image_generation: { retry_after_setting: :api_ai_image_generation_window_seconds },
     api_image_upload: { retry_after_setting: :api_image_upload_window_seconds },
     article_update: { retry_after: 30 },
+    comment_antispam_creation: { retry_after: 300 },
+    comment_creation: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
@@ -19,8 +21,7 @@ class RateLimitChecker
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
-    user_update: { retry_after: 30 },
-    comment_antispam_creation: { retry_after: 300 }
+    user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
