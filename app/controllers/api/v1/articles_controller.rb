@@ -241,28 +241,58 @@ module Api
       def search_and_rerank_database_candidates(
         query_text, cleaned_query, quoted_vector, candidate_limit, page:, per_page:
       )
-        keyword_data = Article.published.from_subforem
+        keyword_data, semantic_data = fetch_database_hybrid_candidates(cleaned_query, quoted_vector, candidate_limit)
+        boosted_scores = compute_database_hybrid_scores(keyword_data, semantic_data)
+        sorted_ids = boosted_scores.keys.sort_by { |id| -boosted_scores[id] }
+
+        page_start = (page - 1) * per_page
+        page_end = page * per_page
+        use_jev_shortlist = page_start < JEV_SHORTLIST_SIZE && Ai::FunctionConfig.jev?(:semantic_search_reranking)
+        ids_to_hydrate = if use_jev_shortlist
+                           sorted_ids.first([JEV_SHORTLIST_SIZE, page_end].max)
+                         else
+                           sorted_ids[page_start...page_end] || []
+                         end
+
+        indexed_articles = hydrate_database_candidates(ids_to_hydrate, quoted_vector)
+        if use_jev_shortlist
+          scored_candidates = ids_to_hydrate.filter_map do |id|
+            article = indexed_articles[id]
+            [article, boosted_scores[id]] if article
+          end
+          reranked = Ai::SearchReranker.new(query: query_text, scored_articles: scored_candidates).rerank
+          reranked[page_start...page_end] || []
+        else
+          ids_to_hydrate.filter_map { |id| indexed_articles[id] }
+        end
+      end
+
+      def fetch_database_hybrid_candidates(cleaned_query, quoted_vector, candidate_limit)
+        base_scope = Article.published.from_subforem
           .where("score >= ?", Settings::UserExperience.index_minimum_score)
+
+        if params[:threshold].present?
+          base_scope = base_scope
+            .where.not(semantic_embedding: nil)
+            .where("semantic_embedding <=> #{quoted_vector} <= ?", params[:threshold].to_f)
+        end
+
+        keyword_data = base_scope
           .search_articles(cleaned_query)
           .limit(candidate_limit)
           .pluck(:id, :score, :published_at)
 
-        semantic_data = Article.published.from_subforem
+        semantic_data = base_scope
           .where.not(semantic_embedding: nil)
-          .where("score >= ?", Settings::UserExperience.index_minimum_score)
           .order(Arel.sql("semantic_embedding <=> #{quoted_vector}"))
           .limit(candidate_limit)
           .pluck(:id, :score, :published_at)
 
-        boosted_scores = compute_database_hybrid_scores(keyword_data, semantic_data)
-        sorted_ids = boosted_scores.keys.sort_by { |id| -boosted_scores[id] }
+        [keyword_data, semantic_data]
+      end
 
-        use_jev_shortlist = page == 1 && Ai::FunctionConfig.jev?(:semantic_search_reranking)
-        ids_to_hydrate = if use_jev_shortlist
-                           sorted_ids.first([JEV_SHORTLIST_SIZE, per_page].max)
-                         else
-                           sorted_ids[((page - 1) * per_page)...(page * per_page)] || []
-                         end
+      def hydrate_database_candidates(ids_to_hydrate, quoted_vector)
+        return {} if ids_to_hydrate.empty?
 
         select_columns = HYDRATION_COLUMNS.map { |col| "articles.#{col}" }
         select_columns << "(semantic_embedding <=> #{quoted_vector}) AS distance"
@@ -276,17 +306,7 @@ module Api
           @articles = @articles.where("semantic_embedding <=> #{quoted_vector} <= ?", threshold_val)
         end
 
-        indexed_articles = @articles.index_by(&:id)
-        if use_jev_shortlist
-          scored_shortlist = ids_to_hydrate.filter_map do |id|
-            article = indexed_articles[id]
-            [article, boosted_scores[id]] if article
-          end
-          reranked = Ai::SearchReranker.new(query: query_text, scored_articles: scored_shortlist).rerank
-          reranked.first(per_page)
-        else
-          ids_to_hydrate.filter_map { |id| indexed_articles[id] }
-        end
+        @articles.index_by(&:id)
       end
 
       def compute_database_hybrid_scores(keyword_data, semantic_data)
@@ -362,10 +382,10 @@ module Api
 
         # Remove common English contraction endings (e.g. 's, 't, 'd, 're, 've, 'll, 'm)
         cleaned = query_text.downcase.gsub(/'(s|t|d|re|ve|ll|m)\b/, "")
-        # Replace non-alphanumeric characters with spaces
-        words = cleaned.gsub(/[^a-z0-9\s]/, " ").split
-        # Filter out stop words and single-character words
-        cleaned_words = words.reject { |w| w.length <= 1 || STOP_WORDS.include?(w) }
+        # Extract alphanumeric tokens along with trailing +/# symbols (e.g. c++, c#, f#)
+        # while preserving single-letter technical terms (e.g. c, r) that aren't stop words.
+        words = cleaned.scan(/[a-z0-9]+[+#]*/)
+        cleaned_words = words.reject { |w| STOP_WORDS.include?(w) }
 
         cleaned_words.empty? ? query_text : cleaned_words.join(" ")
       end

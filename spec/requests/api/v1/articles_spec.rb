@@ -1897,6 +1897,20 @@ RSpec.describe "Api::V1::Articles" do
         expect(Article).to have_received(:raw_search)
       end
 
+      it "preserves single-character and symbol-bearing technical tokens like C, R, C++, and F# in Algolia queries" do
+        allow(Article).to receive(:raw_search)
+          .with(
+            "use c arrays c++ f# r tutorial",
+            hash_including(optionalWords: %w[use c arrays c++ f# r tutorial]),
+          )
+          .and_return({ "hits" => [] })
+
+        get "/api/articles/semantic_search", params: { q: "How do I use C arrays, C++, and F# in an R tutorial?" },
+                                             headers: auth_headers
+        expect(response).to be_successful
+        expect(Article).to have_received(:raw_search)
+      end
+
       it "contextually boosts slightly more recent articles in Algolia search results" do
         older_article = create(:article, title: "Older Algolia Fable", published: true)
         older_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 180.days.ago)
@@ -1998,6 +2012,34 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/semantic_search", params: { q: "rust tokio" }, headers: auth_headers
         expect(response).to be_successful
         expect(response.parsed_body.pluck("id")).to eq([second_pre_ranked.id, first_pre_ranked.id])
+      end
+
+      it "applies Jev re-ranking consistently across pages in the database fallback path" do
+        enable_jev_for(:semantic_search_reranking)
+        allow(Article).to receive(:raw_search).and_return({ "hits" => [] })
+
+        article.update_column(:published, false)
+        first_db = create(:article, title: "DB Jev Fable One", published: true)
+        first_db.update_columns(score: 500, published_at: 1.day.ago, semantic_embedding: Array.new(768, 0.1))
+
+        second_db = create(:article, title: "DB Jev Fable Two", published: true)
+        second_db.update_columns(score: 10, published_at: 30.days.ago, semantic_embedding: Array.new(768, 0.1))
+
+        stub_jev(
+          "candidate::#{first_db.id}" => 0.05,
+          "candidate::#{second_db.id}" => 0.98,
+        )
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 1 }, headers: auth_headers
+        expect(response).to be_successful
+        page_one_ids = response.parsed_body.pluck("id")
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 2 }, headers: auth_headers
+        expect(response).to be_successful
+        page_two_ids = response.parsed_body.pluck("id")
+
+        expect(page_one_ids).to eq([second_db.id])
+        expect(page_two_ids).to eq([first_db.id])
       end
 
       it "falls back to DB hybrid search if Algolia search fails" do
