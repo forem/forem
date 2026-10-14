@@ -4414,6 +4414,24 @@ RSpec.describe Article do
       expect(Notification.where(notifiable: invitation)).to be_empty
     end
 
+    it "refreshes invitation notification titles and paths when a draft is published", :aggregate_failures do
+      draft = create(:article, user: author, published: false, title: "Initial draft title")
+      invitation = create(:co_author_invitation, article: draft, user: invitee)
+      notification = Notifications::CoAuthorInvitations::Send.call(invitation)
+
+      expect(notification.json_data.dig("article", "path")).to include("-temp-slug-", "preview=")
+
+      draft.update!(title: "Published final title", published: true)
+
+      expect(notification.reload.json_data["article"]).to eq(
+        "id" => draft.id,
+        "title" => "Published final title",
+        "path" => draft.current_state_path,
+      )
+      expect(notification.json_data.dig("article", "path")).not_to include("-temp-slug-")
+      expect(notification.json_data.dig("article", "path")).not_to include("preview=")
+    end
+
     describe "organization membership" do
       let(:organization) { create(:organization) }
 

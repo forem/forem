@@ -20,18 +20,13 @@ module CoAuthorInvitations
       @errors = []
     end
 
-    # Validates the list and stages credit removals for withdrawn co-authors on the article, so
-    # they're persisted by the same save as the rest of the edit.
+    # Validates the list before the article is saved.
     #
     # @return [Boolean] whether the list is valid
     def prepare
       validate_list
       new_invitations.each { |invitation| errors.concat(invitation.errors.full_messages) if invitation.invalid? }
-      return false if errors.any?
-
-      uncredited_ids = withdrawn_invitations.filter_map { |invitation| invitation.user_id if invitation.accepted? }
-      article.co_author_ids -= uncredited_ids if uncredited_ids.any?
-      true
+      errors.empty?
     end
 
     # Persists the reconciled invitations. The article must have been saved.
@@ -40,7 +35,10 @@ module CoAuthorInvitations
       # #prepare is seen here. A separate instance is locked because reloading the caller's article
       # would discard the saved_changes its caller still checks.
       Article.transaction do
-        withdraw(Article.lock.find(article.id))
+        locked_article = Article.lock.find(article.id)
+        withdraw(locked_article)
+        next if locked_article.organization_id.present?
+
         # Eligibility was checked in #prepare; if it changed in the moment since (an unfollow,
         # a concurrent save of the same post), no invitation is sent rather than failing the save.
         new_invitations.each(&:save)
@@ -52,6 +50,10 @@ module CoAuthorInvitations
     attr_reader :article, :invitee_ids
 
     def validate_list
+      if article.organization_id.present? && invitee_ids.any? && new_invitations.empty?
+        errors << I18n.t("models.co_author_invitation.personal_posts_only")
+      end
+
       if invitee_ids.size > CoAuthorInvitation::MAX_PER_ARTICLE
         errors << I18n.t("models.co_author_invitation.too_many", count: CoAuthorInvitation::MAX_PER_ARTICLE)
       end
@@ -62,15 +64,18 @@ module CoAuthorInvitations
         end
     end
 
-    # Re-reads the withdrawn invitations under the lock: anyone who accepted since #prepare loses
-    # the credit they just gained, and anyone who declined keeps their invitation as declined.
+    # Re-reads the withdrawn invitations under the lock: anyone who accepted (before or after
+    # #prepare) loses their credit, and anyone who declined keeps their invitation as declined.
     def withdraw(locked_article)
       invitations = CoAuthorInvitation.where(id: withdrawn_invitations.map(&:id)).reject(&:declined?)
       credited_ids = invitations.filter_map { |invitation| invitation.user_id if invitation.accepted? }
       credited_ids &= locked_article.co_author_ids
 
       invitations.each(&:destroy!)
-      locked_article.update!(co_author_ids: locked_article.co_author_ids - credited_ids) if credited_ids.any?
+      return if credited_ids.empty?
+
+      locked_article.update!(co_author_ids: locked_article.co_author_ids - credited_ids)
+      article.co_author_ids = locked_article.co_author_ids
     end
 
     def existing_invitations

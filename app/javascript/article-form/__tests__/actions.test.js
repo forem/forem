@@ -1,4 +1,4 @@
-import { processPayload } from '../actions';
+import { processPayload, acceptedCoAuthorInvitees } from '../actions';
 
 describe('processPayload', () => {
   const basePayload = {
@@ -22,9 +22,7 @@ describe('processPayload', () => {
       { id: 2, name: 'Org Two', fetch_users_url: '/api/users?org=2' },
     ],
     authorId: 99,
-    coAuthorsData: [
-      { id: 1, name: 'Co Author', username: 'coauthor' },
-    ],
+    coAuthorsData: [{ id: 1, name: 'Co Author', username: 'coauthor' }],
   };
 
   it('preserves article content fields in the output', () => {
@@ -152,5 +150,22 @@ describe('processPayload', () => {
     const result = processPayload({ ...basePayload });
 
     expect(result).toEqual(basePayload);
+  });
+
+  describe('acceptedCoAuthorInvitees', () => {
+    const ada = { id: 7, name: 'Ada Lovelace', username: 'ada' };
+    const grace = { id: 8, name: 'Grace Hopper', username: 'grace' };
+
+    it('keeps only selected invitees whose invitation is accepted', () => {
+      const invitations = [
+        { id: 10, status: 'accepted', user: ada },
+        { id: 11, status: 'pending', user: grace },
+      ];
+
+      expect(acceptedCoAuthorInvitees(invitations, [ada, grace])).toEqual([
+        ada,
+      ]);
+      expect(acceptedCoAuthorInvitees(invitations, [grace])).toEqual([]);
+    });
   });
 });

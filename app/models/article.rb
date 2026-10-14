@@ -355,6 +355,9 @@ class Article < ApplicationRecord
   after_update :withdraw_pending_co_author_invitations, if: lambda {
     saved_change_to_organization_id? && organization_id.present?
   }
+  after_update :refresh_co_author_invitation_notifications, if: lambda {
+    saved_change_to_title? || saved_change_to_slug? || saved_change_to_published?
+  }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -1673,7 +1676,10 @@ class Article < ApplicationRecord
   # Co-authors who accepted an invitation consented to the credit themselves, so they don't need
   # to be members of the organization (e.g. a co-authored personal post moved under an org).
   def validate_co_authors_belong_to_organization
-    org_credited_ids = co_author_ids - co_author_invitations.accepted.pluck(:user_id)
+    accepted_ids = new_record? ? [] : co_author_invitations.accepted.pluck(:user_id)
+    org_credited_ids = co_author_ids - accepted_ids
+    return if org_credited_ids.empty?
+
     org_member_count = OrganizationMembership.active
       .where(organization_id: organization_id, user_id: org_credited_ids).count
     return if org_member_count == org_credited_ids.count
@@ -2077,6 +2083,14 @@ class Article < ApplicationRecord
   # an organization. Co-authors who already accepted stay credited.
   def withdraw_pending_co_author_invitations
     co_author_invitations.pending.destroy_all
+  end
+
+  def refresh_co_author_invitation_notifications
+    article_data = { "id" => id, "title" => title, "path" => current_state_path }
+    Notification.where(notifiable_type: "CoAuthorInvitation", notifiable_id: co_author_invitations.select(:id))
+      .find_each do |notification|
+        notification.update!(json_data: notification.json_data.merge("article" => article_data))
+      end
   end
 
   def cleanup_memberships_if_unpublished

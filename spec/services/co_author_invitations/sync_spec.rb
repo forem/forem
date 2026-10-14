@@ -94,6 +94,25 @@ RSpec.describe CoAuthorInvitations::Sync, type: :service do
 
       expect(invitation.reload).to be_declined
     end
+
+    it "preserves the credit of a kept invitee who accepted while another co-author was being withdrawn",
+       :aggregate_failures do
+      kept_invitation = create(:co_author_invitation, article: article, user: other_follower)
+      invitation.update!(status: :accepted, responded_at: Time.current)
+      article.update!(co_author_ids: [follower.id])
+
+      result = described_class.new(article, [other_follower.id])
+      expect(result.prepare).to be(true)
+
+      CoAuthorInvitations::Accept.call(CoAuthorInvitation.find(kept_invitation.id))
+      article.title = "Updated title while saving"
+      article.save!
+      result.apply
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(kept_invitation.reload).to be_accepted
+      expect(article.reload.co_author_ids).to eq([other_follower.id])
+    end
   end
 
   describe "#prepare" do
@@ -126,6 +145,15 @@ RSpec.describe CoAuthorInvitations::Sync, type: :service do
       result = described_class.new(article, [follower.id])
 
       expect(result.prepare).to be(false)
+    end
+
+    it "rejects keeping existing invitations on an organization post", :aggregate_failures do
+      create(:co_author_invitation, article: article, user: follower)
+      article.organization = create(:organization)
+      result = described_class.new(article, [follower.id])
+
+      expect(result.prepare).to be(false)
+      expect(result.errors).to include("Co-author invitations are only available on personal posts.")
     end
 
     it "does not touch the database when the list is invalid", :aggregate_failures do

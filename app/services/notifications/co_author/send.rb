@@ -66,6 +66,8 @@ module Notifications
       # Co-authors who accepted an invitation to an already-published post learned about it from
       # the invitation itself, so a "published" notification on top would be redundant.
       def accepted_while_live_ids
+        return [] if article.published_at.blank?
+
         article.co_author_invitations.accepted.where(responded_at: article.published_at..).pluck(:user_id)
       end
 

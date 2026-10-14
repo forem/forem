@@ -10,8 +10,9 @@ class CoAuthorInvitationsController < ApplicationController
     authorize CoAuthorInvitation
     return not_found unless feature_flag_enabled?(:co_author_invitations)
 
+    search_term = params[:search].to_s.strip.delete_prefix("@")
     users = CoAuthorInvitation.eligible_invitees_for(current_user)
-      .search_by_name_and_username(params[:search])
+      .search_by_name_and_username(search_term)
       .select(:id, :name, :username, :profile_image)
       .order(score: :desc)
       .limit(CANDIDATES_LIMIT)

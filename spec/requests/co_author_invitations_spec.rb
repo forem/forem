@@ -31,6 +31,12 @@ RSpec.describe "CoAuthorInvitations" do
         expect(response.parsed_body.first.keys).to contain_exactly("id", "name", "username", "profile_image_90")
       end
 
+      it "matches when the search term is prefixed with @" do
+        get candidates_co_author_invitations_path, params: { search: " @ada " }
+
+        expect(response.parsed_body.pluck("username")).to eq(["ada_follower"])
+      end
+
       it "returns nothing for a blank search" do
         get candidates_co_author_invitations_path, params: { search: "" }
 

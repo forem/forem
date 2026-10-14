@@ -28,8 +28,8 @@ module Notifications
       attr_reader :invitation
 
       def refresh_invitee_notification
+        json_data = CoAuthorInvitations.json_data(invitation, user: invitation.article.user)
         invitation.notifications.where(user_id: invitation.user_id, action: INVITED).find_each do |notification|
-          json_data = notification.json_data.deep_merge("co_author_invitation" => { "status" => invitation.status })
           notification.update!(json_data: json_data, read: true)
         end
       end
