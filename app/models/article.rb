@@ -356,7 +356,7 @@ class Article < ApplicationRecord
     saved_change_to_organization_id? && organization_id.present?
   }
   after_update :refresh_co_author_invitation_notifications, if: lambda {
-    saved_change_to_title? || saved_change_to_slug? || saved_change_to_published?
+    saved_change_to_title? || saved_change_to_path? || saved_change_to_published?
   }
   before_destroy :before_destroy_actions, prepend: true
 

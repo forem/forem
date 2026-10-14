@@ -4415,7 +4415,7 @@ RSpec.describe Article do
     end
 
     it "refreshes invitation notification titles and paths when a draft is published", :aggregate_failures do
-      draft = create(:article, user: author, published: false, title: "Initial draft title")
+      draft = create(:unpublished_article, user: author, title: "Initial draft title")
       invitation = create(:co_author_invitation, article: draft, user: invitee)
       notification = Notifications::CoAuthorInvitations::Send.call(invitation)
 
