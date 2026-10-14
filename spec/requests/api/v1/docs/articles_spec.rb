@@ -590,7 +590,8 @@ will remain."
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
         tags "articles"
-        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        description "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) " \
+                    "and semantic embeddings search pipeline, with optional Jev shortlist re-ranking."
         produces "application/json"
         parameter name: :q, in: :query, required: true,
                   description: "The search query term to match semantically.",
