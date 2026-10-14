@@ -12,7 +12,8 @@ module Ai
     # PROHIBITED_CONTENT). Spam checks treat this as a clear violation.
     class ProhibitedContentError < StandardError; end
 
-    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL, wrapper: nil, affected_user: nil, affected_content: nil)
+    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_MODEL, wrapper: nil, affected_user: nil, affected_content: nil,
+                   timeout: nil)
       raise ArgumentError, "API key cannot be nil" if api_key.nil? && !Rails.env.test?
 
       @api_key = api_key
@@ -25,6 +26,7 @@ module Ai
           "Content-Type" => "application/json"
         }
       }
+      @options[:timeout] = timeout if timeout
     end
 
     def call(prompt, retry_count: 0, response_mime_type: nil)

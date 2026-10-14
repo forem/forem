@@ -1146,7 +1146,7 @@
         "tags": [
           "articles"
         ],
-        "description": "Allows authenticated clients to search articles using Forem's semantic embeddings database.",
+        "description": "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) and semantic embeddings search pipeline, with optional Jev shortlist re-ranking.",
         "parameters": [
           {
             "name": "q",
