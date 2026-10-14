@@ -147,6 +147,12 @@ RSpec.describe RateLimitChecker, type: :service do
 
       expect(rate_limit_checker.check_limit!(:image_upload)).to be_nil
     end
+
+    it "raises LimitReached for an action without a retry_after entry" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      expect { rate_limit_checker.check_limit!(:comment_creation) }.to raise_error(described_class::LimitReached)
+    end
   end
 
   describe "#track_limit_by_action" do

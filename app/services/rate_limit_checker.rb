@@ -93,9 +93,10 @@ class RateLimitChecker
     end
   end
 
+  # Actions without an ACTION_LIMITERS entry (e.g. comment_creation) have no retry_after.
   def retry_after_for(action)
-    config = ACTION_LIMITERS.fetch(action)
-    return config[:retry_after] if config.key?(:retry_after)
+    config = ACTION_LIMITERS.fetch(action, {})
+    return config[:retry_after] unless config.key?(:retry_after_setting)
 
     Settings::RateLimit.public_send(config[:retry_after_setting])
   end
