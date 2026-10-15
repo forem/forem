@@ -233,11 +233,33 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
             expect(response.body).to include(expected_tag)
           end
+
+          it "queries active discuss threads for the sidebar on page 1" do
+            discuss_article = create(:article, tags: "#{tag.name}, discuss", score: 10)
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(Articles::ActiveThreadsQuery).to have_received(:call).with(
+              tags: [tag.name, "discuss"],
+              time_ago: nil,
+            ).once
+            expect(response.body).to include(CGI.escapeHTML(discuss_article.title))
+          end
         end
 
         # rubocop:disable FactoryBot/ExcessiveCreateList
         context "without user signed in" do
           let(:tag) { create(:tag) }
+
+          it "does not execute Articles::ActiveThreadsQuery for signed-out requests" do
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(response).to have_http_status(:ok)
+            expect(Articles::ActiveThreadsQuery).not_to have_received(:call)
+          end
 
           it "renders tag index properly with many posts", :aggregate_failures do
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
