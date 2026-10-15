@@ -30,6 +30,15 @@ en:
       co_author:
         if_org_html: " under %{org}"
         verb_html: "%{user} published a post you are credited on%{if_org}"
+      co_author_invitation:
+        accept: Accept
+        accepted_html: "%{user} accepted your invitation to co-author %{title}"
+        credited: You're credited as a co-author on this post.
+        decline: Decline
+        declined: You declined this invitation.
+        invited_html: "%{user} invited you to co-author %{title}"
+        pending: If you accept, you'll be credited as a co-author on this post.
+        remove: Remove me as a co-author
       comment:
         commented_html: "%{user} commented on %{title}"
         first_html: "%{user} wrote their first comment on %{title}"

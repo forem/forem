@@ -108,6 +108,13 @@ export const MultiSelectAutocomplete = ({
     showMaxSelectionsReached,
   } = state;
 
+  // Internal IDs are namespaced by inputId so several instances can share a page; without an
+  // inputId they keep their original values.
+  const idPrefix = inputId ? `${inputId}-` : '';
+  const labelId = `${idPrefix}multi-select-label`;
+  const descriptionId = `${idPrefix}input-description`;
+  const listboxId = `${idPrefix}listbox1`;
+
   const inputRef = useRef(null);
   const inputSizerRef = useRef(null);
   const selectedItemsRef = useRef(null);
@@ -569,13 +576,10 @@ export const MultiSelectAutocomplete = ({
         aria-hidden="true"
         className="absolute pointer-events-none opacity-0 p-2"
       />
-      <label
-        id="multi-select-label"
-        className={showLabel ? '' : 'screen-reader-only'}
-      >
+      <label id={labelId} className={showLabel ? '' : 'screen-reader-only'}>
         {labelText}
       </label>
-      <span id="input-description" className="screen-reader-only">
+      <span id={descriptionId} className="screen-reader-only">
         {maxSelections ? `Maximum ${maxSelections} selections` : ''}
       </span>
 
@@ -598,7 +602,7 @@ export const MultiSelectAutocomplete = ({
           role="combobox"
           aria-haspopup="listbox"
           aria-expanded={suggestions.length > 0}
-          aria-owns="listbox1"
+          aria-owns={listboxId}
           className={`c-autocomplete--multi__wrapper${
             border ? '-border crayons-textfield' : ' border-none p-0'
           } flex items-center  cursor-text`}
@@ -609,7 +613,10 @@ export const MultiSelectAutocomplete = ({
             inputRef.current?.focus();
           }}
         >
-          <ul id="combo-selected" className="list-none flex flex-wrap w-100">
+          <ul
+            id={`${idPrefix}combo-selected`}
+            className="list-none flex flex-wrap w-100"
+          >
             {allSelectedItemElements}
 
             <li
@@ -632,8 +639,8 @@ export const MultiSelectAutocomplete = ({
                     : null
                 }
                 aria-autocomplete="list"
-                aria-labelledby="multi-select-label selected-items-list"
-                aria-describedby="input-description"
+                aria-labelledby={`${labelId} ${idPrefix}selected-items-list`}
+                aria-describedby={descriptionId}
                 aria-disabled={!allowSelections}
                 type="text"
                 onChange={handleInputChange}
@@ -658,10 +665,10 @@ export const MultiSelectAutocomplete = ({
             {inputRef.current?.value === '' ? staticSuggestionsHeading : null}
             <ul
               className="list-none"
-              aria-labelledby="multi-select-label"
+              aria-labelledby={labelId}
               role="listbox"
               aria-multiselectable="true"
-              id="listbox1"
+              id={listboxId}
             >
               {suggestions.map((suggestion, index) => {
                 const { name: suggestionDisplayName } = suggestion;
