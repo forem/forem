@@ -1,0 +1,59 @@
+app/services/users/email_footer_payload.rb
+  s_e113c3e3cb8b50::t_3e33d55161f282 1-33,36-37,39-69,97-99
+  s_e113c3e3cb8b50::t_09cac4c562cdc5 70-82,90,92-96
+  s_e113c3e3cb8b50::t_b5fda29d750a59 83-89,91
+  s_e113c3e3cb8b50::t_9a186464406c7d 34-35
+  s_e113c3e3cb8b50::t_6d482158dc1001 38
+app/models/user.rb
+  s_e113c3e3cb8b50::t_e8a26bbe452b7c 910
+spec/models/user_spec.rb
+  s_e113c3e3cb8b50::t_512e2cf2d0efee 74-75,79-83,85-107,123-131
+  s_e113c3e3cb8b50::t_9c4ada4368b3a2 84
+  s_e113c3e3cb8b50::t_325219962dbb68 132
+  s_e113c3e3cb8b50::t_c7a581151f8ee4 108-122
+  s_e113c3e3cb8b50::t_eda25d33e4e1f6 133-144
+app/services/trackers/customerio_cdp.rb
+  s_20bd8186d56855::t_be366457eb063a 41
+spec/services/delivery_methods/customer_io_event_spec.rb
+  s_20bd8186d56855::t_9f9b95ab6203f8 61-85
+  s_20bd8186d56855::t_04bd1d8bf8242c 37
+  s_20bd8186d56855::t_121b542b805f18 30,46,54,104,115
+  s_20bd8186d56855::t_651d4171ab4cc8 14-18,86
+  s_20bd8186d56855::t_4d16d7e1b33689 87
+app/services/delivery_methods/customer_io_event.rb
+  s_20bd8186d56855::t_0ec44dd9bd46ea 44-47
+app/mailers/digest_mailer.rb
+  s_20bd8186d56855::t_fbd8eb19034609 26-28
+app/services/trackable/event_name.rb
+  s_20bd8186d56855::t_bebaa1d87f035d 1-20
+spec/mailers/concerns/deliverable_spec.rb
+  s_20bd8186d56855::t_121b542b805f18 117,130
+spec/mailers/digest_mailer_spec.rb
+  s_20bd8186d56855::t_121b542b805f18 137
+app/mailers/concerns/deliverable.rb
+  s_20bd8186d56855::t_49aca5e2316e0c 17,19-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "930ceb00c789d212206cb06cdd3cf5ce31cb3642",
+  "prompts": {},
+  "sessions": {
+    "s_20bd8186d56855": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dbf1c5f0-019c-4ac0-831f-6a7b2dfe44ca",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_e113c3e3cb8b50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4d58b34f-781a-41ab-8a24-fdabb51572bb",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

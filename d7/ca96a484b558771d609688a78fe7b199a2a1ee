@@ -1,0 +1,21 @@
+app/views/articles/index.html.erb
+  s_175b856f52eaba::t_60946d2585d877 52
+spec/requests/stories_index_spec.rb
+  s_175b856f52eaba::t_de75a698917527 330-348
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d7ca96a484b558771d609688a78fe7b199a2a1ee",
+  "prompts": {},
+  "sessions": {
+    "s_175b856f52eaba": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4b7c8a3d-2efc-4a4a-9623-394aba0b23e2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
