@@ -85,6 +85,10 @@ class Notification < ApplicationRecord
       Notifications::CoAuthorWorker.perform_async(notifiable.id, removed_user_ids)
     end
 
+    def send_co_author_invitation_notification(invitation)
+      Notifications::CoAuthorInvitationWorker.perform_async(invitation.id)
+    end
+
     def send_to_followers(notifiable, action = nil)
       Notifications::NotifiableActionWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end

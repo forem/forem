@@ -52,6 +52,14 @@ fr:
     article_form_co_authors: Co-auteurs
     article_form_co_authors_description: Ajoutez jusqu'à 4 co-auteurs de %{org_name}.
     article_form_co_authors_placeholder: Ajouter jusqu'à 4...
+    article_form_co_author_invitations_description: Invitez des personnes qui vous suivent. Elles seront créditées une fois l'invitation acceptée depuis leurs notifications.
+    article_form_co_author_invitations_placeholder: Rechercher parmi vos abonnés...
+    article_form_co_author_invitations_declined: 'Refusé : %{names}'
+    article_form_co_author_invitation_new: Invitation à l'enregistrement
+    article_form_co_author_invitation_pending: En attente
+    article_form_co_author_invitation_accepted: Acceptée
+    article_form_co_author_invitation_edit: Modifier %{name}
+    article_form_co_author_invitation_remove: Retirer %{name}
     comments_preview: Aperçu
     comments_continue_editing: Continuer l'édition
     survey_enter_response: Entrez votre réponse ici...
