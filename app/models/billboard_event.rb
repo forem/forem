@@ -23,7 +23,8 @@ class BillboardEvent < ApplicationRecord
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_ARTICLE = "article".freeze
   CONTEXT_TYPE_EMAIL = "email".freeze
-  VALID_CONTEXT_TYPES = [CONTEXT_TYPE_HOME, CONTEXT_TYPE_ARTICLE, CONTEXT_TYPE_EMAIL].freeze
+  CONTEXT_TYPE_EMBED = "embed".freeze
+  VALID_CONTEXT_TYPES = [CONTEXT_TYPE_HOME, CONTEXT_TYPE_ARTICLE, CONTEXT_TYPE_EMAIL, CONTEXT_TYPE_EMBED].freeze
 
   validates :category, inclusion: { in: VALID_CATEGORIES }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }

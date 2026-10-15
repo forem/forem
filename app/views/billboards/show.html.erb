@@ -4,7 +4,7 @@
   <% cache "billboard-#{@billboard.id}-#{@billboard.content_updated_at}#{'-hidden' if hidden_by_default}#{"-#{@viewer_country}" if @viewer_country}#{'-anon-tracking' if @anonymous_tracking_allowed}", expires_in: 12.hours do %>
     <%= render partial: "shared/billboard", locals: {
           billboard: @billboard,
-          data_context_type: BillboardEvent::CONTEXT_TYPE_ARTICLE,
+          data_context_type: Billboard::EMBEDDED_PLACEMENTS.include?(@billboard.placement_area) ? BillboardEvent::CONTEXT_TYPE_EMBED : BillboardEvent::CONTEXT_TYPE_ARTICLE,
           hidden_by_default: hidden_by_default,
           viewer_country: @viewer_country,
           anonymous_tracking_allowed: @anonymous_tracking_allowed

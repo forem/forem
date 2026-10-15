@@ -27,7 +27,8 @@ class Billboard < ApplicationRecord
                                post_comments_secondary
                                post_comments_mid
                                digest_first
-                               digest_second].freeze
+                               digest_second
+                               mlh_feed].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home first position)",
@@ -48,7 +49,12 @@ class Billboard < ApplicationRecord
                                             "Below the comment section (Secondary)",
                                             "Midway through the comment section",
                                             "Digest Email First",
-                                            "Digest Email Second"].freeze
+                                            "Digest Email Second",
+                                            "MLH.com Feed"].freeze
+
+  # Placement areas shown on other sites, which load /bb/:placement_area from one of
+  # Billboard.embed_origins and render the billboard in their own markup and styles.
+  EMBEDDED_PLACEMENTS = %w[mlh_feed].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
   # Placement areas that pages load in the context of the article or page they're on
@@ -286,6 +292,11 @@ class Billboard < ApplicationRecord
       SQL
     end
     relation.find_by_sql([query, random_val, random_val]).first
+  end
+
+  # Origins (e.g. "https://www.mlh.com") allowed to record billboard events cross-origin.
+  def self.embed_origins
+    ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s.split(",").map(&:strip).reject(&:empty?)
   end
 
   # Temporary ENV configs, to eventually be replaced by permanent configurations
