@@ -176,14 +176,14 @@ class Billboard < ApplicationRecord
   end
 
   def self.select_billboard_by_weighted_strategy(billboards_for_display, area, article_id = nil)
-    # Return nil if no billboards available
-    return nil if billboards_for_display.blank? || billboards_for_display.empty?
-    
+    # Return nil if no billboards available without triggering an upfront query on an unloaded Relation
+    return if no_billboards_available?(billboards_for_display)
+
     # Get weights from placement area config
     weights = BillboardPlacementAreaConfig.selection_weights_for(area)
-    
+
     # Calculate total weight, filtering out any nil or negative values
-    total_weight = weights.values.compact.map { |v| [v.to_i, 0].max }.sum
+    total_weight = weights.values.compact.sum { |v| [v.to_i, 0].max }
     return billboards_for_display.sample if total_weight.zero?
 
     # Generate random number and select strategy based on weight
@@ -195,7 +195,7 @@ class Billboard < ApplicationRecord
       # Skip strategies with zero or negative weight
       weight_value = [weight.to_i, 0].max
       next if weight_value.zero?
-      
+
       cumulative_weight += weight_value
       if random_value < cumulative_weight
         selected_strategy = strategy
@@ -205,7 +205,7 @@ class Billboard < ApplicationRecord
 
     # Execute the selected strategy
     case selected_strategy
-    when "random_selection"
+    when "random_selection", "evenly_distributed"
       # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
       # rise to the top. This gives "not yet evaluated" stuff a chance to get some engagement and start showing up more.
       # If it doesn't get engagement, it stays in this area.
@@ -226,17 +226,24 @@ class Billboard < ApplicationRecord
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
-    when "evenly_distributed"
-      # Randomly distribute billboards effectively evenly over time.
-      billboards_for_display.sample
     else
       # Fallback to random if strategy is unknown
       billboards_for_display.sample
     end
   end
 
+  def self.no_billboards_available?(billboards_for_display)
+    return true if billboards_for_display.nil? || billboards_for_display.try(:null_relation?)
+    return billboards_for_display.empty? if billboards_for_display.is_a?(Array)
+
+    billboards_for_display.respond_to?(:loaded?) && billboards_for_display.loaded? && billboards_for_display.empty?
+  end
+  private_class_method :no_billboards_available?
+
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
+    return if base_query.blank?
+
     random_val = rand.to_f
     if FeatureFlag.enabled?(:article_id_adjusted_weight)
       condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
