@@ -44,7 +44,7 @@ module Homepage
       per_page: DEFAULT_PER_PAGE
     )
       @relation = Article.published.from_subforem.select(*ATTRIBUTES)
-        .includes(:distinct_reaction_categories)
+        .preload(:distinct_reaction_categories)
 
       @approved = approved
       @published_at = published_at
@@ -79,9 +79,7 @@ module Homepage
       @relation = @relation.where(organization_id: organization_id) if organization_id.present?
       @relation = @relation.cached_tagged_with_any(tags) if tags.any?
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
-      @relation = @relation.includes(:distinct_reaction_categories)
       @relation = @relation.where("score >= 0") # Never return negative score articles
-      @relation = @relation.from_subforem
 
       relation
     end
