@@ -1387,6 +1387,108 @@ RSpec.describe Billboard do
       result = described_class.select_billboard_by_weighted_strategy(relation, area)
       expect(result).to be_a(described_class)
     end
+
+    it "returns nil when billboards_for_display is an unloaded relation matching no records" do
+      unloaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area")
+      result = described_class.select_billboard_by_weighted_strategy(unloaded_empty_relation, area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil without querying when billboards_for_display is an already-loaded empty relation" do
+      loaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area").load
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(described_class.select_billboard_by_weighted_strategy(loaded_empty_relation, area)).to be_nil
+      end
+
+      expect(display_ad_queries).to be_empty
+    end
+
+    it "executes only one display_ads query for weighted_performance instead of loading the relation upfront" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 100
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("LIMIT")
+    end
+
+    it "executes only one display_ads query for new_and_priority when a seldom_seen billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 100,
+          "new_only" => 0,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("WITH base AS")
+    end
+
+    it "executes only one display_ads query for new_only when a low-impression billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 100,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("impressions_count <")
+    end
   end
 
   describe "#bust_billboard_cache (when being taken down)" do
