@@ -29,8 +29,9 @@ module Ai
 
     FUNCTION_KEY = :profile_moderation
     # Jev policy thresholds. Only clear_* labels trigger action in Spam::Handler.
-    CLEAR = 0.85
+    CLEAR = 0.9
     LIKELY = 0.6
+    SUPPORTING = 0.5
 
     # @param user [User] The user whose profile we are labeling.
     # @param ai_client [Ai::Base, nil] Optional Gemini client (forces the Gemini path).
@@ -89,24 +90,48 @@ module Ai
     def jev_questions
       questions = {
         keyword_stuffed_identity: noul(
-          "Is `profile.name` or `profile.username` a keyword-stuffed or promotional phrase rather than the name " \
-          "of a person or organization?",
-          yes: { examples: ["Best Cheap SEO Services Delhi", "buy-followers-fast-2024"] },
+          "Is `profile.name` or `profile.username` blatant, egregious commercial spam (such as black-hat SEO " \
+          "keyword stuffing, gambling/casino ads, adult/escort services, fake customer-support phone numbers, " \
+          "or illegal/scam services) rather than a person, handle, brand, or organization?",
+          yes: {
+            examples: [
+              "Best Cheap SEO Services Delhi",
+              "buy-backlinks-casino-slots-2024",
+              "Call +1-800-555-0199 Airlines Support",
+            ]
+          },
           no: {
             examples: ["Jane Doe", "Acme Cloud", "jdoe_dev", "thebitforge", "Alex Rivera - Full Stack Developer"],
-            includes: "Developer handles, pseudonyms, studio or project names, or personal names that include a " \
-                      "role or tech stack."
+            includes: "Any real name, pseudonym, developer handle, startup/company/project name, or name that " \
+                      "includes a job title, role, or tech stack."
           },
         ),
         promotional_profile: noul(
           {
-            question: "Do `profile.summary` and `profile.website_url` exist mainly to advertise or drive search " \
-                      "traffic to an unrelated business?"
+            question: "Are `profile.summary` and `profile.website_url` blatant, egregious spam (such as SEO " \
+                      "link-selling, casinos/gambling, adult/escort ads, crypto/financial scams, pirated " \
+                      "downloads, or fake support numbers) rather than a legitimate person, project, or business?"
+          },
+          yes: {
+            examples: [
+              "Buy high DR backlinks and cheap guest posts at our casino SEO agency.",
+              "24/7 Escort girls in Dubai - click website for WhatsApp.",
+            ]
           },
           no: {
-            includes: "A legitimate person, developer, company, or organization describing itself, its tech stack, " \
-                      "or its interests, even with a link to a personal portfolio, GitHub, blog, or company site."
+            includes: "Any legitimate person, developer, freelancer, startup, agency, company, or organization " \
+                      "describing itself, its products, its tech stack, or its interests—even if self-promotional, " \
+                      "commercial, or off-topic—with a link to its own site, portfolio, or social profile."
           },
+        ),
+        plausible_profile: noul(
+          "Could `profile` plausibly belong to a real person, developer, student, hobbyist, or legitimate " \
+          "company/organization (even if self-promotional, minimal, or off-topic), rather than an egregious " \
+          "spam bot?",
+          yes: "A real person, developer, freelancer, founder, student, or normal business/organization, " \
+               "including profiles that promote their own project, product, service, or website.",
+          no: "An unmistakably automated or abusive spam profile (e.g., SEO backlink sellers, casino/gambling " \
+              "ads, adult/escort services, scams, pirated streaming/downloads, or fake support phone numbers).",
         ),
         harmful: noul(
           "Does the profile or its recent articles show exploitation, trafficking, doxing, or other clearly " \
@@ -118,15 +143,21 @@ module Ai
       }
       if recent_articles_context.any?
         questions[:spam_articles] = noul(
-          "Are the posts in `recent_articles` spam or promotional abuse rather than good-faith contributions?",
+          "Are the posts in `recent_articles` blatant spam or promotional abuse rather than good-faith contributions?",
         )
       end
       questions
     end
 
     # Safety labels take precedence over spam, matching the label priority used for articles.
+    # Profile-only spam signals are suppressed when the profile plausibly belongs to a real person or organization.
     def label_from_jev(result)
-      spam = [result.noul(:keyword_stuffed_identity), result.noul(:promotional_profile)]
+      profile_spam = if result.noul(:plausible_profile) >= SUPPORTING
+                       0.0
+                     else
+                       [result.noul(:keyword_stuffed_identity), result.noul(:promotional_profile)].max
+                     end
+      spam = [profile_spam]
       spam << result.noul(:spam_articles) if result.key?(:spam_articles)
       signals = {
         "harmful" => result.noul(:harmful),
@@ -222,14 +253,12 @@ module Ai
         #{LABELS.join(', ')}
 
         **Guidelines:**
-        - We are looking for *clear and obvious spam or abuse* only.
-        - If the profile and recent content appear legitimate or borderline, choose `no_moderation_label`.
-        - Developer handles, pseudonyms, personal portfolios, and bios listing tech stacks, roles, or interests are normal and should be labeled `no_moderation_label`.
-        - Use `clear_and_obvious_spam` for unmistakable spam or promotional abuse.
-        - Treat clear SEO abuse as spam (keyword-stuffed names, off-topic profile names, or spammy URLs).
-        - Legitimate organizations and businesses belong here, but SEO spam does not.
-        - Use `clear_and_obvious_harmful` for clear abuse, exploitation, or harmful activity.
-        - Use `clear_and_obvious_inciting` for content that clearly incites violence or extreme hostility.
+        - We are looking ONLY for *blatant, egregious spam bots or severe abuse*. Be extremely conservative: if there is any chance the profile belongs to a real person, developer, student, creator, or legitimate business/organization, choose `no_moderation_label`.
+        - Use `clear_and_obvious_spam` ONLY for unmistakable, egregious commercial spam (such as black-hat SEO/backlink sellers, online casinos/gambling, adult/escort services, crypto recovery or loan-shark scams, pirated downloads/streaming, or fake customer-support phone numbers).
+        - Do NOT use `clear_and_obvious_spam` for self-promotion, freelancers, agencies, startups, SaaS products, personal websites, portfolios, or off-topic businesses.
+        - Developer handles, pseudonyms, studio/project names, and bios listing tech stacks, roles, or interests are normal and must be labeled `no_moderation_label`.
+        - Use `clear_and_obvious_harmful` ONLY for severe, unmistakable abuse, exploitation, trafficking, or doxing.
+        - Use `clear_and_obvious_inciting` ONLY for content that explicitly incites violence or extreme hostility.
 
         Return only the label.
       PROMPT
@@ -242,8 +271,8 @@ module Ai
       cleaned = text.strip.gsub(/\A[`"'\s]+|[`"'\s.]+\z/, "")
       return cleaned if LABELS.include?(cleaned)
 
-      lines = text.lines.map { |line| line.strip.gsub(/\A[`"'\s*-]+|[`"'\s.]+\z/, "") }.reject(&:blank?)
-      exact_line = lines.reverse.find { |line| LABELS.include?(line) }
+      lines = text.lines.map { |line| line.strip.gsub(/\A[`"'\s*-]+|[`"'\s.]+\z/, "") }.compact_blank
+      exact_line = lines.reverse.detect { |line| LABELS.include?(line) }
       return exact_line if exact_line
 
       non_negated_matches = text.enum_for(:scan, /\b(#{Regexp.union(LABELS)})\b/).filter_map do

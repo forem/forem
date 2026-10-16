@@ -18,8 +18,6 @@ module Spam
       "betting",
       "escort",
       "prostitut",
-      "adult",
-      "girls",
       "porn",
       "onlyfans",
       "crypto pump",

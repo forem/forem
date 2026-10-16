@@ -1234,10 +1234,10 @@ RSpec.describe Spam::Handler, type: :service do
       expect(described_class.profile_spam_trigger_term_match?("prostitution ring")).to be(true)
     end
 
-    it "does not false-trigger when a trigger term is a substring inside an unrelated word" do
+    it "does not false-trigger on substrings inside words or benign phrases like 'Girls Who Code'" do
       expect(described_class.profile_spam_trigger_term_match?("Abetting a friend with debugging")).to be(false)
-      expect(described_class.profile_spam_trigger_term_match?("Unadulterated functional programming")).to be(false)
       expect(described_class.profile_spam_trigger_term_match?("Escorted deployments to production")).to be(false)
+      expect(described_class.profile_spam_trigger_term_match?("Mentor at Girls Who Code and adult educator")).to be(false)
     end
   end
 end

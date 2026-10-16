@@ -86,6 +86,12 @@ RSpec.describe Ai::ProfileModerationLabeler, type: :service do
       expect(described_class.new(user).label).to eq("clear_and_obvious_spam")
     end
 
+    it "does not label profile-only spam when the profile plausibly belongs to a real person or organization" do
+      stub_jev(keyword_stuffed_identity: 0.92, promotional_profile: 0.95, plausible_profile: 0.6)
+
+      expect(described_class.new(user).label).to eq("no_moderation_label")
+    end
+
     it "gives safety labels precedence over spam" do
       stub_jev(harmful: 0.9, promotional_profile: 0.95)
 
