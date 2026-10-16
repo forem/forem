@@ -1,0 +1,29 @@
+spec/lib/sidekiq/request_store_middleware_spec.rb
+  s_ce92f46111f74a::t_078946f570a0c6 1-85
+lib/sidekiq/request_store_middleware.rb
+  s_ce92f46111f74a::t_ce496922f57bb0 1-22
+config/initializers/sidekiq.rb
+  s_ce92f46111f74a::t_2fa4df860c2b1d 9,89
+  s_ce92f46111f74a::t_91c2ca6b722b06 87-88
+app/models/settings/base.rb
+  s_ce92f46111f74a::t_401101265e80a6 78,80,178-212,214
+spec/models/settings/base_spec.rb
+  s_ce92f46111f74a::t_3583f26e0ed68a 217,309-419
+  s_ce92f46111f74a::t_4caa40a5d17c5c 420
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5e93b2a8e207859dba93851c60528fec18f7eef8",
+  "prompts": {},
+  "sessions": {
+    "s_ce92f46111f74a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2fb76795-c3a2-44af-907b-e18b752e6780",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

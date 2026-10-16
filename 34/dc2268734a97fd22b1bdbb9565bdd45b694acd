@@ -1,0 +1,14 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "34dc2268734a97fd22b1bdbb9565bdd45b694acd",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

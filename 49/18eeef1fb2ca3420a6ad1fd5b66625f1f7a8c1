@@ -1,0 +1,37 @@
+Gemfile
+  s_2ec2dce38b0e23::t_5446c558df523e 121-122
+  s_2ec2dce38b0e23::t_62cc8ac4610ac4 78-92
+config/initializers/opentelemetry.rb
+  s_2ec2dce38b0e23::t_0e45b585971507 26-27
+  s_2ec2dce38b0e23::t_b70a3e75b9caab 23-25
+  s_2ec2dce38b0e23::t_ac1d1691ad587b 28-30
+  s_25b7ec76e5c5ee::t_eb2c7034ad3b73 1-22,31-51
+config/initializers/sentry.rb
+  s_2ec2dce38b0e23::t_77a1dcfb4560e1 1-29
+Gemfile.lock
+  s_2ec2dce38b0e23::t_6fa85f712bbc7f 392-393,694-766,1026-1031,1289-1300,1342-1343
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4918eeef1fb2ca3420a6ad1fd5b66625f1f7a8c1",
+  "prompts": {},
+  "sessions": {
+    "s_25b7ec76e5c5ee": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-add6e83cb6d4e5f21",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_2ec2dce38b0e23": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b279f3e5-0bcd-431d-b987-2f007b065ebf",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

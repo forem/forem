@@ -1,0 +1,16 @@
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 295-318
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 29-33,66-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "95737d01357ba1dc203d3a297bd18a96ee024b00",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
