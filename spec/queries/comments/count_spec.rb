@@ -52,6 +52,30 @@ RSpec.describe Comments::Count do
     expect(count).to eq(4)
   end
 
+  it "excludes childless low-quality comments containing links" do
+    create(:comment, commentable: article, body_markdown: "Spam [link](https://example.com)")
+      .update_column(:score, -197)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(2)
+  end
+
+  it "includes low-quality comments without links" do
+    create(:comment, commentable: article, score: -197, body_markdown: "Low quality but no link")
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(3)
+  end
+
+  it "includes low-quality comments containing links that have replies" do
+    spammy = create(:comment, commentable: article, body_markdown: "Spam [link](https://example.com)")
+    spammy.update_column(:score, -197)
+    create(:comment, commentable: article, parent: spammy, score: 10)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(4)
+  end
+
   it "excludes childless soft-deleted comments" do
     comment.update!(deleted: true)
     article.reload
