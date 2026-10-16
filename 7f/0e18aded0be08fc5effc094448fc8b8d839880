@@ -1,0 +1,36 @@
+db/seeds.rb
+  s_1e049bdc81f15e::t_ec1749a627a064 304-318
+app/services/favorites/create.rb
+  s_1e049bdc81f15e::t_7732d046ddb34b 29
+  s_1e049bdc81f15e::t_1ac6dda7cc5023 57-62
+config/locales/services/en.yml
+  s_1e049bdc81f15e::t_82ad6865da87c2 17-19
+app/services/badges/award_community_favorite.rb
+  s_1e049bdc81f15e::t_6433a6dae2cb9f 1-55
+spec/services/badges/award_community_favorite_spec.rb
+  s_1e049bdc81f15e::t_3c401ee3225b5f 58-59,61,66
+  s_1e049bdc81f15e::t_ef3e3ba5b8e2eb 1-5,7-34,36-57,60,62-65,67-83
+  s_1e049bdc81f15e::t_96873dd6ad0957 6,35
+config/locales/services/fr.yml
+  s_1e049bdc81f15e::t_82ad6865da87c2 17-19
+spec/services/favorites/create_spec.rb
+  s_1e049bdc81f15e::t_00fb46c3eecda1 26-51
+config/locales/services/pt.yml
+  s_1e049bdc81f15e::t_82ad6865da87c2 17-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "7f0e18aded0be08fc5effc094448fc8b8d839880",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

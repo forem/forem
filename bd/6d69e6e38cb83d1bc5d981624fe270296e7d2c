@@ -1,0 +1,28 @@
+app/services/moderator/manage_activity_and_roles.rb
+  h_f968154a99632d 41,51
+app/services/tag_moderators/add.rb
+  h_f968154a99632d 22
+app/services/tag_moderators/remove.rb
+  h_f968154a99632d 8
+app/services/users/remove_role.rb
+  h_f968154a99632d 21
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 155-156,159-176,179-186,222,224,238,316
+spec/services/tag_moderators/add_spec.rb
+  h_f968154a99632d 29-35
+spec/services/tag_moderators/remove_spec.rb
+  h_f968154a99632d 13-20
+spec/services/users/remove_role_spec.rb
+  h_f968154a99632d 52-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bd6d69e6e38cb83d1bc5d981624fe270296e7d2c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
