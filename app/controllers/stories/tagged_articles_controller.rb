@@ -3,6 +3,9 @@ module Stories
     before_action :set_cache_control_headers, only: :index
 
     SIGNED_OUT_RECORD_COUNT = 15
+    # Nothing links past the first page any more; deeper pages are crawlers replaying old URLs,
+    # and their OFFSET scans hit the statement timeout.
+    MAX_PAGE = 100
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -15,6 +18,7 @@ module Stories
       end
 
       @page = (params[:page] || 1).to_i
+      not_found if @page > MAX_PAGE
 
       if user_signed_in?
         @moderators = User.with_role(:tag_moderator, @tag)
