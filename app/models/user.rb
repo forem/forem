@@ -1237,6 +1237,10 @@ class User < ApplicationRecord
       # callback: an error here rolls back the role grant (and aborts a banish).
       Spam::DomainDetectorWorker.perform_async(id)
       calculate_score
+      # Article scores include a spam penalty that also governs Algolia indexability,
+      # so rescore on every grant/removal regardless of which code path changed the role.
+      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+      articles.published.find_each(&:async_score_calc)
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
