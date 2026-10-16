@@ -704,6 +704,65 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#subforem_aware_sign_up_url" do
+    let!(:default_subforem) { create(:subforem, domain: "default-forem.test") }
+    let!(:root_subforem) { create(:subforem, domain: "root-forem.test", root: true) }
+    let!(:other_subforem) { create(:subforem, domain: "other-forem.test") }
+    let(:path) { "/enter?state=new-user" }
+
+    before do
+      RequestStore.store[:default_subforem_id] = Subforem.cached_default_id
+    end
+
+    after { RequestStore.clear! }
+
+    it "returns the path unchanged when no subforem is in the request" do
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(path)
+    end
+
+    it "links to the default subforem's domain when on the default subforem" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://default-forem.test/enter?state=new-user")
+    end
+
+    it "matches the URL previously built from the default subforem record" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(URL.url(path, default_subforem))
+    end
+
+    it "does not query subforems on repeated default-subforem renders" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems")
+      end
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        3.times { helper.subforem_aware_sign_up_url(path) }
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
+    it "reflects a changed default subforem domain after save" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      default_subforem.update!(domain: "renamed-forem.test")
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://renamed-forem.test/enter?state=new-user")
+    end
+
+    it "links to the root subforem's domain when on a non-default subforem" do
+      RequestStore.store[:subforem_id] = other_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://#{root_subforem.domain}/enter?state=new-user")
+    end
+  end
+
   describe "#main_stylesheets_fingerprint" do
     it "returns a deterministic hash based on minimal, views, and crayons stylesheet paths" do
       fingerprint = helper.main_stylesheets_fingerprint
