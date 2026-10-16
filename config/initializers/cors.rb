@@ -31,4 +31,17 @@ Rails.application.config.middleware.insert_before(
       resource "/api/#{resource_name}/*", methods: %i[head get options], headers: [], max_age: 2.hours.to_i
     end
   end
+
+  # Billboards are public and edge cached, so any origin may read them. A wildcard keeps the
+  # cached response identical for every origin (no Vary: Origin).
+  allow do
+    origins "*"
+    resource "/bb/*", methods: %i[head get options], headers: []
+  end
+
+  # Embedding sites record impressions and clicks without cookies (see BillboardEventsController).
+  allow do
+    origins { |source, _env| Billboard.embed_origins.include?(source) }
+    resource "/bb_tabulations*", methods: %i[post patch options], headers: %w[content-type], max_age: 2.hours.to_i
+  end
 end

@@ -3,9 +3,14 @@ class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
   THROTTLE_TIME = 25 # minutes
 
+  # Embedding sites (Billboard.embed_origins) send events cross-origin without cookies, so there
+  # is no session to forge and their events are always anonymous.
+  skip_forgery_protection if: :embed_request?
+
   def create
     # Only tracking for logged‐in users at the moment
-    billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
+    user_id = embed_request? ? nil : session_current_user_id
+    billboard_event_create_params = billboard_event_params.merge(user_id: user_id)
     return head :ok if billboard_event_create_params[:billboard_id].blank?
 
     @billboard_event = ApplicationRecord.with_synchronous_commit_off do
@@ -64,6 +69,11 @@ class BillboardEventsController < ApplicationMetalController
     event_params[:billboard_id] ||= billboard_id
     event_params[:article_id] = params[:article_id] if params[:article_id].present?
     event_params[:geolocation] = client_geolocation
+    event_params[:context_type] = BillboardEvent::CONTEXT_TYPE_EMBED if embed_request?
     event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation)
+  end
+
+  def embed_request?
+    Billboard.embed_origins.include?(request.origin)
   end
 end

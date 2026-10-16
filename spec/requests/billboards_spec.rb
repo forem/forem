@@ -805,4 +805,22 @@ RSpec.describe "Billboards" do
       end
     end
   end
+
+  describe "GET /bb/mlh_feed for an embedding site" do
+    let!(:billboard) { create_billboard(placement_area: "mlh_feed", template: "authorship_box") }
+    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    before { get billboard_path(placement_area: "mlh_feed"), headers: { "Origin" => "https://www.mlh.com" } }
+
+    it "renders the billboard without Forem's markup, tracked as an embed" do
+      expect(response.body).to include(billboard.processed_html)
+      expect(response.body).not_to include("crayons-bb__header")
+      expect(billboard_element["data-context-type"]).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
+    end
+
+    it "lets any origin read it" do
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
+      expect(response.headers["Vary"].to_s).not_to include("Origin")
+    end
+  end
 end
