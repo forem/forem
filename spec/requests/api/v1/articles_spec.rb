@@ -1872,6 +1872,25 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body[0]["id"]).to eq(valid_article.id)
       end
 
+      it "excludes published articles by spam-flagged authors even before their score penalty is applied" do
+        valid_article = create(:article, title: "Valid Author Fable", published: true)
+        valid_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        spam_author = create(:user)
+        spam_article = create(:article, user: spam_author, title: "Spam Author Fable", published: true)
+        spam_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+        spam_author.add_role(:spam)
+        # Simulate the async rescore not having run yet (stale positive score)
+        spam_article.update_columns(score: 100)
+
+        hits = [{ "objectID" => spam_article.id.to_s }, { "objectID" => valid_article.id.to_s }]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.pluck("id")).to eq([valid_article.id])
+      end
+
       it "passes advanced contextual query parameters and typo-size guards to Algolia raw_search" do
         allow(Article).to receive(:raw_search)
           .with(
