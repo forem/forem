@@ -26,7 +26,7 @@
   <table class="crayons-table mt-2" width="100%">
     <thead>
       <tr>
-        <th scope="col">User ID</th>
+        <th scope="col"><%= sort_link(@q, :user_id, { aria: { label: "Sort by User ID" } }) %></th>
         <th scope="col">User</th>
         <th scope="col">Badge</th>
         <th scope="col">Badge Image</th>

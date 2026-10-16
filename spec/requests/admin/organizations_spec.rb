@@ -19,9 +19,20 @@ RSpec.describe "/admin/content_manager/organizations" do
     end
 
     it "allows searching" do
-      get "#{admin_organizations_path}?search=#{organization.name}"
+      get admin_organizations_path, params: { q: { name_cont: organization.name } }
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
+    end
+
+    it "renders sort links in table headers" do
+      get admin_organizations_path
+      expect(response.body).to include("Sort by Name")
+      expect(response.body).to include("Sort by ID")
+    end
+
+    it "sorts by name ascending when requested" do
+      get admin_organizations_path, params: { q: { s: "name asc" } }
+      expect(response).to have_http_status(:ok)
     end
   end
 
