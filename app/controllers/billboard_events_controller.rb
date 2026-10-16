@@ -32,15 +32,7 @@ class BillboardEventsController < ApplicationMetalController
 
   def update
     current_user_id = session_current_user_id
-    now = Time.current
-
-    rows_updated = ApplicationRecord.with_synchronous_commit_off do
-      BillboardEvent
-        .where(id: params[:id], category: BillboardEvent::CATEGORY_IMPRESSION)
-        .where("user_id IS NULL OR user_id = ?", current_user_id)
-        .where("updated_at <= ?", now - 9.seconds)
-        .update_all(["seconds_visible = seconds_visible + ?, updated_at = ?", 10, now])
-    end
+    rows_updated = BillboardEvent.add_impression_seconds(id: params[:id], user_id: current_user_id)
 
     return head :ok if rows_updated.positive?
 
