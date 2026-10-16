@@ -305,4 +305,120 @@ RSpec.describe Settings::Base do
       end
     end
   end
+
+  shared_context "with host values on global, default and other subforem rows" do
+    let!(:default_subforem) { create(:subforem) }
+    let!(:other_subforem) { create(:subforem) }
+
+    before do
+      TestSetting.set_host("http://global.example.com", subforem_id: nil)
+      TestSetting.set_host("http://default.example.com", subforem_id: default_subforem.id)
+      TestSetting.set_host("http://other.example.com", subforem_id: other_subforem.id)
+      RequestStore.clear!
+    end
+  end
+
+  # Web requests (before Middlewares::SetSubforem runs), the console and rake: unchanged behavior.
+  describe "reading without a subforem context or the fallback flag" do
+    include_context "with host values on global, default and other subforem rows"
+
+    it "reads global rows only, as before" do
+      expect(TestSetting.host).to eq("http://global.example.com")
+    end
+
+    it "reads global rows only for an explicit nil subforem_id, as before" do
+      expect(TestSetting.host(subforem_id: nil)).to eq("http://global.example.com")
+    end
+
+    it "does not look up the default subforem" do
+      allow(Subforem).to receive(:cached_default_id).and_call_original
+
+      TestSetting.host
+
+      expect(Subforem).not_to have_received(:cached_default_id)
+    end
+  end
+
+  # Sidekiq jobs: Sidekiq::RequestStoreMiddleware sets the flag.
+  describe "reading without a subforem context with the fallback flag" do
+    before do
+      RequestStore.clear!
+      RequestStore.store[Settings::Base::DEFAULT_SUBFOREM_FALLBACK_FLAG] = true
+    end
+
+    context "when a default subforem exists" do
+      include_context "with host values on global, default and other subforem rows"
+
+      before { RequestStore.store[Settings::Base::DEFAULT_SUBFOREM_FALLBACK_FLAG] = true }
+
+      it "reads the default subforem's value, as a request on the default subforem would" do
+        expect(TestSetting.host).to eq("http://default.example.com")
+      end
+
+      it "treats an explicit nil subforem_id (e.g. content without a subforem) the same way" do
+        expect(TestSetting.host(subforem_id: nil)).to eq("http://default.example.com")
+      end
+
+      it "falls back to the global value for settings the default subforem has no row for" do
+        TestSetting.set_user_limits(42, subforem_id: nil)
+
+        expect(TestSetting.user_limits).to eq(42)
+      end
+
+      it "falls back to the setting's default when there is no row at all" do
+        expect(TestSetting.mailer_provider).to eq("smtp")
+      end
+
+      it "applies to to_h" do
+        expect(TestSetting.to_h[:host]).to eq("http://default.example.com")
+      end
+
+      it "still lets an explicit subforem_id win" do
+        expect(TestSetting.host(subforem_id: other_subforem.id)).to eq("http://other.example.com")
+      end
+
+      it "still lets a request subforem win" do
+        RequestStore.store[:subforem_id] = other_subforem.id
+
+        expect(TestSetting.host).to eq("http://other.example.com")
+      end
+
+      it "keeps writes without a subforem on the global row" do
+        TestSetting.set_user_limits(7)
+
+        expect(TestSetting.find_by(var: "user_limits").subforem_id).to be_nil
+      end
+
+      it "looks up the default subforem once per unit of work" do
+        allow(Subforem).to receive(:cached_default_id).and_call_original
+
+        3.times { TestSetting.host }
+        TestSetting.user_limits
+
+        expect(Subforem).to have_received(:cached_default_id).once
+      end
+    end
+
+    context "when there are no subforems" do
+      before do
+        TestSetting.set_host("http://global.example.com", subforem_id: nil)
+        RequestStore.clear!
+        RequestStore.store[Settings::Base::DEFAULT_SUBFOREM_FALLBACK_FLAG] = true
+      end
+
+      it "reads global values" do
+        expect(TestSetting.host).to eq("http://global.example.com")
+      end
+
+      it "memoizes the missing default subforem instead of looking it up on every read" do
+        allow(Subforem).to receive(:cached_default_id).and_call_original
+
+        3.times { TestSetting.host }
+
+        expect(Subforem).to have_received(:cached_default_id).once
+        expect(RequestStore.store).to have_key(Settings::Base::DEFAULT_SUBFOREM_FALLBACK_ID)
+        expect(RequestStore.store[Settings::Base::DEFAULT_SUBFOREM_FALLBACK_ID]).to be_nil
+      end
+    end
+  end
 end

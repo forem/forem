@@ -15,6 +15,13 @@ module Settings
     PROTECTED_KEYS = %w[var value].freeze
     SEPARATOR_REGEXP = /[\n,;]+/
 
+    # RequestStore flag that opts the current unit of work into reading the default subforem's settings
+    # when there is no subforem context (see .resolve_read_subforem_id). Set by
+    # Sidekiq::RequestStoreMiddleware for every job; never set during web requests.
+    DEFAULT_SUBFOREM_FALLBACK_FLAG = :settings_fallback_to_default_subforem
+    # RequestStore key memoizing the looked-up default subforem id (nil included) for the unit of work.
+    DEFAULT_SUBFOREM_FALLBACK_ID = :settings_fallback_default_subforem_id
+
     after_commit :clear_cache, on: %i[create update destroy]
 
     class << self
@@ -75,10 +82,10 @@ module Settings
           type: type || :string
         }
 
-        # Getter that supports passing subforem_id or falling back to RequestStore
+        # Getter that supports passing subforem_id or falling back to the current subforem context
+        # (see resolve_read_subforem_id)
         define_singleton_method(key) do |subforem_id: nil|
-          # Fall back to the currently set subforem_id in the request if none provided
-          subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
+          subforem_id = __send__(:resolve_read_subforem_id, subforem_id)
           result = __send__(:value_of, key, subforem_id)
 
           if result.nil?
@@ -176,9 +183,39 @@ module Settings
         end
       end
 
+      # Resolves which subforem a read applies to:
+      #   1. an explicit subforem_id argument
+      #   2. the web request's subforem (Middlewares::SetSubforem)
+      #   3. the web request's default subforem (Middlewares::SetSubforem)
+      #   4. only when DEFAULT_SUBFOREM_FALLBACK_FLAG is set (Sidekiq jobs): the default subforem
+      #
+      # Admin edits made through the web UI are saved on the default subforem's rows. Without (4), a
+      # Sidekiq job has no request context and reads only global (subforem_id: nil) rows, so it silently
+      # misses those edits (e.g. spam trigger terms, internal content description spec). With (4), a job
+      # reads exactly what a web request on the default subforem reads: its rows first, then global rows.
+      #
+      # (4) is deliberately opt-in so web requests (including middleware that runs before SetSubforem,
+      # such as Middlewares::SetCookieDomain), the console and rake keep their existing behavior.
+      # Setters do not use this: a write without a subforem still goes to the global row.
+      def resolve_read_subforem_id(subforem_id)
+        subforem_id ||
+          RequestStore.store[:subforem_id] ||
+          RequestStore.store[:default_subforem_id] ||
+          fallback_default_subforem_id
+      end
+
+      def fallback_default_subforem_id
+        return unless RequestStore.store[DEFAULT_SUBFOREM_FALLBACK_FLAG]
+
+        # Hash#fetch so a nil result (a forem without subforems) is memoized too, and
+        # Subforem.cached_default_id doesn't hit the database on every read.
+        RequestStore.store.fetch(DEFAULT_SUBFOREM_FALLBACK_ID) do
+          RequestStore.store[DEFAULT_SUBFOREM_FALLBACK_ID] = Subforem.cached_default_id
+        end
+      end
+
       def value_of(var_name, subforem_id = nil)
-        # Ensure we fallback to the request store if not provided
-        subforem_id ||= (RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] || nil)
+        subforem_id = resolve_read_subforem_id(subforem_id)
         all = all_settings(subforem_id)
         all[var_name]
       end
