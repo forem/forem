@@ -114,10 +114,18 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "")
-    user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
-      Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+    potential_username = params[:username].tr("@", "").downcase
+    user_or_org = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+                      .where.not(username: potential_username)
+                      .order(profile_updated_at: :desc)
+                      .first ||
+      Organization.where("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+                  .where.not(slug: potential_username)
+                  .order(updated_at: :desc)
+                  .first
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
+      surrogate_keys = user_or_org.is_a?(User) ? user_or_org.profile_cache_keys : [user_or_org.record_key]
+      set_surrogate_key_header(*surrogate_keys)
       redirect_permanently_to(user_or_org.path)
     else
       not_found
@@ -126,13 +134,18 @@ class StoriesController < ApplicationController
 
   def handle_possible_redirect
     if @article.organization
+      set_surrogate_key_header(@article.record_key, @article.organization.record_key)
       redirect_permanently_to(@article.path)
       return
     end
 
     potential_username = params[:username].tr("@", "").downcase
-    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    @user = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+                .where.not(username: potential_username)
+                .order(profile_updated_at: :desc)
+                .first
     if @user&.articles&.find_by(slug: params[:slug])
+      set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     end
