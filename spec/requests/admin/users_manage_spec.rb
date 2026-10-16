@@ -402,6 +402,16 @@ RSpec.describe "Admin::Users" do
       expect(request.flash["success"]).to include("removed in the background")
       expect(request.flash["success"]).not_to include("fully deleted")
     end
+
+    it "allows admins to delete users" do
+      sign_in create(:user, :admin)
+
+      sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
+        post full_delete_admin_user_path(user.id)
+      end
+
+      expect(response).to redirect_to(admin_users_path)
+    end
   end
 
   context "when handling credits" do
