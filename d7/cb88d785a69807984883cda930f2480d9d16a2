@@ -1,0 +1,19 @@
+.env_sample
+  s_f87acf2c327fab::t_3beda79fd61635 93-97
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d7cb88d785a69807984883cda930f2480d9d16a2",
+  "prompts": {},
+  "sessions": {
+    "s_f87acf2c327fab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf9fb0a8-fe46-4a1d-a775-84fde1733cdb",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
