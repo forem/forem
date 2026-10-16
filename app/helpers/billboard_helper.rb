@@ -37,8 +37,9 @@ module BillboardHelper
   #
   # @see BillboardPlacementAreaConfig.fully_cached_for
   def billboard_async_path(placement_area, article: nil, page_id: nil)
+    decorated_article = article.is_a?(ArticleDecorator) ? article : article&.decorate
     if BillboardPlacementAreaConfig.fully_cached_for(placement_area.to_s) &&
-        (article.nil? || article.decorate.permit_adjacent_sponsors?)
+        (decorated_article.nil? || decorated_article.permit_adjacent_sponsors?)
       billboard_path(placement_area: placement_area)
     elsif article
       article_billboard_path(username: article.username, slug: article.slug, placement_area: placement_area)

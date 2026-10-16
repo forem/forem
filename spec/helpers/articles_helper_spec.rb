@@ -100,4 +100,51 @@ describe ArticlesHelper do
         .to eq(I18n.t("views.articles.comment_cue.zero"))
     end
   end
+
+  describe "#has_vid?" do
+    let(:article) { build(:article, processed_html: "<p>Hello world</p>", comments_count: 1) }
+
+    it "returns true when article processed_html contains youtube without calling comments_blob" do
+      article.processed_html = '<iframe src="https://www.youtube.com/embed/123"></iframe>'
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(true)
+      expect(article).not_to have_received(:comments_blob)
+    end
+
+    it "checks already-loaded comment trees in memory, including nested replies" do
+      root = build(:comment, body_markdown: "Nice post")
+      reply = build(:comment, body_markdown: "Check out https://www.youtube.com/watch?v=abc")
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ root => { reply => {} } })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(true)
+      expect(article).not_to have_received(:comments_blob)
+    end
+
+    it "returns false from loaded comment trees without youtube links" do
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ build(:comment, body_markdown: "hi") => {} })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(false)
+      expect(article).not_to have_received(:comments_blob)
+    end
+
+    it "returns false without calling comments_blob when comment counts are zero" do
+      article.comments_count = 0
+      article.displayed_comments_count = 0
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(false)
+      expect(article).not_to have_received(:comments_blob)
+    end
+
+    it "falls back to article.comments_blob when no comment tree has been loaded" do
+      allow(article).to receive(:comments_blob).and_return("watch on youtube")
+
+      expect(helper.has_vid?(article)).to be(true)
+    end
+  end
 end

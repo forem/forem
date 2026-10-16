@@ -475,7 +475,7 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
-    set_article_json_ld
+    set_article_json_ld unless internal_navigation? || user_signed_in?
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
@@ -587,8 +587,6 @@ class StoriesController < ApplicationController
     @article_json_ld = build_article_json_ld
   end
 
-  private
-
   def build_article_json_ld
     json_ld = {
       "@context": "http://schema.org",
@@ -607,7 +605,7 @@ class StoriesController < ApplicationController
           "@context": "http://schema.org",
           "@type": "ImageObject",
           url: ApplicationController.helpers.optimized_image_url(Settings::General.logo_png, width: 192,
-                                                                                             fetch_format: "png"),
+                                                                                              fetch_format: "png"),
           width: "192",
           height: "192"
         }
@@ -662,11 +660,9 @@ class StoriesController < ApplicationController
     json_ld
   end
 
-  private
-
   def fetch_comments_for_json_ld
     # Fetch top-level comments with their nested replies
-    comments_tree = Comments::Tree.for_commentable(@article, limit: 10, order: "top", include_negative: false)
+    comments_tree = @article.comment_tree(limit: 10, order: "top", include_negative: false)
 
     comments_data = []
     comments_tree.each do |root_comment, sub_comments|
@@ -709,7 +705,7 @@ class StoriesController < ApplicationController
     if comment.ancestry.present?
       comment_data[:parentItem] = {
         "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
+        "@id": "#comment-#{comment.parent_id}"
       }
     end
 
@@ -756,39 +752,6 @@ class StoriesController < ApplicationController
     return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
 
     "top"
-  end
-
-  def build_comment_json_ld(comment)
-    comment_data = {
-      "@type": "Comment",
-      "@id": "#comment-#{comment.id}",
-      text: comment.processed_html_final,
-      author: {
-        "@type": "Person",
-        name: comment.user.name,
-        url: URL.user(comment.user)
-      },
-      datePublished: comment.created_at.iso8601,
-      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
-      url: URL.comment(comment),
-      interactionStatistic: [
-        {
-          "@type": "InteractionCounter",
-          interactionType: "https://schema.org/LikeAction",
-          userInteractionCount: comment.public_reactions_count
-        },
-      ]
-    }
-
-    # Add parent comment reference if this is a reply
-    if comment.ancestry.present?
-      comment_data[:parentItem] = {
-        "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
-      }
-    end
-
-    comment_data
   end
 
   def redirect_organization_to_custom_domain_if_needed
