@@ -287,6 +287,17 @@ RSpec.describe ArticleDecorator, type: :decorator do
       article.user.setting.update(permit_adjacent_sponsors: false)
       expect(article.decorate.permit_adjacent_sponsors?).to be(false)
     end
+
+    it "memoizes the result across repeated calls on the same decorated instance" do
+      article.save!
+      article.user.setting.update!(permit_adjacent_sponsors: false)
+      decorated = article.decorate
+      allow(Users::Setting).to receive(:exists?).and_call_original
+
+      expect(decorated.permit_adjacent_sponsors?).to be(false)
+      expect(decorated.permit_adjacent_sponsors?).to be(false)
+      expect(Users::Setting).to have_received(:exists?).once
+    end
   end
 
   describe "delegated methods" do

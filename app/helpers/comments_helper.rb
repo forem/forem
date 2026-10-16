@@ -17,7 +17,15 @@ module CommentsHelper
   end
 
   def article_comment_tree(article, limit, order)
-    Comments::Tree.for_commentable(article, limit: limit, order: order, include_negative: user_signed_in?)
+    if article.respond_to?(:cached_comments_tree) &&
+        article.cached_comments_tree &&
+        limit == 10 && order == "top" && !user_signed_in?
+      return article.cached_comments_tree
+    end
+
+    tree = Comments::Tree.for_commentable(article, limit: limit, order: order, include_negative: user_signed_in?)
+    article.cached_comments_tree = tree if article.respond_to?(:cached_comments_tree=)
+    tree
   end
 
   def podcast_comment_tree(episode)

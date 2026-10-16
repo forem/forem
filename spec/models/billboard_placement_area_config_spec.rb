@@ -196,6 +196,23 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
       # So we just verify the method is called without error
       expect { config.destroy! }.not_to raise_error
     end
+
+    it "memoizes all_configs in RequestStore when an active cache store is configured" do
+      memory_store = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      allow(memory_store).to receive(:fetch).and_call_original
+      described_class.bust_cache
+
+      first_call = described_class.all_configs
+      second_call = described_class.all_configs
+
+      expect(memory_store).to have_received(:fetch).with(described_class::CACHE_KEY, expires_in: 1.hour).once
+      expect(second_call).to be(first_call)
+      expect(RequestStore.store[:billboard_placement_area_configs]).to eq(first_call)
+
+      described_class.bust_cache
+      expect(RequestStore.store[:billboard_placement_area_configs]).to be_nil
+    end
   end
 
   describe ".config_for_placement_area" do

@@ -65,4 +65,31 @@ RSpec.describe CommentsHelper do
       end
     end
   end
+
+  describe "#article_comment_tree" do
+    let(:article) { create(:article) }
+    let(:comment) { create(:comment, commentable: article) }
+    let(:preloaded_tree) { { comment => {} } }
+
+    before do
+      helper.define_singleton_method(:user_signed_in?) { false }
+    end
+
+    it "reuses cached_comments_tree when already populated with limit 10, top order, and signed out" do
+      article.cached_comments_tree = preloaded_tree
+      allow(Comments::Tree).to receive(:for_commentable)
+
+      expect(helper.article_comment_tree(article, 10, "top")).to eq(preloaded_tree)
+      expect(Comments::Tree).not_to have_received(:for_commentable)
+    end
+
+    it "populates cached_comments_tree when loading comments for an article" do
+      allow(Comments::Tree).to receive(:for_commentable).and_return(preloaded_tree)
+
+      result = helper.article_comment_tree(article, 10, "top")
+
+      expect(result).to eq(preloaded_tree)
+      expect(article.cached_comments_tree).to eq(preloaded_tree)
+    end
+  end
 end

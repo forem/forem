@@ -35,7 +35,7 @@ class Article < ApplicationRecord
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series, :labels
-  attr_accessor :body_url
+  attr_accessor :body_url, :cached_comments_tree
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -947,7 +947,10 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+    raw_markdown = comments.pluck(:body_markdown).join(" ")[0..4400]
+    return raw_markdown[0..2200] unless raw_markdown.include?("<")
+
+    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
   end
 
   def url

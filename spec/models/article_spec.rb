@@ -4463,4 +4463,29 @@ RSpec.describe Article do
       end
     end
   end
+
+  describe "#comments_blob" do
+    let(:article) { create(:article) }
+
+    it "returns an empty string when there are no comments" do
+      expect(article.comments_blob).to eq("")
+    end
+
+    it "joins plain-text comment markdown and truncates to 2200 characters without invoking HTML sanitizer" do
+      create(:comment, commentable: article, body_markdown: "a" * 3000)
+      allow(ActionController::Base.helpers).to receive(:sanitize)
+
+      blob = article.comments_blob
+
+      expect(blob.length).to eq(2201)
+      expect(blob).to eq("a" * 2201)
+      expect(ActionController::Base.helpers).not_to have_received(:sanitize)
+    end
+
+    it "strips HTML tags when comments contain markup" do
+      create(:comment, commentable: article, body_markdown: "<script>alert(1)</script>Hello <b>youtube</b> world")
+
+      expect(article.comments_blob).to eq("Hello youtube world")
+    end
+  end
 end

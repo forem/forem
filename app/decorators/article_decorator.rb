@@ -114,10 +114,11 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def permit_adjacent_sponsors?
-    return true unless respond_to?(:user_id) && user_id.present?
+    return @permit_adjacent_sponsors if defined?(@permit_adjacent_sponsors)
+    return @permit_adjacent_sponsors = true unless respond_to?(:user_id) && user_id.present?
 
     author_ids = [user_id] + co_author_ids
-    Users::Setting.where(user_id: author_ids).all?(&:permit_adjacent_sponsors)
+    @permit_adjacent_sponsors = !Users::Setting.exists?(user_id: author_ids, permit_adjacent_sponsors: false)
   end
 
   def pinned?
@@ -125,6 +126,8 @@ class ArticleDecorator < ApplicationDecorator
 
     id == PinnedArticle.id
   end
+
+  delegate :cached_comments_tree, :cached_comments_tree=, to: :object
 
   delegate :readable_publish_date, to: :object
 
