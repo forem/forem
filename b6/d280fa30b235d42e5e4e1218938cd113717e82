@@ -1,0 +1,26 @@
+app/models/settings/base.rb
+  h_f968154a99632d 18-24,85-86,88,186-216,218
+config/initializers/sidekiq.rb
+  h_f968154a99632d 9,87-89
+lib/sidekiq/request_store_middleware.rb
+  h_f968154a99632d 1-30
+spec/lib/middlewares/set_cookie_domain_spec.rb
+  h_f968154a99632d 1-31
+spec/lib/sidekiq/request_store_middleware_spec.rb
+  h_f968154a99632d 1-134
+spec/models/settings/base_spec.rb
+  h_f968154a99632d 308-423
+spec/support/request_store_reset.rb
+  h_f968154a99632d 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b6d280fa30b235d42e5e4e1218938cd113717e82",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

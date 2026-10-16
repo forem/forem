@@ -1,0 +1,22 @@
+spec/helpers/application_helper_spec.rb
+  s_6e336e5c0c2949::t_c1abeff9397221 762
+  s_6e336e5c0c2949::t_56535b6f7166bb 707-761,763-765
+app/helpers/application_helper.rb
+  s_6e336e5c0c2949::t_aa2e2ce82584ba 330-332
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eb6aa506850d8b3e8caf4519889586cf19a1bfd1",
+  "prompts": {},
+  "sessions": {
+    "s_6e336e5c0c2949": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "87b19442-223f-4cd3-8adb-593c4a904817",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
