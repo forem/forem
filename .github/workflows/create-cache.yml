@@ -20,7 +20,7 @@ jobs:
         with:
           bundler-cache: true
       - name: Cache pre-compiled assets
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         id: assetscache
         with:
           path: |
