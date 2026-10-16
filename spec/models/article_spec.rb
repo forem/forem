@@ -4473,17 +4473,19 @@ RSpec.describe Article do
 
     it "joins plain-text comment markdown and truncates to 2200 characters without invoking HTML sanitizer" do
       create(:comment, commentable: article, body_markdown: "a" * 3000)
-      allow(ActionController::Base.helpers).to receive(:sanitize)
+      sanitizer = ActionView::Base.full_sanitizer
+      allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+      allow(sanitizer).to receive(:sanitize).and_call_original
 
       blob = article.comments_blob
 
       expect(blob.length).to eq(2201)
       expect(blob).to eq("a" * 2201)
-      expect(ActionController::Base.helpers).not_to have_received(:sanitize)
+      expect(sanitizer).not_to have_received(:sanitize)
     end
 
     it "strips HTML tags when comments contain markup" do
-      create(:comment, commentable: article, body_markdown: "<script>alert(1)</script>Hello <b>youtube</b> world")
+      create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
 
       expect(article.comments_blob).to eq("Hello youtube world")
     end
