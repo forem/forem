@@ -62,9 +62,11 @@ module Users
 
     def prepare_user_attributes(updated_user_attributes, user)
       attrs = updated_user_attributes.to_h || {}
-      if attrs[:username] != user.username
+      new_username = attrs[:username]&.downcase
+      if new_username.present? && new_username != user.username
         attrs[:old_username] = user.username
-        attrs[:old_old_username] = user.old_username
+        previous_old = user.old_username == new_username ? user.old_old_username : user.old_username
+        attrs[:old_old_username] = previous_old == new_username ? nil : previous_old
       end
       attrs
     end
