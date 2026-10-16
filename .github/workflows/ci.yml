@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  COVERAGE: true
+  COVERAGE: "false"
   RAILS_ENV: test
   NODE_ENV: test
   DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
@@ -40,8 +40,10 @@ jobs:
         with:
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -49,7 +51,9 @@ jobs:
         if: steps.assetscache.outputs.cache-hit != 'true'
       - run: yarn install --immutable
         if: steps.assetscache.outputs.cache-hit != 'true'
-      - run: bundle exec rails assets:precompile
+      - run: |
+          rm -rf public/assets
+          SKIP_YARN_INSTALL=true bundle exec rails assets:precompile
         if: steps.assetscache.outputs.cache-hit != 'true'
 
   rspec:
@@ -69,20 +73,19 @@ jobs:
           POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
-        # ADDED: Options to make the healthcheck more reliable
         options: >-
           --health-cmd pg_isready
-          --health-interval 10s
+          --health-interval 2s
           --health-timeout 5s
           --health-retries 5
+          --tmpfs /var/lib/postgresql/data:rw
       redis:
         image: redis
         ports:
           - 6379:6379
-        # ADDED: Options to make the healthcheck more reliable
         options: >-
           --health-cmd "redis-cli ping"
-          --health-interval 10s
+          --health-interval 2s
           --health-timeout 5s
           --health-retries 5
 
@@ -100,44 +103,36 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      # MODIFIED: Added postgresql-client and redis-tools for the wait step
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y imagemagick postgresql-client redis-tools
+      - name: Install ImageMagick
+        run: sudo apt-get install -y --no-install-recommends imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends imagemagick)
 
-      # NEW: This is the fix. It waits until Postgres and Redis are fully ready
       - name: Wait for services
         run: |
           echo "Waiting for Postgres..."
           until pg_isready -h localhost -p 5432 -U postgres; do
-            sleep 2
+            sleep 1
           done
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          until redis-cli -h localhost -p 6379 ping; do
-            sleep 2
+          until timeout 1 bash -c '</dev/tcp/localhost/6379' 2>/dev/null; do
+            sleep 1
           done
           echo "Redis is ready."
 
       - run: cp .env_sample .env
 
-      # MODIFIED: Replaced db:test:prepare with the more explicit, modern commands
       - name: Setup Database
-        run: |
-          bin/rails db:create
-          bin/rails db:schema:load
-          bin/rails javascript:build
+        run: bin/rails db:create db:schema:load
 
       - name: RSpec
         id: rspec
@@ -157,10 +152,3 @@ jobs:
             tmp/capybara
             tmp/csvs
             tmp/rspec*.xml
-      - name: Rename folder
-        run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
-      - name: Upload test coverage result
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-rspec-${{ matrix.ci_node_index }}
-          path: coverage/
