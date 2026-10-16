@@ -7,10 +7,13 @@ RSpec.describe Articles::PageViewUpdater do
     let(:user) { create(:user) }
 
     context "when article published and written by another user" do
-      let(:article) { create(:article, user: create(:user)) }
+      let!(:article) { create(:article, user: create(:user)) }
 
-      it "updates a user's page view" do
+      it "updates a user's page view without calling exists? twice on Article" do
+        user
+        allow(Article).to receive(:published).and_call_original
         expect { method_call }.to change(PageView, :count)
+        expect(Article).to have_received(:published).once
       end
     end
 
