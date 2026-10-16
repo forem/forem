@@ -143,9 +143,23 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
   end
 
   describe "profile spam checks" do
-    it "enqueues a profile spam check when website_url changes" do
+    it "enqueues a profile spam check when website_url changes to a present value" do
       sidekiq_assert_enqueued_with(job: Users::HandleProfileSpamWorker, args: [user.id]) do
         profile.update!(website_url: "https://example.com")
+      end
+    end
+
+    it "does not enqueue a profile spam check when website_url is updated to blank during onboarding" do
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        profile.update!(website_url: "", summary: "Full-stack developer learning Rust")
+      end
+    end
+
+    it "does not enqueue a profile spam check when an existing website_url is cleared" do
+      profile.update_columns(website_url: "https://example.com")
+
+      sidekiq_assert_no_enqueued_jobs(only: Users::HandleProfileSpamWorker) do
+        profile.update!(website_url: "")
       end
     end
 

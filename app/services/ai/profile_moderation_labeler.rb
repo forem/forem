@@ -69,15 +69,18 @@ module Ai
     end
 
     def jev_state
+      profile_state = {
+        name: @user.name,
+        username: @user.username,
+        summary: @user.profile&.summary,
+        website_url: @user.profile&.website_url,
+        location: @user.profile&.location
+      }
+      profile_state[:fields] = custom_profile_fields if custom_profile_fields.any?
+
       state = {
         community: { description: default_community_description.presence || "No community description provided." },
-        profile: {
-          name: @user.name,
-          username: @user.username,
-          summary: @user.profile&.summary,
-          website_url: @user.profile&.website_url,
-          location: @user.profile&.location
-        }
+        profile: profile_state
       }
       state[:recent_articles] = recent_articles_context if recent_articles_context.any?
       state
@@ -89,7 +92,11 @@ module Ai
           "Is `profile.name` or `profile.username` a keyword-stuffed or promotional phrase rather than the name " \
           "of a person or organization?",
           yes: { examples: ["Best Cheap SEO Services Delhi", "buy-followers-fast-2024"] },
-          no: { examples: ["Jane Doe", "Acme Cloud", "jdoe_dev"] },
+          no: {
+            examples: ["Jane Doe", "Acme Cloud", "jdoe_dev", "thebitforge", "Alex Rivera - Full Stack Developer"],
+            includes: "Developer handles, pseudonyms, studio or project names, or personal names that include a " \
+                      "role or tech stack."
+          },
         ),
         promotional_profile: noul(
           {
@@ -97,8 +104,8 @@ module Ai
                       "traffic to an unrelated business?"
           },
           no: {
-            includes: "A legitimate person, company, or organization describing itself, even with a link " \
-                      "to its own site."
+            includes: "A legitimate person, developer, company, or organization describing itself, its tech stack, " \
+                      "or its interests, even with a link to a personal portfolio, GitHub, blog, or company site."
           },
         ),
         harmful: noul(
@@ -148,6 +155,20 @@ module Ai
       end
     end
 
+    def custom_profile_fields
+      @custom_profile_fields ||= begin
+        data = @user.profile&.data
+        if data.is_a?(Hash)
+          data.except("social_image").each_with_object({}) do |(key, value), fields|
+            cleaned = value.to_s.strip
+            fields[key.to_s] = cleaned if cleaned.present?
+          end
+        else
+          {}
+        end
+      end
+    end
+
     # --- Gemini ---
 
     def build_prompt
@@ -180,6 +201,11 @@ module Ai
         Published comments count: #{@user.comments.where(deleted: false).count}
       PROFILE
 
+      if custom_profile_fields.any?
+        custom_lines = custom_profile_fields.map { |key, value| "#{key.humanize}: #{value}" }.join("\n")
+        profile_context = "#{profile_context}#{custom_lines}\n"
+      end
+
       <<~PROMPT
         Analyze the following user profile and recent content. Return one moderation label from the list below and nothing else.
 
@@ -198,6 +224,7 @@ module Ai
         **Guidelines:**
         - We are looking for *clear and obvious spam or abuse* only.
         - If the profile and recent content appear legitimate or borderline, choose `no_moderation_label`.
+        - Developer handles, pseudonyms, personal portfolios, and bios listing tech stacks, roles, or interests are normal and should be labeled `no_moderation_label`.
         - Use `clear_and_obvious_spam` for unmistakable spam or promotional abuse.
         - Treat clear SEO abuse as spam (keyword-stuffed names, off-topic profile names, or spammy URLs).
         - Legitimate organizations and businesses belong here, but SEO spam does not.
@@ -211,7 +238,24 @@ module Ai
     def parse_response(response)
       return "no_moderation_label" if response.blank?
 
-      LABELS.find { |label| response.include?(label) } || "no_moderation_label"
+      text = response.to_s
+      cleaned = text.strip.gsub(/\A[`"'\s]+|[`"'\s.]+\z/, "")
+      return cleaned if LABELS.include?(cleaned)
+
+      lines = text.lines.map { |line| line.strip.gsub(/\A[`"'\s*-]+|[`"'\s.]+\z/, "") }.reject(&:blank?)
+      exact_line = lines.reverse.find { |line| LABELS.include?(line) }
+      return exact_line if exact_line
+
+      non_negated_matches = text.enum_for(:scan, /\b(#{Regexp.union(LABELS)})\b/).filter_map do
+        label = Regexp.last_match(1)
+        prefix = text[0...Regexp.last_match.begin(0)]
+        negated = prefix.match?(
+          /\b(?:not|no|isn't|isnt|never|without|rather\s+than)\s+(?:[`"']|\b(?:a|an|the|label)\b\s*)*\z/i,
+        )
+        label unless negated
+      end
+
+      non_negated_matches.last || "no_moderation_label"
     end
   end
 end
