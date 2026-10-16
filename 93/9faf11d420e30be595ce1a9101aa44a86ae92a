@@ -1,0 +1,25 @@
+spec/models/event_spec.rb
+  s_8438d306c96978::t_ad6d88c47390e0 370,372,374-380
+  s_8438d306c96978::t_f6f9943b714dc6 371,373
+app/models/event.rb
+  s_8438d306c96978::t_ad6d88c47390e0 111-117
+  s_8438d306c96978::t_8e48fbb329c30a 121
+spec/requests/events_spec.rb
+  s_8438d306c96978::t_ad6d88c47390e0 101-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "939faf11d420e30be595ce1a9101aa44a86ae92a",
+  "prompts": {},
+  "sessions": {
+    "s_8438d306c96978": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "74db7780-ae86-4df7-9e29-ef0815a76980",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

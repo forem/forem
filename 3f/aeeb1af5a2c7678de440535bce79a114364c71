@@ -1,0 +1,337 @@
+spec/services/notifications/co_author_invitations/send_spec.rb
+  s_26a269fa3c3c7f::t_eb4dc1584f9a02 1-31
+app/policies/co_author_invitation_policy.rb
+  s_26a269fa3c3c7f::t_a35baadeaab5b4 1-25
+config/locales/pt.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 55-60
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 61-62
+  s_26a269fa3c3c7f::t_b015234c424671 35
+app/javascript/article-form/articleForm.jsx
+  s_26a269fa3c3c7f::t_2474c2f33a3d9d 134-136,142-144,147-153,165-167,171,232-234
+  s_26a269fa3c3c7f::t_397d1a38ac8115 235-237,531-533
+  s_26a269fa3c3c7f::t_dd580e391f289e 95-97,99-100,104-108,112-115,119-120
+  h_f968154a99632d 8-12,62,67-77,81,90,98,101-103,109-111,116-118,247-248,281-282,385-402,420-435,638-640
+app/javascript/article-form/__tests__/actions.test.js
+  s_26a269fa3c3c7f::t_ab2048ec3b8e4c 73-137
+  h_f968154a99632d 1,25,154-170
+app/services/notifications/co_author_invitations/send.rb
+  s_26a269fa3c3c7f::t_7003420b1deed0 1-15,18-28
+  s_26a269fa3c3c7f::t_24c5e11a2a2558 16-17
+db/schema.rb
+  s_26a269fa3c3c7f::t_05db71e4141e21 461-471,2248-2249
+  s_4e49a6768728b8::t_4af2a88d5d23df 338
+  s_26a269fa3c3c7f::t_4564fdbe4f1fec 338
+app/javascript/article-form/components/__tests__/CoAuthorInvitationSelector.test.jsx
+  s_26a269fa3c3c7f::t_6a811c30c0365c 1-22,25-70,87,95-137,139-158,162-175,179-206
+  s_26a269fa3c3c7f::t_da72d0668090c2 138
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 23-24,176-178
+  s_26a269fa3c3c7f::t_3935d2e28f92db 79-86,88-94
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 71-76,159-161
+  s_26a269fa3c3c7f::t_bdf92cc6cc4d6a 77-78
+spec/requests/articles/articles_update_spec.rb
+  s_26a269fa3c3c7f::t_3ae70cb38bfdbf 167
+  s_26a269fa3c3c7f::t_b390ef6a90a996 117-166,168-176
+config/locales/models/en.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 75-81
+config/locales/controllers/en.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+spec/services/co_author_invitations/accept_spec.rb
+  s_26a269fa3c3c7f::t_81925708f877a5 1-42,58,61-63,65-66
+  s_26a269fa3c3c7f::t_e35e63da69a9be 59-60,64
+  s_26a269fa3c3c7f::t_9867d9113fd7d0 43-57
+config/locales/controllers/pt.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+app/models/notification.rb
+  s_26a269fa3c3c7f::t_fd4c3b0dfa90dd 88-91
+app/services/co_author_invitations/accept.rb
+  s_26a269fa3c3c7f::t_b38f00360a546e 1-19,23-30,32-43
+  s_26a269fa3c3c7f::t_331eed5a462f98 20-22,31
+spec/policies/co_author_invitation_policy_spec.rb
+  s_26a269fa3c3c7f::t_7e568564b3d258 21-22,24
+  s_26a269fa3c3c7f::t_288f4522400a08 1-12,14-20,25-33
+  s_26a269fa3c3c7f::t_4a1d1cfb4a47a8 13
+  s_26a269fa3c3c7f::t_e4894c7c777891 23
+app/views/articles/_v2_form.html.erb
+  s_26a269fa3c3c7f::t_fe93cace849c55 70-75
+spec/lib/data_update_scripts/add_co_author_invitations_feature_flag_spec.rb
+  s_26a269fa3c3c7f::t_41a9ad67afe41b 7
+  s_26a269fa3c3c7f::t_605ac0f07301d1 1-6,8-13
+config/locales/views/notifications/pt.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/services/notifications/co_author_invitations/update.rb
+  s_26a269fa3c3c7f::t_c930911b4f2406 1-30,32,33-49
+  h_f968154a99632d 31
+spec/requests/editor_spec.rb
+  s_26a269fa3c3c7f::t_ce3538d44248e2 42,45-90
+  s_26a269fa3c3c7f::t_82f8148b11d21b 43-44
+app/controllers/articles_controller.rb
+  s_26a269fa3c3c7f::t_3d18fef12c3546 381-382,386-387
+  s_26a269fa3c3c7f::t_daaee3fd62a601 182
+  s_26a269fa3c3c7f::t_7e38218c6dd478 199
+  s_26a269fa3c3c7f::t_4c2885760d03c7 380,383-385,388-391
+spec/services/co_author_invitations/decline_spec.rb
+  s_26a269fa3c3c7f::t_e45a9aa27d3ff1 1-35
+spec/workers/notifications/co_author_invitation_worker_spec.rb
+  s_26a269fa3c3c7f::t_3a585b56b3e84a 1-29
+app/javascript/article-form/components/CoAuthorInvitationSelector.jsx
+  s_26a269fa3c3c7f::t_a165758e1f50a4 1-47,48-54,56-58,62-75,79-207
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 55,59-61,76-78
+app/javascript/article-form/actions.js
+  s_26a269fa3c3c7f::t_7f343b94838da1 52-53,55-56,59-67
+  h_f968154a99632d 4-8,71-79,190-193
+app/services/notifications/co_author_invitations.rb
+  s_26a269fa3c3c7f::t_5df7aaefc1a330 1-21
+config/locales/views/notifications/fr.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/models/article.rb
+  s_26a269fa3c3c7f::t_397d1a38ac8115 354,1683-1684
+  s_26a269fa3c3c7f::t_9000d6ca2a6233 210
+  s_26a269fa3c3c7f::t_e6022de7fc0dc8 1676-1677
+  s_26a269fa3c3c7f::t_f1c62b25928321 1685
+  s_26a269fa3c3c7f::t_58fa7f8bf0dded 2076-2081
+  s_26a269fa3c3c7f::t_397c689bae6799 2082-2087
+  s_26a269fa3c3c7f::t_af481e57304253 355-357
+  h_f968154a99632d 358,360,1679-1682,2088-2095
+  s_26a269fa3c3c7f::t_3d59fc9ea158ed 359
+spec/services/notifications/co_author/send_spec.rb
+  s_26a269fa3c3c7f::t_76937afff647c3 96-97,99,107-108
+  s_26a269fa3c3c7f::t_ef47c581652fbc 94-95,98,100-106,109-114
+config/locales/models/pt.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 74-80
+app/controllers/co_author_invitations_controller.rb
+  s_26a269fa3c3c7f::t_9ab260801bf239 20
+  s_26a269fa3c3c7f::t_0e27c6f4eee71c 1-12,14,16-19,21-55
+  h_f968154a99632d 13,15
+config/locales/controllers/fr.yml
+  s_26a269fa3c3c7f::t_8f7676e13a4383 13-14
+app/javascript/article-form/components/__tests__/Options.test.jsx
+  s_26a269fa3c3c7f::t_aeaba75c3f7cfa 3,135,144-147,151-153,164-166,170,174,178,182
+  s_26a269fa3c3c7f::t_3d6d7cc3cc20af 134,136-143,148-150,154-163,167-169,171-173,175-177,179-181,183-185
+spec/factories/co_author_invitations.rb
+  s_26a269fa3c3c7f::t_fe30edd294d888 1-27
+spec/models/co_author_invitation_spec.rb
+  s_26a269fa3c3c7f::t_b1feec96a234fd 1-109
+app/javascript/packs/articleForm.jsx
+  s_26a269fa3c3c7f::t_7f343b94838da1 48-50,63-65
+spec/services/co_author_invitations/sync_spec.rb
+  s_26a269fa3c3c7f::t_b970f1cbba1a2a 1-73,118-149,159-169
+  s_26a269fa3c3c7f::t_4e4bb3164f19fc 74-76,78-79,81-96,116-117
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 77,80
+  h_f968154a99632d 97-115,150-158
+spec/requests/notifications_spec.rb
+  s_26a269fa3c3c7f::t_655db683d5e3b9 818-866
+config/locales/fr.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 55-60
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 61-62
+  s_26a269fa3c3c7f::t_137eb780c1f38f 35
+app/services/articles/creator.rb
+  s_26a269fa3c3c7f::t_1637a3a1ca4eea 92,98,103-114
+  s_26a269fa3c3c7f::t_58d3f9d3c7ee8c 41
+  s_26a269fa3c3c7f::t_8b96b04e905ca8 21-23,26
+  s_26a269fa3c3c7f::t_32bb89b97d9fe2 115
+app/helpers/co_author_invitations_helper.rb
+  s_26a269fa3c3c7f::t_724d11dc29cc27 1-22
+lib/data_update_scripts/20261007120001_add_co_author_invitations_feature_flag.rb
+  s_26a269fa3c3c7f::t_2b4af4b0417111 1-9
+config/locales/views/notifications/en.yml
+  s_26a269fa3c3c7f::t_de8b0caa0ffbca 33-41
+app/services/articles/updater.rb
+  s_26a269fa3c3c7f::t_972c5557bbf704 9-11,20,23
+  s_26a269fa3c3c7f::t_2e0a34277b91db 15,41,53-58
+  s_26a269fa3c3c7f::t_f7d78f7f7f48d1 42-52,59
+app/javascript/article-form/components/Options.jsx
+  s_26a269fa3c3c7f::t_7f343b94838da1 7,34-37,292-301,336-339
+app/services/co_author_invitations/sync.rb
+  s_26a269fa3c3c7f::t_a2db413863e693 1-22,24-28,30-33,42-52,57-66,81-97
+  s_26a269fa3c3c7f::t_a812ec287b7b40 34-37
+  s_26a269fa3c3c7f::t_08e10ed61c4076 69-74,79-80
+  h_f968154a99632d 23,29,38-41,53-56,67-68,75-78
+config/locales/models/fr.yml
+  s_26a269fa3c3c7f::t_d58896948d1c77 74-80
+app/workers/notifications/co_author_invitation_worker.rb
+  s_26a269fa3c3c7f::t_8ff6139abbf835 1-15
+app/views/notifications/_coauthorinvitation.html.erb
+  s_26a269fa3c3c7f::t_0138d92aac1b78 1-39
+spec/models/article_spec.rb
+  s_26a269fa3c3c7f::t_912e80574db9f3 4383-4416,4435-4444,4458-4465
+  s_26a269fa3c3c7f::t_845a1365a4d23c 4445-4457
+  h_f968154a99632d 4417,4419-4434
+  s_26a269fa3c3c7f::t_3cd7fe5ee587cc 4418
+config/locales/en.yml
+  s_26a269fa3c3c7f::t_29d6a7ac180670 55-60
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 61-62
+  s_26a269fa3c3c7f::t_d08506e5972de1 35
+app/models/co_author_invitation.rb
+  s_26a269fa3c3c7f::t_2a0922e4079a8e 1-10,12-65
+  s_26a269fa3c3c7f::t_a3569ddae256ca 11
+app/services/notifications/co_author/send.rb
+  s_26a269fa3c3c7f::t_a85d9db370449d 66-68,71-73
+  s_26a269fa3c3c7f::t_fa83b5cb3855b3 22
+  h_f968154a99632d 69-70
+spec/requests/co_author_invitations_spec.rb
+  s_26a269fa3c3c7f::t_e7e043f28a880a 1-33,40-95,97-130
+  s_26a269fa3c3c7f::t_4bb3fa588ae236 96
+  h_f968154a99632d 34-39
+app/models/user.rb
+  s_26a269fa3c3c7f::t_94d5afc91f8eb6 97
+app/services/co_author_invitations/decline.rb
+  s_26a269fa3c3c7f::t_617ab9f3627653 1-30,32-43
+  s_26a269fa3c3c7f::t_12bd61304bb49f 31
+config/routes.rb
+  s_26a269fa3c3c7f::t_d2799072d0cba7 256-262
+db/migrate/20261007120000_create_co_author_invitations.rb
+  s_26a269fa3c3c7f::t_5190b4b3008584 1-15
+spec/requests/articles/articles_create_spec.rb
+  s_26a269fa3c3c7f::t_226b868cae6659 83-111,116-129
+  s_26a269fa3c3c7f::t_4b40ef5341e6bd 112-115
+app/javascript/crayons/MultiSelectAutocomplete/MultiSelectAutocomplete.jsx
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 579
+  s_26a269fa3c3c7f::t_809a6c7cd7e9b3 111-117,582,605,616-619,642-643,668,671
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/MultiSelectAutocomplete.test.jsx
+  s_26a269fa3c3c7f::t_f5642888c80823 38-57
+app/javascript/__tests__/__snapshots__/convertCoauthorIdsToUsernameInputs.test.js.snap
+  s_26a269fa3c3c7f::t_87bcc8463c24f5 22,50
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/__snapshots__/MultiSelectAutocomplete.test.jsx.snap
+  s_26a269fa3c3c7f::t_2088e0f4de96f9 5
+db/migrate/20261009120000_add_hidden_by_default_to_billboard_placement_area_configs.rb
+  s_4e49a6768728b8::t_1f432b8cec54eb 2-5
+  s_4e49a6768728b8::t_2fa26eb7d334a4 1
+  s_26a269fa3c3c7f::t_733208015f6410 1-5
+app/javascript/packs/billboardAfterRenderActions.js
+  s_4e49a6768728b8::t_298f01eda94420 72-73
+  s_4e49a6768728b8::t_d0d962e7260f99 156-161,163
+  s_4e49a6768728b8::t_1986f7adb8f451 58-71,74-125,132-135
+  s_26a269fa3c3c7f::t_383dd57ca42e24 58-125,132-135,156-161,163
+app/views/shared/_billboard.html.erb
+  s_4e49a6768728b8::t_b2f364c9f06e0d 15
+  s_26a269fa3c3c7f::t_4b3efbd00c6a93 15
+app/views/admin/billboard_placement_area_configs/edit.html.erb
+  s_4e49a6768728b8::t_630f3c7ae1110a 40-42,44,48-49,58-59
+  s_4e49a6768728b8::t_941c0b55b89371 43,45-47
+  s_26a269fa3c3c7f::t_fc5bafb47a64fa 40-49,58-59
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  s_4e49a6768728b8::t_9a4184373a4f24 49
+  s_26a269fa3c3c7f::t_4005154d0621ba 49
+spec/requests/billboards_spec.rb
+  s_4e49a6768728b8::t_aab7343d5e2f76 312-394
+  s_26a269fa3c3c7f::t_1b2bb92e116ecf 312-394
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  s_4e49a6768728b8::t_a90f288487704d 168-169
+  s_26a269fa3c3c7f::t_c1d57d2a4950f0 168-169
+app/models/billboard_placement_area_config.rb
+  s_4e49a6768728b8::t_6925a28bbadb25 96-106
+  s_26a269fa3c3c7f::t_eda67373d64970 96-106
+app/assets/stylesheets/billboards.scss
+  s_4e49a6768728b8::t_31c556f3518a82 5-11
+  s_4e49a6768728b8::t_9a99045e97b463 14-16
+  s_26a269fa3c3c7f::t_3ba40366590d00 5-11,14-16
+spec/requests/stories_index_spec.rb
+  s_4e49a6768728b8::t_4d983f054fe662 245-254
+  s_4e49a6768728b8::t_92a21330215b44 255-262
+  s_26a269fa3c3c7f::t_3e1b9de8a7710c 245-262
+app/views/billboards/show.html.erb
+  s_4e49a6768728b8::t_6df006625db235 2
+  s_26a269fa3c3c7f::t_72854c373d7e6b 2
+spec/models/billboard_placement_area_config_spec.rb
+  s_4e49a6768728b8::t_17d89139b5d819 265-266
+  s_4e49a6768728b8::t_4ddfefbe933d13 240-264,267-272
+  s_26a269fa3c3c7f::t_cf6115a716324e 240-272
+spec/controllers/admin/billboard_placement_area_configs_controller_spec.rb
+  s_4e49a6768728b8::t_e768aa6da3e1ae 141-148
+  s_4e49a6768728b8::t_f6503b16aebe72 84-97,107
+  s_26a269fa3c3c7f::t_4cb695b560daf3 84-97,107,141-148
+app/javascript/packs/application.jsx
+  s_4e49a6768728b8::t_8da042e79c3b42 14
+  s_4e49a6768728b8::t_626c27c85b8a81 71
+  s_4e49a6768728b8::t_812aae81077e20 24-28
+  s_4e49a6768728b8::t_480724b69c334a 75-76
+  s_26a269fa3c3c7f::t_60181cf4d43f75 14,24-28,71,75-76
+app/javascript/__tests__/billboardPlacementVisibility.test.js
+  s_4e49a6768728b8::t_73e8d0ce8a71b5 97
+  s_4e49a6768728b8::t_2a14b84fbdf3ae 1-79,85-96,98-167
+  s_4e49a6768728b8::t_c6ee78944b65c4 80-84
+  s_26a269fa3c3c7f::t_5838d6caf1206e 1-167
+app/javascript/packs/billboard.js
+  s_4e49a6768728b8::t_d4f83169ead1db 61-63
+  s_26a269fa3c3c7f::t_ced3a1999b9c9f 61-63
+app/views/layouts/application.html.erb
+  s_4e49a6768728b8::t_cbdff58e639384 105-110
+  s_26a269fa3c3c7f::t_79be159174ef74 105-110
+config/locales/views/admin/pt.yml
+  s_4e49a6768728b8::t_d215dc698ec6ef 653-657,661-663
+  s_26a269fa3c3c7f::t_e0e158a42a68dd 653-657,661-663
+config/locales/views/admin/fr.yml
+  s_4e49a6768728b8::t_d215dc698ec6ef 748-752,756-758
+  s_26a269fa3c3c7f::t_88ed075483c78f 748-752,756-758
+config/locales/views/admin/en.yml
+  s_4e49a6768728b8::t_d215dc698ec6ef 757-761,765-767
+  s_26a269fa3c3c7f::t_a3a040a7ce55a8 757-761,765-767
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  s_4e49a6768728b8::t_1a8f3051dbe5c2 30-36
+  s_4e49a6768728b8::t_b1761d21c2d60b 19
+  s_26a269fa3c3c7f::t_4b289a93bcccca 19,30-36
+app/javascript/onboarding/components/ProfileForm/ProfileImage.jsx
+  s_26a269fa3c3c7f::t_0656d59e385ebd 69
+app/javascript/onboarding/components/__tests__/ProfileImage.test.jsx
+  s_26a269fa3c3c7f::t_422674390c4870 10-16,18-20,143-193
+app/javascript/onboarding/components/actions.js
+  s_26a269fa3c3c7f::t_0c090f4adf414d 1-2,26-43,47-49,52-63
+app/javascript/packs/__tests__/mermaidRenderer.test.js
+  s_26a269fa3c3c7f::t_9b6079fa68d565 69-81
+app/javascript/packs/mermaidRenderer.js
+  s_26a269fa3c3c7f::t_31fc174a8319a3 48-54,73
+app/liquid_tags/agent_session_tag.rb
+  s_26a269fa3c3c7f::t_6bc66112759c99 39-58
+app/services/agent_session_renderers/heading_anchors.rb
+  s_26a269fa3c3c7f::t_0d77363dffa0c8 1-46
+app/services/agent_session_renderers/markdown_renderer.rb
+  s_26a269fa3c3c7f::t_8158472b95d55e 4-6,8-21,24,28,38-40
+app/services/events/billboards/live_stream.rb
+  s_26a269fa3c3c7f::t_76d7edc5cce8de 420-421,424-425
+app/views/liquids/_agent_session.html.erb
+  s_26a269fa3c3c7f::t_67cd9132df219b 53,67,73
+app/views/users/show.html.erb
+  s_26a269fa3c3c7f::t_30c5ed0c4872a6 75-78
+spec/liquid_tags/agent_session_tag_spec.rb
+  s_26a269fa3c3c7f::t_590c7bb86d1b3a 215-269
+spec/requests/user/user_show_spec.rb
+  s_26a269fa3c3c7f::t_c5bf3a25194da9 66-95
+spec/services/agent_session_renderers/heading_anchors_spec.rb
+  s_26a269fa3c3c7f::t_983bcf903a6ccf 1-72
+spec/services/agent_session_renderers/markdown_renderer_spec.rb
+  s_26a269fa3c3c7f::t_6e15d5d91c3da9 1-55
+app/services/rate_limit_checker.rb
+  s_26a269fa3c3c7f::t_fbba4b9bef3b43 100
+  s_26a269fa3c3c7f::t_6d572ad5d753a0 97,99
+spec/services/rate_limit_checker_spec.rb
+  s_26a269fa3c3c7f::t_66c67f552b20e2 157-162
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3faeeb1af5a2c7678de440535bce79a114364c71",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_4e49a6768728b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "146190b2-5c7d-4488-aa8d-eb7bb27cb4e7",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
