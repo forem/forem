@@ -947,7 +947,23 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+    raw_markdown = comments.pluck(:body_markdown).join(" ")
+    # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
+    return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
+
+    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+  end
+
+  # Request-local memo of comment trees loaded for this instance, keyed by query options, so
+  # articles#show can share one tree between its JSON-LD and the rendered comment area.
+  def comment_tree(limit:, order:, include_negative:)
+    @comment_trees ||= {}
+    @comment_trees[[limit, order, include_negative]] ||=
+      Comments::Tree.for_commentable(self, limit: limit, order: order, include_negative: include_negative)
+  end
+
+  def loaded_comment_trees
+    @comment_trees&.values || []
   end
 
   def url

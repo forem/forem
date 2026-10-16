@@ -82,6 +82,17 @@ describe BillboardHelper do
 
         expect(helper.billboard_async_path(:post_comments, article: article)).to eq(article_path)
       end
+
+      it "reuses an already-decorated ArticleDecorator without re-decorating" do
+        decorated = article.decorate
+        allow(decorated).to receive(:decorate)
+        allow(decorated).to receive(:permit_adjacent_sponsors?).and_call_original
+
+        expect(helper.billboard_async_path(:post_comments, article: decorated))
+          .to eq(billboard_path(placement_area: :post_comments))
+        expect(decorated).not_to have_received(:decorate)
+        expect(decorated).to have_received(:permit_adjacent_sponsors?).once
+      end
     end
   end
 end

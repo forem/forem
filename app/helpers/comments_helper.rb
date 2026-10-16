@@ -17,7 +17,7 @@ module CommentsHelper
   end
 
   def article_comment_tree(article, limit, order)
-    Comments::Tree.for_commentable(article, limit: limit, order: order, include_negative: user_signed_in?)
+    article.comment_tree(limit: limit, order: order, include_negative: user_signed_in?)
   end
 
   def podcast_comment_tree(episode)

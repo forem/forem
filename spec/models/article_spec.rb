@@ -4463,4 +4463,43 @@ RSpec.describe Article do
       end
     end
   end
+
+  describe "#comments_blob" do
+    let(:article) { create(:article) }
+
+    it "returns an empty string when there are no comments" do
+      expect(article.comments_blob).to eq("")
+    end
+
+    it "joins plain-text comment markdown and truncates to 2200 characters without invoking HTML sanitizer" do
+      create(:comment, commentable: article, body_markdown: "a" * 3000)
+      sanitizer = ActionView::Base.full_sanitizer
+      allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+      allow(sanitizer).to receive(:sanitize).and_call_original
+
+      blob = article.comments_blob
+
+      expect(blob.length).to eq(2201)
+      expect(blob).to eq("a" * 2201)
+      expect(sanitizer).not_to have_received(:sanitize)
+    end
+
+    it "sanitizes the full markup before truncating" do
+      create(:comment, commentable: article, body_markdown: "#{'<b>x</b>' * 600} youtube")
+
+      expect(article.comments_blob).to include("youtube")
+    end
+
+    it "entity-encodes ampersands as before" do
+      create(:comment, commentable: article, body_markdown: "Tom & Jerry")
+
+      expect(article.comments_blob).to eq("Tom &amp; Jerry")
+    end
+
+    it "strips HTML tags when comments contain markup" do
+      create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
+
+      expect(article.comments_blob).to eq("Hello youtube world")
+    end
+  end
 end

@@ -70,13 +70,22 @@ class BillboardPlacementAreaConfig < ApplicationRecord
 
   # Get all configs (cached)
   def self.all_configs
-    Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_EXPIRY) do
+    if RequestStore.store.key?(:billboard_placement_area_configs)
+      return RequestStore.store[:billboard_placement_area_configs]
+    end
+
+    configs = Rails.cache.fetch(CACHE_KEY, expires_in: CACHE_EXPIRY) do
       all.index_by(&:placement_area)
     end
+    unless Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+      RequestStore.store[:billboard_placement_area_configs] = configs
+    end
+    configs
   end
 
   # Bust the cache when configs are modified
   def self.bust_cache
+    RequestStore.store.delete(:billboard_placement_area_configs)
     Rails.cache.delete(CACHE_KEY)
   end
 
