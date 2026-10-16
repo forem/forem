@@ -1,0 +1,58 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 478,608,708
+  s_e3b00ca12701b4::t_74847b4c8c4307 665
+app/decorators/article_decorator.rb
+  h_f968154a99632d 117-118
+  s_e3b00ca12701b4::t_1f5d01bf724e19 121-122
+app/helpers/articles_helper.rb
+  h_f968154a99632d 20,25,87-90,94-104
+  s_e3b00ca12701b4::t_4037c92781b226 91-93
+app/helpers/billboard_helper.rb
+  h_f968154a99632d 40,42
+app/models/article.rb
+  h_f968154a99632d 953-954
+  s_e3b00ca12701b4::t_8cce6eb21a8490 38,950-952,957-968
+app/models/billboard_placement_area_config.rb
+  h_f968154a99632d 73-77,80-83,88
+spec/decorators/article_decorator_spec.rb
+  h_f968154a99632d 290,305-314
+  s_e3b00ca12701b4::t_baf5aebeaf0be8 291-304
+spec/helpers/articles_helper_spec.rb
+  h_f968154a99632d 103-114,120-125,135-143,145-149
+  s_e3b00ca12701b4::t_7b709aea173239 115-119,126-134,144
+spec/helpers/billboard_helper_spec.rb
+  h_f968154a99632d 85-95
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 68-77,81-82,84-85,87,89,91,95-96
+  s_e3b00ca12701b4::t_22061ce9368818 78-80,83,86,88,90,92-94
+spec/models/article_spec.rb
+  h_f968154a99632d 4466-4475,4476-4478,4479-4483,4484,4497-4499,4500,4501-4504
+  s_e3b00ca12701b4::t_1812330df30bb5 4487-4498
+spec/models/billboard_placement_area_config_spec.rb
+  h_f968154a99632d 199-215
+spec/requests/articles/articles_show_spec.rb
+  h_f968154a99632d 139,143,147,487-488,492-497
+app/helpers/comments_helper.rb
+  s_e3b00ca12701b4::t_fa3176dbd2d139 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b042765feee028e21f92159c845f615354e24a62",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e3b00ca12701b4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8368ac6e-c7f6-43bc-b82c-3969f20b4759",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
