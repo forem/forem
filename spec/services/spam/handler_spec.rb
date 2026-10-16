@@ -1225,4 +1225,19 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
   end
+
+  describe ".profile_spam_trigger_term_match?" do
+    it "matches whole trigger words and plurals case-insensitively" do
+      expect(described_class.profile_spam_trigger_term_match?("Best Casino Deals")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Looking for backlinks and SEO services")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Escorts and casinos")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("prostitution ring")).to be(true)
+    end
+
+    it "does not false-trigger on substrings inside words or benign phrases like 'Girls Who Code'" do
+      expect(described_class.profile_spam_trigger_term_match?("Abetting a friend with debugging")).to be(false)
+      expect(described_class.profile_spam_trigger_term_match?("Escorted deployments to production")).to be(false)
+      expect(described_class.profile_spam_trigger_term_match?("Mentor at Girls Who Code and adult educator")).to be(false)
+    end
+  end
 end
