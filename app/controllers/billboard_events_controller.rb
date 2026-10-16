@@ -7,6 +7,7 @@ class BillboardEventsController < ApplicationMetalController
     # Only tracking for logged‐in users at the moment
     billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
     return head :ok if billboard_event_create_params[:billboard_id].blank?
+
     @billboard_event = ApplicationRecord.with_synchronous_commit_off do
       BillboardEvent.create(billboard_event_create_params)
     end
@@ -14,7 +15,8 @@ class BillboardEventsController < ApplicationMetalController
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
       # Enqueue the worker instead of doing the update inline
       throttle_minutes = (ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME).to_i
-      ThrottledCall.perform("billboards_data_update-#{billboard_event_create_params[:billboard_id]}", throttle_for: throttle_minutes.minutes) do
+      throttle_key = "billboards_data_update-#{billboard_event_create_params[:billboard_id]}"
+      ThrottledCall.perform(throttle_key, throttle_for: throttle_minutes.minutes) do
         Billboards::DataUpdateWorker.perform_async(billboard_event_params[:billboard_id])
       end
     end
@@ -29,23 +31,28 @@ class BillboardEventsController < ApplicationMetalController
   end
 
   def update
-    @billboard_event = BillboardEvent.find_by(id: params[:id])
+    current_user_id = session_current_user_id
+    now = Time.current
+
+    rows_updated = ApplicationRecord.with_synchronous_commit_off do
+      BillboardEvent
+        .where(id: params[:id], category: BillboardEvent::CATEGORY_IMPRESSION)
+        .where("user_id IS NULL OR user_id = ?", current_user_id)
+        .where("updated_at <= ?", now - 9.seconds)
+        .update_all(["seconds_visible = seconds_visible + ?, updated_at = ?", 10, now])
+    end
+
+    return head :ok if rows_updated.positive?
+
+    @billboard_event = BillboardEvent.select(:id, :category, :user_id, :updated_at).find_by(id: params[:id])
     return head :not_found unless @billboard_event
     return head :ok unless @billboard_event.category == BillboardEvent::CATEGORY_IMPRESSION
 
-    if @billboard_event.user_id && @billboard_event.user_id != session_current_user_id
+    if @billboard_event.user_id && @billboard_event.user_id != current_user_id
       return head :forbidden
     end
 
-    if @billboard_event.updated_at > 9.seconds.ago
-      return head :too_many_requests
-    end
-
-    ApplicationRecord.with_synchronous_commit_off do
-      BillboardEvent.where(id: @billboard_event.id).update_all(["seconds_visible = seconds_visible + ?, updated_at = ?", 10, Time.current])
-    end
-
-    head :ok
+    head :too_many_requests
   end
 
   private
