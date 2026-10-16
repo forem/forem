@@ -75,21 +75,23 @@ RSpec.describe CommentsHelper do
       helper.define_singleton_method(:user_signed_in?) { false }
     end
 
-    it "reuses cached_comments_tree when already populated with limit 10, top order, and signed out" do
-      article.cached_comments_tree = preloaded_tree
-      allow(Comments::Tree).to receive(:for_commentable)
+    it "reuses a tree already loaded on the article with the same options" do
+      allow(Comments::Tree).to receive(:for_commentable).and_return(preloaded_tree)
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
 
       expect(helper.article_comment_tree(article, 10, "top")).to eq(preloaded_tree)
-      expect(Comments::Tree).not_to have_received(:for_commentable)
+      expect(Comments::Tree).to have_received(:for_commentable).once
     end
 
-    it "populates cached_comments_tree when loading comments for an article" do
+    it "loads a separate tree when the options differ" do
       allow(Comments::Tree).to receive(:for_commentable).and_return(preloaded_tree)
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
 
-      result = helper.article_comment_tree(article, 10, "top")
+      helper.article_comment_tree(article, 10, "latest")
 
-      expect(result).to eq(preloaded_tree)
-      expect(article.cached_comments_tree).to eq(preloaded_tree)
+      expect(Comments::Tree).to have_received(:for_commentable)
+        .with(article, limit: 10, order: "latest", include_negative: false)
+      expect(Comments::Tree).to have_received(:for_commentable).twice
     end
   end
 end

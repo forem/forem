@@ -88,9 +88,9 @@ module ArticlesHelper
   private
 
   def comments_include_youtube?(article)
-    if article.respond_to?(:cached_comments_tree) && article.cached_comments_tree
-      return comment_tree_includes_youtube?(article.cached_comments_tree)
-    end
+    # Comment trees already loaded for this render hold every comment the page shows, so check them in memory
+    loaded_trees = article.loaded_comment_trees
+    return loaded_trees.any? { |tree| comment_tree_includes_youtube?(tree) } if loaded_trees.any?
     return false if article.displayed_comments_count.to_i.zero? && article.comments_count.to_i.zero?
 
     article.comments_blob.include?("youtube")

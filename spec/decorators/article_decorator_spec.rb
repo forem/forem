@@ -288,6 +288,20 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(article.decorate.permit_adjacent_sponsors?).to be(false)
     end
 
+    it "returns false if the author's permit_adjacent_sponsors setting is nil" do
+      article.save!
+      article.user.setting.update_column(:permit_adjacent_sponsors, nil)
+      expect(article.decorate.permit_adjacent_sponsors?).to be(false)
+    end
+
+    it "returns false if a co-author's permit_adjacent_sponsors setting is nil" do
+      co_author = create(:user)
+      co_author.setting.update_column(:permit_adjacent_sponsors, nil)
+      article.co_author_ids = [co_author.id]
+      article.save!
+      expect(article.decorate.permit_adjacent_sponsors?).to be(false)
+    end
+
     it "memoizes the result across repeated calls on the same decorated instance" do
       article.save!
       article.user.setting.update!(permit_adjacent_sponsors: false)

@@ -662,10 +662,7 @@ class StoriesController < ApplicationController
 
   def fetch_comments_for_json_ld
     # Fetch top-level comments with their nested replies
-    comments_tree = Comments::Tree.for_commentable(@article, limit: 10, order: "top", include_negative: false)
-    if @comments_to_show_count == 10 && @comments_order == "top" && !user_signed_in?
-      @article.cached_comments_tree = comments_tree
-    end
+    comments_tree = @article.comment_tree(limit: 10, order: "top", include_negative: false)
 
     comments_data = []
     comments_tree.each do |root_comment, sub_comments|

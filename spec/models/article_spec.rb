@@ -4484,6 +4484,18 @@ RSpec.describe Article do
       expect(sanitizer).not_to have_received(:sanitize)
     end
 
+    it "sanitizes the full markup before truncating" do
+      create(:comment, commentable: article, body_markdown: "#{'<b>x</b>' * 600} youtube")
+
+      expect(article.comments_blob).to include("youtube")
+    end
+
+    it "entity-encodes ampersands as before" do
+      create(:comment, commentable: article, body_markdown: "Tom & Jerry")
+
+      expect(article.comments_blob).to eq("Tom &amp; Jerry")
+    end
+
     it "strips HTML tags when comments contain markup" do
       create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
 

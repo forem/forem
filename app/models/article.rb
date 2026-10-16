@@ -35,7 +35,7 @@ class Article < ApplicationRecord
   # move it to the services where the create/update takes place to avoid using hacks
   attr_accessor :publish_under_org, :admin_update
   attr_writer :series, :labels
-  attr_accessor :body_url, :cached_comments_tree
+  attr_accessor :body_url
 
   delegate :name, to: :user, prefix: true
   delegate :username, to: :user, prefix: true
@@ -947,10 +947,23 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    raw_markdown = comments.pluck(:body_markdown).join(" ")[0..4400]
-    return raw_markdown[0..2200] unless raw_markdown.include?("<")
+    raw_markdown = comments.pluck(:body_markdown).join(" ")
+    # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
+    return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
 
     ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+  end
+
+  # Request-local memo of comment trees loaded for this instance, keyed by query options, so
+  # articles#show can share one tree between its JSON-LD and the rendered comment area.
+  def comment_tree(limit:, order:, include_negative:)
+    @comment_trees ||= {}
+    @comment_trees[[limit, order, include_negative]] ||=
+      Comments::Tree.for_commentable(self, limit: limit, order: order, include_negative: include_negative)
+  end
+
+  def loaded_comment_trees
+    @comment_trees&.values || []
   end
 
   def url

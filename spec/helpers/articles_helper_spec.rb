@@ -112,12 +112,23 @@ describe ArticlesHelper do
       expect(article).not_to have_received(:comments_blob)
     end
 
-    it "checks the preloaded cached_comments_tree in memory when present" do
-      comment = build(:comment, body_markdown: "Check out https://www.youtube.com/watch?v=abc")
-      article.cached_comments_tree = { comment => {} }
+    it "checks already-loaded comment trees in memory, including nested replies" do
+      root = build(:comment, body_markdown: "Nice post")
+      reply = build(:comment, body_markdown: "Check out https://www.youtube.com/watch?v=abc")
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ root => { reply => {} } })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
       allow(article).to receive(:comments_blob)
 
       expect(helper.has_vid?(article)).to be(true)
+      expect(article).not_to have_received(:comments_blob)
+    end
+
+    it "returns false from loaded comment trees without youtube links" do
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ build(:comment, body_markdown: "hi") => {} })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(false)
       expect(article).not_to have_received(:comments_blob)
     end
 
@@ -130,7 +141,7 @@ describe ArticlesHelper do
       expect(article).not_to have_received(:comments_blob)
     end
 
-    it "falls back to article.comments_blob when cached_comments_tree is not populated" do
+    it "falls back to article.comments_blob when no comment tree has been loaded" do
       allow(article).to receive(:comments_blob).and_return("watch on youtube")
 
       expect(helper.has_vid?(article)).to be(true)
