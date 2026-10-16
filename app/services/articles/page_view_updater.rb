@@ -19,7 +19,7 @@ module Articles
       # Don't record views to non-existent or unpublished articles, or author's own views.
       article_row = Article.published.where(id: article_id).pick(:id, :user_id)
       return false if article_row.nil?
-      return false if user_id.present? && article_row[1] == user_id
+      return false if user_id.present? && article_row[1] == user_id.to_i
 
       page_view = PageView.order(created_at: :desc)
         .find_or_create_by(article_id: article_id, user_id: user_id)

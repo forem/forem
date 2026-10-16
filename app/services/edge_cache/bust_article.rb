@@ -39,8 +39,6 @@ module EdgeCache
         cache_bust.call("/")
       end
 
-      return unless article.published
-
       if article.video.present? && article.published_at.to_i > 10.days.ago.to_i
         cache_bust.call("/videos")
       end
@@ -54,7 +52,7 @@ module EdgeCache
         cache_bust.call("/top/#{interval}")
       end
 
-      if article.published_at && article.published_at > 1.hour.ago
+      if article.published && article.published_at > 1.hour.ago
         cache_bust.call("/latest")
       end
 
