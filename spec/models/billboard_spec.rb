@@ -1625,4 +1625,16 @@ RSpec.describe Billboard do
       expect(billboard.tags_array).to eq([])
     end
   end
+
+  describe "database indexes" do
+    it "defines a partial composite index on placement_area and success_rate for active billboards" do
+      indexes = ActiveRecord::Base.connection.indexes(:display_ads)
+      idx = indexes.find { |i| i.name == "index_display_ads_on_placement_area_and_success_rate" }
+      expect(idx).to have_attributes(
+        columns: %w[placement_area success_rate],
+        orders: { "success_rate" => :desc },
+        where: "((approved = true) AND (published = true))",
+      )
+    end
+  end
 end
