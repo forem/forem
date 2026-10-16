@@ -392,18 +392,13 @@ module Api
 
       # Efficient final verification step to ensure candidate articles still exist
       # in the database and are currently published (guards against external index drift).
-      # Also drops articles by spam-flagged authors: those pages 404 for non-admins
-      # (StoriesController#check_admin_access), and the async score penalty may not have landed yet.
       def verify_published_articles(articles)
         return [] if articles.blank?
 
         candidate_ids = articles.filter_map(&:id)
         return [] if candidate_ids.blank?
 
-        valid_ids = Article.published.from_subforem
-          .where(id: candidate_ids)
-          .where.not(user_id: User.with_role(:spam).select(:id))
-          .ids.to_set
+        valid_ids = Article.published.from_subforem.where(id: candidate_ids).ids.to_set
         articles.select { |article| valid_ids.include?(article.id) && article.published? }
       end
     end
