@@ -53,6 +53,12 @@ en:
         parse_error: There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email %{email} if you are having trouble.
     html:
       parser:
+        alerts:
+          caution: Caution
+          important: Important
+          note: Note
+          tip: Tip
+          warning: Warning
         enter_fullscreen_mode: Enter fullscreen mode
         exit_fullscreen_mode: Exit fullscreen mode
     markdown_processor:
