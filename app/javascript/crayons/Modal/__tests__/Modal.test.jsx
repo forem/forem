@@ -23,6 +23,16 @@ describe('Modal', () => {
     expect(results).toHaveNoViolations();
   });
 
+  it('uses the title as the dialog accessible name', () => {
+    const { getByRole } = render(
+      <Modal title="Delete your account">
+        This is the modal body content
+      </Modal>,
+    );
+
+    expect(getByRole('dialog')).toHaveAccessibleName('Delete your account');
+  });
+
   it('should trap focus inside the modal by default', async () => {
     const { getByText, getByLabelText } = render(
       <div>
