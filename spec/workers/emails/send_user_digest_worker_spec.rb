@@ -132,14 +132,16 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         create(:billboard, placement_area: "digest_first", published: true, approved: true)
 
         allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
-        allow(Honeybadger).to receive(:context)
         allow(Rails.error).to receive(:report)
 
         worker.perform(user.id)
 
         # Email was already delivered before billboard tracking was attempted
         expect(message_delivery).to have_received(:deliver_now)
-        expect(Rails.error).to have_received(:report).with(instance_of(StandardError))
+        expect(Rails.error).to have_received(:report).with(
+          instance_of(StandardError),
+          context: { user_id: user.id, article_ids: array_including(kind_of(Integer)) },
+        )
       end
 
       it "rescues Net::SMTPSyntaxError and logs a warning without notifying Honeybadger" do

@@ -223,14 +223,16 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
       user_errors = @user.errors.full_messages
 
-      Honeybadger.context({
-        username: @user.username,
-        user_id: @user.id,
-        auth_data: request.env["omniauth.auth"],
-        auth_error: request.env["omniauth.error"].inspect,
-        user_errors: user_errors
-      })
-      Rails.error.report(StandardError.new("Omniauth log in error"))
+      Rails.error.report(
+        StandardError.new("Omniauth log in error"),
+        context: {
+          username: @user.username,
+          user_id: @user.id,
+          auth_data: request.env["omniauth.auth"],
+          auth_error: request.env["omniauth.error"].inspect,
+          user_errors: user_errors
+        },
+      )
 
       flash[:alert] = user_errors
       redirect_to new_user_registration_url

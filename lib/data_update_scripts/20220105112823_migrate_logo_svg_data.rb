@@ -28,11 +28,14 @@ module DataUpdateScripts
 
       Rails.logger.error("Could not convert logo_svg for #{Settings::Community.community_name} Forem to a PNG.")
 
-      Rails.error.report(e, context: {
-                              community_name: Settings::Community.community_name,
-                              app_domain: Settings::General.app_domain
-                            },
-                            tags: "failed_svg_conversion")
+      Rails.error.report(
+        e,
+        context: {
+          community_name: Settings::Community.community_name,
+          app_domain: Settings::General.app_domain,
+          tags: { failed_svg_conversion: true }
+        },
+      )
     end
   end
 end

@@ -106,8 +106,7 @@ module Emails
       rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e
         Rails.logger.warn("Failed to send digest to user #{user.id} due to SMTP syntax/fatal error: #{e.message}")
       rescue StandardError => e
-        Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
-        Rails.error.report(e)
+        Rails.error.report(e, context: { user_id: user.id, article_ids: articles.map(&:id) })
       end
     end
   end
