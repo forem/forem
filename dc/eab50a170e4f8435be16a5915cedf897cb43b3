@@ -1,0 +1,23 @@
+app/views/articles/_sticky_nav.html.erb
+  s_64f36bb7b49e8e::t_8631ae464bad95 11
+app/services/articles/get_user_stickies.rb
+  s_64f36bb7b49e8e::t_d7567044fd1913 15
+spec/services/articles/get_user_stickies_spec.rb
+  s_64f36bb7b49e8e::t_c25459f305295b 32-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dceab50a170e4f8435be16a5915cedf897cb43b3",
+  "prompts": {},
+  "sessions": {
+    "s_64f36bb7b49e8e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2f54da1c-685d-4f7e-8a58-3b5fcab2c0d2",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

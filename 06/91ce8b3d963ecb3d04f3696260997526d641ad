@@ -1,0 +1,36 @@
+spec/requests/api/v1/analytics_spec.rb
+  h_b2f6efe2daa9cd 72-80
+spec/requests/api/v0/analytics_spec.rb
+  h_b2f6efe2daa9cd 49-52
+app/javascript/analytics/client.js
+  h_b2f6efe2daa9cd 61-71
+app/services/analytics_service.rb
+  h_b2f6efe2daa9cd 138-178
+config/locales/pt.yml
+  h_b2f6efe2daa9cd 54-55
+app/javascript/analytics/dashboard.js
+  h_b2f6efe2daa9cd 1,89,91,571-588,692-701
+config/routes/api.rb
+  h_b2f6efe2daa9cd 43
+app/javascript/analytics/__tests__/dashboard.test.js
+  h_b2f6efe2daa9cd 30,66,95,108,269,279,422-449
+config/locales/fr.yml
+  h_b2f6efe2daa9cd 54-55
+config/locales/en.yml
+  h_b2f6efe2daa9cd 54-55
+app/controllers/concerns/api/analytics_controller.rb
+  h_b2f6efe2daa9cd 46-54
+spec/services/analytics_service_spec.rb
+  h_b2f6efe2daa9cd 573-668
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "0691ce8b3d963ecb3d04f3696260997526d641ad",
+  "prompts": {},
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

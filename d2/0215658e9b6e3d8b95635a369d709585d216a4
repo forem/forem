@@ -1,0 +1,24 @@
+app/views/admin/linked_domains/index.html.erb
+  s_9f387926f05926::t_b163ff2df1ccc6 29
+app/controllers/admin/linked_domains_controller.rb
+  s_9f387926f05926::t_b163ff2df1ccc6 20-25
+  s_9f387926f05926::t_a6e583b2d0bf90 26
+spec/requests/admin/linked_domains_spec.rb
+  s_9f387926f05926::t_b163ff2df1ccc6 105-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d20215658e9b6e3d8b95635a369d709585d216a4",
+  "prompts": {},
+  "sessions": {
+    "s_9f387926f05926": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af59b4f3-165b-443d-8924-330025f3124c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
