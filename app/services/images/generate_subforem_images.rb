@@ -20,7 +20,7 @@ module Images
       generate_logo_png
     rescue StandardError => e
       Rails.logger.error("Failed to generate subforem images: #{e.message}")
-      Honeybadger.notify(e) if defined?(Honeybadger)
+      Rails.error.report(e)
     end
 
     private

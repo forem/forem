@@ -133,13 +133,13 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
         allow(Honeybadger).to receive(:context)
-        allow(Honeybadger).to receive(:notify)
+        allow(Rails.error).to receive(:report)
 
         worker.perform(user.id)
 
         # Email was already delivered before billboard tracking was attempted
         expect(message_delivery).to have_received(:deliver_now)
-        expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
+        expect(Rails.error).to have_received(:report).with(instance_of(StandardError))
       end
 
       it "rescues Net::SMTPSyntaxError and logs a warning without notifying Honeybadger" do
@@ -147,12 +147,12 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         allow(message_delivery).to receive(:deliver_now).and_raise(Net::SMTPSyntaxError.new("501 Recipient syntax error"))
         allow(Rails.logger).to receive(:warn)
-        allow(Honeybadger).to receive(:notify)
+        allow(Rails.error).to receive(:report)
 
         worker.perform(user.id)
 
         expect(Rails.logger).to have_received(:warn).with(/SMTP syntax\/fatal error/)
-        expect(Honeybadger).not_to have_received(:notify)
+        expect(Rails.error).not_to have_received(:report)
       end
 
       it "opens a transaction for analytics tracking even when no billboards are present" do
@@ -312,7 +312,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         it "rescues errors during generation and still delivers digest" do
           allow(ai_generator).to receive(:call).and_raise(StandardError.new("AI error"))
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
           
           worker.perform(user.id)
           

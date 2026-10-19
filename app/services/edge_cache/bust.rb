@@ -15,7 +15,7 @@ module EdgeCache
       paths.each do |path|
         @provider_class.call(path)
       rescue StandardError => e
-        Honeybadger.notify(e)
+        Rails.error.report(e)
         ForemStatsClient.increment(
           "edgecache_bust.provider_error",
           tags: ["provider_class:#{@provider_class}", "error_class:#{e.class}"],
@@ -48,7 +48,7 @@ module EdgeCache
       # If we can't connect to OpenResty, alert ourselves that it is
       # unavailable and return false.
       Rails.logger.error("Could not connect to OpenResty via #{ApplicationConfig['OPENRESTY_URL']}!")
-      Honeybadger.notify(e)
+      Rails.error.report(e)
       ForemStatsClient.increment("edgecache_bust.service_unavailable",
                                  tags: ["path:#{ApplicationConfig['OPENRESTY_URL']}"])
     end

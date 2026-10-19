@@ -133,7 +133,7 @@ module IncomingWebhooks
       obj.customer if obj.respond_to?(:customer)
       obj["customer"] if obj.is_a?(Hash) && obj.key?("customer")
     rescue StandardError => e
-      Honeybadger.notify(e, context: { object: obj })
+      Rails.error.report(e, context: { object: obj })
       nil
     end
     

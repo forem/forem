@@ -45,7 +45,7 @@ module Emails
             article.ai_summary = full_article.reload.ai_summary
           rescue StandardError => e
             Rails.logger.warn("Failed to generate summary for article #{article.id} in digest: #{e.message}")
-            Honeybadger.notify(e) if defined?(Honeybadger)
+            Rails.error.report(e)
           end
         end
       end
@@ -107,7 +107,7 @@ module Emails
         Rails.logger.warn("Failed to send digest to user #{user.id} due to SMTP syntax/fatal error: #{e.message}")
       rescue StandardError => e
         Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
-        Honeybadger.notify(e)
+        Rails.error.report(e)
       end
     end
   end
