@@ -97,6 +97,20 @@ RSpec.describe "Reactions" do
         )
       end
     end
+
+    it "looks up only the article id, once, for the signed-out surrogate key" do
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get reactions_path(article_id: article.id)
+      end
+
+      expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
+      expect(queries.size).to eq(1)
+      expect(queries.first).to start_with('SELECT "articles"."id" FROM "articles"')
+    end
   end
 
   describe "GET /reactions?commentable_id=:article.id&commentable_type=Article" do
