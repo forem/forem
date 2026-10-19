@@ -41,7 +41,8 @@ class ReactionsController < ApplicationController
     }.merge(result).to_json
 
     if !session_current_user_id
-      set_surrogate_key_header(reactions_surrogate_key) if reactions_surrogate_key
+      surrogate_key = reactions_surrogate_key
+      set_surrogate_key_header(surrogate_key) if surrogate_key
       set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
     end
   end
@@ -75,8 +76,8 @@ class ReactionsController < ApplicationController
 
   def reactions_surrogate_key
     if params[:article_id]
-      article = Article.find_by(id: params[:article_id])
-      return Reaction.surrogate_key_for_article(article.id) if article
+      article_id = Article.where(id: params[:article_id]).pick(:id)
+      return Reaction.surrogate_key_for_article(article_id) if article_id
     else
       commentable = commentable_for_reactions
       return Reaction.surrogate_key_for_commentable(commentable) if commentable
@@ -87,7 +88,8 @@ class ReactionsController < ApplicationController
     return unless params[:commentable_id] && params[:commentable_type]
     return unless params[:commentable_type].in?(Comment::COMMENTABLE_TYPES)
 
-    params[:commentable_type].constantize.find_by(id: params[:commentable_id])
+    # Only the id is needed for the surrogate key; avoid hydrating large text columns.
+    params[:commentable_type].constantize.select(:id).find_by(id: params[:commentable_id])
   end
 
   def check_limit
