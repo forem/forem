@@ -1636,6 +1636,21 @@ RSpec.describe "Api::V1::Articles" do
 
         expect(response.parsed_body.first.keys).to match_array keys
       end
+
+      it "does not run a separate COUNT query" do
+        create(:article)
+
+        count_queries = []
+        callback = lambda do |*, payload|
+          count_queries << payload[:sql] if payload[:sql].include?("subquery_for_count")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search"
+        end
+
+        expect(response.parsed_body.length).to eq(2)
+        expect(count_queries).to be_empty
+      end
     end
 
     it "supports pagination" do
