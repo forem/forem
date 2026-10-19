@@ -69,7 +69,7 @@ class ArticleApiIndexService
   def tag_articles
     articles = published_articles_with_users_and_organizations.cached_tagged_with(tag)
 
-    articles = if Tag.find_by(name: tag)&.requires_approval
+    articles = if Tag.where(name: tag).pick(:requires_approval)
                  articles.approved.order(published_at: :desc)
                elsif top.present?
                  articles.where("published_at > ?", top.to_i.days.ago)

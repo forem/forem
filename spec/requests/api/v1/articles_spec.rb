@@ -164,6 +164,14 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.size).to eq(0)
       end
 
+      it "returns approved tag articles if tag requires approval" do
+        article.update_column(:approved, true)
+        Tag.find_by(name: article.tag_list.first).update(requires_approval: true)
+
+        get api_articles_path(tag: article.tag_list.first), headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+      end
+
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss")
         get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }, headers: headers
