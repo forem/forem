@@ -104,16 +104,14 @@ class ReactionsController < ApplicationController
   def reactions_by_user_id(user_id = session_current_user_id)
     id = params[:article_id]
 
-    public_reactions = Reaction.public_category.where(
+    # Single lookup on the (user_id, reactable_id, reactable_type, category) unique index,
+    # keeping public reactions ahead of the readinglist one as before.
+    readinglist, public_reactions = Reaction.where(
       reactable_id: id,
       reactable_type: "Article",
       user_id: user_id,
-    )
-    readinglist = Reaction.where(
-      reactable_id: id,
-      reactable_type: "Article",
-      category: "readinglist", user_id: user_id
-    )
+      category: Reaction.public_reaction_types + ["readinglist"],
+    ).partition { |reaction| reaction.category == "readinglist" }
 
     public_reactions + readinglist
   end

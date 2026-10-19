@@ -36,6 +36,17 @@ RSpec.describe "Reactions" do
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
       end
 
+      it "returns public reactions followed by the readinglist reaction" do
+        create(:reaction, reactable: article, user: user, category: "readinglist")
+        create(:reaction, reactable: article, user: user, category: "unicorn")
+
+        get reactions_path(article_id: article.id)
+
+        categories = response.parsed_body["reactions"].pluck("category")
+        expect(categories).to contain_exactly("like", "unicorn", "readinglist")
+        expect(categories.last).to eq("readinglist")
+      end
+
       it "does not set Surrogate-Key cache control headers" do
         expect(response.headers["Surrogate-Key"]).to be_nil
       end
