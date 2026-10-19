@@ -104,6 +104,36 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user, as before" do
+        create_list(:feed_event, 2, category: "impression", article: article, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create_list(:feed_event, 2, category: "click", article: article, user: nil, article_position: 1)
+
+        article.reload
+        # Distinct impression users: nil and user1; distinct click users: nil.
+        expect(article.feed_success_score).to eq(1 / 2.0)
+        expect(article.feed_impressions_count).to eq(3)
+        expect(article.feed_clicks_count).to eq(2)
+      end
+    end
+
+    context "when computing the counters" do
+      it "reads the article's feed events in a single query" do
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create(:feed_event, category: "click", article: article, user: user2, article_position: 1)
+
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_article_counters(article.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+        expect(article.reload.feed_success_score).to eq(1.0)
+      end
+    end
+
     context "when article_id is nil" do
       it "does not call update_single_article_counters" do
         # Instead of saving (which would hit the not-null constraint), call the callback method directly
