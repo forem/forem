@@ -12,6 +12,7 @@ jobs:
       E2E: true
       RAILS_ENV: test
       NODE_ENV: test
+      YARN_ENABLE_HARDENED_MODE: 0
 
     steps:
       - uses: actions/checkout@v6
@@ -25,8 +26,10 @@ jobs:
         with:
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
@@ -34,5 +37,7 @@ jobs:
         if: steps.assetscache.outputs.cache-hit != 'true'
       - run: yarn install --immutable
         if: steps.assetscache.outputs.cache-hit != 'true'
-      - run: bundle exec rails assets:precompile
+      - run: |
+          rm -rf public/assets
+          SKIP_YARN_INSTALL=true bundle exec rails assets:precompile
         if: steps.assetscache.outputs.cache-hit != 'true'

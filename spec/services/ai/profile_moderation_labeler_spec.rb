@@ -14,6 +14,41 @@ RSpec.describe Ai::ProfileModerationLabeler, type: :service do
 
       expect(described_class.new(user, ai_client: ai_client).label).to eq("clear_and_obvious_spam")
     end
+
+    it "does not false-match a negated clear_and_obvious_spam mention before the chosen label" do
+      response = "This profile is not clear_and_obvious_spam; the appropriate label is okay_and_on_topic."
+      ai_client = instance_double(Ai::Base, call: response)
+
+      expect(described_class.new(user, ai_client: ai_client).label).to eq("okay_and_on_topic")
+    end
+
+    it "returns no_moderation_label when the only mentioned label is negated" do
+      response = "This is not clear_and_obvious_spam."
+      ai_client = instance_double(Ai::Base, call: response)
+
+      expect(described_class.new(user, ai_client: ai_client).label).to eq("no_moderation_label")
+    end
+
+    it "includes non-blank custom profile fields from onboarding in the prompt" do
+      user.profile.update_columns(
+        data: {
+          "skills_languages" => "TypeScript, Rust, PostgreSQL",
+          "currently_learning" => "Distributed systems",
+          "social_image" => "https://example.com/ignored.png"
+        },
+      )
+      captured_prompt = nil
+      ai_client = instance_double(Ai::Base)
+      allow(ai_client).to receive(:call) do |prompt|
+        captured_prompt = prompt
+        "no_moderation_label"
+      end
+
+      expect(described_class.new(user, ai_client: ai_client).label).to eq("no_moderation_label")
+      expect(captured_prompt).to include("Skills languages: TypeScript, Rust, PostgreSQL")
+      expect(captured_prompt).to include("Currently learning: Distributed systems")
+      expect(captured_prompt).not_to include("ignored.png")
+    end
   end
 
   describe "#label with Jev selected" do
@@ -24,13 +59,37 @@ RSpec.describe Ai::ProfileModerationLabeler, type: :service do
 
       expect(described_class.new(user).label).to eq("no_moderation_label")
       expect(requests.first[:state][:profile]).to include(username: user.username)
+      expect(requests.first[:state][:profile]).not_to have_key(:fields)
       expect(requests.first[:questions]).not_to have_key(:spam_articles)
+    end
+
+    it "includes non-blank custom profile fields in the Jev profile state" do
+      user.profile.update_columns(
+        data: {
+          "skills_languages" => "Go, React",
+          "work" => "Backend Engineer",
+          "social_image" => "https://example.com/social.png"
+        },
+      )
+      requests = stub_jev
+
+      expect(described_class.new(user).label).to eq("no_moderation_label")
+      expect(requests.first[:state][:profile][:fields]).to eq(
+        "skills_languages" => "Go, React",
+        "work" => "Backend Engineer",
+      )
     end
 
     it "labels clear SEO spam" do
       stub_jev(keyword_stuffed_identity: 0.92)
 
       expect(described_class.new(user).label).to eq("clear_and_obvious_spam")
+    end
+
+    it "does not label profile-only spam when the profile plausibly belongs to a real person or organization" do
+      stub_jev(keyword_stuffed_identity: 0.92, promotional_profile: 0.95, plausible_profile: 0.6)
+
+      expect(described_class.new(user).label).to eq("no_moderation_label")
     end
 
     it "gives safety labels precedence over spam" do

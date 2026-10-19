@@ -31,5 +31,23 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
 
       expect(response.first[:favorited_by_user_id]).to be_nil
     end
+
+    it "queries articles only once and avoids LEFT OUTER JOIN reactions when serializing Homepage::ArticlesQuery" do
+      relation = Homepage::ArticlesQuery.call(sort_by: :hotness_score, sort_direction: :desc)
+      article_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        article_queries << sql if sql.include?('FROM "articles"') && !payload[:cached]
+      end
+
+      response = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        response = described_class.serialized_collection_from(relation: relation)
+      end
+
+      expect(response.size).to eq(1)
+      expect(article_queries.size).to eq(1)
+      expect(article_queries.first).not_to include('LEFT OUTER JOIN "reactions"')
+    end
   end
 end

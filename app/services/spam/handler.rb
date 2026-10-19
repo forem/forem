@@ -18,8 +18,6 @@ module Spam
       "betting",
       "escort",
       "prostitut",
-      "adult",
-      "girls",
       "porn",
       "onlyfans",
       "crypto pump",
@@ -461,7 +459,10 @@ module Spam
       normalized = text.to_s.downcase
       return false if normalized.blank?
 
-      PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
+      PROFILE_SPAM_TRIGGER_TERMS.any? do |term|
+        pattern = term == "prostitut" ? /\b#{Regexp.escape(term)}\w*\b/ : /\b#{Regexp.escape(term)}s?\b/
+        normalized.match?(pattern)
+      end
     end
 
     # Spam farms publish the same post over and over. The third copy of a title in a day is spam

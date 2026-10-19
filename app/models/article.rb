@@ -207,6 +207,7 @@ class Article < ApplicationRecord
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
@@ -350,6 +351,13 @@ class Article < ApplicationRecord
   before_save :set_caches
   before_save :detect_language
   before_create :create_password
+  after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
+  after_update :withdraw_pending_co_author_invitations, if: lambda {
+    saved_change_to_organization_id? && organization_id.present?
+  }
+  after_update :refresh_co_author_invitation_notifications, if: lambda {
+    saved_change_to_title? || saved_change_to_path? || saved_change_to_published?
+  }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -939,7 +947,23 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+    raw_markdown = comments.pluck(:body_markdown).join(" ")
+    # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
+    return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
+
+    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+  end
+
+  # Request-local memo of comment trees loaded for this instance, keyed by query options, so
+  # articles#show can share one tree between its JSON-LD and the rendered comment area.
+  def comment_tree(limit:, order:, include_negative:)
+    @comment_trees ||= {}
+    @comment_trees[[limit, order, include_negative]] ||=
+      Comments::Tree.for_commentable(self, limit: limit, order: order, include_negative: include_negative)
+  end
+
+  def loaded_comment_trees
+    @comment_trees&.values || []
   end
 
   def url
@@ -1665,8 +1689,16 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
+  # Co-authors who accepted an invitation consented to the credit themselves, so they don't need
+  # to be members of the organization (e.g. a co-authored personal post moved under an org).
   def validate_co_authors_belong_to_organization
-    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
+    accepted_ids = new_record? ? [] : co_author_invitations.accepted.pluck(:user_id)
+    org_credited_ids = co_author_ids - accepted_ids
+    return if org_credited_ids.empty?
+
+    org_member_count = OrganizationMembership.active
+      .where(organization_id: organization_id, user_id: org_credited_ids).count
+    return if org_member_count == org_credited_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
@@ -2055,6 +2087,26 @@ class Article < ApplicationRecord
     removed_user_ids = Array.wrap(before).map(&:to_i) - Array.wrap(after).map(&:to_i)
 
     Notification.send_to_co_authors(self, removed_user_ids)
+  end
+
+  # Keeps accepted invitations in step with co_author_ids when the credit list is edited directly
+  # (org co-author picker, admin tools), so an accepted invitation always means a credited co-author.
+  def remove_uncredited_co_author_invitations
+    co_author_invitations.accepted.where.not(user_id: co_author_ids).destroy_all
+  end
+
+  # Invitations are only for personal posts, so any still pending lapse when the post moves under
+  # an organization. Co-authors who already accepted stay credited.
+  def withdraw_pending_co_author_invitations
+    co_author_invitations.pending.destroy_all
+  end
+
+  def refresh_co_author_invitation_notifications
+    article_data = { "id" => id, "title" => title, "path" => current_state_path }
+    Notification.where(notifiable_type: "CoAuthorInvitation", notifiable_id: co_author_invitations.select(:id))
+      .find_each do |notification|
+        notification.update!(json_data: notification.json_data.merge("article" => article_data))
+      end
   end
 
   def cleanup_memberships_if_unpublished

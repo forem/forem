@@ -51,10 +51,28 @@ RSpec.describe "BillboardEvents", type: :request do
     context "when event exists and is an impression" do
       let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: user, seconds_visible: 10) }
 
-      it "updates seconds_visible by 10 if not updated recently" do
+      it "updates seconds_visible by 10 without a preliminary find_by query if not updated recently" do
         event.update_column(:updated_at, 10.seconds.ago)
+        allow(BillboardEvent).to receive(:find_by).and_call_original
         patch "/bb_tabulations/#{event.id}"
-        expect(response.status).to eq(200)
+        expect([response.status, event.reload.seconds_visible]).to eq([200, 20])
+        expect(BillboardEvent).not_to have_received(:find_by)
+      end
+
+      it "updates with a single SQL statement that keeps synchronous_commit off" do
+        event.update_column(:updated_at, 10.seconds.ago)
+        # Request-wide middleware (e.g. subforem lookups) also queries, so only count the event table.
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?(BillboardEvent.table_name)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          patch "/bb_tabulations/#{event.id}"
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(queries.size).to eq(1)
+        expect(queries.first).to start_with("SET LOCAL synchronous_commit TO OFF; UPDATE")
         expect(event.reload.seconds_visible).to eq(20)
       end
 
@@ -92,6 +110,11 @@ RSpec.describe "BillboardEvents", type: :request do
       it "returns not found status" do
         patch "/bb_tabulations/999999"
         expect(response.status).to eq(404)
+      end
+
+      it "returns not found status for a non-numeric id" do
+        patch "/bb_tabulations/not-an-id"
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

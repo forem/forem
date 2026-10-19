@@ -53,11 +53,26 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect { sticky.processed_html }.to raise_error(ActiveModel::MissingAttributeError)
     end
 
-    it "handles article with nil cached_tag_list" do
+    it "handles article with nil cached_tag_list without querying empty tags" do
       article.update_column(:cached_tag_list, nil)
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+
       result = described_class.call(article.reload, user)
-      # Should not raise, just returns empty or unfiltered results
+
       expect(result).to be_a(ActiveRecord::Relation)
+      expect(result).to be_empty
+      expect(Article).not_to have_received(:cached_tagged_with_any)
+    end
+
+    it "returns an empty relation when cached_tag_list only contains discuss" do
+      article.update_column(:cached_tag_list, "discuss")
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+
+      result = described_class.call(article.reload, user)
+
+      expect(result).to be_a(ActiveRecord::Relation)
+      expect(result).to be_empty
+      expect(Article).not_to have_received(:cached_tagged_with_any)
     end
   end
 end
