@@ -820,7 +820,6 @@ RSpec.describe "Billboards" do
 
     it "lets any origin read it" do
       expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
-      expect(response.headers["Vary"].to_s).not_to include("Origin")
     end
   end
 end

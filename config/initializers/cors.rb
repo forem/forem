@@ -32,11 +32,11 @@ Rails.application.config.middleware.insert_before(
     end
   end
 
-  # Billboards are public and edge cached, so any origin may read them. A wildcard keeps the
-  # cached response identical for every origin (no Vary: Origin).
+  # Billboards are public, so any origin may read them. The path is a regex because rack-cors
+  # compiles "/bb/*" to a pattern that also matches /bb_tabulations.
   allow do
     origins "*"
-    resource "/bb/*", methods: %i[head get options], headers: []
+    resource %r{\A/bb/}, methods: %i[head get options], headers: []
   end
 
   # Embedding sites record impressions and clicks without cookies (see BillboardEventsController).
