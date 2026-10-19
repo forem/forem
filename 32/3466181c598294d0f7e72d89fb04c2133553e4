@@ -1,0 +1,20 @@
+app/javascript/profileDropdown/adminProfileLink.js
+  s_6d90ed72f10959::t_c7e9da53af7e39 26-29,31-38
+  s_6d90ed72f10959::t_ee2ae1bbbcc433 2,21-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "323466181c598294d0f7e72d89fb04c2133553e4",
+  "prompts": {},
+  "sessions": {
+    "s_6d90ed72f10959": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2716733-a560-4851-b8b7-e8d6a2c1d223",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

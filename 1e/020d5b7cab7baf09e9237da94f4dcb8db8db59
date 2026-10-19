@@ -1,0 +1,16 @@
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_f968154a99632d 391
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 24-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "1e020d5b7cab7baf09e9237da94f4dcb8db8db59",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

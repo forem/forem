@@ -1,0 +1,26 @@
+app/workers/articles/update_article_activity_worker.rb
+  f0eae6a24f98aab0 34-42
+app/models/article_activity.rb
+  f0eae6a24f98aab0 81-85,93-98,109-116,127-130,181-183,185,187-188,311-315,327-336
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "149ed8f90669ff1cfc680a1f345092f7bf1d1d91",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 53,
+      "total_deletions": 35,
+      "accepted_lines": 53,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/08c59d5d2e9569c49063ab5067e3ada7cb4bd41c48d5a1f4b075d785d1062151"
+    }
+  }
+}

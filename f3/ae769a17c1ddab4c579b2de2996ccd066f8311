@@ -1,0 +1,27 @@
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_b1271a190e3091::t_3503c3c45b7d56 3
+  s_b1271a190e3091::t_d91d1e10a82d38 30-35,39
+  s_b1271a190e3091::t_e64a5bdf5e97db 5
+  s_b1271a190e3091::t_1a084bc0fabecc 1-2,4,6-14,25-29,36-38,40-45
+  s_b1271a190e3091::t_20909c9ecc8a1a 15-24
+spec/services/authentication/authenticator_spec.rb
+  s_b1271a190e3091::t_993968d835699d 1072-1075
+app/services/authentication/authenticator.rb
+  s_b1271a190e3091::t_4b17ebf9a0adfe 165-168
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "f3ae769a17c1ddab4c579b2de2996ccd066f8311",
+  "prompts": {},
+  "sessions": {
+    "s_b1271a190e3091": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fdc8e-6cad-7733-bc14-6caf3f133812",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}
