@@ -56,7 +56,7 @@ class PollVotesController < ApplicationController
                    user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
                    voted: true }
   rescue StandardError => e
-    Honeybadger.notify(e, context: {
+    Rails.error.report(e, context: {
                          user_id: current_user&.id,
                          poll_option_id: poll_vote_params[:poll_option_id],
                          action: "poll_vote_create",
