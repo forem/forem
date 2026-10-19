@@ -59,6 +59,9 @@ module Stories
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
       stories = stories.full_posts.from_subforem
+      # Full-post feed cards never read processed_html (only status previews do),
+      # so skip hydrating that heavy column for every story on the page.
+      stories = stories.reselect(*(stories.select_values - [:processed_html]))
       @stories = stories.decorate
     end
 
