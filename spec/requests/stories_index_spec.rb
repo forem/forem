@@ -586,6 +586,37 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username with a pending flash message" do
+    let(:user) { create(:user) }
+    let(:profile_url) { "http://www.example.com/#{user.username}" }
+    let(:reset_notice) { I18n.t("devise.passwords.reset_instructions_sent") }
+
+    before do
+      get "/users/password/new", headers: { "Referer" => profile_url }
+      post "/users/password", params: { user: { email: user.email } }
+    end
+
+    it "does not edge cache the response that renders the flash", :aggregate_failures do
+      expect(response).to redirect_to(profile_url)
+      follow_redirect!
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(reset_notice)
+      expect(response.headers["Surrogate-Control"]).to be_nil
+      expect(response.headers["X-Accel-Expires"]).to be_nil
+      expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+    end
+
+    it "consumes the flash so the next request is cacheable again", :aggregate_failures do
+      follow_redirect!
+      get "/#{user.username}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include(reset_notice)
+      expect(response.headers["Surrogate-Control"]).to be_present
+    end
+  end
+
   describe "GET /:slug (organization page)" do
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }

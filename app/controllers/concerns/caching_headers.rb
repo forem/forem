@@ -26,7 +26,7 @@ module CachingHeaders
     # Only public forems should be edge-cached based on current functionality.
     return unless Settings::UserExperience.public
 
-    if auth_state_desynced_with_fastly?
+    if auth_state_desynced_with_fastly? || flash_pending?
       unset_cache_control_headers
       return
     end
@@ -65,6 +65,14 @@ module CachingHeaders
 
   def auth_state_desynced_with_fastly?
     request.cookies.key?("remember_user_token") != user_signed_in?
+  end
+
+  # A flash message (e.g. "Your password reset instructions have been sent.") is
+  # rendered into the page by the layout. If we edge cached that response, every
+  # subsequent visitor would see someone else's flash. Skipping the cache here
+  # also lets the session be written so the flash is actually consumed.
+  def flash_pending?
+    !flash.empty?
   end
 
   def build_surrogate_control(max_age, stale_while_revalidate: nil, stale_if_error: 26_400)
