@@ -956,6 +956,37 @@ RSpec.describe Spam::Handler, type: :service do
         expect(Notification.where(notifiable: comment)).to exist
         expect(Notification.where(notifiable: mention)).to exist
       end
+
+      it "removes notifications on a duplicate check when the mascot's flag is still valid or confirmed" do
+        create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "valid")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).not_to exist
+        expect(Notification.where(notifiable: mention)).not_to exist
+      end
+
+      it "keeps the notifications when an existing mascot flag was marked invalid by an admin" do
+        create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "invalid")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).to exist
+        expect(Notification.where(notifiable: mention)).to exist
+      end
+
+      it "does not recreate a mention notification when MentionWorker runs before score recalculation" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+        expect(comment.reload.score).to be >= 0
+
+        Notifications::NewMention::Send.call(mention.reload)
+
+        expect(Notification.where(notifiable: mention)).not_to exist
+      end
     end
 
     context "when a comment without links is flagged by the escalation check" do
@@ -1039,8 +1070,11 @@ RSpec.describe Spam::Handler, type: :service do
       end
 
       it "marks the account as spam without running the content checks" do
+        allow(Notifications::RemoveBySpammerWorker).to receive(:perform_async)
+
         expect(handler).to eq(:spam)
         expect(commenter.reload).to be_spam
+        expect(Notifications::RemoveBySpammerWorker).to have_received(:perform_async).with(commenter.id)
         expect(AuditLog.on_user(commenter).find_by(slug: "automatic_spam").data)
           .to include("reason" => "new_account_comment_flood", "commented_post_count" => 21)
         expect(Ai::CommentCheck).not_to have_received(:new)

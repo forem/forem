@@ -236,13 +236,23 @@ module Spam
         reactable: reactable,
         category: "vomit",
       )
-      if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+      if reaction.persisted? ||
+          (reaction.errors.of_kind?(:user_id, :taken) && active_spam_reaction_for?(reactable: reactable))
         remove_spam_comment_notifications!(comment: reactable) if reactable.is_a?(Comment)
         return
       end
+      return if reaction.errors.of_kind?(:user_id, :taken)
 
       Rails.logger.warn("Spam reaction not created for #{reactable.class.name} #{reactable.id}: " \
                         "#{reaction.errors.full_messages.to_sentence}")
+    end
+
+    def self.active_spam_reaction_for?(reactable:)
+      Reaction.valid_or_confirmed.exists?(
+        user_id: Settings::General.mascot_user_id,
+        reactable: reactable,
+        category: "vomit",
+      )
     end
 
     # New comment and mention notifications go out when the comment is saved, before the async
@@ -347,6 +357,7 @@ module Spam
       return if user.spam?
 
       user.add_role(:spam)
+      Notifications::RemoveBySpammerWorker.perform_async(user.id)
       audit_automatic_block!(user: user, role: :spam, reason: reason, **details)
 
       Note.create(
