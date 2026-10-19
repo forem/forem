@@ -146,20 +146,24 @@ RSpec.describe "UserSubscriptions" do
       expect(response.parsed_body["error"]).to include("Subscriber email mismatch.")
     end
 
-    it "returns an error for a subscriber that signed up with Apple" do
-      allow(user).to receive(:email).and_return("test@privaterelay.appleid.com")
+    it "returns an error for a subscriber that signed up with Apple", :aggregate_failures do
       article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-      valid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
 
-      expect do
-        post user_subscriptions_path,
-             headers: { "Content-Type" => "application/json" },
-             params: { user_subscription: valid_source_attributes }.to_json
-      end.not_to change(UserSubscription, :count)
+      %w[test@privaterelay.appleid.com test@private.icloud.com].each do |relay_email|
+        allow(user).to receive(:email).and_return(relay_email)
+        valid_source_attributes = { source_type: article.class_name, source_id: article.id,
+                                    subscriber_email: user.email }
 
-      expect(response).to have_http_status(:unprocessable_entity)
-      error_message = "Subscriber email Can't subscribe with an Apple private relay. Please update email."
-      expect(response.parsed_body["error"]).to include(error_message)
+        expect do
+          post user_subscriptions_path,
+               headers: { "Content-Type" => "application/json" },
+               params: { user_subscription: valid_source_attributes }.to_json
+        end.not_to change(UserSubscription, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        error_message = "Subscriber email Can't subscribe with an Apple private relay. Please update email."
+        expect(response.parsed_body["error"]).to include(error_message)
+      end
     end
   end
 
