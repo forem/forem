@@ -1,7 +1,7 @@
 class AddUnreadUserIndexToNotifications < ActiveRecord::Migration[8.0]
   disable_ddl_transaction!
 
-  INDEX_NAME = "index_notifications_on_user_id_and_subforem_id_unread".freeze
+  INDEX_NAME = "index_notifications_on_user_id_unread".freeze
 
   def up
     safety_assured do
@@ -16,7 +16,7 @@ class AddUnreadUserIndexToNotifications < ActiveRecord::Migration[8.0]
 
         conn.exec(<<~SQL.squish)
           CREATE INDEX CONCURRENTLY IF NOT EXISTS #{INDEX_NAME}
-          ON notifications (user_id, subforem_id)
+          ON notifications (user_id)
           WHERE (read = false);
         SQL
       end

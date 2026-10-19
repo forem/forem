@@ -1194,10 +1194,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_19_120000) do
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["organization_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_org_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["subforem_id"], name: "index_notifications_on_subforem_id"
-    t.index ["user_id", "subforem_id"], name: "index_notifications_on_user_id_and_subforem_id_unread", where: "(read = false)"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+    t.index ["user_id"], name: "index_notifications_on_user_id_unread", where: "(read = false)"
   end
 
   create_table "onboarding_checklists", force: :cascade do |t|
