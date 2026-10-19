@@ -928,6 +928,36 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when the comment already sent notifications" do
+      let(:recipient) { create(:user) }
+      let(:other_comment) { create(:comment) }
+      let(:mention) { create(:mention, mentionable: comment, user: recipient) }
+
+      before do
+        create(:notification, user: recipient, organization: nil, notifiable: comment)
+        create(:notification, user: recipient, organization: nil, notifiable: mention)
+        create(:notification, user: recipient, organization: nil, notifiable: other_comment)
+      end
+
+      it "removes the comment and mention notifications once the comment is flagged as spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).not_to exist
+        expect(Notification.where(notifiable: mention)).not_to exist
+        expect(Notification.where(notifiable: other_comment)).to exist
+      end
+
+      it "keeps the notifications when the comment is not spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+
+        expect(handler).to eq(:not_spam)
+        expect(Notification.where(notifiable: comment)).to exist
+        expect(Notification.where(notifiable: mention)).to exist
+      end
+    end
+
     context "when a comment without links is flagged by the escalation check" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)

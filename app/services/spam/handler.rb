@@ -236,10 +236,21 @@ module Spam
         reactable: reactable,
         category: "vomit",
       )
-      return if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+      if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+        remove_spam_comment_notifications!(comment: reactable) if reactable.is_a?(Comment)
+        return
+      end
 
       Rails.logger.warn("Spam reaction not created for #{reactable.class.name} #{reactable.id}: " \
                         "#{reaction.errors.full_messages.to_sentence}")
+    end
+
+    # New comment and mention notifications go out when the comment is saved, before the async
+    # spam check runs. Once the mascot flags the comment, pull them back so recipients don't keep
+    # seeing (and clicking through to) spam in their notifications inbox.
+    def self.remove_spam_comment_notifications!(comment:)
+      Notification.remove_all_without_delay(notifiable_ids: comment.id, notifiable_type: "Comment")
+      Notification.remove_all_without_delay(notifiable_ids: comment.mentions.ids, notifiable_type: "Mention")
     end
 
     def self.escalate_flagged_author!(user:)
@@ -527,7 +538,7 @@ module Spam
       domains
     end
 
-    private_class_method :suspend!, :issue_spam_reaction_for!,
+    private_class_method :suspend!, :issue_spam_reaction_for!, :remove_spam_comment_notifications!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :escalate_flagged_commenter!, :label_article_content!,
                          :offtopic_label?, :check_subforem_reassignment,
