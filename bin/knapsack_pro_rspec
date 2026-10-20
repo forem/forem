@@ -11,7 +11,16 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
   SPEC_OPTS="${SPEC_OPTS} --require ./spec/support/ci/schema_railtie" \
   bundle exec rake "knapsack_pro:rspec[${RSPEC_ARGS}]"
 else
+  SLOW_SPECS="spec/models/article_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/feeds/import_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/spam/reaction_ring_detector_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/requests/api/v1/articles_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/spam/handler_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/requests/api/v0/articles_spec.rb"
+
   RACK_ENV=test \
   RAILS_ENV=test \
-  bundle exec ruby -r ./spec/support/ci/schema_railtie -r knapsack_pro -e "KnapsackPro::Runners::Queue::RSpecRunner.run('${RSPEC_ARGS}')"
+  KNAPSACK_PRO_RSPEC_SPLIT_BY_TEST_EXAMPLES=true \
+  KNAPSACK_PRO_SLOW_TEST_FILE_PATTERN="{${SLOW_SPECS}}" \
+  bundle exec ruby -r knapsack_pro -r ./spec/support/ci/schema_railtie -e "KnapsackPro::Runners::Queue::RSpecRunner.run('${RSPEC_ARGS}')"
 fi
