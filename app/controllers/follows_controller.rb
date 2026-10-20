@@ -16,8 +16,9 @@ class FollowsController < ApplicationController
 
     return render plain: following_them_check unless params[:followable_type] == "User"
 
-    following_you_check = Follows::CheckCached.call(User.find_by(id: params[:id]), params[:followable_type],
-                                                    current_user.id)
+    # Follows::CheckCached only needs the follower's id and updated_at (for its cache key).
+    followed_back_user = User.select(:id, :updated_at).find_by(id: params[:id])
+    following_you_check = Follows::CheckCached.call(followed_back_user, params[:followable_type], current_user.id)
 
     if following_them_check && following_you_check
       render plain: "mutual"
