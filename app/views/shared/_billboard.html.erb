@@ -23,7 +23,7 @@
        anonymous_tracking_allowed: (true if local_assigns[:anonymous_tracking_allowed])
      },
    ) %>
-<% if billboard.template == "plain" %>
+<% if billboard.template == "plain" || Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>
   <div
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"

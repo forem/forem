@@ -7106,7 +7106,8 @@
               "post_comments_secondary",
               "post_comments_mid",
               "digest_first",
-              "digest_second"
+              "digest_second",
+              "external_feed"
             ],
             "description": "Identifies which area of site layout the ad can appear in"
           },
