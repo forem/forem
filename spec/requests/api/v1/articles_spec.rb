@@ -1624,6 +1624,38 @@ RSpec.describe "Api::V1::Articles" do
 
         expect(response.parsed_body.first.keys).to match_array index_keys
       end
+
+      it "runs the full-text search only once and returns body_markdown" do
+        article.update_columns(title: "Quuxlefrobnicator")
+        create(:article)
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "Quuxlefrobnicator" }
+        end
+
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+        expect(response.parsed_body.first["body_markdown"]).to eq(article.body_markdown)
+        expect(search_queries.size).to eq(1)
+      end
+    end
+
+    context "when there are no articles returned" do
+      it "returns an empty array after a single full-text search" do
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "zzznomatchzzz" }
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+        expect(search_queries.size).to eq(1)
+      end
     end
 
     context "when there is more than one article returned" do
