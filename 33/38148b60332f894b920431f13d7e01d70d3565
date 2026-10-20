@@ -1,0 +1,16 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 33-35,37-42,46,54-58,63,65,69,86,92,119,121-123,125,136,140-161
+.github/workflows/create-cache.yml
+  h_f968154a99632d 19-21,23-28,32,40-44,49,51,55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3338148b60332f894b920431f13d7e01d70d3565",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
