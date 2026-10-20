@@ -69,12 +69,14 @@ RSpec.describe FeatureTag, type: :liquid_tag do
       end.to raise_error(StandardError, /Use an emoji or one of/)
     end
 
-    it "raises for a name that exists as an asset but is not curated" do
+    it "still accepts an off-list name that resolves to a root SVG asset" do
       expect(Rails.root.join("app/assets/images/twitter.svg")).to exist
       expect(described_class::ICONS).not_to include("twitter")
 
-      expect { render_feature('title="Off list" icon="twitter"') }
-        .to raise_error(StandardError, /Invalid icon 'twitter'/)
+      result = render_feature('title="Off list" icon="twitter"')
+
+      expect(result).to include("ltag-feature__icon")
+      expect(result).to match(/<svg/)
     end
 
     it "validates the title before the icon" do
@@ -103,6 +105,14 @@ RSpec.describe FeatureTag, type: :liquid_tag do
 
     it "accepts the previously documented rocket icon" do
       expect { render_feature('title="Fast" icon="rocket"') }.not_to raise_error
+    end
+
+    it "recompiles a published page that uses an off-list asset name" do
+      markdown = '{% features %}{% feature title="T" icon="github" %}B{% endfeature %}{% endfeatures %}'
+      page = create(:page, organization: create(:organization), body_markdown: markdown)
+
+      expect { page.recompile! }.not_to raise_error
+      expect(page.reload.processed_html).to include("ltag-feature__icon")
     end
 
     it "renders the rocket alias as a real icon instead of the heart fallback" do

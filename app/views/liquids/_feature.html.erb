@@ -1,7 +1,7 @@
 <div class="ltag-feature">
   <% if icon.present? %>
     <div class="ltag-feature__icon">
-      <% if FeatureTag::ICONS.include?(icon) %>
+      <% if FeatureTag.renderable_icon?(icon) %>
         <% begin %>
           <%= crayons_icon_tag(icon, width: 32, height: 32) %>
         <% rescue StandardError %>
