@@ -14,6 +14,18 @@ This directory contains documentation for the Forem project.
 - **[Feed Partial Index Optimization](feed_partial_index_optimization.md)** - Index optimizations for feed performance
 - **[Moderations Performance Optimizations](moderations_performance_optimizations.md)** - Performance improvements for moderation features
 
+### Deployment & Infrastructure
+- **[Kamal 2 Deployment Guide](kamal-deployment.md)** - Guide for deploying Forem using Kamal 2, container architecture, secrets management, and cloud provider configurations
+- **[Read-Only Database Support](README_READ_ONLY_DATABASE.md)** - Setting up and configuring a read-only PostgreSQL replica (`READ_ONLY_DATABASE_URL`), connection pools, and query timeouts
+
+### Architecture & Services
+- **[Delegated API Access](delegated_access.md)** - Delegated access mechanics and short-lived RFC 9068 JWT authentication
+- **[GitHub Repository Recap Service](github_repo_recap_service.md)** - Overview and usage of the `Ai::GithubRepoRecap` service for summarizing repository activity
+- **[Survey Resubmission Feature](survey_resubmission.md)** - Architecture and configuration for allowing users to resubmit surveys
+
+### Developer Tooling
+- **[Developer Tools Dashboard](dev_tools.md)** - Local `/dev_tools` interface for session spoofing and utility scripts
+
 ## 🛠️ i18n Tools
 
 The project includes several tools for managing internationalization:
