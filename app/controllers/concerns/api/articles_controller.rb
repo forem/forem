@@ -146,7 +146,14 @@ module Api
       # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
       # running a separate COUNT over the full search before every load.
       @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-      @articles = articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate if @articles.size <= 1
+      return unless @articles.size == 1
+
+      # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
+      # return 0-1 results are the slowest searches, so repeating them doubled their cost).
+      @articles = Article.includes([{ user: :profile }, :organization])
+        .where(id: @articles.first.id)
+        .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
+        .decorate
     end
 
     private
