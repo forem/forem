@@ -43,7 +43,7 @@ class PollSkipsController < ApplicationController
       voted: false
     }
   rescue StandardError => e
-    Honeybadger.notify(e, context: {
+    Rails.error.report(e, context: {
                          user_id: current_user&.id,
                          poll_id: poll_skips_params[:poll_id],
                          action: "poll_skip_create",

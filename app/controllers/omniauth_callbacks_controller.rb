@@ -48,7 +48,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         is_expected_oauth_error = error.message.include?("access_token was nil")
       end
 
-      Honeybadger.notify(error) unless is_expected_oauth_error
+      Rails.error.report(error) unless is_expected_oauth_error
     end
 
     super
@@ -83,7 +83,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       I18n.t("omniauth_callbacks_controller.log_in_error", e: e.message)
     redirect_to new_user_registration_url
   rescue StandardError => e
-    Honeybadger.notify(e)
+    Rails.error.report(e)
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
   end
@@ -176,6 +176,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user: current_user,
       cta_variant: cta_variant,
     )
+    @user = sign_in_as_core_identity(auth_payload, cta_variant) if core_identity_mismatch?(auth_payload)
   
     if user_persisted_and_valid? && @user.confirmed?
       set_flash_message(:notice, :success, kind: provider.to_s.titleize) if is_navigational_format?
@@ -222,14 +223,16 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
       user_errors = @user.errors.full_messages
 
-      Honeybadger.context({
-        username: @user.username,
-        user_id: @user.id,
-        auth_data: request.env["omniauth.auth"],
-        auth_error: request.env["omniauth.error"].inspect,
-        user_errors: user_errors
-      })
-      Honeybadger.notify("Omniauth log in error")
+      Rails.error.report(
+        StandardError.new("Omniauth log in error"),
+        context: {
+          username: @user.username,
+          user_id: @user.id,
+          auth_data: request.env["omniauth.auth"],
+          auth_error: request.env["omniauth.error"].inspect,
+          user_errors: user_errors
+        },
+      )
 
       flash[:alert] = user_errors
       redirect_to new_user_registration_url
@@ -245,9 +248,30 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     flash[:alert] = e.record&.errors&.full_messages&.join(", ").presence || I18n.t("omniauth_callbacks_controller.log_in_error", e: e.message)
     redirect_to new_user_registration_url
   rescue StandardError => e
-    Honeybadger.notify(e)
+    Rails.error.report(e)
     flash[:alert] = I18n.t("omniauth_callbacks_controller.log_in_error", e: e)
     redirect_to new_user_registration_url
+  end
+
+  # The Core round trip vouches for the incoming MLH identity, so it must never
+  # return with a signed-in account that is linked to a different one.
+  def core_identity_mismatch?(auth_payload)
+    Authentication::ExternalReturn.redirect_url_for(request.env["omniauth.params"]).present? &&
+      @user.persisted? &&
+      !@user.identities.exists?(provider: auth_payload.provider, uid: auth_payload.uid.to_s)
+  end
+
+  # An existing account for the identity is only reached through the switch
+  # interstitial. With no such account, the person is signed out and one is
+  # created, exactly as a signed-out sign-in would.
+  def sign_in_as_core_identity(auth_payload, cta_variant)
+    owner = Identity.find_by(provider: auth_payload.provider, uid: auth_payload.uid.to_s)&.user ||
+      User.find_by(email: auth_payload.info.email.to_s)&.then { |user| user if user.confirmed? }
+    return @user if owner == @user
+    raise ::Authentication::Errors::AccountSwitchConfirmation.new(owner) if owner
+
+    sign_out(@user)
+    Authentication::Authenticator.call(auth_payload, cta_variant: cta_variant)
   end
 
   def user_persisted_and_valid?

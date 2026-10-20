@@ -87,10 +87,18 @@ RSpec.describe Articles::SuggestStickies, type: :service do
       expect(result).to be_a(Array)
     end
 
-    it "handles article with nil cached_tag_list" do
+    it "handles article with nil cached_tag_list without querying empty tag_articles" do
       article.update_column(:cached_tag_list, nil)
-      result = described_class.call(article.reload)
-      expect(result).to be_a(Array)
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+      expect(described_class.call(article.reload)).to be_a(Array)
+      expect(Article).not_to have_received(:cached_tagged_with_any).with([])
+    end
+
+    it "skips the tag_articles query when cached_tag_list only contains discuss" do
+      article.update_column(:cached_tag_list, "discuss")
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+      expect(described_class.call(article.reload)).to be_a(Array)
+      expect(Article).not_to have_received(:cached_tagged_with_any).with([])
     end
   end
 end

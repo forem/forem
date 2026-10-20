@@ -60,6 +60,20 @@ class Article < ApplicationRecord
 
   MAX_TAG_LIST_SIZE = 4
 
+  # Hosts a user may link as a cover video via `video_source_url`. Used by the
+  # web and API controllers' param whitelists; mirrored on the frontend in
+  # app/javascript/article-form/components/CoverVideoLink.jsx.
+  LINKED_VIDEO_SOURCE_PATTERNS = [
+    %r{\Ahttps?://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)},
+    %r{\Ahttps?://player\.mux\.com/},
+    %r{\Ahttps?://(www\.)?twitch\.tv/videos/},
+  ].freeze
+
+  # Fields embedded in Published/CoAuthor notifications (see Notifications.article_data).
+  # crossposted_at feeds readable_publish_date via displayable_published_at.
+  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at crossposted_at reading_time
+                                    user_id organization_id].freeze
+
   # Author-visible edits, for the article_updated CDP event. Rows churn on score
   # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
   TRACKABLE_UPDATE_KEYS = %w[
@@ -133,6 +147,14 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
+  # Whether a user-submitted `video_source_url` may be mass-assigned.
+  # A blank value is allowed so the cover video can be removed.
+  def self.permitted_video_source_url?(url)
+    return true if url.blank?
+
+    LINKED_VIDEO_SOURCE_PATTERNS.any? { |pattern| url.to_s.match?(pattern) }
+  end
+
   enum :type_of, {
     full_post: 0,
     status: 1,
@@ -185,6 +207,7 @@ class Article < ApplicationRecord
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
@@ -328,6 +351,13 @@ class Article < ApplicationRecord
   before_save :set_caches
   before_save :detect_language
   before_create :create_password
+  after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
+  after_update :withdraw_pending_co_author_invitations, if: lambda {
+    saved_change_to_organization_id? && organization_id.present?
+  }
+  after_update :refresh_co_author_invitation_notifications, if: lambda {
+    saved_change_to_title? || saved_change_to_path? || saved_change_to_published?
+  }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -336,9 +366,15 @@ class Article < ApplicationRecord
   after_save :generate_social_image
   after_save :generate_context_notes
 
+  after_update_commit :notify_co_author_changes, if: proc { |article|
+    article.published? && article.saved_change_to_co_author_ids?
+  }
+
+  # Notifications embed these fields (see Notifications.article_data and user/organization data),
+  # so refresh them only when one changes, not on every touch (e.g. last_comment_at on each comment).
   after_update_commit :update_notifications, if: proc { |article|
-                                                   article.notifications.any? && !article.saved_changes.empty?
-                                                 }
+    article.saved_changes.keys.intersect?(NOTIFICATION_DATA_ATTRIBUTES) && article.notifications.any?
+  }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }
@@ -911,7 +947,23 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+    raw_markdown = comments.pluck(:body_markdown).join(" ")
+    # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
+    return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
+
+    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+  end
+
+  # Request-local memo of comment trees loaded for this instance, keyed by query options, so
+  # articles#show can share one tree between its JSON-LD and the rendered comment area.
+  def comment_tree(limit:, order:, include_negative:)
+    @comment_trees ||= {}
+    @comment_trees[[limit, order, include_negative]] ||=
+      Comments::Tree.for_commentable(self, limit: limit, order: order, include_negative: include_negative)
+  end
+
+  def loaded_comment_trees
+    @comment_trees&.values || []
   end
 
   def url
@@ -1209,7 +1261,17 @@ class Article < ApplicationRecord
   end
 
   def generate_video_embed_url
-    return if video_source_url.blank?
+    if video_source_url.blank?
+      # The cover video was removed: drop the embed derived from it. Only Mux
+      # derives the thumbnail from the source URL, so user-provided thumbnails
+      # are kept.
+      if video_source_url_was.present?
+        self.video = nil
+        self.video_thumbnail_url = nil if video_thumbnail_url&.include?("image.mux.com")
+      end
+      self.video_source_url = nil
+      return
+    end
 
     if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
       begin
@@ -1448,7 +1510,7 @@ class Article < ApplicationRecord
   end
 
   def update_notifications
-    Notification.update_notifications(self, I18n.t("models.article.published"))
+    Notification.update_notifications(self, %w[Published CoAuthor])
   end
 
   def update_notification_subscriptions
@@ -1627,8 +1689,16 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
+  # Co-authors who accepted an invitation consented to the credit themselves, so they don't need
+  # to be members of the organization (e.g. a co-authored personal post moved under an org).
   def validate_co_authors_belong_to_organization
-    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
+    accepted_ids = new_record? ? [] : co_author_invitations.accepted.pluck(:user_id)
+    org_credited_ids = co_author_ids - accepted_ids
+    return if org_credited_ids.empty?
+
+    org_member_count = OrganizationMembership.active
+      .where(organization_id: organization_id, user_id: org_credited_ids).count
+    return if org_member_count == org_credited_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
@@ -1769,7 +1839,8 @@ class Article < ApplicationRecord
                   saved_change_to_published? ||
                   published_at > 1.minute.ago
 
-    Articles::HandleSpamWorker.perform_async(id)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
   def async_bust
@@ -1787,7 +1858,7 @@ class Article < ApplicationRecord
   end
 
   def detect_code_block_languages
-    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless Ai::FunctionConfig.available?(:code_block_language_detection)
     return unless saved_change_to_body_markdown?
     return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
 
@@ -1844,6 +1915,7 @@ class Article < ApplicationRecord
   def trackable_activity_payload
     {
       "title" => title,
+      "description" => description,
       "path" => path,
       "type_of" => type_of,
       "published_at" => published_at&.iso8601,
@@ -1890,8 +1962,22 @@ class Article < ApplicationRecord
     type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
     id if type == "Article"
   end
+
+  # Going live also reports each challenge the post enters, as its own event so
+  # Customer.io can trigger on it without parsing tag_list. Challenge tags added
+  # to an already-published post don't emit.
+  def emit_activity_event(phase, **)
+    super
+    return unless published?
+    return unless phase == :created || (phase == :updated && trackable_changed_keys.include?("published"))
+
+    tag_names = cached_tag_list.to_s.split(",").map(&:strip).compact_blank
+    Event.challenges_entered_by(tag_names, at: published_at || Time.current).each do |challenge|
+      enqueue_trackable_event("challenge_submitted", properties_override: challenge.challenge_trackable_properties)
+    end
+  end
   private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event,
-          :publication_event, :boosted_article_id
+          :publication_event, :boosted_article_id, :emit_activity_event
 
   private
 
@@ -1994,6 +2080,33 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def notify_co_author_changes
+    before, after = saved_change_to_co_author_ids
+    removed_user_ids = Array.wrap(before).map(&:to_i) - Array.wrap(after).map(&:to_i)
+
+    Notification.send_to_co_authors(self, removed_user_ids)
+  end
+
+  # Keeps accepted invitations in step with co_author_ids when the credit list is edited directly
+  # (org co-author picker, admin tools), so an accepted invitation always means a credited co-author.
+  def remove_uncredited_co_author_invitations
+    co_author_invitations.accepted.where.not(user_id: co_author_ids).destroy_all
+  end
+
+  # Invitations are only for personal posts, so any still pending lapse when the post moves under
+  # an organization. Co-authors who already accepted stay credited.
+  def withdraw_pending_co_author_invitations
+    co_author_invitations.pending.destroy_all
+  end
+
+  def refresh_co_author_invitation_notifications
+    article_data = { "id" => id, "title" => title, "path" => current_state_path }
+    Notification.where(notifiable_type: "CoAuthorInvitation", notifiable_id: co_author_invitations.select(:id))
+      .find_each do |notification|
+        notification.update!(json_data: notification.json_data.merge("article" => article_data))
+      end
   end
 
   def cleanup_memberships_if_unpublished

@@ -35,7 +35,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.
 - **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.
 - **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
-- **main_image**: Absolute URL of the cover image for the article.
+- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
 - **description**: A short summary of the article used for previews and SEO meta description.
 - **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."
@@ -585,17 +585,19 @@ will remain."
       end
     end
   end
+
   describe "GET /api/articles/semantic_search" do
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
         tags "articles"
-        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        description "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) " \
+                    "and semantic embeddings search pipeline, with optional Jev shortlist re-ranking."
         produces "application/json"
         parameter name: :q, in: :query, required: true,
                   description: "The search query term to match semantically.",
                   schema: { type: :string }
         parameter name: :per_page, in: :query, required: false,
-                  description: "Limit of articles returned (default 10, max 50).",
+                  description: "Limit of articles returned (default 30, max 100).",
                   schema: { type: :integer }
         parameter name: :page, in: :query, required: false,
                   description: "Pagination page index.",
@@ -605,7 +607,8 @@ will remain."
                   schema: { type: :number }
 
         before do
-          allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(Array.new(768, 0.1))
+          embedding = instance_double(Ai::Embedding, call: Array.new(768, 0.1))
+          allow(Ai::Embedding).to receive(:new).and_return(embedding)
           published_article.update_column(:semantic_embedding, Array.new(768, 0.1))
         end
 

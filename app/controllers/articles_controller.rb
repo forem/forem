@@ -121,7 +121,7 @@ class ArticlesController < ApplicationController
 
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
 
@@ -131,7 +131,7 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @discussion_lock = @article.discussion_lock
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
   end
@@ -179,7 +179,7 @@ class ArticlesController < ApplicationController
     authorize Article
     @user = current_user
     article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
-    article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(@user, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     if article.persisted?
       if article.type_of == "status"
@@ -196,7 +196,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user || current_user
 
-    updated = Articles::Updater.call(@user, @article, article_params_json)
+    updated = Articles::Updater.call(@user, @article, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     respond_to do |format|
       format.html do
@@ -302,7 +302,7 @@ class ArticlesController < ApplicationController
   def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
@@ -353,13 +353,10 @@ class ArticlesController < ApplicationController
                        ]
                      end
 
-    # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
-    video_url = params.dig("article", "video_source_url")
-    if video_url.present?
-      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+    # Allow video_source_url only for supported hosts; a blank value removes the cover video
+    if params["article"].key?("video_source_url") &&
+        Article.permitted_video_source_url?(params["article"]["video_source_url"])
+      allowed_params << :video_source_url
     end
 
     # NOTE: the organization logic is still a little counter intuitive but this should
@@ -380,6 +377,18 @@ class ArticlesController < ApplicationController
     @article_params_json = params.require(:article).permit(allowed_params)
   end
 
+  # The editor's co-author invitee list, or nil to leave the article's invitations untouched (the
+  # list wasn't sent, or invitations aren't enabled). Invitees must follow the author, so only the
+  # author manages them; an admin editing someone else's post leaves them alone.
+  def co_author_invitee_ids
+    article_params_json # normalizes the editor's camelCased keys
+    return unless params["article"].key?("co_author_invitee_ids")
+    return if @article && @article.user_id != current_user.id
+    return unless feature_flag_enabled?(:co_author_invitations)
+
+    params.require(:article).permit(co_author_invitee_ids: [])[:co_author_invitee_ids] || []
+  end
+
   def manage_published_at_params
     time_zone_str = params["article"].delete("timezone")
 
@@ -398,7 +407,7 @@ class ArticlesController < ApplicationController
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
     potential_org_id = requested_organization_id || @article&.organization_id
-    OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
+    OrganizationMembership.member.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
 
@@ -407,7 +416,8 @@ class ArticlesController < ApplicationController
       # if current_user is an org admin of the article's org
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
-      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+      OrganizationMembership.member.exists?(user_id: params[:article][:user_id],
+                                            organization_id: @article.organization_id)
   end
 
   def allowed_to_manage_org_co_authors?

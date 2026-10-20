@@ -331,6 +331,23 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.article_updated_at).to eq("2023-06-02T06:55:53.406Z")
       end
 
+      it "falls back to path or cleans malformed double ports in article_url" do
+        double_port_notif = build(:notification, json_data: {
+          "article" => {
+            "url" => "http://localhost:3000:3100/a_user/article-here",
+            "path" => "/a_user/article-here",
+          },
+        }).decorate
+        expect(double_port_notif.article_url).to eq("/a_user/article-here")
+
+        no_path_notif = build(:notification, json_data: {
+          "article" => {
+            "url" => "http://localhost:3000:3100/a_user/article-here",
+          },
+        }).decorate
+        expect(no_path_notif.article_url).to eq("http://localhost:3000/a_user/article-here")
+      end
+
       it "responds to comment and commentable fields (even if blank)" do
         expect(decorated.comment_id).to be_blank
         expect(decorated.commentable_article_id).to be_blank

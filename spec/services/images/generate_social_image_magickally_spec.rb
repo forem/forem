@@ -74,12 +74,12 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         it "logs a warning and does not alert Honeybadger" do
           allow(generator).to receive(:read_files).and_raise(OpenURI::HTTPError.new("504 Gateway Timeout", StringIO.new))
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
           expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.error).not_to have_received(:report)
         end
       end
 
@@ -87,12 +87,12 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         it "logs a warning and does not alert Honeybadger" do
           allow(generator).to receive(:read_files).and_raise(Net::ReadTimeout)
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
           expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.error).not_to have_received(:report)
         end
       end
 
@@ -100,22 +100,22 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
           allow(generator).to receive(:generate_magickally).and_raise(MiniMagick::Error, "mogrify failed with status: 15")
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
           expect(Rails.logger).to have_received(:warn).with(/MiniMagick terminated by SIGTERM/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.error).not_to have_received(:report)
         end
 
         it "alerts Honeybadger for other MiniMagick errors" do
           error = MiniMagick::Error.new("mogrify failed with status: 1")
           allow(generator).to receive(:generate_magickally).and_raise(error)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
-          expect(Honeybadger).to have_received(:notify).with(error)
+          expect(Rails.error).to have_received(:report).with(error)
         end
       end
 
@@ -449,10 +449,10 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       it "gracefully rescues a Timeout::Error, logs to Honeybadger, and returns the bare result image without an avatar" do
         allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
-        allow(Honeybadger).to receive(:notify)
+        allow(Rails.error).to receive(:report)
 
         expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
-        expect(Honeybadger).to have_received(:notify).with(instance_of(Timeout::Error))
+        expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
         # Ensure that resize was safely aborted and not called after the exception
         expect(author_image).not_to have_received(:resize)
         expect(result_image).not_to have_received(:composite)

@@ -66,6 +66,55 @@ RSpec.describe "Api::V1::Tags" do
     end
   end
 
+  describe "GET /api/tags/supported" do
+    let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+
+    it "returns only supported tags, unpaginated, ordered by taggings_count" do
+      supported = create_list(:tag, 11, supported: true) # rubocop:disable FactoryBot/ExcessiveCreateList
+      supported.first.update_column(:taggings_count, 50)
+      create(:tag, supported: false, taggings_count: 100)
+
+      get supported_api_tags_path, headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).to match_array(supported.map(&:id))
+      expect(response.parsed_body.first["id"]).to eq(supported.first.id)
+      expect_valid_json_body(response.parsed_body.first, supported.first.reload)
+    end
+
+    it "is edge cacheable with a supported tags surrogate key" do
+      tag = create(:tag, supported: true)
+
+      get supported_api_tags_path, headers: headers
+
+      expect(response.headers["surrogate-key"].split.to_set)
+        .to eq([Tag::SUPPORTED_TAGS_SURROGATE_KEY, tag.record_key].to_set)
+      expect(response.headers["surrogate-control"]).to include("max-age")
+    end
+
+    context "when on a non-root subforem" do
+      let(:root_subforem) { create(:subforem, domain: "root.com", root: true) }
+      let(:subforem) { create(:subforem, domain: "sub.com") }
+
+      before do
+        allow(Subforem).to receive_messages(cached_id_by_domain: subforem.id, cached_root_id: root_subforem.id,
+                                            cached_default_id: root_subforem.id)
+      end
+
+      it "returns the tags supported by that subforem" do
+        in_subforem = create(:tag, supported: true)
+        unsupported_rel = create(:tag, supported: true)
+        create(:tag, supported: true)
+        TagSubforemRelationship.create!(tag: in_subforem, subforem: subforem, supported: true)
+        TagSubforemRelationship.create!(tag: unsupported_rel, subforem: subforem, supported: false)
+
+        get supported_api_tags_path, headers: headers
+
+        expect(response.parsed_body.pluck("id")).to eq([in_subforem.id])
+      end
+    end
+  end
+
   private
 
   def expect_valid_json_body(body, tag)

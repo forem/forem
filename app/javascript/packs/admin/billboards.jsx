@@ -152,13 +152,17 @@ document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
   const articleSpecificPlacement = [
     'post_comments',
+    'post_comments_secondary',
     'post_sidebar',
+    'post_sidebar_secondary',
     'post_fixed_bottom',
   ];
   const targetedTagPlacements = [
     'post_fixed_bottom',
     'post_comments',
+    'post_comments_secondary',
     'post_sidebar',
+    'post_sidebar_secondary',
     'sidebar_right',
     'sidebar_right_second',
     'sidebar_right_third',

@@ -3,6 +3,17 @@ require "rails_helper"
 RSpec.describe "MLH OmniAuth setup" do # rubocop:disable RSpec/DescribeClass
   let(:app) { ->(_env) { [200, {}, ["OK"]] } }
   let(:strategy) { OmniAuth::Strategies::MLH.new(app, "client-id", "client-secret") }
+  let(:mlh_oauth_scopes) { nil }
+
+  # ApplicationConfig reads ENV when the setup runs, so pin MLH_OAUTH_SCOPES for every
+  # example regardless of the developer's or CI's environment.
+  around do |example|
+    original_scopes = ENV.fetch("MLH_OAUTH_SCOPES", nil)
+    ENV["MLH_OAUTH_SCOPES"] = mlh_oauth_scopes
+    example.run
+  ensure
+    ENV["MLH_OAUTH_SCOPES"] = original_scopes
+  end
 
   before do
     MLH_OMNIAUTH_SETUP.call("omniauth.strategy" => strategy)
@@ -25,8 +36,28 @@ RSpec.describe "MLH OmniAuth setup" do # rubocop:disable RSpec/DescribeClass
       expect(strategy.options.client_options.authorize_url).to eq("https://core.example/oauth/authorize")
       expect(strategy.options.client_options.token_url).to eq("https://core.example/oauth/token")
       expect(strategy.options.client_options.api_site).to eq("https://api.core.example")
-      expect(strategy.options.scope.split).to contain_exactly("public", "user:read:profile", "mlh:read:user")
+      expect(strategy.options.scope.split).to contain_exactly("public", "mlh:read:user")
       expect(strategy.options.persist_credentials).to be(false)
+    end
+  end
+
+  it "requests only public, offline_access and mlh:read:user when MLH_OAUTH_SCOPES is unset" do
+    expect(strategy.options.scope).to eq("public offline_access mlh:read:user")
+  end
+
+  context "with MLH_OAUTH_SCOPES blank" do
+    let(:mlh_oauth_scopes) { "" }
+
+    it "falls back to the default scopes" do
+      expect(strategy.options.scope).to eq("public offline_access mlh:read:user")
+    end
+  end
+
+  context "with MLH_OAUTH_SCOPES set" do
+    let(:mlh_oauth_scopes) { "public mlh:read:user user:read:address" }
+
+    it "requests the configured scopes" do
+      expect(strategy.options.scope).to eq("public mlh:read:user user:read:address")
     end
   end
 

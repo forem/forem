@@ -211,6 +211,8 @@ FactoryBot.define do
       after(:create) do |user|
         Users::NotificationSetting.find_by(user_id: user.id)
           .update_columns(email_newsletter: true, email_digest_periodic: true)
+        user.notification_setting&.reload
+        user.sync_base_email_eligible!
       end
     end
 

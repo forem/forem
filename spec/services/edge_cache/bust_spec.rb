@@ -88,6 +88,38 @@ RSpec.describe EdgeCache::Bust, type: :service do
         )
       end
 
+      it "records stats and logs a structured warning when Fastly rejects a purge" do
+        body = '{"msg":"Record not found","details":"Cannot find service"}'
+        rejected = instance_double(HTTParty::Response, success?: false, code: 404, body: body)
+        allow(HTTParty).to receive(:post).and_return(rejected)
+        allow(ForemStatsClient).to receive(:increment)
+        allow(Rails.logger).to receive(:warn)
+
+        fastly_provider_class.call("https://blog.example.com/")
+
+        expect(ForemStatsClient).to have_received(:increment).with(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:EdgeCache::Bust::Fastly", "status:404"],
+        ).twice
+        expect(Rails.logger).to have_received(:warn).with(
+          hash_including(
+            message: "EdgeCache::Bust::Fastly purge was rejected",
+            url: "https://blog.example.com/",
+            status: 404,
+          ),
+        )
+      end
+
+      it "does not log a warning when Fastly accepts a purge" do
+        accepted = instance_double(HTTParty::Response, success?: true)
+        allow(HTTParty).to receive(:post).and_return(accepted)
+        allow(Rails.logger).to receive(:warn)
+
+        fastly_provider_class.call(path)
+
+        expect(Rails.logger).not_to have_received(:warn)
+      end
+
       it "gracefully ignores malformed URLs without raising an error or calling HTTParty" do
         allow(HTTParty).to receive(:post)
         

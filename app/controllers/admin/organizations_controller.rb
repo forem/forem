@@ -95,6 +95,35 @@ module Admin
       redirect_to admin_organization_path(org)
     end
 
+    def update_name
+      org = Organization.find(params[:id])
+      old_name = org.name
+
+      if org.update(name: params[:name]&.strip)
+        if old_name != org.name
+          Note.create(
+            author_id: current_user.id,
+            noteable_id: org.id,
+            noteable_type: "Organization",
+            reason: "misc_note",
+            content: "Organization name changed from #{old_name} to #{org.name}",
+          )
+          Audit::Logger.log(:moderator, current_user, {
+                              "action" => params[:action],
+                              "controller" => params[:controller],
+                              "target_organization_id" => org.id,
+                              "old_name" => old_name,
+                              "new_name" => org.name
+                            })
+        end
+
+        flash[:notice] = I18n.t("admin.organizations_controller.name_updated")
+      else
+        flash[:error] = org.errors.full_messages.to_sentence
+      end
+      redirect_to admin_organization_path(org)
+    end
+
     def update_verified
       org = Organization.find(params[:id])
       new_verified = params[:verified] == "true"

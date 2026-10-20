@@ -11,10 +11,11 @@ RSpec.describe "Admin deletes user" do
 
   it "enqueues a job for deleting the user" do
     sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
-      click_button "Delete now"
+      click_on "Delete now"
     end
 
-    message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) has been fully deleted."
+    message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) is being deleted. " \
+              "Their account and content are being removed in the background"
     expect(page).to have_content(message)
   end
 
@@ -23,10 +24,10 @@ RSpec.describe "Admin deletes user" do
     user.update(email: nil)
 
     sidekiq_perform_enqueued_jobs do
-      click_button "Delete now"
+      click_on "Delete now"
     end
 
-    message = "@#{user.username} (email: no email, user_id: #{user.id}) has been fully deleted."
+    message = "@#{user.username} (email: no email, user_id: #{user.id}) is being deleted."
     expect(page).to have_content(message)
     expect(User.find_by(id: user.id)).to be_nil
   end

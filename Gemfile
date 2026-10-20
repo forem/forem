@@ -64,6 +64,7 @@ gem "jwt", "2.10.3" # Verify delegated access tokens
 gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
+gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
 gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.18" # HTML, XML, SAX, and Reader parser
@@ -105,6 +106,9 @@ gem "rouge", "~> 4.2" # A pure-ruby code highlighter
 gem "rss", "~> 0.2.9" # Ruby's standard library for RSS
 gem "rubyzip", "~> 2.4" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
+gem "sentry-rails", "~> 5.19", require: false # Pilot: ships errors to Better Stack (Sentry-protocol compatible); loaded in config/application.rb
+gem "sentry-ruby", "~> 5.19", require: false # Pilot: see config/initializers/sentry.rb, runs alongside Honeybadger
+gem "sentry-sidekiq", "~> 5.19", require: false # Pilot: reports Sidekiq worker errors and traces jobs; loaded in config/application.rb
 gem "sidekiq", "~> 6.5.3" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-throttled", "~> 1.5" # Concurrency control for Sidekiq
 gem "sidekiq-cron", "~> 1.7" # Allows execution of scheduled cron jobs as specific times

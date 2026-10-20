@@ -94,6 +94,7 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :concept_accesses, dependent: :delete_all
@@ -794,8 +795,12 @@ class User < ApplicationRecord
     [profile_identity_record_key, profile_image_record_key]
   end
 
+  def previous_username_paths
+    [old_username, old_old_username].compact_blank.uniq.reject { |name| name == username }.map { |name| "/#{name}" }
+  end
+
   def profile_cache_bust_paths
-    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+    ([path, "/profile_preview_cards/#{id}", "/api/users/#{id}"] + previous_username_paths).uniq
   end
 
   def remove_from_mailchimp_newsletters
@@ -1211,8 +1216,10 @@ class User < ApplicationRecord
     )
   end
 
+  # super is Devise's !confirmed?: without it, users confirmed at creation
+  # (OAuth signups via skip_confirmation!) still get a confirmation email.
   def confirmation_required?
-    ForemInstance.smtp_enabled?
+    ForemInstance.smtp_enabled? && super
   end
 
   def update_user_roles_cache(role)
@@ -1226,8 +1233,14 @@ class User < ApplicationRecord
 
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
-      Spam::DomainDetector.new(self).check_and_block_domain!
+      # The domain scan can hit the statement timeout, so keep it out of this
+      # callback: an error here rolls back the role grant (and aborts a banish).
+      Spam::DomainDetectorWorker.perform_async(id)
       calculate_score
+      # Article scores include a spam penalty that also governs Algolia indexability,
+      # so rescore on every grant/removal regardless of which code path changed the role.
+      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+      articles.published.find_each(&:async_score_calc)
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"

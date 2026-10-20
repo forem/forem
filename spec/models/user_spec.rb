@@ -1270,6 +1270,29 @@ RSpec.describe User do
     end
   end
 
+  describe "spam role article rescoring" do
+    it "enqueues a score recalculation for each published article when the spam role is added" do
+      published = create(:article, user: user, published: true)
+      draft = create(:article, user: user, published: false)
+      Articles::ScoreCalcWorker.jobs.clear
+
+      user.add_role(:spam)
+
+      enqueued_ids = Articles::ScoreCalcWorker.jobs.map { |job| job["args"].first }
+      expect(enqueued_ids).to include(published.id)
+      expect(enqueued_ids).not_to include(draft.id)
+    end
+
+    it "drops published article scores below the index minimum once the spam role is added" do
+      article = create(:article, user: user, published: true)
+      article.update_columns(score: 50)
+
+      sidekiq_perform_enqueued_jobs(only: Articles::ScoreCalcWorker) { user.add_role(:spam) }
+
+      expect(article.reload.score).to be < Settings::UserExperience.index_minimum_score
+    end
+  end
+
   describe "cache counts" do
     it "has an accurate tag follow count" do
       tag = create(:tag)
@@ -1903,6 +1926,22 @@ RSpec.describe User do
       admin_curator = create(:user, :admin, :community_leader_level_1)
 
       expect(admin_curator.favorite_allowance_for_client).to be_nil
+    end
+  end
+
+  describe "#confirmation_required?" do
+    before { allow(ForemInstance).to receive(:smtp_enabled?).and_return(true) }
+
+    it "sends no confirmation email to a user confirmed at creation (OAuth signup)" do
+      user = build(:user, confirmed_at: nil)
+      user.skip_confirmation!
+
+      expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+    end
+
+    it "sends a confirmation email to an unconfirmed signup" do
+      expect { create(:user, confirmed_at: nil) }
+        .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
     end
   end
 end

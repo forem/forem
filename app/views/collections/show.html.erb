@@ -17,6 +17,7 @@
         <% @articles.each do |article| %>
           <%= render "articles/single_story", story: article.decorate, featured: article.main_image.present? %>
         <% end %>
+        <%= paginate @articles %>
         <%= javascript_include_tag "feedPreviewCards", "localizeArticleDates", defer: true %>
       <% else %>
         <p><%= t("views.series.list.empty") %></p>

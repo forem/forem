@@ -71,6 +71,13 @@ pt:
       mention_too_many:
         one: Você não pode mencionar mais de %{count} usuários em um comentário!
         other: Você não pode mencionar mais de %{count} usuários em um comentário!
+    co_author_invitation:
+      declined: "@%{username} recusou seu convite para ser coautor desta publicação."
+      must_follow_author: "@%{username} precisa seguir você para que você possa convidá-lo como coautor."
+      personal_posts_only: Convites de coautoria estão disponíveis apenas para publicações pessoais.
+      too_many:
+        one: Você pode convidar até %{count} coautor.
+        other: Você pode convidar até %{count} coautores.
     feedback_message:
       reported: '(você) reportou esta URL anteriormente.'
     github_issue:

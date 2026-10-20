@@ -606,6 +606,11 @@ en:
             created_at: Created At
             actions: Actions
       organizations:
+        name:
+          heading: Organization Name
+          description: Update this organization's display name.
+          label: Organization name
+          submit: Update Name
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}
@@ -749,3 +754,16 @@ en:
             day_before: "1 Day Before"
             hour_before: "1 Hour Before"
             none: "None"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibility
+          hidden_by_default: Hidden by default
+          visible: Visible
+          caching: Caching
+          fully_cached: Fully cached
+          standard_caching: Standard
+        edit:
+          hidden_by_default: Hidden by default
+          hidden_by_default_desc_html: Billboards are still delivered to this placement area but render hidden, and record no impressions, until frontend logic reveals them with %{reveal_call}. Rendered billboards carry %{placement_attribute}.
+          fully_cached: Fully cached
+          fully_cached_desc: Serve one cached response per visitor location for this placement area, shared by every article and page and by signed-in visitors too, using the cache expiry above. Only billboards that don't target tags, articles, pages, audience segments, roles, survey completions or browser types are shown here. Articles whose authors opt out of nearby sponsors keep the standard behavior. Only affects billboards loaded separately from the page, not ones rendered into it (such as the home page sidebar).

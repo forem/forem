@@ -7,7 +7,17 @@ import { ProfileImage } from '../ProfileForm/ProfileImage';
 
 global.fetch = fetch;
 
+jest.mock('@utilities/locale', () => ({
+  locale: (key) =>
+    ({
+      'core.image_upload_server_error': 'A server error has occurred!',
+    })[key] || key,
+}));
+
 describe('<ProfileImage />', () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+  });
   it('should render correctly', () => {
     const onMainImageUrlChangeMock = jest.fn();
     const { getByTestId } = render(
@@ -129,5 +139,56 @@ describe('<ProfileImage />', () => {
     await waitFor(() => {
       expect(uploadInput.files).toHaveLength(1);
     });
+  });
+
+  it('displays an upload error when a 500 HTML response is returned', async () => {
+    const { getByLabelText, findByText, queryByText } = render(
+      <ProfileImage
+        onMainImageUrlChange={jest.fn()}
+        mainImage="test.png"
+        userId="1"
+        name="Test User"
+      />,
+    );
+    const inputEl = getByLabelText('Edit profile image', { exact: false });
+
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
+    });
+    fetch.mockResponseOnce(
+      '<html><body>500 Internal Server Error</body></html>',
+      {
+        status: 500,
+      },
+    );
+
+    fireEvent.change(inputEl, { target: { files: [file] } });
+    const serverError = await findByText('A server error has occurred!');
+    expect(serverError).toBeInTheDocument();
+    expect(queryByText('Uploading...')).not.toBeInTheDocument();
+  });
+
+  it('displays an upload error when a 422 JSON error payload is returned', async () => {
+    const { getByLabelText, findByText, queryByText } = render(
+      <ProfileImage
+        onMainImageUrlChange={jest.fn()}
+        mainImage="test.png"
+        userId="1"
+        name="Test User"
+      />,
+    );
+    const inputEl = getByLabelText('Edit profile image', { exact: false });
+
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
+    });
+    fetch.mockResponseOnce(JSON.stringify({ error: 'File size too large' }), {
+      status: 422,
+    });
+
+    fireEvent.change(inputEl, { target: { files: [file] } });
+    const payloadError = await findByText('File size too large');
+    expect(payloadError).toBeInTheDocument();
+    expect(queryByText('Uploading...')).not.toBeInTheDocument();
   });
 });

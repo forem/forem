@@ -131,7 +131,14 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def article_url
-    @article_url ||= json_data.dig("article", "url") || json_data.dig("article", "path")
+    @article_url ||= begin
+      url = json_data.dig("article", "url")
+      if url.present? && url.match?(%r{:\d+:\d+})
+        json_data.dig("article", "path").presence || url.sub(%r{(:\d+):\d+}, '\1')
+      else
+        url.presence || json_data.dig("article", "path")
+      end
+    end
   end
 
   def article_title
