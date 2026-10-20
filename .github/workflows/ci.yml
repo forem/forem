@@ -122,43 +122,20 @@ jobs:
           im_pid=$!
 
           echo "Waiting for Postgres..."
-          until pg_isready -h localhost -p 5432 -U postgres -d Forem_test; do
-            sleep 1
-          done
+          timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done'
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          until timeout 1 bash -c '</dev/tcp/localhost/6379' 2>/dev/null; do
-            sleep 1
-          done
+          timeout 60 bash -c 'until timeout 1 bash -c "</dev/tcp/localhost/6379" 2>/dev/null; do sleep 1; done'
           echo "Redis is ready."
 
           wait "$im_pid"
 
+      - run: cp .env_sample .env
+
       - name: RSpec
         id: rspec
-        run: |
-          cp .env_sample .env
-          cat << 'EOF' > /tmp/ci_schema_railtie.rb
-          require "rails"
-
-          class CiSchemaRailtie < Rails::Railtie
-            initializer "ci.load_test_schema", after: "active_record.initialize_database" do
-              unless ActiveRecord::Base.connection.data_source_exists?("schema_migrations")
-                ActiveRecord::Migration.suppress_messages do
-                  ActiveRecord::Tasks::DatabaseTasks.load_schema_current(:ruby, Rails.root.join("db/schema.rb"))
-                end
-              end
-            end
-          end
-          EOF
-
-          RSPEC_ARGS="--force-color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml"
-          if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
-            SPEC_OPTS="--require /tmp/ci_schema_railtie.rb" bin/knapsack_pro_rspec
-          else
-            RACK_ENV=test bundle exec ruby -r /tmp/ci_schema_railtie.rb -r knapsack_pro -e "KnapsackPro::Runners::Queue::RSpecRunner.run('$RSPEC_ARGS')"
-          fi
+        run: bin/knapsack_pro_rspec
       - name: Upload recovered RSpec retries
         uses: actions/upload-artifact@v4
         if: ${{ steps.rspec.outcome == 'success' && hashFiles('tmp/rspec-retries/*.csv') != '' }}
