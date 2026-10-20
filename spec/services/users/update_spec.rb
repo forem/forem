@@ -110,6 +110,14 @@ RSpec.describe Users::Update, type: :service do
       expect(user.reload.username).to eq(third_username)
     end
 
+    it "records nothing when the rename fails validation" do
+      create(:user, username: "taken_already")
+
+      expect do
+        described_class.call(user, user: { username: "taken_already" })
+      end.not_to change(UsersOldUsername, :count)
+    end
+
     it "changes user's articles path" do
       article = create(:article, user: user)
       old_path = article.path
@@ -131,6 +139,20 @@ RSpec.describe Users::Update, type: :service do
       article.reload
       expect(article.path).not_to eq(old_path)
       expect(article.path).to eq("/#{new_username}/#{article.slug}")
+    end
+  end
+
+  context "when the username is not being changed" do
+    it "records nothing for a profile-only update" do
+      expect do
+        described_class.call(user, profile: { summary: "Just a summary" })
+      end.not_to change(UsersOldUsername, :count)
+    end
+
+    it "records nothing when other user fields change" do
+      expect do
+        described_class.call(user, user: { name: "A New Name" })
+      end.not_to change(UsersOldUsername, :count)
     end
   end
 
