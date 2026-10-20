@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_19_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_20_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -896,6 +896,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_19_120000) do
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_feed_import_items_on_article_id"
     t.index ["feed_import_log_id"], name: "index_feed_import_items_on_feed_import_log_id"
+    t.index ["feed_import_log_id", "status"], name: "index_feed_import_items_on_feed_import_log_id_and_status"
   end
 
   create_table "feed_import_logs", force: :cascade do |t|
