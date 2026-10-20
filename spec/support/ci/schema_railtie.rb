@@ -1,5 +1,7 @@
 if ENV["CI"] && !defined?(CiSchemaRailtie)
   ENV["RAILS_ENV"] = "test"
+  ENV["RUBY_DEBUG_ENABLE"] ||= "0"
+  ENV["RUBY_DEBUG_FORK_MODE"] ||= "parent"
   require "rails"
 
   class CiSchemaRailtie < Rails::Railtie
