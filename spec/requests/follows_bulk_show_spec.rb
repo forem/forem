@@ -40,6 +40,28 @@ RSpec.describe "Follows #bulk_show" do
       expect(body[follow_back_user.id.to_s]).to eq("follow-back")
       expect(body[mutual_follow_user.id.to_s]).to eq("mutual")
     end
+
+    it "raises RecordNotFound for ids that do not belong to a user (unchanged from before batching)" do
+      missing_id = User.maximum(:id).to_i + 1
+
+      expect do
+        get bulk_show_follows_path, params: { ids: [missing_id], followable_type: followable_type }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "loads the followed-back candidates in a single users query" do
+      ids = [followed_user.id, not_followed_user.id, follow_back_user.id, mutual_follow_user.id]
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" IN/)
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get bulk_show_follows_path, params: { ids: ids, followable_type: followable_type }
+      end
+
+      expect(user_queries.size).to eq(1)
+    end
   end
 
   it "without ids raises a missing param error" do

@@ -32,13 +32,18 @@ class FollowsController < ApplicationController
     skip_authorization
     render(plain: "not-logged-in") && return unless current_user
 
-    response = params.require(:ids).map(&:to_i).index_with do |id|
+    ids = params.require(:ids).map(&:to_i)
+    # Follows::CheckCached only needs the follower's id and updated_at (for its cache key),
+    # so load every followed-back candidate in one narrow query instead of one full row per id.
+    users_by_id = params[:followable_type] == "User" ? User.where(id: ids).select(:id, :updated_at).index_by(&:id) : {}
+
+    response = ids.index_with do |id|
       if current_user.id == id && params[:followable_type] == "User"
         "self"
       else
         following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id)
         if params[:followable_type] == "User"
-          following_you_check = Follows::CheckCached.call(User.find_by(id: id), params[:followable_type],
+          following_you_check = Follows::CheckCached.call(users_by_id[id], params[:followable_type],
                                                           current_user.id)
           if following_them_check && following_you_check
             "mutual"
