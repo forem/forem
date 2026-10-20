@@ -58,6 +58,28 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
         expect(response.body).not_to include("By signing in")
       end
+
+      it "assigns the ids of the user's latest reaction and comment", :aggregate_failures do
+        article = create(:article)
+        create(:reaction, user: user, reactable: article, category: "like")
+        latest_reaction = create(:reaction, user: user, reactable: article, category: "unicorn")
+        create(:comment, user: user, commentable: article)
+        latest_comment = create(:comment, user: user, commentable: article)
+        create(:comment, commentable: article)
+        sign_in user
+
+        get "/notifications"
+        expect(controller.instance_variable_get(:@last_user_reaction)).to eq(latest_reaction.id)
+        expect(controller.instance_variable_get(:@last_user_comment)).to eq(latest_comment.id)
+      end
+
+      it "assigns nil ids when the user has no reactions or comments", :aggregate_failures do
+        sign_in user
+
+        get "/notifications"
+        expect(controller.instance_variable_get(:@last_user_reaction)).to be_nil
+        expect(controller.instance_variable_get(:@last_user_comment)).to be_nil
+      end
     end
 
     context "when a user has new follow notifications" do

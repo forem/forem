@@ -19,12 +19,20 @@ export const GithubRepos = () => {
         const repositories = await response.json();
         setRepos(repositories);
       } else {
-        throw new Error(response.statusText);
+        // The server responds with a JSON `error` message (e.g. when the
+        // GitHub token was revoked). `statusText` is empty over HTTP/2, so
+        // only fall back to it, then to the status code.
+        const body = await response.json().catch(() => null);
+        throw new Error(
+          body?.error ||
+            response.statusText ||
+            `Request failed with status ${response.status}`,
+        );
       }
     } catch (error) {
       Honeybadger.notify(error);
       setError(true);
-      setErrorMessage(error.toString());
+      setErrorMessage(error instanceof Error ? error.message : String(error));
     }
   };
 

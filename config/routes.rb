@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
+    get "/users/password", to: redirect("/users/password/new")
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
     post "/users/auth/account_switch/confirm",
@@ -526,6 +527,7 @@ Rails.application.routes.draw do
     # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
     get "/settings/integrations", to: redirect("/settings/extensions")
     get "/settings/misc", to: redirect("/settings")
+    get "/settings/password", to: redirect("/settings/account")
     get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
     get "/settings/ux", to: redirect("/settings/customization")
 

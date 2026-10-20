@@ -928,6 +928,67 @@ RSpec.describe Spam::Handler, type: :service do
       end
     end
 
+    context "when the comment already sent notifications" do
+      let(:recipient) { create(:user) }
+      let(:other_comment) { create(:comment) }
+      let(:mention) { create(:mention, mentionable: comment, user: recipient) }
+
+      before do
+        create(:notification, user: recipient, organization: nil, notifiable: comment)
+        create(:notification, user: recipient, organization: nil, notifiable: mention)
+        create(:notification, user: recipient, organization: nil, notifiable: other_comment)
+      end
+
+      it "removes the comment and mention notifications once the comment is flagged as spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).not_to exist
+        expect(Notification.where(notifiable: mention)).not_to exist
+        expect(Notification.where(notifiable: other_comment)).to exist
+      end
+
+      it "keeps the notifications when the comment is not spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+
+        expect(handler).to eq(:not_spam)
+        expect(Notification.where(notifiable: comment)).to exist
+        expect(Notification.where(notifiable: mention)).to exist
+      end
+
+      it "removes notifications on a duplicate check when the mascot's flag is still valid or confirmed" do
+        create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "valid")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).not_to exist
+        expect(Notification.where(notifiable: mention)).not_to exist
+      end
+
+      it "keeps the notifications when an existing mascot flag was marked invalid by an admin" do
+        create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "invalid")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+
+        expect(Notification.where(notifiable: comment)).to exist
+        expect(Notification.where(notifiable: mention)).to exist
+      end
+
+      it "does not recreate a mention notification when MentionWorker runs before score recalculation" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+
+        handler
+        expect(comment.reload.score).to be >= 0
+
+        Notifications::NewMention::Send.call(mention.reload)
+
+        expect(Notification.where(notifiable: mention)).not_to exist
+      end
+    end
+
     context "when a comment without links is flagged by the escalation check" do
       before do
         allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
@@ -1009,8 +1070,11 @@ RSpec.describe Spam::Handler, type: :service do
       end
 
       it "marks the account as spam without running the content checks" do
+        allow(Notifications::RemoveBySpammerWorker).to receive(:perform_async)
+
         expect(handler).to eq(:spam)
         expect(commenter.reload).to be_spam
+        expect(Notifications::RemoveBySpammerWorker).to have_received(:perform_async).with(commenter.id)
         expect(AuditLog.on_user(commenter).find_by(slug: "automatic_spam").data)
           .to include("reason" => "new_account_comment_flood", "commented_post_count" => 21)
         expect(Ai::CommentCheck).not_to have_received(:new)

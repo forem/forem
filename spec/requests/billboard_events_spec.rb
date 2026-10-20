@@ -45,6 +45,49 @@ RSpec.describe "BillboardEvents", type: :request do
       json = JSON.parse(response.body)
       expect(json["id"]).to eq(event.id)
     end
+
+    context "when the request comes from an embedding site" do
+      let(:embed_origin) { "https://embed.example.com" }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("BILLBOARD_EMBED_ORIGINS")
+          .and_return("#{embed_origin}, https://other-embed.example.com")
+      end
+
+      it "records an anonymous embed event" do
+        post bb_tabulations_path, params: { billboard_event: base_params }, headers: { "Origin" => embed_origin }
+
+        event = BillboardEvent.last
+        expect(event.context_type).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
+        expect(event.user_id).to be_nil
+      end
+
+      it "allows the cross-origin preflight" do
+        options bb_tabulations_path, headers: {
+          "Origin" => embed_origin,
+          "Access-Control-Request-Method" => "POST",
+          "Access-Control-Request-Headers" => "content-type"
+        }
+
+        expect(response.headers["Access-Control-Allow-Origin"]).to eq(embed_origin)
+      end
+
+      it "does not allow other origins" do
+        options bb_tabulations_path, headers: {
+          "Origin" => "https://example.com",
+          "Access-Control-Request-Method" => "POST"
+        }
+
+        expect(response.headers["Access-Control-Allow-Origin"]).to be_nil
+      end
+
+      it "keeps the session user for other origins" do
+        post bb_tabulations_path, params: { billboard_event: base_params }, headers: { "Origin" => "https://example.com" }
+
+        expect(BillboardEvent.last).to have_attributes(user_id: user.id, context_type: "home")
+      end
+    end
   end
 
   describe "PATCH /bb_tabulations/:id" do
