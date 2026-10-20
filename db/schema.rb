@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_20_174500) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_20_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -305,6 +305,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_20_174500) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["rewarder_id"], name: "index_badge_achievements_on_rewarder_id", where: "(rewarder_id IS NOT NULL)"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
