@@ -937,7 +937,13 @@ class Article < ApplicationRecord
   end
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
+    # Sanitizing processed_html is slow on long posts and a single save asks for it
+    # several times (description, language detection), so reuse it until the HTML changes.
+    html = processed_html
+    return @body_text if defined?(@body_text) && @body_text_html == html
+
+    @body_text_html = html.dup
+    @body_text = ActionView::Base.full_sanitizer.sanitize(html)[0..7000]
   end
 
   def touch_by_reaction

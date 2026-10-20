@@ -1108,6 +1108,47 @@ RSpec.describe Article do
         sanitized_html = ActionView::Base.full_sanitizer.sanitize(test_article.processed_html)
         expect(test_article.body_text).to eq(sanitized_html)
       end
+
+      it "sanitizes processed_html only once while it is unchanged" do
+        article = build(:article)
+        article.processed_html = "<p>Some text</p>"
+        sanitizer = ActionView::Base.full_sanitizer
+        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+        allow(sanitizer).to receive(:sanitize).and_call_original
+
+        3.times { article.body_text }
+
+        expect(sanitizer).to have_received(:sanitize).once
+      end
+
+      it "recomputes when processed_html changes" do
+        article = build(:article)
+        article.processed_html = "<p>Old text</p>"
+        expect(article.body_text).to eq("Old text")
+
+        article.processed_html = "<p>New text</p>"
+        expect(article.body_text).to eq("New text")
+      end
+
+      it "recomputes when processed_html is mutated in place" do
+        article = build(:article)
+        article.processed_html = "<p>Old text</p>"
+        expect(article.body_text).to eq("Old text")
+
+        article.processed_html.sub!("Old", "New")
+        expect(article.body_text).to eq("New text")
+      end
+
+      it "sanitizes once when saving a draft with a blank description" do
+        article = build(:article, published: false, description: nil)
+        sanitizer = ActionView::Base.full_sanitizer
+        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+        allow(sanitizer).to receive(:sanitize).and_call_original
+
+        article.save!
+
+        expect(sanitizer).to have_received(:sanitize).with(article.processed_html).once
+      end
     end
 
     context "when a main_image does not already exist" do
