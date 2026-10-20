@@ -146,10 +146,13 @@ module Html
       doc = Nokogiri::HTML.fragment(@html)
 
       doc.css("blockquote").each do |blockquote|
-        first = blockquote.at_css("p")
-        next unless first
+        first = blockquote.element_children.first
+        next unless first&.name == "p"
 
-        match = first.content.match(ALERT_TOKEN)
+        leading = first.children.first
+        next unless leading&.text?
+
+        match = leading.content.match(ALERT_TOKEN)
         next unless match
 
         alert_type = match[1].downcase

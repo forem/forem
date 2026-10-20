@@ -60,6 +60,30 @@ RSpec.describe Html::Parser, type: :service do
       expect(result).to include(%(data-alert="tip"))
       expect(result).to include(I18n.t("services.html.parser.alerts.tip"))
     end
+
+    context "when the token is not the leading text of the quote" do
+      it "tags only the inner quote when quotes are nested" do
+        result = transform("<blockquote><blockquote><p>[!TIP] Inner</p></blockquote></blockquote>")
+        outer, inner = Nokogiri::HTML.fragment(result).css("blockquote").to_a
+
+        expect(inner["data-alert"]).to eq("tip")
+        expect(outer["data-alert"]).to be_nil
+      end
+
+      it "leaves a quote that opens with a heading" do
+        result = transform("<blockquote><h2>Heading</h2><p>[!TIP] Body</p></blockquote>")
+
+        expect(result).not_to include("data-alert")
+        expect(result).to include("[!TIP]")
+      end
+
+      it "leaves a quote whose token sits inside inline code" do
+        result = transform("<blockquote><p><code>[!NOTE]</code> is the alert syntax</p></blockquote>")
+
+        expect(result).not_to include("data-alert")
+        expect(result).to include("[!NOTE]")
+      end
+    end
   end
 
   describe "surviving the markdown pipeline" do
@@ -79,6 +103,20 @@ RSpec.describe Html::Parser, type: :service do
 
     it "renders a normal blockquote without an alert attribute" do
       expect(rendered("> Just a quote.")).not_to include("data-alert")
+    end
+
+    it "does not treat a quote about the syntax as an alert" do
+      result = rendered("> `[!NOTE]` is how GitHub writes an alert.")
+
+      expect(result).not_to include("data-alert")
+      expect(result).to include("[!NOTE]")
+    end
+
+    it "tags the inner quote when an alert is nested in a quote" do
+      result = rendered("> > [!TIP]\n> > Inner body.")
+
+      expect(result).to include(%(data-alert="tip"))
+      expect(result).to include("Inner body.")
     end
   end
 end
