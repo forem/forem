@@ -7,6 +7,7 @@ RSpec.describe EdgeCache::BustPage, type: :service do
     [
       "/page/#{slug}",
       "/#{slug}",
+      "/#{slug}/",
     ]
   end
 
