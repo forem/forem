@@ -164,6 +164,14 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.size).to eq(0)
       end
 
+      it "returns approved tag articles if tag requires approval" do
+        article.update_column(:approved, true)
+        Tag.find_by(name: article.tag_list.first).update(requires_approval: true)
+
+        get api_articles_path(tag: article.tag_list.first), headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+      end
+
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss")
         get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }, headers: headers
@@ -1635,6 +1643,21 @@ RSpec.describe "Api::V1::Articles" do
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys
+      end
+
+      it "does not run a separate COUNT query" do
+        create(:article)
+
+        count_queries = []
+        callback = lambda do |*, payload|
+          count_queries << payload[:sql] if payload[:sql].include?("subquery_for_count")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search"
+        end
+
+        expect(response.parsed_body.length).to eq(2)
+        expect(count_queries).to be_empty
       end
     end
 

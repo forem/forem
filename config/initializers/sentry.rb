@@ -43,4 +43,15 @@ if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
       event
     end
   end
+
+  # Errors the app reports itself (Rails.error.report) go to Better Stack too. Like Honeybadger's
+  # subscriber, only handled ones: unhandled errors already arrive through the middleware and
+  # Sidekiq integrations, and Sidekiq's executor would otherwise report every retry.
+  require "sentry/rails/error_subscriber"
+  handled_errors_subscriber = Class.new(Sentry::Rails::ErrorSubscriber) do
+    def report(error, handled:, **)
+      super if handled
+    end
+  end
+  Rails.error.subscribe(handled_errors_subscriber.new)
 end

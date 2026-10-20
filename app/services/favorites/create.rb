@@ -120,7 +120,7 @@ module Favorites
     def award_badge
       Badges::AwardCommunityFavorite.call(favoritable: favoritable, favoriter: user)
     rescue StandardError => e
-      Honeybadger.notify(e)
+      Rails.error.report(e)
     end
 
     def log_audit

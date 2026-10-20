@@ -139,15 +139,14 @@ module Api
       # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
       # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
       # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
-      @articles = Articles::ApiSearchQuery.call(params)
+      articles = Articles::ApiSearchQuery.call(params)
 
       # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
       # ChatGPT cannot process the long body request.
-      @articles = if @articles.count > 1
-                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  else
-                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  end
+      # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
+      # running a separate COUNT over the full search before every load.
+      @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+      @articles = articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate if @articles.size <= 1
     end
 
     private
