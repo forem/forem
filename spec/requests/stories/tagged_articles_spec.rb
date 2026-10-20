@@ -59,6 +59,22 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).to include('href="/assets/tags')
         end
 
+        it "renders stories without loading processed_html", :aggregate_failures do
+          article
+          queries = []
+          callback = lambda do |*, payload|
+            queries << payload[:sql] if payload[:sql].include?("\"articles\".\"title\"")
+          end
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get "/t/#{tag.name}"
+          end
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(article.title))
+          expect(queries).not_to be_empty
+          expect(queries.grep(/processed_html/)).to be_empty
+        end
+
         it "renders page when tag is not supported but has at least one approved article" do
           create(:article, :past, published: true, approved: true, tags: unsupported_tag,
                                   past_published_at: 5.years.ago)
