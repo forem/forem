@@ -252,14 +252,27 @@ RSpec.describe Survey, type: :model do
 
     describe "default send rate calculation" do
       it "sets default daily_email_distributions based on target and time remaining" do
-        # 100 completions needed over 5 days = 20 completions/day.
+        # 100 completions needed over 5 days (120 hours) = 20 completions/day.
         # At 1 completion per 200 sends, rate should be 20 * 200 = 4000.
-        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 0)
+        now = Time.zone.now
+        allow(Time).to receive(:current).and_return(now)
+
+        survey = create(
+          :survey,
+          target_response_count: 100,
+          target_completion_date: now + 120.hours,
+          daily_email_distributions: 0,
+        )
         expect(survey.daily_email_distributions).to eq(4000)
       end
 
       it "does not overwrite non-zero daily_email_distributions" do
-        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 15)
+        survey = create(
+          :survey,
+          target_response_count: 100,
+          target_completion_date: 120.hours.from_now,
+          daily_email_distributions: 15,
+        )
         expect(survey.daily_email_distributions).to eq(15)
       end
     end

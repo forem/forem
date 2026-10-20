@@ -30,13 +30,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
+      - name: Check pre-compiled assets cache
+        uses: actions/cache/restore@v5
+        id: assetscache-lookup
         with:
-          bundler-cache: true
+          lookup-only: true
+          path: |
+            public/assets
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
         with:
           path: |
             public/assets
@@ -44,17 +51,22 @@ jobs:
             tmp/cache/assets
           key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v4-
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
+        with:
+          bundler-cache: true
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
       - run: yarn install --immutable
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
       - run: |
           rm -rf public/assets
           SKIP_YARN_INSTALL=true bundle exec rails assets:precompile
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
 
   rspec:
     runs-on: ubuntu-latest
@@ -71,23 +83,15 @@ jobs:
         image: pgvector/pgvector:pg13
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: Forem_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 2s
-          --health-timeout 5s
-          --health-retries 5
           --tmpfs /var/lib/postgresql/data:rw
       redis:
-        image: redis
+        image: redis:7-alpine
         ports:
           - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 2s
-          --health-timeout 5s
-          --health-retries 5
 
     strategy:
       fail-fast: false
@@ -112,27 +116,22 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Install ImageMagick
-        run: sudo apt-get install -y --no-install-recommends imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends imagemagick)
-
-      - name: Wait for services
+      - name: Install ImageMagick and wait for services
         run: |
+          (sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)) &
+          im_pid=$!
+
           echo "Waiting for Postgres..."
-          until pg_isready -h localhost -p 5432 -U postgres; do
-            sleep 1
-          done
+          timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done'
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          until timeout 1 bash -c '</dev/tcp/localhost/6379' 2>/dev/null; do
-            sleep 1
-          done
+          timeout 60 bash -c 'until timeout 1 bash -c "</dev/tcp/localhost/6379" 2>/dev/null; do sleep 1; done'
           echo "Redis is ready."
 
-      - run: cp .env_sample .env
+          wait "$im_pid"
 
-      - name: Setup Database
-        run: bin/rails db:create db:schema:load
+      - run: cp .env_sample .env
 
       - name: RSpec
         id: rspec
