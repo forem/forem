@@ -47,11 +47,12 @@ RSpec.describe "BillboardEvents", type: :request do
     end
 
     context "when the request comes from an embedding site" do
-      let(:embed_origin) { "https://www.mlh.com" }
+      let(:embed_origin) { "https://embed.example.com" }
 
       before do
         allow(ApplicationConfig).to receive(:[]).and_call_original
-        allow(ApplicationConfig).to receive(:[]).with("BILLBOARD_EMBED_ORIGINS").and_return("#{embed_origin}, https://mlh.com")
+        allow(ApplicationConfig).to receive(:[]).with("BILLBOARD_EMBED_ORIGINS")
+          .and_return("#{embed_origin}, https://other-embed.example.com")
       end
 
       it "records an anonymous embed event" do

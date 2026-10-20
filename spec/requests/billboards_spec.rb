@@ -806,11 +806,13 @@ RSpec.describe "Billboards" do
     end
   end
 
-  describe "GET /bb/mlh_feed for an embedding site" do
-    let!(:billboard) { create_billboard(placement_area: "mlh_feed", template: "authorship_box") }
+  describe "GET /bb/external_feed for an embedding site" do
+    let!(:billboard) { create_billboard(placement_area: "external_feed", template: "authorship_box") }
     let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
 
-    before { get billboard_path(placement_area: "mlh_feed"), headers: { "Origin" => "https://www.mlh.com" } }
+    before do
+      get billboard_path(placement_area: "external_feed"), headers: { "Origin" => "https://embed.example.com" }
+    end
 
     it "renders the billboard without Forem's markup, tracked as an embed" do
       expect(response.body).to include(billboard.processed_html)
