@@ -16,5 +16,11 @@ RSpec.describe ArticleApiIndexService do
       expect(relation.limit_value).to be > described_class::DEFAULT_PER_PAGE
       expect(relation.limit_value).to eq(1000)
     end
+
+    it "honors an explicit per_page when state=all is requested" do
+      relation = described_class.new(username: user.username, state: "all", per_page: 10).get
+
+      expect(relation.limit_value).to eq(10)
+    end
   end
 end
