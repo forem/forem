@@ -69,34 +69,34 @@ class FeedEvent < ApplicationRecord
 
   def self.update_single_article_counters(article_id)
     ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 5.minutes) do
-      impressions = FeedEvent.where(article_id: article_id, category: "impression")
-      return if impressions.empty?
-
-      clicks = FeedEvent.where(article_id: article_id, category: "click")
-      reactions = FeedEvent.where(article_id: article_id, category: "reaction")
-      comments = FeedEvent.where(article_id: article_id, category: "comment")
-      pageviews = FeedEvent.where(article_id: article_id, category: "extended_pageview")
-
-      # Count the distinct users for impressions and each event type
-      distinct_impressions_users = impressions.distinct.pluck(:user_id)
-      distinct_clicks_users = clicks.distinct.pluck(:user_id)
-      distinct_reactions_users = reactions.distinct.pluck(:user_id)
-      distinct_comments_users = comments.distinct.pluck(:user_id)
-      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
+      # Total events and distinct users per category in a single pass over the
+      # article's events. The NULL flag keeps parity with distinct.pluck(:user_id).size,
+      # which counts a NULL user_id as one distinct value.
+      totals = {}
+      distinct_users = Hash.new(0)
+      FeedEvent.where(article_id: article_id).group(:category).pluck(
+        :category,
+        Arel.sql("COUNT(*)"),
+        Arel.sql("COUNT(DISTINCT user_id) + MAX(CASE WHEN user_id IS NULL THEN 1 ELSE 0 END)"),
+      ).each do |category, total, users|
+        totals[category] = total
+        distinct_users[category] = users
+      end
+      return unless totals["impression"]
 
       # Calculate score based on distinct users
-      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER
-      clicks_score = distinct_clicks_users.size # 1x multiplier for clicks
-      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER
-      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+      reactions_score = distinct_users["reaction"] * REACTION_SCORE_MULTIPLIER
+      clicks_score = distinct_users["click"] # 1x multiplier for clicks
+      comments_score = distinct_users["comment"] * COMMENT_SCORE_MULTIPLIER
+      pageviews_score = distinct_users["extended_pageview"] # 1x multiplier for extended pageviews
 
-      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_users["impression"]
 
       # Update the article counters
       Article.where(id: article_id).update_all(
         feed_success_score: score,
-        feed_clicks_count: clicks.size,
-        feed_impressions_count: impressions.size,
+        feed_clicks_count: totals.fetch("click", 0),
+        feed_impressions_count: totals["impression"],
       )
     end
   end

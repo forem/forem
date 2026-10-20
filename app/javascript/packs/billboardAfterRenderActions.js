@@ -55,15 +55,84 @@ export function implementSpecialBehavior(element) {
   }
 }
 
-export function observeBillboards() {
-  const observer = new IntersectionObserver(
+// Billboards in a placement area configured as "hidden by default" render with
+// data-placement-hidden="true" and record no impressions until revealed.
+function isBillboardPlacementHidden(billboard) {
+  return billboard.dataset.placementHidden === 'true';
+}
+
+// Revealed areas are remembered on #page-content so the state is shared by
+// every separately bundled pack, and is forgotten when InstantClick swaps in
+// the next page's content.
+function revealedPlacementAreasHolder() {
+  return document.getElementById('page-content') || document.body;
+}
+
+function revealedPlacementAreas() {
+  const areas =
+    revealedPlacementAreasHolder().dataset.revealedBillboardPlacements;
+  return areas ? areas.split(' ') : [];
+}
+
+function revealPendingBillboardPlacements() {
+  const areas = revealedPlacementAreas();
+  const revealed = [];
+  if (areas.length === 0) {
+    return revealed;
+  }
+
+  document
+    .querySelectorAll('[data-display-unit][data-placement-hidden="true"]')
+    .forEach((billboard) => {
+      if (areas.includes(billboard.dataset.placementArea)) {
+        billboard.dataset.placementHidden = 'false';
+        revealed.push(billboard);
+      }
+    });
+  return revealed;
+}
+
+/**
+ * Reveals billboards in a placement area configured as "hidden by default",
+ * including ones that finish loading after this call. A revealed billboard
+ * records its impression once it is actually in view, like any other billboard.
+ * Exposed as window.Forem.revealBillboardPlacement.
+ *
+ * @param {string} placementArea The placement area to reveal, e.g. "post_sidebar"
+ */
+export function revealBillboardPlacement(placementArea) {
+  if (!placementArea) {
+    return;
+  }
+
+  const areas = revealedPlacementAreas();
+  if (!areas.includes(placementArea)) {
+    revealedPlacementAreasHolder().dataset.revealedBillboardPlacements = [
+      ...areas,
+      placementArea,
+    ].join(' ');
+  }
+
+  // A fresh observer always reports the current intersection, so a revealed
+  // billboard that is already on screen counts without needing to scroll.
+  const observer = createImpressionObserver();
+  revealPendingBillboardPlacements().forEach((billboard) =>
+    observer.observe(billboard),
+  );
+}
+
+function createImpressionObserver() {
+  return new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
         const elem = entry.target;
         if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
           elem.dataset.isBillboardVisible = 'true';
           setTimeout(() => {
-            if (elem.dataset.isBillboardVisible === 'true') {
+            if (
+              elem.dataset.isBillboardVisible === 'true' &&
+              !isBillboardPlacementHidden(elem)
+            ) {
               trackAdImpression(elem);
               startPollingBillboard(elem);
             }
@@ -84,7 +153,14 @@ export function observeBillboards() {
       threshold: 0.25,
     },
   );
+}
 
+export function observeBillboards() {
+  // Billboards render asynchronously, so one may arrive after its placement
+  // area was already revealed on this page.
+  revealPendingBillboardPlacements();
+
+  const observer = createImpressionObserver();
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
     const currentPath = window.location.pathname;
     observer.observe(ad);

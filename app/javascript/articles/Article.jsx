@@ -6,6 +6,7 @@ import {
   CommentsCount,
   CommentsList,
   ContentTitle,
+  FavoritedMarker,
   Meta,
   SaveButton,
   SearchSnippet,
@@ -18,6 +19,7 @@ import { PodcastArticle } from './PodcastArticle';
 
 export const Article = ({
   article,
+  currentUserId,
   isFeatured,
   isBookmarked,
   bookmarkClick,
@@ -44,10 +46,13 @@ export const Article = ({
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
-    !article.cloudinary_video_url && !article.video;
+    !article.cloudinary_video_url &&
+    !article.video;
 
   const parsedUrl = new URL(article.url);
-  const domain = parsedUrl.hostname.replace(".forem.com", "").replace(".to", "");
+  const domain = parsedUrl.hostname
+    .replace('.forem.com', '')
+    .replace('.to', '');
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
@@ -87,12 +92,20 @@ export const Article = ({
         {article.video && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
-        <div className={`crayons-story__body crayons-story__body-${article.type_of}`}>
-          { article.context_note && article.context_note.length > 0 && (
-              <a href={article.url} className="crayons-article__context-note crayons-article__context-note__feed" dangerouslySetInnerHTML={{__html: article.context_note}} />
-            )}
+        <div
+          className={`crayons-story__body crayons-story__body-${article.type_of}`}
+        >
+          {article.context_note && article.context_note.length > 0 && (
+            <a
+              href={article.url}
+              className="crayons-article__context-note crayons-article__context-note__feed"
+              dangerouslySetInnerHTML={{ __html: article.context_note }}
+            />
+          )}
           <div className="crayons-story__top">
-            {article.user && (<Meta article={article} organization={article.organization} />)}
+            {article.user && (
+              <Meta article={article} organization={article.organization} />
+            )}
             {pinned && (
               <div
                 className="pinned color-accent-brand fw-bold"
@@ -117,9 +130,18 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             <ContentTitle article={article} />
-            {article.type_of !== 'status' && (<TagList tags={article.tag_list} flare_tag={article.flare_tag} />)}
+            {article.type_of !== 'status' && (
+              <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
+            )}
 
-            {article.type_of === 'status' && article.body_preview && article.body_preview.length > 0 && (<div className='crayons-story__contentpreview text-styles' dangerouslySetInnerHTML={{__html: article.body_preview}} />)}
+            {article.type_of === 'status' &&
+              article.body_preview &&
+              article.body_preview.length > 0 && (
+                <div
+                  className="crayons-story__contentpreview text-styles"
+                  dangerouslySetInnerHTML={{ __html: article.body_preview }}
+                />
+              )}
 
             {isArticle && (
               // eslint-disable-next-line no-underscore-dangle
@@ -127,9 +149,13 @@ export const Article = ({
             )}
 
             <div className="crayons-story__bottom">
-              {(article.class_name !== 'User' && article.user) && (
+              {article.class_name !== 'User' && article.user && (
                 <div className="crayons-story__details">
                   <ReactionsCount article={article} />
+                  <FavoritedMarker
+                    favoritedByUserId={article.favorited_by_user_id}
+                    currentUserId={currentUserId}
+                  />
                   <CommentsCount
                     count={article.comments_count}
                     articlePath={article.url}
@@ -139,8 +165,15 @@ export const Article = ({
               )}
 
               <div className="crayons-story__save">
-                <ReadingTime readingTime={article.reading_time} typeOf={article.type_of} />
-                { isRoot && (<small class="crayons-story__tertiary mr-2 fs-xs fw-bold">{domain}</small>)}
+                <ReadingTime
+                  readingTime={article.reading_time}
+                  typeOf={article.type_of}
+                />
+                {isRoot && (
+                  <small class="crayons-story__tertiary mr-2 fs-xs fw-bold">
+                    {domain}
+                  </small>
+                )}
                 <SaveButton
                   article={article}
                   isBookmarked={isBookmarked}
@@ -174,6 +207,7 @@ Article.defaultProps = {
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
+  currentUserId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
   isRoot: PropTypes.bool,

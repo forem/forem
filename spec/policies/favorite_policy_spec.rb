@@ -17,8 +17,8 @@ RSpec.describe FavoritePolicy do
     context "with a regular user" do
       let(:user) { create(:user) }
 
-      it "denies" do
-        expect(policy.create?).to be false
+      it "permits" do
+        expect(policy.create?).to be true
       end
     end
 
@@ -32,6 +32,14 @@ RSpec.describe FavoritePolicy do
 
     context "with a suspended leader" do
       let(:user) { create(:user, :community_leader_level_1, :suspended) }
+
+      it "raises UserSuspendedError" do
+        expect { policy.create? }.to raise_error(ApplicationPolicy::UserSuspendedError)
+      end
+    end
+
+    context "with a suspended user" do
+      let(:user) { create(:user, :suspended, earned_favorites_count: 5) }
 
       it "raises UserSuspendedError" do
         expect { policy.create? }.to raise_error(ApplicationPolicy::UserSuspendedError)

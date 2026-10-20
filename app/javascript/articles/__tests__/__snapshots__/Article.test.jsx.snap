@@ -127,6 +127,7 @@ Object {
                         Stella Macejkovic
                          
                         
+                        
                       </button>
                       <div
                         class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -166,12 +167,11 @@ Object {
                             class="print-hidden"
                           >
                             <button
+                              aria-label="Follow Stella Macejkovic"
                               class="c-btn c-btn--primary follow-action-button follow-user w-100"
                               data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                               type="button"
-                            >
-                              Follow
-                            </button>
+                            />
                           </div>
                           <div
                             class="author-preview-metadata-container"
@@ -256,7 +256,7 @@ Object {
                 >
                   <a
                     aria-label="Add a comment to post - Unbranded Home Loan Account"
-                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left flex items-center"
                     data-testid="add-a-comment"
                     href="http://example.com/some-post/path#comments"
                   >
@@ -375,6 +375,7 @@ Object {
                       Stella Macejkovic
                        
                       
+                      
                     </button>
                     <div
                       class="profile-preview-card__content crayons-dropdown p-4 pt-0 branded-7"
@@ -414,12 +415,11 @@ Object {
                           class="print-hidden"
                         >
                           <button
+                            aria-label="Follow Stella Macejkovic"
                             class="c-btn c-btn--primary follow-action-button follow-user w-100"
                             data-info="{\\"id\\":23289,\\"className\\":\\"User\\",\\"name\\":\\"Stella Macejkovic\\",\\"style\\":\\"full\\"}"
                             type="button"
-                          >
-                            Follow
-                          </button>
+                          />
                         </div>
                         <div
                           class="author-preview-metadata-container"
@@ -504,7 +504,7 @@ Object {
               >
                 <a
                   aria-label="Add a comment to post - Unbranded Home Loan Account"
-                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left flex items-center"
                   data-testid="add-a-comment"
                   href="http://example.com/some-post/path#comments"
                 >

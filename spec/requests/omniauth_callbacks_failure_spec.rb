@@ -5,7 +5,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
 
   before do
     allow(ForemStatsClient).to receive(:increment)
-    allow(Honeybadger).to receive(:notify)
+    allow(Rails.error).to receive(:report)
   end
 
   after do
@@ -21,7 +21,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -33,7 +33,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -45,7 +45,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).to have_received(:notify).with(error)
+    expect(Rails.error).to have_received(:report).with(error)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -58,7 +58,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -72,7 +72,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/twitter"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -84,7 +84,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/twitter"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -96,7 +96,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).not_to have_received(:notify)
+    expect(Rails.error).not_to have_received(:report)
     expect(response).to redirect_to(new_user_session_url)
   end
 
@@ -108,7 +108,7 @@ RSpec.describe "OmniAuth Callbacks Failure", type: :request do
     post "/users/auth/apple"
     follow_redirect!
 
-    expect(Honeybadger).to have_received(:notify).with(error)
+    expect(Rails.error).to have_received(:report).with(error)
     expect(response).to redirect_to(new_user_session_url)
   end
 end

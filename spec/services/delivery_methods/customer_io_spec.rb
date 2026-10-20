@@ -39,6 +39,19 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:message_data]).to eq("name" => "Sloan")
   end
 
+  # The App API treats a from in the request as an override of the sender
+  # identity configured on the transactional message, so sending the Rails-side
+  # default would make every template send from ForemInstance.from_email_address.
+  it "omits the from when a transactional_message_id is present so the template's sender is used" do
+    message = delivered_message(transactional_message_id: "dev_test_template")
+    expect(message).not_to have_key(:from)
+  end
+
+  it "still lets a mailer override the sender explicitly through the delivery options" do
+    message = delivered_message(transactional_message_id: "dev_test_template", from: "custom@dev.to")
+    expect(message[:from]).to eq("custom@dev.to")
+  end
+
   it "forwards the one-click unsubscribe headers so RFC 8058 survives the Customer.io render" do
     mail["List-Unsubscribe"] = "<https://dev.to/email_subscriptions/unsubscribe?ut=token>"
     mail["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
@@ -80,6 +93,35 @@ RSpec.describe DeliveryMethods::CustomerIo do
     end
     message = delivered_message({}, mixed)
     expect(message[:body]).to eq("<p>html export</p>")
+  end
+
+  # Customer.io renders its own template, so Ahoy's rewriting of the
+  # ActionMailer body never reaches the recipient. The payload has to carry the
+  # tracking params instead or Ahoy::EmailClicksController is never called.
+  describe "click tracking in the payload" do
+    let(:article_url) { "https://#{Settings::General.app_domain}/ben/some-post" }
+
+    it "decorates message_data links using the token Ahoy set on the mail" do
+      mail.ahoy_data = { token: "tok123", campaign: nil }
+
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      params = Rack::Utils.parse_query(Addressable::URI.parse(message[:message_data]["url"]).query)
+      expect(params["ahoy_click"]).to eq("true")
+      expect(params["t"]).to eq("tok123")
+    end
+
+    it "leaves message_data alone when Ahoy did not set a token" do
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      expect(message[:message_data]["url"]).to eq(article_url)
+    end
   end
 
   it "attaches mail attachments to the request" do

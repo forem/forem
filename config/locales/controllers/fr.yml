@@ -10,6 +10,8 @@ fr:
     please_sign_in : Veuillez vous connecter
   articles_controller:
     deleted: L'article a été supprimé avec succès.
+  co_author_invitations_controller:
+    not_updated: Cette invitation de co-auteur n'a pas pu être mise à jour. Elle a peut-être déjà reçu une réponse ou été retirée.
   comments_controller:
     create:
       success: créé avec succès
@@ -43,14 +45,28 @@ fr:
     newsletter: bulletin d'information
   favorites_controller:
     create:
-      already_favorited: Ceci a déjà été mis en favori.
-      no_allowance: Vous avez épuisé votre quota de favoris.
-      cannot_favorite: Impossible de mettre ceci en favori.
+      already_favorited: Ceci a déjà été choisi comme pépite.
+      no_allowance: Vous avez épuisé votre quota de pépites.
+      cannot_favorite: Impossible de choisir ceci comme pépite.
   feeds:
     sources:
       created: Votre source de flux a été ajoutée et un import a été déclenché.
       updated: Votre source de flux a été mise à jour.
       deleted: Votre source de flux a été supprimée.
+    validate_url:
+      bot_protection: "L'URL du flux n'a pas pu être récupérée — elle est peut-être protégée par une détection de bot ou temporairement indisponible"
+      not_found: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé une erreur 404 (Introuvable)"
+      server_error: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé une erreur 500 (Erreur interne du serveur)"
+      status_error: "L'URL du flux n'a pas pu être récupérée — le serveur a renvoyé le code d'état %{code}"
+      network_error: "Impossible de joindre l'URL du flux — veuillez vérifier l'URL ou votre connexion réseau"
+    xml_imports:
+      success: "%{count} article(s) importé(s) depuis le XML collé."
+      blank: "Le contenu XML ne peut pas être vide."
+      too_large: "Le contenu XML est trop volumineux (max 500 Ko)."
+      too_many_entries: "Le flux contient trop d'entrées (max %{max}). Veuillez importer par lots plus petits ou l'ajouter comme source de flux."
+      no_entries: "Le flux ne contient aucune entrée à importer."
+      none_imported: "Aucun nouvel article n'a été importé (les éléments existent peut-être déjà ou ne sont pas valides)."
+      invalid_xml: "Impossible d'analyser le XML — assurez-vous qu'il s'agit d'un flux RSS ou Atom valide."
   feedback_messages_controller:
     error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
     n_a: NON DISPONIBLE
@@ -74,6 +90,11 @@ fr:
     deleted: L'inscription a été supprimée avec succès.
     no_credit: Pas assez de crédits disponibles
   omniauth_callbacks_controller:
+    account_switch_title: "Confirmer le changement de compte"
+    account_switch_body_html: "Vous êtes connecté avec un autre compte. Continuer avec %{username} ? Votre session actuelle sera fermée et vous serez connecté à ce compte."
+    account_switch_confirm: "Confirmer le changement"
+    account_switch_cancel: "Annuler"
+    account_switch_expired: "Cette tentative de connexion a expiré. Veuillez réessayer."
     log_in_error: 'Erreur de connexion: %{e}'
     username_taken: le nom d'utilisateur a déjà été pris
   organizations_controller:

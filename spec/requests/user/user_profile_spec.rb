@@ -56,12 +56,13 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include "Pinned"
     end
 
-    it "renders profile page of user after changed username" do
+    it "renders profile page of user after changed username and tags redirect with Surrogate-Key" do
       old_username = user.username
       user.update_columns(username: "new_username_yo_#{rand(10_000)}", old_username: old_username,
                           old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
+      expect(response.headers["Surrogate-Key"]).to eq(user.profile_cache_keys.join(" "))
     end
 
     it "renders profile page of user after two changed usernames" do
@@ -72,6 +73,19 @@ RSpec.describe "UserProfiles" do
                           old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
+    end
+
+    it "serves the original profile URL and redirects the temporary username after reverting A -> B -> A" do
+      original_username = user.username
+      temp_username = "#{original_username}_dev"
+      Users::Update.call(user, user: { username: temp_username })
+      Users::Update.call(user.reload, user: { username: original_username })
+
+      get "/#{temp_username}"
+      expect(response).to redirect_to("/#{original_username}")
+
+      get "/#{original_username}"
+      expect(response).to have_http_status(:ok)
     end
 
     it "does not render noindex meta if not suspended" do

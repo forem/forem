@@ -25,10 +25,11 @@ module Authentication
     end
 
     # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
-    def initialize(auth_payload, current_user: nil, cta_variant: nil)
+    def initialize(auth_payload, current_user: nil, cta_variant: nil, expected_user: nil)
       @provider = load_authentication_provider(auth_payload)
 
       @current_user = current_user
+      @expected_user = expected_user
       @cta_variant = cta_variant
     end
 
@@ -41,6 +42,7 @@ module Authentication
         refresh_identity(identity, linked_identity)
         return current_user
       end
+      guard_account_switch!(identity) if current_user
 
       # These variables need to be set outside of the scope of the
       # transaction in order to be used after the transaction is completed.
@@ -50,6 +52,7 @@ module Authentication
 
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
+        verify_expected_user!(user)
 
         user = if user.nil?
                  find_or_create_user!
@@ -167,6 +170,30 @@ module Authentication
         tags: ["error:#{e.class}", "provider:#{linked_identity.provider}"],
       )
       nil
+    end
+
+    def guard_account_switch!(identity)
+      candidate = identity.user || verified_email_user
+      return if candidate.nil? || candidate == current_user
+
+      raise ::Authentication::Errors::Ineligible if candidate.spam_or_suspended?
+
+      raise ::Authentication::Errors::AccountSwitchConfirmation.new(candidate)
+    end
+
+    def verified_email_user
+      email = provider.user_email
+      return nil if email.blank?
+
+      user = User.find_by(email: email)
+      user&.confirmed? ? user : nil
+    end
+
+    def verify_expected_user!(user)
+      return unless @expected_user
+      return if user == @expected_user && user.confirmed? && !user.spam_or_suspended?
+
+      raise ::Authentication::Errors::Ineligible
     end
 
     def proper_user(identity)

@@ -23,7 +23,13 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   useEffect(() => {
     async function fetchFeedItems(timeFrame = '', page = 1) {
       let feedTypeOf = localStorage?.getItem('current_feed');
-      if (feedTypeOf !== 'discover' && feedTypeOf !== 'following') {
+      if (window.location.pathname === '/curated') {
+        feedTypeOf = 'curated';
+      } else if (window.location.pathname === '/following' || window.location.pathname === '/following/latest') {
+        feedTypeOf = 'following';
+      } else if (window.location.pathname === '/discover') {
+        feedTypeOf = 'discover';
+      } else if (feedTypeOf !== 'discover' && feedTypeOf !== 'following' && feedTypeOf !== 'curated') {
         feedTypeOf = 'discover';
       }
       const billboardUrlComponent = document.body.dataset.dynamicUrlComponent || 'bb';

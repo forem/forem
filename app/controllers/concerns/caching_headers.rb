@@ -26,6 +26,11 @@ module CachingHeaders
     # Only public forems should be edge-cached based on current functionality.
     return unless Settings::UserExperience.public
 
+    if auth_state_desynced_with_fastly? || flash_pending?
+      unset_cache_control_headers
+      return
+    end
+
     request.session_options[:skip] = true # no cookies
 
     RequestStore.store[:edge_caching_in_place] = true # To be observed downstream.
@@ -39,6 +44,7 @@ module CachingHeaders
 
   def unset_cache_control_headers
     RequestStore.store[:edge_caching_in_place] = false
+    request.session_options[:skip] = false # Not edge cached, so the session (and flash) can be written normally.
     response.headers["Cache-Control"] = nil
     response.headers["X-Accel-Expires"] = nil
     response.headers["Surrogate-Control"] = nil
@@ -47,7 +53,8 @@ module CachingHeaders
   # Sets Surrogate-Key HTTP header with one or more keys strips session data
   # from the request.
   def set_surrogate_key_header(*surrogate_keys)
-    request.session_options[:skip] = true # No Set-Cookie
+    # No Set-Cookie, unless this response has been explicitly opted out of edge caching.
+    request.session_options[:skip] = true unless RequestStore.store[:edge_caching_in_place] == false
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
   end
 
@@ -57,6 +64,19 @@ module CachingHeaders
   end
 
   private
+
+  def auth_state_desynced_with_fastly?
+    request.cookies.key?("remember_user_token") != user_signed_in?
+  end
+
+  # A flash message (e.g. "Your password reset instructions have been sent.") is
+  # rendered into the page by the layout. If we edge cached that response, every
+  # subsequent visitor would see someone else's flash. Skipping the cache here
+  # also lets the session be written so the flash is actually consumed.
+  # Reading the flash loads the session, which user_signed_in? above has already done.
+  def flash_pending?
+    !flash.empty?
+  end
 
   def build_surrogate_control(max_age, stale_while_revalidate: nil, stale_if_error: 26_400)
     surrogate_control = "max-age=#{max_age}"

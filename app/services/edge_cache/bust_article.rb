@@ -15,10 +15,23 @@ module EdgeCache
 
       cache_bust = EdgeCache::Bust.new
 
+      bust_custom_domain_page(cache_bust, article)
       bust_home_pages(cache_bust, article)
       bust_tag_pages(cache_bust, article)
       bust_user_profile_pages(article)
     end
+
+    def self.bust_custom_domain_page(cache_bust, article)
+      org = article.organization
+      return unless org.respond_to?(:custom_domain) &&
+        org.custom_domain.present? &&
+        FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+
+      custom_domain_url = URL.url("/#{article.slug}", org.custom_domain)
+      cache_bust.call(custom_domain_url)
+    end
+
+    private_class_method :bust_custom_domain_page
 
     def self.bust_home_pages(cache_bust, article)
       if article.published_at.to_i > Time.current.to_i
@@ -31,7 +44,9 @@ module EdgeCache
       end
 
       TIMEFRAMES.each do |timestamp, interval|
-        next unless Article.published.where("published_at > ?", timestamp.call)
+        cutoff = timestamp.call
+        next if article.published_at.blank? || article.published_at <= cutoff
+        break unless Article.published.where("published_at > ?", cutoff)
           .order(score: :desc).limit(3).ids.include?(article.id)
 
         cache_bust.call("/top/#{interval}")
@@ -55,7 +70,9 @@ module EdgeCache
         end
 
         TIMEFRAMES.each do |timestamp, interval|
-          next unless Article.published.where("published_at > ?", timestamp.call).cached_tagged_with_any(tag)
+          cutoff = timestamp.call
+          next if article.published_at.blank? || article.published_at <= cutoff
+          break unless Article.published.where("published_at > ?", cutoff).cached_tagged_with_any(tag)
             .order(score: :desc).limit(3).ids.include?(article.id)
 
           cache_bust.call("/top/#{interval}")

@@ -26,6 +26,7 @@ class ApplicationController < ActionController::Base
   before_action :forward_to_app_config_domain
   before_action :redirect_custom_domain_non_profile_pages
   before_action :determine_locale
+  before_action :set_request_signed_in_context
   after_action  :clear_request_store
 
   include SessionCurrentUser
@@ -40,7 +41,7 @@ class ApplicationController < ActionController::Base
   # This was removed due to flakiness.
   # include EdgeCacheSafetyCheck unless Rails.env.production?
 
-  rescue_from ActionView::MissingTemplate, with: :routing_error
+  rescue_from ActionView::MissingTemplate, with: :respond_with_missing_template
 
   rescue_from RateLimitChecker::LimitReached do |exc|
     error_too_many_requests(exc)
@@ -150,6 +151,23 @@ class ApplicationController < ActionController::Base
   # @raise [ActionController::RoutingError] when called
   def routing_error
     raise ActionController::RoutingError, "Routing Error"
+  end
+
+  # A missing template usually means the format negotiated from the Accept header has no
+  # template (e.g. a feed reader or bot asking for JSON on an HTML-only page), not that the
+  # page is missing. Render the 404 here rather than raising, so the response keeps headers that
+  # stop Fastly from caching it: an edge-cached 404 without Vary: Accept is served to browsers
+  # requesting the same URL, and carries no surrogate key for a purge to clear it.
+  def respond_with_missing_template
+    unset_cache_control_headers
+    response.headers["Cache-Control"] = "private, no-store"
+    add_vary_header("Accept")
+
+    if request.format.html?
+      render file: Rails.public_path.join("404.html"), layout: false, status: :not_found, content_type: "text/html"
+    else
+      head :not_found
+    end
   end
 
   # When called render unauthorized JSON status and raise Pundit::NotAuthorizedError
@@ -324,7 +342,7 @@ class ApplicationController < ActionController::Base
   end
 
   def internal_navigation?
-    params[:i] == "i"
+    params[:i] == "i" || params[:i].to_s.match?(/\A[a-f0-9]{8,12}\z/)
   end
   helper_method :internal_navigation?
 
@@ -398,6 +416,11 @@ class ApplicationController < ActionController::Base
       current_user.remember_me!
       remember_me(current_user)
     end
+  end
+
+  def set_request_signed_in_context
+    RequestStore.store[:user_signed_in] = user_signed_in?
+    RequestStore.store[:custom_domain_org] = request.env["forem.custom_domain_org"]
   end
 
   def after_sign_out_path_for(_resource_or_scope)
@@ -497,7 +520,7 @@ class ApplicationController < ActionController::Base
   end
 
   def custom_domain_org
-    OrgCustomDomainConstraint.custom_domain_org(request)
+    request.env["forem.custom_domain_org"] ||= OrgCustomDomainConstraint.custom_domain_org_for_host(request.host)
   end
 
   def redirect_www_and_unregistred_subforems_to_root
@@ -603,9 +626,9 @@ class ApplicationController < ActionController::Base
   end
 
   def internal_nav_param
-    return "" unless params[:i] == "i"
+    return "" unless internal_navigation?
 
-    "?i=i"
+    "?i=#{params[:i]}"
   end
 
   def clear_request_store

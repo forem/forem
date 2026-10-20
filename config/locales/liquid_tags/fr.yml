@@ -199,5 +199,10 @@ fr:
       field_job_title: Poste
       name_email_required: Le nom et l'e-mail sont obligatoires.
       wrong_organization: Ce formulaire de leads n'appartient pas à cette organisation.
+    org_lead_gate_tag:
+      invalid_id: "ID de formulaire de leads non valide. Utilisez : {% org_lead_gate ID %}...{% endorg_lead_gate %}"
+      sign_in_required: Connectez-vous avec votre compte %{community} pour envoyer ce formulaire et déverrouiller le contenu.
+      sign_in: Se connecter pour déverrouiller
+      data_shared: "Partage votre nom, e-mail, nom d’utilisateur, entreprise et poste avec cette organisation."
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

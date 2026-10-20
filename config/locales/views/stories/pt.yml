@@ -31,6 +31,7 @@ pt:
       feed:
         discover: Descobrir
         following: Seguindo
+        curated: Curadoria
         top_this_week: Top desta semana
         top_this_month: Top deste mês
         top_this_year: Top deste ano
@@ -44,6 +45,11 @@ pt:
           following:
             title: "Nenhum post das pessoas que você segue"
             description: "Siga alguns membros para ver suas últimas postagens no seu feed."
+            action_text: "Voltar à aba Descobrir"
+            action_href: "/discover"
+          curated:
+            title: "Nenhum post selecionado encontrado"
+            description: "Volte mais tarde para ver os posts favoritados pela comunidade!"
             action_text: "Voltar à aba Descobrir"
             action_href: "/discover"
           default:

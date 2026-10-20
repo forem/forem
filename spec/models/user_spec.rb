@@ -71,8 +71,100 @@ RSpec.describe User do
       user = create(:user)
       expect(user.trackable_payload.keys).to contain_exactly(
         "id", "username", "email", "name", "registered_at", "confirmed_at", "email_newsletter",
-        "email_digest_periodic", "mlh_user_id"
+        "email_digest_periodic", "email_comment_notifications", "email_follower_notifications",
+        "email_mention_notifications", "email_unread_notifications", "email_badge_notifications",
+        "email_tag_mod_newsletter", "email_community_mod_newsletter",
+        "mlh_user_id",
+        "signed_up_with_html", "unsubscribe_url", "notification_settings_url"
       )
+    end
+
+    # Core maps each of these onto its own Customer.io subscription topic, and
+    # can only learn the state of an account that never toggles anything from
+    # this payload, so all nine consents have to ride along.
+    it "seeds every email consent Core mirrors, not just the newsletter and digest" do
+      user = create(:user)
+      user.notification_setting.update!(email_comment_notifications: false,
+                                        email_follower_notifications: false,
+                                        email_mention_notifications: true,
+                                        email_unread_notifications: false,
+                                        email_badge_notifications: true)
+
+      payload = user.reload.trackable_payload
+
+      expect(payload).to include(
+        "email_comment_notifications" => false,
+        "email_follower_notifications" => false,
+        "email_mention_notifications" => true,
+        "email_unread_notifications" => false,
+        "email_badge_notifications" => true,
+      )
+    end
+
+    # Customer.io fails the ENTIRE body render of a template that references an
+    # event attribute the triggering event does not carry, and fails on the first
+    # such reference -- so these three must always be present, even when blank.
+    it "always carries the three email footer keys, whatever else is missing" do
+      user = create(:user)
+      allow(Users::EmailFooterPayload).to receive(:unsubscribe_token).and_raise(StandardError, "boom")
+
+      payload = user.trackable_payload
+
+      expect(payload).to include(
+        "signed_up_with_html" => "",
+        "unsubscribe_url" => "",
+        "notification_settings_url" => "",
+      )
+    end
+
+    it "carries a one-click unsubscribe url that the unsubscribe controller accepts" do
+      user = create(:user)
+
+      url = user.trackable_payload["unsubscribe_url"]
+      token = Rack::Utils.parse_query(URI.parse(url).query)["ut"]
+      verified = Rails.application.message_verifier(:unsubscribe).verify(token).with_indifferent_access
+
+      expect(URI.parse(url).path).to eq("/email_subscriptions/unsubscribe")
+      expect(verified[:user_id]).to eq(user.id)
+      expect(verified[:email_type]).to eq("email_newsletter")
+      expect(Time.zone.parse(verified[:expires_at])).to be > Time.current
+    end
+
+    # Production sets Rails.application.routes.default_url_options to the
+    # protocol alone, while test and development both set a host there. Relying
+    # on the ambient default therefore passes locally and blanks every key in
+    # production, which is exactly what happened -- so pin the production shape.
+    it "still builds the footer when only a protocol is configured, as in production" do
+      user = create(:user)
+      allow(Rails.application.routes).to receive(:default_url_options).and_return({ protocol: "https" })
+
+      payload = user.trackable_payload
+
+      expect(payload["signed_up_with_html"]).to be_present
+      expect(payload["unsubscribe_url"]).to include("/email_subscriptions/unsubscribe?ut=")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    it "points the footer at the user's onboarding subforem" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+
+      payload = user.trackable_payload
+
+      expect(URI.parse(payload["unsubscribe_url"]).host).to eq("onboarding.example.com")
+      expect(payload["notification_settings_url"]).to end_with("/settings/notifications")
+    end
+
+    # signed_up_with resolves the community name from try(:subforem_id), so the
+    # copy has to follow the same subforem as the URLs beside it rather than
+    # falling back to the default community.
+    it "names the user's own subforem community in the signed-up-with copy" do
+      subforem = create(:subforem, domain: "onboarding.example.com")
+      user = create(:user, onboarding_subforem_id: subforem.id)
+      allow(Settings::Community).to receive(:community_name)
+        .with(subforem_id: subforem.id).and_return("Onboarding Community")
+
+      expect(user.trackable_payload["signed_up_with_html"]).to include("Onboarding Community")
     end
 
     it "reflects registration, confirmation, and email consent state in the payload" do
@@ -1178,6 +1270,29 @@ RSpec.describe User do
     end
   end
 
+  describe "spam role article rescoring" do
+    it "enqueues a score recalculation for each published article when the spam role is added" do
+      published = create(:article, user: user, published: true)
+      draft = create(:article, user: user, published: false)
+      Articles::ScoreCalcWorker.jobs.clear
+
+      user.add_role(:spam)
+
+      enqueued_ids = Articles::ScoreCalcWorker.jobs.map { |job| job["args"].first }
+      expect(enqueued_ids).to include(published.id)
+      expect(enqueued_ids).not_to include(draft.id)
+    end
+
+    it "drops published article scores below the index minimum once the spam role is added" do
+      article = create(:article, user: user, published: true)
+      article.update_columns(score: 50)
+
+      sidekiq_perform_enqueued_jobs(only: Articles::ScoreCalcWorker) { user.add_role(:spam) }
+
+      expect(article.reload.score).to be < Settings::UserExperience.index_minimum_score
+    end
+  end
+
   describe "cache counts" do
     it "has an accurate tag follow count" do
       tag = create(:tag)
@@ -1718,9 +1833,32 @@ RSpec.describe User do
     end
   end
 
+  describe "#unlimited_favorites?" do
+    it "is true for an admin who curates" do
+      expect(create(:user, :admin, :community_leader_level_1)).to be_unlimited_favorites
+    end
+
+    it "is true for a super admin who curates" do
+      expect(create(:user, :super_admin, :community_leader_level_2)).to be_unlimited_favorites
+    end
+
+    it "is false for an admin who does not curate" do
+      expect(create(:user, :admin)).not_to be_unlimited_favorites
+    end
+
+    it "is false for a curator who is not an admin" do
+      expect(create(:user, :community_leader_level_1)).not_to be_unlimited_favorites
+    end
+  end
+
   describe "#favorite_base_allowance" do
     it "is 0 for a non-leader" do
       expect(create(:user).favorite_base_allowance).to eq(0)
+    end
+
+    it "is infinite for an admin curator" do
+      expect(create(:user, :admin, :community_leader_level_1).favorite_base_allowance)
+        .to eq(Float::INFINITY)
     end
 
     it "uses the level 1 setting for a level 1 leader" do
@@ -1764,6 +1902,46 @@ RSpec.describe User do
       create(:article, favorited_by_user: leader, favorited_at: 2.days.ago)
 
       expect(leader.favorite_allowance).to eq(5)
+    end
+
+    it "is infinite for an admin curator, no matter what they have spent" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 1, community_leader_favorite_refresh_hours: 24,
+      )
+      admin_curator = create(:user, :admin, :community_leader_level_1)
+      create(:article, favorited_by_user: admin_curator, favorited_at: 1.hour.ago)
+
+      expect(admin_curator.favorite_allowance).to eq(Float::INFINITY)
+    end
+  end
+
+  describe "#favorite_allowance_for_client" do
+    it "returns the numeric allowance for a metered user" do
+      user = create(:user, earned_favorites_count: 2)
+
+      expect(user.favorite_allowance_for_client).to eq(2)
+    end
+
+    it "returns nil for an admin curator" do
+      admin_curator = create(:user, :admin, :community_leader_level_1)
+
+      expect(admin_curator.favorite_allowance_for_client).to be_nil
+    end
+  end
+
+  describe "#confirmation_required?" do
+    before { allow(ForemInstance).to receive(:smtp_enabled?).and_return(true) }
+
+    it "sends no confirmation email to a user confirmed at creation (OAuth signup)" do
+      user = build(:user, confirmed_at: nil)
+      user.skip_confirmation!
+
+      expect { user.save! }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
+    end
+
+    it "sends a confirmation email to an unconfirmed signup" do
+      expect { create(:user, confirmed_at: nil) }
+        .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
     end
   end
 end

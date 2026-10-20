@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     get "/enter", to: "registrations#new", as: :sign_up
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
+    post "/users/auth/account_switch/confirm",
+         to: "omniauth_callbacks#confirm_account_switch", as: :user_account_switch_confirm
+    post "/users/auth/account_switch/cancel",
+         to: "omniauth_callbacks#cancel_account_switch", as: :user_account_switch_cancel
   end
 
   # This route makes default Ahoy Email redirect URLs available to us
@@ -36,19 +40,19 @@ Rails.application.routes.draw do
     get "/", to: "stories#custom_domain_index"
     get "/feed", to: "articles#feed", as: nil, defaults: { format: "rss" }
     get "/rss", to: "articles#feed", as: nil, defaults: { format: "rss" }
+    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
+                           constraints: { format: /html/ }
     get "/:org_slug/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          org_slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+)\z)[^/.]+},
+          org_slug: %r{[^/.]+},
           slug: %r{[^/.]+}
         }
     get "/:slug",
         to: "stories#custom_domain_show",
         constraints: {
-          slug: %r{(?!(?:api|assets|packs|rails|r|ahoy|enter|users|p|robots|sitemap-.+)\z)[^/.]+}
+          slug: %r{[^/.]+}
         }
-    get "/p/:page_suffix", to: "stories#custom_domain_index", as: "custom_domain_organization_custom_page",
-                           constraints: { format: /html/ }
   end
 
   # [@forem/delightful] - all routes are nested under this optional scope to
@@ -109,6 +113,10 @@ Rails.application.routes.draw do
         end
 
         resources :feedback_messages, only: :update
+
+        resources :images, only: :create do
+          post :generate, on: :collection
+        end
 
         resources :organizations, only: %i[index create update destroy]
 
@@ -219,6 +227,7 @@ Rails.application.routes.draw do
     end
     namespace :feeds do
       resources :sources, only: %i[create update destroy]
+      resources :xml_imports, only: %i[create]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
@@ -244,6 +253,13 @@ Rails.application.routes.draw do
     resources :ai_image_generations, only: [:create]
     resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
+    resources :co_author_invitations, only: [] do
+      get :candidates, on: :collection, defaults: { format: :json }
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
@@ -422,6 +438,24 @@ Rails.application.routes.draw do
 
     # You can have the root of your site routed with "root
     get "/robots.:format", to: "pages#robots"
+    get "/llms.:format", to: "pages#llms"
+
+    # Canonical location of the generated OpenAPI description, plus redirects from the
+    # paths automated clients commonly probe for a spec before falling back to guessing.
+    get "/api/v1/openapi.json", to: "pages#openapi", defaults: { format: "json" }
+    %w[
+      /openapi.json
+      /api-docs
+      /api_docs
+      /api/docs
+      /api/v1/docs
+      /api/v1/docs/api_v1.json
+      /api_docs/v1.json
+      /swagger/v1/api_v1.json
+      /.well-known/openapi.json
+    ].each do |probe_path|
+      get probe_path, to: redirect("/api/v1/openapi.json"), format: false
+    end
     get "/api", to: redirect("https://developers.forem.com/api")
     get "/privacy", to: "pages#privacy"
     get "/terms", to: "pages#terms"
@@ -521,6 +555,8 @@ Rails.application.routes.draw do
 
     get "/leadership", to: "leadership_dashboards#show", as: :leadership
     get "/leadership/:section", to: "leadership_dashboards#show", as: :leadership_section
+    get "/curation", to: "leadership_dashboards#show", as: :curation
+    get "/curation/:section", to: "leadership_dashboards#show", as: :curation_section
 
     unless Rails.env.production?
       get "/rails/mailers", to: "rails/mailers#index"
@@ -572,7 +608,7 @@ Rails.application.routes.draw do
                                   constraints: { feed_type: /following/, timeframe: /latest|latest_less_filtered/ }
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest|latest_less_filtered/ }
-    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following/ }
+    get "/:feed_type", to: "stories#index", constraints: { feed_type: /discover|following|curated/ }
 
     get "/:username/series", to: "collections#index", as: "user_series"
     get "/:username/series/:id", to: "collections#show"

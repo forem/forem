@@ -5,6 +5,7 @@ module Homepage
       comments_count
       crossposted_at
       displayed_comments_count
+      favorited_by_user_id
       id
       organization_id
       path
@@ -19,6 +20,8 @@ module Homepage
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
+    MAX_PAGE = 100
+    MAX_OFFSET = 10_000
 
     SORT_PARAMS = %i[hotness_score public_reactions_count published_at].freeze
     DEFAULT_SORT_DIRECTION = :desc
@@ -41,7 +44,7 @@ module Homepage
       per_page: DEFAULT_PER_PAGE
     )
       @relation = Article.published.from_subforem.select(*ATTRIBUTES)
-        .includes(:distinct_reaction_categories)
+        .preload(:distinct_reaction_categories)
 
       @approved = approved
       @published_at = published_at
@@ -58,6 +61,8 @@ module Homepage
     end
 
     def call
+      return Article.none if beyond_max_offset?
+
       filter.merge(sort).merge(paginate)
     end
 
@@ -74,9 +79,7 @@ module Homepage
       @relation = @relation.where(organization_id: organization_id) if organization_id.present?
       @relation = @relation.cached_tagged_with_any(tags) if tags.any?
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
-      @relation = @relation.includes(:distinct_reaction_categories)
       @relation = @relation.where("score >= 0") # Never return negative score articles
-      @relation = @relation.from_subforem
 
       relation
     end
@@ -89,6 +92,10 @@ module Homepage
 
     def paginate
       relation.page(page).per(per_page)
+    end
+
+    def beyond_max_offset?
+      page > MAX_PAGE || ((page - 1) * per_page) >= MAX_OFFSET
     end
   end
 end

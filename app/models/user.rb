@@ -94,6 +94,7 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :concept_accesses, dependent: :delete_all
@@ -299,6 +300,9 @@ class User < ApplicationRecord
       articles_count: average_articles_count..,
       comments_count: average_comments_count..,
     )
+  }
+  scope :community_leaders, lambda {
+    joins(:roles).where(roles: { name: CommunityLeaders::ROLES.map(&:to_s) }).distinct
   }
 
   before_validation :downcase_email
@@ -517,6 +521,10 @@ class User < ApplicationRecord
     cached_role_names.include?("base_subscriber")
   end
 
+  def cached_community_leader?
+    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
+  end
+
   def processed_website_url
     profile.website_url.to_s.strip if profile.website_url.present?
   end
@@ -536,6 +544,13 @@ class User < ApplicationRecord
     cache_name = "user-#{id}-#{following_tags_count}-#{formatted_last_followed_at}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.antifollowed_by(self).pluck(:name)
+    end
+  end
+
+  def cached_languages
+    cache_name = "user-#{id}/languages"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      languages.pluck(:language)
     end
   end
 
@@ -632,7 +647,16 @@ class User < ApplicationRecord
   #
   ##############################################################################
 
+  # Admins who curate alongside the community are not metered, so they can keep
+  # picking gems past the community leader allowance.
+  #
+  # @return [Boolean]
+  def unlimited_favorites?
+    any_admin? && community_leader?
+  end
+
   def favorite_base_allowance
+    return Float::INFINITY if unlimited_favorites?
     return Settings::UserExperience.community_leader_l2_favorite_allowance if community_leader_level_2?
     return Settings::UserExperience.community_leader_l1_favorite_allowance if community_leader_level_1?
 
@@ -641,8 +665,9 @@ class User < ApplicationRecord
 
   # How many favorites the user can make.
   #
-  # @return [Integer]
+  # @return [Integer, Float] Float::INFINITY when the user is not metered
   def favorite_allowance
+    return Float::INFINITY if unlimited_favorites?
     return earned_favorites_count unless community_leader?
 
     # Community leader allowances refresh over the configured period
@@ -651,6 +676,15 @@ class User < ApplicationRecord
       favorited_comments.where(favorited_at: window_start..).count
 
     favorite_base_allowance - spent_this_period
+  end
+
+  # The remaining allowance as exposed to the client, where `nil` signals an
+  # unlimited allowance so the front end can skip the counter.
+  #
+  # @return [Integer, nil]
+  def favorite_allowance_for_client
+    allowance = favorite_allowance
+    allowance.finite? ? allowance : nil
   end
 
   # The name of the tags moderated by the user.
@@ -764,8 +798,12 @@ class User < ApplicationRecord
     [profile_identity_record_key, profile_image_record_key]
   end
 
+  def previous_username_paths
+    [old_username, old_old_username].compact_blank.uniq.reject { |name| name == username }.map { |name| "/#{name}" }
+  end
+
   def profile_cache_bust_paths
-    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+    ([path, "/profile_preview_cards/#{id}", "/api/users/#{id}"] + previous_username_paths).uniq
   end
 
   def remove_from_mailchimp_newsletters
@@ -900,10 +938,20 @@ class User < ApplicationRecord
       "id" => id, "username" => username, "email" => email, "name" => name,
       "registered_at" => registered_at&.iso8601,
       "confirmed_at" => confirmed_at&.iso8601,
-      "email_newsletter" => notification_setting&.email_newsletter,
-      "email_digest_periodic" => notification_setting&.email_digest_periodic,
       "mlh_user_id" => identities.where(provider: "mlh").pick(:uid)
-    }
+    }.merge(trackable_email_consents).merge(Users::EmailFooterPayload.call(self))
+  end
+
+  # Current state of every email consent Core mirrors onto a Customer.io
+  # subscription topic. The per-consent events on Users::NotificationSetting
+  # only fire when someone toggles a setting, so seeding the state here is what
+  # lets Core learn it for accounts that never touch their notification
+  # settings. Keyed off the same map the events use so the two cannot drift.
+  def trackable_email_consents
+    setting = notification_setting
+    Users::NotificationSetting::EMAIL_CONSENT_EVENTS.keys.to_h do |column|
+      [column.to_s, setting&.public_send(column)]
+    end
   end
 
   # Invited accounts (registered: false) have not consented to anything yet,
@@ -1007,6 +1055,14 @@ class User < ApplicationRecord
   private :enqueue_trackable_event_created, :enqueue_trackable_event_updated, :trackable_events_skipped?,
           :enqueue_trackable_event_destroyed, :moderation_role_event, :track_engagement, :track_engagement!,
           :engagement_emission_due?
+
+  # rubocop:disable Style/OptionHash
+  def send_reset_password_instructions(opts = {})
+    token = set_reset_password_token
+    send_devise_notification(:reset_password_instructions, token, opts)
+    token
+  end
+  # rubocop:enable Style/OptionHash
 
   protected
 
@@ -1175,8 +1231,10 @@ class User < ApplicationRecord
     )
   end
 
+  # super is Devise's !confirmed?: without it, users confirmed at creation
+  # (OAuth signups via skip_confirmation!) still get a confirmation email.
   def confirmation_required?
-    ForemInstance.smtp_enabled?
+    ForemInstance.smtp_enabled? && super
   end
 
   def update_user_roles_cache(role)
@@ -1190,8 +1248,14 @@ class User < ApplicationRecord
 
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
-      Spam::DomainDetector.new(self).check_and_block_domain!
+      # The domain scan can hit the statement timeout, so keep it out of this
+      # callback: an error here rolls back the role grant (and aborts a banish).
+      Spam::DomainDetectorWorker.perform_async(id)
       calculate_score
+      # Article scores include a spam penalty that also governs Algolia indexability,
+      # so rescore on every grant/removal regardless of which code path changed the role.
+      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+      articles.published.find_each(&:async_score_calc)
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"

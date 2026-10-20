@@ -786,6 +786,104 @@ RSpec.describe "NotificationsIndex" do
       end
     end
 
+    context "when a user has a new co-author notification" do
+      let(:co_author) { create(:user) }
+      let(:article) { create(:article, user_id: user.id, co_author_ids: [co_author.id]) }
+
+      before do
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_to_co_authors(article)
+        end
+        sign_in co_author
+      end
+
+      it "renders the proper message in GET /notifications", :aggregate_failures do
+        get "/notifications"
+
+        expect(response.body).to include "published a post you are credited on"
+        renders_article_path(article)
+        renders_authors_name(article)
+        renders_article_published_at(article)
+      end
+
+      it "renders cleanly in GET /notifications/posts filter", :aggregate_failures do
+        get "/notifications/posts"
+
+        expect(response.body).to include "published a post you are credited on"
+        renders_article_path(article)
+        renders_authors_name(article)
+      end
+    end
+
+    context "when a user has a co-author invitation" do
+      let(:invitee) { create(:user) }
+      let(:article) { create(:article, user: user) }
+      let(:invitation) { create(:co_author_invitation, article: article, user: invitee) }
+
+      before do
+        Notifications::CoAuthorInvitations::Send.call(invitation)
+        sign_in invitee
+      end
+
+      it "renders the invitation with accept and decline actions", :aggregate_failures do
+        get "/notifications"
+
+        expect(response.body).to include("invited you to co-author")
+        renders_authors_name(article)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+        expect(response.body).to include(accept_co_author_invitation_path(invitation))
+        expect(response.body).to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "offers to remove the credit once accepted", :aggregate_failures do
+        CoAuthorInvitations::Accept.call(invitation)
+
+        get "/notifications"
+
+        expect(response.body).to include("You&#39;re credited as a co-author on this post.")
+        expect(response.body).not_to include(accept_co_author_invitation_path(invitation))
+        expect(response.body).to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "shows that the invitation was declined", :aggregate_failures do
+        CoAuthorInvitations::Decline.call(invitation)
+
+        get "/notifications"
+
+        expect(response.body).to include("You declined this invitation.")
+        expect(response.body).not_to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "tells the author when the invitation is accepted" do
+        CoAuthorInvitations::Accept.call(invitation)
+        sign_in user
+
+        get "/notifications"
+
+        expect(response.body).to include("accepted your invitation to co-author")
+      end
+    end
+
+    context "when a user has a new co-author notification with an organization" do
+      let(:co_author) { create(:user) }
+      let(:article) do
+        create(:organization_membership, user: co_author, organization: organization)
+        create(:article, user_id: user.id, organization_id: organization.id, co_author_ids: [co_author.id])
+      end
+
+      it "renders the organization credit", :aggregate_failures do
+        sidekiq_perform_enqueued_jobs { Notification.send_to_co_authors(article) }
+        sign_in co_author
+
+        get "/notifications"
+
+        expect(response.body).to include(
+          "under <a class=\"crayons-link fw-bold\" href=\"#{organization.path}\">" \
+          "#{CGI.escapeHTML(organization.name)}</a>",
+        )
+      end
+    end
+
     context "when a user is an admin" do
       let(:admin) { create(:user, :super_admin) }
       let(:user2)    { create(:user) }

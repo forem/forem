@@ -8,9 +8,15 @@ module Emails
       user = User.find_by(id: user_id)
       return unless user&.registered?
 
-      if !force_send && !user.notification_setting&.email_digest_periodic?
-        return
-      end
+      # Mirrors EmailDigest#get_users. The cron already filters on both, but the
+      # worker is reachable directly -- perform_async on Forems that do not send
+      # the digest inline, and console sends -- so the guards belong here too.
+      #
+      # Moderation status is deliberately not overridable: force_send exists to
+      # bypass the digest consent check for manual and retry sends, not to email
+      # a suspended or spam-flagged account.
+      return if user.suspended? || user.spam?
+      return if !force_send && !user.notification_setting&.email_digest_periodic?
 
       collector = EmailDigestArticleCollector.new(user, force_send: force_send)
       articles = collector.articles_to_send
@@ -39,7 +45,7 @@ module Emails
             article.ai_summary = full_article.reload.ai_summary
           rescue StandardError => e
             Rails.logger.warn("Failed to generate summary for article #{article.id} in digest: #{e.message}")
-            Honeybadger.notify(e) if defined?(Honeybadger)
+            Rails.error.report(e)
           end
         end
       end
@@ -100,8 +106,7 @@ module Emails
       rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e
         Rails.logger.warn("Failed to send digest to user #{user.id} due to SMTP syntax/fatal error: #{e.message}")
       rescue StandardError => e
-        Honeybadger.context({ user_id: user.id, article_ids: articles.map(&:id) })
-        Honeybadger.notify(e)
+        Rails.error.report(e, context: { user_id: user.id, article_ids: articles.map(&:id) })
       end
     end
   end

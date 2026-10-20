@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_19_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -141,6 +141,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "articles", force: :cascade do |t|
+    t.integer "ai_disclosure_level", default: 0, null: false
     t.text "ai_summary"
     t.datetime "ai_summary_generated_at"
     t.string "ai_summary_prompt_version"
@@ -234,6 +235,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["ai_disclosure_level"], name: "index_articles_on_ai_disclosure_level"
     t.index ["cached_label_list"], name: "index_articles_on_cached_label_list", using: :gin
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
@@ -257,6 +259,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["published", "nth_published_by_author"], name: "index_articles_on_published_nth_published_by_author"
     t.index ["published", "score", "published_at"], name: "index_articles_on_published_score_published_at_for_moderation"
     t.index ["published"], name: "index_articles_on_published"
+    t.index ["published_at", "score"], name: "index_articles_on_published_at_and_score", order: { published_at: :desc }, where: "(published = true)"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
@@ -296,6 +299,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.bigint "badge_id", null: false
     t.datetime "created_at", precision: nil, null: false
     t.boolean "include_default_description", default: true, null: false
+    t.jsonb "metadata", default: {}, null: false
     t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
@@ -330,6 +334,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   create_table "billboard_placement_area_configs", force: :cascade do |t|
     t.integer "cache_expiry_seconds", default: 180, null: false
     t.datetime "created_at", null: false
+    t.boolean "fully_cached", default: false, null: false
+    t.boolean "hidden_by_default", default: false, null: false
     t.string "placement_area", null: false
     t.jsonb "selection_weights", default: {}, null: false
     t.integer "signed_in_rate", default: 100, null: false
@@ -452,6 +458,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
+  create_table "co_author_invitations", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "responded_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_id", "user_id"], name: "index_co_author_invitations_on_article_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_co_author_invitations_on_user_id"
+  end
+
   create_table "collections", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "description"
@@ -470,6 +487,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "comments", force: :cascade do |t|
+    t.integer "ai_disclosure_level", default: 0, null: false
     t.string "ancestry"
     t.text "body_html"
     t.text "body_markdown"
@@ -496,6 +514,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.bigint "user_id"
     t.index "digest(body_markdown, 'sha512'::text), user_id, ancestry, commentable_id, commentable_type", name: "index_comments_on_body_markdown_user_ancestry_commentable", unique: true
     t.index "to_tsvector('simple'::regconfig, COALESCE(body_markdown, ''::text))", name: "index_comments_on_body_markdown_as_tsvector", using: :gin
+    t.index ["ai_disclosure_level"], name: "index_comments_on_ai_disclosure_level"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
     t.index ["ancestry"], name: "index_comments_on_ancestry_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["commentable_id", "commentable_type", "created_at"], name: "index_comments_on_commentable_and_created_at"
@@ -713,6 +732,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["organization_id"], name: "index_display_ads_on_organization_id"
     t.index ["page_id"], name: "index_display_ads_on_page_id"
+    t.index ["placement_area", "success_rate"], name: "index_display_ads_on_placement_area_and_success_rate", order: { success_rate: :desc }, where: "((approved = true) AND (published = true))"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
@@ -736,9 +756,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.bigint "audience_segment_id"
     t.text "body", null: false
     t.datetime "created_at", null: false
+    t.text "custom_footer_html"
     t.integer "drip_day", default: 0
     t.bigint "event_id"
     t.bigint "onboarding_subforem_id"
+    t.boolean "override_footer_html", default: false, null: false
     t.integer "status", default: 0
     t.string "subject", null: false
     t.string "targeted_tags", default: [], array: true
@@ -767,9 +789,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "events", force: :cascade do |t|
+    t.string "bg_color_hex"
+    t.text "body_markdown"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
+    t.string "cover_image"
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}
     t.boolean "delegate_to_page", default: false, null: false
@@ -778,10 +803,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.datetime "end_time", null: false
     t.string "event_name_slug", null: false
     t.string "event_variation_slug", null: false
+    t.text "full_details"
     t.boolean "manual_broadcast_end", default: false, null: false
     t.bigint "organization_id"
     t.bigint "page_id"
     t.string "primary_stream_url"
+    t.text "processed_html"
     t.boolean "published", default: false
     t.datetime "start_time", null: false
     t.text "tags_array", default: [], array: true
@@ -800,13 +827,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   end
 
   create_table "feed_configs", force: :cascade do |t|
+    t.float "ai_disclosure_matching_weight", default: 0.0, null: false
     t.integer "all_time_tag_count_max", default: 0
     t.integer "all_time_tag_count_min", default: 0
+    t.float "autonomous_ai_penalty_weight", default: 0.0, null: false
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
     t.float "compellingness_score_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
+    t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.float "feed_success_score", default: 0.0
@@ -1167,6 +1197,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+    t.index ["user_id"], name: "index_notifications_on_user_id_unread", where: "(read = false)"
   end
 
   create_table "onboarding_checklists", force: :cascade do |t|
@@ -1564,6 +1595,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["article_ids"], name: "index_recommended_articles_lists_on_article_ids", using: :gin
     t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
     t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
+    t.index ["user_id", "expires_at"], name: "index_recommended_articles_lists_on_user_and_expires"
     t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
   end
 
@@ -1627,6 +1659,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
     t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
     t.index ["user_id"], name: "index_segmented_users_on_user_id"
+  end
+
+  create_table "settings_ai_functions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subforem_id"
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_ai_functions_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_ai_functions_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_authentications", force: :cascade do |t|
@@ -2155,6 +2197,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
     t.boolean "display_sponsors", default: true, null: false
     t.integer "editor_version", default: 0, null: false
     t.integer "experience_level"
+    t.integer "feed_ai_preference", default: 0, null: false
     t.boolean "feed_mark_canonical", default: false, null: false
     t.boolean "feed_referential_link", default: true, null: false
     t.integer "feed_status", default: 0, null: false
@@ -2213,6 +2256,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_141500) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "articles", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", column: "favorited_by_user_id", on_delete: :nullify

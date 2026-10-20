@@ -3,7 +3,7 @@ class FavoritesController < ApplicationController
   after_action :verify_authorized
 
   FAVORITABLE_TYPES = %w[Article Comment].freeze
-  INVALID_USE_ERRORS = %i[not_found not_a_leader self_favorite ineligible].freeze
+  INVALID_USE_ERRORS = %i[not_found self_favorite ineligible].freeze
 
   def create
     favoritable = find_favoritable
@@ -18,7 +18,11 @@ class FavoritesController < ApplicationController
     result = Favorites::Create.call(favoritable: favoritable, user: current_user)
 
     if result.success?
-      head :ok
+      current_user.reload
+      render json: {
+        success: true,
+        remaining_allowance: current_user.favorite_allowance_for_client
+      }, status: :ok
     else
       render_favorite_error(result.error)
     end

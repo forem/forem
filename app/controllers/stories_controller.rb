@@ -114,23 +114,35 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "")
+    potential_username = params[:username].tr("@", "").downcase
     user_or_org = find_user_by_old_username(potential_username) ||
-      Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+      Organization.where("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+                  .where.not(slug: potential_username)
+                  .order(updated_at: :desc)
+                  .first
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
+      surrogate_keys = user_or_org.is_a?(User) ? user_or_org.profile_cache_keys : [user_or_org.record_key]
+      set_surrogate_key_header(*surrogate_keys)
       redirect_permanently_to(user_or_org.path)
     else
       not_found
     end
   end
 
+  # a user who has reclaimed the name holds it now, so they must not redirect to themselves
   def find_user_by_old_username(username)
-    UsersOldUsername.find_by(username: username)&.user ||
-      User.find_by("old_username = ? OR old_old_username = ?", username, username)
+    recorded_user = UsersOldUsername.find_by(username: username)&.user
+    return recorded_user if recorded_user && recorded_user.username != username
+
+    User.where("old_username = ? OR old_old_username = ?", username, username)
+      .where.not(username: username)
+      .order(profile_updated_at: :desc)
+      .first
   end
 
   def handle_possible_redirect
     if @article.organization
+      set_surrogate_key_header(@article.record_key, @article.organization.record_key)
       redirect_permanently_to(@article.path)
       return
     end
@@ -138,6 +150,7 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = find_user_by_old_username(potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
+      set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     end
@@ -379,8 +392,18 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     assign_article_show_variables
-    user_keys = @article.user&.profile_identity_cache_keys
-    set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    return if performed?
+
+    if !@article.published || @article.scheduled?
+      unset_cache_control_headers
+      response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+      response.headers["Pragma"] = "no-cache"
+      response.headers["Expires"] = "0"
+    else
+      user_keys = @article.user&.profile_identity_cache_keys
+      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    end
+
     redirect_if_appropriate
     return if performed?
 
@@ -393,6 +416,8 @@ class StoriesController < ApplicationController
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:feed_type] == "curated"
+      @stories = Articles::Feeds::Curated.call(page: @page)
     elsif params[:timeframe] == "latest_less_filtered"
       @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -415,7 +440,17 @@ class StoriesController < ApplicationController
   end
 
   def assign_article_show_variables
-    not_found if permission_denied?
+    if permission_denied?
+      if user_signed_in?
+        unset_cache_control_headers
+        if can_edit_article?
+          redirect_to_preview
+          return
+        end
+      end
+      not_found
+    end
+
     not_found unless @article.user
 
     check_admin_access if @article.user.spam?
@@ -445,10 +480,29 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
-    set_article_json_ld
+    set_article_json_ld unless internal_navigation? || user_signed_in?
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
+  end
+
+  def redirect_to_preview
+    unset_cache_control_headers
+    response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    params_hash = request.query_parameters.merge("preview" => @article.password)
+    redirect_to "#{request.path}?#{params_hash.to_query}", status: :found
+  end
+
+  def can_edit_article?
+    return false unless user_signed_in?
+
+    record = @article.respond_to?(:to_model) ? @article.to_model : @article
+    policy(record).edit?
+  rescue Pundit::NotAuthorizedError, Pundit::NotDefinedError
+    false
   end
 
   def permission_denied?
@@ -464,14 +518,24 @@ class StoriesController < ApplicationController
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
-    return unless user_signed_in? && @user.comments_count.positive?
+    @user_profile_comments_count = 0
+    return unless @user.comments_count.positive?
 
-    @comments = @user.comments.good_quality.where(deleted: false)
-      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
-      .merge(Article.from_subforem)
+    @user_profile_comments = user_profile_comments
+    @user_profile_comments_count = @user_profile_comments.count
+    return unless user_signed_in?
+
+    @comments = @user_profile_comments
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
+  end
+
+  def user_profile_comments
+    @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
+      .merge(Article.published)
   end
 
   def assign_user_stories
@@ -528,8 +592,6 @@ class StoriesController < ApplicationController
     @article_json_ld = build_article_json_ld
   end
 
-  private
-
   def build_article_json_ld
     json_ld = {
       "@context": "http://schema.org",
@@ -548,7 +610,7 @@ class StoriesController < ApplicationController
           "@context": "http://schema.org",
           "@type": "ImageObject",
           url: ApplicationController.helpers.optimized_image_url(Settings::General.logo_png, width: 192,
-                                                                                             fetch_format: "png"),
+                                                                                              fetch_format: "png"),
           width: "192",
           height: "192"
         }
@@ -603,11 +665,9 @@ class StoriesController < ApplicationController
     json_ld
   end
 
-  private
-
   def fetch_comments_for_json_ld
     # Fetch top-level comments with their nested replies
-    comments_tree = Comments::Tree.for_commentable(@article, limit: 10, order: "top", include_negative: false)
+    comments_tree = @article.comment_tree(limit: 10, order: "top", include_negative: false)
 
     comments_data = []
     comments_tree.each do |root_comment, sub_comments|
@@ -650,7 +710,7 @@ class StoriesController < ApplicationController
     if comment.ancestry.present?
       comment_data[:parentItem] = {
         "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
+        "@id": "#comment-#{comment.parent_id}"
       }
     end
 
@@ -697,39 +757,6 @@ class StoriesController < ApplicationController
     return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
 
     "top"
-  end
-
-  def build_comment_json_ld(comment)
-    comment_data = {
-      "@type": "Comment",
-      "@id": "#comment-#{comment.id}",
-      text: comment.processed_html_final,
-      author: {
-        "@type": "Person",
-        name: comment.user.name,
-        url: URL.user(comment.user)
-      },
-      datePublished: comment.created_at.iso8601,
-      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
-      url: URL.comment(comment),
-      interactionStatistic: [
-        {
-          "@type": "InteractionCounter",
-          interactionType: "https://schema.org/LikeAction",
-          userInteractionCount: comment.public_reactions_count
-        },
-      ]
-    }
-
-    # Add parent comment reference if this is a reply
-    if comment.ancestry.present?
-      comment_data[:parentItem] = {
-        "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
-      }
-    end
-
-    comment_data
   end
 
   def redirect_organization_to_custom_domain_if_needed

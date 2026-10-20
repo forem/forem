@@ -173,6 +173,17 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include(CGI.escapeHTML(article.title))
     end
 
+    it "renders a favorited (gemmed) article even if below home feed minimum score" do
+      allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(50)
+      favorited_article = create(:article, score: 5, favorited_by_user: create(:user), favorited_at: Time.current)
+      unfavorited_low_score = create(:article, score: 5, featured: false, favorited_by_user: nil)
+
+      get "/"
+
+      expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(unfavorited_low_score.title))
+    end
+
     def renders_proper_description
       expect(response.body).to include(Settings::Community.community_description)
     end
@@ -229,6 +240,24 @@ RSpec.describe "StoriesIndex" do
 
       get "/"
       expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards hidden when their placement area is hidden by default" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
+      BillboardPlacementAreaConfig.create!(placement_area: "sidebar_right", hidden_by_default: true)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+      expect(response.body).to include('data-placement-area="sidebar_right" data-placement-hidden="true"')
+    end
+
+    it "lets server-rendered billboard scripts queue placement reveals before the application pack loads" do
+      get "/"
+      queue_stub_position = response.body.index("window.Forem.queuedBillboardPlacementReveals")
+
+      expect(queue_stub_position).to be_present
+      expect(queue_stub_position).to be < response.body.index('id="page-content"')
     end
 
     it "does not render billboards when not approved" do
@@ -290,6 +319,49 @@ RSpec.describe "StoriesIndex" do
       expect(response).to have_http_status(:ok)
       sets_fastly_headers
       sets_nginx_headers
+    end
+
+    context "when auth state is desynced with remember_user_token cookie" do
+      it "unsets surrogate control headers when remember_user_token is present but user is signed out" do
+        cookies["remember_user_token"] = "invalid_or_expired_token"
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+
+      it "unsets surrogate control headers when remember_user_token is absent but user is signed in" do
+        user = create(:user)
+        sign_in user
+        # Explicitly remove remember_user_token cookie to simulate session-only auth
+        cookies.delete("remember_user_token")
+
+        get "/"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+      end
+    end
+
+    context "with the onboarding task card" do
+      before { sign_in create(:user) }
+
+      it "renders the task card by default" do
+        get "/"
+
+        expect(response.body).to include("onboarding-task-card")
+      end
+
+      it "does not render the task card when :hide_onboarding_task_card is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).and_call_original
+        allow(FeatureFlag).to receive(:enabled?).with(:hide_onboarding_task_card).and_return(true)
+
+        get "/"
+
+        expect(response.body).not_to include("onboarding-task-card")
+      end
     end
 
     def sets_fastly_headers
@@ -421,6 +493,31 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include(expected_tag)
       end
     end
+
+    describe "/curated" do
+      let(:leader) { create(:user) }
+      let!(:favorited_article) { create(:article, favorited_by_user: leader, favorited_at: Time.current) }
+
+      it "renders the curated feed with 200 OK and sidebar containers" do
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(favorited_article.title))
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+      end
+
+      it "renders preload tags for curated feed and sidebar when signed in" do
+        sign_in leader
+        get "/curated"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="sidebar-wrapper-left"')
+        expect(response.body).to include('id="sidebar-wrapper-right"')
+        expect(response.body).to include('href="/stories/feed/?page=1&type_of=curated"')
+        expect(response.body).to include('href="/sidebars/home"')
+      end
+    end
   end
 
   describe "GET locale index" do
@@ -509,6 +606,59 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username with a non-HTML Accept header" do
+    let(:user) { create(:user) }
+
+    it "returns a 404 that cannot be edge cached for browsers" do
+      get "/#{user.username}", headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(response.headers["Cache-Control"]).to include("no-store")
+      expect(response.headers["Surrogate-Control"]).to be_nil
+      expect(response.headers["Vary"]).to include("Accept")
+    end
+  end
+
+  describe "edge-cached pages with a pending flash message" do
+    let(:user) { create(:user) }
+    let(:reset_notice) { I18n.t("devise.passwords.reset_instructions_sent") }
+
+    {
+      "GET /:username" => ->(user) { "/#{user.username}" },
+      "GET / (home page)" => ->(_user) { "/" }
+    }.each do |description, path_for|
+      context "with #{description}" do
+        let(:page_path) { path_for.call(user) }
+        let(:page_url) { "http://www.example.com#{page_path}" }
+
+        before do
+          get "/users/password/new", headers: { "Referer" => page_url }
+          post "/users/password", params: { user: { email: user.email } }
+        end
+
+        it "does not edge cache the response that renders the flash", :aggregate_failures do
+          expect(response).to redirect_to(page_url)
+          follow_redirect!
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(reset_notice)
+          expect(response.headers["Surrogate-Control"]).to be_nil
+          expect(response.headers["X-Accel-Expires"]).to be_nil
+          expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+        end
+
+        it "consumes the flash so the next request is cacheable again", :aggregate_failures do
+          follow_redirect!
+          get page_path
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).not_to include(reset_notice)
+          expect(response.headers["Surrogate-Control"]).to be_present
+        end
+      end
+    end
+  end
+
   describe "GET /:slug (organization page)" do
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }
@@ -536,7 +686,7 @@ RSpec.describe "StoriesIndex" do
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
-               title: organization.name, description: "desc", slug: "#{organization.slug}-page",
+               title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
                template: "full_within_layout")
         FeatureFlag.add(:org_readme)
         FeatureFlag.enable(:org_readme, FeatureFlag::Actor[organization])
@@ -555,6 +705,28 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
         expect(response.body).to include("Showcase")
         expect(response.body).to include("All Posts")
+      end
+
+      it "uses the editable page title for the showcase tab" do
+        organization.main_page.update!(title: "✨ Showcase")
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+        expect(showcase_tab["data-text"]).to eq("✨ Showcase")
+
+        get "/#{organization.slug}", params: { mode: "all-posts" }
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq("✨ Showcase")
+      end
+
+      it "falls back to the translated label for a legacy page without a title" do
+        organization.main_page.update_column(:title, nil)
+
+        get "/#{organization.slug}"
+        showcase_tab = Nokogiri::HTML(response.body).at_css("#org-tab-nav a[href='/#{organization.slug}']")
+        expect(showcase_tab.text.strip).to eq(I18n.t("views.organizations.showcase"))
+        expect(showcase_tab["data-text"]).to eq(I18n.t("views.organizations.showcase"))
       end
 
       it "renders the classic feed template with all posts tab active when mode is all-posts" do
@@ -642,26 +814,29 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
-  describe "InstantClick stylesheet alignment" do
-    it "does not render the alignment script under normal navigation" do
+  describe "InstantClick stylesheet fingerprinting and layout behavior" do
+    it "renders data-style-fingerprint and outer shell link tags under normal navigation" do
       get "/"
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-style-fingerprint=")
       expect(response.body).not_to include("expectedStyles")
       # Expect outer shell link tags
       expect(response.body).to include('id="main-minimal-stylesheet"')
     end
 
-    it "renders the alignment script with correct asset paths under internal navigation" do
+    it "renders internal navigation fragment without alignment script or outer shell links" do
       get "/", params: { i: "i" }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("expectedStyles")
-      expected_minimal = ActionController::Base.helpers.stylesheet_path("minimal")
-      expected_views = ActionController::Base.helpers.stylesheet_path("views")
-      expected_crayons = ActionController::Base.helpers.stylesheet_path("crayons")
-      expect(response.body).to include(%("minimal": "#{expected_minimal}"))
-      expect(response.body).to include(%("views": "#{expected_views}"))
-      expect(response.body).to include(%("crayons": "#{expected_crayons}"))
+      expect(response.body).not_to include("expectedStyles")
+      expect(response.body).not_to include("pendingHref")
       # Internal navigation excludes the outer layout, so the outer shell links should not be rendered
+      expect(response.body).not_to include('id="main-minimal-stylesheet"')
+    end
+
+    it "supports fingerprinted internal navigation params" do
+      get "/", params: { i: "cc9ed033eb" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("expectedStyles")
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end

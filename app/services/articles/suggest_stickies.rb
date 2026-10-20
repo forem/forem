@@ -41,6 +41,7 @@ module Articles
 
     def tag_articles
       article_tags = article.cached_tag_list.to_s.split(", ") - ["discuss"]
+      return [] if article_tags.empty?
 
       scope = Article
         .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
@@ -65,11 +66,12 @@ module Articles
 
     # A helper method to ensure a consistent lookup
     def apply_common_scope(scope:, tags:)
+      # Columns needed for _sticky_nav (includes cached_user for avatar)
       scope.published.from_subforem
         .where(archived: false)
         .cached_tagged_with_any(tags)
         .unscope(:select)
-        .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav (includes cached_user for avatar)
+        .select(:id, :path, :title, :cached_tag_list, :cached_user, :organization_id, :user_id, :subforem_id)
         .where.not(id: article.id)
         .not_authored_by(article.user_id)
         .where("published_at > ?", 5.days.ago)

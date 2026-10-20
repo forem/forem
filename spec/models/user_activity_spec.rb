@@ -155,6 +155,16 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
+      it "does not load heavy article columns when computing recent_* aggregations" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        article_queries = queries.grep(/FROM "articles"/)
+        expect(article_queries).not_to be_empty
+        expect(article_queries).to all(satisfy { |sql| !sql.include?("body_markdown") && !sql.include?(%("articles".*)) })
+      end
+
       it "populates alltime_tags from the user's cached_followed_tag_names" do
         expect(activity.alltime_tags).to eq(
           user.cached_followed_tag_names

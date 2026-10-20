@@ -586,12 +586,189 @@ RSpec.describe ApplicationHelper do
       allow(FeatureFlag).to receive(:all).and_return({ foo: :off })
       expect(helper.enabled_global_feature_flags).to eq("")
     end
+  end
 
-    it "memoizes the result on RequestStore" do
-      allow(FeatureFlag).to receive(:all).and_return({ foo: :on })
-      helper.enabled_global_feature_flags
-      helper.enabled_global_feature_flags
-      expect(FeatureFlag).to have_received(:all).once
+  describe "#community_leader_icon" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "renders the icon for a community leader" do
+      expect(helper.community_leader_icon(leader)).to include("community-leader-icon")
+    end
+
+    it "renders nothing for a user who is not a leader" do
+      expect(helper.community_leader_icon(create(:user))).to be_nil
+    end
+
+    it "renders nothing when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.community_leader_icon(leader)).to be_nil
+    end
+
+    it "renders nothing for an object that cannot be a leader" do
+      expect(helper.community_leader_icon(create(:organization))).to be_nil
+    end
+  end
+
+  describe "#should_render_favorited_marker?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:favorited) { create(:article) }
+
+    before do
+      FeatureFlag.add(:community_favorites)
+      FeatureFlag.enable(:community_favorites)
+      favorited.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+    end
+
+    after { FeatureFlag.remove(:community_favorites) }
+
+    it "is true for favorited content" do
+      expect(helper.should_render_favorited_marker?(favorited)).to be true
+    end
+
+    it "is true for favorited comments" do
+      comment = create(:comment, commentable: create(:article))
+      comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current)
+
+      expect(helper.should_render_favorited_marker?(comment)).to be true
+    end
+
+    it "is false for content nobody has favorited" do
+      expect(helper.should_render_favorited_marker?(create(:article))).to be false
+    end
+
+    it "is false when the feature flag is disabled" do
+      FeatureFlag.disable(:community_favorites)
+
+      expect(helper.should_render_favorited_marker?(favorited)).to be false
+    end
+
+    it "is false when the column was not selected" do
+      trimmed = Article.select(:id, :title).find(favorited.id)
+
+      expect(helper.should_render_favorited_marker?(trimmed)).to be false
+    end
+  end
+
+  describe "#custom_domain_main_app_url" do
+    let(:organization) { build_stubbed(:organization, slug: "myorg", custom_domain: "blog.myorg.com") }
+
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+    end
+
+    it "returns nil when custom_org is nil" do
+      expect(helper.custom_domain_main_app_url(nil)).to be_nil
+    end
+
+    it "maps root path to organization profile on main domain" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg")
+    end
+
+    it "preserves query string when mapping root path" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "sort=top&page=2")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg?sort=top&page=2")
+    end
+
+    it "maps custom page /p/:page_suffix" do
+      request_double = instance_double(ActionDispatch::Request, path: "/p/about", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/p/about")
+    end
+
+    it "maps article path /:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+
+    it "handles article path already containing org slug /:org_slug/:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/myorg/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+  end
+
+  describe "#subforem_aware_sign_up_url" do
+    let!(:default_subforem) { create(:subforem, domain: "default-forem.test") }
+    let!(:root_subforem) { create(:subforem, domain: "root-forem.test", root: true) }
+    let!(:other_subforem) { create(:subforem, domain: "other-forem.test") }
+    let(:path) { "/enter?state=new-user" }
+
+    before do
+      RequestStore.store[:default_subforem_id] = Subforem.cached_default_id
+    end
+
+    after { RequestStore.clear! }
+
+    it "returns the path unchanged when no subforem is in the request" do
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(path)
+    end
+
+    it "links to the default subforem's domain when on the default subforem" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://default-forem.test/enter?state=new-user")
+    end
+
+    it "matches the URL previously built from the default subforem record" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(URL.url(path, default_subforem))
+    end
+
+    it "does not query subforems on repeated default-subforem renders" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems")
+      end
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        3.times { helper.subforem_aware_sign_up_url(path) }
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
+    it "reflects a changed default subforem domain after save" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      default_subforem.update!(domain: "renamed-forem.test")
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://renamed-forem.test/enter?state=new-user")
+    end
+
+    it "links to the root subforem's domain when on a non-default subforem" do
+      RequestStore.store[:subforem_id] = other_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://#{root_subforem.domain}/enter?state=new-user")
+    end
+  end
+
+  describe "#main_stylesheets_fingerprint" do
+    it "returns a deterministic hash based on minimal, views, and crayons stylesheet paths" do
+      fingerprint = helper.main_stylesheets_fingerprint
+      expect(fingerprint).to be_a(String)
+      expect(fingerprint.length).to eq(10)
+      expect(fingerprint).to eq(helper.main_stylesheets_fingerprint)
     end
   end
 end

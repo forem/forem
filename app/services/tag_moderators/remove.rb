@@ -5,6 +5,7 @@ module TagModerators
       if user.notification_setting.email_tag_mod_newsletter?
         user.notification_setting.update(email_tag_mod_newsletter: false)
       end
+      tag&.touch
       Rails.cache.delete("user-#{user.id}/tag_moderators_list")
       return unless tag_mod_newsletter_enabled?
 

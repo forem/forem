@@ -114,10 +114,12 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def permit_adjacent_sponsors?
-    return true unless respond_to?(:user_id) && user_id.present?
+    return @permit_adjacent_sponsors if defined?(@permit_adjacent_sponsors)
+    return @permit_adjacent_sponsors = true unless respond_to?(:user_id) && user_id.present?
 
     author_ids = [user_id] + co_author_ids
-    Users::Setting.where(user_id: author_ids).all?(&:permit_adjacent_sponsors)
+    # permit_adjacent_sponsors is nullable; nil opts out, matching the previous `all?` check
+    @permit_adjacent_sponsors = !Users::Setting.exists?(user_id: author_ids, permit_adjacent_sponsors: [false, nil])
   end
 
   def pinned?
@@ -150,4 +152,6 @@ class ArticleDecorator < ApplicationDecorator
   delegate :skip_indexing?, to: :object
   delegate :displayable_published_at, to: :object
   delegate :title_for_metadata, to: :object
+  delegate :ai_disclosure_label, to: :object
+  delegate :ai_disclosed?, to: :object
 end
