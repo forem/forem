@@ -1,0 +1,21 @@
+spec/workers/users/delete_worker_spec.rb
+  s_2717fea812dfa4::t_a0678a16c0c84b 24-39
+app/workers/users/delete_worker.rb
+  s_2717fea812dfa4::t_c30d395291e573 14-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "56942ff1bdf839744e9dee34679060eaaf1b8c48",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

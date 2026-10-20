@@ -1,0 +1,53 @@
+app/services/comments/calculate_score.rb
+  f0eae6a24f98aab0 15,18-19,35-49
+app/workers/articles/backfill_activities_worker.rb
+  h_b2f6efe2daa9cd 1-30
+app/models/article_activity.rb
+  f0eae6a24f98aab0 90-92,112-113,116,241,244,254
+app/workers/articles/update_article_activity_worker.rb
+  f0eae6a24f98aab0 20-24
+spec/models/page_view_spec.rb
+  f0eae6a24f98aab0 22-39
+app/models/page_view.rb
+  f0eae6a24f98aab0 12
+spec/services/comments/calculate_score_spec.rb
+  f0eae6a24f98aab0 40-67
+spec/models/article_activity_spec.rb
+  f0eae6a24f98aab0 26-28,79-80
+app/services/analytics_service.rb
+  f0eae6a24f98aab0 443-447
+spec/models/reaction_spec.rb
+  f0eae6a24f98aab0 475-501
+app/models/comment.rb
+  f0eae6a24f98aab0 79,223-231
+app/controllers/concerns/api/analytics_controller.rb
+  f0eae6a24f98aab0 119-121,125-128,147-150
+spec/models/comment_spec.rb
+  f0eae6a24f98aab0 724-748
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "7a049f486e2615beb3bda560d9283ad7a8eb5850",
+  "prompts": {
+    "f0eae6a24f98aab0": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje",
+      "messages": [],
+      "total_additions": 162,
+      "total_deletions": 39,
+      "accepted_lines": 162,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/4639ceb9b9b37667970e86fe4dae2308ea260159979f6555a7b33d616c09ae60"
+    }
+  },
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}
