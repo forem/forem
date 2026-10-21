@@ -304,7 +304,8 @@ class ArticlesController < ApplicationController
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.member_organizations
-    @tag = Tag.find_by(name: params[:template])
+    # Tag names are required, so a blank template can never match; skip the lookup.
+    @tag = Tag.find_by(name: params[:template]) if params[:template].present?
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
