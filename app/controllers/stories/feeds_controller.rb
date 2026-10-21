@@ -1,5 +1,7 @@
 module Stories
   class FeedsController < ApplicationController
+    include Instrumentation
+
     respond_to :json
 
     before_action :current_user_by_token, only: [:show]
@@ -92,7 +94,12 @@ module Stories
       # weighted query implementation as it returns a lovely
       # ActiveRecord::Relation.  So this is a compromise.
 
-      feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+      instrument("feed.query",
+                 span_type: "db",
+                 resource: "#{self.class}.#{__method__}",
+                 tags: { feed_class: feed.class.to_s.dasherize }) do
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+      end
     end
 
     def signed_out_base_feed
@@ -108,10 +115,10 @@ module Stories
                  type_of: "discover",
                )
              end
-      Datadog::Tracing.trace("feed.query",
-                             span_type: "db",
-                             resource: "#{self.class}.#{__method__}",
-                             tags: { feed_class: feed.class.to_s.dasherize }) do
+      instrument("feed.query",
+                 span_type: "db",
+                 resource: "#{self.class}.#{__method__}",
+                 tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
