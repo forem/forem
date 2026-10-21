@@ -188,6 +188,21 @@ class Tag < ActsAsTaggableOn::Tag
       .order(hotness_score: :desc)
   end
 
+  # Same tags as `Tag.with_role(:tag_moderator, user)`, but avoids rolify's
+  # `roles.resource_id IS NULL OR roles.resource_id = tags.id` join condition,
+  # which forces a sequential scan of the whole tags table.  We only fall back
+  # to rolify when the user holds a class-wide (resource_id IS NULL) role, since
+  # that grants every tag.
+  #
+  # @param user [User]
+  # @return [ActiveRecord::Relation<Tag>]
+  def self.moderated_by(user)
+    roles = user.roles.where(name: "tag_moderator", resource_type: "Tag")
+    return with_role(:tag_moderator, user) if roles.exists?(resource_id: nil)
+
+    where(id: roles.select(:resource_id))
+  end
+
   # returns the tags that are followed by the user
   # @param user [User] the user to check
   # @param points [Range] the range of explicit points to check for (default is 0 (including 0) to infinity)
