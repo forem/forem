@@ -44,7 +44,6 @@ module Homepage
       per_page: DEFAULT_PER_PAGE
     )
       @relation = Article.published.from_subforem.select(*ATTRIBUTES)
-        .preload(:distinct_reaction_categories)
 
       @approved = approved
       @published_at = published_at
