@@ -360,7 +360,10 @@ class User < ApplicationRecord
   def good_standing_followers_count
     cache_key = "#{cache_key_with_version}/good_standing_followers_count"
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
-      Follow.non_suspended("User", id).count
+      # follower_id is unique per followable here, so COUNT(DISTINCT follower_id) equals
+      # COUNT(DISTINCT id) but can be served by an index-only scan on
+      # index_follows_on_followable_and_follower instead of fetching every follows heap row.
+      Follow.non_suspended("User", id).count(:follower_id)
     end
   end
 
