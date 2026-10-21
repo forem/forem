@@ -58,6 +58,14 @@ RSpec.describe FeedEvent do
         expect(user.feed_events).to contain_exactly(click)
       end
     end
+
+    it "has a partial index whose predicate matches the click enum value used for the last-click lookup" do
+      index = described_class.connection.indexes(:feed_events)
+        .find { |i| i.name == "index_feed_events_on_user_id_and_id_clicks" }
+
+      expect(index.columns).to eq(%w[user_id id])
+      expect(index.where).to eq("(category = #{described_class.categories[:click]})")
+    end
   end
 
   describe "after_create_commit .record_field_test_event" do

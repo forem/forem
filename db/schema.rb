@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_20_180000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_21_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -884,6 +884,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_20_180000) do
     t.index ["created_at"], name: "index_feed_events_on_created_at"
     t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
+    t.index ["user_id", "id"], name: "index_feed_events_on_user_id_and_id_clicks", where: "(category = 1)"
   end
 
   create_table "feed_import_items", force: :cascade do |t|
