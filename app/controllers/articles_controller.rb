@@ -59,7 +59,8 @@ class ArticlesController < ApplicationController
                   end
     end
 
-    not_found unless @articles&.any?
+    # Load once up front; `any?` on an unloaded relation would issue an extra EXISTS query.
+    not_found unless @articles&.load&.any?
 
     user_keys = if @user&.respond_to?(:profile_identity_cache_keys)
                   @user.profile_identity_cache_keys
