@@ -106,7 +106,7 @@
           data-published="<%= @article.published? %>"
           data-scheduled="<%= @article.scheduled? %>"
           <%= @article.language? ? "lang=#{@article.language}" : " " %>
-          <%= @article.pinned? ? "data-pinned" : " " %>>
+          <%= @article.id == @pinned_article_id ? "data-pinned" : " " %>>
           <script>
             try {
               if(localStorage) {
