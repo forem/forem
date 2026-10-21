@@ -184,7 +184,7 @@ class StoriesController < ApplicationController
     end
 
     @story_show = true
-    set_surrogate_key_header "show-page-#{params[:username]}"
+    set_surrogate_key_header "show-page-#{@page.slug}"
 
     if @page.template == "json"
       render json: @page.body_json
