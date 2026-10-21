@@ -19,16 +19,21 @@ if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
   }
 
   # sentry-rails only traces top-level render_template.action_view, leaving partial and Jbuilder
-  # collection rendering as unattributed "compute" gaps in the trace waterfall.
+  # collection rendering as unattributed "compute" gaps in the trace waterfall. Skip sub-millisecond
+  # partials so tight loops (e.g., icons or recursive comment nodes) don't bloat span volume.
   action_view_subscriber = Class.new(Sentry::Rails::Tracing::ActionViewSubscriber) do
     const_set(:EVENT_NAMES, %w[
       render_template.action_view
       render_partial.action_view
       render_collection.action_view
     ].freeze)
+    const_set(:MIN_PARTIAL_DURATION_MS, 1.0)
 
     def self.subscribe!
       subscribe_to_event(self::EVENT_NAMES) do |event_name, duration, payload|
+        next unless Sentry::Rails::Tracing.get_current_transaction&.sampled
+        next if event_name == "render_partial.action_view" && duration < self::MIN_PARTIAL_DURATION_MS
+
         record_on_current_span(
           op: self::SPAN_PREFIX + event_name,
           origin: self::SPAN_ORIGIN,
@@ -60,6 +65,7 @@ if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
 
     def self.subscribe!
       subscribe_to_event(self::EVENT_NAMES) do |event_name, duration, payload|
+        next unless Sentry::Rails::Tracing.get_current_transaction&.sampled
         next if self::IGNORED_STORES.include?(payload[:store])
 
         record_on_current_span(

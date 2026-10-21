@@ -46,12 +46,15 @@ RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop
     expect(Sentry.configuration.enabled_patches).to include(:faraday, :excon, :redis, :puma, :http)
   end
 
-  it "traces partial and collection rendering in addition to templates" do
+  it "traces partial (>= 1ms) and collection rendering in addition to templates" do
     activate_tracing!
 
     spans = record_spans do
       ActiveSupport::Notifications.instrument("render_template.action_view", identifier: "articles/show.html.erb")
-      ActiveSupport::Notifications.instrument("render_partial.action_view", identifier: "articles/_reaction.html.erb")
+      ActiveSupport::Notifications.instrument("render_partial.action_view", identifier: "articles/_tiny_icon.html.erb")
+      ActiveSupport::Notifications.instrument("render_partial.action_view", identifier: "articles/_reaction.erb") do
+        sleep(0.002)
+      end
       ActiveSupport::Notifications.instrument(
         "render_collection.action_view",
         identifier: "comments/_comment.html.erb",
@@ -67,8 +70,14 @@ RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop
         template.render_collection.action_view
       ],
     )
+    expect(spans.map(&:description)).to eq(
+      %w[
+        articles/show.html.erb
+        articles/_reaction.erb
+        comments/_comment.html.erb
+      ],
+    )
     collection_span = spans.last
-    expect(collection_span.description).to eq("comments/_comment.html.erb")
     expect(collection_span.data).to include("template.count" => 42, "template.cache_hits" => 10)
   end
 
