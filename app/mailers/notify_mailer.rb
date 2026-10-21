@@ -179,15 +179,19 @@ class NotifyMailer < ApplicationMailer
     @favoritable = params[:favoritable]
     @user = @favoritable.user
     return if @user.email.blank?
+    # Checked here as well as in the worker, because Deliverable#hold_until_linked
+    # replays this action directly.
+    return unless @user.notification_setting.email_badge_notifications
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
     @comment = @favoritable.is_a?(Comment)
+    use_favoritable_subforem_context
     @title = (@comment ? @favoritable.commentable&.title : @favoritable.title).presence ||
       I18n.t("mailers.notify_mailer.gem_received.untitled")
     @favoritable_url = @comment ? URL.comment(@favoritable) : URL.article(@favoritable)
     # Community leaders spend a refreshing allowance rather than earned gems,
     # so the gem they just earned does not change what they can give.
-    @can_pay_forward = !@user.community_leader?
+    @can_pay_forward = !@user.community_leader? && !@user.spam_or_suspended?
     @community_name = Settings::Community.community_name(subforem_id: @subforem_id)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
     add_unsubscribe_headers(@unsubscribe)
@@ -386,6 +390,16 @@ class NotifyMailer < ApplicationMailer
   end
 
   private
+
+  # setup_subforem_context resolves the community from the recipient before the
+  # action runs, and gem_received_email has no recipient param. Brand the email
+  # for the community where the gem was given, falling back to the author's.
+  def use_favoritable_subforem_context
+    subforem_id = @comment ? @favoritable.commentable.try(:subforem_id) : @favoritable.subforem_id
+    @subforem_id = subforem_id || @user.onboarding_subforem_id || @subforem_id
+    @subforem_domain = determine_subforem_domain(@subforem_id)
+    ActionMailer::Base.default_url_options[:host] = @subforem_domain
+  end
 
   # Mirrors the conditional "Trusted Member Guide" link rendered by
   # trusted_role_email.html.erb -- only present when a "trusted-member" Page

@@ -30,7 +30,7 @@
         <h3 style="font-weight:600;margin-top:0"><%= t("pay_forward_heading", scope: scope) %></h3>
         <p><%= t("pay_forward", scope: scope, community: @community_name) %></p>
         <p style="margin-bottom:0">
-          <a href="<%= URL.url("/") %>" style="<%= button_style %>">
+          <a href="<%= URL.url("/", @subforem_domain) %>" style="<%= button_style %>">
             <%= t("pay_forward_cta", scope: scope) %>
           </a>
         </p>

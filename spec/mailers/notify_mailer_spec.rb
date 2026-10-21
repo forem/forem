@@ -285,6 +285,46 @@ RSpec.describe NotifyMailer do
       expect(email.html_part.body).not_to include("You have a gem to give")
     end
 
+    it "does not offer a gem to pass on to a suspended author" do
+      user.add_role(:suspended)
+
+      expect(email.html_part.body).not_to include("You have a gem to give")
+    end
+
+    it "does not send when the author has turned off badge emails" do
+      user.notification_setting.update!(email_badge_notifications: false)
+
+      expect(email.message).to be_a(ActionMailer::Base::NullMail)
+    end
+
+    context "when the post belongs to a non-default subforem" do
+      let!(:default_subforem) { create(:subforem, domain: "default.example.com") }
+      let!(:gem_subforem) { create(:subforem, domain: "gems.example.com") }
+
+      before do
+        article.update_columns(subforem_id: gem_subforem.id)
+        allow(Subforem).to receive_messages(
+          cached_default_id: default_subforem.id,
+          cached_default_domain: default_subforem.domain,
+          cached_id_to_domain_hash: { default_subforem.id => default_subforem.domain,
+                                      gem_subforem.id => gem_subforem.domain },
+        )
+        allow(Settings::Community).to receive(:community_name).and_call_original
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: gem_subforem.id).and_return("Gem Community")
+      end
+
+      it "brands the email and links for the community where the gem was given", :aggregate_failures do
+        expect(email[:from].display_names).to eq(["Gem Community"])
+        expect(email.text_part.body).to include("more people on Gem Community find it")
+        expect(email.text_part.body).to include("The Gem Community Team")
+        expect(email.text_part.body).to include("#{URL.protocol}gems.example.com/\n")
+        # Ahoy wraps links for click tracking, so check the wrapped target.
+        expect(email.html_part.body).to include("u=#{CGI.escape("#{URL.protocol}gems.example.com/")}\"")
+        expect(email.html_part.body).not_to include("default.example.com")
+      end
+    end
+
     context "when the favorite is a comment" do
       let(:email) { described_class.with(favoritable: comment).gem_received_email }
 

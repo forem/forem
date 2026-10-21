@@ -12,7 +12,7 @@
 
 <%= t("pay_forward", scope: scope, community: @community_name) %>
 
-<%= URL.url("/") %>
+<%= URL.url("/", @subforem_domain) %>
 <% end -%>
 
 <%= t("sign_off", scope: scope, community: @community_name) %>
