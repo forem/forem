@@ -586,6 +586,25 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username story list reaction preloading" do
+    let(:user) { create(:user) }
+    let!(:article) { create(:article, user: user, published: true) }
+
+    it "renders the profile without preloading distinct reaction categories" do
+      create(:reaction, reactable: article, category: "like")
+      distinct_category_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        distinct_category_queries << payload[:sql] if payload[:sql].include?("distinct(reactions.category)")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/#{user.username}" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(article.title)
+      expect(distinct_category_queries).to be_empty
+    end
+  end
+
   describe "edge-cached pages with a pending flash message" do
     let(:user) { create(:user) }
     let(:reset_notice) { I18n.t("devise.passwords.reset_instructions_sent") }
