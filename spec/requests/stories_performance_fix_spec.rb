@@ -78,6 +78,32 @@ RSpec.describe "StoriesPerformanceFix", type: :request do
       expect(response.body).to include("min read")
     end
 
+    context "with context notes" do
+      before do
+        create(:context_note, article: articles.first, content: "first note")
+        create(:context_note, article: articles.first, content: "second note")
+        create(:context_note, article: articles.last, content: "pinned note")
+        create(:profile_pin, profile: user, pinnable: articles.last)
+      end
+
+      it "preloads context notes in one query and renders each article's first note", :aggregate_failures do
+        context_note_queries = 0
+        counter = lambda do |_name, _start, _finish, _id, payload|
+          context_note_queries += 1 if payload[:sql].include?("\"context_notes\"")
+        end
+
+        ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
+          get "/#{user.username}"
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(context_note_queries).to eq(1)
+        expect(response.body).to include("first note")
+        expect(response.body).to include("pinned note")
+        expect(response.body).not_to include("second note")
+      end
+    end
+
     context "with pinned articles" do
       let!(:pin) { create(:profile_pin, profile: user, pinnable: articles.first) }
 
