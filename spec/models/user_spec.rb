@@ -1444,14 +1444,35 @@ RSpec.describe User do
   end
 
   describe ".staff_account" do
-    it "returns nil if the account does not exist" do
+    before { RequestStore.clear! }
+    after { RequestStore.clear! }
+
+    it "returns nil without querying User if staff_user_id is not configured" do
+      allow(Settings::Community).to receive(:staff_user_id).and_return(nil)
+      allow(described_class).to receive(:find_by)
+
       expect(described_class.staff_account).to be_nil
+      expect(described_class).not_to have_received(:find_by)
     end
 
-    it "returns the user if the account exists" do
+    it "returns the user and memoizes the lookup in RequestStore if the account exists" do
       allow(Settings::Community).to receive(:staff_user_id).and_return(user.id)
+      allow(described_class).to receive(:find_by).with(id: user.id).and_call_original
 
       expect(described_class.staff_account).to eq(user)
+      expect(described_class.staff_account).to eq(user)
+      expect(described_class).to have_received(:find_by).with(id: user.id).once
+    end
+  end
+
+  describe "#cached_role_names" do
+    it "uses preloaded roles in memory without reading Rails.cache when roles are loaded" do
+      user.add_role(:base_subscriber)
+      loaded_user = described_class.includes(:roles).find(user.id)
+      allow(Rails.cache).to receive(:fetch)
+
+      expect(loaded_user.cached_role_names).to include("base_subscriber")
+      expect(Rails.cache).not_to have_received(:fetch)
     end
   end
 
