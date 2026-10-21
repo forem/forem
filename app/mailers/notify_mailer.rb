@@ -171,6 +171,31 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.new_badge"))
   end
 
+  # Celebrates a post or comment being picked as a gem (a favorite) and, for
+  # members who spend earned gems, invites them to pass the one they just
+  # earned on to someone else. Rendered by Forem rather than a Customer.io
+  # template, so Customer.io recipients get this body as a passthrough send.
+  def gem_received_email
+    @favoritable = params[:favoritable]
+    @user = @favoritable.user
+    return if @user.email.blank?
+    return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
+
+    @comment = @favoritable.is_a?(Comment)
+    @title = (@comment ? @favoritable.commentable&.title : @favoritable.title).presence ||
+      I18n.t("mailers.notify_mailer.gem_received.untitled")
+    @favoritable_url = @comment ? URL.comment(@favoritable) : URL.article(@favoritable)
+    # Community leaders spend a refreshing allowance rather than earned gems,
+    # so the gem they just earned does not change what they can give.
+    @can_pay_forward = !@user.community_leader?
+    @community_name = Settings::Community.community_name(subforem_id: @subforem_id)
+    @unsubscribe = generate_unsubscribe_token(@user.id, :email_badge_notifications)
+    add_unsubscribe_headers(@unsubscribe)
+
+    subject_key = @comment ? "comment_subject" : "article_subject"
+    mail(to: @user.email, subject: I18n.t("mailers.notify_mailer.gem_received.#{subject_key}"))
+  end
+
   def feedback_response_email
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 

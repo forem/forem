@@ -1,0 +1,46 @@
+<% scope = "mailers.notify_mailer.gem_received" %>
+<% button_style = "background:#{Settings::UserExperience.primary_brand_color_hex};color:white;padding:12px 15px;border-radius:6px;text-decoration:none;font-weight:bold;display:inline-block" %>
+<center>
+  <p style="font-size:48px;margin:0">💎</p>
+  <h1 style="font-size:24px;color:#333">
+    <%= t(@comment ? "comment_heading" : "article_heading", scope: scope) %>
+  </h1>
+</center>
+
+<p><%= t("greeting", scope: scope, name: @user.name) %></p>
+
+<p>
+  <%= t(@comment ? "comment_intro" : "article_intro", scope: scope, title: @title) %>
+</p>
+
+<p><%= t("why", scope: scope, community: @community_name) %></p>
+
+<center>
+  <p style="padding:12px 0">
+    <a href="<%= @favoritable_url %>" style="<%= button_style %>">
+      <%= t(@comment ? "view_comment" : "view_article", scope: scope) %>
+    </a>
+  </p>
+</center>
+
+<% if @can_pay_forward %>
+  <table style="width:100%;" cellpadding="0" cellspacing="0">
+    <tr>
+      <td bgcolor="#F8F8F8" style="padding:20px;color:#3a3c3d;font-size:16px;border-radius:8px;border:2px solid #3a3c3d">
+        <h3 style="font-weight:600;margin-top:0"><%= t("pay_forward_heading", scope: scope) %></h3>
+        <p><%= t("pay_forward", scope: scope, community: @community_name) %></p>
+        <p style="margin-bottom:0">
+          <a href="<%= URL.url("/") %>" style="<%= button_style %>">
+            <%= t("pay_forward_cta", scope: scope) %>
+          </a>
+        </p>
+      </td>
+    </tr>
+  </table>
+<% end %>
+
+<p>
+  <%= t("sign_off", scope: scope, community: @community_name) %>
+  <br>
+  <%= t("team", scope: scope, community: @community_name) %>
+</p>

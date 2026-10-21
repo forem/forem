@@ -253,6 +253,70 @@ RSpec.describe NotifyMailer do
     end
   end
 
+  describe "#gem_received_email" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:email) { described_class.with(favoritable: article).gem_received_email }
+
+    before { article.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+    include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
+    include_examples "#delivers_via_smtp_by_default"
+
+    it "renders proper subject and receiver", :aggregate_failures do
+      expect(email.subject).to eq("💎 Your post was picked as a gem")
+      expect(email.to).to eq([user.email])
+    end
+
+    it "explains the gem and links to the post", :aggregate_failures do
+      expect(email.html_part.body).to include("Gems are rare")
+      expect(email.html_part.body).to include(CGI.escapeHTML(article.title))
+      expect(email.text_part.body).to include(URL.article(article))
+    end
+
+    it "invites a regular member to pass a gem on", :aggregate_failures do
+      expect(email.html_part.body).to include("You have a gem to give")
+      expect(email.text_part.body).to include("Share the love!")
+    end
+
+    it "does not offer a gem to pass on to a community leader" do
+      user.add_role(:community_leader_level_1)
+
+      expect(email.html_part.body).not_to include("You have a gem to give")
+    end
+
+    context "when the favorite is a comment" do
+      let(:email) { described_class.with(favoritable: comment).gem_received_email }
+
+      before { comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      it "describes the comment and links to it", :aggregate_failures do
+        expect(email.subject).to eq("💎 Your comment was picked as a gem")
+        expect(email.text_part.body).to include("your comment on \"#{article.title}\"")
+        expect(email.text_part.body).to include(URL.comment(comment))
+      end
+    end
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "sends the Forem-rendered body instead of a Customer.io template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+        expect(settings[:transactional_message_id]).to be_nil
+        expect(email.html_part.body).to include("Gems are rare")
+      end
+    end
+  end
+
   describe "#new_badge_email" do
     let(:badge) { create(:badge) }
     let(:badge_achievement) { create_badge_achievement(user, badge, user2) }
