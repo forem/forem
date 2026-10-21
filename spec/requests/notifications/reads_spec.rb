@@ -47,6 +47,22 @@ RSpec.describe "Notifications::Reads", type: :request do
         expect(org_admin.notifications.unread.count).to eq(0)
         expect(org.notifications.unread.count).to eq(0)
       end
+
+      it "scopes the organization update to org-level notifications" do
+        org_admin = create(:user, :org_admin)
+        org       = org_admin.organizations.first
+        create_follow_notifications(org, following_user)
+        sign_in org_admin
+
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].start_with?("UPDATE \"notifications\"") }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          post "/notifications/reads", params: { org_id: org.id }
+        end
+
+        expect(queries.last).to include("\"notifications\".\"user_id\" IS NULL")
+        expect(Notification.for_organization(org.id).unread.count).to eq(0)
+      end
     end
 
     context "when using token-based authentication" do
