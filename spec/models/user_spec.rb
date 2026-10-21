@@ -1090,6 +1090,22 @@ RSpec.describe User do
                                                   expires_in: 24.hours).and_call_original
       expect(user.good_standing_followers_count).to eq(1)
     end
+
+    it "counts a follower with multiple roles once" do
+      create(:user, :trusted, :tag_moderator).follow(user)
+
+      expect(user.good_standing_followers_count).to eq(2)
+    end
+
+    it "counts distinct follower ids so the follows index can serve the query" do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("COUNT(") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        user.good_standing_followers_count
+      end
+
+      expect(queries).to include(a_string_including('COUNT(DISTINCT "follows"."follower_id")'))
+    end
   end
 
   describe "theming properties" do
