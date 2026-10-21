@@ -352,6 +352,24 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#estimated_user_count" do
+    it "runs the estimated count query once per view when also checking the display threshold" do
+      allow(User).to receive(:estimated_count).and_return(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+
+      expect(display_estimated_user_count?).to be(true)
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      expect(User).to have_received(:estimated_count).once
+    end
+
+    it "does not display the count for a small userbase" do
+      allow(User).to receive(:estimated_count).and_return(0)
+
+      expect(display_estimated_user_count?).to be(false)
+      expect(estimated_user_count).to eq(0)
+      expect(User).to have_received(:estimated_count).once
+    end
+  end
+
   describe "#cloudinary", cloudinary: true do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
