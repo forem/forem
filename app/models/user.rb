@@ -342,7 +342,12 @@ class User < ApplicationRecord
   end
 
   def self.staff_account
-    find_by(id: Settings::Community.staff_user_id)
+    staff_id = Settings::Community.staff_user_id
+    return if staff_id.blank?
+
+    RequestStore.fetch(:"staff_account_user_#{staff_id}") do
+      find_by(id: staff_id)
+    end
   end
 
   def self.mascot_account
@@ -511,6 +516,8 @@ class User < ApplicationRecord
   end
 
   def cached_role_names
+    return roles.map(&:name) if association(:roles).loaded?
+
     cache_key = "user-#{id}/role_names"
     Rails.cache.fetch(cache_key, expires_in: 200.hours) do
       roles.pluck(:name)
