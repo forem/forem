@@ -241,16 +241,28 @@ async function generateBillboard(element) {
   }
 }
 
-getBillboard();
+export function cleanupStaleLiveStreamIntervals() {
+  if (!window.liveStreamIntervals) return;
+
+  Object.keys(window.liveStreamIntervals).forEach((key) => {
+    const hasActiveElement =
+      document.getElementById(`overlay-feed-${key}`) ||
+      document.getElementById(`overlay-post-${key}`) ||
+      document.getElementById(`overlay-minimized-${key}`);
+    if (!hasActiveElement) {
+      clearInterval(window.liveStreamIntervals[key]);
+      delete window.liveStreamIntervals[key];
+    }
+  });
+}
+
+if (!window._billboardChangeRegistered) {
+  getBillboard();
+}
 
 if (window.InstantClick && !window._billboardChangeRegistered) {
   window.InstantClick.on('change', () => {
-    if (window.liveStreamIntervals) {
-      Object.keys(window.liveStreamIntervals).forEach((key) => {
-        clearInterval(window.liveStreamIntervals[key]);
-      });
-      window.liveStreamIntervals = {};
-    }
+    cleanupStaleLiveStreamIntervals();
 
     const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
     if (sidebarContainer) {
