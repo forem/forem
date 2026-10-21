@@ -67,4 +67,24 @@ RSpec.describe ProfileField do
       end
     end
   end
+
+  describe ".cached_display_area_fields" do
+    before { RequestStore.clear! }
+    after { RequestStore.clear! }
+
+    it "memoizes display area fields in RequestStore and invalidates on save or destroy" do
+      field = create(:profile_field, label: "Cached Header Field", display_area: :left_sidebar)
+
+      first_lookup = described_class.cached_display_area_fields(:left_sidebar)
+      expect(first_lookup["Cached Header Field"]).to eq(field.attribute_name)
+
+      field.update!(label: "Updated Header Field")
+      updated_lookup = described_class.cached_display_area_fields(:left_sidebar)
+      expect(updated_lookup["Updated Header Field"]).to eq(field.attribute_name)
+      expect(updated_lookup).not_to have_key("Cached Header Field")
+
+      field.destroy!
+      expect(described_class.cached_display_area_fields(:left_sidebar)).not_to have_key("Updated Header Field")
+    end
+  end
 end
