@@ -18,6 +18,69 @@ if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
     "PG::QueryCanceled" => "pg_query_canceled"
   }
 
+  # sentry-rails only traces top-level render_template.action_view, leaving partial and Jbuilder
+  # collection rendering as unattributed "compute" gaps in the trace waterfall.
+  action_view_subscriber = Class.new(Sentry::Rails::Tracing::ActionViewSubscriber) do
+    const_set(:EVENT_NAMES, %w[
+      render_template.action_view
+      render_partial.action_view
+      render_collection.action_view
+    ].freeze)
+
+    def self.subscribe!
+      subscribe_to_event(self::EVENT_NAMES) do |event_name, duration, payload|
+        record_on_current_span(
+          op: self::SPAN_PREFIX + event_name,
+          origin: self::SPAN_ORIGIN,
+          start_timestamp: payload[Sentry::Rails::Tracing::START_TIMESTAMP_NAME],
+          description: payload[:identifier],
+          duration: duration,
+        ) do |span|
+          span.set_data("template.count", payload[:count]) if payload[:count]
+          span.set_data("template.cache_hits", payload[:cache_hits]) if payload[:cache_hits]
+        end
+      end
+    end
+  end
+
+  # MemoryFirstCache and Flipper read from process-local MemoryStore/LocalStore hundreds of times
+  # per request, accounting for ~58% of all spans and truncating complex traces at Sentry's
+  # 1,000-span cap before view rendering finishes. Keep distributed cache (RedisCacheStore) spans.
+  active_support_subscriber = Class.new(Sentry::Rails::Tracing::ActiveSupportSubscriber) do
+    const_set(:READ_EVENT_NAMES, %w[cache_read.active_support cache_read_multi.active_support].freeze)
+    const_set(
+      :EVENT_NAMES,
+      (self::READ_EVENT_NAMES + self::WRITE_EVENT_NAMES + self::REMOVE_EVENT_NAMES + self::FLUSH_EVENT_NAMES).freeze,
+    )
+    const_set(:IGNORED_STORES, %w[
+      ActiveSupport::Cache::MemoryStore
+      ActiveSupport::Cache::Strategy::LocalCache::LocalStore
+      ActiveSupport::Cache::NullStore
+    ].freeze)
+
+    def self.subscribe!
+      subscribe_to_event(self::EVENT_NAMES) do |event_name, duration, payload|
+        next if self::IGNORED_STORES.include?(payload[:store])
+
+        record_on_current_span(
+          op: operation_name(event_name),
+          origin: self::SPAN_ORIGIN,
+          start_timestamp: payload[Sentry::Rails::Tracing::START_TIMESTAMP_NAME],
+          description: payload[:store],
+          duration: duration,
+        ) do |span|
+          keys = Array(payload[:key]).select { |key| Sentry::Utils::EncodingHelper.valid_utf_8?(key) }
+          span.set_data("cache.key", keys)
+          span.set_data("cache.hit", payload[:hit] == true)
+        end
+      end
+    end
+
+    def self.operation_name(event_name)
+      self::READ_EVENT_NAMES.include?(event_name) ? "cache.get" : super
+    end
+  end
+
   Sentry.init do |config|
     config.dsn = ENV.fetch("BETTER_STACK_ERRORS_DSN")
     config.enabled_environments = %w[production]
@@ -26,6 +89,11 @@ if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
     config.breadcrumbs_logger = [:active_support_logger]
     # Sampled request and job traces; Better Stack stores them as spans.
     config.traces_sample_rate = ENV.fetch("SENTRY_TRACES_SAMPLE_RATE", "0.05").to_f
+    # Trace outgoing HTTP calls via Faraday and Excon alongside Net::HTTP, Redis, and Puma.
+    config.enabled_patches += %i[faraday excon]
+    config.rails.tracing_subscribers.delete(Sentry::Rails::Tracing::ActionViewSubscriber)
+    config.rails.tracing_subscribers.delete(Sentry::Rails::Tracing::ActiveSupportSubscriber)
+    config.rails.tracing_subscribers.merge([action_view_subscriber, active_support_subscriber])
     # Like Honeybadger's attempt_threshold: skip job failures that will be retried.
     config.sidekiq.report_after_job_retries = true
     config.excluded_exceptions += ignored_exceptions

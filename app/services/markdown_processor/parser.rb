@@ -1,5 +1,7 @@
 module MarkdownProcessor
   class Parser
+    include Instrumentation
+
     BAD_XSS_REGEX = [
       /src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
@@ -29,40 +31,42 @@ module MarkdownProcessor
     end
 
     def finalize(link_attributes: {}, prefix_images_options: { width: 800, synchronous_detail_detection: false })
-      options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
-      renderer = Redcarpet::Render::HTMLRouge.new(options)
-      markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-      catch_xss_attempts(@content)
-      
-      # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
-      content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-      # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
-      content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+      instrument("markdown_processor.finalize", tags: { source_type: @source&.class&.name }) do
+        options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
+        renderer = Redcarpet::Render::HTMLRouge.new(options)
+        markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
+        catch_xss_attempts(@content)
 
-      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
-      escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
-      html = markdown.render(escaped_content)
-      sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
+        # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
+        content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
+        # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
+        content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
 
-      begin
-        # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
-        # a String substitute, hence we force the conversion before passing it to Liquid::Template.
-        # See <https://github.com/Shopify/liquid/issues/1390>
-        parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
+        code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
+        escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
+        html = markdown.render(escaped_content)
+        sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
 
-        html = markdown.render(parsed_liquid.render)
-      rescue NoMethodError => e
-        raise e unless e.message.include?("line_number")
+        begin
+          # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
+          # a String substitute, hence we force the conversion before passing it to Liquid::Template.
+          # See <https://github.com/Shopify/liquid/issues/1390>
+          parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
 
-        # Handle the specific NoMethodError
-        Rails.logger.error("Liquid rendering error: #{e.message}")
-        html = sanitized_content.to_str
-      rescue Liquid::SyntaxError => e
-        html = e.message
+          html = markdown.render(parsed_liquid.render)
+        rescue NoMethodError => e
+          raise e unless e.message.include?("line_number")
+
+          # Handle the specific NoMethodError
+          Rails.logger.error("Liquid rendering error: #{e.message}")
+          html = sanitized_content.to_str
+        rescue Liquid::SyntaxError => e
+          html = e.message
+        end
+
+        html = add_target_blank_to_outbound_links(html)
+        parse_html(html, prefix_images_options)
       end
-
-      html = add_target_blank_to_outbound_links(html)
-      parse_html(html, prefix_images_options)
     end
 
     def convert_deeply_nested_links_to_html(content)
