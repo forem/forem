@@ -277,6 +277,25 @@ RSpec.describe "Articles" do
       end
     end
 
+    context "with the template param" do
+      it "prefills the editor from the matching tag" do
+        tag = create(:tag, name: "templatetag")
+        get "/new", params: { template: tag.name }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("templatetag")
+      end
+
+      it "does not query tags when the template param is absent" do
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/new" }
+        expect(response).to have_http_status(:ok)
+        expect(tag_queries).to be_empty
+      end
+    end
+
     it "sets canonical url with base" do
       get "/new"
       expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
