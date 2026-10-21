@@ -233,6 +233,24 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
     end
 
+    it "marks the pinned article as pinned while looking up the pinned article once" do
+      PinnedArticle.set(article)
+      allow(PinnedArticle).to receive(:id).and_call_original
+
+      get article.path
+
+      expect(response.body).to match(/data-pinned[\s>]/)
+      expect(PinnedArticle).to have_received(:id).once
+    end
+
+    it "does not mark an article as pinned when another article is pinned" do
+      PinnedArticle.set(create(:article))
+
+      get article.path
+
+      expect(response.body).not_to match(/data-pinned[\s>]/)
+    end
+
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem) { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem) }
