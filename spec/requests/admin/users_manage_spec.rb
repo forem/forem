@@ -143,6 +143,15 @@ RSpec.describe "Admin::Users" do
       expect(Note.first.content).to eq("limited role added")
     end
 
+    it "allows admins to assign community leader level 1" do
+      sign_in create(:user, :admin)
+
+      params = { user: { user_status: "Community Leader Level 1", note_for_current_role: "assigning community leader" } }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_1?).to be(true)
+    end
+
     it "selects new role for user" do
       user.add_role(:trusted)
       user.reload
