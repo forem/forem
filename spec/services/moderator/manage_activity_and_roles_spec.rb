@@ -395,5 +395,11 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
         manage_roles_for(user, user_status: "Super Moderator")
       end.to raise_error(StandardError)
     end
+
+    it "raises exception when trying to assign community leader level 2" do
+      expect do
+        manage_roles_for(user, user_status: "Community Leader Level 2")
+      end.to raise_error(StandardError)
+    end
   end
 end

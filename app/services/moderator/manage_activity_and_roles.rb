@@ -136,6 +136,7 @@ module Moderator
     end
 
     def assign_community_leader_role(role)
+      check_super_admin if role == :community_leader_level_2
       remove_negative_roles
       CommunityLeaders::Add.call(user, role)
     end
