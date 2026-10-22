@@ -105,6 +105,33 @@ RSpec.describe ArticleActivity do
       expect(activity.total_comments).to eq(1)
       expect(activity.last_aggregated_at).to be_present
     end
+
+    it "rolls multiple referrer domains into one day from a single page_views scan" do
+      ts = Time.utc(day.year, day.month, day.day, 12, 0, 0)
+      user = create(:user)
+      create(:page_view, article: article, user: user, created_at: ts,
+                         counts_for_number_of_views: 3, time_tracked_in_seconds: 20)
+        .update_column(:domain, "a.com")
+      create(:page_view, article: article, user: nil, created_at: ts,
+                         counts_for_number_of_views: 2, time_tracked_in_seconds: 50)
+        .update_column(:domain, "b.com")
+      create(:page_view, article: article, user: nil, created_at: ts, counts_for_number_of_views: 1)
+        .update_column(:domain, nil)
+
+      page_view_queries = []
+      callback = lambda do |*, payload|
+        page_view_queries << payload[:sql] if payload[:sql].include?('FROM "page_views"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.recompute_all! }
+      activity.reload
+
+      expect(page_view_queries.size).to eq(1)
+      expect(activity.daily_page_views[iso]).to eq(
+        "total" => 6, "sum_read_seconds" => 20, "logged_in_count" => 1,
+      )
+      expect(activity.daily_referrers[iso]).to eq("a.com" => 3, "b.com" => 2, "" => 1)
+      expect(activity.total_page_views).to eq(6)
+    end
   end
 
   describe ".bulk_backfill!" do
