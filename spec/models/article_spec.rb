@@ -3543,6 +3543,22 @@ RSpec.describe Article do
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
+
+    context "when the author changes on a published article with a generated social image" do
+      before do
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
+      end
+
+      it "triggers the Images::SocialImageWorker" do
+        article.update(user: create(:user))
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not trigger the Images::SocialImageWorker when the author is unchanged" do
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
   end
 
   describe "#skip_indexing?" do
