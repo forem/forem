@@ -1,0 +1,22 @@
+app/services/rate_limit_checker.rb
+  s_26a269fa3c3c7f::t_fbba4b9bef3b43 99
+  s_26a269fa3c3c7f::t_6d572ad5d753a0 96,98
+spec/services/rate_limit_checker_spec.rb
+  s_26a269fa3c3c7f::t_66c67f552b20e2 150-155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e599fe2da3c6c782e641b8b90bb6192b713a556d",
+  "prompts": {},
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

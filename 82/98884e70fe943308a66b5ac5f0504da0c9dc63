@@ -1,0 +1,35 @@
+spec/decorators/article_decorator_spec.rb
+  s_e3b00ca12701b4::t_baf5aebeaf0be8 291-304
+spec/helpers/articles_helper_spec.rb
+  s_e3b00ca12701b4::t_7b709aea173239 115-119,126-134,144
+spec/helpers/comments_helper_spec.rb
+  s_e3b00ca12701b4::t_22061ce9368818 78-80,83,86,88,90,92-94
+spec/models/article_spec.rb
+  s_e3b00ca12701b4::t_1812330df30bb5 4487-4498
+app/controllers/stories_controller.rb
+  s_e3b00ca12701b4::t_74847b4c8c4307 665
+app/decorators/article_decorator.rb
+  s_e3b00ca12701b4::t_1f5d01bf724e19 121-122
+app/helpers/articles_helper.rb
+  s_e3b00ca12701b4::t_4037c92781b226 91-93
+app/helpers/comments_helper.rb
+  s_e3b00ca12701b4::t_fa3176dbd2d139 20
+app/models/article.rb
+  s_e3b00ca12701b4::t_8cce6eb21a8490 38,950-952,957-968
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8298884e70fe943308a66b5ac5f0504da0c9dc63",
+  "prompts": {},
+  "sessions": {
+    "s_e3b00ca12701b4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "8368ac6e-c7f6-43bc-b82c-3969f20b4759",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

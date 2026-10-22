@@ -1,0 +1,42 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 48-49,72,311
+app/decorators/profile_decorator.rb
+  h_f968154a99632d 5-7
+app/helpers/application_helper.rb
+  h_f968154a99632d 263
+app/models/profile_field.rb
+  h_f968154a99632d 22-33,37-40
+app/models/user.rb
+  h_f968154a99632d 345-350,519-520
+app/queries/comments/tree.rb
+  h_f968154a99632d 7,25
+app/views/shared/_profile_card_content.html.erb
+  h_f968154a99632d 26
+config/initializers/inline_svg.rb
+  h_f968154a99632d 1-8
+config/initializers/middlewares.rb
+  h_f968154a99632d 7
+spec/decorators/profile_decorator_spec.rb
+  h_f968154a99632d 1-26
+spec/helpers/crayons_helper_spec.rb
+  h_f968154a99632d 46-54
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 140-176
+spec/models/profile_field_spec.rb
+  h_f968154a99632d 70-89
+spec/models/user_spec.rb
+  h_f968154a99632d 1447-1453,1455,1458,1460,1463-1475
+spec/queries/comments/tree_spec.rb
+  h_f968154a99632d 18-26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b98cafdf480c10cec42d91369b96c86f40984d7f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

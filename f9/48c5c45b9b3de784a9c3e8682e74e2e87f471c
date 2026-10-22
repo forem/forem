@@ -1,0 +1,36 @@
+app/controllers/admin/flag_appeals_controller.rb
+  h_f968154a99632d 12,51-55
+app/controllers/api/v0/api_controller.rb
+  h_f968154a99632d 35
+app/models/flag_appeal.rb
+  h_f968154a99632d 2-3
+app/services/appeals/resolver.rb
+  h_f968154a99632d 21-23,27-28,30,32-41,43-71,84-90,115,120,124,170-173,179,191,195-201,204,208-210,216-221,235-238,246-252
+app/views/admin/flag_appeals/_flag_appeal.html.erb
+  h_f968154a99632d 66-67,69
+app/workers/appeals/ai_review_worker.rb
+  h_f968154a99632d 14-16,18-26
+config/locales/views/admin/en.yml
+  h_f968154a99632d 327
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 319
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 28,41
+spec/requests/admin/flag_appeals_spec.rb
+  h_f968154a99632d 71,98-109
+spec/requests/api/v0/api_controller_spec.rb
+  h_f968154a99632d 15-20,24,26-29,31
+spec/services/appeals/resolver_spec.rb
+  h_f968154a99632d 79-82,86,131,136,156-157,161,164-165,167-169,177-179,260,265-278,292-296,298,300,311-318,321
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f948c5c45b9b3de784a9c3e8682e74e2e87f471c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
