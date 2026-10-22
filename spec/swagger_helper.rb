@@ -319,6 +319,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               is_top_level_path: { type: :boolean,
                                    description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
               social_image: { type: :object, nullable: true },
+              organization_id: {
+                type: :integer, format: :int64, nullable: true,
+                description: "The ID of the organization the page belongs to, if any"
+              },
+              position: {
+                type: :integer, format: :int32,
+                description: "Display order position for organization pages"
+              },
               template: {
                 type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                 description: "Controls what kind of layout the page is rendered in"
