@@ -1828,7 +1828,9 @@ class Article < ApplicationRecord
   def generate_social_image
     return if main_image.present?
 
-    change = saved_change_to_attribute?(:title) || saved_change_to_attribute?(:published_at)
+    change = saved_change_to_attribute?(:title) ||
+      saved_change_to_attribute?(:published_at) ||
+      saved_change_to_attribute?(:user_id) # the image shows the author's name, avatar, and brand color
     return unless (change || social_image.blank?) && published
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
