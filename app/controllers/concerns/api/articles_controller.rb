@@ -80,14 +80,18 @@ module Api
     end
 
     def update
-      articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
-      article = articles_relation.find(params[:id])
+      # Set @article before #article_params so #allowed_to_change_org_id? checks the
+      # post's author, not the editor, when an org admin edits someone else's post.
+      @article = find_updatable_article
+      editor_is_author = @article.user_id == @user.id
+      organization_id = @article.organization_id
 
-      result = Articles::Updater.call(@user, article, article_params)
+      result = Articles::Updater.call(@user, @article, article_params)
 
       @article = result.article
 
       if result.success
+        log_non_author_update(organization_id) unless editor_is_author
         assign_ai_disclosure_warning
         render "show", status: :ok
       else
@@ -166,6 +170,31 @@ module Api
       all_tags = tag_params.flat_map { |t| t.to_s.split(",") }.map(&:strip).compact_blank
 
       all_tags.any? { |t| !t.match?(/\A[[:alnum:]\-]+\z/i) }
+    end
+
+    # Uses the same ArticlePolicy#update? as the web editor. A caller who may not
+    # edit the post gets a 404, not a 401, as before: this keeps the existing
+    # response and does not reveal that an unpublished draft exists.
+    def find_updatable_article
+      article = Article.includes(:user).find(params[:id])
+      authorize article, :update?
+      article
+    rescue Pundit::NotAuthorizedError => e
+      raise if e.is_a?(ApplicationPolicy::UserSuspendedError)
+
+      raise ActiveRecord::RecordNotFound
+    end
+
+    # @param organization_id [Integer, nil] the post's organization before the update,
+    #        i.e. the organization whose admin rights allowed the edit
+    def log_non_author_update(organization_id)
+      payload = {
+        action: "api_article_update",
+        article_id: @article.id,
+        organization_id: organization_id,
+        changed_attributes: @article.saved_changes.keys - %w[updated_at]
+      }
+      Audit::Logger.log(:admin_api, @user, payload)
     end
 
     def per_page_max
