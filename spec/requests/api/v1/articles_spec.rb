@@ -1491,6 +1491,19 @@ RSpec.describe "Api::V1::Articles" do
     describe "when authorized as super_admin" do
       before { user.add_role(:super_admin) }
 
+      it "creates an audit log when updating another user's article" do
+        Audit::Subscribe.listen listener
+        other_article = create(:article, user: create(:user))
+
+        put "/api/articles/#{other_article.id}", params: { article: { body_markdown: "New body" } }.to_json,
+                                                 headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(AuditLog.last.data).to include("action" => "api_article_update", "article_id" => other_article.id)
+      ensure
+        Audit::Subscribe.forget listener
+      end
+
       it "updates the labels" do
         expect do
           put_article(
@@ -1532,6 +1545,105 @@ RSpec.describe "Api::V1::Articles" do
           )
           article.reload
         end.to change(article, :cached_label_list)
+      end
+    end
+  end
+
+  describe "PUT /api/articles/:id when the editor is not the author", :aggregate_failures do
+    let(:user) { api_secret.user }
+    let(:path) { api_article_path(article.id) }
+    let(:author) { create(:user) }
+    let(:article) do
+      create(:article, user: author, organization: organization, published: false, published_at: nil)
+    end
+    let(:new_body) { "An edit made through the API" }
+
+    before do
+      create(:organization_membership, user: author, organization: organization, type_of_user: "member")
+      Audit::Subscribe.listen listener
+    end
+
+    after { Audit::Subscribe.forget listener }
+
+    context "when the user is an admin of the article's organization" do
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+      end
+
+      it "updates the article and keeps the original author" do
+        put_article(title: "Edited by an org admin", body_markdown: new_body, user_id: user.id)
+
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.title).to eq("Edited by an org admin")
+        expect(article.body_markdown).to eq(new_body)
+        expect(article.user).to eq(author)
+      end
+
+      it "creates an audit log of the update" do
+        expect { put_article(title: "Edited by an org admin", body_markdown: new_body) }
+          .to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(user.id)
+        expect(log.data["action"]).to eq("api_article_update")
+        expect(log.data["article_id"]).to eq(article.id)
+        expect(log.data["organization_id"]).to eq(organization.id)
+        expect(log.data["changed_attributes"]).to include("title", "body_markdown")
+        expect(log.data["changed_attributes"]).not_to include("updated_at")
+      end
+
+      it "does not move the article to an organization the author does not belong to" do
+        other_organization = create(:organization)
+        create(:organization_membership, user: user, organization: other_organization, type_of_user: "admin")
+
+        put_article(body_markdown: new_body, organization_id: other_organization.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
+      end
+
+      it "does not create an audit log when the update fails" do
+        expect { put_article(title: nil, body_markdown: nil) }.not_to change(AuditLog, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "when the user is an admin of a different organization" do
+      before do
+        create(:organization_membership, user: user, organization: create(:organization), type_of_user: "admin")
+      end
+
+      it "returns not found and does not update the article" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:not_found)
+        expect(article.reload.body_markdown).not_to eq(new_body)
+      end
+    end
+
+    context "when the user is a regular member of the article's organization" do
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+      end
+
+      it "returns not found and does not update the article" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:not_found)
+        expect(article.reload.body_markdown).not_to eq(new_body)
+      end
+    end
+
+    context "when the user is the author" do
+      let(:article) { create(:article, user: user, organization: organization, published: false) }
+
+      it "updates the article without creating an audit log" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.body_markdown).to eq(new_body)
       end
     end
   end
