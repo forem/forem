@@ -338,6 +338,8 @@ fr:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
+              community_leader_level_1: Community Leader Level 1
+              community_leader_level_2: Community Leader Level 2
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
