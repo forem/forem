@@ -5,6 +5,9 @@ module CommentsHelper
   MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED = 5
 
   def any_negative_comments?(commentable)
+    return false if no_comments_on?(commentable)
+    return commentable.comments.any? { |comment| comment.score.to_i.negative? } if commentable.comments.loaded?
+
     commentable.comments.where("score < 0").any?
   end
 
@@ -114,6 +117,13 @@ module CommentsHelper
   end
 
   private
+
+  def no_comments_on?(commentable)
+    return false unless commentable.respond_to?(:comments_count)
+
+    commentable.comments_count.to_i <= 0 &&
+      (!commentable.respond_to?(:displayed_comments_count) || commentable.displayed_comments_count.to_i <= 0)
+  end
 
   def limit_descendants(sub_hash, limit)
     count = 0

@@ -251,6 +251,42 @@ RSpec.describe "StoriesShow" do
       expect(response.body).not_to match(/data-pinned[\s>]/)
     end
 
+    it "does not query for negative comments when the article has no comments" do
+      negative_comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        negative_comment_queries << payload[:sql] if payload[:sql].include?("score < 0")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(negative_comment_queries).to be_empty
+    end
+
+    it "queries for negative comments only once when rendering the hidden negative comments notice" do
+      create(:comment, commentable: article, score: -5)
+      article.reload
+
+      negative_comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        negative_comment_queries << payload[:sql] if payload[:sql].include?("score < 0")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Some comments may only be visible to logged-in visitors")
+      expect(negative_comment_queries.size).to eq(1)
+    end
+
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem) { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem) }
