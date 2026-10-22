@@ -323,7 +323,8 @@ class ArticlesController < ApplicationController
     return unless tag_name
 
     @tag = Tag.find_by(name: tag_name)
-    @articles = @articles.cached_tagged_with(tag_name)
+    # The feed template renders each article's author name, so preload users to avoid an N+1.
+    @articles = @articles.cached_tagged_with(tag_name).includes(:user)
   end
 
   def set_article

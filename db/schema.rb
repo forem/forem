@@ -262,6 +262,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_150000) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at", "score"], name: "index_articles_on_published_at_and_score", order: { published_at: :desc }, where: "(published = true)"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["published_at"], name: "index_articles_on_published_at_for_suggest_stickies", where: "((published = true) AND ((score > 25) OR (comment_score > 15)))"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true

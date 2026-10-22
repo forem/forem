@@ -1830,6 +1830,7 @@ class Article < ApplicationRecord
 
     change = saved_change_to_attribute?(:title) ||
       saved_change_to_attribute?(:published_at) ||
+      saved_change_to_attribute?(:user_id) || # the image shows the author's name, avatar, and brand color
       saved_change_to_attribute?(:reading_time) || # the image shows the reading time
       social_image_quote_changed?
     missing = social_image.blank? || twitter_social_image.blank?
