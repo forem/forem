@@ -11,7 +11,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
   let(:default_logo_url) { "https://example.com/default_logo.png" }
   let(:custom_logo_url) { "https://example.com/custom_logo.png" }
-  let(:generated_images) { { social_image: "https://example.com/og.png", twitter_social_image: "https://example.com/x.png" } }
+  let(:generated_image) { "https://example.com/og.png" }
 
   before do
     allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
@@ -32,19 +32,17 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:generate_images).and_return(generated_images)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates the images with the author's brand color" do
+      it "generates the image with the author's brand color" do
         described_class.call(article)
-        expect(generator).to have_received(:generate_images).with(article, user.setting.brand_color1).once
+        expect(generator).to have_received(:generate_image).with(article, user.setting.brand_color1).once
       end
 
-      it "stores both the default and the X image" do
+      it "stores the generated image on the article" do
         described_class.call(article)
-        article.reload
-        expect(article.social_image).to eq("https://example.com/og.png")
-        expect(article.twitter_social_image).to eq("https://example.com/x.png")
+        expect(article.reload.social_image).to eq("https://example.com/og.png")
       end
 
       it "busts article cache" do
@@ -55,7 +53,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       context "when an external fetch fails with an HTTP error" do
         it "logs a warning and does not alert Honeybadger" do
-          allow(generator).to receive(:generate_images).and_raise(OpenURI::HTTPError.new("404 Not Found", nil))
+          allow(generator).to receive(:generate_image).and_raise(OpenURI::HTTPError.new("404 Not Found", nil))
           allow(Rails.logger).to receive(:warn)
           allow(Rails.error).to receive(:report)
 
@@ -68,7 +66,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       context "when an external fetch times out" do
         it "logs a warning and does not alert Honeybadger" do
-          allow(generator).to receive(:generate_images).and_raise(Net::ReadTimeout)
+          allow(generator).to receive(:generate_image).and_raise(Net::ReadTimeout)
           allow(Rails.logger).to receive(:warn)
           allow(Rails.error).to receive(:report)
 
@@ -81,7 +79,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       context "when MiniMagick throws an error" do
         it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
-          allow(generator).to receive(:generate_images).and_raise(MiniMagick::Error.new("`convert` failed with status: 15"))
+          allow(generator).to receive(:generate_image).and_raise(MiniMagick::Error.new("`convert` failed with status: 15"))
           allow(Rails.logger).to receive(:warn)
           allow(Rails.error).to receive(:report)
 
@@ -93,7 +91,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
         it "alerts Honeybadger for other MiniMagick errors" do
           error = MiniMagick::Error.new("`convert` failed with status: 1")
-          allow(generator).to receive(:generate_images).and_raise(error)
+          allow(generator).to receive(:generate_image).and_raise(error)
           allow(Rails.error).to receive(:report)
 
           described_class.call(article)
@@ -108,21 +106,20 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:generate_images).and_return(generated_images)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates images for each published article without an organization or cover" do
+      it "generates an image for each published article without an organization or cover" do
         described_class.call(user)
         [article, article_with_custom_subforem, article_without_subforem].each do |art|
-          expect(generator).to have_received(:generate_images).with(art, user.setting.brand_color1)
+          expect(generator).to have_received(:generate_image).with(art, user.setting.brand_color1)
         end
-        expect(generator).not_to have_received(:generate_images).with(second_article, anything)
+        expect(generator).not_to have_received(:generate_image).with(second_article, anything)
       end
 
-      it "stores both images on the articles" do
+      it "stores the generated image on the articles" do
         described_class.call(user)
         expect(article.reload.social_image).to eq("https://example.com/og.png")
-        expect(article.twitter_social_image).to eq("https://example.com/x.png")
       end
     end
 
@@ -131,18 +128,17 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:generate_images).and_return(generated_images)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates images with the organization's color" do
+      it "generates the image with the organization's color" do
         described_class.call(organization)
-        expect(generator).to have_received(:generate_images).with(second_article, organization.bg_color_hex).once
+        expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
       end
 
-      it "stores both images on the article" do
+      it "stores the generated image on the article" do
         described_class.call(organization)
         expect(second_article.reload.social_image).to eq("https://example.com/og.png")
-        expect(second_article.twitter_social_image).to eq("https://example.com/x.png")
       end
     end
 
@@ -181,20 +177,19 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
   describe "layout" do
     let(:stack) { described_class::WINDOW_STACK_OFFSET * described_class::WINDOW_STACK_DEPTH }
+    let(:card_bottom) { described_class::WINDOW_Y + described_class::WINDOW_HEIGHT + stack }
 
-    it "keeps the X card above the bottom area where X overlays the post title" do
-      card_bottom = described_class::TWITTER_WINDOW_Y + described_class::WINDOW_HEIGHT + stack
+    it "keeps the card above the bottom area where X overlays the post title" do
       expect(card_bottom).to be <= described_class::HEIGHT - described_class::X_KEEP_CLEAR
     end
 
-    it "centers the default card vertically" do
-      top = described_class::DEFAULT_WINDOW_Y
-      bottom = described_class::HEIGHT - (top + described_class::WINDOW_HEIGHT + stack)
-      expect((top - bottom).abs).to be <= 1
+    it "centers the card vertically" do
+      bottom_margin = described_class::HEIGHT - card_bottom
+      expect((described_class::WINDOW_Y - bottom_margin).abs).to be <= 1
     end
   end
 
-  describe "#generate_images" do
+  describe "#generate_image" do
     let(:generator) { described_class.new(article) }
     let(:written) { [] }
 
@@ -211,16 +206,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       end
     end
 
-    it "renders a default and an X image at 1200x627 with ImageMagick" do
-      images = generator.send(:generate_images, article, "#3b49df")
-
-      expect(images).to eq(social_image: "https://example.com/1.png", twitter_social_image: "https://example.com/2.png")
-      expect(written).to eq([[1200, 627], [1200, 627]])
+    it "renders a 1200x627 image with ImageMagick" do
+      expect(generator.send(:generate_image, article, "#3b49df")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
     end
 
     it "quotes the opening of the article" do
       allow(generator).to receive(:render_quote).and_call_original
-      generator.send(:generate_images, article, nil)
+      generator.send(:generate_image, article, nil)
       expect(generator).to have_received(:render_quote).with(Images::SocialImageQuote.call(article))
     end
   end
@@ -346,7 +339,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     end
 
     it "adds the profile image and rounded mask after collapsing animation frames" do
-      generator.send(:add_profile_image, result_image, described_class::DEFAULT_WINDOW_Y)
+      generator.send(:add_profile_image, result_image)
       expect(author_image).to have_received(:collapse!)
       expect(author_image).to have_received(:format).with("png")
       expect(author_image).to have_received(:resize).with("64x64!")
@@ -358,7 +351,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
       allow(Rails.error).to receive(:report)
 
-      expect(generator.send(:add_profile_image, result_image, described_class::DEFAULT_WINDOW_Y)).to eq(result_image)
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
       expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
       expect(author_image).not_to have_received(:resize)
       expect(result_image).not_to have_received(:composite)
@@ -377,14 +370,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     end
 
     it "scales the logo to the window's title bar and adds it" do
-      generator.send(:add_logo, result_image, described_class::DEFAULT_WINDOW_Y)
+      generator.send(:add_logo, result_image)
       expect(logo_image).to have_received(:resize).with("x#{described_class::LOGO_HEIGHT}")
       expect(result_image).to have_received(:composite).with(logo_image)
     end
 
     it "does not add a logo when there is none" do
       generator.instance_variable_set(:@logo_image, nil)
-      expect(generator.send(:add_logo, result_image, described_class::DEFAULT_WINDOW_Y)).to eq(result_image)
+      expect(generator.send(:add_logo, result_image)).to eq(result_image)
       expect(result_image).not_to have_received(:composite)
     end
   end

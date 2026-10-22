@@ -3546,14 +3546,14 @@ RSpec.describe Article do
 
     context "when the generated image's quote or reading time could change" do
       let(:opening) { "The opening paragraph is quoted on the generated social image, so it matters." }
+      # Created with a cover so creating it doesn't queue an image, then the cover is removed.
       let(:article) do
         body = "---\ntitle: Quote Trigger\npublished: true\n---\n\n#{opening}\n\nLater text here."
-        create(:article, with_main_image: false, title: "Quote Trigger", body_markdown: body)
+        create(:article, title: "Quote Trigger", body_markdown: body)
       end
 
       before do
-        article.update_columns(social_image: "https://example.com/social.png",
-                               twitter_social_image: "https://example.com/twitter.png")
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
       end
 
       it "triggers the Images::SocialImageWorker when the opening paragraph changes" do
@@ -3570,18 +3570,11 @@ RSpec.describe Article do
         article.update(body_markdown: "#{article.body_markdown}\n\n#{'word ' * 600}")
         expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
       end
-
-      it "triggers the Images::SocialImageWorker when the X image has not been generated yet" do
-        article.update_columns(twitter_social_image: nil)
-        article.save
-        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
-      end
     end
 
     context "when the author changes on a published article with a generated social image" do
       before do
-        article.update_columns(main_image: nil, social_image: "https://example.com/social.png",
-                               twitter_social_image: "https://example.com/twitter.png")
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
       end
 
       it "triggers the Images::SocialImageWorker" do

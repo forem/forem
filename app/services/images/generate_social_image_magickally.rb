@@ -4,14 +4,14 @@ module Images
   TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
   ROUNDED_MASK_PATH = "app/assets/images/rounded_mask.png".freeze
 
-  # Generates the share images used when an article has no cover image: a quote
+  # Generates the share image used when an article has no cover image: a quote
   # from the opening of the post in a browser-window card over a soft gradient,
   # with the author's avatar, name, date, and reading time.
   #
-  # Two versions are stored. `social_image` (og:image) centers the card.
-  # `twitter_social_image` (twitter:image) raises it, because X overlays the
-  # post title in a dark bar across roughly the bottom 12% of link cards, so the
-  # bottom X_KEEP_CLEAR pixels must hold only background.
+  # One image serves every platform. X overlays the post title in a dark bar
+  # across roughly the bottom 12% of link cards, so the bottom X_KEEP_CLEAR
+  # pixels hold only background. The card keeps the same margin at the top so
+  # it stays vertically centered where nothing is overlaid (LinkedIn, Slack...).
   #
   # Production runs ImageMagick 6, so stick to IM6-compatible operations.
   class GenerateSocialImageMagickally
@@ -26,15 +26,14 @@ module Images
     MESH_BLUR = "0x48".freeze
 
     WINDOW_WIDTH = 966
-    WINDOW_HEIGHT = 466
     WINDOW_STACK_OFFSET = 14 # two outlines peek out behind the window
     WINDOW_STACK_DEPTH = 2
+    WINDOW_HEIGHT = HEIGHT - (2 * X_KEEP_CLEAR) - (WINDOW_STACK_OFFSET * WINDOW_STACK_DEPTH)
     WINDOW_RADIUS = 18
     WINDOW_STROKE = 4
     WINDOW_BAR_HEIGHT = 46
     WINDOW_X = (WIDTH - WINDOW_WIDTH - (WINDOW_STACK_OFFSET * WINDOW_STACK_DEPTH)) / 2
-    TWITTER_WINDOW_Y = 46
-    DEFAULT_WINDOW_Y = (HEIGHT - WINDOW_HEIGHT - (WINDOW_STACK_OFFSET * WINDOW_STACK_DEPTH)) / 2
+    WINDOW_Y = X_KEEP_CLEAR
 
     LOGO_HEIGHT = 30
     QUOTE_MARK_POINTSIZE = 150
@@ -77,18 +76,18 @@ module Images
     def call
       if @resource.is_a?(Article)
         @user = @resource.user
-        @resource.update_columns(generate_images(@resource, @user.setting.brand_color1))
+        @resource.update_column(:social_image, generate_image(@resource, @user.setting.brand_color1))
         ## We only need to bust article. All else can fade naturally
         EdgeCache::BustArticle.call(@resource)
       elsif @resource.is_a?(User)
         @user = @resource
         @resource.articles.published.where(organization_id: nil, main_image: nil).find_each do |article|
-          article.update_columns(generate_images(article, @user.setting.brand_color1))
+          article.update_column(:social_image, generate_image(article, @user.setting.brand_color1))
         end
       else # Organization
         @user = @resource
         @resource.articles.published.where(main_image: nil).find_each do |article|
-          article.update_columns(generate_images(article, @user.bg_color_hex))
+          article.update_column(:social_image, generate_image(article, @user.bg_color_hex))
         end
       end
     rescue OpenURI::HTTPError, Timeout::Error, Net::OpenTimeout, Net::ReadTimeout => e
@@ -110,7 +109,7 @@ module Images
 
     attr_reader :resource
 
-    def generate_images(article, color)
+    def generate_image(article, color)
       read_files(article)
       palette = palette_for(color, article.id)
       card = {
@@ -120,23 +119,18 @@ module Images
         accent: accent_color(palette)
       }
       background = draw_background(palette, article.id)
-
-      {
-        social_image: generate_magickally(background, card, window_y: DEFAULT_WINDOW_Y),
-        twitter_social_image: generate_magickally(background, card, window_y: TWITTER_WINDOW_Y)
-      }
+      generate_magickally(background, card)
     ensure
       background&.destroy!
       card&.values_at(:quote_image, :name_image, :meta_image)&.compact&.each(&:destroy!)
     end
 
-    def generate_magickally(background, card, window_y:)
-      result = MiniMagick::Image.open(background.path)
-      draw_window(result, window_y)
-      result = add_logo(result, window_y)
-      result = add_quote(result, card[:quote_image], card[:accent], window_y)
-      result = add_profile_image(result, window_y)
-      result = add_byline(result, card[:name_image], card[:meta_image], window_y)
+    def generate_magickally(background, card)
+      draw_window(background)
+      result = add_logo(background)
+      result = add_quote(result, card[:quote_image], card[:accent])
+      result = add_profile_image(result)
+      result = add_byline(result, card[:name_image], card[:meta_image])
       upload_result(result)
     end
 
@@ -161,12 +155,12 @@ module Images
       MiniMagick::Image.new(tempfile.path, tempfile)
     end
 
-    def draw_window(result, window_y)
+    def draw_window(result)
       x0 = WINDOW_X
       x1 = WINDOW_X + WINDOW_WIDTH
-      y1 = window_y + WINDOW_HEIGHT
-      bar_y = window_y + WINDOW_BAR_HEIGHT
-      dot_y = window_y + (WINDOW_BAR_HEIGHT / 2)
+      y1 = WINDOW_Y + WINDOW_HEIGHT
+      bar_y = WINDOW_Y + WINDOW_BAR_HEIGHT
+      dot_y = WINDOW_Y + (WINDOW_BAR_HEIGHT / 2)
 
       result.combine_options do |c|
         c.fill "white"
@@ -174,10 +168,10 @@ module Images
         c.strokewidth WINDOW_STROKE.to_s
         WINDOW_STACK_DEPTH.downto(1) do |depth|
           offset = depth * WINDOW_STACK_OFFSET
-          c.draw "roundrectangle #{x0 + offset},#{window_y + offset} #{x1 + offset},#{y1 + offset} " \
+          c.draw "roundrectangle #{x0 + offset},#{WINDOW_Y + offset} #{x1 + offset},#{y1 + offset} " \
                  "#{WINDOW_RADIUS},#{WINDOW_RADIUS}"
         end
-        c.draw "roundrectangle #{x0},#{window_y} #{x1},#{y1} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
+        c.draw "roundrectangle #{x0},#{WINDOW_Y} #{x1},#{y1} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
         c.draw "line #{x0},#{bar_y} #{x1},#{bar_y}"
         c.stroke "none"
         c.fill TEXT_COLOR
@@ -192,20 +186,20 @@ module Images
       end
     end
 
-    def add_logo(result, window_y)
+    def add_logo(result)
       return result unless @logo_image
 
       @logo_image.resize "x#{LOGO_HEIGHT}"
       result.composite(@logo_image) do |c|
         c.compose "Over"
-        c.geometry "+#{WINDOW_X + 18}+#{window_y + ((WINDOW_BAR_HEIGHT - LOGO_HEIGHT) / 2)}"
+        c.geometry "+#{WINDOW_X + 18}+#{WINDOW_Y + ((WINDOW_BAR_HEIGHT - LOGO_HEIGHT) / 2)}"
       end
     end
 
     # ImageMagick applies settings in order, so font/fill/pointsize must come
     # before each draw or the text renders in the default font.
-    def add_quote(result, quote_image, accent, window_y)
-      body_top = window_y + WINDOW_BAR_HEIGHT
+    def add_quote(result, quote_image, accent)
+      body_top = WINDOW_Y + WINDOW_BAR_HEIGHT
       result.combine_options do |c|
         c.gravity "NorthWest"
         c.font BOLD_FONT_PATH.to_s
@@ -255,9 +249,9 @@ module Images
       MiniMagick::Image.new(tempfile.path, tempfile)
     end
 
-    def add_profile_image(result, window_y)
+    def add_profile_image(result)
       x = WINDOW_X + 40
-      y = window_y + WINDOW_HEIGHT - BYLINE_HEIGHT
+      y = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
 
       # Flatten animated GIFs to a single frame and convert to PNG immediately to prevent
       # mogrify from attempting to resize hundreds of frames, sparking Timeout::Errors.
@@ -289,9 +283,9 @@ module Images
       result
     end
 
-    def add_byline(result, name_image, meta_image, window_y)
+    def add_byline(result, name_image, meta_image)
       text_x = WINDOW_X + 40 + AVATAR_SIZE + 20
-      top = window_y + WINDOW_HEIGHT - BYLINE_HEIGHT
+      top = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
 
       result = result.composite(name_image) do |c|
         c.compose "Over"

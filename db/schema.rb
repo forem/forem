@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_22_150000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -224,7 +224,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_150000) do
     t.bigint "subforem_id"
     t.text "tags_array", default: [], array: true
     t.string "title"
-    t.string "twitter_social_image"
     t.integer "type_of", default: 0
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
