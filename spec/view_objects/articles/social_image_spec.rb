@@ -50,4 +50,33 @@ RSpec.describe Articles::SocialImage do
       end
     end
   end
+
+  describe "#url" do
+    let(:article) { create(:article, with_main_image: false) }
+    let(:social_image) { "https://example.com/social.png" }
+    let(:twitter_image) { "https://example.com/twitter.png" }
+
+    before do
+      allow(Images::Optimizer).to receive(:call) { |image, **_options| "optimized:#{image}" }
+      article.update_columns(social_image: social_image, twitter_social_image: twitter_image)
+    end
+
+    it "uses the generated social image by default" do
+      expect(described_class.new(article).url).to eq("optimized:#{social_image}")
+    end
+
+    it "uses the X-specific generated image when twitter: true" do
+      expect(described_class.new(article, twitter: true).url).to eq("optimized:#{twitter_image}")
+    end
+
+    it "falls back to the generated social image when the X image is missing" do
+      article.update_columns(twitter_social_image: nil)
+      expect(described_class.new(article, twitter: true).url).to eq("optimized:#{social_image}")
+    end
+
+    it "prefers the cover image over both generated images" do
+      article.update_columns(main_image: "https://example.com/cover.png")
+      expect(described_class.new(article, twitter: true).url).to eq("optimized:https://example.com/cover.png")
+    end
+  end
 end

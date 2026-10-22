@@ -579,7 +579,7 @@ class Article < ApplicationRecord
            :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :max_score, :baseline_score,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
-           :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
+           :video_thumbnail_url, :video_closed_caption_track_url, :social_image, :twitter_social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
            :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
            :favorited_by_user_id, :ai_disclosure_level)
@@ -1828,10 +1828,23 @@ class Article < ApplicationRecord
   def generate_social_image
     return if main_image.present?
 
-    change = saved_change_to_attribute?(:title) || saved_change_to_attribute?(:published_at)
-    return unless (change || social_image.blank?) && published
+    change = saved_change_to_attribute?(:title) ||
+      saved_change_to_attribute?(:published_at) ||
+      saved_change_to_attribute?(:reading_time) || # the image shows the reading time
+      social_image_quote_changed?
+    missing = social_image.blank? || twitter_social_image.blank?
+    return unless (change || missing) && published
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
+  # The generated image quotes the opening of the post, so only body edits that
+  # change that quote need a new image.
+  def social_image_quote_changed?
+    return false unless saved_change_to_attribute?(:processed_html)
+
+    Images::SocialImageQuote.from_html(attribute_before_last_save(:processed_html), title) !=
+      Images::SocialImageQuote.call(self)
   end
 
   def calculate_base_scores
