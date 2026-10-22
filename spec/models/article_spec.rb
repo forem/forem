@@ -3545,8 +3545,8 @@ RSpec.describe Article do
     end
 
     context "when the generated image's quote or reading time could change" do
-      let(:opening) { "The opening paragraph is quoted on the generated social image, so it matters." }
-      # Created with a cover so creating it doesn't queue an image, then the cover is removed.
+      # Long enough (80+ characters) that the quote doesn't also pull in the next paragraph.
+      let(:opening) { "The opening paragraph is quoted on the generated social image, so changing it matters." }
       let(:article) do
         body = "---\ntitle: Quote Trigger\npublished: true\n---\n\n#{opening}\n\nLater text here."
         create(:article, title: "Quote Trigger", body_markdown: body)
