@@ -49,6 +49,11 @@ module Constants
 
     SPECIAL_ROLES = SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.keys.freeze
 
+    # Roles whose (global) Role record can be the resource of an instance-scoped
+    # single_resource_admin role.  Holding single_resource_admin on one of these
+    # Role records lets a user grant and remove that role through the user roles API.
+    RESOURCE_ADMIN_SCOPABLE_ROLES = %w[base_subscriber].freeze
+
     ALL_ROLES_LABELS_TO_WHERE_CLAUSE =
       SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.merge(BASE_ROLES_LABELS_TO_WHERE_CLAUSE).freeze
   end

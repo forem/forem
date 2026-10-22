@@ -44,11 +44,24 @@ class Role < ApplicationRecord
 
   scopify
 
+  # A Role record can itself be a rolify resource, so a user can hold
+  # single_resource_admin on one specific role (for example base_subscriber)
+  # without holding it on any other role.
+  #
+  # The association is not named :roles (rolify's default) to avoid
+  # confusion with users' roles.  restrict_with_error keeps a role from being
+  # destroyed while roles are scoped to it: rolify destroys a role when its
+  # last user loses it (Rolify.remove_role_if_empty), which would otherwise
+  # drop every scoped grant on that role.
+  resourcify :scoped_roles, dependent: :restrict_with_error
+
   # Returns a somewhat friendly name for the resource related to a given role.
   # In the case of Tag Moderators, a resource_type is not present, so we use the
   # resource_id to grab the specific Tag related to that moderator's role.
+  # For a role scoped to a specific Role record, this is that role's name.
   def resource_name
     return resource_type unless resource_id
+    return resource&.name if resource_type == "Role"
 
     Tag.find(resource_id).name
   end

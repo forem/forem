@@ -112,6 +112,14 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(user.username)
     end
 
+    it "renders a single resource admin role scoped to a specific role" do
+      user.add_role(:single_resource_admin, Role.global.find_or_create_by!(name: "base_subscriber"))
+
+      get admin_user_path(user)
+
+      expect(response).to have_http_status(:ok)
+    end
+
     it "displays profile contact links without leading whitespace" do
       get admin_user_path(user)
 

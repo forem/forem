@@ -55,7 +55,7 @@ module Api
       def authorize_role_management
         authorize(@target_user, :manage_user_roles?)
       rescue Pundit::NotAuthorizedError
-        error_unauthorized
+        error_unauthorized unless scoped_role_admin?
       end
 
       def base_subscriber?
@@ -88,6 +88,18 @@ module Api
 
         payload = { action: "api_user_remove_#{params[:role]}", target_user_id: @target_user.id }
         Audit::Logger.log(:admin_api, @user, payload)
+      end
+
+      # A user who holds single_resource_admin on a specific Role record may grant
+      # and remove that role, but only for roles listed in
+      # Constants::Role::RESOURCE_ADMIN_SCOPABLE_ROLES.  Moderation roles keep
+      # requiring manage_user_roles?.
+      def scoped_role_admin?
+        return false unless Constants::Role::RESOURCE_ADMIN_SCOPABLE_ROLES.include?(params[:role])
+        return false if @user.spam_or_suspended?
+
+        role = Role.global.find_by(name: params[:role])
+        role.present? && @user.single_resource_admin_for?(role)
       end
 
       def set_target_user

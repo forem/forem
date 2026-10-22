@@ -389,7 +389,7 @@ RSpec.describe "Api::V1::Docs::Users" do
         description "Assign the base_subscriber role to a user.
 
 ### Base Subscriber Details:
-- Requires an admin role or the `super_moderator` role.
+- Requires an admin role, the `super_moderator` role, or the `single_resource_admin` role scoped to the `base_subscriber` role.
 - Uses the same path as granting \"Base Subscriber\" in the admin UI: adds the role, adds a note to the user, and sends the user the base subscriber email.
 - Idempotent: if the user already has the role, nothing changes (no note, no email) and the response is still 204."
         operationId "addBaseSubscriber"
@@ -440,7 +440,7 @@ RSpec.describe "Api::V1::Docs::Users" do
     path "/api/users/{id}/base_subscriber" do
       delete "Remove base_subscriber role from a User" do
         tags "users"
-        description "Remove the base_subscriber role from a user. Other roles are not changed. Requires an admin role or the `super_moderator` role."
+        description "Remove the base_subscriber role from a user. Other roles are not changed. Requires an admin role, the `super_moderator` role, or the `single_resource_admin` role scoped to the `base_subscriber` role."
         operationId "removeBaseSubscriber"
         produces "application/json"
         parameter name: :id, in: :path, required: true,

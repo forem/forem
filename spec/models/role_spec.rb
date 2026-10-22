@@ -50,4 +50,66 @@ RSpec.describe Role do
       it { is_expected.to eq "Resource Admin: Badge" }
     end
   end
+
+  describe "as a resource" do
+    let(:base_subscriber_role) { described_class.global.find_or_create_by!(name: "base_subscriber") }
+    let(:trusted_role) { described_class.global.find_or_create_by!(name: "trusted") }
+    let(:user) { create(:user) }
+
+    it { is_expected.to have_many(:scoped_roles).class_name("Role").dependent(:restrict_with_error) }
+
+    it "is a rolify resource type" do
+      expect(Rolify.resource_types).to include("Role")
+    end
+
+    it "lets a user hold single_resource_admin on one specific role", :aggregate_failures do
+      scoped_role = user.add_role(:single_resource_admin, base_subscriber_role)
+
+      expect(scoped_role).to be_persisted
+      expect(scoped_role.resource).to eq(base_subscriber_role)
+      expect(base_subscriber_role.scoped_roles).to contain_exactly(scoped_role)
+      expect(user.single_resource_admin_for?(base_subscriber_role)).to be true
+      expect(user.single_resource_admin_for?(trusted_role)).to be false
+      expect(Authorizer.for(user: user).administrative_access_to?(resource: base_subscriber_role)).to be true
+      expect(Authorizer.for(user: user).administrative_access_to?(resource: trusted_role)).to be false
+    end
+
+    it "does not give the user the scoped role itself" do
+      user.add_role(:single_resource_admin, base_subscriber_role)
+
+      expect(user.base_subscriber?).to be false
+    end
+
+    it "is not destroyed while roles are scoped to it", :aggregate_failures do
+      user.add_role(:single_resource_admin, base_subscriber_role)
+
+      expect(base_subscriber_role.destroy).to be false
+      expect(described_class.exists?(base_subscriber_role.id)).to be true
+    end
+
+    it "keeps the record when its last user loses the role, if roles are scoped to it" do
+      subscriber = create(:user)
+      subscriber.add_role(:base_subscriber)
+      user.add_role(:single_resource_admin, base_subscriber_role)
+
+      subscriber.remove_role(:base_subscriber)
+
+      expect(user.single_resource_admin_for?(described_class.global.find_by(name: "base_subscriber"))).to be true
+    end
+
+    it "is still destroyed when its last user loses the role and nothing is scoped to it" do
+      subscriber = create(:user)
+      subscriber.add_role(:base_subscriber)
+
+      subscriber.remove_role(:base_subscriber)
+
+      expect(described_class.global.find_by(name: "base_subscriber")).to be_nil
+    end
+
+    it "uses the role name as the resource name" do
+      scoped_role = user.add_role(:single_resource_admin, base_subscriber_role)
+
+      expect(scoped_role.resource_name).to eq("base_subscriber")
+    end
+  end
 end

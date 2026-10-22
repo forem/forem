@@ -565,4 +565,140 @@ RSpec.describe "Api::V1::UserRoles" do
       expect(target_user.base_subscriber?).to be true
     end
   end
+
+  describe "single_resource_admin scoped to a role", :aggregate_failures do
+    let(:scoped_admin) { api_secret.user }
+    let(:base_subscriber_role) { Role.global.find_or_create_by!(name: "base_subscriber") }
+
+    before do
+      Audit::Subscribe.listen listener
+      scoped_admin.add_role(:single_resource_admin, base_subscriber_role)
+    end
+
+    after { Audit::Subscribe.forget listener }
+
+    it "can grant base_subscriber" do
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(target_user.reload.base_subscriber?).to be true
+      expect(AuditLog.last.data["action"]).to eq("api_user_base_subscriber")
+      expect(AuditLog.last.user_id).to eq(scoped_admin.id)
+    end
+
+    it "can remove base_subscriber" do
+      target_user = create(:user)
+      target_user.add_role(:base_subscriber)
+
+      delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(target_user.reload.base_subscriber?).to be false
+      expect(AuditLog.last.data["action"]).to eq("api_user_remove_base_subscriber")
+    end
+
+    it "keeps the scoped grant after removing base_subscriber from its last holder" do
+      target_user = create(:user)
+      target_user.add_role(:base_subscriber)
+
+      delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(target_user.reload.base_subscriber?).to be true
+    end
+
+    it "cannot use moderation roles" do
+      target_user = create(:user)
+
+      %w[suspend suspended limited spam trusted].each do |role|
+        put api_user_add_role_path(target_user, role), headers: auth_headers, params: { note: "note" }
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      %w[limited spam trusted].each do |role|
+        delete api_user_remove_role_path(target_user, role), headers: auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      expect(target_user.reload.roles).to be_empty
+    end
+
+    it "is denied when the scoped admin is suspended" do
+      scoped_admin.add_role(:suspended)
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(target_user.reload.base_subscriber?).to be false
+    end
+  end
+
+  describe "single_resource_admin scoped to a different role", :aggregate_failures do
+    before do
+      api_secret.user.add_role(:single_resource_admin, Role.global.find_or_create_by!(name: "trusted"))
+    end
+
+    it "cannot grant or remove base_subscriber" do
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
+
+      target_user.add_role(:base_subscriber)
+      delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(target_user.reload.base_subscriber?).to be true
+    end
+
+    it "cannot grant the role it is scoped to, because that role is a moderation role" do
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "trusted"), headers: auth_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(target_user.reload.has_trusted_role?).to be false
+    end
+  end
+
+  describe "single_resource_admin scoped to another resource type" do
+    before { api_secret.user.add_role(:single_resource_admin, Tag) }
+
+    it "cannot grant base_subscriber" do
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
+
+  describe "when the base_subscriber role record does not exist" do
+    it "denies a user without manage_user_roles", :aggregate_failures do
+      expect(Role.global.find_by(name: "base_subscriber")).to be_nil
+      target_user = create(:user)
+
+      put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+      expect(response).to have_http_status(:unauthorized)
+      expect(target_user.reload.base_subscriber?).to be false
+    end
+  end
+
+  describe "base_subscriber with manage_user_roles" do
+    %i[admin super_admin super_moderator].each do |role|
+      it "lets a #{role} grant base_subscriber without a scoped role", :aggregate_failures do
+        api_secret.user.add_role(role)
+        target_user = create(:user)
+
+        put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(response).to have_http_status(:no_content)
+        expect(target_user.reload.base_subscriber?).to be true
+      end
+    end
+  end
 end
