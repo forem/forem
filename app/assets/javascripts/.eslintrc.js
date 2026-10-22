@@ -14,6 +14,8 @@ module.exports = {
     'vars-on-top': 'off',
   },
   globals: {
+    applyColorMode: false,
+    watchColorModeChanges: false,
     getCsrfToken: false,
     sendFetch: false,
     preventDefaultAction: false,

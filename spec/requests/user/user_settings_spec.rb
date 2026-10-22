@@ -338,6 +338,35 @@ RSpec.describe "UserSettings" do
       expect(user.setting.reload.disallow_subforem_reassignment).to be(false)
     end
 
+    it "updates the users theme to follow the operating system color scheme" do
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "system_theme" } }
+      end.to change { user.setting.reload.config_theme }.from("light_theme").to("system_theme")
+    end
+
+    it "keeps an explicit theme choice when the user picks one" do
+      user.setting.update!(config_theme: :system_theme)
+
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "dark_theme" } }
+      end.to change { user.setting.reload.config_theme }.from("system_theme").to("dark_theme")
+    end
+
+    it "offers every theme, including the system one, in the customization form" do
+      get user_settings_path(:customization)
+
+      expect(response.body).to include("theme-selector--system-theme")
+      expect(response.body).to include("theme-selector--light-theme")
+      expect(response.body).to include("theme-selector--dark-theme")
+    end
+
+    it "inlines the color mode helper so the theme is resolved before first paint" do
+      get user_settings_path(:customization)
+
+      expect(response.body).to include("function applyColorMode")
+      expect(response.body).to include("prefers-color-scheme: dark")
+    end
+
     it "displays the subforem reassignment setting in the customization form" do
       get user_settings_path(:customization)
 
