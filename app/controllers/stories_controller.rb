@@ -45,7 +45,8 @@ class StoriesController < ApplicationController
     not_found unless @organization
     not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
-    @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
+    @article = Article.includes(user: %i[profile setting roles])
+      .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
       RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
@@ -68,7 +69,7 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    if (@article = Article.includes(:user).find_by(path: path)&.decorate)
+    if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
@@ -307,7 +308,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", ""))
+    @user = User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return

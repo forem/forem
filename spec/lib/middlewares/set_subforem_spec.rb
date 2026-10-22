@@ -137,6 +137,42 @@ RSpec.describe Middlewares::SetSubforem do
         expect { middleware.call(env) }.not_to raise_error
       end
     end
+
+    context "when chained before Middlewares::SetCookieDomain" do
+      let!(:subforem) { create(:subforem, domain: "community.example.com") }
+      let(:inner_app) { ->(_env) { [200, {}, ["OK"]] } }
+      let(:cookie_middleware) { Middlewares::SetCookieDomain.new(inner_app) }
+      let(:stacked_middleware) { described_class.new(cookie_middleware) }
+      let(:env) do
+        Rack::MockRequest.env_for("https://community.example.com/articles").merge(
+          "rack.session.options" => {},
+        )
+      end
+
+      before do
+        allow(Subforem).to receive(:cached_id_by_domain).with("community.example.com").and_return(subforem.id)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_root_id: subforem.id,
+          cached_root_domain: "community.example.com",
+          cached_default_domain: "community.example.com",
+          cached_id_to_domain_hash: { subforem.id => "community.example.com" },
+          cached_all_domains: ["community.example.com"],
+        )
+      end
+
+      it "populates RequestStore[:subforem_id] before SetCookieDomain reads Settings::General.app_domain" do
+        observed_subforem_id = nil
+        allow(Settings::General).to receive(:app_domain) do
+          observed_subforem_id ||= RequestStore.store[:subforem_id]
+          "community.example.com"
+        end
+
+        stacked_middleware.call(env)
+
+        expect(observed_subforem_id).to eq(subforem.id)
+        expect(env["rack.session.options"][:domain]).to eq(".example.com")
+      end
+    end
   end
 end
-

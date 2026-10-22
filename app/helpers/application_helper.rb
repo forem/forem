@@ -259,8 +259,8 @@ module ApplicationHelper
   end
 
   def community_leader_icon(user)
-    return unless user.try(:cached_community_leader?)
     return unless FeatureFlag.enabled?(:community_favorites)
+    return unless user.try(:cached_community_leader?)
 
     image_tag("community-leader-icon.svg",
               alt: t("views.leadership.icon.leader_alt"),

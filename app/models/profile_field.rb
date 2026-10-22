@@ -19,8 +19,24 @@ class ProfileField < ApplicationRecord
   validate :maximum_header_field_count
 
   before_create :generate_attribute_name
+  after_destroy :clear_request_store_cache
+  after_save :clear_request_store_cache
+
+  def self.cached_display_area_fields(area)
+    RequestStore.fetch(:"profile_fields_#{area}") do
+      public_send(area).pluck(:label, :attribute_name).to_h
+    end
+  end
+
+  def self.clear_request_store_cache
+    RequestStore.store.delete_if { |key, _| key.to_s.start_with?("profile_fields_") }
+  end
 
   private
+
+  def clear_request_store_cache
+    self.class.clear_request_store_cache
+  end
 
   def generate_attribute_name
     self.attribute_name = "attribute_#{SecureRandom.hex}"
