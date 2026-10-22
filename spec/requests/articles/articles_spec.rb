@@ -237,6 +237,21 @@ RSpec.describe "Articles" do
 
         expect(response.body).not_to include("<image>")
       end
+
+      it "preloads article authors instead of loading each one separately" do
+        authors = create_list(:user, 2)
+        authors.each { |author| create(:article, user: author, tags: tag.name) }
+
+        user_lookups = []
+        callback = lambda do |*, payload|
+          user_lookups << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" = /)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get tag_feed_path(tag.name) }
+
+        rss_feed = Feedjira.parse(response.body)
+        expect(rss_feed.entries.map(&:author)).to include(*authors.map(&:name))
+        expect(user_lookups).to be_empty
+      end
     end
 
     context "when :tag param is given and tag exists and is an alias" do
