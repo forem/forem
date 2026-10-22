@@ -58,6 +58,7 @@ en:
       image_only: '[image]'
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
+      parent_deleted: You can't reply to a comment that has been deleted.
       published_article: is not a published article
       ai_disclosure:
         not_disclosed: Not Disclosed

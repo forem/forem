@@ -57,6 +57,7 @@ fr:
       image_only: '[image]'
       is_not_valid: n'est pas valide.
       locked: la discussion est verrouillée sur ce message
+      parent_deleted: Vous ne pouvez pas répondre à un commentaire qui a été supprimé.
       published_article: n'est pas un article publié
       ai_disclosure:
         not_disclosed: Non divulgué
