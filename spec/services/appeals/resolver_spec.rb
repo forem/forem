@@ -76,10 +76,14 @@ RSpec.describe Appeals::Resolver do
         expect(high_quality.reload.automod_label).to eq("great_and_on_topic")
       end
 
-      it "destroys mascot vomit on the author's other articles and profile" do
+      it "destroys mascot vomit on the author's other articles and profile and restores user score" do
+        user.calculate_score
+        expect(user.reload.score).to be < 0
+
         described_class.approve(appeal: appeal, admin: admin)
 
         expect(Reaction.where(user_id: mascot.id, category: "vomit")).to be_empty
+        expect(user.reload.score).to eq(0)
       end
 
       it "keeps vomit reactions from moderators" do
@@ -121,15 +125,15 @@ RSpec.describe Appeals::Resolver do
     end
 
     it "is idempotent: a second approval returns false and does not re-run side effects" do
-      allow(Articles::ScoreCalcWorker).to receive(:perform_async)
       expect(described_class.approve(appeal: appeal, admin: admin)).to be true
 
       user.add_role(:suspended)
+      allow(Articles::ScoreCalcWorker).to receive(:perform_async)
       replay = FlagAppeal.find(appeal.id)
 
       expect(described_class.approve(appeal: replay, admin: admin)).to be false
       expect(user.reload.suspended?).to be true
-      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).once
+      expect(Articles::ScoreCalcWorker).not_to have_received(:perform_async)
     end
 
     it "does not re-approve an appeal that was already rejected" do
@@ -149,16 +153,20 @@ RSpec.describe Appeals::Resolver do
       described_class.approve(appeal: appeal, admin: admin)
 
       # The spam role took 500 points off every one of these, and nothing else would restore them.
-      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(article.id)
-      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(other_article.id)
+      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(article.id).at_least(:once)
+      expect(Articles::ScoreCalcWorker).to have_received(:perform_async).with(other_article.id).at_least(:once)
       expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
     end
 
-    it "only recalculates the appealed content when the author was not restricted" do
+    it "only recalculates and unflags the appealed content when the author was not restricted" do
       user.remove_role(:suspended)
       user.remove_role(:spam)
+      other_flagged_article = create(:article, user: user, automod_label: "likely_spam")
+      Reaction.create!(user_id: mascot.id, reactable: other_flagged_article, category: "vomit")
       other_comment = create(:comment, user: user)
-      comment = create(:comment, user: user)
+      parent_comment = create(:comment, commentable: article)
+      comment = create(:comment, user: user, commentable: article, parent: parent_comment)
+      Reaction.create!(user_id: mascot.id, reactable: comment, category: "vomit")
       comment_appeal = create(:flag_appeal, user: user, appealable: comment)
       allow(Comments::CalculateScoreWorker).to receive(:perform_async)
 
@@ -166,6 +174,9 @@ RSpec.describe Appeals::Resolver do
 
       expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(comment.id)
       expect(Comments::CalculateScoreWorker).not_to have_received(:perform_async).with(other_comment.id)
+      expect(Reaction.exists?(user_id: mascot.id, reactable: comment, category: "vomit")).to be false
+      expect(other_flagged_article.reload.automod_label).to eq("likely_spam")
+      expect(Reaction.exists?(user_id: mascot.id, reactable: other_flagged_article, category: "vomit")).to be true
     end
 
     it "leaves a note on the user recording who approved the appeal" do
@@ -246,10 +257,24 @@ RSpec.describe Appeals::Resolver do
       expect(user.reload.suspended?).to be false
     end
 
-    it "approves users that no longer have a restriction" do
+    it "approves users that no longer have a restriction when the target was auto-flagged" do
       user.remove_role(:suspended)
 
       expect(described_class.auto_approvable?(appeal)).to be true
+    end
+
+    it "refuses when a moderator flagged the appealed target with a vomit reaction" do
+      user.remove_role(:suspended)
+      create(:vomit_reaction, reactable: article)
+
+      expect(described_class.auto_approvable?(appeal)).to be false
+    end
+
+    it "refuses when an unrestricted user's article was unpublished rather than auto-flagged" do
+      user.remove_role(:suspended)
+      article.update_columns(published: false)
+
+      expect(described_class.auto_approvable?(appeal)).to be false
     end
   end
 
@@ -264,9 +289,15 @@ RSpec.describe Appeals::Resolver do
       create(:article, user: user).tap { |a| a.update_columns(published: false, **attrs) }
     end
 
+    def suspension_log!(ids, at: 1.day.ago)
+      create(:audit_log, user_id: mascot.id, category: "spam.automatic_block", slug: "automatic_suspended",
+                         data: { target_user_id: user.id, unpublished_article_ids: ids }, created_at: at)
+    end
+
     context "when the target is an Article" do
-      it "republishes it without re-running the spam checks" do
+      it "republishes it without re-running the spam checks when recorded by an automatic suspension" do
         article.update_columns(published: false)
+        suspension_log!([article.id])
 
         # update_all skips the publish callbacks that would re-run the spam checks.
         sidekiq_assert_no_enqueued_jobs(only: Articles::HandleSpamWorker) do
@@ -277,8 +308,17 @@ RSpec.describe Appeals::Resolver do
         expect(Articles::BustMultipleCachesWorker).to have_received(:perform_async).with(array_including(article.id))
       end
 
+      it "does not republish an article that was unpublished by a moderator or the author" do
+        article.update_columns(published: false)
+
+        described_class.approve(appeal: appeal, admin: admin)
+
+        expect(article.reload.published).to be false
+      end
+
       it "leaves a never-published draft unpublished" do
         article.update_columns(published: false, published_at: nil)
+        suspension_log!([article.id])
 
         described_class.approve(appeal: appeal, admin: admin)
 
@@ -292,11 +332,6 @@ RSpec.describe Appeals::Resolver do
       let!(:also_hidden) { unpublished_article }
       let!(:author_unpublished) { unpublished_article }
       let!(:draft) { unpublished_article(published_at: nil) }
-
-      def suspension_log!(ids, at: 1.day.ago)
-        create(:audit_log, user_id: mascot.id, category: "spam.automatic_block", slug: "automatic_suspended",
-                           data: { target_user_id: user.id, unpublished_article_ids: ids }, created_at: at)
-      end
 
       it "restores only the posts recorded by the automatic suspensions" do
         suspension_log!([hidden.id], at: 2.days.ago)

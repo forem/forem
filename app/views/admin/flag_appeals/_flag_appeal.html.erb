@@ -63,9 +63,10 @@
           </span>
         </div>
         <div class="flex items-center gap-2 mt-1">
-          <% role_badge = appeal.user.spam_or_suspended? ? "c-indicator--danger" : "c-indicator--success" %>
+          <% account_flagged = appeal.user.spam_or_suspended? %>
+          <% role_badge = account_flagged ? "c-indicator--danger" : "c-indicator--success" %>
           <span class="c-indicator <%= role_badge %> fs-xs">
-            <%= appeal.user.spam_or_suspended? ? t("views.admin.flag_appeals.account_flagged") : t("views.admin.flag_appeals.account_active") %>
+            <%= account_flagged ? t("views.admin.flag_appeals.account_flagged") : t("views.admin.flag_appeals.account_active") %>
           </span>
           <span class="fs-xs color-base-60">• <%= t("views.admin.flag_appeals.user_score", score: appeal.user.score) %></span>
         </div>

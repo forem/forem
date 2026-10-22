@@ -18,19 +18,57 @@ module Appeals
     MANUAL_BAN_NOTE_REASONS = %w[Suspended Spam].freeze
     MANUAL_CLEAR_NOTE_REASONS = ["Good standing", "Trusted"].freeze
 
-    # Whether the appeal may be approved without a human. Only restrictions the automation applied
-    # are eligible: if a moderator banned the user during the current restriction (before or after
-    # the automation did), the appeal is left for human review.
+    # Whether the appeal may be approved without a human. Only flags and restrictions the
+    # automation applied are eligible: if a moderator banned the user or flagged/unpublished the
+    # target, the appeal is left for human review.
     #
     # @return [Boolean]
     def self.auto_approvable?(appeal)
+      target = appeal.appealable
+      return false unless target
+
       user = appeal.user
-      return true unless user.spam? || user.suspended?
-
       since = restriction_started_after(appeal)
-      return false unless within(AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY).on_user(user), since).exists?
+      return false if within(Note.where(noteable: user, reason: MANUAL_BAN_NOTE_REASONS), since).exists?
+      return false if moderator_flagged?(user) || moderator_flagged?(target)
 
-      !within(Note.where(noteable: user, reason: MANUAL_BAN_NOTE_REASONS), since).exists?
+      if (user.spam? || user.suspended?) &&
+          !within(AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY).on_user(user), since).exists?
+        return false
+      end
+
+      target_auto_approvable?(appeal, target: target, user: user)
+    end
+
+    def self.target_auto_approvable?(appeal, target:, user:)
+      case target
+      when User
+        user.spam? || user.suspended? || mascot_flagged?(user)
+      when Article
+        return false if !target.published? && automatically_unpublished_article_ids(appeal).exclude?(target.id)
+
+        user.spam? || user.suspended? ||
+          FLAGGED_AUTOMOD_LABELS.include?(target.automod_label) ||
+          mascot_flagged?(target)
+      when Comment
+        user.spam? || user.suspended? || mascot_flagged?(target)
+      else
+        false
+      end
+    end
+
+    def self.moderator_flagged?(reactable)
+      vomits = Reaction.where(reactable: reactable, category: "vomit")
+      mascot_id = Settings::General.mascot_user_id
+      vomits = vomits.where("user_id != ? OR status = 'confirmed'", mascot_id) if mascot_id
+      vomits.exists?
+    end
+
+    def self.mascot_flagged?(reactable)
+      mascot_id = Settings::General.mascot_user_id
+      return false unless mascot_id
+
+      Reaction.exists?(user_id: mascot_id, reactable: reactable, category: "vomit", status: "valid")
     end
 
     # The last time the user's restrictions were lifted (an approved appeal or a human reinstating
@@ -41,6 +79,13 @@ module Appeals
         FlagAppeal.approved.where(user_id: user.id).where.not(id: appeal.id).maximum(:updated_at),
         Note.where(noteable: user, reason: MANUAL_CLEAR_NOTE_REASONS).maximum(:created_at),
       ].compact.max
+    end
+
+    # Union across the current restriction's suspension logs, since suspend! can run more than once.
+    def self.automatically_unpublished_article_ids(appeal)
+      since = restriction_started_after(appeal)
+      logs = AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY, slug: "automatic_suspended").on_user(appeal.user)
+      within(logs, since).flat_map { |log| Array(log.data["unpublished_article_ids"]) }.uniq
     end
 
     def self.within(relation, since)
@@ -67,15 +112,16 @@ module Appeals
       @restriction_lifted = false
     end
 
-    # Automated approvals (no admin) are refused when a human moderator applied the ban.
+    # Automated approvals (no admin) are refused when a human moderator applied the ban or flag.
     def approve
       return false if @admin.nil? && !self.class.auto_approvable?(@appeal)
 
       resolved = resolve!(:approved) do
+        @restriction_lifted = @user.spam_or_suspended?
         republish_articles
-        remove_restriction_roles
         reset_flagged_article_labels
         destroy_mascot_vomit_reactions
+        remove_restriction_roles
         create_approval_note
       end
       return false unless resolved
@@ -104,7 +150,6 @@ module Appeals
     end
 
     def remove_restriction_roles
-      @restriction_lifted = @user.spam_or_suspended?
       @user.remove_role(:suspended) if @user.suspended?
       @user.remove_role(:spam) if @user.spam?
     end
@@ -122,14 +167,16 @@ module Appeals
       )
     end
 
-    # Republishes the appealed article, or for an account appeal, the posts the automatic
-    # suspension hid (as recorded by Spam::Handler.suspend!). Drafts (no published_at) stay drafts.
+    # Republishes posts the automatic suspension hid (as recorded by Spam::Handler.suspend!):
+    # for an article appeal, only that article (if automation unpublished it); for an account
+    # appeal, all of them. Posts unpublished by a moderator or the author, and drafts (no
+    # published_at), stay unpublished.
     #
     # update_all skips callbacks on purpose: Article's publish callbacks re-run the spam checks
     # (Articles::HandleSpamWorker), which could re-flag the author right after reinstatement.
     def republish_articles
       ids = case @target
-            when Article then [@target.id]
+            when Article then [@target.id] & automatically_unpublished_article_ids
             when User then automatically_unpublished_article_ids
             else []
             end
@@ -140,30 +187,38 @@ module Appeals
       Article.where(id: @republished_article_ids).update_all(published: true)
     end
 
-    # Union across the current restriction's suspension logs, since suspend! can run more than once.
     def automatically_unpublished_article_ids
-      since = self.class.restriction_started_after(@appeal)
-      logs = AuditLog.where(category: AUTOMATIC_BLOCK_CATEGORY, slug: "automatic_suspended").on_user(@user)
-      self.class.within(logs, since).flat_map { |log| Array(log.data["unpublished_article_ids"]) }.uniq
+      self.class.automatically_unpublished_article_ids(@appeal)
     end
 
     def reset_flagged_article_labels
-      articles = @user.articles.where(automod_label: FLAGGED_AUTOMOD_LABELS)
-      articles = articles.or(@user.articles.where(id: @target.id)) if @target.is_a?(Article)
+      articles = if @restriction_lifted || @target.is_a?(User)
+                   @user.articles.where(automod_label: FLAGGED_AUTOMOD_LABELS)
+                 elsif @target.is_a?(Article)
+                   @user.articles.where(id: @target.id, automod_label: FLAGGED_AUTOMOD_LABELS)
+                 else
+                   Article.none
+                 end
 
       @reset_article_ids = articles.ids
-      Article.where(id: @reset_article_ids).update_all(automod_label: RESET_AUTOMOD_LABEL)
+      Article.where(id: @reset_article_ids).update_all(automod_label: RESET_AUTOMOD_LABEL) if @reset_article_ids.any?
     end
 
     # Only the mascot's automated vomit reactions are removed; reactions from moderators and
-    # community members are left alone.
+    # community members are left alone. Account-wide cleanup only runs when lifting a restriction
+    # or resolving an account appeal; a single-post or single-comment appeal for an unrestricted
+    # author only clears that item.
     def destroy_mascot_vomit_reactions
       mascot_id = Settings::General.mascot_user_id
       return unless mascot_id
 
       vomits = Reaction.where(user_id: mascot_id, category: "vomit")
-      vomits.where(reactable_type: "Article", reactable_id: @user.articles.select(:id)).destroy_all
-      vomits.where(reactable_type: "User", reactable_id: @user.id).destroy_all
+      if @restriction_lifted || @target.is_a?(User)
+        vomits.where(reactable_type: "Article", reactable_id: @user.articles.select(:id)).destroy_all
+        vomits.where(reactable_type: "User", reactable_id: @user.id).destroy_all
+      elsif @target.is_a?(Article)
+        vomits.where(reactable: @target).destroy_all
+      end
       vomits.where(reactable: @target).destroy_all if @target.is_a?(Comment)
     end
 
@@ -177,19 +232,24 @@ module Appeals
     end
 
     # Spam and suspended roles lower the scores of all the author's articles and comments, directly or
-    # through the author's own score (Article#calculate_score, Comments::CalculateScore). Lifting one
-    # means recalculating all of them, as Moderator::ManageActivityAndRoles does. Otherwise only the
-    # appealed content needs it.
+    # through the author's own score (Article#calculate_score, Comments::CalculateScore). Removing a
+    # role in User#update_user_roles_cache already rescores @user and @user.articles.published, so
+    # lifting a restriction only needs to rescore comments here. Otherwise only the appealed item
+    # needs it.
     def enqueue_score_recalculation
       if @restriction_lifted
-        @user.articles.published.find_each(&:async_score_calc)
         @user.comments.find_each(&:calculate_score)
         return
       end
 
       case @target
-      when Comment then Comments::CalculateScoreWorker.perform_async(@target.id)
-      when Article then Articles::ScoreCalcWorker.perform_async(@target.id)
+      when Comment
+        @target.ancestors.update_all(updated_at: Time.current) if @target.ancestry.present?
+        Comments::CalculateScoreWorker.perform_async(@target.id)
+      when Article
+        Articles::ScoreCalcWorker.perform_async(@target.id)
+      when User
+        @user.calculate_score
       end
     end
   end

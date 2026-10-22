@@ -1,4 +1,6 @@
 class FlagAppeal < ApplicationRecord
+  resourcify
+
   belongs_to :user
   # Optional so an appeal can still be resolved after its target was deleted; presence is enforced on create.
   belongs_to :appealable, polymorphic: true, optional: true

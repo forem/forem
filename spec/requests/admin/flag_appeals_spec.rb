@@ -68,7 +68,7 @@ RSpec.describe "Admin::FlagAppeals" do
 
       patch admin_flag_appeal_path(appeal), params: { resolution: "approve" }
 
-      expect(response).to redirect_to(admin_flag_appeals_path(status: "open"))
+      expect(response).to redirect_to(admin_flag_appeals_path(status: "pending"))
       expect(flash[:alert]).to eq(I18n.t("admin.flag_appeals_controller.already_resolved"))
       expect(flash[:notice]).to be_nil
     end
@@ -94,6 +94,18 @@ RSpec.describe "Admin::FlagAppeals" do
       end.to raise_error(Pundit::NotAuthorizedError)
 
       expect(appeal.reload.open?).to be true
+    end
+
+    it "allows a FlagAppeal single_resource_admin to view and resolve appeals" do
+      resource_admin = create(:user)
+      resource_admin.add_role(:single_resource_admin, FlagAppeal)
+      sign_in resource_admin
+
+      get admin_flag_appeals_path
+      expect(response).to have_http_status(:ok)
+
+      patch admin_flag_appeal_path(appeal), params: { resolution: "approve" }
+      expect(appeal.reload.approved?).to be true
     end
   end
 

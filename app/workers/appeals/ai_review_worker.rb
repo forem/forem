@@ -11,15 +11,19 @@ module Appeals
 
       results = Ai::AppealAssessor.new(appeal).evaluate
 
-      # Ensure appeal status has not changed (e.g. resolved manually by an admin while AI evaluated)
-      return unless appeal.reload.open?
+      # Lock the row so a concurrent admin resolution cannot be overwritten back to ai_reviewed.
+      updated = appeal.with_lock do
+        next false unless appeal.open?
 
-      appeal.update!(
-        ai_summary: results[:summary],
-        ai_confidence_score: results[:confidence_score],
-        ai_recommendation: results[:recommendation],
-        status: :ai_reviewed,
-      )
+        appeal.update!(
+          ai_summary: results[:summary],
+          ai_confidence_score: results[:confidence_score],
+          ai_recommendation: results[:recommendation],
+          status: :ai_reviewed,
+        )
+        true
+      end
+      return unless updated
 
       # Optional auto-resolution for high-confidence false positives. Without an admin, the resolver
       # also refuses to lift a ban a human moderator applied, leaving the appeal for human review.

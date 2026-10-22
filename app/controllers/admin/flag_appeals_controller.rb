@@ -9,7 +9,7 @@ module Admin
 
     def index
       @status = params[:status].presence || "pending"
-      @flag_appeals = FlagAppeal.includes(:user, :appealable, :resolved_by).recent_first
+      @flag_appeals = FlagAppeal.includes(:appealable, :resolved_by, user: :roles).recent_first
 
       @flag_appeals = case @status
                       when "approved"
@@ -41,7 +41,6 @@ module Admin
         flash[:alert] = I18n.t("admin.flag_appeals_controller.invalid_action")
       end
 
-      redirect_status = @appeal.pending_review? ? "pending" : @appeal.status
       redirect_to admin_flag_appeals_path(status: redirect_status)
     end
 
@@ -49,7 +48,11 @@ module Admin
 
     def already_resolved_redirect
       flash[:alert] = I18n.t("admin.flag_appeals_controller.already_resolved")
-      redirect_to admin_flag_appeals_path(status: @appeal.status)
+      redirect_to admin_flag_appeals_path(status: redirect_status)
+    end
+
+    def redirect_status
+      @appeal.pending_review? ? "pending" : @appeal.status
     end
 
     def set_appeal
