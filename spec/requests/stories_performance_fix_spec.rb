@@ -18,7 +18,7 @@ RSpec.describe "StoriesPerformanceFix", type: :request do
       # Create articles to trigger sticky nav suggestions
       create_list(:article, 3, user: user, published: true, cached_tag_list: "ruby")
       career_articles = create_list(:article, 3, published: true, cached_tag_list: "career",
-                                    public_reactions_count: 50)
+                                                 score: 50, comment_score: 20)
       career_articles.each { |a| a.update_columns(published_at: 1.day.ago) }
     end
 

@@ -4,17 +4,17 @@ RSpec.describe Articles::SuggestStickies, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, published: true, cached_tag_list: "ruby") }
 
-  # Create articles with SUGGESTION_TAGS that meet the reaction/comment thresholds.
+  # Create articles with SUGGESTION_TAGS that meet the score/comment_score thresholds.
   # We create first, then update published_at via update_column to bypass validation.
   let!(:career_articles) do
     articles = create_list(:article, 3, published: true, cached_tag_list: "career",
-                           public_reactions_count: 50, comments_count: 10)
+                                        score: 50, comment_score: 20)
     articles.each { |a| a.update_columns(published_at: 1.day.ago) }
     articles
   end
   let!(:discuss_articles) do
     articles = create_list(:article, 2, published: true, cached_tag_list: "discuss",
-                           public_reactions_count: 50, comments_count: 10)
+                                        score: 50, comment_score: 20)
     articles.each { |a| a.update_columns(published_at: 1.day.ago) }
     articles
   end
@@ -99,6 +99,60 @@ RSpec.describe Articles::SuggestStickies, type: :service do
       allow(Article).to receive(:cached_tagged_with_any).and_call_original
       expect(described_class.call(article.reload)).to be_a(Array)
       expect(Article).not_to have_received(:cached_tagged_with_any).with([])
+    end
+
+    it "deduplicates articles that match both tag_articles and more_articles" do
+      article.update_column(:cached_tag_list, "career")
+      result = described_class.call(article.reload, sample_size: 10)
+      expect(result.map(&:id)).to eq(result.map(&:id).uniq)
+    end
+
+    it "excludes articles below the non-production score and comment_score thresholds" do
+      low_scored = create(:article, published: true, tags: "ruby, career",
+                                    score: -1, comment_score: -2)
+      low_scored.update_columns(published_at: 1.day.ago)
+
+      result = described_class.call(article, sample_size: 10)
+      expect(result.map(&:id)).not_to include(low_scored.id)
+    end
+
+    context "when in production environment" do
+      let(:ruby_article) { create(:article, user: user, published: true, tags: "ruby") }
+
+      before do
+        allow(Rails.env).to receive(:production?).and_return(true)
+      end
+
+      it "includes tag_articles with score > 25 or comment_score > 15 and excludes those below both" do
+        high_score_tag_article = create(:article, published: true, tags: "ruby",
+                                                  score: 26, comment_score: 0)
+        high_comment_score_tag_article = create(:article, published: true, tags: "ruby",
+                                                          score: 5, comment_score: 16)
+        below_threshold_tag_article = create(:article, published: true, tags: "ruby",
+                                                       score: 25, comment_score: 15,
+                                                       public_reactions_count: 50, comments_count: 20)
+        [high_score_tag_article, high_comment_score_tag_article, below_threshold_tag_article].each do |a|
+          a.update_columns(published_at: 1.day.ago)
+        end
+
+        result_ids = described_class.call(ruby_article, sample_size: 20).map(&:id)
+        expect(result_ids).to include(high_score_tag_article.id, high_comment_score_tag_article.id)
+        expect(result_ids).not_to include(below_threshold_tag_article.id)
+      end
+
+      it "requires comment_score > 15 for more_articles" do
+        score_only_suggestion_article = create(:article, published: true, tags: "productivity",
+                                                         score: 40, comment_score: 15, comments_count: 20)
+        qualifying_suggestion_article = create(:article, published: true, tags: "productivity",
+                                                         score: 10, comment_score: 16)
+        [score_only_suggestion_article, qualifying_suggestion_article].each do |a|
+          a.update_columns(published_at: 1.day.ago)
+        end
+
+        result_ids = described_class.call(ruby_article, sample_size: 20).map(&:id)
+        expect(result_ids).to include(qualifying_suggestion_article.id)
+        expect(result_ids).not_to include(score_only_suggestion_article.id)
+      end
     end
   end
 end
