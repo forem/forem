@@ -40,8 +40,8 @@ Rails.application.configure do
     "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{3000.days.to_i}"
   }
 
-  # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :terser
+  # Compress JavaScripts and CSS (skipping app/assets/builds, which esbuild already minifies).
+  config.assets.js_compressor = :terser_skip_builds
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
