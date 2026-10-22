@@ -32,6 +32,7 @@ class Tag < ActsAsTaggableOn::Tag
   include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  SUPPORTED_TAGS_SURROGATE_KEY = "supported_tags".freeze
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
 
   belongs_to :badge, optional: true
@@ -103,6 +104,11 @@ class Tag < ActsAsTaggableOn::Tag
   }
 
   scope :suggested_for_onboarding, -> { where(suggested: true) }
+
+  # Purges the edge-cached list of supported tags (e.g. /api/tags/supported).
+  def self.purge_supported_tags
+    EdgeCache::PurgeByKey.call(SUPPORTED_TAGS_SURROGATE_KEY)
+  end
 
   def self.valid_categories
     ALLOWED_CATEGORIES
@@ -180,6 +186,21 @@ class Tag < ActsAsTaggableOn::Tag
       .joins(:followings)
       .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
       .order(hotness_score: :desc)
+  end
+
+  # Same tags as `Tag.with_role(:tag_moderator, user)`, but avoids rolify's
+  # `roles.resource_id IS NULL OR roles.resource_id = tags.id` join condition,
+  # which forces a sequential scan of the whole tags table.  We only fall back
+  # to rolify when the user holds a class-wide (resource_id IS NULL) role, since
+  # that grants every tag.
+  #
+  # @param user [User]
+  # @return [ActiveRecord::Relation<Tag>]
+  def self.moderated_by(user)
+    roles = user.roles.where(name: "tag_moderator", resource_type: "Tag")
+    return with_role(:tag_moderator, user) if roles.exists?(resource_id: nil)
+
+    where(id: roles.select(:resource_id))
   end
 
   # returns the tags that are followed by the user

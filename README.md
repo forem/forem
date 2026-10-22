@@ -48,7 +48,7 @@ within our community. ❤️
 - [Getting Started](#getting-started)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Deployment with Kamal](#deployment-with-kamal)
+- [Deployment with Kamal (Beta)](#deployment-with-kamal-beta)
 - [Vulnerability Disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)

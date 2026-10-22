@@ -30,5 +30,10 @@ RSpec.describe EmailMessage do
       email_message = create(:email_message, content: nil)
       expect(email_message.html_content).to eq("")
     end
+
+    it "returns the html portion when there is an opening tag but no closing tag" do
+      email_message = create(:email_message, content: "preamble <html><body>hi")
+      expect(email_message.html_content).to eq("<html><body>hi")
+    end
   end
 end

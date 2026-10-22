@@ -80,6 +80,53 @@ RSpec.describe "ArticlesCreate" do
     expect(Article.last.co_author_ids).to eq([co_author.id])
   end
 
+  describe "co-author invitations" do
+    let(:follower) { create(:user) }
+
+    before { follower.follow(user) }
+
+    def post_article(invitee_ids)
+      post "/articles", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", co_author_invitee_ids: invitee_ids }
+      }
+    end
+
+    it "ignores the invitee list while the feature is disabled" do
+      post_article([follower.id])
+
+      expect(CoAuthorInvitation.count).to eq(0)
+    end
+
+    context "when the feature is enabled" do
+      before { FeatureFlag.enable(:co_author_invitations) }
+
+      it "invites the listed followers", :aggregate_failures do
+        post_article([follower.id])
+
+        invitation = Article.last.co_author_invitations.sole
+        expect(invitation.user).to eq(follower)
+        expect(invitation).to be_pending
+      end
+
+      it "accepts the editor's camelCased JSON payload" do
+        payload = { article: { title: new_title, bodyMarkdown: "Yo ho ho", coAuthorInviteeIds: [follower.id] } }
+
+        post "/articles", params: payload.to_json,
+                          headers: { "Content-Type" => "application/json", "Accept" => "application/json" }
+
+        expect(Article.last.co_author_invitations.pluck(:user_id)).to eq([follower.id])
+      end
+
+      it "rejects the post when an invitee doesn't follow the author", :aggregate_failures do
+        stranger = create(:user)
+
+        expect { post_article([stranger.id]) }.not_to change(Article, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["base"]).to include(a_string_including("@#{stranger.username} needs to follow you"))
+      end
+    end
+  end
+
   it "creates series when series is created with frontmatter" do
     new_title = "NEW TITLE #{rand(100)}"
     post "/articles", params: {

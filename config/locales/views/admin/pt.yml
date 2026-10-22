@@ -650,3 +650,16 @@ pt:
             day_before: "1 dia antes"
             hour_before: "1 hora antes"
             none: "Nenhuma"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibilidade
+          hidden_by_default: Oculto por padrão
+          visible: Visível
+          caching: Cache
+          fully_cached: Totalmente em cache
+          standard_caching: Padrão
+        edit:
+          hidden_by_default: Oculto por padrão
+          hidden_by_default_desc_html: Os painéis publicitários continuam sendo entregues a esta área de posicionamento, mas são exibidos ocultos e não registram impressões até que a lógica do frontend os revele com %{reveal_call}. Os painéis renderizados incluem %{placement_attribute}.
+          fully_cached: Totalmente em cache
+          fully_cached_desc: Serve uma única resposta em cache por localização do visitante para esta área de posicionamento, compartilhada por todos os artigos e páginas e também por visitantes conectados, usando a expiração de cache acima. Apenas painéis que não segmentam tags, artigos, páginas, segmentos de público, funções, respostas a pesquisas ou tipos de navegador são exibidos aqui. Artigos cujos autores recusam patrocinadores próximos mantêm o comportamento padrão. Só se aplica a painéis carregados separadamente da página, não aos renderizados nela (como a barra lateral da página inicial).

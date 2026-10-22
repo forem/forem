@@ -1,8 +1,18 @@
 module Ai
+  #
+  # Tag generation writes text, so it stays on a generative model (:community_tag_generation).
+  # The yes/no similarity check between two tag descriptions is its own function
+  # (:tag_similarity) and can run on Jev as a single TypeSafe Noul.
   class ForemTags
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
     MAX_RETRIES = 3
     TARGET_TAG_COUNT = 60
+    GENERATION_FUNCTION_KEY = :community_tag_generation
+    SIMILARITY_FUNCTION_KEY = :tag_similarity
+    # "Be conservative - only say YES if they are clearly very similar."
+    SIMILAR_THRESHOLD = 0.8
 
     def initialize(subforem_id, brain_dump, locale = "en")
       @subforem_id = subforem_id
@@ -63,7 +73,8 @@ module Ai
 
     def generate_tags
       prompt = build_prompt
-      response = Ai::Base.new(wrapper: self).call(prompt)
+      model = Ai::FunctionConfig.selection_for(GENERATION_FUNCTION_KEY).gemini_model
+      response = Ai::Base.new(model: model, wrapper: self).call(prompt)
       parse_tags_from_response(response)
     end
 
@@ -206,17 +217,34 @@ module Ai
     def tags_have_similar_meaning?(existing_description, new_description)
       return false if existing_description.blank? || new_description.blank?
 
+      selection = Ai::FunctionConfig.selection_for(SIMILARITY_FUNCTION_KEY)
+      return similar_meaning_via_jev?(selection, existing_description, new_description) if selection.jev?
+
       # Use AI to determine if the descriptions have similar meaning
       prompt = build_similarity_prompt(existing_description, new_description)
 
       begin
-        response = Ai::Base.new.call(prompt)
+        response = Ai::Base.new(model: selection.gemini_model, wrapper: self).call(prompt)
         response.downcase.include?("yes") || response.downcase.include?("similar")
       rescue StandardError => e
         Rails.logger.warn("AI similarity check failed, falling back to word overlap: #{e.message}")
         # Fallback to simple word overlap method
         fallback_similarity_check(existing_description, new_description)
       end
+    end
+
+    def similar_meaning_via_jev?(selection, existing_description, new_description)
+      state = { description_1: existing_description, description_2: new_description }
+      question = noul(
+        "Do `description_1` and `description_2` describe the same topic, so that both tags would be used " \
+        "for the same kind of content?",
+        no: { includes: "Related but distinct topics, such as a language and one of its frameworks." },
+      )
+      client = Ai::TypeSafe::Client.new(model: selection.model, wrapper: self)
+      client.evaluate(state: state, questions: { same_topic: question }).noul(:same_topic) >= SIMILAR_THRESHOLD
+    rescue StandardError => e
+      Rails.logger.warn("Jev similarity check failed, falling back to word overlap: #{e.message}")
+      fallback_similarity_check(existing_description, new_description)
     end
 
     def get_locale_instruction

@@ -35,6 +35,7 @@ namespace :admin do
   resources :creator_settings, only: %i[create new]
 
   namespace :settings do
+    resources :ai_functions, only: [:create]
     resources :authentications, only: [:create]
     resources :campaigns, only: [:create]
     resources :communities, only: [:create]
@@ -217,7 +218,9 @@ namespace :admin do
     resources :moderator_actions, only: %i[index]
     resources :privileged_reactions, only: %i[index]
     resources :blocked_email_domains, only: %i[index new create destroy]
-    resources :linked_domains, only: %i[index edit update]
+    resources :linked_domains, only: %i[index edit update] do
+      patch :spam_threshold, on: :collection, action: :update_spam_threshold
+    end
   end
 
   scope :advanced do

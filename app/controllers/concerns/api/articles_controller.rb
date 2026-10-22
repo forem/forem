@@ -139,15 +139,21 @@ module Api
       # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
       # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
       # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
-      @articles = Articles::ApiSearchQuery.call(params)
+      articles = Articles::ApiSearchQuery.call(params)
 
       # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
       # ChatGPT cannot process the long body request.
-      @articles = if @articles.count > 1
-                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  else
-                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  end
+      # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
+      # running a separate COUNT over the full search before every load.
+      @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+      return unless @articles.size == 1
+
+      # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
+      # return 0-1 results are the slowest searches, so repeating them doubled their cost).
+      @articles = Article.includes([{ user: :profile }, :organization])
+        .where(id: @articles.first.id)
+        .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
+        .decorate
     end
 
     private
@@ -203,10 +209,11 @@ module Api
 
     def allowed_to_change_org_id?
       potential_user = @article&.user || @user
-      if @article.nil? || OrganizationMembership.exists?(user: potential_user,
-                                                         organization_id: params.dig("article", "organization_id"))
-        OrganizationMembership.exists?(user: potential_user,
-                                       organization_id: params.dig("article", "organization_id"))
+      if @article.nil? || OrganizationMembership.member.exists?(user: potential_user,
+                                                                organization_id: params.dig("article",
+                                                                                            "organization_id"))
+        OrganizationMembership.member.exists?(user: potential_user,
+                                              organization_id: params.dig("article", "organization_id"))
       elsif potential_user == @user
         potential_user.org_admin?(params.dig("article", "organization_id")) ||
           @user.any_admin?

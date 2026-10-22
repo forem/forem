@@ -126,6 +126,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include EmbedsHelpers, type: :liquid_tag
   config.include FactoryBot::Syntax::Methods
+  config.include JevHelpers
   config.include OmniauthHelpers
   config.include RpushHelpers
   config.include SidekiqTestHelpers
@@ -173,9 +174,14 @@ RSpec.configure do |config|
     # Ensure ESBuild assets are present for system specs locally
     system("bin/rails javascript:build") unless ENV["CI"] || ENV["SKIP_JS_BUILD"]
 
+    # Persist the initial random timezone across Knapsack Pro subset batches
+    # so Ruby's Time.zone and headless Chrome's TZ stay synchronized.
+    ENV["ZONEBIE_TZ"] ||= Time.zone.name
+
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
+    Dotenv.save if defined?(Dotenv)
   end
 
   config.before do
@@ -205,6 +211,7 @@ RSpec.configure do |config|
 
   config.after do
     Settings::General.clear_cache
+    Settings::AiFunctions.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys

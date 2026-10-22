@@ -91,4 +91,25 @@ RSpec.describe Notifications::CoAuthor::Send, type: :service do
 
     expect { described_class.call(article) }.not_to change(Notification, :count)
   end
+
+  context "with co-authors who joined by invitation" do
+    let(:article) { create(:article, user: author, published: true) }
+
+    it "skips co-authors who accepted after the post was published" do
+      article.update_columns(published_at: 1.day.ago)
+      create(:co_author_invitation, :accepted, article: article, user: co_author)
+
+      described_class.call(article.reload)
+
+      expect(co_author_notifications(article)).to be_empty
+    end
+
+    it "notifies co-authors who accepted before the post was published" do
+      create(:co_author_invitation, :accepted, article: article, user: co_author, responded_at: 1.day.ago)
+
+      described_class.call(article.reload)
+
+      expect(co_author_notifications(article).pluck(:user_id)).to eq([co_author.id])
+    end
+  end
 end

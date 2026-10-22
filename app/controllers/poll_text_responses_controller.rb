@@ -22,7 +22,7 @@ class PollTextResponsesController < ApplicationController
       # Check if this response completes a survey
       SurveyCompletionService.check_and_mark_completion(user: current_user, poll: @poll)
     else
-      Honeybadger.notify("PollTextResponse save failed", context: {
+      Rails.error.report(StandardError.new("PollTextResponse save failed"), context: {
                            user_id: current_user&.id,
                            poll_id: @poll&.id,
                            errors: @text_response.errors.full_messages,
@@ -32,7 +32,7 @@ class PollTextResponsesController < ApplicationController
 
     render json: { success: true, message: "Text response submitted successfully" }
   rescue StandardError => e
-    Honeybadger.notify(e, context: {
+    Rails.error.report(e, context: {
                          user_id: current_user&.id,
                          poll_id: params[:poll_id],
                          action: "poll_text_response_create",

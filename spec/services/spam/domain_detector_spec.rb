@@ -15,6 +15,14 @@ RSpec.describe Spam::DomainDetector, type: :service do
       end
     end
 
+    context "when domain is already blocked" do
+      before { BlockedEmailDomain.create!(domain: "example.com") }
+
+      it "returns false without enqueuing another block job" do
+        expect { detector.check_and_block_domain! }.not_to change(Spam::BlockDomainAndSuspendUsersWorker.jobs, :size)
+      end
+    end
+
     context "when spam pattern is detected" do
       let!(:spam_user1) { create(:user, email: "user1@example.com") }
       let!(:spam_user2) { create(:user, email: "user2@example.com") }
