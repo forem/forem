@@ -118,7 +118,7 @@ class FeedTag < LiquidTagBase
     articles = articles.cached_tagged_with_any(@tag_names) if @tag_names.any?
 
     articles
-      .includes(:distinct_reaction_categories, :subforem)
+      .includes(:subforem)
       .limited_column_select
   end
 
