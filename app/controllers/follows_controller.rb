@@ -38,14 +38,20 @@ class FollowsController < ApplicationController
     # so load every followed-back candidate in one narrow query instead of one full row per id.
     users_by_id = params[:followable_type] == "User" ? User.where(id: ids).select(:id, :updated_at).index_by(&:id) : {}
 
+    # Read every cached follow check in one round-trip instead of one cache read per check.
+    checks = ids.flat_map do |id|
+      [[current_user, params[:followable_type], id], [users_by_id[id], params[:followable_type], current_user.id]]
+    end
+    cached = Follows::CheckCached.read_multi(checks)
+
     response = ids.index_with do |id|
       if current_user.id == id && params[:followable_type] == "User"
         "self"
       else
-        following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id)
+        following_them_check = Follows::CheckCached.call(current_user, params[:followable_type], id, cached)
         if params[:followable_type] == "User"
           following_you_check = Follows::CheckCached.call(users_by_id[id], params[:followable_type],
-                                                          current_user.id)
+                                                          current_user.id, cached)
           if following_them_check && following_you_check
             "mutual"
           elsif following_you_check
