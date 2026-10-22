@@ -8,10 +8,11 @@ module Images
   # from the opening of the post in a browser-window card over a soft gradient,
   # with the author's avatar, name, date, and reading time.
   #
-  # One image serves every platform. X overlays the post title in a dark bar
-  # across roughly the bottom 12% of link cards, so the bottom X_KEEP_CLEAR
-  # pixels hold only background. The card keeps the same margin at the top so
-  # it stays vertically centered where nothing is overlaid (LinkedIn, Slack...).
+  # One image serves every platform. X overlays the post title in a dark label
+  # inset at the bottom-left of link cards (about 29-73px up from the bottom of
+  # this image), so the bottom X_KEEP_CLEAR pixels hold only background. The
+  # card keeps the same margin at the top so it stays vertically centered where
+  # nothing is overlaid (LinkedIn, Slack...).
   #
   # Production runs ImageMagick 6, so stick to IM6-compatible operations.
   class GenerateSocialImageMagickally
