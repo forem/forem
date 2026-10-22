@@ -104,6 +104,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :tags, only: :update
+
         resources :agent_sessions, only: %i[index show create] do
           collection do
             post :presign
