@@ -46,7 +46,7 @@ export const Modal = ({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label={title}
+          aria-label={title || 'modal'}
           className="crayons-modal__box"
         >
           {showHeader && (
