@@ -65,6 +65,7 @@ class DashboardsController < ApplicationController
     @user = current_user
     @organizations = @user.admin_organizations
     @action = params[:state]
+    @posts_count = posts_count_for(@user)
   end
 
   def following_tags
@@ -218,5 +219,13 @@ class DashboardsController < ApplicationController
 
   def collections_count(user)
     user.collections.non_empty.count
+  end
+
+  # The "Posts" nav item always links to the default (non-archived, full posts
+  # only) view of the user's own dashboard, so its indicator should reflect
+  # that same scope rather than the user's raw articles_count, which also
+  # includes statuses and archived posts that never show up in that list.
+  def posts_count_for(user)
+    user.articles.from_subforem.full_posts.where(archived: false).count
   end
 end
