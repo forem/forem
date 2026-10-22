@@ -10,15 +10,20 @@ module Api
     DEFAULT_PER_PAGE = 50
     private_constant :DEFAULT_PER_PAGE
 
+    # Each level renders as a nested jbuilder partial, so a very deep reply chain
+    # overflows the stack (SystemStackError). Replies below this depth are left out.
+    MAX_DEPTH = 50
+    private_constant :MAX_DEPTH
+
     def index
       commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
       per_page = params[:per_page] || DEFAULT_PER_PAGE
 
-      @comments = commentable.comments
+      @comments = prune(commentable.comments
         .includes(user: :profile)
         .select(ATTRIBUTES_FOR_SERIALIZATION)
-        .arrange(order: "id")
+        .arrange(order: "id"))
 
       # paginating only if page is passed
       if params[:page].to_i.positive?
@@ -29,10 +34,10 @@ module Api
     end
 
     def show
-      tree_with_root_comment = Comment.subtree_of(params[:id].to_i(26))
+      tree_with_root_comment = prune(Comment.subtree_of(params[:id].to_i(26))
         .includes(user: :profile)
         .select(ATTRIBUTES_FOR_SERIALIZATION)
-        .arrange
+        .arrange)
 
       # being only one tree we know that the root comment is the first (and only) key
       @comment = tree_with_root_comment.keys.first
@@ -42,6 +47,12 @@ module Api
     end
 
     private
+
+    def prune(comments_trees, depth = 0)
+      return {} if depth >= MAX_DEPTH
+
+      comments_trees.transform_values { |children| prune(children, depth + 1) }
+    end
 
     # ancestry wraps a single or multiple trees of comments into a single hash,
     # in the case of an article comments, the hash has multiple keys (the root comments),

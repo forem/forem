@@ -4,6 +4,19 @@ module Settings
 
     setting :agent_session_creation, type: :integer, default: 5
     setting :ai_image_generation, type: :integer, default: 5
+    # API image endpoints are limited to N requests per configurable window
+    # (fixed window starting at the first request). Setting a limit to 0
+    # disables that endpoint entirely.
+    setting :api_ai_image_generation, type: :integer, default: 3,
+                                      validates: { numericality: { only_integer: true, greater_than_or_equal_to: 0 } }
+    setting :api_ai_image_generation_window_seconds,
+            type: :integer, default: 86_400,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
+    setting :api_image_upload, type: :integer, default: 10,
+                               validates: { numericality: { only_integer: true, greater_than_or_equal_to: 0 } }
+    setting :api_image_upload_window_seconds,
+            type: :integer, default: 3600,
+            validates: { numericality: { only_integer: true, greater_than: 0 } }
     setting :article_update, type: :integer, default: 30
     setting :comment_antispam_creation, type: :integer, default: 1
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts

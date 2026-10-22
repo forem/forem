@@ -2,9 +2,18 @@
 @import 'variables';
 @import '_mixins';
 
+// Billboards in a placement area configured as "hidden by default" stay hidden
+// until window.Forem.revealBillboardPlacement flips the attribute to "false".
+// !important so inline display styles set by billboard scripts can't leak them.
+[data-display-unit][data-placement-hidden='true'] {
+  display: none !important;
+}
+
 // Collapse an empty primary/secondary slot so its padding and grid gap
 // don't leave stray whitespace when only one placement returns a billboard.
-.bb-shuffle-group > :not(:has([data-display-unit])) {
+// A slot whose billboard is still hidden by its placement counts as empty.
+.bb-shuffle-group
+  > :not(:has([data-display-unit]:not([data-placement-hidden='true']))) {
   display: none;
 }
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_20_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -305,6 +305,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["rewarder_id"], name: "index_badge_achievements_on_rewarder_id", where: "(rewarder_id IS NOT NULL)"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
@@ -334,6 +335,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
   create_table "billboard_placement_area_configs", force: :cascade do |t|
     t.integer "cache_expiry_seconds", default: 180, null: false
     t.datetime "created_at", null: false
+    t.boolean "fully_cached", default: false, null: false
+    t.boolean "hidden_by_default", default: false, null: false
     t.string "placement_area", null: false
     t.jsonb "selection_weights", default: {}, null: false
     t.integer "signed_in_rate", default: 100, null: false
@@ -454,6 +457,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
+  end
+
+  create_table "co_author_invitations", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "responded_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_id", "user_id"], name: "index_co_author_invitations_on_article_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_co_author_invitations_on_user_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -719,6 +733,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["organization_id"], name: "index_display_ads_on_organization_id"
     t.index ["page_id"], name: "index_display_ads_on_page_id"
+    t.index ["placement_area", "success_rate"], name: "index_display_ads_on_placement_area_and_success_rate", order: { success_rate: :desc }, where: "((approved = true) AND (published = true))"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
@@ -882,6 +897,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_feed_import_items_on_article_id"
     t.index ["feed_import_log_id"], name: "index_feed_import_items_on_feed_import_log_id"
+    t.index ["feed_import_log_id", "status"], name: "index_feed_import_items_on_feed_import_log_id_and_status"
   end
 
   create_table "feed_import_logs", force: :cascade do |t|
@@ -1202,6 +1218,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+    t.index ["user_id"], name: "index_notifications_on_user_id_unread", where: "(read = false)"
   end
 
   create_table "onboarding_checklists", force: :cascade do |t|
@@ -1287,6 +1304,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
     t.index ["custom_domain"], name: "index_organizations_on_custom_domain", unique: true, where: "((custom_domain IS NOT NULL) AND ((custom_domain)::text <> ''::text))"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
+    t.index ["old_old_slug"], name: "index_organizations_on_old_old_slug"
+    t.index ["old_slug"], name: "index_organizations_on_old_slug"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
     t.index ["tls_subscription_id"], name: "index_organizations_on_tls_subscription_id", unique: true, where: "((tls_subscription_id IS NOT NULL) AND ((tls_subscription_id)::text <> ''::text))"
@@ -2173,6 +2192,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
     t.bigint "role_id"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
@@ -2251,6 +2271,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_29_120000) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "articles", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", column: "favorited_by_user_id", on_delete: :nullify

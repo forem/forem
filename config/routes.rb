@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
+    get "/users/password", to: redirect("/users/password/new")
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
     post "/users/auth/account_switch/confirm",
@@ -113,6 +114,10 @@ Rails.application.routes.draw do
         end
 
         resources :feedback_messages, only: :update
+
+        resources :images, only: :create do
+          post :generate, on: :collection
+        end
 
         resources :organizations, only: %i[index create update destroy]
 
@@ -252,6 +257,13 @@ Rails.application.routes.draw do
     resources :ai_image_generations, only: [:create]
     resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
+    resources :co_author_invitations, only: [] do
+      get :candidates, on: :collection, defaults: { format: :json }
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
@@ -518,6 +530,7 @@ Rails.application.routes.draw do
     # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
     get "/settings/integrations", to: redirect("/settings/extensions")
     get "/settings/misc", to: redirect("/settings")
+    get "/settings/password", to: redirect("/settings/account")
     get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
     get "/settings/ux", to: redirect("/settings/customization")
 

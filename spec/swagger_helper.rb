@@ -167,6 +167,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           }
         },
         schemas: {
+          ImageUrl: {
+            description: "An image hosted by this Forem, usable in body_markdown or as an article's main_image",
+            type: :object,
+            properties: {
+              url: { type: :string, format: :url }
+            },
+            required: %w[url]
+          },
           ArticleFlareTag: {
             description: "Flare tag of the article",
             type: :object,
@@ -294,7 +302,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { description: "Tag id", type: :integer, format: :int64 },
               name: { type: :string },
               bg_color_hex: { type: :string, nullable: true },
-              text_color_hex: { type: :string, nullable: true }
+              text_color_hex: { type: :string, nullable: true },
+              short_summary: { type: :string, nullable: true }
             }
           },
           Page: {

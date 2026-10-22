@@ -117,6 +117,31 @@ function showHiddenCommentAppealNotices(user) {
   }
 }
 
+function addAdminProfileLinks(user) {
+  if (!user.admin) return;
+
+  // Placeholders in user context menus (profile and comment dropdowns)
+  var adminButts = document.getElementsByClassName('admin-actions');
+  for (let i = 0; i < adminButts.length; i += 1) {
+    let butt = adminButts[i];
+    if (butt.dataset.initialized === 'true') continue;
+
+    let link = document.createElement('a');
+    link.href = butt.dataset.path;
+    link.rel = 'nofollow';
+    link.className = 'crayons-link crayons-link--block';
+    link.dataset.noInstant = '';
+    link.textContent = butt.dataset.text;
+    if (butt.hasAttribute('aria-label')) {
+      link.setAttribute('aria-label', butt.getAttribute('aria-label'));
+    }
+    butt.appendChild(link);
+    butt.classList.remove('hidden');
+    butt.classList.add('block');
+    butt.dataset.initialized = 'true';
+  }
+}
+
 function setCurrentUserToNavBar(user) {
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
@@ -139,4 +164,5 @@ function initializeBaseUserData() {
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
   showHiddenCommentAppealNotices(user);
+  addAdminProfileLinks(user);
 }

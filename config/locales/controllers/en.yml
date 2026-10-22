@@ -10,6 +10,8 @@ en:
     please_sign_in: Please sign in
   articles_controller:
     deleted: Article was successfully deleted.
+  co_author_invitations_controller:
+    not_updated: That co-author invitation couldn't be updated. It may have already been answered or withdrawn.
   comments_controller:
     create:
       success: created

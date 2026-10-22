@@ -23,7 +23,7 @@
 <% if actor.class.name == "User" %>
   <div class="user-metadata-details">
     <ul class="user-metadata-details-inner">
-      <% if actor.setting.display_email_on_profile && context != "sidebar" %>
+      <% if context != "sidebar" && actor.setting.display_email_on_profile %>
         <li>
           <div class="key">
             <%= t("views.sticky.email") %>

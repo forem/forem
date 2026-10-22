@@ -10,6 +10,8 @@ fr:
     please_sign_in : Veuillez vous connecter
   articles_controller:
     deleted: L'article a été supprimé avec succès.
+  co_author_invitations_controller:
+    not_updated: Cette invitation de co-auteur n'a pas pu être mise à jour. Elle a peut-être déjà reçu une réponse ou été retirée.
   comments_controller:
     create:
       success: créé avec succès

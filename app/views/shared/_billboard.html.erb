@@ -12,10 +12,22 @@
   }
 </style>
 
-<% if billboard.template == "plain" %>
+<% hidden_by_default = local_assigns.fetch(:hidden_by_default) { BillboardPlacementAreaConfig.hidden_by_default_for(billboard.placement_area) } %>
+<%# viewer_country and anonymous_tracking_allowed are only passed when served by BillboardsController#show, %>
+<%# which varies its edge cache on geo whenever it sends them. Elsewhere they are omitted. %>
+<% billboard_attributes = tag.attributes(
+     data: {
+       placement_area: billboard.placement_area,
+       placement_hidden: (true if hidden_by_default),
+       viewer_country: local_assigns[:viewer_country],
+       anonymous_tracking_allowed: (true if local_assigns[:anonymous_tracking_allowed])
+     },
+   ) %>
+<% if billboard.template == "plain" || Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>
   <div
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -28,6 +40,7 @@
   <div class="crayons-story crayons-story__billboard bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -56,6 +69,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb crayons-story__billboard hero-billboard js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -78,6 +92,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -110,6 +125,7 @@
         <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
           style="<%= billboard.style_string.gsub('border-bottom: none;', '') %>"
           data-display-unit data-id="<%= billboard.id %>"
+          <%= billboard_attributes %>
           data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
           data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
           data-context-type="<%= data_context_type %>"
@@ -129,6 +145,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -161,6 +178,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"

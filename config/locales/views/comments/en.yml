@@ -133,6 +133,9 @@ en:
           unhide_text: Unhide
         moderate:
           aria_label: Moderate %{user}'s comment
+        admin_profile:
+          aria_label: View %{user}'s admin profile
+          text: View Admin Profile
         report:
           aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:

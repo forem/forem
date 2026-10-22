@@ -10,6 +10,8 @@ pt:
     please_sign_in: Por favor, faça login
   articles_controller:
     deleted: Artigo foi excluído com sucesso.
+  co_author_invitations_controller:
+    not_updated: Não foi possível atualizar este convite de coautoria. Ele pode já ter sido respondido ou retirado.
   comments_controller:
     create:
       success: criado

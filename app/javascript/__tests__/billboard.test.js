@@ -1,3 +1,4 @@
+import { webcrypto } from 'crypto';
 import { getBillboard, shuffleBillboardGroups } from '../packs/billboard';
 import { executeBBScripts } from '../packs/billboardAfterRenderActions';
 
@@ -203,6 +204,75 @@ describe('getBillboard', () => {
 
     expect(billboard.getAttribute('data-is-billboard-visible')).toBe('true');
     expect(billboard.getAttribute('data-evil-hack')).toBeNull();
+  });
+
+  test('creates an anonymous visitor ID and records article tags when a billboard allows it', async () => {
+    // jsdom doesn't provide Web Crypto, which every supported browser has.
+    Object.defineProperty(window, 'crypto', {
+      value: webcrypto,
+      configurable: true,
+    });
+    localStorage.clear();
+    document.body.innerHTML = `
+      <article id="article-show-container" data-article-tags="javascript,webdev"></article>
+      <div class="js-billboard-container" data-async-url="/bb/post_comments"></div>
+    `;
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<div class="js-billboard" data-display-unit data-id="1" data-viewer-country="US" data-anonymous-tracking-allowed="true">Billboard Content</div>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    expect(document.querySelector('.js-billboard').dataset.viewerCountry).toBe('US');
+    expect(localStorage.getItem('anonymous_visitor_id')).toBeTruthy();
+    expect(
+      Object.keys(JSON.parse(localStorage.getItem('anonymous_visitor_tag_views'))),
+    ).toEqual(['javascript', 'webdev']);
+  });
+
+  test('attributes every billboard, including plain-template ones, to the article on the page', async () => {
+    document.body.innerHTML = `
+      <article id="article-show-container" data-article-id="42"></article>
+      <div class="js-billboard-container" data-async-url="/bb/post_comments"></div>
+    `;
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<div data-display-unit data-id="1" data-article-id="">Plain template billboard</div>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    expect(document.querySelector('[data-display-unit]').dataset.articleId).toBe('42');
+  });
+
+  test('does not create an anonymous visitor ID when no billboard allows it', async () => {
+    localStorage.clear();
+    document.body.innerHTML = `
+      <article id="article-show-container" data-article-tags="javascript,webdev"></article>
+      <div class="js-billboard-container" data-async-url="/bb/post_comments"></div>
+    `;
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<div class="js-billboard" data-display-unit data-id="1" data-viewer-country="FR">Billboard Content</div>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    expect(localStorage.getItem('anonymous_visitor_id')).toBeNull();
+    expect(localStorage.getItem('anonymous_visitor_tag_views')).toBeNull();
   });
 });
 

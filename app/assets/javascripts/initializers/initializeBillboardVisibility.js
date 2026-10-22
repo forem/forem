@@ -165,7 +165,8 @@ function observeBillboards() {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
           elem.dataset.isBillboardVisible = 'true';
           setTimeout(function () {
-            if (elem.dataset.isBillboardVisible === 'true') {
+            // Billboards hidden by their placement area record no impressions until revealed
+            if (elem.dataset.isBillboardVisible === 'true' && elem.dataset.placementHidden !== 'true') {
               trackAdImpression(elem);
               startPollingBillboard(elem);
             }

@@ -8,7 +8,7 @@ module Ai
   # Runs only when the :spam_escalation function is set to Jev (see Ai::FunctionConfig);
   # otherwise content without links is never escalated, as before.
   class SpamEscalationCheck
-    VERSION = "1.2".freeze
+    VERSION = "1.3".freeze
     FUNCTION_KEY = :spam_escalation
 
     MAX_TEXT_LENGTH = 3_000
@@ -32,6 +32,12 @@ module Ai
         yes: "It markets something outside the community's subject, such as a local service, retail goods, " \
              "travel, health, real estate, or a course unrelated to that subject.",
         no: "It is about the community's subject, even if it promotes the author's own relevant product.",
+      ),
+      phishing: Ai::TypeSafe::Questions.noul(
+        "Does `content` try to phish readers, for example by impersonating this platform or its staff?",
+        yes: "It poses as an official notice, security update, or support message, or tells readers to verify, " \
+             "secure, or recover their account through a link, short URL, or contact.",
+        no: "It makes no such claim or request.",
       )
     }.freeze
 

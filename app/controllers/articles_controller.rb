@@ -59,7 +59,8 @@ class ArticlesController < ApplicationController
                   end
     end
 
-    not_found unless @articles&.any?
+    # Load once up front; `any?` on an unloaded relation would issue an extra EXISTS query.
+    not_found unless @articles&.load&.any?
 
     user_keys = if @user&.respond_to?(:profile_identity_cache_keys)
                   @user.profile_identity_cache_keys
@@ -179,7 +180,7 @@ class ArticlesController < ApplicationController
     authorize Article
     @user = current_user
     article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
-    article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(@user, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     if article.persisted?
       if article.type_of == "status"
@@ -196,7 +197,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user || current_user
 
-    updated = Articles::Updater.call(@user, @article, article_params_json)
+    updated = Articles::Updater.call(@user, @article, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     respond_to do |format|
       format.html do
@@ -303,7 +304,8 @@ class ArticlesController < ApplicationController
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.member_organizations
-    @tag = Tag.find_by(name: params[:template])
+    # Tag names are required, so a blank template can never match; skip the lookup.
+    @tag = Tag.find_by(name: params[:template]) if params[:template].present?
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
@@ -375,6 +377,18 @@ class ArticlesController < ApplicationController
     manage_published_at_params
 
     @article_params_json = params.require(:article).permit(allowed_params)
+  end
+
+  # The editor's co-author invitee list, or nil to leave the article's invitations untouched (the
+  # list wasn't sent, or invitations aren't enabled). Invitees must follow the author, so only the
+  # author manages them; an admin editing someone else's post leaves them alone.
+  def co_author_invitee_ids
+    article_params_json # normalizes the editor's camelCased keys
+    return unless params["article"].key?("co_author_invitee_ids")
+    return if @article && @article.user_id != current_user.id
+    return unless feature_flag_enabled?(:co_author_invitations)
+
+    params.require(:article).permit(co_author_invitee_ids: [])[:co_author_invitee_ids] || []
   end
 
   def manage_published_at_params

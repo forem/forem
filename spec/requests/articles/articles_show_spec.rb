@@ -22,6 +22,11 @@ RSpec.describe "ArticlesShow" do
       expect(response).to have_http_status(:ok)
     end
 
+    it "exposes the article's tags for anonymous tag tracking" do
+      tags = doc.at_css("#article-show-container")["data-article-tags"].split(",")
+      expect(tags).to match_array(%w[javascript html])
+    end
+
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(
         "@context" => "http://schema.org",
@@ -131,13 +136,15 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
-    it "renders nested comment structure for replies" do
+    it "renders nested comment structure for replies without extra parent queries" do
       root_comment = create(:comment, commentable: article, user: user)
       reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
       article.update_columns(comments_count: 2, displayed_comments_count: 2)
+      allow(Comments::Tree).to receive(:for_commentable).and_call_original
 
       get article.path
 
+      expect(Comments::Tree).to have_received(:for_commentable).once
       expect(response_json["mainEntity"]["comment"]).to be_present
       root_comment_data = response_json["mainEntity"]["comment"].first
       expect(root_comment_data["comment"]).to be_present
@@ -418,6 +425,22 @@ RSpec.describe "ArticlesShow" do
       end
     end
 
+    context "when a billboard placement area is fully cached" do
+      it "loads that placement area from the shared URL and the others in the article's context" do
+        BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
+
+        get article.path
+
+        expect(response.body).to include("\"#{billboard_path(placement_area: :post_comments)}\"")
+        article_path = lambda do |area|
+          article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+        end
+        expect(response.body).not_to include("\"#{article_path.call(:post_comments)}\"")
+        expect(response.body).to include("\"#{article_path.call(:post_comments_secondary)}\"")
+        expect(response.body).to include("\"#{article_path.call(:post_sidebar)}\"")
+      end
+    end
+
     context "when rendering secondary billboard placements" do
       it "renders the primary and secondary sidebar and comments slots in shuffle groups" do
         get article.path
@@ -461,11 +484,17 @@ RSpec.describe "ArticlesShow" do
 
   context "when user not signed in but internal nav triggered" do
     before do
-      get "#{article.path}?i=i"
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
     end
 
     describe "GET /:slug (user)" do
-      it "does not render json ld" do
+      it "does not render json ld and fetches comment tree only once" do
+        allow(Comments::Tree).to receive(:for_commentable).and_call_original
+
+        get "#{article.path}?i=i"
+
+        expect(Comments::Tree).to have_received(:for_commentable).once
         expect(response.body).not_to include "application/ld+json"
       end
     end

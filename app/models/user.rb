@@ -95,6 +95,7 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :concept_accesses, dependent: :delete_all
@@ -342,7 +343,12 @@ class User < ApplicationRecord
   end
 
   def self.staff_account
-    find_by(id: Settings::Community.staff_user_id)
+    staff_id = Settings::Community.staff_user_id
+    return if staff_id.blank?
+
+    RequestStore.fetch(:"staff_account_user_#{staff_id}") do
+      find_by(id: staff_id)
+    end
   end
 
   def self.mascot_account
@@ -360,7 +366,10 @@ class User < ApplicationRecord
   def good_standing_followers_count
     cache_key = "#{cache_key_with_version}/good_standing_followers_count"
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
-      Follow.non_suspended("User", id).count
+      # follower_id is unique per followable here, so COUNT(DISTINCT follower_id) equals
+      # COUNT(DISTINCT id) but can be served by an index-only scan on
+      # index_follows_on_followable_and_follower instead of fetching every follows heap row.
+      Follow.non_suspended("User", id).count(:follower_id)
     end
   end
 
@@ -508,6 +517,8 @@ class User < ApplicationRecord
   end
 
   def cached_role_names
+    return roles.map(&:name) if association(:roles).loaded?
+
     cache_key = "user-#{id}/role_names"
     Rails.cache.fetch(cache_key, expires_in: 200.hours) do
       roles.pluck(:name)
@@ -795,8 +806,12 @@ class User < ApplicationRecord
     [profile_identity_record_key, profile_image_record_key]
   end
 
+  def previous_username_paths
+    [old_username, old_old_username].compact_blank.uniq.reject { |name| name == username }.map { |name| "/#{name}" }
+  end
+
   def profile_cache_bust_paths
-    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+    ([path, "/profile_preview_cards/#{id}", "/api/users/#{id}"] + previous_username_paths).uniq
   end
 
   def remove_from_mailchimp_newsletters
@@ -1233,6 +1248,10 @@ class User < ApplicationRecord
       # callback: an error here rolls back the role grant (and aborts a banish).
       Spam::DomainDetectorWorker.perform_async(id)
       calculate_score
+      # Article scores include a spam penalty that also governs Algolia indexability,
+      # so rescore on every grant/removal regardless of which code path changed the role.
+      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+      articles.published.find_each(&:async_score_calc)
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"

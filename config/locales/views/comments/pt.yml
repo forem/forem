@@ -149,7 +149,10 @@ pt:
       form: Formulário
       table: Tabela
       list: Lista
-      menu: Menu
+      menu:
+        admin_profile:
+          aria_label: Ver o perfil de administrador de %{user}
+          text: Ver perfil de administrador
       toolbar: Barra de ferramentas
       sidebar: Barra lateral
       header: Cabeçalho

@@ -1,4 +1,4 @@
-import { getBillboard } from '../billboard';
+import { getBillboard, cleanupStaleLiveStreamIntervals } from '../billboard';
 import { setupBillboardInteractivity, ensurePersistentMinimizedBillboardContainer } from '../../utilities/billboardInteractivity';
 import {
   observeBillboards,
@@ -143,5 +143,26 @@ describe('billboard.js - internal navigation behavior', () => {
 
     // Verify helper callbacks were not called for the minimized container
     expect(executeBBScripts).not.toHaveBeenCalledWith(mockContainer);
+  });
+
+  describe('cleanupStaleLiveStreamIntervals', () => {
+    it('preserves intervals for overlays still present in the DOM and clears intervals for detached overlays', () => {
+      document.body.innerHTML = '<div id="overlay-feed-42"></div>';
+      const activeInterval = setInterval(() => {}, 10000);
+      const staleInterval = setInterval(() => {}, 10000);
+
+      window.liveStreamIntervals = {
+        42: activeInterval,
+        99: staleInterval,
+      };
+
+      cleanupStaleLiveStreamIntervals();
+
+      expect(window.liveStreamIntervals['42']).toBe(activeInterval);
+      expect(window.liveStreamIntervals['99']).toBeUndefined();
+
+      clearInterval(activeInterval);
+      clearInterval(staleInterval);
+    });
   });
 });
