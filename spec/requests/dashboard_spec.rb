@@ -101,16 +101,6 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("Analytics")
       end
 
-      it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
-        article
-        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
-        create(:article, user: user, archived: true)
-
-        get dashboard_path
-
-        expect(assigns(:posts_count)).to eq(1)
-      end
-
       xit "renders a link to analytics for the org" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
@@ -212,6 +202,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
 
         expect(assigns(:posts_count)).to eq(1)
+        expect(response.body).to include('<span class="c-indicator">1</span>')
       end
     end
 

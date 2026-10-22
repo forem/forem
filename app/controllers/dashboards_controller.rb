@@ -29,7 +29,6 @@ class DashboardsController < ApplicationController
     not_authorized if params[:org_id] && !(@user.org_admin?(params[:org_id]) || @user.any_admin?)
 
     @organizations = @user.admin_organizations
-    @posts_count = posts_count_for(@user)
 
     # NOTE: This logic is a super set of the above not_authorized check
     if params[:which] == "organization" && params[:org_id] && (@user.org_admin?(params[:org_id]) || @user.any_admin?)
