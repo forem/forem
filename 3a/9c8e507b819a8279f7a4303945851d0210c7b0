@@ -1,0 +1,16 @@
+spec/rails_helper.rb
+  h_f968154a99632d 177-180,184
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3a9c8e507b819a8279f7a4303945851d0210c7b0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
