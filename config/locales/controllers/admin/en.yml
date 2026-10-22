@@ -253,7 +253,7 @@ en:
       confirm_sent: Confirmation email sent!
       verify_sent: Verification email sent!
       manual_verification_sent: Email manually verified!
-      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
+      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) is being deleted. Their account and content are being removed in the background, which can take a few minutes for accounts with a lot of activity. If this is a GDPR delete, once the deletion finishes, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
       no_email: no email
       parameter_missing: Both subject and body are required!
       role_removed: 'Role: %{role} has been successfully removed from the user!'

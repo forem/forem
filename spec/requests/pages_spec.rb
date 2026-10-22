@@ -23,6 +23,18 @@ RSpec.describe "Pages" do
       expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
+    it "sets the page's surrogate key on a top-level page" do
+      page = create(:page, is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
+    it "sets the page's surrogate key on the InstantClick fetch of a top-level page" do
+      page = create(:page, is_top_level_path: true)
+      get "/#{page.slug}?i=0123456789"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
     context "with a null byte in the slug URL" do
       it "returns a 400 Bad Request error without raising an unhandled exception for default formats" do
         get "/page/%00.env"
@@ -149,6 +161,12 @@ RSpec.describe "Pages" do
   end
 
   describe "GET /slug/slug/slug/etc." do
+    it "keys a nested top-level page on its own slug, not its parent's" do
+      page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
     it "renders proper page when slug has one subdirectory" do
       page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
       get "/#{page.slug}"

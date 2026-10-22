@@ -338,6 +338,8 @@ fr:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
+              community_leader_level_1: Community Leader Level 1
+              community_leader_level_2: Community Leader Level 2
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
@@ -745,3 +747,16 @@ fr:
             day_before: "1 jour avant"
             hour_before: "1 heure avant"
             none: "Aucune"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibilité
+          hidden_by_default: Masqué par défaut
+          visible: Visible
+          caching: Mise en cache
+          fully_cached: Entièrement en cache
+          standard_caching: Standard
+        edit:
+          hidden_by_default: Masqué par défaut
+          hidden_by_default_desc_html: Les panneaux publicitaires sont toujours diffusés dans cet emplacement, mais s'affichent masqués et n'enregistrent aucune impression jusqu'à ce que la logique frontend les révèle avec %{reveal_call}. Les panneaux affichés portent %{placement_attribute}.
+          fully_cached: Entièrement en cache
+          fully_cached_desc: Sert une seule réponse en cache par localisation du visiteur pour cet emplacement, partagée par tous les articles et pages ainsi que par les visiteurs connectés, avec la durée de cache ci-dessus. Seuls les panneaux qui ne ciblent ni tags, ni articles, ni pages, ni segments d'audience, ni rôles, ni réponses à des sondages, ni types de navigateur sont affichés ici. Les articles dont les auteurs refusent les sponsors à proximité conservent le comportement standard. Ne s'applique qu'aux panneaux chargés séparément de la page, pas à ceux intégrés dans la page (comme la barre latérale de la page d'accueil).

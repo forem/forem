@@ -352,6 +352,24 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#estimated_user_count" do
+    it "runs the estimated count query once per view when also checking the display threshold" do
+      allow(User).to receive(:estimated_count).and_return(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+
+      expect(display_estimated_user_count?).to be(true)
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      expect(User).to have_received(:estimated_count).once
+    end
+
+    it "does not display the count for a small userbase" do
+      allow(User).to receive(:estimated_count).and_return(0)
+
+      expect(display_estimated_user_count?).to be(false)
+      expect(estimated_user_count).to eq(0)
+      expect(User).to have_received(:estimated_count).once
+    end
+  end
+
   describe "#cloudinary", cloudinary: true do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
@@ -701,6 +719,65 @@ RSpec.describe ApplicationHelper do
       allow(helper).to receive(:request).and_return(request_double)
 
       expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+  end
+
+  describe "#subforem_aware_sign_up_url" do
+    let!(:default_subforem) { create(:subforem, domain: "default-forem.test") }
+    let!(:root_subforem) { create(:subforem, domain: "root-forem.test", root: true) }
+    let!(:other_subforem) { create(:subforem, domain: "other-forem.test") }
+    let(:path) { "/enter?state=new-user" }
+
+    before do
+      RequestStore.store[:default_subforem_id] = Subforem.cached_default_id
+    end
+
+    after { RequestStore.clear! }
+
+    it "returns the path unchanged when no subforem is in the request" do
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(path)
+    end
+
+    it "links to the default subforem's domain when on the default subforem" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://default-forem.test/enter?state=new-user")
+    end
+
+    it "matches the URL previously built from the default subforem record" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(URL.url(path, default_subforem))
+    end
+
+    it "does not query subforems on repeated default-subforem renders" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems")
+      end
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        3.times { helper.subforem_aware_sign_up_url(path) }
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
+    it "reflects a changed default subforem domain after save" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      default_subforem.update!(domain: "renamed-forem.test")
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://renamed-forem.test/enter?state=new-user")
+    end
+
+    it "links to the root subforem's domain when on a non-default subforem" do
+      RequestStore.store[:subforem_id] = other_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://#{root_subforem.domain}/enter?state=new-user")
     end
   end
 

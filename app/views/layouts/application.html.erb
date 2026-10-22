@@ -102,6 +102,12 @@
         if (navigator.userAgent === 'ForemWebView/1' || window.frameElement) {
           document.body.classList.add("hidden-shell");
         }
+        <%# Server-rendered billboard scripts run before the deferred application pack defines %>
+        <%# window.Forem, so queue their placement reveals for that pack to replay. %>
+        window.Forem = window.Forem || {};
+        window.Forem.revealBillboardPlacement = window.Forem.revealBillboardPlacement || function (placementArea) {
+          (window.Forem.queuedBillboardPlacementReveals = window.Forem.queuedBillboardPlacementReveals || []).push(placementArea);
+        };
         <%# This is for rolling out or rolling back the app sidebar. %>
         <%# Use this format to make JS compatible: YYYY-MM-DDTHH:MM:SS (e.g. 2023-12-31T23:59:59) %>
         <% if ENV["MAKE_SIDEBAR_INVISIBLE_DATE"].present? %>

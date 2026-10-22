@@ -16,7 +16,8 @@ module Follows
       formatted_updated_at = follower.updated_at.respond_to?(:rfc3339) ? follower.updated_at.rfc3339 : follower.updated_at.to_s
       cache_key = "user-#{follower.id}-#{formatted_updated_at}/is_following_#{followable_type}_#{followable_id}"
       Rails.cache.fetch(cache_key, expires_in: 20.hours) do
-        follower.following?(followable.find(followable_id))
+        # following? only reads the followable's id and class, so skip hydrating the full row
+        follower.following?(followable.select(:id).find(followable_id))
       end
     end
 

@@ -114,5 +114,21 @@ RSpec.describe "Admin::BulkAssignRole" do
       expect(log.data["username"]).to eq(user1.username)
       expect(log.data["user_action_status"]).to eq("user_already_has_the_role")
     end
+
+    it "allows a regular admin to bulk-assign Community Leader Level 1 and logs duplicate assignments" do
+      sign_in create(:user, :admin)
+      params = {
+        usernames: user1.username,
+        role: "Community Leader Level 1",
+        note_for_current_role: "Assigning L1 curator"
+      }
+
+      post admin_bulk_assign_role_path, params: params
+      expect(user1.reload.community_leader_level_1?).to be(true)
+      expect(AuditLog.last.data["user_action_status"]).to eq("role_applied_successfully")
+
+      post admin_bulk_assign_role_path, params: params
+      expect(AuditLog.last.data["user_action_status"]).to eq("user_already_has_the_role")
+    end
   end
 end

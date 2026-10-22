@@ -164,6 +164,14 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.size).to eq(0)
       end
 
+      it "returns approved tag articles if tag requires approval" do
+        article.update_column(:approved, true)
+        Tag.find_by(name: article.tag_list.first).update(requires_approval: true)
+
+        get api_articles_path(tag: article.tag_list.first), headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+      end
+
       it "supports pagination" do
         create_list(:article, 2, tags: "discuss")
         get api_articles_path(tag: article.tag_list.first), params: { page: 1, per_page: 2 }, headers: headers
@@ -1616,6 +1624,38 @@ RSpec.describe "Api::V1::Articles" do
 
         expect(response.parsed_body.first.keys).to match_array index_keys
       end
+
+      it "runs the full-text search only once and returns body_markdown" do
+        article.update_columns(title: "Quuxlefrobnicator")
+        create(:article)
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "Quuxlefrobnicator" }
+        end
+
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+        expect(response.parsed_body.first["body_markdown"]).to eq(article.body_markdown)
+        expect(search_queries.size).to eq(1)
+      end
+    end
+
+    context "when there are no articles returned" do
+      it "returns an empty array after a single full-text search" do
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "zzznomatchzzz" }
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+        expect(search_queries.size).to eq(1)
+      end
     end
 
     context "when there is more than one article returned" do
@@ -1635,6 +1675,21 @@ RSpec.describe "Api::V1::Articles" do
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys
+      end
+
+      it "does not run a separate COUNT query" do
+        create(:article)
+
+        count_queries = []
+        callback = lambda do |*, payload|
+          count_queries << payload[:sql] if payload[:sql].include?("subquery_for_count")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search"
+        end
+
+        expect(response.parsed_body.length).to eq(2)
+        expect(count_queries).to be_empty
       end
     end
 
@@ -1820,7 +1875,7 @@ RSpec.describe "Api::V1::Articles" do
         algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
 
         expect(Article).to receive(:raw_search)
-          .with("fable", hash_including(hitsPerPage: 100))
+          .with("fable", hash_including(hitsPerPage: 250))
           .and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
 
         get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
@@ -1872,19 +1927,43 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body[0]["id"]).to eq(valid_article.id)
       end
 
-      it "passes advanced contextual query parameters to Algolia raw_search" do
+      it "passes advanced contextual query parameters and typo-size guards to Algolia raw_search" do
         allow(Article).to receive(:raw_search)
-          .with("fable", hash_including(
-            removeStopWords: true,
-            ignorePlurals: true,
-            advancedSyntax: true,
-            distinct: true,
-            typoTolerance: true,
-          ))
+          .with(
+            "best rust async runtime",
+            hash_including(
+              hitsPerPage: 250,
+              removeStopWords: true,
+              ignorePlurals: true,
+              advancedSyntax: true,
+              distinct: true,
+              typoTolerance: true,
+              minWordSizefor1Typo: 5,
+              minWordSizefor2Typos: 9,
+              removeWordsIfNoResults: "allOptional",
+              restrictSearchableAttributes: %w[title tag_list body],
+              optionalWords: %w[best rust async runtime],
+            ),
+          )
           .and_return({ "hits" => [] })
 
-        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        get "/api/articles/semantic_search", params: { q: "What is the best Rust async runtime?" }, headers: auth_headers
         expect(response).to be_successful
+        expect(Article).to have_received(:raw_search)
+      end
+
+      it "preserves single-character and symbol-bearing technical tokens like C, R, C++, and F# in Algolia queries" do
+        allow(Article).to receive(:raw_search)
+          .with(
+            "use c arrays c++ f# r tutorial",
+            hash_including(optionalWords: %w[use c arrays c++ f# r tutorial]),
+          )
+          .and_return({ "hits" => [] })
+
+        get "/api/articles/semantic_search", params: { q: "How do I use C arrays, C++, and F# in an R tutorial?" },
+                                             headers: auth_headers
+        expect(response).to be_successful
+        expect(Article).to have_received(:raw_search)
       end
 
       it "contextually boosts slightly more recent articles in Algolia search results" do
@@ -1903,6 +1982,119 @@ RSpec.describe "Api::V1::Articles" do
         get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
         expect(response).to be_successful
         expect(response.parsed_body.first["id"]).to eq(recent_article.id)
+      end
+
+      it "promotes strong semantic matches over noisy lexical matches in Stage 2 pre-ranking" do
+        common_time = 5.days.ago
+        noisy_lexical_article = create(:article, title: "Roasting coffee beans", published: true)
+        # Perpendicular to query_embedding ([1.0, 0.0, ...]) -> cosine distance = 1.0 (> 0.45 penalty threshold)
+        noisy_lexical_article.update_columns(
+          score: 100,
+          published_at: common_time,
+          semantic_embedding: [0.0, 1.0] + Array.new(766, 0.0),
+        )
+
+        strong_semantic_article = create(:article, title: "Rust async deep dive", published: true)
+        # Identical to query_embedding ([1.0, 0.0, ...]) -> cosine distance = 0.0
+        strong_semantic_article.update_columns(
+          score: 100,
+          published_at: common_time,
+          semantic_embedding: [1.0, 0.0] + Array.new(766, 0.0),
+        )
+
+        hits = [
+          { "objectID" => noisy_lexical_article.id.to_s },
+          { "objectID" => strong_semantic_article.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "rust" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.pluck("id")).to eq([strong_semantic_article.id, noisy_lexical_article.id])
+      end
+
+      it "still returns Algolia results when query embedding times out or fails" do
+        algolia_article = create(:article, title: "Fast Algolia Hit", published: true)
+        algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        embedding_mock = instance_double(Ai::Embedding)
+        allow(Ai::Embedding).to receive(:new).and_return(embedding_mock)
+        allow(embedding_mock).to receive(:call).and_raise(Timeout::Error.new("embedding timed out"))
+        allow(Article).to receive(:raw_search).and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.length).to eq(1)
+        expect(response.parsed_body.first["id"]).to eq(algolia_article.id)
+      end
+
+      it "falls back to DB hybrid search when Algolia exceeds the parallel timeout" do
+        stub_const("Api::V1::ArticlesController::PARALLEL_FETCH_TIMEOUT_SECONDS", 0.05)
+        db_article = create(:article, title: "Database Fallback Fable", published: true)
+        db_article.update_columns(score: 100, semantic_embedding: nil)
+
+        allow(Article).to receive(:raw_search) do
+          sleep 0.25
+          { "hits" => [] }
+        end
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.detect { |item| item["id"] == db_article.id }).to be_present
+      end
+
+      it "re-ranks the top 50 shortlist with Jev in Stage 3 when :semantic_search_reranking is enabled" do
+        enable_jev_for(:semantic_search_reranking)
+
+        common_time = 2.days.ago
+        first_pre_ranked = create(:article, title: "Superficial match", published: true)
+        first_pre_ranked.update_columns(score: 100, published_at: common_time, semantic_embedding: Array.new(768, 0.1))
+
+        second_pre_ranked = create(:article, title: "Authoritative guide to Rust Tokio", published: true)
+        second_pre_ranked.update_columns(score: 100, published_at: common_time, semantic_embedding: Array.new(768, 0.1))
+
+        hits = [
+          { "objectID" => first_pre_ranked.id.to_s },
+          { "objectID" => second_pre_ranked.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        stub_jev(
+          "candidate::#{first_pre_ranked.id}" => 0.05,
+          "candidate::#{second_pre_ranked.id}" => 0.98,
+        )
+
+        get "/api/articles/semantic_search", params: { q: "rust tokio" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.pluck("id")).to eq([second_pre_ranked.id, first_pre_ranked.id])
+      end
+
+      it "applies Jev re-ranking consistently across pages in the database fallback path" do
+        enable_jev_for(:semantic_search_reranking)
+        allow(Article).to receive(:raw_search).and_return({ "hits" => [] })
+
+        article.update_column(:published, false)
+        first_db = create(:article, title: "DB Jev Fable One", published: true)
+        first_db.update_columns(score: 500, published_at: 1.day.ago, semantic_embedding: Array.new(768, 0.1))
+
+        second_db = create(:article, title: "DB Jev Fable Two", published: true)
+        second_db.update_columns(score: 10, published_at: 30.days.ago, semantic_embedding: Array.new(768, 0.1))
+
+        stub_jev(
+          "candidate::#{first_db.id}" => 0.05,
+          "candidate::#{second_db.id}" => 0.98,
+        )
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 1 }, headers: auth_headers
+        expect(response).to be_successful
+        page_one_ids = response.parsed_body.pluck("id")
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 2 }, headers: auth_headers
+        expect(response).to be_successful
+        page_two_ids = response.parsed_body.pluck("id")
+
+        expect(page_one_ids).to eq([second_db.id])
+        expect(page_two_ids).to eq([first_db.id])
       end
 
       it "falls back to DB hybrid search if Algolia search fails" do

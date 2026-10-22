@@ -259,8 +259,8 @@ module ApplicationHelper
   end
 
   def community_leader_icon(user)
-    return unless user.try(:cached_community_leader?)
     return unless FeatureFlag.enabled?(:community_favorites)
+    return unless user.try(:cached_community_leader?)
 
     image_tag("community-leader-icon.svg",
               alt: t("views.leadership.icon.leader_alt"),
@@ -327,7 +327,9 @@ module ApplicationHelper
 
   def root_unless_default_subforem
     if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
-      Subforem.first
+      # Domain string instead of a record to avoid an uncached query on every logged-out render;
+      # URL.url accepts either.
+      Subforem.cached_default_domain
     elsif RequestStore.store[:subforem_id].present?
       Subforem.where(root: true).first
     end
@@ -452,7 +454,7 @@ module ApplicationHelper
   end
 
   def estimated_user_count
-    User.registered.estimated_count
+    @estimated_user_count ||= User.registered.estimated_count
   end
 
   def display_estimated_user_count?
