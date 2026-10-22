@@ -42,6 +42,35 @@ RSpec.describe "AhoyEmailClicks" do
         expect(bb_1.reload.clicks_count).to be(1)
       end
 
+      it "re-tallies the billboard's impressions, clicks, seconds visible and success rate", :aggregate_failures do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        create(:billboard_event, billboard: bb_1, category: "impression", counts_for: 3, seconds_visible: 7)
+        create(:billboard_event, billboard: bb_1, category: "impression", counts_for: 1, seconds_visible: 5)
+        create(:billboard_event, billboard: bb_1, category: "click", counts_for: 1, seconds_visible: 11)
+        create(:billboard_event, billboard: bb_1, category: "signup", counts_for: 2)
+        create(:billboard_event, category: "impression", counts_for: 50, seconds_visible: 50)
+
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature, bb: bb_1.id }
+
+        bb_1.reload
+        expect(bb_1.impressions_count).to eq(4)
+        expect(bb_1.clicks_count).to eq(2)
+        expect(bb_1.seconds_visible).to eq(12)
+        expect(bb_1.success_rate).to eq(0.5)
+      end
+
+      it "records a zero success rate when the billboard has no impressions", :aggregate_failures do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature, bb: bb_1.id }
+
+        bb_1.reload
+        expect(bb_1.impressions_count).to eq(0)
+        expect(bb_1.clicks_count).to eq(1)
+        expect(bb_1.seconds_visible).to eq(0)
+        expect(bb_1.success_rate).to eq(0)
+      end
+
       it "records feed event if article with url path exists" do
         article = create(:article)
         feed_config = create(:feed_config)
