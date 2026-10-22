@@ -26,25 +26,26 @@ module Articles
 
     def initialize(article, sample_size:)
       @article = article
-      @reaction_count_num = Rails.env.production? ? 15 : -1
-      @comment_count_num = Rails.env.production? ? 7 : -2
+      # Production thresholds match the partial index_articles_on_published_at_for_suggest_stickies
+      @score_num = Rails.env.production? ? 25 : -1
+      @comment_score_num = Rails.env.production? ? 15 : -2
       @sample_size = sample_size
     end
 
     def call
-      (tag_articles + more_articles).sample(@sample_size)
+      (tag_articles + more_articles).uniq.sample(@sample_size)
     end
 
     private
 
-    attr_accessor :article, :reaction_count_num, :comment_count_num
+    attr_accessor :article, :score_num, :comment_score_num
 
     def tag_articles
       article_tags = article.cached_tag_list.to_s.split(", ") - ["discuss"]
       return [] if article_tags.empty?
 
       scope = Article
-        .where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num)
+        .where("score > ? OR comment_score > ?", score_num, comment_score_num)
         .limit(DEFAULT_TAG_ARTICLES_LIMIT)
 
       apply_common_scope(scope: scope, tags: article_tags)
@@ -58,7 +59,7 @@ module Articles
     #       was unnecessary.
     def more_articles
       scope = Article
-        .where("comments_count > ?", comment_count_num)
+        .where("comment_score > ?", comment_score_num)
         .limit(DEFAULT_MORE_ARTICLES_LIMIT)
 
       apply_common_scope(scope: scope, tags: SUGGESTION_TAGS)
