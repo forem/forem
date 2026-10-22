@@ -1,5 +1,7 @@
 class FlagAppealsController < ApplicationController
+  before_action :set_no_cache_header
   before_action :authenticate_user!
+  before_action :require_suspended_user!, only: %i[new create]
 
   def show
     @flag_appeal = current_user.flag_appeals.find_by(id: params[:id])
@@ -7,36 +9,14 @@ class FlagAppealsController < ApplicationController
   end
 
   def new
-    # source_* because Fastly strips GET params missing from config/fastly/snippets/safe_params_list.vcl;
-    # appealable_* is still honored for links that never pass through the edge.
-    appealable_type = params[:source_type].presence || params[:appealable_type].presence || "User"
-    appealable_id = params[:source_id].presence || params[:appealable_id].presence || current_user.id
-
-    case appealable_type
-    when "Article"
-      unless current_user.articles.exists?(id: appealable_id)
-        appealable_type = "User"
-        appealable_id = current_user.id
-      end
-    when "Comment"
-      unless current_user.comments.exists?(id: appealable_id)
-        appealable_type = "User"
-        appealable_id = current_user.id
-      end
-    else
-      appealable_type = "User"
-      appealable_id = current_user.id
-    end
-
-    @flag_appeal = current_user.flag_appeals.build(
-      appealable_type: appealable_type,
-      appealable_id: appealable_id,
-    )
+    @flag_appeal = current_user.flag_appeals.build(appealable: current_user)
   end
 
   def create
-    @flag_appeal = current_user.flag_appeals.build(appeal_params)
-    validate_and_sanitize_appealable
+    @flag_appeal = current_user.flag_appeals.build(
+      reason: appeal_params[:reason],
+      appealable: current_user,
+    )
 
     # Every appeal triggers a paid AI review, so cap how fast a user can file them across targets.
     rate_limit!(:flag_appeal_creation)
@@ -64,27 +44,11 @@ class FlagAppealsController < ApplicationController
 
   private
 
-  def appeal_params
-    params.require(:flag_appeal).permit(:reason, :appealable_type, :appealable_id)
+  def require_suspended_user!
+    redirect_to root_path unless current_user.actively_spam_or_suspended?
   end
 
-  def validate_and_sanitize_appealable
-    case @flag_appeal.appealable_type
-    when "Article"
-      article = current_user.articles.find_by(id: @flag_appeal.appealable_id)
-      unless article
-        @flag_appeal.appealable_type = "User"
-        @flag_appeal.appealable_id = current_user.id
-      end
-    when "Comment"
-      comment = current_user.comments.find_by(id: @flag_appeal.appealable_id)
-      unless comment
-        @flag_appeal.appealable_type = "User"
-        @flag_appeal.appealable_id = current_user.id
-      end
-    else
-      @flag_appeal.appealable_type = "User"
-      @flag_appeal.appealable_id = current_user.id
-    end
+  def appeal_params
+    params.require(:flag_appeal).permit(:reason)
   end
 end

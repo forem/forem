@@ -338,6 +338,8 @@ class ApplicationController < ActionController::Base
   end
 
   def respond_with_user_suspended
+    unset_cache_control_headers
+    set_no_cache_header
     response.status = :forbidden
     render "pages/forbidden"
   end

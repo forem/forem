@@ -12,9 +12,11 @@ pt:
       submitted_heading: Obrigado pelo envio do seu recurso
       home_link: Início %{community}
       already_pending: Você já tem um recurso aberto pendente de análise para este item.
-      appealing_comment_heading: Recurso sobre a sinalização do seu comentário
-      appealing_article_heading: Recurso sobre a sinalização do seu artigo
       errors_heading:
         one: "1 erro impediu o envio deste recurso:"
         other: "%{count} erros impediram o envio deste recurso:"
-      on_post: "Em: %{title}"
+      suspended_notice:
+        heading: Conta suspensa
+        description: Sua conta foi suspensa e tem acesso limitado. Sua capacidade de publicar e comentar pode estar limitada.
+        contact_or_appeal_html: "Para mais informações, você pode enviar uma mensagem para %{contact} ou %{appeal_link}."
+        appeal_link: enviar um recurso

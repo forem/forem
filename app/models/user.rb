@@ -533,6 +533,25 @@ class User < ApplicationRecord
     CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
   end
 
+  # Fast negative path via cached_role_names so non-suspended users never hit the database,
+  # paired with an authoritative role check when the cache reports "suspended" so a lifted
+  # suspension is never shown stale UI.
+  def actively_suspended?
+    return false unless cached_role_names.include?("suspended")
+    return true if suspended?
+
+    Rails.cache.delete("user-#{id}/role_names")
+    false
+  end
+
+  def actively_spam_or_suspended?
+    return false unless (cached_role_names & %w[spam suspended]).any?
+    return true if spam_or_suspended?
+
+    Rails.cache.delete("user-#{id}/role_names")
+    false
+  end
+
   def processed_website_url
     profile.website_url.to_s.strip if profile.website_url.present?
   end
