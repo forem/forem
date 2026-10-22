@@ -1290,6 +1290,36 @@ RSpec.describe Spam::Handler, type: :service do
     end
   end
 
+  describe ".suspend!" do
+    let(:user) { create(:user) }
+    let!(:published) { create(:article, user: user) }
+
+    def suspension_log
+      AuditLog.on_user(user).find_by(category: "spam.automatic_block", slug: "automatic_suspended")
+    end
+
+    it "records the posts it unpublishes so an approved appeal can restore exactly those" do
+      allow(described_class).to receive(:unpublish_all_posts_when_user_auto_suspended?).and_return(true)
+      scheduled = create(:article, user: user).tap { |a| a.update_columns(published_at: 1.day.from_now) }
+      create(:article, user: user).tap { |a| a.update_columns(published: false) } # already hidden by the author
+
+      described_class.__send__(:suspend!, user: user)
+
+      expect(published.reload).not_to be_published
+      expect(scheduled.reload).not_to be_published
+      expect(suspension_log.data["unpublished_article_ids"]).to contain_exactly(published.id, scheduled.id)
+    end
+
+    it "does not record unpublished posts when posts are left published" do
+      allow(described_class).to receive(:unpublish_all_posts_when_user_auto_suspended?).and_return(false)
+
+      described_class.__send__(:suspend!, user: user)
+
+      expect(published.reload).to be_published
+      expect(suspension_log.data).not_to have_key("unpublished_article_ids")
+    end
+  end
+
   describe ".profile_spam_trigger_term_match?" do
     it "matches whole trigger words and plurals case-insensitively" do
       expect(described_class.profile_spam_trigger_term_match?("Best Casino Deals")).to be(true)
