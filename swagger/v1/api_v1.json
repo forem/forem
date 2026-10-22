@@ -5048,6 +5048,93 @@
         }
       }
     },
+    "/api/tags/{id}": {
+      "put": {
+        "summary": "Update a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Update a tag's display details and wiki by ID.\n\nRequires an API key that belongs to a super admin, an admin, or a user with the `single_resource_admin` role on Tag. Each update is written to the admin API audit log.\n\n### Body Parameter Guidelines:\n- All fields are optional; only the fields you send are changed.\n- **pretty_name**: Display name for the tag, e.g. `JavaScript` for `javascript`.\n- **short_summary**: Short description shown with the tag.\n- **wiki_body_markdown**: Markdown body of the tag's wiki.\n- **supported**: Whether the tag is supported on the platform.\n- **bg_color_hex** / **text_color_hex**: Tag colors as hexadecimal values, e.g. `#1E90FF`.\n- **context_note_instructions**: Instructions shown to people who add a context note to a post with this tag.\n\nThe tag's `name` cannot be changed. The response has the fields of an item in `GET /api/tags` plus every editable field, so callers can confirm the edit.",
+        "operationId": "updateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag to update.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag fields to update"
+        }
+      }
+    },
     "/api/trends": {
       "get": {
         "summary": "Trends",
@@ -6736,6 +6823,58 @@
             "nullable": true
           }
         }
+      },
+      "ExtendedTag": {
+        "description": "Representation of a tag with its editable fields, returned when a tag is updated",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pretty_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "short_summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "wiki_body_markdown": {
+            "type": "string",
+            "nullable": true
+          },
+          "context_note_instructions": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "text_color_hex": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "pretty_name",
+          "short_summary",
+          "supported",
+          "wiki_body_markdown",
+          "context_note_instructions",
+          "bg_color_hex",
+          "text_color_hex"
+        ]
       },
       "Page": {
         "description": "Representation of a page object",
