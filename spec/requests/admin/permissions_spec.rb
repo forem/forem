@@ -93,6 +93,66 @@ RSpec.describe "/admin/permissions" do
       expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).to exist
       expect(flash[:success]).to be_present
     end
+
+    it "grants single resource admin on a specific role, creating the role record if needed", :aggregate_failures do
+      expect(Role.global.find_by(name: "base_subscriber")).to be_nil
+
+      post grant_admin_permissions_path,
+           params: { username: target_user.username, role_name: "single_resource_admin|Role|base_subscriber" }
+
+      expect(response).to redirect_to(admin_permissions_path)
+      base_subscriber_role = Role.global.find_by(name: "base_subscriber")
+      expect(base_subscriber_role).to be_present
+      expect(target_user.reload.single_resource_admin_for?(base_subscriber_role)).to be true
+      expect(target_user.base_subscriber?).to be false
+      expect(flash[:success]).to be_present
+    end
+
+    it "uses the existing role record" do
+      existing_role = Role.global.find_or_create_by!(name: "base_subscriber")
+
+      expect do
+        post grant_admin_permissions_path,
+             params: { username: target_user.username, role_name: "single_resource_admin|Role|base_subscriber" }
+      end.to change(Role, :count).by(1) # only the scoped single_resource_admin role
+
+      expect(target_user.reload.roles.find_by(name: "single_resource_admin").resource).to eq(existing_role)
+    end
+
+    it "rejects a role scope that is not allowed", :aggregate_failures do
+      post grant_admin_permissions_path,
+           params: { username: target_user.username, role_name: "single_resource_admin|Role|trusted" }
+
+      expect(flash[:error]).to be_present
+      expect(target_user.reload.roles).to be_empty
+    end
+
+    it "rejects a class-level role scope", :aggregate_failures do
+      post grant_admin_permissions_path,
+           params: { username: target_user.username, role_name: "single_resource_admin|Role" }
+
+      expect(flash[:error]).to be_present
+      expect(target_user.reload.roles).to be_empty
+    end
+  end
+
+  describe "GET /admin/permissions with a role-scoped resource admin" do
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:scoped_admin) { create(:user) }
+
+    before do
+      scoped_admin.add_role(:single_resource_admin, Role.global.find_or_create_by!(name: "base_subscriber"))
+      sign_in super_admin
+    end
+
+    it "lists the user with the scoped role and offers it in the grant form", :aggregate_failures do
+      get admin_permissions_path
+
+      expect(response.body).to include("@#{scoped_admin.username}")
+      expect(response.body).to include("Role Admin: base_subscriber")
+      expect(response.body).to include("single_resource_admin|Role|base_subscriber")
+      expect(response.body).to include("Resource Admin: Role base_subscriber")
+    end
   end
 
   describe "DELETE /admin/permissions/revoke" do
@@ -121,6 +181,22 @@ RSpec.describe "/admin/permissions" do
       delete revoke_admin_permissions_path, params: { user_id: target_user.id, role_name: "single_resource_admin|Event" }
       expect(response).to redirect_to(admin_permissions_path)
       expect(target_user.reload.roles.where(name: "single_resource_admin", resource_type: "Event")).not_to exist
+      expect(flash[:success]).to be_present
+    end
+
+    it "revokes single resource admin on a specific role only", :aggregate_failures do
+      base_subscriber_role = Role.global.find_or_create_by!(name: "base_subscriber")
+      target_user.add_role(:single_resource_admin, base_subscriber_role)
+      target_user.add_role(:single_resource_admin, Event)
+
+      delete revoke_admin_permissions_path,
+             params: { user_id: target_user.id, role_name: "single_resource_admin|Role|base_subscriber" }
+
+      expect(response).to redirect_to(admin_permissions_path)
+      target_user.reload
+      expect(target_user.single_resource_admin_for?(base_subscriber_role)).to be false
+      expect(target_user.roles.where(name: "single_resource_admin", resource_type: "Event")).to exist
+      expect(target_user.admin?).to be true
       expect(flash[:success]).to be_present
     end
   end
