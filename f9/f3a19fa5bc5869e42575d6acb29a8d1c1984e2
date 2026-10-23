@@ -1,0 +1,30 @@
+app/assets/javascripts/initializers/initializeBaseUserData.js
+  h_a5e25bc086eb00 107-119,141
+app/controllers/flag_appeals_controller.rb
+  h_a5e25bc086eb00 10-13
+app/helpers/comments_helper.rb
+  h_a5e25bc086eb00 133-151,153-155,157-163,166-178
+app/views/articles/_full_comment_area.html.erb
+  h_a5e25bc086eb00 60-61,66
+app/views/comments/_comment_proper.html.erb
+  h_a5e25bc086eb00 8,56
+app/views/comments/_hidden_comment_appeal_notice.html.erb
+  h_a5e25bc086eb00 1-14
+spec/requests/comments/hidden_comment_appeal_notice_spec.rb
+  h_a5e25bc086eb00 1-107
+spec/requests/flag_appeals_spec.rb
+  h_a5e25bc086eb00 41-60
+spec/system/comments/hidden_comment_appeal_notice_spec.rb
+  h_a5e25bc086eb00 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f9f3a19fa5bc5869e42575d6acb29a8d1c1984e2",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
