@@ -1,0 +1,24 @@
+app/controllers/chat_comments_controller.rb
+  h_f968154a99632d 2,5-46,49-58
+app/controllers/stories_controller.rb
+  h_f968154a99632d 411-412
+app/models/article.rb
+  h_f968154a99632d 478
+app/views/articles/_chat_comment_area.html.erb
+  h_f968154a99632d 1-20,22-34,36-69,71,73-98,100-146,149-231,233
+app/views/articles/chat.html.erb
+  h_f968154a99632d 5,7,10-56,61,63,67-716,719-736,739-807,811-820,825-830,834-842,844-849,853-862,864-871,878-922,924-934,936-943,945-966,969-1184,1186-1193,1195,1200-1203,1206-1221,1224-1273,1275
+spec/requests/chat_articles_spec.rb
+  h_f968154a99632d 3,5-11,14,18-22,27-51,57,64-74,76-78,82-100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0317f74a3b0a2dc11f0034e59ce86d22edaf1a8a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

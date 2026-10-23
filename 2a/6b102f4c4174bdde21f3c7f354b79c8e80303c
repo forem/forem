@@ -1,0 +1,22 @@
+.env_sample
+  h_f968154a99632d 138
+app/models/billboard.rb
+  h_f968154a99632d 31,53,57,297
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 50,54-55
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 809-810,813-815
+swagger/v1/api_v1.json
+  h_f968154a99632d 7109-7110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2a6b102f4c4174bdde21f3c7f354b79c8e80303c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

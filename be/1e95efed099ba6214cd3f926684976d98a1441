@@ -1,0 +1,51 @@
+config/locales/services/fr.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 117
+spec/services/ai/spam_escalation_check_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 36-41,76
+  s_4da727bc2810b3::t_acb5e164e6c26d 42-64,75
+config/locales/services/en.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 119
+app/services/spam/handler.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 30-31,51,62,68,88,218,229-232,236,240,245,248,394,397,400-401,404-406,462-463
+  s_46fe994672464f::t_0714abdb720dcc 237
+  s_46fe994672464f::t_ab25d67761bdc5 238
+  s_46fe994672464f::t_614238e9bb3d43 243,246
+  s_46fe994672464f::t_e5a2285326514f 395-396,398-399,402-403
+spec/services/spam/handler_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 97-121,126-144,152-154,530,533-535,542-544,546
+  s_46fe994672464f::t_081751212e3468 536-541
+  s_46fe994672464f::t_e5a2285326514f 122-125,145-151
+config/locales/services/pt.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 127
+app/services/ai/spam_escalation_check.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 11,28-29
+  s_4da727bc2810b3::t_acb5e164e6c26d 30-34,52,61-73
+  s_4da727bc2810b3::t_2b023c6e0183af 74
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_46fe994672464f::t_e5a2285326514f 53-54
+  s_4da727bc2810b3::t_acb5e164e6c26d 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "be1e95efed099ba6214cd3f926684976d98a1441",
+  "prompts": {},
+  "sessions": {
+    "s_46fe994672464f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b3d78f86-8f58-45b4-8663-57ece48e5ab4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_4da727bc2810b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6e665fd5-120a-4d91-ab94-082199c64e39",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
