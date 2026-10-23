@@ -136,6 +136,10 @@ RSpec.describe Middlewares::SetSubforem do
       it "does not raise EOFError" do
         expect { middleware.call(env) }.not_to raise_error
       end
+
+      it "does not include JQuery::FileUpload::Rails::Middleware in the Rails middleware stack" do
+        expect(Rails.application.middleware.middlewares).not_to include(JQuery::FileUpload::Rails::Middleware)
+      end
     end
 
     context "when chained before Middlewares::SetCookieDomain" do
