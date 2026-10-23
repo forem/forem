@@ -2,15 +2,17 @@ require "logtail"
 require_relative "log_device"
 
 module Betterstack
-  # Stands in for ForemStatsClient (a Datadog::Statsd): every call is passed on to `forward_to`
-  # unchanged, then written to Better Stack as one structured log event. Only the methods the app
-  # calls are implemented. Only loaded when BETTERSTACK_METRICS_SOURCE_TOKEN is set
+  # Stands in for ForemStatsClient: every call is passed on to `forward_to` (a Datadog::Statsd when
+  # DD_API_KEY is set) unchanged, and written to Better Stack as one structured log event when
+  # `source_token` is present. Only the methods the app calls are implemented
   # (see config/initializers/datadog.rb).
   class StatsClient
-    def initialize(source_token, ingesting_host: nil, forward_to: nil)
-      @logger = Logtail::Logger.new(LogDevice.new(source_token, ingesting_host: ingesting_host))
-      # Logtail::Logger defaults to ENV["LOG_LEVEL"], which drops these info events in production.
-      @logger.level = :info
+    def initialize(source_token = nil, ingesting_host: nil, forward_to: nil)
+      if source_token.present?
+        @logger = Logtail::Logger.new(LogDevice.new(source_token, ingesting_host: ingesting_host))
+        # Logtail::Logger defaults to ENV["LOG_LEVEL"], which drops these info events in production.
+        @logger.level = :info
+      end
       @forward_to = forward_to
     end
 
@@ -41,7 +43,7 @@ module Betterstack
 
     # Tags keep Datadog's "key:value" strings.
     def write(type, name, value, opts)
-      @logger.info(message: name, metric: { type: type, name: name, value: value, tags: Array(opts[:tags]) })
+      @logger&.info(message: name, metric: { type: type, name: name, value: value, tags: Array(opts[:tags]) })
     end
   end
 end

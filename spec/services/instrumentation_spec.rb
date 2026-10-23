@@ -12,8 +12,20 @@ RSpec.describe Instrumentation do
     Sentry.close if Sentry.initialized?
   end
 
-  it "traces operations with Datadog and returns the block value" do
-    allow(Datadog::Tracing).to receive(:trace).and_call_original
+  it "returns the block value without Datadog when DD_API_KEY is unset" do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("DD_API_KEY").and_return(nil)
+
+    result = dummy_class.new.__send__(:instrument, "test.op", tags: { user_id: 42 }) { "computed" }
+
+    expect(result).to eq("computed")
+  end
+
+  it "traces operations with Datadog when DD_API_KEY is present and returns the block value" do
+    require "ddtrace"
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("DD_API_KEY").and_return("dd-key")
+    allow(Datadog::Tracing).to receive(:trace).and_yield
 
     result = dummy_class.new.__send__(:instrument, "test.op", tags: { user_id: 42 }) { "computed" }
 
