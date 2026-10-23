@@ -3,7 +3,9 @@ module Admin
     layout "admin"
 
     def index
-      @badges = Badge.all
+      @q = Badge.ransack(params[:q])
+      @q.sorts = 'title asc' if @q.sorts.empty?
+      @badges = @q.result
     end
 
     def new
