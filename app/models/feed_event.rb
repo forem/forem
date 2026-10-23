@@ -61,6 +61,12 @@ class FeedEvent < ApplicationRecord
     update_counters_for_articles(unique_article_ids)
   end
 
+  def self.bulk_update_counters_by_feed_config_id(feed_config_ids)
+    feed_config_ids.compact.uniq.each do |feed_config_id|
+      update_single_feed_config_counters(feed_config_id)
+    end
+  end
+
   def self.update_counters_for_articles(article_ids)
     article_ids.each do |article_id|
       update_single_article_counters(article_id)
@@ -101,8 +107,9 @@ class FeedEvent < ApplicationRecord
     end
   end
 
-  def self.update_single_feed_config_counters(feed_config_id)
-    ThrottledCall.perform("feed_config_feed_success_score_#{feed_config_id}", throttle_for: 5.minutes) do
+  def self.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: nil)
+    throttle_key = ["feed_config_feed_success_score", feed_config_id, throttle_key_suffix].compact.join("_")
+    ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
       impressions = FeedEvent.where(feed_config_id: feed_config_id, category: "impression")
       return if impressions.empty?
 
@@ -113,7 +120,6 @@ class FeedEvent < ApplicationRecord
 
       # Count the distinct users for impressions and each event type
       distinct_impressions_users = impressions.distinct.pluck(:user_id)
-      distinct_clicks_users = clicks.distinct.pluck(:user_id)
       distinct_reactions_users = reactions.distinct.pluck(:user_id)
       distinct_comments_users = comments.distinct.pluck(:user_id)
       distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
@@ -125,7 +131,7 @@ class FeedEvent < ApplicationRecord
       pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
 
       score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
-      
+
       # Update the feed config counters
       FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions.size)
     end
@@ -135,7 +141,10 @@ class FeedEvent < ApplicationRecord
 
   def update_article_counters_and_scores
     self.class.update_single_article_counters(article_id) if article_id
-    self.class.update_single_feed_config_counters(feed_config_id) if feed_config_id
+    return unless feed_config_id
+
+    suffix = impression? ? nil : category
+    self.class.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: suffix)
   end
 
   def create_feed_config_offshoot

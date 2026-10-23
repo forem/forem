@@ -282,6 +282,71 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_impressions_count).to eq(original_impressions)
       end
     end
+
+    context "when an engagement event follows an impression within the throttle window", :throttled_call do
+      it "updates the feed config score without being blocked by the impression throttle key" do
+        article = create(:article)
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(1)
+        expect(feed_config.feed_success_score).to eq(0.0)
+
+        create(
+          :feed_event,
+          category: "click",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_success_score).to eq(1.0)
+      end
+    end
+  end
+
+  describe ".bulk_update_counters_by_feed_config_id" do
+    let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
+    let(:user1)       { create(:user) }
+
+    before do
+      allow(ThrottledCall).to receive(:perform).and_yield
+    end
+
+    it "updates counters for unique feed_config_ids" do
+      article = create(:article)
+      described_class.insert_all(
+        [
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :impression,
+            article_position: 1,
+            context_type: "home"
+          },
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :click,
+            article_position: 1,
+            context_type: "home"
+          },
+        ],
+      )
+
+      described_class.bulk_update_counters_by_feed_config_id([feed_config.id, feed_config.id, nil])
+      feed_config.reload
+
+      expect(feed_config.feed_impressions_count).to eq(1)
+      expect(feed_config.feed_success_score).to eq(1.0)
+    end
   end
 
   describe "after_save .create_feed_config_offshoot" do

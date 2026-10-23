@@ -66,14 +66,7 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-
-               @feed_config = if params[:item]
-                                FeedConfig.find_by(id: params[:item]) || FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              elsif rand(20) == 0 # 5% of the time, we'll just pick a random feed config
-                                FeedConfig.where("feed_impressions_count < 100").order("RANDOM()").limit(1).first || FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              else
-                                FeedConfig.order("feed_success_score DESC").limit(rand(1..15)).sample || FeedConfig.first_or_create
-                              end
+               @feed_config = FeedConfig.select_for_feed(preferred_id: params[:item])
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else

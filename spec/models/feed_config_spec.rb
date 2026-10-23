@@ -483,7 +483,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(feed_config.reload.attributes.slice(*original_attrs.keys)).to eq(original_attrs)
     end
 
-    it "adjusts tag count ranges with +/- offsets and resets impressions" do
+    it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
+      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -492,6 +493,42 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
+      expect(clone.feed_success_score).to eq(0.0)
+    end
+  end
+
+  describe ".select_for_feed" do
+    let!(:proven_top_config) do
+      create(:feed_config, feed_success_score: 1.5, feed_impressions_count: 500, created_at: 5.days.ago)
+    end
+    let!(:new_config) do
+      create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 10, created_at: 1.hour.ago)
+    end
+
+    it "returns the preferred feed config when preferred_id matches" do
+      expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
+    end
+
+    it "selects from the newest low-impression pool when roll is < 20" do
+      allow(described_class).to receive(:rand).with(100).and_return(10)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed).to eq(new_config)
+    end
+
+    it "selects from proven top performers when roll is >= 25" do
+      unproven_clone = create(
+        :feed_config,
+        feed_success_score: 9.9,
+        feed_impressions_count: 0,
+        created_at: 1.minute.ago,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(proven_top_config)
+      expect(selected).not_to eq(unproven_clone)
     end
   end
 

@@ -95,10 +95,13 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
             feedThirdBillboard,
           ]) => {
             // Set feed config if available
-            if (feedPosts.length > 0) {
+            const indexContainer = document.getElementById('index-container');
+            if (indexContainer && feedPosts.length > 0) {
               const firstPost = feedPosts[0];
               if (firstPost.feed_config) {
-                document.getElementById('index-container').dataset.feedConfigId = firstPost.feed_config;
+                indexContainer.dataset.feedConfigId = firstPost.feed_config;
+              } else {
+                delete indexContainer.dataset.feedConfigId;
               }
             }
 
