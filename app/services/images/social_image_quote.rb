@@ -28,6 +28,7 @@ module Images
     def call
       quote = opening_text
       quote = clean(title) if quote.blank?
+      quote = title.to_s.squish if quote.blank?
       shorten(quote)
     end
 

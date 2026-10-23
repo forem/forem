@@ -67,5 +67,10 @@ RSpec.describe Images::SocialImageQuote do
     it "falls back to the title when the body has no usable paragraph" do
       expect(quote("<div class='highlight'><pre>code only</pre></div>", title: "Only Code")).to eq("Only Code")
     end
+
+    it "falls back to the raw title when both body and cleaned title are empty" do
+      html = "<div class='highlight'><pre>code only</pre></div>"
+      expect(quote(html, title: "\u{1F525}\u{1F525}")).to eq("\u{1F525}\u{1F525}")
+    end
   end
 end

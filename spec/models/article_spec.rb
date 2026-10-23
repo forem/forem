@@ -3537,9 +3537,11 @@ RSpec.describe Article do
     end
 
     context "when title or published_at attribute changes but published is false" do
-      it "does not trigger the Images::SocialImageWorker" do
+      it "does not trigger the Images::SocialImageWorker or parse the quote" do
+        allow(Images::SocialImageQuote).to receive(:from_html)
         article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: false\n---\n\n# Hello World"
         article.save
+        expect(Images::SocialImageQuote).not_to have_received(:from_html)
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end

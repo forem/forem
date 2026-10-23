@@ -216,6 +216,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       generator.send(:generate_image, article, nil)
       expect(generator).to have_received(:render_quote).with(Images::SocialImageQuote.call(article))
     end
+
+    it "cleans up intermediate and opened tempfiles after rendering" do
+      generator.send(:generate_image, article, "#3b49df")
+
+      %i[@logo_image @author_image @rounded_mask].each do |ivar|
+        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+      end
+    end
   end
 
   describe "#render_text" do
@@ -231,7 +239,15 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       # Rendering the one-character file content would be far narrower than the path.
       expect(image.width).to be > 200
     ensure
+      image&.destroy!
       file&.close!
+    end
+
+    it "renders a blank string without raising an ImageMagick error" do
+      image = generator.send(:render_text, "label", "", Images::BOLD_FONT_PATH, 28, "black")
+      expect(image.width).to be >= 1
+    ensure
+      image&.destroy!
     end
   end
 
@@ -253,6 +269,14 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
     it "expands three-digit hex colors" do
       expect(generator.send(:palette_for, "#FC0", 1).first).to eq("#ffcc00")
+    end
+
+    it "rotates hue with floating-point division for grayscale brand colors" do
+      palette = generator.send(:palette_for, "#808080", 1)
+      # +38 degrees from 0 is warm amber (green > blue), not pure red (green == blue)
+      _, r, g, b = *palette[1].match(/\A#(..)(..)(..)\z/)
+      expect(r.to_i(16)).to be > g.to_i(16)
+      expect(g.to_i(16)).to be > b.to_i(16)
     end
   end
 
@@ -279,6 +303,11 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     it "drops emoji and truncates long names" do
       expect(generator.send(:display_name, "Jess \u{1F984}")).to eq("Jess")
       expect(generator.send(:display_name, "a" * 60).length).to eq(described_class::MAX_NAME_LENGTH)
+    end
+
+    it "falls back to the username when the name is emoji-only" do
+      generator.instance_variable_set(:@user, user)
+      expect(generator.send(:display_name, "\u{1F525}\u{1F984}")).to eq(user.username)
     end
   end
 

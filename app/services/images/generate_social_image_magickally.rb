@@ -122,8 +122,10 @@ module Images
       background = draw_background(palette, article.id)
       generate_magickally(background, card)
     ensure
-      background&.destroy!
-      card&.values_at(:quote_image, :name_image, :meta_image)&.compact&.each(&:destroy!)
+      [background, @logo_image, @author_image, @rounded_mask,
+       *card&.values_at(:quote_image, :name_image, :meta_image)].each do |image|
+        destroy_image(image)
+      end
     end
 
     def generate_magickally(background, card)
@@ -133,6 +135,8 @@ module Images
       result = add_profile_image(result)
       result = add_byline(result, card[:name_image], card[:meta_image])
       upload_result(result)
+    ensure
+      destroy_image(result) unless result.equal?(background)
     end
 
     def draw_background(palette, seed)
@@ -154,6 +158,9 @@ module Images
         convert << tempfile.path
       end
       MiniMagick::Image.new(tempfile.path, tempfile)
+    rescue StandardError
+      tempfile&.close!
+      raise
     end
 
     def draw_window(result)
@@ -191,7 +198,7 @@ module Images
       return result unless @logo_image
 
       @logo_image.resize "x#{LOGO_HEIGHT}"
-      result.composite(@logo_image) do |c|
+      composite_onto(result, @logo_image) do |c|
         c.compose "Over"
         c.geometry "+#{WINDOW_X + 18}+#{WINDOW_Y + ((WINDOW_BAR_HEIGHT - LOGO_HEIGHT) / 2)}"
       end
@@ -210,7 +217,7 @@ module Images
       end
 
       quote_y = body_top + 24 + [(QUOTE_MAX_HEIGHT + 16 - quote_image.height) / 2, 0].max
-      result.composite(quote_image) do |c|
+      composite_onto(result, quote_image) do |c|
         c.compose "Over"
         c.geometry "+#{WINDOW_X + QUOTE_LEFT}+#{quote_y}"
       end
@@ -234,6 +241,7 @@ module Images
     # ImageMagick read a file and "%" sequences expand to image properties.
     def render_text(kind, text, font, pointsize, color, width: nil)
       tempfile = Tempfile.new(["social_text", ".png"])
+      content = text.to_s.strip.empty? ? "\u00A0" : escape_text(text)
       MiniMagick::Tool::Convert.new do |convert|
         convert.background "none"
         convert.fill color
@@ -244,10 +252,13 @@ module Images
           convert.size "#{width}x"
           convert.gravity "West"
         end
-        convert << "#{kind}:#{escape_text(text)}"
+        convert << "#{kind}:#{content}"
         convert << tempfile.path
       end
       MiniMagick::Image.new(tempfile.path, tempfile)
+    rescue StandardError
+      tempfile&.close!
+      raise
     end
 
     def add_profile_image(result)
@@ -262,11 +273,11 @@ module Images
       @rounded_mask.resize "#{AVATAR_SIZE}x#{AVATAR_SIZE}"
 
       # The mask paints white corners, which blend into the white window.
-      result = result.composite(@author_image) do |c|
+      result = composite_onto(result, @author_image) do |c|
         c.compose "Over"
         c.geometry "+#{x}+#{y}"
       end
-      result = result.composite(@rounded_mask) do |c|
+      result = composite_onto(result, @rounded_mask) do |c|
         c.compose "Over"
         c.geometry "+#{x}+#{y}"
       end
@@ -288,14 +299,27 @@ module Images
       text_x = WINDOW_X + 40 + AVATAR_SIZE + 20
       top = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
 
-      result = result.composite(name_image) do |c|
+      result = composite_onto(result, name_image) do |c|
         c.compose "Over"
         c.geometry "+#{text_x}+#{top - 2}"
       end
-      result.composite(meta_image) do |c|
+      composite_onto(result, meta_image) do |c|
         c.compose "Over"
         c.geometry "+#{text_x}+#{top + 36}"
       end
+    end
+
+    def composite_onto(base, overlay, &block)
+      composed = base.composite(overlay, &block)
+      destroy_image(base) unless composed.equal?(base)
+      composed
+    end
+
+    def destroy_image(image)
+      return unless image.respond_to?(:destroy!)
+      return if image.respond_to?(:tempfile) && image.tempfile && image.tempfile.path.nil?
+
+      image.destroy!
     end
 
     def escape_text(text)
@@ -304,9 +328,11 @@ module Images
 
     # NFKC turns "fancy" Unicode letters into plain ones the fonts can render.
     def display_name(name)
-      name.to_s.unicode_normalize(:nfkc)
+      cleaned = name.to_s.unicode_normalize(:nfkc)
         .gsub(/[\p{Extended_Pictographic}\uFE0F\u200D]/, "")
-        .squish.truncate(MAX_NAME_LENGTH)
+        .squish
+      cleaned = @user&.username.to_s if cleaned.blank?
+      cleaned.truncate(MAX_NAME_LENGTH)
     end
 
     def meta_line(article)
@@ -371,7 +397,7 @@ module Images
       max = [r, g, b].max
       min = [r, g, b].min
       lightness = (max + min) / 2
-      return [0, 0, lightness] if max == min
+      return [0.0, 0.0, lightness] if max == min
 
       delta = max - min
       saturation = lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min)
@@ -384,14 +410,14 @@ module Images
     end
 
     def hsl_to_hex(hue, saturation, lightness)
-      hue %= 360
+      hue %= 360.0
       saturation = saturation.clamp(0, 1)
       lightness = lightness.clamp(0, 1)
       chroma = (1 - ((2 * lightness) - 1).abs) * saturation
-      x = chroma * (1 - (((hue / 60) % 2) - 1).abs)
+      x = chroma * (1 - (((hue / 60.0) % 2) - 1).abs)
       m = lightness - (chroma / 2)
       sectors = [[chroma, x, 0], [x, chroma, 0], [0, chroma, x], [0, x, chroma], [x, 0, chroma], [chroma, 0, x]]
-      rgb = sectors[(hue / 60).floor % 6]
+      rgb = sectors[(hue / 60.0).floor % 6]
       "##{rgb.map { |channel| ((channel + m) * 255).round.to_s(16).rjust(2, '0') }.join}"
     end
 
