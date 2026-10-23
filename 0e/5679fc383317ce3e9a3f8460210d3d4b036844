@@ -1,0 +1,16 @@
+app/views/users/show.html.erb
+  h_a5e25bc086eb00 71
+spec/requests/user/user_show_spec.rb
+  h_a5e25bc086eb00 66-67,69-93
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0e5679fc383317ce3e9a3f8460210d3d4b036844",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
