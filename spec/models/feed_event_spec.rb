@@ -50,6 +50,19 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when the user has never clicked the specified article" do
+      let!(:other_click) { create(:feed_event, user: user, category: :click) }
+      it "does not create a new feed event or look up the latest click" do
+        article
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { record_journey }
+
+        expect(queries.grep(/FROM "feed_events".*ORDER BY/m)).to be_empty
+        expect(user.feed_events).to contain_exactly(other_click)
+      end
+    end
+
     context "when the interaction type is not one of reaction, comment, or extended_pageview" do
       let(:category) { :impression }
       let!(:click)   { create(:feed_event, user: user, article: article, category: :click) }

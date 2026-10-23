@@ -44,6 +44,10 @@ class FeedEvent < ApplicationRecord
 
   def self.record_journey_for(user, article:, category:)
     return unless %i[reaction comment extended_pageview].include?(category)
+    # The latest click can only be on this article if a click on it exists at all.
+    # This probe uses the (article_id, user_id, category) index and skips the
+    # latest-click lookup, which walks the primary key backwards for users with few clicks.
+    return unless where(article: article, user: user, category: :click).exists?
 
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
