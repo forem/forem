@@ -62,6 +62,9 @@ module Stories
       # Full-post feed cards never read processed_html (only status previews do),
       # so skip hydrating that heavy column for every story on the page.
       stories = stories.reselect(*(stories.select_values - [:processed_html]))
+      # Signed-out renders go through URL.article, which reads each org story's
+      # organization (custom domain check); batch those into one query.
+      stories = stories.preload(:organization) unless user_signed_in?
       @stories = stories.decorate
     end
 
