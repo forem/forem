@@ -143,8 +143,11 @@ class FeedEvent < ApplicationRecord
     self.class.update_single_article_counters(article_id) if article_id
     return unless feed_config_id
 
-    suffix = impression? ? nil : category
-    self.class.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: suffix)
+    if impression?
+      self.class.update_single_feed_config_counters(feed_config_id)
+    else
+      self.class.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: category)
+    end
   end
 
   def create_feed_config_offshoot
