@@ -4,6 +4,9 @@ class BillboardsController < ApplicationController
   include BillboardHelper
   RANDOM_USER_TAG_RANGE_MIN = 5
   RANDOM_USER_TAG_RANGE_MAX = 32
+  # The only article attributes Billboard.for_display reads. Loading just these skips the
+  # article's large columns (processed_html, body_markdown, embeddings) on every request.
+  ARTICLE_TARGETING_COLUMNS = %i[id user_id co_author_ids organization_id cached_tag_list].freeze
 
   def show
     skip_authorization
@@ -47,7 +50,8 @@ class BillboardsController < ApplicationController
   def contextual_billboard
     if params[:username].present? && params[:slug].present?
       path = "/#{params[:username].downcase}/#{params[:slug].downcase}"
-      @article = Article.find_by(path: path) || Article.find_by(slug: params[:slug])
+      articles = Article.select(ARTICLE_TARGETING_COLUMNS)
+      @article = articles.find_by(path: path) || articles.find_by(slug: params[:slug])
     end
 
     Billboard.for_display(

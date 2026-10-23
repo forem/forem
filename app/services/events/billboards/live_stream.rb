@@ -106,10 +106,10 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-feed-#{event.id}");
-              const countdownEl = document.getElementById("countdown-feed-#{event.id}");
-              const playerContainer = document.getElementById("player-container-feed-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-feed-#{event.id}");
+                const countdownEl = document.getElementById("countdown-feed-#{event.id}");
+                const playerContainer = document.getElementById("player-container-feed-#{event.id}");
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
@@ -299,10 +299,10 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-post-#{event.id}");
-              const countdownEl = document.getElementById("countdown-post-#{event.id}");
-              const playerContainer = document.getElementById("player-container-post-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-post-#{event.id}");
+                const countdownEl = document.getElementById("countdown-post-#{event.id}");
+                const playerContainer = document.getElementById("player-container-post-#{event.id}");
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
@@ -451,11 +451,11 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-minimized-#{event.id}");
-              const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
-              const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
-              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-minimized-#{event.id}");
+                const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
+                const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
+                const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
                 const now = Date.now();
                 if (now >= TARGET_TIME) {
                   if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {

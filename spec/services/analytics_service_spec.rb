@@ -452,6 +452,27 @@ RSpec.describe AnalyticsService, type: :service do
         expected_stats = { total: 0 }
         expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
       end
+
+      it "only counts follows inside the requested range" do
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-02T23:59:00Z"))
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-03T00:01:00Z"))
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-10T12:00:00Z"))
+
+        stats = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-02").grouped_by_day
+
+        expect(stats.keys).to eq(%w[2019-04-01 2019-04-02])
+        expect(stats.values.sum { |day| day[:follows][:total] }).to eq(1)
+      end
+
+      it "keeps counting follows from earlier in the first weekly bucket" do
+        # 2019-04-01 is a Monday; a > DAILY_HISTORY_DAYS range starting mid-week
+        # snaps the first bucket back to that Monday.
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-01T13:00:00Z"))
+
+        stats = described_class.new(user, start_date: "2019-04-03", end_date: "2019-12-31").grouped_by_day
+
+        expect(stats["2019-04-01"][:follows]).to eq({ total: 1 })
+      end
     end
 
     describe "page views stats for a specific day" do

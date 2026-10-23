@@ -136,13 +136,15 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
-    it "renders nested comment structure for replies" do
+    it "renders nested comment structure for replies without extra parent queries" do
       root_comment = create(:comment, commentable: article, user: user)
       reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
       article.update_columns(comments_count: 2, displayed_comments_count: 2)
+      allow(Comments::Tree).to receive(:for_commentable).and_call_original
 
       get article.path
 
+      expect(Comments::Tree).to have_received(:for_commentable).once
       expect(response_json["mainEntity"]["comment"]).to be_present
       root_comment_data = response_json["mainEntity"]["comment"].first
       expect(root_comment_data["comment"]).to be_present
@@ -482,11 +484,17 @@ RSpec.describe "ArticlesShow" do
 
   context "when user not signed in but internal nav triggered" do
     before do
-      get "#{article.path}?i=i"
+      create(:comment, commentable: article, user: user)
+      article.update_columns(comments_count: 1, displayed_comments_count: 1)
     end
 
     describe "GET /:slug (user)" do
-      it "does not render json ld" do
+      it "does not render json ld and fetches comment tree only once" do
+        allow(Comments::Tree).to receive(:for_commentable).and_call_original
+
+        get "#{article.path}?i=i"
+
+        expect(Comments::Tree).to have_received(:for_commentable).once
         expect(response.body).not_to include "application/ld+json"
       end
     end

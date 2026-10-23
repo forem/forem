@@ -10,7 +10,10 @@ class RateLimitChecker
     api_ai_image_generation: { retry_after_setting: :api_ai_image_generation_window_seconds },
     api_image_upload: { retry_after_setting: :api_image_upload_window_seconds },
     article_update: { retry_after: 30 },
+    comment_antispam_creation: { retry_after: 300 },
+    comment_creation: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
+    flag_appeal_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
     organization_creation: { retry_after: 300 },
@@ -19,8 +22,7 @@ class RateLimitChecker
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
-    user_update: { retry_after: 30 },
-    comment_antispam_creation: { retry_after: 300 }
+    user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
@@ -93,9 +95,10 @@ class RateLimitChecker
     end
   end
 
+  # Actions without an ACTION_LIMITERS entry (e.g. comment_creation) have no retry_after.
   def retry_after_for(action)
-    config = ACTION_LIMITERS.fetch(action)
-    return config[:retry_after] if config.key?(:retry_after)
+    config = ACTION_LIMITERS.fetch(action, {})
+    return config[:retry_after] unless config.key?(:retry_after_setting)
 
     Settings::RateLimit.public_send(config[:retry_after_setting])
   end

@@ -81,7 +81,7 @@ class Profile < ApplicationRecord
   end
 
   def profile_spam_check_triggered?
-    saved_change_to_website_url? || summary_contains_spam_trigger_terms?
+    (saved_change_to_website_url? && website_url.present?) || summary_contains_spam_trigger_terms?
   end
 
   def summary_contains_spam_trigger_terms?

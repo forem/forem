@@ -286,7 +286,9 @@ belonging to the requested collection, ordered by ascending publication date.",
         description "This endpoint allows the client to update an existing article by its unique numerical `id`.
 
 ### Authorization Constraints:
-- The API key provided must belong to the author of the article.
+- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.
+- Edits by anyone other than the author are recorded in the audit log.
+- Returns `404` if the article does not exist or the API key's user may not edit it.
 - Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.
 - Setting `published: false` on an already published article will revert it to draft status."
         operationId "updateArticle"
@@ -590,7 +592,8 @@ will remain."
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
         tags "articles"
-        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        description "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) " \
+                    "and semantic embeddings search pipeline, with optional Jev shortlist re-ranking."
         produces "application/json"
         parameter name: :q, in: :query, required: true,
                   description: "The search query term to match semantically.",

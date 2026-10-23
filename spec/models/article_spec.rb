@@ -1108,6 +1108,47 @@ RSpec.describe Article do
         sanitized_html = ActionView::Base.full_sanitizer.sanitize(test_article.processed_html)
         expect(test_article.body_text).to eq(sanitized_html)
       end
+
+      it "sanitizes processed_html only once while it is unchanged" do
+        article = build(:article)
+        article.processed_html = "<p>Some text</p>"
+        sanitizer = ActionView::Base.full_sanitizer
+        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+        allow(sanitizer).to receive(:sanitize).and_call_original
+
+        3.times { article.body_text }
+
+        expect(sanitizer).to have_received(:sanitize).once
+      end
+
+      it "recomputes when processed_html changes" do
+        article = build(:article)
+        article.processed_html = "<p>Old text</p>"
+        expect(article.body_text).to eq("Old text")
+
+        article.processed_html = "<p>New text</p>"
+        expect(article.body_text).to eq("New text")
+      end
+
+      it "recomputes when processed_html is mutated in place" do
+        article = build(:article)
+        article.processed_html = "<p>Old text</p>"
+        expect(article.body_text).to eq("Old text")
+
+        article.processed_html.sub!("Old", "New")
+        expect(article.body_text).to eq("New text")
+      end
+
+      it "sanitizes once when saving a draft with a blank description" do
+        article = build(:article, published: false, description: nil)
+        sanitizer = ActionView::Base.full_sanitizer
+        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+        allow(sanitizer).to receive(:sanitize).and_call_original
+
+        article.save!
+
+        expect(sanitizer).to have_received(:sanitize).with(article.processed_html).once
+      end
     end
 
     context "when a main_image does not already exist" do
@@ -3502,6 +3543,22 @@ RSpec.describe Article do
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
+
+    context "when the author changes on a published article with a generated social image" do
+      before do
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
+      end
+
+      it "triggers the Images::SocialImageWorker" do
+        article.update(user: create(:user))
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not trigger the Images::SocialImageWorker when the author is unchanged" do
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
   end
 
   describe "#skip_indexing?" do
@@ -4378,6 +4435,128 @@ RSpec.describe Article do
       article.update!(co_author_ids: [co_author1.id, co_author2.id])
 
       expect(Notification).not_to have_received(:send_to_co_authors)
+    end
+  end
+
+  describe "co-author invitations" do
+    let(:author) { create(:user) }
+    let(:article) { create(:article, user: author) }
+    let(:invitee) { create(:user) }
+
+    it "removes an accepted invitation when its co-author is dropped from co_author_ids", :aggregate_failures do
+      invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+      pending_invitation = create(:co_author_invitation, article: article)
+
+      article.reload.update!(co_author_ids: [])
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(CoAuthorInvitation.exists?(pending_invitation.id)).to be(true)
+    end
+
+    it "keeps accepted invitations whose co-author is still credited" do
+      invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+
+      article.reload.update!(title: "A new title")
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(true)
+    end
+
+    it "destroys its invitations and their notifications along with the article", :aggregate_failures do
+      invitation = create(:co_author_invitation, article: article, user: invitee)
+      Notifications::CoAuthorInvitations::Send.call(invitation)
+
+      article.destroy
+
+      expect(CoAuthorInvitation.exists?(invitation.id)).to be(false)
+      expect(Notification.where(notifiable: invitation)).to be_empty
+    end
+
+    it "refreshes invitation notification titles and paths when a draft is published", :aggregate_failures do
+      draft = create(:unpublished_article, user: author, title: "Initial draft title")
+      invitation = create(:co_author_invitation, article: draft, user: invitee)
+      notification = Notifications::CoAuthorInvitations::Send.call(invitation)
+
+      expect(notification.json_data.dig("article", "path")).to include("-temp-slug-", "preview=")
+
+      draft.update!(title: "Published final title", published: true)
+
+      expect(notification.reload.json_data["article"]).to eq(
+        "id" => draft.id,
+        "title" => "Published final title",
+        "path" => draft.current_state_path,
+      )
+      expect(notification.json_data.dig("article", "path")).not_to include("-temp-slug-")
+      expect(notification.json_data.dig("article", "path")).not_to include("preview=")
+    end
+
+    describe "organization membership" do
+      let(:organization) { create(:organization) }
+
+      it "allows a co-author who accepted an invitation even if they're not an org member" do
+        create(:co_author_invitation, :accepted, article: article, user: invitee)
+        create(:organization_membership, user: author, organization: organization)
+
+        expect(article.reload.update(organization: organization)).to be(true)
+      end
+
+      it "withdraws pending invitations when the post moves under the organization", :aggregate_failures do
+        pending_invitation = create(:co_author_invitation, article: article)
+        accepted_invitation = create(:co_author_invitation, :accepted, article: article, user: invitee)
+        Notifications::CoAuthorInvitations::Send.call(pending_invitation)
+        create(:organization_membership, user: author, organization: organization)
+
+        article.reload.update!(organization: organization)
+
+        expect(CoAuthorInvitation.exists?(pending_invitation.id)).to be(false)
+        expect(Notification.where(notifiable: pending_invitation)).to be_empty
+        expect(CoAuthorInvitation.exists?(accepted_invitation.id)).to be(true)
+      end
+
+      it "still requires org membership for co-authors credited without an invitation" do
+        create(:organization_membership, user: author, organization: organization)
+        article.update_columns(co_author_ids: [invitee.id])
+
+        expect(article.reload.update(organization: organization)).to be(false)
+      end
+    end
+  end
+
+  describe "#comments_blob" do
+    let(:article) { create(:article) }
+
+    it "returns an empty string when there are no comments" do
+      expect(article.comments_blob).to eq("")
+    end
+
+    it "joins plain-text comment markdown and truncates to 2200 characters without invoking HTML sanitizer" do
+      create(:comment, commentable: article, body_markdown: "a" * 3000)
+      sanitizer = ActionView::Base.full_sanitizer
+      allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
+      allow(sanitizer).to receive(:sanitize).and_call_original
+
+      blob = article.comments_blob
+
+      expect(blob.length).to eq(2201)
+      expect(blob).to eq("a" * 2201)
+      expect(sanitizer).not_to have_received(:sanitize)
+    end
+
+    it "sanitizes the full markup before truncating" do
+      create(:comment, commentable: article, body_markdown: "#{'<b>x</b>' * 600} youtube")
+
+      expect(article.comments_blob).to include("youtube")
+    end
+
+    it "entity-encodes ampersands as before" do
+      create(:comment, commentable: article, body_markdown: "Tom & Jerry")
+
+      expect(article.comments_blob).to eq("Tom &amp; Jerry")
+    end
+
+    it "strips HTML tags when comments contain markup" do
+      create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
+
+      expect(article.comments_blob).to eq("Hello youtube world")
     end
   end
 end

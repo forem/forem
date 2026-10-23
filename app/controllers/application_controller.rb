@@ -299,7 +299,8 @@ class ApplicationController < ActionController::Base
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
 
-      if URI.parse(path).path == "/signout_confirm"
+      parsed_path = URI.parse(path).path
+      if parsed_path == "/signout_confirm" || parsed_path&.start_with?("/users/password")
         path = root_path(signin: "true")
       end
 
@@ -337,6 +338,8 @@ class ApplicationController < ActionController::Base
   end
 
   def respond_with_user_suspended
+    unset_cache_control_headers
+    set_no_cache_header
     response.status = :forbidden
     render "pages/forbidden"
   end

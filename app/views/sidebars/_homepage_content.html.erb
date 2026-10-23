@@ -26,23 +26,53 @@
   <% end %>
 
   <% if @upcoming_events&.any? %>
-    <section class="crayons-card crayons-card--secondary crayons-layout__content" id="upcoming-events">
-      <header class="crayons-card__header">
-        <h3 class="crayons-subtitle-2">
-          <%= t("views.main.side.upcoming_events") %>
+    <section class="crayons-card crayons-card--secondary crayons-layout__content sidebar-events-card" id="upcoming-events">
+      <header class="crayons-card__header sidebar-events-card__header">
+        <h3 class="crayons-subtitle-2 sidebar-events-card__title">
+          <% if @upcoming_events.any?(&:live?) %>
+            <span class="sidebar-events-card__live-dot" aria-hidden="true"></span>
+          <% end %>
+          <%= sidebar_events_heading(@upcoming_events) %>
         </h3>
       </header>
-      <div>
+      <div class="sidebar-events-card__list">
         <% @upcoming_events.each do |event| %>
-          <% link_target = (event.delegate_to_page? && event.page.present?) ? event.page.path : event_path(event.event_name_slug, event.event_variation_slug) %>
-          <a class="crayons-link crayons-link--contentful" href="<%= link_target %>">
-            <%= truncate(event.title, length: 100) %>
-            <div class="crayons-link__secondary">
-              <% if event.start_time <= Time.current && event.end_time >= Time.current %>
-                <span class="c-indicator c-indicator--error fw-bold">LIVE</span>
-              <% else %>
-                <%= event.start_time.in_time_zone.strftime("%b %-d, %H:%M %Z") %>
+          <% link_target = event_link_target(event) %>
+          <% is_live = event.live? %>
+          <a class="crayons-link crayons-link--contentful sidebar-event-item" href="<%= link_target %>">
+            <% if event.cover_image.present? %>
+              <div class="sidebar-event-item__cover">
+                <img src="<%= event.cover_image.url %>" alt="<%= event.title %>" class="sidebar-event-item__cover-img" loading="lazy" />
+              </div>
+            <% end %>
+            <div class="sidebar-event-item__badges">
+              <span class="sidebar-event-item__type sidebar-event-item__type--<%= event.type_of %>">
+                <%= sidebar_event_type_label(event) %>
+              </span>
+              <% if is_live %>
+                <span class="c-indicator c-indicator--danger sidebar-event-item__live fw-bold">
+                  <span class="sidebar-event-item__live-dot" aria-hidden="true"></span>
+                  <%= t("views.main.side.events.live_badge") %>
+                </span>
               <% end %>
+            </div>
+            <div class="sidebar-event-item__title">
+              <%= truncate(event.title, length: 100) %>
+            </div>
+            <div class="crayons-link__secondary sidebar-event-item__secondary">
+              <svg class="sidebar-event-item__icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>
+                <% if is_live %>
+                  <%= event.formatted_date_range %>
+                <% else %>
+                  <%= event.start_time.in_time_zone.strftime("%b %-d, %H:%M %Z") %>
+                <% end %>
+              </span>
             </div>
           </a>
         <% end %>

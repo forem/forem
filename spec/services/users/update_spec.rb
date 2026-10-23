@@ -89,6 +89,26 @@ RSpec.describe Users::Update, type: :service do
       expect(user.old_old_username).to eq(old_old_username)
     end
 
+    it "does not overwrite old_username or old_old_username when updating profile without username" do
+      original_username = user.username
+      described_class.call(user, user: { username: new_username })
+      described_class.call(user, profile: { location: "Elsewhere" })
+      user.reload
+      expect(user.username).to eq(new_username)
+      expect(user.old_username).to eq(original_username)
+      expect(user.old_old_username).to be_nil
+    end
+
+    it "does not set old_old_username to current username when reverting username A -> B -> A" do
+      original_username = user.username
+      described_class.call(user, user: { username: new_username })
+      described_class.call(user.reload, user: { username: original_username })
+      user.reload
+      expect(user.username).to eq(original_username)
+      expect(user.old_username).to eq(new_username)
+      expect(user.old_old_username).to be_nil
+    end
+
     it "changes user's articles path" do
       article = create(:article, user: user)
       old_path = article.path

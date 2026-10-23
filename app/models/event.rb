@@ -123,6 +123,10 @@ class Event < ApplicationRecord
     ActionController::Base.helpers.simple_format(description)
   end
 
+  def live?(at = Time.current)
+    start_time.present? && end_time.present? && start_time <= at && end_time >= at
+  end
+
   def formatted_date_range
     return "" if start_time.blank?
 

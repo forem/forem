@@ -59,6 +59,10 @@ module Ai
         name: "Article moderation label & compellingness",
         description: "Assigns an automod label and a 0-1 compellingness score to new articles " \
                      "(Ai::ContentModerationLabeler)." },
+      { key: :appeal_assessment, group: :moderation, jev: false,
+        name: "Moderation appeal assessment",
+        description: "Summarizes a user's appeal against a spam flag or suspension and recommends an outcome " \
+                     "for the admin appeals queue (Ai::AppealAssessor). Defaults to the lite model." },
       # Classification & ranking
       { key: :article_quality_ranking, group: :classification, jev: true,
         name: "Daily best/worst article pick",
@@ -92,6 +96,10 @@ module Ai
         name: "Code block language detection",
         description: "Picks a syntax-highlighting language for unlabeled code blocks " \
                      "(Articles::DetectCodeBlockLanguages)." },
+      { key: :semantic_search_reranking, group: :classification, jev: true, jev_only: true,
+        name: "Semantic search Jev re-ranking",
+        description: "Re-ranks top semantic search shortlist candidates against the user query " \
+                     "(Ai::SearchReranker). Off keeps lexical + vector hybrid pre-ranking." },
       # Text generation
       { key: :article_summary, group: :generation, jev: false,
         name: "Article summary", description: "Writes article summaries (Ai::ArticleSummaryGenerator)." },

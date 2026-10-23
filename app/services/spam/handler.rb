@@ -18,8 +18,6 @@ module Spam
       "betting",
       "escort",
       "prostitut",
-      "adult",
-      "girls",
       "porn",
       "onlyfans",
       "crypto pump",
@@ -215,6 +213,10 @@ module Spam
     # @param reason [String] which automated check suspended the user, for the audit log
     def self.suspend!(user:, reason: "too_many_spam_reactions", **details)
       user.add_role(:suspended)
+      unpublish = unpublish_all_posts_when_user_auto_suspended?
+      # Recorded so an approved appeal (Appeals::Resolver) can restore exactly the posts hidden here.
+      # Not the `published` scope: scheduled posts must be hidden too.
+      details[:unpublished_article_ids] = user.articles.where(published: true).ids if unpublish
       audit_automatic_block!(user: user, role: :suspended, reason: reason, **details)
 
       Note.create(
@@ -224,9 +226,9 @@ module Spam
         content: I18n.t("models.comment.suspended_too_many"),
       )
 
-      return unless unpublish_all_posts_when_user_auto_suspended?
+      return unless unpublish
 
-      user.articles.update_all(published: false)
+      user.articles.where(id: details[:unpublished_article_ids]).update_all(published: false)
     end
 
     # Have the mascot of this Forem react negatively to this reactable.
@@ -238,10 +240,31 @@ module Spam
         reactable: reactable,
         category: "vomit",
       )
-      return if reaction.persisted? || reaction.errors.of_kind?(:user_id, :taken)
+      if reaction.persisted? ||
+          (reaction.errors.of_kind?(:user_id, :taken) && active_spam_reaction_for?(reactable: reactable))
+        remove_spam_comment_notifications!(comment: reactable) if reactable.is_a?(Comment)
+        return
+      end
+      return if reaction.errors.of_kind?(:user_id, :taken)
 
       Rails.logger.warn("Spam reaction not created for #{reactable.class.name} #{reactable.id}: " \
                         "#{reaction.errors.full_messages.to_sentence}")
+    end
+
+    def self.active_spam_reaction_for?(reactable:)
+      Reaction.valid_or_confirmed.exists?(
+        user_id: Settings::General.mascot_user_id,
+        reactable: reactable,
+        category: "vomit",
+      )
+    end
+
+    # New comment and mention notifications go out when the comment is saved, before the async
+    # spam check runs. Once the mascot flags the comment, pull them back so recipients don't keep
+    # seeing (and clicking through to) spam in their notifications inbox.
+    def self.remove_spam_comment_notifications!(comment:)
+      Notification.remove_all_without_delay(notifiable_ids: comment.id, notifiable_type: "Comment")
+      Notification.remove_all_without_delay(notifiable_ids: comment.mentions.ids, notifiable_type: "Mention")
     end
 
     def self.escalate_flagged_author!(user:)
@@ -338,6 +361,7 @@ module Spam
       return if user.spam?
 
       user.add_role(:spam)
+      Notifications::RemoveBySpammerWorker.perform_async(user.id)
       audit_automatic_block!(user: user, role: :spam, reason: reason, **details)
 
       Note.create(
@@ -461,7 +485,10 @@ module Spam
       normalized = text.to_s.downcase
       return false if normalized.blank?
 
-      PROFILE_SPAM_TRIGGER_TERMS.any? { |term| normalized.include?(term) }
+      PROFILE_SPAM_TRIGGER_TERMS.any? do |term|
+        pattern = term == "prostitut" ? /\b#{Regexp.escape(term)}\w*\b/ : /\b#{Regexp.escape(term)}s?\b/
+        normalized.match?(pattern)
+      end
     end
 
     # Spam farms publish the same post over and over. The third copy of a title in a day is spam
@@ -526,7 +553,7 @@ module Spam
       domains
     end
 
-    private_class_method :suspend!, :issue_spam_reaction_for!,
+    private_class_method :suspend!, :issue_spam_reaction_for!, :remove_spam_comment_notifications!,
                          :extensive_domain_spam?, :extract_first_domain_from,
                          :escalate_flagged_commenter!, :label_article_content!,
                          :offtopic_label?, :check_subforem_reassignment,

@@ -45,6 +45,9 @@ function loadForm() {
         coverImageCrop,
         aiAvailable,
         aiDisclosureEnabled,
+        coAuthorInvitationsEnabled,
+        coAuthorInvitations,
+        coAuthorInvitationsMax,
       } = root.dataset;
       render(
         <ArticleForm
@@ -57,6 +60,9 @@ function loadForm() {
           schedulingEnabled={schedulingEnabled == 'true'}
           aiAvailable={aiAvailable === 'true'}
           aiDisclosureEnabled={aiDisclosureEnabled === 'true'}
+          coAuthorInvitationsEnabled={coAuthorInvitationsEnabled === 'true'}
+          coAuthorInvitations={coAuthorInvitations}
+          coAuthorInvitationsMax={coAuthorInvitationsMax}
         />,
         createRootFragment(root, root.firstElementChild),
       );

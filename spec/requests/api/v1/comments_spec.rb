@@ -256,6 +256,15 @@ RSpec.describe "Api::V1::Comments" do
       expect(great_grandchild_comment_json_id).to eq(great_grandchild_comment.id_code_generated)
     end
 
+    it "leaves out replies below the maximum depth" do
+      stub_const("Api::CommentsController::MAX_DEPTH", 2)
+
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("children", 0, "children")).to eq([])
+    end
+
     it "sets the correct edge caching surrogate key for all the comments" do
       get api_comment_path(root_comment.id_code_generated), headers: headers
 

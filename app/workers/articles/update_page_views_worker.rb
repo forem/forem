@@ -22,53 +22,73 @@ module Articles
                     retry: false
 
     def perform(create_params)
-      create_params = create_params.with_indifferent_access
-
+      create_params = sanitize_params(create_params.with_indifferent_access)
       return if bot_user_agent?(create_params[:user_agent])
-
-      has_viewable_id = create_params[:viewable_id].present?
-      has_viewable_type = create_params[:viewable_type].present?
-      create_params = create_params.except(:viewable_id, :viewable_type) if has_viewable_id != has_viewable_type
-      
-      return unless create_params[:article_id].present? ||
-                    (create_params[:viewable_id].present? && create_params[:viewable_type].present?)
+      return unless valid_target?(create_params)
 
       if create_params[:article_id].present?
-        article = Article.find_by(id: create_params[:article_id])
-        return unless article&.published?
+        article = find_published_article(create_params[:article_id])
+        return unless article
         return if create_params[:user_id] && article.user_id == create_params[:user_id]
       end
 
-      begin
-        PageView.create!(create_params)
-      rescue ActiveRecord::RecordNotUnique
-        # This is the most likely error. It happens when this job runs twice
-        # due to a race condition. It's safe to ignore it, because the page
-        # view has already been created. We can simply stop the worker.
-        return
-      rescue ActiveRecord::RecordInvalid => e
-        # This indicates a data problem. We should log it to understand why
-        # the params are bad, and then stop the worker.
-        Rails.logger.error("Articles::UpdatePageViewsWorker validation failed: #{e.message} for params: #{create_params}")
-        return
-      end
+      return unless create_page_view(create_params)
+      return unless article
 
-      if article
-        updated_count = article.page_views.sum(:counts_for_number_of_views)
-        if updated_count > article.page_views_count
-          article.update_column(:page_views_count, updated_count)
-        end
-
-        return unless create_params[:referrer] == GOOGLE_REFERRER
-
-        Articles::UpdateOrganicPageViewsWorker.perform_at(
-          25.minutes.from_now,
-          article.id,
-        )
-      end
+      update_article_views(article, create_params[:referrer])
     end
 
     private
+
+    def sanitize_params(create_params)
+      has_viewable_id = create_params[:viewable_id].present?
+      has_viewable_type = create_params[:viewable_type].present?
+      return create_params if has_viewable_id == has_viewable_type
+
+      create_params.except(:viewable_id, :viewable_type)
+    end
+
+    def valid_target?(create_params)
+      create_params[:article_id].present? ||
+        (create_params[:viewable_id].present? && create_params[:viewable_type].present?)
+    end
+
+    def find_published_article(article_id)
+      article = Article.select(:id, :published, :published_at, :user_id, :page_views_count)
+        .find_by(id: article_id)
+      article if article&.published?
+    end
+
+    def create_page_view(create_params)
+      PageView.create!(create_params)
+      true
+    rescue ActiveRecord::RecordNotUnique
+      # This is the most likely error. It happens when this job runs twice
+      # due to a race condition. It's safe to ignore it, because the page
+      # view has already been created. We can simply stop the worker.
+      false
+    rescue ActiveRecord::RecordInvalid => e
+      # This indicates a data problem. We should log it to understand why
+      # the params are bad, and then stop the worker.
+      Rails.logger.error(
+        "Articles::UpdatePageViewsWorker validation failed: #{e.message} for params: #{create_params}",
+      )
+      false
+    end
+
+    def update_article_views(article, referrer)
+      updated_count = article.page_views.sum(:counts_for_number_of_views)
+      if updated_count > article.page_views_count
+        article.update_column(:page_views_count, updated_count)
+      end
+
+      return unless referrer == GOOGLE_REFERRER
+
+      Articles::UpdateOrganicPageViewsWorker.perform_at(
+        25.minutes.from_now,
+        article.id,
+      )
+    end
 
     def bot_user_agent?(user_agent)
       user_agent.present? && BOT_USER_AGENT_REGEX.match?(user_agent)

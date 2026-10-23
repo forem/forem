@@ -58,6 +58,28 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
         expect(response.body).not_to include("By signing in")
       end
+
+      it "assigns the ids of the user's latest reaction and comment", :aggregate_failures do
+        article = create(:article)
+        create(:reaction, user: user, reactable: article, category: "like")
+        latest_reaction = create(:reaction, user: user, reactable: article, category: "unicorn")
+        create(:comment, user: user, commentable: article)
+        latest_comment = create(:comment, user: user, commentable: article)
+        create(:comment, commentable: article)
+        sign_in user
+
+        get "/notifications"
+        expect(controller.instance_variable_get(:@last_user_reaction)).to eq(latest_reaction.id)
+        expect(controller.instance_variable_get(:@last_user_comment)).to eq(latest_comment.id)
+      end
+
+      it "assigns nil ids when the user has no reactions or comments", :aggregate_failures do
+        sign_in user
+
+        get "/notifications"
+        expect(controller.instance_variable_get(:@last_user_reaction)).to be_nil
+        expect(controller.instance_variable_get(:@last_user_comment)).to be_nil
+      end
     end
 
     context "when a user has new follow notifications" do
@@ -812,6 +834,55 @@ RSpec.describe "NotificationsIndex" do
         expect(response.body).to include "published a post you are credited on"
         renders_article_path(article)
         renders_authors_name(article)
+      end
+    end
+
+    context "when a user has a co-author invitation" do
+      let(:invitee) { create(:user) }
+      let(:article) { create(:article, user: user) }
+      let(:invitation) { create(:co_author_invitation, article: article, user: invitee) }
+
+      before do
+        Notifications::CoAuthorInvitations::Send.call(invitation)
+        sign_in invitee
+      end
+
+      it "renders the invitation with accept and decline actions", :aggregate_failures do
+        get "/notifications"
+
+        expect(response.body).to include("invited you to co-author")
+        renders_authors_name(article)
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+        expect(response.body).to include(accept_co_author_invitation_path(invitation))
+        expect(response.body).to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "offers to remove the credit once accepted", :aggregate_failures do
+        CoAuthorInvitations::Accept.call(invitation)
+
+        get "/notifications"
+
+        expect(response.body).to include("You&#39;re credited as a co-author on this post.")
+        expect(response.body).not_to include(accept_co_author_invitation_path(invitation))
+        expect(response.body).to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "shows that the invitation was declined", :aggregate_failures do
+        CoAuthorInvitations::Decline.call(invitation)
+
+        get "/notifications"
+
+        expect(response.body).to include("You declined this invitation.")
+        expect(response.body).not_to include(decline_co_author_invitation_path(invitation))
+      end
+
+      it "tells the author when the invitation is accepted" do
+        CoAuthorInvitations::Accept.call(invitation)
+        sign_in user
+
+        get "/notifications"
+
+        expect(response.body).to include("accepted your invitation to co-author")
       end
     end
 

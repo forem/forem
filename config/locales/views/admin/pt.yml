@@ -25,6 +25,7 @@ pt:
           roles:
             name:
               resource_admin_event: "Event Admin"
+              resource_admin_flag_appeal: "Flag Appeal Admin"
               resource_admin_survey: "Survey Admin"
               resource_admin_organization: "Organization Admin"
               resource_admin_podcast: "Podcast Admin"
@@ -35,8 +36,11 @@ pt:
               resource_admin_space: "Space Admin"
               resource_admin_profile_field: "Profile Field Admin"
               resource_admin_profile_field_group: "Profile Field Group Admin"
+              community_leader_level_1: "Community Leader Level 1"
+              community_leader_level_2: "Community Leader Level 2"
         roles:
           "Resource Admin: Event": "Resource Admin: Event"
+          "Resource Admin: FlagAppeal": "Resource Admin: FlagAppeal"
           "Resource Admin: Survey": "Resource Admin: Survey"
           "Resource Admin: Organization": "Resource Admin: Organization"
           "Resource Admin: Podcast": "Resource Admin: Podcast"

@@ -197,6 +197,30 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
         expect(globally_hot_articles).not_to be_empty
       end
     end
+
+    [true, false].each do |signed_in|
+      it "loads the feed without querying reactions when user_signed_in is #{signed_in}" do
+        create(:reaction, reactable: hot_story, category: "like")
+        reaction_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.globally_hot_articles(signed_in).second.to_a
+        end
+
+        expect(reaction_queries).to be_empty
+      end
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: hot_story, category: "like")
+
+      story = feed.globally_hot_articles(false).second.find { |result| result.id == hot_story.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
+    end
   end
 
   describe "AI disclosure preferences" do

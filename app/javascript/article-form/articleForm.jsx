@@ -5,7 +5,11 @@ import postscribe from 'postscribe';
 import moment from 'moment';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
-import { submitArticle, previewArticle } from './actions';
+import {
+  submitArticle,
+  previewArticle,
+  acceptedCoAuthorInvitees,
+} from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
 import { locale } from '@utilities/locale';
@@ -55,23 +59,26 @@ export class ArticleForm extends Component {
   }
 
   static handleAgentSessionPreview() {
-    document.querySelectorAll('.ltag-agent-session').forEach(function(embed) {
+    document.querySelectorAll('.ltag-agent-session').forEach(function (embed) {
       if (embed.dataset.bound) return;
       embed.dataset.bound = '1';
 
       // Tool call expand/collapse
-      embed.querySelectorAll('.agent-session-tool-toggle').forEach(function(toggle) {
-        toggle.addEventListener('click', function() {
-          var detail = this.nextElementSibling;
-          var isExpanded = this.getAttribute('aria-expanded') === 'true';
-          detail.style.display = isExpanded ? 'none' : 'block';
-          this.setAttribute('aria-expanded', !isExpanded);
-          this.querySelector('.agent-session-chevron').textContent = isExpanded ? '\u25B8' : '\u25BE';
+      embed
+        .querySelectorAll('.agent-session-tool-toggle')
+        .forEach(function (toggle) {
+          toggle.addEventListener('click', function () {
+            var detail = this.nextElementSibling;
+            var isExpanded = this.getAttribute('aria-expanded') === 'true';
+            detail.style.display = isExpanded ? 'none' : 'block';
+            this.setAttribute('aria-expanded', !isExpanded);
+            this.querySelector('.agent-session-chevron').textContent =
+              isExpanded ? '\u25B8' : '\u25BE';
+          });
         });
-      });
 
       // Collapsible long text
-      embed.querySelectorAll('[data-collapsible]').forEach(function(wrapper) {
+      embed.querySelectorAll('[data-collapsible]').forEach(function (wrapper) {
         var textEl = wrapper.querySelector('.agent-session-text-collapse');
         var btn = wrapper.querySelector('.agent-session-expand-btn');
         if (!textEl || !btn) return;
@@ -80,7 +87,7 @@ export class ArticleForm extends Component {
           textEl.classList.remove('agent-session-text-collapse');
           return;
         }
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
           var expanded = textEl.classList.toggle('expanded');
           btn.textContent = expanded ? 'Show less' : 'Show more';
         });
@@ -88,21 +95,27 @@ export class ArticleForm extends Component {
 
       // In-transcript fragment links (e.g. an agent's table of contents):
       // expand the collapsed text holding the heading and scroll the embed, not the page
-      embed.addEventListener('click', function(event) {
+      embed.addEventListener('click', function (event) {
         var link = event.target.closest('a[href^="#agent-session-"]');
         if (!link) return;
-        var target = embed.querySelector('[id="' + CSS.escape(link.getAttribute('href').slice(1)) + '"]');
+        var target = embed.querySelector(
+          '[id="' + CSS.escape(link.getAttribute('href').slice(1)) + '"]',
+        );
         if (!target) return;
         event.preventDefault();
         var collapsed = target.closest('.agent-session-text-collapse');
         if (collapsed && !collapsed.classList.contains('expanded')) {
           collapsed.classList.add('expanded');
-          var expandBtn = collapsed.parentNode.querySelector('.agent-session-expand-btn');
+          var expandBtn = collapsed.parentNode.querySelector(
+            '.agent-session-expand-btn',
+          );
           if (expandBtn) expandBtn.textContent = 'Show less';
         }
         var scroller = embed.querySelector('.agent-session-scroll');
         if (scroller) {
-          scroller.scrollTop += target.getBoundingClientRect().top - scroller.getBoundingClientRect().top;
+          scroller.scrollTop +=
+            target.getBoundingClientRect().top -
+            scroller.getBoundingClientRect().top;
         }
       });
     });
@@ -118,12 +131,25 @@ export class ArticleForm extends Component {
     coverImageCrop: PropTypes.string.isRequired,
     aiAvailable: PropTypes.bool.isRequired,
     aiDisclosureEnabled: PropTypes.bool,
+    coAuthorInvitationsEnabled: PropTypes.bool,
+    coAuthorInvitations: PropTypes.string,
+    coAuthorInvitationsMax: PropTypes.string,
   };
 
   static defaultProps = {
     organizations: '[]',
     aiDisclosureEnabled: false,
+    coAuthorInvitationsEnabled: false,
+    coAuthorInvitations: '[]',
+    coAuthorInvitationsMax: '4',
   };
+
+  // Everyone invited or credited through an invitation, as the co-author picker's selection.
+  static activeCoAuthorInvitees(invitations) {
+    return invitations
+      .filter(({ status }) => status !== 'declined')
+      .map(({ user }) => user);
+  }
 
   constructor(props) {
     super(props);
@@ -136,9 +162,13 @@ export class ArticleForm extends Component {
       coverImageCrop,
       aiAvailable,
       aiDisclosureEnabled,
+      coAuthorInvitationsEnabled,
+      coAuthorInvitations,
+      coAuthorInvitationsMax,
     } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
+    this.coAuthorInvitations = JSON.parse(coAuthorInvitations || '[]');
     organizations = organizations ? JSON.parse(organizations) : null;
     this.url = window.location.href;
 
@@ -199,6 +229,12 @@ export class ArticleForm extends Component {
       authorId: this.article.user_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
+      coAuthorInvitationsEnabled,
+      coAuthorInvitationsMax: parseInt(coAuthorInvitationsMax, 10),
+      coAuthorInvitations: this.coAuthorInvitations,
+      coAuthorInvitees: ArticleForm.activeCoAuthorInvitees(
+        this.coAuthorInvitations,
+      ),
       aiDisclosureLevel: this.article.ai_disclosure_level || 'not_disclosed',
       errors: null,
       edited: false,
@@ -208,7 +244,8 @@ export class ArticleForm extends Component {
       coverImageHeight,
       coverImageCrop,
       aiAvailable,
-      aiDisclosureEnabled: aiDisclosureEnabled === true || aiDisclosureEnabled === 'true',
+      aiDisclosureEnabled:
+        aiDisclosureEnabled === true || aiDisclosureEnabled === 'true',
       helpFor: null,
       helpPosition: null,
       isModalOpen: false,
@@ -241,7 +278,8 @@ export class ArticleForm extends Component {
       return;
     }
 
-    const { version, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } = this.state;
+    const { version, title, tagList, mainImage, bodyMarkdown, videoSourceUrl } =
+      this.state;
     const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
@@ -344,17 +382,24 @@ export class ArticleForm extends Component {
 
   handleOrgIdChange = (e) => {
     const nextOrganizationId = e.target.selectedOptions[0].value;
-    this.setState((currentState) => ({
-      organizationId: nextOrganizationId,
-      coAuthorIdsList:
-        String(currentState.organizationId || '') === String(nextOrganizationId || '')
-          ? currentState.coAuthorIdsList
-          : '',
-      coAuthorsData:
-        String(currentState.organizationId || '') === String(nextOrganizationId || '')
-          ? currentState.coAuthorsData
-          : [],
-    }));
+    this.setState((currentState) => {
+      if (
+        String(currentState.organizationId || '') ===
+        String(nextOrganizationId || '')
+      ) {
+        return { organizationId: nextOrganizationId };
+      }
+
+      const acceptedInvitees = acceptedCoAuthorInvitees(
+        currentState.coAuthorInvitations,
+        currentState.coAuthorInvitees,
+      );
+      return {
+        organizationId: nextOrganizationId,
+        coAuthorIdsList: acceptedInvitees.map(({ id }) => id).join(', '),
+        coAuthorsData: acceptedInvitees,
+      };
+    });
   };
 
   failedPreview = (response) => {
@@ -372,7 +417,22 @@ export class ArticleForm extends Component {
     const name = e?.target?.name || e?.name;
     const value = e?.target !== undefined ? e.target.value : e?.value;
     if (name) {
-      this.setState({ [name]: value, edited: true });
+      this.setState((currentState) => {
+        if (name === 'coAuthorInvitees' && !currentState.organizationId) {
+          const acceptedInvitees = acceptedCoAuthorInvitees(
+            currentState.coAuthorInvitations,
+            value,
+          );
+          return {
+            coAuthorInvitees: value,
+            coAuthorIdsList: acceptedInvitees.map(({ id }) => id).join(', '),
+            coAuthorsData: acceptedInvitees,
+            edited: true,
+          };
+        }
+
+        return { [name]: value, edited: true };
+      });
     }
   };
 
@@ -468,6 +528,9 @@ export class ArticleForm extends Component {
       organizationId: this.article.organization_id,
       coAuthorIdsList: this.article.co_author_ids_list || '',
       coAuthorsData: this.article.co_authors_data || [],
+      coAuthorInvitees: ArticleForm.activeCoAuthorInvitees(
+        this.coAuthorInvitations,
+      ),
       errors: null,
       edited: false,
       helpFor: null,
@@ -572,7 +635,9 @@ export class ArticleForm extends Component {
 
         <span aria-live="polite" className="screen-reader-only">
           {previewLoading ? locale('core.article_form_loading_preview') : null}
-          {previewShowing && !previewLoading ? locale('core.article_form_preview_loaded') : null}
+          {previewShowing && !previewLoading
+            ? locale('core.article_form_preview_loaded')
+            : null}
         </span>
 
         {previewShowing || previewLoading ? (

@@ -585,6 +585,56 @@ RSpec.describe "Billboards" do
     end
   end
 
+  describe "GET /:username/:slug/billboards/:placement_area article targeting" do
+    def get_article_billboard(target_article = article)
+      get article_billboard_path(username: target_article.username, slug: target_article.slug,
+                                 placement_area: "post_comments")
+    end
+
+    it "does not load the article's large columns" do
+      article
+      create_billboard(placement_area: "post_comments")
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "articles"') }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get_article_billboard }
+
+      expect(queries).not_to be_empty
+      expect(queries.join("\n")).not_to include('"articles".*', "processed_html", "body_markdown")
+    end
+
+    it "targets billboards by the article's tags" do
+      ruby_billboard = create_billboard(placement_area: "post_comments", tag_list: "ruby")
+
+      get_article_billboard(create(:article, user: user, tags: "ruby"))
+
+      expect(response.body).to include(ruby_billboard.processed_html)
+    end
+
+    it "serves community billboards of the article's organization" do
+      organization = create(:organization)
+      org_article = create(:article, user: user, organization: organization)
+      community_billboard = create_billboard(placement_area: "post_comments", type_of: :community,
+                                             organization: organization)
+      create_billboard(placement_area: "post_comments", type_of: :in_house)
+
+      get_article_billboard(org_article)
+
+      expect(response.body).to include(community_billboard.processed_html)
+    end
+
+    it "does not serve external billboards when a co-author opts out of adjacent sponsors" do
+      co_author = create(:user)
+      co_author.setting.update!(permit_adjacent_sponsors: false)
+      article.update!(co_author_ids: [co_author.id])
+      create_billboard(placement_area: "post_comments", type_of: :external)
+
+      get_article_billboard
+
+      expect(response.body).to be_empty
+    end
+  end
+
   describe "GET /:username/:slug/billboards/:placement_area viewer country and anonymous tracking" do
     let!(:billboard) { create_billboard(placement_area: "post_comments") }
     let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
@@ -803,6 +853,25 @@ RSpec.describe "Billboards" do
         expect(response.headers["Vary"].to_s).not_to include("X-Cacheable-Client-Geo")
         expect(billboard_element["data-viewer-country"]).to be_nil
       end
+    end
+  end
+
+  describe "GET /bb/external_feed for an embedding site" do
+    let!(:billboard) { create_billboard(placement_area: "external_feed", template: "authorship_box") }
+    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    before do
+      get billboard_path(placement_area: "external_feed"), headers: { "Origin" => "https://embed.example.com" }
+    end
+
+    it "renders the billboard without Forem's markup, tracked as an embed" do
+      expect(response.body).to include(billboard.processed_html)
+      expect(response.body).not_to include("crayons-bb__header")
+      expect(billboard_element["data-context-type"]).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
+    end
+
+    it "lets any origin read it" do
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
     end
   end
 end

@@ -206,6 +206,42 @@ RSpec.describe Tag do
     end
   end
 
+  describe ".moderated_by" do
+    let(:user) { create(:user) }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+
+    before { create(:tag) }
+
+    it "returns no tags when the user moderates none" do
+      expect(described_class.moderated_by(user)).to be_empty
+    end
+
+    it "returns the same tags as rolify's with_role" do
+      user.add_role(:tag_moderator, tag1)
+      user.add_role(:tag_moderator, tag2)
+      create(:user).add_role(:tag_moderator, described_class.last)
+
+      expect(described_class.moderated_by(user)).to contain_exactly(tag1, tag2)
+      expect(described_class.moderated_by(user).to_a)
+        .to match_array(described_class.with_role(:tag_moderator, user).to_a)
+    end
+
+    it "ignores other roles scoped to tags" do
+      user.add_role(:trusted, tag1)
+
+      expect(described_class.moderated_by(user)).to be_empty
+    end
+
+    it "returns every tag when the user holds a class-wide tag_moderator role" do
+      tag1
+      tag2
+      user.add_role(:tag_moderator, described_class)
+
+      expect(described_class.moderated_by(user)).to match_array(described_class.all)
+    end
+  end
+
   describe "#points" do
     it "defaults to 0" do
       expect(described_class.new.points).to eq(0)

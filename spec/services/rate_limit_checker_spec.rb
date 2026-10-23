@@ -31,6 +31,7 @@ RSpec.describe RateLimitChecker, type: :service do
     described_class::ACTION_LIMITERS
       .except(:published_article_creation,
               :published_article_antispam_creation,
+              :comment_creation,
               :comment_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
@@ -46,6 +47,22 @@ RSpec.describe RateLimitChecker, type: :service do
         ).and_return(Settings::RateLimit.public_send(action))
 
         expect(rate_limit_checker.limit_by_action(action)).to be(false)
+      end
+    end
+
+    context "when filing flag appeals" do
+      it "limits with Settings::RateLimit.flag_appeal_creation and a five minute retry window" do
+        allow(Settings::RateLimit).to receive(:flag_appeal_creation).and_return(3)
+        allow(Rails.cache).to receive(:read).with(cache_key(:flag_appeal_creation), raw: true).and_return(4)
+
+        expect(described_class::ACTION_LIMITERS.dig(:flag_appeal_creation, :retry_after)).to eq(300)
+        expect(rate_limit_checker.limit_by_action(:flag_appeal_creation)).to be(true)
+        expect { rate_limit_checker.check_limit!(:flag_appeal_creation) }
+          .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(300) }
+      end
+
+      it "defaults to 3 appeals per window" do
+        expect(Settings::RateLimit.flag_appeal_creation).to eq(3)
       end
     end
 
@@ -142,10 +159,22 @@ RSpec.describe RateLimitChecker, type: :service do
       expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(described_class::LimitReached)
     end
 
+    it "raises LimitReached with retry_after for comment_creation" do
+      allow(rate_limit_checker).to receive(:limit_by_action).with(:comment_creation).and_return(true)
+      expect { rate_limit_checker.check_limit!(:comment_creation) }
+        .to raise_error(described_class::LimitReached) { |error| expect(error.retry_after).to eq(30) }
+    end
+
     it "returns nil if running in end to end tests" do
       allow(ApplicationConfig).to receive(:[]).with("E2E").and_return("true")
 
       expect(rate_limit_checker.check_limit!(:image_upload)).to be_nil
+    end
+
+    it "raises LimitReached for an action without a retry_after entry" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      expect { rate_limit_checker.check_limit!(:comment_creation) }.to raise_error(described_class::LimitReached)
     end
   end
 

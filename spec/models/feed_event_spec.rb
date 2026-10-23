@@ -50,6 +50,19 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when the user has never clicked the specified article" do
+      let!(:other_click) { create(:feed_event, user: user, category: :click) }
+      it "does not create a new feed event or look up the latest click" do
+        article
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { record_journey }
+
+        expect(queries.grep(/FROM "feed_events".*ORDER BY/m)).to be_empty
+        expect(user.feed_events).to contain_exactly(other_click)
+      end
+    end
+
     context "when the interaction type is not one of reaction, comment, or extended_pageview" do
       let(:category) { :impression }
       let!(:click)   { create(:feed_event, user: user, article: article, category: :click) }
@@ -101,6 +114,36 @@ RSpec.describe FeedEvent do
         expect(article.feed_success_score).to eq(expected_score)
         expect(article.feed_impressions_count).to eq(2)
         expect(article.feed_clicks_count).to eq(1)
+      end
+    end
+
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user, as before" do
+        create_list(:feed_event, 2, category: "impression", article: article, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create_list(:feed_event, 2, category: "click", article: article, user: nil, article_position: 1)
+
+        article.reload
+        # Distinct impression users: nil and user1; distinct click users: nil.
+        expect(article.feed_success_score).to eq(1 / 2.0)
+        expect(article.feed_impressions_count).to eq(3)
+        expect(article.feed_clicks_count).to eq(2)
+      end
+    end
+
+    context "when computing the counters" do
+      it "reads the article's feed events in a single query" do
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create(:feed_event, category: "click", article: article, user: user2, article_position: 1)
+
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_article_counters(article.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+        expect(article.reload.feed_success_score).to eq(1.0)
       end
     end
 

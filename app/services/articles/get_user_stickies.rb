@@ -2,14 +2,16 @@ module Articles
   class GetUserStickies
     def self.call(article, author)
       article_tags = article.cached_tag_list.to_s.split(", ") - ["discuss"]
+      return Article.none if article_tags.empty?
 
+      # Columns needed for _sticky_nav and path generation
       author
         .articles
         .published.from_subforem
         .where(archived: false)
         .cached_tagged_with_any(article_tags)
         .unscope(:select)
-        .select(:id, :path, :title, :cached_tag_list, :organization_id, :user_id, :subforem_id) # Columns needed for _sticky_nav and path generation
+        .select(:id, :path, :title, :cached_tag_list, :organization_id, :user_id, :subforem_id)
         .where.not(id: article.id)
         .order(published_at: :desc)
         .limit(2)

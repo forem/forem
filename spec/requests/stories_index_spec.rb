@@ -586,6 +586,65 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username story list reaction preloading" do
+    let(:user) { create(:user) }
+    let!(:article) { create(:article, user: user, published: true) }
+
+    it "renders the profile without preloading distinct reaction categories" do
+      create(:reaction, reactable: article, category: "like")
+      distinct_category_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        distinct_category_queries << payload[:sql] if payload[:sql].include?("distinct(reactions.category)")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/#{user.username}" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(article.title)
+      expect(distinct_category_queries).to be_empty
+    end
+  end
+
+  describe "edge-cached pages with a pending flash message" do
+    let(:user) { create(:user) }
+    let(:reset_notice) { I18n.t("devise.passwords.reset_instructions_sent") }
+
+    {
+      "GET /:username" => ->(user) { "/#{user.username}" },
+      "GET / (home page)" => ->(_user) { "/" }
+    }.each do |description, path_for|
+      context "with #{description}" do
+        let(:page_path) { path_for.call(user) }
+        let(:page_url) { "http://www.example.com#{page_path}" }
+
+        before do
+          get "/users/password/new", headers: { "Referer" => page_url }
+          post "/users/password", params: { user: { email: user.email } }
+        end
+
+        it "does not edge cache the response that renders the flash", :aggregate_failures do
+          expect(response).to redirect_to(page_url)
+          follow_redirect!
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(reset_notice)
+          expect(response.headers["Surrogate-Control"]).to be_nil
+          expect(response.headers["X-Accel-Expires"]).to be_nil
+          expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
+        end
+
+        it "consumes the flash so the next request is cacheable again", :aggregate_failures do
+          follow_redirect!
+          get page_path
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).not_to include(reset_notice)
+          expect(response.headers["Surrogate-Control"]).to be_present
+        end
+      end
+    end
+  end
+
   describe "GET /:slug (organization page)" do
     let(:organization) { create(:organization) }
     let(:user) { create(:user) }
