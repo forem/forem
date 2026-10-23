@@ -1,6 +1,24 @@
 require "rails_helper"
 
 RSpec.describe BillboardEvent do
+  describe ".crawler_user_agent" do
+    %w[bot crawl spider slurp headless GoogleOther meta-externalads facebookexternalhit
+       Google- preview bedrock amazon- python curl go-http axios node-fetch wget scrapy
+       httpclient okhttp java/].each do |token|
+      it "matches #{token} case-insensitively within a user agent" do
+        expect(described_class.crawler_user_agent("Agent #{token.upcase} Agent")).to be(true)
+      end
+    end
+
+    it "does not treat the existing filter as the attribution rule" do
+      expect(described_class.crawler_user_agent("anthropic-ai/1.0")).to be(false)
+    end
+
+    it "leaves missing user agents unclassified" do
+      expect(described_class.crawler_user_agent(nil)).to be_nil
+    end
+  end
+
   it { is_expected.to validate_inclusion_of(:category).in_array(described_class::VALID_CATEGORIES) }
 
   it { is_expected.to validate_inclusion_of(:context_type).in_array(described_class::VALID_CONTEXT_TYPES) }

@@ -135,6 +135,18 @@ RSpec.describe BillboardEventRollup, type: :service do
     expect(results.first.counts_for).to eq(28)
   end
 
+  it "discards user-agent attribution without splitting compacted groups" do
+    [true, false, nil].each do |value|
+      create(:billboard_event, billboard: billboard1, user_id: nil, crawler_user_agent: value)
+    end
+
+    described_class.rollup(Date.current)
+
+    events = BillboardEvent.where(created_at: Date.current.all_day)
+    expect(events.count).to eq(1)
+    expect(events.first).to have_attributes(counts_for: 3, crawler_user_agent: nil)
+  end
+
   # sums seconds_visible
   it "sums seconds_visible of compacted events" do
     create(:billboard_event, billboard: billboard1, seconds_visible: 20, user_id: nil)

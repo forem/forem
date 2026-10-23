@@ -10,6 +10,13 @@ class BillboardEvent < ApplicationRecord
   validate :unique_on_user_if_type_of_conversion_category, on: :create
   validate :only_recent_registrations, on: :create
 
+  # Comparison rule for publisher reporting, independent of the client-side tracking filter.
+  CRAWLER_USER_AGENT_PATTERN = Regexp.new(
+    "bot|crawl|spider|slurp|headless|GoogleOther|meta-externalads|facebookexternalhit|Google-|" \
+    "preview|bedrock|amazon-|python|curl|go-http|axios|node-fetch|wget|scrapy|httpclient|okhttp|java/",
+    Regexp::IGNORECASE,
+  )
+
   self.table_name = "display_ad_events"
 
   alias_attribute :billboard_id, :display_ad_id
@@ -34,6 +41,12 @@ class BillboardEvent < ApplicationRecord
   scope :signups, -> { where(category: CATEGORY_SIGNUP) }
   scope :conversions, -> { where(category: CATEGORY_CONVERSION) }
   scope :all_conversion_types, -> { where(category: [CATEGORY_SIGNUP, CATEGORY_CONVERSION]) }
+
+  def self.crawler_user_agent(user_agent)
+    return if user_agent.blank?
+
+    CRAWLER_USER_AGENT_PATTERN.match?(user_agent)
+  end
 
   # Adds visible time to an impression the viewer may write to, unless it was updated within
   # the throttle window. Like ApplicationRecord.with_synchronous_commit_off, this commits without

@@ -46,6 +46,41 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
+    context "with user-agent attribution" do
+      {
+        "python-requests/2.32.0" => true,
+        "Mozilla/5.0 HeadlessChrome/130.0" => true,
+        "Mozilla/5.0 Chrome/130.0 Safari/537.36" => false,
+        "" => nil
+      }.each do |user_agent, expected|
+        it "records #{expected.inspect} for #{user_agent.inspect} without changing event counts" do
+          expect do
+            post bb_tabulations_path, params: { billboard_event: base_params },
+                                      headers: { "User-Agent" => user_agent }
+          end.to change(BillboardEvent, :count).by(1)
+
+          expect(response).to have_http_status(:ok)
+          expect(BillboardEvent.last).to have_attributes(crawler_user_agent: expected, counts_for: 1)
+        end
+      end
+
+      it "derives attribution from the request instead of accepting a client-provided flag" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params.merge(crawler_user_agent: false) },
+             headers: { "User-Agent" => "curl/8.0" }
+
+        expect(BillboardEvent.last.crawler_user_agent).to be(true)
+      end
+
+      it "supports legacy event parameters" do
+        post bb_tabulations_path,
+             params: { display_ad_event: base_params.except(:billboard_id).merge(display_ad_id: billboard.id) },
+             headers: { "User-Agent" => "node-fetch/3.0" }
+
+        expect(BillboardEvent.last).to have_attributes(billboard_id: billboard.id, crawler_user_agent: true)
+      end
+    end
+
     context "when the request comes from an embedding site" do
       let(:embed_origin) { "https://embed.example.com" }
 

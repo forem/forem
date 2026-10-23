@@ -10,7 +10,10 @@ class BillboardEventsController < ApplicationMetalController
   def create
     # Only tracking for logged‐in users at the moment
     user_id = embed_request? ? nil : session_current_user_id
-    billboard_event_create_params = billboard_event_params.merge(user_id: user_id)
+    billboard_event_create_params = billboard_event_params.merge(
+      user_id: user_id,
+      crawler_user_agent: BillboardEvent.crawler_user_agent(request.user_agent),
+    )
     return head :ok if billboard_event_create_params[:billboard_id].blank?
 
     @billboard_event = ApplicationRecord.with_synchronous_commit_off do
