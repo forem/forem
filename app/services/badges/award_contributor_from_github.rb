@@ -18,11 +18,12 @@ module Badges
 
     def initialize(msg)
       @msg = msg
-      @badge_slugs_with_id = get_badge_slugs_with_id
     end
 
     def call
       return unless Settings::Authentication.providers.map(&:to_s).include?("github")
+
+      @badge_slugs_with_id = get_badge_slugs_with_id
 
       REPOSITORIES.each do |repo|
         award_single_commit_contributors(repo)
@@ -65,16 +66,23 @@ module Badges
         next if slug_id.nil?
         next if commits_count < BADGE_SLUGS[slug]
 
-        BadgeAchievement.create(user_id: user_id, badge_id: slug_id)
+        BadgeAchievement
+          .where(user_id: user_id, badge_id: slug_id)
+          .first_or_create(rewarding_context_message_markdown: msg)
       end
     end
 
     def get_badge_slugs_with_id
       badge_slugs_with_id = {}
       BADGE_SLUGS.each_key do |slug|
-        badge_slugs_with_id[slug] = Badge.id_for_slug(slug)
+        slug_id = Badge.id_for_slug(slug)
+        if slug_id.nil?
+          Rails.logger.warn("[Badges::AwardContributorFromGithub] Badge slug not found: #{slug}")
+        else
+          badge_slugs_with_id[slug] = slug_id
+        end
       end
-      badge_slugs_with_id.compact
+      badge_slugs_with_id
     end
   end
 end

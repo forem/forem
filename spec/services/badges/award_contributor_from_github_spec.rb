@@ -22,10 +22,14 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
     end
 
     context "when badges do not exist in the database" do
-      it "does not raise an error due to nil badge IDs when creating badge achievements" do
+      it "does not raise an error and logs a warning for missing badge slugs" do
+        allow(Rails.logger).to receive(:warn)
+
         expect {
           described_class.call
         }.not_to raise_error
+
+        expect(Rails.logger).to have_received(:warn).with(/Badge slug not found: 4x-commit-club/)
       end
     end
 
@@ -43,12 +47,23 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
       let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
       let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club") }
 
-      it "awards the expected badges" do
+      it "awards the expected badges with rewarding context message" do
         described_class.call
 
         badge_ids = user.badge_achievements.pluck(:badge_id)
         expect(badge_ids).to include(dev_contributor_badge.id)
         expect(badge_ids).to include(four_x_commit_badge.id)
+
+        four_x_achievement = user.badge_achievements.find_by(badge_id: four_x_commit_badge.id)
+        expect(four_x_achievement.rewarding_context_message_markdown).to eq(I18n.t("services.badges.thank_you"))
+      end
+
+      it "is idempotent and guards against duplicate badge achievements on repeated runs" do
+        described_class.call
+
+        expect { described_class.call }.not_to raise_error
+        expect(user.badge_achievements.where(badge_id: four_x_commit_badge.id).count).to eq(1)
+        expect(user.badge_achievements.where(badge_id: dev_contributor_badge.id).count).to eq(1)
       end
     end
 
