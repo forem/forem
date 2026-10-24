@@ -58,7 +58,28 @@ module ForemNative
       Native.calculate_reading_time(content.to_s)
     end
 
+    # Scales a strict `#rrggbb` hex color, matching `Color::CompareHex#brightness`.
+    # Returns nil for anything outside that domain (malformed hexes, negative or
+    # non-finite channels) or when an older committed binary lacks the symbol, so the
+    # caller can resolve it with the original Ruby semantics.
+    def color_brightness(hex, amount = 1, only_values: false)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible? && Native.respond_to?(:color_brightness)
+
+      native_amount = native_float(amount)
+      return unless native_amount
+
+      Native.color_brightness(hex, native_amount, only_values ? true : false)
+    end
+
     private
+
+    # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
+    def native_float(amount)
+      case amount
+      when Float then amount
+      when Integer then amount.to_f if amount.abs < 2**31
+      end
+    end
 
     def require_candidate_binary
       candidates = ["forem_native/forem_native"] +

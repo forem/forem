@@ -88,4 +88,98 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".color_brightness" do
+    let(:legacy_brightness) do
+      lambda do |hex, amount, only_values|
+        rgb = hex.match(/^#?(?<r>..)(?<g>..)(?<b>..)$/).named_captures.to_h { |key, color| [key.to_sym, color.hex] }
+        rgb = rgb.transform_values { |color| (color * amount).round }
+        only_values ? format("%<r>d, %<g>d, %<b>d", rgb) : format("#%<r>02x%<g>02x%<b>02x", rgb)
+      rescue StandardError
+        hex
+      end
+    end
+
+    let(:edge_hexes) do
+      [
+        nil, "", "#", "#fff", "#12345", "#1234567", "##12345", "#ccddee", "ccddee", "#CCDDEE", "#000000",
+        "#ffffff", "#-1-1-1", "#0x0x0x", "# 1 2 3", "#1_2_3_", "#12345g", "#ccddee\n", "\n#ccddee",
+        "foo\n#ccddee", "#ccddee\r\n", "#éééééé", "#🚀🚀🚀", "#日本語", "#ccddee".encode("UTF-16LE"),
+        "#ccddee".b, :"#ccddee"
+      ]
+    end
+
+    let(:edge_amounts) do
+      [1, 0, -1, 2, 0.0, -0.0, 0.5, 0.625, 0.8, 0.88, 1.0, 1.35, -0.4, -0.6, 1e300, -1e300, 2**40,
+       Float::INFINITY, -Float::INFINITY, Float::NAN, Rational(1, 2), nil, "1"] +
+        Color::CompareHex::ACCENT_MODIFIERS
+    end
+
+    let(:native_brightness?) { ForemNative::Native.respond_to?(:color_brightness) }
+
+    it "matches the legacy Ruby reference across edge-case hexes and amounts" do
+      edge_hexes.product(edge_amounts, [false, true]).each do |hex, amount, only_values|
+        expected = legacy_brightness.call(hex, amount, only_values)
+        native = described_class.color_brightness(hex, amount, only_values: only_values)
+        actual = Color::CompareHex.new([hex]).brightness(amount, only_values: only_values)
+        message = "mismatch for #{hex.inspect} * #{amount.inspect} (only_values: #{only_values})"
+        if expected.is_a?(String)
+          expect(native).to eq(expected), message unless native.nil?
+          expect(actual).to eq(expected), message
+          expect(actual.encoding).to eq(expected.encoding), message
+        else
+          expect(native).to be_nil, message
+          expect(actual).to equal(expected), message
+        end
+      end
+    end
+
+    it "returns nil from the native function for inputs outside the strict #rrggbb domain" do
+      skip "committed binary predates color_brightness" unless native_brightness?
+
+      expect(ForemNative::Native.color_brightness("#ccddee", 0.5, false)).to eq("#666f77")
+      expect(ForemNative::Native.color_brightness("#ccddee\n", 0.5, false)).to be_nil
+      expect(ForemNative::Native.color_brightness("#010101", -0.6, false)).to be_nil
+      expect(ForemNative::Native.color_brightness("#ffffff", Float::NAN, true)).to be_nil
+    end
+
+    it "returns nil when the native symbol is missing so CompareHex uses the legacy path" do
+      allow(ForemNative::Native).to receive(:respond_to?).and_call_original
+      allow(ForemNative::Native).to receive(:respond_to?).with(:color_brightness).and_return(false)
+
+      expect(described_class.color_brightness("#ccddee", 0.5)).to be_nil
+      expect(Color::CompareHex.new(["#ccddee"]).brightness(1.35, only_values: true)).to eq("275, 298, 321")
+    end
+
+    it "passes differential equivalence across 1,000 generated hex colors and amounts" do
+      srand(424_242)
+      rng = Random.new(424_242)
+      hex_chars = [*"0".."9", *"a".."f", *"A".."F"]
+      noise_chars = hex_chars + ["#", "-", "+", " ", "_", "x", "g", "\n", "é", "🚀"]
+      modifiers = Color::CompareHex::ACCENT_MODIFIERS + [0.625, 0.88, 1.35, 0.8, 1, 0, 2]
+
+      1_000.times do |iteration|
+        prefix = rng.rand < 0.8 ? "#" : ""
+        hex = if rng.rand < 0.85
+                prefix + Array.new(6) { hex_chars.sample(random: rng) }.join
+              else
+                prefix + Array.new(rng.rand(0..8)) { noise_chars.sample(random: rng) }.join
+              end
+        amount = case rng.rand(4)
+                 when 0 then modifiers.sample(random: rng)
+                 when 1 then Color::CompareHex::ACCENT_MODIFIERS.sample(random: rng)**rng.rand(-3..3)
+                 when 2 then (rng.rand * 4.0) - 0.5
+                 else rng.rand(-2..5)
+                 end
+        only_values = rng.rand < 0.5
+
+        expected = legacy_brightness.call(hex, amount, only_values)
+        native = described_class.color_brightness(hex, amount, only_values: only_values)
+        message = "iteration #{iteration}: #{hex.inspect} * #{amount.inspect} (only_values: #{only_values})"
+
+        expect(native).to eq(expected), message unless native.nil?
+        expect(Color::CompareHex.new([hex]).brightness(amount, only_values: only_values)).to eq(expected), message
+      end
+    end
+  end
 end
