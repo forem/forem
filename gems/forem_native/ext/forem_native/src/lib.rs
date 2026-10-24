@@ -74,6 +74,26 @@ fn convert_escaped_pipes_outside_codeblocks(ruby: &Ruby, content: RString) -> Op
     Some(converted.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
 }
 
+fn fixer_add_quotes_to_section(
+    ruby: &Ruby,
+    markdown: RString,
+    section: RString,
+) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` slice borrows; `forem_core` never calls into Ruby,
+    // and the borrows end before we allocate any Ruby objects.
+    // Returns `nil` for invalid UTF-8 and non-word sections so Ruby keeps its semantics.
+    let quoted = {
+        let text = std::str::from_utf8(unsafe { markdown.as_slice() }).ok()?;
+        let section = std::str::from_utf8(unsafe { section.as_slice() }).ok()?;
+        match forem_core::fixer::add_quotes_to_section(text, section)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(quoted) => Some(quoted),
+        }
+    };
+    // Like `sub` without changes, hand back a cheap copy-on-write copy of the input.
+    Some(quoted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -96,6 +116,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "convert_escaped_pipes_outside_codeblocks",
         function!(convert_escaped_pipes_outside_codeblocks, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "fixer_add_quotes_to_section",
+        function!(fixer_add_quotes_to_section, 2),
     )?;
     Ok(())
 }
