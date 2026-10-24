@@ -586,6 +586,40 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username flagged state" do
+    let(:user) { create(:user) }
+
+    it "skips the flag lookup for signed-out visitors" do
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('FROM "reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/#{user.username}" }
+
+      expect(response).to have_http_status(:ok)
+      expect(reaction_queries.grep(/"reactions"\."user_id" IS NULL/)).to be_empty
+    end
+
+    it "marks the profile flagged when the signed-in viewer flagged the user" do
+      flagger = create(:user, :trusted)
+      create(:vomit_reaction, user: flagger, reactable: user)
+      sign_in flagger
+
+      get "/#{user.username}"
+
+      expect(response.body).to include('data-is-user-flagged="true"')
+    end
+
+    it "does not mark the profile flagged when the signed-in viewer has not flagged the user" do
+      sign_in create(:user)
+
+      get "/#{user.username}"
+
+      expect(response.body).to include('data-is-user-flagged="false"')
+    end
+  end
+
   describe "GET /:username story list reaction preloading" do
     let(:user) { create(:user) }
     let!(:article) { create(:article, user: user, published: true) }
