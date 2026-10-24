@@ -60,10 +60,10 @@ module ForemNative
 
     # Scales a strict `#rrggbb` hex color, matching `Color::CompareHex#brightness`.
     # Returns nil for anything outside that domain (malformed hexes, negative or
-    # non-finite channels) or when an older committed binary lacks the symbol, so the
-    # caller can resolve it with the original Ruby semantics.
+    # non-finite channels) so `Color::CompareHex#brightness` can handle those
+    # edge cases via its private `legacy_brightness` method.
     def color_brightness(hex, amount = 1, only_values: false)
-      return unless hex.is_a?(String) && hex.encoding.ascii_compatible? && Native.respond_to?(:color_brightness)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible?
 
       native_amount = native_float(amount)
       return unless native_amount

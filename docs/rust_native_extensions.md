@@ -52,7 +52,7 @@ Target leaf methods on hot spans (high `avg_other_ruby_ms` relative to DB/Redis 
 - Expose a thin wrapper on `ForemNative::Native` in `gems/forem_native/ext/forem_native/src/lib.rs` and expose the public method on `ForemNative`.
 
 ### Step 3: Clean Module Boundary (Single Source of Truth)
-Delegate the Ruby call site cleanly to `ForemNative`:
+Delegate the Ruby call site cleanly to `ForemNative`. Do **not** add runtime `FeatureFlag` checks, `ENV` toggles (such as `FOREM_NATIVE_FORCE_FALLBACK`), or duplicate `ForemNative::RubyFallback` modules inside `gems/forem_native`:
 
 ```ruby
 module MarkdownProcessor
@@ -65,6 +65,10 @@ module MarkdownProcessor
   end
 end
 ```
+
+- **When a Rust function handles 100% of inputs** (e.g., `MarkdownProcessor::ReadingTime.calculate`), call `ForemNative.<method>` directly and delete the old runtime Ruby code from `app/`.
+- **When a Rust function intentionally handles a strict common-case domain and returns `nil` for quirky/out-of-domain inputs** (e.g., `ForemNative.color_brightness` returning `nil` for malformed hex strings or `NaN`/`Infinity` multipliers so Ruby's rescue/formatting quirks apply), keep the legacy edge-case handler as a private method in the host Ruby class (`ForemNative.color_brightness(...) || legacy_brightness(...)`) so constants/regexes remain in one place rather than duplicating them inside `gems/forem_native`.
+- **Update all committed precompiled binaries** (`x86_64-linux/forem_native.so`, `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`) whenever adding a new native symbol so every platform exports the full `ForemNative::Native` API without needing `respond_to?` guards.
 
 ### Step 4: Differential Equivalence & Edge-Case Verification
 Every ported function **must** include an RSpec suite (`spec/lib/forem_native_spec.rb`) verifying:

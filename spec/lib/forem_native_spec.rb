@@ -115,8 +115,6 @@ RSpec.describe ForemNative do
         Color::CompareHex::ACCENT_MODIFIERS
     end
 
-    let(:native_brightness?) { ForemNative::Native.respond_to?(:color_brightness) }
-
     it "matches the legacy Ruby reference across edge-case hexes and amounts" do
       edge_hexes.product(edge_amounts, [false, true]).each do |hex, amount, only_values|
         expected = legacy_brightness.call(hex, amount, only_values)
@@ -135,20 +133,10 @@ RSpec.describe ForemNative do
     end
 
     it "returns nil from the native function for inputs outside the strict #rrggbb domain" do
-      skip "committed binary predates color_brightness" unless native_brightness?
-
       expect(ForemNative::Native.color_brightness("#ccddee", 0.5, false)).to eq("#666f77")
       expect(ForemNative::Native.color_brightness("#ccddee\n", 0.5, false)).to be_nil
       expect(ForemNative::Native.color_brightness("#010101", -0.6, false)).to be_nil
       expect(ForemNative::Native.color_brightness("#ffffff", Float::NAN, true)).to be_nil
-    end
-
-    it "returns nil when the native symbol is missing so CompareHex uses the legacy path" do
-      allow(ForemNative::Native).to receive(:respond_to?).and_call_original
-      allow(ForemNative::Native).to receive(:respond_to?).with(:color_brightness).and_return(false)
-
-      expect(described_class.color_brightness("#ccddee", 0.5)).to be_nil
-      expect(Color::CompareHex.new(["#ccddee"]).brightness(1.35, only_values: true)).to eq("275, 298, 321")
     end
 
     it "passes differential equivalence across 1,000 generated hex colors and amounts" do
