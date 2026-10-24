@@ -42,9 +42,7 @@ module MarkdownProcessor
       end
 
       def self.split_tags(markdown)
-        markdown.gsub(/\ntags:.*\n/) do |tags|
-          tags.split(" #").join(",").delete("#").gsub(":,", ": ")
-        end
+        ForemNative.fixer_split_tags(markdown) || legacy_split_tags(markdown)
       end
 
       def self.underscores_in_usernames(markdown)
@@ -96,6 +94,15 @@ module MarkdownProcessor
         end
       end
       private_class_method :legacy_add_quotes_to_section
+
+      # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+      # invalid byte sequences).
+      def self.legacy_split_tags(markdown)
+        markdown.gsub(/\ntags:.*\n/) do |tags|
+          tags.split(" #").join(",").delete("#").gsub(":,", ": ")
+        end
+      end
+      private_class_method :legacy_split_tags
     end
   end
 end
