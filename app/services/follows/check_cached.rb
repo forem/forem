@@ -16,6 +16,28 @@ module Follows
       Rails.cache.read_multi(*keys)
     end
 
+    # Computes every User-to-User check missing from +prefetched+ in one follows query (instead of a
+    # find plus a COUNT per check), caches the results, and returns them merged into +prefetched+.
+    # Checks whose followable id is not in +existing_user_ids+ are skipped so .call still raises for them.
+    def self.fill_user_misses(checks, prefetched, existing_user_ids)
+      existing_user_ids = existing_user_ids.to_set
+      misses = checks.filter_map do |follower, followable_type, followable_id|
+        next unless follower && followable_type == "User" && follower.id != followable_id
+        next unless existing_user_ids.include?(followable_id)
+
+        key = new(follower, followable_type, followable_id).cache_key
+        [key, [follower.id, followable_id]] unless prefetched.key?(key)
+      end.uniq
+      return prefetched if misses.empty?
+
+      followed_pairs = Follow.unblocked.where(follower_type: "User", followable_type: "User")
+        .where(%i[follower_id followable_id] => misses.map(&:last))
+        .pluck(:follower_id, :followable_id).to_set
+      results = misses.to_h { |key, pair| [key, followed_pairs.include?(pair)] }
+      Rails.cache.write_multi(results, expires_in: CACHE_EXPIRY)
+      prefetched.merge(results)
+    end
+
     def initialize(follower, followable_type, followable_id)
       @follower = follower
       @followable_type = followable_type
