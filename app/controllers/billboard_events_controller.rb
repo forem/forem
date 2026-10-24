@@ -61,8 +61,9 @@ class BillboardEventsController < ApplicationMetalController
     event_params[:billboard_id] ||= billboard_id
     event_params[:article_id] = params[:article_id] if params[:article_id].present?
     event_params[:geolocation] = client_geolocation
+    event_params[:user_agent] = event_params[:user_agent].presence || params[:user_agent].presence || request.user_agent
     event_params[:context_type] = BillboardEvent::CONTEXT_TYPE_EMBED if embed_request?
-    event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation)
+    event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation, :user_agent)
   end
 
   def embed_request?

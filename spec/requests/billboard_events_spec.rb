@@ -46,6 +46,54 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
+    context "when recording user_agent" do
+      let(:header_ua) { "Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/128.0" }
+      let(:param_ua) { "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15" }
+
+      it "records user_agent from the User-Agent request header when not in params" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(header_ua)
+      end
+
+      it "records user_agent from billboard_event params when provided by client JS" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params.merge(user_agent: param_ua) },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(param_ua)
+      end
+
+      it "records user_agent from top-level params when provided" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params, user_agent: param_ua },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(param_ua)
+      end
+
+      it "falls back to the User-Agent request header when param user_agent is blank" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params.merge(user_agent: "") },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(header_ua)
+      end
+
+      it "records user_agent for legacy display_ad_event params" do
+        post display_ad_events_path,
+             params: { display_ad_event: base_params.except(:billboard_id).merge(display_ad_id: billboard.id) },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last).to have_attributes(
+          billboard_id: billboard.id,
+          user_agent: header_ua,
+        )
+      end
+    end
+
     context "when the request comes from an embedding site" do
       let(:embed_origin) { "https://embed.example.com" }
 
@@ -55,12 +103,16 @@ RSpec.describe "BillboardEvents", type: :request do
           .and_return("#{embed_origin}, https://other-embed.example.com")
       end
 
-      it "records an anonymous embed event" do
-        post bb_tabulations_path, params: { billboard_event: base_params }, headers: { "Origin" => embed_origin }
+      it "records an anonymous embed event with its user_agent" do
+        embed_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0"
+        post bb_tabulations_path,
+             params: { billboard_event: base_params },
+             headers: { "Origin" => embed_origin, "User-Agent" => embed_ua }
 
         event = BillboardEvent.last
         expect(event.context_type).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
         expect(event.user_id).to be_nil
+        expect(event.user_agent).to eq(embed_ua)
       end
 
       it "allows the cross-origin preflight" do
