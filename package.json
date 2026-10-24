@@ -90,7 +90,7 @@
     "jest": "28.1.3",
     "jest-axe": "^6.0.0",
     "jest-environment-jsdom": "^28.1.3",
-    "jest-fetch-mock": "^3.0.3",
+    "jest-fetch-mock": "^3.2.0",
     "jest-watch-typeahead": "^2.2.2",
     "jsdom": "^20.0.1",
     "lint-staged": "^13.3.0",
