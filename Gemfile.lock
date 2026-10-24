@@ -207,6 +207,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.7)
+    csv (3.3.6)
     cuprite (0.15)
       capybara (~> 3.0)
       ferrum (~> 0.14.0)
@@ -450,7 +451,8 @@ GEM
     http-parser (1.2.3)
       ffi-compiler (>= 1.0, < 2.0)
     http_parser.rb (0.6.0)
-    httparty (0.21.0)
+    httparty (0.24.3)
+      csv
       mini_mime (>= 1.0.0)
       multi_xml (>= 0.5.2)
     httpclient (2.9.0)
@@ -1203,7 +1205,7 @@ DEPENDENCIES
   honeybadger (~> 5.1)
   honeycomb-beeline (~> 2.11.0)
   html_truncator (~> 0.4)
-  httparty (~> 0.20)
+  httparty (~> 0.24)
   httpclient (~> 2.9.0)
   hypershield (~> 0.2.2)
   i18n-js (~> 3.9.2)
