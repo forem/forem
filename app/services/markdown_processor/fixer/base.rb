@@ -67,6 +67,13 @@ module MarkdownProcessor
       end
 
       def self.add_quotes_to_section(markdown, section:)
+        ForemNative.fixer_add_quotes_to_section(markdown, section) ||
+          legacy_add_quotes_to_section(markdown, section: section)
+      end
+
+      # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+      # invalid byte sequences, sections that are not plain words).
+      def self.legacy_add_quotes_to_section(markdown, section:)
         # Only add quotes to front matter, or text between triple dashes
         markdown.sub(FRONT_MATTER_DETECTOR) do |front_matter|
           front_matter.gsub(/#{section}: ?(?<content>.*?)(\r\n|\n)/m) do |target|
@@ -88,6 +95,7 @@ module MarkdownProcessor
           end
         end
       end
+      private_class_method :legacy_add_quotes_to_section
     end
   end
 end
