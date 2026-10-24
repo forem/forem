@@ -14,9 +14,12 @@ module CachingHeaders
   #  {cache_control: 'public, no-cache, maxage=xyz', surrogate_control: 'max-age: 100'}
   #
   # @note If you call this for a public Forem, you won't have access to data about the current user.
-  #       You can check if they are authenticated but nothing else.
+  #       You can check if they are authenticated (`user_signed_in?`) but nothing else.
+  #       Never use `current_user` or `session_current_user_id` to personalize an edge-cached
+  #       response unless `unset_cache_control_headers` has been called first.
   #
   # @see {EdgeCacheSafetyCheck#current_user} for impact on "current_user"
+  # @see {SessionCurrentUser#session_current_user_id} for session ID caveats on cached paths
   def set_cache_control_headers(
     max_age = ((ApplicationConfig["EDGE_CACHE_DURATION_IN_HOURS"] || 24).to_i).hours.to_i,
     surrogate_control: nil,
