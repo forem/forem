@@ -191,17 +191,10 @@ module MarkdownProcessor
       raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
     end
 
+    # Escape codeblocks, code spans, and inline code
     def escape_liquid_tags_in_codeblock(content)
-      # Escape codeblocks, code spans, and inline code
-      content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
-        codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
-        codeblock.gsub!("{% raw %}", "{----% raw %----}")
-        if codeblock.match?(/[[:space:]]*`{3,}/)
-          "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
-        else
-          "{% raw %}#{codeblock}{% endraw %}"
-        end
-      end
+      ForemNative.escape_liquid_tags_in_codeblock(content) ||
+        legacy_escape_liquid_tags_in_codeblock(content)
     end
 
     def convert_code_tags_to_triple_backticks(content)
@@ -223,6 +216,20 @@ module MarkdownProcessor
       content.gsub(/^(?: {16,}|\t{4,})[-*+ \d.]* .*$/) do |line|
         line.gsub(/\[([^\]]*)\]\(([^)]*)\)/) do
           "<a href=\"#{Regexp.last_match(2)}\">#{Regexp.last_match(1)}</a>"
+        end
+      end
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_escape_liquid_tags_in_codeblock(content)
+      content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+        codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+        codeblock.gsub!("{% raw %}", "{----% raw %----}")
+        if codeblock.match?(/[[:space:]]*`{3,}/)
+          "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
+        else
+          "{% raw %}#{codeblock}{% endraw %}"
         end
       end
     end
