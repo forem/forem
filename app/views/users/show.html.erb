@@ -44,9 +44,8 @@
                     id="user-profile-dropdownmenu-flag-button"
                     data-profile-user-id="<%= @user.id %>"
                     data-profile-user-name="@<%= @user.username %>"
-                    data-is-user-flagged="<%= @is_user_flagged %>"
                     class="border-none crayons-link crayons-link--block">
-                    <%= t("views.users.#{@flag_status ? 'unflag' : 'flag'}", user: @user.username) %>
+                    <%= t("views.users.flag", user: @user.username) %>
                   </a>
                   <a
                     href="javascript:void(0);"
