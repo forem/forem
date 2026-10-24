@@ -23,6 +23,7 @@ For platform-wide guides, getting started tutorials, and API references, please 
 - **[Survey Resubmission Feature](survey_resubmission.md)** - Specification, configuration, and model lifecycle methods for the survey resubmission mechanism.
 
 ### ⚡ Performance & Optimizations
+- **[Rust Native Extensions (`forem_native`)](rust_native_extensions.md)** - In-process Rust native extension architecture (`magnus` + `forem_core`), zero-deployment-overhead fallback design, and the 5-step strangler pattern for porting Ruby hot paths.
 - **[Feed Query Optimization](feed_query_optimization.md)** - Query restructuring, eager loading, and performance improvements for home and tag feeds.
 - **[Feed Partial Index Optimization](feed_partial_index_optimization.md)** - Database index optimizations and partial index strategies for feed queries.
 - **[Moderations Performance Optimizations](moderations_performance_optimizations.md)** - Query and indexing optimizations for the `/mod` dashboard to eliminate N+1 queries.

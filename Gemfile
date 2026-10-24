@@ -191,3 +191,4 @@ group :test do
 end
 
 gem "neighbor", "~> 0.5.2"
+gem "forem_native", path: "gems/forem_native"
