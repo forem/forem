@@ -3376,6 +3376,35 @@ RSpec.describe Article do
     end
   end
 
+  describe ".preload_reaction_counts_for_reactable" do
+    let(:other_article) { create(:article, user: user) }
+
+    before do
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "unicorn")
+      create(:reaction, reactable: other_article, category: "fire")
+    end
+
+    it "returns the same categories as the per-record lookup with a single cache call" do
+      expected = [article, other_article].map { |a| Article.find(a.id).public_reaction_categories }
+      stories = [Article.find(article.id), Article.find(other_article.id)]
+
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      described_class.preload_reaction_counts_for_reactable(stories)
+
+      expect(stories.map(&:public_reaction_categories)).to eq(expected)
+      expect(Rails.cache).to have_received(:fetch_multi).once
+      expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
+    end
+
+    it "is a no-op for an empty list" do
+      allow(Rails.cache).to receive(:fetch_multi)
+      described_class.preload_reaction_counts_for_reactable([])
+      expect(Rails.cache).not_to have_received(:fetch_multi)
+    end
+  end
+
   describe "#public_reaction_categories cache invalidation" do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
