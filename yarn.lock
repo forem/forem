@@ -7746,7 +7746,7 @@ __metadata:
     cypress-pipe: "npm:^2.0.1"
     dompurify: "npm:^3.3.3"
     esbuild: "npm:^0.19.12"
-    esbuild-plugin-stimulus: "npm:^0.1.5"
+    esbuild-plugin-stimulus: "npm:^0.2.0"
     esbuild-plugin-svgr: "npm:^2.1.0"
     eslint: "npm:^8.57.0"
     eslint-config-preact: "npm:^2.0.0"
@@ -8542,10 +8542,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-plugin-stimulus@npm:^0.1.5":
-  version: 0.1.5
-  resolution: "esbuild-plugin-stimulus@npm:0.1.5"
-  checksum: 10c0/b59b582004d9a40b6cf1a8d2c87fb6d11738e4c79d69818df25afa8f8bab83c49fd5769cc0f5cfbcc7c3e393b310a5f48365047357f27724225973da35fb5f4a
+"esbuild-plugin-stimulus@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "esbuild-plugin-stimulus@npm:0.2.0"
+  checksum: 10c0/b6a4869a09811a9ab9c46a2ae3ffd0290f5b5fce60e576617eb54f0e50017970b78b8128f655dce36057aca43cf6b54ef39d58d5df2e57c1d7490bc3b9a7381a
   languageName: node
   linkType: hard
 
