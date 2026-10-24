@@ -48,7 +48,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.20.7",
     "@cypress/code-coverage": "^3.12.36",
     "@etchteam/storybook-addon-css-variables-theme": "^1.6.0",
-    "@faker-js/faker": "^7.6.0",
+    "@faker-js/faker": "^10.6.0",
     "@knapsack-pro/cypress": "^7.4.0",
     "@storybook/addon-a11y": "^8.6.15",
     "@storybook/addon-actions": "^8.6.15",
