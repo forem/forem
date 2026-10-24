@@ -84,6 +84,13 @@ RSpec.describe Subforem do
 
       expect(described_class.cached_id_by_domain("later.example.com")).to eq(later.id)
     end
+
+    it "returns nil without querying the database for a domain containing a null byte" do
+      allow(described_class).to receive(:find_by).and_call_original
+
+      expect(described_class.cached_id_by_domain("dev.to\u0000")).to be_nil
+      expect(described_class).not_to have_received(:find_by)
+    end
   end
 
   describe ".create_from_scratch!" do
