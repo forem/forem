@@ -96,6 +96,30 @@ RSpec.describe Comment do
         expect(subject).not_to be_valid
       end
 
+      it "is invalid on create when replying to a deleted comment" do
+        parent_comment = create(:comment, commentable: article)
+        parent_comment.update!(deleted: true)
+        reply = build(:comment, commentable: article, parent: parent_comment)
+
+        expect(reply).not_to be_valid
+        expect(reply.errors.full_messages).to include(I18n.t("models.comment.parent_deleted"))
+      end
+
+      it "is valid when replying to a comment that is not deleted" do
+        parent_comment = create(:comment, commentable: article)
+        reply = build(:comment, commentable: article, parent: parent_comment)
+
+        expect(reply).to be_valid
+      end
+
+      it "keeps existing replies valid after their parent is deleted" do
+        parent_comment = create(:comment, commentable: article)
+        reply = create(:comment, commentable: article, parent: parent_comment)
+        parent_comment.update!(deleted: true)
+
+        expect(reply.reload).to be_valid
+      end
+
       it "is valid without a commentable" do
         subject.commentable = nil
 

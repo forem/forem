@@ -57,6 +57,7 @@ pt:
       image_only: '[imagem]'
       is_not_valid: não é válido.
       locked: a discussão está bloqueada neste Post
+      parent_deleted: Você não pode responder a um comentário que foi excluído.
       published_article: não é um artigo publicado
       ai_disclosure:
         not_disclosed: Não divulgado
