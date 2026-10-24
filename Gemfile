@@ -51,7 +51,7 @@ gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database 
 gem "honeybadger", "~> 5.1" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.11.0" # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
-gem "httparty", "~> 0.20" # Makes http fun! Also, makes consuming restful web services dead easy
+gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
 gem "i18n-js", "~> 3.9.2" # Helps with internationalization in Rails.
 gem "imgproxy", "~> 2.1" # A gem that easily generates imgproxy URLs for your images
