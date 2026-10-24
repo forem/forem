@@ -142,7 +142,7 @@ class ArticleActivity < ApplicationRecord
     rx = build_reactions_from_raw
     cm = build_comments_from_raw
 
-    update!(
+    assign_attributes(
       daily_page_views: pv,
       daily_reactions: rx,
       daily_comments: cm,
@@ -152,6 +152,11 @@ class ArticleActivity < ApplicationRecord
       total_comments: cm.values.sum(&:to_i),
       last_aggregated_at: Time.current,
     )
+    # Skip validation: the only validator is the belongs_to :article presence
+    # check, which would load the full articles row (body, processed_html, ...)
+    # on every recompute. article_id is NOT NULL with a foreign key, so an
+    # existing activity row always points at a real article.
+    save!(validate: false)
   end
 
   def derive_page_view_day(raw)
