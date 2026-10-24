@@ -129,7 +129,7 @@
     "core-js": "3",
     "dompurify": "^3.3.3",
     "esbuild": "^0.19.12",
-    "esbuild-plugin-stimulus": "^0.1.5",
+    "esbuild-plugin-stimulus": "^0.2.0",
     "esbuild-plugin-svgr": "^2.1.0",
     "file-loader": "^6.2.0",
     "focus-trap": "^7.8.0",
