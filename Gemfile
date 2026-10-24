@@ -87,7 +87,7 @@ gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 6.0" # Domain name parser based on the Public Suffix List
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
-gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
+gem "rack-cors", "~> 2.0" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "8.0.5" # Ruby on Rails
 gem "ransack", "~> 4.2" # Searching and sorting
