@@ -263,6 +263,30 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_success_score).to eq(expected_score)
         expect(feed_config.feed_impressions_count).to eq(2)
       end
+
+      it "reads the feed config's feed events in a single aggregate query" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_feed_config_counters(feed_config.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+      end
+    end
+
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user" do
+        create_list(:feed_event, 2, category: "impression", feed_config: feed_config, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
+        create(:feed_event, category: "click", feed_config: feed_config, user: nil, article_position: 1)
+
+        described_class.update_single_feed_config_counters(feed_config.id)
+        feed_config.reload
+
+        expect(feed_config.feed_success_score).to eq(1.0 / 2.0)
+        expect(feed_config.feed_impressions_count).to eq(3)
+      end
     end
 
     context "when no impression events exist for the feed config" do

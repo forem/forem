@@ -21,6 +21,7 @@ class FeedConfig < ApplicationRecord
                end
 
     selected ||
+      where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT).order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
       where("feed_impressions_count > 0").order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
       order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
       first_or_create

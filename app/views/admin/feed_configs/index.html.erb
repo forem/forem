@@ -44,7 +44,7 @@
 <div class="crayons-card p-6 grid gap-6">
   <div class="flex items-center justify-between">
     <div class="text-sm color-base-60">
-      <strong>Exposure Split:</strong> 75% Top <%= FeedConfig::TOP_POOL_LIMIT %> by Score &middot; 20% Newest <%= FeedConfig::TOP_POOL_LIMIT %> (&lt; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 5% Random
+      <strong>Exposure Split:</strong> 75% Top <%= FeedConfig::TOP_POOL_LIMIT %> by Score (&ge; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 20% Newest <%= FeedConfig::TOP_POOL_LIMIT %> (&lt; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 5% Random
     </div>
     <nav class="crayons-tabs" aria-label="Sort feed configs">
       <ul class="crayons-tabs__list">
