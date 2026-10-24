@@ -74,15 +74,22 @@ module Badges
 
     def get_badge_slugs_with_id
       badge_slugs_with_id = {}
+      missing_slugs = []
+
       BADGE_SLUGS.each_key do |slug|
-        slug_id = Badge.id_for_slug(slug)
-        if slug_id.nil?
-          Rails.logger.warn("[Badges::AwardContributorFromGithub] Badge slug not found: #{slug}")
-        else
+        if (slug_id = Badge.id_for_slug(slug))
           badge_slugs_with_id[slug] = slug_id
+        else
+          missing_slugs << slug
         end
       end
+
+      log_missing_slugs(missing_slugs) if missing_slugs.any?
       badge_slugs_with_id
+    end
+
+    def log_missing_slugs(slugs)
+      Rails.logger.info("[Badges::AwardContributorFromGithub] Badge slugs not found: #{slugs.join(', ')}")
     end
   end
 end
