@@ -117,6 +117,11 @@ class ArticleDecorator < ApplicationDecorator
     return @permit_adjacent_sponsors if defined?(@permit_adjacent_sponsors)
     return @permit_adjacent_sponsors = true unless respond_to?(:user_id) && user_id.present?
 
+    # billboards#show selects the answer alongside the article (see BillboardsController).
+    if object.has_attribute?(:adjacent_sponsors_permitted)
+      return @permit_adjacent_sponsors = object[:adjacent_sponsors_permitted]
+    end
+
     # articles#show preloads the author's setting; answer from it instead of querying again.
     # user_id is unique in users_settings, so the loaded row is the only one exists? could match.
     if co_author_ids.empty? && object.association(:user).loaded? && user&.association(:setting)&.loaded?
