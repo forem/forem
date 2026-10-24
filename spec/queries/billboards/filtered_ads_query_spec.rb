@@ -223,6 +223,19 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
     end
+
+    it "does not preload organizations for every candidate billboard" do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+      filtered = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        filtered = filter_billboards(organization_id: nil).to_a
+      end
+
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
+      expect(queries.grep(/FROM "organizations"/)).to be_empty
+      expect(filtered.find { |bb| bb.id == external_ad.id }.organization).to eq(organization)
+    end
   end
 
   context "when considering home hero ads" do
