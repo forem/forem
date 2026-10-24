@@ -163,6 +163,188 @@ fn find_byte(bytes: &[u8], from: usize, needle: u8) -> Option<usize> {
         .map(|i| from + i)
 }
 
+/// Equivalent of `MarkdownProcessor::Parser#escape_liquid_tags_in_codeblock`:
+///
+/// ```ruby
+/// content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+///   codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+///   codeblock.gsub!("{% raw %}", "{----% raw %----}")
+///   if codeblock.match?(/[[:space:]]*`{3,}/)
+///     "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
+///   else
+///     "{% raw %}#{codeblock}{% endraw %}"
+///   end
+/// end
+/// ```
+///
+/// Onigmo's `[[:space:]]` on UTF-8 strings is the Unicode `White_Space` property, the same set
+/// as `char::is_whitespace`. Every other delimiter is an ASCII byte, so slicing never splits a
+/// multi-byte character, and the unanchored `match?` is simply "contains three backticks".
+///
+/// Returns `Cow::Borrowed` when there is no code (the common case for comments), so callers
+/// can hand back a shared copy of the input instead of copying it.
+pub fn escape_liquid_tags_in_codeblock(content: &str) -> Cow<'_, str> {
+    let mut scanner = CodeScanner::new(content.as_bytes());
+    let mut out: Option<String> = None;
+    let mut copied = 0;
+    let mut pos = 0;
+
+    // Only whitespace, backticks, and tildes can start a match; skip other ASCII in bulk.
+    while let Some(skip) = content.as_bytes()[pos..]
+        .iter()
+        .position(|&b| !b.is_ascii() || matches!(b, b'`' | b'~' | b'\t'..=b'\r' | b' '))
+    {
+        pos += skip;
+        let Some(ch) = content[pos..].chars().next() else {
+            break;
+        };
+        let found = if ch.is_whitespace() {
+            // Fewer leading spaces would leave a space where the fence must start, so the
+            // whole run is consumed, and the inline alternatives need a backtick at `pos`.
+            let fence = pos + whitespace_len(&content[pos..]);
+            match scanner.fenced_block_end(fence) {
+                Some(end) => Some(end),
+                None => {
+                    pos = fence;
+                    continue;
+                }
+            }
+        } else if ch == '`' {
+            scanner
+                .fenced_block_end(pos)
+                .or_else(|| scanner.inline_code_end(pos))
+        } else if ch == '~' {
+            scanner.fenced_block_end(pos)
+        } else {
+            None
+        };
+
+        let Some(end) = found else {
+            pos += ch.len_utf8();
+            continue;
+        };
+        let buf = out.get_or_insert_with(|| String::with_capacity(content.len() + 64));
+        buf.push_str(&content[copied..pos]);
+        push_raw_wrapped(&content[pos..end], buf);
+        copied = end;
+        pos = end;
+    }
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&content[copied..]);
+            Cow::Owned(buf)
+        }
+        None => Cow::Borrowed(content),
+    }
+}
+
+fn whitespace_len(text: &str) -> usize {
+    text.find(|c: char| !c.is_whitespace())
+        .unwrap_or(text.len())
+}
+
+fn push_raw_wrapped(codeblock: &str, out: &mut String) {
+    // Neither replacement can create or split an occurrence of the other tag.
+    let escaped: Cow<'_, str> = if codeblock.contains("raw %}") {
+        Cow::Owned(
+            codeblock
+                .replace("{% endraw %}", "{----% endraw %----}")
+                .replace("{% raw %}", "{----% raw %----}"),
+        )
+    } else {
+        Cow::Borrowed(codeblock)
+    };
+    if escaped.contains("```") {
+        out.push_str("\n{% raw %}\n");
+        out.push_str(&escaped);
+        out.push_str("\n{% endraw %}\n");
+    } else {
+        out.push_str("{% raw %}");
+        out.push_str(&escaped);
+        out.push_str("{% endraw %}");
+    }
+}
+
+/// Longest fence/backtick run length whose failed searches are remembered.
+const MEMO_RUN_CAP: usize = 8;
+
+/// Backtracking-equivalent matcher for the code alternatives of the escape regex.
+///
+/// A failed search for `k` consecutive fence bytes from `from` proves there is no such run
+/// anywhere at or after `from` (nor any longer run), so those failures are remembered.
+/// That keeps unclosed backticks linear instead of rescanning the rest of the document.
+struct CodeScanner<'a> {
+    bytes: &'a [u8],
+    // `absent_from[fence][k - 1]`: no run of `k` fence bytes starts at or after this offset.
+    absent_from: [[usize; MEMO_RUN_CAP]; 2],
+}
+
+impl<'a> CodeScanner<'a> {
+    fn new(bytes: &'a [u8]) -> Self {
+        Self {
+            bytes,
+            absent_from: [[usize::MAX; MEMO_RUN_CAP]; 2],
+        }
+    }
+
+    /// `(`{3,}|~{3,})[\s\S]*?\2` at `start`: the greedy fence backtracks from the full run
+    /// down to three bytes, and each length closes at the earliest identical run after it.
+    fn fenced_block_end(&mut self, start: usize) -> Option<usize> {
+        let fence = *self.bytes.get(start)?;
+        if fence != b'`' && fence != b'~' {
+            return None;
+        }
+        let run = self.bytes[start..]
+            .iter()
+            .take_while(|&&b| b == fence)
+            .count();
+        (3..=run).rev().find_map(|len| {
+            self.find_run(fence, len, start + len)
+                .map(|close| close + len)
+        })
+    }
+
+    /// `` `{2}.+?`{2}|`{1}.+?`{1} `` at `start` (a backtick). `.+?` must consume at least
+    /// one character, and a backtick is never part of a multi-byte one.
+    fn inline_code_end(&mut self, start: usize) -> Option<usize> {
+        if self.bytes.get(start + 1) == Some(&b'`') {
+            if let Some(close) = self.find_run(b'`', 2, start + 3) {
+                return Some(close + 2);
+            }
+        }
+        self.find_run(b'`', 1, start + 2).map(|close| close + 1)
+    }
+
+    /// Offset of the first run of `len` consecutive `fence` bytes starting at or after `from`.
+    fn find_run(&mut self, fence: u8, len: usize, from: usize) -> Option<usize> {
+        let memo = &mut self.absent_from[usize::from(fence == b'~')];
+        if memo[..len.min(MEMO_RUN_CAP)]
+            .iter()
+            .any(|&absent| from >= absent)
+        {
+            return None;
+        }
+
+        let mut count = 0;
+        for (i, &b) in self.bytes.iter().enumerate().skip(from) {
+            if b == fence {
+                count += 1;
+                if count == len {
+                    return Some(i + 1 - len);
+                }
+            } else {
+                count = 0;
+            }
+        }
+
+        if len <= MEMO_RUN_CAP {
+            memo[len - 1] = memo[len - 1].min(from);
+        }
+        None
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -321,6 +503,93 @@ mod tests {
         assert_eq!(
             nested(&format!("{indent}- [a\n](b)")),
             format!("{indent}- [a\n](b)")
+        );
+    }
+
+    fn escape(input: &str) -> String {
+        escape_liquid_tags_in_codeblock(input).into_owned()
+    }
+
+    #[test]
+    fn borrows_input_without_code() {
+        for input in [
+            "",
+            "plain text",
+            "a ` b",
+            "~~ x ~~",
+            "{% raw %} outside",
+            "日本 🚀\r\n",
+        ] {
+            assert!(
+                matches!(escape_liquid_tags_in_codeblock(input), Cow::Borrowed(s) if s == input),
+                "{input:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn wraps_fenced_blocks_with_their_leading_whitespace() {
+        assert_eq!(
+            escape("a\n```js\n{{ x }}\n```\nb"),
+            "a\n{% raw %}\n\n```js\n{{ x }}\n```\n{% endraw %}\n\nb"
+        );
+        assert_eq!(escape("~~~\nx\n~~~"), "{% raw %}~~~\nx\n~~~{% endraw %}");
+        assert_eq!(
+            escape("\u{a0}\u{3000}```x```"),
+            "\n{% raw %}\n\u{a0}\u{3000}```x```\n{% endraw %}\n"
+        );
+        // U+200B is not White_Space, so it stays outside the match.
+        assert_eq!(
+            escape("\u{200b}```x```"),
+            "\u{200b}\n{% raw %}\n```x```\n{% endraw %}\n"
+        );
+    }
+
+    #[test]
+    fn mirrors_fence_backtracking() {
+        let cases = [
+            ("````", "\n{% raw %}\n```\n{% endraw %}\n`"),
+            ("`````", "\n{% raw %}\n`````\n{% endraw %}\n"),
+            ("``````", "\n{% raw %}\n``````\n{% endraw %}\n"),
+            ("````a```", "\n{% raw %}\n````a```\n{% endraw %}\n"),
+            ("~~~~a~~~", "{% raw %}~~~~a~~~{% endraw %}"),
+            ("~~~a", "~~~a"),
+            ("  ```a", "  \n{% raw %}\n```\n{% endraw %}\na"),
+            (
+                "`a```b`",
+                "{% raw %}`a`{% endraw %}{% raw %}``b`{% endraw %}",
+            ),
+            ("``a`", "{% raw %}``a`{% endraw %}"),
+            ("``", "``"),
+            ("```", "\n{% raw %}\n```\n{% endraw %}\n"),
+            ("`\n`", "{% raw %}`\n`{% endraw %}"),
+            ("`é`", "{% raw %}`é`{% endraw %}"),
+        ];
+        for (input, expected) in cases {
+            assert_eq!(escape(input), expected, "{input:?}");
+        }
+    }
+
+    #[test]
+    fn neutralizes_raw_tags_inside_code_only() {
+        assert_eq!(
+            escape("{% raw %}`{% raw %}x{% endraw %}`"),
+            "{% raw %}{% raw %}`{----% raw %----}x{----% endraw %----}`{% endraw %}"
+        );
+    }
+
+    #[test]
+    fn stays_linear_on_long_whitespace_runs_and_unclosed_fences() {
+        let spaces = " ".repeat(200_000);
+        assert_eq!(
+            escape(&format!("{spaces}```x")),
+            format!("{spaces}\n{{% raw %}}\n```\n{{% endraw %}}\nx")
+        );
+        let tail = " \u{3000}~~ x\t".repeat(50_000);
+        assert_eq!(
+            escape(&format!("~~~~{tail}")),
+            format!("~~~~{tail}"),
+            "an unclosed tilde fence never matches"
         );
     }
 }

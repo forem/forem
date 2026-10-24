@@ -254,4 +254,85 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".escape_liquid_tags_in_codeblock" do
+    let(:legacy_escape_liquid_tags_in_codeblock) do
+      lambda do |content|
+        content.gsub(/([[:space:]]*(`{3,}|~{3,}))[\s\S]*?\2|`{2}.+?`{2}|`{1}.+?`{1}/m) do |codeblock|
+          codeblock.gsub!("{% endraw %}", "{----% endraw %----}")
+          codeblock.gsub!("{% raw %}", "{----% raw %----}")
+          if codeblock.match?(/[[:space:]]*`{3,}/)
+            "\n{% raw %}\n#{codeblock}\n{% endraw %}\n"
+          else
+            "{% raw %}#{codeblock}{% endraw %}"
+          end
+        end
+      end
+    end
+
+    let(:parser) { MarkdownProcessor::Parser.new("") }
+
+    let(:edge_cases) do
+      [
+        "", "\n", "plain text", "a ` b", "`", "``", "```", "````", "`````", "``````", "`a`", "``a`", "``a``",
+        "`a```b`", "````a```", "~~", "~~~", "~~~a", "~~~a~~~", "~~~~a~~~", "~~~\nx\n~~~", "  ```a", " \t```a```",
+        "a\n```js\n{{ x }}\n```\nb", "```\r\ncode\r\n```\r\n", " 　 ```x```", "​```x```",
+        "᠎```x```", "﻿`x`", "`é` and `日本` 🚀", "`\n`", "{% raw %}`{% raw %}x{% endraw %}`",
+        "```\n{% raw %}some text{% endraw %}\n```", "``{% raw %}some text{% endraw %}``", "`{% endraw %}`",
+        "`{% raw {% raw %}%}`", "~~~\n{% endraw %}{% raw %}\n~~~", "#{' ' * 500}```x", "~~~~#{" 　~~ x\t" * 50}"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_escape_liquid_tags_in_codeblock.call(input)
+        expect(described_class.escape_liquid_tags_in_codeblock(input)).to eq(expected), input.inspect
+        expect(parser.escape_liquid_tags_in_codeblock(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid byte sequences so the parser keeps Ruby semantics" do
+      input = "a `{% raw %}` b"
+      expected = "a {% raw %}`{----% raw %----}`{% endraw %} b"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.escape_liquid_tags_in_codeblock(other)).to be_nil
+        result = parser.escape_liquid_tags_in_codeblock(other)
+        expect(result).to eq(expected)
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      expect(ForemNative::Native.escape_liquid_tags_in_codeblock("#{input}\xFF")).to be_nil
+      expect { parser.escape_liquid_tags_in_codeblock("#{input}\xFF") }
+        .to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was escaped" do
+      ["a `b` c".freeze, "no code here".freeze].each do |input|
+        result = described_class.escape_liquid_tags_in_codeblock(input)
+
+        expect(result).to eq(legacy_escape_liquid_tags_in_codeblock.call(input))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated code-heavy Markdown inputs" do
+      rng = Random.new(424_242)
+      tokens = ["`", "``", "```", "````", "`````", "~", "~~", "~~~", "~~~~", " ", "  ", "\t", "\n", "\r\n", " ",
+                "　", " ", "​", "\u0085", "word", "x", "é", "🚀", "日本", "{% raw %}", "{% endraw %}",
+                "{%", "%}", "{{ x }}", "{% tag %}", "```ruby\n", "~~~js\n", "\\", "|", "#"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_escape_liquid_tags_in_codeblock.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.escape_liquid_tags_in_codeblock(sample)).to eq(expected), message
+        expect(parser.escape_liquid_tags_in_codeblock(sample)).to eq(expected), message
+      end
+    end
+  end
 end
