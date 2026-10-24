@@ -2,6 +2,10 @@ import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 
 export const ArticleCoverImage = ({ article }) => {
+  const handleImageError = (event) => {
+    event.currentTarget.closest('.crayons-article__cover')?.remove();
+  };
+
   return (
     <div
       className="crayons-article__cover crayons-article__cover__image__feed"
@@ -20,6 +24,7 @@ export const ArticleCoverImage = ({ article }) => {
           width="1000"
           height={article.main_image_height}
           alt={article.title}
+          onError={handleImageError}
         />
       </a>
     </div>
