@@ -15,6 +15,13 @@ fn calculate_reading_time(text: RString) -> usize {
     forem_core::markdown::calculate_reading_time_bytes(bytes)
 }
 
+fn color_brightness(hex: RString, amount: f64, only_values: bool) -> Option<String> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
+    // Returns `nil` for inputs outside the strict `#rrggbb` domain so Ruby can fall back.
+    let bytes = unsafe { hex.as_slice() };
+    forem_core::color::brightness(bytes, amount, only_values)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -24,5 +31,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "calculate_reading_time",
         function!(calculate_reading_time, 1),
     )?;
+    native_mod.define_singleton_method("color_brightness", function!(color_brightness, 3))?;
     Ok(())
 }
