@@ -603,6 +603,22 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(article.title)
       expect(distinct_category_queries).to be_empty
     end
+
+    it "fetches story reaction counts in one cache round-trip" do
+      other_article = create(:article, user: user, published: true)
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: other_article, category: "unicorn")
+      [article, other_article].each { |story| story.update_column(:public_reactions_count, 1) }
+
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      get "/#{user.username}"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("sparkle-heart", "multi-unicorn")
+      expect(Rails.cache).to have_received(:fetch_multi).once
+      expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
+    end
   end
 
   describe "edge-cached pages with a pending flash message" do
