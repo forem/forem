@@ -75,9 +75,10 @@ class FollowsController < ApplicationController
   def create
     authorize Follow
 
-    followable_klass = case params[:followable_type].capitalize
+    followable_type = params.require(:followable_type).to_s.capitalize
+    followable_klass = case followable_type
                        when "Organization", "Tag", "Podcast", "Subforem"
-                         params[:followable_type].capitalize.constantize
+                         followable_type.constantize
                        else
                          User
                        end
