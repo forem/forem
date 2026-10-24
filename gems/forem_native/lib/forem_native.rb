@@ -81,6 +81,16 @@ module ForemNative
       Native.convert_deeply_nested_links_to_html(content)
     end
 
+    # Wraps fenced code blocks and inline code spans in `{% raw %}` tags (neutralizing any
+    # raw tags inside them), matching `MarkdownProcessor::Parser#escape_liquid_tags_in_codeblock`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_escape_liquid_tags_in_codeblock` keeps Ruby's semantics.
+    def escape_liquid_tags_in_codeblock(content)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.escape_liquid_tags_in_codeblock(content)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
