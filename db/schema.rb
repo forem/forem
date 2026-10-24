@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -673,6 +673,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
     t.string "geolocation"
     t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "user_agent"
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
@@ -976,6 +977,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
     t.string "variant"
     t.index ["experiment", "created_at"], name: "index_field_test_memberships_on_experiment_and_created_at"
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
+  end
+
+  create_table "flag_appeals", force: :cascade do |t|
+    t.float "ai_confidence_score"
+    t.integer "ai_recommendation", default: 1, null: false
+    t.text "ai_summary"
+    t.bigint "appealable_id", null: false
+    t.string "appealable_type", null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.bigint "resolved_by_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["appealable_type", "appealable_id"], name: "index_flag_appeals_on_appealable"
+    t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
+    t.index ["status"], name: "index_flag_appeals_on_status"
+    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "(status = ANY (ARRAY[0, 1]))"
+    t.index ["user_id"], name: "index_flag_appeals_on_user_id"
   end
 
   create_table "flipper_features", force: :cascade do |t|
@@ -2295,6 +2315,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users", on_delete: :cascade
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade

@@ -104,6 +104,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :tags, only: :update
+
         resources :agent_sessions, only: %i[index show create] do
           collection do
             post :presign
@@ -122,11 +124,11 @@ Rails.application.routes.draw do
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited|spam|trusted/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted|base_subscriber/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited|spam|trusted/) do
+          constraints(role: /limited|spam|trusted|base_subscriber/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end
@@ -235,6 +237,9 @@ Rails.application.routes.draw do
     resources :favorites, only: %i[create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
+    get "/appeal", to: "flag_appeals#new", as: :appeal
+    post "/appeal", to: "flag_appeals#create"
+    get "/appeal/success", to: "flag_appeals#show", as: :appeal_success
     resources :organizations, only: %i[update create destroy]
     resources :follows, only: %i[show create] do
       collection do

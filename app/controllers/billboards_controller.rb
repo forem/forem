@@ -7,6 +7,14 @@ class BillboardsController < ApplicationController
   # The only article attributes Billboard.for_display reads. Loading just these skips the
   # article's large columns (processed_html, body_markdown, embeddings) on every request.
   ARTICLE_TARGETING_COLUMNS = %i[id user_id co_author_ids organization_id cached_tag_list].freeze
+  # Answers ArticleDecorator#permit_adjacent_sponsors? in the article lookup itself, saving a
+  # separate users_settings query per request. permit_adjacent_sponsors is nullable; nil opts out.
+  ADJACENT_SPONSORS_PERMITTED = Arel.sql(<<~SQL.squish)
+    NOT EXISTS (SELECT 1 FROM users_settings
+      WHERE users_settings.user_id = ANY(array_prepend(articles.user_id, articles.co_author_ids))
+      AND (users_settings.permit_adjacent_sponsors = FALSE OR users_settings.permit_adjacent_sponsors IS NULL))
+    AS adjacent_sponsors_permitted
+  SQL
 
   def show
     skip_authorization
@@ -50,7 +58,7 @@ class BillboardsController < ApplicationController
   def contextual_billboard
     if params[:username].present? && params[:slug].present?
       path = "/#{params[:username].downcase}/#{params[:slug].downcase}"
-      articles = Article.select(ARTICLE_TARGETING_COLUMNS)
+      articles = Article.select(*ARTICLE_TARGETING_COLUMNS, ADJACENT_SPONSORS_PERMITTED)
       @article = articles.find_by(path: path) || articles.find_by(slug: params[:slug])
     end
 

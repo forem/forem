@@ -4,7 +4,7 @@
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
     "yarn": "1.22.18",
-    "node": "20.x"
+    "node": ">=22.23.4 <23"
   },
   "main": "index.js",
   "directories": {

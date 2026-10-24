@@ -358,8 +358,9 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
-  def collection_link(collection, **kwargs)
-    size_string = I18n.t("views.articles.series.size", count: collection.articles.published.from_subforem.size)
+  def collection_link(collection, size: nil, **kwargs)
+    size ||= collection.articles.published.from_subforem.size
+    size_string = I18n.t("views.articles.series.size", count: size)
     body = if collection.slug.present?
              I18n.t("views.articles.series.subtitle", slug: collection.slug,
                                                       size: size_string)

@@ -854,7 +854,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.\n- Edits by anyone other than the author are recorded in the audit log.\n- Returns `404` if the article does not exist or the API key's user may not edit it.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
@@ -5048,6 +5048,93 @@
         }
       }
     },
+    "/api/tags/{id}": {
+      "put": {
+        "summary": "Update a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Update a tag's display details and wiki by ID.\n\nRequires an API key that belongs to a super admin, an admin, or a user with the `single_resource_admin` role on Tag. Each update is written to the admin API audit log.\n\n### Body Parameter Guidelines:\n- All fields are optional; only the fields you send are changed.\n- **pretty_name**: Display name for the tag, e.g. `JavaScript` for `javascript`.\n- **short_summary**: Short description shown with the tag.\n- **wiki_body_markdown**: Markdown body of the tag's wiki.\n- **supported**: Whether the tag is supported on the platform.\n- **bg_color_hex** / **text_color_hex**: Tag colors as hexadecimal values, e.g. `#1E90FF`.\n- **context_note_instructions**: Instructions shown to people who add a context note to a post with this tag.\n\nThe tag's `name` cannot be changed. The response has the fields of an item in `GET /api/tags` plus every editable field, so callers can confirm the edit.",
+        "operationId": "updateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag to update.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag fields to update"
+        }
+      }
+    },
     "/api/trends": {
       "get": {
         "summary": "Trends",
@@ -5405,6 +5492,74 @@
         "responses": {
           "204": {
             "description": "Successfully removed the trusted role from a user"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Unknown User ID"
+          }
+        }
+      }
+    },
+    "/api/users/{id}/base_subscriber": {
+      "put": {
+        "summary": "Add base_subscriber role for a User",
+        "tags": [
+          "users"
+        ],
+        "description": "Assign the base_subscriber role to a user.\n\n### Base Subscriber Details:\n- Requires an admin role or the `super_moderator` role.\n- Uses the same path as granting \"Base Subscriber\" in the admin UI: adds the role, adds a note to the user, and sends the user the base subscriber email.\n- Idempotent: if the user already has the role, nothing changes (no note, no email) and the response is still 204.",
+        "operationId": "addBaseSubscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to assign the base_subscriber role.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "base_subscriber role assigned to the user successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Unknown User ID"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove base_subscriber role from a User",
+        "tags": [
+          "users"
+        ],
+        "description": "Remove the base_subscriber role from a user. Other roles are not changed. Requires an admin role or the `super_moderator` role.",
+        "operationId": "removeBaseSubscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to remove the base_subscriber role from.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully removed the base_subscriber role from a user"
           },
           "401": {
             "description": "Unauthorized"
@@ -6668,6 +6823,58 @@
             "nullable": true
           }
         }
+      },
+      "ExtendedTag": {
+        "description": "Representation of a tag with its editable fields, returned when a tag is updated",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pretty_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "short_summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "wiki_body_markdown": {
+            "type": "string",
+            "nullable": true
+          },
+          "context_note_instructions": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "text_color_hex": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "pretty_name",
+          "short_summary",
+          "supported",
+          "wiki_body_markdown",
+          "context_note_instructions",
+          "bg_color_hex",
+          "text_color_hex"
+        ]
       },
       "Page": {
         "description": "Representation of a page object",

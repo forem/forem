@@ -324,6 +324,7 @@ en:
               resource_admin_billboard: Billboard Admin
               resource_admin_data_update_script: Data Update Script Admin
               resource_admin_feedback_message: Feedback Message Admin
+              resource_admin_flag_appeal: Flag Appeal Admin
               resource_admin_html_variant: HTML Variant Admin
               resource_admin_listing_category: Listing Category Admin
               resource_admin_page: Page Admin
@@ -346,6 +347,8 @@ en:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
+              community_leader_level_1: Community Leader Level 1
+              community_leader_level_2: Community Leader Level 2
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
@@ -500,6 +503,7 @@ en:
           "Resource Admin: Billboard": "Resource Admin: Billboard"
           "Resource Admin: DataUpdateScript": "Resource Admin: DataUpdateScript"
           "Resource Admin: FeedbackMessage": "Resource Admin: FeedbackMessage"
+          "Resource Admin: FlagAppeal": "Resource Admin: FlagAppeal"
           "Resource Admin: HtmlVariant": "Resource Admin: HtmlVariant"
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"

@@ -5,7 +5,7 @@ module Users
     include ImageUploads
 
     CORE_PROFILE_FIELDS = %i[summary].freeze
-    CORE_USER_FIELDS = %i[name username profile_image].freeze
+    CORE_USER_FIELDS = %i[name username profile_image remove_profile_image].freeze
     CORE_SETTINGS_FIELDS = %i[brand_color1].freeze
 
     # @param user [User] the user whose profile we are updating
@@ -68,6 +68,8 @@ module Users
         previous_old = user.old_username == new_username ? user.old_old_username : user.old_username
         attrs[:old_old_username] = previous_old == new_username ? nil : previous_old
       end
+      # CarrierWave discards a newly cached file when the remove flag is set, so a replacement wins.
+      attrs.delete(:remove_profile_image) if attrs[:profile_image].present?
       attrs
     end
 

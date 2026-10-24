@@ -143,6 +143,38 @@ RSpec.describe "Admin::Users" do
       expect(Note.first.content).to eq("limited role added")
     end
 
+    it "allows admins to assign community leader level 1" do
+      sign_in create(:user, :admin)
+
+      params = {
+        user: { user_status: "Community Leader Level 1", note_for_current_role: "assigning community leader" }
+      }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_1?).to be(true)
+    end
+
+    it "does not allow non-super-admins to assign community leader level 2" do
+      sign_in create(:user, :admin)
+
+      params = { user: { user_status: "Community Leader Level 2", note_for_current_role: "assigning level 2" } }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_2?).to be(false)
+      expect(request.flash["danger"]).to be_present
+    end
+
+    it "allows admins to remove community leader level 1", :aggregate_failures do
+      sign_in create(:user, :admin)
+      user.add_role(:community_leader_level_1)
+      role = user.roles.find_by!(name: "community_leader_level_1")
+
+      delete admin_user_path(user.id), params: { user_id: user.id, role_id: role.id }
+
+      expect(user.reload.community_leader_level_1?).to be(false)
+      expect(request.flash["success"]).to include("Community Leader Level 1")
+    end
+
     it "selects new role for user" do
       user.add_role(:trusted)
       user.reload

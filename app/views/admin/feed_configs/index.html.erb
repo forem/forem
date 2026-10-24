@@ -42,6 +42,25 @@
 <% end %>
 
 <div class="crayons-card p-6 grid gap-6">
+  <div class="flex items-center justify-between">
+    <div class="text-sm color-base-60">
+      <strong>Exposure Split:</strong> 75% Top <%= FeedConfig::TOP_POOL_LIMIT %> by Score (&ge; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 20% Newest <%= FeedConfig::TOP_POOL_LIMIT %> (&lt; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 5% Random
+    </div>
+    <nav class="crayons-tabs" aria-label="Sort feed configs">
+      <ul class="crayons-tabs__list">
+        <li>
+          <%= link_to "Top Score", admin_feed_configs_path(sort: "score"), class: "crayons-tabs__item #{params[:sort].blank? || params[:sort] == 'score' ? 'crayons-tabs__item--current' : ''}" %>
+        </li>
+        <li>
+          <%= link_to "Newest", admin_feed_configs_path(sort: "newest"), class: "crayons-tabs__item #{params[:sort] == 'newest' ? 'crayons-tabs__item--current' : ''}" %>
+        </li>
+        <li>
+          <%= link_to "Most Impressions", admin_feed_configs_path(sort: "impressions"), class: "crayons-tabs__item #{params[:sort] == 'impressions' ? 'crayons-tabs__item--current' : ''}" %>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
   <table class="crayons-table">
     <thead>
       <tr>
@@ -60,6 +79,11 @@
             <strong><%= link_to "##{config.id}", admin_feed_config_path(config) %></strong>
             <% if config.id == @best_feed_config&.id %>
               <span class="c-indicator c-indicator--success ml-1">Best</span>
+            <% elsif @top_pool_ids&.include?(config.id) %>
+              <span class="c-indicator c-indicator--info ml-1">Top <%= FeedConfig::TOP_POOL_LIMIT %></span>
+            <% end %>
+            <% if @new_pool_ids&.include?(config.id) %>
+              <span class="c-indicator c-indicator--warning ml-1">New Pool</span>
             <% end %>
           </td>
           <td><%= config.feed_success_score.round(4) %></td>

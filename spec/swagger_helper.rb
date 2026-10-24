@@ -306,6 +306,23 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               short_summary: { type: :string, nullable: true }
             }
           },
+          ExtendedTag: {
+            description: "Representation of a tag with its editable fields, returned when a tag is updated",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              pretty_name: { type: :string, nullable: true },
+              short_summary: { type: :string, nullable: true },
+              supported: { type: :boolean },
+              wiki_body_markdown: { type: :string, nullable: true },
+              context_note_instructions: { type: :string, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            },
+            required: %w[id name pretty_name short_summary supported wiki_body_markdown
+                         context_note_instructions bg_color_hex text_color_hex]
+          },
           Page: {
             description: "Representation of a page object",
             type: :object,
