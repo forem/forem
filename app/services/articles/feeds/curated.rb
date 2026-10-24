@@ -8,7 +8,6 @@ module Articles
           .published.from_subforem
           .favorited
           .order(Arel.sql("articles.favorited_at DESC NULLS LAST, articles.published_at DESC"))
-          .includes(:subforem)
           .where("score > -10")
 
         if user.present? && (hidden_tags = user.cached_antifollowed_tag_names).any?

@@ -139,7 +139,6 @@ module Articles
           .from_subforem
           .minimal_feed_column_select
           .includes(:context_notes)
-          .includes(:subforem)
           .order(config.order_by.to_sql)
 
         scope = case comments_variant
