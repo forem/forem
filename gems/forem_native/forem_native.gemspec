@@ -6,11 +6,10 @@ Gem::Specification.new do |spec|
   spec.authors = ["Forem"]
   spec.email = ["yo@dev.to"]
 
-  spec.summary = "In-process Rust native extensions (Magnus + rb-sys) for Forem hot paths with pure-Ruby fallback"
+  spec.summary = "In-process Rust native extensions (Magnus + rb-sys) for Forem hot paths"
   spec.description = <<~DESC
     Provides memory-safe, zero-copy Rust native extensions for CPU-bound and
-    allocation-heavy hot paths in Forem, backed by the pure-Rust `forem_core` crate
-    and automatic pure-Ruby fallback when precompiled binaries are absent.
+    allocation-heavy hot paths in Forem, backed by the pure-Rust `forem_core` crate.
   DESC
   spec.homepage = "https://github.com/forem/forem"
   spec.license = "MIT"

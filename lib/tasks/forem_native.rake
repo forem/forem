@@ -51,8 +51,12 @@ namespace :forem_native do
       heap allocations and speed up execution by an order of magnitude! 🚀
     MD
 
-    ruby_mem = MemoryProfiler.report { 10.times { ForemNative::RubyFallback.calculate_reading_time(sample_markdown) } }
-    rust_mem = MemoryProfiler.report { 10.times { ForemNative::Native.calculate_reading_time(sample_markdown) } }
+    legacy_ruby_calculate = lambda do |content|
+      (content.to_s.split(/\W+/).count / 275.0).ceil
+    end
+
+    ruby_mem = MemoryProfiler.report { 10.times { legacy_ruby_calculate.call(sample_markdown) } }
+    rust_mem = MemoryProfiler.report { 10.times { ForemNative.calculate_reading_time(sample_markdown) } }
 
     puts "Sample size: #{sample_markdown.bytesize} bytes (#{ForemNative.split_word_count(sample_markdown)} tokens)"
     puts "Ruby Legacy allocations (10 runs): " \
@@ -63,10 +67,10 @@ namespace :forem_native do
     Benchmark.ips do |x|
       x.config(time: 2, warmup: 1)
       x.report("Ruby (legacy split + count)") do
-        ForemNative::RubyFallback.calculate_reading_time(sample_markdown)
+        legacy_ruby_calculate.call(sample_markdown)
       end
       x.report("Rust (magnus + forem_core)") do
-        ForemNative::Native.calculate_reading_time(sample_markdown)
+        ForemNative.calculate_reading_time(sample_markdown)
       end
       x.compare!
     end

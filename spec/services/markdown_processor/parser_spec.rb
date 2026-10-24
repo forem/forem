@@ -971,16 +971,8 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   describe "#calculate_reading_time" do
     let(:three_hundred_words) { Array.new(300, "word").join(" ") }
 
-    it "calculates reading time matching legacy Ruby behavior when :native_reading_time is disabled" do
-      FeatureFlag.disable(:native_reading_time)
+    it "calculates reading time via MarkdownProcessor::ReadingTime" do
       expect(described_class.new(three_hundred_words).calculate_reading_time).to eq(2)
-    end
-
-    it "calculates identical reading time when :native_reading_time is enabled" do
-      FeatureFlag.enable(:native_reading_time)
-      expect(described_class.new(three_hundred_words).calculate_reading_time).to eq(2)
-    ensure
-      FeatureFlag.disable(:native_reading_time)
     end
   end
 end

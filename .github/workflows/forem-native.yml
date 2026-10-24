@@ -45,4 +45,11 @@ jobs:
       - name: Run Rust unit tests (forem_core)
         run: cargo test -p forem_core
       - name: Build release native library
-        run: cargo build --release
+        run: |
+          cargo build --release
+          strip target/release/libforem_native.so
+      - name: Upload x86_64-linux native binary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: forem-native-x86_64-linux
+          path: gems/forem_native/target/release/libforem_native.so

@@ -1,12 +1,12 @@
 # Rust Native Extensions (`forem_native`)
 
-Forem uses an incremental, zero-deployment-overhead architecture (`gems/forem_native/`) to methodically rewrite CPU-bound and allocation-heavy Ruby hot paths into memory-safe Rust.
+Forem uses an incremental, zero-deployment-overhead architecture (`gems/forem_native/`) to methodically rewrite CPU-bound and allocation-heavy Ruby hot paths into memory-safe Rust as the **single source of truth**.
 
 ---
 
 ## 1. Architectural Overview: Why Option A (`magnus` + `forem_core`)
 
-To eliminate Ruby VM compute bottlenecks and Garbage Collection (GC) pressure without introducing sidecar containers, network hops, or mandatory Rust toolchains on production hosts, Forem packages native optimizations as an in-process Ruby C-ABI extension in `gems/forem_native/`.
+To eliminate Ruby VM compute bottlenecks and Garbage Collection (GC) pressure without introducing sidecar containers, network hops, or duplicate code paths to maintain, Forem packages native optimizations as an in-process Ruby C-ABI extension in `gems/forem_native/`.
 
 ### Clean Two-Layer Separation (`forem_core` + `forem_native`)
 Inside `gems/forem_native/`, the Cargo workspace is strictly divided into two crates:
@@ -22,13 +22,18 @@ Inside `gems/forem_native/`, the Cargo workspace is strictly divided into two cr
 
 ---
 
-## 2. Zero Deployment Overhead on Docker, Kamal, and Heroku
+## 2. Running Everywhere (Heroku, Railway, Render, AWS, DigitalOcean, Docker, Kamal, Local)
 
-A core requirement of `forem_native` is that **no deployment environment (Docker, Kamal, Heroku, or contributor laptops without Rust) ever breaks or slows down if `rustc`/`cargo` is absent**:
+`forem_native` runs natively in every deployment environment without needing a feature flag or a duplicate runtime Ruby implementation:
 
-1. **Graceful `extconf.rb`**: When `ext/forem_native/extconf.rb` runs during gem installation, it checks whether a precompiled binary is already present or whether `cargo` is installed. If `cargo` is not installed (or `FOREM_NATIVE_SKIP_BUILD=1` is set), `extconf.rb` emits a no-op `Makefile` so `bundle install` always succeeds.
-2. **Automatic Pure-Ruby Fallback (`ForemNative::RubyFallback`)**: When `require "forem_native"` runs, it attempts to load the compiled shared library (`forem_native.bundle` / `forem_native.so`). If absent, `ForemNative.available?` returns `false` and all methods transparently delegate to `ForemNative::RubyFallback`.
-3. **Runtime Flipper Feature Flag**: Every Rails integration point guards execution with `ForemNative.available? && FeatureFlag.enabled?(:native_<feature>)`, allowing instant runtime toggling without redeploying.
+1. **Docker / Kamal / AWS / DigitalOcean / Render / Railway (`Containerfile`)**:
+   - `Containerfile` includes a dedicated `FROM rust:1.85-bullseye as rust-builder` multi-stage build that compiles `gems/forem_native` in `--release` mode for the target container architecture (`amd64` or `arm64`) and copies `libforem_native.so` into `${APP_HOME}/gems/forem_native/lib/forem_native/forem_native.so`.
+   - Zero Rust compiler toolchain (`rustc`/`cargo`) remains in the final production image.
+2. **Heroku / Render Native / Railway Buildpacks & GitHub Actions CI (`x86_64-linux`)**:
+   - Because `magnus` + `rb-sys` resolves CRuby C-API symbols dynamically from the host `ruby` process at `dlopen` time (linking only against system `libc`), a single stripped `gems/forem_native/lib/forem_native/x86_64-linux/forem_native.so` (~313 KB) is committed in the repository and verified on every PR by `.github/workflows/forem-native.yml`.
+   - Standard Heroku `heroku/ruby` dynos, PaaS buildpacks, and all 30 parallel CI RSpec nodes load `x86_64-linux/forem_native.so` immediately on boot with **zero buildpack changes and zero compile time**.
+3. **Local Development (`arm64-darwin`, `x86_64-darwin`, `aarch64-linux`)**:
+   - When `ForemNative.load_native!` runs on a machine where no binary is staged yet, it automatically invokes `ForemNative::Builder.compile!` via `cargo` and loads the compiled `.bundle` / `.so`.
 
 ---
 
@@ -43,29 +48,18 @@ Target leaf methods on hot spans (high `avg_other_ruby_ms` relative to DB/Redis 
 
 ### Step 2: Pure-Rust Implementation in `forem_core` & Thin `magnus` Binding
 - Implement the algorithm in `gems/forem_native/crates/forem_core/` with zero-allocation slices where possible and comprehensive Rust `#[test]` unit tests.
-- Expose a thin wrapper on `ForemNative::Native` in `gems/forem_native/ext/forem_native/src/lib.rs` and mirror the method in `ForemNative` and `ForemNative::RubyFallback`.
+- Expose a thin wrapper on `ForemNative::Native` in `gems/forem_native/ext/forem_native/src/lib.rs` and expose the public method on `ForemNative`.
 
-### Step 3: Clean Module Boundary & Dual-Path Feature Flag
-Extract the Ruby call site into a clean module boundary gated by both `ForemNative.available?` and a `FeatureFlag`:
+### Step 3: Clean Module Boundary (Single Source of Truth)
+Delegate the Ruby call site cleanly to `ForemNative`:
 
 ```ruby
 module MarkdownProcessor
   module ReadingTime
     WORDS_READ_PER_MINUTE = 275.0
-    FEATURE_FLAG = :native_reading_time
 
     def self.calculate(content)
-      text = content.to_s
-      if ForemNative.available? && FeatureFlag.enabled?(FEATURE_FLAG)
-        ForemNative.calculate_reading_time(text)
-      else
-        legacy_ruby_calculate(text)
-      end
-    end
-
-    def self.legacy_ruby_calculate(content)
-      word_count = content.to_s.split(/\W+/).count
-      (word_count / WORDS_READ_PER_MINUTE).ceil
+      ForemNative.calculate_reading_time(content.to_s)
     end
   end
 end
@@ -74,8 +68,7 @@ end
 ### Step 4: Differential Equivalence & Edge-Case Verification
 Every ported function **must** include an RSpec suite (`spec/lib/forem_native_spec.rb`) verifying:
 - `nil`, empty string, whitespace-only, punctuation-only, Unicode/emoji, and boundary inputs.
-- **Differential Equivalence Testing**: Assert `ForemNative::Native.<method>(input) == ForemNative::RubyFallback.<method>(input)` across `1,000+` randomized realistic inputs.
-- Both states of the Flipper `FeatureFlag` (`enabled` and `disabled`) plus `ForemNative.with_fallback`.
+- **Differential Equivalence Testing**: Keep the legacy Ruby calculation in the spec as a reference oracle and assert `ForemNative.<method>(input) == legacy_ruby.<method>(input)` across `1,000+` randomized realistic inputs.
 
 ### Step 5: Mandatory Benchmark & Allocation Proof
 Run `bundle exec rake forem_native:benchmark` and include both `benchmark-ips` throughput and `memory_profiler` allocation results in the PR description.

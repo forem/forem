@@ -1,27 +1,18 @@
 require "rails_helper"
 
 RSpec.describe ForemNative do
-  before do
-    if !described_class.native_loaded? && ForemNative::Builder.cargo_available? && ENV["FOREM_NATIVE_DISABLE"] != "1"
-      ForemNative::Builder.compile!
-      described_class.load_native!
-    end
+  let(:legacy_split_word_count) do
+    ->(content) { content.to_s.split(/\W+/).count }
   end
 
-  describe ".available? and .with_fallback" do
-    it "reports native availability when compiled and toggles cleanly inside .with_fallback" do
-      skip "Rust toolchain (cargo) is not available in this environment" unless ForemNative::Builder.cargo_available?
-      skip "ForemNative disabled via FOREM_NATIVE_DISABLE=1" if ENV["FOREM_NATIVE_DISABLE"] == "1"
+  let(:legacy_calculate_reading_time) do
+    ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
+  end
 
+  describe ".available?" do
+    it "loads the compiled Rust native extension directly" do
+      expect(described_class.available?).to be(true)
       expect(described_class.native_loaded?).to be(true)
-      expect(described_class.available?).to be(true)
-
-      described_class.with_fallback do
-        expect(described_class.available?).to be(false)
-        expect(described_class.calculate_reading_time("hello world")).to eq(1)
-      end
-
-      expect(described_class.available?).to be(true)
     end
   end
 
@@ -53,26 +44,19 @@ RSpec.describe ForemNative do
       ]
     end
 
-    it "matches RubyFallback across all edge cases and boundary conditions" do
+    it "matches the legacy Ruby reference calculation across all edge cases and boundary conditions" do
       edge_cases.each do |input|
-        expected_words = ForemNative::RubyFallback.split_word_count(input)
-        expected_minutes = ForemNative::RubyFallback.calculate_reading_time(input)
+        expected_words = legacy_split_word_count.call(input)
+        expected_minutes = legacy_calculate_reading_time.call(input)
 
         expect(described_class.split_word_count(input)).to eq(expected_words),
                                                            "word count mismatch for #{input.inspect}"
         expect(described_class.calculate_reading_time(input)).to eq(expected_minutes),
                                                                  "reading time mismatch for #{input.inspect}"
-
-        described_class.with_fallback do
-          expect(described_class.split_word_count(input)).to eq(expected_words)
-          expect(described_class.calculate_reading_time(input)).to eq(expected_minutes)
-        end
       end
     end
 
     it "passes differential equivalence across 1,000 generated Markdown and Unicode inputs" do
-      skip "Native extension not loaded" unless described_class.available?
-
       tokens = [
         "word", "Rust", "Ruby_3_3", "0", "42", " ", "  ", "\n", "\r\n", "\t",
         ".", ",", "!", "-", "_", "`", "```", "|", "\\|", "é", "ü", "🚀", "中",
@@ -84,13 +68,13 @@ RSpec.describe ForemNative do
         piece_count = rng.rand(0..120)
         sample = Array.new(piece_count) { tokens.sample(random: rng) }.join
 
-        expected_words = ForemNative::RubyFallback.split_word_count(sample)
-        actual_words = ForemNative::Native.split_word_count(sample)
+        expected_words = legacy_split_word_count.call(sample)
+        actual_words = described_class.split_word_count(sample)
         expect(actual_words).to eq(expected_words),
                                 "Differential word_count mismatch at iteration #{iteration} for #{sample.inspect}"
 
-        expected_time = ForemNative::RubyFallback.calculate_reading_time(sample)
-        actual_time = ForemNative::Native.calculate_reading_time(sample)
+        expected_time = legacy_calculate_reading_time.call(sample)
+        actual_time = described_class.calculate_reading_time(sample)
         expect(actual_time).to eq(expected_time),
                                "Differential reading_time mismatch at iteration #{iteration} for #{sample.inspect}"
       end

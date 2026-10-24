@@ -10,39 +10,15 @@ RSpec.describe MarkdownProcessor::ReadingTime, type: :service do
   end
 
   describe ".calculate" do
-    context "when :native_reading_time feature flag is disabled (default)" do
-      before { FeatureFlag.disable(:native_reading_time) }
+    it "computes reading time via ForemNative.calculate_reading_time" do
+      allow(ForemNative).to receive(:calculate_reading_time).and_call_original
 
-      it "computes reading time via the legacy Ruby implementation" do
-        allow(ForemNative).to receive(:calculate_reading_time)
+      result = described_class.calculate(sample_markdown)
+      expected = (sample_markdown.split(/\W+/).count / described_class::WORDS_READ_PER_MINUTE).ceil
 
-        result = described_class.calculate(sample_markdown)
-
-        expect(result).to eq(2)
-        expect(ForemNative).not_to have_received(:calculate_reading_time)
-      end
-    end
-
-    context "when :native_reading_time feature flag is enabled" do
-      before { FeatureFlag.enable(:native_reading_time) }
-      after { FeatureFlag.disable(:native_reading_time) }
-
-      it "delegates to ForemNative.calculate_reading_time when native extension is available" do
-        allow(ForemNative).to receive(:available?).and_return(true)
-        allow(ForemNative).to receive(:calculate_reading_time).and_call_original
-
-        result = described_class.calculate(sample_markdown)
-
-        expect(result).to eq(described_class.legacy_ruby_calculate(sample_markdown))
-        expect(ForemNative).to have_received(:calculate_reading_time).with(sample_markdown)
-      end
-
-      it "falls back transparently to legacy_ruby_calculate when native extension is unavailable" do
-        ForemNative.with_fallback do
-          expect(described_class.native_enabled?).to be(false)
-          expect(described_class.calculate(sample_markdown)).to eq(2)
-        end
-      end
+      expect(result).to eq(2)
+      expect(result).to eq(expected)
+      expect(ForemNative).to have_received(:calculate_reading_time).with(sample_markdown)
     end
 
     it "handles nil and empty input safely" do

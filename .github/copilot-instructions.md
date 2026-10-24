@@ -68,14 +68,15 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Do Not Leave Specs Outdated**: Outdated API specifications cause integration failures for external services, gateway clients, and LLM MCP servers. Always treat specs as part of the core delivery.
 
 ## Rust Native Extensions (`gems/forem_native`)
-- **Architecture (Option A: `magnus` + `forem_core`)**: We methodically rewrite CPU-bound and allocation-heavy Ruby hot paths (e.g., Markdown/Liquid processing, string/tree manipulation, feed scoring math) into Rust inside `gems/forem_native/`.
+- **Architecture (Option A: `magnus` + `forem_core`)**: We methodically rewrite CPU-bound and allocation-heavy Ruby hot paths (e.g., Markdown/Liquid processing, string/tree manipulation, feed scoring math) into Rust inside `gems/forem_native/` as the single source of truth.
 - **Strict Two-Layer Separation**:
   - Put all pure algorithm logic in `gems/forem_native/crates/forem_core/` with **zero** Ruby or `magnus` dependencies so it can be unit-tested standalone (`cargo test -p forem_core`) and remains portable to WebAssembly (`wasm32`) or standalone Rust services in future phases.
   - Keep `gems/forem_native/ext/forem_native/` as a thin `magnus` C-ABI wrapper (~15–20 lines per function) that borrows Ruby strings/slices in-place and delegates to `forem_core`.
-- **Zero-Deployment-Overhead & 100% Safe Fallback**:
-  - Deployments on Docker, Kamal, and Heroku must **never** require `rustc` or `cargo` at deploy time. `extconf.rb` must gracefully emit a no-op `Makefile` when `cargo` is unavailable.
-  - Every native function must have a 100% behaviorally equivalent pure-Ruby fallback in `ForemNative::RubyFallback` and be gated at the Rails call site by both `ForemNative.available?` and a Flipper `FeatureFlag` (e.g., `ForemNative.available? && FeatureFlag.enabled?(:native_<feature>)`).
+- **Universal Deployment (Docker, Kamal, Heroku, Render, Railway, AWS, DO, Local)**:
+  - `Containerfile` builds `gems/forem_native` in a dedicated `rust-builder` stage so container builds on any architecture (`amd64` / `arm64`) compile fresh from Rust source with zero Rust toolchain in the final production image.
+  - A precompiled `gems/forem_native/lib/forem_native/x86_64-linux/forem_native.so` is committed for buildpack-only hosts (Heroku, Render Native, Railway) and instant CI execution, while `ForemNative.load_native!` auto-compiles via `cargo` on local development machines when needed.
+  - Do not maintain duplicate runtime `RubyFallback` modules or feature flags for pure-compute replacements; instead, keep the legacy Ruby calculation in `spec/lib/forem_native_spec.rb` and `lib/tasks/forem_native.rake` as the differential test and benchmark oracle.
 - **Verification Requirements**:
   - Run `bundle exec rake forem_native:rust_test` (`cargo test` + `cargo clippy`) and `cargo fmt --all -- --check`.
-  - Include differential equivalence specs in `spec/lib/forem_native_spec.rb` asserting `ForemNative::Native` matches `ForemNative::RubyFallback` across edge cases and randomized inputs (`1,000+` iterations), plus specs covering both enabled and disabled `FeatureFlag` states.
+  - Include differential equivalence specs in `spec/lib/forem_native_spec.rb` asserting `ForemNative` matches the legacy Ruby reference calculation across edge cases and randomized inputs (`1,000+` iterations).
   - Include `benchmark-ips` throughput and `memory_profiler` allocation comparisons (`bundle exec rake forem_native:benchmark`) in PR descriptions. See `docs/rust_native_extensions.md` for full details.
