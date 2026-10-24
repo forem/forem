@@ -345,6 +345,185 @@ impl<'a> CodeScanner<'a> {
     }
 }
 
+/// Placeholder `MarkdownProcessor::Parser#convert_escaped_pipes_outside_codeblocks` swaps
+/// in for `\|` inside inline code spans.
+const ESC_PIPE_PLACEHOLDER: &str = "\u{0}FOREM_ESC_PIPE\u{0}";
+
+/// Equivalent of `MarkdownProcessor::Parser#convert_escaped_pipes_outside_codeblocks`:
+///
+/// ```ruby
+/// content.each_line.map do |line|
+///   # lines inside ``` / ~~~ fenced blocks (and the fence lines) are kept verbatim
+///   line.gsub!(/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/) { |span| span.gsub('\|') { placeholder } }
+///   line.gsub!(/(?<!\\)\\\|/, "&#124;")
+///   line.gsub!(placeholder) { '\|' }
+///   line
+/// end.join
+/// ```
+///
+/// `each_line` and Ruby's `^`/`$` only split on `\n`, and Ruby's `\s` is ASCII-only
+/// (`[ \t\n\v\f\r]`), so every delimiter is a single ASCII byte and slicing never splits a
+/// multi-byte UTF-8 character.
+///
+/// Returns `Cow::Borrowed` when no line changes, so callers can hand back a shared copy.
+pub fn convert_escaped_pipes_outside_codeblocks(content: &str) -> Cow<'_, str> {
+    if !content.contains("\\|") {
+        return Cow::Borrowed(content);
+    }
+
+    let mut out: Option<String> = None;
+    let mut offset = 0;
+    let mut fence: Option<(u8, usize)> = None;
+
+    for line in content.split_inclusive('\n') {
+        let start = offset;
+        offset += line.len();
+
+        let converted = if let Some((fence_char, min_len)) = fence {
+            if is_closing_fence(line.as_bytes(), fence_char, min_len) {
+                fence = None;
+            }
+            None
+        } else if let Some(opening) = opening_fence(line.as_bytes()) {
+            fence = Some(opening);
+            None
+        } else if line.contains("\\|") || line.contains(ESC_PIPE_PLACEHOLDER) {
+            // Lines without `\|` can still carry a literal placeholder, which Ruby's last
+            // `gsub!` turns into `\|`.
+            Some(convert_escaped_pipes_in_line(line)).filter(|converted| converted != line)
+        } else {
+            None
+        };
+
+        match (converted, out.as_mut()) {
+            (Some(converted), Some(s)) => s.push_str(&converted),
+            (Some(converted), None) => {
+                let mut s = String::with_capacity(content.len() + 64);
+                s.push_str(&content[..start]);
+                s.push_str(&converted);
+                out = Some(s);
+            }
+            (None, Some(s)) => s.push_str(line),
+            (None, None) => {}
+        }
+    }
+
+    match out {
+        Some(s) => Cow::Owned(s),
+        None => Cow::Borrowed(content),
+    }
+}
+
+#[inline]
+const fn is_ruby_space(byte: u8) -> bool {
+    matches!(byte, b' ' | b'\t' | b'\n' | 0x0b | 0x0c | b'\r')
+}
+
+#[inline]
+fn run_len(bytes: &[u8], from: usize, byte: u8) -> usize {
+    bytes[from..].iter().take_while(|&&b| b == byte).count()
+}
+
+/// `line[/^\s*((`{3,}|~{3,}))/i, 1]` as `(fence_char, marker_len)`.
+fn opening_fence(line: &[u8]) -> Option<(u8, usize)> {
+    let i = line.iter().take_while(|&&b| is_ruby_space(b)).count();
+    let fence_char = *line.get(i).filter(|&&b| b == b'`' || b == b'~')?;
+    let len = run_len(line, i, fence_char);
+    (len >= 3).then_some((fence_char, len))
+}
+
+/// `line.match?(/^\s*#{fence_char}{#{min_len},}\s*$/)`.
+fn is_closing_fence(line: &[u8], fence_char: u8, min_len: usize) -> bool {
+    let i = line.iter().take_while(|&&b| is_ruby_space(b)).count();
+    let len = run_len(line, i, fence_char);
+    len >= min_len && line[i + len..].iter().all(|&b| is_ruby_space(b))
+}
+
+fn convert_escaped_pipes_in_line(line: &str) -> String {
+    let bytes = line.as_bytes();
+
+    // Pass 1: protect `\|` inside inline code spans with the placeholder.
+    let mut protected = String::with_capacity(line.len() + 32);
+    if bytes.contains(&b'`') {
+        // `tick_runs[i]` = number of consecutive backticks starting at `i`.
+        let mut tick_runs = vec![0usize; bytes.len() + 1];
+        for i in (0..bytes.len()).rev() {
+            if bytes[i] == b'`' {
+                tick_runs[i] = tick_runs[i + 1] + 1;
+            }
+        }
+
+        let mut copied = 0;
+        let mut search = 0;
+        while let Some(start) = find_byte(bytes, search, b'`') {
+            match code_span_end(bytes, &tick_runs, start) {
+                Some(end) => {
+                    protected.push_str(&line[copied..start]);
+                    protected.push_str(&line[start..end].replace("\\|", ESC_PIPE_PLACEHOLDER));
+                    copied = end;
+                    search = end;
+                }
+                None => search = start + 1,
+            }
+        }
+        protected.push_str(&line[copied..]);
+    } else {
+        protected.push_str(line);
+    }
+
+    // Pass 2: `gsub!(/(?<!\\)\\\|/, "&#124;")`.
+    let protected_bytes = protected.as_bytes();
+    let mut entities = String::with_capacity(protected.len() + 16);
+    let mut copied = 0;
+    let mut i = 0;
+    while i + 1 < protected_bytes.len() {
+        if protected_bytes[i] == b'\\'
+            && protected_bytes[i + 1] == b'|'
+            && (i == 0 || protected_bytes[i - 1] != b'\\')
+        {
+            entities.push_str(&protected[copied..i]);
+            entities.push_str("&#124;");
+            i += 2;
+            copied = i;
+        } else {
+            i += 1;
+        }
+    }
+    entities.push_str(&protected[copied..]);
+
+    // Pass 3: `gsub!(placeholder) { '\|' }`.
+    if entities.contains(ESC_PIPE_PLACEHOLDER) {
+        entities.replace(ESC_PIPE_PLACEHOLDER, "\\|")
+    } else {
+        entities
+    }
+}
+
+/// End of the Onigmo match of `/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/` anchored at `start`.
+///
+/// The backreference group backtracks from the full backtick run down to a single one; for
+/// each length the body walks forward, stopping at the first backtick followed by a full
+/// closing run, and otherwise falls back to the right-most backtick that starts one.
+fn code_span_end(bytes: &[u8], tick_runs: &[usize], start: usize) -> Option<usize> {
+    let run = tick_runs[start];
+    (1..=run).rev().find_map(|ticks| {
+        let mut fallback = None;
+        let mut i = start + ticks;
+        while i < bytes.len() && bytes[i] != b'\n' {
+            if bytes[i] == b'`' {
+                if tick_runs[i + 1] >= ticks {
+                    return Some(i + ticks);
+                }
+                if tick_runs[i] >= ticks {
+                    fallback = Some(i + ticks);
+                }
+            }
+            i += 1;
+        }
+        fallback
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -591,5 +770,62 @@ mod tests {
             format!("~~~~{tail}"),
             "an unclosed tilde fence never matches"
         );
+    }
+
+    fn pipes(input: &str) -> String {
+        convert_escaped_pipes_outside_codeblocks(input).into_owned()
+    }
+
+    #[test]
+    fn borrows_input_without_convertible_pipes() {
+        for input in [
+            "",
+            "a | b",
+            "```\na\\|b\n```",
+            "`a\\|b`",
+            "leave \\\\|alone",
+        ] {
+            assert!(matches!(
+                convert_escaped_pipes_outside_codeblocks(input),
+                Cow::Borrowed(s) if s == input
+            ));
+        }
+        assert!(matches!(
+            convert_escaped_pipes_outside_codeblocks("a\\|b"),
+            Cow::Owned(_)
+        ));
+    }
+
+    #[test]
+    fn mirrors_ruby_escaped_pipe_conversion() {
+        // Expectations generated from the legacy Ruby implementation.
+        for (input, expected) in [
+            ("a\\|b", "a&#124;b"),
+            ("| a\\|b | c\\|d |\n", "| a&#124;b | c&#124;d |\n"),
+            ("leave \\\\|alone", "leave \\\\|alone"),
+            ("`a\\|b` c\\|d", "`a\\|b` c&#124;d"),
+            ("`` a\\|b `` x\\|y", "`` a\\|b `` x&#124;y"),
+            ("``a`\\|", "``a`&#124;"),
+            ("`a``b\\|`", "`a``b\\|`"),
+            ("``a`b\\|``", "``a`b\\|``"),
+            ("```\na\\|b\n```\nc\\|d", "```\na\\|b\n```\nc&#124;d"),
+            ("~~~\na\\|b\n~~~~\nc\\|d", "~~~\na\\|b\n~~~~\nc&#124;d"),
+            (
+                "````\n```\na\\|b\n````\n\\|",
+                "````\n```\na\\|b\n````\n&#124;",
+            ),
+            (
+                "  ```js\n\\|\n  ```  \r\n\\|",
+                "  ```js\n\\|\n  ```  \r\n&#124;",
+            ),
+            ("~~~\n\\|\n```\n\\|", "~~~\n\\|\n```\n\\|"),
+            ("\\|\r\n`\\|`\r\n", "&#124;\r\n`\\|`\r\n"),
+            ("é\\|🚀 `日本\\|`", "é&#124;🚀 `日本\\|`"),
+            ("\u{0}FOREM_ESC_PIPE\u{0} \\|", "\\| &#124;"),
+            ("\\|\\|\\\\|", "&#124;&#124;\\\\|"),
+            ("`\\|\n\\|`", "`&#124;\n&#124;`"),
+        ] {
+            assert_eq!(pipes(input), expected, "{input:?}");
+        }
     }
 }
