@@ -120,7 +120,7 @@ RUN echo 'httpTimeout: 300000' >> ~/.yarnrc.yml
 # Docker storage drivers (resulting in Directory Not Empty errors).
 RUN NODE_ENV=production yarn install && \
     yarn build && \
-    RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile && \
+    SKIP_JS_BUILD=true RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile && \
     rm -rf node_modules
 
 # This used to be calculated within the container build, but we then tried
