@@ -71,6 +71,19 @@ module ForemNative
       Native.color_brightness(hex, native_amount, only_values ? true : false)
     end
 
+    # Formats a strict `#rrggbb` hex color as `rgba(r, g, b, a)`, matching
+    # `Color::CompareHex#opacity`. Returns nil for malformed hexes and for alphas
+    # that would need `%.2f` rounding (anything beyond two decimals, non-finite,
+    # Rational, ...) so `Color::CompareHex#opacity` can use its private `legacy_opacity`.
+    def color_opacity(hex, alpha = 0.0)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible?
+
+      native_alpha = native_float(alpha)
+      return unless native_alpha
+
+      Native.color_opacity(hex, native_alpha)
+    end
+
     # Rewrites `[text](url)` links as `<a>` tags on 16+ space / 4+ tab indented list lines,
     # matching `MarkdownProcessor::Parser#convert_deeply_nested_links_to_html`.
     # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
