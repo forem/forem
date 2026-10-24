@@ -34,6 +34,7 @@ function trackAdImpression(adBox) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -106,6 +107,7 @@ function trackAdClick(adBox, event, currentPath) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 

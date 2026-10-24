@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -673,6 +673,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_22_140000) do
     t.string "geolocation"
     t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "user_agent"
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"

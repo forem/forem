@@ -76,6 +76,7 @@ module IncomingWebhooks
         BillboardEvent.create(user_id: user.id,
                               category: "conversion",
                               geolocation: event.geolocation,
+                              user_agent: event.user_agent,
                               context_type: event.context_type,
                               billboard_id: event.billboard_id)
       end
