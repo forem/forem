@@ -13,11 +13,19 @@ RUN find /etc/apt -type f \( -name "sources.list" -o -name "*.list" -o -name "*.
       -exec sed -i "s|http://[a-z.]*debian.org/debian-security|http://snapshot.debian.org/archive/debian-security/20260831T000000Z|g" {} + \
     && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99snapshot
 
-FROM rust:1.85-bullseye as rust-builder
+FROM rust:1.85-bullseye as rust-toolchain
 
+FROM base as rust-builder
+COPY --from=rust-toolchain /usr/local/cargo /usr/local/cargo
+COPY --from=rust-toolchain /usr/local/rustup /usr/local/rustup
+ENV PATH="/usr/local/cargo/bin:${PATH}" \
+    RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo
+RUN apt update && apt install -y build-essential && apt clean
 WORKDIR /opt/apps/forem/gems/forem_native
 COPY ./gems/forem_native /opt/apps/forem/gems/forem_native
-RUN cargo build --release --manifest-path /opt/apps/forem/gems/forem_native/Cargo.toml
+RUN cargo build --release --manifest-path /opt/apps/forem/gems/forem_native/Cargo.toml && \
+    strip /opt/apps/forem/gems/forem_native/target/release/libforem_native.so
 
 FROM base as builder
 
