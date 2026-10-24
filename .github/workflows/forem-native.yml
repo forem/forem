@@ -29,6 +29,20 @@ jobs:
         working-directory: gems/forem_native
     steps:
       - uses: actions/checkout@v6
+      - name: Setup Ruby and verify committed x86_64-linux binary loads immediately
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.0"
+      - name: Verify precompiled x86_64-linux binary works without compiling
+        env:
+          FOREM_NATIVE_SKIP_BUILD: "1"
+        run: |
+          ruby -Ilib -rforem_native -e '
+            raise "Native not loaded!" unless ForemNative.available?
+            raise "Unexpected word count!" unless ForemNative.split_word_count("hello world") == 2
+            raise "Unexpected reading time!" unless ForemNative.calculate_reading_time("hello world") == 1
+            puts "Successfully loaded precompiled #{RUBY_PLATFORM} binary!"
+          '
       - name: Cache Cargo registry and target
         uses: actions/cache@v5
         with:
