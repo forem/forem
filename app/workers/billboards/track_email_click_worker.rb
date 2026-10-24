@@ -10,9 +10,10 @@ module Billboards
       "COALESCE(SUM(seconds_visible) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_IMPRESSION}'), 0)",
     ].map { |sql| Arel.sql(sql) }.freeze
 
-    def perform(bb_param, user_id)
+    def perform(bb_param, user_id, user_agent = nil)
       @bb = bb_param
       @user = User.find_by(id: user_id)
+      @user_agent = user_agent
       track_billboard
     end
 
@@ -23,7 +24,8 @@ module Billboards
         BillboardEvent.create(billboard_id: @bb.to_i,
                               category: "click",
                               user_id: @user&.id,
-                              context_type: "email")
+                              context_type: "email",
+                              user_agent: @user_agent)
         update_billboard_counts
       end
     rescue StandardError => e
