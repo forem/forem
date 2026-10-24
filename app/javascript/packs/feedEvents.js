@@ -220,6 +220,12 @@ export function observeFeedElements() {
       },
       contentIdAttribute: 'feedContentId'
     });
+  } else {
+    window.mainFeedTracker.feedItemsRoot = feedItemsRoot;
+    window.mainFeedTracker.config.categoryClick = feedCategoryClick;
+    window.mainFeedTracker.config.categoryImpression = feedCategoryImpression;
+    window.mainFeedTracker.config.contextType = feedContextType;
+    window.mainFeedTracker.config.feedConfigId = feedConfigId;
   }
   
   // Re-initialize to observe new elements.
