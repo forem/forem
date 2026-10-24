@@ -10,6 +10,9 @@ module Homepage
       # as we want to optimize by loading them in one query, we're using a different class
       tag_flares = Homepage::FetchTagFlares.call(articles)
 
+      # One cache round-trip for every article's :public_reaction_categories
+      Article.preload_reaction_counts_for_reactable(articles.to_a)
+
       new(articles, params: { tag_flares: tag_flares }, is_collection: true)
         .serializable_hash[:data]
         .pluck(:attributes)
