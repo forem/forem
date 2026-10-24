@@ -156,6 +156,7 @@ class User < ApplicationRecord
   has_many :devices, dependent: :delete_all
   # languages that user undestands
   has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
+  has_many :old_usernames, class_name: "UsersOldUsername", dependent: :delete_all
   has_many :user_visit_contexts, dependent: :delete_all
   has_one :user_activity, dependent: :delete
 
@@ -310,6 +311,7 @@ class User < ApplicationRecord
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :set_username
   before_create :create_users_settings_and_notification_settings_records
+  after_update :record_old_username, if: :saved_change_to_username?
   after_update :refresh_auto_audience_segments
   after_update :create_email_change_note, if: :saved_change_to_unconfirmed_email?
   after_update :create_password_change_note, if: :saved_change_to_encrypted_password?
@@ -322,6 +324,7 @@ class User < ApplicationRecord
   after_save :sync_base_email_eligible!, if: lambda {
                                                saved_changes.key?(:email) || saved_changes.key?(:registered) || saved_changes.key?(:score)
                                              }
+  after_save :clear_stale_username_history, if: :saved_change_to_username?
   after_save :create_conditional_autovomits
   after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
@@ -1128,6 +1131,18 @@ class User < ApplicationRecord
 
   def set_username
     self.username = username&.downcase.presence || generate_username
+  end
+
+  def clear_stale_username_history
+    UsersOldUsername.where(username: username).where.not(user_id: id).delete_all
+  end
+
+  # insert, not create: a duplicate must not abort the surrounding transaction
+  def record_old_username
+    previous_username = username_before_last_save
+    return if previous_username.blank?
+
+    UsersOldUsername.insert({ user_id: id, username: previous_username })
   end
 
   def auth_provider_usernames

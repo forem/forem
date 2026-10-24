@@ -134,6 +134,35 @@ RSpec.describe Users::Update, type: :service do
       expect(user.old_old_username).to eq(old_old_username)
     end
 
+    it "records the old username in users_old_usernames table" do
+      old_username = user.username
+      expect do
+        described_class.call(user, user: { username: new_username })
+      end.to change(UsersOldUsername, :count).by(1)
+      expect(UsersOldUsername.find_by(username: old_username).user).to eq(user)
+    end
+
+    it "records all username changes across multiple renames" do
+      first_username = user.username
+      second_username = "#{user.username}_second"
+      third_username = "#{user.username}_third"
+
+      described_class.call(user, user: { username: second_username })
+      described_class.call(user.reload, user: { username: third_username })
+
+      expect(UsersOldUsername.exists?(username: first_username)).to be true
+      expect(UsersOldUsername.exists?(username: second_username)).to be true
+      expect(user.reload.username).to eq(third_username)
+    end
+
+    it "records nothing when the rename fails validation" do
+      create(:user, username: "taken_already")
+
+      expect do
+        described_class.call(user, user: { username: "taken_already" })
+      end.not_to change(UsersOldUsername, :count)
+    end
+
     it "does not overwrite old_username or old_old_username when updating profile without username" do
       original_username = user.username
       described_class.call(user, user: { username: new_username })
@@ -151,8 +180,7 @@ RSpec.describe Users::Update, type: :service do
       user.reload
       expect(user.username).to eq(original_username)
       expect(user.old_username).to eq(new_username)
-      expect(user.old_old_username).to be_nil
-    end
+      expect(user.old_old_username).to be_nil    end
 
     it "changes user's articles path" do
       article = create(:article, user: user)
@@ -175,6 +203,20 @@ RSpec.describe Users::Update, type: :service do
       article.reload
       expect(article.path).not_to eq(old_path)
       expect(article.path).to eq("/#{new_username}/#{article.slug}")
+    end
+  end
+
+  context "when the username is not being changed" do
+    it "records nothing for a profile-only update" do
+      expect do
+        described_class.call(user, profile: { summary: "Just a summary" })
+      end.not_to change(UsersOldUsername, :count)
+    end
+
+    it "records nothing when other user fields change" do
+      expect do
+        described_class.call(user, user: { name: "A New Name" })
+      end.not_to change(UsersOldUsername, :count)
     end
   end
 
