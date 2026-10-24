@@ -513,4 +513,92 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".fixer_add_quotes_to_section" do
+    let(:legacy_add_quotes_to_section) do
+      lambda do |markdown, section|
+        markdown.sub(/-{3}.*?-{3}/m) do |front_matter|
+          front_matter.gsub(/#{section}: ?(?<content>.*?)(\r\n|\n)/m) do |target|
+            captured_text = Regexp.last_match("content")
+            if captured_text.scan(/(^".*"$|^'.*'$)/).empty?
+              "#{section}: \"#{captured_text.gsub(/(?<!\\)"/, '\\"')}\"\n"
+            else
+              target
+            end
+          end
+        end
+      end
+    end
+
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      [
+        "", "no front matter", "---\ntitle: Hello\n---\nbody", "---\ntitle: a \"b\" \\\"c\\\"\n---",
+        "---\ntitle: \"Hi\"\r\ndescription: 'x'\n---", "---\ntitle: \"\n---", "---\ntitle: '\n---",
+        "---\ntitle: \"x'\n---", "---\r\ntitle:Hi\r\n---", "---\ntitle:\n---", "---\ntitle: \n---",
+        "---\ntitle:  two\n---", "---\ntitle: a\rb\r\r\n---", "---\nsubtitle: a\ntitle: b\n---\ntitle: c\n",
+        "---\ntitletitle: x\n---", "---\ntitle x\n---", "---title: x---\n", "---\ntitle: x ---\ntitle: y\n",
+        "intro ----\ntitle: x\n---", "-----title: x\n", "------\ntitle: x\n---",
+        "---\ntitle: 日本語 \"🎉\"\n---", "---\ndescription: it's \"great\"\ntitle: 'ok'\n---\n# Heading\n"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      sections = %w[title description]
+      edge_cases.each do |input|
+        sections.each do |section|
+          expected = legacy_add_quotes_to_section.call(input, section)
+          message = "#{section}: #{input.inspect}"
+          expect(described_class.fixer_add_quotes_to_section(input, section)).to eq(expected), message
+          expect(fixer.add_quotes_to_section(input, section: section)).to eq(expected), message
+        end
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, invalid bytes, and non-word sections so Fixer keeps Ruby semantics" do
+      input = "---\ntitle: a \"b\"\n---"
+      expected = "---\ntitle: \"a \\\"b\\\"\"\n---"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_add_quotes_to_section(other, "title")).to be_nil
+        expect(fixer.add_quotes_to_section(other, section: "title")).to eq(expected)
+      end
+
+      expect(described_class.fixer_add_quotes_to_section(input, "ti.le")).to be_nil
+      expect(fixer.add_quotes_to_section(input, section: "ti.le"))
+        .to eq(legacy_add_quotes_to_section.call(input, "ti.le"))
+      expect(ForemNative::Native.fixer_add_quotes_to_section("#{input}\xFF", "title")).to be_nil
+      expect { fixer.add_quotes_to_section("#{input}\xFF", section: "title") }
+        .to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was quoted" do
+      ["---\ntitle: \"a\"\n---".freeze, "---\ntitle: a\n---".freeze].each do |input|
+        result = described_class.fixer_add_quotes_to_section(input, "title")
+
+        expect(result).to eq(legacy_add_quotes_to_section.call(input, "title"))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated front matter inputs" do
+      rng = Random.new(424_242)
+      tokens = ["---", "---\n", "-", "--", "\n", "\r\n", "\r", "title", "title:", "title: ", "description: ", ":", " ",
+                "\"", "'", "\\", "\\\"", "sub", "a", "word", "é", "🚀", "日本", "\ntitle: ", "\ndescription:"]
+
+      1_000.times do |iteration|
+        sample = "---\n#{Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join}"
+        section = rng.rand(2).zero? ? "title" : "description"
+
+        expected = legacy_add_quotes_to_section.call(sample, section)
+        message = "iteration #{iteration} (#{section}): #{sample.inspect}"
+        expect(described_class.fixer_add_quotes_to_section(sample, section)).to eq(expected), message
+        expect(fixer.add_quotes_to_section(sample, section: section)).to eq(expected), message
+      end
+    end
+  end
 end

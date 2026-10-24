@@ -114,6 +114,17 @@ module ForemNative
       Native.convert_escaped_pipes_outside_codeblocks(content)
     end
 
+    # Wraps unquoted `<section>: value` front matter lines in double quotes (escaping inner
+    # quotes), matching `MarkdownProcessor::Fixer::Base.add_quotes_to_section`.
+    # Returns nil for anything but plain UTF-8 Strings (and for invalid UTF-8 or a section
+    # that is not a plain word) so `Fixer::Base` can use its private `legacy_add_quotes_to_section`.
+    def fixer_add_quotes_to_section(markdown, section)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+      return unless section.instance_of?(String)
+
+      Native.fixer_add_quotes_to_section(markdown, section)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
