@@ -32,11 +32,16 @@ module Color
     end
 
     def opacity(value = 0.0)
-      rgba = hex_to_rgb_hash(smallest).merge(a: value)
-      format(OPACITY_FORMAT, rgba)
+      ForemNative.color_opacity(smallest, value) || legacy_opacity(value)
     end
 
     private
+
+    # Handles the inputs ForemNative declines (malformed hexes, alphas needing rounding).
+    def legacy_opacity(value)
+      rgba = hex_to_rgb_hash(smallest).merge(a: value)
+      format(OPACITY_FORMAT, rgba)
+    end
 
     # Handles the inputs ForemNative declines (malformed hexes, negative or non-finite channels).
     def legacy_brightness(amount, only_values)

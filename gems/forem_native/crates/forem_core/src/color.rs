@@ -62,9 +62,113 @@ pub fn brightness(hex: &[u8], amount: f64, only_values: bool) -> Option<String> 
     })
 }
 
+/// Largest alpha magnitude formatted natively; keeps `alpha * 100` far inside the
+/// range where every integer is an exact `f64` and the half-ulp error stays tiny.
+const MAX_ALPHA: f64 = 1e9;
+
+/// Equivalent of `Color::CompareHex#opacity(alpha)` for a strict 6-digit hex color:
+/// `"rgba(r, g, b, a)"` with `a` formatted like Ruby's `%.2f`.
+///
+/// Only alphas whose shortest decimal form has at most two fractional digits
+/// (`0.1`, `0.5`, `1`, `-0.0`, ...) are handled natively, so no rounding is ever
+/// needed and the output is exactly those digits. Anything else returns `None` and
+/// stays with Ruby's `sprintf`, whose float rounding differs from correctly rounded
+/// formatting (Ruby prints `2.675` as `"2.68"`, Rust as `"2.67"`).
+pub fn opacity(hex: &[u8], alpha: f64) -> Option<String> {
+    let [r, g, b] = parse_hex_rgb(hex)?;
+    // NaN fails this range check too.
+    if !(0.0..MAX_ALPHA).contains(&alpha.abs()) {
+        return None;
+    }
+
+    let hundredths = (alpha * 100.0).round();
+    // `hundredths` is an exact integer, so this holds exactly when `alpha` is the
+    // double nearest to `hundredths / 100`, i.e. it round-trips with two decimals.
+    if hundredths / 100.0 != alpha {
+        return None;
+    }
+
+    let hundredths = hundredths.abs() as u64;
+    // `is_sign_negative` keeps Ruby's `"-0.00"` for `-0.0`.
+    let sign = if alpha.is_sign_negative() { "-" } else { "" };
+    Some(format!(
+        "rgba({r}, {g}, {b}, {sign}{}.{:02})",
+        hundredths / 100,
+        hundredths % 100
+    ))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn rgba(input: &str, alpha: f64) -> Option<String> {
+        opacity(input.as_bytes(), alpha)
+    }
+
+    #[test]
+    fn matches_existing_compare_hex_opacity_spec() {
+        assert_eq!(
+            rgba("#123456", 0.5),
+            Some("rgba(18, 52, 86, 0.50)".to_string())
+        );
+        assert_eq!(
+            rgba("#3B49DF", 0.1),
+            Some("rgba(59, 73, 223, 0.10)".to_string())
+        );
+        assert_eq!(
+            rgba("ffffff", 0.0),
+            Some("rgba(255, 255, 255, 0.00)".to_string())
+        );
+    }
+
+    #[test]
+    fn formats_two_decimal_alphas_like_ruby_sprintf() {
+        for (alpha, expected) in [
+            (0.29, "0.29"),
+            (0.07, "0.07"),
+            (1.0, "1.00"),
+            (12.34, "12.34"),
+            (-0.1, "-0.10"),
+            (-0.0, "-0.00"),
+            (-2.5, "-2.50"),
+            (123_456_789.99, "123456789.99"),
+        ] {
+            assert_eq!(
+                rgba("#000000", alpha),
+                Some(format!("rgba(0, 0, 0, {expected})")),
+                "{alpha}"
+            );
+        }
+    }
+
+    #[test]
+    fn defers_alphas_that_need_rounding_or_are_out_of_range() {
+        for alpha in [
+            0.125,
+            2.675,
+            0.015,
+            1.0 / 3.0,
+            0.001,
+            -0.004,
+            f64::MIN_POSITIVE,
+            1e9,
+            -1e9,
+            1e300,
+            f64::NAN,
+            f64::INFINITY,
+            f64::NEG_INFINITY,
+        ] {
+            assert_eq!(rgba("#123456", alpha), None, "{alpha}");
+        }
+    }
+
+    #[test]
+    fn defers_malformed_hexes_for_opacity() {
+        for input in ["", "#fff", "#12345g", "#123456\n", "#🚀1234", "#1234567"] {
+            assert_eq!(rgba(input, 0.1), None, "{input:?}");
+        }
+    }
 
     fn hex(input: &str, amount: f64) -> Option<String> {
         brightness(input.as_bytes(), amount, false)
