@@ -101,6 +101,14 @@ RSpec.describe "Api::V1::Articles" do
         expect(response_article["flare_tag"]["name"]).to eq("discuss")
       end
 
+      it "only returns flare tags for articles that have one" do
+        other_article = create(:article, featured: true, tags: "ruby")
+        get api_articles_path, headers: headers
+        articles_by_id = response.parsed_body.index_by { |a| a["id"] }
+        expect(articles_by_id[article.id]["flare_tag"]["name"]).to eq("discuss")
+        expect(articles_by_id[other_article.id]).not_to have_key("flare_tag")
+      end
+
       it "sets the correct edge caching surrogate key" do
         get api_articles_path, headers: headers
 
