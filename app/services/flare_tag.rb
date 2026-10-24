@@ -8,8 +8,17 @@ class FlareTag
     tag_ids = articles.to_h { |article| [article.id, new(article, except_tag).tag_id] }.compact
     return {} if tag_ids.empty?
 
-    tags = Tag.select(:id, *TAG_ATTRIBUTES).where(id: tag_ids.values.uniq).index_by(&:id)
+    tags = tags_by_id
     tag_ids.transform_values { |tag_id| tags[tag_id] }.compact
+  end
+
+  # Every flare tag, loaded once per request (or Sidekiq job) so story lists that call
+  # FlareTag.new(story).tag per story share one tags query instead of one per story.
+  # Keyed on the flare tag ids so a different id set never reads a stale entry.
+  def self.tags_by_id
+    RequestStore.fetch([:flare_tags_by_id, FLARE_TAG_IDS_HASH.values]) do
+      Tag.select(:id, *TAG_ATTRIBUTES).where(id: FLARE_TAG_IDS_HASH.values).index_by(&:id)
+    end
   end
 
   def initialize(article, except_tag = nil)
@@ -19,7 +28,7 @@ class FlareTag
 
   def tag
     @tag ||= if tag_id
-               Tag.select(TAG_ATTRIBUTES).find_by(id: tag_id)
+               self.class.tags_by_id[tag_id]
              end
   end
 
