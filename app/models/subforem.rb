@@ -35,6 +35,9 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_id_by_domain(passed_domain)
+    # A domain containing a null byte can never match a subforem, and Postgres rejects it.
+    return if passed_domain.to_s.include?("\0")
+
     # Unknown domains cache "" (read back as nil by return_type: :integer) because
     # MemoryFirstCache treats a cached nil as a miss and would hit the DB every request.
     MemoryFirstCache.fetch("subforem_id_by_domain_#{passed_domain}", redis_expires_in: 12.hours, return_type: :integer) do
