@@ -532,7 +532,7 @@ RSpec.describe FeedConfig, type: :model do
       noisy_low_impression_config = create(
         :feed_config,
         feed_success_score: 12.0,
-        feed_impressions_count: 50,
+        feed_impressions_count: 15,
         created_at: 2.minutes.ago,
       )
       allow(described_class).to receive(:rand).with(100).and_return(50)
@@ -547,7 +547,7 @@ RSpec.describe FeedConfig, type: :model do
     it "falls back to configs with > 0 impressions when no config has reached LOW_IMPRESSION_COUNT" do
       proven_top_config.destroy!
       unproven_clone = create(:feed_config, feed_success_score: 9.9, feed_impressions_count: 0)
-      low_impression_winner = create(:feed_config, feed_success_score: 2.5, feed_impressions_count: 50)
+      low_impression_winner = create(:feed_config, feed_success_score: 2.5, feed_impressions_count: 15)
       allow(described_class).to receive(:rand).with(100).and_return(50)
       allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
 
