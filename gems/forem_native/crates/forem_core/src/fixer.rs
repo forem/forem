@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 
 const FRONT_MATTER_FENCE: &str = "---";
+const TAGS_LINE: &str = "\ntags:";
 
 /// Quotes `<section>: value` lines inside the front matter, matching
 /// `MarkdownProcessor::Fixer::Base.add_quotes_to_section`:
@@ -99,6 +100,51 @@ pub fn add_quotes_to_section<'a>(markdown: &'a str, section: &str) -> Option<Cow
         }
         None => Cow::Borrowed(markdown),
     })
+}
+
+/// Joins `#tag` lists on `tags:` lines, matching `MarkdownProcessor::Fixer::Base.split_tags`:
+///
+/// ```ruby
+/// markdown.gsub(/\ntags:.*\n/) do |tags|
+///   tags.split(" #").join(",").delete("#").gsub(":,", ": ")
+/// end
+/// ```
+///
+/// ### Behavioral Equivalence Notes
+/// - A match is `\ntags:` plus the rest of its line *including* the closing `\n`, so a
+///   `tags:` on the very first line or on an unterminated last line is left alone, and a
+///   `tags:` line right after another one is skipped (its leading `\n` was consumed).
+/// - The match always ends in `\n`, so `split(" #")` never drops trailing empty fields and
+///   `split(" #").join(",")` is exactly a left-to-right `" #"` -> `","` replacement.
+/// - The three steps run in Ruby's order over the whole match (including the `\ntags:`
+///   prefix), so `tags: #a` becomes `tags: a` via `tags:,a`.
+///
+/// Returns `Cow::Borrowed` when there is no `tags:` line to rewrite.
+pub fn split_tags(markdown: &str) -> Cow<'_, str> {
+    let mut out: Option<String> = None;
+    // Everything before `copied` is already in `out`.
+    let mut copied = 0;
+
+    while let Some(start) = find(markdown, TAGS_LINE, copied) {
+        let Some(newline) = find(markdown, "\n", start + TAGS_LINE.len()) else {
+            break;
+        };
+        let end = newline + 1;
+
+        let out = out.get_or_insert_with(|| String::with_capacity(markdown.len()));
+        out.push_str(&markdown[copied..start]);
+        let joined = markdown[start..end].replace(" #", ",").replace('#', "");
+        out.push_str(&joined.replace(":,", ": "));
+        copied = end;
+    }
+
+    match out {
+        Some(mut out) => {
+            out.push_str(&markdown[copied..]);
+            Cow::Owned(out)
+        }
+        None => Cow::Borrowed(markdown),
+    }
 }
 
 fn is_wrapped_in_quotes(content: &[u8]) -> bool {
@@ -255,5 +301,37 @@ mod tests {
     fn rejects_non_word_sections() {
         assert!(add_quotes_to_section("---\ntitle: x\n---", "").is_none());
         assert!(add_quotes_to_section("---\ntitle: x\n---", "ti.le").is_none());
+    }
+
+    #[test]
+    fn split_tags_joins_hash_tags() {
+        assert_eq!(
+            split_tags("---\ntags: #a #b #c\n---"),
+            "---\ntags: a,b,c\n---"
+        );
+        assert_eq!(split_tags("---\ntags: a, b\n---"), "---\ntags: a, b\n---");
+        assert_eq!(split_tags("---\ntags:#a#b\n"), "---\ntags:ab\n");
+        assert_eq!(split_tags("x\ntags: # #a ##b\n"), "x\ntags: ,a,b\n");
+        assert_eq!(split_tags("x\ntags::# a\n"), "x\ntags:: a\n");
+    }
+
+    #[test]
+    fn split_tags_needs_leading_and_trailing_newlines() {
+        assert!(matches!(split_tags("tags: #a #b\n"), Cow::Borrowed(_)));
+        assert!(matches!(split_tags("x\ntags: #a #b"), Cow::Borrowed(_)));
+        assert!(matches!(split_tags(""), Cow::Borrowed(_)));
+        assert_eq!(
+            split_tags("\ntags: #a\ntags: #b\n\ntags: #c\n"),
+            "\ntags: a\ntags: #b\n\ntags: c\n"
+        );
+    }
+
+    #[test]
+    fn split_tags_keeps_carriage_returns_and_multibyte() {
+        assert_eq!(
+            split_tags("x\r\ntags: #日本 #🚀\r\nbody #x\n"),
+            "x\r\ntags: 日本,🚀\r\nbody #x\n"
+        );
+        assert_eq!(split_tags("\nTags: #a\n"), "\nTags: #a\n");
     }
 }

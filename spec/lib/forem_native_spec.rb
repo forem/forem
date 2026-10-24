@@ -601,4 +601,72 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".fixer_split_tags" do
+    let(:legacy_split_tags) do
+      lambda do |markdown|
+        markdown.gsub(/\ntags:.*\n/) do |tags|
+          tags.split(" #").join(",").delete("#").gsub(":,", ": ")
+        end
+      end
+    end
+
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      [
+        "", "no tags", "tags: #a #b\n", "x\ntags: #a #b", "---\ntags: #a #b #c\n---", "---\ntags: a, b\n---",
+        "---\ntags:#a#b\n", "x\ntags: # #a ##b\n", "x\ntags::# a\n", "x\ntags: #\n", "x\ntags:\n",
+        "\ntags: #a\ntags: #b\n\ntags: #c\n", "x\r\ntags: #日本 #🚀\r\nbody #x\n", "\nTags: #a\n",
+        "---\ntitle: Hi\ntags: #ruby #rails\n---\n# Heading\n\ntags: #not #front #matter\n"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_split_tags.call(input)
+        expect(described_class.fixer_split_tags(input)).to eq(expected), input.inspect
+        expect(fixer.split_tags(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so Fixer keeps Ruby semantics" do
+      input = "x\ntags: #a #b\n"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_split_tags(other)).to be_nil
+        expect(fixer.split_tags(other)).to eq("x\ntags: a,b\n")
+      end
+
+      expect(ForemNative::Native.fixer_split_tags("#{input}\xFF")).to be_nil
+      expect { fixer.split_tags("#{input}\xFF") }.to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was split" do
+      ["no tags".freeze, "x\ntags: #a\n".freeze].each do |input|
+        result = described_class.fixer_split_tags(input)
+
+        expect(result).to eq(legacy_split_tags.call(input))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["\ntags:", "\ntags: ", "tags:", "\n", "\r\n", "\r", " ", "#", " #", "##", ",", ":", ":,", "a",
+                "ruby", "é", "🚀", "日本", "---\n", "\nTags:"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_split_tags.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.fixer_split_tags(sample)).to eq(expected), message
+        expect(fixer.split_tags(sample)).to eq(expected), message
+      end
+    end
+  end
 end

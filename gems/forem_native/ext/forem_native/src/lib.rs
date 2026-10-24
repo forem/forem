@@ -94,6 +94,20 @@ fn fixer_add_quotes_to_section(
     Some(quoted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
+fn fixer_split_tags(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
+    // and the borrow ends before we allocate any Ruby objects.
+    // Returns `nil` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let split = {
+        let text = std::str::from_utf8(unsafe { markdown.as_slice() }).ok()?;
+        match forem_core::fixer::split_tags(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(split) => Some(split),
+        }
+    };
+    Some(split.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -121,5 +135,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "fixer_add_quotes_to_section",
         function!(fixer_add_quotes_to_section, 2),
     )?;
+    native_mod.define_singleton_method("fixer_split_tags", function!(fixer_split_tags, 1))?;
     Ok(())
 }
