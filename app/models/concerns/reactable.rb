@@ -51,21 +51,40 @@ module Reactable
     end
 
     # Warm #public_reaction_categories for a list of records with one cache
-    # round-trip (fetch_multi) instead of one cache.get per record.
-    # Misses are computed and written exactly as the per-record fetch would.
+    # round-trip (read_multi) instead of one cache.get per record.
+    # Misses are computed with one grouped query (instead of one query per
+    # record) and written with the same values the per-record fetch would.
     #
     # @param records [Array<ActiveRecord::Base>]
     def preload_reaction_counts_for_reactable(records)
       records_by_key = records.index_by(&:reaction_counts_cache_key)
       return if records_by_key.empty?
 
-      counts_by_key = Rails.cache.fetch_multi(*records_by_key.keys, expires_in: 10.hours) do |key|
-        records_by_key[key].send(:compute_reaction_counts_for_reactable)
+      counts_by_key = Rails.cache.read_multi(*records_by_key.keys)
+      missing = records_by_key.except(*counts_by_key.keys)
+      if missing.any?
+        computed = compute_reaction_counts_for_reactables(missing)
+        Rails.cache.write_multi(computed, expires_in: 10.hours)
+        counts_by_key.merge!(computed)
       end
       records_by_key.each do |key, record|
         record.instance_variable_set(:@preloaded_reaction_counts_for_reactable, counts_by_key[key])
       end
     end
+
+    # Same result as #compute_reaction_counts_for_reactable for each record, in one query.
+    #
+    # @param records_by_key [Hash{String => ActiveRecord::Base}]
+    # @return [Hash{String => Array<Hash>}] keyed like records_by_key
+    def compute_reaction_counts_for_reactables(records_by_key)
+      counts_by_id = Hash.new { |hash, id| hash[id] = [] }
+      Reaction.where(reactable_type: polymorphic_name, reactable_id: records_by_key.values.map(&:id))
+        .group(:reactable_id, :category).count
+        .each { |(id, category), count| counts_by_id[id] << { category: category, count: count } }
+
+      records_by_key.transform_values { |record| counts_by_id[record.id] }
+    end
+    private :compute_reaction_counts_for_reactables
   end
 
   def reaction_counts_cache_key
