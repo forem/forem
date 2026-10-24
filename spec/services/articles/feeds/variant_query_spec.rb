@@ -23,6 +23,24 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
+
+        it "loads articles from the current subforem without querying subforems", :aggregate_failures do
+          subforem = create(:subforem)
+          article = create(:article)
+          article.update_column(:subforem_id, subforem.id)
+          RequestStore.store[:subforem_id] = subforem.id
+
+          subforem_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+          end
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
+
+          expect(result).to match_array(article)
+          expect(subforem_queries).to be_empty
+        ensure
+          RequestStore.store.delete(:subforem_id)
+        end
       end
 
       describe "#call with a non-nil user" do
