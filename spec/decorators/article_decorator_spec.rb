@@ -305,12 +305,46 @@ RSpec.describe ArticleDecorator, type: :decorator do
     it "memoizes the result across repeated calls on the same decorated instance" do
       article.save!
       article.user.setting.update!(permit_adjacent_sponsors: false)
-      decorated = article.decorate
+      decorated = Article.find(article.id).decorate
       allow(Users::Setting).to receive(:exists?).and_call_original
 
       expect(decorated.permit_adjacent_sponsors?).to be(false)
       expect(decorated.permit_adjacent_sponsors?).to be(false)
       expect(Users::Setting).to have_received(:exists?).once
+    end
+
+    context "when the author's setting is preloaded" do
+      def preloaded_decorated_article
+        Article.includes(user: :setting).find(article.id).decorate
+      end
+
+      before do
+        article.save!
+        allow(Users::Setting).to receive(:exists?).and_call_original
+      end
+
+      it "returns true without querying when the author permits adjacent sponsors" do
+        expect(preloaded_decorated_article.permit_adjacent_sponsors?).to be(true)
+        expect(Users::Setting).not_to have_received(:exists?)
+      end
+
+      it "returns false without querying when the author's setting is false or nil" do
+        article.user.setting.update_column(:permit_adjacent_sponsors, false)
+        expect(preloaded_decorated_article.permit_adjacent_sponsors?).to be(false)
+
+        article.user.setting.update_column(:permit_adjacent_sponsors, nil)
+        expect(preloaded_decorated_article.permit_adjacent_sponsors?).to be(false)
+        expect(Users::Setting).not_to have_received(:exists?)
+      end
+
+      it "still queries co-authors' settings" do
+        co_author = create(:user)
+        co_author.setting.update_column(:permit_adjacent_sponsors, nil)
+        article.update!(co_author_ids: [co_author.id])
+
+        expect(preloaded_decorated_article.permit_adjacent_sponsors?).to be(false)
+        expect(Users::Setting).to have_received(:exists?).once
+      end
     end
   end
 

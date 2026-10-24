@@ -117,6 +117,12 @@ class ArticleDecorator < ApplicationDecorator
     return @permit_adjacent_sponsors if defined?(@permit_adjacent_sponsors)
     return @permit_adjacent_sponsors = true unless respond_to?(:user_id) && user_id.present?
 
+    # articles#show preloads the author's setting; answer from it instead of querying again.
+    # user_id is unique in users_settings, so the loaded row is the only one exists? could match.
+    if co_author_ids.empty? && object.association(:user).loaded? && user&.association(:setting)&.loaded?
+      return @permit_adjacent_sponsors = user.setting.nil? || user.setting.permit_adjacent_sponsors?
+    end
+
     author_ids = [user_id] + co_author_ids
     # permit_adjacent_sponsors is nullable; nil opts out, matching the previous `all?` check
     @permit_adjacent_sponsors = !Users::Setting.exists?(user_id: author_ids, permit_adjacent_sponsors: [false, nil])
