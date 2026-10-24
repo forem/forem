@@ -62,6 +62,22 @@ RSpec.describe "Follows #bulk_show" do
 
       expect(user_queries.size).to eq(1)
     end
+
+    it "computes uncached follow checks in a single follows query" do
+      ids = [followed_user.id, not_followed_user.id, follow_back_user.id, mutual_follow_user.id]
+      follow_queries = []
+      callback = lambda do |*, payload|
+        follow_queries << payload[:sql] if payload[:sql].include?('FROM "follows"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get bulk_show_follows_path, params: { ids: ids, followable_type: followable_type }
+      end
+
+      expect(follow_queries.size).to eq(1)
+      expect(follow_queries.grep(/COUNT/)).to be_empty
+      expect(response.parsed_body.values).to eq(%w[true false follow-back mutual])
+    end
   end
 
   it "without ids raises a missing param error" do
