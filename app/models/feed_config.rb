@@ -1,5 +1,5 @@
 class FeedConfig < ApplicationRecord
-  LOW_IMPRESSION_COUNT = 100
+  LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
 
   has_many :feed_events, dependent: :nullify
