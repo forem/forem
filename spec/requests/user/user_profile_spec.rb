@@ -46,6 +46,26 @@ RSpec.describe "UserProfiles" do
       end
     end
 
+    it "counts the user's published articles once for the sidebar stats", :aggregate_failures do
+      create(:article, user: user)
+      published_count_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        next unless sql.start_with?('SELECT COUNT(*) FROM "articles" WHERE "articles"."user_id"')
+        next unless sql.include?("published_at <=")
+        next if sql.match?(/type_of|created_at >|score/)
+
+        published_count_queries << sql
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include("1 post published")
+      expect(published_count_queries.size).to eq(1)
+    end
+
     it "calls user by their username in the 'more info' area" do
       get "/#{user.username}"
       expect(response.body).to include "More info about @#{user.username}"
