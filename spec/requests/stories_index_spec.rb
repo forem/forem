@@ -586,6 +586,30 @@ RSpec.describe "StoriesIndex" do
     end
   end
 
+  describe "GET /:username flagged state isolation on cached profile path" do
+    let(:user) { create(:user) }
+
+    it "does not query user flag reactions for signed-out or signed-in visitors" do
+      flagger = create(:user, :trusted)
+      create(:vomit_reaction, user: flagger, reactable: user)
+
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('FROM "reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+        sign_in flagger
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(reaction_queries.grep(/"reactable_type" = 'User'/)).to be_empty
+      expect(response.body).not_to include("data-is-user-flagged")
+    end
+  end
+
   describe "GET /:username story list reaction preloading" do
     let(:user) { create(:user) }
     let!(:article) { create(:article, user: user, published: true) }

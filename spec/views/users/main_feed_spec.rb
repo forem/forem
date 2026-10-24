@@ -13,7 +13,6 @@ RSpec.describe "users/show" do
     assign(:comments, [])
     assign(:pinned_stories, [])
     assign(:profile, user.profile.decorate)
-    assign(:is_user_flagged, false)
   end
 
   context "when signed-in" do
