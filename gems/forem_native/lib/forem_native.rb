@@ -39,14 +39,14 @@ module ForemNative
 
     # Returns true when the compiled Rust `magnus` extension is loaded and active.
     def available?
-      !@force_fallback && @native_loaded
+      !@force_fallback && @native_loaded && defined?(Native) ? true : false
     end
     alias native_available? available?
 
     # Returns true when the C-ABI shared library is loaded in the process,
     # regardless of whether `with_fallback` is temporarily active.
     def native_loaded?
-      @native_loaded
+      @native_loaded && defined?(Native) ? true : false
     end
 
     # Temporarily forces `ForemNative.available?` to return false inside the block
@@ -62,7 +62,7 @@ module ForemNative
     # Counts word tokens matching `content.to_s.split(/\W+/).count`.
     def split_word_count(content)
       text = content.to_s
-      if available?
+      if available? && defined?(Native)
         Native.split_word_count(text)
       else
         RubyFallback.split_word_count(text)
@@ -73,7 +73,7 @@ module ForemNative
     # `(content.to_s.split(/\W+/).count / 275.0).ceil`.
     def calculate_reading_time(content)
       text = content.to_s
-      if available?
+      if available? && defined?(Native)
         Native.calculate_reading_time(text)
       else
         RubyFallback.calculate_reading_time(text)

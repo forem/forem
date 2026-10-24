@@ -29,12 +29,15 @@ jobs:
         working-directory: gems/forem_native
     steps:
       - uses: actions/checkout@v6
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Cache Cargo registry and target
+        uses: actions/cache@v5
         with:
-          components: rustfmt, clippy
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "gems/forem_native -> target"
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            gems/forem_native/target
+          key: ${{ runner.os }}-cargo-forem-native-${{ hashFiles('gems/forem_native/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-forem-native-
       - name: Check formatting
         run: cargo fmt --all -- --check
       - name: Run Clippy

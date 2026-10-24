@@ -27,6 +27,7 @@ if skip_build
     \t@true
   MAKEFILE
 else
+  gem_root = ForemNative::Builder::GEM_ROOT
   manifest_path = ForemNative::Builder::MANIFEST_PATH
   artifact_path = ForemNative::Builder.cargo_artifact_path
   target_bin = ForemNative::Builder.extension_binary_path
@@ -35,7 +36,7 @@ else
     RUBYARCHDIR ?= #{RbConfig::CONFIG['sitearchdir']}
 
     all:
-    \tcargo build --release --manifest-path "#{manifest_path}"
+    \tcd "#{gem_root}" && cargo build --release --manifest-path "#{manifest_path}"
     \tmkdir -p "#{File.dirname(target_bin)}"
     \tcp "#{artifact_path}" "#{target_bin}"
 
@@ -43,6 +44,6 @@ else
     \tif [ -n "$(RUBYARCHDIR)" ]; then mkdir -p "$(RUBYARCHDIR)/forem_native" && cp "#{target_bin}" "$(RUBYARCHDIR)/forem_native/forem_native.#{dlext}"; fi
 
     clean:
-    \tcargo clean --manifest-path "#{manifest_path}"
+    \tcd "#{gem_root}" && cargo clean --manifest-path "#{manifest_path}"
   MAKEFILE
 end

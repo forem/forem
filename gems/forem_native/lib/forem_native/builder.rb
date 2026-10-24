@@ -53,7 +53,7 @@ module ForemNative
     def self.compile!(dest_dir: LIB_TARGET_DIR)
       return false unless cargo_available?
 
-      success = system("cargo", "build", "--release", "--manifest-path", MANIFEST_PATH)
+      success = system("cargo", "build", "--release", "--manifest-path", MANIFEST_PATH, chdir: GEM_ROOT)
       return false unless success
 
       install_built_artifact!(dest_dir)

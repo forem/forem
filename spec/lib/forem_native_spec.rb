@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe ForemNative do
   before do
-    if !described_class.native_loaded? && ForemNative::Builder.cargo_available?
+    if !described_class.native_loaded? && ForemNative::Builder.cargo_available? && ENV["FOREM_NATIVE_DISABLE"] != "1"
       ForemNative::Builder.compile!
       described_class.load_native!
     end
@@ -11,6 +11,7 @@ RSpec.describe ForemNative do
   describe ".available? and .with_fallback" do
     it "reports native availability when compiled and toggles cleanly inside .with_fallback" do
       skip "Rust toolchain (cargo) is not available in this environment" unless ForemNative::Builder.cargo_available?
+      skip "ForemNative disabled via FOREM_NATIVE_DISABLE=1" if ENV["FOREM_NATIVE_DISABLE"] == "1"
 
       expect(described_class.native_loaded?).to be(true)
       expect(described_class.available?).to be(true)
