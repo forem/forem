@@ -70,11 +70,8 @@ module MarkdownProcessor
     end
 
     def convert_deeply_nested_links_to_html(content)
-      content.gsub(/^(?: {16,}|\t{4,})[-*+ \d.]* .*$/) do |line|
-        line.gsub(/\[([^\]]*)\]\(([^)]*)\)/) do
-          "<a href=\"#{$2}\">#{$1}</a>"
-        end
-      end
+      ForemNative.convert_deeply_nested_links_to_html(content) ||
+        legacy_convert_deeply_nested_links_to_html(content)
     end
 
     # Note: This preserves fenced code blocks opened with either ``` or ~~~, but
@@ -219,6 +216,16 @@ module MarkdownProcessor
     end
 
     private
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_convert_deeply_nested_links_to_html(content)
+      content.gsub(/^(?: {16,}|\t{4,})[-*+ \d.]* .*$/) do |line|
+        line.gsub(/\[([^\]]*)\]\(([^)]*)\)/) do
+          "<a href=\"#{Regexp.last_match(2)}\">#{Regexp.last_match(1)}</a>"
+        end
+      end
+    end
 
     def parse_html(html, prefix_images_options)
       return html if html.blank?
