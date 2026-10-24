@@ -15,7 +15,9 @@ module Billboards
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
                    role_names: nil, subforem_id: nil, fully_cached: false)
-      @filtered_billboards = billboards.includes([:organization])
+      # No organization preload: callers pick a single billboard from the candidates, and only
+      # its header partial reads the organization (usually from a cached fragment).
+      @filtered_billboards = billboards
       @area = area
       @user_signed_in = user_signed_in
       @user_id = user_signed_in ? user_id : nil
