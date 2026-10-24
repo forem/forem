@@ -104,6 +104,28 @@ RSpec.describe "StoriesPerformanceFix", type: :request do
       end
     end
 
+    context "with reactions" do
+      before do
+        create(:reaction, reactable: articles.first, category: "like")
+        create(:reaction, reactable: articles.last, category: "unicorn")
+        articles.values_at(0, -1).each { |a| a.update_columns(public_reactions_count: 1) }
+        create(:profile_pin, profile: user, pinnable: articles.last)
+      end
+
+      it "fetches reaction counts for pinned and listed stories in one cache call", :aggregate_failures do
+        allow(Rails.cache).to receive(:fetch_multi).and_call_original
+        allow(Rails.cache).to receive(:fetch).and_call_original
+
+        get "/#{user.username}"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("multiple_reactions_icons_container")
+        expect(Rails.cache).to have_received(:fetch_multi)
+          .with(*articles.values_at(-1, 0).map(&:reaction_counts_cache_key), expires_in: 10.hours).once
+        expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
+      end
+    end
+
     context "with pinned articles" do
       let!(:pin) { create(:profile_pin, profile: user, pinnable: articles.first) }
 
@@ -135,6 +157,17 @@ RSpec.describe "StoriesPerformanceFix", type: :request do
       org_articles.each do |a|
         expect(response.body).to include(a.title)
       end
+    end
+
+    it "fetches org story reaction counts in one cache call" do
+      create(:reaction, reactable: org_articles.first, category: "like")
+      org_articles.first.update_columns(public_reactions_count: 1)
+      allow(Rails.cache).to receive(:fetch).and_call_original
+
+      get "/#{org.slug}"
+
+      expect(response).to have_http_status(:ok)
+      expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
     end
   end
 end
