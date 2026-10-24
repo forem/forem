@@ -6770,12 +6770,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:^3.0.4":
-  version: 3.1.5
-  resolution: "cross-fetch@npm:3.1.5"
+"cross-fetch@npm:^3.1.8":
+  version: 3.2.0
+  resolution: "cross-fetch@npm:3.2.0"
   dependencies:
-    node-fetch: "npm:2.6.7"
-  checksum: 10c0/29b457f8df11b46b8388a53c947de80bfe04e6466a59c1628c9870b48505b90ec1d28a05b543a0247416a99f1cfe147d1efe373afdeb46a192334ba5fe91b871
+    node-fetch: "npm:^2.7.0"
+  checksum: 10c0/d8596adf0269130098a676f6739a0922f3cc7b71cc89729925411ebe851a87026171c82ea89154c4811c9867c01c44793205a52e618ce2684650218c7fbeeb9f
   languageName: node
   linkType: hard
 
@@ -7836,7 +7836,7 @@ __metadata:
     jest: "npm:28.1.3"
     jest-axe: "npm:^6.0.0"
     jest-environment-jsdom: "npm:^28.1.3"
-    jest-fetch-mock: "npm:^3.0.3"
+    jest-fetch-mock: "npm:^3.2.0"
     jest-junit: "npm:^16.0.0"
     jest-watch-typeahead: "npm:^2.2.2"
     jsdom: "npm:^20.0.1"
@@ -11682,13 +11682,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-fetch-mock@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "jest-fetch-mock@npm:3.0.3"
+"jest-fetch-mock@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "jest-fetch-mock@npm:3.2.0"
   dependencies:
-    cross-fetch: "npm:^3.0.4"
-    promise-polyfill: "npm:^8.1.3"
-  checksum: 10c0/21ffe8c902ca5adafa7ed61760e100e4c290e99b0b487645f5bb92938ea64c2d1d9dc8af46e65fb7917d6237586067d53af756583a77330dbb4fbda079a63c29
+    cross-fetch: "npm:^3.1.8"
+    domexception: "npm:^4.0.0"
+  checksum: 10c0/39bbd17208ea67b4c60fced2dfeb71d73a0f19c3214f46bc15099cb1b347c66fbb40c9d83b95c5f7a4aa332b2da1448f1573d7cc258add3e0df554a097f2eb28
   languageName: node
   linkType: hard
 
@@ -13282,7 +13282,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:2.6.7, node-fetch@npm:^2.6.1":
+"node-fetch@npm:^2.6.1":
   version: 2.6.7
   resolution: "node-fetch@npm:2.6.7"
   dependencies:
@@ -13293,6 +13293,20 @@ __metadata:
     encoding:
       optional: true
   checksum: 10c0/fcae80f5ac52fbf5012f5e19df2bd3915e67d3b3ad51cb5942943df2238d32ba15890fecabd0e166876a9f98a581ab50f3f10eb942b09405c49ef8da36b826c7
+  languageName: node
+  linkType: hard
+
+"node-fetch@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "node-fetch@npm:2.7.0"
+  dependencies:
+    whatwg-url: "npm:^5.0.0"
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 10c0/b55786b6028208e6fbe594ccccc213cab67a72899c9234eb59dba51062a299ea853210fcf526998eaa2867b0963ad72338824450905679ff0fa304b8c5093ae8
   languageName: node
   linkType: hard
 
@@ -14770,13 +14784,6 @@ __metadata:
   version: 0.11.10
   resolution: "process@npm:0.11.10"
   checksum: 10c0/40c3ce4b7e6d4b8c3355479df77aeed46f81b279818ccdc500124e6a5ab882c0cc81ff7ea16384873a95a74c4570b01b120f287abbdd4c877931460eca6084b3
-  languageName: node
-  linkType: hard
-
-"promise-polyfill@npm:^8.1.3":
-  version: 8.2.3
-  resolution: "promise-polyfill@npm:8.2.3"
-  checksum: 10c0/8d0418ef94d92ff53b3d8a42f47596bd354f4dfadcf21a5d52682f3addba05b05c02d88d4674e4909c069c8e14128a6d0d5e646392fb088b5300f99982a11a6c
   languageName: node
   linkType: hard
 
