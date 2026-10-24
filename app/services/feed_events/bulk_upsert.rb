@@ -73,6 +73,7 @@ module FeedEvents
       begin
         FeedEvent.insert_all(records_to_insert)
         FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
+        FeedEvent.bulk_update_counters_by_feed_config_id(records_to_insert.pluck(:feed_config_id).compact)
       rescue ActiveRecord::InvalidForeignKey
         # Race condition: article or user was deleted after our check but before insert_all.
         # We can gracefully ignore this failure rather than throwing a 500 for an analytics payload.
@@ -96,7 +97,7 @@ module FeedEvents
       event = valid_events.first
       FeedEvent
         .where.not("created_at > ?", timebox.ago.utc) # Only proceed if
-        .create_with(event.slice(:article_position, :context_type))
+        .create_with(event.slice(:article_position, :context_type, :feed_config_id))
         .find_or_create_by(event.slice(:article_id, :user_id, :category))
     rescue ActiveRecord::InvalidForeignKey
       # Ignore if the article or user was deleted concurrently

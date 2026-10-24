@@ -100,7 +100,6 @@ module Emails
               }
             end
             FeedEvents::BulkUpsert.call(feed_events_data)
-            FeedEvent.update_single_feed_config_counters(collector.feed_config_id)
           end
         end
       rescue Net::SMTPSyntaxError, Net::SMTPFatalError => e
