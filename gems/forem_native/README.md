@@ -12,6 +12,7 @@ gems/forem_native/
 ├── crates/
 │   └── forem_core/             # Pure-Rust core library (ZERO Ruby/magnus dependencies)
 │       └── src/
+│           ├── color.rs        # Zero-allocation hex color brightness scaling
 │           ├── lib.rs
 │           └── markdown.rs     # Zero-allocation Markdown/text algorithms
 ├── ext/

@@ -19,12 +19,8 @@ module Color
     end
 
     def brightness(amount = 1, only_values: false)
-      rgb = hex_to_rgb_hash(smallest).transform_values do |color|
-        (color * amount).round
-      end
-      only_values ? format(RGB_FORMAT, rgb) : format(BRIGHTNESS_FORMAT, rgb)
-    rescue StandardError
-      smallest
+      ForemNative.color_brightness(smallest, amount, only_values: only_values) ||
+        legacy_brightness(amount, only_values)
     end
 
     # Returns the first valid hex string it finds (# + 6 digits)
@@ -41,6 +37,16 @@ module Color
     end
 
     private
+
+    # Handles the inputs ForemNative declines (malformed hexes, negative or non-finite channels).
+    def legacy_brightness(amount, only_values)
+      rgb = hex_to_rgb_hash(smallest).transform_values do |color|
+        (color * amount).round
+      end
+      only_values ? format(RGB_FORMAT, rgb) : format(BRIGHTNESS_FORMAT, rgb)
+    rescue StandardError
+      smallest
+    end
 
     def hex_to_rgb_hash(hex)
       hex.match(RGB_REGEX).named_captures.to_h do |key, color|
