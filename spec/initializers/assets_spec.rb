@@ -46,4 +46,60 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
       expect(Terser::Compressor).to have_received(:call).with(input)
     end
   end
+
+  describe "Build configuration hygiene" do
+    it "does not declare a conflicting engines.yarn in package.json alongside packageManager" do
+      package_json = JSON.parse(Rails.root.join("package.json").read)
+      expect(package_json["packageManager"]).to start_with("yarn@")
+      expect(package_json.dig("engines", "yarn")).to be_nil
+    end
+
+    it "does not include a committed bin/bundle binstub" do
+      expect(Rails.root.join("bin/bundle").exist?).to be(false)
+    end
+
+    it "removes javascript:build from assets:precompile in production when app/assets/builds has compiled bundles" do
+      Rails.application.load_tasks unless Rake::Task.task_defined?("assets:precompile")
+      task = Rake::Task["assets:precompile"]
+      original_prereqs = task.prerequisites.dup
+
+      begin
+        task.prerequisites << "javascript:build" unless task.prerequisites.include?("javascript:build")
+        builds_dir = instance_double(Pathname)
+        allow(builds_dir).to receive(:glob).with("*.{js,css}").and_return([Pathname.new("application.js")])
+        allow(Rails.root).to receive(:join).and_call_original
+        allow(Rails.root).to receive(:join).with("app/assets/builds").and_return(builds_dir)
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("RAILS_ENV").and_return("production")
+
+        load Rails.root.join("lib/tasks/post_precompile_assets.rake")
+
+        expect(task.prerequisites).not_to include("javascript:build")
+      ensure
+        task.prerequisites.replace(original_prereqs)
+      end
+    end
+
+    it "keeps javascript:build on assets:precompile in production when only .keep is present in app/assets/builds" do
+      Rails.application.load_tasks unless Rake::Task.task_defined?("assets:precompile")
+      task = Rake::Task["assets:precompile"]
+      original_prereqs = task.prerequisites.dup
+
+      begin
+        task.prerequisites << "javascript:build" unless task.prerequisites.include?("javascript:build")
+        builds_dir = instance_double(Pathname)
+        allow(builds_dir).to receive(:glob).with("*.{js,css}").and_return([])
+        allow(Rails.root).to receive(:join).and_call_original
+        allow(Rails.root).to receive(:join).with("app/assets/builds").and_return(builds_dir)
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("RAILS_ENV").and_return("production")
+
+        load Rails.root.join("lib/tasks/post_precompile_assets.rake")
+
+        expect(task.prerequisites).to include("javascript:build")
+      ensure
+        task.prerequisites.replace(original_prereqs)
+      end
+    end
+  end
 end

@@ -45,6 +45,10 @@ Rails.application.configure do
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
+  # NOTE: Forem intentionally keeps `config.assets.compile = true` so that
+  # `Rails.application.assets[...]` remains initialized in production for views/models
+  # that inline compiled CSS (e.g., `app/views/layouts/_user_config.html.erb`,
+  # `app/models/comment.rb#custom_css`, and `app/views/onboardings/show.html.erb`).
   config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
