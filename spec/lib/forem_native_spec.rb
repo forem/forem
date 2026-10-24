@@ -170,4 +170,88 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".convert_deeply_nested_links_to_html" do
+    let(:legacy_convert_deeply_nested_links_to_html) do
+      lambda do |content|
+        content.gsub(/^(?: {16,}|\t{4,})[-*+ \d.]* .*$/) do |line|
+          line.gsub(/\[([^\]]*)\]\(([^)]*)\)/) { "<a href=\"#{Regexp.last_match(2)}\">#{Regexp.last_match(1)}</a>" }
+        end
+      end
+    end
+
+    let(:parser) { MarkdownProcessor::Parser.new("") }
+    let(:deep) { " " * 16 }
+
+    let(:edge_cases) do
+      [
+        "", "\n", "\r\n", "[a](b)", "- [a](b)", "#{' ' * 15}- [a](b)", "#{deep}- [a](b)", "#{deep}x [a](b)",
+        "#{deep}-[a](b)", "#{deep} [a](b)", "#{deep}1.2 [a](b)", "#{deep}٣ [a](b)", "\t\t\t- [a](b)",
+        "\t\t\t\t- [a](b)", "\t\t\t\t\t* [a](b)", "\t\t\t\tx [a](b)", "\t\t\t\t \t[a](b)", "x#{deep}- [a](b)",
+        "#{deep}- [a [b](c)", "#{deep}- [a] [b](c)", "#{deep}- [](  )", "#{deep}- [a](b(c))", "#{deep}- [a](b",
+        "#{deep}- [a]](b)", "#{deep}- [[a]](b)", "#{deep}- [a\n](b)", "#{deep}- [a](b)\r\n#{deep}+ [c](d)\r\n",
+        "#{deep}- [日本](🚀) é\n[x](y)\n#{deep}- [x](y)", "#{deep}- [a](b)\n\n\n", "\n\n#{deep}- [a](b)",
+        "#{deep}- #{'[' * 50}](b)#{')' * 5}"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_deeply_nested_links_to_html.call(input)
+        expect(described_class.convert_deeply_nested_links_to_html(input)).to eq(expected), input.inspect
+        expect(parser.convert_deeply_nested_links_to_html(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid byte sequences so the parser keeps Ruby semantics" do
+      input = "#{deep}- [a](b)"
+      expected = "#{deep}- <a href=\"b\">a</a>"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.convert_deeply_nested_links_to_html(other)).to be_nil
+        result = parser.convert_deeply_nested_links_to_html(other)
+        expect(result).to eq(expected)
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      expect(ForemNative::Native.convert_deeply_nested_links_to_html("#{input}\xFF")).to be_nil
+      expect { parser.convert_deeply_nested_links_to_html("#{input}\xFF") }
+        .to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was converted" do
+      ["#{deep}- [a](b)".freeze, "- [a](b)\n    - [c](d)".freeze].each do |input|
+        result = described_class.convert_deeply_nested_links_to_html(input)
+
+        expect(result).to eq(legacy_convert_deeply_nested_links_to_html.call(input))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated nested-list Markdown inputs" do
+      rng = Random.new(424_242)
+      indents = ["", " ", "  ", " " * 4, " " * 15, " " * 16, " " * 17, " " * 20, "\t" * 3, "\t" * 4, "\t" * 5,
+                 "\t\t\t\t ", " \t\t\t\t"]
+      markers = ["", "-", "*", "+", "1.", "10.", "-.", " ", "  ", "x", "٣", "#"]
+      tokens = ["[", "]", "(", ")", "[a](b)", "[DEV](https://dev.to)", "[a [b](c)", "](", " ", "  ", "\t", "\r",
+                "word", "é", "🚀", "日本", "`", "\\|", "<", "\"", "-", "1"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..6)) do
+          indents.sample(random: rng) + markers.sample(random: rng) +
+            (rng.rand < 0.8 ? " " : "") +
+            Array.new(rng.rand(0..12)) { tokens.sample(random: rng) }.join
+        end.join(rng.rand < 0.2 ? "\r\n" : "\n")
+        sample << "\n" if rng.rand < 0.3
+
+        expected = legacy_convert_deeply_nested_links_to_html.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.convert_deeply_nested_links_to_html(sample)).to eq(expected), message
+        expect(parser.convert_deeply_nested_links_to_html(sample)).to eq(expected), message
+      end
+    end
+  end
 end
