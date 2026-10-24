@@ -7830,7 +7830,7 @@ __metadata:
     sass: "npm:1.54.0"
     sass-loader: "npm:^13.3.3"
     storybook-addon-jsx: "npm:^7.3.14"
-    style-loader: "npm:^2.0.0"
+    style-loader: "npm:^3.3.4"
     svgo: "npm:2.8.0"
     web-share-wrapper: "npm:^0.2.2"
   languageName: unknown
@@ -16498,19 +16498,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"style-loader@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "style-loader@npm:2.0.0"
-  dependencies:
-    loader-utils: "npm:^2.0.0"
-    schema-utils: "npm:^3.0.0"
-  peerDependencies:
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: 10c0/6febd1809b4f67a722e4e366fa3b3f8e1083425f7214b7a8962cf53aa7cc9c522623fb55a5e64049e46d637bbbda3b29ebbe14ec9f7652b27345450fcef6ea80
-  languageName: node
-  linkType: hard
-
-"style-loader@npm:^3.3.1":
+"style-loader@npm:^3.3.1, style-loader@npm:^3.3.4":
   version: 3.3.4
   resolution: "style-loader@npm:3.3.4"
   peerDependencies:
