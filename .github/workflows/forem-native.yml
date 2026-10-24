@@ -1,0 +1,45 @@
+name: Forem Native (Rust)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "gems/forem_native/**"
+      - "app/services/markdown_processor/reading_time.rb"
+      - "spec/lib/forem_native_spec.rb"
+      - "spec/services/markdown_processor/reading_time_spec.rb"
+      - ".github/workflows/forem-native.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "gems/forem_native/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  rust-unit-and-lint:
+    name: Rust Core Tests & Clippy
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: gems/forem_native
+    steps:
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "gems/forem_native -> target"
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+      - name: Run Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Run Rust unit tests (forem_core)
+        run: cargo test -p forem_core
+      - name: Build release native library
+        run: cargo build --release

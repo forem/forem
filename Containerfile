@@ -72,6 +72,7 @@ WORKDIR "${APP_HOME}"
 COPY --chown=${APP_UID}:${APP_GID} ./.ruby-version "${APP_HOME}"/
 COPY --chown=${APP_UID}:${APP_GID} ./Gemfile ./Gemfile.lock "${APP_HOME}"/
 COPY --chown=${APP_UID}:${APP_GID} ./vendor/cache "${APP_HOME}"/vendor/cache
+COPY --chown=${APP_UID}:${APP_GID} ./gems/forem_native "${APP_HOME}"/gems/forem_native
 
 # Have to reset APP_CONFIG, which appears to be set by upstream images, to
 # avoid permission errors in the development/test images (which run bundle

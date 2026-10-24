@@ -1,0 +1,15 @@
+[package]
+name = "forem_native"
+version = "0.1.0"
+edition = "2021"
+description = "Magnus Ruby C-ABI bindings for forem_core"
+license = "MIT"
+publish = false
+
+[lib]
+name = "forem_native"
+crate-type = ["cdylib"]
+
+[dependencies]
+forem_core = { path = "../../crates/forem_core" }
+magnus = "0.9"
