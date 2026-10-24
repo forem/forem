@@ -69,3 +69,17 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Document All API Changes**: Any time you modify or add any routes, controller actions, or parameters under `/api/*` (such as adding semantic or fuzzy search endpoints), you **MUST** update or create the corresponding RSWAG documentation specs in `spec/requests/api/v1/docs/*_spec.rb` (or matching version).
 - **Regenerate OpenAPI Schema**: After updating the swagger spec files, you **MUST** run the Swagger generation rake task (`bundle exec rake rswag:specs:swaggerize`) to regenerate the `swagger/v1/api_v1.json` file.
 - **Do Not Leave Specs Outdated**: Outdated API specifications cause integration failures for external services, gateway clients, and LLM MCP servers. Always treat specs as part of the core delivery.
+
+## Rust Native Extensions (`gems/forem_native`)
+- **Architecture (Option A: `magnus` + `forem_core`)**: We methodically rewrite CPU-bound and allocation-heavy Ruby hot paths (e.g., Markdown/Liquid processing, string/tree manipulation, feed scoring math) into Rust inside `gems/forem_native/` as the single source of truth.
+- **Strict Two-Layer Separation**:
+  - Put all pure algorithm logic in `gems/forem_native/crates/forem_core/` with **zero** Ruby or `magnus` dependencies so it can be unit-tested standalone (`cargo test -p forem_core`) and remains portable to WebAssembly (`wasm32`) or standalone Rust services in future phases.
+  - Keep `gems/forem_native/ext/forem_native/` as a thin `magnus` C-ABI wrapper (~15–20 lines per function) that borrows Ruby strings/slices in-place and delegates to `forem_core`.
+- **Universal Deployment (Docker, Kamal, Heroku, Render, Railway, AWS, DO, Local)**:
+  - `Containerfile` builds `gems/forem_native` in a dedicated `rust-builder` stage so container builds on any architecture (`amd64` / `arm64`) compile fresh from Rust source with zero Rust toolchain in the final production image.
+  - Precompiled binaries (`x86_64-linux/forem_native.so`, `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`) are committed in `gems/forem_native/lib/forem_native/` for buildpack-only hosts (Heroku, Render Native, Railway), instant CI execution, and zero-dependency local macOS/Linux development (with `ForemNative.load_native!` auto-compiling via `cargo` if needed on other architectures).
+  - Do not maintain duplicate runtime `RubyFallback` modules or feature flags for pure-compute replacements; instead, keep the legacy Ruby calculation in `spec/lib/forem_native_spec.rb` and `lib/tasks/forem_native.rake` as the differential test and benchmark oracle.
+- **Verification Requirements**:
+  - Run `bundle exec rake forem_native:rust_test` (`cargo test` + `cargo clippy`) and `cargo fmt --all -- --check`.
+  - Include differential equivalence specs in `spec/lib/forem_native_spec.rb` asserting `ForemNative` matches the legacy Ruby reference calculation across edge cases and randomized inputs (`1,000+` iterations).
+  - Include `benchmark-ips` throughput and `memory_profiler` allocation comparisons (`bundle exec rake forem_native:benchmark`) in PR descriptions. See `docs/rust_native_extensions.md` for full details.
