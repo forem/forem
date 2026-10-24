@@ -71,6 +71,16 @@ module ForemNative
       Native.color_brightness(hex, native_amount, only_values ? true : false)
     end
 
+    # Rewrites `[text](url)` links as `<a>` tags on 16+ space / 4+ tab indented list lines,
+    # matching `MarkdownProcessor::Parser#convert_deeply_nested_links_to_html`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_convert_deeply_nested_links_to_html` keeps Ruby's semantics.
+    def convert_deeply_nested_links_to_html(content)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.convert_deeply_nested_links_to_html(content)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
