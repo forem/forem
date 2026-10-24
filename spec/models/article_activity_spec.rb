@@ -132,6 +132,21 @@ RSpec.describe ArticleActivity do
       expect(activity.daily_referrers[iso]).to eq("a.com" => 3, "b.com" => 2, "" => 1)
       expect(activity.total_page_views).to eq(6)
     end
+
+    it "does not load the article row when saving" do
+      create(:page_view, article: article, created_at: Time.utc(day.year, day.month, day.day, 12, 0, 0))
+      fresh_activity = described_class.find(activity.id)
+
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { fresh_activity.recompute_all! }
+
+      expect(article_queries).to be_empty
+      expect(fresh_activity.reload.total_page_views).to eq(1)
+      expect(fresh_activity.last_aggregated_at).to be_present
+    end
   end
 
   describe ".bulk_backfill!" do
