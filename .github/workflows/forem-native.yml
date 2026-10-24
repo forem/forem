@@ -22,18 +22,22 @@ concurrency:
 
 jobs:
   rust-unit-and-lint:
-    name: Rust Core Tests & Clippy
-    runs-on: ubuntu-latest
+    name: Rust Core Tests & Clippy (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
     defaults:
       run:
         working-directory: gems/forem_native
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Ruby and verify committed x86_64-linux binary loads immediately
+      - name: Setup Ruby and verify committed precompiled binary loads immediately
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3.0"
-      - name: Verify precompiled x86_64-linux binary works without compiling
+      - name: Verify precompiled platform binary works without compiling
         env:
           FOREM_NATIVE_SKIP_BUILD: "1"
         run: |
@@ -41,7 +45,7 @@ jobs:
             raise "Native not loaded!" unless ForemNative.available?
             raise "Unexpected word count!" unless ForemNative.split_word_count("hello world") == 2
             raise "Unexpected reading time!" unless ForemNative.calculate_reading_time("hello world") == 1
-            puts "Successfully loaded precompiled #{RUBY_PLATFORM} binary!"
+            puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
       - name: Cache Cargo registry and target
         uses: actions/cache@v5
@@ -53,17 +57,24 @@ jobs:
           key: ${{ runner.os }}-cargo-forem-native-${{ hashFiles('gems/forem_native/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-forem-native-
       - name: Check formatting
+        if: matrix.os == 'ubuntu-latest'
         run: cargo fmt --all -- --check
       - name: Run Clippy
+        if: matrix.os == 'ubuntu-latest'
         run: cargo clippy --workspace --all-targets -- -D warnings
       - name: Run Rust unit tests (forem_core)
         run: cargo test -p forem_core
       - name: Build release native library
-        run: |
-          cargo build --release
-          strip target/release/libforem_native.so
+        run: cargo build --release
       - name: Upload x86_64-linux native binary artifact
+        if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v4
         with:
           name: forem-native-x86_64-linux
           path: gems/forem_native/target/release/libforem_native.so
+      - name: Upload macos native binary artifact
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: forem-native-macos
+          path: gems/forem_native/target/release/libforem_native.dylib

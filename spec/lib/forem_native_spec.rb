@@ -9,10 +9,18 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
-  describe ".available?" do
+  describe ".available? and Builder.normalized_platform" do
     it "loads the compiled Rust native extension directly" do
       expect(described_class.available?).to be(true)
       expect(described_class.native_loaded?).to be(true)
+    end
+
+    it "normalizes OS version suffixes on RUBY_PLATFORM for precompiled binary lookup" do
+      expect(ForemNative::Builder.normalized_platform("arm64-darwin23")).to eq("arm64-darwin")
+      expect(ForemNative::Builder.normalized_platform("x86_64-darwin22")).to eq("x86_64-darwin")
+      expect(ForemNative::Builder.normalized_platform("x86_64-linux-gnu")).to eq("x86_64-linux")
+      expect(ForemNative::Builder.normalized_platform("x86_64-linux")).to eq("x86_64-linux")
+      expect(ForemNative::Builder.precompiled_binary_exists?).to be(true)
     end
   end
 

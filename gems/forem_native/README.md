@@ -21,9 +21,13 @@ gems/forem_native/
 └── lib/
     ├── forem_native.rb         # Public API and native binary loader
     └── forem_native/
-        ├── builder.rb          # Cargo build helper
+        ├── builder.rb          # Cargo build helper and platform resolver
+        ├── arm64-darwin/
+        │   └── forem_native.bundle # Precompiled macOS Apple Silicon binary
+        ├── x86_64-darwin/
+        │   └── forem_native.bundle # Precompiled macOS Intel binary
         ├── x86_64-linux/
-        │   └── forem_native.so # Precompiled Linux binary for Heroku / Render / Railway / CI
+        │   └── forem_native.so     # Precompiled Linux binary for Heroku / Render / Railway / CI
         └── version.rb
 ```
 
@@ -35,7 +39,7 @@ gems/forem_native/
 
 - **Container Deployments (`Containerfile` / Docker / Kamal / AWS / DigitalOcean / Render / Railway)**: A dedicated `FROM rust:1.85-bullseye as rust-builder` multi-stage layer compiles `gems/forem_native` in `--release` mode for the target architecture (`amd64` or `arm64`) and copies `libforem_native.so` into the app image with zero Rust compiler overhead in the final production image.
 - **Buildpack Deployments & CI (Heroku, Render Native Ruby, Railway, GitHub Actions)**: A precompiled, stripped `lib/forem_native/x86_64-linux/forem_native.so` (~313 KB, dynamically resolving Ruby C-API symbols from the host process) is committed directly to the repository so `git push heroku main` and CI nodes load the native extension immediately with zero compile step or Rust buildpack required.
-- **Local Development (macOS / Linux)**: If no binary for the current `RUBY_PLATFORM` is staged yet, `ForemNative.load_native!` automatically invokes `ForemNative::Builder.compile!` via `cargo` on first boot.
+- **Local Development (macOS Apple Silicon, macOS Intel, Linux)**: Precompiled `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`, and `x86_64-linux/forem_native.so` binaries are committed in the repository, so developers do **not** need Rust or `cargo` installed locally unless they are actively modifying `.rs` files in `gems/forem_native/`. If a developer runs on an unlisted platform, `ForemNative.load_native!` automatically invokes `ForemNative::Builder.compile!` via `cargo` on first boot.
 
 ## Common Commands
 

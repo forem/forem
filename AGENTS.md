@@ -74,7 +74,7 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
   - Keep `gems/forem_native/ext/forem_native/` as a thin `magnus` C-ABI wrapper (~15–20 lines per function) that borrows Ruby strings/slices in-place and delegates to `forem_core`.
 - **Universal Deployment (Docker, Kamal, Heroku, Render, Railway, AWS, DO, Local)**:
   - `Containerfile` builds `gems/forem_native` in a dedicated `rust-builder` stage so container builds on any architecture (`amd64` / `arm64`) compile fresh from Rust source with zero Rust toolchain in the final production image.
-  - A precompiled `gems/forem_native/lib/forem_native/x86_64-linux/forem_native.so` is committed for buildpack-only hosts (Heroku, Render Native, Railway) and instant CI execution, while `ForemNative.load_native!` auto-compiles via `cargo` on local development machines when needed.
+  - Precompiled binaries (`x86_64-linux/forem_native.so`, `arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`) are committed in `gems/forem_native/lib/forem_native/` for buildpack-only hosts (Heroku, Render Native, Railway), instant CI execution, and zero-dependency local macOS/Linux development (with `ForemNative.load_native!` auto-compiling via `cargo` if needed on other architectures).
   - Do not maintain duplicate runtime `RubyFallback` modules or feature flags for pure-compute replacements; instead, keep the legacy Ruby calculation in `spec/lib/forem_native_spec.rb` and `lib/tasks/forem_native.rake` as the differential test and benchmark oracle.
 - **Verification Requirements**:
   - Run `bundle exec rake forem_native:rust_test` (`cargo test` + `cargo clippy`) and `cargo fmt --all -- --check`.

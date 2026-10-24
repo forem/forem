@@ -4,17 +4,13 @@ require_relative "../../lib/forem_native/builder"
 
 # Zero-deployment-overhead `extconf.rb` for `forem_native`:
 # 1. If a precompiled binary for the target platform is already present, or if
-#    `cargo` is not installed (e.g., on a stock Heroku dyno or minimal Docker
-#    builder layer), writes a no-op `Makefile` so `bundle install` always succeeds.
-# 2. If `cargo` is available and `FOREM_NATIVE_SKIP_BUILD` is not set, generates
-#    a `Makefile` that compiles the Rust workspace in `--release` mode and installs
-#    the resulting shared library (`.bundle` / `.so`).
+#    `cargo` is not installed, writes a no-op `Makefile` so `bundle install`
+#    always succeeds immediately.
+# 2. If no precompiled binary is present and `cargo` is available, generates
+#    a `Makefile` that compiles the Rust workspace in `--release` mode.
 
 dlext = ForemNative::Builder.dlext
-precompiled_platform_bin = ForemNative::Builder.extension_binary_path(platform_dir: RUBY_PLATFORM)
-precompiled_default_bin = ForemNative::Builder.extension_binary_path
-skip_build = File.exist?(precompiled_platform_bin) ||
-  File.exist?(precompiled_default_bin) ||
+skip_build = ForemNative::Builder.precompiled_binary_exists? ||
   !ForemNative::Builder.cargo_available?
 
 if skip_build

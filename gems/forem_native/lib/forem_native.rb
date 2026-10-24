@@ -4,11 +4,11 @@ require_relative "forem_native/builder"
 # `ForemNative` provides in-process Rust acceleration (via `magnus` + `rb-sys`)
 # for CPU-bound and allocation-heavy operations in Forem.
 #
-# In production and CI, it loads either the platform-compiled shared library
-# (`forem_native/forem_native.{so,bundle}` from `Containerfile` / `rake forem_native:compile`)
-# or the precompiled platform binary (`forem_native/#{RUBY_PLATFORM}/forem_native.{so,bundle}`
-# for buildpack hosts such as Heroku, Render, and Railway), and automatically compiles
-# via `cargo` on first load if neither is staged yet.
+# In production, CI, and local development, it loads either the platform-compiled
+# shared library (`forem_native/forem_native.{so,bundle}` from `Containerfile` /
+# `rake forem_native:compile`) or the committed precompiled platform binary
+# (`forem_native/{arm64-darwin,x86_64-darwin,x86_64-linux}/forem_native.{so,bundle}`),
+# and automatically compiles via `cargo` on first load if neither is staged yet.
 module ForemNative
   @native_loaded = false
 
@@ -16,9 +16,9 @@ module ForemNative
     def load_native!
       return true if @native_loaded && defined?(Native)
 
-      # 1. If `cargo build --release` has already produced an artifact in `target/release`
-      #    (e.g. during local dev or CI), stage it into `lib/forem_native/` before requiring.
-      if !File.exist?(Builder.extension_binary_path) && File.exist?(Builder.cargo_artifact_path)
+      # 1. If a local `cargo build --release` has already produced an artifact in `target/release`
+      #    (and no precompiled or staged binary is present yet), stage it into `lib/forem_native/`.
+      if !Builder.precompiled_binary_exists? && File.exist?(Builder.cargo_artifact_path)
         Builder.install_built_artifact!
       end
 
@@ -28,7 +28,7 @@ module ForemNative
         return true
       end
 
-      # 3. If no binary is present on disk yet (e.g. first boot on a local macOS/Linux machine),
+      # 3. If no binary is present on disk yet (e.g. an exotic platform),
       #    compile the Rust workspace automatically via `cargo` and load it.
       if Builder.compile! && require_candidate_binary
         @native_loaded = true
@@ -61,10 +61,8 @@ module ForemNative
     private
 
     def require_candidate_binary
-      candidates = [
-        "forem_native/forem_native",
-        "forem_native/#{RUBY_PLATFORM}/forem_native",
-      ]
+      candidates = ["forem_native/forem_native"] +
+        Builder.platform_candidates.map { |dir| "forem_native/#{dir}/forem_native" }
 
       candidates.each do |candidate|
         require candidate

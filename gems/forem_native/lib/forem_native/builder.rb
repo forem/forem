@@ -4,7 +4,8 @@ require "rbconfig"
 module ForemNative
   # Helper for compiling the Rust workspace into a Ruby C-ABI shared library
   # (`forem_native.bundle` on macOS, `forem_native.so` on Linux) when `cargo`
-  # is available, without failing in environments without a Rust toolchain.
+  # is available, and resolving normalized platform directories (`arm64-darwin`,
+  # `x86_64-darwin`, `x86_64-linux`).
   module Builder
     GEM_ROOT = File.expand_path("../..", __dir__).freeze
     MANIFEST_PATH = File.join(GEM_ROOT, "Cargo.toml").freeze
@@ -13,6 +14,14 @@ module ForemNative
 
     def self.dlext
       RbConfig::CONFIG["DLEXT"] || "so"
+    end
+
+    def self.normalized_platform(platform = RUBY_PLATFORM)
+      platform.to_s.sub(/darwin\d+$/, "darwin").sub(/-gnu$/, "")
+    end
+
+    def self.platform_candidates(platform = RUBY_PLATFORM)
+      [platform.to_s, normalized_platform(platform)].uniq
     end
 
     def self.cargo_lib_filename
@@ -33,6 +42,11 @@ module ForemNative
     def self.extension_binary_path(platform_dir: nil)
       base_dir = platform_dir ? File.join(LIB_TARGET_DIR, platform_dir) : LIB_TARGET_DIR
       File.join(base_dir, "forem_native.#{dlext}")
+    end
+
+    def self.precompiled_binary_exists?(platform = RUBY_PLATFORM)
+      File.exist?(extension_binary_path) ||
+        platform_candidates(platform).any? { |dir| File.exist?(extension_binary_path(platform_dir: dir)) }
     end
 
     def self.cargo_available?
