@@ -145,8 +145,7 @@ module MarkdownProcessor
     end
 
     def calculate_reading_time
-      word_count = @content.split(/\W+/).count
-      (word_count / WORDS_READ_PER_MINUTE).ceil
+      MarkdownProcessor::ReadingTime.calculate(@content)
     end
 
     def evaluate_markdown(allowed_tags: MarkdownProcessor::AllowedTags::MARKDOWN_PROCESSOR_DEFAULT,

@@ -6,6 +6,11 @@ GIT
     acts_as_follower (0.2.1)
       activerecord (>= 4.0)
 
+PATH
+  remote: gems/forem_native
+  specs:
+    forem_native (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -1187,6 +1192,7 @@ DEPENDENCIES
   flipper-active_support_cache_store (~> 1.4)
   flipper-ui (~> 1.4)
   fog-aws (~> 3.14)
+  forem_native!
   front_matter_parser (~> 1.0)
   gemoji (~> 4.1.0)
   gibbon (~> 3.4)

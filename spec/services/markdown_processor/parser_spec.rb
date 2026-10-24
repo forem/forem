@@ -967,4 +967,12 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(output).not_to include("style=")
     end
   end
+
+  describe "#calculate_reading_time" do
+    let(:three_hundred_words) { Array.new(300, "word").join(" ") }
+
+    it "calculates reading time via MarkdownProcessor::ReadingTime" do
+      expect(described_class.new(three_hundred_words).calculate_reading_time).to eq(2)
+    end
+  end
 end

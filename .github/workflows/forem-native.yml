@@ -1,0 +1,80 @@
+name: Forem Native (Rust)
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "gems/forem_native/**"
+      - "app/services/markdown_processor/reading_time.rb"
+      - "spec/lib/forem_native_spec.rb"
+      - "spec/services/markdown_processor/reading_time_spec.rb"
+      - ".github/workflows/forem-native.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "gems/forem_native/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  rust-unit-and-lint:
+    name: Rust Core Tests & Clippy (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: gems/forem_native
+    steps:
+      - uses: actions/checkout@v6
+      - name: Setup Ruby and verify committed precompiled binary loads immediately
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3.0"
+      - name: Verify precompiled platform binary works without compiling
+        env:
+          FOREM_NATIVE_SKIP_BUILD: "1"
+        run: |
+          ruby -Ilib -rforem_native -e '
+            raise "Native not loaded!" unless ForemNative.available?
+            raise "Unexpected word count!" unless ForemNative.split_word_count("hello world") == 2
+            raise "Unexpected reading time!" unless ForemNative.calculate_reading_time("hello world") == 1
+            puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
+          '
+      - name: Cache Cargo registry and target
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            gems/forem_native/target
+          key: ${{ runner.os }}-cargo-forem-native-${{ hashFiles('gems/forem_native/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-forem-native-
+      - name: Check formatting
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo fmt --all -- --check
+      - name: Run Clippy
+        if: matrix.os == 'ubuntu-latest'
+        run: cargo clippy --workspace --all-targets -- -D warnings
+      - name: Run Rust unit tests (forem_core)
+        run: cargo test -p forem_core
+      - name: Build release native library
+        run: cargo build --release
+      - name: Upload x86_64-linux native binary artifact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: forem-native-x86_64-linux
+          path: gems/forem_native/target/release/libforem_native.so
+      - name: Upload macos native binary artifact
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: forem-native-macos
+          path: gems/forem_native/target/release/libforem_native.dylib
