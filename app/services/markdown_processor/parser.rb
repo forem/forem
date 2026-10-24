@@ -97,27 +97,8 @@ module MarkdownProcessor
     def convert_escaped_pipes_outside_codeblocks(content)
       return content unless content.include?('\|')
 
-      placeholder = "\x00FOREM_ESC_PIPE\x00"
-      current_fence_marker = nil
-
-      content.each_line.map do |line|
-        if current_fence_marker
-          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
-          next line
-        end
-
-        opening_marker = fenced_code_block_opening_marker(line)
-        if opening_marker
-          current_fence_marker = opening_marker
-          next line
-        end
-
-        line.gsub!(/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/) { |span| span.gsub('\|') { placeholder } }
-        line.gsub!(/(?<!\\)\\\|/, "&#124;")
-        line.gsub!(placeholder) { '\|' }
-        
-        line
-      end.join
+      ForemNative.convert_escaped_pipes_outside_codeblocks(content) ||
+        legacy_convert_escaped_pipes_outside_codeblocks(content)
     end
 
     def add_target_blank_to_outbound_links(html)
@@ -232,6 +213,32 @@ module MarkdownProcessor
           "{% raw %}#{codeblock}{% endraw %}"
         end
       end
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_convert_escaped_pipes_outside_codeblocks(content)
+      placeholder = "\x00FOREM_ESC_PIPE\x00"
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
+
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub!(/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/) { |span| span.gsub('\|') { placeholder } }
+        line.gsub!(/(?<!\\)\\\|/, "&#124;")
+        line.gsub!(placeholder) { '\|' }
+
+        line
+      end.join
     end
 
     def parse_html(html, prefix_images_options)

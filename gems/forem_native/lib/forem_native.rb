@@ -104,6 +104,16 @@ module ForemNative
       Native.escape_liquid_tags_in_codeblock(content)
     end
 
+    # Replaces `\|` with `&#124;` outside fenced code blocks and inline code spans, matching
+    # `MarkdownProcessor::Parser#convert_escaped_pipes_outside_codeblocks`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_convert_escaped_pipes_outside_codeblocks` keeps Ruby's semantics.
+    def convert_escaped_pipes_outside_codeblocks(content)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.convert_escaped_pipes_outside_codeblocks(content)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
