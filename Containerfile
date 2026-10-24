@@ -21,7 +21,7 @@ COPY --from=rust-toolchain /usr/local/rustup /usr/local/rustup
 ENV PATH="/usr/local/cargo/bin:${PATH}" \
     RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo
-RUN apt update && apt install -y build-essential && apt clean
+RUN apt update && apt install -y build-essential clang libclang-dev && apt clean
 WORKDIR /opt/apps/forem/gems/forem_native
 COPY ./gems/forem_native /opt/apps/forem/gems/forem_native
 RUN cargo build --release --manifest-path /opt/apps/forem/gems/forem_native/Cargo.toml && \
