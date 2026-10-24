@@ -287,6 +287,28 @@ RSpec.describe "StoriesShow" do
       expect(negative_comment_queries.size).to eq(1)
     end
 
+    it "loads the series articles with a single query when rendering the series switcher" do
+      collection = create(:collection, :with_articles, user: user, amount: 6)
+      series_article = collection.articles.first
+
+      collection_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        collection_queries << payload[:sql] if payload[:sql].include?(%("articles"."collection_id" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get series_article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("series-switcher")
+      expect(response.body).to include("6 Part Series")
+      collection.articles.each { |a| expect(response.body).to include(a.path) }
+      expect(collection_queries.size).to eq(1)
+    end
+
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem) { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem) }
