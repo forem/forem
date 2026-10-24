@@ -66,6 +66,11 @@ module Stories
       # organization (custom domain check); batch those into one query.
       stories = stories.preload(:organization) unless user_signed_in?
       @stories = stories.decorate
+      # articles/_single_story reads public_reaction_categories for every story with
+      # reactions; fetch those cached counts in one round-trip instead of one per story.
+      Article.preload_reaction_counts_for_reactable(
+        @stories.map(&:object).select { |story| story.public_reactions_count.positive? },
+      )
     end
 
     def tagged_count(tag:)
