@@ -24,6 +24,13 @@ fn color_brightness(hex: RString, amount: f64, only_values: bool) -> Option<Stri
     forem_core::color::brightness(bytes, amount, only_values)
 }
 
+fn color_opacity(hex: RString, alpha: f64) -> Option<String> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
+    // Returns `nil` for malformed hexes and alphas needing rounding so Ruby can fall back.
+    let bytes = unsafe { hex.as_slice() };
+    forem_core::color::opacity(bytes, alpha)
+}
+
 fn convert_deeply_nested_links_to_html(ruby: &Ruby, content: RString) -> Option<RString> {
     // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
     // and the borrow ends before we allocate any Ruby objects.
@@ -63,6 +70,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(calculate_reading_time, 1),
     )?;
     native_mod.define_singleton_method("color_brightness", function!(color_brightness, 3))?;
+    native_mod.define_singleton_method("color_opacity", function!(color_opacity, 2))?;
     native_mod.define_singleton_method(
         "convert_deeply_nested_links_to_html",
         function!(convert_deeply_nested_links_to_html, 1),

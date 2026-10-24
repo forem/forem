@@ -171,6 +171,94 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".color_opacity" do
+    let(:legacy_opacity) do
+      lambda do |hex, alpha|
+        rgb = hex.match(/^#?(?<r>..)(?<g>..)(?<b>..)$/).named_captures.to_h { |key, color| [key.to_sym, color.hex] }
+        format("rgba(%<r>d, %<g>d, %<b>d, %<a>.2f)", rgb.merge(a: alpha))
+      end
+    end
+
+    let(:edge_hexes) do
+      [
+        nil, "", "#", "#fff", "#12345", "#1234567", "##12345", "#123456", "123456", "#3B49DF", "#000000",
+        "#ffffff", "#-1-1-1", "#0x0x0x", "# 1 2 3", "#12345g", "#123456\n", "\n#123456", "foo\n#123456",
+        "#123456\r\n", "#éééééé", "#🚀🚀🚀", "#123456".encode("UTF-16LE"), "#123456".b, :"#123456"
+      ]
+    end
+
+    let(:edge_alphas) do
+      [0.1, 0.0, -0.0, 0.5, 1, 0, -1, 0.29, 0.07, 12.34, -0.1, 0.125, 0.375, 2.675, 1.005, 0.015, 0.025,
+       1.0 / 3, 0.001, -0.004, 5e-324, 999_999_999.99, 1e9, 2**31, 2**40, 1e300, -1e300, Float::INFINITY,
+       -Float::INFINITY, Float::NAN, Rational(1, 2), "0.5", nil]
+    end
+
+    let(:outcome) do
+      lambda do |&block|
+        block.call
+      rescue StandardError => e
+        e.class
+      end
+    end
+
+    it "matches the legacy Ruby reference across edge-case hexes and alphas" do
+      edge_hexes.product(edge_alphas).each do |hex, alpha|
+        expected = outcome.call { legacy_opacity.call(hex, alpha) }
+        native = described_class.color_opacity(hex, alpha)
+        actual = outcome.call { Color::CompareHex.new([hex]).opacity(alpha) }
+        message = "mismatch for #{hex.inspect} @ #{alpha.inspect}"
+
+        expect(native).to eq(expected), message unless native.nil?
+        expect(actual).to eq(expected), message
+        expect(actual.encoding).to eq(expected.encoding), message if expected.is_a?(String)
+      end
+    end
+
+    it "returns nil from the native function for malformed hexes and alphas that need rounding" do
+      expect(ForemNative::Native.color_opacity("#123456", 0.5)).to eq("rgba(18, 52, 86, 0.50)")
+      expect(ForemNative::Native.color_opacity("#123456", -0.0)).to eq("rgba(18, 52, 86, -0.00)")
+      expect(ForemNative::Native.color_opacity("#123456\n", 0.5)).to be_nil
+      expect(ForemNative::Native.color_opacity("#123456", 2.675)).to be_nil
+      expect(ForemNative::Native.color_opacity("#123456", Float::NAN)).to be_nil
+      expect(Color::CompareHex.new(["#123456"]).opacity(2.675)).to eq("rgba(18, 52, 86, 2.68)")
+    end
+
+    it "passes differential equivalence across 1,000 generated hex colors and alphas" do
+      rng = Random.new(424_242)
+      hex_chars = [*"0".."9", *"a".."f", *"A".."F"]
+      noise_chars = hex_chars + ["#", "-", "+", " ", "_", "x", "g", "\n", "é", "🚀"]
+
+      1_000.times do |iteration|
+        prefix = rng.rand < 0.8 ? "#" : ""
+        hex = if rng.rand < 0.85
+                prefix + Array.new(6) { hex_chars.sample(random: rng) }.join
+              else
+                prefix + Array.new(rng.rand(1..8)) { noise_chars.sample(random: rng) }.join
+              end
+        alpha = case rng.rand(4)
+                when 0 then rng.rand(-100..1_000) / 100.0
+                when 1 then rng.rand(-999_999_999_999..99_999_999_999) / 100.0
+                when 2 then (rng.rand * 4.0) - 1.0
+                else rng.rand(-2..5)
+                end
+
+        expected = outcome.call { legacy_opacity.call(hex, alpha) }
+        native = described_class.color_opacity(hex, alpha)
+        message = "iteration #{iteration}: #{hex.inspect} @ #{alpha.inspect}"
+
+        expect(native).to eq(expected), message unless native.nil?
+        expect(outcome.call { Color::CompareHex.new([hex]).opacity(alpha) }).to eq(expected), message
+      end
+    end
+
+    it "agrees with Ruby's %.2f for every hundredth from -20,000.00 to 20,000.00" do
+      (-2_000_000..2_000_000).step(7) do |hundredths|
+        alpha = hundredths / 100.0
+        expect(described_class.color_opacity("#3b49df", alpha)).to eq(legacy_opacity.call("#3b49df", alpha))
+      end
+    end
+  end
+
   describe ".convert_deeply_nested_links_to_html" do
     let(:legacy_convert_deeply_nested_links_to_html) do
       lambda do |content|
