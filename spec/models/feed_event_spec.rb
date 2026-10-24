@@ -306,6 +306,30 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_success_score).to eq(expected_score)
         expect(feed_config.feed_impressions_count).to eq(2)
       end
+
+      it "reads the feed config's feed events in a single aggregate query" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_feed_config_counters(feed_config.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+      end
+    end
+
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user" do
+        create_list(:feed_event, 2, category: "impression", feed_config: feed_config, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
+        create(:feed_event, category: "click", feed_config: feed_config, user: nil, article_position: 1)
+
+        described_class.update_single_feed_config_counters(feed_config.id)
+        feed_config.reload
+
+        expect(feed_config.feed_success_score).to eq(1.0 / 2.0)
+        expect(feed_config.feed_impressions_count).to eq(3)
+      end
     end
 
     context "when no impression events exist for the feed config" do
@@ -324,6 +348,71 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_success_score).to eq(original_score)
         expect(feed_config.feed_impressions_count).to eq(original_impressions)
       end
+    end
+
+    context "when an engagement event follows an impression within the throttle window", :throttled_call do
+      it "updates the feed config score without being blocked by the impression throttle key" do
+        article = create(:article)
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(1)
+        expect(feed_config.feed_success_score).to eq(0.0)
+
+        create(
+          :feed_event,
+          category: "click",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_success_score).to eq(1.0)
+      end
+    end
+  end
+
+  describe ".bulk_update_counters_by_feed_config_id" do
+    let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
+    let(:user1)       { create(:user) }
+
+    before do
+      allow(ThrottledCall).to receive(:perform).and_yield
+    end
+
+    it "updates counters for unique feed_config_ids" do
+      article = create(:article)
+      described_class.insert_all(
+        [
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :impression,
+            article_position: 1,
+            context_type: "home"
+          },
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :click,
+            article_position: 1,
+            context_type: "home"
+          },
+        ],
+      )
+
+      described_class.bulk_update_counters_by_feed_config_id([feed_config.id, feed_config.id, nil])
+      feed_config.reload
+
+      expect(feed_config.feed_impressions_count).to eq(1)
+      expect(feed_config.feed_success_score).to eq(1.0)
     end
   end
 
