@@ -43,6 +43,10 @@ class FollowsController < ApplicationController
       [[current_user, params[:followable_type], id], [users_by_id[id], params[:followable_type], current_user.id]]
     end
     cached = Follows::CheckCached.read_multi(checks)
+    if params[:followable_type] == "User"
+      # Compute every cache miss in one follows query instead of a find + COUNT per check.
+      cached = Follows::CheckCached.fill_user_misses(checks, cached, users_by_id.keys << current_user.id)
+    end
 
     response = ids.index_with do |id|
       if current_user.id == id && params[:followable_type] == "User"
