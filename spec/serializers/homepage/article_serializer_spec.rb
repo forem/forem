@@ -32,6 +32,20 @@ RSpec.describe Homepage::ArticleSerializer, type: :serializer do
       expect(response.first[:favorited_by_user_id]).to be_nil
     end
 
+    it "reads reaction counts for all articles in one cache round-trip" do
+      other_article = create(:article, user: user)
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: other_article, category: "unicorn")
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      allow(Rails.cache).to receive(:fetch).and_call_original
+
+      response = described_class.serialized_collection_from(relation: Article.order(:id))
+
+      expect(response.map { |a| a[:public_reaction_categories].map { |c| c.slug.to_s } }).to eq([%w[like], %w[unicorn]])
+      expect(Rails.cache).to have_received(:fetch_multi).once
+      expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
+    end
+
     it "queries articles only once and avoids LEFT OUTER JOIN reactions when serializing Homepage::ArticlesQuery" do
       relation = Homepage::ArticlesQuery.call(sort_by: :hotness_score, sort_direction: :desc)
       article_queries = []
