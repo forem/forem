@@ -60,6 +60,20 @@ fn escape_liquid_tags_in_codeblock(ruby: &Ruby, content: RString) -> Option<RStr
     Some(escaped.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
 }
 
+fn convert_escaped_pipes_outside_codeblocks(ruby: &Ruby, content: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
+    // and the borrow ends before we allocate any Ruby objects.
+    // Returns `nil` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let converted = {
+        let text = std::str::from_utf8(unsafe { content.as_slice() }).ok()?;
+        match forem_core::markdown::convert_escaped_pipes_outside_codeblocks(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(converted) => Some(converted),
+        }
+    };
+    Some(converted.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -78,6 +92,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "escape_liquid_tags_in_codeblock",
         function!(escape_liquid_tags_in_codeblock, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "convert_escaped_pipes_outside_codeblocks",
+        function!(convert_escaped_pipes_outside_codeblocks, 1),
     )?;
     Ok(())
 }

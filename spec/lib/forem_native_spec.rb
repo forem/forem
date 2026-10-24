@@ -423,4 +423,94 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".convert_escaped_pipes_outside_codeblocks" do
+    let(:legacy_convert_escaped_pipes_outside_codeblocks) do
+      lambda do |content|
+        placeholder = "\x00FOREM_ESC_PIPE\x00"
+        current_fence_marker = nil
+
+        content.each_line.map do |line|
+          if current_fence_marker
+            fence_char = current_fence_marker[0]
+            closing = /^\s*#{Regexp.escape(fence_char)}{#{current_fence_marker.length},}\s*$/
+            current_fence_marker = nil if line.match?(closing)
+            next line
+          end
+
+          opening_marker = line[/^\s*((`{3,}|~{3,}))/i, 1]
+          if opening_marker
+            current_fence_marker = opening_marker
+            next line
+          end
+
+          line.gsub!(/(`+)([^`\n]*?(?:`(?!\1)[^`\n]*?)*)\1/) { |span| span.gsub('\|') { placeholder } }
+          line.gsub!(/(?<!\\)\\\|/, "&#124;")
+          line.gsub!(placeholder) { '\|' }
+          line
+        end.join
+      end
+    end
+
+    let(:parser) { MarkdownProcessor::Parser.new("") }
+
+    let(:edge_cases) do
+      [
+        "\\|", "a\\|b", "| a\\|b | c\\|d |\n", "leave \\\\|alone", "\\\\\\|", "\\|\\|", "`a\\|b` c\\|d",
+        "`` a\\|b `` x\\|y", "``a`\\|", "`a``b\\|`", "``a`b\\|``", "`\\|", "`\\|\n\\|`", "```\na\\|b\n```\nc\\|d",
+        "~~~\na\\|b\n~~~~\nc\\|d", "````\n```\na\\|b\n````\n\\|", "  ```js\n\\|\n  ```  \r\n\\|", "~~~\n\\|\n```\n\\|",
+        "\t\v```\n\\|\n\f```\n\\|", "``` x\n\\|\n``` x\n\\|", "\\|\r\n`\\|`\r\n", "é\\|🚀 `日本\\|`",
+        "\x00FOREM_ESC_PIPE\x00 \\|", "#{'`' * 300}\\|", "`x` #{'\\|' * 200}"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_escaped_pipes_outside_codeblocks.call(input.dup)
+        expect(described_class.convert_escaped_pipes_outside_codeblocks(input)).to eq(expected), input.inspect
+        expect(parser.convert_escaped_pipes_outside_codeblocks(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid byte sequences so the parser keeps Ruby semantics" do
+      input = "a\\|b `c\\|d`"
+      expected = "a&#124;b `c\\|d`"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.convert_escaped_pipes_outside_codeblocks(other)).to be_nil
+        expect(parser.convert_escaped_pipes_outside_codeblocks(other)).to eq(expected)
+      end
+
+      expect(ForemNative::Native.convert_escaped_pipes_outside_codeblocks("#{input}\xFF")).to be_nil
+      expect { parser.convert_escaped_pipes_outside_codeblocks("#{input}\xFF") }
+        .to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was converted" do
+      ["a\\|b".freeze, "`a\\|b`".freeze].each do |input|
+        result = described_class.convert_escaped_pipes_outside_codeblocks(input)
+
+        expect(result).to eq(legacy_convert_escaped_pipes_outside_codeblocks.call(input.dup))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated table and code-heavy Markdown inputs" do
+      rng = Random.new(424_242)
+      tokens = ["`", "``", "```", "````", "~", "~~", "~~~", "~~~~", "\\|", "\\|", "\\", "|", "\\\\|", " ", "\t", "\v",
+                "\n", "\r\n", "a", "word", "é", "🚀", "日本", "\x00FOREM_ESC_PIPE\x00", "```js\n", "~~~\n", "  ```", "| "]
+
+      1_000.times do |iteration|
+        sample = "\\|#{Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join}"
+
+        expected = legacy_convert_escaped_pipes_outside_codeblocks.call(sample.dup)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
+        expect(parser.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
+      end
+    end
+  end
 end
