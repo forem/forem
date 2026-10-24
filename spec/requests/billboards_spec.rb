@@ -874,4 +874,46 @@ RSpec.describe "Billboards" do
       expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
     end
   end
+
+  describe "GET /:username/:slug/billboards/:placement_area with adjacent sponsor preferences" do
+    let!(:external_billboard) { create_billboard(placement_area: "post_comments", type_of: :external) }
+
+    def get_contextual_billboard
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+    end
+
+    it "shows external billboards when every author permits adjacent sponsors" do
+      get_contextual_billboard
+
+      expect(response.body).to include(external_billboard.processed_html)
+    end
+
+    it "hides external billboards when the author opts out" do
+      user.setting.update_column(:permit_adjacent_sponsors, false)
+
+      get_contextual_billboard
+
+      expect(response.body).not_to include(external_billboard.processed_html)
+    end
+
+    it "hides external billboards when a co-author's setting is nil" do
+      co_author = create(:user)
+      co_author.setting.update_column(:permit_adjacent_sponsors, nil)
+      article.update_column(:co_author_ids, [co_author.id])
+
+      get_contextual_billboard
+
+      expect(response.body).not_to include(external_billboard.processed_html)
+    end
+
+    it "answers the preference in the article lookup without a separate users_settings query" do
+      article
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get_contextual_billboard }
+
+      expect(queries.grep(/FROM "users_settings"/)).to be_empty
+      expect(response.body).to include(external_billboard.processed_html)
+    end
+  end
 end
