@@ -13,10 +13,8 @@ class BillboardEventsController < ApplicationMetalController
     billboard_event_create_params = billboard_event_params.merge(user_id: user_id)
     return head :ok if billboard_event_create_params[:billboard_id].blank?
 
-    @billboard_event = ApplicationRecord.with_synchronous_commit_off do
-      BillboardEvent.create(billboard_event_create_params.except(:billboard_id)
-        .merge(billboard: billboard_for_event(billboard_event_create_params[:billboard_id])))
-    end
+    billboard_event_id = BillboardEvent.create_with_async_commit(billboard_event_create_params.except(:billboard_id)
+      .merge(billboard: billboard_for_event(billboard_event_create_params[:billboard_id])))
 
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
       # Enqueue the worker instead of doing the update inline
@@ -27,10 +25,10 @@ class BillboardEventsController < ApplicationMetalController
       end
     end
 
-    if @billboard_event&.persisted?
+    if billboard_event_id
       self.status = 200
       self.content_type = "application/json"
-      self.response_body = { id: @billboard_event.id }.to_json
+      self.response_body = { id: billboard_event_id }.to_json
     else
       head :ok
     end

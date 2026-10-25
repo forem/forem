@@ -56,6 +56,28 @@ class BillboardEvent < ApplicationRecord
     connection.exec_update(sql, "#{name} Add Impression Seconds")
   end
 
+  # Validates and inserts a new event like create does, committing without waiting on a WAL flush
+  # in a single round trip instead of four (BEGIN, SET LOCAL, INSERT, COMMIT), the same way
+  # add_impression_seconds does for its UPDATE. Values are serialized by each attribute's type and
+  # quoted inline, because binds would force the extended protocol.
+  #
+  # @return [Integer, nil] the new event's id, or nil when the event is invalid
+  def self.create_with_async_commit(attributes)
+    event = new(attributes)
+    return unless event.valid?
+
+    event.created_at = event.updated_at = Time.current
+    values = event.attributes.except(primary_key)
+    columns = values.keys.map { |column| connection.quote_column_name(column) }
+    quoted_values = values.map { |column, value| connection.quote(type_for_attribute(column).serialize(value)) }
+    sql = <<~SQL.squish
+      SET LOCAL synchronous_commit TO OFF;
+      INSERT INTO #{quoted_table_name} (#{columns.join(', ')}) VALUES (#{quoted_values.join(', ')})
+      RETURNING #{connection.quote_column_name(primary_key)}
+    SQL
+    type_for_attribute(primary_key).cast(connection.exec_query(sql, "#{name} Create").rows.first.first)
+  end
+
   def unique_on_user_if_type_of_conversion_category
     return unless [CATEGORY_SIGNUP, CATEGORY_CONVERSION].include?(category) && user_id.present?
     return unless self.class.exists?(user_id: user_id, category: category)
