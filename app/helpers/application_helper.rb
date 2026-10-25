@@ -172,14 +172,22 @@ module ApplicationHelper
       { background: tag.bg_color_hex, color: tag.text_color_hex }
     else
       tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
-      Rails.cache.fetch("view-helper-#{tag_name}/tag_colors", expires_in: 5.hours) do
-        if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
-          { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
-        else
-          { background: "#d6d9e0", color: "#606570" }
-        end
+      preloaded_tag_colors.fetch(tag_name) do
+        Rails.cache.fetch(tag_colors_cache_key(tag_name), expires_in: 5.hours) { find_tag_colors(tag_name) }
       end
     end
+  end
+
+  # Reads the cached colors for every tag shown in a story list in one cache round-trip,
+  # so render_tag_link doesn't make a separate cache read per tag.
+  def preload_tag_colors(stories)
+    tag_names = stories.reject { |story| story.type_of == "status" }
+      .flat_map(&:cached_tag_list_array).uniq - preloaded_tag_colors.keys
+    return if tag_names.empty?
+
+    names_by_key = tag_names.index_by { |tag_name| tag_colors_cache_key(tag_name) }
+    Rails.cache.fetch_multi(*names_by_key.keys, expires_in: 5.hours) { |key| find_tag_colors(names_by_key[key]) }
+      .each { |key, colors| preloaded_tag_colors[names_by_key[key]] = colors }
   end
 
   def any_enabled_auth_providers?
@@ -585,6 +593,24 @@ module ApplicationHelper
         stylesheet_path("crayons")
       ].join
       Digest::MD5.hexdigest(combined)[0..9]
+    end
+  end
+
+  private
+
+  def preloaded_tag_colors
+    @preloaded_tag_colors ||= {}
+  end
+
+  def tag_colors_cache_key(tag_name)
+    "view-helper-#{tag_name}/tag_colors"
+  end
+
+  def find_tag_colors(tag_name)
+    if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
+      { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
+    else
+      { background: "#d6d9e0", color: "#606570" }
     end
   end
 end
