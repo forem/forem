@@ -32,9 +32,7 @@ module MarkdownProcessor
       end
 
       def self.lowercase_published(markdown)
-        markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
-          front_matter.gsub(/^published: /i, "published: ")
-        end
+        ForemNative.fixer_lowercase_published(markdown) || legacy_lowercase_published(markdown)
       end
 
       def self.convert_new_lines(markdown)
@@ -103,6 +101,15 @@ module MarkdownProcessor
         end
       end
       private_class_method :legacy_split_tags
+
+      # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+      # invalid byte sequences).
+      def self.legacy_lowercase_published(markdown)
+        markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
+          front_matter.gsub(/^published: /i, "published: ")
+        end
+      end
+      private_class_method :legacy_lowercase_published
     end
   end
 end
