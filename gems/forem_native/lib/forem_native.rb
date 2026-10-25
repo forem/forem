@@ -134,6 +134,16 @@ module ForemNative
       Native.markdown_xss_attempt(markdown)
     end
 
+    # Replaces the editor's default `![Image Description]` alt text with `![ ]`, matching the
+    # cleanup in `MarkdownProcessor::Parser#initialize`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_strip_default_image_alt_text` keeps Ruby's semantics.
+    def strip_default_image_alt_text(content)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.strip_default_image_alt_text(content)
+    end
+
     # Wraps unquoted `<section>: value` front matter lines in double quotes (escaping inner
     # quotes), matching `MarkdownProcessor::Fixer::Base.add_quotes_to_section`.
     # Returns nil for anything but plain UTF-8 Strings (and for invalid UTF-8 or a section

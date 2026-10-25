@@ -660,6 +660,62 @@ fn ends_with_ignore_case(haystack: &[u8], suffix: &[u8]) -> bool {
         && haystack[haystack.len() - suffix.len()..].eq_ignore_ascii_case(suffix)
 }
 
+/// Equivalent of the default alt text cleanup in `MarkdownProcessor::Parser#initialize`:
+///
+/// ```ruby
+/// content.gsub(/!\[Image Description\]/i, "![ ]")
+/// ```
+///
+/// The pattern is literal and starts with `!`, which it never contains again, so matches
+/// cannot overlap. Onigmo's `/i` folds exactly one non-ASCII code point onto it: `ſ` (U+017F)
+/// matches `s` (brute-forced over every code point, including multi-character folds).
+///
+/// Returns `Cow::Borrowed` when nothing changes.
+pub fn strip_default_image_alt_text(content: &str) -> Cow<'_, str> {
+    // `contains` is SIMD-accelerated in std (unlike `find`), so image-free bodies exit fast.
+    if !content.contains("![") {
+        return Cow::Borrowed(content);
+    }
+
+    let bytes = content.as_bytes();
+    let mut out = String::new();
+    let mut copied = 0;
+    let mut search = 0;
+    while let Some(offset) = content[search..].find("![") {
+        let alt_start = search + offset + 2;
+        search = alt_start;
+        if let Some(alt_len) = default_image_alt_len(&bytes[alt_start..]) {
+            if out.is_empty() {
+                out.reserve(content.len());
+            }
+            out.push_str(&content[copied..alt_start]);
+            out.push_str(" ]");
+            copied = alt_start + alt_len;
+            search = copied;
+        }
+    }
+
+    if copied == 0 {
+        return Cow::Borrowed(content);
+    }
+    out.push_str(&content[copied..]);
+    Cow::Owned(out)
+}
+
+/// Byte length of a case-insensitive `Image Description]` (with `ſ` for `s`) at the start of
+/// `rest`, if there is one.
+fn default_image_alt_len(rest: &[u8]) -> Option<usize> {
+    let mut i = 0;
+    for &expected in b"image description]" {
+        match *rest.get(i)? {
+            byte if byte.to_ascii_lowercase() == expected => i += 1,
+            0xC5 if expected == b's' && rest.get(i + 1) == Some(&0xBF) => i += 2,
+            _ => return None,
+        }
+    }
+    Some(i)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1111,5 +1167,45 @@ mod tests {
         assert!(contains_xss_attempt(&input));
         let input = format!("{}x", "``` ~~~ ".repeat(100_000));
         assert!(!contains_xss_attempt(&input));
+    }
+
+    #[test]
+    fn default_image_alt_text_matches_ruby_gsub() {
+        for (input, expected) in [
+            ("![Image Description](x.png)", "![ ](x.png)"),
+            ("![image description]", "![ ]"),
+            ("![IMAGE DESCRIPTION]![Image Description]", "![ ]![ ]"),
+            ("!![Image Description]", "!![ ]"),
+            ("![Image Deſcription](a)", "![ ](a)"),
+            ("日本![iMaGe dEsCrIpTiOn]🚀", "日本![ ]🚀"),
+            ("![Image Description]]", "![ ]]"),
+            ("[![Image Description](a)](b)", "[![ ](a)](b)"),
+            ("a ![x](y) ![Image Description](z) b", "a ![x](y) ![ ](z) b"),
+        ] {
+            assert_eq!(strip_default_image_alt_text(input), expected, "{input:?}");
+        }
+    }
+
+    #[test]
+    fn default_image_alt_text_is_borrowed_when_nothing_matches() {
+        for input in [
+            "",
+            "no images",
+            "![Image Description",
+            "![Image  Description]",
+            "![Image DeſſCription]",
+            "![ Image Description]",
+            "!\\[Image Description]",
+            "![Image Descriptions]",
+            "![Image\nDescription]",
+            "![Image Descriptioñ]",
+            "![Image Descriptio\u{c5}",
+            "![",
+        ] {
+            assert!(
+                matches!(strip_default_image_alt_text(input), Cow::Borrowed(_)),
+                "{input:?}"
+            );
+        }
     }
 }
