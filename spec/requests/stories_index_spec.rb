@@ -725,11 +725,12 @@ RSpec.describe "StoriesIndex" do
       end
 
       it "does not repeat the pinned post in the regular feed" do
-        # article's title legitimately appears several times within a single rendered
-        # story card (hidden nav link, image alt text, aria-labels, etc.), so we assert
-        # on the card's unique per-article DOM id instead of counting title occurrences.
+        # A rendered story card references its own "article-link-<id>" DOM id twice
+        # (once as the id= attribute itself, once as an aria-labelledby reference to
+        # it), so scanning for that bare string gives 2 per card. Match the id=
+        # attribute specifically to count actual card instances.
         get "/#{organization.slug}"
-        expect(response.body.scan("article-link-#{pinned_article.id}").size).to eq(1)
+        expect(response.body.scan(%r{id="article-link-#{pinned_article.id}"}).size).to eq(1)
       end
     end
 
