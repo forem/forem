@@ -71,18 +71,22 @@ module Spam
       end
     end
 
+    # Memoized: called once per ring member while checking for diverse patterns,
+    # and the answer only depends on the triggering user.
     def find_shared_authors
-      # Get authors of articles that our user has reacted to in the past 3 months
-      user_reacted_article_authors = user.reactions
-                                        .public_category
-                                        .only_articles
-                                        .where(created_at: 3.months.ago..)
-                                        .joins("JOIN articles ON reactions.reactable_id = articles.id")
-                                        .pluck("articles.user_id")
-                                        .uniq
+      @find_shared_authors ||= begin
+        # Get authors of articles that our user has reacted to in the past 3 months
+        user_reacted_article_authors = user.reactions
+                                          .public_category
+                                          .only_articles
+                                          .where(created_at: 3.months.ago..)
+                                          .joins("JOIN articles ON reactions.reactable_id = articles.id")
+                                          .pluck("articles.user_id")
+                                          .uniq
 
-      # Exclude self-reactions (user reacting to their own articles)
-      user_reacted_article_authors - [user_id]
+        # Exclude self-reactions (user reacting to their own articles)
+        user_reacted_article_authors - [user_id]
+      end
     end
 
     def find_users_with_similar_patterns(shared_authors)

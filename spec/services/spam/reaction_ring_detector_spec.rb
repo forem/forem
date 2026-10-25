@@ -168,6 +168,28 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         expect(Note.where(noteable: ring_member2, reason: "reaction_ring_detection")).to exist
         expect(Note.where(noteable: ring_member3, reason: "reaction_ring_detection")).to exist
       end
+
+      it "loads the triggering user's reacted authors only once" do
+        reacted_author_queries = 0
+        callback = lambda do |*, payload|
+          # Only the reactions-rooted pluck; the similar-patterns query is
+          # rooted at users and also binds the triggering user's id.
+          next unless payload[:sql].include?('FROM "reactions"')
+          next unless payload[:sql].include?("JOIN articles ON reactions.reactable_id = articles.id")
+          next unless payload[:sql].include?('"reactions"."user_id" =')
+
+          binds = payload[:type_casted_binds]
+          binds = binds.call if binds.respond_to?(:call)
+          reacted_author_queries += 1 if Array(binds).include?(user.id) ||
+            payload[:sql].match?(/"reactions"\."user_id" = #{user.id}\b/)
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(reacted_author_queries).to eq(1)
+      end
     end
 
     context "when users have legitimate community connections" do
