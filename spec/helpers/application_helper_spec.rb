@@ -490,6 +490,43 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#preload_tag_colors" do
+    before { create(:tag, name: "ruby", bg_color_hex: "#cc0000", text_color_hex: "#ffffff") }
+
+    let(:story) { build(:article, cached_tag_list: "ruby, unknowntag").decorate }
+    let(:other_story) { build(:article, cached_tag_list: "ruby").decorate }
+    let(:status_story) { build(:article, type_of: "status", cached_tag_list: "python").decorate }
+
+    it "reads every distinct tag's colors in one batch for the story list" do
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      helper.preload_tag_colors([story, other_story, status_story])
+      expect(Rails.cache).to have_received(:fetch_multi)
+        .with("view-helper-ruby/tag_colors", "view-helper-unknowntag/tag_colors", expires_in: 5.hours).once
+    end
+
+    it "makes tag_colors return the same colors without another cache read or DB lookup" do
+      helper.preload_tag_colors([story])
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      allow(Tag).to receive(:select).and_call_original
+      expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+      expect(helper.tag_colors("unknowntag")).to eq(background: "#d6d9e0", color: "#606570")
+      expect(Rails.cache).not_to have_received(:fetch)
+      expect(Tag).not_to have_received(:select)
+    end
+
+    it "still looks up tags that were not preloaded" do
+      helper.preload_tag_colors([story])
+      create(:tag, name: "python", bg_color_hex: "#3572a5", text_color_hex: "#ffffff")
+      expect(helper.tag_colors("python")).to eq(background: "#3572a5", color: "#ffffff")
+    end
+
+    it "skips the cache when there are no tags to preload" do
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      helper.preload_tag_colors([status_story])
+      expect(Rails.cache).not_to have_received(:fetch_multi)
+    end
+  end
+
   describe "#render_tag_link" do
     context "when given a string" do
       let!(:tag) { create(:tag, name: "ruby", bg_color_hex: "#cc0000", text_color_hex: "#ffffff") }
