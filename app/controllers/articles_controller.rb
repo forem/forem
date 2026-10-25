@@ -158,7 +158,8 @@ class ArticlesController < ApplicationController
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
-          if front_matter["cover_image"]
+          # A YAML list or number in front matter isn't an image URL; skip it instead of raising.
+          if front_matter["cover_image"].is_a?(String)
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
 
