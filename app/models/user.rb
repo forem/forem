@@ -745,7 +745,11 @@ class User < ApplicationRecord
   #
   # @return [Array<String>] an array of tag names
   def moderator_for_tags_not_cached
-    Tag.with_role(:tag_moderator, self).pluck(:name)
+    tag_ids = roles.where(name: "tag_moderator", resource_type: "Tag").pluck(:resource_id)
+    return Tag.with_role(:tag_moderator, self).pluck(:name) if tag_ids.include?(nil)
+    return [] if tag_ids.empty?
+
+    Tag.where(id: tag_ids).pluck(:name)
   end
 
   # When you need the "up to the moment" names of the subforems moderated
