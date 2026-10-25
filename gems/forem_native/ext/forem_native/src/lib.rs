@@ -234,6 +234,21 @@ fn join_url(base: RString, reference: RString) -> Option<String> {
     unsafe { forem_core::url::join_url(base.test_as_str()?, reference.test_as_str()?) }
 }
 
+fn quickie_title_html(title: RString, truncate_for_feed: bool) -> Option<String> {
+    // Binary (and other non-UTF-8) titles count URL lengths in bytes, so leave them to Ruby.
+    if !title.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so `Article` can use its legacy `gsub` pipeline.
+    let text = unsafe { title.test_as_str() }?;
+    Some(forem_core::title::quickie_title_html(
+        text,
+        truncate_for_feed,
+    ))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -284,5 +299,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         .define_singleton_method("cloudflare_image_url", function!(cloudflare_image_url, 7))?;
     native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
     native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
+    native_mod.define_singleton_method("quickie_title_html", function!(quickie_title_html, 2))?;
     Ok(())
 }
