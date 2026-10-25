@@ -462,8 +462,12 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
+  # The pg_class estimate only moves when VACUUM/ANALYZE refreshes table stats,
+  # so serve it from the in-process cache instead of querying on every auth render.
   def estimated_user_count
-    @estimated_user_count ||= User.registered.estimated_count
+    @estimated_user_count ||= MemoryFirstCache.fetch("estimated_user_count", redis_expires_in: 10.minutes) do
+      User.registered.estimated_count
+    end
   end
 
   def display_estimated_user_count?

@@ -361,6 +361,16 @@ RSpec.describe ApplicationHelper do
       expect(User).to have_received(:estimated_count).once
     end
 
+    it "reuses the in-process cached estimate across separate renders" do
+      allow(User).to receive(:estimated_count).and_return(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      remove_instance_variable(:@estimated_user_count)
+
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      expect(User).to have_received(:estimated_count).once
+    end
+
     it "does not display the count for a small userbase" do
       allow(User).to receive(:estimated_count).and_return(0)
 
