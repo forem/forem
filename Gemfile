@@ -62,7 +62,7 @@ gem "jsbundling-rails", "~> 1.2" # A Rails plugin to bundle JavaScript
 gem "jsonapi-serializer", "~> 2.2" # Serializer for Ruby objects
 gem "jwt", "2.10.3" # Verify delegated access tokens
 gem "kaminari", "~> 1.2" # A Scope and Engine based, clean, powerful, customizable and sophisticated paginator
-gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
+gem "katex", "~> 0.11.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects

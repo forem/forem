@@ -533,8 +533,8 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    katex (0.9.0)
-      execjs (~> 2.7)
+    katex (0.11.0)
+      execjs (~> 2.8)
     knapsack_pro (5.7.0)
       rake
     kramdown (2.4.0)
@@ -1219,7 +1219,7 @@ DEPENDENCIES
   jwt (= 2.10.3)
   kamal (~> 2.3)
   kaminari (~> 1.2)
-  katex (~> 0.9.0)
+  katex (~> 0.11.0)
   knapsack_pro (~> 5.1)
   launchy (~> 2.5)
   liquid (~> 5.4)
