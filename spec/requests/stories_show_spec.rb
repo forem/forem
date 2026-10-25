@@ -29,6 +29,22 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "sets surrogate keys on the org redirect without loading the article body by slug" do
+      old_path = article.path
+      article.update(organization: org)
+      slug_queries = []
+      callback = lambda do |*, payload|
+        slug_queries << payload[:sql] if payload[:sql].include?(%("articles"."slug" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get old_path }
+
+      expect(response).to redirect_to(article.path)
+      expect(response.headers["Surrogate-Key"]).to include(article.record_key, org.record_key)
+      expect(slug_queries).not_to be_empty
+      expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
+    end
+
     it "preserves internal nav param (i=i) upon redirect" do
       old_path = article.path
       article.update(organization: org)
