@@ -71,7 +71,8 @@ class StoriesController < ApplicationController
     path = "/#{params[:username].downcase}/#{params[:slug]}"
     if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
       handle_article_show
-    elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
+    # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
+    elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
