@@ -273,12 +273,12 @@ GEM
     emoji_regex (3.2.3)
     equalizer (0.0.11)
     erb (6.0.4)
-    erb_lint (0.5.0)
+    erb_lint (0.9.0)
       activesupport
       better_html (>= 2.0.1)
       parser (>= 2.7.1.4)
       rainbow
-      rubocop
+      rubocop (>= 1)
       smart_properties
     erubi (1.13.1)
     et-orbi (1.2.11)
@@ -1180,7 +1180,7 @@ DEPENDENCIES
   easy_translate (~> 0.5.1)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
-  erb_lint (~> 0.3)
+  erb_lint (~> 0.9)
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.2)
   faker (~> 3.5)
