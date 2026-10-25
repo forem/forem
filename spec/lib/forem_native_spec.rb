@@ -1138,4 +1138,61 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".normalize_url" do
+    let(:legacy_normalize_url) { ->(url) { Addressable::URI.parse(url).normalize.to_s } }
+
+    let(:edge_cases) do
+      [
+        "https://media2.dev.to/dynamic/image/quality=100/https://dev-to-uploads.s3.amazonaws.com/uploads/logo.png",
+        "https://media2.dev.to/image/width=190/https%3A%2F%2Fa.com%2Flogo.png", "/assets/12-abc123.png",
+        "HTTPS://Example.COM", "http://a.com?x=1", "https://a.com./x", "https://a.com../x", "https://./x",
+        "https://a.com:443/x", "http://a.com:080/x", "http://a.com:/x", "http://a.com:0/x", "http://a.com:08080/x",
+        "http://a.com:443/x", "/a%41%2f%7e%25%zz%", "/a\"b<c>{d}|e^`\\", "/a[b]", "/a%3F%23", "/a?b;c&d=%3d&e+f%2bg%2B",
+        "/a?%252b%25", "/a?", "/a?&", "/a?%26", "/a#", "/a#b#c?/%41", "/a?#b", "https://my_bucket.s3.amazonaws.com/a.png"
+      ]
+    end
+
+    it "matches Addressable normalization across edge cases" do
+      edge_cases.each do |url|
+        actual = described_class.normalize_url(url)
+        expect(actual).to eq(legacy_normalize_url.call(url)), url.inspect
+        expect(actual.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+
+    it "declines URLs whose normalization needs Addressable" do
+      [
+        "", "relative.png", "//cdn.example.com/a.png", "ftp://a.com/x", "feed:http://a.com", "data:image/png;base64,A",
+        "https://user@a.com/x", "https://[::1]/x", "https:///x", "https:/a.com/x", "https://a b.com/x",
+        "https://a.com/ x", "https://a.com/x\n", "https://www.火.dev/IMAGE.png", "https://a.com/%C3%A9",
+        "https://a.com/x?%80", "https://a.com:12a/x", "https://a.com/./x", "https://a.com/x/..", "/%2E%2E/x",
+        "https://a%41.com/x", "https://a.com/x".encode("UTF-16LE"), "https://a.com/\xFF",
+        ActiveSupport::SafeBuffer.new("https://a.com/x"), nil
+      ].each do |url|
+        expect(described_class.normalize_url(url)).to be_nil, url.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      prefixes = ["https://a.com", "http://Ex.ample.com:8080", "/", "https://media2.dev.to", "HTTPS://Dev.TO.", ""]
+      tokens = ["/", "//", "?", "#", "&", ";", "=", "+", "%", "%2b", "%2B", "%2F", "%41", "%7E", "%25", "%3A",
+                "%20", "%3F", "%23", "%26", "%00", "%zz", "%4", ".", "..", ":", ":443", ":0", "@", "a", "B", "9", "-",
+                "_", "~", "!", "$", "'", "(", ")", "*", ",", "[", "]", "\"", "<", ">", "{", "}", "|", "\\", "^", "`",
+                ".com", "png"]
+      accepted = 0
+
+      10_000.times do |iteration|
+        url = prefixes.sample(random: rng) + Array.new(rng.rand(1..12)) { tokens.sample(random: rng) }.join
+        actual = described_class.normalize_url(url)
+        next if actual.nil?
+
+        accepted += 1
+        expect(actual).to eq(legacy_normalize_url.call(url)), "iteration #{iteration}: #{url.inspect}"
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+    end
+  end
 end

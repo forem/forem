@@ -149,7 +149,7 @@ module ApplicationHelper
 
     return unless (image_url = url.presence || fallback_image)
 
-    normalized_url = Addressable::URI.parse(image_url).normalize.to_s
+    normalized_url = ForemNative.normalize_url(image_url) || legacy_normalize_url(image_url)
     Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
@@ -601,6 +601,11 @@ module ApplicationHelper
   end
 
   private
+
+  # Handles the URLs ForemNative declines (non-ASCII hosts, other schemes, dot segments, ...).
+  def legacy_normalize_url(url)
+    Addressable::URI.parse(url).normalize.to_s
+  end
 
   def preloaded_tag_colors
     @preloaded_tag_colors ||= {}
