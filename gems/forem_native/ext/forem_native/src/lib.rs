@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use magnus::{function, prelude::*, Error, RString, Ruby};
+use magnus::{function, prelude::*, Error, Integer, RString, Ruby, Value};
 
 fn split_word_count(text: RString) -> usize {
     // SAFETY: `text.as_slice()` borrows the Ruby String's underlying byte buffer in-place
@@ -176,6 +176,45 @@ fn strip_default_image_alt_text(ruby: &Ruby, content: RString) -> Option<RString
     Some(stripped.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
 }
 
+/// Converts an `Addressable::Template` value the way `Images::Optimizer.cloudflare` sees it:
+/// `nil` expands like `""` and Integers like `to_s`. Strings must be UTF-8 (or US-ASCII) and
+/// valid; everything else returns `None` so Ruby keeps Addressable's semantics.
+fn template_value(value: Value) -> Option<String> {
+    if value.is_nil() {
+        return Some(String::new());
+    }
+    if let Some(integer) = Integer::from_value(value) {
+        return integer.to_i64().ok().map(|integer| integer.to_string());
+    }
+    let string = RString::from_value(value)?;
+    if !string.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow, copied out before returning. `test_as_str`
+    // reuses Ruby's cached coderange and returns `None` for invalid UTF-8.
+    unsafe { string.test_as_str() }.map(str::to_owned)
+}
+
+fn cloudflare_image_url(
+    domain: Value,
+    directory: Value,
+    width: Value,
+    height: Value,
+    fit: Value,
+    img_src: Value,
+    src: Value,
+) -> Option<String> {
+    forem_core::image::cloudflare_image_url(
+        &template_value(domain)?,
+        &template_value(directory)?,
+        &template_value(width)?,
+        &template_value(height)?,
+        &template_value(fit)?,
+        &template_value(img_src)?,
+        &template_value(src)?,
+    )
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -222,5 +261,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "strip_default_image_alt_text",
         function!(strip_default_image_alt_text, 1),
     )?;
+    native_mod
+        .define_singleton_method("cloudflare_image_url", function!(cloudflare_image_url, 7))?;
     Ok(())
 }
