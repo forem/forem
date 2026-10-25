@@ -17,8 +17,12 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
     let(:comment) { comment_class.new.tap { |c| c.processed_html = "original_comment" } }
     let(:source_article_id) { 100 }
 
+    let(:source_article_relation) { instance_double(ActiveRecord::Relation) }
+
     before do
-      allow(Article).to receive(:find_by).with(id: source_article_id).and_return(article)
+      allow(Article).to receive(:where).and_call_original
+      allow(Article).to receive(:where).with(id: source_article_id).and_return(source_article_relation)
+      allow(source_article_relation).to receive(:pick).with(:organization_id) { article.organization_id }
       liquid_embed_relation = double("LiquidEmbedReference::Relation")
       allow(LiquidEmbedReference).to receive(:where).and_return(liquid_embed_relation)
       
@@ -73,7 +77,7 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
 
     context "when the source article has been deleted" do
       before do
-        allow(Article).to receive(:find_by).with(id: source_article_id).and_return(nil)
+        allow(source_article_relation).to receive(:pick).with(:organization_id).and_return(nil)
       end
 
       it "still queries and processes generic Article LiquidEmbedReferences successfully" do
@@ -115,6 +119,22 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
       expect(article).not_to have_received(:async_bust)
       expect(comment).not_to have_received(:update_column)
       expect(comment).not_to have_received(:bust_cache)
+    end
+  end
+
+  describe "#perform with a persisted source article" do
+    it "reads only the source article's organization id instead of the full row" do
+      source_article = create(:article, organization: create(:organization))
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.new.perform(source_article.id)
+      end
+
+      article_selects = queries.grep(/FROM "articles"/)
+      expect(article_selects).not_to be_empty
+      expect(article_selects).to all(start_with('SELECT "articles"."organization_id" FROM "articles"'))
     end
   end
 end
