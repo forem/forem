@@ -710,6 +710,26 @@ RSpec.describe "StoriesIndex" do
       end
     end
 
+    context "when the organization has a pinned post" do
+      let(:pinned_article) { create(:article, organization: organization, user: user, published: true) }
+
+      before do
+        create(:profile_pin, :for_organization, pinnable: pinned_article, profile: organization)
+      end
+
+      it "renders a dedicated pinned section above the regular feed" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(pinned_article.title))
+        expect(response.body).to include(I18n.t("views.users.pinned"))
+      end
+
+      it "does not repeat the pinned post in the regular feed" do
+        get "/#{organization.slug}"
+        expect(response.body.scan(CGI.escapeHTML(pinned_article.title)).size).to eq(1)
+      end
+    end
+
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",

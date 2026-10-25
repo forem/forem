@@ -1,4 +1,5 @@
 <% title t("views.manager.meta.title", title: @article.title) %>
+<% org_pinnable = @article.organization.present? && current_user.org_admin?(@article.organization) %>
 <main id="main-content" class="manage-page-with-sidebar">
   <!-- Sidebar Navigation -->
   <aside class="manage-sidebar crayons-card" id="manage-sidebar">
@@ -9,6 +10,9 @@
         <li><a href="#section-stats" class="manage-sidebar-link" data-section="section-stats">Statistics</a></li>
         <li><a href="#section-edit" class="manage-sidebar-link" data-section="section-edit">Edit Post</a></li>
         <li><a href="#section-pin" class="manage-sidebar-link" data-section="section-pin">Pin to Profile</a></li>
+        <% if org_pinnable %>
+          <li><a href="#section-pin-org" class="manage-sidebar-link" data-section="section-pin-org">Pin to Organization</a></li>
+        <% end %>
         <li><a href="#section-discussion" class="manage-sidebar-link" data-section="section-discussion">Discussion Lock</a></li>
         <li><a href="#section-delete" class="manage-sidebar-link" data-section="section-delete">Delete Post</a></li>
         <li><a href="#section-tips" class="manage-sidebar-link" data-section="section-tips">Tips</a></li>
@@ -152,6 +156,34 @@
         <% end %>
       <% end %>
     </div>
+
+    <% if org_pinnable %>
+      <!-- Pin to Organization -->
+      <div class="crayons-card p-6 mb-4" id="section-pin-org">
+        <h2 class="crayons-title mb-2">Pin to Organization</h2>
+        <p class="color-base-70 mb-4">
+          Pinning a post to <%= @article.organization.name %> makes it appear in a dedicated pinned section at the top of the organization page. Up to 5 posts can be pinned.
+        </p>
+        <% org_pin = @article.profile_pins.find_by(profile_type: "Organization", profile_id: @article.organization.id) %>
+        <% if org_pin %>
+          <%= form_with url: organization_profile_pin_path(@article.organization.slug, org_pin.id), method: :delete, class: "mb-3" do %>
+            <button type="submit" class="crayons-btn crayons-btn--outlined" style="width: auto;">
+              Unpin from Organization
+            </button>
+          <% end %>
+          <p class="color-base-60 fs-s">
+            This post is currently pinned to <%= @article.organization.name %>.
+          </p>
+        <% else %>
+          <%= form_with url: organization_profile_pins_path(@article.organization.slug), method: :post do %>
+            <input type="hidden" name="profile_pin[pinnable_id]" value="<%= @article.id %>">
+            <button type="submit" class="crayons-btn" style="width: auto;">
+              Pin to Organization
+            </button>
+          <% end %>
+        <% end %>
+      </div>
+    <% end %>
 
     <!-- Discussion Lock -->
     <div class="crayons-card p-6 mb-4" id="section-discussion">

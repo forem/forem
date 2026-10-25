@@ -42,5 +42,42 @@ RSpec.describe ProfilePin do
         expect(other_pin).not_to be_valid
       end
     end
+
+    describe "organization profiles" do
+      let(:organization) { create(:organization) }
+      let(:org_article) { create(:article, organization: organization, user: user) }
+
+      it "allows an organization to pin an article it owns" do
+        pin = build(:profile_pin, pinnable: org_article, profile: organization, profile_type: "Organization")
+        expect(pin).to be_valid
+      end
+
+      it "disallows pinning an article that does not belong to the organization" do
+        other_article = create(:article, user: user)
+        pin = build(:profile_pin, pinnable: other_article, profile: organization, profile_type: "Organization")
+        expect(pin).not_to be_valid
+      end
+
+      it "allows up to five pins per organization" do
+        articles = create_list(:article, 5, organization: organization, user: user)
+        articles.first(4).each do |article|
+          create(:profile_pin, pinnable: article, profile: organization, profile_type: "Organization")
+        end
+        organization.reload
+        pin = build(:profile_pin, pinnable: articles.last, profile: organization, profile_type: "Organization")
+        expect(pin).to be_valid
+      end
+
+      it "disallows the sixth pin for an organization" do
+        articles = create_list(:article, 6, organization: organization, user: user)
+        articles.first(5).each do |article|
+          create(:profile_pin, pinnable: article, profile: organization, profile_type: "Organization")
+        end
+        organization.reload
+        expect do
+          create(:profile_pin, pinnable: articles.last, profile: organization, profile_type: "Organization")
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 end
