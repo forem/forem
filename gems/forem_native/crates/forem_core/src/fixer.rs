@@ -3,6 +3,7 @@ use std::borrow::Cow;
 const FRONT_MATTER_FENCE: &str = "---";
 const TAGS_LINE: &str = "\ntags:";
 const PUBLISHED_KEY: &str = "published: ";
+const CODEBLOCK_MARKER: &str = "```";
 
 /// Quotes `<section>: value` lines inside the front matter, matching
 /// `MarkdownProcessor::Fixer::Base.add_quotes_to_section`:
@@ -232,6 +233,117 @@ fn published_key_len(bytes: &[u8]) -> Option<usize> {
     } else {
         None
     }
+}
+
+/// Escapes `@_username_` underscores outside fenced code blocks, matching
+/// `MarkdownProcessor::Fixer::Base.underscores_in_usernames`:
+///
+/// ```ruby
+/// return markdown unless markdown.match?(/(?<!`)@_\w+_/)
+///
+/// traverser = MarkdownProcessor::Traverser.new(markdown)
+/// traverser.each do |line|
+///   next if traverser.in_codeblock?
+///
+///   line.scan(/(?<!`)@_\w+_/).each do |to_escape|
+///     line.sub!(to_escape, to_escape.gsub("_", "\\_"))
+///   end
+/// end.join
+/// ```
+///
+/// ### Behavioral Equivalence Notes
+/// - `Traverser` flips its state on every line holding a ```` ``` ```` and skips only the
+///   lines in between, so the fence lines themselves are still escaped.
+/// - Ruby's `\w` is ASCII-only here, and the greedy `\w+_` ends at the last `_` of the
+///   word run that has at least one word byte before it.
+/// - `sub!` replaces the first literal occurrence in the (already updated) line, which can be
+///   an earlier `` `@_name_ `` the scan itself skipped; that is replayed as-is.
+/// - Without a match `Traverser` yields the lines unchanged, so the early return is only a
+///   shortcut.
+///
+/// Returns `Cow::Borrowed` when no username gets escaped (the binding then returns the input).
+pub fn underscores_in_usernames(markdown: &str) -> Cow<'_, str> {
+    if next_username(markdown, 0).is_none() {
+        return Cow::Borrowed(markdown);
+    }
+
+    let mut out: Option<String> = None;
+    // Everything before `copied` is already in `out`.
+    let mut copied = 0;
+    let mut offset = 0;
+    let mut in_codeblock = false;
+
+    for line in markdown.split_inclusive('\n') {
+        let start = offset;
+        offset += line.len();
+        if line.contains(CODEBLOCK_MARKER) {
+            in_codeblock = !in_codeblock;
+        } else if in_codeblock {
+            continue;
+        }
+
+        let Some(escaped) = escape_usernames_in_line(line) else {
+            continue;
+        };
+        let out = out.get_or_insert_with(|| String::with_capacity(markdown.len() + 16));
+        out.push_str(&markdown[copied..start]);
+        out.push_str(&escaped);
+        copied = offset;
+    }
+
+    match out {
+        Some(mut out) => {
+            out.push_str(&markdown[copied..]);
+            Cow::Owned(out)
+        }
+        None => Cow::Borrowed(markdown),
+    }
+}
+
+/// `escape_underscored_username_in_line!`, or `None` when the line has no username.
+fn escape_usernames_in_line(line: &str) -> Option<String> {
+    let mut matches = Vec::new();
+    let mut from = 0;
+    while let Some((start, end)) = next_username(line, from) {
+        matches.push(&line[start..end]);
+        from = end;
+    }
+    if matches.is_empty() {
+        return None;
+    }
+
+    let mut escaped_line = line.to_owned();
+    for to_escape in matches {
+        if let Some(at) = escaped_line.find(to_escape) {
+            escaped_line.replace_range(at..at + to_escape.len(), &to_escape.replace('_', "\\_"));
+        }
+    }
+    Some(escaped_line)
+}
+
+/// Byte range of the next `/(?<!`)@_\w+_/` match starting at or after `from`.
+fn next_username(text: &str, mut from: usize) -> Option<(usize, usize)> {
+    let bytes = text.as_bytes();
+    while let Some(at) = find(text, "@_", from) {
+        from = at + 1;
+        if at > 0 && bytes[at - 1] == b'`' {
+            continue;
+        }
+        let run_start = at + 2;
+        let run_len = bytes[run_start..]
+            .iter()
+            .take_while(|&&byte| byte.is_ascii_alphanumeric() || byte == b'_')
+            .count();
+        // `\w+` needs one word byte before the closing `_`.
+        if let Some(last) = bytes[run_start..run_start + run_len]
+            .iter()
+            .skip(1)
+            .rposition(|&byte| byte == b'_')
+        {
+            return Some((at, run_start + 1 + last + 1));
+        }
+    }
+    None
 }
 
 fn is_wrapped_in_quotes(content: &[u8]) -> bool {
@@ -474,5 +586,59 @@ mod tests {
             lowercase_published("---\nPubliſshed: x\nPublishéd: y\n---"),
             Cow::Borrowed(_)
         ));
+    }
+
+    #[test]
+    fn underscores_in_usernames_escapes_greedy_word_runs() {
+        for (input, expected) in [
+            ("@_xy_", "@\\_xy\\_"),
+            ("@_x_y_", "@\\_x\\_y\\_"),
+            ("@___", "@\\_\\_\\_"),
+            ("@_a_b", "@\\_a\\_b"),
+            ("a@_b_c@_d_", "a@\\_b\\_c@\\_d\\_"),
+            ("@_a_@_b_", "@\\_a\\_@\\_b\\_"),
+            ("@@_a_", "@@\\_a\\_"),
+            ("@_a_\r\n@_b_", "@\\_a\\_\r\n@\\_b\\_"),
+        ] {
+            assert_eq!(underscores_in_usernames(input), expected, "{input:?}");
+        }
+        for input in [
+            "",
+            "@__",
+            "@_a",
+            "_make this cursive_",
+            "@_é_ @_aé_x_",
+            "`@_a_`",
+        ] {
+            assert!(
+                matches!(underscores_in_usernames(input), Cow::Borrowed(_)),
+                "{input:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn underscores_in_usernames_skips_codeblocks_but_not_fence_lines() {
+        assert_eq!(
+            underscores_in_usernames("@_dev_\n```ruby\n@_in_code_\n```\n@_out_\n"),
+            "@\\_dev\\_\n```ruby\n@_in_code_\n```\n@\\_out\\_\n"
+        );
+        assert_eq!(
+            underscores_in_usernames("``` @_fence_\n@_in_\n```\n"),
+            "``` @\\_fence\\_\n@_in_\n```\n"
+        );
+        assert!(matches!(
+            underscores_in_usernames("```@_fence_\n@_in_\n```\n"),
+            Cow::Borrowed(_)
+        ));
+    }
+
+    #[test]
+    fn underscores_in_usernames_replays_first_occurrence_sub() {
+        assert_eq!(underscores_in_usernames("`@_a_ @_a_"), "`@\\_a\\_ @_a_");
+        assert_eq!(
+            underscores_in_usernames("x`@_a_b_ @_a_"),
+            "x`@\\_a\\_b_ @_a_"
+        );
     }
 }

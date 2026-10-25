@@ -145,6 +145,16 @@ module ForemNative
       Native.fixer_lowercase_published(markdown)
     end
 
+    # Escapes `@_username_` underscores outside fenced code blocks, matching
+    # `MarkdownProcessor::Fixer::Base.underscores_in_usernames`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so
+    # `Fixer::Base` can use its private `legacy_underscores_in_usernames`.
+    def fixer_underscores_in_usernames(markdown)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_underscores_in_usernames(markdown)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

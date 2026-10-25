@@ -122,6 +122,21 @@ fn fixer_lowercase_published(ruby: &Ruby, markdown: RString) -> Option<RString> 
     Some(lowercased.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
+fn fixer_underscores_in_usernames(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
+    // and the borrow ends before we allocate any Ruby objects.
+    // Returns `nil` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let escaped = {
+        let text = std::str::from_utf8(unsafe { markdown.as_slice() }).ok()?;
+        match forem_core::fixer::underscores_in_usernames(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(escaped) => Some(escaped),
+        }
+    };
+    // Like the legacy `match?` early return, hand back the input itself when nothing changes.
+    Some(escaped.map_or(markdown, |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -153,6 +168,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_lowercase_published",
         function!(fixer_lowercase_published, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "fixer_underscores_in_usernames",
+        function!(fixer_underscores_in_usernames, 1),
     )?;
     Ok(())
 }

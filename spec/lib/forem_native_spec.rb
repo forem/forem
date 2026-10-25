@@ -740,4 +740,83 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".fixer_underscores_in_usernames" do
+    let(:legacy_underscores_in_usernames) do
+      lambda do |markdown|
+        regexp = /(?<!`)@_\w+_/
+        next markdown unless markdown.match?(regexp)
+
+        traverser = MarkdownProcessor::Traverser.new(markdown)
+        traverser.each do |line|
+          next if traverser.in_codeblock?
+
+          line.scan(regexp).each { |to_escape| line.sub!(to_escape, to_escape.gsub("_", "\\_")) }
+        end.join
+      end
+    end
+
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      [
+        "", "@_xy_", "@_x_y_", "@__", "@___", "@_a", "@_a_b", "_make this cursive_", "a@_b_c@_d_", "@_a_@_b_",
+        "@@_a_", "`@_a_`", "`@_a_ @_a_", "x`@_a_b_ @_a_", "@_a_\r\n@_b_", "@_é_ @_aé_x_", "日本 @_🎉_ @_日_本_",
+        "@_dev_\n```ruby\n@_in_code_\n```\n@_out_\n", "``` @_fence_\n@_in_\n```\n", "```@_fence_\n@_in_\n```\n",
+        "```\n@_open_forever_\n", "``` ```\n@_a_\n", "\n\n@_a_\n\n", "@_a_\r@_b_"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_underscores_in_usernames.call(input)
+        expect(described_class.fixer_underscores_in_usernames(input)).to eq(expected), input.inspect
+        expect(fixer.underscores_in_usernames(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so Fixer keeps Ruby semantics" do
+      input = "@_dev_ `@_code_`"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_underscores_in_usernames(other)).to be_nil
+        expect(fixer.underscores_in_usernames(other)).to eq("@\\_dev\\_ `@_code_`")
+      end
+
+      expect(ForemNative::Native.fixer_underscores_in_usernames("#{input}\xFF")).to be_nil
+      expect { fixer.underscores_in_usernames("#{input}\xFF") }.to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns the input itself when nothing is escaped, like the legacy early return" do
+      input = "no usernames".freeze
+
+      expect(described_class.fixer_underscores_in_usernames(input)).to equal(input)
+      expect(legacy_underscores_in_usernames.call(input)).to equal(input)
+    end
+
+    it "returns a new mutable UTF-8 String when a username is escaped" do
+      input = "@_dev_".freeze
+      result = described_class.fixer_underscores_in_usernames(input)
+
+      expect(result).to eq(legacy_underscores_in_usernames.call(input))
+      expect(result).not_to be_frozen
+      expect(result.encoding).to eq(Encoding::UTF_8)
+      expect { result << "!" }.not_to(change { input })
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["@_", "@", "_", "__", "a", "Z9", "dev", "`", "```", "```ruby", "\n", "\r\n", "\r", " ", "@_dev_",
+                "@_x_y_", "`@_a_", "\\", "-", "é", "🚀", "日本"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_underscores_in_usernames.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.fixer_underscores_in_usernames(sample)).to eq(expected), message
+        expect(fixer.underscores_in_usernames(sample)).to eq(expected), message
+      end
+    end
+  end
 end
