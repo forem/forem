@@ -524,9 +524,102 @@ fn code_span_end(bytes: &[u8], tick_runs: &[usize], start: usize) -> Option<usiz
     })
 }
 
+/// Mirrors `MarkdownProcessor::Parser#convert_code_tags_to_triple_backticks`:
+///
+/// ```ruby
+/// return content unless /^<code>$/.match?(content)
+/// return content if content.include?("<code>") && content.include?("<pre>")
+///
+/// content.gsub(%r{^</?code>$}, "\n```\n")
+/// ```
+///
+/// Ruby's `^`/`$` only split on `\n` (a `\r` stays part of the line), so both regexes match
+/// whole `\n`-delimited lines and their matches can never overlap.
+///
+/// Returns `Cow::Borrowed` when nothing changes, so callers can hand back the input itself.
+pub fn convert_code_tags_to_triple_backticks(content: &str) -> Cow<'_, str> {
+    if !has_code_tag_line(content) || content.contains("<pre>") {
+        return Cow::Borrowed(content);
+    }
+
+    let mut out = String::with_capacity(content.len() + 64);
+    for (i, line) in content.split('\n').enumerate() {
+        if i > 0 {
+            out.push('\n');
+        }
+        if line == "<code>" || line == "</code>" {
+            out.push_str("\n```\n");
+        } else {
+            out.push_str(line);
+        }
+    }
+    Cow::Owned(out)
+}
+
+/// `/^<code>$/.match?(content)`. The `contains` prefilter (SIMD-accelerated in std, unlike
+/// `match_indices`) rejects bodies without any `<code>` tag cheaply; the line walk then skips
+/// inline `<code>` spans without re-searching for each one.
+fn has_code_tag_line(content: &str) -> bool {
+    content.contains("<code>") && content.split('\n').any(|line| line == "<code>")
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn code_tags_without_a_bare_code_line_are_borrowed() {
+        for input in [
+            "",
+            "</code>",
+            "<code></code>",
+            "a<code>\n</code>",
+            "x\n<code>\r\n</code>\n",
+            "<code>\r</code>",
+            "inline <code>x</code> only",
+        ] {
+            assert!(matches!(
+                convert_code_tags_to_triple_backticks(input),
+                Cow::Borrowed(_)
+            ));
+        }
+    }
+
+    #[test]
+    fn code_tags_next_to_a_pre_tag_are_borrowed() {
+        for input in [
+            "<code>\n<pre>",
+            "<pre>\n<code>\n code \n</code>\n</pre>",
+            "<code>\nhi\n</code>\n</code>x\n<pre>z",
+        ] {
+            assert!(matches!(
+                convert_code_tags_to_triple_backticks(input),
+                Cow::Borrowed(_)
+            ));
+        }
+    }
+
+    #[test]
+    fn bare_code_tag_lines_become_triple_backticks() {
+        let cases = [
+            ("<code>", "\n```\n"),
+            ("<code>\n</code>", "\n```\n\n\n```\n"),
+            ("\n<code>\n\n</code>\n", "\n\n```\n\n\n\n```\n\n"),
+            ("\n</code>\n<code>\n", "\n\n```\n\n\n```\n\n"),
+            ("é\n<code>\n日本\n</code>", "é\n\n```\n\n日本\n\n```\n"),
+            (
+                "<code>\n</CODE>\n<code >\n<//code>\n</code>",
+                "\n```\n\n</CODE>\n<code >\n<//code>\n\n```\n",
+            ),
+            (
+                "<code>\r\n<code>\n</code>\r\n",
+                "<code>\r\n\n```\n\n</code>\r\n",
+            ),
+        ];
+        for (input, expected) in cases {
+            assert_eq!(convert_code_tags_to_triple_backticks(input), expected);
+        }
+    }
 
     #[test]
     fn empty_and_non_word_only_strings_return_zero() {
