@@ -24,7 +24,9 @@ module MarkdownProcessor
 
     def initialize(content, source: nil, user: nil,
                    liquid_tag_options: {})
-      @content = (content || "").gsub(/!\[Image Description\]/i, "![ ]")
+      content ||= ""
+      @content = ForemNative.strip_default_image_alt_text(content) ||
+        legacy_strip_default_image_alt_text(content)
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
@@ -185,6 +187,12 @@ module MarkdownProcessor
     end
 
     private
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_strip_default_image_alt_text(content)
+      content.gsub(/!\[Image Description\]/i, "![ ]")
+    end
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).
