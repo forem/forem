@@ -86,5 +86,29 @@ RSpec.describe ProfileField do
       field.destroy!
       expect(described_class.cached_display_area_fields(:left_sidebar)).not_to have_key("Updated Header Field")
     end
+
+    it "returns each display area's fields from a single query per request" do
+      described_class.destroy_all
+      header = create(:profile_field, label: "Header Field", display_area: :header)
+      sidebar = create(:profile_field, label: "Sidebar Field", display_area: :left_sidebar)
+      RequestStore.clear!
+
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("profile_fields") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(described_class.cached_display_area_fields(:header)).to eq("Header Field" => header.attribute_name)
+        expect(described_class.cached_display_area_fields(:left_sidebar))
+          .to eq("Sidebar Field" => sidebar.attribute_name)
+      end
+      expect(queries.size).to eq(1)
+    end
+
+    it "returns an empty hash for a display area without fields" do
+      described_class.destroy_all
+      create(:profile_field, label: "Header Only", display_area: :header)
+      RequestStore.clear!
+
+      expect(described_class.cached_display_area_fields(:left_sidebar)).to eq({})
+    end
   end
 end
