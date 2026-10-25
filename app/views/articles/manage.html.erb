@@ -1,5 +1,6 @@
 <% title t("views.manager.meta.title", title: @article.title) %>
-<% org_pinnable = @article.organization.present? && current_user.org_admin?(@article.organization) %>
+<% org_pinnable = @article.organization.present? &&
+                  (current_user.any_admin? || current_user.org_admin?(@article.organization)) %>
 <main id="main-content" class="manage-page-with-sidebar">
   <!-- Sidebar Navigation -->
   <aside class="manage-sidebar crayons-card" id="manage-sidebar">
@@ -138,8 +139,8 @@
       <p class="color-base-70 mb-4">
         Pinning a post to your profile makes it appear at the top of your profile page. You can pin up to 5 posts to highlight your best work.
       </p>
-      <% if @article.profile_pins.any? %>
-        <%= form_for(@article.profile_pins.first, html: { class: "mb-3" }) do |f| %>
+      <% if @article.user_profile_pins.any? %>
+        <%= form_for(@article.user_profile_pins.first, html: { class: "mb-3" }) do |f| %>
           <button type="submit" class="crayons-btn crayons-btn--outlined" style="width: auto;">
             Unpin from Profile
           </button>

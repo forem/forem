@@ -222,6 +222,8 @@ class Article < ApplicationRecord
   #     the poll votes, options, and skips.
   has_many :polls, dependent: :destroy
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable, dependent: :delete_all
+  has_many :user_profile_pins, -> { where(profile_type: "User") }, as: :pinnable, inverse_of: :pinnable,
+                                                                     class_name: "ProfilePin"
   # `dependent: :destroy` because in RatingVote we're relying on
   #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
@@ -377,6 +379,9 @@ class Article < ApplicationRecord
   }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
+  }
+  after_update_commit :remove_stale_organization_pin, if: proc { |article|
+    article.saved_change_to_organization_id?
   }
 
   begin
@@ -1886,6 +1891,17 @@ class Article < ApplicationRecord
     return if published_at.blank?
 
     self.published_at = nil if published_at > 5.years.from_now
+  end
+
+  # When an article's organization changes (or is cleared), any Organization-type
+  # ProfilePin pointing at it is pinning a post the org no longer has. Remove it so
+  # it stops counting toward that org's 5-pin cap and doesn't linger on its page.
+  def remove_stale_organization_pin
+    old_organization_id = organization_id_before_last_save
+    return if old_organization_id.blank?
+
+    ProfilePin.where(profile_type: "Organization", profile_id: old_organization_id,
+                      pinnable_type: "Article", pinnable_id: id).delete_all
   end
 
   def recompile_organization_pages

@@ -251,7 +251,7 @@ class StoriesController < ApplicationController
     @pinned_stories = if is_readme
                         Article.none
                       else
-                        Article.published.from_subforem.full_posts
+                        @organization.articles.published.from_subforem.full_posts
                           .where(id: @organization.profile_pins.select(:pinnable_id))
                           .limited_column_select.order(published_at: :desc).decorate
                       end

@@ -18,7 +18,7 @@ class ProfilePin < ApplicationRecord
   end
 
   def pinnable_belongs_to_profile
-    return if pinnable_owner_id == profile_id
+    return if pinnable.present? && pinnable_owner_id == profile_id
 
     errors.add(:pinnable_id, I18n.t("models.profile_pin.pin_unpermitted"))
   end

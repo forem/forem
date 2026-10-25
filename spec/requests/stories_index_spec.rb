@@ -732,6 +732,14 @@ RSpec.describe "StoriesIndex" do
         get "/#{organization.slug}"
         expect(response.body.scan(%r{id="article-link-#{pinned_article.id}"}).size).to eq(1)
       end
+
+      it "stops showing the pin once the article moves to a different organization" do
+        other_org = create(:organization)
+        pinned_article.update!(organization: other_org)
+
+        get "/#{organization.slug}"
+        expect(response.body).not_to include(%(id="article-link-#{pinned_article.id}"))
+      end
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
