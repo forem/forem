@@ -895,4 +895,73 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".markdown_xss_attempt" do
+    let(:legacy_markdown_xss_attempt) do
+      lambda do |markdown|
+        markdown.gsub(MarkdownProcessor::Parser::CODE_BLOCKS_REGEX, "")
+          .match?(Regexp.union(MarkdownProcessor::Parser::BAD_XSS_REGEX))
+      end
+    end
+
+    let(:parser) { MarkdownProcessor::Parser.new("") }
+
+    let(:edge_cases) do
+      [
+        "", "plain text", "src='data", "src=\"&\"", "SRC='DATA", "src='DatA:text/html;base64:xxxx'", "src= 'data",
+        "src='dat", "src=`data", "src=", "rc='data", "ſrc='data", "ſRC=\"&", "srcſ='data", "data:text/html,",
+        "DATA:TEXT/HTML;", "data:text/html", "data:text/html ,", "```const data = 'data:text/html';```",
+        "```\n src='data \n```", "`` src='data ``", "` src='data `", "~~~\n src='data \n~~~",
+        "```\n  code block 1\n```\n\nsrc='data\n\n```\n  code block 2\n```\n", "sr`x`c='data", "src=``x``'data",
+        "src=~~~x~~~\"&", "data:```x```text/html;", "````src='data````", "````src='data", "~~src='data~~",
+        "~~~~src='data~~~", "``` x `` src='data", "`` x ` src='data `", "`unclosed src='data", "ſ`x`rc='data",
+        "`ſ`rc='data", "日本語 src='データ", "😀src='data😀", "\r\n`x`\r\nsrc='&"
+      ]
+    end
+
+    def expect_parser_check(parser, input, expected, message)
+      if expected
+        expect { parser.catch_xss_attempts(input) }.to raise_error(ArgumentError), message
+      else
+        expect { parser.catch_xss_attempts(input) }.not_to raise_error, message
+      end
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_markdown_xss_attempt.call(input)
+        expect(described_class.markdown_xss_attempt(input)).to eq(expected), input.inspect
+        expect_parser_check(parser, input, expected, input.inspect)
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so the parser keeps Ruby semantics" do
+      input = "src='data"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.markdown_xss_attempt(other)).to be_nil
+        expect { parser.catch_xss_attempts(other) }.to raise_error(ArgumentError)
+      end
+      expect { parser.catch_xss_attempts("`#{input}`".b) }.not_to raise_error
+
+      expect(ForemNative::Native.markdown_xss_attempt("plain\xFF")).to be_nil
+      expect { parser.catch_xss_attempts("plain\xFF") }.to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["src='data", "SrC=\"&", "ſrc='", "data:text/html,", "DATA:TEXT/HTML;", "src", "ſ", "rc", "=", "'",
+                "\"", "data", "&", ":", "text/html", ";", "`", "``", "```", "~~~", " ", "\n", "\r\n", "x", "é",
+                "🚀", "日本"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..30)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_markdown_xss_attempt.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.markdown_xss_attempt(sample)).to eq(expected), message
+        expect_parser_check(parser, sample, expected, message)
+      end
+    end
+  end
 end
