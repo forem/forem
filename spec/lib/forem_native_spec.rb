@@ -1195,4 +1195,63 @@ RSpec.describe ForemNative do
       expect(accepted).to eq(1_000)
     end
   end
+
+  describe ".join_url" do
+    let(:legacy_join_url) { ->(base, uri) { Addressable::URI.parse(base).join(uri).normalize.to_s } }
+
+    let(:edge_cases) do
+      [
+        ["https://dev.to", ""], ["https://dev.to", "terms"], ["https://dev.to", "/terms"],
+        ["https://dev.to", "?a=1"], ["https://dev.to", "#x"], ["https://dev.to", "x?y#z"], ["https://dev.to", "/x?"],
+        ["https://dev.to", "/x#"], ["https://dev.to", "/a:b"], ["https://dev.to", "/a//b"],
+        ["https://dev.to", "/t/c%2B%2B/page/2"], ["https://dev.to", "ben/comment/1abc"],
+        ["https://dev.to", "/ben/my-post-1abc#comment-2xyz"], ["https://dev.to", "/enter?state=new-user"],
+        ["http://localhost:3000", "/a?b"], ["https://Dev.To.", "terms"], ["HTTPS://dev.to:443", "x"],
+        ["https://community.example.com", "/sitemap-index.xml"]
+      ]
+    end
+
+    it "matches Addressable join + normalization across edge cases" do
+      edge_cases.each do |base, uri|
+        actual = described_class.join_url(base, uri)
+        expect(actual).to eq(legacy_join_url.call(base, uri)), [base, uri].inspect
+        expect(actual.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+
+    it "declines joins whose resolution or normalization needs Addressable" do
+      [
+        ["https://dev.to/base", "x"], ["https://dev.to?q", "x"], ["https://dev.to#f", "x"], ["https://", "x"],
+        ["ftp://dev.to", "x"], ["dev.to", "x"], ["https://dev.to", "//x.com/a"], ["https://dev.to", "https://other.com/A"],
+        ["https://dev.to", "a:b"], ["https://dev.to", "/a/../b"], ["https://dev.to", "a/./b"], ["https://dev.to", ".."],
+        ["https://dev.to", "%2E%2E/x"], ["https://dev.to", "/a b"], ["https://dev.to", "/café"],
+        ["https://user@dev.to", "x"], ["https://dev.to", "/x".encode("UTF-16LE")], ["https://dev.to", "/\xFF"],
+        ["https://dev.to", ActiveSupport::SafeBuffer.new("/x")], ["https://dev.to", Addressable::URI.parse("/x")],
+        ["https://dev.to", nil], [nil, "/x"]
+      ].each do |base, uri|
+        expect(described_class.join_url(base, uri)).to be_nil, [base, uri].inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      bases = ["https://dev.to", "http://localhost:3000", "HTTPS://Dev.TO.", "https://a.com:8080", "http://x.dev:80"]
+      tokens = ["/", "//", "?", "#", "&", ";", "=", "+", "%", "%2b", "%2B", "%2F", "%41", "%7E", "%25", "%3A", "%20",
+                "%3F", "%23", "%2E", "%zz", ".", "..", ":", "@", "a", "B", "9", "-", "_", "~", "!", "$", "'", "(", ")",
+                "*", ",", "[", "]", "\"", "<", ">", "{", "}", "|", "\\", "^", "`", "comment", "t", "page"]
+      accepted = 0
+
+      10_000.times do |iteration|
+        base = bases.sample(random: rng)
+        uri = Array.new(rng.rand(1..12)) { tokens.sample(random: rng) }.join
+        actual = described_class.join_url(base, uri)
+        next if actual.nil?
+
+        accepted += 1
+        expect(actual).to eq(legacy_join_url.call(base, uri)), "iteration #{iteration}: #{[base, uri].inspect}"
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+    end
+  end
 end
