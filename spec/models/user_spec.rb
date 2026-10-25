@@ -1057,6 +1057,28 @@ RSpec.describe User do
     end
   end
 
+  describe "#moderator_for_tags_not_cached" do
+    let(:tags) { create_list(:tag, 3) }
+
+    it "matches rolify's with_role tag names without joining every tag" do
+      user.add_role(:tag_moderator, tags.first)
+      user.add_role(:tag_moderator, tags.second)
+      user.add_role(:trusted, tags.last)
+      create(:user).add_role(:tag_moderator, tags.last)
+
+      expect(user.moderator_for_tags_not_cached).to contain_exactly(tags.first.name, tags.second.name)
+      expect(user.moderator_for_tags_not_cached)
+        .to match_array(Tag.with_role(:tag_moderator, user).pluck(:name))
+    end
+
+    it "returns every tag name when the user holds a class-wide tag_moderator role" do
+      tags
+      user.add_role(:tag_moderator, Tag)
+
+      expect(user.moderator_for_tags_not_cached).to match_array(Tag.pluck(:name))
+    end
+  end
+
   describe "#followed_articles" do
     let!(:another_user) { create(:user) }
     let!(:articles) { create_list(:article, 2, user: another_user) }
