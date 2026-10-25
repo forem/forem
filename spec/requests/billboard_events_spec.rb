@@ -46,6 +46,29 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
+    it "checks the billboard exists without loading its full row" do
+      billboard
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("display_ads") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        post bb_tabulations_path, params: { billboard_event: base_params }
+      end
+
+      expect(BillboardEvent.last.billboard_id).to eq(billboard.id)
+      expect(queries.grep(/\ASELECT/)).to contain_exactly(a_string_starting_with('SELECT "display_ads"."id" FROM'))
+    end
+
+    it "does not create an event for a billboard that does not exist" do
+      missing_id_params = { billboard_event: base_params.merge(billboard_id: billboard.id + 1000) }
+      expect { post bb_tabulations_path, params: missing_id_params }.not_to change(BillboardEvent, :count)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does not create an event when billboard_id is not a single id" do
+      array_id_params = { billboard_event: base_params.merge(billboard_id: [billboard.id]) }
+      expect { post bb_tabulations_path, params: array_id_params }.not_to change(BillboardEvent, :count)
+    end
+
     context "when recording user_agent" do
       let(:header_ua) { "Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/128.0" }
       let(:param_ua) { "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15" }
