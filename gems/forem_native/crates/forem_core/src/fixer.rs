@@ -2,6 +2,7 @@ use std::borrow::Cow;
 
 const FRONT_MATTER_FENCE: &str = "---";
 const TAGS_LINE: &str = "\ntags:";
+const PUBLISHED_KEY: &str = "published: ";
 
 /// Quotes `<section>: value` lines inside the front matter, matching
 /// `MarkdownProcessor::Fixer::Base.add_quotes_to_section`:
@@ -144,6 +145,92 @@ pub fn split_tags(markdown: &str) -> Cow<'_, str> {
             Cow::Owned(out)
         }
         None => Cow::Borrowed(markdown),
+    }
+}
+
+/// Lowercases `published:` keys inside every front matter block, matching
+/// `MarkdownProcessor::Fixer::Base.lowercase_published`:
+///
+/// ```ruby
+/// markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
+///   front_matter.gsub(/^published: /i, "published: ")
+/// end
+/// ```
+///
+/// ### Behavioral Equivalence Notes
+/// - Each block is a `---` plus everything up to the next `---` that starts at least three
+///   bytes later; the next block search resumes right after it. Once no closing `---` is
+///   left, no later start can find one either.
+/// - The inner `gsub` only sees the block, so `^` anchors right after a `\n` inside it
+///   (its first byte is `-`) and the key has to end before the closing `---` ends.
+/// - Onigmo's `/i` folds ASCII letters plus `ſ` (U+017F LONG S) for `s`; no other code
+///   point or sequence folds onto `published` (checked against every code point).
+///
+/// Returns `Cow::Borrowed` when every key inside front matter is already lowercase.
+pub fn lowercase_published(markdown: &str) -> Cow<'_, str> {
+    let bytes = markdown.as_bytes();
+    let mut out: Option<String> = None;
+    // Everything before `copied` is already in `out`.
+    let mut copied = 0;
+    let mut search_from = 0;
+
+    while let Some(open) = find(markdown, FRONT_MATTER_FENCE, search_from) {
+        let Some(close) = find(
+            markdown,
+            FRONT_MATTER_FENCE,
+            open + FRONT_MATTER_FENCE.len(),
+        ) else {
+            break;
+        };
+        let end = close + FRONT_MATTER_FENCE.len();
+        let front_matter = &markdown[..end];
+
+        let mut line_from = open;
+        while let Some(newline) = find(front_matter, "\n", line_from) {
+            let start = newline + 1;
+            line_from = start;
+            let Some(len) = published_key_len(&bytes[start..end]) else {
+                continue;
+            };
+            if &bytes[start..start + len] == PUBLISHED_KEY.as_bytes() {
+                continue;
+            }
+
+            let out = out.get_or_insert_with(|| String::with_capacity(markdown.len()));
+            out.push_str(&markdown[copied..start]);
+            out.push_str(PUBLISHED_KEY);
+            copied = start + len;
+        }
+
+        search_from = end;
+    }
+
+    match out {
+        Some(mut out) => {
+            out.push_str(&markdown[copied..]);
+            Cow::Owned(out)
+        }
+        None => Cow::Borrowed(markdown),
+    }
+}
+
+/// Byte length of a `/published: /i` match at the start of `bytes`, if there is one.
+fn published_key_len(bytes: &[u8]) -> Option<usize> {
+    let (head, rest) = (bytes.get(..5)?, &bytes[5..]);
+    if !head.eq_ignore_ascii_case(b"publi") {
+        return None;
+    }
+    let s_len = match rest {
+        [b's' | b'S', ..] => 1,
+        // `ſ` (U+017F) case-folds to `s`.
+        [0xC5, 0xBF, ..] => 2,
+        _ => return None,
+    };
+    let tail = rest.get(s_len..s_len + 5)?;
+    if tail[..3].eq_ignore_ascii_case(b"hed") && &tail[3..] == b": " {
+        Some(5 + s_len + 5)
+    } else {
+        None
     }
 }
 
@@ -333,5 +420,59 @@ mod tests {
             "x\r\ntags: 日本,🚀\r\nbody #x\n"
         );
         assert_eq!(split_tags("\nTags: #a\n"), "\nTags: #a\n");
+    }
+
+    #[test]
+    fn lowercase_published_rewrites_keys_inside_front_matter_only() {
+        assert_eq!(
+            lowercase_published("---\nPublished: true\nPUBLISHED: false\n---\nPublished: x\n"),
+            "---\npublished: true\npublished: false\n---\nPublished: x\n"
+        );
+        assert_eq!(
+            lowercase_published("---\na: 1\n---\n\n---\nPuBlIsHeD: y\n---"),
+            "---\na: 1\n---\n\n---\npublished: y\n---"
+        );
+        assert_eq!(
+            lowercase_published("---\nPublished: ---"),
+            "---\npublished: ---"
+        );
+    }
+
+    #[test]
+    fn lowercase_published_needs_line_start_and_exact_key() {
+        for input in [
+            "---Published: x\n---",
+            "--- Published: x\n---",
+            "---\n Published: x\n---",
+            "---\nPublished:x\n---",
+            "---\nPublished : x\n---",
+            "---\npublished: x\n---",
+            "---\nPubli---shed: x\n",
+            "---\nPublished:---",
+            "---\r\nx\rPublished: x\n---",
+            "-----\nPublished: x",
+            "",
+        ] {
+            assert!(
+                matches!(lowercase_published(input), Cow::Borrowed(_)),
+                "{input:?}"
+            );
+        }
+        assert_eq!(
+            lowercase_published("---\r\nPublished: x\r\n---"),
+            "---\r\npublished: x\r\n---"
+        );
+    }
+
+    #[test]
+    fn lowercase_published_folds_long_s_and_keeps_multibyte() {
+        assert_eq!(
+            lowercase_published("---\nPubliſhed: 日本\nPUBLIſHED: 🎉\n---"),
+            "---\npublished: 日本\npublished: 🎉\n---"
+        );
+        assert!(matches!(
+            lowercase_published("---\nPubliſshed: x\nPublishéd: y\n---"),
+            Cow::Borrowed(_)
+        ));
     }
 }

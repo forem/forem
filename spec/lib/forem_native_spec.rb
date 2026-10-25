@@ -669,4 +669,75 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".fixer_lowercase_published" do
+    let(:legacy_lowercase_published) do
+      lambda do |markdown|
+        markdown.gsub(/-{3}.*?-{3}/m) do |front_matter|
+          front_matter.gsub(/^published: /i, "published: ")
+        end
+      end
+    end
+
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      [
+        "", "no front matter", "---\nPublished: true\nPUBLISHED: false\n---\nPublished: x\n",
+        "---\na: 1\n---\n\n---\nPuBlIsHeD: y\n---", "---\nPublished: ---", "---Published: x\n---",
+        "--- Published: x\n---", "---\n Published: x\n---", "---\nPublished:x\n---", "---\nPublished : x\n---",
+        "---\npublished: x\n---", "---\nPubli---shed: x\n", "---\nPublished:---", "---\r\nx\rPublished: x\n---",
+        "-----\nPublished: x", "------\nPublished: x\n---", "---\r\nPublished: x\r\n---",
+        "---\nPubliſhed: 日本\nPUBLIſHED: 🎉\n---", "---\nPubliſshed: x\nPublishéd: y\n---"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_lowercase_published.call(input)
+        expect(described_class.fixer_lowercase_published(input)).to eq(expected), input.inspect
+        expect(fixer.lowercase_published(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so Fixer keeps Ruby semantics" do
+      input = "---\nPublished: true\n---"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_lowercase_published(other)).to be_nil
+        expect(fixer.lowercase_published(other)).to eq("---\npublished: true\n---")
+      end
+
+      expect(ForemNative::Native.fixer_lowercase_published("#{input}\xFF")).to be_nil
+      expect { fixer.lowercase_published("#{input}\xFF") }.to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String whether or not anything was lowercased" do
+      ["---\npublished: x\n---".freeze, "---\nPublished: x\n---".freeze].each do |input|
+        result = described_class.fixer_lowercase_published(input)
+
+        expect(result).to eq(legacy_lowercase_published.call(input))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["---", "---\n", "\n---", "--", "-", "\n", "\r\n", "\r", " ", "\nPublished: ", "published: ",
+                "Published: ", "PUBLISHED: ", "pUbLiShEd: ", "Publiſhed: ", "publi", "shed: ", "Published:",
+                "published", ": ", "true", "é", "🚀", "日本"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..40)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_lowercase_published.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.fixer_lowercase_published(sample)).to eq(expected), message
+        expect(fixer.lowercase_published(sample)).to eq(expected), message
+      end
+    end
+  end
 end
