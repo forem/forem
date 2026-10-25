@@ -85,6 +85,22 @@ module ArticlesHelper
     t("views.articles.comment_cue.#{bucket}")
   end
 
+  # Sanitizing an article body for RSS (a Nokogiri parse in plain_html plus a Loofah
+  # scrub of every node) costs several ms per item, and the result depends only on
+  # processed_html, so it is cached per distinct body and fetched in one round-trip.
+  def feed_item_descriptions(articles, **sanitize_options)
+    keys_by_article_id = articles.to_h do |article|
+      [article.id, "rss_feed_description/v1/#{Digest::MD5.hexdigest(article.processed_html.to_s)}"]
+    end
+    articles_by_key = articles.index_by { |article| keys_by_article_id[article.id] }
+
+    descriptions = Rails.cache.fetch_multi(*articles_by_key.keys, expires_in: 6.hours) do |key|
+      sanitize(articles_by_key[key].plain_html, **sanitize_options).to_str
+    end
+
+    keys_by_article_id.transform_values { |key| descriptions[key] }
+  end
+
   private
 
   def comments_include_youtube?(article)

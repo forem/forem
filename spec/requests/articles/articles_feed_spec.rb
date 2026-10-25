@@ -10,6 +10,32 @@ RSpec.describe "ArticlesFeed" do
     expect(response.body).to include("<pubDate>#{article.published_at.to_fs(:rfc822)}</pubDate>")
   end
 
+  context "when item descriptions are cached" do
+    let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+
+    before { allow(Rails).to receive(:cache).and_return(memory_store) }
+
+    it "renders the same description from cache without sanitizing the body again" do
+      get "/feed/#{article.user.username}"
+      uncached_body = response.body
+
+      allow(Loofah).to receive(:html5_fragment).and_call_original
+      get "/feed/#{article.user.username}"
+
+      expect(response.body).to eq(uncached_body)
+      expect(Loofah).not_to have_received(:html5_fragment)
+    end
+
+    it "re-sanitizes when processed_html changes without touching updated_at" do
+      get "/feed/#{article.user.username}"
+      article.update_column(:processed_html, "<p>Fresh <em>body</em></p>")
+
+      get "/feed/#{article.user.username}"
+
+      expect(response.body).to include("&lt;p&gt;Fresh &lt;em&gt;body&lt;/em&gt;&lt;/p&gt;")
+    end
+  end
+
   context "with a user feed" do
     let(:user) { article.user }
 
