@@ -166,8 +166,9 @@ module MarkdownProcessor
     end
 
     def catch_xss_attempts(markdown)
-      markdown_without_code_blocks = markdown.gsub(CODE_BLOCKS_REGEX, "")
-      return unless markdown_without_code_blocks.match?(Regexp.union(BAD_XSS_REGEX))
+      xss_attempt = ForemNative.markdown_xss_attempt(markdown)
+      xss_attempt = legacy_xss_attempt?(markdown) if xss_attempt.nil?
+      return unless xss_attempt
 
       raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
     end
@@ -184,6 +185,13 @@ module MarkdownProcessor
     end
 
     private
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_xss_attempt?(markdown)
+      markdown_without_code_blocks = markdown.gsub(CODE_BLOCKS_REGEX, "")
+      markdown_without_code_blocks.match?(Regexp.union(BAD_XSS_REGEX))
+    end
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).

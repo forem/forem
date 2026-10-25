@@ -124,6 +124,16 @@ module ForemNative
       Native.convert_code_tags_to_triple_backticks(content)
     end
 
+    # Whether the markdown has a `src="data` / `src="&` or `data:text/html,` XSS attempt outside
+    # code blocks, matching the check in `MarkdownProcessor::Parser#catch_xss_attempts`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_xss_attempt?` keeps Ruby's semantics.
+    def markdown_xss_attempt(markdown)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.markdown_xss_attempt(markdown)
+    end
+
     # Wraps unquoted `<section>: value` front matter lines in double quotes (escaping inner
     # quotes), matching `MarkdownProcessor::Fixer::Base.add_quotes_to_section`.
     # Returns nil for anything but plain UTF-8 Strings (and for invalid UTF-8 or a section

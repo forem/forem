@@ -153,6 +153,14 @@ fn convert_code_tags_to_triple_backticks(ruby: &Ruby, content: RString) -> Optio
     Some(converted.map_or(content, |s| ruby.str_new(&s)))
 }
 
+fn markdown_xss_attempt(content: RString) -> Option<bool> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let text = unsafe { content.test_as_str() }?;
+    Some(forem_core::markdown::contains_xss_attempt(text))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -193,5 +201,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "convert_code_tags_to_triple_backticks",
         function!(convert_code_tags_to_triple_backticks, 1),
     )?;
+    native_mod
+        .define_singleton_method("markdown_xss_attempt", function!(markdown_xss_attempt, 1))?;
     Ok(())
 }
