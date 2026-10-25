@@ -395,6 +395,15 @@ RSpec.describe ApplicationHelper do
       expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
     end
 
+    it "normalizes the URL like Addressable before optimizing it" do
+      allow(Images::Optimizer).to receive(:call).and_call_original
+
+      helper.optimized_image_url("HTTPS://Example.COM:443/a%7eb.png?x=%3d#")
+
+      expect(Images::Optimizer).to have_received(:call)
+        .with("https://example.com/a~b.png?x==", width: 500, quality: 80, fetch_format: "auto")
+    end
+
     it "returns random fallback images as expected" do
       expect(helper.optimized_image_url("")).not_to be_nil
       expect(helper.optimized_image_url("", random_fallback: false)).to be_nil
