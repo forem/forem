@@ -1,0 +1,16 @@
+app/lib/server_warmup.rb
+  h_f968154a99632d 75,88,108,116,127-131,141,165,183,192,201-202,211,238,248,301,322,342,353,362,376,398,401
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 6,17-32,42,49,80,90,94-96,121,136,140-142,159-160,164,175-268,270,275,280-282,314-315,326-345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f492aa3c97fee74386ed437baf15a9c9c15b1f87",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
