@@ -108,6 +108,20 @@ fn fixer_split_tags(ruby: &Ruby, markdown: RString) -> Option<RString> {
     Some(split.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
+fn fixer_lowercase_published(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
+    // and the borrow ends before we allocate any Ruby objects.
+    // Returns `nil` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let lowercased = {
+        let text = std::str::from_utf8(unsafe { markdown.as_slice() }).ok()?;
+        match forem_core::fixer::lowercase_published(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(lowercased) => Some(lowercased),
+        }
+    };
+    Some(lowercased.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -136,5 +150,9 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(fixer_add_quotes_to_section, 2),
     )?;
     native_mod.define_singleton_method("fixer_split_tags", function!(fixer_split_tags, 1))?;
+    native_mod.define_singleton_method(
+        "fixer_lowercase_published",
+        function!(fixer_lowercase_published, 1),
+    )?;
     Ok(())
 }
