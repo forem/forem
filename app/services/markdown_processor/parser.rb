@@ -179,6 +179,15 @@ module MarkdownProcessor
     end
 
     def convert_code_tags_to_triple_backticks(content)
+      ForemNative.convert_code_tags_to_triple_backticks(content) ||
+        legacy_convert_code_tags_to_triple_backticks(content)
+    end
+
+    private
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_convert_code_tags_to_triple_backticks(content)
       # return content if there is not a <code> tag
       return content unless /^<code>$/.match?(content)
 
@@ -188,8 +197,6 @@ module MarkdownProcessor
       # Convert all multiline code tags to triple backticks
       content.gsub(%r{^</?code>$}, "\n```\n")
     end
-
-    private
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).

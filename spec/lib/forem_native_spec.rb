@@ -819,4 +819,80 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".convert_code_tags_to_triple_backticks" do
+    let(:legacy_convert_code_tags_to_triple_backticks) do
+      lambda do |content|
+        next content unless /^<code>$/.match?(content)
+        next content if content.include?("<code>") && content.include?("<pre>")
+
+        content.gsub(%r{^</?code>$}, "\n```\n")
+      end
+    end
+
+    let(:parser) { MarkdownProcessor::Parser.new("") }
+
+    let(:edge_cases) do
+      [
+        "", "<code>", "</code>", "<code></code>", "<code>\n</code>", "a<code>\n</code>", "x\n<code>\r\n</code>\n",
+        "<code>\r</code>", "\r\n<code>\r\n<code>\n</code>\r\n", "<code>\nhi\n</code>\n</code>x\n<pre>z",
+        "<pre>\n<code>\n code \n</code>\n</pre>", "<code>\n<PRE>\n</code>", "\n<code>\n\n</code>\n",
+        "\n</code>\n<code>\n", "é\n<code>\n日本\n</code>", "<code>\n</CODE>\n<code >\n<//code>\n</code>",
+        "🚀<code>\n<code>🚀\n<code>\n", "inline <code>x</code> only\n"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_code_tags_to_triple_backticks.call(input)
+        expect(described_class.convert_code_tags_to_triple_backticks(input)).to eq(expected), input.inspect
+        expect(parser.convert_code_tags_to_triple_backticks(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so the parser keeps Ruby semantics" do
+      input = "<code>\nx\n</code>"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.convert_code_tags_to_triple_backticks(other)).to be_nil
+        expect(parser.convert_code_tags_to_triple_backticks(other)).to eq("\n```\n\nx\n\n```\n")
+      end
+
+      expect(ForemNative::Native.convert_code_tags_to_triple_backticks("#{input}\xFF")).to be_nil
+      expect { parser.convert_code_tags_to_triple_backticks("#{input}\xFF") }
+        .to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns the input itself when nothing is converted, like the legacy early returns" do
+      ["no code tags".freeze, "<pre>\n<code>\n</code>".freeze].each do |input|
+        expect(described_class.convert_code_tags_to_triple_backticks(input)).to equal(input)
+        expect(legacy_convert_code_tags_to_triple_backticks.call(input)).to equal(input)
+      end
+    end
+
+    it "returns a new mutable UTF-8 String when code tags are converted" do
+      input = "<code>\nx\n</code>".freeze
+      result = described_class.convert_code_tags_to_triple_backticks(input)
+
+      expect(result).to eq(legacy_convert_code_tags_to_triple_backticks.call(input))
+      expect(result).not_to be_frozen
+      expect(result.encoding).to eq(Encoding::UTF_8)
+      expect { result << "!" }.not_to(change { input })
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["<code>", "</code>", "<code>\n", "\n</code>", "<pre>", "</pre>", "<", ">", "/", "code", "<code",
+                "\n", "\r\n", "\r", " ", "x", "```", "é", "🚀", "日本"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..30)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_convert_code_tags_to_triple_backticks.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.convert_code_tags_to_triple_backticks(sample)).to eq(expected), message
+        expect(parser.convert_code_tags_to_triple_backticks(sample)).to eq(expected), message
+      end
+    end
+  end
 end

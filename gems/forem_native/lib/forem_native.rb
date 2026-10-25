@@ -114,6 +114,16 @@ module ForemNative
       Native.convert_escaped_pipes_outside_codeblocks(content)
     end
 
+    # Turns bare `<code>` / `</code>` lines into triple backticks unless the content also has a
+    # `<pre>` tag, matching `MarkdownProcessor::Parser#convert_code_tags_to_triple_backticks`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so the
+    # parser's private `legacy_convert_code_tags_to_triple_backticks` keeps Ruby's semantics.
+    def convert_code_tags_to_triple_backticks(content)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.convert_code_tags_to_triple_backticks(content)
+    end
+
     # Wraps unquoted `<section>: value` front matter lines in double quotes (escaping inner
     # quotes), matching `MarkdownProcessor::Fixer::Base.add_quotes_to_section`.
     # Returns nil for anything but plain UTF-8 Strings (and for invalid UTF-8 or a section
