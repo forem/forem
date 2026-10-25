@@ -549,6 +549,15 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
     preload_context_notes(@pinned_stories + @stories)
     preload_reaction_counts(@pinned_stories + @stories)
+    preload_organizations(@pinned_stories + @stories) unless user_signed_in?
+  end
+
+  # Signed-out renders go through URL.article, which reads each org story's
+  # organization (custom domain check); batch those into one query.
+  def preload_organizations(stories)
+    ActiveRecord::Associations::Preloader.new(
+      records: stories.map(&:object).select(&:organization_id), associations: :organization,
+    ).call
   end
 
   # articles/_single_story calls `story.context_notes.first` per story. Preload them in one
