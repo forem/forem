@@ -137,6 +137,22 @@ fn fixer_underscores_in_usernames(ruby: &Ruby, markdown: RString) -> Option<RStr
     Some(escaped.map_or(markdown, |s| ruby.str_new(&s)))
 }
 
+fn convert_code_tags_to_triple_backticks(ruby: &Ruby, content: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange instead of re-validating the whole body, and returns `None` for invalid
+    // UTF-8 so Ruby raises its usual `ArgumentError`.
+    let converted = {
+        let text = unsafe { content.test_as_str() }?;
+        match forem_core::markdown::convert_code_tags_to_triple_backticks(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(converted) => Some(converted),
+        }
+    };
+    // Like the legacy early returns, hand back the input itself when nothing changes.
+    Some(converted.map_or(content, |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -172,6 +188,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_underscores_in_usernames",
         function!(fixer_underscores_in_usernames, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "convert_code_tags_to_triple_backticks",
+        function!(convert_code_tags_to_triple_backticks, 1),
     )?;
     Ok(())
 }
