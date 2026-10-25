@@ -123,6 +123,43 @@ RSpec.describe Middlewares::SetSubforem do
       end
     end
 
+    context "when the request host is a bare hostname or a subdomain" do
+      before do
+        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+        allow(Subforem).to receive(:cached_id_by_domain).with("example.com").and_return(1)
+        allow(Subforem).to receive(:cached_id_by_domain).with("community.example.com").and_return(2)
+        allow(Subforem).to receive_messages(cached_default_id: 1, cached_root_id: nil, cached_root_domain: nil,
+                                            cached_default_domain: "example.com",
+                                            cached_id_to_domain_hash: { 1 => "example.com",
+                                                                        2 => "community.example.com" },
+                                            cached_all_domains: ["example.com", "community.example.com"])
+        allow(Settings::General).to receive(:app_domain).and_return("example.com")
+        allow(Rack::Utils).to receive(:delete_cookie_header!)
+      end
+
+      it "drops the port from a passed_domain before looking up the subforem" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=community.example.com:3000"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "keeps the host from a passed_domain URL" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=http://community.example.com/x"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "removes the session cookies on a subdomain of the registrable domain" do
+        middleware.call(Rack::MockRequest.env_for("https://community.example.com/articles"))
+        expect(Rack::Utils).to have_received(:delete_cookie_header!)
+          .with(anything, "remember_user_token", domain: "community.example.com")
+      end
+
+      it "keeps the session cookies on the registrable domain itself" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/articles"))
+        expect(RequestStore.store[:subforem_id]).to eq(1)
+        expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+      end
+    end
+
     context "when a request has an empty body and a multipart Content-Type header" do
       let(:env) do
         Rack::MockRequest.env_for(
