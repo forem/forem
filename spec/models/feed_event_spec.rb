@@ -504,6 +504,8 @@ RSpec.describe FeedEvent do
 
     context "when multiple reactions occur within the throttle window", :throttled_call do
       it "throttles offshoot creation to at most one clone per window" do
+        feed_config
+
         expect {
           create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
           create(:feed_event, feed_config: feed_config, article: article, user: create(:user), category: "comment")
