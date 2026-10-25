@@ -14,7 +14,8 @@ class BillboardEventsController < ApplicationMetalController
     return head :ok if billboard_event_create_params[:billboard_id].blank?
 
     @billboard_event = ApplicationRecord.with_synchronous_commit_off do
-      BillboardEvent.create(billboard_event_create_params)
+      BillboardEvent.create(billboard_event_create_params.except(:billboard_id)
+        .merge(billboard: billboard_for_event(billboard_event_create_params[:billboard_id])))
     end
 
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
@@ -53,6 +54,14 @@ class BillboardEventsController < ApplicationMetalController
   end
 
   private
+
+  # The required belongs_to :billboard check would load the whole billboard row (body, html and
+  # targeting arrays) on every event. Only its existence matters here, so look up just the id,
+  # cast exactly as assigning display_ad_id would. A missing billboard still fails validation.
+  def billboard_for_event(raw_billboard_id)
+    billboard_id = BillboardEvent.type_for_attribute(:display_ad_id).cast(raw_billboard_id)
+    Billboard.select(:id).find_by(id: billboard_id) if billboard_id
+  end
 
   def billboard_event_params
     event_params = params[:billboard_event] || params[:display_ad_event] || ActionController::Parameters.new
