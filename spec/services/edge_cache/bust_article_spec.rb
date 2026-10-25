@@ -96,5 +96,18 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
       expect(cache_bust).to have_received(:call).with("/top/year").at_least(:once)
       expect(cache_bust).to have_received(:call).with("/top/infinity").at_least(:once)
     end
+
+    it "purges each tag API path once even when the article is top in every timeframe" do
+      top = create(:article, :past, tags: "ruby, rails", score: 500, published: true, past_published_at: 1.day.ago)
+      described_class.call(top)
+
+      %w[ruby rails].each do |tag|
+        12.times do |i|
+          expect(cache_bust).to have_received(:call).with("/api/articles?tag=#{tag}&top=#{i}").once
+        end
+      end
+      # Once from bust_home_pages and once (not once per tag) from bust_tag_pages
+      expect(cache_bust).to have_received(:call).with("/top/week").twice
+    end
   end
 end
