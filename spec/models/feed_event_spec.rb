@@ -374,6 +374,60 @@ RSpec.describe FeedEvent do
         )
         expect(feed_config.reload.feed_success_score).to eq(1.0)
       end
+
+      it "continues updating impression counters on every batch until reaching LOW_IMPRESSION_COUNT, then throttles" do
+        article = create(:article)
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(1)
+
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user2,
+          article_position: 2,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(2)
+
+        described_class.insert_all(
+          Array.new(FeedConfig::LOW_IMPRESSION_COUNT - 2) do |i|
+            {
+              article_id: article.id,
+              user_id: user1.id,
+              feed_config_id: feed_config.id,
+              category: :impression,
+              article_position: i + 3,
+              context_type: "home"
+            }
+          end,
+        )
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_impressions_count).to eq(FeedConfig::LOW_IMPRESSION_COUNT)
+
+        # Once at or above LOW_IMPRESSION_COUNT, subsequent impression updates within 5 minutes are throttled
+        described_class.insert_all(
+          [
+            {
+              article_id: article.id,
+              user_id: user2.id,
+              feed_config_id: feed_config.id,
+              category: :impression,
+              article_position: 1,
+              context_type: "home"
+            },
+          ],
+        )
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_impressions_count).to eq(FeedConfig::LOW_IMPRESSION_COUNT)
+      end
     end
   end
 
@@ -419,19 +473,41 @@ RSpec.describe FeedEvent do
   describe "after_save .create_feed_config_offshoot" do
     let(:article)     { create(:article) }
     let(:user)        { create(:user) }
-    let(:feed_config) { create(:feed_config) }
+    let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT) }
 
-    context "when feed_config is present and category is reaction" do
+    before do
+      allow(ThrottledCall).to receive(:perform).and_yield
+    end
+
+    context "when feed_config is proven and category is reaction" do
       it "calls create_slightly_modified_clone! on the feed_config" do
         expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
       end
     end
 
-    context "when feed_config is present and category is comment" do
+    context "when feed_config is proven and category is comment" do
       it "calls create_slightly_modified_clone! on the feed_config" do
         expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "comment")
+      end
+    end
+
+    context "when feed_config has fewer than LOW_IMPRESSION_COUNT impressions" do
+      let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1) }
+
+      it "does not call create_slightly_modified_clone!" do
+        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
+        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+      end
+    end
+
+    context "when multiple reactions occur within the throttle window", :throttled_call do
+      it "throttles offshoot creation to at most one clone per window" do
+        expect {
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+          create(:feed_event, feed_config: feed_config, article: article, user: create(:user), category: "comment")
+        }.to change(FeedConfig, :count).by(1)
       end
     end
 
