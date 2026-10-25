@@ -128,6 +128,27 @@ RSpec.describe "Editor" do
 
         expect(response).to be_successful
       end
+
+      it "ignores a cover_image given as a list instead of raising" do
+        article_body = <<~MARKDOWN
+          ---
+          title: Hello
+          cover_image:
+            - https://example.com/image.png
+          ---
+
+          Hello
+        MARKDOWN
+
+        post "/articles/preview",
+             headers: headers,
+             params: { article_body: article_body },
+             as: :json
+
+        expect(response).to be_successful
+        expect(response.parsed_body["cover_image"]).to be_nil
+        expect(response.parsed_body["title"]).to eq("Hello")
+      end
     end
   end
 end
