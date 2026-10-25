@@ -221,6 +221,7 @@
               
               <% if @article.type_of == "full_post" %>
                 <% cache("main-article-tags-#{@article.cached_tag_list_array.sort.join('-')}", expires_in: 72.hours) do %>
+                  <% preload_tag_colors([@article]) %>
                   <div class="spec__tags flex flex-wrap">
                     <% @article.cached_tag_list_array.each do |tag| %>
                       <%= render_tag_link(tag) %>
