@@ -34,6 +34,8 @@ class Tag < ActsAsTaggableOn::Tag
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   SUPPORTED_TAGS_SURROGATE_KEY = "supported_tags".freeze
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
+  # tags.hotness_score is a 4-byte integer column
+  HOTNESS_SCORE_RANGE = (-(2**31)..((2**31) - 1))
 
   belongs_to :badge, optional: true
 
@@ -328,9 +330,13 @@ class Tag < ActsAsTaggableOn::Tag
       .to_a
       .first
 
-    self.hotness_score =
+    # The busiest tags (many recent articles * a large taggings_count) can
+    # exceed the integer column, which would raise ActiveModel::RangeError on
+    # save, so cap the score at the column's limits.
+    self.hotness_score = (
       score_attributes.partial_score.to_i +
       (score_attributes.article_count.to_i * ((taggings_count + 6) / 2))
+    ).clamp(HOTNESS_SCORE_RANGE)
   end
 
   def bust_cache

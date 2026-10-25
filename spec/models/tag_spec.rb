@@ -248,6 +248,18 @@ RSpec.describe Tag do
     end
   end
 
+  describe "#hotness_score" do
+    it "is capped at the integer column limit for very busy tags" do
+      tag = create(:tag, name: "busytag")
+      create_list(:article, 3, tags: tag.name)
+      # 3 recent articles * (taggings_count + 6) / 2 exceeds 2**31 - 1
+      tag.update_column(:taggings_count, 2_000_000_000)
+
+      expect { tag.reload.save! }.not_to raise_error
+      expect(tag.reload.hotness_score).to eq(described_class::HOTNESS_SCORE_RANGE.max)
+    end
+  end
+
   describe "followed_by and antifollowed_by" do
     let(:user) { create(:user) }
     let(:first_followed_tag) { create(:tag, name: "tagone") }
