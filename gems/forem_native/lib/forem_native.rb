@@ -135,6 +135,16 @@ module ForemNative
       Native.fixer_split_tags(markdown)
     end
 
+    # Lowercases `published:` keys at line starts inside front matter blocks, matching
+    # `MarkdownProcessor::Fixer::Base.lowercase_published`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so
+    # `Fixer::Base` can use its private `legacy_lowercase_published`.
+    def fixer_lowercase_published(markdown)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_lowercase_published(markdown)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
