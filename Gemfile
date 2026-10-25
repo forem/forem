@@ -37,7 +37,7 @@ gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
-gem "feedjira", "~> 3.2" # A feed fetching and parsing library
+gem "feedjira", "~> 4.0" # A feed fetching and parsing library
 gem "field_test", "~> 1.0" # A/B testing
 gem "flipper", "~> 1.4" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 1.4" # Store Flipper flags in ActiveRecord
