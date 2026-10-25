@@ -2666,7 +2666,7 @@ RSpec.describe Article do
     end
 
     let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
-    let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:comments) { double("comments", pluck: [3]) } # rubocop:disable RSpec/VerifiedDoubles
 
     it "stably sets the correct blackbox values" do
       article.update_score
@@ -2892,6 +2892,17 @@ RSpec.describe Article do
         # Total: -1 + -1 + 10 + -1 = 7
         expect(article.reload.comment_score).to eq(7)
       end
+
+      it "reads only comment scores instead of loading full comment rows" do
+        create(:comment, commentable: article, score: 4)
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { article.update_score }
+
+        expect(queries).to all(start_with('SELECT "comments"."score"'))
+        expect(article.reload.comment_score).to eq(4)
+      end
     end
 
     context "triggering LinkedDomains::UpdateScoreWorker" do
@@ -2946,7 +2957,7 @@ RSpec.describe Article do
   describe "automod_label adjustments" do
     before do
       allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
-      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(article).to receive(:comments).and_return(double(pluck: []))
       allow(BlackBox).to receive(:article_hotness_score).and_return(0)
     end
 
@@ -3089,7 +3100,7 @@ RSpec.describe Article do
   describe "established_user_adjustment in update_score" do
     before do
       allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
-      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(article).to receive(:comments).and_return(double(pluck: []))
       allow(BlackBox).to receive(:article_hotness_score).and_return(0)
       allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
     end
