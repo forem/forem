@@ -258,6 +258,15 @@ fn quickie_title_html(title: RString, truncate_for_feed: bool) -> Option<String>
     ))
 }
 
+fn content_includes_title(content: RString, title: RString) -> Option<bool> {
+    // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let content = unsafe { content.test_as_str() }?;
+    let title = unsafe { title.test_as_str() }?;
+    Some(forem_core::text::content_includes_title(content, title))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -310,5 +319,9 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
     native_mod.define_singleton_method("quickie_title_html", function!(quickie_title_html, 2))?;
     native_mod.define_singleton_method("host_without_www", function!(host_without_www, 1))?;
+    native_mod.define_singleton_method(
+        "content_includes_title",
+        function!(content_includes_title, 2),
+    )?;
     Ok(())
 }
