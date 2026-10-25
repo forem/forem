@@ -509,9 +509,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
     end
 
-    it "selects from the newest low-impression pool when roll is < 20" do
+    it "selects uniformly from the newest low-impression pool when roll is < 20" do
       allow(described_class).to receive(:rand).with(100).and_return(10)
-      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
 
       expect(described_class.select_for_feed).to eq(new_config)
     end
