@@ -743,7 +743,7 @@ GEM
     psych (5.4.0)
       date
       stringio
-    public_suffix (6.0.2)
+    public_suffix (7.0.5)
     puma (5.6.9)
       nio4r (~> 2.0)
     pundit (2.3.1)
@@ -1247,7 +1247,7 @@ DEPENDENCIES
   pghero (~> 3.6)
   pry (~> 0.14)
   pry-rails (~> 0.3)
-  public_suffix (~> 6.0)
+  public_suffix (~> 7.0)
   puma (~> 5.6.4)
   pundit (~> 2.2)
   pundit-matchers (~> 1.7)
