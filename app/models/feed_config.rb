@@ -14,7 +14,7 @@ class FeedConfig < ApplicationRecord
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs
                  where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
                    .order(created_at: :desc)
-                   .limit(rand(1..TOP_POOL_LIMIT))
+                   .limit(TOP_POOL_LIMIT)
                    .sample
                elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
                  order("RANDOM()").limit(1).first
