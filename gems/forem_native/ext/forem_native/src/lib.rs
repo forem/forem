@@ -267,6 +267,42 @@ fn content_includes_title(content: RString, title: RString) -> Option<bool> {
     Some(forem_core::text::content_includes_title(content, title))
 }
 
+/// Hosts arrive as binary (Puma headers) or UTF-8 (query params); both are ASCII-compatible,
+/// which is all the hostname byte checks rely on.
+fn is_ascii_compatible_host(ruby: &Ruby, s: RString) -> bool {
+    s.is_utf8_compatible_encoding() || s.enc_get() == ruby.ascii8bit_encindex()
+}
+
+fn subforem_request_domain(ruby: &Ruby, raw: RString) -> Option<RString> {
+    if !is_ascii_compatible_host(ruby, raw) {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we allocate any Ruby objects.
+    let bytes = unsafe { raw.as_slice() };
+    let len = forem_core::url::subforem_request_domain_len(bytes)?;
+    if len == bytes.len() {
+        // Without a port the domain is the host itself, so skip the copy.
+        return Some(raw);
+    }
+    let domain = bytes[..len].to_vec();
+    Some(ruby.enc_str_new(domain, raw.enc_get()))
+}
+
+fn subforem_subdomain_host(ruby: &Ruby, host: RString, sld: RString, tld: RString) -> Option<bool> {
+    if ![host, sld, tld]
+        .into_iter()
+        .all(|s| is_ascii_compatible_host(ruby, s))
+    {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` slice borrows; `forem_core` never calls into Ruby, and
+    // the borrows end before returning.
+    unsafe {
+        forem_core::url::subforem_subdomain_host(host.as_slice(), sld.as_slice(), tld.as_slice())
+    }
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -322,6 +358,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "content_includes_title",
         function!(content_includes_title, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "subforem_request_domain",
+        function!(subforem_request_domain, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "subforem_subdomain_host",
+        function!(subforem_subdomain_host, 3),
     )?;
     Ok(())
 }
