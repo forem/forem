@@ -644,6 +644,31 @@ RSpec.describe "StoriesIndex" do
         .with(a_string_starting_with("reaction_counts_for_reactable"), any_args).once
       expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
     end
+
+    it "does not query organizations once per org story when signed out", :aggregate_failures do
+      org = create(:organization)
+      count_org_queries = lambda do
+        org_queries = 0
+        callback = lambda do |*, payload|
+          org_queries += 1 if payload[:sql].include?("FROM \"organizations\"")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/#{user.username}" }
+        org_queries
+      end
+
+      create(:article, user: user, organization: org, published: true)
+      # Warm-up render: the first request pays one-off lookups unrelated to stories.
+      count_org_queries.call
+      baseline = count_org_queries.call
+      expect(response).to have_http_status(:ok)
+
+      create_list(:article, 2, user: user, organization: org, published: true)
+      2.times { create(:article, user: user, organization: create(:organization), published: true) }
+
+      expect(count_org_queries.call).to be <= baseline
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(org.name))
+    end
   end
 
   describe "edge-cached pages with a pending flash message" do
