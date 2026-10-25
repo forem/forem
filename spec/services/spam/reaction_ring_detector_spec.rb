@@ -190,6 +190,29 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
 
         expect(reacted_author_queries).to eq(1)
       end
+
+      it "plucks each ring member's reacted-to authors only once" do
+        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
+        member_plucks = Hash.new(0)
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          next unless sql.include?('FROM "reactions"')
+          next unless sql.include?("JOIN articles ON reactions.reactable_id = articles.id")
+
+          binds = payload[:type_casted_binds]
+          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
+
+          member_ids.each do |id|
+            member_plucks[id] += 1 if binds.include?(id) || sql.match?(/"reactions"\."user_id" = #{id}\b/)
+          end
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(member_plucks.values_at(*member_ids)).to eq([1, 1, 1])
+      end
     end
 
     context "when users have legitimate community connections" do
