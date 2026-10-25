@@ -1384,4 +1384,89 @@ RSpec.describe ForemNative do
       expect(accepted).to eq(1_000)
     end
   end
+
+  describe ".content_includes_title" do
+    let(:legacy_content_includes_title) do
+      ->(content, title) { content.gsub(/[[:space:]]/, " ").include?(title.delete("…")) }
+    end
+    let(:feed_item_class) do
+      Class.new do
+        attr_reader :url, :title, :content
+
+        def initialize(url:, title:, content:, categories: nil)
+          @url = url
+          @title = title
+          @content = content
+          @categories = categories
+        end
+
+        def [](field)
+          instance_variable_get(:"@#{field}")
+        end
+      end
+    end
+    let(:medium_reply?) do
+      lambda do |content, title, categories: nil|
+        item = feed_item_class.new(url: " https://Medium.com/@user/reply-1 ", title: title, content: content,
+                                   categories: categories)
+        Feeds::CheckItemMediumReply.call(item)
+      end
+    end
+
+    it "matches the whitespace-normalized include? check across edge cases" do
+      [
+        ["", ""], ["anything", ""], ["", "a"], ["anything", "……"], ["<p>Hello world</p>", "Hello world"],
+        ["<p>Hello world</p>", "Goodbye"], ["I think this is right", "I think…"], ["abc", "a…b…c"],
+        ["I think…", "I think… really"], ["I think…", "I think"], ["Hello\nworld", "Hello world"],
+        ["Hello\r\nworld", "Hello world"], ["Hello\r\nworld", "Hello  world"], ["Hello\u00A0world", "Hello world"],
+        ["a\u2028b\u0085c\u3000d\u1680e\u202Ff\u205Fg", "a b c d e f g"], ["Hello\nworld", "Hello\nworld"],
+        ["Hello\u00A0world", "Hello\u00A0world"], ["tab\there", "\t"], ["a\u200Bb", "a b"], ["a\u200Bb", "a\u200Bb"],
+        ["a\u180Eb", "a b"], ["日本語\nのタイトル 🎉", "日本語 のタイトル 🎉"], ["日本語のタイトル", "タイトル🎉"]
+      ].each do |content, title|
+        expected = legacy_content_includes_title.call(content, title)
+        expect(described_class.content_includes_title(content, title)).to be(expected), [content, title].inspect
+        expect(medium_reply?.call(content, title)).to be(expected)
+      end
+      expect(medium_reply?.call("Hello world", "Hello world", categories: ["dev"])).to be(false)
+    end
+
+    it "declines non-UTF-8 and invalid strings and keeps the service's legacy result" do
+      [
+        [nil, "a"], ["a", nil], ["a\xFFb", "a"], ["a", "\xFF"], ["ab".encode("UTF-16LE"), "a"], ["ab".b, "a"],
+        ["ab", "a".encode("US-ASCII")], [ActiveSupport::SafeBuffer.new("ab"), "a"], [:ab, "a"]
+      ].each do |content, title|
+        expect(described_class.content_includes_title(content, title)).to be_nil, [content, title].inspect
+      end
+      expect(medium_reply?.call("Hello\nworld", "Hello world".encode("US-ASCII"))).to be(true)
+      expect(medium_reply?.call("ab".b, "a".b)).to be(true)
+      expect { medium_reply?.call(nil, "a") }.to raise_error(NoMethodError)
+      expect { medium_reply?.call("a\xFFb", "a") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["a", "b", "Hello", "world", " ", "  ", "\n", "\r\n", "\t", "\v", "\f", "\u0085", "\u00A0", "\u1680",
+                "\u2000", "\u200A", "\u200B", "\u2028", "\u202F", "\u205F", "\u3000", "…", "...", "<p>", "</p>",
+                "é", "日本", "\u{1F600}", "-", "."]
+      positives = 0
+
+      1_000.times do |iteration|
+        content = Array.new(rng.rand(1..16)) { tokens.sample(random: rng) }.join
+        title = if rng.rand < 0.5
+                  start = rng.rand(content.length)
+                  content[start, rng.rand(1..8)].gsub(/[[:space:]]/) { rng.rand < 0.8 ? " " : _1 }
+                else
+                  Array.new(rng.rand(1..4)) { tokens.sample(random: rng) }.join
+                end
+        title = title.chars.flat_map { |char| rng.rand < 0.1 ? [char, "…"] : [char] }.join
+
+        expected = legacy_content_includes_title.call(content, title)
+        positives += 1 if expected
+        message = "iteration #{iteration}: #{[content, title].inspect}"
+        expect(described_class.content_includes_title(content, title)).to be(expected), message
+        expect(medium_reply?.call(content, title)).to be(expected)
+      end
+      expect(positives).to be_between(200, 800)
+    end
+  end
 end

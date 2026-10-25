@@ -238,6 +238,18 @@ module ForemNative
       Native.host_without_www(url)
     end
 
+    # Whether `content` with every `[[:space:]]` character replaced by a space includes `title`
+    # without its `…` characters, matching the check in
+    # `Feeds::CheckItemMediumReply#content_is_not_the_title?`.
+    # Returns nil for anything but plain UTF-8 Strings (and for invalid UTF-8) so the service
+    # can use its private `legacy_content_is_not_the_title?`.
+    def content_includes_title(content, title)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+      return unless title.instance_of?(String) && title.encoding == Encoding::UTF_8
+
+      Native.content_includes_title(content, title)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
