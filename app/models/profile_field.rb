@@ -22,10 +22,15 @@ class ProfileField < ApplicationRecord
   after_destroy :clear_request_store_cache
   after_save :clear_request_store_cache
 
+  # Loads every display area in one query so pages rendering both the header
+  # and the left sidebar (e.g. profiles) only hit the table once per request.
   def self.cached_display_area_fields(area)
-    RequestStore.fetch(:"profile_fields_#{area}") do
-      public_send(area).pluck(:label, :attribute_name).to_h
+    fields_by_area = RequestStore.fetch(:profile_fields_by_display_area) do
+      pluck(:display_area, :label, :attribute_name)
+        .group_by(&:first)
+        .transform_values { |rows| rows.to_h { |_display_area, label, attribute_name| [label, attribute_name] } }
     end
+    fields_by_area.fetch(area.to_s, {})
   end
 
   def self.clear_request_store_cache
