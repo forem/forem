@@ -185,6 +185,15 @@ module ForemNative
       Native.fixer_underscores_in_usernames(markdown)
     end
 
+    # Builds the `https://{domain}/{directory}/image/{options*}/{src}` Cloudflare Images URL,
+    # matching the `Addressable::Template` expansion in `Images::Optimizer.cloudflare`.
+    # Returns nil for values other than nil, Integers, and valid UTF-8 Strings (and for text
+    # at or above U+0300, which Addressable NFC-normalizes) so `Images::Optimizer` can use its
+    # private `legacy_cloudflare`.
+    def cloudflare_image_url(domain, directory, width, height, fit, img_src, src)
+      Native.cloudflare_image_url(domain, directory, width, height, fit, img_src, src)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
