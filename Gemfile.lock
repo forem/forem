@@ -97,8 +97,9 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.4)
-    ahoy_matey (5.0.2)
-      activesupport (>= 6.1)
+    ahoy_matey (5.5.0)
+      activesupport (>= 7.2)
+      cgi
       device_detector (>= 1)
       safely_block (>= 0.4)
     algolia (2.3.4)
@@ -1148,7 +1149,7 @@ DEPENDENCIES
   acts_as_follower!
   addressable (~> 2.8)
   ahoy_email (~> 2.2.0)
-  ahoy_matey (~> 5.0.2)
+  ahoy_matey (~> 5.5)
   algoliasearch-rails (~> 2.3)
   amazing_print (~> 2.0)
   analytics-ruby (~> 2.5)
