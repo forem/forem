@@ -18,22 +18,7 @@ class PollSkipsController < ApplicationController
       return
     end
 
-    # For survey polls, create skip with session_start
-    # For regular polls, use the old behavior
-    if poll.survey.present?
-      # Survey poll - create skip with session if not already recorded in this session
-      unless poll.vote_previously_recorded_for_in_session?(user_id: current_user.id, session_start: session_start)
-        poll_skip = PollSkip.new(
-          user_id: current_user.id,
-          poll_id: poll.id,
-          session_start: session_start,
-        )
-        poll_skip.save!
-      end
-    else
-      # Regular poll - use old behavior
-      poll.poll_skips.create_or_find_by(user_id: current_user.id)
-    end
+    record_poll_skip!(poll: poll, session_start: session_start)
 
     # Check if this skip completes a survey
     SurveyCompletionService.check_and_mark_completion(user: current_user, poll: poll)
@@ -59,6 +44,24 @@ class PollSkipsController < ApplicationController
   end
 
   private
+
+  def record_poll_skip!(poll:, session_start:)
+    if poll.survey.present?
+      return if poll.vote_previously_recorded_for_in_session?(user_id: current_user.id, session_start: session_start)
+
+      poll_skip = PollSkip.find_or_initialize_by(
+        user_id: current_user.id,
+        poll_id: poll.id,
+      )
+      poll_skip.session_start = session_start
+      poll_skip.save!
+    else
+      poll.poll_skips.create_or_find_by(user_id: current_user.id)
+    end
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    raise unless poll.survey.present? &&
+      poll.vote_previously_recorded_for_in_session?(user_id: current_user.id, session_start: session_start)
+  end
 
   def poll_skips_params
     params.require(:poll_skip).permit(POLL_SKIPS_PERMITTED_PARAMS)

@@ -187,15 +187,15 @@ class SurveyTag < LiquidTagBase
             }
     
             // Store pending votes for multiple choice
-            if (!pendingVotes[pollId]) {
-              pendingVotes[pollId] = [];
-            }
-    
             const selectedOptions = pollElement.querySelectorAll('input[type="checkbox"]:checked');
-            pendingVotes[pollId] = Array.from(selectedOptions).map(opt => opt.closest('.survey-poll-option').dataset.optionId);
-    
-            // Check if any option is selected to enable next button
             const hasSelection = selectedOptions.length > 0;
+            if (hasSelection) {
+              pendingVotes[pollId] = Array.from(selectedOptions).map(opt => opt.closest('.survey-poll-option').dataset.optionId);
+            } else {
+              delete pendingVotes[pollId];
+            }
+
+            // Check if any option is selected to enable next button
             pollElement.classList.toggle('is-answered', hasSelection);
             updateUI();
           } else {
@@ -246,15 +246,15 @@ class SurveyTag < LiquidTagBase
     #{'      '}
           for (const [pollId, voteData] of entriesToSubmit) {
             if (Array.isArray(voteData)) {
-              // Multiple choice - submit each selected option
-              voteData.forEach(optionId => {
+              // Multiple choice - submit all selected options in a single request
+              if (voteData.length > 0) {
                 promises.push(
                   window.fetch('/poll_votes', {
                     method: 'POST',
                     headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                       poll_vote: {
-                        poll_option_id: optionId,
+                        poll_option_id: voteData[0],
                         poll_option_ids: voteData,
                         session_start: currentSession
                       }
@@ -262,7 +262,7 @@ class SurveyTag < LiquidTagBase
                     credentials: 'same-origin',
                   })
                 );
-              });
+              }
             } else if (typeof voteData === 'object' && voteData.type === 'text') {
               // Text input - submit text response
               promises.push(

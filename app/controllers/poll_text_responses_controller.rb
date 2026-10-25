@@ -11,22 +11,7 @@ class PollTextResponsesController < ApplicationController
       return
     end
 
-    # For survey polls, find or initialize within the same session so users can update responses via Previous/Next
-    # For regular polls, build a new response to preserve existing non-survey behavior
-    @text_response = if @poll.survey.present?
-                       @poll.poll_text_responses.find_or_initialize_by(
-                         user: current_user,
-                         session_start: session_start,
-                       )
-                     else
-                       @poll.poll_text_responses.build(
-                         user: current_user,
-                         session_start: session_start,
-                       )
-                     end
-    @text_response.text_content = params[:poll_text_response][:text_content]
-
-    if @text_response.save
+    if save_text_response(session_start: session_start, text_content: params[:poll_text_response][:text_content])
       # Check if this response completes a survey
       SurveyCompletionService.check_and_mark_completion(user: current_user, poll: @poll)
     else
@@ -49,6 +34,43 @@ class PollTextResponsesController < ApplicationController
   end
 
   private
+
+  def save_text_response(session_start:, text_content:)
+    # For survey polls, find or initialize within the same session so users can update responses via Previous/Next
+    # For regular polls, build a new response to preserve existing non-survey behavior
+    @text_response = if @poll.survey.present?
+                       PollTextResponse.find_or_initialize_by(
+                         poll_id: @poll.id,
+                         user_id: current_user.id,
+                         session_start: session_start,
+                       )
+                     else
+                       @poll.poll_text_responses.build(
+                         user: current_user,
+                         session_start: session_start,
+                       )
+                     end
+    @text_response.text_content = text_content
+    return true if @text_response.save
+
+    retry_survey_text_response_save(session_start: session_start, text_content: text_content)
+  rescue ActiveRecord::RecordNotUnique
+    raise if @poll.survey.blank?
+
+    retry_survey_text_response_save(session_start: session_start, text_content: text_content)
+  end
+
+  def retry_survey_text_response_save(session_start:, text_content:)
+    return false unless @poll.survey.present? &&
+      (@text_response.errors.empty? || @text_response.errors.of_kind?(:poll_id, :taken))
+
+    existing = @poll.poll_text_responses.find_by(user: current_user, session_start: session_start)
+    return false unless existing
+
+    @text_response = existing
+    @text_response.text_content = text_content
+    @text_response.save
+  end
 
   def set_poll
     @poll = Poll.find(params[:poll_id])

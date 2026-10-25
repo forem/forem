@@ -14,15 +14,16 @@ class PollVotesController < ApplicationController
   end
 
   def create
-    poll_option = PollOption.find(poll_vote_params[:poll_option_id])
+    option_id = poll_vote_params[:poll_option_id] || Array(poll_vote_params[:poll_option_ids]).first
+    poll_option = PollOption.find(option_id)
     poll = poll_option.poll
     session_start = poll_vote_params[:session_start]&.to_i || 0
 
     # Check if this poll belongs to a survey and if submission is allowed
-    if poll.survey.present? && !can_submit_survey_vote?(poll: poll, session_start: session_start)
+    if poll.survey.present? && !poll.survey.can_user_submit?(current_user)
       render json: { voting_data: poll.voting_data,
                      poll_id: poll.id,
-                     user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
+                     user_vote_poll_option_id: poll_option.id,
                      voted: true }
       return
     end
@@ -32,9 +33,9 @@ class PollVotesController < ApplicationController
     # Check if this vote completes a survey
     SurveyCompletionService.check_and_mark_completion(user: current_user, poll: poll)
 
-    render json: { voting_data: poll.voting_data,
+    render json: { voting_data: poll.reload.voting_data,
                    poll_id: poll.id,
-                   user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
+                   user_vote_poll_option_id: poll_option.id,
                    voted: true }
   rescue StandardError => e
     Rails.error.report(e, context: {
@@ -50,13 +51,6 @@ class PollVotesController < ApplicationController
 
   private
 
-  def can_submit_survey_vote?(poll:, session_start:)
-    return true if poll.survey.can_user_submit?(current_user)
-
-    # Allow concurrent option submissions for a multiple-choice poll within the active session
-    poll.multiple_choice? && session_start.positive? && session_start == poll.survey.get_latest_session(current_user)
-  end
-
   def record_poll_vote!(poll:, poll_option:, session_start:)
     if poll.multiple_choice?
       record_multiple_choice_vote!(poll: poll, poll_option: poll_option, session_start: session_start)
@@ -66,26 +60,33 @@ class PollVotesController < ApplicationController
   end
 
   def record_multiple_choice_vote!(poll:, poll_option:, session_start:)
-    lookup_attrs = {
+    scope_attrs = {
       user_id: current_user.id,
-      poll_id: poll.id,
-      poll_option_id: poll_option.id
+      poll_id: poll.id
     }
-    lookup_attrs[:session_start] = session_start if poll.survey.present?
+    scope_attrs[:session_start] = session_start if poll.survey.present?
 
-    if poll.survey.present? && poll_vote_params[:poll_option_ids].present?
-      selected_ids = Array(poll_vote_params[:poll_option_ids]).map(&:to_i)
-      PollVote.where(
-        user_id: current_user.id,
-        poll_id: poll.id,
-        session_start: session_start,
-      ).where.not(poll_option_id: selected_ids).destroy_all
+    has_option_ids = poll_vote_params[:poll_option_ids].present?
+    selected_ids = if has_option_ids
+                     poll.poll_options.where(id: Array(poll_vote_params[:poll_option_ids]).map(&:to_i)).ids
+                   else
+                     [poll_option.id]
+                   end
+
+    poll.with_lock do
+      PollVote.where(scope_attrs).where.not(poll_option_id: selected_ids).destroy_all if has_option_ids
+
+      selected_ids.each do |option_id|
+        create_multiple_choice_option_vote!(scope_attrs.merge(poll_option_id: option_id))
+      end
     end
+  end
 
-    poll_vote = PollVote.find_or_initialize_by(lookup_attrs)
+  def create_multiple_choice_option_vote!(vote_attrs)
+    poll_vote = PollVote.find_or_initialize_by(vote_attrs)
     poll_vote.save! if poll_vote.new_record?
   rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-    raise unless PollVote.exists?(lookup_attrs)
+    raise unless PollVote.exists?(vote_attrs)
   end
 
   def record_single_choice_vote!(poll:, poll_option:, session_start:)

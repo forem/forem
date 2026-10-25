@@ -70,6 +70,27 @@ RSpec.describe "PollText-responsesController", type: :request do
         expect(Rails.error).not_to have_received(:report)
         expect(PollTextResponse.find_by(user: user, poll: poll, session_start: 1).text_content).to eq("Updated text")
       end
+
+      it "retries and updates the response without reporting an error when a concurrent insert wins the race" do
+        allow(Rails.error).to receive(:report)
+        raced_record = PollTextResponse.new(poll: poll, user: user, session_start: 1)
+
+        allow(PollTextResponse).to receive(:find_or_initialize_by).and_wrap_original do |_method, **_args|
+          create(:poll_text_response, user: user, poll: poll, text_content: "Concurrent text", session_start: 1)
+          raced_record
+        end
+
+        post "/polls/#{poll.id}/poll_text_responses", params: {
+          poll_text_response: {
+            text_content: "Winning text",
+            session_start: 1
+          }
+        }
+
+        expect(response).to have_http_status(:ok)
+        expect(Rails.error).not_to have_received(:report)
+        expect(PollTextResponse.find_by(user: user, poll: poll, session_start: 1).text_content).to eq("Winning text")
+      end
     end
 
     context "when poll belongs to a survey with resubmission not allowed" do
