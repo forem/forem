@@ -250,6 +250,26 @@ module ForemNative
       Native.content_includes_title(content, title)
     end
 
+    # Returns the domain `Middlewares::SetSubforem` looks up for a request host (or its
+    # `passed_domain` param): the host itself, without an all-digit `:port`.
+    # Returns nil for non-Strings and anything but a bare `[A-Za-z0-9.-]` hostname (full URLs,
+    # paths, userinfo, non-ASCII) so the middleware can fall back to `URI.parse`.
+    def subforem_request_domain(raw)
+      return unless raw.instance_of?(String)
+
+      Native.subforem_request_domain(raw)
+    end
+
+    # Whether `host` matches `/^([^.]+)\.#{sld}\.#{tld}$/`, the subdomain check
+    # `Middlewares::SetSubforem` builds from `PublicSuffix.parse(host)` on every request.
+    # Returns nil for non-Strings and for hosts or labels outside `[A-Za-z0-9.-]` so the
+    # middleware can build the `Regexp`.
+    def subforem_subdomain_host(host, sld, tld)
+      return unless host.instance_of?(String) && sld.instance_of?(String) && tld.instance_of?(String)
+
+      Native.subforem_subdomain_host(host, sld, tld)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

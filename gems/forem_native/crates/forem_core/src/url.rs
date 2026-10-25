@@ -341,6 +341,67 @@ pub fn host_without_www(url: &str) -> Option<String> {
     })
 }
 
+fn is_hostname_byte(byte: u8) -> bool {
+    byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'-')
+}
+
+/// Byte length of the domain `Middlewares::SetSubforem` looks up for a request host (or its
+/// `passed_domain` param): `URI.parse(raw).host.presence`, else `raw` without an `http(s)://`
+/// prefix, path, or port, else `raw` itself.
+///
+/// Only bare hostnames (`[A-Za-z0-9.-]+`) with an optional all-digit `:port` are handled.
+/// Without a `//` `URI` finds no host in those, so the domain is everything before the colon.
+/// Returns `None` for anything else so Ruby can run its `URI.parse` fallback chain.
+pub fn subforem_request_domain_len(raw: &[u8]) -> Option<usize> {
+    let end = raw
+        .iter()
+        .position(|&byte| byte == b':')
+        .unwrap_or(raw.len());
+    let (host, port) = raw.split_at(end);
+    let valid = !host.is_empty()
+        && host.iter().all(|&byte| is_hostname_byte(byte))
+        && port.iter().skip(1).all(u8::is_ascii_digit);
+    valid.then_some(end)
+}
+
+/// Whether `host` matches `/^([^.]+)\.#{sld}\.#{tld}$/`, the subdomain check
+/// `Middlewares::SetSubforem` builds from `PublicSuffix.parse(host)` on every request.
+///
+/// The labels are interpolated unescaped, so each `.` in `tld` matches any character. Only
+/// `[A-Za-z0-9.-]` hosts with non-empty `[A-Za-z0-9-]` `sld`s and `[A-Za-z0-9.-]` `tld`s are
+/// handled: without newlines `^` and `$` anchor the whole host, and `-` is a literal outside a
+/// character class. Returns `None` for anything else so Ruby can build the `Regexp`.
+pub fn subforem_subdomain_host(host: &[u8], sld: &[u8], tld: &[u8]) -> Option<bool> {
+    let valid = host.iter().all(|&byte| is_hostname_byte(byte))
+        && !sld.is_empty()
+        && sld
+            .iter()
+            .all(|&byte| byte.is_ascii_alphanumeric() || byte == b'-')
+        && !tld.is_empty()
+        && tld.iter().all(|&byte| is_hostname_byte(byte));
+    if !valid {
+        return None;
+    }
+
+    // `\.#{sld}\.#{tld}` has a fixed length, and `([^.]+)` needs at least one byte before it.
+    let suffix_len = sld.len() + tld.len() + 2;
+    if host.len() <= suffix_len {
+        return Some(false);
+    }
+    let (subdomain, suffix) = host.split_at(host.len() - suffix_len);
+    let (dot_sld, dot_tld) = suffix.split_at(sld.len() + 1);
+    Some(
+        !subdomain.contains(&b'.')
+            && dot_sld[0] == b'.'
+            && &dot_sld[1..] == sld
+            && dot_tld[0] == b'.'
+            && dot_tld[1..]
+                .iter()
+                .zip(tld)
+                .all(|(&byte, &pattern)| pattern == b'.' || byte == pattern),
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -562,6 +623,97 @@ mod tests {
             "https://a.com/\u{1f600}",
         ] {
             assert_eq!(host_without_www(url), None, "{url:?}");
+        }
+    }
+
+    #[test]
+    fn subforem_request_domain_drops_only_a_port() {
+        for (raw, domain) in [
+            ("dev.to", "dev.to"),
+            ("DEV.to", "DEV.to"),
+            ("community.example.com", "community.example.com"),
+            ("localhost", "localhost"),
+            ("localhost:3000", "localhost"),
+            ("dev.to:443", "dev.to"),
+            ("dev.to:", "dev.to"),
+            ("127.0.0.1:3000", "127.0.0.1"),
+            ("1a:2", "1a"),
+            ("a-b.c-d:0", "a-b.c-d"),
+            (".:1", "."),
+            ("...", "..."),
+            ("-", "-"),
+        ] {
+            let len = subforem_request_domain_len(raw.as_bytes());
+            assert_eq!(len.map(|len| &raw[..len]), Some(domain), "{raw:?}");
+        }
+    }
+
+    #[test]
+    fn subforem_request_domain_declines_urls_and_odd_hosts() {
+        for raw in [
+            "",
+            " ",
+            ":3000",
+            "https://dev.to",
+            "dev.to/path",
+            "dev.to:443:1",
+            "dev.to:x",
+            "dev.to:44 ",
+            " dev.to",
+            "dev_to",
+            "user@example.com",
+            "[::1]:3000",
+            "d\u{e9}v.to",
+            "dev.to\n",
+        ] {
+            assert_eq!(subforem_request_domain_len(raw.as_bytes()), None, "{raw:?}");
+        }
+    }
+
+    #[test]
+    fn subforem_subdomain_host_matches_the_interpolated_regexp() {
+        for (host, sld, tld, expected) in [
+            ("dev.to", "dev", "to", false),
+            ("www.dev.to", "dev", "to", true),
+            ("a.b.dev.to", "dev", "to", false),
+            ("xdev.to", "dev", "to", false),
+            ("a.dev.to", "dev", "to", true),
+            ("a.DEV.to", "dev", "to", false),
+            ("a.bbc.co.uk", "bbc", "co.uk", true),
+            ("a.bbc.coxuk", "bbc", "co.uk", true),
+            ("a.bbc.co-uk", "bbc", "co.uk", true),
+            (".dev.to", "dev", "to", false),
+            ("a.dev.to.", "dev", "to", false),
+            ("a.devxto", "dev", "to", false),
+            ("a-b.my-site.io", "my-site", "io", true),
+            ("", "dev", "to", false),
+        ] {
+            assert_eq!(
+                subforem_subdomain_host(host.as_bytes(), sld.as_bytes(), tld.as_bytes()),
+                Some(expected),
+                "{host:?} {sld:?} {tld:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn subforem_subdomain_host_declines_regexp_metacharacters() {
+        for (host, sld, tld) in [
+            ("a.dev.to", "", "to"),
+            ("a.dev.to", "dev", ""),
+            ("a.dev.to", "d.v", "to"),
+            ("a.dev.to", "de*", "to"),
+            ("a.dev.to", "dev", "t+"),
+            ("a.dev.to\n", "dev", "to"),
+            ("a b.dev.to", "dev", "to"),
+            ("a_b.dev.to", "dev", "to"),
+            ("\u{e4}.dev.to", "dev", "to"),
+        ] {
+            assert_eq!(
+                subforem_subdomain_host(host.as_bytes(), sld.as_bytes(), tld.as_bytes()),
+                None,
+                "{host:?} {sld:?} {tld:?}"
+            );
         }
     }
 }

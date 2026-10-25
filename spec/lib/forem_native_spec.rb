@@ -1469,4 +1469,115 @@ RSpec.describe ForemNative do
       expect(positives).to be_between(200, 800)
     end
   end
+
+  describe ".subforem_request_domain" do
+    let(:legacy_subforem_request_domain) do
+      lambda do |raw_domain|
+        parsed_host = begin
+          URI.parse(raw_domain).host
+        rescue StandardError
+          nil
+        end
+        parsed_host.presence ||
+          raw_domain.gsub(%r{\Ahttps?://}, "").split("/").first&.split(":")&.first.presence || raw_domain
+      end
+    end
+    let(:middleware) { Middlewares::SetSubforem.new(->(_env) { [200, {}, []] }) }
+
+    it "matches the URI.parse domain extraction across edge cases" do
+      [
+        "dev.to", "DEV.to", "community.example.com", "localhost", "localhost:3000", "dev.to:443", "dev.to:",
+        "127.0.0.1:3000", "1a:2", "a-b.c-d:0", ".:1", "...", "-", "dev.to".b, "dev.to:3000".b,
+        "dev.to".encode("US-ASCII")
+      ].each do |raw|
+        actual = described_class.subforem_request_domain(raw)
+        expect(actual).to eq(legacy_subforem_request_domain.call(raw)), raw.inspect
+        expect(actual.encoding).to eq(raw.encoding)
+      end
+      host = +"dev.to"
+      expect(described_class.subforem_request_domain(host)).to equal(host)
+    end
+
+    it "declines domains that need URI.parse and keeps the middleware's legacy result" do
+      [
+        "", " ", ":3000", "https://dev.to", "http://dev.to:3000/x", "dev.to/path", "dev.to:443:1", "dev.to:x",
+        " dev.to", "dev_to", "user@example.com", "[::1]:3000", "dév.to", "dev.to\n", "dev.to".encode("UTF-16LE"),
+        ActiveSupport::SafeBuffer.new("dev.to"), nil, ["dev.to"]
+      ].each do |raw|
+        expect(described_class.subforem_request_domain(raw)).to be_nil, raw.inspect
+      end
+      expect(middleware.__send__(:legacy_request_domain, "https://Override.example.com/x"))
+        .to eq("Override.example.com")
+      expect(middleware.__send__(:legacy_request_domain, ":3000")).to eq(":3000")
+      expect(middleware.__send__(:legacy_request_domain, "http:/a.com")).to eq("http")
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["dev", "to", "DEV", "example", "com", "localhost", "a", "b-c", "1", "443", "3000", ".", ".", "-", ":",
+                ":", "//", "/", "http", "https", "@", "_", "[", "]", " ", "\n", "é", "%41", "?", "#", "+"]
+      accepted = 0
+
+      20_000.times do |iteration|
+        raw = Array.new(rng.rand(1..6)) { tokens.sample(random: rng) }.join
+        actual = described_class.subforem_request_domain(raw)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_subforem_request_domain.call(raw)
+        expect(actual).to eq(expected), "iteration #{iteration}: #{raw.inspect}"
+        expect(middleware.__send__(:legacy_request_domain, raw)).to eq(expected)
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+    end
+  end
+
+  describe ".subforem_subdomain_host" do
+    let(:legacy_subforem_subdomain_host) do
+      ->(host, sld, tld) { !(host =~ /^([^.]+)\.#{sld}\.#{tld}$/).nil? }
+    end
+
+    it "matches the interpolated Regexp across edge cases" do
+      [
+        ["dev.to", "dev", "to"], ["www.dev.to", "dev", "to"], ["a.b.dev.to", "dev", "to"], ["xdev.to", "dev", "to"],
+        ["a.dev.to", "dev", "to"], ["a.DEV.to", "dev", "to"], ["a.bbc.co.uk", "bbc", "co.uk"],
+        ["a.bbc.coxuk", "bbc", "co.uk"], ["a.bbc.co-uk", "bbc", "co.uk"], [".dev.to", "dev", "to"],
+        ["a.dev.to.", "dev", "to"], ["a.devxto", "dev", "to"], ["a-b.my-site.io", "my-site", "io"],
+        ["", "dev", "to"], ["community.example.com".b, "example", "com"]
+      ].each do |host, sld, tld|
+        expect(described_class.subforem_subdomain_host(host, sld, tld))
+          .to eq(legacy_subforem_subdomain_host.call(host, sld, tld)), [host, sld, tld].inspect
+      end
+    end
+
+    it "declines hosts and labels that need the Regexp" do
+      [
+        ["a.dev.to", "", "to"], ["a.dev.to", "dev", ""], ["a.dev.to", "d.v", "to"], ["a.dev.to", "de*", "to"],
+        ["a.dev.to", "dev", "t+"], ["a.dev.to\n", "dev", "to"], ["a b.dev.to", "dev", "to"],
+        ["a_b.dev.to", "dev", "to"], ["ä.dev.to", "dev", "to"], ["a.dev.to".encode("UTF-16LE"), "dev", "to"],
+        [nil, "dev", "to"], ["a.dev.to", nil, "to"], ["a.dev.to", "dev", :to]
+      ].each do |host, sld, tld|
+        expect(described_class.subforem_subdomain_host(host, sld, tld)).to be_nil, [host, sld, tld].inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to co uk bbc example com a b x my-site io DEV 1 -]
+      positives = 0
+
+      1_000.times do |iteration|
+        sld = labels.sample(random: rng)
+        tld = Array.new(rng.rand(1..2)) { labels.sample(random: rng) }.join(".")
+        host = Array.new(rng.rand(1..5)) { (labels + [sld, tld, "", "x"]).sample(random: rng) }.join(".")
+        host = [host, "#{labels.sample(random: rng)}.#{sld}.#{tld}"].sample(random: rng)
+        actual = described_class.subforem_subdomain_host(host, sld, tld)
+        expect(actual).to eq(legacy_subforem_subdomain_host.call(host, sld, tld)),
+                          "iteration #{iteration}: #{[host, sld, tld].inspect}"
+        positives += 1 if actual
+      end
+      expect(positives).to be_between(200, 800)
+    end
+  end
 end
