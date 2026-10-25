@@ -64,9 +64,14 @@ module EdgeCache
     def self.bust_tag_pages(cache_bust, article)
       return unless article.published
 
+      # "/top/<interval>" repeats for every tag and "/api/articles?tag=<tag>&top=<i>" repeats for every
+      # matching timeframe, so purge each path only once (each purge is two Fastly HTTP calls).
+      busted_paths = Set.new
+      bust_once = ->(path) { cache_bust.call(path) if busted_paths.add?(path) }
+
       article.tag_list.each do |tag|
         if article.published_at.to_i > 2.minutes.ago.to_i
-          cache_bust.call("/t/#{tag}/latest")
+          bust_once.call("/t/#{tag}/latest")
         end
 
         TIMEFRAMES.each do |timestamp, interval|
@@ -75,9 +80,9 @@ module EdgeCache
           break unless Article.published.where("published_at > ?", cutoff).cached_tagged_with_any(tag)
             .order(score: :desc).limit(3).ids.include?(article.id)
 
-          cache_bust.call("/top/#{interval}")
+          bust_once.call("/top/#{interval}")
           12.times do |i|
-            cache_bust.call("/api/articles?tag=#{tag}&top=#{i}")
+            bust_once.call("/api/articles?tag=#{tag}&top=#{i}")
           end
         end
 
@@ -85,7 +90,7 @@ module EdgeCache
           Article.published.cached_tagged_with(tag)
             .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
-        cache_bust.call("/t/#{tag}")
+        bust_once.call("/t/#{tag}")
       end
     end
 
