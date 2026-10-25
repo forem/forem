@@ -215,6 +215,16 @@ fn cloudflare_image_url(
     )
 }
 
+fn normalize_url(url: RString) -> Option<String> {
+    if !url.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before the result is converted. `test_as_str` returns `None` for invalid
+    // UTF-8, which `forem_core` would decline anyway (it only accepts printable ASCII).
+    forem_core::url::normalize_url(unsafe { url.test_as_str() }?)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -263,5 +273,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod
         .define_singleton_method("cloudflare_image_url", function!(cloudflare_image_url, 7))?;
+    native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
     Ok(())
 }

@@ -194,6 +194,17 @@ module ForemNative
       Native.cloudflare_image_url(domain, directory, width, height, fit, img_src, src)
     end
 
+    # Normalizes `http`/`https` URLs and `/`-rooted paths, matching
+    # `Addressable::URI.parse(url).normalize.to_s`.
+    # Returns nil for anything but a plain UTF-8 (or US-ASCII) String, and for URLs whose
+    # normalization needs Addressable (other schemes, non-ASCII text, userinfo, dot segments,
+    # whitespace, ...) so callers can fall back to Addressable.
+    def normalize_url(url)
+      return unless url.instance_of?(String)
+
+      Native.normalize_url(url)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
