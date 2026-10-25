@@ -1254,4 +1254,74 @@ RSpec.describe ForemNative do
       expect(accepted).to eq(1_000)
     end
   end
+
+  describe ".quickie_title_html" do
+    let(:legacy_quickie_title_html) do
+      lambda do |title, truncate_for_feed|
+        processed_title = truncate_for_feed ? title.split("\n").first(6).join("\n") : title.dup
+        processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
+        processed_title.gsub!("\n", "<br>")
+        if processed_title.include?("<br>") || processed_title.include?("</p><p")
+          processed_title = "<p class=\"quickie-paragraph\">#{processed_title}</p>"
+          processed_title.gsub!("<p class=\"quickie-paragraph\"></p>", "")
+          processed_title.gsub!(%r{<p class="quickie-paragraph">\s*</p>}, "")
+          processed_title.gsub!(/<p class="quickie-paragraph">\s+/, "<p class=\"quickie-paragraph\">")
+          processed_title.gsub!(%r{\s+</p>}, "</p>")
+        end
+        processed_title += '<span class="quickie-read-more">...read more</span>' if truncate_for_feed
+        processed_title.gsub(%r{https?://[^\s<>"{}|\\^`\[\]]+}) do |url|
+          clean_url = url.gsub(%r{^https?://}, "").gsub(/^www\./, "").chomp("/")
+          display_url = clean_url.length > 25 ? "#{clean_url[0..21]}..." : clean_url
+          "<span style=\"text-decoration: underline;\">#{display_url}</span>"
+        end
+      end
+    end
+
+    let(:edge_cases) do
+      [
+        "", "Hello world", "a\nb", "a\n\nb", "a\n \t\n \n b", "a\r\nb", "a\r\n\r\nb", "\n\n", "\n\nhi\n\n", "  \n  ",
+        "a\n \nb", "a\n \n\u0085b", "a\v\n\f\nb", "x<br>y", "x </p>", "x </p><p y",
+        "<p class=\"quickie-paragraph\"></p>\nx", "<p class=\"quickie-paragraph\">  </p></p>\n",
+        "see https://www.example.com/ now", "http://abcdefghijklmnopqrstuvwxyz.com", "http:// x", "httpx://y",
+        "hhttps://a", "http:///", "https://www.", "https://a.dev\nnext", "https://a.dev/x?q=1&b=2#f\"quoted\"",
+        "https://例え.テスト/日本語のパスはとても長いのでここで切り詰められます", "🎉 launch day!\n\nhttps://dev.to/🎉",
+        "1\n2\n3\n4\n5\n6\n7\n8\n9", "a\n\n\n\n\n\n\n\n\n", "\n\n\n\n\n\n\n\n", "\n\na\n\nb\n\nc\n\nd\n\ne\n\nf\n\ng"
+      ]
+    end
+
+    it "matches the legacy title_finalized and truncate_title_for_feed pipelines across edge cases" do
+      edge_cases.product([false, true]) do |title, truncate_for_feed|
+        actual = described_class.quickie_title_html(title, truncate_for_feed: truncate_for_feed)
+        expect(actual).to eq(legacy_quickie_title_html.call(title, truncate_for_feed)),
+                          [title, truncate_for_feed].inspect
+        expect(actual.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+
+    it "declines titles that are not valid UTF-8 Strings" do
+      ["x\n\xC3\xA9".b, "\xFF\nhttp://a", "a\nb".encode("UTF-16LE"), ActiveSupport::SafeBuffer.new("a\nb"), nil,
+       :title].each do |title|
+        expect(described_class.quickie_title_html(title)).to be_nil, title.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      pieces = ["\n", "\n", "\r\n", " ", "\t", "\v", "\f", "\r", " ", " ", "a", "word", "日本", "🎉", "é",
+                "http", "https://", "http://", "www.", "/", "<br>", "</p>", "<p", "</p><p",
+                "<p class=\"quickie-paragraph\">", "<p class=\"quickie-paragraph\"></p>", "example.com",
+                "abcdefghijklmnopqrstuvwxyz", "\"", "<", ">", "[", "]", "{", "|", "\\", "^", "`", "?q=1&b=2", "#f",
+                "s", ":", "hhttp"]
+
+      truncate_modes = [false, true].freeze
+
+      1_000.times do
+        title = Array.new(rng.rand(1..30)) { pieces.sample(random: rng) }.join
+        truncate_modes.each do |truncate_for_feed|
+          expect(described_class.quickie_title_html(title, truncate_for_feed: truncate_for_feed))
+            .to eq(legacy_quickie_title_html.call(title, truncate_for_feed)), [title, truncate_for_feed].inspect
+        end
+      end
+    end
+  end
 end

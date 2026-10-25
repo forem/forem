@@ -749,6 +749,11 @@ class Article < ApplicationRecord
   def title_finalized
     return title unless title.present?
 
+    ForemNative.quickie_title_html(title)&.html_safe || legacy_title_finalized
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_title_finalized
     # First handle line breaks and paragraphs
     processed_title = title.dup
 
@@ -792,6 +797,8 @@ class Article < ApplicationRecord
     end.html_safe
   end
 
+  private :legacy_title_finalized
+
   def title_finalized_for_feed
     return title_finalized unless type_of == "status" && title.present?
 
@@ -826,6 +833,11 @@ class Article < ApplicationRecord
   def truncate_title_for_feed
     return title_finalized unless title.present?
 
+    ForemNative.quickie_title_html(title, truncate_for_feed: true)&.html_safe || legacy_truncate_title_for_feed
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_truncate_title_for_feed
     # Split the title into lines to find a good truncation point
     lines = title.split("\n")
 
@@ -879,6 +891,8 @@ class Article < ApplicationRecord
       "<span style=\"text-decoration: underline;\">#{display_url}</span>"
     end.html_safe
   end
+
+  private :legacy_truncate_title_for_feed
 
   def flare_tag
     @flare_tag ||= FlareTag.new(self).tag_hash

@@ -216,6 +216,17 @@ module ForemNative
       Native.join_url(base, reference)
     end
 
+    # Renders a status post title as HTML (paragraphs, `<br>`s, and shortened underlined URLs),
+    # matching `Article#title_finalized`, or `Article#truncate_title_for_feed` (first six lines
+    # plus a "read more" marker) when `truncate_for_feed` is true.
+    # Returns nil for anything but a plain String (and for invalid UTF-8) so `Article` can use
+    # its private `legacy_title_finalized` / `legacy_truncate_title_for_feed`.
+    def quickie_title_html(title, truncate_for_feed: false)
+      return unless title.instance_of?(String)
+
+      Native.quickie_title_html(title, truncate_for_feed ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
