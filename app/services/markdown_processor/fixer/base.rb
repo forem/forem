@@ -44,14 +44,7 @@ module MarkdownProcessor
       end
 
       def self.underscores_in_usernames(markdown)
-        return markdown unless markdown.match?(USERNAME_WITH_UNDERSCORE_REGEXP)
-
-        traverser = MarkdownProcessor::Traverser.new(markdown)
-        traverser.each do |line|
-          next if traverser.in_codeblock?
-
-          escape_underscored_username_in_line!(line)
-        end.join
+        ForemNative.fixer_underscores_in_usernames(markdown) || legacy_underscores_in_usernames(markdown)
       end
 
       # Escapes underscored username that is not in code
@@ -110,6 +103,20 @@ module MarkdownProcessor
         end
       end
       private_class_method :legacy_lowercase_published
+
+      # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+      # invalid byte sequences).
+      def self.legacy_underscores_in_usernames(markdown)
+        return markdown unless markdown.match?(USERNAME_WITH_UNDERSCORE_REGEXP)
+
+        traverser = MarkdownProcessor::Traverser.new(markdown)
+        traverser.each do |line|
+          next if traverser.in_codeblock?
+
+          escape_underscored_username_in_line!(line)
+        end.join
+      end
+      private_class_method :legacy_underscores_in_usernames
     end
   end
 end
