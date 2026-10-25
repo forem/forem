@@ -49,6 +49,19 @@ RSpec.describe "Collections" do
 
       expect(context_note_queries).to eq(1)
     end
+
+    it "reads the listed articles' tag colors in one cache batch", :aggregate_failures do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+
+      get collection.path
+
+      tags = collection.articles.flat_map { |article| article.decorate.cached_tag_list_array }.uniq
+      expect(Rails.cache).to have_received(:fetch_multi).with(*tags.map { |tag| "view-helper-#{tag}/tag_colors" },
+                                                              expires_in: 5.hours).once
+      expect(Rails.cache).not_to have_received(:fetch).with(a_string_ending_with("/tag_colors"), any_args)
+      expect(response.body).to include(*tags.map { |tag| %(href="/t/#{tag}") })
+    end
   end
 
   describe "GET large user collection show" do

@@ -14,8 +14,10 @@
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if @articles.present? %>
-        <% @articles.each do |article| %>
-          <%= render "articles/single_story", story: article.decorate, featured: article.main_image.present? %>
+        <% stories = @articles.map(&:decorate) %>
+        <% preload_tag_colors(stories) %>
+        <% stories.each do |story| %>
+          <%= render "articles/single_story", story: story, featured: story.main_image.present? %>
         <% end %>
         <%= paginate @articles %>
         <%= javascript_include_tag "feedPreviewCards", "localizeArticleDates", defer: true %>
