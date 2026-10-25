@@ -60,46 +60,6 @@ module ServerWarmup
     taggings
   ].freeze
 
-  KNOWN_FEATURE_FLAGS = %i[
-    ab_experiment_feed_strategy
-    article_id_adjusted_weight
-    auto_generated_profile_pics
-    billboard_location_targeting
-    cloudflare_preferred_for_hosted_images
-    comment_cue_popup
-    community_favorites
-    data_update_scripts
-    digest_smart_summary
-    discover_and_following_tabs
-    field_test_event_single_create_pageview
-    gemini_onboarding
-    hero_billboard
-    hide_onboarding_task_card
-    moderator_role
-    more_rigorous_user_profile_spam_checking
-    onboarding_custom_cta_slide
-    onboarding_drip_emails
-    org_custom_domain
-    org_dofollow_links
-    org_lead_forms
-    org_readme
-    org_verification
-    personalized_email_digests
-    subscriber_icon
-    unpublish_all_posts_when_user_auto_suspended
-    use_stories_endpoint
-  ].freeze
-
-  SETTINGS_CLASS_NAMES = %w[
-    Settings::General
-    Settings::UserExperience
-    Settings::Community
-    Settings::Authentication
-    Settings::Smtp
-    Settings::RateLimit
-    Settings::Campaign
-  ].freeze
-
   DEFAULT_PREBOOT_KEEPALIVE_INTERVAL = 25
 
   @keepalive_mutex = Mutex.new
@@ -112,7 +72,7 @@ module ServerWarmup
     def warmup_enabled?
       return ENV["PUMA_WARMUP_ENABLED"] == "true" if ENV.key?("PUMA_WARMUP_ENABLED")
 
-      defined?(Rails) && !Rails.env.test?
+      defined?(Rails) && Rails.env.production?
     end
 
     # Runs in the Puma master process after `preload_app!` and immediately before `nakayoshi_fork`
@@ -125,7 +85,7 @@ module ServerWarmup
       preload_model_schemas!
       warm_in_memory_caches!
     rescue StandardError => e
-      log_debug("before_fork warmup skipped: #{e.class}: #{e.message}")
+      log_error("before_fork warmup failed", e)
     ensure
       disconnect_parent_connections! if warmup_enabled?
     end
@@ -145,7 +105,7 @@ module ServerWarmup
       warm_in_memory_caches!
       start_preboot_keepalive!
     rescue StandardError => e
-      log_debug("on_worker_boot warmup skipped: #{e.class}: #{e.message}")
+      log_error("on_worker_boot warmup failed", e)
     ensure
       clear_request_store!
     end
@@ -153,7 +113,7 @@ module ServerWarmup
     def on_worker_shutdown
       stop_preboot_keepalive!
     rescue StandardError => e
-      log_debug("on_worker_shutdown cleanup skipped: #{e.class}: #{e.message}")
+      log_error("on_worker_shutdown cleanup failed", e)
     end
 
     def mark_traffic_received!
@@ -162,6 +122,11 @@ module ServerWarmup
 
     def traffic_received?
       @traffic_received
+    end
+
+    def reset_state!
+      stop_preboot_keepalive!
+      @traffic_received = false
     end
 
     def preload_model_schemas!
@@ -173,7 +138,7 @@ module ServerWarmup
 
       preload_auxiliary_tables!
     rescue StandardError => e
-      log_debug("Model schema preload skipped: #{e.class}: #{e.message}")
+      log_error("Model schema preload failed", e)
     end
 
     def warm_database_connections!(target_count = worker_thread_count)
@@ -197,7 +162,7 @@ module ServerWarmup
         checked_out.each { |conn| pool.checkin(conn) }
       end
     rescue StandardError => e
-      log_debug("Database connection pool warmup skipped: #{e.class}: #{e.message}")
+      log_error("Database connection pool warmup failed", e)
       0
     end
 
@@ -215,7 +180,7 @@ module ServerWarmup
         Rails.cache.read("subforem_default_id")
       end
     rescue StandardError => e
-      log_debug("Redis cache connection warmup skipped: #{e.class}: #{e.message}")
+      log_error("Redis cache connection warmup failed", e)
     end
 
     def warm_in_memory_caches!
@@ -223,9 +188,8 @@ module ServerWarmup
 
       warm_flipper_cache!
       warm_subforem_caches!
-      warm_settings_caches!
     rescue StandardError => e
-      log_debug("In-memory cache warmup skipped: #{e.class}: #{e.message}")
+      log_error("In-memory cache warmup failed", e)
     ensure
       clear_request_store!
     end
@@ -234,9 +198,8 @@ module ServerWarmup
       return unless defined?(Flipper)
 
       preloaded = Flipper.respond_to?(:preload_all) ? Flipper.preload_all : []
-      if Flipper.respond_to?(:preload)
-        keys_to_preload = (Array(preloaded).map { |f| f.key.to_sym } | KNOWN_FEATURE_FLAGS).uniq
-        Flipper.preload(keys_to_preload)
+      if Flipper.respond_to?(:preload) && preloaded.present?
+        Flipper.preload(Array(preloaded).map { |f| f.key.to_sym })
       end
 
       if defined?(MemoryFirstCache) && defined?(FeatureFlag) && FeatureFlag.respond_to?(:all)
@@ -245,7 +208,7 @@ module ServerWarmup
         end
       end
     rescue StandardError => e
-      log_debug("Flipper cache warmup skipped: #{e.class}: #{e.message}")
+      log_error("Flipper cache warmup failed", e)
     end
 
     def warm_subforem_caches!
@@ -272,29 +235,7 @@ module ServerWarmup
         Subforem.cached_id_by_domain(domain)
       end
     rescue StandardError => e
-      log_debug("Subforem cache warmup skipped: #{e.class}: #{e.message}")
-    end
-
-    def warm_settings_caches!
-      subforem_ids = [nil]
-      if defined?(Subforem) && Subforem.table_exists?
-        subforem_ids << Subforem.cached_default_id
-        subforem_ids << Subforem.cached_root_id
-      end
-      subforem_ids.uniq!
-
-      SETTINGS_CLASS_NAMES.each do |class_name|
-        settings_class = class_name.safe_constantize
-        next unless settings_class&.table_exists?
-
-        subforem_ids.each do |subforem_id|
-          settings_class.__send__(:all_settings, subforem_id)
-        end
-      rescue StandardError => e
-        log_debug("Settings warmup skipped for #{class_name}: #{e.class}: #{e.message}")
-      end
-    rescue StandardError => e
-      log_debug("Settings cache warmup skipped: #{e.class}: #{e.message}")
+      log_error("Subforem cache warmup failed", e)
     end
 
     def disconnect_parent_connections!
@@ -304,7 +245,7 @@ module ServerWarmup
       end
       close_redis_cache_connection!
     rescue StandardError => e
-      log_debug("Parent connection cleanup skipped: #{e.class}: #{e.message}")
+      log_error("Parent connection cleanup failed", e)
     end
 
     # Keeps the worker's pre-warmed database connections and L1 caches warm across
@@ -324,7 +265,6 @@ module ServerWarmup
         deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + duration_seconds.to_f
 
         @keepalive_thread = Thread.new do
-          Thread.current.thread_variable_set(:fork_safe, true)
           Thread.current.name = "puma-preboot-keepalive" if Thread.current.respond_to?(:name=)
           run_preboot_keepalive_loop(queue, deadline, interval_seconds.to_f)
         end
@@ -358,7 +298,7 @@ module ServerWarmup
         warm_flipper_cache!
       end
     rescue StandardError => e
-      log_debug("Preboot keepalive exited: #{e.class}: #{e.message}")
+      log_error("Preboot keepalive exited unexpectedly", e)
     ensure
       clear_request_store!
     end
@@ -379,7 +319,7 @@ module ServerWarmup
       end
       @traffic_hook_registered = true
     rescue StandardError => e
-      log_debug("Traffic hook registration skipped: #{e.class}: #{e.message}")
+      log_error("Traffic hook registration failed", e)
     end
 
     def models_to_preload
@@ -399,7 +339,7 @@ module ServerWarmup
       model.primary_key
       model.define_attribute_methods
     rescue StandardError => e
-      log_debug("Schema preload skipped for #{model}: #{e.class}: #{e.message}")
+      log_error("Schema preload failed for #{model}", e)
     end
 
     def preload_auxiliary_tables!
@@ -410,7 +350,7 @@ module ServerWarmup
         schema_cache.primary_keys(table_name)
         schema_cache.columns_hash(table_name)
       rescue StandardError => e
-        log_debug("Auxiliary table preload skipped for #{table_name}: #{e.class}: #{e.message}")
+        log_error("Auxiliary table preload failed for #{table_name}", e)
       end
     end
 
@@ -419,7 +359,7 @@ module ServerWarmup
 
       ActiveRecord::Base.with_connection(&:active?)
     rescue StandardError => e
-      log_debug("Database unavailable for warmup: #{e.class}: #{e.message}")
+      log_error("Database unavailable for warmup", e)
       false
     end
 
@@ -433,7 +373,7 @@ module ServerWarmup
         redis_client.close
       end
     rescue StandardError => e
-      log_debug("Redis connection close skipped: #{e.class}: #{e.message}")
+      log_error("Redis connection close failed", e)
     end
 
     def clear_request_store!
@@ -455,10 +395,10 @@ module ServerWarmup
       ENV.fetch("PUMA_PREBOOT_KEEPALIVE_INTERVAL", DEFAULT_PREBOOT_KEEPALIVE_INTERVAL).to_f
     end
 
-    def log_debug(message)
+    def log_error(context, error)
       return unless defined?(Rails) && Rails.respond_to?(:logger) && Rails.logger
 
-      Rails.logger.debug { "[ServerWarmup] #{message}" }
+      Rails.logger.error("[ServerWarmup] #{context}: #{error.class}: #{error.message}")
     end
   end
 end

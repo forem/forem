@@ -3,8 +3,7 @@ require "puma/configuration"
 
 RSpec.describe ServerWarmup, type: :lib do
   after do
-    described_class.stop_preboot_keepalive!
-    described_class.mark_traffic_received!
+    described_class.reset_state!
   end
 
   describe ".warmup_enabled?" do
@@ -13,6 +12,22 @@ RSpec.describe ServerWarmup, type: :lib do
       allow(ENV).to receive(:key?).with("PUMA_WARMUP_ENABLED").and_return(false)
 
       expect(described_class.warmup_enabled?).to be(false)
+    end
+
+    it "returns false by default in the development environment" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("PUMA_WARMUP_ENABLED").and_return(false)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("development"))
+
+      expect(described_class.warmup_enabled?).to be(false)
+    end
+
+    it "returns true by default in the production environment" do
+      allow(ENV).to receive(:key?).and_call_original
+      allow(ENV).to receive(:key?).with("PUMA_WARMUP_ENABLED").and_return(false)
+      allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
+
+      expect(described_class.warmup_enabled?).to be(true)
     end
 
     it "returns true when PUMA_WARMUP_ENABLED is set to 'true'" do
@@ -24,21 +39,14 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(described_class.warmup_enabled?).to be(true)
     end
 
-    it "returns false when PUMA_WARMUP_ENABLED is set to 'false'" do
+    it "returns false when PUMA_WARMUP_ENABLED is set to 'false' even in production" do
       allow(ENV).to receive(:key?).and_call_original
       allow(ENV).to receive(:key?).with("PUMA_WARMUP_ENABLED").and_return(true)
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("PUMA_WARMUP_ENABLED").and_return("false")
-
-      expect(described_class.warmup_enabled?).to be(false)
-    end
-
-    it "returns true in non-test environments when PUMA_WARMUP_ENABLED is unset" do
-      allow(ENV).to receive(:key?).and_call_original
-      allow(ENV).to receive(:key?).with("PUMA_WARMUP_ENABLED").and_return(false)
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new("production"))
 
-      expect(described_class.warmup_enabled?).to be(true)
+      expect(described_class.warmup_enabled?).to be(false)
     end
   end
 
@@ -69,7 +77,7 @@ RSpec.describe ServerWarmup, type: :lib do
       expect { described_class.preload_model_schemas! }.not_to raise_error
     end
 
-    it "continues preloading remaining models when an individual model raises an error" do
+    it "logs errors at error level and continues preloading when an individual model raises" do
       failing_model = Class.new(ApplicationRecord) do
         self.table_name = "users"
 
@@ -79,17 +87,17 @@ RSpec.describe ServerWarmup, type: :lib do
       end
 
       allow(described_class).to receive(:models_to_preload).and_return([failing_model, Article])
+      allow(Rails.logger).to receive(:error)
 
       expect { described_class.preload_model_schemas! }.not_to raise_error
       expect(Article.__send__(:schema_loaded?)).to be(true)
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("[ServerWarmup] Schema preload failed", "simulated schema error"),
+      )
     end
   end
 
   describe ".warm_database_connections!" do
-    before do
-      described_class.instance_variable_set(:@traffic_received, false)
-    end
-
     it "checks out, verifies, and checks back in the requested number of connections" do
       mock_conn1 = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter, verify!: true)
       mock_conn2 = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter, verify!: true)
@@ -110,7 +118,7 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(mock_pool).to have_received(:checkin).with(mock_conn2).once
     end
 
-    it "checks back in already checked-out connections if a subsequent checkout fails" do
+    it "checks back in already checked-out connections and logs error if checkout fails" do
       mock_conn1 = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter, verify!: true)
       mock_pool = instance_double(
         ActiveRecord::ConnectionAdapters::ConnectionPool,
@@ -125,9 +133,13 @@ RSpec.describe ServerWarmup, type: :lib do
       end
       allow(mock_pool).to receive(:checkin)
       allow(ActiveRecord::Base).to receive(:connection_pool).and_return(mock_pool)
+      allow(Rails.logger).to receive(:error)
 
       expect(described_class.warm_database_connections!(2)).to eq(0)
       expect(mock_pool).to have_received(:checkin).with(mock_conn1).once
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("[ServerWarmup] Database connection pool warmup failed"),
+      )
     end
   end
 
@@ -144,9 +156,12 @@ RSpec.describe ServerWarmup, type: :lib do
     end
 
     it "warms Flipper, MemoryFirstCache Subforem keys, and clears RequestStore afterwards" do
+      allow(Flipper).to receive(:preload).and_call_original
+
       described_class.warm_in_memory_caches!
 
       memory_store = MemoryFirstCache.__send__(:memory_store)
+      expect(Flipper).to have_received(:preload).with(array_including(:community_favorites))
       expect(memory_store.read("memory_first:enabled_global_feature_flags")).to include("community_favorites")
       expect(memory_store.read("memory_first:subforem_default_id")).to be_present
       expect(memory_store.read("memory_first:subforem_root_id")).to be_present
@@ -157,16 +172,114 @@ RSpec.describe ServerWarmup, type: :lib do
     end
   end
 
+  describe ".disconnect_parent_connections!" do
+    after do
+      ActiveRecord::Base.establish_connection
+    end
+
+    it "clears RequestStore, clears all ActiveRecord connections, and closes direct Redis client" do
+      RequestStore.store[:warmup_test_key] = "present"
+      redis_client = Class.new do
+        attr_reader :closed
+
+        def close
+          @closed = true
+        end
+      end.new
+      cache_with_redis = Class.new do
+        attr_reader :redis
+
+        def initialize(redis)
+          @redis = redis
+        end
+
+        def delete(_key); end
+      end.new(redis_client)
+
+      allow(Rails).to receive(:cache).and_return(cache_with_redis)
+      allow(ActiveRecord::Base.connection_handler).to receive(:clear_all_connections!).and_call_original
+
+      described_class.disconnect_parent_connections!
+
+      expect(RequestStore.store).to be_empty
+      expect(ActiveRecord::Base.connection_handler).to have_received(:clear_all_connections!).with(:all)
+      expect(redis_client.closed).to be(true)
+    end
+
+    it "closes pooled Redis connections via .with when Rails.cache.redis is a connection pool" do
+      pooled_conn = Class.new do
+        attr_reader :closed
+
+        def close
+          @closed = true
+        end
+      end.new
+      redis_pool = Class.new do
+        def initialize(conn)
+          @conn = conn
+        end
+
+        def with
+          yield @conn
+        end
+      end.new(pooled_conn)
+      cache_with_pool = Class.new do
+        attr_reader :redis
+
+        def initialize(redis)
+          @redis = redis
+        end
+
+        def delete(_key); end
+      end.new(redis_pool)
+
+      allow(Rails).to receive(:cache).and_return(cache_with_pool)
+
+      described_class.disconnect_parent_connections!
+
+      expect(pooled_conn.closed).to be(true)
+    end
+
+    it "logs an error without raising if closing Redis fails" do
+      failing_redis = Class.new do
+        def close
+          raise Redis::BaseError, "simulated close failure"
+        end
+      end.new
+      cache_with_failing_redis = Class.new do
+        attr_reader :redis
+
+        def initialize(redis)
+          @redis = redis
+        end
+
+        def delete(_key); end
+      end.new(failing_redis)
+
+      allow(Rails).to receive(:cache).and_return(cache_with_failing_redis)
+      allow(Rails.logger).to receive(:error)
+
+      expect { described_class.disconnect_parent_connections! }.not_to raise_error
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("[ServerWarmup] Redis connection close failed", "simulated close failure"),
+      )
+    end
+  end
+
   describe ".before_fork" do
-    it "runs schema preload, warms caches, and always disconnects parent connections in ensure" do
+    it "runs schema preload, warms caches, logs errors, and disconnects parent connections in ensure" do
       allow(described_class).to receive(:warmup_enabled?).and_return(true)
       allow(described_class).to receive(:preload_model_schemas!)
       allow(described_class).to receive(:warm_in_memory_caches!).and_raise(StandardError, "simulated error")
       allow(described_class).to receive(:disconnect_parent_connections!)
+      allow(Rails.logger).to receive(:error)
 
       expect { described_class.before_fork }.not_to raise_error
       expect(described_class).to have_received(:preload_model_schemas!).once
       expect(described_class).to have_received(:disconnect_parent_connections!).once
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("[ServerWarmup] before_fork warmup failed: StandardError: simulated error"),
+      )
     end
   end
 
@@ -198,9 +311,8 @@ RSpec.describe ServerWarmup, type: :lib do
     end
   end
 
-  describe ".start_preboot_keepalive! and .stop_preboot_keepalive!" do
-    it "periodically refreshes connections and Flipper cache until stopped or traffic arrives" do
-      described_class.instance_variable_set(:@traffic_received, false)
+  describe ".start_preboot_keepalive! and traffic executor hook" do
+    it "periodically refreshes connections and Flipper cache until stopped" do
       refresh_count = 0
       allow(described_class).to receive(:warm_database_connections!) { refresh_count += 1 }
       allow(described_class).to receive(:warm_flipper_cache!)
@@ -211,6 +323,26 @@ RSpec.describe ServerWarmup, type: :lib do
 
       expect(refresh_count).to be >= 1
       expect(described_class).to have_received(:warm_flipper_cache!).at_least(:once)
+      expect(described_class.traffic_received?).to be(false)
+    end
+
+    it "marks traffic_received and exits the keepalive thread when Rails.application.executor runs" do
+      described_class.__send__(:register_traffic_hook!)
+      allow(described_class).to receive(:warm_database_connections!)
+      allow(described_class).to receive(:warm_flipper_cache!)
+
+      described_class.start_preboot_keepalive!(duration_seconds: 5, interval_seconds: 0.02)
+      keepalive_thread = described_class.instance_variable_get(:@keepalive_thread)
+      expect(keepalive_thread).to be_alive
+      expect(described_class.traffic_received?).to be(false)
+
+      Rails.application.executor.wrap do
+        # Simulates the first live request entering the Rails executor
+      end
+
+      expect(described_class.traffic_received?).to be(true)
+      expect(keepalive_thread.join(1)).to eq(keepalive_thread)
+      expect(keepalive_thread).not_to be_alive
     end
   end
 
