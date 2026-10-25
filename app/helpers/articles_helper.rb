@@ -59,11 +59,17 @@ module ArticlesHelper
   end
 
   def get_host_without_www(url)
-    url = url.strip
-    url = "http://#{url}" if Addressable::URI.parse(url).scheme.nil?
-    host = Addressable::URI.parse(url).host.downcase.delete_prefix("www.")
+    host = ForemNative.host_without_www(url) || legacy_host_without_www(url)
     host == "medium.com" ? "Medium" : host
   end
+
+  # Handles the URLs ForemNative declines (non-ASCII text, userinfo, IP literals, ...).
+  def legacy_host_without_www(url)
+    url = url.strip
+    url = "http://#{url}" if Addressable::URI.parse(url).scheme.nil?
+    Addressable::URI.parse(url).host.downcase.delete_prefix("www.")
+  end
+  private :legacy_host_without_www
 
   def utc_iso_timestamp(timestamp)
     timestamp&.utc&.iso8601
