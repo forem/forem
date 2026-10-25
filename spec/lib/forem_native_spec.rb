@@ -1037,4 +1037,105 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".cloudflare_image_url" do
+    let(:legacy_cloudflare_image_url) do
+      lambda do |domain, directory, width, height, fit, img_src, src|
+        template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+        options = { width: width, height: height, fit: fit, gravity: "auto" }
+        options[:format] = "auto" unless img_src&.match?(/\.(gif|webp)(\?.*)?$/i)
+        template.expand(domain: domain, directory: directory, options: options, src: src).to_s
+      end
+    end
+
+    let(:domain) { "images.example.com" }
+
+    let(:optimizer_cloudflare) do
+      lambda do |img_src, **kwargs|
+        allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(domain)
+        Images::Optimizer.cloudflare(img_src, **kwargs)
+      end
+    end
+
+    let(:edge_cases) do
+      [
+        nil, "", "https://i.imgur.com/fKYKgo4.png", "https://x.com/a.gif", "https://x.com/a.GIF?w=1", "a.webp",
+        "https://x.com/a.WebP?", "https://x.com/a.gif\nmore", "https://x.com/a.gif\r\n", "https://x.com/a.gifv",
+        "https://x.com/a.gif#frag", "https://x.com/agif", "a b/c?d=e&f=g#h", "https://x.com/é.png", "ñ~-._!*'()",
+        "https://x.com/a.ġif", "\u02FF", "https://images.example.com/cdn-cgi/image/width=1/https%3A%2F%2Fa.com%2Fb.png"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      [nil, "", "media2.dev.to", "a:b@c"].product([nil, 1000, -5, "880", ""], %w[cover scale-down]) do |dom, w, fit|
+        edge_cases.each do |img_src|
+          expected = legacy_cloudflare_image_url.call(dom, "cdn-cgi", w, 420, fit, img_src, img_src)
+          actual = described_class.cloudflare_image_url(dom, "cdn-cgi", w, 420, fit, img_src, img_src)
+          expect(actual).to eq(expected), [dom, w, fit, img_src].inspect
+        end
+      end
+    end
+
+    it "keeps Images::Optimizer.cloudflare output identical, including nested Cloudflare URLs" do
+      kwarg_sets = [{ width: 821, height: 505, crop: "limit" }, { width: 821, crop: "crop" }, {}]
+      edge_cases.product(kwarg_sets) do |img_src, kwargs|
+        fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+        src = img_src&.start_with?("https://#{domain}/cdn-cgi/image") ? "https://a.com/b.png" : img_src
+        expected = legacy_cloudflare_image_url.call(domain, "cdn-cgi", kwargs[:width], kwargs[:height], fit, img_src,
+                                                    src)
+        expect(optimizer_cloudflare.call(img_src, **kwargs)).to eq(expected), [img_src, kwargs].inspect
+      end
+    end
+
+    it "declines values Addressable would convert or normalize so Images::Optimizer keeps Ruby semantics" do
+      [
+        [1000.0, "https://x.com/a.png"], [:wide, "https://x.com/a.png"], [2**64, "https://x.com/a.png"],
+        [1, "https://x.com/e\u0301.png"], [1, "https://x.com/日本.png"], [1, "https://x.com/😀.gif"],
+        [1, "https://x.com/a.png".b], [1, "https://x.com/\xFF.png"]
+      ].each do |width, img_src|
+        expect(described_class.cloudflare_image_url(domain, "cdn-cgi", width, 1, "cover", img_src, img_src)).to be_nil
+
+        next unless img_src.valid_encoding?
+
+        expected = legacy_cloudflare_image_url.call(domain, "cdn-cgi", width, nil, "scale-down", img_src, img_src)
+        expect(optimizer_cloudflare.call(img_src, width: width)).to eq(expected), [width, img_src].inspect
+      end
+    end
+
+    it "accepts ActiveSupport::SafeBuffer sources like Addressable" do
+      img_src = ActiveSupport::SafeBuffer.new("https://x.com/a b.gif")
+      expected = legacy_cloudflare_image_url.call(domain, "cdn-cgi", 1, 2, "cover", img_src, img_src)
+
+      expect(described_class.cloudflare_image_url(domain, "cdn-cgi", 1, 2, "cover", img_src, img_src)).to eq(expected)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["https://", "x.com", "/", ".", "gif", "GIF", "webp", "WeBp", ".gif", ".webp", ".GiF", ".WEBP", "png",
+                "?", "#", "&", "=", " ", "%", "+", "\n", "\r", "~", "-", "_", "é", "ñ", "\u02FF", "\u0300", "日本",
+                "🚀", "a", "Z", "9", ":", "@"]
+      values = [nil, "", 0, 1000, -1, "880", "auto", "a b"]
+
+      1_000.times do |iteration|
+        img_src = Array.new(rng.rand(1..12)) { tokens.sample(random: rng) }.join
+        src = rng.rand < 0.1 ? nil : img_src
+        args = [[nil, "", "media2.dev.to", "a:b"].sample(random: rng), %w[cdn-cgi dynamic].sample(random: rng),
+                values.sample(random: rng), values.sample(random: rng), %w[cover scale-down].sample(random: rng),
+                img_src, src]
+
+        expected = legacy_cloudflare_image_url.call(*args)
+        actual = described_class.cloudflare_image_url(*args)
+        message = "iteration #{iteration}: #{args.inspect}"
+        if img_src.match?(/[\u0300-\u{10FFFF}]/)
+          expect(actual).to be_nil, message
+        else
+          expect(actual).to eq(expected), message
+        end
+
+        kwargs = { width: args[2], height: args[3], crop: args[4] == "cover" ? "crop" : "limit" }
+        expect(optimizer_cloudflare.call(img_src, **kwargs))
+          .to eq(legacy_cloudflare_image_url.call(domain, "cdn-cgi", *args[2..4], img_src, img_src)), message
+      end
+    end
+  end
 end
