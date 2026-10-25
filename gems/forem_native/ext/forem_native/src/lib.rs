@@ -234,6 +234,15 @@ fn join_url(base: RString, reference: RString) -> Option<String> {
     unsafe { forem_core::url::join_url(base.test_as_str()?, reference.test_as_str()?) }
 }
 
+fn host_without_www(url: RString) -> Option<String> {
+    if !url.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before the result is converted. Invalid UTF-8 returns `None`.
+    forem_core::url::host_without_www(unsafe { url.test_as_str() }?)
+}
+
 fn quickie_title_html(title: RString, truncate_for_feed: bool) -> Option<String> {
     // Binary (and other non-UTF-8) titles count URL lengths in bytes, so leave them to Ruby.
     if !title.is_utf8_compatible_encoding() {
@@ -300,5 +309,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
     native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
     native_mod.define_singleton_method("quickie_title_html", function!(quickie_title_html, 2))?;
+    native_mod.define_singleton_method("host_without_www", function!(host_without_www, 1))?;
     Ok(())
 }
