@@ -281,6 +281,66 @@ fn is_query_char(byte: u8) -> bool {
     byte != b'&' && byte != b';' && is_fragment_char(byte)
 }
 
+/// Returns the lowercased host of a (possibly scheme-less) URL without a leading `www.`,
+/// matching `ArticlesHelper`'s `url.strip`, `"http://#{url}"` when `Addressable::URI.parse`
+/// finds no scheme, then `Addressable::URI.parse(url).host.downcase.delete_prefix("www.")`.
+///
+/// Returns `None` for anything outside printable ASCII after stripping, invalid schemes, URLs
+/// without an authority or with an empty host, userinfo, IP literals, non-digit ports, and
+/// characters Addressable rejects in hosts, so Ruby can fall back to Addressable.
+pub fn host_without_www(url: &str) -> Option<String> {
+    // Ruby's `String#strip` removes NUL and ASCII whitespace from both ends.
+    let url = url.trim_matches(|c| matches!(c, '\0' | '\t' | '\n' | '\x0b' | '\x0c' | '\r' | ' '));
+    if !url.bytes().all(|byte| byte.is_ascii_graphic()) {
+        return None;
+    }
+
+    // `URIREGEX`'s scheme is a non-empty run of non-`:/?#` characters followed by `:`.
+    let rest = match url.find([':', '/', '?', '#']) {
+        Some(end) if end > 0 && url.as_bytes()[end] == b':' => {
+            let scheme = &url.as_bytes()[..end];
+            let valid = scheme[0].is_ascii_alphabetic()
+                && scheme
+                    .iter()
+                    .all(|&b| b.is_ascii_alphanumeric() || matches!(b, b'.' | b'+' | b'-'));
+            if !valid {
+                return None;
+            }
+            url[end + 1..].strip_prefix("//")?
+        }
+        // A scheme-less path starting with `:` is ambiguous (`NORMPATH`), so `to_s` raises.
+        Some(0) if url.starts_with(':') => return None,
+        // Without a scheme the URL gets `http://` prepended, so all of it follows the `//`.
+        _ => url,
+    };
+
+    let authority = &rest[..rest.find(['/', '?', '#']).unwrap_or(rest.len())];
+    if authority.contains(['@', '[', ']']) {
+        return None;
+    }
+    let host = match authority.rfind(':') {
+        Some(colon) => {
+            if !authority.as_bytes()[colon + 1..]
+                .iter()
+                .all(u8::is_ascii_digit)
+            {
+                return None;
+            }
+            &authority[..colon]
+        }
+        None => authority,
+    };
+    if host.is_empty() || host.contains(['<', '>', '{', '}', '\\', '"']) {
+        return None;
+    }
+
+    let host = host.to_ascii_lowercase();
+    Some(match host.strip_prefix("www.") {
+        Some(stripped) => stripped.to_owned(),
+        None => host,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -450,6 +510,58 @@ mod tests {
             "https://a%41.com/x",
         ] {
             assert_eq!(n(url), None, "{url:?}");
+        }
+    }
+
+    #[test]
+    fn extracts_hosts_without_www() {
+        for (url, host) in [
+            ("https://www.example.com", "example.com"),
+            ("https://www.EXAMPLE.COM", "example.com"),
+            ("https://www.medium.com", "medium.com"),
+            ("https://premedium.com", "premedium.com"),
+            ("www.example.com", "example.com"),
+            (" www.example.com ", "example.com"),
+            ("\0\t\x0bwww.a.com/x \r\n\0", "a.com"),
+            ("http://a.com:/x", "a.com"),
+            ("https://a.com#frag", "a.com"),
+            ("a.com?q=1:2", "a.com"),
+            ("a.com/b:c", "a.com"),
+            ("HTTPS://WwW.medium.com/@user/post", "medium.com"),
+            ("https://a.com:080", "a.com"),
+            ("https://www.www.a.com", "www.a.com"),
+            ("git+ssh://Host.example.org/repo", "host.example.org"),
+        ] {
+            assert_eq!(host_without_www(url).as_deref(), Some(host), "{url:?}");
+        }
+    }
+
+    #[test]
+    fn declines_hosts_addressable_rejects_or_lacks() {
+        for url in [
+            "",
+            "   ",
+            "WWW.Dev.To:443/a",
+            "x:y",
+            "a.com:8080",
+            "http:a.com",
+            "1http://a.com",
+            "http://",
+            "/path",
+            ":foo",
+            "::1",
+            " :,:",
+            "//a.com:x",
+            "https://user@a.com",
+            "https://[::1]/x",
+            "https://a.com:1a",
+            "https://a.com:%31",
+            "https://a<b.com",
+            "https://a b.com",
+            "https://ex\u{e4}mple.com",
+            "https://a.com/\u{1f600}",
+        ] {
+            assert_eq!(host_without_www(url), None, "{url:?}");
         }
     }
 }

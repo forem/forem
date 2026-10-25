@@ -227,6 +227,17 @@ module ForemNative
       Native.quickie_title_html(title, truncate_for_feed ? true : false)
     end
 
+    # Returns the lowercased host of a (possibly scheme-less) URL without a leading `www.`,
+    # matching `Addressable::URI.parse(url).host.downcase.delete_prefix("www.")` after
+    # `ArticlesHelper#get_host_without_www` strips the URL and adds a missing `http://`.
+    # Returns nil for non-Strings, non-ASCII URLs, userinfo, IP literals, non-digit ports, and
+    # URLs without a host so the helper can fall back to Addressable.
+    def host_without_www(url)
+      return unless url.instance_of?(String)
+
+      Native.host_without_www(url)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

@@ -1324,4 +1324,64 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".host_without_www" do
+    let(:legacy_host_without_www) do
+      lambda do |url|
+        url = url.strip
+        url = "http://#{url}" if Addressable::URI.parse(url).scheme.nil?
+        Addressable::URI.parse(url).host.downcase.delete_prefix("www.")
+      end
+    end
+    let(:helper_host) { Object.new.extend(ArticlesHelper) }
+
+    it "matches the Addressable host extraction across edge cases" do
+      [
+        "https://www.example.com", "https://www.EXAMPLE.COM", "https://www.medium.com", "https://premedium.com",
+        "www.example.com", " www.example.com ", "\0\t\vwww.a.com/x \r\n\0", "http://a.com:/x", "https://a.com#frag",
+        "a.com?q=1:2", "a.com/b:c", "HTTPS://WwW.medium.com/@user/post", "https://a.com:080", "https://www.www.a.com",
+        "git+ssh://Host.example.org/repo", "https://dev.to/ben/my-post-1abc?utm_source=x#comment"
+      ].each do |url|
+        actual = described_class.host_without_www(url)
+        expect(actual).to eq(legacy_host_without_www.call(url)), url.inspect
+        expect(actual.encoding).to eq(Encoding::UTF_8)
+      end
+    end
+
+    it "declines URLs that need Addressable and keeps the helper's legacy result" do
+      [
+        "", "a.com:8080", "http:a.com", "1http://a.com", "http://", "/path", "::1", "//a.com:x", "https://user@a.com",
+        "https://[::1]/x", "https://a.com:1a", "https://a.com:%31", "https://a<b.com", "https://exämple.com",
+        "https://ÉXAMPLE.com", "https://a.com/\u{1f600}", " https://a.com/x".encode("UTF-16LE"),
+        "https://a.com/\xFF", ActiveSupport::SafeBuffer.new("https://a.com"), nil
+      ].each do |url|
+        expect(described_class.host_without_www(url)).to be_nil, url.inspect
+      end
+      expect(helper_host.get_host_without_www("https://user@WWW.Medium.com")).to eq("Medium")
+      expect(helper_host.get_host_without_www(" https://www.Éxample.com ")).to eq("éxample.com")
+      expect { helper_host.get_host_without_www("a.com:8080") }.to raise_error(NoMethodError)
+      expect { helper_host.get_host_without_www("1http://a.com") }.to raise_error(Addressable::URI::InvalidURIError)
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["http", "https", "HTTP", "git+ssh", "1x", "www.", "WWW.", "Example", "dev.to", "medium.com", "a", "b-c",
+                "_", "%41", ":", "//", "/", "?", "#", "@", "[", "]", "::1", "80", "x", "<", ">", "{", "\"", "\\", "|",
+                "`", " ", "\t", "\n", "\0", "é", "\u{1f600}", ".", "+", "-", "=", "&", ";", "~", "!", "(", ","]
+      accepted = 0
+
+      20_000.times do |iteration|
+        url = Array.new(rng.rand(1..12)) { tokens.sample(random: rng) }.join
+        actual = described_class.host_without_www(url)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_host_without_www.call(url)
+        expect(actual).to eq(expected), "iteration #{iteration}: #{url.inspect}"
+        expect(helper_host.get_host_without_www(url)).to eq(expected == "medium.com" ? "Medium" : expected)
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+    end
+  end
 end
