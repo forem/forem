@@ -225,6 +225,15 @@ fn normalize_url(url: RString) -> Option<String> {
     forem_core::url::normalize_url(unsafe { url.test_as_str() }?)
 }
 
+fn join_url(base: RString, reference: RString) -> Option<String> {
+    if !base.is_utf8_compatible_encoding() || !reference.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before the result is converted. Invalid UTF-8 returns `None`.
+    unsafe { forem_core::url::join_url(base.test_as_str()?, reference.test_as_str()?) }
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -274,5 +283,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod
         .define_singleton_method("cloudflare_image_url", function!(cloudflare_image_url, 7))?;
     native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
+    native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
     Ok(())
 }

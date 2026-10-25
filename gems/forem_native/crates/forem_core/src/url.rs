@@ -95,6 +95,48 @@ pub fn normalize_url(url: &str) -> Option<String> {
     Some(out)
 }
 
+/// Resolves `reference` against a bare `http(s)://host[:port]` base and normalizes the result,
+/// mirroring `Addressable::URI.parse(base).join(reference).normalize.to_s` (as `URL.url` does).
+///
+/// Against a base without path, query, or fragment, RFC 3986 resolution of a scheme-less,
+/// authority-less reference without dot segments is plain concatenation (with a `/` before a
+/// relative path), so the joined string is handed to [`normalize_url`].
+///
+/// Returns `None` for bases with a path, query, or fragment, for references with a scheme, an
+/// authority (`//`), or `.`/`..` path segments, and for everything [`normalize_url`] declines.
+pub fn join_url(base: &str, reference: &str) -> Option<String> {
+    let colon = base.find("://")?;
+    let scheme = &base[..colon];
+    if !(scheme.eq_ignore_ascii_case("https") || scheme.eq_ignore_ascii_case("http"))
+        || base[colon + 3..].contains(['/', '?', '#'])
+    {
+        return None;
+    }
+
+    if reference.starts_with("//") {
+        return None;
+    }
+    let path = &reference[..reference.find(['?', '#']).unwrap_or(reference.len())];
+    if path
+        .split('/')
+        .next()
+        .is_some_and(|first| first.contains(':'))
+        || path
+            .split('/')
+            .any(|segment| segment == "." || segment == "..")
+    {
+        return None;
+    }
+
+    let mut joined = String::with_capacity(base.len() + 1 + reference.len());
+    joined.push_str(base);
+    if !path.is_empty() && !path.starts_with('/') {
+        joined.push('/');
+    }
+    joined.push_str(reference);
+    normalize_url(&joined)
+}
+
 /// Mirrors `normalized_authority` for `host[:port]` authorities: the host is lowercased with a
 /// single trailing dot removed (Addressable's `/[^\.]\.$/` rule), and the port is dropped when
 /// empty, zero, or the scheme's default (Addressable stores ports via `to_i`).
@@ -320,6 +362,65 @@ mod tests {
         assert_eq!(n("/a#").as_deref(), Some("/a"));
         assert_eq!(n("/a#b#c?/%41").as_deref(), Some("/a#b%23c?/A"));
         assert_eq!(n("/a?#b").as_deref(), Some("/a#b"));
+    }
+
+    #[test]
+    fn joins_references_against_bare_bases() {
+        for (base, reference, expected) in [
+            ("https://dev.to", "", "https://dev.to/"),
+            ("https://dev.to", "terms", "https://dev.to/terms"),
+            ("https://dev.to", "/terms", "https://dev.to/terms"),
+            ("https://dev.to", "?a=1", "https://dev.to/?a=1"),
+            ("https://dev.to", "#x", "https://dev.to/#x"),
+            ("https://dev.to", "x?y#z", "https://dev.to/x?y#z"),
+            ("https://dev.to", "/x?", "https://dev.to/x"),
+            ("https://dev.to", "/x#", "https://dev.to/x"),
+            ("https://dev.to", "/a:b", "https://dev.to/a:b"),
+            ("https://dev.to", "/a//b", "https://dev.to/a//b"),
+            (
+                "https://dev.to",
+                "/t/c%2B%2B/page/2",
+                "https://dev.to/t/c++/page/2",
+            ),
+            (
+                "https://dev.to",
+                "ben/comment/1abc",
+                "https://dev.to/ben/comment/1abc",
+            ),
+            ("http://localhost:3000", "/a?b", "http://localhost:3000/a?b"),
+            ("https://Dev.To.", "terms", "https://dev.to/terms"),
+            ("HTTPS://dev.to:443", "x", "https://dev.to/x"),
+        ] {
+            assert_eq!(
+                join_url(base, reference).as_deref(),
+                Some(expected),
+                "{base:?} + {reference:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn declines_joins_needing_addressable() {
+        for (base, reference) in [
+            ("https://dev.to/base", "x"),
+            ("https://dev.to?q", "x"),
+            ("https://dev.to#f", "x"),
+            ("https://", "x"),
+            ("ftp://dev.to", "x"),
+            ("dev.to", "x"),
+            ("https://dev.to", "//x.com/a"),
+            ("https://dev.to", "https://other.com/A"),
+            ("https://dev.to", "a:b"),
+            ("https://dev.to", "/a/../b"),
+            ("https://dev.to", "a/./b"),
+            ("https://dev.to", ".."),
+            ("https://dev.to", "%2E%2E/x"),
+            ("https://dev.to", "/a b"),
+            ("https://dev.to", "/caf\u{e9}"),
+            ("https://user@dev.to", "x"),
+        ] {
+            assert_eq!(join_url(base, reference), None, "{base:?} + {reference:?}");
+        }
     }
 
     #[test]
