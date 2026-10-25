@@ -11,12 +11,20 @@ class PollTextResponsesController < ApplicationController
       return
     end
 
-    # Create a new text response with the session_start
-    @text_response = @poll.poll_text_responses.build(
-      user: current_user,
-      text_content: params[:poll_text_response][:text_content],
-      session_start: session_start,
-    )
+    # For survey polls, find or initialize within the same session so users can update responses via Previous/Next
+    # For regular polls, build a new response to preserve existing non-survey behavior
+    @text_response = if @poll.survey.present?
+                       @poll.poll_text_responses.find_or_initialize_by(
+                         user: current_user,
+                         session_start: session_start,
+                       )
+                     else
+                       @poll.poll_text_responses.build(
+                         user: current_user,
+                         session_start: session_start,
+                       )
+                     end
+    @text_response.text_content = params[:poll_text_response][:text_content]
 
     if @text_response.save
       # Check if this response completes a survey

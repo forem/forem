@@ -1,7 +1,7 @@
 class PollVotesController < ApplicationController
   before_action :authenticate_user!, only: %i[create]
 
-  POLL_VOTES_PERMITTED_PARMS = %i[poll_option_id session_start].freeze
+  POLL_VOTES_PERMITTED_PARMS = [:poll_option_id, :session_start, { poll_option_ids: [] }].freeze
 
   def show
     @poll = Poll.find(params[:id]) # Querying the poll instead of the poll vote
@@ -18,8 +18,8 @@ class PollVotesController < ApplicationController
     poll = poll_option.poll
     session_start = poll_vote_params[:session_start]&.to_i || 0
 
-    # Check if this poll belongs to a survey and if resubmission is allowed
-    if poll.survey.present? && !poll.survey.can_user_submit?(current_user)
+    # Check if this poll belongs to a survey and if submission is allowed
+    if poll.survey.present? && !can_submit_survey_vote?(poll: poll, session_start: session_start)
       render json: { voting_data: poll.voting_data,
                      poll_id: poll.id,
                      user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
@@ -27,26 +27,7 @@ class PollVotesController < ApplicationController
       return
     end
 
-    # For survey polls, always create new votes with session_start
-    # For regular polls, use the old behavior of updating existing votes
-    if poll.survey.present?
-      # Survey poll - create new vote with session
-      poll_vote = PollVote.new(
-        user_id: current_user.id,
-        poll_id: poll.id,
-        poll_option_id: poll_option.id,
-        session_start: session_start,
-      )
-      poll_vote.save!
-    else
-      # Regular poll - update existing vote or create new one
-      poll_vote = PollVote.find_or_initialize_by(
-        user_id: current_user.id,
-        poll_id: poll.id,
-      )
-      poll_vote.poll_option_id = poll_option.id
-      poll_vote.save!
-    end
+    record_poll_vote!(poll: poll, poll_option: poll_option, session_start: session_start)
 
     # Check if this vote completes a survey
     SurveyCompletionService.check_and_mark_completion(user: current_user, poll: poll)
@@ -62,12 +43,67 @@ class PollVotesController < ApplicationController
                          action: "poll_vote_create",
                        })
     render json: { voting_data: { votes_count: 0, votes_distribution: [] },
-                   poll_id: poll_vote_params[:poll_option_id],
+                   poll_id: poll&.id || poll_vote_params[:poll_option_id],
                    user_vote_poll_option_id: poll_vote_params[:poll_option_id].to_i,
                    voted: true }
   end
 
   private
+
+  def can_submit_survey_vote?(poll:, session_start:)
+    return true if poll.survey.can_user_submit?(current_user)
+
+    # Allow concurrent option submissions for a multiple-choice poll within the active session
+    poll.multiple_choice? && session_start.positive? && session_start == poll.survey.get_latest_session(current_user)
+  end
+
+  def record_poll_vote!(poll:, poll_option:, session_start:)
+    if poll.multiple_choice?
+      record_multiple_choice_vote!(poll: poll, poll_option: poll_option, session_start: session_start)
+    else
+      record_single_choice_vote!(poll: poll, poll_option: poll_option, session_start: session_start)
+    end
+  end
+
+  def record_multiple_choice_vote!(poll:, poll_option:, session_start:)
+    lookup_attrs = {
+      user_id: current_user.id,
+      poll_id: poll.id,
+      poll_option_id: poll_option.id
+    }
+    lookup_attrs[:session_start] = session_start if poll.survey.present?
+
+    if poll.survey.present? && poll_vote_params[:poll_option_ids].present?
+      selected_ids = Array(poll_vote_params[:poll_option_ids]).map(&:to_i)
+      PollVote.where(
+        user_id: current_user.id,
+        poll_id: poll.id,
+        session_start: session_start,
+      ).where.not(poll_option_id: selected_ids).destroy_all
+    end
+
+    poll_vote = PollVote.find_or_initialize_by(lookup_attrs)
+    poll_vote.save! if poll_vote.new_record?
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    raise unless PollVote.exists?(lookup_attrs)
+  end
+
+  def record_single_choice_vote!(poll:, poll_option:, session_start:)
+    lookup_attrs = {
+      user_id: current_user.id,
+      poll_id: poll.id
+    }
+    lookup_attrs[:session_start] = session_start if poll.survey.present?
+
+    poll_vote = PollVote.find_or_initialize_by(lookup_attrs)
+    poll_vote.poll_option_id = poll_option.id
+    poll_vote.save! if poll_vote.new_record? || poll_vote.changed?
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+    poll_vote = PollVote.find_by(lookup_attrs)
+    raise unless poll_vote
+
+    poll_vote.update!(poll_option_id: poll_option.id) if poll_vote.poll_option_id != poll_option.id
+  end
 
   def poll_vote_params
     params.require(:poll_vote).permit(POLL_VOTES_PERMITTED_PARMS)

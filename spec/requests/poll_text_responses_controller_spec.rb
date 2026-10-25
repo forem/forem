@@ -52,6 +52,24 @@ RSpec.describe "PollText-responsesController", type: :request do
         expect(responses.where(session_start: 1).first.text_content).to eq("First response")
         expect(responses.where(session_start: 2).first.text_content).to eq("Second response")
       end
+
+      it "updates the existing text response when re-submitted in the same session without reporting an error" do
+        create(:poll_text_response, user: user, poll: poll, text_content: "Initial text", session_start: 1)
+        allow(Rails.error).to receive(:report)
+
+        expect do
+          post "/polls/#{poll.id}/poll_text_responses", params: {
+            poll_text_response: {
+              text_content: "Updated text",
+              session_start: 1
+            }
+          }
+        end.not_to change(PollTextResponse, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(Rails.error).not_to have_received(:report)
+        expect(PollTextResponse.find_by(user: user, poll: poll, session_start: 1).text_content).to eq("Updated text")
+      end
     end
 
     context "when poll belongs to a survey with resubmission not allowed" do

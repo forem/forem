@@ -61,6 +61,9 @@ class SurveyTag < LiquidTagBase
     document.querySelectorAll('.ltag-survey').forEach(initializeSurvey);
 
     function initializeSurvey(surveyElement) {
+      if (surveyElement.dataset.surveyInitialized === 'true') return;
+      surveyElement.dataset.surveyInitialized = 'true';
+
       // --- Get all DOM elements upfront ---
       const surveyId = surveyElement.dataset.surveyId;
       const polls = surveyElement.querySelectorAll('.survey-poll');
@@ -76,7 +79,8 @@ class SurveyTag < LiquidTagBase
       const totalPolls = polls.length;
       let currentPollIndex = 0; // Default to the first poll
       let pendingVotes = {}; // Store pending votes for submission
-      let currentSession = Math.floor(Math.random() * 1000000); // Generate random session number (0-999999)
+      let currentSession = Math.floor(Math.random() * 1000000) + 1; // Generate random non-zero session number (1-1000000)
+      let isSubmitting = false;
 
       // --- Define UI update function (used by everyone) ---
       function updateUI() {
@@ -88,10 +92,10 @@ class SurveyTag < LiquidTagBase
         if (progressIndicator) {
           progressIndicator.textContent = 'Question ' + (currentPollIndex + 1) + ' of ' + totalPolls;
         }
-        if (prevBtn) prevBtn.disabled = currentPollIndex === 0;
+        if (prevBtn) prevBtn.disabled = isSubmitting || currentPollIndex === 0;
         const isCurrentPollAnswered = polls[currentPollIndex]?.classList.contains('is-answered');
         if (nextBtn) {
-          nextBtn.disabled = !isCurrentPollAnswered;
+          nextBtn.disabled = isSubmitting || !isCurrentPollAnswered;
           if (currentPollIndex === totalPolls - 1) {
             nextBtn.textContent = 'Finish';
           } else {
@@ -112,9 +116,10 @@ class SurveyTag < LiquidTagBase
         // --- LOGGED-IN USER LOGIC ---
         function setAndLockAnsweredPoll(poll, votedOptionIds) {
           poll.classList.add('is-answered');
-          if (Array.isArray(votedOptionIds)) {
+          if (Array.isArray(votedOptionIds) || poll.dataset.pollType === 'multiple_choice') {
             // Multiple choice poll
-            votedOptionIds.forEach(optionId => {
+            const optionIds = Array.isArray(votedOptionIds) ? votedOptionIds : [votedOptionIds];
+            optionIds.forEach(optionId => {
               const selectedOption = poll.querySelector(`.survey-poll-option[data-option-id="${optionId}"]`);
               if (selectedOption) {
                 selectedOption.classList.add('user-selected');
@@ -139,10 +144,18 @@ class SurveyTag < LiquidTagBase
               if (radio) radio.checked = true;
             }
           }
-          poll.querySelectorAll('.survey-poll-option').forEach(opt => opt.classList.add('disabled'));
+          poll.querySelectorAll('.survey-poll-option').forEach(opt => {
+            opt.classList.add('disabled');
+            const input = opt.querySelector('input');
+            if (input) input.disabled = true;
+          });
         }
 
         function handleSelection(e, optionElement) {
+          if (optionElement.classList.contains('disabled')) {
+            return;
+          }
+
           // If the click is on the label or within it, let the browser fire the synthetic input click natively
           if (e.target.closest('label')) {
             return;
@@ -220,6 +233,7 @@ class SurveyTag < LiquidTagBase
             pollElement.classList.add('is-answered');
             updateUI();
           } else {
+            delete pendingVotes[pollId];
             pollElement.classList.remove('is-answered');
             updateUI();
           }
@@ -228,8 +242,9 @@ class SurveyTag < LiquidTagBase
         async function submitPendingVotes() {
           const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
           const promises = [];
+          const entriesToSubmit = Object.entries(pendingVotes);
     #{'      '}
-          for (const [pollId, voteData] of Object.entries(pendingVotes)) {
+          for (const [pollId, voteData] of entriesToSubmit) {
             if (Array.isArray(voteData)) {
               // Multiple choice - submit each selected option
               voteData.forEach(optionId => {
@@ -237,7 +252,13 @@ class SurveyTag < LiquidTagBase
                   window.fetch('/poll_votes', {
                     method: 'POST',
                     headers: { 'X-CSRF-Token': csrfToken, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ poll_vote: { poll_option_id: optionId, session_start: currentSession } }),
+                    body: JSON.stringify({
+                      poll_vote: {
+                        poll_option_id: optionId,
+                        poll_option_ids: voteData,
+                        session_start: currentSession
+                      }
+                    }),
                     credentials: 'same-origin',
                   })
                 );
@@ -278,8 +299,10 @@ class SurveyTag < LiquidTagBase
               return false;
             }
     #{'        '}
-            // Clear pending votes after successful submission
-            pendingVotes = {};
+            // Clear submitted pending votes after successful submission
+            for (const [pollId] of entriesToSubmit) {
+              delete pendingVotes[pollId];
+            }
             return true;
           } catch (error) {
             console.error('Error submitting votes:', error);
@@ -290,36 +313,34 @@ class SurveyTag < LiquidTagBase
     #{'    '}
         // Attach interactive event listeners for navigation
         nextBtn.addEventListener('click', async () => {
-          if (currentPollIndex < totalPolls - 1) {
-            // Submit current poll's votes before moving to next
+          if (isSubmitting) return;
+          isSubmitting = true;
+          updateUI();
+
+          try {
             const currentPoll = polls[currentPollIndex];
             const pollId = currentPoll.dataset.pollId;
-    #{'        '}
+
             if (pendingVotes[pollId]) {
               const success = await submitPendingVotes();
               if (!success) return; // Don't proceed if submission failed
             }
-    #{'        '}
-            currentPollIndex++;
+
+            if (currentPollIndex < totalPolls - 1) {
+              currentPollIndex++;
+            } else {
+              if (pollsContainer) pollsContainer.style.display = 'none';
+              if (navigation) navigation.style.display = 'none';
+              if (finalMessage) finalMessage.style.display = 'block';
+            }
+          } finally {
+            isSubmitting = false;
             updateUI();
-          } else {
-            // Submit final poll's votes before finishing
-            const currentPoll = polls[currentPollIndex];
-            const pollId = currentPoll.dataset.pollId;
-    #{'        '}
-            if (pendingVotes[pollId]) {
-              const success = await submitPendingVotes();
-              if (!success) return; // Don't proceed if submission failed
-            }
-    #{'        '}
-            if (pollsContainer) pollsContainer.style.display = 'none';
-            if (navigation) navigation.style.display = 'none';
-            if (finalMessage) finalMessage.style.display = 'block';
           }
         });
     #{'    '}
         prevBtn.addEventListener('click', () => {#{' '}
-          if (currentPollIndex > 0) {#{' '}
+          if (!isSubmitting && currentPollIndex > 0) {#{' '}
             currentPollIndex--;#{' '}
             updateUI();#{' '}
           }#{' '}
@@ -348,16 +369,13 @@ class SurveyTag < LiquidTagBase
             const completed = json.completed === true;
             const allowResubmission = json.allow_resubmission === true;
     #{'        '}
-            console.log('Survey state:', {
-              completed,
-              allowResubmission,
-              canSubmit,
-              currentSession,
-              userVotes: Object.keys(userVotes).length
-            });
-    #{'        '}
-            // For resubmission surveys, always start fresh
+            // For resubmission surveys, always start fresh with a monotonically increasing session
             if (allowResubmission) {
+              if (json.new_session) {
+                currentSession = json.new_session;
+              } else if (json.current_session && json.current_session > 0) {
+                currentSession = json.current_session + 1;
+              }
               console.log('Resubmission survey - starting fresh from first poll');
               // Clear all previous answers and start from first poll
               polls.forEach(poll => {
@@ -366,7 +384,10 @@ class SurveyTag < LiquidTagBase
                   option.classList.remove('user-selected');
                   option.classList.remove('disabled');
                   const input = option.querySelector('input');
-                  if (input) input.checked = false;
+                  if (input) {
+                    input.checked = false;
+                    input.disabled = false;
+                  }
                 });
                 const textarea = poll.querySelector('.survey-text-input');
                 if (textarea) {
@@ -390,6 +411,11 @@ class SurveyTag < LiquidTagBase
               if (finalMessage) finalMessage.style.display = 'block';
               return;
             }
+
+            // Continue existing in-progress session if one exists
+            if (json.current_session && json.current_session > 0) {
+              currentSession = json.current_session;
+            }
     #{'        '}
             // Normal flow for non-resubmission surveys - show existing answers and jump to first unanswered
             console.log('Normal survey flow - showing existing answers and jumping to first unanswered');
@@ -408,19 +434,6 @@ class SurveyTag < LiquidTagBase
           })
           .catch(error => {
             console.error("Survey Error:", error);
-            // If survey state fetch fails, still attach event listeners for fresh start
-            polls.forEach(poll => {
-              if (poll.dataset.pollType === 'text_input') {
-                const textarea = poll.querySelector('.survey-text-input');
-                if (textarea) {
-                  textarea.addEventListener('input', () => handleTextInput(poll));
-                }
-              } else {
-                poll.querySelectorAll('.survey-poll-option').forEach(option => {
-                  option.addEventListener('click', (e) => handleSelection(e, option));
-                });
-              }
-            });
           });
 
       } else {

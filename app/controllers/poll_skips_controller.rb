@@ -21,13 +21,15 @@ class PollSkipsController < ApplicationController
     # For survey polls, create skip with session_start
     # For regular polls, use the old behavior
     if poll.survey.present?
-      # Survey poll - create new skip with session
-      poll_skip = PollSkip.new(
-        user_id: current_user.id,
-        poll_id: poll.id,
-        session_start: session_start,
-      )
-      poll_skip.save!
+      # Survey poll - create skip with session if not already recorded in this session
+      unless poll.vote_previously_recorded_for_in_session?(user_id: current_user.id, session_start: session_start)
+        poll_skip = PollSkip.new(
+          user_id: current_user.id,
+          poll_id: poll.id,
+          session_start: session_start,
+        )
+        poll_skip.save!
+      end
     else
       # Regular poll - use old behavior
       poll.poll_skips.create_or_find_by(user_id: current_user.id)

@@ -84,6 +84,21 @@ RSpec.describe Survey, type: :model do
       it "returns false" do
         expect(survey.completed_by_user?(user)).to be false
       end
+
+      it "returns false when multiple options on a single multiple-choice poll equal total poll count" do
+        mc_poll = create(:poll, :multiple_choice, survey: survey)
+        mc_opt1 = mc_poll.poll_options.first
+        mc_opt2 = mc_poll.poll_options.second
+        mc_opt3 = create(:poll_option, poll: mc_poll, markdown: "Option 3")
+
+        # Survey has 3 polls (poll1, poll2, mc_poll). User selects 3 options on mc_poll alone.
+        expect(survey.polls.count).to eq(3)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt1, session_start: 1)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt2, session_start: 1)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt3, session_start: 1)
+
+        expect(survey.completed_by_user?(user)).to be false
+      end
     end
 
     context "when user has responded to all polls" do
