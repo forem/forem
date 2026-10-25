@@ -203,6 +203,38 @@ RSpec.describe "Pages" do
       expect { get "/heyhey/hey/hey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
+    context "when subforem filtering is disabled" do
+      around do |example|
+        original = ENV.fetch("NO_SUBFOREM_FILTER", nil)
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+        example.run
+      ensure
+        ENV["NO_SUBFOREM_FILTER"] = original
+      end
+
+      def page_queries_during(&)
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "pages"') }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record", &)
+        queries
+      end
+
+      it "looks up a missing slug once before returning not found" do
+        queries = page_queries_during do
+          expect { get "/heyhey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        expect(queries.size).to eq(1)
+      end
+
+      it "still renders a page from another subforem" do
+        page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true,
+                             subforem_id: create(:subforem).id)
+        get "/#{page.slug}"
+        expect(response.body).to include(CGI.escapeHTML(page.title))
+      end
+    end
+
     it "returns routing error when 7+ directories" do
       # 6+ directories will be a non-valid page, so just further testing routing error
       expect { get "/heyhey/hey/hey/hey/hey/hey/hey" }.to raise_error(ActionController::RoutingError)
