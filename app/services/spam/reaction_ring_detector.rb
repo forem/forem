@@ -71,9 +71,10 @@ module Spam
 
       # Filter to only include users who meet the ring criteria. One primary-key query
       # per 100 candidates instead of a User.find per candidate; each slice's users can
-      # be garbage-collected once it has been checked.
+      # be garbage-collected once it has been checked. Roles are preloaded so the
+      # any_admin? check reads them in memory instead of a COUNT query per member.
       potential_ring_members.each_slice(100).flat_map do |members|
-        member_users = User.where(id: members.map(&:id)).index_by(&:id)
+        member_users = User.includes(:roles).where(id: members.map(&:id)).index_by(&:id)
         members.select do |member|
           member_user = member_users.fetch(member.id) { User.find(member.id) }
           meets_ring_criteria?(member, member_user, shared_author_ids)
