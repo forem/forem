@@ -161,6 +161,21 @@ fn markdown_xss_attempt(content: RString) -> Option<bool> {
     Some(forem_core::markdown::contains_xss_attempt(text))
 }
 
+fn strip_default_image_alt_text(ruby: &Ruby, content: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so Ruby raises its usual `ArgumentError`.
+    let stripped = {
+        let text = unsafe { content.test_as_str() }?;
+        match forem_core::markdown::strip_default_image_alt_text(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(stripped) => Some(stripped),
+        }
+    };
+    // Like `gsub` without matches, hand back a cheap copy-on-write copy of the input.
+    Some(stripped.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -203,5 +218,9 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod
         .define_singleton_method("markdown_xss_attempt", function!(markdown_xss_attempt, 1))?;
+    native_mod.define_singleton_method(
+        "strip_default_image_alt_text",
+        function!(strip_default_image_alt_text, 1),
+    )?;
     Ok(())
 }

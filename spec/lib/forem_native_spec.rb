@@ -964,4 +964,77 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".strip_default_image_alt_text" do
+    let(:legacy_strip_default_image_alt_text) do
+      ->(content) { content.gsub(/!\[Image Description\]/i, "![ ]") }
+    end
+
+    let(:parsed_content) do
+      ->(content) { MarkdownProcessor::Parser.new(content).instance_variable_get(:@content) }
+    end
+
+    let(:edge_cases) do
+      [
+        "", "![", "![Image Description](x.png)", "![image description]", "![IMAGE DESCRIPTION]![Image Description]",
+        "!![Image Description]", "![Image Description", "![Image  Description]", "![Image Deſcription](a)",
+        "![Image DeſſCription]", "![ Image Description]", "!\\[Image Description]", "日本![iMaGe dEsCrIpTiOn]🚀",
+        "![Image Description]]", "[![Image Description](a)](b)", "![Image Descriptions]", "![Image\nDescription]",
+        "![Image Descriptioñ]", "![ImageKescription]", "![İmage Description]", "![ımage Description]",
+        "x\r\n![Image Description](a)\r\n![alt](b)\n"
+      ]
+    end
+
+    it "matches the legacy Ruby reference across edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_strip_default_image_alt_text.call(input)
+        expect(described_class.strip_default_image_alt_text(input)).to eq(expected), input.inspect
+        expect(parsed_content.call(input)).to eq(expected), input.inspect
+      end
+    end
+
+    it "treats a nil body as empty like the legacy initializer" do
+      expect(parsed_content.call(nil)).to eq("")
+    end
+
+    it "declines non-UTF-8, String subclasses, and invalid bytes so the parser keeps Ruby semantics" do
+      input = "![Image Description](x)"
+
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.strip_default_image_alt_text(other)).to be_nil
+        expect(parsed_content.call(other)).to eq("![ ](x)")
+      end
+
+      expect(ForemNative::Native.strip_default_image_alt_text("#{input}\xFF")).to be_nil
+      expect { MarkdownProcessor::Parser.new("#{input}\xFF") }.to raise_error(ArgumentError, /invalid byte sequence/)
+    end
+
+    it "returns a new mutable UTF-8 String, like gsub, whether or not anything matched" do
+      ["no default alt text".freeze, "![Image Description](x)".freeze].each do |input|
+        result = described_class.strip_default_image_alt_text(input)
+
+        expect(result).to eq(legacy_strip_default_image_alt_text.call(input))
+        expect(result).not_to equal(input)
+        expect(result).not_to be_frozen
+        expect(result.encoding).to eq(Encoding::UTF_8)
+        expect { result << "!" }.not_to(change { input })
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["![", "!", "[", "]", "![Image Description]", "Image", "image", "IMAGE", "iMaGe", " ", "Description",
+                "DESCRIPTION", "Deſcription", "Descriptio", "description]", "ſ", "s", "S", "(x)", "\n", "\r\n",
+                "é", "🚀", "日本", "Image Description]"]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..30)) { tokens.sample(random: rng) }.join
+
+        expected = legacy_strip_default_image_alt_text.call(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(described_class.strip_default_image_alt_text(sample)).to eq(expected), message
+        expect(parsed_content.call(sample)).to eq(expected), message
+      end
+    end
+  end
 end
