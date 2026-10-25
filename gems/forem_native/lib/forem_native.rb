@@ -205,6 +205,17 @@ module ForemNative
       Native.normalize_url(url)
     end
 
+    # Resolves `reference` against a bare `http(s)://host[:port]` base and normalizes it,
+    # matching `Addressable::URI.parse(base).join(reference).normalize.to_s`.
+    # Returns nil for non-String (or String subclass) arguments, bases with a path, references
+    # with a scheme, an authority, or dot segments, and everything `normalize_url` declines,
+    # so `URL.url` can fall back to Addressable.
+    def join_url(base, reference)
+      return unless base.instance_of?(String) && reference.instance_of?(String)
+
+      Native.join_url(base, reference)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

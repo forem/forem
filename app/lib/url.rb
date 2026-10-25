@@ -48,8 +48,15 @@ module URL
     base_url += ":#{port}" if Rails.env.development? && port.present? && !port_present?(base_url)
     return base_url unless uri
 
+    ForemNative.join_url(base_url, uri) || legacy_join_url(base_url, uri)
+  end
+
+  # Handles the joins ForemNative declines (absolute or dot-segment references, non-ASCII, ...).
+  def self.legacy_join_url(base_url, uri)
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
+
+  private_class_method :legacy_join_url
 
   def self.port_present?(url)
     Addressable::URI.heuristic_parse(url).port.present?
