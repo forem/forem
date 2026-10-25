@@ -3389,19 +3389,56 @@ RSpec.describe Article do
       expected = [article, other_article].map { |a| Article.find(a.id).public_reaction_categories }
       stories = [Article.find(article.id), Article.find(other_article.id)]
 
-      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      allow(Rails.cache).to receive(:read_multi).and_call_original
       allow(Rails.cache).to receive(:fetch).and_call_original
       described_class.preload_reaction_counts_for_reactable(stories)
 
       expect(stories.map(&:public_reaction_categories)).to eq(expected)
-      expect(Rails.cache).to have_received(:fetch_multi).once
+      expect(Rails.cache).to have_received(:read_multi).once
       expect(Rails.cache).not_to have_received(:fetch).with(/reaction_counts_for_reactable/, anything)
     end
 
+    it "computes all cache misses with one reactions query and caches the per-record values" do
+      empty_article = create(:article, user: user)
+      stories = [article, other_article, empty_article].map { |a| described_class.find(a.id) }
+      expected = stories.to_h do |story|
+        [story.reaction_counts_cache_key, story.send(:compute_reaction_counts_for_reactable)]
+      end
+
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('FROM "reactions"')
+      end
+      allow(Rails.cache).to receive(:write_multi).and_call_original
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.preload_reaction_counts_for_reactable(stories)
+      end
+
+      expect(reaction_queries.size).to eq(1)
+      expect(Rails.cache).to have_received(:write_multi).with(anything, expires_in: 10.hours).once
+      expect(Rails.cache).to have_received(:write_multi) do |written|
+        expect(written.transform_values { |counts| counts.sort_by { |c| c[:category] } })
+          .to eq(expected.transform_values { |counts| counts.sort_by { |c| c[:category] } })
+        expect(written[empty_article.reaction_counts_cache_key]).to eq([])
+      end
+    end
+
+    it "does not recompute or rewrite records that are already cached" do
+      cached = [{ category: "like", count: 7 }]
+      allow(Rails.cache).to receive(:read_multi).and_return(article.reaction_counts_cache_key => cached)
+      allow(Rails.cache).to receive(:write_multi)
+      story = described_class.find(article.id)
+
+      described_class.preload_reaction_counts_for_reactable([story])
+
+      expect(story.send(:reaction_counts_for_reactable)).to eq(cached)
+      expect(Rails.cache).not_to have_received(:write_multi)
+    end
+
     it "is a no-op for an empty list" do
-      allow(Rails.cache).to receive(:fetch_multi)
+      allow(Rails.cache).to receive(:read_multi)
       described_class.preload_reaction_counts_for_reactable([])
-      expect(Rails.cache).not_to have_received(:fetch_multi)
+      expect(Rails.cache).not_to have_received(:read_multi)
     end
   end
 
