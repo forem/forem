@@ -870,7 +870,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_26_150001) do
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
-    t.index ["feed_success_score"], name: "index_feed_configs_on_feed_success_score"
   end
 
   create_table "feed_events", force: :cascade do |t|
