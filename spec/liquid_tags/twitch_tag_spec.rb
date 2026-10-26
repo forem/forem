@@ -50,5 +50,12 @@ RSpec.describe TwitchTag, type: :liquid_tag do
       url = "https://player.twitch.tv/?autoplay=false&parent=localhost&video=#{video_id}"
       assert_parses_video video_id, url
     end
+
+    it "rejects non-Twitch URLs containing player.twitch.tv in the path" do
+      url = "https://example.com/player.twitch.tv/?video=#{video_id}"
+      expect do
+        Liquid::Template.parse("{% twitch #{url} %}").render
+      end.to raise_error(StandardError, I18n.t("liquid_tags.twitch_tag.invalid_twitch_id"))
+    end
   end
 end

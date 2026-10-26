@@ -1,13 +1,13 @@
 class TwitchTag < LiquidTagBase
   PARTIAL = "liquids/twitch".freeze
-  REGISTRY_REGEXP = %r{https://(?:clips|player|www)\.twitch\.tv/(?:(?:embed\?clip=|\w+/clip/)|(?:\?(?:[^&#]*&)*video=|videos/))(?<id>[a-zA-Z0-9-]{,100})(?:&[^$]+)?}
+  REGISTRY_REGEXP = %r{https://(?:clips|player|www)\.twitch\.tv/(?:(?:embed\?clip=|\w+/clip/)|(?:\?(?:[^&#]*&(?:amp;)?)*video=|videos/))(?<id>[a-zA-Z0-9-]{,100})(?:&[^$]+)?}
   VALID_VIDEO_REGEXP = /\A(?<video_id>\d+)\Z/
   VALID_CLIP_REGEXP = /\A(?<clip_slug>[a-zA-Z0-9-]{,100})\Z/
   REGEXP_OPTIONS = [VALID_VIDEO_REGEXP, VALID_CLIP_REGEXP, REGISTRY_REGEXP].freeze
 
   def initialize(_tag_name, input, _parse_context)
     super
-    @url = parsed_input(strip_tags(input))
+    @url = parsed_input(CGI.unescape_html(strip_tags(input)))
     @width = 710
     @height = 399
   end
@@ -42,13 +42,14 @@ class TwitchTag < LiquidTagBase
 
   def parsed_input(input)
     # For player.twitch.tv URLs, parse query params directly to handle any query parameter order
-    if input.include?("player.twitch.tv")
-      begin
-        video_id = Addressable::URI.parse(input).query_values&.[]("video")
+    begin
+      uri = Addressable::URI.parse(input)
+      if uri&.host == "player.twitch.tv" && %w[http https].include?(uri.scheme)
+        video_id = uri.query_values&.[]("video")
         return player_url(video_id) if video_id&.match?(VALID_VIDEO_REGEXP)
-      rescue Addressable::URI::InvalidURIError
-        # fall through to the standard matching below
       end
+    rescue Addressable::URI::InvalidURIError
+      # fall through to the standard matching below
     end
 
     input = input.split("&")[0] # prevent param injection
