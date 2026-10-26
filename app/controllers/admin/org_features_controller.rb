@@ -23,7 +23,7 @@ module Admin
 
     def index
       @features = FEATURES.map do |key, config|
-        feature = Flipper.feature(key)
+        feature = FeatureFlag.uncached.feature(key)
         globally_enabled = feature.state == :on
 
         # Get per-org enablements from Flipper gates.

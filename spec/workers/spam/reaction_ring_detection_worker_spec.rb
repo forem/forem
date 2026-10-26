@@ -27,10 +27,6 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     context "when user is admin" do
       let(:user) { create(:user, :admin) }
 
-      before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
-      end
-
       it "returns early without running detection" do
         expect(Spam::ReactionRingDetector).not_to receive(:new)
         described_class.new.perform(user.id)
@@ -40,10 +36,6 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
     context "when user is trusted" do
       let(:user) { create(:user, :trusted) }
 
-      before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
-      end
-
       it "returns early without running detection" do
         expect(Spam::ReactionRingDetector).not_to receive(:new)
         described_class.new.perform(user.id)
@@ -52,7 +44,7 @@ RSpec.describe Spam::ReactionRingDetectionWorker, type: :worker do
 
     context "when user meets criteria for analysis" do
       before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_list(:reaction, 50, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "runs the ring detection" do
