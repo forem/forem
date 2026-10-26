@@ -20,6 +20,7 @@ RSpec.describe Users::Delete, type: :service do
     allow(user).to receive(:destroy) do
       attempts += 1
       raise ActiveRecord::InvalidForeignKey, "violates foreign key constraint on table ai_audits" if attempts == 1
+
       original_method.call
     end
 
@@ -28,9 +29,138 @@ RSpec.describe Users::Delete, type: :service do
     expect(attempts).to eq(2)
   end
 
-  it "busts user profile page" do
-    described_class.new(user).call
-    expect(EdgeCache::BustUser).to have_received(:call).with(user)
+  it "recovers from a real ai_audits foreign key violation inside the destroy transaction" do
+    attempts = 0
+    original_method = user.method(:destroy)
+    allow(user).to receive(:destroy) do
+      attempts += 1
+      # a real violation aborts the surrounding transaction unless it's in a savepoint
+      create(:ai_audit, affected_user_id: -1) if attempts == 1
+      original_method.call
+    end
+
+    described_class.call(user)
+
+    expect(User.find_by(id: user.id)).to be_nil
+    expect(attempts).to eq(2)
+  end
+
+  it "enqueues a purge of the user's profile" do
+    sidekiq_assert_enqueued_with(
+      job: EdgeCache::PurgeByKeyWorker,
+      args: [user.profile_cache_keys, user.profile_cache_bust_paths],
+    ) do
+      described_class.call(user)
+    end
+  end
+
+  it "keeps the user when the final profile purge can't be enqueued, so a retry can finish the job" do
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in).and_call_original
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in)
+      .with(anything, user.profile_cache_keys, user.profile_cache_bust_paths)
+      .and_raise(Redis::CannotConnectError)
+
+    expect { described_class.call(user) }.to raise_error(Redis::CannotConnectError)
+    expect(User.exists?(user.id)).to be(true)
+
+    allow(EdgeCache::PurgeByKeyWorker).to receive(:perform_in).and_call_original
+    sidekiq_assert_enqueued_with(
+      job: EdgeCache::PurgeByKeyWorker,
+      args: [user.profile_cache_keys, user.profile_cache_bust_paths],
+    ) do
+      described_class.call(User.find(user.id))
+    end
+    expect(User.exists?(user.id)).to be(false)
+  end
+
+  it "delays the final profile purge until after the destroy is committed" do
+    described_class.call(user)
+
+    job = EdgeCache::PurgeByKeyWorker.jobs.detect { |j| j["args"].first == user.profile_cache_keys }
+    expect(job["at"]).to be > Time.current.to_f
+  end
+
+  describe "the post-destroy block" do
+    it "runs once the user is destroyed" do
+      user_existed = nil
+
+      described_class.call(user) { user_existed = User.exists?(user.id) }
+
+      expect(user_existed).to be(false)
+    end
+
+    it "keeps the user when the block fails, so a retry can run it again", :aggregate_failures do
+      expect do
+        described_class.call(user) { raise ActiveRecord::QueryCanceled }
+      end.to raise_error(ActiveRecord::QueryCanceled)
+      expect(User.exists?(user.id)).to be(true)
+
+      block_ran = false
+      described_class.call(User.find(user.id)) { block_ran = true }
+
+      expect(block_ran).to be(true)
+      expect(User.exists?(user.id)).to be(false)
+    end
+  end
+
+  it "raises instead of carrying on when the destroy is aborted" do
+    allow(user).to receive(:destroy!).and_raise(ActiveRecord::RecordNotDestroyed)
+    block_ran = false
+
+    expect do
+      described_class.call(user) { block_ran = true }
+    end.to raise_error(ActiveRecord::RecordNotDestroyed)
+    expect(block_ran).to be(false)
+  end
+
+  it "purges the user's profile when the enqueued jobs run" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+    keys = user.profile_cache_keys
+    paths = user.profile_cache_bust_paths
+
+    sidekiq_perform_enqueued_jobs { described_class.call(user) }
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with(keys, fallback_paths: paths)
+  end
+
+  it "doesn't bust edge caches inline" do
+    create(:article, user: user)
+    create(:comment, user: user)
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+    allow(EdgeCache::Bust).to receive(:call)
+    allow(EdgeCache::BustArticle).to receive(:call)
+    allow(EdgeCache::BustComment).to receive(:call)
+
+    described_class.call(user)
+
+    expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    expect(EdgeCache::Bust).not_to have_received(:call)
+    expect(EdgeCache::BustArticle).not_to have_received(:call)
+    expect(EdgeCache::BustComment).not_to have_received(:call)
+    expect(EdgeCache::BustUser).not_to have_received(:call)
+  end
+
+  it "removes the user from Mailchimp exactly once" do
+    allow(user).to receive(:remove_from_mailchimp_newsletters)
+
+    described_class.call(user)
+
+    expect(user).to have_received(:remove_from_mailchimp_newsletters).once
+  end
+
+  it "can be re-run to finish a deletion that failed part way through" do
+    article = create(:article, user: user)
+    create(:comment, user: user)
+    allow(Users::DeletePodcasts).to receive(:call).and_raise(ActiveRecord::QueryCanceled)
+
+    expect { described_class.call(user) }.to raise_error(ActiveRecord::QueryCanceled)
+    expect(User.exists?(user.id)).to be(true)
+    expect(Article.exists?(article.id)).to be(false)
+
+    allow(Users::DeletePodcasts).to receive(:call).and_call_original
+    described_class.call(User.find(user.id))
+
+    expect(User.exists?(user.id)).to be(false)
   end
 
   it "deletes user's follows" do

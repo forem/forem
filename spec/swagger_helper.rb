@@ -167,6 +167,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           }
         },
         schemas: {
+          ImageUrl: {
+            description: "An image hosted by this Forem, usable in body_markdown or as an article's main_image",
+            type: :object,
+            properties: {
+              url: { type: :string, format: :url }
+            },
+            required: %w[url]
+          },
           ArticleFlareTag: {
             description: "Flare tag of the article",
             type: :object,
@@ -294,8 +302,26 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { description: "Tag id", type: :integer, format: :int64 },
               name: { type: :string },
               bg_color_hex: { type: :string, nullable: true },
-              text_color_hex: { type: :string, nullable: true }
+              text_color_hex: { type: :string, nullable: true },
+              short_summary: { type: :string, nullable: true }
             }
+          },
+          ExtendedTag: {
+            description: "Representation of a tag with its editable fields, returned when a tag is updated",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              pretty_name: { type: :string, nullable: true },
+              short_summary: { type: :string, nullable: true },
+              supported: { type: :boolean },
+              wiki_body_markdown: { type: :string, nullable: true },
+              context_note_instructions: { type: :string, nullable: true },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            },
+            required: %w[id name pretty_name short_summary supported wiki_body_markdown
+                         context_note_instructions bg_color_hex text_color_hex]
           },
           Page: {
             description: "Representation of a page object",
@@ -310,6 +336,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               is_top_level_path: { type: :boolean,
                                    description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
               social_image: { type: :object, nullable: true },
+              organization_id: {
+                type: :integer, format: :int64, nullable: true,
+                description: "The ID of the organization the page belongs to, if any"
+              },
+              position: {
+                type: :integer, format: :int32,
+                description: "Display order position for organization pages"
+              },
               template: {
                 type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                 description: "Controls what kind of layout the page is rendered in"

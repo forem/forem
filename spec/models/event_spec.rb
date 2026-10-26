@@ -307,6 +307,23 @@ RSpec.describe Event do
     end
   end
 
+  describe "#live?" do
+    it "returns true when current time is between start_time and end_time" do
+      event = build(:event, start_time: 1.hour.ago, end_time: 1.hour.from_now)
+      expect(event.live?).to be(true)
+    end
+
+    it "returns false when start_time is in the future" do
+      event = build(:event, start_time: 1.hour.from_now, end_time: 2.hours.from_now)
+      expect(event.live?).to be(false)
+    end
+
+    it "returns false when end_time is in the past" do
+      event = build(:event, start_time: 2.hours.ago, end_time: 1.hour.ago)
+      expect(event.live?).to be(false)
+    end
+  end
+
   describe "#formatted_date_range" do
     it "formats same-month date ranges as 'MMM D - D'" do
       event = build(
@@ -350,6 +367,38 @@ RSpec.describe Event do
     it "defaults to CHALLENGE for challenge" do
       event = build(:event, type_of: :challenge)
       expect(event.format_pill_label).to eq("CHALLENGE")
+    end
+  end
+
+  describe "#body_html" do
+    it "renders body_markdown to processed_html on save and uses it" do
+      event = create(:event, description: "Short summary.", body_markdown: "## Agenda\n\n**Bold** plan")
+      expect(event.processed_html).to include("<h2")
+      expect(event.body_html).to include("<strong>Bold</strong>")
+      expect(event.body_html).not_to include("Short summary.")
+    end
+
+    it "falls back to the description when body_markdown is blank" do
+      event = create(:event, description: "Short summary.", body_markdown: "")
+      expect(event.processed_html).to be_nil
+      expect(event.body_html).to include("<p>Short summary.</p>")
+    end
+
+    it "does not save and reports an error when the markdown fails to parse" do
+      event = build(:event, body_markdown: "hello {% gist 123 %}")
+      expect(event.save).to be(false)
+      expect(event.errors[:body_markdown].join).to include("Invalid Gist link")
+    end
+
+    it "excludes body fields from JSON serialization" do
+      event = create(:event, body_markdown: "Hello")
+      expect(event.as_json.keys).not_to include("body_markdown", "processed_html")
+    end
+
+    it "clears processed_html when body_markdown is removed" do
+      event = create(:event, body_markdown: "Hello **world**")
+      event.update!(body_markdown: "")
+      expect(event.reload.processed_html).to be_nil
     end
   end
 end

@@ -86,6 +86,12 @@ RSpec.describe URL, type: :lib do
       expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
     end
 
+    it "falls back to Addressable for references ForemNative declines" do
+      expect(described_class.url("/a/../t/c%2B%2B?q=a b")).to eq("https://dev.to/t/c++?q=a%20b")
+      expect(described_class.url("https://Other.com/x")).to eq("https://other.com/x")
+      expect(described_class.url(Addressable::URI.parse("terms"))).to eq("https://dev.to/terms")
+    end
+
     context "when passed a domain string" do
       it "creates a URL with the specified domain" do
         expect(described_class.url("/feed", "subdomain.example.com")).to eq("https://subdomain.example.com/feed")
@@ -128,6 +134,12 @@ RSpec.describe URL, type: :lib do
         allow(described_class).to receive(:dev_port).and_return("3005")
         allow(Settings::General).to receive(:app_domain).and_return("localhost:3005")
         expect(described_class.url).to eq("https://localhost:3005")
+      end
+
+      it "does not append dev_port when the domain already contains a different port" do
+        allow(described_class).to receive(:dev_port).and_return("3100")
+        allow(Settings::General).to receive(:app_domain).and_return("localhost:3000")
+        expect(described_class.url).to eq("https://localhost:3000")
       end
 
       it "omits the port entirely when dev_port is blank, for a TLS proxy in front of the app" do

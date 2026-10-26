@@ -4,9 +4,16 @@ module Billboards
 
     sidekiq_options queue: :low_priority, retry: 10
 
-    def perform(bb_param, user_id)
+    TALLY_COLUMNS = [
+      "COALESCE(SUM(counts_for) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_IMPRESSION}'), 0)",
+      "COALESCE(SUM(counts_for) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_CLICK}'), 0)",
+      "COALESCE(SUM(seconds_visible) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_IMPRESSION}'), 0)",
+    ].map { |sql| Arel.sql(sql) }.freeze
+
+    def perform(bb_param, user_id, user_agent = nil)
       @bb = bb_param
       @user = User.find_by(id: user_id)
+      @user_agent = user_agent
       track_billboard
     end
 
@@ -17,7 +24,8 @@ module Billboards
         BillboardEvent.create(billboard_id: @bb.to_i,
                               category: "click",
                               user_id: @user&.id,
-                              context_type: "email")
+                              context_type: "email",
+                              user_agent: @user_agent)
         update_billboard_counts
       end
     rescue StandardError => e
@@ -28,9 +36,8 @@ module Billboards
       billboard = Billboard.find_by(id: @bb.to_i)
       return unless billboard
 
-      num_impressions = billboard.billboard_events.impressions.sum(:counts_for)
-      num_clicks = billboard.billboard_events.clicks.sum(:counts_for)
-      num_seconds_visible = billboard.billboard_events.impressions.sum(:seconds_visible)
+      # One pass over the billboard's events instead of one SUM query per tally.
+      num_impressions, num_clicks, num_seconds_visible = billboard.billboard_events.pick(*TALLY_COLUMNS)
       rate = num_impressions.positive? ? (num_clicks.to_f / num_impressions) : 0
       billboard.update_columns(
         success_rate: rate,

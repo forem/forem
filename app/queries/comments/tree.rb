@@ -4,7 +4,7 @@ module Comments
 
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
       includes = [:user]
-      includes << { user: %i[setting profile organization_memberships] }
+      includes << { user: %i[setting profile organization_memberships roles] }
 
       # Only include organization for Article commentables
       if commentable.is_a?(Article)
@@ -22,7 +22,7 @@ module Comments
 
     def for_root_comment(root_comment, include_negative: false)
       includes = [:user]
-      includes << { user: %i[setting profile organization_memberships] }
+      includes << { user: %i[setting profile organization_memberships roles] }
 
       # Only include organization for Article commentables
       if root_comment.commentable.is_a?(Article)

@@ -98,6 +98,19 @@ RSpec.describe "Events" do
     context "when requesting a challenge event" do
       let!(:challenge_event) { create(:event, published: true, type_of: :challenge, title: "Game Jam Challenge") }
 
+      it "renders legacy data body_markdown when the body column is blank" do
+        challenge_event.update!(data: { "body_markdown" => "Legacy **rules**" })
+        get event_path(challenge_event.event_name_slug, challenge_event.event_variation_slug)
+        expect(response.body).to include("<strong>rules</strong>")
+      end
+
+      it "prefers the body_markdown column over legacy data" do
+        challenge_event.update!(body_markdown: "New **agenda**", data: { "body_markdown" => "Legacy **rules**" })
+        get event_path(challenge_event.event_name_slug, challenge_event.event_variation_slug)
+        expect(response.body).to include("<strong>agenda</strong>")
+        expect(response.body).not_to include("Legacy")
+      end
+
       it "renders the challenge template" do
         get event_path(challenge_event.event_name_slug, challenge_event.event_variation_slug)
         expect(response).to have_http_status(:success)

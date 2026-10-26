@@ -150,6 +150,37 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
           expect(billboard.counts_tabulated_at).to eq(now)
         end
       end
+
+      it "counts signups as conversions and tallies all categories in a single events query" do
+        create(:billboard_event, billboard: billboard, category: "signup", counts_for: 1, seconds_visible: 0,
+                                 created_at: now - 1.hour)
+        event_queries = []
+        callback = lambda do |*, payload|
+          event_queries << payload[:sql] if payload[:sql].include?('FROM "display_ad_events"')
+        end
+
+        travel_to(now) do
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { worker.perform(billboard.id) }
+        end
+        billboard.reload
+
+        expect(event_queries.size).to eq(1)
+        expect(billboard.impressions_count).to eq(17)
+        expect(billboard.clicks_count).to eq(7)
+        expect(billboard.seconds_visible).to eq(200)
+        expect(billboard.success_rate).to eq((7 + 50).to_f / 17)
+      end
+
+      it "leaves the counters unchanged when there are no new events" do
+        travel_to(now) { worker.perform(billboard.id) }
+        travel_to(now + 1.hour) { worker.perform(billboard.id) }
+        billboard.reload
+
+        expect(billboard.impressions_count).to eq(17)
+        expect(billboard.clicks_count).to eq(7)
+        expect(billboard.seconds_visible).to eq(200)
+        expect(billboard.success_rate).to eq(7.to_f / 17)
+      end
     end
 
     context "when impressions_count is very large and first random check triggers early return" do
