@@ -90,7 +90,6 @@ describe ProfileImageUploader, type: :uploader do
       user # ensure user is created before switching ProfileImageUploader to fog storage
 
       original_storage = described_class.storage
-      original_cache_storage = described_class.cache_storage
       original_fog_credentials = described_class.fog_credentials
       original_fog_directory = described_class.fog_directory
 
@@ -105,14 +104,12 @@ describe ProfileImageUploader, type: :uploader do
       Fog::Storage.new(credentials).directories.create(key: "test-bucket")
 
       described_class.storage = :fog
-      described_class.cache_storage = :file
       described_class.fog_credentials = credentials
       described_class.fog_directory = "test-bucket"
 
       example.run
     ensure
       described_class.storage = original_storage
-      described_class.cache_storage = original_cache_storage
       described_class.fog_credentials = original_fog_credentials
       described_class.fog_directory = original_fog_directory
       Fog.unmock!
@@ -129,6 +126,7 @@ describe ProfileImageUploader, type: :uploader do
       expect(reloaded_user.profile_image.blank?).to be(false)
       expect(reloaded_user.profile_image.present?).to be(true)
       expect(reloaded_user.profile_image?).to be(true)
+      expect(reloaded_user.profile_image.filename).to end_with(".jpg")
       expect(reloaded_user.valid?).to be(true)
       expect(fog_file).not_to have_received(:exists?)
     end
@@ -139,20 +137,6 @@ describe ProfileImageUploader, type: :uploader do
 
       expect(reloaded_user.profile_image.blank?).to be(true)
       expect(reloaded_user.profile_image.present?).to be(false)
-    end
-
-    it "caches locally and uploads directly to final S3 store path without temporary S3 cache objects" do
-      fresh_uploader = described_class.new(user, mounted_as)
-      expect(fresh_uploader.__send__(:cache_storage)).to be_a(CarrierWave::Storage::File)
-
-      fresh_uploader.store!(image_jpg)
-
-      connection = Fog::Storage.new(described_class.fog_credentials)
-      bucket_keys = connection.directories.get("test-bucket").files.map(&:key)
-
-      expect(bucket_keys.length).to eq(1)
-      expect(bucket_keys.first).to start_with("uploads/user/profile_image/#{user.id}/")
-      expect(bucket_keys).to all(satisfy { |k| k.exclude?("uploads/tmp/") })
     end
   end
 end

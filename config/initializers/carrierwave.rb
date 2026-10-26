@@ -10,7 +10,6 @@ module CarrierWaveInitializer
   def self.local_storage_config
     CarrierWave.configure do |config|
       config.storage = :file
-      config.cache_storage = :file
       config.enable_processing = !Rails.env.test? # disabled for test
       config.asset_host = if Rails.env.production?
                             "https://#{ApplicationConfig['APP_DOMAIN']}"
@@ -21,7 +20,6 @@ module CarrierWaveInitializer
   def self.standard_production_config
     CarrierWave.configure do |config|
       config.storage = :fog
-      config.cache_storage = :file
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.fog_attributes = { cache_control: "public, max-age=#{365.days.to_i}" }
       config.fog_credentials = {
@@ -36,7 +34,6 @@ module CarrierWaveInitializer
   def self.forem_cloud_config
     CarrierWave.configure do |config|
       config.storage = :fog
-      config.cache_storage = :file
       config.fog_directory = ApplicationConfig["AWS_BUCKET_NAME"]
       config.asset_host = "https://#{ApplicationConfig['APP_DOMAIN']}/remoteimages"
       config.fog_public = false
