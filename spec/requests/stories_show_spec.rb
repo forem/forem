@@ -548,6 +548,23 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    context "when the organization has a cover image" do
+      before { org.update!(cover_image: fixture_file_upload("800x600.png", "image/png")) }
+
+      it "serves the cover at 1600px for 1x screens and 3200px for 2x screens" do
+        allow(Images::Optimizer).to receive(:call).and_call_original
+
+        get org.path
+
+        expect(response).to have_http_status(:ok)
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 1600))
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 3200))
+        expect(response.body).to include("image-set(")
+      end
+    end
+
     context "with comment cue popup data attributes" do
       it "renders cue data attributes when the flag is fully enabled globally" do
         allow(FeatureFlag).to receive(:enabled?).and_call_original
