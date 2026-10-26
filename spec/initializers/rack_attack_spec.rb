@@ -54,14 +54,14 @@ describe Rack, ".attack", throttle: true, type: :request do
       allow(Search::Article).to receive(:search_documents).and_return([])
     end
 
-    it "throttles signed-out /search/feed_content after 10 requests per minute" do
+    it "throttles signed-out /search/feed_content after 20 requests per minute" do
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..10).map do |i|
+        valid_responses = (1..20).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
-        Timecop.travel(start_time + 11.seconds)
+        Timecop.travel(start_time + 21.seconds)
         throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 
@@ -93,11 +93,11 @@ describe Rack, ".attack", throttle: true, type: :request do
     it "falls back to Rails remote_ip if HTTP_FASTLY_CLIENT_IP is blank/missing" do
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..10).map do |i|
+        valid_responses = (1..20).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
         end
-        Timecop.travel(start_time + 11.seconds)
+        Timecop.travel(start_time + 21.seconds)
         throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
         new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "1.1.1.1" }
 
@@ -113,11 +113,11 @@ describe Rack, ".attack", throttle: true, type: :request do
         params = { feed_params: { class_name: "Article", sort_by: "hotness_score" } }
         headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
 
-        valid_responses = (1..10).map do |i|
+        valid_responses = (1..20).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content/", params: params, headers: headers
         end
-        Timecop.travel(start_time + 11.seconds)
+        Timecop.travel(start_time + 21.seconds)
         throttled_response = get "/search/feed_content/", params: params, headers: headers
 
         valid_responses.each { |r| expect(r).not_to eq(429) }

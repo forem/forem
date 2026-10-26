@@ -133,7 +133,7 @@ module Rack
       end
     end
 
-    throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
+    throttle("search_feed_content_throttle", limit: 20, period: 1.minute) do |request|
       if request.path.chomp("/") == "/search/feed_content" && !user_signed_in?(request)
         request.track_and_return_ip
       end
