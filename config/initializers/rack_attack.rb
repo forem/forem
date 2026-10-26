@@ -4,6 +4,8 @@ module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
+    API_SEARCH_PATH_REGEX =
+      %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
 
     # Method that checks API Key from the request and returns true if it
     # belongs to an admin, false otherwise
@@ -114,6 +116,24 @@ module Rack
     throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
       if request.path.chomp("/") == "/search/feed_content"
         request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_throttle", limit: 2, period: 1) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_throttle_per_minute", limit: 10, period: 1.minute) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_key_throttle_per_minute", limit: 10, period: 1.minute) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"].presence
       end
     end
 

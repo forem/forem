@@ -91,6 +91,94 @@ describe Rack, ".attack", throttle: true, type: :request do
     end
   end
 
+  describe "api_search_throttle and api_search_throttle_per_minute" do
+    before do
+      allow(Articles::ApiSearchQuery).to receive(:call).and_return(Article.none)
+    end
+
+    it "throttles /api/articles/search after 2 requests per second per IP", :aggregate_failures do
+      Timecop.freeze do
+        valid_responses = Array.new(2).map do
+          get "/api/articles/search", params: { q: "ruby" }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        throttled_response = get "/api/articles/search",
+                                 params: { q: "ruby" },
+                                 headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get "/api/articles/search",
+                              params: { q: "ruby" },
+                              headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "throttles /api/articles/search after 10 requests per minute per IP", :aggregate_failures do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + (i * 2).seconds)
+          get "/api/articles/search", params: { q: "ruby" }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        Timecop.travel(start_time + 25.seconds)
+        throttled_response = get "/api/articles/search",
+                                 params: { q: "ruby" },
+                                 headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get "/api/articles/search",
+                              params: { q: "ruby" },
+                              headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "throttles /api/articles/search after 10 requests per minute per API key across different IPs",
+       :aggregate_failures do
+      api_secret = create(:api_secret)
+      another_api_secret = create(:api_secret)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..10).map do |i|
+          Timecop.travel(start_time + (i * 2).seconds)
+          get "/api/articles/search",
+              params: { q: "ruby" },
+              headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.#{i}", "api-key" => api_secret.secret }
+        end
+        Timecop.travel(start_time + 25.seconds)
+        throttled_response = get "/api/articles/search",
+                                 params: { q: "ruby" },
+                                 headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.99", "api-key" => api_secret.secret }
+        new_key_response = get "/api/articles/search",
+                               params: { q: "ruby" },
+                               headers: {
+                                 "HTTP_FASTLY_CLIENT_IP" => "10.0.0.100",
+                                 "api-key" => another_api_secret.secret
+                               }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_key_response).not_to eq(429)
+      end
+    end
+
+    it "does not throttle /api/articles/search when the API key belongs to an admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => admin_api_key.secret }
+        valid_responses = Array.new(12).map do
+          get "/api/articles/search", params: { q: "ruby" }, headers: headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+      end
+    end
+  end
+
   describe "api_throttle" do
     it "throttles api get endpoints based on IP" do
       Timecop.freeze do
