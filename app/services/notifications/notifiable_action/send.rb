@@ -36,7 +36,8 @@ module Notifications
         # same reason mentions are excluded: one notification per person per post.
         co_author_ids = Array.wrap(notifiable.co_author_ids).map(&:to_i)
 
-        article_followers = User.joins("INNER JOIN follows ON follows.follower_id = users.id")
+        # Only follower ids are used below, so skip hydrating (and DISTINCT-sorting) full user rows
+        article_followers = User.select(:id).joins("INNER JOIN follows ON follows.follower_id = users.id")
           .where("(follows.followable_id = ? AND follows.followable_type = ?)
                  OR (follows.followable_id = ? AND follows.followable_type = ?)",
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
