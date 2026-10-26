@@ -74,10 +74,13 @@
   --card-tertiary-bg-hover: rgba(var(--grey-800), 0.9);
   --card-border: rgba(var(--white), 0.15);
   --card-secondary-border: rgba(var(--white), 0.1);
+  --card-shadow: 0 0 0 1px var(--card-secondary-border);
+  --card-shadow-hover: 0 0 0 1px rgba(var(--white), 0.2);
 
   /* Header */
   --header-bg: rgb(var(--grey-900));
   --header-shadow: rgb(var(--black));
+  --header-border: rgba(var(--white), 0.08);
 
   /* Footer */
   --footer-bg: rgb(var(--grey-900));
@@ -394,9 +397,11 @@
 
   /* Focus */
   --focus: var(--accent-brand-lighter);
+  --focus-halo: rgba(var(--accent-brand-lighter-rgb), 0.3);
 
   /* Divider */
   --divider: rgb(var(--grey-700));
+  --selection-bg: rgba(var(--accent-brand-lighter-rgb), 0.35);
 
   /* Shadows */
   --shadow-1: 0 10px 15px -3px rgba(var(--black), 0.5),

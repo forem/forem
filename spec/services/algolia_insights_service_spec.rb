@@ -22,7 +22,7 @@ RSpec.describe AlgoliaInsightsService do
       allow(AlgoliaInsightsService).to receive(:post).and_raise(OpenSSL::SSL::SSLError.new("SSL_connect returned=1 errno=0 state=error: unexpected eof while reading"))
 
       expect(Rails.logger).to receive(:warn).with(/AlgoliaInsightsService network error/)
-      expect(Honeybadger).to receive(:notify).with(instance_of(OpenSSL::SSL::SSLError))
+      expect(Rails.error).to receive(:report).with(instance_of(OpenSSL::SSL::SSLError))
 
       # The method should gracefully return nil without bubbling the exception
       result = service.track_event(event_type, event_name, user_id, object_id, index_name)

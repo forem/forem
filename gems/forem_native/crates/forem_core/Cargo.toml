@@ -1,0 +1,11 @@
+[package]
+name = "forem_core"
+version = "0.1.0"
+edition = "2021"
+description = "Pure-Rust performance core for Forem (zero Ruby/FFI dependencies; compatible with native C-ABI and WASM targets)"
+license = "MIT"
+publish = false
+
+[lib]
+name = "forem_core"
+path = "src/lib.rs"

@@ -438,7 +438,7 @@ RSpec.describe "Api::V1::Docs::Users" do
 
 ### Account Merging Behavior:
 - Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).
-- Deletes/destroys the source user account once the merge completes successfully.
+- Deletes/destroys the source user account in the background once its content has been transferred, so it may still exist briefly after this request returns.
 - High risk! Action is permanent and irreversible.
 - Requires Super Admin credentials."
         consumes "application/json"

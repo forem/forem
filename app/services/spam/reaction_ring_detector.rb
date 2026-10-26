@@ -63,26 +63,50 @@ module Spam
       return [] if shared_authors.empty?
 
       # Find users who have high overlap with our user's reaction patterns
-      potential_ring_members = find_users_with_similar_patterns(shared_authors)
-      
-      # Filter to only include users who meet the ring criteria
-      potential_ring_members.select do |member|
-        meets_ring_criteria?(member, shared_authors)
+      potential_ring_members = find_users_with_similar_patterns(shared_authors).to_a
+      # Set lookups: the Array#include? scan was O(member reactions x shared authors) per member
+      shared_author_ids = shared_authors.to_set
+      # Reacted-to authors kept only for members that pass, for reuse in is_legitimate_ring?
+      @ring_member_reacted_author_ids = {}
+
+      # Filter to only include users who meet the ring criteria. One primary-key query
+      # per 100 candidates instead of a User.find per candidate; each slice's users can
+      # be garbage-collected once it has been checked. Roles are preloaded so the
+      # any_admin? check reads them in memory instead of a COUNT query per member.
+      potential_ring_members.each_slice(100).flat_map do |members|
+        member_users = User.includes(:roles).where(id: members.map(&:id)).index_by(&:id)
+        members.select do |member|
+          member_user = member_users.fetch(member.id) { User.find(member.id) }
+          meets_ring_criteria?(member, member_user, shared_author_ids)
+        end
       end
     end
 
-    def find_shared_authors
-      # Get authors of articles that our user has reacted to in the past 3 months
-      user_reacted_article_authors = user.reactions
-                                        .public_category
-                                        .only_articles
-                                        .where(created_at: 3.months.ago..)
-                                        .joins("JOIN articles ON reactions.reactable_id = articles.id")
-                                        .pluck("articles.user_id")
-                                        .uniq
+    def reacted_author_ids_for(member_user)
+      member_user.reactions
+        .public_category
+        .only_articles
+        .where(created_at: 3.months.ago..)
+        .joins("JOIN articles ON reactions.reactable_id = articles.id")
+        .pluck("articles.user_id")
+    end
 
-      # Exclude self-reactions (user reacting to their own articles)
-      user_reacted_article_authors - [user_id]
+    # Memoized: called once per ring member while checking for diverse patterns,
+    # and the answer only depends on the triggering user.
+    def find_shared_authors
+      @find_shared_authors ||= begin
+        # Get authors of articles that our user has reacted to in the past 3 months
+        user_reacted_article_authors = user.reactions
+                                          .public_category
+                                          .only_articles
+                                          .where(created_at: 3.months.ago..)
+                                          .joins("JOIN articles ON reactions.reactable_id = articles.id")
+                                          .pluck("articles.user_id")
+                                          .uniq
+
+        # Exclude self-reactions (user reacting to their own articles)
+        user_reacted_article_authors - [user_id]
+      end
     end
 
     def find_users_with_similar_patterns(shared_authors)
@@ -101,22 +125,15 @@ module Spam
           .select("users.id, COUNT(DISTINCT articles.user_id) as shared_author_count")
     end
 
-    def meets_ring_criteria?(member, shared_authors)
-      member_user = User.find(member.id)
-      
+    def meets_ring_criteria?(member, member_user, shared_author_ids)
       # Skip admin and trusted users
       return false if member_user.any_admin? || member_user.trusted?
-      
+
       # Get this member's recent reactions
-      member_reactions = member_user.reactions
-                                   .public_category
-                                   .only_articles
-                                   .where(created_at: 3.months.ago..)
-                                   .joins("JOIN articles ON reactions.reactable_id = articles.id")
-                                   .pluck("articles.user_id")
+      member_reactions = reacted_author_ids_for(member_user)
 
       # Calculate concentration of reactions to shared authors
-      shared_author_reactions = member_reactions.count { |author_id| shared_authors.include?(author_id) }
+      shared_author_reactions = member_reactions.count { |author_id| shared_author_ids.include?(author_id) }
       total_reactions = member_reactions.size
       
       return false if total_reactions < MIN_REACTIONS_THRESHOLD
@@ -130,6 +147,7 @@ module Spam
       self_reaction_percentage = self_reactions.to_f / total_reactions
       return false if self_reaction_percentage > MAX_SELF_REACTION_PERCENTAGE
 
+      @ring_member_reacted_author_ids[member.id] = member_reactions
       true
     end
 
@@ -139,14 +157,7 @@ module Spam
       # Additional validation: check if the ring members have diverse reaction patterns
       # outside of the shared authors (to avoid false positives from legitimate communities)
       has_diverse_patterns = potential_ring.any? do |member|
-        member_user = User.find(member.id)
-        all_authors = member_user.reactions
-                                .public_category
-                                .only_articles
-                                .where(created_at: 3.months.ago..)
-                                .joins("JOIN articles ON reactions.reactable_id = articles.id")
-                                .pluck("articles.user_id")
-                                .uniq
+        all_authors = @ring_member_reacted_author_ids.fetch(member.id).uniq
 
         # Check if they react to authors outside the shared group
         shared_authors = find_shared_authors

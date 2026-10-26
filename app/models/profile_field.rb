@@ -19,8 +19,29 @@ class ProfileField < ApplicationRecord
   validate :maximum_header_field_count
 
   before_create :generate_attribute_name
+  after_destroy :clear_request_store_cache
+  after_save :clear_request_store_cache
+
+  # Loads every display area in one query so pages rendering both the header
+  # and the left sidebar (e.g. profiles) only hit the table once per request.
+  def self.cached_display_area_fields(area)
+    fields_by_area = RequestStore.fetch(:profile_fields_by_display_area) do
+      pluck(:display_area, :label, :attribute_name)
+        .group_by(&:first)
+        .transform_values { |rows| rows.to_h { |_display_area, label, attribute_name| [label, attribute_name] } }
+    end
+    fields_by_area.fetch(area.to_s, {})
+  end
+
+  def self.clear_request_store_cache
+    RequestStore.store.delete_if { |key, _| key.to_s.start_with?("profile_fields_") }
+  end
 
   private
+
+  def clear_request_store_cache
+    self.class.clear_request_store_cache
+  end
 
   def generate_attribute_name
     self.attribute_name = "attribute_#{SecureRandom.hex}"

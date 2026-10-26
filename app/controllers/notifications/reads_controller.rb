@@ -12,7 +12,10 @@ module Notifications
 
       if params[:org_id] && current_user.org_member?(params[:org_id])
         org = Organization.find_by(id: params[:org_id])
-        org.notifications.unread.update_all(read: true, read_at: now)
+        # Org notifications always have a NULL user_id (see Notification.for_organization).
+        # Scoping on both columns lets Postgres seek the (user_id, organization_id, ...)
+        # index instead of scanning all of it for a non-leading organization_id.
+        Notification.for_organization(org.id).unread.update_all(read: true, read_at: now)
       end
 
       render plain: "read"

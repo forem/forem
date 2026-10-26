@@ -147,4 +147,29 @@ describe('persistent billboard close functionality', () => {
     expect(sidebarBb.nextElementSibling).toBe(sidebarContainer);
     expect(sidebarContainer.classList.contains('hidden')).toBe(false);
   });
+  it('inserts the container after the whole shuffle group so it does not land between slots', () => {
+    document.body.innerHTML = `
+      <div class="crayons-layout__sidebar-right">
+        <div class="js-bb-shuffle-group">
+          <div class="sidebar-bb" id="slot-a"></div>
+          <div class="sidebar-bb" id="slot-b"></div>
+        </div>
+      </div>
+      <div class="js-billboard popover-billboard" style="display: block;" data-dismissal-sku="PERSISTENT_SKU" data-special="persistent">
+        <button id="sponsorship-close-trigger-3"></button>
+        <template class="js-minimized-template">
+          <div class="minimized-content">Minimized content matches!</div>
+        </template>
+      </div>
+    `;
+
+    setupBillboardInteractivity();
+    document.querySelector('#sponsorship-close-trigger-3').click();
+
+    const sidebarContainer = document.getElementById('persistent-minimized-billboard-container');
+    const group = document.querySelector('.js-bb-shuffle-group');
+    expect(group.nextElementSibling).toBe(sidebarContainer);
+    expect(document.getElementById('slot-a').nextElementSibling.id).toBe('slot-b');
+    expect(document.getElementById('slot-b').nextElementSibling).toBeNull();
+  });
 });

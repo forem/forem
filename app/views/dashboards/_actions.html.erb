@@ -6,7 +6,7 @@
         href="<%= dashboard_path %>"
         <%= @action == "show" && (params[:which] == "organization" || params[:which].blank?) ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.posts") %>
-        <span class="c-indicator"><%= @user.articles_count %></span>
+        <span class="c-indicator"><%= @posts_count %></span>
       </a>
     </li>
 

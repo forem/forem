@@ -57,6 +57,27 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       end
     end
 
+    [true, false].each do |signed_in|
+      it "loads the feed without querying subforems when user_signed_in is #{signed_in}", :aggregate_failures do
+        subforem = create(:subforem)
+        hot_story.update_column(:subforem_id, subforem.id)
+        RequestStore.store[:subforem_id] = subforem.id
+
+        subforem_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+        end
+        result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.featured_story_and_default_home_feed(user_signed_in: signed_in)
+        end
+
+        expect(result.second).to include(hot_story)
+        expect(subforem_queries).to be_empty
+      ensure
+        RequestStore.store.delete(:subforem_id)
+      end
+    end
+
     context "when ranking is true" do
       it "performs article ranking" do
         allow(feed).to receive(:rank_and_sort_articles).and_call_original
@@ -196,6 +217,30 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
       end
+    end
+
+    [true, false].each do |signed_in|
+      it "loads the feed without querying reactions when user_signed_in is #{signed_in}" do
+        create(:reaction, reactable: hot_story, category: "like")
+        reaction_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.globally_hot_articles(signed_in).second.to_a
+        end
+
+        expect(reaction_queries).to be_empty
+      end
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: hot_story, category: "like")
+
+      story = feed.globally_hot_articles(false).second.find { |result| result.id == hot_story.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
     end
   end
 

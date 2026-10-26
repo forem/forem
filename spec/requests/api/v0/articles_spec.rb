@@ -643,6 +643,15 @@ RSpec.describe "Api::V0::Articles" do
         expect(response.parsed_body.first.keys).to match_array(keys)
       end
 
+      it "only returns flare tags for articles that have one" do
+        flare_article = create(:article, user: user, tags: "discuss")
+        other_article = create(:article, user: user, tags: "ruby")
+        get "/api/articles/me", headers: headers
+        articles_by_id = response.parsed_body.index_by { |a| a["id"] }
+        expect(articles_by_id[flare_article.id]["flare_tag"]["name"]).to eq("discuss")
+        expect(articles_by_id[other_article.id]).not_to have_key("flare_tag")
+      end
+
       it "only includes published articles by default" do
         create(:article, published: false, published_at: nil, user: user)
         get "/api/articles/me", headers: headers

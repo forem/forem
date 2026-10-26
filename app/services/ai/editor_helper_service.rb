@@ -6,7 +6,8 @@ module Ai
       @user = user
       @history = history
       @article_state = article_state
-      @ai_client = Ai::Base.new(wrapper: self, affected_user: user)
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:editor_helper), wrapper: self,
+                                affected_user: user)
     end
 
     def generate_response(user_message)

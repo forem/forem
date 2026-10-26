@@ -83,6 +83,22 @@ RSpec.describe "Tags", :proper_status do
       expect(response_tag).to have_key("badge")
       expect(response_tag["badge"]).to have_key("badge_image")
     end
+
+    it "loads tag badges in a single query" do
+      3.times { create(:tag, badge: create(:badge)) }
+      create(:tag)
+
+      badge_queries = []
+      callback = lambda do |*, payload|
+        badge_queries << payload[:sql] if payload[:sql].include?('FROM "badges"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get suggest_tags_path
+      end
+
+      expect(badge_queries.size).to eq(1)
+      expect(response.parsed_body.count { |tag| tag["badge"].present? }).to eq(3)
+    end
   end
 
   describe "GET /t/:tag/edit" do

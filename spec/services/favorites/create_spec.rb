@@ -57,6 +57,43 @@ RSpec.describe Favorites::Create, type: :service do
     expect(comment).to have_received(:async_score_calc)
   end
 
+  it "purges the edge cache of the favorited article" do
+    allow(article).to receive(:purge)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:purge)
+  end
+
+  it "busts the edge cache of the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(Comments::BustCacheWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(Comments::BustCacheWorker).to have_received(:perform_async).with(comment.id)
+  end
+
+  it "expires the comment tree fragment by touching the comment and its ancestors" do
+    root = create(:comment, commentable: article, user: author)
+    reply = create(:comment, commentable: article, user: author, parent: root)
+    Comment.where(id: [root.id, reply.id]).update_all(updated_at: 1.day.ago)
+
+    described_class.call(favoritable: reply, user: leader)
+
+    expect(root.reload.updated_at).to be > 1.minute.ago
+    expect(reply.reload.updated_at).to be > 1.minute.ago
+  end
+
+  it "does not bust caches when the favorite is rejected" do
+    own_article = create(:article, user: leader)
+    allow(own_article).to receive(:purge)
+
+    described_class.call(favoritable: own_article, user: leader)
+
+    expect(own_article).not_to have_received(:purge)
+  end
+
   it "rejects an already-favorited record" do
     other_leader = create(:user, :community_leader_level_2)
     article.update!(favorited_by_user_id: other_leader.id, favorited_at: Time.current)

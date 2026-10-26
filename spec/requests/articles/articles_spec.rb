@@ -237,6 +237,21 @@ RSpec.describe "Articles" do
 
         expect(response.body).not_to include("<image>")
       end
+
+      it "preloads article authors instead of loading each one separately" do
+        authors = create_list(:user, 2)
+        authors.each { |author| create(:article, user: author, tags: tag.name) }
+
+        user_lookups = []
+        callback = lambda do |*, payload|
+          user_lookups << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" = /)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get tag_feed_path(tag.name) }
+
+        rss_feed = Feedjira.parse(response.body)
+        expect(rss_feed.entries.map(&:author)).to include(*authors.map(&:name))
+        expect(user_lookups).to be_empty
+      end
     end
 
     context "when :tag param is given and tag exists and is an alias" do
@@ -274,6 +289,25 @@ RSpec.describe "Articles" do
       it "returns a new article" do
         get "/new", params: { slug: "mytag" }
         expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "with the template param" do
+      it "prefills the editor from the matching tag" do
+        tag = create(:tag, name: "templatetag")
+        get "/new", params: { template: tag.name }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("templatetag")
+      end
+
+      it "does not query tags when the template param is absent" do
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/new" }
+        expect(response).to have_http_status(:ok)
+        expect(tag_queries).to be_empty
       end
     end
 

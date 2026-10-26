@@ -8,7 +8,6 @@ module Articles
         articles = articles.published.from_subforem
         articles = articles.where("published_at > ?", ::Timeframe.datetime(timeframe)) if timeframe != "infinity"
         articles
-          .includes(:distinct_reaction_categories)
           .where("score > ?", minimum_score)
           .order(score: :desc)
           .page(page)

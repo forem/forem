@@ -127,12 +127,13 @@ RSpec.describe Articles::UpdateArticleActivityWorker do
       expect(described_class.debounce_delay_for(100_000, Time.current)).to be_within(1.second).of(5.minutes)
       expect(described_class.debounce_delay_for(500_000, Time.current)).to be_within(1.second).of(5.minutes)
 
-      # Age multipliers (exponential backoff)
+      # Age multipliers (exponential backoff). Use hour durations so a DST
+      # transition in the randomized test zone can't stretch a "day".
       # 5. Low views, 1 day old article -> 10 seconds * 1.5^1 = 15 seconds
-      expect(described_class.debounce_delay_for(500, 1.day.ago)).to be_within(1.second).of(15.seconds)
+      expect(described_class.debounce_delay_for(500, 24.hours.ago)).to be_within(1.second).of(15.seconds)
 
       # 6. Low views, 5 days old article -> 10 seconds * 1.5^5 (7.59) = 75.9 seconds
-      expect(described_class.debounce_delay_for(500, 5.days.ago)).to be_within(1.second).of(75.9.seconds)
+      expect(described_class.debounce_delay_for(500, (5 * 24).hours.ago)).to be_within(1.second).of(75.9.seconds)
 
       # 7. Extremely old article (e.g. 100 days) -> capped at 30 minutes
       expect(described_class.debounce_delay_for(500, 100.days.ago)).to eq(30.minutes)

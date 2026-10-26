@@ -297,4 +297,118 @@ describe('<Feed /> component', () => {
       });
     });
   });
+
+  describe('afterRender callback across tab navigation', () => {
+    beforeEach(() => {
+      fetch.resetMocks();
+    });
+
+    it('invokes afterRender on initial load and again when returning from a tab where the billboard disappeared', async () => {
+      const afterRender = jest.fn();
+      const renderFeed = jest.fn(({ feedItems, isLoading }) =>
+        isLoading ? (
+          <div id="test-feed-loading" />
+        ) : (
+          <div id="test-feed-container">
+            {feedItems.map((item, idx) =>
+              typeof item === 'string' ? (
+                <div
+                  key={`billboard-${idx}`}
+                  dangerouslySetInnerHTML={{ __html: item }}
+                />
+              ) : (
+                <div key={item.id}>{item.title}</div>
+              ),
+            )}
+          </div>
+        ),
+      );
+
+      // 1. Initial load on Discover tab (timeFrame="")
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+
+      const { container } = render(
+        <Feed
+          timeFrame=""
+          renderFeed={renderFeed}
+          afterRender={afterRender}
+        />,
+      );
+
+      await waitFor(() => {
+        expect(afterRender).toHaveBeenCalledTimes(1);
+      });
+
+      // 2. Switch to a tab with no results (billboard disappears)
+      fetch.mockResponseOnce(JSON.stringify([]), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce('', {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce('', {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce('', {
+        headers: { 'content-type': 'text/html' },
+      });
+
+      render(
+        <Feed
+          timeFrame="latest"
+          renderFeed={renderFeed}
+          afterRender={afterRender}
+        />,
+        { container },
+      );
+
+      await waitFor(() => {
+        expect(
+          document.getElementById('test-feed-container')?.children.length,
+        ).toBe(0);
+      });
+      expect(afterRender).toHaveBeenCalledTimes(1);
+
+      // 3. Switch back to Discover tab (billboard comes back, must re-trigger afterRender so scripts execute)
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+
+      render(
+        <Feed
+          timeFrame=""
+          renderFeed={renderFeed}
+          afterRender={afterRender}
+        />,
+        { container },
+      );
+
+      await waitFor(() => {
+        expect(afterRender).toHaveBeenCalledTimes(2);
+      });
+      expect(
+        document.getElementById('test-feed-container').textContent,
+      ).toContain('billboard one');
+    });
+  });
 });

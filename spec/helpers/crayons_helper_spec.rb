@@ -43,5 +43,14 @@ RSpec.describe CrayonsHelper do
       icon_tag = helper.crayons_icon_tag(:twitter, class: "test", native: true)
       expect(icon_tag).to match(/class="crayons-icon crayons-icon--default test"/)
     end
+
+    it "loads SVGs from the boot-time CachedAssetFile without reading from disk per render" do
+      expect(InlineSvg.configuration.asset_file).to be_a(InlineSvg::CachedAssetFile)
+      allow(File).to receive(:read).and_call_original
+
+      helper.crayons_icon_tag("twitter")
+
+      expect(File).not_to have_received(:read)
+    end
   end
 end

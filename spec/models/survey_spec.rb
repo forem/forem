@@ -84,6 +84,21 @@ RSpec.describe Survey, type: :model do
       it "returns false" do
         expect(survey.completed_by_user?(user)).to be false
       end
+
+      it "returns false when multiple options on a single multiple-choice poll equal total poll count" do
+        mc_poll = create(:poll, :multiple_choice, survey: survey)
+        mc_opt1 = mc_poll.poll_options.first
+        mc_opt2 = mc_poll.poll_options.second
+        mc_opt3 = create(:poll_option, poll: mc_poll, markdown: "Option 3")
+
+        # Survey has 3 polls (poll1, poll2, mc_poll). User selects 3 options on mc_poll alone.
+        expect(survey.polls.count).to eq(3)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt1, session_start: 1)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt2, session_start: 1)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt3, session_start: 1)
+
+        expect(survey.completed_by_user?(user)).to be false
+      end
     end
 
     context "when user has responded to all polls" do
@@ -252,14 +267,27 @@ RSpec.describe Survey, type: :model do
 
     describe "default send rate calculation" do
       it "sets default daily_email_distributions based on target and time remaining" do
-        # 100 completions needed over 5 days = 20 completions/day.
+        # 100 completions needed over 5 days (120 hours) = 20 completions/day.
         # At 1 completion per 200 sends, rate should be 20 * 200 = 4000.
-        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 0)
+        now = Time.zone.now
+        allow(Time).to receive(:current).and_return(now)
+
+        survey = create(
+          :survey,
+          target_response_count: 100,
+          target_completion_date: now + 120.hours,
+          daily_email_distributions: 0,
+        )
         expect(survey.daily_email_distributions).to eq(4000)
       end
 
       it "does not overwrite non-zero daily_email_distributions" do
-        survey = create(:survey, target_response_count: 100, target_completion_date: 5.days.from_now, daily_email_distributions: 15)
+        survey = create(
+          :survey,
+          target_response_count: 100,
+          target_completion_date: 120.hours.from_now,
+          daily_email_distributions: 15,
+        )
         expect(survey.daily_email_distributions).to eq(15)
       end
     end

@@ -9,6 +9,15 @@ RSpec.describe "Sidebars" do
       expect(response.body).to include("rubymagoo")
     end
 
+    it "does not run the campaign article queries, which the sidebar does not render" do
+      allow(Campaign.current).to receive(:count)
+      allow(Campaign.current).to receive(:plucked_article_attributes)
+      sign_in create(:user)
+      get "/sidebars/home"
+      expect(Campaign.current).not_to have_received(:count)
+      expect(Campaign.current).not_to have_received(:plucked_article_attributes)
+    end
+
     context "when onboarding progress is shown" do
       let(:user) { create(:user) }
 
@@ -81,7 +90,9 @@ RSpec.describe "Sidebars" do
 
       it "includes article without the proper tags if recently viewed and has over 1 comment" do
         second_article = create(:article, comments_count: 2)
-        create(:page_view, user_id: user.id, article_id: second_article.id)
+        sidekiq_perform_enqueued_jobs(only: Users::UpdateUserActivitiesWorker) do
+          create(:page_view, user_id: user.id, article_id: second_article.id)
+        end
         sign_in user
         get "/sidebars/home"
         expect(response.body).to include(CGI.escapeHTML(second_article.title))
@@ -89,10 +100,42 @@ RSpec.describe "Sidebars" do
 
       it "does not include recently-viewed page if only one comment" do
         second_article = create(:article, comments_count: 1)
-        create(:page_view, user_id: user.id, article_id: second_article.id)
+        sidekiq_perform_enqueued_jobs(only: Users::UpdateUserActivitiesWorker) do
+          create(:page_view, user_id: user.id, article_id: second_article.id)
+        end
         sign_in user
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "only considers the most recently viewed articles from the user activity store" do
+        recent_article = create(:article, comments_count: 2)
+        older_article = create(:article, comments_count: 2)
+        recently_viewed = Array.new(SidebarsController::RECENTLY_VIEWED_ARTICLE_LIMIT) do |i|
+          [recent_article.id, i.minutes.ago, 60]
+        end
+        UserActivity.find_or_create_by(user_id: user.id)
+          .update!(recently_viewed_articles: recently_viewed + [[older_article.id, 1.day.ago, 60]])
+        sign_in user
+        get "/sidebars/home"
+        expect(response.body).to include(CGI.escapeHTML(recent_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(older_article.title))
+      end
+
+      it "does not query the page_views table" do
+        UserActivity.find_or_create_by(user_id: user.id)
+          .update!(recently_viewed_articles: [[article.id, 1.hour.ago, 60]])
+        sign_in user
+        page_view_queries = 0
+        counter = lambda do |_name, _started, _finished, _unique_id, payload|
+          page_view_queries += 1 if payload[:sql].include?("\"page_views\"")
+        end
+
+        ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
+          get "/sidebars/home"
+        end
+
+        expect(page_view_queries).to eq(0)
       end
 
       it "does not include a 2 comment article if not recently viewed" do
@@ -156,6 +199,44 @@ RSpec.describe "Sidebars" do
       it "does not include unpublished elevated event" do
         get "/sidebars/home"
         expect(response.body).not_to include("Unpublished Elevated Event")
+      end
+
+      it "renders the event type badge and contextual headline for upcoming livestream" do
+        get "/sidebars/home"
+        expect(response.body).to include("Upcoming Livestreams")
+        expect(response.body).to include("Live Stream")
+        expect(response.body).not_to include("sidebar-event-item__cover")
+      end
+
+      it "renders the cover image when attached to an elevated event" do
+        elevated_upcoming_event.update!(
+          cover_image: Rack::Test::UploadedFile.new(
+            Rails.root.join("spec/fixtures/files/800x600.png"),
+            "image/png",
+          ),
+        )
+        get "/sidebars/home"
+        expect(response.body).to include("sidebar-event-item__cover")
+        expect(response.body).to include(elevated_upcoming_event.cover_image.url)
+      end
+
+      it "renders contextual headline 'Live and Upcoming Challenges' when both live and upcoming challenges exist" do
+        elevated_upcoming_event.update!(type_of: "challenge")
+        create(:event, title: "Live Challenge Event", type_of: "challenge", elevated: true, published: true,
+                       start_time: 1.hour.ago, end_time: 1.day.from_now)
+        get "/sidebars/home"
+        expect(response.body).to include("Live and Upcoming Challenges")
+        expect(response.body).to include("Challenge")
+        expect(response.body).to include("LIVE")
+      end
+
+      it "renders contextual headline 'Live and Upcoming Events' when different event types exist with one live" do
+        create(:event, title: "Live Challenge Event", type_of: "challenge", elevated: true, published: true,
+                       start_time: 1.hour.ago, end_time: 1.day.from_now)
+        get "/sidebars/home"
+        expect(response.body).to include("Live and Upcoming Events")
+        expect(response.body).to include("Challenge")
+        expect(response.body).to include("Live Stream")
       end
     end
 

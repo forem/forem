@@ -72,6 +72,7 @@
             <% end %>
           </li>
         <% end %>
+        <li class="admin-actions hidden" data-path="<%= admin_user_path(comment.user_id) %>" data-text="<%= t("views.comments.menu.admin_profile.text") %>" aria-label="<%= t("views.comments.menu.admin_profile.aria_label", user: comment.user.name) %>"></li>
         <li class="mod-actions hidden mod-actions-comment-button" data-path="<%= URL.comment(comment) %>/mod" aria-label="<%= t("views.comments.menu.moderate.aria_label", user: comment.user.name) %>"></li>
         <li class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= URL.comment(comment) %>" aria-label="<%= t("views.comments.menu.report.aria_label", user: comment.user.name) %>"></li>
         <li class="current-user-actions"></li>

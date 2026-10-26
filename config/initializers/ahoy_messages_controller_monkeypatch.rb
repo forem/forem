@@ -7,7 +7,7 @@ Rails.application.config.to_prepare do
         url = params[:u] || params[:url]
         if url.present? && URI.parse(url).query.to_s.include?("bb=")
           bb = URI.parse(url).query.to_s.scan(/(?<=\A|&)bb=([^&]*)/).flatten.last
-          Billboards::TrackEmailClickWorker.perform_async(bb, current_user&.id)
+          Billboards::TrackEmailClickWorker.perform_async(bb, current_user&.id, request.user_agent)
         end
         # Call the original click method
         super

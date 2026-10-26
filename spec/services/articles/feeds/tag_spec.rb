@@ -17,4 +17,24 @@ RSpec.describe Articles::Feeds::Tag, type: :service do
       expect(described_class.call(tag)).to include tagged_article
     end
   end
+
+  it "loads the feed without querying reactions" do
+    create(:reaction, reactable: tagged_article, category: "like")
+    reaction_queries = []
+    callback = lambda do |_name, _start, _finish, _id, payload|
+      reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { described_class.call(tag).load }
+
+    expect(reaction_queries).to be_empty
+  end
+
+  it "still returns the reaction categories of each article" do
+    create(:reaction, reactable: tagged_article, category: "like")
+
+    story = described_class.call(tag).find { |article| article.id == tagged_article.id }
+
+    expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
+  end
 end

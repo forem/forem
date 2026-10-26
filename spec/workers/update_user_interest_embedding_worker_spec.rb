@@ -30,6 +30,30 @@ RSpec.describe UpdateUserInterestEmbeddingWorker, type: :worker do
       expect(result[1]).to be_within(0.001).of(0.7)
     end
 
+    it "loads only the article's id and embedding columns" do
+      article.update_column(:semantic_embedding, Array.new(768, 1.0))
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.new.perform(user.id, article.id)
+      end
+
+      expect(article_queries.size).to eq(1)
+      expect(article_queries.first).not_to include('"articles".*')
+      expect(user_activity.reload.interest_embedding).to eq(Array.new(768, 1.0))
+    end
+
+    it "does nothing if the article does not exist" do
+      user_activity.update_column(:interest_embedding, Array.new(768, 1.0))
+
+      described_class.new.perform(user.id, Article.maximum(:id).to_i + 1)
+
+      expect(user_activity.reload.interest_embedding).to eq(Array.new(768, 1.0))
+    end
+
     it "does nothing if the article has no embedding" do
       article.update_column(:semantic_embedding, nil)
       user_activity.update_column(:interest_embedding, Array.new(768, 1.0))

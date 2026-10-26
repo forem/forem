@@ -146,4 +146,16 @@ RSpec.describe BillboardEventRollup, type: :service do
     expect(results.count).to eq(1)
     expect(results.first.seconds_visible).to eq(60)
   end
+
+  it "does not split compacted groups by user_agent and discards user_agent on rolled up record" do
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: "Mozilla/5.0 Chrome/120.0")
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: "Mozilla/5.0 Firefox/121.0")
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: nil)
+
+    described_class.rollup(Date.current)
+    results = BillboardEvent.where(created_at: Date.current.all_day)
+    expect(results.count).to eq(1)
+    expect(results.first.counts_for).to eq(3)
+    expect(results.first.user_agent).to be_nil
+  end
 end

@@ -78,4 +78,71 @@ RSpec.describe "DiscussionLocks" do
       expect(cache_buster).to have_received(:call).with(article).once
     end
   end
+
+  describe "discussion lock UI state on manage, article, and comment pages" do
+    let(:article) { create(:article, user: user) }
+    let!(:comment_one) { create(:comment, user: user, commentable: article) }
+    let!(:comment_two) { create(:comment, user: user, commentable: article) }
+
+    context "when an Article does not have a discussion lock" do
+      it "shows Lock Discussion on manage and enables new comment form and reply buttons", :aggregate_failures do
+        get "#{article.path}/manage"
+        manage_doc = Nokogiri::HTML(response.body)
+        expect(manage_doc.at_css("#section-discussion a[href='#{article.path}/discussion_lock_confirm']")&.text)
+          .to include("Lock Discussion")
+
+        get article.path
+        article_doc = Nokogiri::HTML(response.body)
+        expect(article_doc.at_css("#discussion-lock")).to be_nil
+        expect(article_doc.at_css("#new_comment")).to be_present
+        expect(article_doc.at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_present
+        expect(article_doc.at_css("[data-testid='reply-button-#{comment_two.id}']")).to be_present
+
+        get "#{article.path}/comments"
+        comments_doc = Nokogiri::HTML(response.body)
+        expect(comments_doc.at_css("#new_comment")).to be_present
+        expect(comments_doc.at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_present
+        expect(comments_doc.at_css("[data-testid='reply-button-#{comment_two.id}']")).to be_present
+
+        get "#{article.path}/comments/#{comment_one.id.to_s(26)}"
+        expect(Nokogiri::HTML(response.body).at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_present
+
+        get comment_one.path
+        expect(Nokogiri::HTML(response.body).at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_present
+      end
+    end
+
+    context "when an Article has a discussion lock" do
+      let!(:discussion_lock) { create(:discussion_lock, article: article, locking_user: user) }
+
+      it "shows Unlock Discussion on manage and hides new comment form and reply buttons", :aggregate_failures do
+        get "#{article.path}/manage"
+        manage_doc = Nokogiri::HTML(response.body)
+        expect(manage_doc.at_css("#section-discussion a[href='#{article.path}/discussion_unlock_confirm']")&.text)
+          .to include("Unlock Discussion")
+
+        get article.path
+        article_doc = Nokogiri::HTML(response.body)
+        lock_node = article_doc.at_css("#discussion-lock")
+        expect(lock_node).to be_present
+        expect(lock_node.text).to include("The discussion has been locked. New comments can't be added.")
+        expect(lock_node.text).to include(discussion_lock.reason)
+        expect(article_doc.at_css("#new_comment")).to be_nil
+        expect(article_doc.at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_nil
+        expect(article_doc.at_css("[data-testid='reply-button-#{comment_two.id}']")).to be_nil
+
+        get "#{article.path}/comments"
+        comments_doc = Nokogiri::HTML(response.body)
+        expect(comments_doc.at_css("#new_comment")).to be_nil
+        expect(comments_doc.at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_nil
+        expect(comments_doc.at_css("[data-testid='reply-button-#{comment_two.id}']")).to be_nil
+
+        get "#{article.path}/comments/#{comment_one.id.to_s(26)}"
+        expect(Nokogiri::HTML(response.body).at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_nil
+
+        get comment_one.path
+        expect(Nokogiri::HTML(response.body).at_css("[data-testid='reply-button-#{comment_one.id}']")).to be_nil
+      end
+    end
+  end
 end

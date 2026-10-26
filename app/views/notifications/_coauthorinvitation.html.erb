@@ -1,0 +1,39 @@
+<% json_data = notification.json_data %>
+<% invitation = json_data["co_author_invitation"] %>
+<% user_link = link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold") %>
+<% title_link = link_to(json_data["article"]["title"], json_data["article"]["path"], class: "crayons-link fw-bold") %>
+<div class="crayons-card notification">
+  <%= render "notifications/shared/profile_pic", json_data: json_data %>
+
+  <div class="notification__content">
+    <header class="mb-4">
+      <h2 class="fs-base fw-normal">
+        <% if notification.action == Notifications::CoAuthorInvitations::ACCEPTED %>
+          <%= t("views.notifications.co_author_invitation.accepted_html", user: user_link, title: title_link) %>
+        <% else %>
+          <%= t("views.notifications.co_author_invitation.invited_html", user: user_link, title: title_link) %>
+        <% end %>
+      </h2>
+      <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>
+    </header>
+
+    <% if notification.action == Notifications::CoAuthorInvitations::INVITED %>
+      <% case invitation["status"] %>
+      <% when "pending" %>
+        <p class="mb-4 color-base-70"><%= t("views.notifications.co_author_invitation.pending") %></p>
+        <div class="flex gap-2">
+          <%= button_to t("views.notifications.co_author_invitation.accept"), accept_co_author_invitation_path(invitation["id"]),
+                        method: :patch, class: "crayons-btn crayons-btn--s" %>
+          <%= button_to t("views.notifications.co_author_invitation.decline"), decline_co_author_invitation_path(invitation["id"]),
+                        method: :patch, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
+        </div>
+      <% when "accepted" %>
+        <p class="mb-4 color-base-70"><%= t("views.notifications.co_author_invitation.credited") %></p>
+        <%= button_to t("views.notifications.co_author_invitation.remove"), decline_co_author_invitation_path(invitation["id"]),
+                      method: :patch, class: "crayons-btn crayons-btn--ghost crayons-btn--s" %>
+      <% when "declined" %>
+        <p class="color-base-60"><%= t("views.notifications.co_author_invitation.declined") %></p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

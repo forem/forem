@@ -265,8 +265,13 @@ class AnalyticsService
   end
 
   def calculate_follows_stats_per_day(follow_data)
+    # follow_data is intentionally unbounded (totals need all-time follows), so
+    # bound it to the charted buckets here; otherwise every follow the owner ever
+    # received is grouped. The lower bound covers the first weekly bucket and both
+    # ends are padded by a day so DATE() bucketing is unaffected.
+    window = (start_date.beginning_of_week - 1.day)..(end_date + 1.day)
     # AR returns a hash with date => count, we transform it using ISO dates for convenience
-    follow_data.group(bucket_sql).count.transform_keys(&:iso8601)
+    follow_data.where(created_at: window).group(bucket_sql).count.transform_keys(&:iso8601)
   end
 
   def calculate_reactions_stats_per_day(reaction_data)

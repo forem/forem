@@ -88,6 +88,12 @@ RSpec.describe Articles::UpdatePageViewsWorker, type: :worker do
         expect(Articles::UpdateOrganicPageViewsWorker).not_to have_received(:perform_at)
       end
     end
+
+    it "selects only required article columns instead of loading full article text" do
+      allow(Article).to receive(:select).and_call_original
+      worker.perform("article_id" => article.id, "user_id" => user.id)
+      expect(Article).to have_received(:select).with(:id, :published, :published_at, :user_id, :page_views_count)
+    end
   end
 
   context "when filtering bot user agents" do

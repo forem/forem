@@ -249,6 +249,9 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if @user.update_with_password(password_params)
+      bypass_sign_in(@user)
+      remember_me(@user) if cookies[:remember_user_token].present?
+      flash[:settings_notice] = I18n.t("devise.passwords.updated_not_active")
       redirect_to user_settings_path(@tab)
     else
       Honeycomb.add_field("error", @user.errors.messages.compact_blank)

@@ -1,0 +1,30 @@
+require_relative "lib/forem_native/builder"
+
+# rubocop:disable Rails/RakeEnvironment
+namespace :forem_native do
+  desc "Compile the Rust native extension into lib/forem_native"
+  task :compile do
+    abort "Failed to compile forem_native (is `cargo` installed?)" unless ForemNative::Builder.compile!
+
+    puts "Compiled #{ForemNative::Builder.extension_binary_path}"
+  end
+
+  desc "Run pure-Rust unit tests and Clippy lints for forem_native"
+  task :rust_test do
+    Dir.chdir(ForemNative::Builder::GEM_ROOT) do
+      sh "cargo test --workspace"
+      sh "cargo clippy --workspace --all-targets -- -D warnings"
+    end
+  end
+
+  desc "Clean compiled Rust artifacts and staged shared libraries"
+  task :clean do
+    FileUtils.rm_f(ForemNative::Builder.extension_binary_path)
+    Dir.chdir(ForemNative::Builder::GEM_ROOT) do
+      sh "cargo clean" if ForemNative::Builder.cargo_available?
+    end
+  end
+end
+
+task default: %i[forem_native:rust_test forem_native:compile]
+# rubocop:enable Rails/RakeEnvironment

@@ -57,11 +57,11 @@ module Images
       if e.message.include?("status: 15")
         Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
       else
-        Honeybadger.notify(e)
+        Rails.error.report(e)
       end
     rescue StandardError => e
       Rails.logger.error(e)
-      Honeybadger.notify(e)
+      Rails.error.report(e)
     end
 
     private
@@ -164,7 +164,7 @@ module Images
         c.geometry profile_image_location
       end
     rescue Timeout::Error, StandardError => e
-      Honeybadger.notify(e)
+      Rails.error.report(e)
       # If processing the profile picture triggers a mogrify lockup, 
       # gracefully fall back to returning the social image without their avatar.
       result

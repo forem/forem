@@ -59,6 +59,22 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).to include('href="/assets/tags')
         end
 
+        it "renders stories without loading processed_html", :aggregate_failures do
+          article
+          queries = []
+          callback = lambda do |*, payload|
+            queries << payload[:sql] if payload[:sql].include?("\"articles\".\"title\"")
+          end
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get "/t/#{tag.name}"
+          end
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(article.title))
+          expect(queries).not_to be_empty
+          expect(queries.grep(/processed_html/)).to be_empty
+        end
+
         it "renders page when tag is not supported but has at least one approved article" do
           create(:article, :past, published: true, approved: true, tags: unsupported_tag,
                                   past_published_at: 5.years.ago)
@@ -233,11 +249,59 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
             expect(response.body).to include(expected_tag)
           end
+
+          it "queries active discuss threads for the sidebar on page 1" do
+            discuss_article = create(:article, tags: "#{tag.name}, discuss", score: 10)
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(Articles::ActiveThreadsQuery).to have_received(:call).with(
+              tags: [tag.name, "discuss"],
+              time_ago: nil,
+            ).once
+            expect(response.body).to include(CGI.escapeHTML(discuss_article.title))
+          end
         end
 
         # rubocop:disable FactoryBot/ExcessiveCreateList
         context "without user signed in" do
           let(:tag) { create(:tag) }
+
+          it "does not execute Articles::ActiveThreadsQuery for signed-out requests" do
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(response).to have_http_status(:ok)
+            expect(Articles::ActiveThreadsQuery).not_to have_received(:call)
+          end
+
+          it "does not query organizations once per org story", :aggregate_failures do
+            count_org_queries = lambda do
+              org_queries = 0
+              callback = lambda do |*, payload|
+                org_queries += 1 if payload[:sql].include?("FROM \"organizations\"")
+              end
+              ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+                get "/t/#{tag.name}"
+              end
+              org_queries
+            end
+
+            create_list(:article, 2, organization: org, tags: tag.name, score: 5)
+            # Warm-up render: the first request pays one-off lookups unrelated to stories.
+            count_org_queries.call
+            baseline = count_org_queries.call
+            expect(response).to have_http_status(:ok)
+
+            create_list(:article, 3, organization: org, tags: tag.name, score: 5)
+            3.times { create(:article, organization: create(:organization), tags: tag.name, score: 5) }
+
+            expect(count_org_queries.call).to be <= baseline
+            expect(response).to have_http_status(:ok)
+            expect(response.body).to include(CGI.escapeHTML(org.name))
+          end
 
           it "renders tag index properly with many posts", :aggregate_failures do
             create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)

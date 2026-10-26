@@ -123,6 +123,49 @@ RSpec.describe Middlewares::SetSubforem do
       end
     end
 
+    context "when the request host is a bare hostname or a subdomain" do
+      before do
+        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+        allow(Subforem).to receive(:cached_id_by_domain).with("example.com").and_return(1)
+        allow(Subforem).to receive(:cached_id_by_domain).with("community.example.com").and_return(2)
+        allow(Subforem).to receive_messages(cached_default_id: 1, cached_root_id: nil, cached_root_domain: nil,
+                                            cached_default_domain: "example.com",
+                                            cached_id_to_domain_hash: { 1 => "example.com",
+                                                                        2 => "community.example.com" },
+                                            cached_all_domains: ["example.com", "community.example.com"])
+        allow(Settings::General).to receive(:app_domain).and_return("example.com")
+        allow(Rack::Utils).to receive(:delete_cookie_header!)
+      end
+
+      it "drops the port from a passed_domain before looking up the subforem" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=community.example.com:3000"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "keeps the host from a passed_domain URL" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=http://community.example.com/x"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "falls back to the request host when passed_domain is not valid UTF-8" do
+        env = Rack::MockRequest.env_for("https://community.example.com/auth_pass/iframe?passed_domain=%C0%AF")
+        expect { middleware.call(env) }.not_to raise_error
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "removes the session cookies on a subdomain of the registrable domain" do
+        middleware.call(Rack::MockRequest.env_for("https://community.example.com/articles"))
+        expect(Rack::Utils).to have_received(:delete_cookie_header!)
+          .with(anything, "remember_user_token", domain: "community.example.com")
+      end
+
+      it "keeps the session cookies on the registrable domain itself" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/articles"))
+        expect(RequestStore.store[:subforem_id]).to eq(1)
+        expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+      end
+    end
+
     context "when a request has an empty body and a multipart Content-Type header" do
       let(:env) do
         Rack::MockRequest.env_for(
@@ -136,7 +179,47 @@ RSpec.describe Middlewares::SetSubforem do
       it "does not raise EOFError" do
         expect { middleware.call(env) }.not_to raise_error
       end
+
+      it "does not include JQuery::FileUpload::Rails::Middleware in the Rails middleware stack" do
+        expect(Rails.application.middleware.middlewares).not_to include(JQuery::FileUpload::Rails::Middleware)
+      end
+    end
+
+    context "when chained before Middlewares::SetCookieDomain" do
+      let!(:subforem) { create(:subforem, domain: "community.example.com") }
+      let(:inner_app) { ->(_env) { [200, {}, ["OK"]] } }
+      let(:cookie_middleware) { Middlewares::SetCookieDomain.new(inner_app) }
+      let(:stacked_middleware) { described_class.new(cookie_middleware) }
+      let(:env) do
+        Rack::MockRequest.env_for("https://community.example.com/articles").merge(
+          "rack.session.options" => {},
+        )
+      end
+
+      before do
+        allow(Subforem).to receive(:cached_id_by_domain).with("community.example.com").and_return(subforem.id)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_root_id: subforem.id,
+          cached_root_domain: "community.example.com",
+          cached_default_domain: "community.example.com",
+          cached_id_to_domain_hash: { subforem.id => "community.example.com" },
+          cached_all_domains: ["community.example.com"],
+        )
+      end
+
+      it "populates RequestStore[:subforem_id] before SetCookieDomain reads Settings::General.app_domain" do
+        observed_subforem_id = nil
+        allow(Settings::General).to receive(:app_domain) do
+          observed_subforem_id ||= RequestStore.store[:subforem_id]
+          "community.example.com"
+        end
+
+        stacked_middleware.call(env)
+
+        expect(observed_subforem_id).to eq(subforem.id)
+        expect(env["rack.session.options"][:domain]).to eq(".example.com")
+      end
     end
   end
 end
-

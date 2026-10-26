@@ -43,7 +43,7 @@ RSpec.describe Subforems::CreateFromScratchWorker do
       before do
         allow(Settings::Community).to receive(:set_community_name).and_return(name).and_raise(StandardError, "Settings error")
         allow(Rails.logger).to receive(:error)
-        allow(Honeybadger).to receive(:notify) if defined?(Honeybadger)
+        allow(Rails.error).to receive(:report)
       end
 
       it "logs error and re-raises" do
@@ -52,7 +52,7 @@ RSpec.describe Subforems::CreateFromScratchWorker do
         end.to raise_error(StandardError, "Settings error")
 
         expect(Rails.logger).to have_received(:error).with("Failed to create subforem #{subforem.id} with AI services: Settings error")
-        expect(Honeybadger).to have_received(:notify) if defined?(Honeybadger)
+        expect(Rails.error).to have_received(:report)
       end
     end
 

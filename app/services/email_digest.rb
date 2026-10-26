@@ -22,7 +22,7 @@ class EmailDigest
             Emails::SendUserDigestWorker.perform_async(user.id)
           end
         rescue StandardError => e
-          Honeybadger.notify(e)
+          Rails.error.report(e)
         end
       end
     end

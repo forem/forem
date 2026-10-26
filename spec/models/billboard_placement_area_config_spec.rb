@@ -196,6 +196,23 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
       # So we just verify the method is called without error
       expect { config.destroy! }.not_to raise_error
     end
+
+    it "memoizes all_configs in RequestStore when an active cache store is configured" do
+      memory_store = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(memory_store)
+      allow(memory_store).to receive(:fetch).and_call_original
+      described_class.bust_cache
+
+      first_call = described_class.all_configs
+      second_call = described_class.all_configs
+
+      expect(memory_store).to have_received(:fetch).with(described_class::CACHE_KEY, expires_in: 1.hour).once
+      expect(second_call).to be(first_call)
+      expect(RequestStore.store[:billboard_placement_area_configs]).to eq(first_call)
+
+      described_class.bust_cache
+      expect(RequestStore.store[:billboard_placement_area_configs]).to be_nil
+    end
   end
 
   describe ".config_for_placement_area" do
@@ -234,6 +251,78 @@ RSpec.describe BillboardPlacementAreaConfig, type: :model do
     it "returns 0 when cache_expiry_seconds is explicitly set to 0" do
       described_class.create!(placement_area: "sidebar_left", signed_in_rate: 50, signed_out_rate: 50, cache_expiry_seconds: 0)
       expect(described_class.cache_expiry_seconds_for("sidebar_left")).to eq(0)
+    end
+  end
+
+  describe ".hidden_by_default_for" do
+    it "returns true when the placement area is configured as hidden by default" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(true)
+    end
+
+    it "returns false when the placement area is not hidden by default" do
+      described_class.create!(placement_area: "sidebar_left")
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+
+    it "only applies to the configured placement area" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      expect(described_class.hidden_by_default_for("sidebar_left_2")).to be(false)
+    end
+
+    it "returns false for a placement area without a config" do
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+
+    it "returns false for nil placement area" do
+      expect(described_class.hidden_by_default_for(nil)).to be(false)
+    end
+
+    it "returns false for a cached config that predates the column" do
+      described_class.create!(placement_area: "sidebar_left", hidden_by_default: true)
+      config = described_class.select(:id, :placement_area).find_by(placement_area: "sidebar_left")
+      allow(described_class).to receive(:config_for_placement_area).with("sidebar_left").and_return(config)
+
+      expect(described_class.hidden_by_default_for("sidebar_left")).to be(false)
+    end
+  end
+
+  describe ".fully_cached_for" do
+    it "returns true when the placement area is configured as fully cached" do
+      described_class.create!(placement_area: "post_comments", fully_cached: true)
+      expect(described_class.fully_cached_for("post_comments")).to be(true)
+      expect(described_class.fully_cached_for("post_sidebar")).to be(false)
+    end
+
+    it "returns false when the placement area is not fully cached" do
+      described_class.create!(placement_area: "post_comments")
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
+    end
+
+    it "returns false for a placement area without a config, or nil" do
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
+      expect(described_class.fully_cached_for(nil)).to be(false)
+    end
+
+    it "purges the placement area's cached billboard responses when switched either way" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      config = described_class.create!(placement_area: "post_comments")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+
+      config.update!(signed_in_rate: 50)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+
+      config.update!(fully_cached: true)
+      config.update!(fully_cached: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("billboard_responses/post_comments").twice
+    end
+
+    it "returns false for a cached config that predates the column" do
+      described_class.create!(placement_area: "post_comments", fully_cached: true)
+      config = described_class.select(:id, :placement_area).find_by(placement_area: "post_comments")
+      allow(described_class).to receive(:config_for_placement_area).with("post_comments").and_return(config)
+
+      expect(described_class.fully_cached_for("post_comments")).to be(false)
     end
   end
 

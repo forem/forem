@@ -93,6 +93,25 @@ RSpec.describe PinnedArticle do
     end
   end
 
+  context "when no article is pinned" do
+    it "skips the site_configs lookup in .id and .get" do
+      Settings::General.feed_pinned_article_id = nil
+      Settings::General.feed_pinned_article_id # warm the request-cached settings
+
+      lookups = []
+      callback = lambda do |*, payload|
+        lookups << payload[:sql] if payload[:sql].to_s.include?('"site_configs"."var" =')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(described_class.id).to be_nil
+        expect(described_class.get).to be_nil
+      end
+
+      expect(lookups).to be_empty
+    end
+  end
+
   describe ".set" do
     it "sets the pinned article" do
       expect(Settings::General.feed_pinned_article_id).to be_nil

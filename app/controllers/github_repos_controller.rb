@@ -9,7 +9,7 @@ class GithubReposController < ApplicationController
     # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
     # to fetch all of the user's repositories. This could eventually become slow
     @repos = fetch_repositories_from_github(known_repositories)
-  rescue Github::Errors::Unauthorized => e
+  rescue Github::Errors::Unauthorized, Github::Errors::AccountSuspended => e
     render json: { error: I18n.t("github_repos_controller.github_unauthorized", e_message: e.message), status: 401 },
            status: :unauthorized
   end

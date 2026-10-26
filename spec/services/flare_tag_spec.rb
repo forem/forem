@@ -32,6 +32,63 @@ RSpec.describe FlareTag, type: :labor do
       valid_article = create(:article, tags: %w[ama explainlikeimfive])
       expect(described_class.new(valid_article).tag.name).to eq("ama")
     end
+
+    it "returns the tag's colors" do
+      valid_article = create(:article, tags: "ama")
+      expect(described_class.new(valid_article).tag.slice(:bg_color_hex, :text_color_hex))
+        .to eq("bg_color_hex" => "#f3f3f3", "text_color_hex" => "#cccccc")
+    end
+
+    it "loads the flare tags once per request across articles" do
+      articles = [create(:article, tags: "ama"), create(:article, tags: "explainlikeimfive"), article]
+      RequestStore.clear!
+      queries = []
+      callback = lambda { |*, payload| queries << payload[:sql] if payload[:sql].include?('FROM "tags"') }
+      names = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        articles.map { |a| described_class.new(a).tag&.name }
+      end
+
+      expect(names).to eq(["ama", "explainlikeimfive", nil])
+      expect(queries.size).to eq(1)
+    end
+  end
+
+  describe ".tags_by_article_id" do
+    let(:ama_article) { create(:article, tags: "ama") }
+    let(:both_article) { create(:article, tags: %w[explainlikeimfive ama]) }
+    let(:articles) { [article, ama_article, both_article] }
+
+    it "returns an empty hash when no article has a flare tag" do
+      expect(described_class.tags_by_article_id([article])).to eq({})
+    end
+
+    it "matches the per-article flare tag for every article" do
+      result = described_class.tags_by_article_id(articles)
+
+      expect(result.keys).to contain_exactly(ama_article.id, both_article.id)
+      articles.each do |a|
+        expect(result[a.id]&.attributes&.slice("name", "bg_color_hex", "text_color_hex"))
+          .to eq(described_class.new(a).tag&.attributes&.slice("name", "bg_color_hex", "text_color_hex"))
+      end
+    end
+
+    it "honors the except tag" do
+      result = described_class.tags_by_article_id(articles, "explainlikeimfive")
+
+      expect(result.keys).to contain_exactly(ama_article.id)
+    end
+
+    it "loads the flare tags in a single query" do
+      articles
+      RequestStore.clear!
+      queries = []
+      callback = lambda { |*, payload| queries << payload[:sql] if payload[:sql].include?('FROM "tags"') }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.tags_by_article_id(articles)
+      end
+
+      expect(queries.size).to eq(1)
+    end
   end
 
   describe "#tag_hash" do

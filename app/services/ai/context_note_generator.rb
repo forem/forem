@@ -5,7 +5,8 @@ module Ai
     def initialize(article, tag)
       @article = article
       @tag = tag
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: article)
+      @ai_client = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:context_note), wrapper: self,
+                                affected_content: article)
     end
 
     def call

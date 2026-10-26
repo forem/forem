@@ -129,6 +129,9 @@ fr:
           unhide_text: Unhide
         moderate:
           aria_label: Moderate %{user}'s comment
+        admin_profile:
+          aria_label: Voir le profil admin de %{user}
+          text: Voir le profil admin
         report:
           aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:

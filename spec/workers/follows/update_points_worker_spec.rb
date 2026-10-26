@@ -63,6 +63,21 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
       expect(follow.implicit_points).to be > first_implicit_score
     end
 
+    it "loads taggings for the scored articles in a single query" do
+      create(:reaction, reactable: second_article, user: user)
+      create(:page_view, user: user, article: create(:article, tags: [second_tag.name]), time_tracked_in_seconds: 100)
+
+      taggings_queries = []
+      callback = lambda do |*, payload|
+        taggings_queries << payload[:sql] if payload[:sql].include?('FROM "taggings"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        worker.calculate_implicit_points(tag, user)
+      end
+
+      expect(taggings_queries.size).to eq(1)
+    end
+
     it "bumps down tag follow points not included in this calc" do
       follow = Follow.first
       worker.perform(reaction.reactable_id, reaction.user_id)

@@ -43,6 +43,12 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
       expect { generate_tag(legacy_playlist_uri) }.not_to raise_error
     end
 
+    it "generates a playlist iframe for a legacy playlist URI" do
+      result = generate_tag(legacy_playlist_uri).render
+      expect(result).to include("https://open.spotify.com/embed/playlist/37i9dQZF1E36t2Deh8frhL")
+      expect(result).to include('height="380px"')
+    end
+
     it "raises an error if the uri is invalid" do
       message = "Invalid Spotify URI or URL."
       expect do

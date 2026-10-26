@@ -1,12 +1,19 @@
 class RateLimitChecker
   attr_reader :user, :action
 
-  # retry_after values are the seconds until a user can retry an action
+  # retry_after values are the seconds until a user can retry an action.
+  # retry_after_setting names a Settings::RateLimit attribute to read the
+  # window from instead, so admins can configure it.
   ACTION_LIMITERS = {
     agent_session_creation: { retry_after: 60 },
     ai_image_generation: { retry_after: 60 },
+    api_ai_image_generation: { retry_after_setting: :api_ai_image_generation_window_seconds },
+    api_image_upload: { retry_after_setting: :api_image_upload_window_seconds },
     article_update: { retry_after: 30 },
+    comment_antispam_creation: { retry_after: 300 },
+    comment_creation: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
+    flag_appeal_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
     organization_creation: { retry_after: 300 },
@@ -15,8 +22,7 @@ class RateLimitChecker
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
     user_subscription_creation: { retry_after: 30 },
-    user_update: { retry_after: 30 },
-    comment_antispam_creation: { retry_after: 300 }
+    user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
@@ -39,8 +45,22 @@ class RateLimitChecker
     return if ApplicationConfig["E2E"]
     return unless limit_by_action(action)
 
-    retry_after = ACTION_LIMITERS.dig(action, :retry_after)
-    raise LimitReached, retry_after
+    raise LimitReached, retry_after_for(action)
+  end
+
+  # Atomically counts an attempt against the action's limit, raising if it
+  # pushes the user over. Unlike check_limit! + track_limit_by_action, this
+  # can't be raced by concurrent requests, and it counts failed attempts too,
+  # which matters for expensive actions. A limit of 0 blocks every attempt.
+  def consume!(action)
+    return if ApplicationConfig["E2E"]
+
+    count = track_limit_by_action(action).to_i
+    return if count <= action_rate_limit(action)
+
+    @action = action
+    log_to_datadog
+    raise LimitReached, retry_after_for(action)
   end
 
   def limit_by_action(action)
@@ -57,7 +77,7 @@ class RateLimitChecker
   end
 
   def track_limit_by_action(action)
-    expires_in = ACTION_LIMITERS.dig(action, :retry_after).seconds
+    expires_in = retry_after_for(action).seconds
     Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in, raw: true)
   end
 
@@ -73,6 +93,14 @@ class RateLimitChecker
     define_method(:"check_#{action}_limit") do
       Rails.cache.read(limit_cache_key(action), raw: true).to_i > action_rate_limit(action)
     end
+  end
+
+  # Actions without an ACTION_LIMITERS entry (e.g. comment_creation) have no retry_after.
+  def retry_after_for(action)
+    config = ACTION_LIMITERS.fetch(action, {})
+    return config[:retry_after] unless config.key?(:retry_after_setting)
+
+    Settings::RateLimit.public_send(config[:retry_after_setting])
   end
 
   def limit_cache_key(action)

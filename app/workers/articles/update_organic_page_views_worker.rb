@@ -10,7 +10,9 @@ module Articles
     GOOGLE_REFERRER = "https://www.google.com/".freeze
 
     def perform(article_id)
-      article = Article.find(article_id)
+      # Only the id (for the page_views association) and the column being
+      # written are needed; avoid hydrating heavy body/HTML/embedding columns.
+      article = Article.select(:id, :organic_page_views_past_month_count).find(article_id)
       google_page_views = article.page_views.where(referrer: GOOGLE_REFERRER)
       update_params = {}
       past_month_count = sum_page_views(google_page_views, 1.month.ago)

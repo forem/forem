@@ -88,6 +88,16 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       end
     end
 
+    context "when user is in community_leader_level_1 role" do
+      before { user.add_role(:community_leader_level_1) }
+
+      it "adding #{status} removes the community_leader_level_1 role" do
+        expect(user.roles.pluck(:name)).to include("community_leader_level_1")
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("community_leader_level_1")
+      end
+    end
+
     context "when user is in admin role" do
       before { user.add_role(:admin) }
 
@@ -144,6 +154,8 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   it_behaves_like "elevated role", "Resource Admin: Tag"
   it_behaves_like "elevated role", "Super Admin"
   it_behaves_like "elevated role", "Trusted"
+  it_behaves_like "elevated role", "Community Leader Level 1"
+  it_behaves_like "elevated role", "Community Leader Level 2"
   it_behaves_like "elevated role", "Good standing"
   it_behaves_like "elevated role", "Tech Admin"
 
@@ -237,10 +249,12 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     user.add_role(:comment_suspended)
     user.add_role(:warned)
     user.add_role(:trusted)
+    user.add_role(:community_leader_level_1)
     manage_roles_for(user, user_status: "Good standing")
     expect(user.suspended?).to be false
     expect(user.roles.count).to eq(0)
     expect(user.has_trusted_role?).to be false
+    expect(user.community_leader?).to be false
   end
 
   describe "Rack::Attack cache invalidation optimization" do
@@ -394,6 +408,22 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       expect do
         manage_roles_for(user, user_status: "Super Moderator")
       end.to raise_error(StandardError)
+    end
+
+    it "raises exception when trying to assign community leader level 2" do
+      expect do
+        manage_roles_for(user, user_status: "Community Leader Level 2")
+      end.to raise_error(StandardError)
+    end
+
+    it "raises exception when trying to downgrade a community leader level 2 user to level 1" do
+      user.add_role(:community_leader_level_2)
+
+      expect do
+        manage_roles_for(user, user_status: "Community Leader Level 1")
+      end.to raise_error(StandardError)
+
+      expect(user.reload.community_leader_level_2?).to be(true)
     end
   end
 end

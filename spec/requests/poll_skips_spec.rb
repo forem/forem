@@ -26,5 +26,30 @@ RSpec.describe "PollSkips" do
         post "/poll_skips", params: { poll_skip: { poll_id: poll.id } }
       end.to change(user.poll_skips, :count).by(1)
     end
+
+    it "does not raise or report an error when skipping a survey poll twice in the same session" do
+      survey = create(:survey)
+      survey_poll = create(:poll, survey: survey)
+      allow(Rails.error).to receive(:report)
+
+      expect do
+        post "/poll_skips", params: { poll_skip: { poll_id: survey_poll.id, session_start: 1 } }
+        post "/poll_skips", params: { poll_skip: { poll_id: survey_poll.id, session_start: 1 } }
+      end.to change(user.poll_skips, :count).by(1)
+
+      expect(Rails.error).not_to have_received(:report)
+    end
+
+    it "allows skipping a survey poll again in a new resubmission session without RecordNotUnique" do
+      survey = create(:survey, allow_resubmission: true)
+      survey_poll = create(:poll, survey: survey)
+      allow(Rails.error).to receive(:report)
+
+      post "/poll_skips", params: { poll_skip: { poll_id: survey_poll.id, session_start: 1 } }
+      post "/poll_skips", params: { poll_skip: { poll_id: survey_poll.id, session_start: 2 } }
+
+      expect(Rails.error).not_to have_received(:report)
+      expect(user.poll_skips.find_by(poll_id: survey_poll.id).session_start).to eq(2)
+    end
   end
 end

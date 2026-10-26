@@ -27,13 +27,22 @@
 </div>
 
 <script>
-  const resetPasswordPage = document.querySelector('.js-new-password');
-  const topbarElement = document.querySelector('#topbar');
-  // Check if the reset password element exists and the topbar element exists.
-  if (resetPasswordPage && topbarElement) {
+  {
+    const resetPasswordPage = document.querySelector('.js-new-password');
+    const topbarElement = document.querySelector('#topbar');
+    // Check if the reset password element exists and the topbar element exists.
+    if (resetPasswordPage && topbarElement) {
       topbarElement.style.display = 'none';
       document.body.style.paddingTop = '0';
       // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
       document.body.style.backgroundColor = 'white';
+    }
+    window.addEventListener('popstate', () => {
+      if (resetPasswordPage && topbarElement) {
+        topbarElement.style.display = 'block';
+        document.body.style.removeProperty('padding-top');
+        document.body.style.removeProperty('background-color');
+      }
+    });
   }
 </script>

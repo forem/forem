@@ -149,7 +149,7 @@ module Events
       private
 
       def image_url
-        event.data["image_url"] || event.organization&.profile_image_url || event.user&.profile_image_url
+        event.data["image_url"] || event.organization&.profile_image_url || event.user&.profile_image_90
       end
 
       def link

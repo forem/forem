@@ -57,6 +57,12 @@ RSpec.describe FeedbackMessage do
       subject(:feedback_message) { create(:feedback_message, :bug_report, reporter: reporter) }
 
       it { is_expected.not_to validate_presence_of(:reported_url) }
+
+      it "does not enforce reporter uniqueness on non-abuse feedback messages" do
+        create(:feedback_message, :bug_report, reported_url: "/some/path", reporter: reporter)
+        duplicate = build(:feedback_message, :bug_report, reported_url: "/some/path", reporter: reporter)
+        expect(duplicate).to be_valid
+      end
     end
   end
 

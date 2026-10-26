@@ -45,16 +45,170 @@ RSpec.describe "BillboardEvents", type: :request do
       json = JSON.parse(response.body)
       expect(json["id"]).to eq(event.id)
     end
+
+    it "checks the billboard exists without loading its full row" do
+      billboard
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("display_ads") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        post bb_tabulations_path, params: { billboard_event: base_params }
+      end
+
+      expect(BillboardEvent.last.billboard_id).to eq(billboard.id)
+      expect(queries.grep(/\ASELECT/)).to contain_exactly(a_string_starting_with('SELECT "display_ads"."id" FROM'))
+    end
+
+    it "inserts the event in a single statement that keeps synchronous_commit off" do
+      billboard
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?(BillboardEvent.table_name) }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        post bb_tabulations_path, params: { billboard_event: base_params }
+      end
+
+      expect(queries.size).to eq(1)
+      expect(queries.first).to start_with("SET LOCAL synchronous_commit TO OFF; INSERT")
+      event = BillboardEvent.last
+      expect(response.parsed_body).to eq("id" => event.id)
+      expect(event).to have_attributes(billboard_id: billboard.id, user_id: user.id, geolocation: "test-geo",
+                                       counts_for: 1, seconds_visible: 10)
+      expect(event.created_at).to be_within(1.minute).of(Time.current)
+      expect(event.updated_at).to eq(event.created_at)
+    end
+
+    it "does not create an event for a billboard that does not exist" do
+      missing_id_params = { billboard_event: base_params.merge(billboard_id: billboard.id + 1000) }
+      expect { post bb_tabulations_path, params: missing_id_params }.not_to change(BillboardEvent, :count)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "does not create an event when billboard_id is not a single id" do
+      array_id_params = { billboard_event: base_params.merge(billboard_id: [billboard.id]) }
+      expect { post bb_tabulations_path, params: array_id_params }.not_to change(BillboardEvent, :count)
+    end
+
+    context "when recording user_agent" do
+      let(:header_ua) { "Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/128.0" }
+      let(:param_ua) { "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15" }
+
+      it "records user_agent from the User-Agent request header when not in params" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(header_ua)
+      end
+
+      it "records user_agent from billboard_event params when provided by client JS" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params.merge(user_agent: param_ua) },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(param_ua)
+      end
+
+      it "records user_agent from top-level params when provided" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params, user_agent: param_ua },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(param_ua)
+      end
+
+      it "falls back to the User-Agent request header when param user_agent is blank" do
+        post bb_tabulations_path,
+             params: { billboard_event: base_params.merge(user_agent: "") },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last.user_agent).to eq(header_ua)
+      end
+
+      it "records user_agent for legacy display_ad_event params" do
+        post display_ad_events_path,
+             params: { display_ad_event: base_params.except(:billboard_id).merge(display_ad_id: billboard.id) },
+             headers: { "User-Agent" => header_ua }
+
+        expect(BillboardEvent.last).to have_attributes(
+          billboard_id: billboard.id,
+          user_agent: header_ua,
+        )
+      end
+    end
+
+    context "when the request comes from an embedding site" do
+      let(:embed_origin) { "https://embed.example.com" }
+
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("BILLBOARD_EMBED_ORIGINS")
+          .and_return("#{embed_origin}, https://other-embed.example.com")
+      end
+
+      it "records an anonymous embed event with its user_agent" do
+        embed_ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/126.0.0.0"
+        post bb_tabulations_path,
+             params: { billboard_event: base_params },
+             headers: { "Origin" => embed_origin, "User-Agent" => embed_ua }
+
+        event = BillboardEvent.last
+        expect(event.context_type).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
+        expect(event.user_id).to be_nil
+        expect(event.user_agent).to eq(embed_ua)
+      end
+
+      it "allows the cross-origin preflight" do
+        options bb_tabulations_path, headers: {
+          "Origin" => embed_origin,
+          "Access-Control-Request-Method" => "POST",
+          "Access-Control-Request-Headers" => "content-type"
+        }
+
+        expect(response.headers["Access-Control-Allow-Origin"]).to eq(embed_origin)
+      end
+
+      it "does not allow other origins" do
+        options bb_tabulations_path, headers: {
+          "Origin" => "https://example.com",
+          "Access-Control-Request-Method" => "POST"
+        }
+
+        expect(response.headers["Access-Control-Allow-Origin"]).to be_nil
+      end
+
+      it "keeps the session user for other origins" do
+        post bb_tabulations_path, params: { billboard_event: base_params }, headers: { "Origin" => "https://example.com" }
+
+        expect(BillboardEvent.last).to have_attributes(user_id: user.id, context_type: "home")
+      end
+    end
   end
 
   describe "PATCH /bb_tabulations/:id" do
     context "when event exists and is an impression" do
       let!(:event) { create(:billboard_event, billboard: billboard, category: "impression", user: user, seconds_visible: 10) }
 
-      it "updates seconds_visible by 10 if not updated recently" do
+      it "updates seconds_visible by 10 without a preliminary find_by query if not updated recently" do
         event.update_column(:updated_at, 10.seconds.ago)
+        allow(BillboardEvent).to receive(:find_by).and_call_original
         patch "/bb_tabulations/#{event.id}"
-        expect(response.status).to eq(200)
+        expect([response.status, event.reload.seconds_visible]).to eq([200, 20])
+        expect(BillboardEvent).not_to have_received(:find_by)
+      end
+
+      it "updates with a single SQL statement that keeps synchronous_commit off" do
+        event.update_column(:updated_at, 10.seconds.ago)
+        # Request-wide middleware (e.g. subforem lookups) also queries, so only count the event table.
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?(BillboardEvent.table_name)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          patch "/bb_tabulations/#{event.id}"
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(queries.size).to eq(1)
+        expect(queries.first).to start_with("SET LOCAL synchronous_commit TO OFF; UPDATE")
         expect(event.reload.seconds_visible).to eq(20)
       end
 
@@ -92,6 +246,11 @@ RSpec.describe "BillboardEvents", type: :request do
       it "returns not found status" do
         patch "/bb_tabulations/999999"
         expect(response.status).to eq(404)
+      end
+
+      it "returns not found status for a non-numeric id" do
+        patch "/bb_tabulations/not-an-id"
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

@@ -12,8 +12,10 @@ module Feeds
     end
 
     def call
-      title = item.title.strip.gsub('"', '\"')
-      feed_source_url = item.url.strip.split("?source=")[0]
+      return false if item.nil? || item.url.blank? || item.title.blank?
+
+      title = item.title.to_s.strip.gsub('"', '\"')
+      feed_source_url = item.url.to_s.strip.split("?source=")[0]
       relation = user.articles
       relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
     end

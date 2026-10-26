@@ -76,6 +76,7 @@ module IncomingWebhooks
         BillboardEvent.create(user_id: user.id,
                               category: "conversion",
                               geolocation: event.geolocation,
+                              user_agent: event.user_agent,
                               context_type: event.context_type,
                               billboard_id: event.billboard_id)
       end
@@ -133,7 +134,7 @@ module IncomingWebhooks
       obj.customer if obj.respond_to?(:customer)
       obj["customer"] if obj.is_a?(Hash) && obj.key?("customer")
     rescue StandardError => e
-      Honeybadger.notify(e, context: { object: obj })
+      Rails.error.report(e, context: { object: obj })
       nil
     end
     

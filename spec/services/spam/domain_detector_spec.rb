@@ -15,6 +15,14 @@ RSpec.describe Spam::DomainDetector, type: :service do
       end
     end
 
+    context "when domain is already blocked" do
+      before { BlockedEmailDomain.create!(domain: "example.com") }
+
+      it "returns false without enqueuing another block job" do
+        expect { detector.check_and_block_domain! }.not_to change(Spam::BlockDomainAndSuspendUsersWorker.jobs, :size)
+      end
+    end
+
     context "when spam pattern is detected" do
       let!(:spam_user1) { create(:user, email: "user1@example.com") }
       let!(:spam_user2) { create(:user, email: "user2@example.com") }
@@ -85,6 +93,16 @@ RSpec.describe Spam::DomainDetector, type: :service do
       it "does not block the domain when there are only 2 spam users" do
         expect(detector.check_and_block_domain!).to be false
         expect(BlockedEmailDomain.where(domain: "example.com")).to be_empty
+      end
+
+      it "skips the full-table older-users scan" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          detector.check_and_block_domain!
+        end
+
+        expect(queries.grep(/registered_at </)).to be_empty
       end
     end
 

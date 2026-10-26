@@ -129,7 +129,8 @@ class Organization < ApplicationRecord
   def check_for_slug_change
     return unless slug_changed?
 
-    self.old_old_slug = old_slug
+    previous_old = old_slug == slug ? old_old_slug : old_slug
+    self.old_old_slug = previous_old == slug ? nil : previous_old
     self.old_slug = slug_was
     Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end

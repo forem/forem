@@ -4,4 +4,12 @@ class TagSubforemRelationship < ApplicationRecord
 
   validates :tag_id, presence: true, uniqueness: { scope: :subforem_id }
   validates :subforem_id, presence: true, uniqueness: { scope: :tag_id }
+
+  after_commit :purge_supported_tags
+
+  private
+
+  def purge_supported_tags
+    Tag.purge_supported_tags
+  end
 end

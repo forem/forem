@@ -31,6 +31,10 @@ RSpec.describe "api/v1/pages" do
 
         produces "application/json"
 
+        parameter name: :organization_id, in: :query, required: false,
+                  description: "Filter pages belonging to a specific organization ID, ordered by position.",
+                  schema: { type: :integer, format: :int64 }
+
         response(200, "successful") do
           schema type: :array,
                  items: { "$ref": "#/components/schemas/Page" }
@@ -45,15 +49,17 @@ RSpec.describe "api/v1/pages" do
       post("pages") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Create a new custom page. Requires administrative privileges.
+        Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).
 
         ### Body Parameter Guidelines:
         - **title**: Heading displayed at the top of the page.
-        - **slug**: URL path identifier. Must be unique and URL-safe.
+        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).
         - **body_markdown**: Content written in Markdown format.
         - **body_json**: Optional JSON payload for API-consumed/structured data pages.
         - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.
-        - **template**: Layout styling options (`contained` or custom layouts).
+        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.
+        - **organization_id**: Optional ID of the organization this page belongs to.
+        - **position**: Optional display order position for organization pages.
         DESCRIBE
 
         produces "application/json"
@@ -71,6 +77,10 @@ RSpec.describe "api/v1/pages" do
                       body_json: { type: :string, description: "For JSON pages, the JSON body" },
                       is_top_level_path: { type: :boolean,
                                            description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+                      organization_id: { type: :integer, format: :int64,
+                                         description: "The ID of the organization the page belongs to" },
+                      position: { type: :integer, format: :int32,
+                                  description: "Display order position for organization pages" },
                       template: {
                         type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
                         description: "Controls what kind of layout the page is rendered in"
@@ -147,7 +157,7 @@ RSpec.describe "api/v1/pages" do
       put("update details for a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Update an existing page's details by ID. Requires administrative privileges.
+        Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.
         DESCRIBE
 
         produces "application/json"
@@ -198,7 +208,7 @@ RSpec.describe "api/v1/pages" do
       delete("remove a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Delete a custom page from the system by ID. Requires administrative privileges.
+        Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.
         DESCRIBE
 
         produces "application/json"

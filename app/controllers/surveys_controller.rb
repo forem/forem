@@ -35,11 +35,20 @@ class SurveysController < ApplicationController
                       end
 
     # Find all of the current user's votes for the polls in this survey in the session to show
-    # and format them into a Hash of { poll_id => poll_option_id }
-    user_votes = current_user.poll_votes
+    # For multiple choice polls, format as an array of option IDs; otherwise a single option ID
+    multiple_choice_poll_ids = @survey.polls.where(type_of: :multiple_choice).ids.to_set
+    raw_votes = current_user.poll_votes
       .where(poll_id: @survey.poll_ids, session_start: session_to_show)
       .pluck(:poll_id, :poll_option_id)
-      .to_h
+
+    user_votes = {}
+    raw_votes.each do |poll_id, poll_option_id|
+      if multiple_choice_poll_ids.include?(poll_id)
+        (user_votes[poll_id] ||= []) << poll_option_id
+      else
+        user_votes[poll_id] = poll_option_id
+      end
+    end
 
     # Find all of the current user's text responses for the polls in this survey in the session to show
     # and format them into a Hash of { poll_id => text_content }

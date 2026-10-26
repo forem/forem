@@ -204,6 +204,14 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
     margin: 0;
     overflow: hidden;
     box-shadow: var(--shadow-smooth);
+
+    // The shared feed cover uses `height: 100%`, which only falls back to its
+    // aspect ratio when the story height is auto. With the story stretched to
+    // its grid row, the cover would fill the whole card and push the title
+    // and meta out of view, so let the aspect ratio size it instead.
+    > .crayons-article__cover {
+      height: auto;
+    }
   }
 
   .ltag-org-team .org-sidebar-widget-body {

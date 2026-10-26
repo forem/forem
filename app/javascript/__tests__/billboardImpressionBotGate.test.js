@@ -78,17 +78,28 @@ describe('billboard impression tracking — bot gate', () => {
   });
 
   it('sends the impression POST to /bb_tabulations for a human browser UA', () => {
-    setUserAgent(
+    const humanUa =
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 ' +
-        '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    );
+      '(KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36';
+    setUserAgent(humanUa);
 
     observeBillboards();
     scrollAdIntoView();
 
     expect(global.fetch).toHaveBeenCalledWith(
       '/bb_tabulations',
-      expect.objectContaining({ method: 'POST' }),
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          billboard_event: {
+            billboard_id: '42',
+            context_type: 'home',
+            category: 'impression',
+            article_id: '7',
+            user_agent: humanUa,
+          },
+        }),
+      }),
     );
   });
 });

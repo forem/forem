@@ -29,6 +29,25 @@ module BillboardHelper
     Billboard::HOME_FEED_PLACEMENTS.include?(area)
   end
 
+  # The URL a page loads a placement area's billboard from.
+  #
+  # Fully cached placement areas use one URL everywhere, so a single edge-cached response (per
+  # location) is shared by every article and page. Articles whose authors opt out of sponsors
+  # next to their posts keep their own URL so that choice is still honored.
+  #
+  # @see BillboardPlacementAreaConfig.fully_cached_for
+  def billboard_async_path(placement_area, article: nil, page_id: nil)
+    decorated_article = article.is_a?(ArticleDecorator) ? article : article&.decorate
+    if BillboardPlacementAreaConfig.fully_cached_for(placement_area.to_s) &&
+        (decorated_article.nil? || decorated_article.permit_adjacent_sponsors?)
+      billboard_path(placement_area: placement_area)
+    elsif article
+      article_billboard_path(username: article.username, slug: article.slug, placement_area: placement_area)
+    else
+      billboard_path(page_id: page_id, placement_area: placement_area)
+    end
+  end
+
   # Including here because multiple controllers render this in different contexts
   # When signed in, this is uncached, but it is cached for signed-out contexts
   def get_homepage_sidebar_billboards

@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   # This was removed due to flakiness.
   # include EdgeCacheSafetyCheck unless Rails.env.production?
 
-  rescue_from ActionView::MissingTemplate, with: :routing_error
+  rescue_from ActionView::MissingTemplate, with: :respond_with_missing_template
 
   rescue_from RateLimitChecker::LimitReached do |exc|
     error_too_many_requests(exc)
@@ -151,6 +151,23 @@ class ApplicationController < ActionController::Base
   # @raise [ActionController::RoutingError] when called
   def routing_error
     raise ActionController::RoutingError, "Routing Error"
+  end
+
+  # A missing template usually means the format negotiated from the Accept header has no
+  # template (e.g. a feed reader or bot asking for JSON on an HTML-only page), not that the
+  # page is missing. Render the 404 here rather than raising, so the response keeps headers that
+  # stop Fastly from caching it: an edge-cached 404 without Vary: Accept is served to browsers
+  # requesting the same URL, and carries no surrogate key for a purge to clear it.
+  def respond_with_missing_template
+    unset_cache_control_headers
+    response.headers["Cache-Control"] = "private, no-store"
+    add_vary_header("Accept")
+
+    if request.format.html?
+      render file: Rails.public_path.join("404.html"), layout: false, status: :not_found, content_type: "text/html"
+    else
+      head :not_found
+    end
   end
 
   # When called render unauthorized JSON status and raise Pundit::NotAuthorizedError
@@ -282,7 +299,8 @@ class ApplicationController < ActionController::Base
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
 
-      if URI.parse(path).path == "/signout_confirm"
+      parsed_path = URI.parse(path).path
+      if parsed_path == "/signout_confirm" || parsed_path&.start_with?("/users/password")
         path = root_path(signin: "true")
       end
 
@@ -320,6 +338,8 @@ class ApplicationController < ActionController::Base
   end
 
   def respond_with_user_suspended
+    unset_cache_control_headers
+    set_no_cache_header
     response.status = :forbidden
     render "pages/forbidden"
   end
@@ -361,7 +381,7 @@ class ApplicationController < ActionController::Base
   end
 
   def determine_locale
-    I18n.locale = if %w[en fr pt].include?(params[:locale])
+    I18n.locale = if Constants::Settings::UserExperience::SUPPORTED_LOCALES.key?(params[:locale])
                     params[:locale]
                   else
                     Settings::UserExperience.default_locale
