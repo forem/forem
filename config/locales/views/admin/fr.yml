@@ -316,6 +316,7 @@ fr:
               resource_admin_billboard: Billboard Admin
               resource_admin_data_update_script: Data Update Script Admin
               resource_admin_feedback_message: Feedback Message Admin
+              resource_admin_flag_appeal: Flag Appeal Admin
               resource_admin_html_variant: HTML Variant Admin
               resource_admin_listing_category: Listing Category Admin
               resource_admin_page: Page Admin
@@ -338,6 +339,8 @@ fr:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
+              community_leader_level_1: Community Leader Level 1
+              community_leader_level_2: Community Leader Level 2
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
@@ -350,6 +353,10 @@ fr:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
           no_flags: No flags received against this user yet.
           title: Flags received
+        content_flags:
+          description: Signalements laissés sur les publications et commentaires de ce membre, y compris ceux émis automatiquement par la modération. Marquer un signalement comme invalide restaure le score du contenu.
+          no_flags: Aucun signalement reçu sur les publications ou commentaires de cet utilisateur pour le moment.
+          title: Signalements sur les publications et commentaires
         profile:
           locked:
             icon: Access locked
@@ -373,6 +380,18 @@ fr:
             remove_social: Remove social accounts
             banish: Banish user
             delete: Delete user
+        password:
+          title: Accès au mot de passe
+          description: Définissez directement un nouveau mot de passe ou envoyez à l’utilisateur un e-mail de réinitialisation précisant qu’il a été déclenché par un administrateur.
+          new_password: Nouveau mot de passe
+          password_confirmation: Confirmer le nouveau mot de passe
+          submit: Mettre à jour le mot de passe
+          success: Mot de passe mis à jour avec succès.
+          reset_title: Envoyer un e-mail de réinitialisation du mot de passe
+          reset_description: Envoyez à l’utilisateur un lien de réinitialisation qui explique qu’il a été initié par un administrateur pour l’aider.
+          reset_submit: Envoyer l’e-mail de réinitialisation du mot de passe
+          reset_sent: E-mail de réinitialisation du mot de passe envoyé avec succès.
+          reset_error: Échec de l’envoi de l’e-mail de réinitialisation du mot de passe.
         edit_profile:
           heading: Modifier le profil de %{user}
           desc_html: Les changements faits ici sont immédiatement publics sur le profil de l'utilisateur.
@@ -438,13 +457,24 @@ fr:
           commentable: commentable
           created: "Created at: %{time}"
         tabs:
-          overview: Overview
+          overview: Aperçu
           notes: Notes
-          emails: Emails
-          reports: Reports
-          flags: Flags
+          emails: E-mails
+          security: Sécurité
+          reports: Signalements
+          flags: Drapeaux
+          articles: Articles
+          comments: Commentaires
+          identities: Identités d'authentification
+          badges: Badges
+          reactions: Réactions
+          agent_sessions: Sessions d'agent
+          collections: Séries
+          follows: Abonnements
+          blocks: Blocages
           audit_log: Journal d'audit
-          unpublish_logs: Unpublish All History
+          unpublish_logs: Historique de dépublication
+          more_details: Plus de détails
         status_title: Current status
         status_reader: "Current status:"
         more_orgs:
@@ -464,6 +494,7 @@ fr:
           "Resource Admin: Billboard": "Resource Admin: Billboard"
           "Resource Admin: DataUpdateScript": "Resource Admin: DataUpdateScript"
           "Resource Admin: FeedbackMessage": "Resource Admin: FeedbackMessage"
+          "Resource Admin: FlagAppeal": "Resource Admin: FlagAppeal"
           "Resource Admin: HtmlVariant": "Resource Admin: HtmlVariant"
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"
@@ -480,6 +511,8 @@ fr:
           "Resource Admin: ProfileField": "Resource Admin: ProfileField"
           "Resource Admin: ProfileFieldGroup": "Resource Admin: ProfileFieldGroup"
           Super Moderator: Super Moderator
+          Community Leader Level 1: Curateur communautaire niveau 1
+          Community Leader Level 2: Curateur communautaire niveau 2
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
@@ -496,7 +529,83 @@ fr:
           facebook: Facebook
           github: GitHub
           twitter: Twitter
+        identities_tab:
+          title: Identités d'authentification
+          empty: Aucune identité d'authentification associée à cet utilisateur.
+          remove: Supprimer l'identité
+          table:
+            provider: Fournisseur
+            uid: UID
+            username: Nom d'utilisateur / Nom
+            email: E-mail
+            created_at: Associé le
+            actions: Actions
+        collections_tab:
+          title: Séries et collections
+          empty: Aucune série ou collection trouvée pour cet utilisateur.
+          table:
+            title: Titre
+            description: Description
+            articles_count: Articles
+            created_at: Créé le
+        follows_tab:
+          title: Abonnements et abonnés
+          followers: Abonnés
+          following: Abonnements
+          empty: Aucun abonnement trouvé.
+          table:
+            user: Utilisateur
+            username: Nom d'utilisateur
+            followed_at: Suivi le
+        blocks_tab:
+          title: Blocages
+          blocking: Bloqués
+          blocked_by: Bloqué par
+          empty: Aucun blocage trouvé.
+          table:
+            user: Utilisateur
+            username: Nom d'utilisateur
+            blocked_at: Bloqué le
+        badges_tab:
+          title: Badges et accomplissements
+          empty: Aucun badge obtenu ou attribué pour le moment.
+          manage_badges: Gérer les badges
+          system: Attribué par le système
+          table:
+            badge: Badge
+            description: Description
+            awarded_by: Attribué par
+            awarded_at: Attribué le
+        reactions_tab:
+          title: Réactions de l'utilisateur
+          empty: Aucune réaction trouvée pour cet utilisateur.
+          deleted_target: Contenu supprimé
+          table:
+            category: Catégorie
+            target_type: Type
+            target: Contenu
+            status: Statut
+            created_at: Créé le
+        agent_sessions_tab:
+          title: Sessions d'agent
+          empty: Aucune session d'agent trouvée pour cet utilisateur.
+          published: Publié
+          draft: Brouillon
+          view: Voir
+          curate: Organiser
+          table:
+            title: Titre
+            tool: Outil
+            status: Statut
+            messages: Messages
+            created_at: Créé le
+            actions: Actions
       organizations:
+        name:
+          heading: Nom de l'organisation
+          description: Mettre à jour le nom affiché de cette organisation.
+          label: Nom de l'organisation
+          submit: Mettre à jour le nom
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}
@@ -549,6 +658,27 @@ fr:
             enable: Activer Dofollow
             disable: Désactiver Dofollow
             enabled_notice: Les liens dofollow sont activés pour la page readme de cette organisation.
+        bulk_add_users:
+          heading: Ajouter des membres en bloc
+          description: "Ajoutez plusieurs utilisateurs à cette organisation en une seule fois. Entrez une liste de noms d'utilisateur séparés par des virgules (avec ou sans @ et espaces). Les membres existants seront ignorés."
+          usernames_label: Noms d'utilisateur
+          usernames_placeholder: "utilisateur1, @utilisateur2, utilisateur3"
+          role_label: Rôle
+          roles:
+            member: Membre
+            admin: Administrateur
+          submit: Ajouter des membres en bloc
+      favorites:
+        leaderboard:
+          heading: Classement d'impact
+          description: Classement des utilisateurs selon l'engagement généré par leurs pépites.
+          empty: Aucune pépite pour le moment.
+          rank: Rang
+          leader: Curateur
+          favorites: Pépites
+          articles: Articles
+          comments: Commentaires
+          impact: Impact
       org_features:
         heading: Fonctionnalités Org
         description: Gérer les fonctionnalités des organisations globalement ou par organisation.
@@ -596,6 +726,9 @@ fr:
           lookback_button: "Déclencher"
           similarity_threshold: "Seuil de similitude"
         form:
+          score: "Score du concept"
+          score_placeholder: "ex. 1.0 (optionnel)"
+          score_help: "Ajustement manuel du score/poids utilisé pour le classement."
           similarity_threshold: "Seuil de similitude"
           similarity_threshold_placeholder: "ex. 0.25 (optionnel)"
           similarity_threshold_help: "Optionnel. Nombre décimal entre 0,0 et 1,0. Si laissé vide, la valeur par défaut du système (0,28) est utilisée."
@@ -603,6 +736,8 @@ fr:
           threshold: "Seuil"
           default: "défaut"
       events:
+        fork: "Dupliquer"
+        fork_event: "Dupliquer l'événement"
         show:
           signups_title: "Inscriptions à l'événement"
           no_signups: "Aucune inscription pour cet événement pour le moment."
@@ -614,3 +749,16 @@ fr:
             day_before: "1 jour avant"
             hour_before: "1 heure avant"
             none: "Aucune"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibilité
+          hidden_by_default: Masqué par défaut
+          visible: Visible
+          caching: Mise en cache
+          fully_cached: Entièrement en cache
+          standard_caching: Standard
+        edit:
+          hidden_by_default: Masqué par défaut
+          hidden_by_default_desc_html: Les panneaux publicitaires sont toujours diffusés dans cet emplacement, mais s'affichent masqués et n'enregistrent aucune impression jusqu'à ce que la logique frontend les révèle avec %{reveal_call}. Les panneaux affichés portent %{placement_attribute}.
+          fully_cached: Entièrement en cache
+          fully_cached_desc: Sert une seule réponse en cache par localisation du visiteur pour cet emplacement, partagée par tous les articles et pages ainsi que par les visiteurs connectés, avec la durée de cache ci-dessus. Seuls les panneaux qui ne ciblent ni tags, ni articles, ni pages, ni segments d'audience, ni rôles, ni réponses à des sondages, ni types de navigateur sont affichés ici. Les articles dont les auteurs refusent les sponsors à proximité conservent le comportement standard. Ne s'applique qu'aux panneaux chargés séparément de la page, pas à ceux intégrés dans la page (comme la barre latérale de la page d'accueil).

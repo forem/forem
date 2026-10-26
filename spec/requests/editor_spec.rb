@@ -42,6 +42,55 @@ RSpec.describe "Editor" do
     end
   end
 
+  describe "co-author invitations in the editor" do
+    let(:user) { create(:user) }
+    let(:article) { create(:article, user: user) }
+    let(:edit_path) { "/#{user.username}/#{article.slug}/edit" }
+
+    before { sign_in user }
+
+    it "leaves the picker out while the feature is disabled" do
+      get edit_path
+
+      expect(response.body).not_to include("data-co-author-invitations-enabled")
+    end
+
+    context "when the feature is enabled" do
+      before { FeatureFlag.enable(:co_author_invitations) }
+
+      it "passes the article's invitations to the editor", :aggregate_failures do
+        invitation = create(:co_author_invitation, article: article)
+
+        get edit_path
+
+        html = Nokogiri::HTML(response.body)
+        main = html.at_css("main#main-content")
+        expect(main["data-co-author-invitations-enabled"]).to eq("true")
+        expect(main["data-co-author-invitations-max"]).to eq(CoAuthorInvitation::MAX_PER_ARTICLE.to_s)
+        expect(JSON.parse(main["data-co-author-invitations"])).to contain_exactly(
+          hash_including("id" => invitation.id, "status" => "pending",
+                         "user" => hash_including("username" => invitation.user.username)),
+        )
+      end
+
+      it "shows an empty picker on a new post" do
+        get new_path
+
+        main = Nokogiri::HTML(response.body).at_css("main#main-content")
+        expect(main["data-co-author-invitations"]).to eq("[]")
+      end
+
+      it "leaves the picker out for someone editing another user's post" do
+        admin = create(:user, :super_admin)
+        sign_in admin
+
+        get edit_path
+
+        expect(response.body).not_to include("data-co-author-invitations-enabled")
+      end
+    end
+  end
+
   describe "POST /articles/preview" do
     let(:user) { create(:user) }
     let(:article) { create(:article, user: user) }
@@ -78,6 +127,27 @@ RSpec.describe "Editor" do
              as: :json
 
         expect(response).to be_successful
+      end
+
+      it "ignores a cover_image given as a list instead of raising" do
+        article_body = <<~MARKDOWN
+          ---
+          title: Hello
+          cover_image:
+            - https://example.com/image.png
+          ---
+
+          Hello
+        MARKDOWN
+
+        post "/articles/preview",
+             headers: headers,
+             params: { article_body: article_body },
+             as: :json
+
+        expect(response).to be_successful
+        expect(response.parsed_body["cover_image"]).to be_nil
+        expect(response.parsed_body["title"]).to eq("Hello")
       end
     end
   end

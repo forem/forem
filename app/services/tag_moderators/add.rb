@@ -19,6 +19,7 @@ module TagModerators
         add_tag_mod_role(user, tag)
         ::TagModerators::AddTrustedRole.call(user)
         tag.update(supported: true) unless tag.supported?
+        tag.touch
 
         NotifyMailer
           .with(user: user, tag: tag)

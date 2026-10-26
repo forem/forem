@@ -27,6 +27,11 @@ RSpec.describe "CommentsCreate" do
     end.to change(user.comments, :count).by(1)
   end
 
+  it "creates a comment with ai_disclosure_level" do
+    post comments_path, params: comment_params(ai_disclosure_level: "some_ai")
+    expect(Comment.last.ai_disclosure_level).to eq("some_ai")
+  end
+
   it "creates NotificationSubscription for comment" do
     post comments_path, params: comment_params
 

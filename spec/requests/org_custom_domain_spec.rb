@@ -27,9 +27,11 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
 
-      it "does not redirect organization profile page requests" do
+      it "does not redirect organization profile page requests and uses the default canonical link" do
         get "http://forem.com/#{organization.slug}"
         expect(response).to have_http_status(:success)
+        expect(response.body).to include("<link rel=\"canonical\" href=\"http://forem.com/#{organization.slug}\" />")
+        expect(response.body).to include("<meta property=\"og:url\" content=\"http://forem.com/#{organization.slug}\" />")
       end
 
       it "does not redirect organization article requests" do
@@ -44,12 +46,14 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
     end
 
-    it "routes root path to the organization profile" do
+    it "routes root path to the organization profile and uses the custom domain as the canonical link" do
       get "http://custom.org/"
 
       expect(response).to have_http_status(:success)
       # The organization show page should be rendered
       expect(response.body).to include(organization.name)
+      expect(response.body).to include('<link rel="canonical" href="http://custom.org" />')
+      expect(response.body).to include('<meta property="og:url" content="http://custom.org" />')
     end
 
     it "redirects header links to the main app domain and styles the topbar with the organization brand color" do
@@ -72,6 +76,27 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       expect(response.body).to include("#topbar { background: #1ab394 !important; }")
     end
 
+    describe "non-HTML Accept headers on the root path" do
+      it "returns a 404 that cannot be edge cached for browsers" do
+        get "http://custom.org/", headers: { "Accept" => "application/json" }
+
+        expect(response).to have_http_status(:not_found)
+        expect(response.headers["Cache-Control"]).to include("no-store")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Vary"]).to include("Accept")
+      end
+
+      it "still renders the organization profile for a browser after a non-HTML request" do
+        get "http://custom.org/", headers: { "Accept" => "application/rss+xml" }
+        expect(response).to have_http_status(:not_found)
+
+        get "http://custom.org/", headers: { "Accept" => "text/html" }
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(organization.name)
+        expect(response.headers["Surrogate-Control"]).to be_present
+      end
+    end
+
     describe "API routing" do
       it "does not intercept /api endpoints on a custom domain" do
         get "http://custom.org/api/articles"
@@ -92,6 +117,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
 
         expect(response).to have_http_status(:success)
         expect(response.body).to include("Test Article Content")
+      end
+
+      it "routes /:slug to the organization's article when requested via fetch / link preload" do
+        get "http://custom.org/#{article.slug}", headers: { "Sec-Fetch-Dest" => "empty", "Sec-Fetch-Mode" => "cors" }
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("Test Article Content")
+      end
+
+      it "routes /:slug to the organization's article when slug begins with a reserved word as a substring (e.g. api2)" do
+        api2_article = create(:article, slug: "api2-announcement", organization: organization, user: user, title: "API 2.0 Post")
+        get "http://custom.org/#{api2_article.slug}"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("API 2.0 Post")
       end
 
       it "routes /:username/:slug to the organization's article" do
@@ -141,6 +181,21 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
       end
     end
 
+    describe "custom page routing" do
+      let!(:custom_page) { create(:page, organization: organization, slug: "#{organization.slug}/about", body_markdown: "About Us Content") }
+
+      before do
+        FeatureFlag.enable(:org_readme, FeatureFlag::Actor.new(organization))
+      end
+
+      it "routes /p/:page_suffix to organization custom pages" do
+        get "http://custom.org/p/about"
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include("About Us Content")
+      end
+    end
+
     describe "signed out redirection to custom domain" do
       let(:user) { create(:user) }
       let!(:article) { create(:article, organization: organization, user: user, title: "Test Article Content") }
@@ -178,9 +233,11 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
           sign_in logged_in_user
         end
 
-        it "does not redirect organization profile page requests" do
+        it "does not redirect organization profile page requests and uses the custom domain as the canonical link" do
           get "http://forem.com/#{organization.slug}"
           expect(response).to have_http_status(:success)
+          expect(response.body).to include('<link rel="canonical" href="http://custom.org" />')
+          expect(response.body).to include('<meta property="og:url" content="http://custom.org" />')
         end
 
         it "does not redirect organization article requests" do

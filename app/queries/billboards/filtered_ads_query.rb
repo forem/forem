@@ -9,11 +9,15 @@ module Billboards
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
     # @param billboards [Billboard] can be a filtered scope or Arel relationship
     # @param location [Geolocation|String] the visitor's geographic location
+    # @param fully_cached [Boolean] whether the response is shared through the edge cache by
+    #   everyone in a location (see BillboardPlacementAreaConfig.fully_cached_for)
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil,
-                   role_names: nil, subforem_id: nil)
-      @filtered_billboards = billboards.includes([:organization])
+                   role_names: nil, subforem_id: nil, fully_cached: false)
+      # No organization preload: callers pick a single billboard from the candidates, and only
+      # its header partial reads the organization (usually from a cached fragment).
+      @filtered_billboards = billboards
       @area = area
       @user_signed_in = user_signed_in
       @user_id = user_signed_in ? user_id : nil
@@ -28,6 +32,7 @@ module Billboards
       @cookies_allowed = cookies_allowed
       @role_names = role_names
       @subforem_id = subforem_id || RequestStore.store[:subforem_id]
+      @fully_cached = fully_cached
     end
 
     def call
@@ -37,6 +42,7 @@ module Billboards
       apply_event_broadcast_overrides!
 
       @filtered_billboards = included_subforem_ads # if @subforem_id.present?
+      @filtered_billboards = request_independent_ads if @fully_cached
       @filtered_billboards = browser_context_ads if @user_agent.present?
       @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
@@ -170,12 +176,17 @@ module Billboards
     end
 
     def unexcluded_article_ads
-      @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+      @filtered_billboards.where(
+        "exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0 OR NOT (:id = ANY(exclude_article_ids))",
+        id: @article_id
+      )
     end
 
     def included_subforem_ads
-      @filtered_billboards.where("cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
-                                 subforem_id: @subforem_id)
+      @filtered_billboards.where(
+        "include_subforem_ids IS NULL OR cardinality(include_subforem_ids) = 0 OR :subforem_id = ANY(include_subforem_ids)",
+        subforem_id: @subforem_id
+      )
     end
 
     def authenticated_ads(display_auth_audience)
@@ -184,6 +195,18 @@ module Billboards
 
     def cookies_allowed_ads
       @filtered_billboards.where(requires_cookies: false)
+    end
+
+    # A fully cached placement area serves the same response to everyone in a location, so it
+    # can only offer billboards whose eligibility doesn't depend on who is asking or which
+    # article or page they're on. Requiring cookies is fine: cookies_allowed is part of the URL.
+    def request_independent_ads
+      @filtered_billboards
+        .where(cached_tag_list: [nil, ""], audience_segment_id: nil, page_id: nil)
+        .where(exclude_survey_completions: false, browser_context: :all_browsers)
+        .where("exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0")
+        .where("target_role_names IS NULL OR cardinality(target_role_names) = 0")
+        .where("exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0")
     end
 
     def user_targeting_ads
@@ -197,14 +220,14 @@ module Billboards
 
     def role_filtered_ads
       @filtered_billboards.where(
-        "(cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
-        AND (cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
+        AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
         role_names: @role_names,
       )
     end
 
     def location_targeted_ads
-      geo_query = "cardinality(target_geolocations) = 0" # Empty array
+      geo_query = "target_geolocations IS NULL OR cardinality(target_geolocations) = 0" # Empty array
       if @location&.valid?
         geo_query += " OR (#{@location.to_sql_query_clause})"
       end

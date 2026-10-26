@@ -191,7 +191,7 @@ class AnalyticsService
 
   attr_reader(
     :user_or_org, :article_id, :start_date, :end_date,
-    :article_data, :reaction_data, :comment_data, :follow_data, :page_view_data
+    :article_data, :article_ids, :reaction_data, :comment_data, :follow_data, :page_view_data
   )
 
   def load_data
@@ -201,11 +201,9 @@ class AnalyticsService
 
       # check article_id is published and belongs to the user/org
       raise ArgumentError, I18n.t("services.analytics_service.no_stats") unless @article_data.exists?
-
-      article_ids = [@article_id]
-    else
-      article_ids = @article_data.ids
     end
+
+    @article_ids = @article_data.ids
 
     # prepare relations for metrics
     @comment_data = Comment
@@ -267,8 +265,13 @@ class AnalyticsService
   end
 
   def calculate_follows_stats_per_day(follow_data)
+    # follow_data is intentionally unbounded (totals need all-time follows), so
+    # bound it to the charted buckets here; otherwise every follow the owner ever
+    # received is grouped. The lower bound covers the first weekly bucket and both
+    # ends are padded by a day so DATE() bucketing is unaffected.
+    window = (start_date.beginning_of_week - 1.day)..(end_date + 1.day)
     # AR returns a hash with date => count, we transform it using ISO dates for convenience
-    follow_data.group(bucket_sql).count.transform_keys(&:iso8601)
+    follow_data.where(created_at: window).group(bucket_sql).count.transform_keys(&:iso8601)
   end
 
   def calculate_reactions_stats_per_day(reaction_data)
@@ -439,7 +442,6 @@ class AnalyticsService
   def scoped_activities
     return @scoped_activities if defined?(@scoped_activities)
 
-    article_ids = article_data.ids
     if article_ids.empty?
       @scoped_activities = nil
       return nil
@@ -452,7 +454,7 @@ class AnalyticsService
       # that owners with thousands of articles don't spike the queue on a
       # cold dashboard load. The current request still falls back to the
       # raw-table path; the cache is warm on the next visit.
-      Articles::BackfillActivitiesWorker.perform_async(missing)
+      Articles::BackfillActivitiesWorker.perform_async(missing.sort)
       @scoped_activities = nil
       return nil
     end

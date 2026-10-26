@@ -1,5 +1,5 @@
 class BadgeAchievementPolicy < ApplicationPolicy
   def api?
-    user&.any_admin?
+    user&.administrative_access_to?(resource: BadgeAchievement)
   end
 end

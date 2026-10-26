@@ -5,6 +5,7 @@ import { initializeNotifications } from './initializers/initializeNotifications'
 import { initializeDateHelpers } from './initializers/initializeDateTimeHelpers';
 import { initializeSettings } from './initializers/initializeSettings';
 import { initializeGifVideos } from '@utilities/gifVideo';
+import { initializeMermaidDiagrams } from '@utilities/mermaidDiagrams';
 import {
   showUserAlertModal,
   showModalAfterError,
@@ -17,13 +18,16 @@ initializeNotifications();
 initializeTimeFixer();
 initializeDateHelpers();
 initializeGifVideos(document);
+initializeMermaidDiagrams(document);
 
 InstantClick.on('change', () => {
   initializeCommentDate();
   initializeCommentPreview();
   initializeSettings();
   initializeNotifications();
+  initializeDateHelpers(); // Re-format dates on page navigation
   initializeGifVideos(document);
+  initializeMermaidDiagrams(document);
 });
 
 window.showUserAlertModal = showUserAlertModal;

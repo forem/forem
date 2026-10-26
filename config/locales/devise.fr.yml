@@ -1,5 +1,5 @@
 ---
-en:
+fr:
   devise:
     confirmations:
       confirmed: "Your email address has been successfully confirmed."
@@ -25,6 +25,7 @@ en:
         subject: "Password Changed"
       reset_password_instructions:
         subject: "Reset password instructions"
+        admin_triggered_html: "Un administrateur (%{admin}) a demandé cette réinitialisation du mot de passe pour vous aider à retrouver l’accès à votre compte."
       unlock_instructions:
         subject: "Unlock instructions"
       magic_link:

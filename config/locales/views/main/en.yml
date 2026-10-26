@@ -33,6 +33,7 @@ en:
         placeholder: "..."
         list: Reading list
         moderator_center: Moderator Center
+        leadership: Community Curation
         other: Other
         settings: Settings
         account: Account
@@ -52,7 +53,27 @@ en:
         Videos: Videos
       side:
         active_discussions: "Active discussions"
-        upcoming_events: "Upcoming events"
+        upcoming_events: "Upcoming Events"
+        events:
+          headings:
+            upcoming_events: "Upcoming Events"
+            live_events: "Live Events"
+            live_and_upcoming_events: "Live and Upcoming Events"
+            upcoming_challenges: "Upcoming Challenges"
+            live_challenges: "Live Challenges"
+            live_and_upcoming_challenges: "Live and Upcoming Challenges"
+            upcoming_livestreams: "Upcoming Livestreams"
+            live_livestreams: "Live Livestreams"
+            live_and_upcoming_livestreams: "Live and Upcoming Livestreams"
+            upcoming_takeovers: "Upcoming Takeovers"
+            live_takeovers: "Live Takeovers"
+            live_and_upcoming_takeovers: "Live and Upcoming Takeovers"
+          types:
+            challenge: "Challenge"
+            live_stream: "Live Stream"
+            takeover: "Takeover"
+            other: "Event"
+          live_badge: "LIVE"
         listings:
           heading: Listings
           all: See all

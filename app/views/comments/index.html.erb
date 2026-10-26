@@ -1,8 +1,10 @@
 <%= javascript_include_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? && !@root_comment.decorate.super_low_quality %>
   <% title(@root_comment.title.to_s) %>
-<% else %>
+<% elsif @commentable %>
   <% title(t("views.comments.meta.title_root", title: @commentable.title)) %>
+<% else %>
+  <% title(t("views.comments.orphan.deleted")) %>
 <% end %>
 
 <% if @commentable %>
@@ -88,7 +90,7 @@
     </article>
   <% else %>
     <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_include_tag "commentsDisplay", defer: true %>
+    <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary crayons-layout__content s:mx-2 m:mx-4 -mb-1 z-0">
       <% if @commentable %>
         <h1 class="crayons-subtitle-1 mb-4">
@@ -157,11 +159,11 @@
           </div>
         <% end %>
 
+        <%# Not fragment-cached per thread: this action is edge-cached, so origin renders are mostly edge misses
+            and the per-thread fragments hit too rarely to pay for their Redis read + write. %>
         <% tree_to_render.each do |comment, sub_comments| %>
-          <% cache ["comment_root_v2_#{user_signed_in?}", comment] do %>
-            <% limited_sub_comments = user_signed_in? ? sub_comments : limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED) %>
-            <%= nested_comments(tree: { comment => limited_sub_comments }, commentable: @commentable, is_view_root: true) %>
-          <% end %>
+          <% limited_sub_comments = user_signed_in? ? sub_comments : limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED) %>
+          <%= nested_comments(tree: { comment => limited_sub_comments }, commentable: @commentable, is_view_root: true) %>
         <% end %>
       <% end %>
     </div>

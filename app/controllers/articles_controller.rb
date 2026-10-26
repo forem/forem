@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   # NOTE: It seems quite odd to not authenticate the user for the :new action.
-  before_action :authenticate_user!, except: %i[feed new]
+  before_action :authenticate_user!, except: %i[feed new short_link]
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
@@ -59,7 +59,8 @@ class ArticlesController < ApplicationController
                   end
     end
 
-    not_found unless @articles&.any?
+    # Load once up front; `any?` on an unloaded relation would issue an extra EXISTS query.
+    not_found unless @articles&.load&.any?
 
     user_keys = if @user&.respond_to?(:profile_identity_cache_keys)
                   @user.profile_identity_cache_keys
@@ -78,6 +79,21 @@ class ArticlesController < ApplicationController
       allowed_attributes: MarkdownProcessor::AllowedAttributes::FEED,
       scrubber: FeedMarkdownScrubber.new
     }
+  end
+
+  def short_link
+    skip_authorization
+    code = params[:code].to_s.downcase
+    id = code.reverse.to_i(26)
+    @article = Article.published.find_by(id: id)
+
+    if @article
+      set_surrogate_key_header("articles/#{@article.id}")
+      set_cache_control_headers(1.hour.to_i)
+      redirect_to @article.path
+    else
+      not_found
+    end
   end
 
   # @note The /new path is a unique creature.  We want to ensure that folks coming to the /new with
@@ -106,7 +122,7 @@ class ArticlesController < ApplicationController
 
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
 
@@ -116,7 +132,7 @@ class ArticlesController < ApplicationController
     @article = @article.decorate
     @discussion_lock = @article.discussion_lock
     @user = @article.user
-    @organizations = @user&.organizations
+    @organizations = @user&.member_organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
   end
@@ -142,15 +158,19 @@ class ArticlesController < ApplicationController
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
-          if front_matter["cover_image"]
+          # A YAML list or number in front matter isn't an image URL; skip it instead of raising.
+          if front_matter["cover_image"].is_a?(String)
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
+
+          ai_disclosure_level = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
 
           render json: {
             processed_html: processed_html,
             title: front_matter["title"],
             tags: tags,
-            cover_image: cover_image
+            cover_image: cover_image,
+            ai_disclosure_level: ai_disclosure_level
           }, status: :ok
         end
       end
@@ -161,7 +181,7 @@ class ArticlesController < ApplicationController
     authorize Article
     @user = current_user
     article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
-    article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(@user, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     if article.persisted?
       if article.type_of == "status"
@@ -178,7 +198,7 @@ class ArticlesController < ApplicationController
     authorize @article
     @user = @article.user || current_user
 
-    updated = Articles::Updater.call(@user, @article, article_params_json)
+    updated = Articles::Updater.call(@user, @article, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     respond_to do |format|
       format.html do
@@ -284,8 +304,9 @@ class ArticlesController < ApplicationController
   def base_editor_assignments
     @user = current_user
     @version = @user.setting.editor_version if @user
-    @organizations = @user&.organizations
-    @tag = Tag.find_by(name: params[:template])
+    @organizations = @user&.member_organizations
+    # Tag names are required, so a blank template can never match; skip the lookup.
+    @tag = Tag.find_by(name: params[:template]) if params[:template].present?
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end
@@ -303,7 +324,8 @@ class ArticlesController < ApplicationController
     return unless tag_name
 
     @tag = Tag.find_by(name: tag_name)
-    @articles = @articles.cached_tagged_with(tag_name)
+    # The feed template renders each article's author name, so preload users to avoid an N+1.
+    @articles = @articles.cached_tagged_with(tag_name).includes(:user)
   end
 
   def set_article
@@ -331,17 +353,14 @@ class ArticlesController < ApplicationController
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time type_of body_url subforem_id
+                         published_at_date published_at_time type_of body_url subforem_id ai_disclosure_level
                        ]
                      end
 
-    # Allow video_source_url if it's a valid YouTube, Mux, or Twitch URL
-    video_url = params.dig("article", "video_source_url")
-    if video_url.present?
-      youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-      mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-      twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-      allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+    # Allow video_source_url only for supported hosts; a blank value removes the cover video
+    if params["article"].key?("video_source_url") &&
+        Article.permitted_video_source_url?(params["article"]["video_source_url"])
+      allowed_params << :video_source_url
     end
 
     # NOTE: the organization logic is still a little counter intuitive but this should
@@ -362,6 +381,18 @@ class ArticlesController < ApplicationController
     @article_params_json = params.require(:article).permit(allowed_params)
   end
 
+  # The editor's co-author invitee list, or nil to leave the article's invitations untouched (the
+  # list wasn't sent, or invitations aren't enabled). Invitees must follow the author, so only the
+  # author manages them; an admin editing someone else's post leaves them alone.
+  def co_author_invitee_ids
+    article_params_json # normalizes the editor's camelCased keys
+    return unless params["article"].key?("co_author_invitee_ids")
+    return if @article && @article.user_id != current_user.id
+    return unless feature_flag_enabled?(:co_author_invitations)
+
+    params.require(:article).permit(co_author_invitee_ids: [])[:co_author_invitee_ids] || []
+  end
+
   def manage_published_at_params
     time_zone_str = params["article"].delete("timezone")
 
@@ -380,7 +411,7 @@ class ArticlesController < ApplicationController
   def allowed_to_change_org_id?
     potential_user = @article&.user || current_user
     potential_org_id = requested_organization_id || @article&.organization_id
-    OrganizationMembership.exists?(user: potential_user, organization_id: potential_org_id) ||
+    OrganizationMembership.member.exists?(user: potential_user, organization_id: potential_org_id) ||
       current_user.any_admin?
   end
 
@@ -389,7 +420,8 @@ class ArticlesController < ApplicationController
       # if current_user is an org admin of the article's org
       current_user.org_admin?(@article.organization_id) &&
       # and if the author being changed to belongs to the article's org
-      OrganizationMembership.exists?(user_id: params[:article][:user_id], organization_id: @article.organization_id)
+      OrganizationMembership.member.exists?(user_id: params[:article][:user_id],
+                                            organization_id: @article.organization_id)
   end
 
   def allowed_to_manage_org_co_authors?

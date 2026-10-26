@@ -1,5 +1,7 @@
 module Stories
   class FeedsController < ApplicationController
+    include Instrumentation
+
     respond_to :json
 
     before_action :current_user_by_token, only: [:show]
@@ -38,7 +40,7 @@ module Stories
     end
 
     def assign_feed_stories
-      params[:type_of] = "discover" unless params[:type_of].in?(%w[discover following])
+      params[:type_of] = "discover" unless params[:type_of].in?(%w[discover following curated])
 
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
@@ -46,6 +48,8 @@ module Stories
                   latest_following_feed
                 elsif params[:type_of] == "following" && user_signed_in?
                   relevant_following_feed
+                elsif params[:type_of] == "curated"
+                  curated_feed
                 elsif params[:timeframe] == "latest_less_filtered"
                   latest_less_filtered_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -64,14 +68,7 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-
-               @feed_config = if params[:item]
-                                FeedConfig.find_by(id: params[:item]) || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                              elsif rand(20) == 0 # 5% of the time, we'll just pick a random feed config
-                                FeedConfig.where("feed_impressions_count < 100").order("RANDOM()").limit(1).first || FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                              else
-                                FeedConfig.order("feed_success_score DESC").limit(rand(15)).sample || FeedConfig.first_or_create
-                              end
+               @feed_config = FeedConfig.select_for_feed(preferred_id: params[:item])
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else
@@ -90,7 +87,12 @@ module Stories
       # weighted query implementation as it returns a lovely
       # ActiveRecord::Relation.  So this is a compromise.
 
-      feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+      instrument("feed.query",
+                 span_type: "db",
+                 resource: "#{self.class}.#{__method__}",
+                 tags: { feed_class: feed.class.to_s.dasherize }) do
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+      end
     end
 
     def signed_out_base_feed
@@ -106,10 +108,10 @@ module Stories
                  type_of: "discover",
                )
              end
-      Datadog::Tracing.trace("feed.query",
-                             span_type: "db",
-                             resource: "#{self.class}.#{__method__}",
-                             tags: { feed_class: feed.class.to_s.dasherize }) do
+      instrument("feed.query",
+                 span_type: "db",
+                 resource: "#{self.class}.#{__method__}",
+                 tags: { feed_class: feed.class.to_s.dasherize }) do
         # Hey, why the to_a you say?  Because the
         # LargeForemExperimental has already done this.  But the
         # weighted strategy has not.  I also don't want to alter the
@@ -136,6 +138,15 @@ module Stories
 
     def latest_less_filtered_feed
       Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
+    end
+
+    def curated_feed
+      Articles::Feeds::Curated.call(
+        user: current_user,
+        tag: params[:tag],
+        page: @page,
+        number_of_articles: 25,
+      )
     end
 
     def latest_following_feed

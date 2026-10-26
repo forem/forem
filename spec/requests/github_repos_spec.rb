@@ -74,6 +74,16 @@ RSpec.describe "GithubRepos" do
         expect(response.parsed_body["error"]).to include("GitHub Unauthorized")
       end
 
+      it "returns unauthorized if the user's GitHub account is suspended" do
+        allow(Github::OauthClient).to receive(:new).and_raise(
+          Github::Errors::AccountSuspended, "403 - Sorry. Your account was suspended"
+        )
+
+        get github_repos_path, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to include("Your account was suspended")
+      end
+
       it "returns 200 on success" do
         get github_repos_path, headers: headers
 

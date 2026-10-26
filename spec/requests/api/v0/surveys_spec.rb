@@ -379,4 +379,179 @@ RSpec.describe "Api::V0::Surveys" do
       end
     end
   end
+
+  describe "POST /api/surveys" do
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        post api_surveys_path, params: { survey: { title: "API Survey" } }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated but not admin" do
+      it "returns unauthorized" do
+        post api_surveys_path, params: { survey: { title: "API Survey" } }, headers: auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated as admin" do
+      before do
+        user.add_role(:admin)
+      end
+
+      it "creates a survey with basic params" do
+        post api_surveys_path, params: { survey: { title: "API Survey", active: true } }, headers: auth_headers
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["title"]).to eq("API Survey")
+        expect(response.parsed_body["active"]).to be(true)
+      end
+
+      it "creates a survey with nested polls and options using clean JSON keys" do
+        params = {
+          survey: {
+            title: "Nested Clean Survey",
+            survey_type_of: "community_pulse",
+            polls: [
+              {
+                prompt_markdown: "Favorite editor?",
+                poll_type_of: "single_choice",
+                poll_options: [
+                  { markdown: "Vim" },
+                  { markdown: "VS Code" }
+                ]
+              }
+            ]
+          }
+        }
+        expect {
+          post api_surveys_path, params: params, headers: auth_headers, as: :json
+        }.to change(Survey, :count).by(1).and change(Poll, :count).by(1).and change(PollOption, :count).by(2)
+
+        expect(response).to have_http_status(:created)
+        json = response.parsed_body
+        expect(json["polls"].size).to eq(1)
+        expect(json["polls"].first["poll_options"].map { |o| o["markdown"] }).to eq(["Vim", "VS Code"])
+      end
+
+      it "returns unprocessable entity for invalid parameters" do
+        post api_surveys_path, params: { survey: { title: "" } }, headers: auth_headers
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["errors"]).to include("Title can't be blank")
+      end
+    end
+  end
+
+  describe "PATCH /api/surveys/:id_or_slug" do
+    let!(:survey) { create(:survey, title: "Original Survey") }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        patch api_survey_path(survey.id), params: { survey: { title: "New Title" } }
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated but not admin" do
+      it "returns unauthorized" do
+        patch api_survey_path(survey.id), params: { survey: { title: "New Title" } }, headers: auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated as admin" do
+      before do
+        user.add_role(:admin)
+      end
+
+      it "updates basic survey attributes" do
+        patch api_survey_path(survey.id), params: { survey: { title: "Updated Title" } }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(survey.reload.title).to eq("Updated Title")
+      end
+
+      it "updates nested polls and options" do
+        poll = create(:poll, survey: survey, prompt_markdown: "Old prompt", poll_options_input_array: ["Option A", "Option B"])
+        option = poll.poll_options.first
+        other_option = poll.poll_options.second
+
+        params = {
+          survey: {
+            polls: [
+              {
+                id: poll.id,
+                prompt_markdown: "New prompt",
+                poll_options: [
+                  { id: option.id, markdown: "New option" },
+                  { id: other_option.id, _destroy: true },
+                  { markdown: "Added option" }
+                ]
+              }
+            ]
+          }
+        }
+        patch api_survey_path(survey.id), params: params, headers: auth_headers, as: :json
+        expect(response).to have_http_status(:ok)
+
+        poll.reload
+        expect(poll.prompt_markdown).to eq("New prompt")
+        expect(poll.poll_options.map(&:markdown)).to contain_exactly("New option", "Added option")
+      end
+
+      it "destroys a poll when _destroy is passed" do
+        poll = create(:poll, survey: survey)
+        params = {
+          survey: {
+            polls: [
+              { id: poll.id, _destroy: true }
+            ]
+          }
+        }
+        patch api_survey_path(survey.id), params: params, headers: auth_headers, as: :json
+        expect(response).to have_http_status(:ok)
+        expect(survey.polls.reload).to be_empty
+      end
+
+      it "returns 404 for nonexistent survey" do
+        patch api_survey_path("nonexistent"), params: { survey: { title: "Title" } }, headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
+  describe "DELETE /api/surveys/:id_or_slug" do
+    let!(:survey) { create(:survey) }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        delete api_survey_path(survey.id)
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated but not admin" do
+      it "returns unauthorized" do
+        delete api_survey_path(survey.id), headers: auth_headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when authenticated as admin" do
+      before do
+        user.add_role(:admin)
+      end
+
+      it "destroys the survey" do
+        expect {
+          delete api_survey_path(survey.id), headers: auth_headers
+        }.to change(Survey, :count).by(-1)
+        expect(response).to have_http_status(:no_content)
+      end
+
+      it "returns 404 for nonexistent survey" do
+        delete api_survey_path("nonexistent"), headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 end

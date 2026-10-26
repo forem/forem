@@ -84,7 +84,9 @@ export function ensurePersistentMinimizedBillboardContainer() {
 
   const sidebar = document.querySelector('.crayons-layout__sidebar-right');
   if (sidebar) {
-    const sidebarBb = sidebar.querySelector('.sidebar-bb');
+    const sidebarBb =
+      sidebar.querySelector('.js-bb-shuffle-group') ||
+      sidebar.querySelector('.sidebar-bb');
     if (sidebarBb) {
       sidebarBb.insertAdjacentElement('afterend', sidebarContainer);
     } else {

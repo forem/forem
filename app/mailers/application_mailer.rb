@@ -34,6 +34,16 @@ class ApplicationMailer < ActionMailer::Base
                                                               })
   end
 
+  # RFC 8058 one-click unsubscribe. Gmail and Yahoo require bulk senders to
+  # expose these two headers so the mailbox provider can render its own
+  # unsubscribe control, which POSTs to the URL without a confirmation step.
+  # Only bulk/marketing style mail should call this -- transactional mail
+  # (password resets, verification, etc.) must stay subscribed.
+  def add_unsubscribe_headers(token)
+    headers["List-Unsubscribe"] = "<#{email_subscriptions_unsubscribe_url(ut: token)}>"
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
+  end
+
   def setup_subforem_context
     # Determine subforem from user's onboarding_subforem_id or fall back to default
     user = find_user_for_email

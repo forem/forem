@@ -37,6 +37,23 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("User")
       end
 
+      it "offers profile image removal when the user has one" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[remove_profile_image]")
+        html = Nokogiri::HTML(response.body)
+        expect(html.css('label[for="user[remove_profile_image]"] p.crayons-field__description')).to be_present
+      end
+
+      it "renders the Profile tab without the removal checkbox when there is no profile image" do
+        sign_in create(:user, profile_image: nil)
+
+        get user_settings_path(:profile)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("user[remove_profile_image]")
+      end
+
       it "displays profile groups content on Profile tab" do
         profile_field = create(:profile_field)
 
@@ -205,6 +222,55 @@ RSpec.describe "UserSettings" do
 
         expect(response.body).to include("Connect GitHub Account")
         expect(response.body).not_to include("Connect Apple Account")
+      end
+
+      # Identities created through the admin API carry nothing but a uid, so
+      # they have no auth payload to read an email from.
+      it "points a uid-only mlh identity at MLH instead of the dead-end relink error", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("https://my.mlh.com/")
+        expect(response.body).to include("Sign in to MLH")
+        expect(response.body).not_to include("Please relink your")
+      end
+
+      it "labels a uid-only mlh row MLH email rather than MyMLH email", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("MLH email")
+        expect(response.body).not_to include("MyMLH email")
+      end
+
+      it "offers the provider button so a uid-only mlh identity can be relinked" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("Reconnect MLH Account")
+      end
+
+      it "does not offer a relink for an mlh identity that has a payload", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:mlh])
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).not_to include("Reconnect MLH Account")
+        expect(response.body).not_to include("Connect MLH Account")
       end
     end
 

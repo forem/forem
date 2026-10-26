@@ -9,7 +9,7 @@ module Trackable
     # A dead-lettered event is silent DEV -> Core drift: the event is gone
     # and nothing downstream will notice. Page instead of dropping quietly.
     sidekiq_retries_exhausted do |job, exception|
-      Honeybadger.notify(
+      Rails.error.report(
         exception,
         context: { adapter: job["args"]&.first, event: job["args"]&.second, trackable_dead_letter: true },
       )
