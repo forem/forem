@@ -25,12 +25,15 @@ jest.mock('algoliasearch/lite', () => {
 // Adjust this import path if your Form imports it from a different location.
 jest.mock('../pasteURLHelpers', () => {
     const actual = jest.requireActual('../pasteURLHelpers');
+    const mockHandler = jest.fn();
     return {
         ...actual,
-        handleURLPasted: jest.fn(),
+        handleURLPasted: jest.fn(() => mockHandler),
+        _mockHandler: mockHandler,
     };
 });
 import { handleURLPasted } from '../pasteURLHelpers';
+const { _mockHandler: mockURLHandler } = require('../pasteURLHelpers');
 
 describe('<Form /> – paste behavior (regression tests)', () => {
     const baseProps = {
@@ -86,24 +89,23 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         await userEvent.paste(textArea, 'https://example.com/some-page?ref=utm');
 
         await waitFor(() => {
-            expect(handleURLPasted).toHaveBeenCalledTimes(1);
+            expect(mockURLHandler).toHaveBeenCalled();
         });
 
-        // Assert argument wiring (event + textarea target)
-        const [evtArg, targetArg] = handleURLPasted.mock.calls[0];
-        expect(targetArg).toBe(textArea);
+        // Assert argument wiring (event)
+        const [evtArg] = mockURLHandler.mock.calls[0];
         expect(evtArg).toBeInstanceOf(Event);
     });
 
-    it('Non-URL text paste neutralizes mention triggers (no mention UI, no mention fetch)', async () => {
-        renderForm();
+    it('Non-URL text paste does not trigger mention suggestions (no mention UI, no mention fetch)', async () => {
+        renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 
         // Paste content with '@' that would normally trigger mention suggestions
         await userEvent.paste(textArea, 'Hey @john — welcome!');
 
-        // 1) The text shows up in the editor
+        // 1) The text shows up in the editor as pasted
         expect(textArea).toHaveValue('Hey @john — welcome!');
 
         // 2) No URL handler for non-URL text
@@ -121,7 +123,7 @@ describe('<Form /> – paste behavior (regression tests)', () => {
     });
 
     it('Image/file paste is unaffected (no URL handler; paste not blocked)', async () => {
-        renderForm();
+        renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 

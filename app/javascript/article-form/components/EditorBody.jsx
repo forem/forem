@@ -86,28 +86,9 @@ export const EditorBody = ({
         return;
       }
 
-      // Otherwise, paste as plain text, but neutralize '@' in mention-like contexts so it won't trigger mentions
-      // Insert a zero-width space right after '@' when it appears at the start of the text or after whitespace
-      const neutralized = pastedText.replace(/(^|\s)@(\w+)/g, '$1@\u200B$2');
-
-      e.preventDefault();
-
-      // get the cursor index from start to end
-      const el = textarea;
-      const start = el.selectionStart;
-      const end = el.selectionEnd;
-
-      if (typeof el.setRangeText === 'function') {
-        el.setRangeText(neutralized, start, end, 'end'); // move to end of inserted text
-      } else {
-        // Fallback for very old browsers
-        const before = el.value.slice(0, start);
-        const after = el.value.slice(end);
-        el.value = before + neutralized + after;
-        el.selectionStart = el.selectionEnd = (before + neutralized).length;
-      }
-
-      el.dispatchEvent(new Event('input', { bubbles: true }));
+      // For plain text, let the browser handle the paste normally to preserve 
+      // the undo stack and avoid modifying stored content (e.g., inserting zero-width spaces).
+    };
     };
 
     textarea.addEventListener('paste', onPaste);
