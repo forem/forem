@@ -59,12 +59,15 @@ module Articles
       end
 
       def build_optimized_base_query(lookback, user_data, comments_variant: "more_inclusive_recent_good_comments")
-        # Use limited_column_select with computed_score to avoid transferring heavy columns
+        # Use a limited column select with computed_score to avoid transferring heavy columns
         # (e.g., body_markdown, body_html, 768-dimension semantic_embedding, tsvector).
+        # processed_html is only rendered for status posts (body_preview), which the root
+        # subforem feed excludes, so skip that TOASTed column there.
+        column_select = root_subforem_feed? ? :minimal_feed_column_select : :limited_column_select
         base_query = Article.published
           .with_at_least_home_feed_minimum_score
           .where("articles.published_at > ?", lookback)
-          .limited_column_select
+          .public_send(column_select)
           .select("(#{score_sql_method}) as computed_score")
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
@@ -119,11 +122,15 @@ module Articles
 
       def apply_subforem_filters(articles)
         # Apply subforem-specific filters
-        if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+        if root_subforem_feed?
           articles = articles.where(type_of: :full_post)
         end
         
         articles
+      end
+
+      def root_subforem_feed?
+        RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
       end
 
       def weighted_shuffle(arr, shuffle_weight)

@@ -148,6 +148,26 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
           expect(result).to contain_exactly(high_score_article, medium_score_article, low_score_article)
           expect(subforem_queries).to be_empty
         end
+
+        it "still loads processed_html so status posts keep their body_preview" do
+          status_article = create(:article, published: true, type_of: "status", body_markdown: "", main_image: nil)
+          status_article.update_columns(published_at: 1.day.ago, subforem_id: subforem.id, score: 90,
+                                        processed_html: "<p>Hello status body</p>")
+
+          result = feed.default_home_feed.to_a
+
+          expect(result.map { |article| article.has_attribute?(:processed_html) }.uniq).to eq([true])
+          expect(result.detect { |article| article.id == status_article.id }.body_preview)
+            .to include("Hello status body")
+        end
+      end
+
+      it "skips loading processed_html on the root subforem feed, which only returns full posts" do
+        result = feed.default_home_feed.to_a
+
+        expect(result).to contain_exactly(high_score_article, medium_score_article, low_score_article)
+        expect(result.none? { |article| article.has_attribute?(:processed_html) }).to be(true)
+        expect(result.map(&:computed_score)).to all(be_present)
       end
 
       context "when user has antifollowed tags" do
