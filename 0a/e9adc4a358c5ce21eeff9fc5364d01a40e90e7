@@ -1,0 +1,16 @@
+config/initializers/rack_attack.rb
+  h_f968154a99632d 136
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 57,60,64,96,100,116,120
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0ae9adc4a358c5ce21eeff9fc5364d01a40e90e7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
