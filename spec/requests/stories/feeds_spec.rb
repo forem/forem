@@ -825,6 +825,17 @@ RSpec.describe "Stories::Feeds" do
       expect(response_article["feed_config"]).to eq(feed_config.id)
     end
 
+    it "does not select archived feed configs when feed_strategy is configured" do
+      archived_config = create(:feed_config, archived: true, feed_success_score: 1000.0)
+      active_config = create(:feed_config, archived: false, feed_success_score: 10.0)
+      sign_in user
+
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get stories_feed_path(page: 1, item: archived_config.id)
+      response_article = response.parsed_body.detect { |item| item["id"] == article.id }
+      expect(response_article["feed_config"]).to eq(active_config.id)
+    end
+
     it "renders configured feed payload using limited_column_select with preloaded comments" do
       feed_config = create(:feed_config)
       sign_in user
