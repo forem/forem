@@ -226,6 +226,20 @@ RSpec.describe "Onboardings" do
         end.to change(user.profile, :location).to("Galactic Empire")
       end
 
+      it "ignores a summary sent under user params instead of raising" do
+        params = { user: { name: "Wilhuff Tarkin", summary: "Grand Moff" } }
+        patch "/onboarding", params: params
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.name).to eq("Wilhuff Tarkin")
+      end
+
+      it "updates the user's profile summary" do
+        params = { profile: { summary: "Grand Moff" } }
+        expect do
+          patch "/onboarding", params: params
+        end.to change { user.profile.reload.summary }.to("Grand Moff")
+      end
+
       it "does not update the user's last_onboarding_page if it is empty" do
         params = { user: { last_onboarding_page: "" } }
         expect do
