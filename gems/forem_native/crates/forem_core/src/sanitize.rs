@@ -30,14 +30,58 @@ const LEGACY_ENTITY_NAMES: [&str; 106] = [
     "yacute", "yen", "yuml",
 ];
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum SectionKind {
+    Thead,
+    Tbody,
+    Tfoot,
+}
+
+impl SectionKind {
+    fn from_tag(name: &[u8]) -> Option<Self> {
+        if name.eq_ignore_ascii_case(b"thead") {
+            Some(Self::Thead)
+        } else if name.eq_ignore_ascii_case(b"tbody") {
+            Some(Self::Tbody)
+        } else if name.eq_ignore_ascii_case(b"tfoot") {
+            Some(Self::Tfoot)
+        } else {
+            None
+        }
+    }
+}
+
+/// Tracks the exact HTML5 table insertion state so any malformed table markup that could
+/// implicitly close a cell/row/section or trigger HTML5 foster-parenting is declined (`None`).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum TableState {
+    NotInTable,
+    InTable,
+    InCaption,
+    InColgroup,
+    InSection(SectionKind),
+    InRow(Option<SectionKind>),
+    InTd(Option<SectionKind>),
+    InTh(Option<SectionKind>),
+}
+
+impl TableState {
+    fn is_outside_cell(self) -> bool {
+        matches!(
+            self,
+            Self::InTable | Self::InColgroup | Self::InSection(_) | Self::InRow(_)
+        )
+    }
+}
+
 /// Strips all HTML tags, comments, and doctypes while decoding HTML character references and
 /// re-serializing text nodes (`&` -> `&amp;`, `<` -> `&lt;`, `>` -> `&gt;`, U+00A0 -> `&nbsp;`,
 /// `\r\n`/`\r` -> `\n`), matching `ActionView::Base.full_sanitizer.sanitize`.
 ///
 /// Returns `None` when the input requires the full HTML5 tree builder or entity table (such as
-/// NUL bytes, leading BOM, foster-parented non-whitespace text inside `<table>` outside cells,
-/// unclosed or malformed tags/comments, or uncommon named character references) so the caller can
-/// fall back to `ActionView::Base.full_sanitizer.sanitize`.
+/// NUL bytes, leading BOM, foster-parented or malformed `<table>` markup, foreign-content breakout
+/// inside `<svg>`, unclosed or malformed tags/comments, or uncommon named character references)
+/// so the caller can fall back to `ActionView::Base.full_sanitizer.sanitize`.
 pub fn full_sanitize(html: &str) -> Option<String> {
     if html.is_empty() {
         return Some(String::new());
@@ -54,8 +98,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
     }
 
     let mut out = String::with_capacity(html.len());
-    let mut table_depth = 0usize;
-    let mut cell_depth = 0usize;
+    let mut table_state = TableState::NotInTable;
     let mut svg_depth = 0usize;
     let mut i = 0;
 
@@ -63,7 +106,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
         let b = bytes[i];
         if b == b'<' {
             let Some(&next) = bytes.get(i + 1) else {
-                if table_depth > 0 && cell_depth == 0 {
+                if table_state.is_outside_cell() {
                     return None;
                 }
                 out.push_str("&lt;");
@@ -80,7 +123,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
             }
             if next == b'/' {
                 let (name, tag_end) = parse_end_tag(bytes, i)?;
-                update_end_tag_state(name, &mut table_depth, &mut cell_depth, &mut svg_depth)?;
+                update_end_tag_state(name, &mut table_state, &mut svg_depth)?;
                 i = tag_end;
                 continue;
             }
@@ -89,25 +132,43 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                 if is_declined_tag(name) {
                     return None;
                 }
-                if table_depth > 0 && cell_depth == 0 && !is_table_structure_tag(name) {
+
+                if svg_depth > 0 {
+                    if name.eq_ignore_ascii_case(b"svg") {
+                        if !self_closing {
+                            svg_depth += 1;
+                        }
+                        i = tag_end;
+                        continue;
+                    }
+                    if name.eq_ignore_ascii_case(b"title") {
+                        if self_closing {
+                            return None;
+                        }
+                        let (content_end, close_end) = find_closing_tag(bytes, tag_end, name)?;
+                        if bytes[tag_end..content_end].contains(&b'<') {
+                            return None;
+                        }
+                        push_rcdata(&mut out, &html[tag_end..content_end])?;
+                        i = close_end;
+                        continue;
+                    }
+                    if !is_svg_child_tag(name) {
+                        return None;
+                    }
+                    i = tag_end;
+                    continue;
+                }
+
+                if is_any_table_tag(name) {
+                    update_start_tag_table_state(name, self_closing, &mut table_state)?;
+                    i = tag_end;
+                    continue;
+                }
+                if table_state.is_outside_cell() {
                     return None;
                 }
-                if name.eq_ignore_ascii_case(b"table") {
-                    if self_closing {
-                        return None;
-                    }
-                    table_depth += 1;
-                    i = tag_end;
-                    continue;
-                }
-                if is_table_cell_tag(name) {
-                    if table_depth == 0 || cell_depth > 0 || self_closing {
-                        return None;
-                    }
-                    cell_depth += 1;
-                    i = tag_end;
-                    continue;
-                }
+
                 if name.eq_ignore_ascii_case(b"svg") {
                     if !self_closing {
                         svg_depth += 1;
@@ -116,14 +177,11 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                     continue;
                 }
                 if name.eq_ignore_ascii_case(b"pre") {
-                    if svg_depth > 0 {
-                        return None;
-                    }
                     i = skip_leading_newline(bytes, tag_end)?;
                     continue;
                 }
                 if is_rawtext_or_script_tag(name) {
-                    if svg_depth > 0 || self_closing || (table_depth > 0 && cell_depth == 0) {
+                    if self_closing {
                         return None;
                     }
                     let (content_end, close_end) = find_closing_tag(bytes, tag_end, name)?;
@@ -136,18 +194,15 @@ pub fn full_sanitize(html: &str) -> Option<String> {
                     continue;
                 }
                 if is_rcdata_tag(name) {
-                    if self_closing || (table_depth > 0 && cell_depth == 0) {
+                    if self_closing {
                         return None;
                     }
                     let is_textarea = name.eq_ignore_ascii_case(b"textarea");
-                    if is_textarea && svg_depth > 0 {
-                        return None;
-                    }
                     let (content_end, close_end) = find_closing_tag(bytes, tag_end, name)?;
                     let inner_start = if is_textarea {
                         skip_leading_newline(&bytes[..content_end], tag_end)?
                     } else {
-                        if svg_depth > 0 && bytes[tag_end..content_end].contains(&b'<') {
+                        if bytes[tag_end..content_end].contains(&b'<') {
                             return None;
                         }
                         tag_end
@@ -161,7 +216,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
             }
 
             // `<` followed by a non-tag character (e.g. `a < b` or `x < 10`) is literal text.
-            if table_depth > 0 && cell_depth == 0 {
+            if table_state.is_outside_cell() {
                 return None;
             }
             out.push_str("&lt;");
@@ -169,7 +224,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
             continue;
         }
 
-        if table_depth > 0 && cell_depth == 0 && !is_html_space(b) {
+        if table_state.is_outside_cell() && !is_html_space(b) {
             return None;
         }
 
@@ -197,7 +252,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
             _ => {
                 let start = i;
                 i += 1;
-                if table_depth > 0 && cell_depth == 0 {
+                if table_state.is_outside_cell() {
                     while i < bytes.len() && is_html_space(bytes[i]) && bytes[i] != b'\r' {
                         i += 1;
                     }
@@ -212,7 +267,7 @@ pub fn full_sanitize(html: &str) -> Option<String> {
         }
     }
 
-    if table_depth != 0 || svg_depth != 0 {
+    if table_state != TableState::NotInTable || svg_depth != 0 {
         return None;
     }
 
@@ -239,14 +294,46 @@ fn is_declined_tag(name: &[u8]) -> bool {
         b"template",
         b"noscript",
         b"frameset",
+        b"applet",
+        b"marquee",
+        b"object",
     ]
     .iter()
     .any(|tag| name.eq_ignore_ascii_case(tag))
 }
 
-fn is_table_structure_tag(name: &[u8]) -> bool {
+/// Pure SVG drawing/container elements that never trigger HTML5 foreign-content breakout.
+fn is_svg_child_tag(name: &[u8]) -> bool {
     [
-        &b"thead"[..],
+        &b"path"[..],
+        b"g",
+        b"circle",
+        b"rect",
+        b"line",
+        b"polyline",
+        b"polygon",
+        b"ellipse",
+        b"text",
+        b"tspan",
+        b"defs",
+        b"clippath",
+        b"lineargradient",
+        b"radialgradient",
+        b"stop",
+        b"use",
+        b"symbol",
+        b"mask",
+        b"pattern",
+        b"filter",
+    ]
+    .iter()
+    .any(|tag| name.eq_ignore_ascii_case(tag))
+}
+
+fn is_any_table_tag(name: &[u8]) -> bool {
+    [
+        &b"table"[..],
+        b"thead",
         b"tbody",
         b"tfoot",
         b"tr",
@@ -260,12 +347,6 @@ fn is_table_structure_tag(name: &[u8]) -> bool {
     .any(|tag| name.eq_ignore_ascii_case(tag))
 }
 
-fn is_table_cell_tag(name: &[u8]) -> bool {
-    name.eq_ignore_ascii_case(b"td")
-        || name.eq_ignore_ascii_case(b"th")
-        || name.eq_ignore_ascii_case(b"caption")
-}
-
 fn is_rawtext_or_script_tag(name: &[u8]) -> bool {
     name.eq_ignore_ascii_case(b"style")
         || name.eq_ignore_ascii_case(b"script")
@@ -274,6 +355,153 @@ fn is_rawtext_or_script_tag(name: &[u8]) -> bool {
 
 fn is_rcdata_tag(name: &[u8]) -> bool {
     name.eq_ignore_ascii_case(b"textarea") || name.eq_ignore_ascii_case(b"title")
+}
+
+fn update_start_tag_table_state(
+    name: &[u8],
+    self_closing: bool,
+    table_state: &mut TableState,
+) -> Option<()> {
+    if name.eq_ignore_ascii_case(b"col") {
+        if *table_state == TableState::InColgroup {
+            return Some(());
+        }
+        return None;
+    }
+    if self_closing {
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"table") {
+        if *table_state == TableState::NotInTable {
+            *table_state = TableState::InTable;
+            return Some(());
+        }
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"caption") {
+        if *table_state == TableState::InTable {
+            *table_state = TableState::InCaption;
+            return Some(());
+        }
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"colgroup") {
+        if *table_state == TableState::InTable {
+            *table_state = TableState::InColgroup;
+            return Some(());
+        }
+        return None;
+    }
+    if let Some(sec) = SectionKind::from_tag(name) {
+        if *table_state == TableState::InTable {
+            *table_state = TableState::InSection(sec);
+            return Some(());
+        }
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"tr") {
+        *table_state = match *table_state {
+            TableState::InTable => TableState::InRow(None),
+            TableState::InSection(sec) => TableState::InRow(Some(sec)),
+            _ => return None,
+        };
+        return Some(());
+    }
+    if name.eq_ignore_ascii_case(b"td") {
+        if let TableState::InRow(sec) = *table_state {
+            *table_state = TableState::InTd(sec);
+            return Some(());
+        }
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"th") {
+        if let TableState::InRow(sec) = *table_state {
+            *table_state = TableState::InTh(sec);
+            return Some(());
+        }
+        return None;
+    }
+    None
+}
+
+fn update_end_tag_state(
+    name: &[u8],
+    table_state: &mut TableState,
+    svg_depth: &mut usize,
+) -> Option<()> {
+    if is_declined_tag(name) {
+        return None;
+    }
+    if *svg_depth > 0 {
+        if name.eq_ignore_ascii_case(b"svg") {
+            *svg_depth -= 1;
+            return Some(());
+        }
+        if is_svg_child_tag(name) {
+            return Some(());
+        }
+        return None;
+    }
+    if name.eq_ignore_ascii_case(b"svg") {
+        return None;
+    }
+    if is_any_table_tag(name) {
+        if name.eq_ignore_ascii_case(b"table") {
+            if *table_state == TableState::InTable {
+                *table_state = TableState::NotInTable;
+                return Some(());
+            }
+            return None;
+        }
+        if name.eq_ignore_ascii_case(b"caption") {
+            if *table_state == TableState::InCaption {
+                *table_state = TableState::InTable;
+                return Some(());
+            }
+            return None;
+        }
+        if name.eq_ignore_ascii_case(b"colgroup") {
+            if *table_state == TableState::InColgroup {
+                *table_state = TableState::InTable;
+                return Some(());
+            }
+            return None;
+        }
+        if let Some(sec) = SectionKind::from_tag(name) {
+            if *table_state == TableState::InSection(sec) {
+                *table_state = TableState::InTable;
+                return Some(());
+            }
+            return None;
+        }
+        if name.eq_ignore_ascii_case(b"tr") {
+            *table_state = match *table_state {
+                TableState::InRow(Some(sec)) => TableState::InSection(sec),
+                TableState::InRow(None) => TableState::InTable,
+                _ => return None,
+            };
+            return Some(());
+        }
+        if name.eq_ignore_ascii_case(b"td") {
+            if let TableState::InTd(sec) = *table_state {
+                *table_state = TableState::InRow(sec);
+                return Some(());
+            }
+            return None;
+        }
+        if name.eq_ignore_ascii_case(b"th") {
+            if let TableState::InTh(sec) = *table_state {
+                *table_state = TableState::InRow(sec);
+                return Some(());
+            }
+            return None;
+        }
+        return None;
+    }
+    if table_state.is_outside_cell() {
+        return None;
+    }
+    Some(())
 }
 
 /// Skips `<!-- ... -->` or `<!DOCTYPE ...>` starting at `start` (`bytes[start..]` starts with `<!`).
@@ -320,42 +548,6 @@ fn parse_end_tag(bytes: &[u8], start: usize) -> Option<(&[u8], usize)> {
         return None;
     }
     Some((name, i + 1))
-}
-
-fn update_end_tag_state(
-    name: &[u8],
-    table_depth: &mut usize,
-    cell_depth: &mut usize,
-    svg_depth: &mut usize,
-) -> Option<()> {
-    if is_declined_tag(name) {
-        return None;
-    }
-    if name.eq_ignore_ascii_case(b"svg") {
-        if *svg_depth == 0 {
-            return None;
-        }
-        *svg_depth -= 1;
-        return Some(());
-    }
-    if name.eq_ignore_ascii_case(b"table") {
-        if *table_depth == 0 || *cell_depth > 0 {
-            return None;
-        }
-        *table_depth -= 1;
-        return Some(());
-    }
-    if is_table_cell_tag(name) {
-        if *table_depth == 0 || *cell_depth == 0 {
-            return None;
-        }
-        *cell_depth -= 1;
-        return Some(());
-    }
-    if *table_depth > 0 && *cell_depth == 0 && !is_table_structure_tag(name) {
-        return None;
-    }
-    Some(())
 }
 
 /// Parses `<name ...>` or `<name .../>` starting at `start` (`bytes[start]` is `<`).
@@ -421,10 +613,11 @@ fn parse_start_tag(bytes: &[u8], start: usize) -> Option<(&[u8], usize, bool)> {
             let close = bytes[i..].iter().position(|&b| b == quote)?;
             i += close + 1;
         } else {
+            // Unquoted attribute value (WHATWG HTML5 §13.2.5.38): `/` and `=` are normal value characters.
             let val_start = i;
             while i < bytes.len()
                 && !is_html_space(bytes[i])
-                && !matches!(bytes[i], b'>' | b'"' | b'\'' | b'<' | b'=' | b'`' | b'/')
+                && !matches!(bytes[i], b'>' | b'"' | b'\'' | b'<' | b'`')
             {
                 i += 1;
             }
@@ -855,6 +1048,10 @@ mod tests {
             Some("text")
         );
         assert_eq!(
+            full_sanitize("<a href=https://dev.to/path/>unquoted slash</a>").as_deref(),
+            Some("unquoted slash")
+        );
+        assert_eq!(
             full_sanitize("<!DOCTYPE html><!-- comment --><p>doc</p>").as_deref(),
             Some("doc")
         );
@@ -896,8 +1093,8 @@ mod tests {
             Some("Enter fullscreen mode")
         );
         assert_eq!(
-            full_sanitize("<table>\n<thead>\n<tr><th>H1</th></tr>\n</thead>\n<tbody>\n<tr><td>C1</td></tr>\n</tbody>\n</table>").as_deref(),
-            Some("\n\nH1\n\n\nC1\n\n")
+            full_sanitize("<table>\n<caption>Cap</caption>\n<colgroup><col></colgroup>\n<thead>\n<tr><th>H1</th></tr>\n</thead>\n<tbody>\n<tr><td>C1</td></tr>\n</tbody>\n<tfoot>\n<tr><td>F1</td></tr>\n</tfoot>\n</table>").as_deref(),
+            Some("\nCap\n\n\nH1\n\n\nC1\n\n\nF1\n\n")
         );
         assert_eq!(
             full_sanitize("<style>.a > .b { content: \"<x>\"; }</style>").as_deref(),
@@ -921,12 +1118,30 @@ mod tests {
     }
 
     #[test]
-    fn declines_ambiguous_html5_edge_cases() {
+    fn declines_ambiguous_html5_and_malformed_table_edge_cases() {
         for input in [
             "null\0byte",
             "\u{FEFF}bom",
             "<table><tr><td>1</td></tr>stray<td>2</td></table>",
             "<table><b>stray</b><tr><td>1</td></tr></table>",
+            "<table><tr><td>A</tr> stray</td></table>",
+            "<table><tr><td>A<tr> stray</td></table>",
+            "<table><tr><td>A</tbody> stray</td></table>",
+            "<table><tr><td>A</th> stray</td></table>",
+            "<table><thead><tr><td>A</tr></tbody> stray</thead></table>",
+            "<table><caption>A<tr><td>B</td></tr>stray</caption></table>",
+            "<table><colgroup>stray</colgroup><tr><td>A</td></tr></table>",
+            "<table><tr><td><svg>A</td></tr>stray</svg></table>",
+            "<table><tr><td><object>A</td>stray</tr></table>",
+            "<table><tr><td><marquee>A</td>stray</tr></table>",
+            "<table><tr><td><applet>A</td>stray</tr></table>",
+            "<table><tr><td><table><tr><td>nested</td></tr></table></td></tr></table>",
+            "</td>",
+            "</tr>",
+            "</table>",
+            "<svg><p><style>a > b</style></svg>",
+            "<div><svg></div><title><b>raw</b></title></svg>",
+            "<title><b>raw</b></title>",
             "<!-- unclosed",
             "<!-->abrupt",
             "<!-- --!>bang",
