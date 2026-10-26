@@ -1112,13 +1112,11 @@ RSpec.describe Article do
       it "sanitizes processed_html only once while it is unchanged" do
         article = build(:article)
         article.processed_html = "<p>Some text</p>"
-        sanitizer = ActionView::Base.full_sanitizer
-        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
-        allow(sanitizer).to receive(:sanitize).and_call_original
+        allow(ForemNative).to receive(:full_sanitize).and_call_original
 
         3.times { article.body_text }
 
-        expect(sanitizer).to have_received(:sanitize).once
+        expect(ForemNative).to have_received(:full_sanitize).once
       end
 
       it "recomputes when processed_html changes" do
@@ -1141,13 +1139,11 @@ RSpec.describe Article do
 
       it "sanitizes once when saving a draft with a blank description" do
         article = build(:article, published: false, description: nil)
-        sanitizer = ActionView::Base.full_sanitizer
-        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
-        allow(sanitizer).to receive(:sanitize).and_call_original
+        allow(ForemNative).to receive(:full_sanitize).and_call_original
 
         article.save!
 
-        expect(sanitizer).to have_received(:sanitize).with(article.processed_html).once
+        expect(ForemNative).to have_received(:full_sanitize).with(article.processed_html).once
       end
     end
 
@@ -4610,11 +4606,13 @@ RSpec.describe Article do
       sanitizer = ActionView::Base.full_sanitizer
       allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
       allow(sanitizer).to receive(:sanitize).and_call_original
+      allow(ForemNative).to receive(:full_sanitize).and_call_original
 
       blob = article.comments_blob
 
       expect(blob.length).to eq(2201)
       expect(blob).to eq("a" * 2201)
+      expect(ForemNative).not_to have_received(:full_sanitize)
       expect(sanitizer).not_to have_received(:sanitize)
     end
 

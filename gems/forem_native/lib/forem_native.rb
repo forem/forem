@@ -294,6 +294,17 @@ module ForemNative
       Native.inline_svg_icon(svg, class_name, width, height, aria_hidden, title, title_id)
     end
 
+    # Strips HTML tags, comments, and doctypes while decoding character references and re-escaping
+    # `&`, `<`, `>`, and U+00A0 (`&nbsp;`), matching `ActionView::Base.full_sanitizer.sanitize`.
+    # Returns nil for non-Strings (including nil), invalid or non-UTF-8 strings, and HTML5 parser
+    # edge cases (foster-parented table text, uncommon named entities, ...) so callers can fall
+    # back to `ActionView::Base.full_sanitizer.sanitize`.
+    def full_sanitize(html)
+      return unless html.instance_of?(String)
+
+      Native.full_sanitize(html)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
