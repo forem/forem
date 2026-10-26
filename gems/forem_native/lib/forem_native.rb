@@ -167,6 +167,16 @@ module ForemNative
       Native.fixer_add_quotes_to_section(markdown, section)
     end
 
+    # Normalizes CRLF line endings to LF, matching `MarkdownProcessor::Fixer::Base.convert_new_lines`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so Fixer can
+    # preserve Ruby's encoding and String-subclass behavior.
+    def fixer_convert_new_lines(markdown)
+      return unless Native.respond_to?(:fixer_convert_new_lines)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_convert_new_lines(markdown)
+    end
+
     # Joins `#tag` lists on `tags:` lines into comma-separated values, matching
     # `MarkdownProcessor::Fixer::Base.split_tags`.
     # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so

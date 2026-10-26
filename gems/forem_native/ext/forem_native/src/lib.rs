@@ -101,6 +101,19 @@ fn fixer_add_quotes_to_section(
     Some(quoted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
+fn fixer_convert_new_lines(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: The borrowed bytes are inspected only by pure forem_core code, and the borrow
+    // ends before any Ruby object is allocated. Invalid UTF-8 is left to the Ruby caller.
+    let converted = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::convert_new_lines(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(converted) => Some(converted),
+        }
+    };
+    Some(converted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
 fn fixer_split_tags(ruby: &Ruby, markdown: RString) -> Option<RString> {
     // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby,
     // and the borrow ends before we allocate any Ruby objects.
@@ -446,6 +459,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_add_quotes_to_section",
         function!(fixer_add_quotes_to_section, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "fixer_convert_new_lines",
+        function!(fixer_convert_new_lines, 1),
     )?;
     native_mod.define_singleton_method("fixer_split_tags", function!(fixer_split_tags, 1))?;
     native_mod.define_singleton_method(
