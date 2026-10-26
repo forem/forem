@@ -109,7 +109,7 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         expect(textArea).toHaveValue('Hey @john — welcome!');
 
         // 2) No URL handler for non-URL text
-        expect(handleURLPasted).not.toHaveBeenCalled();
+        expect(mockURLHandler).not.toHaveBeenCalled();
 
         // 3) No mention suggestion UI becomes visible (adjust roles if your UI differs)
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
@@ -154,7 +154,7 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         textArea.dispatchEvent(pasteEvent);
 
         // 1) URL-specific handler should not run
-        expect(handleURLPasted).not.toHaveBeenCalled();
+        expect(mockURLHandler).not.toHaveBeenCalled();
 
         // 2) New neutralization logic should not block file pastes
         // If your image paste flow intentionally prevents default, flip this expectation.
