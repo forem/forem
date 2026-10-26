@@ -10,6 +10,7 @@ pub mod color;
 pub mod fixer;
 pub mod image;
 pub mod markdown;
+pub(crate) mod psl_data;
 pub mod svg;
 pub mod text;
 pub mod title;

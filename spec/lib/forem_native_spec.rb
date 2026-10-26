@@ -1753,4 +1753,136 @@ RSpec.describe ForemNative do
       expect(native_hits).to be > 500
     end
   end
+
+  describe ".public_suffix_domain" do
+    let(:legacy_public_suffix_domain) do
+      lambda do |host|
+        PublicSuffix.parse(host, default_rule: nil).domain
+      rescue PublicSuffix::DomainInvalid
+        false
+      end
+    end
+    let(:cookie_middleware) { Middlewares::SetCookieDomain.new(->(env) { [200, env, []] }) }
+
+    it "matches PublicSuffix.parse(host, default_rule: nil).domain across normal, wildcard, and exception rules" do
+      [
+        "dev.to", "DEV.TO", "community.example.com", "a.b.example.co.uk", "  EXAMPLE.COM. \t\r\n",
+        "bar.foo.ck", "www.ck", "sub.www.ck", "city.kawasaki.jp", "www.city.kawasaki.jp",
+        "bar.foo.kawasaki.jp", "my-app.s3.amazonaws.com", "foo_bar.example.com", "example.com".b,
+        "sub.example.com".b, "example.com".encode("US-ASCII"), nil, "", "   ", ".", ".example.com",
+        "example.com..", "..com", "com", "co.uk", "ck", "foo.ck", "kawasaki.jp", "foo.kawasaki.jp",
+        "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000", "http://example.com"
+      ].each do |host|
+        expected = legacy_public_suffix_domain.call(host)
+        actual = described_class.public_suffix_domain(host)
+        expect(actual).to eq(expected), host.inspect
+        expect(actual.encoding).to eq(host.encoding) if actual.is_a?(String)
+        expect(cookie_middleware.root_domain(host)).to eq(expected || host), host.inspect
+      end
+
+      host = +"dev.to"
+      expect(described_class.public_suffix_domain(host)).to equal(host)
+    end
+
+    it "declines non-ASCII, NUL, embedded newlines, and consecutive dots so callers fall back to PublicSuffix" do
+      [
+        "dév.to", "example.公司.cn", "example..com", "foo\nbar.com", "example.com\0",
+        "dev.to".encode("UTF-16LE"), ActiveSupport::SafeBuffer.new("dev.to"), :dev_to
+      ].each do |host|
+        expect(described_class.public_suffix_domain(host)).to be_nil, host.inspect
+      end
+      expect(cookie_middleware.root_domain("sub.example.公司.cn")).to eq("example.公司.cn")
+      expect(cookie_middleware.root_domain("example..com")).to eq("example.com")
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to DEV example com co uk ck www city kawasaki jp amazonaws s3 sub my-site io localhost 127 0 1
+                  invalidtld]
+      tokens = labels + [".", ".", "-", "_", ":", "3000", "://", "http", " ", "\t", "\r", "\v", "\f"]
+      accepted = 0
+      valid_count = 0
+
+      20_000.times do |iteration|
+        sample = if rng.rand < 0.5
+                   Array.new(rng.rand(1..4)) { labels.sample(random: rng) }.join(".")
+                 else
+                   Array.new(rng.rand(1..6)) { tokens.sample(random: rng) }.join
+                 end
+        actual = described_class.public_suffix_domain(sample)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_domain.call(sample)
+        valid_count += 1 if expected
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(cookie_middleware.root_domain(sample)).to eq(expected || sample), message
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(valid_count).to be_between(200, 800)
+    end
+  end
+
+  describe ".public_suffix_subdomain_host" do
+    let(:legacy_public_suffix_subdomain_host) do
+      lambda do |host|
+        parsed = PublicSuffix.parse(host, default_rule: nil)
+        !(host =~ /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/).nil?
+      rescue PublicSuffix::DomainInvalid
+        :invalid
+      end
+    end
+
+    it "matches the PublicSuffix.parse + subdomain Regexp pipeline in Middlewares::SetSubforem" do
+      [
+        "community.example.com", "example.com", "a.b.example.com", "SUB.example.com",
+        "sub.EXAMPLE.com", "COMMUNITY.EXAMPLE.COM", "sub.example.com.", "sub.bbc.co.uk",
+        "bbc.co.uk", "a.b.bbc.co.uk", "sub.www.ck", "www.ck", "sub.foo.ck", "bar.sub.foo.ck",
+        "foo.ck", "ck", "com", "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000",
+        "http://example.com", "", ".", ".example.com", nil, "community.example.com".b,
+        "community.example.com".encode("US-ASCII")
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host))
+          .to eq(legacy_public_suffix_subdomain_host.call(host)), host.inspect
+      end
+    end
+
+    it "declines hosts outside [A-Za-z0-9.-] or non-ASCII so SetSubforem can fall back" do
+      [
+        "foo_bar.example.com", "  sub.example.com  ", "dév.to", "sub.example.公司.cn",
+        "sub..example.com", "sub.example.com\n", "sub.example.com".encode("UTF-16LE"),
+        ActiveSupport::SafeBuffer.new("sub.example.com"), :host
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host)).to be_nil, host.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to bbc example com a b sub my-site io DEV 1 - localhost invalid]
+      tlds = %w[to com io co.uk ck www.ck kawasaki.jp city.kawasaki.jp invalid]
+      accepted = 0
+      subdomains = 0
+
+      20_000.times do |iteration|
+        host = if rng.rand < 0.5
+                 "#{labels.sample(random: rng)}.#{labels.sample(random: rng)}.#{tlds.sample(random: rng)}"
+               else
+                 Array.new(rng.rand(1..5)) { labels.sample(random: rng) }.join(".")
+               end
+        actual = described_class.public_suffix_subdomain_host(host)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_subdomain_host.call(host)
+        subdomains += 1 if expected == true
+        expect(actual).to eq(expected), "iteration #{iteration}: #{host.inspect}"
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(subdomains).to be_between(200, 800)
+    end
+  end
 end

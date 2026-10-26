@@ -28,9 +28,15 @@ module Middlewares
       begin
         # Example logic: if a subforem is found, we do custom cookie manipulation
         if RequestStore.store[:subforem_id].present?
-          parsed = PublicSuffix.parse(request.host, default_rule: nil)
-          subdomain = ForemNative.subforem_subdomain_host(request.host, parsed.sld, parsed.tld)
-          subdomain = legacy_subdomain_host?(request.host, parsed) if subdomain.nil?
+          subdomain = ForemNative.public_suffix_subdomain_host(request.host)
+          if subdomain == :invalid
+            Rails.logger.error("Invalid domain: #{request.host}")
+            return [status, headers, body]
+          elsif subdomain.nil?
+            parsed = PublicSuffix.parse(request.host, default_rule: nil)
+            subdomain = ForemNative.subforem_subdomain_host(request.host, parsed.sld, parsed.tld)
+            subdomain = legacy_subdomain_host?(request.host, parsed) if subdomain.nil?
+          end
 
           if subdomain
             # Remove your session cookie (or any other cookie) from subdomain

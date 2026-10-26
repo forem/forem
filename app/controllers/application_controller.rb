@@ -621,6 +621,10 @@ class ApplicationController < ActionController::Base
   end
 
   def root_domain(host)
+    domain = ForemNative.public_suffix_domain(host)
+    return domain if domain
+    return host if domain == false
+
     # The `default_rule: nil` option ensures it raises an error if the domain is invalid
     parsed = PublicSuffix.parse(host, default_rule: nil)
     parsed.domain # Returns the domain with TLD, e.g. "example.com"
