@@ -270,6 +270,30 @@ module ForemNative
       Native.subforem_subdomain_host(host, sld, tld)
     end
 
+    # Returns the registrable root domain (`PublicSuffix.parse(host, default_rule: nil).domain`),
+    # `false` when `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings, non-ASCII hosts, NUL bytes, embedded newlines,
+    # and consecutive dots (`..`) so the caller can fall back to `PublicSuffix.parse`.
+    def public_suffix_domain(host)
+      return false if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_domain(host)
+    end
+
+    # Checks whether `host` is a single-label subdomain of its Public Suffix List registrable
+    # domain (`PublicSuffix.parse(host, default_rule: nil)` + `/^([^.]+)\.#{sld}\.#{tld}$/`) in
+    # `Middlewares::SetSubforem`: returns `true` or `false` for valid domains, `:invalid` when
+    # `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings and hosts outside `[A-Za-z0-9.-]` so the
+    # middleware can fall back to `PublicSuffix.parse`.
+    def public_suffix_subdomain_host(host)
+      return :invalid if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_subdomain_host(host)
+    end
+
     # Whether the original host `Middlewares::RestoreOriginalHost` reads from the Fastly or
     # X-Forwarded headers on every request is a valid hostname (or `localhost`), ignoring any
     # `:port`. Returns nil for non-Strings, non-ASCII hosts, and hosts starting with `:` so the
