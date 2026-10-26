@@ -4,9 +4,7 @@ class RegistrationsController < Devise::RegistrationsController
   def new
     return redirect_to root_path(signin: "true") if user_signed_in?
 
-    if URI(request.referer || "").host == URI(request.base_url).host
-      store_location_for(:user, request.referer)
-    end
+    store_referer_location_if_safe
 
     if RequestStore.store[:subforem_id] &&
         RequestStore.store[:root_subforem_id] &&
@@ -88,5 +86,20 @@ class RegistrationsController < Devise::RegistrationsController
     check_allowed_email(resource) if resource.email.present?
     resource.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
     resource.save if resource.email.present?
+  end
+
+  def store_referer_location_if_safe
+    return if request.referer.blank?
+
+    referer_uri = URI.parse(request.referer)
+    return unless referer_uri.host == URI.parse(request.base_url).host
+    return if referer_uri.path.blank?
+    return if referer_uri.path.start_with?(
+      "/users/password", "/users/sign_in", "/enter", "/signout_confirm", "/magic_links"
+    )
+
+    store_location_for(:user, request.referer)
+  rescue URI::InvalidURIError
+    nil
   end
 end

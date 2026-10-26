@@ -65,7 +65,8 @@ module Ai
 
     def generate_about_content
       prompt = build_prompt
-      response = Ai::Base.new(wrapper: self).call(prompt)
+      model = Ai::FunctionConfig.gemini_model_for(:about_page_generation)
+      response = Ai::Base.new(model: model, wrapper: self).call(prompt)
       parse_about_response(response)
     end
 

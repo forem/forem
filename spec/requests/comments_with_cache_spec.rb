@@ -80,4 +80,31 @@ RSpec.describe "ArticleCommentsWithCache" do
       expect(response.body).not_to include("potential-spam-comment")
     end
   end
+
+  describe "GET /:username/:slug/comments (full comment tree)" do
+    around do |example|
+      original_cache_store = ActionController::Base.cache_store
+      original_perform_caching = ActionController::Base.perform_caching
+      ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+      ActionController::Base.perform_caching = true
+      example.run
+    ensure
+      ActionController::Base.perform_caching = original_perform_caching
+      ActionController::Base.cache_store = original_cache_store
+    end
+
+    it "renders each top-level thread without writing a per-thread fragment" do
+      child = create(:comment, commentable: article, user: user2, parent: parent, body_markdown: "child-comment")
+      allow(ActionController::Base.cache_store).to receive(:write).and_call_original
+
+      get "#{article.path}/comments"
+      expect(response.body).to include("parent-comment", "child-comment")
+      expect(ActionController::Base.cache_store).not_to have_received(:write)
+        .with(satisfy { |key| key.to_s.include?("comment_root") }, any_args)
+
+      child.update_columns(processed_html: "<p>edited-child-comment</p>")
+      get "#{article.path}/comments"
+      expect(response.body).to include("edited-child-comment")
+    end
+  end
 end

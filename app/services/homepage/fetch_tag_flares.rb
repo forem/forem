@@ -4,6 +4,7 @@ module Homepage
 
     def self.call(articles)
       flares = articles_tag_flares(articles)
+      return {} if flares.empty?
 
       tags = Tag.where(name: flares.keys).select(*ATTRIBUTES).index_by(&:name)
 
@@ -18,7 +19,7 @@ module Homepage
       flare_tags_for_articles = Hash.new { |hash, key| hash[key] = [] }
 
       flare_tag_names = ::Constants::Tags::FLARE_TAG_NAMES.to_set
-      articles.pluck(:id, :cached_tag_list).map do |article_id, cached_tag_list|
+      article_tag_pairs(articles).each do |article_id, cached_tag_list|
         next if cached_tag_list.blank?
 
         tags = cached_tag_list.split(", ")
@@ -31,5 +32,14 @@ module Homepage
       flare_tags_for_articles
     end
     private_class_method :articles_tag_flares
+
+    def self.article_tag_pairs(articles)
+      if articles.is_a?(ActiveRecord::Relation) && !articles.loaded?
+        articles.unscope(:includes).pluck(:id, :cached_tag_list)
+      else
+        articles.map { |article| [article.id, article.cached_tag_list] }
+      end
+    end
+    private_class_method :article_tag_pairs
   end
 end

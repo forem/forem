@@ -124,6 +124,32 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result).not_to include(a)
       end
 
+      context "when articles belong to the current subforem" do
+        let(:subforem) { create(:subforem) }
+
+        before do
+          Article.where(id: [high_score_article.id, medium_score_article.id, low_score_article.id])
+            .update_all(subforem_id: subforem.id)
+          RequestStore.store[:subforem_id] = subforem.id
+        end
+
+        after { RequestStore.store.delete(:subforem_id) }
+
+        it "loads the feed without querying subforems" do
+          subforem_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+          end
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            feed.default_home_feed.to_a
+          end
+
+          expect(result).to contain_exactly(high_score_article, medium_score_article, low_score_article)
+          expect(subforem_queries).to be_empty
+        end
+      end
+
       context "when user has antifollowed tags" do
         let!(:hidden_article) do
           a = create(:article, published: true, score: 70, tags: "hidden")
@@ -663,6 +689,26 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       expect(first_article.has_attribute?(:title)).to be true
       expect(first_article.has_attribute?(:body_markdown)).to be false
       expect(first_article.has_attribute?(:semantic_embedding)).to be false
+    end
+
+    it "loads the feed without querying reactions" do
+      create(:reaction, reactable: high_score_article, category: "like")
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { feed.default_home_feed.to_a }
+
+      expect(reaction_queries).to be_empty
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: high_score_article, category: "like")
+
+      story = feed.default_home_feed.to_a.find { |article| article.id == high_score_article.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
     end
   end
 end

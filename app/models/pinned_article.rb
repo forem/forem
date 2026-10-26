@@ -4,7 +4,10 @@ class PinnedArticle
       pinned_article_id.present? && valid?
     end
 
+    # The request-cached setting value is checked first: when nothing is pinned the answer is nil
+    # regardless of validity, so we skip the site_configs lookup on every article page and feed item.
     def id
+      return if pinned_article_id.nil?
       return unless valid?
 
       pinned_article_id
@@ -17,6 +20,7 @@ class PinnedArticle
     end
 
     def get
+      return if pinned_article_id.nil?
       return unless valid?
 
       Article.published.from_subforem.find_by(id: pinned_article_id)
