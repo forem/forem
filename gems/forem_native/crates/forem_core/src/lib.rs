@@ -10,6 +10,7 @@ pub mod color;
 pub mod fixer;
 pub mod image;
 pub mod markdown;
+pub mod svg;
 pub mod text;
 pub mod title;
 pub mod url;
