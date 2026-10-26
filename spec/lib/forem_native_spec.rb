@@ -1651,4 +1651,106 @@ RSpec.describe ForemNative do
       expect(positives).to be_between(200, 800)
     end
   end
+
+  describe ".inline_svg_icon (CrayonsHelper#crayons_icon_tag)" do
+    let(:view) do
+      Class.new do
+        include InlineSvg::ActionView::Helpers
+        include CrayonsHelper
+      end.new
+    end
+    let(:icon_names) do
+      root = Rails.root.join("app/assets/images")
+      Dir.glob(root.join("**/*.svg")).map { |path| path.delete_prefix("#{root}/").delete_suffix(".svg") }.sort
+    end
+    # The pre-ForemNative body of CrayonsHelper#crayons_icon_tag.
+    let(:legacy_crayons_icon_tag) do
+      lambda do |name, native: false, **opts|
+        name = name.to_s
+        icon_name = name.ends_with?(".svg") ? name : "#{name}.svg"
+        icon_class = ["crayons-icon", ("crayons-icon--default" if native), opts.delete(:class)].compact.join(" ")
+        opts[:width] ||= 24
+        opts[:height] ||= 24
+        view.inline_svg_tag(icon_name, aria: true, class: icon_class, **opts)
+      end
+    end
+
+    # Title ids are random; make both renderers draw the same ids.
+    def with_fixed_title_ids
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+      yield
+    end
+
+    it "matches inline_svg_tag for common icon options" do
+      with_fixed_title_ids do
+        [
+          ["small-medal", {}], ["x", { class: "pointer-events-none" }], ["twemoji/flag", { native: true }],
+          ["small-overflow-horizontal", { class: "pointer-events-none", title: "Menu" }],
+          [:search, { aria_hidden: true }], ["chevron-down", { width: 16, height: "16" }],
+          ["checkmark", { title: "Tom & \"Jerry\" <3 😀", class: "a & b" }], ["lock", { title: "" }],
+          ["external-link", { aria_hidden: false, title: nil }], ["copy", { aria_hidden: "false" }]
+        ].each do |name, opts|
+          expected = legacy_crayons_icon_tag.call(name, **opts.dup)
+          actual = view.crayons_icon_tag(name, **opts.dup)
+          expect(actual).to eq(expected), [name, opts].inspect
+          expect(actual).to be_html_safe
+        end
+      end
+    end
+
+    it "declines what needs Nokogiri and keeps the helper's legacy result" do
+      svg = "<svg viewBox=\"0 0 1 1\"></svg>\n"
+      expect(described_class.inline_svg_icon(svg, "c", "24", "24")).to eq(
+        "<svg viewBox=\"0 0 1 1\" role=\"img\" class=\"c\" width=\"24\" height=\"24\"></svg>\n",
+      )
+      expect(described_class.inline_svg_icon("<svg><title>t</title></svg>\n", "c", "24", "24")).to be_nil
+      [["c\"", "24", "24"], ["c\n", "24", "24"], ["c", 24, "24"], [nil, "24", "24"], ["c", "24", "\xFF"],
+       ["c", "24", "\xFF".b], ["c", "24", "24".encode("UTF-16LE")]].each do |args|
+        expect(described_class.inline_svg_icon(svg, *args)).to be_nil, args.inspect
+      end
+      expect(described_class.inline_svg_icon(svg, "c", "24", "24", title: "t")).to be_nil
+      expect(described_class.inline_svg_icon(svg, "c", "24", "24", aria_hidden: true)).to be_nil
+      with_fixed_title_ids do
+        [
+          ["x", { title: "a\rb" }], ["x", { style: "color: red" }], ["x", { width: 1.5 }], ["x", { aria_hidden: :yes }],
+          ["x", { data: { a: 1 } }], ["no-such-icon", {}], ["x", { class: "a\"b" }]
+        ].each do |name, opts|
+          expect(view.crayons_icon_tag(name, **opts.dup)).to eq(legacy_crayons_icon_tag.call(name, **opts.dup))
+        end
+      end
+      allow(InlineSvg.configuration).to receive(:custom_transformations).and_return(no_attribute: {})
+      expect(view.__send__(:native_crayons_icon_tag, "x.svg", "c", { width: 24, height: 24 })).to be_nil
+    end
+
+    it "passes differential equivalence across every icon and 1,000 generated option sets" do
+      rng = Random.new(424_242)
+      pieces = ["crayons-icon", "pointer-events-none", " ", "  ", "a", "Zz", "&", "&amp;", "<", ">", "\"", "'", "é",
+                "中", "😀", "\u00A0", "\u2028", "\t", "\n", "\r", "\u0001", "\u007F", "\u0085", "\uFFFE", "16", "24"]
+      word = -> { Array.new(rng.rand(1..4)) { pieces.sample(random: rng) }.join }
+      native_hits = 0
+
+      with_fixed_title_ids do
+        icon_names.each do |name|
+          expect(view.crayons_icon_tag(name)).to eq(legacy_crayons_icon_tag.call(name)), name
+          expect(view.crayons_icon_tag(name, title: name)).to eq(legacy_crayons_icon_tag.call(name, title: name)), name
+        end
+
+        1_000.times do |iteration|
+          name = icon_names.sample(random: rng)
+          opts = {}
+          opts[:native] = true if rng.rand < 0.2
+          opts[:class] = word.call if rng.rand < 0.6
+          opts[:title] = word.call if rng.rand < 0.5
+          opts[:aria_hidden] = [true, false, "true", word.call].sample(random: rng) if rng.rand < 0.3
+          opts[:width] = [16, 24, "16", word.call].sample(random: rng) if rng.rand < 0.3
+          opts[:height] = [16, 24, "16", word.call].sample(random: rng) if rng.rand < 0.3
+          native_opts = { width: 24, height: 24 }.merge(opts.except(:native, :class).compact_blank)
+          native_hits += 1 if view.__send__(:native_crayons_icon_tag, "#{name}.svg", "c", native_opts)
+          expect(view.crayons_icon_tag(name, **opts.dup)).to eq(legacy_crayons_icon_tag.call(name, **opts.dup)),
+                                                             "iteration #{iteration}: #{[name, opts].inspect}"
+        end
+      end
+      expect(native_hits).to be > 500
+    end
+  end
 end

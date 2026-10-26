@@ -312,6 +312,53 @@ fn original_host_valid(ruby: &Ruby, host: RString) -> Option<bool> {
     forem_core::url::original_host_valid(unsafe { host.as_slice() })
 }
 
+fn inline_svg_icon(
+    svg: RString,
+    class: RString,
+    width: RString,
+    height: RString,
+    aria_hidden: Option<RString>,
+    title: Option<RString>,
+    title_id: Option<RString>,
+) -> Option<String> {
+    let strings = [
+        Some(svg),
+        Some(class),
+        Some(width),
+        Some(height),
+        aria_hidden,
+        title,
+        title_id,
+    ];
+    if !strings
+        .iter()
+        .flatten()
+        .all(|s| s.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before the result is converted. Invalid UTF-8 returns `None`.
+    unsafe {
+        let title = match (title.as_ref(), title_id.as_ref()) {
+            (Some(text), Some(id)) => Some((text.test_as_str()?, id.test_as_str()?)),
+            (None, None) => None,
+            _ => return None,
+        };
+        let options = forem_core::svg::IconOptions {
+            class: class.test_as_str()?,
+            width: width.test_as_str()?,
+            height: height.test_as_str()?,
+            aria_hidden: match aria_hidden.as_ref() {
+                Some(value) => Some(value.test_as_str()?),
+                None => None,
+            },
+            title,
+        };
+        forem_core::svg::inline_svg_icon(svg.test_as_str()?, &options)
+    }
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -377,5 +424,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(subforem_subdomain_host, 3),
     )?;
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
+    native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
     Ok(())
 }

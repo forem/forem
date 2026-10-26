@@ -280,6 +280,20 @@ module ForemNative
       Native.original_host_valid(host)
     end
 
+    # Renders an icon's HTML-serialized SVG (`svg`) with the `aria: true`, `class:`, `width:`,
+    # `height:`, and optional `aria_hidden:` and `title:` transformations of `inline_svg_tag`,
+    # matching its Nokogiri pipeline. `title_id` is the `InlineSvg::IdGenerator` id for the title.
+    # Returns nil for non-String values, icons that already have a `<title>` or `<desc>`, and
+    # values holding `"` or control characters so `CrayonsHelper` can use `inline_svg_tag`.
+    def inline_svg_icon(svg, class_name, width, height, aria_hidden: nil, title: nil, title_id: nil)
+      strings = [svg, class_name, width, height]
+      strings.push(aria_hidden) unless aria_hidden.nil?
+      strings.push(title, title_id) unless title.nil? && title_id.nil?
+      return unless strings.all?(String)
+
+      Native.inline_svg_icon(svg, class_name, width, height, aria_hidden, title, title_id)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
