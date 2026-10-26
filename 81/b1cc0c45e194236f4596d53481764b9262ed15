@@ -1,0 +1,16 @@
+config/initializers/omniauth_twitter_monkey_patch.rb
+  h_f968154a99632d 1-29
+spec/initializers/omniauth_twitter_monkey_patch_spec.rb
+  h_f968154a99632d 1-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "81b1cc0c45e194236f4596d53481764b9262ed15",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
