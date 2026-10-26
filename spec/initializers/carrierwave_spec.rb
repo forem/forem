@@ -6,6 +6,7 @@ describe CarrierWaveInitializer do
     @original_config = {}
     %i[
       storage
+      cache_storage
       fog_directory
       fog_attributes
       fog_credentials
@@ -28,20 +29,23 @@ describe CarrierWaveInitializer do
     it "configures local file storage without errors" do
       expect { described_class.local_storage_config }.not_to raise_error
       expect(CarrierWave::Uploader::Base.storage).to eq(CarrierWave::Storage::File)
+      expect(CarrierWave::Uploader::Base.cache_storage).to eq(CarrierWave::Storage::File)
     end
   end
 
   describe ".standard_production_config" do
-    it "configures standard production fog storage without errors" do
+    it "configures standard production fog storage with local file cache storage" do
       expect { described_class.standard_production_config }.not_to raise_error
       expect(CarrierWave::Uploader::Base.storage).to eq(CarrierWave::Storage::Fog)
+      expect(CarrierWave::Uploader::Base.cache_storage).to eq(CarrierWave::Storage::File)
     end
   end
 
   describe ".forem_cloud_config" do
-    it "configures Forem Cloud fog storage without errors" do
+    it "configures Forem Cloud fog storage with local file cache storage" do
       expect { described_class.forem_cloud_config }.not_to raise_error
       expect(CarrierWave::Uploader::Base.storage).to eq(CarrierWave::Storage::Fog)
+      expect(CarrierWave::Uploader::Base.cache_storage).to eq(CarrierWave::Storage::File)
     end
   end
 

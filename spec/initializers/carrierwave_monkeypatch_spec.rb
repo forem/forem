@@ -14,5 +14,25 @@ describe CarrierWave::Storage::Fog::File do
 
     expect(file_url).to include("forem.com")
   end
+
+  describe "#blank?" do
+    it "returns false when path is present without making a remote HEAD request" do
+      fog_file = described_class.new(CarrierWave::Uploader::Base, nil, "uploads/user/profile_image/1/avatar.jpg")
+      allow(fog_file).to receive(:exists?)
+
+      expect(fog_file.blank?).to be(false)
+      expect(fog_file.present?).to be(true)
+      expect(fog_file).not_to have_received(:exists?)
+    end
+
+    it "returns true when path is blank without making a remote HEAD request" do
+      fog_file = described_class.new(CarrierWave::Uploader::Base, nil, "")
+      allow(fog_file).to receive(:exists?)
+
+      expect(fog_file.blank?).to be(true)
+      expect(fog_file.present?).to be(false)
+      expect(fog_file).not_to have_received(:exists?)
+    end
+  end
 end
 # rubocop:enable RSpec/FilePath
