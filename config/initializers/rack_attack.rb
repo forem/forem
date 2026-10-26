@@ -49,7 +49,7 @@ module Rack
       end
     end
 
-    throttle("search_throttle", limit: 5, period: 1) do |request|
+    throttle("search_throttle", limit: 4, period: 1) do |request|
       if request.path.starts_with?("/search/") && !user_signed_in?(request)
         request.track_and_return_ip
       end
@@ -61,28 +61,42 @@ module Rack
       end
     end
 
-    throttle("api_throttle", limit: 3, period: 1) do |request|
+    throttle("api_throttle", limit: 2, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && request.get? && !admin_api_key?(request)
+      if api_endpoint && request.get? && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+    throttle("api_throttle_signed_in", limit: 4, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && request.get? && !admin_api_key?(request)
+      if api_endpoint && request.get? && user_signed_in?(request) && !admin_api_key?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_key_throttle", limit: 3, period: 1) do |request|
+    throttle("api_throttle_per_minute", limit: 25, period: 1.minute) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_throttle_signed_in_per_minute", limit: 40, period: 1.minute) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && user_signed_in?(request) && !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_key_throttle", limit: 4, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
         request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
       end
     end
 
-    throttle("api_key_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+    throttle("api_key_throttle_per_minute", limit: 40, period: 1.minute) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
         request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
@@ -133,7 +147,7 @@ module Rack
       end
     end
 
-    throttle("search_feed_content_throttle", limit: 20, period: 1.minute) do |request|
+    throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
       if request.path.chomp("/") == "/search/feed_content" && !user_signed_in?(request)
         request.track_and_return_ip
       end

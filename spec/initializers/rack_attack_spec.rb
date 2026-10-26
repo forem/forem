@@ -15,11 +15,11 @@ describe Rack, ".attack", throttle: true, type: :request do
   end
 
   describe "search_throttle" do
-    it "throttles signed-out /search endpoints after 5 requests per second based on IP" do
+    it "throttles signed-out /search endpoints after 4 requests per second based on IP" do
       Timecop.freeze do
         allow(Search::Username).to receive(:search_documents).and_return({})
 
-        valid_responses = Array.new(5).map do
+        valid_responses = Array.new(4).map do
           get "/search/usernames", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
         throttled_response = get "/search/usernames", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
@@ -54,14 +54,14 @@ describe Rack, ".attack", throttle: true, type: :request do
       allow(Search::Article).to receive(:search_documents).and_return([])
     end
 
-    it "throttles signed-out /search/feed_content after 20 requests per minute" do
+    it "throttles signed-out /search/feed_content after 10 requests per minute" do
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..20).map do |i|
+        valid_responses = (1..10).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
-        Timecop.travel(start_time + 21.seconds)
+        Timecop.travel(start_time + 11.seconds)
         throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 
@@ -93,11 +93,11 @@ describe Rack, ".attack", throttle: true, type: :request do
     it "falls back to Rails remote_ip if HTTP_FASTLY_CLIENT_IP is blank/missing" do
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..20).map do |i|
+        valid_responses = (1..10).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
         end
-        Timecop.travel(start_time + 21.seconds)
+        Timecop.travel(start_time + 11.seconds)
         throttled_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "9.9.9.9" }
         new_ip_response = get "/search/feed_content", params: { feed_params: { class_name: "Article", sort_by: "hotness_score" } }, headers: { "REMOTE_ADDR" => "1.1.1.1" }
 
@@ -113,11 +113,11 @@ describe Rack, ".attack", throttle: true, type: :request do
         params = { feed_params: { class_name: "Article", sort_by: "hotness_score" } }
         headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
 
-        valid_responses = (1..20).map do |i|
+        valid_responses = (1..10).map do |i|
           Timecop.travel(start_time + i.seconds)
           get "/search/feed_content/", params: params, headers: headers
         end
-        Timecop.travel(start_time + 21.seconds)
+        Timecop.travel(start_time + 11.seconds)
         throttled_response = get "/search/feed_content/", params: params, headers: headers
 
         valid_responses.each { |r| expect(r).not_to eq(429) }
@@ -234,9 +234,9 @@ describe Rack, ".attack", throttle: true, type: :request do
   end
 
   describe "api_throttle" do
-    it "throttles api get endpoints based on IP" do
+    it "throttles signed-out api get endpoints after 2 requests per second based on IP" do
       Timecop.freeze do
-        valid_responses = Array.new(3).map do
+        valid_responses = Array.new(2).map do
           get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
         throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
@@ -248,14 +248,28 @@ describe Rack, ".attack", throttle: true, type: :request do
       end
     end
 
-    it "throttles api get endpoints based on IP and API key when key is present" do
+    it "allows up to 4 requests per second for signed-in users on api get endpoints", :aggregate_failures do
+      sign_in create(:user)
+
+      Timecop.freeze do
+        valid_responses = Array.new(4).map do
+          get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
+
+    it "throttles api get endpoints after 4 requests per second based on IP and API key when key is present" do
       api_secret = create(:api_secret)
       another_api_secret = create(:api_secret)
       headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
       dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1", "api-key" => another_api_secret.secret }
 
       Timecop.freeze do
-        valid_responses = Array.new(3).map do
+        valid_responses = Array.new(4).map do
           get api_articles_path, headers: headers
         end
         throttled_response = get api_articles_path, headers: headers
@@ -273,10 +287,10 @@ describe Rack, ".attack", throttle: true, type: :request do
       headers_ip_2 = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1", "api-key" => api_secret.secret }
 
       Timecop.freeze do
-        valid_responses = Array.new(3).map do
+        valid_responses = Array.new(4).map do
           get api_articles_path, headers: headers_ip_1
         end
-        # 4th request from a different IP but with the same API key should be throttled
+        # 5th request from a different IP but with the same API key should be throttled
         throttled_response = get api_articles_path, headers: headers_ip_2
 
         valid_responses.each { |r| expect(r).not_to eq(429) }
@@ -285,19 +299,17 @@ describe Rack, ".attack", throttle: true, type: :request do
     end
 
     it "throttles when multiple API keys are used from the same IP" do
-      api_secret = create(:api_secret)
-      another_api_secret = create(:api_secret)
-      third_api_secret = create(:api_secret)
-      fourth_api_secret = create(:api_secret)
+      api_secrets = create_list(:api_secret, 5)
 
       Timecop.freeze do
-        # 3 allowed requests from same IP with different API keys
-        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secret.secret }
-        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => another_api_secret.secret }
-        get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => third_api_secret.secret }
+        # 4 allowed requests from same IP with different API keys
+        api_secrets.first(4).each do |secret|
+          get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => secret.secret }
+        end
 
-        # 4th request from same IP with a different API key should get throttled by IP limit
-        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => fourth_api_secret.secret }
+        # 5th request from same IP with a different API key should get throttled by signed-in IP limit
+        throttled_response = get api_articles_path,
+                                 headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => api_secrets.last.secret }
         expect(throttled_response).to eq(429)
       end
     end
@@ -318,14 +330,14 @@ describe Rack, ".attack", throttle: true, type: :request do
   end
 
   describe "api_throttle_per_minute" do
-    it "throttles api get endpoints after 30 requests per minute based on IP" do
+    it "throttles signed-out api get endpoints after 25 requests per minute based on IP" do
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..30).map do |i|
+        valid_responses = (1..25).map do |i|
           Timecop.travel(start_time + (i * 1.5).seconds)
           get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         end
-        Timecop.travel(start_time + 46.seconds)
+        Timecop.travel(start_time + 40.seconds)
         throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
         new_ip_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 
@@ -335,14 +347,31 @@ describe Rack, ".attack", throttle: true, type: :request do
       end
     end
 
+    it "allows up to 40 requests per minute for signed-in users on api get endpoints", :aggregate_failures do
+      sign_in create(:user)
+
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..40).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        Timecop.travel(start_time + 41.seconds)
+        throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
+
     it "doesn't throttle when API key provided belongs to admin" do
       admin_api_key = create(:api_secret, user: create(:user, :admin))
 
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
         headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => admin_api_key.secret }
-        valid_responses = (1..35).map do |i|
-          Timecop.travel(start_time + (i * 1.5).seconds)
+        valid_responses = (1..45).map do |i|
+          Timecop.travel(start_time + i.seconds)
           get api_articles_path, headers: headers
         end
 
@@ -352,17 +381,17 @@ describe Rack, ".attack", throttle: true, type: :request do
   end
 
   describe "api_key_throttle_per_minute" do
-    it "throttles api get endpoints after 30 requests per minute based on API key across different IPs" do
+    it "throttles api get endpoints after 40 requests per minute based on API key across different IPs" do
       api_secret = create(:api_secret)
       another_api_secret = create(:api_secret)
 
       Timecop.freeze do
         start_time = Time.current.beginning_of_minute
-        valid_responses = (1..30).map do |i|
-          Timecop.travel(start_time + (i * 1.5).seconds)
+        valid_responses = (1..40).map do |i|
+          Timecop.travel(start_time + i.seconds)
           get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.#{i}", "api-key" => api_secret.secret }
         end
-        Timecop.travel(start_time + 46.seconds)
+        Timecop.travel(start_time + 41.seconds)
         throttled_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.99", "api-key" => api_secret.secret }
         new_key_response = get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "10.0.0.100", "api-key" => another_api_secret.secret }
 
