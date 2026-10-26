@@ -1,5 +1,64 @@
 <% content_for :page_title, "Linked Domains" %>
 
+<div class="crayons-card p-4 mb-4">
+  <h2 class="crayons-subtitle-1 mb-2">Domain abuse score threshold</h2>
+  <p class="color-base-70 mb-4">
+    Each linked domain's net score is the sum of the scores of every post that links to it.
+    When a new post from a low-score author (user score 50 or below) links to a domain whose
+    net score is at or below the negative of this threshold, the post is automatically flagged as spam.
+  </p>
+
+  <%= form_with url: spam_threshold_admin_linked_domains_path, method: :patch, local: true do |form| %>
+    <div class="crayons-field mb-4">
+      <%= form.label :linked_domain_spam_score_threshold, "Threshold (total negative score)", class: "crayons-field__label" %>
+      <%= form.number_field :linked_domain_spam_score_threshold,
+                            value: @spam_score_threshold,
+                            min: 1,
+                            step: 1,
+                            required: true,
+                            class: "crayons-textfield" %>
+    </div>
+    <%= form.submit "Save threshold", class: "crayons-btn" %>
+  <% end %>
+
+  <div class="mt-4 p-4 bg-base-10 radius-default">
+    <p class="fw-bold mb-2">What does <%= number_with_delimiter(@spam_score_threshold) %> mean?</p>
+    <ul class="mb-3 pl-6" style="list-style: disc;">
+      <li>
+        A post by a spam-flagged author scores about -<%= @spam_post_score %>, so a domain reaches the threshold after
+        roughly <strong><%= pluralize((@spam_score_threshold / @spam_post_score.to_f).ceil, "spam post") %></strong> linking to it.
+      </li>
+      <li>
+        Posts that are merely downvoted or auto-labeled as spam (without a spam-flagged author) usually score in the
+        single or low double digits below zero, so it takes many more of them — roughly
+        <strong><%= number_with_delimiter((@spam_score_threshold / 10.0).ceil) %> posts</strong> at -10 each.
+      </li>
+      <li>
+        Legitimate posts linking to the same domain add positive score and push the domain back above the threshold.
+      </li>
+      <li>
+        <strong><%= pluralize(@domains_over_threshold_count, "domain") %></strong> currently at or below -<%= number_with_delimiter(@spam_score_threshold) %>.
+      </li>
+    </ul>
+    <p class="fw-bold mb-2">Effective threshold by author score</p>
+    <p class="color-base-70 mb-2">Authors with higher user scores get more slack: the threshold is multiplied by 1 + (user score ÷ 10). Authors above 50 are never flagged by this check.</p>
+    <table class="crayons-table">
+      <thead>
+        <tr><th>Author score</th><th>Domain net score needed</th><th>≈ Spam posts</th></tr>
+      </thead>
+      <tbody>
+        <% @threshold_examples.each do |author_score, net_score| %>
+          <tr>
+            <td><%= author_score <= 0 ? "0 or below" : author_score %></td>
+            <td><%= number_with_delimiter(net_score) %></td>
+            <td><%= (net_score.abs / @spam_post_score.to_f).ceil %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
 <div class="crayons-card p-4">
   <div class="flex justify-between items-center mb-4">
     <h1 class="crayons-title">Linked Domains</h1>

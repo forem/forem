@@ -28,13 +28,16 @@ class Survey < ApplicationRecord
     # Get the latest session for this user and survey
     latest_session = get_latest_session(user)
 
-    # Check if user has voted or skipped all polls in the latest session
-    user_votes_count = user.poll_votes.where(poll_id: poll_ids, session_start: latest_session).count
-    user_skips_count = user.poll_skips.where(poll_id: poll_ids, session_start: latest_session).count
-    user_text_responses_count = user.poll_text_responses.where(poll_id: poll_ids, session_start: latest_session).count
+    # Check if user has voted, skipped, or submitted a text response for all distinct polls in the latest session
+    voted_poll_ids = user.poll_votes.where(poll_id: poll_ids, session_start: latest_session).distinct.pluck(:poll_id)
+    skipped_poll_ids = user.poll_skips.where(poll_id: poll_ids, session_start: latest_session).distinct.pluck(:poll_id)
+    text_poll_ids = user.poll_text_responses
+      .where(poll_id: poll_ids, session_start: latest_session)
+      .distinct
+      .pluck(:poll_id)
 
-    total_responses = user_votes_count + user_skips_count + user_text_responses_count
-    total_responses >= poll_ids.count
+    responded_poll_ids = voted_poll_ids | skipped_poll_ids | text_poll_ids
+    (poll_ids - responded_poll_ids).empty?
   end
 
   # Check if a user can submit this survey (based on allow_resubmission setting)

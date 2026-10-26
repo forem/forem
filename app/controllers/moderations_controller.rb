@@ -67,7 +67,7 @@ class ModerationsController < ApplicationController
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
     not_found unless @moderatable
-    @tag_moderator_tags = Tag.with_role(:tag_moderator, current_user)
+    @tag_moderator_tags = Tag.moderated_by(current_user)
     @allowed_to_adjust = @moderatable.instance_of?(Article) && (
       current_user.super_admin? || @tag_moderator_tags.any?)
     @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)

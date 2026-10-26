@@ -12,6 +12,8 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
       category: "click",
       created_at: 30.minutes.ago,
       context_type: "home",
+      geolocation: "US-NY",
+      user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
       billboard_id: billboard.id,
     )
   end
@@ -63,6 +65,7 @@ RSpec.describe "IncomingWebhooks::StripeEventsController" do
         new_ev = BillboardEvent.last
         expect(new_ev.category).to eq("conversion")
         expect(new_ev.geolocation).to eq(last_billboard_event.geolocation)
+        expect(new_ev.user_agent).to eq(last_billboard_event.user_agent)
         expect(new_ev.context_type).to eq(last_billboard_event.context_type)
         expect(new_ev.billboard_id).to eq(last_billboard_event.billboard_id)
       end

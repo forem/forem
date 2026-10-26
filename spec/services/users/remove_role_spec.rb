@@ -76,4 +76,20 @@ RSpec.describe Users::RemoveRole, type: :service do
     described_class.call(user: user, role: :spam, resource_type: nil)
     expect(profile).to have_received(:touch)
   end
+
+  context "when removing a community leader role" do
+    let(:user) { create(:user, :community_leader_level_1) }
+
+    it "removes the role, touches the user, and resaves the user's articles", :aggregate_failures do
+      allow(user).to receive(:touch).and_call_original
+      allow(Users::ResaveArticlesWorker).to receive(:perform_async)
+
+      result = described_class.call(user: user, role: "community_leader_level_1", resource_type: nil)
+
+      expect(result.success).to be(true)
+      expect(user.reload.community_leader?).to be(false)
+      expect(user).to have_received(:touch)
+      expect(Users::ResaveArticlesWorker).to have_received(:perform_async).with(user.id)
+    end
+  end
 end

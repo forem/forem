@@ -4,8 +4,11 @@ class UpdateUserInterestEmbeddingWorker
 
   def perform(user_id, article_id, blend_factor = 0.2)
     blend_factor = blend_factor.to_f.clamp(0.0, 1.0)
-    article = Article.find_by(id: article_id)
-    return unless article && article.respond_to?(:semantic_embedding) && article.semantic_embedding.present?
+    return unless Article.column_names.include?("semantic_embedding")
+
+    # Only the embedding is needed, so skip hydrating the full (TOAST-heavy) article row.
+    article = Article.select(:id, :semantic_embedding).find_by(id: article_id)
+    return unless article && article.semantic_embedding.present?
 
     article_vector = article.semantic_embedding.to_a
     return unless article_vector.length == 768

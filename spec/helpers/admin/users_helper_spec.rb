@@ -8,14 +8,14 @@ describe Admin::UsersHelper do
       user.add_role(:admin)
       roles = helper.role_options(user)
       expect(roles).to have_key("Statuses")
-      expect(roles["Statuses"]).to eq Constants::Role::BASE_ROLES
+      expect(roles["Statuses"]).to eq(Constants::Role::BASE_ROLES + ["Community Leader Level 1"])
     end
 
     it "returns special roles as roles", :aggregate_failures do
       user.add_role(:super_admin)
       roles = helper.role_options(user)
       expect(roles).to have_key("Roles")
-      expect(roles["Roles"]).to eq Constants::Role::SPECIAL_ROLES
+      expect(roles["Roles"]).to eq(Constants::Role::SPECIAL_ROLES - ["Community Leader Level 1"])
     end
 
     it "adds moderator role when feature flag enabled", :aggregate_failures do

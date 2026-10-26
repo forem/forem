@@ -3,7 +3,8 @@ module Ai
     VERSION = "1.0"
     def initialize(articles, ai_client: nil)
       @articles = articles
-      @ai_client = ai_client || Ai::Base.new(wrapper: self)
+      @ai_client = ai_client ||
+        Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:email_digest_summary), wrapper: self)
     end
 
     MAX_RETRIES = 1

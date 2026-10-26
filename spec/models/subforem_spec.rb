@@ -62,6 +62,37 @@ RSpec.describe Subforem do
     end
   end
 
+  describe ".cached_id_by_domain" do
+    it "returns the id for a known domain" do
+      known = create(:subforem, domain: "known.example.com")
+
+      expect(described_class.cached_id_by_domain("known.example.com")).to eq(known.id)
+    end
+
+    it "returns nil for an unknown domain and does not query the database again" do
+      expect(described_class.cached_id_by_domain("unknown.example.com")).to be_nil
+
+      allow(described_class).to receive(:find_by).and_call_original
+      expect(described_class.cached_id_by_domain("unknown.example.com")).to be_nil
+      expect(described_class).not_to have_received(:find_by)
+    end
+
+    it "returns the new id once a subforem is created for a previously unknown domain" do
+      expect(described_class.cached_id_by_domain("later.example.com")).to be_nil
+
+      later = create(:subforem, domain: "later.example.com")
+
+      expect(described_class.cached_id_by_domain("later.example.com")).to eq(later.id)
+    end
+
+    it "returns nil without querying the database for a domain containing a null byte" do
+      allow(described_class).to receive(:find_by).and_call_original
+
+      expect(described_class.cached_id_by_domain("dev.to\u0000")).to be_nil
+      expect(described_class).not_to have_received(:find_by)
+    end
+  end
+
   describe ".create_from_scratch!" do
     let(:domain) { "test.com" }
     let(:brain_dump) { "A test community" }
