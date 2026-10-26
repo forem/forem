@@ -42,7 +42,10 @@ RSpec.describe "UserSettings" do
 
         expect(response.body).to include("user[remove_profile_image]")
         html = Nokogiri::HTML(response.body)
-        expect(html.css('label[for="user[remove_profile_image]"] p.crayons-field__description')).to be_present
+        checkbox = html.at_css('input[type="checkbox"][id="user[remove_profile_image]"]')
+        expect(checkbox["aria-describedby"]).to eq("remove-profile-image-description")
+        expect(html.css('label[for="user[remove_profile_image]"] p')).to be_empty
+        expect(html.css("p#remove-profile-image-description.crayons-field__description")).to be_present
       end
 
       it "renders the Profile tab without the removal checkbox when there is no profile image" do
