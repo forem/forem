@@ -20,6 +20,8 @@
   display: inline-flex;
   position: relative;
   overflow-wrap: normal;
+  transition: background-color var(--transition-props),
+    border-color var(--transition-props), color var(--transition-props);
 
   &:hover,
   .js-focus-visible &.focus-visible:focus {
@@ -27,7 +29,6 @@
     border-color: var(--border-hover);
     color: var(--color-hover);
     z-index: var(--z-elevate);
-    text-decoration: underline;
   }
 
   .js-focus-visible &.focus-visible:focus {

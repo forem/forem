@@ -452,12 +452,71 @@ function updateItemSummaryHtml(item) {
   }
 }
 
+function toggleCommentFromDepthIndicator(commentNode) {
+  var wrapper = commentNode.parentElement;
+  if (!wrapper || !wrapper.classList.contains("js-comment-wrapper")) {
+    var depthMatch = commentNode.className.match(/comment--deep-(\d+)/);
+    var depth = depthMatch ? parseInt(depthMatch[1], 10) : 3;
+    var iconExpand = '<svg width="24" height="24" class="crayons-icon collapsed" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 18L8 14.2287L8.99982 13.286L12 16.1147L15.0002 13.286L16 14.2287L12 18ZM12 7.88533L8.99982 10.714L8 9.77133L12 6L16 9.77133L15.0002 10.7133L12 7.88533Z" /></svg>';
+
+    wrapper = document.createElement("details");
+    wrapper.className = "comment-wrapper js-comment-wrapper comment-wrapper--deep-" + depth + " child" + (depth > 3 ? " comment-wrapper--too-deep" : "");
+    wrapper.open = true;
+    wrapper.innerHTML =
+      '<summary aria-label="Toggle this comment (and replies)" data-tracking-name="expand_comment_toggle">' +
+        '<span class="mx-0 inline-block align-middle">' + iconExpand + '</span>' +
+        '<span class="js-collapse-comment-content inline-block align-middle"></span>' +
+      '</summary>';
+
+    commentNode.parentNode.insertBefore(wrapper, commentNode);
+    wrapper.appendChild(commentNode);
+    wrapper.addEventListener("toggle", function(e) {
+      updateItemSummaryHtml(e.target);
+    });
+  }
+
+  wrapper.open = !wrapper.open;
+  updateItemSummaryHtml(wrapper);
+}
+
 function listenForDetailsToggle() {
   var detailItems = document.querySelectorAll(".js-comment-wrapper");
   for (var i = 0; i < detailItems.length; i++) {
     detailItems[i].addEventListener("toggle", event => {
       var item = event.target;
       updateItemSummaryHtml(item);
+    });
+  }
+
+  var commentsContainer = document.getElementById("comments-container");
+  if (commentsContainer && !commentsContainer.dataset.depthIndicatorBound) {
+    commentsContainer.dataset.depthIndicatorBound = "true";
+    commentsContainer.addEventListener("click", function(event) {
+      var target = event.target;
+      if (!target || !target.classList) return;
+
+      var inner = null;
+      if (target.classList.contains("comment__inner")) {
+        if (event.clientX < target.getBoundingClientRect().left) {
+          inner = target;
+        }
+      } else if (target.classList.contains("comment") && target.classList.contains("child")) {
+        var candidateInner = target.querySelector(":scope > .comment__inner");
+        if (candidateInner) {
+          var rect = candidateInner.getBoundingClientRect();
+          if (event.clientX < rect.left && event.clientY >= rect.top && event.clientY <= rect.top + 48) {
+            inner = candidateInner;
+          }
+        }
+      }
+
+      if (inner) {
+        var commentNode = inner.closest(".comment.child");
+        if (commentNode) {
+          event.preventDefault();
+          toggleCommentFromDepthIndicator(commentNode);
+        }
+      }
     });
   }
 }

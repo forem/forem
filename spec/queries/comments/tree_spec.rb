@@ -15,6 +15,15 @@ RSpec.describe Comments::Tree do
       expect(comments).to eq(comment => { child_comment => {} }, other_comment => {})
     end
 
+    it "preloads user roles, profile, and setting on returned comments" do
+      comments = described_class.for_commentable(article)
+      root_comment = comments.keys.first
+
+      expect(root_comment.user.association(:roles)).to be_loaded
+      expect(root_comment.user.association(:profile)).to be_loaded
+      expect(root_comment.user.association(:setting)).to be_loaded
+    end
+
     it "returns part of the tree" do
       comments = described_class.for_commentable(article, limit: 1)
       expect(comments).to eq(comment => { child_comment => {} })

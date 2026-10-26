@@ -95,4 +95,5 @@ fr:
       spam: Marquer @%{user} comme spam
       unflag: Unflag @%{user}
       unspam: Définir @%{user} en règle
+      view_admin_profile: Voir le profil admin
       website: Personal website

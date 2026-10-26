@@ -595,6 +595,24 @@ fr:
         title: Limiter le nombre d'images téléchargées
         description: Combien d'images peut-on télécharger sur une période de 30 secondes
           ?
+      api_upload:
+        title: Limiter le nombre d'images téléchargées via l'API
+        description: Combien d'images peut-on télécharger via l'API pendant la fenêtre
+          de téléchargement d'images de l'API ? Mettre à 0 pour désactiver le téléchargement
+          d'images via l'API.
+      api_upload_window:
+        title: Fenêtre de téléchargement d'images de l'API (secondes)
+        description: Durée de la fenêtre, en secondes, pour la limite de téléchargement
+          d'images via l'API (par ex. 3600 pour une heure).
+      api_generation:
+        title: Limiter le nombre d'images IA générées via l'API
+        description: Combien d'images IA peut-on générer via l'API pendant la fenêtre
+          de génération d'images de l'API ? Les tentatives échouées sont aussi comptées.
+          Mettre à 0 pour désactiver la génération d'images via l'API.
+      api_generation_window:
+        title: Fenêtre de génération d'images IA de l'API (secondes)
+        description: Durée de la fenêtre, en secondes, pour la limite de génération
+          d'images IA via l'API (par ex. 86400 pour un jour).
       user:
         title: Limiter le nombre de modifications qu'une personne peut apporter à
           son compte

@@ -303,6 +303,29 @@ RSpec.describe Settings::Base do
         # Verify cache was cleared
         expect(RequestStore[cache_key]).to be_nil
       end
+
+      it "skips querying Subforem when Rails.cache is NullStore" do
+        RequestStore["test_setting-123"] = { "host" => "http://cached.example.com" }
+        allow(Subforem).to receive(:ids)
+
+        TestSetting.clear_cache
+
+        expect(Subforem).not_to have_received(:ids)
+        expect(RequestStore["test_setting-123"]).to be_nil
+      end
+
+      it "clears subforem-specific keys from Rails.cache when using a backing cache store" do
+        subforem = create(:subforem)
+        memory_cache = ActiveSupport::Cache::MemoryStore.new
+        allow(Rails).to receive(:cache).and_return(memory_cache)
+
+        cache_key = "test_setting-#{subforem.id}"
+        memory_cache.write(cache_key, { "host" => "http://cached.example.com" })
+
+        TestSetting.clear_cache
+
+        expect(memory_cache.read(cache_key)).to be_nil
+      end
     end
   end
 end

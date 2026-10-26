@@ -31,5 +31,10 @@ RSpec.describe Ai::Embedding do
 
       expect { service.call(text) }.to raise_error(/API Error: 400 - Bad Request/)
     end
+
+    it "forwards an explicit timeout option to HTTParty options" do
+      custom_service = described_class.new(api_key: api_key, timeout: 1.2)
+      expect(custom_service.instance_variable_get(:@options)[:timeout]).to eq(1.2)
+    end
   end
 end
