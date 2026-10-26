@@ -1,0 +1,17 @@
+app/liquid_tags/twitch_tag.rb
+  h_a5e25bc086eb00 3,10,46-48,51-52
+  h_a5e25bc086eb00 45
+spec/liquid_tags/twitch_tag_spec.rb
+  h_a5e25bc086eb00 53-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7d8e83cde642aa3629f8afb4923ec76abef86d17",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
