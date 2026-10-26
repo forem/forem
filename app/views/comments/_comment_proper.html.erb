@@ -29,7 +29,7 @@
             text-styles
             text-styles--secondary
             body
-            <%= "color-base-60" if comment.decorate.low_quality %>
+            <%= "color-base-60" if decorated_comment.low_quality %>
             <%= should_be_hidden?(comment, @root_comment) ? "element-hidden-by-commentable-user" : "" %>
           ">
           <%= comment.safe_processed_html %>
