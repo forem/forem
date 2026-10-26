@@ -169,15 +169,20 @@ RSpec.describe Middlewares::SetSubforem do
         expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
       end
 
-      it "logs an invalid domain without calling PublicSuffix.parse when the host is localhost" do
+      it "logs an invalid domain and still normalizes frame headers when the host is localhost" do
+        allow(app).to receive(:call).and_return([200, { "X-Frame-Options" => "SAMEORIGIN" }, ["OK"]])
         allow(Rails.logger).to receive(:error)
         allow(PublicSuffix).to receive(:parse)
 
-        middleware.call(Rack::MockRequest.env_for("http://localhost:3000/articles?passed_domain=example.com"))
+        _status, headers, _body = middleware.call(
+          Rack::MockRequest.env_for("http://localhost:3000/articles?passed_domain=example.com"),
+        )
 
         expect(PublicSuffix).not_to have_received(:parse)
         expect(Rails.logger).to have_received(:error).with("Invalid domain: localhost")
         expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+        expect(headers).not_to have_key("X-Frame-Options")
+        expect(headers["Content-Security-Policy"]).to eq("frame-ancestors https://example.com https://community.example.com")
       end
 
       it "falls back to PublicSuffix.parse for hosts outside [A-Za-z0-9.-]" do

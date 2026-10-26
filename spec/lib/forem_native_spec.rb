@@ -1799,13 +1799,14 @@ RSpec.describe ForemNative do
       rng = Random.new(424_242)
       labels = %w[dev to DEV example com co uk ck www city kawasaki jp amazonaws s3 sub my-site io localhost 127 0 1
                   invalidtld]
+      tlds = %w[to com io dev co.uk ck www.ck kawasaki.jp city.kawasaki.jp s3.amazonaws.com invalidtld]
       tokens = labels + [".", ".", "-", "_", ":", "3000", "://", "http", " ", "\t", "\r", "\v", "\f"]
       accepted = 0
       valid_count = 0
 
       20_000.times do |iteration|
         sample = if rng.rand < 0.5
-                   Array.new(rng.rand(1..4)) { labels.sample(random: rng) }.join(".")
+                   "#{Array.new(rng.rand(1..3)) { labels.sample(random: rng) }.join('.')}.#{tlds.sample(random: rng)}"
                  else
                    Array.new(rng.rand(1..6)) { tokens.sample(random: rng) }.join
                  end
