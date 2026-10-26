@@ -7,7 +7,7 @@ module Api
 
       before_action :authenticate_with_api_key!, only: %i[create update me unpublish semantic_search]
       before_action :validate_article_param_is_hash, only: %i[create update]
-      before_action :set_cache_control_headers, only: %i[index show show_by_slug search]
+      before_action :set_cache_control_headers, only: %i[index show show_by_slug]
       after_action :verify_authorized, only: %i[create]
 
       PARALLEL_FETCH_TIMEOUT_SECONDS = 1.2

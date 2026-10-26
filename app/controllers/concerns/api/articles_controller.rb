@@ -4,6 +4,7 @@ module Api
 
     included do
       before_action :validate_page_limit, only: %i[index search]
+      before_action -> { set_cache_control_headers(1.hour.to_i) }, only: %i[search]
     end
 
     INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
