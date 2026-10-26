@@ -565,6 +565,52 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".fixer_convert_new_lines" do
+    let(:legacy_convert_new_lines) { ->(markdown) { markdown.gsub("\r\n", "\n") } }
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      ["", "plain LF\ntext", "lone CR\r", "\r\n", "\r\r\n", "a\r\nb\r\nc", "🚀\r\n日本\né\rX"]
+    end
+
+    it "matches Ruby's gsub across line ending and Unicode edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_new_lines.call(input)
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), input.inspect
+        expect(fixer.convert_new_lines(input)).to eq(expected), input.inspect
+      end
+      expect(described_class.fixer_convert_new_lines(nil)).to be_nil
+      expect { fixer.convert_new_lines(nil) }.to raise_error(NoMethodError)
+    end
+
+    it "declines unsupported encodings, String subclasses, and invalid bytes" do
+      input = "one\r\ntwo"
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_convert_new_lines(other)).to be_nil
+        result = fixer.convert_new_lines(other)
+        expect(result).to eq(legacy_convert_new_lines.call(other))
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      invalid = "one\r\ntwo\xFF"
+      expect(ForemNative::Native.fixer_convert_new_lines(invalid)).to be_nil
+      expect(fixer.convert_new_lines(invalid)).to eq(legacy_convert_new_lines.call(invalid))
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["word", "\r\n", "\n", "\r", "🚀", "日本", "é", " ", "```ruby", "\t"]
+
+      1_000.times do |iteration|
+        input = Array.new(rng.rand(0..100)) { tokens.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        expected = legacy_convert_new_lines.call(input)
+        message = "iteration #{iteration}: #{input.inspect}"
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), message
+        expect(fixer.convert_new_lines(input)).to eq(expected), message
+      end
+    end
+  end
+
   describe ".fixer_add_quotes_to_section" do
     let(:legacy_add_quotes_to_section) do
       lambda do |markdown, section|
