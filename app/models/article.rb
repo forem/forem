@@ -957,7 +957,7 @@ class Article < ApplicationRecord
     return @body_text if defined?(@body_text) && @body_text_html == html
 
     @body_text_html = html.dup
-    @body_text = ActionView::Base.full_sanitizer.sanitize(html)[0..7000]
+    @body_text = full_sanitize(html)[0..7000]
   end
 
   def touch_by_reaction
@@ -971,8 +971,14 @@ class Article < ApplicationRecord
     # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
     return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
 
-    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+    full_sanitize(raw_markdown)[0..2200]
   end
+
+  def full_sanitize(html)
+    ForemNative.full_sanitize(html) || ActionView::Base.full_sanitizer.sanitize(html)
+  end
+
+  private :full_sanitize
 
   # Request-local memo of comment trees loaded for this instance, keyed by query options, so
   # articles#show can share one tree between its JSON-LD and the rendered comment area.

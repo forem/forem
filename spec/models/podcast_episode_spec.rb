@@ -48,6 +48,29 @@ RSpec.describe PodcastEpisode do
       ep2.body = "<h1>Body with HTML tags</h1>"
       expect(ep2.description).to eq("Body with HTML tags")
     end
+
+    it "preserves HTML5 foster-parented text order on malformed table markup" do
+      ep2 = build(:podcast_episode, guid: podcast_episode.guid)
+
+      ep2.body = "<table><tr><td>A</tr> stray</td></table>"
+      expect(ep2.description).to eq(" strayA")
+    end
+  end
+
+  describe "#body_text" do
+    it "strips tags from processed_html" do
+      ep2 = build(:podcast_episode, guid: podcast_episode.guid)
+
+      ep2.processed_html = "<p>Processed <strong>HTML</strong> &amp; text</p>"
+      expect(ep2.body_text).to eq("Processed HTML &amp; text")
+    end
+
+    it "preserves HTML5 foster-parented text order on malformed table markup" do
+      ep2 = build(:podcast_episode, guid: podcast_episode.guid)
+
+      ep2.processed_html = "<table><tr><td>A</tr> stray</td></table>"
+      expect(ep2.body_text).to eq(" strayA")
+    end
   end
 
   describe ".available" do

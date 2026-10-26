@@ -1052,6 +1052,7 @@ RSpec.describe ForemNative do
 
     let(:optimizer_cloudflare) do
       lambda do |img_src, **kwargs|
+        allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(domain)
         Images::Optimizer.cloudflare(img_src, **kwargs)
       end
@@ -1751,6 +1752,239 @@ RSpec.describe ForemNative do
         end
       end
       expect(native_hits).to be > 500
+    end
+  end
+
+  describe ".full_sanitize (ActionView::Base.full_sanitizer.sanitize)" do
+    let(:legacy_sanitize) { ->(html) { ActionView::Base.full_sanitizer.sanitize(html) } }
+
+    let(:edge_cases) do
+      [
+        "",
+        "plain text without markup",
+        "日本語 🎉 café naïve 👨‍👩‍👧‍👦 e\u0301",
+        "<p>Hello <b>world</b>!</p>",
+        "<div class=\"a\" data-x=\"1 > 2\" data-y='3 < 4' disabled>text</div>",
+        "<a href=https://dev.to/ben/post?a=1&amp;b=2 target=_blank rel=noopener>link</a>",
+        "<!DOCTYPE html><!-- comment --><!----><p>doc</p>",
+        "Tom & Jerry &amp; &lt; &gt; &quot; &#39; &#x27; &apos; &nbsp; &#160; &#xA0;",
+        "&#x25B8; &middot; &copy; &reg; &trade; &mdash; &ndash; &hellip; &lsquo; &rsquo; &ldquo; &rdquo; &rarr;",
+        "&euro; &bull; &larr; &uarr; &darr; &harr; &minus; &lowast; &le; &ge; &ne; &equiv; &asymp; &infin;",
+        "&ensp; &emsp; &thinsp; &zwnj; &zwj; &lrm; &rlm; &fnof; &dagger; &Dagger; &permil; &prime; &Prime; &radic;",
+        "&#0; &#128; &#130; &#145; &#146; &#147; &#148; &#150; &#151; &#153; &#159;",
+        "&#xD800; &#xDFFF; &#x110000; &#999999999999999; &#00038; &#128512; &#x1F600; &#X1f680; &#; &#x;",
+        "a < b && c > d\u00A0e\r\nf\rg",
+        "https://dev.to/search?q=rust&sort=latest&page=2",
+        "<pre>\nline 1\nline 2</pre>",
+        "<pre>\r\nline 1\r\nline 2</pre>",
+        "<pre>\rline 1\rline 2</pre>",
+        "<pre>\n\ndouble newline keeps one</pre>",
+        "<pre><code>\nline 1</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Enter &amp; exit</title><g><path d=\"M0 0\"/></g></svg>",
+        "<svg><defs><linearGradient id=\"g\"><stop offset=\"0%\"/></linearGradient></defs><circle r=\"5\"/></svg>",
+        "<svg><svg viewBox=\"0 0 10 10\"><rect width=\"10\" height=\"10\"/></svg></svg>",
+        "<svg/>after",
+        "<table>\n<thead>\n<tr><th>H1</th><th>H2</th></tr>\n</thead>\n" \
+        "<tbody>\n<tr><td>C1</td><td><b>C2</b></td></tr>\n</tbody>\n" \
+        "<tfoot>\n<tr><td>F1</td><td>F2</td></tr>\n</tfoot>\n</table>",
+        "<table><caption>Table <b>Caption</b></caption><colgroup><col span=\"2\"/></colgroup>" \
+        "<tr><th>H</th><td><svg><path d=\"M0 0\"/></svg>Data</td></tr></table>",
+        "<style>.a > .b { content: \"<x>\"; }</style>",
+        "<script>const a = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback <b>text</b></iframe>",
+        "<textarea>\n<b>raw</b> &amp; text</textarea>",
+        "<textarea>\r\n<b>raw</b> &lt;text&gt;</textarea>",
+        "<title>Title &amp; Text</title>",
+      ]
+    end
+
+    it "matches ActionView::Base.full_sanitizer.sanitize across edge cases and editor guide HTML" do
+      edge_cases.each do |html|
+        expected = legacy_sanitize.call(html)
+        expect(described_class.full_sanitize(html)).to eq(expected), html.inspect
+      end
+
+      raw_guide = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb").read
+      guide_without_erb = raw_guide.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")
+      expect(described_class.full_sanitize(guide_without_erb)).to eq(legacy_sanitize.call(guide_without_erb))
+    end
+
+    it "declines malformed table markup, implicit cell closures, scoping elements, and SVG breakouts" do
+      malformed_and_quirky_cases = [
+        # P2 regression: implicit cell closure on </tr> followed by foster-parented stray text
+        "<table><tr><td>A</tr> stray</td></table>",
+        "<table><tr><th>A</tr> stray</th></table>",
+        # Other end tags that implicitly close an open <td> or <th> in HTML5 "in cell" mode
+        "<table><tr><td>A</tbody> stray</td></table>",
+        "<table><thead><tr><td>A</thead> stray</td></tr></table>",
+        "<table><tfoot><tr><td>A</tfoot> stray</td></tr></table>",
+        "<table><tr><td>A</table> stray</td>",
+        "<table><tr><td>A</th> stray</td></tr></table>",
+        "<table><tr><th>A</td> stray</th></tr></table>",
+        # Start tags inside <td>/<th> that implicitly close the cell in HTML5 "in cell" mode
+        "<table><tr><td>A<tr> stray</td></tr></table>",
+        "<table><tr><td>A<td>B</td> stray</tr></table>",
+        "<table><tr><td>A<th>B</th> stray</tr></table>",
+        "<table><tr><td>A<tbody><tr><td>B</td></tr></tbody> stray</tr></table>",
+        "<table><tr><td>A<thead><tr><td>B</td></tr></thead> stray</tr></table>",
+        "<table><tr><td>A<tfoot><tr><td>B</td></tr></tfoot> stray</tr></table>",
+        "<table><tr><td>A<caption>B</caption> stray</tr></table>",
+        "<table><tr><td>A<colgroup><col></colgroup> stray</tr></table>",
+        "<table><tr><td>A<col> stray</td></tr></table>",
+        "<table><tr><td><table><tr><td>nested</td></tr></table></td></tr></table>",
+        # Mismatched section/caption/colgroup/row transitions and foster-parented text/elements
+        "<table><thead><tr><td>A</tr></tbody> stray</thead></table>",
+        "<table><tbody><tr><td>A</td></tr></thead>stray</table>",
+        "<table><caption>A<tr><td>B</td></tr>stray</caption></table>",
+        "<table><caption>A</table>stray",
+        "<table><colgroup>stray</colgroup><tr><td>A</td></tr></table>",
+        "<table><colgroup><span>A</span></colgroup><tr><td>B</td></tr></table>",
+        "<table><col><tr><td>A</td></tr></table>",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<table><b>stray</b><tr><td>1</td></tr></table>",
+        "<table><tr><span>stray</span><td>1</td></tr></table>",
+        "<table><tr>stray<td>1</td></tr></table>",
+        # Unclosed, orphan, or self-closing table elements
+        "<table><tr><td>unclosed",
+        "<table><tr><td>A</td>",
+        "<table><tr><td>A</td></tr>",
+        "</td><td>orphan</td>",
+        "</tr><tr><td>orphan</td></tr>",
+        "</table>",
+        "<table/><tr><td>A</td></tr>",
+        "<table><tr/><td>A</td></table>",
+        "<table><tr><td/>A</tr></table>",
+        "<table><tr><th/>A</tr></table>",
+        # HTML5 scoping elements inside <td> that prevent </td> from closing the cell
+        "<table><tr><td><object>A</td></tr>stray</table>",
+        "<table><tr><td><marquee>A</td></tr>stray</table>",
+        "<table><tr><td><applet>A</td></tr>stray</table>",
+        "<table><tr><td><template>A</td></tr>stray</table>",
+        # SVG foreign-content breakout tags and ancestor HTML end tags inside <svg>
+        "<table><tr><td><svg>A</td></tr>stray</svg></table>",
+        "<div><svg></div><p>after</p></svg>",
+        "<svg><p>breakout</p></svg>",
+        "<svg><div>breakout</div></svg>",
+        "<svg><b>breakout</b></svg>",
+        "<svg><table><tr><td>breakout</td></tr></table></svg>",
+        "<svg><foreignObject><p>html</p></foreignObject></svg>",
+        "<svg><desc>description</desc></svg>",
+        "<svg><title><b>tag in svg title</b></title></svg>",
+        "<svg/></svg>",
+        "</svg>",
+        "<svg><path d=\"M0 0\">",
+        # Other HTML5 tokenizer / tree-builder edge cases
+        "null\x00byte",
+        "\uFEFFbom",
+        "<!-- unclosed",
+        "<!-->abrupt",
+        "<!--->",
+        "<?xml version=\"1.0\"?><span>pi</span>",
+        "<div attr=\"unclosed>",
+        "<div attr=unclosed\"quote>text</div>",
+        "&CounterClockwiseContourIntegral;",
+        "&copy=1",
+        "&notanentity;",
+        "&#123",
+        "&#x1F600",
+        "<pre>&#10;newline entity</pre>",
+        "<textarea>&#10;newline entity</textarea>",
+        "<title><b>tag in title</b></title>",
+        "<script><!--</script><p>visible</p><script>--></script>",
+        "<script><script></script><p>after</p>",
+        "<style/>body { color: red; }",
+        "<script/>alert(1)",
+        "<iframe/>fallback",
+        "<xmp><b>raw</b></xmp>",
+        "<plaintext><b>raw</b>",
+        "<noembed><b>raw</b></noembed>",
+        "<noframes><b>raw</b></noframes>",
+        "<noscript><b>raw</b></noscript>",
+        "<select><option>opt</option><input></select>",
+      ]
+
+      # Specifically verify the P2 reviewer reproduction case foster-parents " stray" before "A"
+      p2_repro = "<table><tr><td>A</tr> stray</td></table>"
+      expect(described_class.full_sanitize(p2_repro)).to be_nil
+      expect(legacy_sanitize.call(p2_repro)).to eq(" strayA")
+
+      malformed_and_quirky_cases.each do |quirky|
+        expect(described_class.full_sanitize(quirky)).to be_nil, quirky.inspect
+        expected = legacy_sanitize.call(quirky)
+        article = build(:article, processed_html: quirky)
+        expect(article.body_text).to eq(expected[0..7000]), quirky.inspect
+      end
+    end
+
+    it "declines non-Strings and non-UTF-8 encodings" do
+      [nil, false, 123, :sym, ActiveSupport::SafeBuffer.new("<p>x</p>"), "<p>x</p>".b,
+       "<p>x</p>".encode("UTF-16LE"), "<p>\xFF</p>"].each do |input|
+        expect(described_class.full_sanitize(input)).to be_nil, input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated HTML fragments" do
+      rng = Random.new(424_242)
+      pieces = [
+        "", "hello", "world", " ", "\n", "\r\n", "\r", "\t", "\u00A0", "é", "日本", "🚀",
+        "&", "&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&nbsp;", "&middot;", "&copy;", "&mdash;", "&ndash;",
+        "&#39;", "&#x25B8;", "&#160;", "&#0;", "&#128;", "&#146;", "&#128512;", "&#xD800;", "&#;",
+        "&unknown;", "&copy=1", "&#123", "?a=1&b=2&utm_source=dev",
+        "<", ">", "a < b", "x > y", "<p>", "</p>", "<br>", "<br/>", "<div class=\"a > b\" data-x='c < d'>", "</div>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\" target=_blank>", "</a>",
+        "<a href=https://dev.to/ben/post>",
+        "<!-- comment -->", "<!DOCTYPE html>",
+        "<pre>\ncode</pre>", "<pre>\r\ncode</pre>", "<pre><code>\ncode</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Icon</title><path d=\"M0 0\"/></svg>",
+        "<table>\n<thead>\n<tr><th>H</th></tr>\n</thead>\n<tbody>\n<tr><td>D</td></tr>\n</tbody>\n</table>",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<table><tr><td>A</tr> stray</td></table>",
+        "<style>.a > .b { color: red; }</style>",
+        "<script>const x = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback</iframe>",
+        "<textarea>\nraw <b>html</b> &amp;</textarea>",
+        "<title>Title &amp; Text</title>",
+        "<xmp><b>x</b></xmp>", "null\x00byte", "\uFEFFbom", "<div unclosed"
+      ]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { pieces.sample(random: rng) }.join
+        expected = legacy_sanitize.call(sample)
+        native = described_class.full_sanitize(sample)
+        native_hits += 1 unless native.nil?
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+
+      expect(native_hits).to be > 500
+    end
+
+    it "passes adversarial differential equivalence across 1,000 generated table, SVG, and scoping fragments" do
+      rng = Random.new(987_654)
+      table_svg_tokens = [
+        "<table>", "</table>", "<table/>",
+        "<thead>", "</thead>", "<tbody>", "</tbody>", "<tfoot>", "</tfoot>",
+        "<caption>", "</caption>", "<colgroup>", "</colgroup>", "<col>", "<col/>",
+        "<tr>", "</tr>", "<tr/>", "<td>", "</td>", "<td/>", "<th>", "</th>", "<th/>",
+        "<svg>", "</svg>", "<svg/>", "<path d=\"M0 0\"/>", "<g>", "</g>", "<title>", "</title>",
+        "<object>", "</object>", "<marquee>", "</marquee>", "<applet>", "</applet>", "<template>", "</template>",
+        "<p>", "</p>", "<div>", "</div>", "<b>", "</b>", "<br>",
+        "A", "B", "stray", " ", "\n", "&amp;", "&lt;"
+      ]
+
+      1_000.times do |iteration|
+        sample = if rng.rand < 0.25
+                   # Mix valid table structures with random perturbations
+                   "<table><thead><tr><th>#{table_svg_tokens.sample(random: rng)}</th></tr></thead>" \
+                     "<tbody><tr><td>A#{table_svg_tokens.sample(random: rng)}</td>" \
+                     "<td>#{table_svg_tokens.sample(random: rng)}B</td></tr></tbody></table>"
+                 else
+                   "<table>#{Array.new(rng.rand(2..10)) { table_svg_tokens.sample(random: rng) }.join}</table>"
+                 end
+        expected = legacy_sanitize.call(sample)
+        native = described_class.full_sanitize(sample)
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
     end
   end
 end
