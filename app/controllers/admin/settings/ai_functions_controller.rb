@@ -25,6 +25,9 @@ module Admin
           if settings[:spam_escalation_threshold].present?
             ::Settings::AiFunctions.set_global_spam_escalation_threshold(settings[:spam_escalation_threshold])
           end
+          if settings[:appeal_auto_unflag_threshold].present?
+            ::Settings::General.set_appeal_auto_unflag_threshold(settings[:appeal_auto_unflag_threshold])
+          end
         end
         Result.new([])
       rescue ActiveRecord::RecordInvalid => e
@@ -33,7 +36,11 @@ module Admin
 
       def settings_params
         params.require(:settings_ai_functions)
-          .permit(:spam_escalation_threshold, function_models: Ai::FunctionRegistry.configurable.map(&:key))
+          .permit(
+            :spam_escalation_threshold,
+            :appeal_auto_unflag_threshold,
+            function_models: Ai::FunctionRegistry.configurable.map(&:key),
+          )
       end
     end
   end
