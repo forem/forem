@@ -29,6 +29,22 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "sets surrogate keys on the org redirect without loading the article body by slug" do
+      old_path = article.path
+      article.update(organization: org)
+      slug_queries = []
+      callback = lambda do |*, payload|
+        slug_queries << payload[:sql] if payload[:sql].include?(%("articles"."slug" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get old_path }
+
+      expect(response).to redirect_to(article.path)
+      expect(response.headers["Surrogate-Key"]).to include(article.record_key, org.record_key)
+      expect(slug_queries).not_to be_empty
+      expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
+    end
+
     it "preserves internal nav param (i=i) upon redirect" do
       old_path = article.path
       article.update(organization: org)
@@ -115,6 +131,19 @@ RSpec.describe "StoriesShow" do
       expect(response.body)
         .to include(" #{article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}")
       expect(response.body).to include(" articleuser-#{article.user_id}")
+    end
+
+    it "reads the article's tag colors in one cache batch" do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+
+      get article.path
+
+      tags = article.decorate.cached_tag_list_array
+      tag_color_keys = tags.map { |tag| "view-helper-#{tag}/tag_colors" }
+      expect(Rails.cache).to have_received(:fetch_multi).with(*tag_color_keys, expires_in: 5.hours).once
+      expect(Rails.cache).not_to have_received(:fetch).with(a_string_ending_with("/tag_colors"), any_args)
+      expect(response.body).to include(*tags.map { |tag| %(href="/t/#{tag}") })
     end
 
     ###
@@ -233,6 +262,82 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
     end
 
+    it "marks the pinned article as pinned while looking up the pinned article once" do
+      PinnedArticle.set(article)
+      allow(PinnedArticle).to receive(:id).and_call_original
+
+      get article.path
+
+      expect(response.body).to match(/data-pinned[\s>]/)
+      expect(PinnedArticle).to have_received(:id).once
+    end
+
+    it "does not mark an article as pinned when another article is pinned" do
+      PinnedArticle.set(create(:article))
+
+      get article.path
+
+      expect(response.body).not_to match(/data-pinned[\s>]/)
+    end
+
+    it "does not query for negative comments when the article has no comments" do
+      negative_comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        negative_comment_queries << payload[:sql] if payload[:sql].include?("score < 0")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(negative_comment_queries).to be_empty
+    end
+
+    it "queries for negative comments only once when rendering the hidden negative comments notice" do
+      create(:comment, commentable: article, score: -5)
+      article.reload
+
+      negative_comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        negative_comment_queries << payload[:sql] if payload[:sql].include?("score < 0")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Some comments may only be visible to logged-in visitors")
+      expect(negative_comment_queries.size).to eq(1)
+    end
+
+    it "loads the series articles with a single query when rendering the series switcher" do
+      collection = create(:collection, :with_articles, user: user, amount: 6)
+      series_article = collection.articles.first
+
+      collection_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        collection_queries << payload[:sql] if payload[:sql].include?(%("articles"."collection_id" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get series_article.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("series-switcher")
+      expect(response.body).to include("6 Part Series")
+      collection.articles.each { |a| expect(response.body).to include(a.path) }
+      expect(collection_queries.size).to eq(1)
+    end
+
     context "when subforem logic is triggered by RequestStore" do
       let!(:subforem) { create(:subforem, domain: "www.example.com") }
       let!(:default_subforem) { create(:subforem) }
@@ -283,6 +388,144 @@ RSpec.describe "StoriesShow" do
         article.update_column(:subforem_id, nil)
         get article.path
         expect(response).not_to have_http_status(:moved_permanently)
+      end
+    end
+  end
+
+  describe "GET /:username/:slug (unpublished or scheduled preview redirect)" do
+    let(:unpublished_article) { create(:article, user: user, published: false) }
+    let(:scheduled_article) { create(:article, user: user, published: true, published_at: 1.day.from_now) }
+    let(:other_user) { create(:user) }
+    let(:admin_user) { create(:user, :admin) }
+
+    context "when user is not signed in" do
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for unpublished article with invalid preview param" do
+        expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for scheduled article without preview param" do
+        expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "allows viewing unpublished article with valid preview param without edge caching headers" do
+        get "#{unpublished_article.path}?preview=#{unpublished_article.password}"
+        expect(response).to have_http_status(:ok)
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is signed in without edit permissions" do
+      before { sign_in other_user }
+
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for unpublished article with invalid preview param" do
+        expect { get "#{unpublished_article.path}?preview=invalid" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 for scheduled article without preview param" do
+        expect { get scheduled_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when user is signed in as the author" do
+      before { sign_in user }
+
+      it "redirects unpublished article without preview param to the preview URL with 302 Found" do
+        get unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+
+      it "redirects unpublished article with invalid preview param to the correct preview URL" do
+        get "#{unpublished_article.path}?preview=wrong_token"
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+
+      it "preserves additional query parameters on redirect" do
+        get "#{unpublished_article.path}?i=i"
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?i=i&preview=#{unpublished_article.password}")
+      end
+
+      it "redirects scheduled article without preview param to the preview URL" do
+        get scheduled_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{scheduled_article.path}?preview=#{scheduled_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is signed in as an admin" do
+      before { sign_in admin_user }
+
+      it "redirects unpublished article without preview param to preview URL" do
+        get unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{unpublished_article.path}?preview=#{unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when user is an organization admin for an org unpublished article" do
+      let(:org_admin) { create(:user) }
+      let(:org_unpublished_article) { create(:article, user: user, organization: org, published: false) }
+
+      before do
+        create(:organization_membership, user: org_admin, organization: org, type_of_user: :admin)
+        sign_in org_admin
+      end
+
+      it "redirects unpublished article to preview URL" do
+        get org_unpublished_article.path
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("#{org_unpublished_article.path}?preview=#{org_unpublished_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
+      end
+    end
+
+    context "when author is suspended" do
+      before do
+        user.add_role(:suspended)
+        sign_in user
+      end
+
+      it "raises 404 for unpublished article without preview param" do
+        expect { get unpublished_article.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    context "when on a custom domain" do
+      let(:custom_org) { create(:organization, custom_domain: "custom.example.com") }
+      let(:custom_article) { create(:article, user: user, organization: custom_org, published: false) }
+
+      before do
+        sign_in user
+      end
+
+      it "redirects to custom domain preview URL for authorized user" do
+        get "/#{custom_article.slug}",
+            headers: { "Host" => "custom.example.com" },
+            env: { "forem.custom_domain_org" => custom_org }
+        expect(response).to have_http_status(:found)
+        expect(response).to redirect_to("/#{custom_article.slug}?preview=#{custom_article.password}")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(response.headers["Cache-Control"]).to include("private")
       end
     end
   end

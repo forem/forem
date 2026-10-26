@@ -29,7 +29,9 @@ module Notifications
       add_organization_data = notifiable.is_a?(Article) && notifiable.organization
       new_json_data[:organization] = organization_data(notifiable.organization) if add_organization_data
 
-      notifications.update_all(json_data: new_json_data)
+      # Popular articles have a notification per follower. Batches keep each UPDATE under the
+      # statement timeout and lock rows in id order, so concurrent refreshes don't deadlock.
+      notifications.in_batches(of: 1_000) { |batch| batch.update_all(json_data: new_json_data) }
     end
 
     private

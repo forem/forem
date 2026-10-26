@@ -32,6 +32,7 @@ pt:
         placeholder: "..."
         list: Lista de leitura
         moderator_center: Centro de Moderação
+        leadership: Curadoria Comunitária
         other: Outros
         settings: Configurações
         account: Conta
@@ -52,6 +53,26 @@ pt:
       side:
         active_discussions: "Discussões ativas"
         upcoming_events: "Próximos eventos"
+        events:
+          headings:
+            upcoming_events: "Próximos eventos"
+            live_events: "Eventos ao vivo"
+            live_and_upcoming_events: "Eventos ao vivo e próximos"
+            upcoming_challenges: "Próximos desafios"
+            live_challenges: "Desafios ao vivo"
+            live_and_upcoming_challenges: "Desafios ao vivo e próximos"
+            upcoming_livestreams: "Próximas transmissões ao vivo"
+            live_livestreams: "Transmissões ao vivo"
+            live_and_upcoming_livestreams: "Transmissões ao vivo e próximas"
+            upcoming_takeovers: "Próximos takeovers"
+            live_takeovers: "Takeovers ao vivo"
+            live_and_upcoming_takeovers: "Takeovers ao vivo e próximos"
+          types:
+            challenge: "Desafio"
+            live_stream: "Transmissão ao vivo"
+            takeover: "Takeover"
+            other: "Evento"
+          live_badge: "AO VIVO"
         listings:
           heading: Anúncios
           all: Ver todos

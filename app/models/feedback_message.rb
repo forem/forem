@@ -59,10 +59,18 @@ class FeedbackMessage < ApplicationRecord
               in: STATUSES
             }
   validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: reporter_uniqueness_msg },
-                          if: :abuse_report? && :reporter_id
+                          if: -> { abuse_report? && reporter_id.present? }
 
   def abuse_report?
     feedback_type == "abuse-reports"
+  end
+
+  def reported_url=(value)
+    if value.is_a?(String)
+      value = value.dup.force_encoding(Encoding::UTF_8) unless value.encoding == Encoding::UTF_8
+      value = value.scrub("") unless value.valid_encoding?
+    end
+    super(value)
   end
 
   def user_types(user_id)

@@ -7,6 +7,7 @@ pt:
         start_missing: Parâmetro obrigatório 'start' está ausente
       articles_controller:
         must_be_json: parâmetro article deve ser um objeto JSON. Você forneceu article como um %{type}
+        page_limit_exceeded: A profundidade da página é limitada a 1000 sem uma chave de API
       follows_controller:
         followed:
           one: seguido %{count} usuário
@@ -19,3 +20,10 @@ pt:
         redis_not_connected: Redis NÃO conectado!
       listings_controller:
         no_credit: Créditos disponíveis insuficientes
+    v1:
+      images_controller:
+        image_required: Um arquivo 'image' é obrigatório (multipart/form-data)
+        prompt_required: Um 'prompt' é obrigatório
+        prompt_too_long: O 'prompt' deve ter no máximo %{max} caracteres
+        invalid_aspect_ratio: "'aspect_ratio' deve ser um dos seguintes: %{valid}"
+        generation_unavailable: A geração de imagens por IA não está disponível neste Forem

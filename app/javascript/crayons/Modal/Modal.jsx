@@ -46,7 +46,7 @@ export const Modal = ({
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="modal"
+          aria-label={title || 'modal'}
           className="crayons-modal__box"
         >
           {showHeader && (
@@ -70,6 +70,7 @@ export const Modal = ({
           <div
             data-testid="modal-overlay"
             className="crayons-modal__backdrop"
+            onClick={backdropDismissible ? onClose : undefined}
           />
         )}
       </div>

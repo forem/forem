@@ -1,5 +1,5 @@
 function formatDateTime(options, value) {
-  return new Intl.DateTimeFormat('en-US', options).format(value);
+  return new Intl.DateTimeFormat(navigator.language, options).format(value);
 }
 
 function convertUtcTime(utcTime) {

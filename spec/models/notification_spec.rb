@@ -559,6 +559,21 @@ RSpec.describe Notification do
         expected_notification_organization_id = described_class.last.json_data["organization"]["id"]
         expect(expected_notification_organization_id).to eq(organization.id)
       end
+
+      it "updates CoAuthor notifications with the new article title" do
+        co_author = create(:user)
+        article.update(co_author_ids: [co_author.id])
+        sidekiq_perform_enqueued_jobs { described_class.send_to_co_authors(article) }
+
+        new_title = "Brand New Co-Authored Title"
+        new_body_markdown = article.body_markdown.gsub(article.title, new_title)
+        article.update(title: new_title, body_markdown: new_body_markdown)
+        described_class.update_notifications(article, %w[Published CoAuthor])
+        sidekiq_perform_enqueued_jobs
+
+        co_author_notification = co_author.notifications.find_by(action: "CoAuthor")
+        expect(co_author_notification.json_data["article"]["title"]).to eq(new_title)
+      end
     end
   end
 
@@ -693,6 +708,49 @@ RSpec.describe Notification do
           notification.send(:cleanup_old_notifications)
         end.not_to change(Notifications::CleanupUserWorker.jobs, :size)
       end
+    end
+  end
+
+  describe ".send_to_co_authors" do
+    before do
+      allow(Notifications::CoAuthorWorker).to receive(:perform_async)
+    end
+
+    it "enqueues CoAuthorWorker when co_author_ids are present" do
+      article = create(:article, co_author_ids: [user.id])
+      described_class.send_to_co_authors(article)
+
+      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(article.id, [])
+    end
+
+    it "enqueues CoAuthorWorker when removed_user_ids are present even if co_author_ids is empty" do
+      article = create(:article, co_author_ids: [])
+      described_class.send_to_co_authors(article, [user.id])
+
+      expect(Notifications::CoAuthorWorker).to have_received(:perform_async).with(article.id, [user.id])
+    end
+
+    it "skips enqueuing when both co_author_ids and removed_user_ids are blank" do
+      article = create(:article, co_author_ids: [])
+      described_class.send_to_co_authors(article, [])
+
+      expect(Notifications::CoAuthorWorker).not_to have_received(:perform_async)
+    end
+
+    it "skips enqueuing when notifiable is not an Article" do
+      described_class.send_to_co_authors(comment, [user.id])
+
+      expect(Notifications::CoAuthorWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe ".for_published_articles" do
+    it "includes both Published and CoAuthor notifications" do
+      published_notification = create(:notification, notifiable: article, action: "Published")
+      co_author_notification = create(:notification, notifiable: article, action: "CoAuthor")
+      _other_notification = create(:notification, notifiable: article, action: "Moderation")
+
+      expect(described_class.for_published_articles).to contain_exactly(published_notification, co_author_notification)
     end
   end
 end

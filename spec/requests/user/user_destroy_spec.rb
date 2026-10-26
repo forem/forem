@@ -138,17 +138,26 @@ RSpec.describe "UserDestroy" do
         expect(flash[:settings_notice]).to include("Your token has expired,")
       end
 
-      it "renders not_found if destroy_token != token" do
-        allow(Rails.cache).to receive(:read).and_return(SecureRandom.hex(8))
+      it "renders not_found and records Honeycomb fields if destroy_token != token" do
+        mismatch_token = SecureRandom.hex(8)
+        allow(Honeycomb).to receive(:add_field)
+        allow(Rails.cache).to receive(:read).and_call_original
+        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(mismatch_token)
         expect do
           get user_confirm_destroy_path(token: token)
         end.to raise_error(ActionController::RoutingError)
+        expect(Honeycomb).to have_received(:add_field).with("destroy_token", mismatch_token)
+        expect(Honeycomb).to have_received(:add_field).with("token", token)
       end
 
-      it "renders template if destroy_token is correct" do
-        allow(Rails.cache).to receive(:read).and_return(token)
+      it "renders template with verification fields if destroy_token is correct", :aggregate_failures do
+        allow(Rails.cache).to receive(:read).and_call_original
+        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(token)
         get user_confirm_destroy_path(token: token)
         expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="delete__account__username__field"')
+        expect(response.body).to include('id="delete__account__verification__field"')
+        expect(response.body).to include('id="delete__account__btn"')
       end
     end
 

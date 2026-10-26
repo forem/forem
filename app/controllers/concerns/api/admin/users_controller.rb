@@ -11,6 +11,13 @@ module Api
         "Good standing", "Suspended", "Spam", "Warned",
         "Comment Suspended", "Trusted", "Limited"
       ].freeze
+      # Email notification columns writable through this endpoint. These are
+      # the user-consent settings an external system of record may push back
+      # onto the account. Mobile and in-app columns are excluded, as are the
+      # moderator newsletters (Users::NotificationSetting::ROLE_DRIVEN_NEWSLETTER_SETTINGS),
+      # which are driven by role changes rather than by the user's own choice —
+      # Core still receives their state via EMAIL_CONSENT_EVENTS, one-way.
+      ALLOWED_NOTIFICATION_SETTINGS = Users::NotificationSetting::CORE_SYNCED_EMAIL_SETTINGS
 
       def index
         users = filtered_users
@@ -68,6 +75,9 @@ module Api
         # but explicitly bust the user cache that the after_commit hook would
         # otherwise refresh.
         @user_record.update_columns(email: new_email, unconfirmed_email: nil)
+        # ...and the Trackable after_commit, so tell the DEV -> Core sync
+        # about the new address explicitly.
+        @user_record.track!("user_updated")
         Users::BustCacheWorker.perform_async(@user_record.id)
         audit!(slug: "update_user_email",
                data: { "target_user_id" => @user_record.id, "old_email" => old_email, "new_email" => new_email })
@@ -96,6 +106,38 @@ module Api
                  "note" => params[:note].to_s
                })
         render json: { id: @user_record.id, status: status }
+      end
+
+      # Lets Core push all seven DEV email consents back onto the account's
+      # local notification settings, which DEV's own senders key off. Writes
+      # through the model so callbacks other than CDP event emission still run.
+      def update_notification_settings
+        @user_record = User.find(params[:id])
+        # Handle the missing wrapper here rather than via params.require, so
+        # the caller gets the admin API error_code instead of a generic
+        # ParameterMissing 422.
+        wrapper = params[:notification_setting]
+        updates = wrapper.respond_to?(:permit) ? wrapper.permit(*ALLOWED_NOTIFICATION_SETTINGS) : {}
+        if updates.blank?
+          raise Api::Admin::ApiError.new(:invalid_notification_settings,
+                                         I18n.t("admin_api.errors.invalid_notification_settings"),
+                                         status: 422)
+        end
+
+        setting = @user_record.notification_setting
+        # This endpoint carries Core's own consent state. Emitting the CDP
+        # consent events here would make Core consume its own push as a user
+        # change. Model callbacks that aren't CDP emission (Mailchimp sync,
+        # base_email_eligible) still run.
+        User.skip_trackable_events { setting.update!(updates) }
+
+        audit!(slug: "update_notification_settings",
+               data: {
+                 "target_user_id" => @user_record.id,
+                 "changes" => setting.saved_changes.slice(*ALLOWED_NOTIFICATION_SETTINGS.map(&:to_s))
+               })
+        render json: { id: @user_record.id,
+                       notification_setting: setting.slice(*ALLOWED_NOTIFICATION_SETTINGS) }
       end
 
       def merge

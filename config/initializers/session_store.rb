@@ -19,12 +19,19 @@ end
 
 domain = Rails.env.production? ? ApplicationConfig["APP_DOMAIN"] : nil
 
-begin
-  parsed = PublicSuffix.parse(domain, default_rule: nil)
-  parsed.domain # Returns the domain with TLD, e.g. "example.com"
-  domain = parsed.domain
-rescue PublicSuffix::DomainInvalid
+parsed_domain = ForemNative.public_suffix_domain(domain)
+if parsed_domain
+  domain = parsed_domain
+elsif parsed_domain == false
   domain = nil
+else
+  begin
+    parsed = PublicSuffix.parse(domain, default_rule: nil)
+    parsed.domain # Returns the domain with TLD, e.g. "example.com"
+    domain = parsed.domain
+  rescue PublicSuffix::DomainInvalid
+    domain = nil
+  end
 end
 
 # Main session store

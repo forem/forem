@@ -26,7 +26,11 @@ resources :users, only: %i[show] do
     get :me
   end
 end
-resources :tags, only: [:index]
+resources :tags, only: [:index] do
+  collection do
+    get :supported
+  end
+end
 resources :follows, only: [:create] do
   collection do
     get :tags
@@ -68,7 +72,7 @@ resources :organizations, only: [:show], param: :id_or_slug do
   resources :articles, only: [:index], to: "organizations#articles"
 end
 
-resources :surveys, only: %i[index show], param: :id_or_slug do
+resources :surveys, only: %i[index show create update destroy], param: :id_or_slug do
   member do
     get :poll_votes
     get :poll_text_responses

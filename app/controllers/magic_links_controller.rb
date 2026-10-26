@@ -2,7 +2,12 @@ class MagicLinksController < ApplicationController
   def show
     user = User.find_by(sign_in_token: params[:id])
     if user && user.sign_in_token_sent_at > 20.minutes.ago
-      user.update_column(:confirmed_at, Time.current) if user.confirmed_at.blank?
+      if user.confirmed_at.blank?
+        user.update_column(:confirmed_at, Time.current)
+        # update_column bypasses the Trackable after_commit, so tell the
+        # DEV -> Core sync the email is now verified.
+        user.track!("user_updated")
+      end
       sign_in(user)
       redirect_to root_path
     else

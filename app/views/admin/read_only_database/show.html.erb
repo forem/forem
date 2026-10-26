@@ -35,12 +35,12 @@
     
     <!-- Actions -->
     <div class="flex gap-4">
-      <%= link_to "Test Connection", admin_read_only_database_test_path, 
+      <%= link_to "Test Connection", test_connection_admin_read_only_database_index_path, 
           method: :post, 
           class: "crayons-btn crayons-btn--primary",
           data: { confirm: "This will execute a simple query to test the connection. Continue?" } %>
       
-      <%= link_to "Reset Connection Pool", admin_read_only_database_reset_path, 
+      <%= link_to "Reset Connection Pool", reset_pool_admin_read_only_database_index_path, 
           method: :post, 
           class: "crayons-btn crayons-btn--secondary",
           data: { confirm: "This will reset the connection pool. Continue?" } %>

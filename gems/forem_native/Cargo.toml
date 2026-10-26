@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = [
+  "crates/forem_core",
+  "ext/forem_native",
+]
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

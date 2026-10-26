@@ -109,6 +109,7 @@ class UserDecorator < ApplicationDecorator
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
       "mod-status-#{any_admin? || !moderator_for_tags.empty?}",
       "trusted-status-#{trusted?}",
+      "community-leader-status-#{community_leader?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
 

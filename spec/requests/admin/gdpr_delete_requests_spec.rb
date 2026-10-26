@@ -44,7 +44,9 @@ RSpec.describe "/admin/member_manager/gdpr_delete_requests" do
   end
 
   context "with gdpr request missing name (legacy)" do
-    let!(:gdr) { create(:gdpr_delete_request, email: "legacy@dev.to", username: "legacyuser", name: nil) }
+    before do
+      create(:gdpr_delete_request, email: "legacy@dev.to", username: "legacyuser", name: nil)
+    end
 
     it "renders successfully without name" do
       get admin_gdpr_delete_requests_path

@@ -39,6 +39,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag reading_time_minutes language subforem_id
+        ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.first.keys).to match_array index_keys
@@ -81,12 +82,31 @@ RSpec.describe "Api::V1::Articles" do
         expect(response.parsed_body.length).to eq(1)
       end
 
+      it "rejects requests with page greater than 1000 without an API key" do
+        get api_articles_path, params: { page: 1001 }, headers: headers
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+      end
+
+      it "allows requests with page greater than 1000 with a valid API key" do
+        get api_articles_path, params: { page: 1001 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
       it "returns flare tag in the response" do
         get api_articles_path, headers: headers
         response_article = response.parsed_body.first
         expect(response_article["flare_tag"]).to be_present
         expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
         expect(response_article["flare_tag"]["name"]).to eq("discuss")
+      end
+
+      it "only returns flare tags for articles that have one" do
+        other_article = create(:article, featured: true, tags: "ruby")
+        get api_articles_path, headers: headers
+        articles_by_id = response.parsed_body.index_by { |a| a["id"] }
+        expect(articles_by_id[article.id]["flare_tag"]["name"]).to eq("discuss")
+        expect(articles_by_id[other_article.id]).not_to have_key("flare_tag")
       end
 
       it "sets the correct edge caching surrogate key" do
@@ -150,6 +170,14 @@ RSpec.describe "Api::V1::Articles" do
 
         get api_articles_path(tag: tag.name), headers: headers
         expect(response.parsed_body.size).to eq(0)
+      end
+
+      it "returns approved tag articles if tag requires approval" do
+        article.update_column(:approved, true)
+        Tag.find_by(name: article.tag_list.first).update(requires_approval: true)
+
+        get api_articles_path(tag: article.tag_list.first), headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
       end
 
       it "supports pagination" do
@@ -458,7 +486,7 @@ RSpec.describe "Api::V1::Articles" do
         tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag reading_time_minutes
-        language subforem_id
+        language subforem_id ai_disclosure_level ai_disclosure_label
       ]
 
       expect(response.parsed_body.keys).to match_array show_keys
@@ -1197,6 +1225,38 @@ RSpec.describe "Api::V1::Articles" do
         expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
+      it "removes video_source_url when given an empty string" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.reload.video).to be_present
+
+        put_article(video_source_url: "")
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to be_nil
+        expect(article.video).to be_nil
+      end
+
+      it "removes video_source_url when given nil" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.reload.video).to be_present
+
+        put_article(video_source_url: nil)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to be_nil
+        expect(article.video).to be_nil
+      end
+
+      it "does not touch video_source_url when the key is absent" do
+        article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+        put_article(title: "New title")
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+        expect(article.video).to be_present
+      end
+
       it "updates the tags" do
         expect do
           put_article(
@@ -1439,6 +1499,19 @@ RSpec.describe "Api::V1::Articles" do
     describe "when authorized as super_admin" do
       before { user.add_role(:super_admin) }
 
+      it "creates an audit log when updating another user's article" do
+        Audit::Subscribe.listen listener
+        other_article = create(:article, user: create(:user))
+
+        put "/api/articles/#{other_article.id}", params: { article: { body_markdown: "New body" } }.to_json,
+                                                 headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(AuditLog.last.data).to include("action" => "api_article_update", "article_id" => other_article.id)
+      ensure
+        Audit::Subscribe.forget listener
+      end
+
       it "updates the labels" do
         expect do
           put_article(
@@ -1480,6 +1553,105 @@ RSpec.describe "Api::V1::Articles" do
           )
           article.reload
         end.to change(article, :cached_label_list)
+      end
+    end
+  end
+
+  describe "PUT /api/articles/:id when the editor is not the author", :aggregate_failures do
+    let(:user) { api_secret.user }
+    let(:path) { api_article_path(article.id) }
+    let(:author) { create(:user) }
+    let(:article) do
+      create(:article, user: author, organization: organization, published: false, published_at: nil)
+    end
+    let(:new_body) { "An edit made through the API" }
+
+    before do
+      create(:organization_membership, user: author, organization: organization, type_of_user: "member")
+      Audit::Subscribe.listen listener
+    end
+
+    after { Audit::Subscribe.forget listener }
+
+    context "when the user is an admin of the article's organization" do
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+      end
+
+      it "updates the article and keeps the original author" do
+        put_article(title: "Edited by an org admin", body_markdown: new_body, user_id: user.id)
+
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.title).to eq("Edited by an org admin")
+        expect(article.body_markdown).to eq(new_body)
+        expect(article.user).to eq(author)
+      end
+
+      it "creates an audit log of the update" do
+        expect { put_article(title: "Edited by an org admin", body_markdown: new_body) }
+          .to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(user.id)
+        expect(log.data["action"]).to eq("api_article_update")
+        expect(log.data["article_id"]).to eq(article.id)
+        expect(log.data["organization_id"]).to eq(organization.id)
+        expect(log.data["changed_attributes"]).to include("title", "body_markdown")
+        expect(log.data["changed_attributes"]).not_to include("updated_at")
+      end
+
+      it "does not move the article to an organization the author does not belong to" do
+        other_organization = create(:organization)
+        create(:organization_membership, user: user, organization: other_organization, type_of_user: "admin")
+
+        put_article(body_markdown: new_body, organization_id: other_organization.id)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.organization).to eq(organization)
+      end
+
+      it "does not create an audit log when the update fails" do
+        expect { put_article(title: nil, body_markdown: nil) }.not_to change(AuditLog, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "when the user is an admin of a different organization" do
+      before do
+        create(:organization_membership, user: user, organization: create(:organization), type_of_user: "admin")
+      end
+
+      it "returns not found and does not update the article" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:not_found)
+        expect(article.reload.body_markdown).not_to eq(new_body)
+      end
+    end
+
+    context "when the user is a regular member of the article's organization" do
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+      end
+
+      it "returns not found and does not update the article" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:not_found)
+        expect(article.reload.body_markdown).not_to eq(new_body)
+      end
+    end
+
+    context "when the user is the author" do
+      let(:article) { create(:article, user: user, organization: organization, published: false) }
+
+      it "updates the article without creating an audit log" do
+        expect { put_article(body_markdown: new_body) }.not_to change(AuditLog, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.body_markdown).to eq(new_body)
       end
     end
   end
@@ -1567,10 +1739,42 @@ RSpec.describe "Api::V1::Articles" do
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
           published_timestamp user organization flare_tag reading_time_minutes body_markdown
-          language subforem_id
+          language subforem_id ai_disclosure_level ai_disclosure_label
         ]
 
         expect(response.parsed_body.first.keys).to match_array index_keys
+      end
+
+      it "runs the full-text search only once and returns body_markdown" do
+        article.update_columns(title: "Quuxlefrobnicator")
+        create(:article)
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "Quuxlefrobnicator" }
+        end
+
+        expect(response.parsed_body.pluck("id")).to eq([article.id])
+        expect(response.parsed_body.first["body_markdown"]).to eq(article.body_markdown)
+        expect(search_queries.size).to eq(1)
+      end
+    end
+
+    context "when there are no articles returned" do
+      it "returns an empty array after a single full-text search" do
+        search_queries = []
+        callback = lambda do |*, payload|
+          search_queries << payload[:sql] if payload[:sql].include?("to_tsquery")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search", params: { q: "zzznomatchzzz" }
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+        expect(search_queries.size).to eq(1)
       end
     end
 
@@ -1587,9 +1791,25 @@ RSpec.describe "Api::V1::Articles" do
           tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
           collection_id created_at edited_at crossposted_at published_at last_comment_at
           published_timestamp user organization flare_tag reading_time_minutes language subforem_id
+          ai_disclosure_level ai_disclosure_label
         ]
 
         expect(response.parsed_body.first.keys).to match_array keys
+      end
+
+      it "does not run a separate COUNT query" do
+        create(:article)
+
+        count_queries = []
+        callback = lambda do |*, payload|
+          count_queries << payload[:sql] if payload[:sql].include?("subquery_for_count")
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/articles/search"
+        end
+
+        expect(response.parsed_body.length).to eq(2)
+        expect(count_queries).to be_empty
       end
     end
 
@@ -1599,6 +1819,17 @@ RSpec.describe "Api::V1::Articles" do
       expect(response.parsed_body.length).to eq(2)
       get "/api/articles/search", params: { page: 2, per_page: 2 }
       expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "rejects requests with page greater than 1000 without an API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+      expect(response.parsed_body["error"]).to eq("Page depth limited to 1000 without an API key")
+    end
+
+    it "allows requests with page greater than 1000 with a valid API key" do
+      get "/api/articles/search", params: { page: 1001 }, headers: auth_headers
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns flare tag in the response" do
@@ -1625,6 +1856,469 @@ RSpec.describe "Api::V1::Articles" do
         create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
         get "/api/articles/search", params: { per_page: 10 }
         expect(response.parsed_body.count).to eq(2)
+      end
+    end
+  end
+
+  describe "GET /api/articles/semantic_search" do
+    let(:query_embedding) { [1.0] + Array.new(767, 0.0) }
+
+    before do
+      allow_any_instance_of(Ai::Embedding).to receive(:call).and_return(query_embedding)
+      article.update_column(:semantic_embedding, Array.new(768, 0.1))
+      article.update_column(:published, true)
+    end
+
+    it "requires api-key" do
+      get "/api/articles/semantic_search", headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "requires q parameter" do
+      get "/api/articles/semantic_search", headers: auth_headers
+      expect(response).to have_http_status(:bad_request)
+      expect(JSON.parse(response.body)["error"]).to eq("q parameter is required")
+    end
+
+    it "returns semantically matching articles with distance and similarity metrics" do
+      get "/api/articles/semantic_search", params: { q: "testing query" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json.length).to eq(1)
+      expect(json[0]["id"]).to eq(article.id)
+      expect(json[0]).to have_key("distance")
+      expect(json[0]).to have_key("similarity")
+    end
+
+    it "returns keyword-matching articles even if they have no semantic embedding" do
+      keyword_article = create(:article, title: "An amazing fable of anthropic fable", published: true)
+      # Ensure it matches the index minimum score check if necessary
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+      
+      # The search query has "fable" which matches keyword_article
+      get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # The keyword match should be present
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
+      expect(matching_item["distance"]).to be_nil
+      expect(matching_item["similarity"]).to be_nil
+    end
+
+    it "ranks articles matching both keyword and semantic criteria higher using RRF" do
+      # Create one pure keyword match
+      keyword_article = create(:article, title: "UniqueKeywordMatch", published: true)
+      keyword_article.update_column(:score, 100)
+      keyword_article.update_column(:semantic_embedding, nil)
+
+      # Create one article that is both keyword and semantic match
+      both_match_article = create(:article, title: "UniqueKeywordMatch and semantic", published: true)
+      both_match_article.update_column(:score, 100)
+      both_match_article.update_column(:semantic_embedding, Array.new(768, 0.1))
+
+      # The current stub returns query_embedding for any query.
+      # both_match_article will be at the top of semantic search, and also present in keyword search.
+      get "/api/articles/semantic_search", params: { q: "UniqueKeywordMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      
+      # both_match_article should be ranked first (since it appears in both lists)
+      expect(json.first["id"]).to eq(both_match_article.id)
+    end
+
+    it "ranks more recent articles higher than older articles, all else being equal" do
+      # Create two keyword-matching articles with the same score
+      older_article = create(:article, title: "RecencyMatch Older", published: true)
+      older_article.update_columns(score: 100, semantic_embedding: nil, published_at: 10.days.ago)
+
+      newer_article = create(:article, title: "RecencyMatch Newer", published: true)
+      newer_article.update_columns(score: 100, semantic_embedding: nil, published_at: 1.day.ago)
+
+      get "/api/articles/semantic_search", params: { q: "RecencyMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The newer article should be ranked before the older article
+      newer_index = json.index { |item| item["id"] == newer_article.id }
+      older_index = json.index { |item| item["id"] == older_article.id }
+      expect(newer_index).to be_present
+      expect(older_index).to be_present
+      expect(newer_index).to be < older_index
+    end
+
+    it "ranks articles with higher quality scores higher, all else being equal" do
+      # Create two keyword-matching articles published at the same time
+      common_time = 2.days.ago
+      lower_score_article = create(:article, title: "QualityMatch Lower", published: true)
+      lower_score_article.update_columns(score: 10, semantic_embedding: nil, published_at: common_time)
+
+      higher_score_article = create(:article, title: "QualityMatch Higher", published: true)
+      higher_score_article.update_columns(score: 500, semantic_embedding: nil, published_at: common_time)
+
+      get "/api/articles/semantic_search", params: { q: "QualityMatch" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      # The higher score article should be ranked before the lower score article
+      higher_index = json.index { |item| item["id"] == higher_score_article.id }
+      lower_index = json.index { |item| item["id"] == lower_score_article.id }
+      expect(higher_index).to be_present
+      expect(lower_index).to be_present
+      expect(higher_index).to be < lower_index
+    end
+
+    it "respects similarity threshold param" do
+      get "/api/articles/semantic_search", params: { q: "testing query", threshold: 0.001 }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+      expect(json).to eq([])
+    end
+
+    it "allows requesting up to 100 articles with per_page" do
+      get "/api/articles/semantic_search", params: { q: "testing query", per_page: 100 }, headers: auth_headers
+      expect(response).to be_successful
+    end
+
+    context "when Algolia is available" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_APPLICATION_ID").and_return("test_app_id")
+        allow(ApplicationConfig).to receive(:[]).with("ALGOLIA_API_KEY").and_return("test_api_key")
+        allow(Settings::General).to receive(:algolia_search_enabled?).and_return(true)
+      end
+
+      it "routes the query through Algolia and validates results against the database" do
+        algolia_article = create(:article, title: "Algolia Match Title", published: true)
+        algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        expect(Article).to receive(:raw_search)
+          .with("fable", hash_including(hitsPerPage: 250))
+          .and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.length).to eq(1)
+        expect(json[0]["id"]).to eq(algolia_article.id)
+      end
+
+      it "filters out unpublished or low-score articles returned by Algolia" do
+        draft_article = create(:article, title: "Algolia Draft", published: false)
+        low_score_article = create(:article, title: "Algolia Low Score", published: true)
+        low_score_article.update_columns(score: -10)
+
+        expect(Article).to receive(:raw_search)
+          .and_return({ "hits" => [
+            { "objectID" => draft_article.id.to_s },
+            { "objectID" => low_score_article.id.to_s }
+          ] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json).to eq([])
+      end
+
+      it "verifies that articles returned still exist and are published, discarding drifted or deleted results" do
+        valid_article = create(:article, title: "Valid Published Fable", published: true)
+        valid_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        future_article = create(:article, title: "Scheduled Future Fable", published: true)
+        future_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 1.day.from_now)
+
+        deleted_article = create(:article, title: "Deleted Fable", published: true)
+        deleted_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+        deleted_id = deleted_article.id
+        deleted_article.destroy!
+
+        hits = [
+          { "objectID" => valid_article.id.to_s },
+          { "objectID" => future_article.id.to_s },
+          { "objectID" => deleted_id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.length).to eq(1)
+        expect(response.parsed_body[0]["id"]).to eq(valid_article.id)
+      end
+
+      it "passes advanced contextual query parameters and typo-size guards to Algolia raw_search" do
+        allow(Article).to receive(:raw_search)
+          .with(
+            "best rust async runtime",
+            hash_including(
+              hitsPerPage: 250,
+              removeStopWords: true,
+              ignorePlurals: true,
+              advancedSyntax: true,
+              distinct: true,
+              typoTolerance: true,
+              minWordSizefor1Typo: 5,
+              minWordSizefor2Typos: 9,
+              removeWordsIfNoResults: "allOptional",
+              restrictSearchableAttributes: %w[title tag_list body],
+              optionalWords: %w[best rust async runtime],
+            ),
+          )
+          .and_return({ "hits" => [] })
+
+        get "/api/articles/semantic_search", params: { q: "What is the best Rust async runtime?" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(Article).to have_received(:raw_search)
+      end
+
+      it "preserves single-character and symbol-bearing technical tokens like C, R, C++, and F# in Algolia queries" do
+        allow(Article).to receive(:raw_search)
+          .with(
+            "use c arrays c++ f# r tutorial",
+            hash_including(optionalWords: %w[use c arrays c++ f# r tutorial]),
+          )
+          .and_return({ "hits" => [] })
+
+        get "/api/articles/semantic_search", params: { q: "How do I use C arrays, C++, and F# in an R tutorial?" },
+                                             headers: auth_headers
+        expect(response).to be_successful
+        expect(Article).to have_received(:raw_search)
+      end
+
+      it "contextually boosts slightly more recent articles in Algolia search results" do
+        older_article = create(:article, title: "Older Algolia Fable", published: true)
+        older_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 180.days.ago)
+
+        recent_article = create(:article, title: "Recent Algolia Fable", published: true)
+        recent_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1), published_at: 2.days.ago)
+
+        hits = [
+          { "objectID" => older_article.id.to_s },
+          { "objectID" => recent_article.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.first["id"]).to eq(recent_article.id)
+      end
+
+      it "promotes strong semantic matches over noisy lexical matches in Stage 2 pre-ranking" do
+        common_time = 5.days.ago
+        noisy_lexical_article = create(:article, title: "Roasting coffee beans", published: true)
+        # Perpendicular to query_embedding ([1.0, 0.0, ...]) -> cosine distance = 1.0 (> 0.45 penalty threshold)
+        noisy_lexical_article.update_columns(
+          score: 100,
+          published_at: common_time,
+          semantic_embedding: [0.0, 1.0] + Array.new(766, 0.0),
+        )
+
+        strong_semantic_article = create(:article, title: "Rust async deep dive", published: true)
+        # Identical to query_embedding ([1.0, 0.0, ...]) -> cosine distance = 0.0
+        strong_semantic_article.update_columns(
+          score: 100,
+          published_at: common_time,
+          semantic_embedding: [1.0, 0.0] + Array.new(766, 0.0),
+        )
+
+        hits = [
+          { "objectID" => noisy_lexical_article.id.to_s },
+          { "objectID" => strong_semantic_article.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        get "/api/articles/semantic_search", params: { q: "rust" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.pluck("id")).to eq([strong_semantic_article.id, noisy_lexical_article.id])
+      end
+
+      it "still returns Algolia results when query embedding times out or fails" do
+        algolia_article = create(:article, title: "Fast Algolia Hit", published: true)
+        algolia_article.update_columns(score: 100, semantic_embedding: Array.new(768, 0.1))
+
+        embedding_mock = instance_double(Ai::Embedding)
+        allow(Ai::Embedding).to receive(:new).and_return(embedding_mock)
+        allow(embedding_mock).to receive(:call).and_raise(Timeout::Error.new("embedding timed out"))
+        allow(Article).to receive(:raw_search).and_return({ "hits" => [{ "objectID" => algolia_article.id.to_s }] })
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.length).to eq(1)
+        expect(response.parsed_body.first["id"]).to eq(algolia_article.id)
+      end
+
+      it "falls back to DB hybrid search when Algolia exceeds the parallel timeout" do
+        stub_const("Api::V1::ArticlesController::PARALLEL_FETCH_TIMEOUT_SECONDS", 0.05)
+        db_article = create(:article, title: "Database Fallback Fable", published: true)
+        db_article.update_columns(score: 100, semantic_embedding: nil)
+
+        allow(Article).to receive(:raw_search) do
+          sleep 0.25
+          { "hits" => [] }
+        end
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.detect { |item| item["id"] == db_article.id }).to be_present
+      end
+
+      it "re-ranks the top 50 shortlist with Jev in Stage 3 when :semantic_search_reranking is enabled" do
+        enable_jev_for(:semantic_search_reranking)
+
+        common_time = 2.days.ago
+        first_pre_ranked = create(:article, title: "Superficial match", published: true)
+        first_pre_ranked.update_columns(score: 100, published_at: common_time, semantic_embedding: Array.new(768, 0.1))
+
+        second_pre_ranked = create(:article, title: "Authoritative guide to Rust Tokio", published: true)
+        second_pre_ranked.update_columns(score: 100, published_at: common_time, semantic_embedding: Array.new(768, 0.1))
+
+        hits = [
+          { "objectID" => first_pre_ranked.id.to_s },
+          { "objectID" => second_pre_ranked.id.to_s },
+        ]
+        allow(Article).to receive(:raw_search).and_return({ "hits" => hits })
+
+        stub_jev(
+          "candidate::#{first_pre_ranked.id}" => 0.05,
+          "candidate::#{second_pre_ranked.id}" => 0.98,
+        )
+
+        get "/api/articles/semantic_search", params: { q: "rust tokio" }, headers: auth_headers
+        expect(response).to be_successful
+        expect(response.parsed_body.pluck("id")).to eq([second_pre_ranked.id, first_pre_ranked.id])
+      end
+
+      it "applies Jev re-ranking consistently across pages in the database fallback path" do
+        enable_jev_for(:semantic_search_reranking)
+        allow(Article).to receive(:raw_search).and_return({ "hits" => [] })
+
+        article.update_column(:published, false)
+        first_db = create(:article, title: "DB Jev Fable One", published: true)
+        first_db.update_columns(score: 500, published_at: 1.day.ago, semantic_embedding: Array.new(768, 0.1))
+
+        second_db = create(:article, title: "DB Jev Fable Two", published: true)
+        second_db.update_columns(score: 10, published_at: 30.days.ago, semantic_embedding: Array.new(768, 0.1))
+
+        stub_jev(
+          "candidate::#{first_db.id}" => 0.05,
+          "candidate::#{second_db.id}" => 0.98,
+        )
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 1 }, headers: auth_headers
+        expect(response).to be_successful
+        page_one_ids = response.parsed_body.pluck("id")
+
+        get "/api/articles/semantic_search", params: { q: "fable", per_page: 1, page: 2 }, headers: auth_headers
+        expect(response).to be_successful
+        page_two_ids = response.parsed_body.pluck("id")
+
+        expect(page_one_ids).to eq([second_db.id])
+        expect(page_two_ids).to eq([first_db.id])
+      end
+
+      it "falls back to DB hybrid search if Algolia search fails" do
+        db_article = create(:article, title: "Database Match Fable", published: true)
+        db_article.update_columns(score: 100, semantic_embedding: nil)
+
+        expect(Article).to receive(:raw_search).and_raise(StandardError.new("Algolia Error"))
+
+        get "/api/articles/semantic_search", params: { q: "fable" }, headers: auth_headers
+        expect(response).to be_successful
+        json = JSON.parse(response.body)
+        expect(json.find { |item| item["id"] == db_article.id }).to be_present
+      end
+    end
+
+    it "caches the embedding API call for identical queries" do
+      memory_store = ActiveSupport::Cache.lookup_store(:memory_store)
+      allow(Rails).to receive(:cache).and_return(memory_store)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      expect(Ai::Embedding).to receive(:new).once.and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call).once.and_return(query_embedding)
+
+      # First request: should call the service
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+
+      # Second request: should read from cache and not call the service again
+      get "/api/articles/semantic_search", params: { q: "cache query" }, headers: auth_headers
+      expect(response).to be_successful
+    end
+
+    it "strips stop words and contractions from database keyword query" do
+      allow(Settings::General).to receive(:algolia_search_enabled?).and_return(false)
+
+      embedding_mock = instance_double(Ai::Embedding)
+      allow(Ai::Embedding).to receive(:new).and_return(embedding_mock)
+      expect(embedding_mock).to receive(:call)
+        .with("what's the latest with anthropic fable", task_type: "RETRIEVAL_QUERY", output_dimensionality: 768)
+        .and_return(query_embedding)
+
+      keyword_article = create(:article, title: "An amazing latest news fable by anthropic", published: true)
+      keyword_article.update_columns(score: 100, semantic_embedding: nil)
+
+      get "/api/articles/semantic_search", params: { q: "what's the latest with anthropic fable" }, headers: auth_headers
+      expect(response).to be_successful
+      json = JSON.parse(response.body)
+
+      matching_item = json.find { |item| item["id"] == keyword_article.id }
+      expect(matching_item).to be_present
+    end
+  end
+
+  describe "AI disclosure visibility for automated clients" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:auth_headers) do
+      { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json",
+        "content-type" => "application/json" }
+    end
+
+    context "when ai disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "returns the disclosure level and label so a client can verify it" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        get api_article_path(article.id), headers: auth_headers
+
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body["ai_disclosure_label"]).to be_present
+      end
+
+      it "warns when updating an undisclosed article" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["warnings"].first).to include("not_disclosed")
+      end
+
+      it "omits warnings when the article is already disclosed" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
+    end
+
+    context "when ai disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "does not attach warnings on update" do
+        article = create(:article, user: user, ai_disclosure_level: :not_disclosed)
+
+        put api_article_path(article.id), params: { article: { title: "An edited title" } }.to_json,
+                                          headers: auth_headers
+
+        expect(response.parsed_body).not_to have_key("warnings")
       end
     end
   end

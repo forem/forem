@@ -29,6 +29,12 @@ RSpec.describe KotlinTag, type: :liquid_tag do
         expect(liquid2.render).to include("<iframe")
         expect(liquid2.render).to include("src=\"https://pl.kotl.in/owreUFFUG?theme=darcula&amp;from=3&amp;to=6&amp;readOnly=true\"")
       end
+
+      it "keeps multi-digit from and to line ranges" do
+        liquid = generate_new_liquid("https://pl.kotl.in/owreUFFUG?from=10&to=20")
+        expect(liquid.render).to include("<iframe")
+        expect(liquid.render).to include("src=\"https://pl.kotl.in/owreUFFUG?from=10&amp;to=20\"")
+      end
     end
 
     context "with invalid Kotlin urls" do

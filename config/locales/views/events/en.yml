@@ -1,0 +1,9 @@
+---
+en:
+  views:
+    events:
+      meta:
+        title: Upcoming Events
+        description: Discover upcoming virtual events, challenges, streams, and hackathons.
+      view_on_calendar: View on Calendar
+      no_events: No upcoming events scheduled right now. Check back soon!

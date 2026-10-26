@@ -22,7 +22,6 @@ RSpec.describe "UserShow" do
     end
 
     it "renders the proper JSON-LD for a user" do
-      user.setting.update(display_email_on_profile: true)
       get user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
@@ -41,9 +40,16 @@ RSpec.describe "UserShow" do
         ],
         "image" => user.profile_image_url_for(length: 320),
         "name" => user.name,
-        "email" => user.email,
         "description" => user.tag_line,
       )
+    end
+
+    it "does not include email in JSON-LD structured data even when display_email_on_profile is enabled" do
+      user.setting.update(display_email_on_profile: true)
+      get user.path
+      text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
+      response_json = JSON.parse(text)
+      expect(response_json.key?("email")).to be(false)
     end
 
     it "includes a subscription icon if user is subscribed" do
@@ -55,6 +61,36 @@ RSpec.describe "UserShow" do
     it "does not include a subscription icon if user is not subscribed" do
       get user.path
       expect(response.body).not_to include('class="subscription-icon"')
+    end
+
+    context "when rendering the icons next to the profile name" do
+      let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
+
+      after { FeatureFlag.remove(:community_favorites) }
+
+      it "does not render an icon wrapper when the user has no icons" do
+        get user.path
+        expect(title).not_to be_nil
+        expect(title.at_css("span.ml-2")).to be_nil
+      end
+
+      it "wraps a subscription icon in a spaced span" do
+        user.add_role("base_subscriber")
+        get user.path
+        expect(title.at_css("span.ml-2 .subscription-icon")).not_to be_nil
+      end
+
+      it "renders every icon inside a single spaced span" do
+        FeatureFlag.add(:community_favorites)
+        FeatureFlag.enable(:community_favorites)
+        user.add_role("base_subscriber")
+        user.add_role(:community_leader_level_1)
+        get user.path
+        wrapper = title.css("span.ml-2")
+        expect(wrapper.size).to eq(1)
+        expect(wrapper.first.at_css(".subscription-icon")).not_to be_nil
+        expect(wrapper.first.at_css(".community-leader-icon")).not_to be_nil
+      end
     end
 
     it "does not render a key if no value is given" do

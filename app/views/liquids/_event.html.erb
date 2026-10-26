@@ -1,0 +1,20 @@
+<div class="ltag__event" data-event-name-slug="<%= event.event_name_slug %>" data-event-variation-slug="<%= event.event_variation_slug %>">
+  <div class="ltag__event__header">
+    <h3 class="ltag__event__title">
+      <%= link_to event.title, event_path(event.event_name_slug, event.event_variation_slug), class: "crayons-link" %>
+    </h3>
+    <span class="ltag__event__date"><%= event.start_time.strftime("%B %d, %Y") %></span>
+  </div>
+  <p class="ltag__event__description"><%= event.description&.rstrip %></p>
+  <div class="ltag__event__actions">
+    <button data-event-signup-button="true" data-event-name-slug="<%= event.event_name_slug %>" data-event-variation-slug="<%= event.event_variation_slug %>" data-signed-up-class="crayons-btn--outlined" data-unsigned-up-class="crayons-btn--primary" class="crayons-btn event-signup-btn crayons-btn--primary" data-signed-up="false">
+      <template data-signed-up-html>
+        <%= event.signup_button_text(signed_up: true) %>
+      </template>
+      <template data-unsigned-up-html>
+        <%= event.signup_button_text(signed_up: false) %>
+      </template>
+      <%= event.signup_button_text(signed_up: false) %>
+    </button>
+  </div>
+</div>

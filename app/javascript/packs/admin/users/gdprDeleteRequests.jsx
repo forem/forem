@@ -9,9 +9,10 @@ import {
 document
   .getElementById('gdpr-delete-requests-content')
   ?.addEventListener('click', ({ target }) => {
+    const button = target.closest?.('button[data-gdpr-form-action]') || target;
     const {
-      dataset: { username, name, gdprFormAction },
-    } = target;
+      dataset: { username, name, gdprFormAction } = {},
+    } = button;
     if (gdprFormAction) {
       handleConfirmDelete(username, name, gdprFormAction);
     }

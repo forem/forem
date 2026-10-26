@@ -38,6 +38,8 @@ class Organization < ApplicationRecord
   before_save :remove_at_from_usernames
   before_save :generate_secret
   before_save :reset_verification_on_domain_change
+  before_save :set_baseline_score_on_verification_change
+
 
   after_save :bust_cache
   after_save :generate_social_images
@@ -127,7 +129,8 @@ class Organization < ApplicationRecord
   def check_for_slug_change
     return unless slug_changed?
 
-    self.old_old_slug = old_slug
+    previous_old = old_slug == slug ? old_old_slug : old_slug
+    self.old_old_slug = previous_old == slug ? nil : previous_old
     self.old_slug = slug_was
     Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end
@@ -174,6 +177,10 @@ class Organization < ApplicationRecord
     false
   end
 
+  def cached_community_leader?
+    false
+  end
+
   def fully_trusted?
     fully_trusted == true
   end
@@ -186,8 +193,12 @@ class Organization < ApplicationRecord
     main_page.present?
   end
 
+  def ordered_pages
+    pages.order(:position, :created_at, :id)
+  end
+
   def main_page
-    pages.order(:created_at).first
+    ordered_pages.first
   end
 
   def social_link(platform)
@@ -338,6 +349,16 @@ class Organization < ApplicationRecord
     self.verification_url = nil
   end
 
+  def set_baseline_score_on_verification_change
+    return unless will_save_change_to_verified?
+
+    if verified?
+      self.baseline_score = Settings::UserExperience.index_minimum_score.to_i
+    else
+      self.baseline_score = 0
+    end
+  end
+
   def remove_at_from_usernames
     self.twitter_username = twitter_username.delete("@") if twitter_username
     self.github_username = github_username.delete("@") if github_username
@@ -389,6 +410,7 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+    MemoryFirstCache.delete("org_custom_domain:#{id}")
   end
 
   def recompile_pages

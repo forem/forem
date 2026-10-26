@@ -17,4 +17,5 @@ json.user do
   json.twitter_username current_user.twitter_username
   json.github_username current_user.github_username
   json.cached_base_subscriber current_user.cached_base_subscriber?
+  json.cached_community_leader current_user.cached_community_leader?
 end

@@ -19,6 +19,15 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Better Stack's Rails integration has to load before the app boots; only load it when configured
+# (see config/initializers/betterstack.rb).
+require "logtail-rails" if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
+# Same for the Better Stack errors pilot (see config/initializers/sentry.rb).
+if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
+  require "sentry-rails"
+  require "sentry-sidekiq"
+end
+
 if defined?(Anyway)
   Anyway.loaders.delete(:secrets)
 end
@@ -35,7 +44,7 @@ module PracticalDeveloper
   class Application < Rails::Application
     # Specify the default Rails settings version we're targetting
     # See: https://guides.rubyonrails.org/configuring.html#results-of-config-load-defaults
-    config.load_defaults 7.2
+    config.load_defaults 8.0
 
     # Set AhoyEmail secret token early to prevent it from accessing deprecated Rails.application.secrets
     config.before_initialize do
@@ -49,14 +58,13 @@ module PracticalDeveloper
     # Enable modern cache format version 7.1
     config.active_support.cache_format_version = 7.1
 
-    # Enable modern message serializer to prepare for Rails 8.0
-    config.active_support.message_serializer = :json
+    # Enable modern message serializer with temporary Marshal fallback support for legacy unsubscribe links.
+    # TODO: Revert to :json after legacy links (valid for 31 days) have expired.
+    config.active_support.message_serializer = :json_allow_marshal
 
-    # Preserve receiver timezone when calling to_time (preparing for Rails 8.0/8.1)
-    config.active_support.to_time_preserves_timezone = :zone
+    # Enable JSON message serializer for metadata to avoid legacy Marshal format dependency.
+    config.active_support.use_message_serializer_for_metadata = true
 
-    # Enable strict freshness to prioritize ETag over Last-Modified (preparing for Rails 8.0)
-    config.action_dispatch.strict_freshness = true
 
     # Enable validating only parent-related columns for presence when the parent is mandatory.
     config.active_record.belongs_to_required_validates_foreign_key = true
