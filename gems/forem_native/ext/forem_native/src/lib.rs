@@ -303,6 +303,15 @@ fn subforem_subdomain_host(ruby: &Ruby, host: RString, sld: RString, tld: RStrin
     }
 }
 
+fn original_host_valid(ruby: &Ruby, host: RString) -> Option<bool> {
+    if !is_ascii_compatible_host(ruby, host) {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before returning.
+    forem_core::url::original_host_valid(unsafe { host.as_slice() })
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -367,5 +376,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "subforem_subdomain_host",
         function!(subforem_subdomain_host, 3),
     )?;
+    native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     Ok(())
 }
