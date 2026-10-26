@@ -71,6 +71,18 @@ module ForemNative
       Native.color_brightness(hex, native_amount, only_values ? true : false)
     end
 
+    # Finds the first seven-character brightness variant for `Color::CompareHex#accent`.
+    # Returns nil outside the strict hex and finite numeric domain so the helper can use
+    # its private `legacy_accent` implementation for Ruby's edge-case semantics.
+    def color_accent(hex, amount = 1)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible?
+
+      native_amount = native_float(amount)
+      return unless native_amount
+
+      Native.color_accent(hex, native_amount)
+    end
+
     # Formats a strict `#rrggbb` hex color as `rgba(r, g, b, a)`, matching
     # `Color::CompareHex#opacity`. Returns nil for malformed hexes and for alphas
     # that would need `%.2f` rounding (anything beyond two decimals, non-finite,
