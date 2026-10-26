@@ -8,7 +8,7 @@ module Middlewares
     def call(env)
       request = Rack::Request.new(env)
 
-      raw_domain = request.GET["passed_domain"].presence || request.host
+      raw_domain = valid_passed_domain(request).presence || request.host
       domain = ForemNative.subforem_request_domain(raw_domain) || legacy_request_domain(raw_domain)
       RequestStore.store[:default_subforem_id]     = Subforem.cached_default_id
       RequestStore.store[:subforem_id]             = Subforem.cached_id_by_domain(domain)
@@ -65,6 +65,14 @@ module Middlewares
     end
 
     private
+
+    # A passed_domain with invalid UTF-8 can't name a subforem (and raises in String#blank?), so ignore it.
+    def valid_passed_domain(request)
+      passed_domain = request.GET["passed_domain"]
+      return if passed_domain.is_a?(String) && !passed_domain.valid_encoding?
+
+      passed_domain
+    end
 
     # Handles the domains ForemNative declines (full URLs, paths, non-ASCII, non-Strings).
     def legacy_request_domain(raw_domain)

@@ -147,6 +147,12 @@ RSpec.describe Middlewares::SetSubforem do
         expect(RequestStore.store[:subforem_id]).to eq(2)
       end
 
+      it "falls back to the request host when passed_domain is not valid UTF-8" do
+        env = Rack::MockRequest.env_for("https://community.example.com/auth_pass/iframe?passed_domain=%C0%AF")
+        expect { middleware.call(env) }.not_to raise_error
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
       it "removes the session cookies on a subdomain of the registrable domain" do
         middleware.call(Rack::MockRequest.env_for("https://community.example.com/articles"))
         expect(Rack::Utils).to have_received(:delete_cookie_header!)
