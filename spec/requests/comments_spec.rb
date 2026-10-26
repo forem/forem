@@ -398,6 +398,17 @@ RSpec.describe "Comments" do
         get comment.path
         expect(response.body).to include("Comment from a deleted post")
       end
+
+      it "shows a low-quality comment from a deleted post to a signed-in user", :aggregate_failures do
+        low_comment = create(:comment, commentable: article, user: user, score: -500, body_markdown: "low-comment")
+        create(:comment, commentable: article, user: user, parent: low_comment, body_markdown: "child comment")
+        article.destroy
+        sign_in user
+
+        get low_comment.reload.path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Comment from a deleted post")
+      end
     end
 
     context "when the podcast episode is deleted" do
