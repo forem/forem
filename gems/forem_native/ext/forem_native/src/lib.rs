@@ -303,6 +303,49 @@ fn subforem_subdomain_host(ruby: &Ruby, host: RString, sld: RString, tld: RStrin
     }
 }
 
+fn public_suffix_domain(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we allocate any Ruby objects.
+    let domain = {
+        let bytes = unsafe { host.as_slice() };
+        match forem_core::url::public_suffix_domain(bytes) {
+            None => return ruby.qnil().as_value(),
+            Some(Err(())) => return ruby.qfalse().as_value(),
+            Some(Ok(domain)) => {
+                if domain.as_bytes() == bytes {
+                    None
+                } else {
+                    Some(domain.into_owned().into_bytes())
+                }
+            }
+        }
+    };
+    match domain {
+        None => host.as_value(),
+        Some(bytes) => ruby.enc_str_new(bytes, host.enc_get()).as_value(),
+    }
+}
+
+fn public_suffix_subdomain_host(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we touch the Ruby VM.
+    let outcome = forem_core::url::public_suffix_subdomain_host(unsafe { host.as_slice() });
+    match outcome {
+        None => ruby.qnil().as_value(),
+        Some(forem_core::url::SubforemSubdomain::InvalidDomain) => {
+            ruby.to_symbol("invalid").as_value()
+        }
+        Some(forem_core::url::SubforemSubdomain::Subdomain(true)) => ruby.qtrue().as_value(),
+        Some(forem_core::url::SubforemSubdomain::Subdomain(false)) => ruby.qfalse().as_value(),
+    }
+}
+
 fn original_host_valid(ruby: &Ruby, host: RString) -> Option<bool> {
     if !is_ascii_compatible_host(ruby, host) {
         return None;
@@ -432,6 +475,12 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "subforem_subdomain_host",
         function!(subforem_subdomain_host, 3),
+    )?;
+    native_mod
+        .define_singleton_method("public_suffix_domain", function!(public_suffix_domain, 1))?;
+    native_mod.define_singleton_method(
+        "public_suffix_subdomain_host",
+        function!(public_suffix_subdomain_host, 1),
     )?;
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
