@@ -92,5 +92,23 @@ RSpec.describe Comments::Tree do
       comments = described_class.for_root_comment(comment, include_negative: true)
       expect(comments).to eq(comment => { child_comment => {}, low_comment => {} })
     end
+
+    it "reuses the root comment's loaded article instead of re-fetching it" do
+      root = Comment.find(comment.id)
+      root.commentable
+
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(article_queries).to be_empty
+      nodes = [tree.keys.first, *tree.values.first.keys]
+      expect(nodes.map(&:commentable)).to all(be(root.commentable))
+      expect(root.commentable.association(:organization)).to be_loaded
+    end
   end
 end
