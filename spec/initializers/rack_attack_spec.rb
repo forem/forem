@@ -367,6 +367,42 @@ describe Rack, ".attack", throttle: true, type: :request do
     end
   end
 
+  describe "calendar_throttle" do
+    it "throttles /calendar after 20 requests per minute based on IP" do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        valid_responses = (1..20).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/calendar", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        end
+        Timecop.travel(start_time + 21.seconds)
+        throttled_response = get "/calendar", headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+        new_ip_response = get "/calendar", headers: { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    end
+
+    it "throttles /calendar/ with trailing slash" do
+      Timecop.freeze do
+        start_time = Time.current.beginning_of_minute
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+        valid_responses = (1..20).map do |i|
+          Timecop.travel(start_time + i.seconds)
+          get "/calendar/", headers: headers
+        end
+        Timecop.travel(start_time + 21.seconds)
+        throttled_response = get "/calendar/", headers: headers
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+      end
+    end
+  end
+
   describe "edge-cached page throttling removal" do
     it "confirms that edge-cached pages are no longer throttled" do
       # These pages are edge-cached globally, so Rack Attack rules were removed

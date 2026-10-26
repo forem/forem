@@ -1,4 +1,4 @@
-﻿class LegacyCodeTag < Liquid::Block
+class LegacyCodeTag < Liquid::Block
   def self.fallback_html(preamble:, parsed_content:)
     escaped_preamble = ERB::Util.html_escape(preamble)
     escaped_content = ERB::Util.html_escape(parsed_content)
@@ -36,7 +36,7 @@
   def sanitized_preamble(markup)
     raise StandardError, I18n.t("liquid_tags.legacy_code_tag.invalid_tag") if markup.include? ">"
 
-    ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
+    ForemNative.full_sanitize(markup) || ActionView::Base.full_sanitizer.sanitize(markup, tags: [])
   end
 end
 

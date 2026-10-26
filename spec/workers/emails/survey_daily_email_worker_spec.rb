@@ -148,18 +148,19 @@ RSpec.describe Emails::SurveyDailyEmailWorker, type: :worker do
     end
 
     context "when adjusting the send rate" do
-      # 100 completions needed. 5 days remaining. 25 hours since started sending.
+      # 100 completions needed. 5 days (120 hours) remaining. 25 hours since started sending.
       # 10 completions done so far. 1000 emails sent.
       # conversion rate = 10 / 1000 = 1%.
       # remaining completions needed = 90.
       # required daily completion rate = 90 / 5 = 18.
       # new daily send rate = 18 / 0.01 = 1800.
+      let(:now) { Time.zone.now }
       let!(:survey) do
         s = create(:survey, active: true, target_response_count: 100, daily_email_distributions: 4000)
         s.update_columns(
-          target_completion_date: 5.days.from_now,
-          sending_started_at: 25.hours.ago,
-          emails_sent_count: 1000
+          target_completion_date: now + 120.hours,
+          sending_started_at: now - 25.hours,
+          emails_sent_count: 1000,
         )
         s
       end
@@ -169,10 +170,9 @@ RSpec.describe Emails::SurveyDailyEmailWorker, type: :worker do
       end
 
       it "updates daily_email_distributions based on actual conversion rate" do
-        # We also mock the time to prevent time drifts in the calculations
-        now = Time.zone.now
+        # Mock the time to prevent time drifts and DST calendar-day shifts in the calculations
         allow(Time).to receive(:current).and_return(now)
-        
+
         # Stub the hourly sending so it doesn't try to send 1800 / 24 = 75 emails
         # which would require 75 eligible users and output mock clutter
         allow(subject).to receive(:send_hourly_emails)

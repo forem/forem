@@ -16,7 +16,7 @@ module Users
       # Log the error but don't raise it to prevent account deletion from failing
       Rails.logger.error "Failed to cancel Stripe subscriptions for user #{user.id}: #{e.message}"
       ForemStatsClient.increment("users.stripe_subscription_cancellation_failed", tags: ["user_id:#{user.id}"])
-      Honeybadger.notify(e, context: { user_id: user.id, stripe_id_code: user.stripe_id_code })
+      Rails.error.report(e, context: { user_id: user.id, stripe_id_code: user.stripe_id_code })
     end
 
     private

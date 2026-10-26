@@ -26,7 +26,11 @@ resources :users, only: %i[show] do
     get :me
   end
 end
-resources :tags, only: [:index]
+resources :tags, only: [:index] do
+  collection do
+    get :supported
+  end
+end
 resources :follows, only: [:create] do
   collection do
     get :tags

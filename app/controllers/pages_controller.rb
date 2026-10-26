@@ -161,7 +161,12 @@ class PagesController < ApplicationController
   private
 
   def proper_page_by_slug
-    Page.from_subforem.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
+    subforem_pages = Page.from_subforem
+    # When subforem filtering is off, the scoped lookup is the same query as the fallback,
+    # so a missing slug would otherwise hit the database twice before raising.
+    return Page.find_by!(slug: params[:slug]) if subforem_pages.where_clause.empty?
+
+    subforem_pages.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
   end
 
   def redirect_daily_thread_request(daily_thread)

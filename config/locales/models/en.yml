@@ -72,6 +72,13 @@ en:
       mention_too_many:
         one: You cannot mention more than %{count} users in a comment!
         other: You cannot mention more than %{count} users in a comment!
+    co_author_invitation:
+      declined: "@%{username} declined your invitation to co-author this post."
+      must_follow_author: "@%{username} needs to follow you before you can invite them as a co-author."
+      personal_posts_only: Co-author invitations are only available on personal posts.
+      too_many:
+        one: You can invite up to %{count} co-author.
+        other: You can invite up to %{count} co-authors.
     feedback_message:
       reported: '(you) previously reported this URL.'
     github_issue:
