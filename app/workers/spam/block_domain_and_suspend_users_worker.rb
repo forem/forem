@@ -25,6 +25,7 @@ module Spam
           next if user.spam? || user.suspended?
 
           user.add_role(:suspended)
+          Spam::Handler.audit_automatic_block!(user: user, role: :suspended, reason: "email_domain", domain: domain)
 
           Note.create(
             author_id: Settings::General.mascot_user_id,

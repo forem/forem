@@ -17,6 +17,11 @@ describe ArticlesHelper do
       expect(host).to eq "Medium"
     end
 
+    it "does not brand unrelated hosts that merely contain 'medium.com'" do
+      host = helper.get_host_without_www("https://premedium.com")
+      expect(host).to eq "premedium.com"
+    end
+
     it "can handle urls without schemes" do
       host = helper.get_host_without_www("www.example.com")
       expect(host).to eq "example.com"
@@ -96,40 +101,50 @@ describe ArticlesHelper do
     end
   end
 
-  describe "#should_show_updated_on?" do
-    let(:article) { instance_double("Article", published: true, published_from_feed: false) }
+  describe "#has_vid?" do
+    let(:article) { build(:article, processed_html: "<p>Hello world</p>", comments_count: 1) }
 
-    it "returns false if edited_at is nil" do
-      allow(article).to receive(:edited_at).and_return(nil)
-      expect(helper.should_show_updated_on?(article)).to be false
+    it "returns true when article processed_html contains youtube without calling comments_blob" do
+      article.processed_html = '<iframe src="https://www.youtube.com/embed/123"></iframe>'
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(true)
+      expect(article).not_to have_received(:comments_blob)
     end
 
-    it "returns false if not published" do
-      allow(article).to receive(:published).and_return(false)
-      allow(article).to receive(:edited_at).and_return(Time.current)
-      expect(helper.should_show_updated_on?(article)).to be false
+    it "checks already-loaded comment trees in memory, including nested replies" do
+      root = build(:comment, body_markdown: "Nice post")
+      reply = build(:comment, body_markdown: "Check out https://www.youtube.com/watch?v=abc")
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ root => { reply => {} } })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(true)
+      expect(article).not_to have_received(:comments_blob)
     end
 
-    it "returns false if published from feed" do
-      allow(article).to receive(:published_from_feed).and_return(true)
-      allow(article).to receive(:edited_at).and_return(Time.current)
-      expect(helper.should_show_updated_on?(article)).to be false
+    it "returns false from loaded comment trees without youtube links" do
+      allow(Comments::Tree).to receive(:for_commentable).and_return({ build(:comment, body_markdown: "hi") => {} })
+      article.comment_tree(limit: 10, order: "top", include_negative: false)
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(false)
+      expect(article).not_to have_received(:comments_blob)
     end
 
-    it "returns true if edited after publication on a different day" do
-      published_at = 2.days.ago
-      edited_at = Time.current
-      allow(article).to receive(:published_at).and_return(published_at)
-      allow(article).to receive(:edited_at).and_return(edited_at)
-      expect(helper.should_show_updated_on?(article)).to be true
+    it "returns false without calling comments_blob when comment counts are zero" do
+      article.comments_count = 0
+      article.displayed_comments_count = 0
+      allow(article).to receive(:comments_blob)
+
+      expect(helper.has_vid?(article)).to be(false)
+      expect(article).not_to have_received(:comments_blob)
     end
 
-    it "returns true if edited on the same day as publication" do
-      published_at = Time.current.beginning_of_day
-      edited_at = Time.current
-      allow(article).to receive(:published_at).and_return(published_at)
-      allow(article).to receive(:edited_at).and_return(edited_at)
-      expect(helper.should_show_updated_on?(article)).to be true
+    it "falls back to article.comments_blob when no comment tree has been loaded" do
+      allow(article).to receive(:comments_blob).and_return("watch on youtube")
+
+      expect(helper.has_vid?(article)).to be(true)
     end
   end
 end

@@ -38,6 +38,12 @@ RSpec.describe JsFiddleTag, type: :liquid_tag do
       end.to raise_error(StandardError)
     end
 
+    it "raises the invalid-URL error, not a NoMethodError, on a non-matching link" do
+      expect do
+        generate_new_liquid("https://not-jsfiddle.example/x")
+      end.to raise_error(StandardError, "Invalid JSFiddle URL")
+    end
+
     it "accepts jsfiddle link with a custom-tab parameter" do
       expect do
         generate_new_liquid(jsfiddle_link_with_custom_tabs)

@@ -11,6 +11,9 @@ module Settings
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
     setting :article_published_slack_channel, type: :string, default: "activity"
+    # AI confidence needed to auto-approve an appeal. Scores are capped at 1.0, so the 1.01 default
+    # disables auto-approval and routes every appeal to human review; lower it to opt in.
+    setting :appeal_auto_unflag_threshold, type: :float, default: 1.01
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current
@@ -94,6 +97,30 @@ module Settings
     setting :billboard_enabled_countries, type: :hash, default: Geolocation::DEFAULT_ENABLED_COUNTRIES, validates: {
       enabled_countries_hash: true
     }
+
+    # Regions (ISO 3166 codes such as "US", "CA" or "US-CA") where signed-out visitors may be
+    # given an anonymous identifier in their browser's localStorage, along with a tally of the
+    # tags on the articles they read. Delivered to the browser through billboard responses
+    # (see BillboardsController#anonymous_tracking_allowed? and
+    # app/javascript/utilities/anonymousVisitor.js).
+    #
+    # This exists so we can serve better content to anonymous readers. It is empty (off
+    # everywhere) by default, and admins are responsible for only listing regions where it is
+    # lawful to store an identifier on a visitor's device without asking first:
+    #
+    # - Many jurisdictions (e.g. the EU/EEA and UK under GDPR + ePrivacy) treat a persistent
+    #   localStorage identifier like a cookie: it needs prior consent unless strictly necessary.
+    #   Do NOT list such regions unless the flow is first gated on the cookie banner
+    #   (localStorage "cookie_status" === "allowed"), which this setting alone does not do.
+    # - If this data is ever used for ads (e.g. billboard targeting), it must be allowed for
+    #   advertising in each listed region and/or compatible with the cookie banner, and the
+    #   privacy policy should say so.
+    # - Removing a region stops new identifiers from being created there, but does not clear
+    #   identifiers browsers already have; that needs a client-side change.
+    # - Signed-out visitors are only geolocated to countries in Fastly's
+    #   `active_geofencing_regions` edge dictionary (config/fastly/snippets/client_geolocation.vcl).
+    #   A region missing from that dictionary never matches here.
+    setting :geos_with_allowed_anonymous_tracking, type: :array, default: %w[]
 
     # Newsletter
     # <https://mailchimp.com/developer/>

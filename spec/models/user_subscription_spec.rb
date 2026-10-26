@@ -29,13 +29,15 @@ RSpec.describe UserSubscription do
       expect(user_subscription.errors[:base]).to include "User subscriptions are not enabled for the source."
     end
 
-    it "validates the subscriber isn't using an Apple private relay" do
-      subscriber_with_apple_relay = create(:user, email: "test@privaterelay.appleid.com")
-      user_subscription = described_class.build(source: source, subscriber: subscriber_with_apple_relay)
-      expect(user_subscription).not_to be_valid
+    it "validates the subscriber isn't using an Apple private relay", :aggregate_failures do
+      %w[test@privaterelay.appleid.com test@private.icloud.com].each do |relay_email|
+        subscriber_with_apple_relay = create(:user, email: relay_email)
+        user_subscription = described_class.build(source: source, subscriber: subscriber_with_apple_relay)
+        expect(user_subscription).not_to be_valid
 
-      error = "Can't subscribe with an Apple private relay. Please update email."
-      expect(user_subscription.errors[:subscriber_email]).to include(error)
+        error = "Can't subscribe with an Apple private relay. Please update email."
+        expect(user_subscription.errors[:subscriber_email]).to include(error)
+      end
     end
 
     describe "#user_subscription_sourceable" do

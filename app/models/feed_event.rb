@@ -44,6 +44,10 @@ class FeedEvent < ApplicationRecord
 
   def self.record_journey_for(user, article:, category:)
     return unless %i[reaction comment extended_pageview].include?(category)
+    # The latest click can only be on this article if a click on it exists at all.
+    # This probe uses the (article_id, user_id, category) index and skips the
+    # latest-click lookup, which walks the primary key backwards for users with few clicks.
+    return unless where(article: article, user: user, category: :click).exists?
 
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
@@ -61,6 +65,12 @@ class FeedEvent < ApplicationRecord
     update_counters_for_articles(unique_article_ids)
   end
 
+  def self.bulk_update_counters_by_feed_config_id(feed_config_ids)
+    feed_config_ids.compact.uniq.each do |feed_config_id|
+      update_single_feed_config_counters(feed_config_id)
+    end
+  end
+
   def self.update_counters_for_articles(article_ids)
     article_ids.each do |article_id|
       update_single_article_counters(article_id)
@@ -69,81 +79,105 @@ class FeedEvent < ApplicationRecord
 
   def self.update_single_article_counters(article_id)
     ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 5.minutes) do
-      impressions = FeedEvent.where(article_id: article_id, category: "impression")
-      return if impressions.empty?
-
-      clicks = FeedEvent.where(article_id: article_id, category: "click")
-      reactions = FeedEvent.where(article_id: article_id, category: "reaction")
-      comments = FeedEvent.where(article_id: article_id, category: "comment")
-      pageviews = FeedEvent.where(article_id: article_id, category: "extended_pageview")
-
-      # Count the distinct users for impressions and each event type
-      distinct_impressions_users = impressions.distinct.pluck(:user_id)
-      distinct_clicks_users = clicks.distinct.pluck(:user_id)
-      distinct_reactions_users = reactions.distinct.pluck(:user_id)
-      distinct_comments_users = comments.distinct.pluck(:user_id)
-      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
+      # Total events and distinct users per category in a single pass over the
+      # article's events. The NULL flag keeps parity with distinct.pluck(:user_id).size,
+      # which counts a NULL user_id as one distinct value.
+      totals = {}
+      distinct_users = Hash.new(0)
+      FeedEvent.where(article_id: article_id).group(:category).pluck(
+        :category,
+        Arel.sql("COUNT(*)"),
+        Arel.sql("COUNT(DISTINCT user_id) + MAX(CASE WHEN user_id IS NULL THEN 1 ELSE 0 END)"),
+      ).each do |category, total, users|
+        totals[category] = total
+        distinct_users[category] = users
+      end
+      return unless totals["impression"]
 
       # Calculate score based on distinct users
-      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER
-      clicks_score = distinct_clicks_users.size # 1x multiplier for clicks
-      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER
-      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+      reactions_score = distinct_users["reaction"] * REACTION_SCORE_MULTIPLIER
+      clicks_score = distinct_users["click"] # 1x multiplier for clicks
+      comments_score = distinct_users["comment"] * COMMENT_SCORE_MULTIPLIER
+      pageviews_score = distinct_users["extended_pageview"] # 1x multiplier for extended pageviews
 
-      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_users["impression"]
 
       # Update the article counters
       Article.where(id: article_id).update_all(
         feed_success_score: score,
-        feed_clicks_count: clicks.size,
-        feed_impressions_count: impressions.size,
+        feed_clicks_count: totals.fetch("click", 0),
+        feed_impressions_count: totals["impression"],
       )
     end
   end
 
-  def self.update_single_feed_config_counters(feed_config_id)
-    ThrottledCall.perform("feed_config_feed_success_score_#{feed_config_id}", throttle_for: 5.minutes) do
-      impressions = FeedEvent.where(feed_config_id: feed_config_id, category: "impression")
-      return if impressions.empty?
+  def self.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: nil)
+    throttle_key = ["feed_config_feed_success_score", feed_config_id, throttle_key_suffix].compact.join("_")
+    executed = false
+    impressions_total = 0
 
-      clicks = FeedEvent.where(feed_config_id: feed_config_id, category: "click")
-      reactions = FeedEvent.where(feed_config_id: feed_config_id, category: "reaction")
-      comments = FeedEvent.where(feed_config_id: feed_config_id, category: "comment")
-      pageviews = FeedEvent.where(feed_config_id: feed_config_id, category: "extended_pageview")
-
-      # Count the distinct users for impressions and each event type
-      distinct_impressions_users = impressions.distinct.pluck(:user_id)
-      distinct_clicks_users = clicks.distinct.pluck(:user_id)
-      distinct_reactions_users = reactions.distinct.pluck(:user_id)
-      distinct_comments_users = comments.distinct.pluck(:user_id)
-      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
+    ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
+      executed = true
+      # Total events, distinct users, and position-weighted click sum per category
+      # in a single pass over the feed config's events. The NULL flag keeps parity
+      # with distinct.pluck(:user_id).size, which counts a NULL user_id as one distinct value.
+      totals = {}
+      distinct_users = Hash.new(0)
+      clicks_score = 0.0
+      FeedEvent.where(feed_config_id: feed_config_id).group(:category).pluck(
+        :category,
+        Arel.sql("COUNT(*)"),
+        Arel.sql("COUNT(DISTINCT user_id) + MAX(CASE WHEN user_id IS NULL THEN 1 ELSE 0 END)"),
+        Arel.sql("SUM(POWER(2.0/3, article_position - 1))"),
+      ).each do |category, total, users, position_weighted_sum|
+        totals[category] = total
+        distinct_users[category] = users
+        clicks_score = position_weighted_sum.to_f if category == "click"
+      end
+      impressions_total = totals["impression"].to_i
+      next if impressions_total.zero?
 
       # Calculate score based on distinct users
-      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER * 2
-      clicks_score = clicks.sum("POWER(2.0/3, article_position - 1)")
-      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER * 2
-      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
+      reactions_score = distinct_users["reaction"] * REACTION_SCORE_MULTIPLIER * 2
+      comments_score = distinct_users["comment"] * COMMENT_SCORE_MULTIPLIER * 2
+      pageviews_score = distinct_users["extended_pageview"] # 1x multiplier for extended pageviews
 
-      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
-      
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_users["impression"]
+
       # Update the feed config counters
-      FeedConfig.find_by(id: feed_config_id)&.update_columns(feed_success_score: score, feed_impressions_count: impressions.size)
+      FeedConfig.where(id: feed_config_id).update_all(
+        feed_success_score: score,
+        feed_impressions_count: impressions_total,
+      )
     end
+
+    return unless executed && impressions_total < FeedConfig::LOW_IMPRESSION_COUNT
+
+    Rails.cache.delete(format(ThrottledCall::KEY_TEMPLATE, key: throttle_key))
   end
 
   private
 
   def update_article_counters_and_scores
     self.class.update_single_article_counters(article_id) if article_id
-    self.class.update_single_feed_config_counters(feed_config_id) if feed_config_id
+    return unless feed_config_id
+
+    if impression?
+      self.class.update_single_feed_config_counters(feed_config_id)
+    else
+      self.class.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: category)
+    end
   end
 
   def create_feed_config_offshoot
-    # Any time we get a reaction or comment, we branch off a slightly modified feed based on the success of the current one
+    # Any time we get a reaction or comment on a proven config, branch off a slightly modified feed config
     return unless feed_config
     return unless %w[reaction comment].include?(category)
+    return if feed_config.feed_impressions_count < FeedConfig::LOW_IMPRESSION_COUNT
 
-    feed_config.create_slightly_modified_clone!
+    ThrottledCall.perform("create_feed_config_offshoot", throttle_for: 5.minutes) do
+      feed_config.create_slightly_modified_clone!
+    end
   end
 
   # @see AbExperiment::GoalConversionHandler

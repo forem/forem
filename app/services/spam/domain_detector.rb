@@ -80,27 +80,31 @@ module Spam
 
     private
 
+    # Already-blocked domains are skipped so the bulk suspension in
+    # BlockDomainAndSuspendUsersWorker doesn't re-scan the domain per user.
     def should_skip_domain?
-      POPULAR_SHARED_DOMAINS.include?(@email_domain)
+      POPULAR_SHARED_DOMAINS.include?(@email_domain) || BlockedEmailDomain.exists?(domain: @email_domain)
     end
 
     def spam_pattern_detected?
       # Users with this email domain
       same_domain_users = User.where("email LIKE ?", "%@#{@email_domain}")
+      two_weeks_ago = 2.weeks.ago
 
-      # Requirement 1: we've never seen this domain before 2 weeks ago
-      any_older_than_two_weeks = same_domain_users.where("registered_at < ?", 2.weeks.ago).exists?
-      return false if any_older_than_two_weeks
-
+      # Requirement 2 is checked first: it is driven by the spam/suspended
+      # roles, while Requirement 1's leading-wildcard LIKE can only be answered
+      # by a sequential scan of the whole users table.
       # Requirement 2: at least 3 users registered in the last 2 weeks are spam or suspended
-      recent_users = same_domain_users.where("registered_at >= ?", 2.weeks.ago)
+      recent_users = same_domain_users.where("registered_at >= ?", two_weeks_ago)
       recent_spam_or_suspended_count = recent_users
         .joins(:roles)
         .where(roles: { name: %w[spam suspended] })
         .distinct
         .count
+      return false if recent_spam_or_suspended_count < 3
 
-      recent_spam_or_suspended_count >= 3
+      # Requirement 1: we've never seen this domain before 2 weeks ago
+      !same_domain_users.where("registered_at < ?", two_weeks_ago).exists?
     end
 
     # NOTE: Heavy work moved to Spam::BlockDomainAndSuspendUsersWorker

@@ -23,12 +23,23 @@ module Feeds
     attr_reader :item
 
     def get_host_without_www(url)
+      ForemNative.host_without_www(url) || legacy_get_host_without_www(url)
+    end
+
+    # Handles the URLs ForemNative declines (non-ASCII text, userinfo, IP literals, ...).
+    def legacy_get_host_without_www(url)
       url = "http://#{url}" if Addressable::URI.parse(url).scheme.nil?
       host = Addressable::URI.parse(url).host.downcase
       host.start_with?("www.") ? host[4..] : host
     end
 
     def content_is_not_the_title?(item)
+      result = ForemNative.content_includes_title(item.content, item.title)
+      result.nil? ? legacy_content_is_not_the_title?(item) : result
+    end
+
+    # Handles the contents and titles ForemNative declines (nil, non-UTF-8, invalid UTF-8).
+    def legacy_content_is_not_the_title?(item)
       # [[:space:]] removes all whitespace, including unicode ones.
       content = item.content.gsub(/[[:space:]]/, " ")
       title = item.title.delete("…")
