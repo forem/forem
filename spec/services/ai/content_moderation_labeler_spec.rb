@@ -196,4 +196,79 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       end
     end
   end
+
+  describe "#evaluate with Jev selected" do
+    before { enable_jev_for(:content_moderation) }
+
+    # Quality Score positions run 0-4; compellingness dimensions 0-3.
+    def evaluate_with(answers)
+      stub_jev({ on_topic: 0.9, quality: 2.0 }.merge(answers))
+      described_class.new(article).evaluate
+    end
+
+    it "decomposes the judgment into one batched request instead of calling Gemini" do
+      requests = stub_jev(on_topic: 0.9, quality: 2.0)
+
+      described_class.new(article).evaluate
+
+      expect(Ai::Base).not_to have_received(:new)
+      expect(requests.size).to eq(1)
+      expect(requests.first[:questions].keys).to include(
+        :harmful, :inciting, :promotional_spam, :malicious, :auto_generated, :quality, :on_topic,
+        :originality, :personal_voice, :discussion_potential
+      )
+    end
+
+    it "labels acceptable on-topic content" do
+      expect(evaluate_with({})).to eq(label: "okay_and_on_topic", compellingness_score: 0.0)
+    end
+
+    it "maps quality and relevance to the label" do
+      expect(evaluate_with(quality: 3.2)[:label]).to eq("very_good_and_on_topic")
+      expect(evaluate_with(quality: 3.8)[:label]).to eq("great_and_on_topic")
+      expect(evaluate_with(quality: 3.8, on_topic: 0.2)[:label]).to eq("great_but_off_topic_for_subforem")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.2)[:label]).to eq("ok_but_offtopic_for_subforem")
+      expect(evaluate_with(quality: 1.0)[:label]).to eq("likely_low_quality")
+      expect(evaluate_with(quality: 0.2)[:label]).to eq("clear_and_obvious_low_quality")
+    end
+
+    it "puts safety ahead of spam, and spam ahead of quality" do
+      expect(evaluate_with(harmful: 0.9, promotional_spam: 0.95, quality: 4.0)[:label])
+        .to eq("clear_and_obvious_harmful")
+      expect(evaluate_with(inciting: 0.7)[:label]).to eq("likely_inciting")
+      expect(evaluate_with(promotional_spam: 0.9, quality: 4.0)[:label]).to eq("clear_and_obvious_spam")
+      expect(evaluate_with(malicious: 0.65)[:label]).to eq("likely_spam")
+    end
+
+    it "treats generic text as spam only when it is also promotional" do
+      expect(evaluate_with(auto_generated: 0.95)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(auto_generated: 0.95, promotional_spam: 0.55)[:label]).to eq("clear_and_obvious_spam")
+    end
+
+    it "caps negatively scored articles below the very good tiers" do
+      article.update_column(:score, -5)
+
+      expect(evaluate_with(quality: 4.0)[:label]).to eq("okay_and_on_topic")
+    end
+
+    it "caps quality when tag moderation rules are clearly broken" do
+      article.tags << create(:tag, name: "jevrules", moderation_instructions: "Posts must include a demo link.")
+
+      expect(evaluate_with(quality: 4.0, violates_tag_rules: 0.9)[:label]).to eq("likely_low_quality")
+    end
+
+    it "composes compellingness from weighted dimensions" do
+      result = evaluate_with(originality: 3.0, personal_voice: 3.0, discussion_potential: 0.0)
+
+      expect(result[:compellingness_score]).to eq(0.7)
+    end
+
+    it "falls back to the safe default when TypeSafe fails" do
+      client = instance_double(Ai::TypeSafe::Client)
+      allow(Ai::TypeSafe::Client).to receive(:new).and_return(client)
+      allow(client).to receive(:evaluate).and_raise(Ai::TypeSafe::Client::Error, "overloaded")
+
+      expect(described_class.new(article).evaluate).to eq(label: "no_moderation_label", compellingness_score: 0.0)
+    end
+  end
 end

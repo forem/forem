@@ -71,7 +71,7 @@ module Payments
         ForemStatsClient.increment("stripe.errors", tags: ["error:CardError"])
         raise CardError, e.message
       rescue Stripe::StripeError => e
-        Honeybadger.notify(e)
+        Rails.error.report(e)
         ForemStatsClient.increment("stripe.errors", tags: ["error:StripeError"])
         raise PaymentsError, e.message
       end

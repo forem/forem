@@ -43,12 +43,23 @@ module Images
     CLOUDFLARE_DIRECTORY = (ApplicationConfig["CLOUDFLARE_IMAGES_DIRECTORY"] || "cdn-cgi").freeze
 
     def self.cloudflare(img_src, **kwargs)
-      template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
+      domain = ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]
       fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+      src = extract_suffix_url(img_src)
+
+      ForemNative.cloudflare_image_url(domain, CLOUDFLARE_DIRECTORY, kwargs[:width], kwargs[:height], fit, img_src,
+                                       src) ||
+        legacy_cloudflare(img_src, src, domain: domain, width: kwargs[:width], height: kwargs[:height], fit: fit)
+    end
+
+    # Handles the values ForemNative declines (Floats, Symbols, non-UTF-8 or invalid Strings,
+    # and text Addressable has to NFC-normalize).
+    def self.legacy_cloudflare(img_src, src, domain:, width:, height:, fit:)
+      template = Addressable::Template.new("https://{domain}/{directory}/image/{options*}/{src}")
 
       options = {
-        width: kwargs[:width],
-        height: kwargs[:height],
+        width: width,
+        height: height,
         fit: fit,
         gravity: "auto"
       }
@@ -57,12 +68,13 @@ module Images
       options[:format] = "auto" unless is_animated
 
       template.expand(
-        domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
+        domain: domain,
         directory: CLOUDFLARE_DIRECTORY,
         options: options,
-        src: extract_suffix_url(img_src),
+        src: src,
       ).to_s
     end
+    private_class_method :legacy_cloudflare
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank

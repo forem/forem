@@ -58,7 +58,7 @@ class OpenGraph
   end
 
   def preferred_desc
-    properties["og:description"].first || page.description
+    properties["og:description"]&.first || page.description
   end
 
   # this method groups like-properties, making it a little easier to determine

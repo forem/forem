@@ -16,7 +16,7 @@ module Notifications
       end
 
       def call
-        return if mention.mentionable.score.negative?
+        return if skip_notification?
 
         Notification.create(
           user_id: mention.user_id,
@@ -57,6 +57,11 @@ module Notifications
       private
 
       attr_reader :mention
+
+      def skip_notification?
+        mention.mentionable.score.negative? ||
+          Spam::Handler.active_spam_reaction_for?(reactable: mention.mentionable)
+      end
 
       def json_data
         data = { user: user_data(mention.mentionable.user) }

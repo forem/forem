@@ -183,14 +183,39 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when logged in with only draft articles and cannot create new ones" do
+      it "does not redirect away from the dashboard" do
+        sign_in user
+        unpublished_article
+        allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true)
+
+        get dashboard_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(unpublished_article.title))
+      end
+    end
+
     describe "sidebar sidebar fetch" do
       it "assigns the agent_sessions_count utilizing the counter cache" do
         sign_in user
         user.reload.update!(agent_sessions_count: 5)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
-        
+
         expect(assigns(:agent_sessions_count)).to eq(5)
+      end
+
+      it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
+        sign_in user
+        create(:article, user: user)
+        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
+        create(:article, user: user, archived: true)
+
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        expect(assigns(:posts_count)).to eq(1)
+        expect(response.body).to include('<span class="c-indicator">1</span>')
       end
     end
 

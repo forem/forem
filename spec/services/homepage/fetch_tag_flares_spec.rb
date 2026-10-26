@@ -41,5 +41,24 @@ RSpec.describe Homepage::FetchTagFlares, type: :service do
       expected_result = { "bg_color_hex" => bg_color_hex, "text_color_hex" => text_color_hex, "name" => tag.name }
       expect(result[article1.id]).to eq(expected_result)
     end
+
+    it "does not re-query articles when passed an already-loaded relation or query tags when no flare tags match" do
+      article = create(:article, tags: "foobar")
+      loaded_relation = Article.where(id: article.id).select(:id, :cached_tag_list).load
+
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        queries << sql if (sql.include?('"articles"') || sql.include?('"tags"')) && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.call(loaded_relation)
+      end
+
+      expect(result).to eq({})
+      expect(queries).to be_empty
+    end
   end
 end

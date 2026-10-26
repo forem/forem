@@ -122,7 +122,7 @@ module Ai
       end.compact
 
       prompt = build_description_prompt(comparable_descriptions)
-      response = Ai::Base.new(wrapper: self).call(prompt)
+      response = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:community_copy), wrapper: self).call(prompt)
       parse_description_response(response)
     end
 
@@ -132,13 +132,13 @@ module Ai
       end.compact
 
       prompt = build_tagline_prompt(comparable_taglines)
-      response = Ai::Base.new(wrapper: self).call(prompt)
+      response = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:community_copy), wrapper: self).call(prompt)
       parse_tagline_response(response)
     end
 
     def generate_internal_content_description
       prompt = build_content_description_prompt
-      response = Ai::Base.new(wrapper: self).call(prompt)
+      response = Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:community_copy), wrapper: self).call(prompt)
       parse_content_description_response(response)
     end
 

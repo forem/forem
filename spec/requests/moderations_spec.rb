@@ -145,6 +145,25 @@ RSpec.describe "Moderations" do
     end
   end
 
+  describe "article approval on /mod" do
+    let(:admin) { create(:user, :admin) }
+    let!(:article) { create(:article, tags: "javascript, cool, beans") }
+
+    before { sign_in admin }
+
+    it "shows the approval button when one of the article's tags requires approval" do
+      Tag.find_by(name: "cool").update!(requires_approval: true)
+      get "#{article.path}/mod"
+      expect(response.body).to include 'action="/article_approvals"'
+    end
+
+    it "hides the approval button when only other tags require approval" do
+      create(:tag, name: "unrelated", requires_approval: true)
+      get "#{article.path}/mod"
+      expect(response.body).not_to include 'action="/article_approvals"'
+    end
+  end
+
   describe "/mod" do
     let(:dev_name_copy) { "We periodically award some DEV members with heightened privileges" }
     # rubocop:disable Layout/LineLength

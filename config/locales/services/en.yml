@@ -3,6 +3,10 @@ en:
   services:
     analytics_service:
       no_stats: You can't view this article's stats
+    appeals:
+      resolver:
+        approved_note: "Flag appeal #%{id} approved by %{resolver}."
+        automatic: "automatic AI review"
     article_with_video_creation_service:
       unpublished_video: Unpublished Video ~ %{rand}
     authentication:
@@ -116,6 +120,10 @@ en:
     spam:
       article_handler:
         suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.
+        marked_spam_repeat_auto_flags: User marked as spam after %{count} of their articles from the last month were auto-flagged as spam or clear violations, triggered by autovomit.
+      comment_handler:
+        marked_spam_repeat_auto_flags: User marked as spam after %{count} of their comments from the last month were auto-flagged as spam, triggered by autovomit.
+        marked_spam_comment_flood: New account marked as spam after commenting on %{count} posts in a day, triggered by autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source not found.

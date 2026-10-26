@@ -8,7 +8,7 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
-export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
+export const Feed = ({ timeFrame, feedLocation = '', renderFeed, afterRender }) => {
   const user = userData();
   const { reading_list_ids = [] } = user || {}; // eslint-disable-line camelcase
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
@@ -95,10 +95,13 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
             feedThirdBillboard,
           ]) => {
             // Set feed config if available
-            if (feedPosts.length > 0) {
+            const indexContainer = document.getElementById('index-container');
+            if (indexContainer && feedPosts.length > 0) {
               const firstPost = feedPosts[0];
               if (firstPost.feed_config) {
-                document.getElementById('index-container').dataset.feedConfigId = firstPost.feed_config;
+                indexContainer.dataset.feedConfigId = firstPost.feed_config;
+              } else {
+                delete indexContainer.dataset.feedConfigId;
               }
             }
 
@@ -150,13 +153,13 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       }
     };
     organizeFeedItems();
-  }, [timeFrame, onError]);
+  }, [timeFrame, feedLocation, onError]);
 
   useEffect(() => {
-    if (feedItems.length > 0) {
+    if (!isLoading && feedItems.length > 0 && typeof afterRender === 'function') {
       afterRender();
     }
-  }, [afterRender, feedItems.length]);
+  }, [afterRender, feedItems, isLoading]);
 
   function getImagePost(feedPosts) {
     return feedPosts.find((post) => post.main_image !== null);

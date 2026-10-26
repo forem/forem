@@ -2,18 +2,18 @@
   <div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right crayons-layout__content">
     <div class="sidebar-bg" id="sidebar-bg-right"></div>
     <aside class="side-bar sidebar-additional showing fs-s" id="sidebar-additional">
-      <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
-      <% if user_signed_in? && active_threads.present? %>
-        <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
-          <header class="crayons-card__header">
-            <h3 class="crayons-subtitle-3"><%= t("views.stories.discuss") %></h3>
-          </header>
-          <div>
-            <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
-          </div>
-        </section>
-      <% end %>
       <% if user_signed_in? %>
+        <% active_threads = active_threads(tags: [@tag.name, "discuss"], time_ago: Timeframe.datetime(params[:timeframe])) %>
+        <% if active_threads.present? %>
+          <section class="crayons-card crayons-card--secondary crayons-layout__content mb-4">
+            <header class="crayons-card__header">
+              <h3 class="crayons-subtitle-3"><%= t("views.stories.discuss") %></h3>
+            </header>
+            <div>
+              <%= render partial: "articles/widget_list_item", collection: active_threads, as: :plucked_article, locals: { show_comment_count: true } %>
+            </div>
+          </section>
+        <% end %>
         <%= javascript_include_tag "sidebarWidget", defer: true %>
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>

@@ -45,6 +45,18 @@ class Geolocation
     parse(ltree, separator: LTREE_SEPARATOR)
   end
 
+  # Whether an ISO 3166 code (e.g. "US-CA") falls within any of the given codes. A country
+  # covers all of its regions ("US" covers "US-CA"), but a region doesn't cover its country.
+  def self.code_covered_by?(code, geo_codes)
+    code = code.to_s.strip.upcase
+    return false if code.empty?
+
+    Array(geo_codes).any? do |geo|
+      geo = geo.to_s.strip.upcase
+      geo.present? && (code == geo || code.start_with?("#{geo}#{ISO3166_SEPARATOR}"))
+    end
+  end
+
   def self.parse(code, separator:)
     return if code.blank?
     return code if code.is_a?(Geolocation)
