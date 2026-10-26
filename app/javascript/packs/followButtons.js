@@ -228,12 +228,13 @@ function updateFollowButton(button, newState, buttonInfo) {
  *
  * @param {HTMLElement} target The target of the click event
  */
-function handleFollowButtonClick({ target }, verb) {
+function handleFollowButtonClick({ target }) {
   if (
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user') ||
     target.classList.contains('follow-subforem')
   ) {
+    const verb = target.dataset.verb;
     const userStatus = document.body.getAttribute('data-user-status');
     if (userStatus === 'logged-out') {
       let trackingData = {};
@@ -250,7 +251,6 @@ function handleFollowButtonClick({ target }, verb) {
 
     const buttonInfo = JSON.parse(target.dataset.info);
     removeCachedFollowButtonStatus(buttonInfo);
-    optimisticallyUpdateButtonUI(target);
     browserStoreCache('remove');
     if (verb === 'self') {
       window.location.href = '/settings';
