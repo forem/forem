@@ -11,6 +11,10 @@ module CarrierWave
         def url(*args)
           public_url.gsub(ApplicationConfig["APP_DOMAIN"], Settings::General.app_domain)
         end
+
+        # Avoid triggering a synchronous S3 HEAD request (`#empty?` -> `#exists?` -> `directory.files.head(path)`)
+        # when ActiveSupport's `Object#blank?` / `#present?` is called on a stored Fog::File.
+        delegate :blank?, to: :path
       end
     end
   end
