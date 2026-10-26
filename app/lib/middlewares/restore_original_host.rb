@@ -26,6 +26,12 @@ module Middlewares
     private
 
     def valid_host?(host)
+      valid = ForemNative.original_host_valid(host)
+      valid.nil? ? legacy_valid_host?(host) : valid
+    end
+
+    # Handles the hosts ForemNative declines (non-ASCII, nothing before the first ":").
+    def legacy_valid_host?(host)
       host_without_port = host.split(":").first
       host_without_port.match?(VALID_HOST_REGEXP) || host_without_port == "localhost"
     end

@@ -40,11 +40,15 @@ Rails.application.configure do
     "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{3000.days.to_i}"
   }
 
-  # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :terser
+  # Compress JavaScripts and CSS (skipping app/assets/builds, which esbuild already minifies).
+  config.assets.js_compressor = :terser_skip_builds
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
+  # NOTE: Forem intentionally keeps `config.assets.compile = true` so that
+  # `Rails.application.assets[...]` remains initialized in production for views/models
+  # that inline compiled CSS (e.g., `app/views/layouts/_user_config.html.erb`,
+  # `app/models/comment.rb#custom_css`, and `app/views/onboardings/show.html.erb`).
   config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb

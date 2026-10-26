@@ -9,6 +9,20 @@ RSpec.describe "Comments" do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
 
+  describe "agent guidance discovery" do
+    before { sign_in user }
+
+    it "links to site guidance without advertising an unlaunched comment workflow" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+
+      get article.path
+
+      expect(response.body).to include('rel="describedby"')
+      expect(response.body).not_to include("data-agent-posting-policy")
+      expect(response.body).not_to include("Review our AI disclosure policy")
+    end
+  end
+
   describe "GET comment index" do
     it "returns 200" do
       get comment.path
@@ -382,6 +396,17 @@ RSpec.describe "Comments" do
         article.destroy
 
         get comment.path
+        expect(response.body).to include("Comment from a deleted post")
+      end
+
+      it "shows a low-quality comment from a deleted post to a signed-in user", :aggregate_failures do
+        low_comment = create(:comment, commentable: article, user: user, score: -500, body_markdown: "low-comment")
+        create(:comment, commentable: article, user: user, parent: low_comment, body_markdown: "child comment")
+        article.destroy
+        sign_in user
+
+        get low_comment.reload.path
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment from a deleted post")
       end
     end

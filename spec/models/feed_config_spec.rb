@@ -192,6 +192,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("subforem_id IN") # Added expectation
         expect(sql).not_to include("articles.type_of = 1 AND articles.user_id IN")
       end
+
+      it "does not query RecommendedArticlesList when precomputed_selections_weight is zero" do
+        expect(RecommendedArticlesList).not_to receive(:where)
+        feed_config.score_sql(user)
+      end
+
+      it "does not query user languages when language_match_weight is zero" do
+        feed_config.language_match_weight = 0.0
+        expect(user).not_to receive(:languages)
+        feed_config.score_sql(user)
+      end
     end
 
     context "when all base weights are zero" do
@@ -236,6 +247,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.recent_article_suppression_rate = 2.0
         feed_config.published_today_weight         = 3.0
         feed_config.featured_weight                = 4.0
+        feed_config.favorited_weight               = 4.5
         feed_config.clickbait_score_weight         = 5.0
         feed_config.compellingness_score_weight    = 6.0
         feed_config.language_match_weight          = 7.0
@@ -277,6 +289,11 @@ RSpec.describe FeedConfig, type: :model do
       it "includes the featured weight" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
+      end
+
+      it "includes the favorited weight" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.favorited_by_user_id IS NOT NULL THEN 4.5")
       end
 
       it "includes the status weight" do
@@ -369,6 +386,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.recent_article_suppression_rate = 13.0
       feed_config.published_today_weight         = 14.0
       feed_config.featured_weight                = 15.0
+      feed_config.favorited_weight               = 15.2
       feed_config.status_weight                  = 15.5
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
@@ -378,6 +396,8 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
       feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.follow_status_weight          = 23.0
+      feed_config.ai_disclosure_matching_weight = 24.0
+      feed_config.autonomous_ai_penalty_weight  = 25.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -409,6 +429,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
       expect(clone.published_today_weight).to eq(14.0 * 1.1)
       expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.favorited_weight).to eq(15.2 * 1.1)
       expect(clone.status_weight).to eq(15.5 * 1.1)
       expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
       expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
@@ -418,6 +439,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
       expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
       expect(clone.follow_status_weight).to eq(23.0 * 1.1)
+      expect(clone.ai_disclosure_matching_weight).to eq(24.0 * 1.1)
+      expect(clone.autonomous_ai_penalty_weight).to eq(25.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -439,6 +462,7 @@ RSpec.describe FeedConfig, type: :model do
         "general_past_day_bonus_weight",
         "recently_active_past_day_bonus_weight",
         "featured_weight",
+        "favorited_weight",
         "status_weight",
         "clickbait_score_weight",
         "compellingness_score_weight",
@@ -446,6 +470,8 @@ RSpec.describe FeedConfig, type: :model do
         "subforem_follow_weight", # Added new weight to check
         "recent_page_views_shuffle_weight",
         "follow_status_weight",
+        "ai_disclosure_matching_weight",
+        "autonomous_ai_penalty_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",
@@ -457,7 +483,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(feed_config.reload.attributes.slice(*original_attrs.keys)).to eq(original_attrs)
     end
 
-    it "adjusts tag count ranges with +/- offsets and resets impressions" do
+    it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
+      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -466,12 +493,84 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
+      expect(clone.feed_success_score).to eq(0.0)
+    end
+  end
+
+  describe ".select_for_feed" do
+    let!(:proven_top_config) do
+      create(:feed_config, feed_success_score: 1.5, feed_impressions_count: 500, created_at: 5.days.ago)
+    end
+    let!(:new_config) do
+      create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 10, created_at: 1.hour.ago)
+    end
+
+    it "returns the preferred feed config when preferred_id matches" do
+      expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
+    end
+
+    it "selects uniformly from the newest low-impression pool when roll is < 20" do
+      allow(described_class).to receive(:rand).with(100).and_return(10)
+
+      expect(described_class.select_for_feed).to eq(new_config)
+    end
+
+    it "selects a random feed config when roll is between 20 and 24" do
+      allow(described_class).to receive(:rand).with(100).and_return(22)
+
+      expect([proven_top_config, new_config]).to include(described_class.select_for_feed)
+    end
+
+    it "selects from proven top performers (>= LOW_IMPRESSION_COUNT) when roll is >= 25" do
+      unproven_clone = create(
+        :feed_config,
+        feed_success_score: 9.9,
+        feed_impressions_count: 0,
+        created_at: 1.minute.ago,
+      )
+      noisy_low_impression_config = create(
+        :feed_config,
+        feed_success_score: 12.0,
+        feed_impressions_count: 15,
+        created_at: 2.minutes.ago,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(proven_top_config)
+      expect(selected).not_to eq(unproven_clone)
+      expect(selected).not_to eq(noisy_low_impression_config)
+    end
+
+    it "falls back to configs with > 0 impressions when no config has reached LOW_IMPRESSION_COUNT" do
+      proven_top_config.destroy!
+      unproven_clone = create(:feed_config, feed_success_score: 9.9, feed_impressions_count: 0)
+      low_impression_winner = create(:feed_config, feed_success_score: 2.5, feed_impressions_count: 15)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(low_impression_winner)
+      expect(selected).not_to eq(unproven_clone)
+    end
+
+    it "falls back to score order when all configs have 0 impressions, and creates one when none exist" do
+      described_class.delete_all
+      zero_imp_config = create(:feed_config, feed_success_score: 0.5, feed_impressions_count: 0)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed).to eq(zero_imp_config)
+
+      described_class.delete_all
+      expect { described_class.select_for_feed }.to change(described_class, :count).from(0).to(1)
     end
   end
 
   describe "#score_sql" do
     let(:user) { create(:user) }
-    let(:feed_config) { FeedConfig.new(semantic_similarity_weight: 10.0) }
+    let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
     it "includes semantic embedding calculation when activity store has a vector" do
@@ -482,6 +581,58 @@ RSpec.describe FeedConfig, type: :model do
       sql = feed_config.score_sql(user)
       expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
       expect(sql).to include("* 10.0")
+    end
+
+    context "when ai_disclosure_matching_weight is positive" do
+      before { feed_config.ai_disclosure_matching_weight = 12.0 }
+
+      context "when user has minimize_ai feed preference" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "scales AI disclosure penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 WHEN articles.ai_disclosure_level = 5 THEN -24.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has hide_fully_autonomous feed preference" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "scales some_ai penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has show_all feed preference" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "does not include user AI disclosure penalty terms" do
+          sql = feed_config.score_sql(user)
+          expect(sql).not_to include("articles.ai_disclosure_level = 3")
+        end
+      end
+    end
+
+    context "when ai_disclosure_matching_weight is 0" do
+      before do
+        feed_config.ai_disclosure_matching_weight = 0.0
+        user.setting.update(feed_ai_preference: :minimize_ai)
+      end
+
+      it "does not include AI disclosure matching penalty terms" do
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("articles.ai_disclosure_level = 3")
+      end
+    end
+
+    context "when autonomous_ai_penalty_weight is positive" do
+      before { feed_config.autonomous_ai_penalty_weight = 25.0 }
+
+      it "includes the autonomous AI penalty weight term" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
+      end
     end
   end
 end

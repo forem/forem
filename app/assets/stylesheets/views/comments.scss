@@ -95,7 +95,8 @@
   }
 }
 
-.comment-wrapper {
+.comment-wrapper,
+.comment {
   --level-n-indent: var(--su-3);
   --level-1-indent: var(--su-4);
 
@@ -103,10 +104,14 @@
     --level-n-indent: calc(var(--su-4) + var(--su-1));
     --level-1-indent: calc(var(--su-6) + var(--su-1));
   }
+}
+
+.comment-wrapper {
   position: relative;
 
   > summary {
     position: static;
+    z-index: var(--z-elevate);
     display: block;
     align-items: center;
     transform: initial;
@@ -143,8 +148,13 @@
     --indent: var(--level-1-indent);
   }
 
-  &--deep-2:not(.root) > summary {
+  &--deep-2:not(.root) > summary,
+  &--deep-3:not(.root) > summary {
     --indent: var(--level-n-indent);
+  }
+
+  &--too-deep > summary {
+    --indent: 0;
   }
 
   &[open] > summary {
@@ -174,15 +184,28 @@
     }
   }
 
+  &:not(.comment-wrapper--deep-0):not(.comment-wrapper--deep-1):not(.comment-wrapper--deep-2)[open] > summary {
+    display: none;
+  }
+
   &[open]:hover {
     > summary {
       display: block;
+    }
+
+    &:not(.comment-wrapper--deep-0):not(.comment-wrapper--deep-1):not(.comment-wrapper--deep-2) > summary {
+      display: none;
     }
 
     .expanded,
     .collapsed {
       opacity: 1;
     }
+  }
+
+  > summary:hover + .comment > .comment__inner {
+    --depth-indicator-line-color: var(--base-40);
+    --depth-indicator-dot-color: var(--base-60);
   }
 }
 
@@ -195,12 +218,83 @@
     --comment-gap: var(--su-6);
   }
 
+  &.root {
+    --first-child-indent: var(--level-n-indent);
+
+    &.comment--deep-0 {
+      --first-child-indent: var(--level-1-indent);
+    }
+  }
+
   &.child {
     &:not(.comment--too-deep) {
       padding-left: var(--level-n-indent);
+      --depth-indent: var(--first-child-indent, var(--level-n-indent));
+      --depth-dots: 1;
+      --depth-dots-shadow: none;
     }
+
     &.comment--deep-1 {
       padding-left: var(--level-1-indent);
+      --depth-indent: var(--level-1-indent);
+    }
+
+    .comment.child:not(.comment--too-deep) {
+      --depth-indent: calc(var(--first-child-indent, var(--level-1-indent)) + var(--level-n-indent));
+      --depth-dots: 2;
+      --depth-dots-shadow: -7px 0 0 currentColor;
+    }
+
+    .comment.child .comment.child:not(.comment--too-deep) {
+      --depth-indent: calc(var(--first-child-indent, var(--level-1-indent)) + (var(--level-n-indent) * 2));
+      --depth-dots: 3;
+      --depth-dots-shadow: -7px 0 0 currentColor, -14px 0 0 currentColor;
+    }
+
+    .comment.child .comment.child .comment.child {
+      --depth-indent: calc(var(--first-child-indent, var(--level-1-indent)) + (var(--level-n-indent) * 2));
+      --depth-dots: 4;
+      --depth-dots-shadow: -7px 0 0 currentColor, -14px 0 0 currentColor,
+        -21px 0 0 currentColor;
+    }
+
+    &:not(.comment--too-deep),
+    .comment.child .comment.child & {
+      > .comment__inner {
+        &::before,
+        &::after {
+          content: '';
+          position: absolute;
+          cursor: pointer;
+          pointer-events: auto;
+          transition: background-color var(--transition-props),
+            border-color var(--transition-props),
+            color var(--transition-props),
+            box-shadow var(--transition-props);
+        }
+
+        &::before {
+          top: var(--su-4);
+          left: calc(-1 * var(--depth-indent));
+          width: Max(0px, calc(var(--depth-indent) - 7px));
+          height: calc((var(--su-6) / 2) + 0.5px);
+          border-left: 1px solid var(--depth-indicator-line-color);
+          border-bottom: 1px solid var(--depth-indicator-line-color);
+          border-bottom-left-radius: var(--radius);
+        }
+
+        &::after {
+          top: calc(var(--su-4) + (var(--su-6) / 2));
+          left: -9px;
+          transform: translateY(-50%);
+          width: var(--su-1);
+          height: var(--su-1);
+          border-radius: 50%;
+          color: var(--depth-indicator-dot-color);
+          background-color: currentColor;
+          box-shadow: var(--depth-dots-shadow, none);
+        }
+      }
     }
   }
 
@@ -218,6 +312,10 @@
   }
 
   &__inner {
+    --depth-indicator-line-color: var(--base-20);
+    --depth-indicator-dot-color: var(--base-40);
+
+    position: relative;
     display: flex;
     align-items: flex-start;
     margin-bottom: var(--comment-gap);
@@ -225,6 +323,8 @@
     &:hover,
     &:focus-within {
       --dropdown-opacity: 1;
+      --depth-indicator-line-color: var(--base-40);
+      --depth-indicator-dot-color: var(--base-60);
     }
   }
 

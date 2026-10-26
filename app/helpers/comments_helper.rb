@@ -5,6 +5,9 @@ module CommentsHelper
   MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED = 5
 
   def any_negative_comments?(commentable)
+    return false if no_comments_on?(commentable)
+    return commentable.comments.any? { |comment| comment.score.to_i.negative? } if commentable.comments.loaded?
+
     commentable.comments.where("score < 0").any?
   end
 
@@ -17,7 +20,7 @@ module CommentsHelper
   end
 
   def article_comment_tree(article, limit, order)
-    Comments::Tree.for_commentable(article, limit: limit, order: order, include_negative: user_signed_in?)
+    article.comment_tree(limit: limit, order: order, include_negative: user_signed_in?)
   end
 
   def podcast_comment_tree(episode)
@@ -115,6 +118,13 @@ module CommentsHelper
 
   private
 
+  def no_comments_on?(commentable)
+    return false unless commentable.respond_to?(:comments_count)
+
+    commentable.comments_count.to_i <= 0 &&
+      (!commentable.respond_to?(:displayed_comments_count) || commentable.displayed_comments_count.to_i <= 0)
+  end
+
   def limit_descendants(sub_hash, limit)
     count = 0
     traverse = ->(hash) do
@@ -131,16 +141,15 @@ module CommentsHelper
 
   def nested_comments(tree:, commentable:, is_view_root: false, is_admin: false)
     comments = tree.filter_map do |comment, sub_comments|
-      is_childless = sub_comments.empty?
-      # hide childless comments with score below hide threshold (but show for admins)
-      hide = comment.decorate.super_low_quality && is_childless
+      subtree_html = nested_comments(tree: sub_comments, commentable: commentable, is_admin: is_admin)
+      is_childless = subtree_html.blank?
+      # hide childless comments if they are low quality or soft-deleted (but show for admins)
+      hide = is_childless && (comment.decorate.super_low_quality || comment.deleted?)
       if is_admin || !hide
         render("comments/comment", comment: comment, commentable: commentable,
                                    is_view_root: is_view_root, is_childless: is_childless,
                                    is_admin: is_admin,
-                                   subtree_html: nested_comments(tree: sub_comments,
-                                                                 commentable: commentable,
-                                                                 is_admin: is_admin))
+                                   subtree_html: subtree_html)
       end
     end
     safe_join(comments)

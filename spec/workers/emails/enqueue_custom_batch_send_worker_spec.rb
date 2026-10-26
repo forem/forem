@@ -9,17 +9,26 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
       allow(Emails::BatchCustomSendWorker).to receive(:perform_async).and_return(true)
     end
 
+    context "when Customer.io email cutover is active" do
+      before do
+        allow(ForemInstance).to receive(:customerio_email_cutover?).and_return(true)
+      end
+
+      it "does not process the email or enqueue any BatchCustomSendWorker jobs" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async)
+      end
+    end
+
     context "when email has an audience segment" do
-      let!(:audience_segment) { create(:audience_segment) }
-      let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
       let!(:user_in_segment) { create(:user, :with_newsletters) }
       let!(:user_outside_segment) { create(:user, :with_newsletters) }
-
-      before do
-        audience_segment.segmented_users.create!(user: user_in_segment)
-        # Stub out the segment to return only user_in_segment
-        allow(audience_segment).to receive(:users).and_return(User.where(id: user_in_segment.id))
+      let!(:audience_segment) do
+        create(:audience_segment).tap do |segment|
+          segment.segmented_users.create!(user: user_in_segment)
+        end
       end
+      let!(:email) { create(:email, subject: "Segmented", audience_segment: audience_segment) }
 
       it "uses the segment scope and enqueues BatchCustomSendWorker for those users" do
         described_class.new.perform(email.id)
@@ -33,6 +42,33 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
         )
         expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
           [user_outside_segment.id],
+          anything,
+          anything,
+          anything,
+          anything,
+        )
+      end
+    end
+
+    context "when email has an automatic audience segment" do
+      let!(:trusted_user) { create(:user, :with_newsletters).tap { |u| u.add_role(:trusted) } }
+      let!(:untrusted_user) { create(:user, :with_newsletters) }
+      let!(:audience_segment) { create(:audience_segment, type_of: :trusted) }
+      let!(:email) { create(:email, subject: "Trusted Segment", audience_segment: audience_segment) }
+
+      it "uses all_users_in_segment and enqueues BatchCustomSendWorker only for matching users" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [trusted_user.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(untrusted_user.id),
+          anything,
           anything,
           anything,
           anything,
@@ -88,6 +124,37 @@ RSpec.describe Emails::EnqueueCustomBatchSendWorker, type: :worker do
 
         # The worker should have called the batch worker (we can see from the output that it does)
         # This test verifies the worker executes successfully with user queries
+      end
+    end
+
+    context "when email has an event target" do
+      let!(:event) { create(:event) }
+      let!(:signed_up_user) { create(:user, :with_newsletters) }
+      let!(:non_signed_up_user) { create(:user, :with_newsletters) }
+      let!(:email) { create(:email, subject: "Event Email", event: event) }
+
+      before do
+        create(:event_signup, event: event, user: signed_up_user)
+      end
+
+      it "enqueues BatchCustomSendWorker for users who signed up for the event" do
+        described_class.new.perform(email.id)
+        expect(Emails::BatchCustomSendWorker).to have_received(:perform_async).with(
+          [signed_up_user.id],
+          email.subject,
+          email.body,
+          email.type_of,
+          email.id,
+          email.default_from_name_based_on_type,
+        )
+        expect(Emails::BatchCustomSendWorker).not_to have_received(:perform_async).with(
+          include(non_signed_up_user.id),
+          anything,
+          anything,
+          anything,
+          anything,
+          anything,
+        )
       end
     end
 

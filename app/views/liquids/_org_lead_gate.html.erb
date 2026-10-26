@@ -1,0 +1,101 @@
+<div class="ltag-org-lead-gate crayons-card p-6 my-4" data-org-lead-gate data-lead-form-id="<%= form.id %>">
+  <div data-org-lead-gate-prompt>
+    <h3 class="crayons-subtitle-2 mb-2"><%= form.title %></h3>
+    <% if form.description.present? %>
+      <p class="color-base-70 mb-3"><%= form.description %></p>
+    <% end %>
+
+    <div data-org-lead-gate-signed-out hidden>
+      <p class="color-base-70 mb-3"><%= I18n.t("liquid_tags.org_lead_gate_tag.sign_in_required", community: Settings::Community.community_name) %></p>
+      <a href="/enter" class="crayons-btn" data-no-instant><%= I18n.t("liquid_tags.org_lead_gate_tag.sign_in") %></a>
+    </div>
+
+    <div data-org-lead-gate-signed-in hidden>
+      <button type="button" class="crayons-btn" data-org-lead-gate-submit><%= form.button_text %></button>
+      <span class="fs-s color-base-60 ml-2" role="status" aria-live="polite" data-org-lead-gate-status hidden></span>
+      <p class="fs-s color-base-60 mt-3"><%= I18n.t("liquid_tags.org_lead_gate_tag.data_shared") %></p>
+    </div>
+  </div>
+
+  <template data-org-lead-gate-content><%= gated_content.html_safe %></template>
+  <div data-org-lead-gate-unlocked hidden></div>
+</div>
+
+<script>
+  (function() {
+    document.querySelectorAll('[data-org-lead-gate]:not([data-org-lead-gate-initialized])').forEach(function(gate) {
+      gate.setAttribute('data-org-lead-gate-initialized', 'true');
+
+      var formId = gate.getAttribute('data-lead-form-id');
+      var signedOutView = gate.querySelector('[data-org-lead-gate-signed-out]');
+      var signedInView = gate.querySelector('[data-org-lead-gate-signed-in]');
+      var submitButton = gate.querySelector('[data-org-lead-gate-submit]');
+      var status = gate.querySelector('[data-org-lead-gate-status]');
+      var submitLabel = submitButton.textContent;
+      var csrfToken;
+
+      function unlock() {
+        var content = gate.querySelector('[data-org-lead-gate-content]');
+        var target = gate.querySelector('[data-org-lead-gate-unlocked]');
+        target.appendChild(content.content.cloneNode(true));
+        gate.querySelector('[data-org-lead-gate-prompt]').hidden = true;
+        target.hidden = false;
+      }
+
+      function showError(message, retryable) {
+        status.textContent = message;
+        status.hidden = false;
+        submitButton.textContent = submitLabel;
+        submitButton.disabled = !retryable;
+      }
+
+      if (document.body.getAttribute('data-user-status') !== 'logged-in') {
+        signedOutView.hidden = false;
+        return;
+      }
+
+      fetch('/lead_submissions/check?form_ids=' + formId, { credentials: 'same-origin' })
+        .then(function(response) {
+          if (!response.ok) throw new Error('Unable to check lead submission');
+          return response.json();
+        })
+        .then(function(data) {
+          csrfToken = data.csrf_token;
+          if (!csrfToken) throw new Error('Unable to check lead submission');
+
+          if (data[formId]) {
+            unlock();
+          } else {
+            signedInView.hidden = false;
+          }
+        })
+        .catch(function() {
+          signedInView.hidden = false;
+          showError('<%= j I18n.t("liquid_tags.org_lead_form_tag.error") %>', false);
+        });
+
+      submitButton.addEventListener('click', function() {
+        submitButton.disabled = true;
+        submitButton.textContent = '<%= j I18n.t("liquid_tags.org_lead_form_tag.submitting") %>';
+        status.hidden = true;
+
+        fetch('/lead_submissions', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+          },
+          body: JSON.stringify({ organization_lead_form_id: formId })
+        }).then(function(response) {
+          return response.json().then(function(data) {
+            if (!response.ok || !data.success) throw new Error(data.error);
+            unlock();
+          });
+        }).catch(function() {
+          showError('<%= j I18n.t("liquid_tags.org_lead_form_tag.error") %>', true);
+        });
+      });
+    });
+  })();
+</script>

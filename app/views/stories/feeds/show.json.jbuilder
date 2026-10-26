@@ -3,7 +3,7 @@ article_attributes_to_include = %i[
   title path id user_id comments_count public_reactions_count organization_id
   reading_time video_thumbnail_url video edited_at
   experience_level_rating experience_level_rating_distribution main_image_height
-  type_of subforem_id
+  type_of subforem_id favorited_by_user_id ai_disclosure_level
 ]
 
 # Core methods that are always needed
@@ -11,6 +11,7 @@ article_methods_to_include = %i[
   flare_tag class_name cloudinary_video_url published_at_int
   published_timestamp main_image_background_hex_color
   public_reaction_categories readable_publish_date video_duration_in_minutes
+  ai_disclosure_label
 ]
 
 json.array!(@stories) do |article|
@@ -23,6 +24,7 @@ json.array!(@stories) do |article|
     article.edited_at,
     article.last_comment_at,
     article.public_reactions_count, # Changes when reactions are added/removed
+    article.favorited_by_user_id, # Favorites::Create claims with update_all, leaving updated_at untouched
     article.cached_user, # Text field containing serialized user data
     article.cached_organization, # Text field containing serialized organization data
     I18n.locale,
@@ -36,6 +38,7 @@ json.array!(@stories) do |article|
     # Optimize user data - only call as_json once
     cached_user = article.cached_user.as_json
     cached_user[:cached_base_subscriber] = cached_user["cached_base_subscriber?"]
+    cached_user[:cached_community_leader] = cached_user["cached_community_leader?"]
     json.user cached_user
 
     # Only include organization if it exists
@@ -48,7 +51,6 @@ json.array!(@stories) do |article|
     # Optimize main_image - avoid cloud_cover_url call when not needed
     json.main_image article.main_image? ? cloud_cover_url(article.main_image, article.subforem_id) : nil
 
-    json.url URL.article(article)
     json.tag_list article.cached_tag_list_array
 
     # Only include body_preview for status articles
@@ -93,7 +95,8 @@ json.array!(@stories) do |article|
     json.context_note article.context_notes.first&.processed_html
   end
   
-  # These fields are added outside the cache so they don't fragment the cache
+  # These fields are added outside the cache so they don't fragment the cache and respect signed-in context
+  json.url URL.article(article)
   json.current_user_signed_in user_signed_in?
   json.feed_config @feed_config&.id
 end

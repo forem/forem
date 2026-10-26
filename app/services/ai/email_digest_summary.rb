@@ -3,7 +3,8 @@ module Ai
     VERSION = "1.0"
     def initialize(articles, ai_client: nil)
       @articles = articles
-      @ai_client = ai_client || Ai::Base.new(wrapper: self)
+      @ai_client = ai_client ||
+        Ai::Base.new(model: Ai::FunctionConfig.gemini_model_for(:email_digest_summary), wrapper: self)
     end
 
     MAX_RETRIES = 1
@@ -62,9 +63,8 @@ module Ai
     end
 
     def prompt
-      base_url = "https://#{Settings::General.app_domain}"
       article_list = @articles.map do |a|
-        "- Title: #{a.title}\n  URL: #{base_url}#{a.path}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
+        "- Title: #{a.title}\n  URL: #{URL.article(a)}\n  Description: #{a.description}\n  Tags: #{a.cached_tag_list}"
       end.join("\n\n")
 
       <<~PROMPT

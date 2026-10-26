@@ -19,6 +19,7 @@ RSpec.describe EdgeCache::BustTag, type: :service do
     end
 
     allow(tag).to receive(:purge).once
+    allow(Tag).to receive(:purge_supported_tags)
   end
 
   it "busts the cache", :aggregate_failures do
@@ -29,5 +30,6 @@ RSpec.describe EdgeCache::BustTag, type: :service do
     end
 
     expect(tag).to have_received(:purge).once
+    expect(Tag).to have_received(:purge_supported_tags)
   end
 end

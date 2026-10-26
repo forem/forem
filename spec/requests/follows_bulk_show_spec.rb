@@ -40,6 +40,44 @@ RSpec.describe "Follows #bulk_show" do
       expect(body[follow_back_user.id.to_s]).to eq("follow-back")
       expect(body[mutual_follow_user.id.to_s]).to eq("mutual")
     end
+
+    it "raises RecordNotFound for ids that do not belong to a user (unchanged from before batching)" do
+      missing_id = User.maximum(:id).to_i + 1
+
+      expect do
+        get bulk_show_follows_path, params: { ids: [missing_id], followable_type: followable_type }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "loads the followed-back candidates in a single users query" do
+      ids = [followed_user.id, not_followed_user.id, follow_back_user.id, mutual_follow_user.id]
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" IN/)
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get bulk_show_follows_path, params: { ids: ids, followable_type: followable_type }
+      end
+
+      expect(user_queries.size).to eq(1)
+    end
+
+    it "computes uncached follow checks in a single follows query" do
+      ids = [followed_user.id, not_followed_user.id, follow_back_user.id, mutual_follow_user.id]
+      follow_queries = []
+      callback = lambda do |*, payload|
+        follow_queries << payload[:sql] if payload[:sql].include?('FROM "follows"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get bulk_show_follows_path, params: { ids: ids, followable_type: followable_type }
+      end
+
+      expect(follow_queries.size).to eq(1)
+      expect(follow_queries.grep(/COUNT/)).to be_empty
+      expect(response.parsed_body.values).to eq(%w[true false follow-back mutual])
+    end
   end
 
   it "without ids raises a missing param error" do

@@ -37,8 +37,10 @@ class NotificationsController < ApplicationController
 
     @notifications = NotificationDecorator.decorate_collection(@notifications)
 
-    @last_user_reaction = @user.reactions.last&.id
-    @last_user_comment = @user.comments.last&.id
+    # Only the ids are needed (as cache-key parts), so avoid hydrating full rows
+    # (comments carry body_markdown, processed_html and semantic_embedding).
+    @last_user_reaction = @user.reactions.order(id: :desc).pick(:id)
+    @last_user_comment = @user.comments.order(id: :desc).pick(:id)
 
     @organizations = @user.member_organizations if @user.organizations
     @selected_organization = Organization.find(params[:org_id]) if params[:org_id].present?

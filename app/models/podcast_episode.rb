@@ -58,7 +58,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def description
-    ActionView::Base.full_sanitizer.sanitize(body)
+    ForemNative.full_sanitize(body) || ActionView::Base.full_sanitizer.sanitize(body)
   end
 
   def profile_image_url
@@ -66,7 +66,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize(processed_html)
+    ForemNative.full_sanitize(processed_html) || ActionView::Base.full_sanitizer.sanitize(processed_html)
   end
 
   def score

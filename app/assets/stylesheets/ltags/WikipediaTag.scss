@@ -4,22 +4,36 @@
 .ltag__wikipedia--container {
   border: 1px solid var(--form-border);
   box-shadow: var(--shadow-smooth);
-  border-radius: var(--radius-auto);
-  margin: 1.1em auto 1.3em;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
-    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  border-radius: var(--radius-lg, 8px);
+  margin: 1.5em auto;
+  font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif);
   overflow: hidden;
-  padding-top: 1rem;
+  padding-top: var(--su-4);
+  background-color: var(--card-bg);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-1);
+  }
 
   .ltag__wikipedia--header {
-    font-weight: var(--fw-normal);
+    font-weight: var(--fw-bold, 700);
     font-size: var(--fs-xl);
     line-height: var(--lh-base);
-    margin: 0em 0 0.5em;
-    padding: 0 var(--su-5);
+    margin: 0 0 var(--su-2);
+    padding: 0 var(--su-4);
+    display: flex;
+    align-items: center;
+    gap: var(--su-2);
 
     > a {
       color: var(--link-branded-color);
+      text-decoration: none;
+      
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .ltag__wikipedia--logo {
@@ -27,9 +41,8 @@
       max-width: 1.1em;
       display: inline-block;
       left: 0;
-      margin: 0 var(--su-2) 0 0;
+      margin: 0;
       vertical-align: middle;
-      filter: invert(0);
       filter: var(--theme-social-icon-invert, invert(0));
     }
   }
@@ -37,28 +50,36 @@
   .ltag__wikipedia--extract {
     font-weight: var(--fw-normal);
     margin: 0;
-    margin-left: 0.15em;
-    font-size: var(--fs-s);
-    line-height: var(--lh-base);
-    padding: 0 var(--su-5);
+    font-size: var(--fs-m, 0.95em);
+    line-height: var(--lh-base, 1.5);
+    padding: 0 var(--su-4);
+    color: var(--card-color-secondary);
   }
 
   .ltag__wikipedia--btn--container {
-    padding: 1rem;
+    padding: var(--su-4) var(--su-4) var(--su-5);
     z-index: var(--z-elevate);
     text-align: center;
     position: relative;
-    box-shadow: 0px 0px 60px 42px #fff;
-    box-shadow: 0px 0px 60px 42px var(--theme-container-background, #fff);
+    box-shadow: 0px 0px 40px 30px var(--card-bg);
+    background-color: var(--card-bg);
+    margin-top: calc(-1 * var(--su-2));
   }
 
   .ltag__wikipedia--btn {
     @extend .crayons-btn;
     @extend .crayons-btn--secondary;
+    text-decoration: none !important;
 
-    > a,
-    > a:hover {
+    > a {
       color: var(--button-secondary-color);
+      text-decoration: none;
+    }
+    
+    &:hover {
+      > a {
+        color: var(--button-secondary-color-hover, var(--white));
+      }
     }
   }
 }

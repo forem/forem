@@ -60,6 +60,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:super_admin) }
     end
 
+    trait :support_admin do
+      after(:build) { |user| user.add_role(:support_admin) }
+    end
+
     trait :creator do
       after(:build) do |user|
         user.add_role(:super_admin)
@@ -108,6 +112,14 @@ FactoryBot.define do
 
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
+    end
+
+    trait :community_leader_level_1 do
+      after(:build) { |user| user.add_role(:community_leader_level_1) }
+    end
+
+    trait :community_leader_level_2 do
+      after(:build) { |user| user.add_role(:community_leader_level_2) }
     end
 
     trait :suspended do
@@ -199,6 +211,8 @@ FactoryBot.define do
       after(:create) do |user|
         Users::NotificationSetting.find_by(user_id: user.id)
           .update_columns(email_newsletter: true, email_digest_periodic: true)
+        user.notification_setting&.reload
+        user.sync_base_email_eligible!
       end
     end
 

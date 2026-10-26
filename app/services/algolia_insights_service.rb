@@ -39,7 +39,7 @@ class AlgoliaInsightsService
       response
     rescue StandardError => e
       Rails.logger.warn("AlgoliaInsightsService network error: #{e.message}")
-      Honeybadger.notify(e) if defined?(Honeybadger)
+      Rails.error.report(e)
       nil
     end
   end

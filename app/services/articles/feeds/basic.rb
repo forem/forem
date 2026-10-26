@@ -16,12 +16,15 @@ module Articles
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
           .limited_column_select
-          .includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
+          .includes(:context_notes, top_comments: :user)
           .from_subforem
 
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+        if @user.setting&.hide_fully_autonomous_feed_ai?
+          articles = articles.where.not(ai_disclosure_level: :fully_autonomous)
+        end
         if (hidden_tags = @user.cached_antifollowed_tag_names).any?
           articles = articles.not_cached_tagged_with_any(hidden_tags)
         end
@@ -29,11 +32,12 @@ module Articles
           tag_score = score_followed_tags(article)
           user_score = score_followed_user(article)
           org_score = score_followed_organization(article)
+          ai_score = score_ai_disclosure(article)
 
           # NOTE: Not quite understanding the purpose of the `-
           # index`.  My guess is that it helps reduce the impact of the
           # hotness score on the sort order.
-          tag_score + org_score + user_score - index
+          tag_score + org_score + user_score + ai_score - index
         end.reverse!
       end
 
@@ -51,6 +55,7 @@ module Articles
       delegate(:score_followed_tags,
                :score_followed_user,
                :score_followed_organization,
+               :score_ai_disclosure,
                to: :@article_score_applicator)
     end
   end

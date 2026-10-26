@@ -35,8 +35,20 @@ function loadForm() {
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
 
-      const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop, aiAvailable } =
-        root.dataset;
+      const {
+        article,
+        organizations,
+        version,
+        siteLogo,
+        schedulingEnabled,
+        coverImageHeight,
+        coverImageCrop,
+        aiAvailable,
+        aiDisclosureEnabled,
+        coAuthorInvitationsEnabled,
+        coAuthorInvitations,
+        coAuthorInvitationsMax,
+      } = root.dataset;
       render(
         <ArticleForm
           article={article}
@@ -47,6 +59,10 @@ function loadForm() {
           coverImageCrop={coverImageCrop}
           schedulingEnabled={schedulingEnabled == 'true'}
           aiAvailable={aiAvailable === 'true'}
+          aiDisclosureEnabled={aiDisclosureEnabled === 'true'}
+          coAuthorInvitationsEnabled={coAuthorInvitationsEnabled === 'true'}
+          coAuthorInvitations={coAuthorInvitations}
+          coAuthorInvitationsMax={coAuthorInvitationsMax}
         />,
         createRootFragment(root, root.firstElementChild),
       );

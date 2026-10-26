@@ -1,0 +1,61 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.reactions_tab.title") %></h3>
+  </div>
+
+  <% if @reactions.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.reactions_tab.empty") %></p>
+    </div>
+  <% else %>
+    <%= paginate @reactions if respond_to?(:paginate) %>
+
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.reactions_tab.table.category") %></th>
+            <th scope="col"><%= t("views.admin.users.reactions_tab.table.target_type") %></th>
+            <th scope="col"><%= t("views.admin.users.reactions_tab.table.target") %></th>
+            <th scope="col"><%= t("views.admin.users.reactions_tab.table.status") %></th>
+            <th scope="col"><%= t("views.admin.users.reactions_tab.table.created_at") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @reactions.each do |reaction| %>
+            <tr>
+              <td>
+                <span class="inline-flex items-center gap-1 font-semibold">
+                  <%= reaction.category.humanize.titleize %>
+                </span>
+              </td>
+              <td><%= reaction.reactable_type %></td>
+              <td>
+                <% if reaction.reactable.present? %>
+                  <% case reaction.reactable_type %>
+                  <% when "Article" %>
+                    <%= link_to reaction.reactable.title.presence || "Article ##{reaction.reactable_id}", reaction.reactable.path, class: "c-link", target: "_blank", rel: "noopener" %>
+                  <% when "Comment" %>
+                    <%= link_to truncate(reaction.reactable.body_markdown.to_s, length: 80).presence || "Comment ##{reaction.reactable_id}", reaction.reactable.path, class: "c-link", target: "_blank", rel: "noopener" %>
+                  <% when "User" %>
+                    <%= link_to reaction.reactable.name.presence || "@#{reaction.reactable.username}", admin_user_path(reaction.reactable_id), class: "c-link" %>
+                  <% else %>
+                    <span>#<%= reaction.reactable_id %></span>
+                  <% end %>
+                <% else %>
+                  <span class="color-secondary"><%= t("views.admin.users.reactions_tab.deleted_target") %> (#<%= reaction.reactable_id %>)</span>
+                <% end %>
+              </td>
+              <td>
+                <span class="crayons-tag <%= reaction.status == 'valid' ? 'crayons-tag--success' : '' %>"><%= reaction.status %></span>
+              </td>
+              <td class="whitespace-nowrap"><%= l(reaction.created_at, format: :short_with_yy) rescue reaction.created_at.to_s %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @reactions if respond_to?(:paginate) %>
+  <% end %>
+</div>

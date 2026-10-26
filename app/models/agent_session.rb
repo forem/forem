@@ -1,5 +1,5 @@
 class AgentSession < ApplicationRecord
-  TOOL_NAMES = %w[claude_code codex gemini_cli github_copilot opencode pi].freeze
+  TOOL_NAMES = %w[antigravity_cli claude_code codex gemini_cli github_copilot opencode pi].freeze
   MAX_CURATED_DATA_SIZE = 10.megabytes
   RAW_FILE_RETENTION_DAYS = 90
 
@@ -11,11 +11,25 @@ class AgentSession < ApplicationRecord
 
   validate :data_has_messages
   validate :data_not_too_large
+  validate :s3_key_format_and_ownership
 
+  before_validation :strip_null_bytes
   before_validation :generate_slug
+  before_validation :assign_message_indices
   after_destroy :delete_s3_object
 
   scope :published, -> { where(published: true) }
+
+  # Postgres jsonb rejects \u0000 ("cannot be converted to text"), and raw
+  # tool output (e.g. `find -print0`, binary file reads) can contain it.
+  def self.strip_null_bytes(value)
+    case value
+    when String then value.delete("\u0000")
+    when Hash then value.to_h { |k, v| [strip_null_bytes(k), strip_null_bytes(v)] }
+    when Array then value.map { |v| strip_null_bytes(v) }
+    else value
+    end
+  end
 
   def messages
     curated_data.fetch("messages", [])
@@ -79,6 +93,13 @@ class AgentSession < ApplicationRecord
 
   private
 
+  def strip_null_bytes
+    self.title = self.class.strip_null_bytes(title)
+    self.curated_data = self.class.strip_null_bytes(curated_data)
+    self.session_metadata = self.class.strip_null_bytes(session_metadata)
+    self.slices = self.class.strip_null_bytes(slices)
+  end
+
   def generate_slug
     return if slug.present?
     return if title.blank?
@@ -88,27 +109,46 @@ class AgentSession < ApplicationRecord
     self.slug = "#{base}-#{SecureRandom.alphanumeric(6).downcase}"
   end
 
+  # Curation, slices, and embeds address messages by "index". The browser
+  # parsers set it, but sessions submitted pre-normalized via the API
+  # (e.g. Antigravity CLI through MCP) often omit it.
+  def assign_message_indices
+    msgs = curated_data.is_a?(Hash) ? curated_data["messages"] : nil
+    return unless msgs.is_a?(Array)
+
+    msgs.each_with_index { |msg, i| msg["index"] ||= i if msg.is_a?(Hash) }
+  end
+
   def data_has_messages
     return if curated_data.blank? || curated_data == {}
 
     messages_data = curated_data["messages"]
-    unless messages_data.is_a?(Array)
-      errors.add(:curated_data, "must contain a messages array")
-    end
+    return if messages_data.is_a?(Array)
+
+    errors.add(:curated_data, "must contain a messages array")
+
     # Sessions with just s3_key and no curated_data yet (draft state) are valid
   end
 
   def data_not_too_large
     return if curated_data.blank? || curated_data == {}
 
-    if curated_data.to_json.bytesize > MAX_CURATED_DATA_SIZE
-      errors.add(:curated_data, "is too large (max #{MAX_CURATED_DATA_SIZE / 1.megabyte}MB)")
-    end
+    return unless curated_data.to_json.bytesize > MAX_CURATED_DATA_SIZE
+
+    errors.add(:curated_data, "is too large (max #{MAX_CURATED_DATA_SIZE / 1.megabyte}MB)")
   end
 
   def delete_s3_object
     return unless s3_key.present? && AgentSessions::S3Storage.enabled?
 
     AgentSessions::S3Storage.delete(s3_key)
+  end
+
+  def s3_key_format_and_ownership
+    return if s3_key.blank?
+
+    return if AgentSessions::S3Storage.valid_key_for_user?(s3_key, user_id)
+
+    errors.add(:s3_key, "is invalid or does not belong to this user")
   end
 end

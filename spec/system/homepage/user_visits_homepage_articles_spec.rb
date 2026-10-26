@@ -4,9 +4,9 @@ RSpec.describe "User visits a homepage" do
   let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
   let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
   # Let's use yesterday's date for this instead of relying on a magic date.
-  let!(:timestamp) { "#{Date.yesterday.to_fs('%Y-%M-%d')}T10:00:00Z" }
-  let(:published_datetime) { Time.zone.parse(timestamp) }
-  let(:published_date) { published_datetime.strftime("%b %e").gsub("  ", " ") }
+  let(:published_datetime) { 1.day.ago.utc.change(hour: 10, min: 0, sec: 0) }
+  let(:timestamp) { article.published_timestamp }
+  let(:published_date) { article.readable_publish_date }
 
   context "when no options specified" do
     context "when main featured article" do

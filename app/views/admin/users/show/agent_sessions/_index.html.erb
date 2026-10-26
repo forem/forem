@@ -1,0 +1,57 @@
+<div class="flex flex-col h-100">
+  <div class="flex justify-between items-center mb-5">
+    <h3 class="crayons-subtitle-2"><%= t("views.admin.users.agent_sessions_tab.title") %></h3>
+  </div>
+
+  <% if @agent_sessions.blank? %>
+    <div class="align-center flex flex-col justify-center my-auto py-7">
+      <p class="color-secondary"><%= t("views.admin.users.agent_sessions_tab.empty") %></p>
+    </div>
+  <% else %>
+    <%= paginate @agent_sessions if respond_to?(:paginate) %>
+
+    <div class="overflow-x-auto">
+      <table class="crayons-table" width="100%">
+        <thead>
+          <tr>
+            <th scope="col"><%= t("views.admin.users.agent_sessions_tab.table.title") %></th>
+            <th scope="col"><%= t("views.admin.users.agent_sessions_tab.table.tool") %></th>
+            <th scope="col"><%= t("views.admin.users.agent_sessions_tab.table.status") %></th>
+            <th scope="col"><%= t("views.admin.users.agent_sessions_tab.table.messages") %></th>
+            <th scope="col"><%= t("views.admin.users.agent_sessions_tab.table.created_at") %></th>
+            <th scope="col" class="align-right"><%= t("views.admin.users.agent_sessions_tab.table.actions") %></th>
+          </tr>
+        </thead>
+        <tbody class="crayons-card">
+          <% @agent_sessions.each do |session| %>
+            <tr>
+              <td>
+                <strong><%= link_to session.title, agent_session_path(session), class: "c-link", target: "_blank", rel: "noopener" %></strong>
+              </td>
+              <td>
+                <span class="crayons-tag"><%= session.tool_name.titleize %></span>
+              </td>
+              <td>
+                <% if session.published? %>
+                  <span class="crayons-tag crayons-tag--success"><%= t("views.admin.users.agent_sessions_tab.published") %></span>
+                <% else %>
+                  <span class="crayons-tag"><%= t("views.admin.users.agent_sessions_tab.draft") %></span>
+                <% end %>
+              </td>
+              <td><%= session.total_messages %></td>
+              <td class="whitespace-nowrap"><%= l(session.created_at, format: :short_with_yy) rescue session.created_at.to_s %></td>
+              <td class="align-right">
+                <div class="flex gap-2 justify-end">
+                  <%= link_to t("views.admin.users.agent_sessions_tab.view"), agent_session_path(session), class: "c-btn c-btn--secondary c-btn--s", target: "_blank", rel: "noopener" %>
+                  <%= link_to t("views.admin.users.agent_sessions_tab.curate"), edit_agent_session_path(session), class: "c-btn c-btn--ghost c-btn--s", target: "_blank", rel: "noopener" %>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <%= paginate @agent_sessions if respond_to?(:paginate) %>
+  <% end %>
+</div>

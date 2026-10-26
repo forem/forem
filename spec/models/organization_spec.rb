@@ -374,6 +374,24 @@ RSpec.describe Organization do
     end
   end
 
+  describe ".find_by_slug_or_legacy" do
+    it "finds an organization by its current, old, or old-old slug" do
+      original_slug = organization.slug
+      organization.update(slug: "second_slug")
+      organization.update(slug: "third_slug")
+
+      expect(described_class.find_by_slug_or_legacy("third_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("second_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy(original_slug)).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("missing_slug")).to be_nil
+    end
+
+    it "uses indexes on the legacy slug columns" do
+      indexed_columns = described_class.connection.indexes(:organizations).map(&:columns)
+      expect(indexed_columns).to include(["old_slug"], ["old_old_slug"])
+    end
+  end
+
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(organization.enough_credits?(1)).to be(false)
@@ -507,6 +525,16 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#ordered_pages" do
+    it "orders pages by position and uses creation order as a stable fallback when positions are equal" do
+      first_page = create(:page, organization: organization, position: 0, created_at: 2.hours.ago)
+      second_page = create(:page, organization: organization, position: 0, created_at: 1.hour.ago)
+      promoted_page = create(:page, organization: organization, position: -1, created_at: Time.current)
+
+      expect(organization.ordered_pages).to eq([promoted_page, first_page, second_page])
+    end
+  end
+
   describe "#flipper_id" do
     it "returns a string with Organization prefix and id" do
       expect(organization.flipper_id).to eq("Organization;#{organization.id}")
@@ -574,6 +602,38 @@ RSpec.describe Organization do
     it "does not enqueue recompilation when other attributes change" do
       organization.update!(company_size: "50")
       expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "#set_baseline_score_on_verification_change" do
+    let(:organization) { create(:organization, verified: false, baseline_score: 0) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(15)
+    end
+
+    it "sets baseline_score to index_minimum_score when becoming verified" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+    end
+
+    it "reverts baseline_score to 0 when losing verification" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(verified: false)
+      expect(organization.baseline_score).to eq(0)
+    end
+
+    it "preserves manual baseline_score updates when verification status does not change" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(baseline_score: 45)
+      expect(organization.baseline_score).to eq(45)
+
+      organization.update!(name: "Updated Org Name")
+      expect(organization.baseline_score).to eq(45)
     end
   end
 end

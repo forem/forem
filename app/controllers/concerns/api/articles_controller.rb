@@ -12,6 +12,7 @@ module Api
       cached_tag_list slug path canonical_url comments_count
       public_reactions_count created_at edited_at last_comment_at published
       updated_at video_thumbnail_url reading_time subforem_id language
+      ai_disclosure_level
     ].freeze
 
     ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
@@ -29,6 +30,7 @@ module Api
       title description main_image published published_at cached_tag_list
       slug path canonical_url comments_count public_reactions_count
       page_views_count crossposted_at body_markdown updated_at reading_time
+      ai_disclosure_level
     ].freeze
     private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -78,14 +80,19 @@ module Api
     end
 
     def update
-      articles_relation = @user.super_admin? ? Article.includes(:user) : @user.articles
-      article = articles_relation.find(params[:id])
+      # Set @article before #article_params so #allowed_to_change_org_id? checks the
+      # post's author, not the editor, when an org admin edits someone else's post.
+      @article = find_updatable_article
+      editor_is_author = @article.user_id == @user.id
+      organization_id = @article.organization_id
 
-      result = Articles::Updater.call(@user, article, article_params)
+      result = Articles::Updater.call(@user, @article, article_params)
 
       @article = result.article
 
       if result.success
+        log_non_author_update(organization_id) unless editor_is_author
+        assign_ai_disclosure_warning
         render "show", status: :ok
       else
         message = @article.errors_as_sentence
@@ -136,15 +143,21 @@ module Api
       # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
       # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
       # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
-      @articles = Articles::ApiSearchQuery.call(params)
+      articles = Articles::ApiSearchQuery.call(params)
 
       # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
       # ChatGPT cannot process the long body request.
-      @articles = if @articles.count > 1
-                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  else
-                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
-                  end
+      # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
+      # running a separate COUNT over the full search before every load.
+      @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+      return unless @articles.size == 1
+
+      # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
+      # return 0-1 results are the slowest searches, so repeating them doubled their cost).
+      @articles = Article.includes([{ user: :profile }, :organization])
+        .where(id: @articles.first.id)
+        .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
+        .decorate
     end
 
     private
@@ -159,8 +172,46 @@ module Api
       all_tags.any? { |t| !t.match?(/\A[[:alnum:]\-]+\z/i) }
     end
 
+    # Uses the same ArticlePolicy#update? as the web editor. A caller who may not
+    # edit the post gets a 404, not a 401, as before: this keeps the existing
+    # response and does not reveal that an unpublished draft exists.
+    def find_updatable_article
+      article = Article.includes(:user).find(params[:id])
+      authorize article, :update?
+      article
+    rescue Pundit::NotAuthorizedError => e
+      raise if e.is_a?(ApplicationPolicy::UserSuspendedError)
+
+      raise ActiveRecord::RecordNotFound
+    end
+
+    # @param organization_id [Integer, nil] the post's organization before the update,
+    #        i.e. the organization whose admin rights allowed the edit
+    def log_non_author_update(organization_id)
+      payload = {
+        action: "api_article_update",
+        article_id: @article.id,
+        organization_id: organization_id,
+        changed_attributes: @article.saved_changes.keys - %w[updated_at]
+      }
+      Audit::Logger.log(:admin_api, @user, payload)
+    end
+
     def per_page_max
       (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    end
+
+    # Updates stay permissive: every article predating this feature is
+    # `not_disclosed`, so requiring a value here would break existing clients
+    # editing old posts. Warn instead.
+    def assign_ai_disclosure_warning
+      return unless Settings::General.enable_ai_disclosure
+      return unless @article.not_disclosed?
+
+      @warnings = [
+        "This article has ai_disclosure_level=not_disclosed. Set it to one of: " \
+        "#{Article.ai_disclosure_levels.keys.join(', ')}. See #{URL.url('llms.txt')}"
+      ]
     end
 
     def article_params
@@ -170,14 +221,12 @@ module Api
         :main_image, :canonical_url, :description, { tags: [] },
         :published_at, :subforem_id, :language
       ]
+      allowed_params << :ai_disclosure_level if Settings::General.enable_ai_disclosure
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
-      # allow if a youtube.com, mux.com, or twitch.tv URL
-      video_url = params.dig("article", "video_source_url")
-      if video_url.present?
-        youtube_pattern = /\Ahttps?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)/
-        mux_pattern = /\Ahttps?:\/\/player\.mux\.com\//
-        twitch_pattern = /\Ahttps?:\/\/(www\.)?twitch\.tv\/videos\//
-        allowed_params << :video_source_url if video_url.match?(youtube_pattern) || video_url.match?(mux_pattern) || video_url.match?(twitch_pattern)
+      # allow video_source_url only for supported hosts; a blank value removes the cover video
+      if params["article"]&.key?("video_source_url") &&
+          Article.permitted_video_source_url?(params["article"]["video_source_url"])
+        allowed_params << :video_source_url
       end
       if @user.super_admin?
         allowed_params << :clickbait_score
@@ -189,10 +238,11 @@ module Api
 
     def allowed_to_change_org_id?
       potential_user = @article&.user || @user
-      if @article.nil? || OrganizationMembership.exists?(user: potential_user,
-                                                         organization_id: params.dig("article", "organization_id"))
-        OrganizationMembership.exists?(user: potential_user,
-                                       organization_id: params.dig("article", "organization_id"))
+      if @article.nil? || OrganizationMembership.member.exists?(user: potential_user,
+                                                                organization_id: params.dig("article",
+                                                                                            "organization_id"))
+        OrganizationMembership.member.exists?(user: potential_user,
+                                              organization_id: params.dig("article", "organization_id"))
       elsif potential_user == @user
         potential_user.org_admin?(params.dig("article", "organization_id")) ||
           @user.any_admin?

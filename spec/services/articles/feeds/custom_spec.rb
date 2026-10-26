@@ -124,6 +124,32 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result).not_to include(a)
       end
 
+      context "when articles belong to the current subforem" do
+        let(:subforem) { create(:subforem) }
+
+        before do
+          Article.where(id: [high_score_article.id, medium_score_article.id, low_score_article.id])
+            .update_all(subforem_id: subforem.id)
+          RequestStore.store[:subforem_id] = subforem.id
+        end
+
+        after { RequestStore.store.delete(:subforem_id) }
+
+        it "loads the feed without querying subforems" do
+          subforem_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+          end
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            feed.default_home_feed.to_a
+          end
+
+          expect(result).to contain_exactly(high_score_article, medium_score_article, low_score_article)
+          expect(subforem_queries).to be_empty
+        end
+      end
+
       context "when user has antifollowed tags" do
         let!(:hidden_article) do
           a = create(:article, published: true, score: 70, tags: "hidden")
@@ -608,6 +634,81 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     it "aliases more_comments_minimal_weight_randomized to default_home_feed" do
       expect(feed.method(:more_comments_minimal_weight_randomized))
         .to eq(feed.method(:default_home_feed))
+    end
+  end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) do
+      a = create(:article, published: true, score: 90, ai_disclosure_level: :no_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:some_ai_article) do
+      a = create(:article, published: true, score: 85, ai_disclosure_level: :some_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:autonomous_article) do
+      a = create(:article, published: true, score: 80, ai_disclosure_level: :fully_autonomous)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article)
+        expect(result).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article, autonomous_article)
+      end
+    end
+  end
+
+  describe "performance optimizations" do
+    it "preloads the requested comments_variant to prevent downstream N+1 queries" do
+      result = feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments")
+      first_article = result.first
+      expect(first_article.association(:more_inclusive_recent_good_comments)).to be_loaded
+    end
+
+    it "uses limited_column_select avoiding heavy text and vector columns" do
+      result = feed.default_home_feed.to_a
+      first_article = result.first
+      expect(first_article.has_attribute?(:title)).to be true
+      expect(first_article.has_attribute?(:body_markdown)).to be false
+      expect(first_article.has_attribute?(:semantic_embedding)).to be false
+    end
+
+    it "loads the feed without querying reactions" do
+      create(:reaction, reactable: high_score_article, category: "like")
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { feed.default_home_feed.to_a }
+
+      expect(reaction_queries).to be_empty
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: high_score_article, category: "like")
+
+      story = feed.default_home_feed.to_a.find { |article| article.id == high_score_article.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
     end
   end
 end
