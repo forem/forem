@@ -171,6 +171,57 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".color_accent" do
+    let(:legacy_accent) do
+      lambda do |hex, amount|
+        Color::CompareHex::ACCENT_MODIFIERS.each do |modifier|
+          with_brightness = begin
+            rgb = hex.match(/^#?(?<r>..)(?<g>..)(?<b>..)$/).named_captures.to_h do |key, color|
+              [key.to_sym, color.hex]
+            end
+            format("#%<r>02x%<g>02x%<b>02x", rgb.transform_values { |color| (color * (modifier**amount)).round })
+          rescue StandardError
+            hex
+          end
+          break with_brightness if with_brightness.size == 7
+        end
+      end
+    end
+
+    it "matches the legacy reference across strict and malformed colors" do
+      ["#ccddee", "ccddee", "#000000", "#ffffff", "#123456", "#123456\n", "#éééééé", "#🚀🚀🚀"].each do |hex|
+        [1, 0, -1, 0.5, 1.25, 2, Float::INFINITY, Float::NAN].each do |amount|
+          expected = legacy_accent.call(hex, amount)
+          native = described_class.color_accent(hex, amount)
+          expect(native).to eq(expected) unless native.nil?
+          expect(Color::CompareHex.new([hex]).accent(amount)).to eq(expected)
+        end
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated hex colors and amounts" do
+      rng = Random.new(424_242)
+      hex_chars = [*"0".."9", *"a".."f", *"A".."F"]
+      noise_chars = hex_chars + ["#", "-", "+", " ", "_", "x", "g", "\n", "é", "🚀"]
+
+      1_000.times do |iteration|
+        prefix = rng.rand < 0.8 ? "#" : ""
+        hex = if rng.rand < 0.85
+                prefix + Array.new(6) { hex_chars.sample(random: rng) }.join
+              else
+                prefix + Array.new(rng.rand(0..8)) { noise_chars.sample(random: rng) }.join
+              end
+        amount = (rng.rand * 4.0) - 0.5
+        expected = legacy_accent.call(hex, amount)
+        native = described_class.color_accent(hex, amount)
+        actual = Color::CompareHex.new([hex]).accent(amount)
+        message = "iteration #{iteration}: #{hex.inspect} ** #{amount.inspect}"
+        expect(native).to eq(expected), message unless native.nil?
+        expect(actual).to eq(expected), message
+      end
+    end
+  end
+
   describe ".color_opacity" do
     let(:legacy_opacity) do
       lambda do |hex, alpha|
@@ -510,6 +561,52 @@ RSpec.describe ForemNative do
         message = "iteration #{iteration}: #{sample.inspect}"
         expect(described_class.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
         expect(parser.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".fixer_convert_new_lines" do
+    let(:legacy_convert_new_lines) { ->(markdown) { markdown.gsub("\r\n", "\n") } }
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      ["", "plain LF\ntext", "lone CR\r", "\r\n", "\r\r\n", "a\r\nb\r\nc", "🚀\r\n日本\né\rX"]
+    end
+
+    it "matches Ruby's gsub across line ending and Unicode edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_new_lines.call(input)
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), input.inspect
+        expect(fixer.convert_new_lines(input)).to eq(expected), input.inspect
+      end
+      expect(described_class.fixer_convert_new_lines(nil)).to be_nil
+      expect { fixer.convert_new_lines(nil) }.to raise_error(NoMethodError)
+    end
+
+    it "declines unsupported encodings, String subclasses, and invalid bytes" do
+      input = "one\r\ntwo"
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_convert_new_lines(other)).to be_nil
+        result = fixer.convert_new_lines(other)
+        expect(result).to eq(legacy_convert_new_lines.call(other))
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      invalid = "one\r\ntwo\xFF"
+      expect(ForemNative::Native.fixer_convert_new_lines(invalid)).to be_nil
+      expect(fixer.convert_new_lines(invalid)).to eq(legacy_convert_new_lines.call(invalid))
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["word", "\r\n", "\n", "\r", "🚀", "日本", "é", " ", "```ruby", "\t"]
+
+      1_000.times do |iteration|
+        input = Array.new(rng.rand(0..100)) { tokens.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        expected = legacy_convert_new_lines.call(input)
+        message = "iteration #{iteration}: #{input.inspect}"
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), message
+        expect(fixer.convert_new_lines(input)).to eq(expected), message
       end
     end
   end

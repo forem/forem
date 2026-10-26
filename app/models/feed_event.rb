@@ -171,7 +171,7 @@ class FeedEvent < ApplicationRecord
 
   def create_feed_config_offshoot
     # Any time we get a reaction or comment on a proven config, branch off a slightly modified feed config
-    return unless feed_config
+    return unless feed_config && !feed_config.archived?
     return unless %w[reaction comment].include?(category)
     return if feed_config.feed_impressions_count < FeedConfig::LOW_IMPRESSION_COUNT
 

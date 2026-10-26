@@ -14,11 +14,11 @@ RSpec.describe "User comments" do
 
     it "does not show user's articles" do
       within("#substories") do
-        expect(page).not_to have_content(article.title)
+        expect(page).to have_no_content(article.title)
       end
     end
 
-    it "shows user's comments", js: true do
+    it "shows user's comments" do
       within("#substories div.profile-comment-card") do
         expect(page).to have_content("All comments")
         expect(page).to have_link(nil, href: comment.path)
@@ -26,9 +26,9 @@ RSpec.describe "User comments" do
       end
     end
 
-    it "hides comments locked cta", js: true do
+    it "hides comments locked cta" do
       within("#substories") do
-        expect(page).not_to have_content("Want to connect with #{user.name}?")
+        expect(page).to have_no_content("Want to connect with #{user.name}?")
       end
     end
   end
@@ -38,19 +38,19 @@ RSpec.describe "User comments" do
 
     it "does not show user's articles" do
       within("#substories") do
-        expect(page).not_to have_content(article.title)
+        expect(page).to have_no_content(article.title)
       end
     end
 
-    it "hides user's comments", js: true do
+    it "hides user's comments" do
       within("#substories") do
-        expect(page).not_to have_content("All comments")
-        expect(page).not_to have_link(nil, href: comment.path)
-        expect(page).not_to have_link(nil, href: comment2.path)
+        expect(page).to have_no_content("All comments")
+        expect(page).to have_no_link(nil, href: comment.path)
+        expect(page).to have_no_link(nil, href: comment2.path)
       end
     end
 
-    it "shows comments locked cta", js: true do
+    it "shows comments locked cta" do
       within("#substories") do
         expect(page).to have_content("Want to connect with #{user.name}?")
       end
@@ -63,7 +63,7 @@ RSpec.describe "User comments" do
       visit "/user3000/comments"
     end
 
-    it "show user's last comments", js: true do
+    it "show user's last comments" do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/user3000/comments"
       within("#substories div.profile-comment-card") do
