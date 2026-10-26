@@ -46,4 +46,36 @@ RSpec.describe "ApplicationController", type: :request do
       end
     end
   end
+
+  describe "#valid_request_origin?" do
+    let(:mock_request) do
+      instance_double(
+        ActionDispatch::Request,
+        referer: referer,
+        host: "dev.to",
+        port: 443,
+      )
+    end
+
+    before do
+      allow(Rails.env).to receive(:test?).and_return(false)
+      allow(controller).to receive(:request).and_return(mock_request)
+    end
+
+    context "when referer matches the request host and port" do
+      let(:referer) { "https://dev.to/some-post" }
+
+      it "returns true" do
+        expect(controller.valid_request_origin?).to be(true)
+      end
+    end
+
+    context "when referer contains an invalid URI or non-ASCII bytes" do
+      let(:referer) { "1 \xC0\xA7\xC0\xA2%2527%2522".b }
+
+      it "returns false instead of raising URI::InvalidURIError" do
+        expect(controller.valid_request_origin?).to be(false)
+      end
+    end
+  end
 end
