@@ -52,5 +52,28 @@ RSpec.describe CrayonsHelper do
 
       expect(File).not_to have_received(:read)
     end
+
+    it "renders each icon and option set through inline_svg only once per process" do
+      described_class::ICON_CACHE.clear
+      allow(helper).to receive(:inline_svg_tag).and_call_original
+
+      first = helper.crayons_icon_tag(:twitter, class: "memo-test")
+      second = helper.crayons_icon_tag(:twitter, class: "memo-test")
+
+      expect(second).to eq(first)
+      expect(second).to be_html_safe
+      expect(helper).to have_received(:inline_svg_tag).once
+    end
+
+    it "gives every render fresh, matching aria-labelledby ids for the title and description" do
+      tags = Array.new(2) { helper.crayons_icon_tag(:twitter, title: "Same", desc: "Desc") }
+      id_lists = tags.map { |tag| tag[/aria-labelledby="([^"]+)"/, 1].split }
+
+      expect(id_lists.flatten.uniq.size).to eq(4)
+      tags.zip(id_lists).each do |tag, ids|
+        expect(tag).to include(%(<title id="#{ids.first}">Same</title>))
+        expect(tag).to include(%(<desc id="#{ids.last}">Desc</desc>))
+      end
+    end
   end
 end

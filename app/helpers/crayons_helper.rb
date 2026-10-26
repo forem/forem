@@ -32,6 +32,31 @@ module CrayonsHelper
     opts[:width] ||= 24
     opts[:height] ||= 24
 
-    inline_svg_tag(icon_name, aria: true, class: icon_class, **opts)
+    key = [icon_name, icon_class, opts]
+    svg = ICON_CACHE[key] || begin
+      ICON_CACHE.clear if ICON_CACHE.size >= ICON_CACHE_LIMIT
+      ICON_CACHE[key] = String.new(inline_svg_tag(icon_name, aria: true, class: icon_class, **opts)).freeze
+    end
+    with_fresh_aria_ids(svg).html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  # inline_svg re-serializes and re-parses the whole SVG once per transformation (title, aria,
+  # class, width, height), which costs about half a millisecond per icon. The output only depends
+  # on the arguments, so it is rendered once per process and reused. The keyspace is bounded by a
+  # simple size cap because a few icons carry record-specific titles.
+  ICON_CACHE = Concurrent::Map.new
+  ICON_CACHE_LIMIT = 2_000
+  ARIA_LABELLEDBY = /\A<svg\b[^>]*?\baria-labelledby="([^"]+)"/
+
+  private
+
+  # inline_svg gives every <title>/<desc> a random id per render so the aria-labelledby
+  # references on a page stay unique. Re-randomize them on each call to keep that guarantee.
+  def with_fresh_aria_ids(svg)
+    ids = svg[ARIA_LABELLEDBY, 1]&.split
+    return svg if ids.blank?
+
+    fresh_ids = ids.index_with { |id| InlineSvg::IdGenerator.generate("aria", id) }
+    svg.gsub(Regexp.union(ids), fresh_ids)
   end
 end
