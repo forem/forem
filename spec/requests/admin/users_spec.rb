@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/admin/member_manager/users" do
-  let!(:user) do
+  let(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
@@ -13,8 +13,9 @@ RSpec.describe "/admin/member_manager/users" do
 
   describe "GET /admin/member_manager/users" do
     it "renders to appropriate page" do
+      username = user.username
       get admin_users_path
-      expect(response.body).to include(user.username)
+      expect(response.body).to include(username)
     end
 
     it "does not query roles separately for each user displayed" do
