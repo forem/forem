@@ -5,7 +5,8 @@ module Admin
     def index
       @best_feed_config = best_feed_config
       @top_pool_ids = top_pool_ids
-      @new_pool_ids = FeedConfig.where("feed_impressions_count < ?", FeedConfig::LOW_IMPRESSION_COUNT)
+      @new_pool_ids = FeedConfig.active
+        .where("feed_impressions_count < ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order(created_at: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
         .ids
@@ -19,7 +20,7 @@ module Admin
                        { feed_success_score: :desc, created_at: :desc }
                      end
 
-      @feed_configs = FeedConfig.order(order_clause).page(params[:page]).per(25)
+      @feed_configs = FeedConfig.active.order(order_clause).page(params[:page]).per(25)
     end
 
     def show
@@ -37,6 +38,7 @@ module Admin
                        source_config.dup.tap do |config|
                          config.feed_impressions_count = 0
                          config.feed_success_score = 0.0
+                         config.archived = false
                        end
                      else
                        FeedConfig.new
@@ -69,25 +71,28 @@ module Admin
     private
 
     def top_pool_ids
-      ids = FeedConfig.where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
+      ids = FeedConfig.active
+        .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order(feed_success_score: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
         .ids
       return ids if ids.any?
 
-      FeedConfig.where("feed_impressions_count > 0")
+      FeedConfig.active
+        .where("feed_impressions_count > 0")
         .order(feed_success_score: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
         .ids
     end
 
     def best_feed_config
-      FeedConfig.where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
+      FeedConfig.active
+        .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order("feed_success_score DESC NULLS LAST")
         .first ||
-        FeedConfig.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
-        FeedConfig.order("feed_success_score DESC NULLS LAST").first ||
-        FeedConfig.last
+        FeedConfig.active.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
+        FeedConfig.active.order("feed_success_score DESC NULLS LAST").first ||
+        FeedConfig.active.last
     end
 
     def feed_config_params

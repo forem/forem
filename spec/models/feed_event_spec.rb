@@ -526,5 +526,17 @@ RSpec.describe FeedEvent do
         create(:feed_event, feed_config: nil, article: article, user: user, category: "reaction")
       end
     end
+
+    context "when feed_config is archived" do
+      let(:feed_config) do
+        create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT, archived: true)
+      end
+
+      it "does not call create_slightly_modified_clone!" do
+        allow(feed_config).to receive(:create_slightly_modified_clone!)
+        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+        expect(feed_config).not_to have_received(:create_slightly_modified_clone!)
+      end
+    end
   end
 end
