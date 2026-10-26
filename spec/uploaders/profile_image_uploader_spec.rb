@@ -84,4 +84,71 @@ describe ProfileImageUploader, type: :uploader do
       expect(EXIFR::JPEG.new(user.profile_image.path).gps.present?).to be(false)
     end
   end
+
+  describe "fog storage behavior" do
+    around do |example|
+      user # ensure user is created before switching ProfileImageUploader to fog storage
+
+      original_storage = described_class.storage
+      original_fog_credentials = described_class.fog_credentials
+      original_fog_directory = described_class.fog_directory
+
+      Fog.mock!
+      Fog::Mock.reset
+      credentials = {
+        provider: "AWS",
+        aws_access_key_id: "test-key",
+        aws_secret_access_key: "test-secret",
+        region: "us-east-1"
+      }
+      Fog::Storage.new(credentials).directories.create(key: "test-bucket")
+
+      described_class.storage = :fog
+      described_class.fog_credentials = credentials
+      described_class.fog_directory = "test-bucket"
+
+      example.run
+    ensure
+      described_class.storage = original_storage
+      described_class.fog_credentials = original_fog_credentials
+      described_class.fog_directory = original_fog_directory
+      Fog.unmock!
+    end
+
+    it "does not issue S3 HEAD requests when validating a model or checking #present? / #blank?" do
+      user.update_column(:profile_image, "existing_avatar.jpg")
+      reloaded_user = User.find(user.id)
+
+      fog_file = reloaded_user.profile_image.file
+      expect(fog_file).to be_a(CarrierWave::Storage::Fog::File)
+      allow(fog_file).to receive(:exists?)
+
+      expect(reloaded_user.profile_image.blank?).to be(false)
+      expect(reloaded_user.profile_image.present?).to be(true)
+      expect(reloaded_user.profile_image?).to be(true)
+      expect(reloaded_user.profile_image.filename).to end_with(".jpg")
+      expect(reloaded_user.valid?).to be(true)
+      expect(fog_file).not_to have_received(:exists?)
+    end
+
+    it "returns blank? true when no file is mounted on a fog-backed uploader" do
+      user.update_column(:profile_image, nil)
+      reloaded_user = User.find(user.id)
+
+      expect(reloaded_user.profile_image.blank?).to be(true)
+      expect(reloaded_user.profile_image.present?).to be(false)
+    end
+
+    it "stores a new upload without issuing any S3 HEAD requests during copy_to" do
+      connection = CarrierWave::Storage::Fog.new(user.profile_image).connection
+      allow(connection).to receive(:head_object).and_call_original
+
+      user.profile_image = image_jpg
+      user.save!
+
+      expect(connection).not_to have_received(:head_object)
+      expect(user.profile_image.file.path).to start_with("uploads/user/profile_image/#{user.id}/")
+      expect(user.profile_image.file.path).to end_with(".jpg")
+    end
+  end
 end
