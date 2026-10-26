@@ -103,7 +103,7 @@ module Redcarpet
       end
 
       def slugify(string)
-        stripped_string = ActionView::Base.full_sanitizer.sanitize string
+        stripped_string = ForemNative.full_sanitize(string) || ActionView::Base.full_sanitizer.sanitize(string)
         stripped_string.downcase.gsub(EmojiRegex::RGIEmoji, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
       end
     end

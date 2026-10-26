@@ -37,7 +37,7 @@ gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
-gem "feedjira", "~> 3.2" # A feed fetching and parsing library
+gem "feedjira", "~> 4.0" # A feed fetching and parsing library
 gem "field_test", "~> 1.0" # A/B testing
 gem "flipper", "~> 1.4" # Feature flipping / flags for Ruby
 gem "flipper-active_record", "~> 1.4" # Store Flipper flags in ActiveRecord
@@ -182,7 +182,7 @@ group :test do
   gem "simplecov", "~> 0.21.2", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "3.1.0.rc3", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers
-  gem "test-prof", "~> 1.0" # Ruby Tests Profiling Toolbox
+  gem "test-prof", "~> 1.6" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.3" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webmock", "~> 3.17", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests

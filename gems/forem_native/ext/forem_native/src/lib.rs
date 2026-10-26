@@ -402,6 +402,16 @@ fn inline_svg_icon(
     }
 }
 
+fn full_sanitize(html: RString) -> Option<String> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so callers can fall back to `ActionView::Base.full_sanitizer`.
+    forem_core::sanitize::full_sanitize(unsafe { html.test_as_str() }?)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -474,5 +484,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
+    native_mod.define_singleton_method("full_sanitize", function!(full_sanitize, 1))?;
     Ok(())
 }
