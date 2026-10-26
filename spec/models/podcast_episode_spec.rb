@@ -50,6 +50,15 @@ RSpec.describe PodcastEpisode do
     end
   end
 
+  describe "#body_text" do
+    it "strips tags from processed_html" do
+      ep2 = build(:podcast_episode, guid: podcast_episode.guid)
+
+      ep2.processed_html = "<p>Processed <strong>HTML</strong> &amp; text</p>"
+      expect(ep2.body_text).to eq("Processed HTML &amp; text")
+    end
+  end
+
   describe ".available" do
     let(:podcast) { create(:podcast) }
 

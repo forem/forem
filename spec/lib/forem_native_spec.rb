@@ -1052,6 +1052,7 @@ RSpec.describe ForemNative do
 
     let(:optimizer_cloudflare) do
       lambda do |img_src, **kwargs|
+        allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(domain)
         Images::Optimizer.cloudflare(img_src, **kwargs)
       end
@@ -1750,6 +1751,108 @@ RSpec.describe ForemNative do
                                                              "iteration #{iteration}: #{[name, opts].inspect}"
         end
       end
+      expect(native_hits).to be > 500
+    end
+  end
+
+  describe ".full_sanitize (ActionView::Base.full_sanitizer.sanitize)" do
+    let(:legacy_sanitize) { ->(html) { ActionView::Base.full_sanitizer.sanitize(html) } }
+
+    let(:edge_cases) do
+      [
+        "",
+        "plain text without markup",
+        "日本語 🎉 café naïve",
+        "<p>Hello <b>world</b>!</p>",
+        "<div class=\"a\" data-x=\"1 > 2\" data-y='3 < 4' disabled>text</div>",
+        "<!DOCTYPE html><!-- comment --><p>doc</p>",
+        "Tom & Jerry &amp; &lt; &gt; &quot; &#39; &#x27; &apos; &nbsp; &#160; &#xA0;",
+        "&#x25B8; &middot; &copy; &reg; &trade; &mdash; &ndash; &hellip; &lsquo; &rsquo; &ldquo; &rdquo; &rarr;",
+        "&#0; &#128; &#146; &#xD800; &#x110000; &#999999999999999; &#128512; &#x1F600; &#;",
+        "a < b && c > d\u00A0e\r\nf\rg",
+        "https://dev.to/search?q=rust&sort=latest&page=2",
+        "<pre>\nline 1\nline 2</pre>",
+        "<pre>\r\nline 1\r\nline 2</pre>",
+        "<pre><code>\nline 1</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Enter fullscreen mode</title><path d=\"M0 0\"/></svg>",
+        "<table>\n<thead>\n<tr><th>H1</th></tr>\n</thead>\n<tbody>\n<tr><td>C1</td></tr>\n</tbody>\n</table>",
+        "<style>.a > .b { content: \"<x>\"; }</style>",
+        "<script>const a = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback <b>text</b></iframe>",
+        "<textarea>\n<b>raw</b> &amp; text</textarea>",
+        "<title>Title &amp; Text</title>",
+      ]
+    end
+
+    it "matches ActionView::Base.full_sanitizer.sanitize across edge cases and editor guide HTML" do
+      edge_cases.each do |html|
+        expected = legacy_sanitize.call(html)
+        expect(described_class.full_sanitize(html)).to eq(expected), html.inspect
+      end
+
+      raw_guide = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb").read
+      guide_without_erb = raw_guide.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")
+      expect(described_class.full_sanitize(guide_without_erb)).to eq(legacy_sanitize.call(guide_without_erb))
+    end
+
+    it "declines non-Strings, invalid encodings, and HTML5 tree-builder quirks so callers can fall back" do
+      [nil, false, 123, :sym, ActiveSupport::SafeBuffer.new("<p>x</p>"), "<p>x</p>".b,
+       "<p>x</p>".encode("UTF-16LE"), "<p>\xFF</p>"].each do |input|
+        expect(described_class.full_sanitize(input)).to be_nil, input.inspect
+      end
+
+      [
+        "null\x00byte",
+        "\uFEFFbom",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<table><b>stray</b><tr><td>1</td></tr></table>",
+        "<!-- unclosed",
+        "<!-->abrupt",
+        "<?xml version=\"1.0\"?><span>pi</span>",
+        "<div attr=\"unclosed>",
+        "&CounterClockwiseContourIntegral;",
+        "&copy=1",
+        "&#123",
+        "<xmp><b>raw</b></xmp>",
+        "<plaintext><b>raw</b>",
+      ].each do |quirky|
+        expect(described_class.full_sanitize(quirky)).to be_nil, quirky.inspect
+        article = build(:article, processed_html: quirky)
+        expect(article.body_text).to eq(legacy_sanitize.call(quirky)[0..7000])
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated HTML fragments" do
+      rng = Random.new(424_242)
+      pieces = [
+        "", "hello", "world", " ", "\n", "\r\n", "\r", "\t", "\u00A0", "é", "日本", "🚀",
+        "&", "&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&nbsp;", "&middot;", "&copy;", "&mdash;", "&ndash;",
+        "&#39;", "&#x25B8;", "&#160;", "&#0;", "&#128;", "&#146;", "&#128512;", "&#xD800;", "&#;",
+        "&unknown;", "&copy=1", "&#123", "?a=1&b=2&utm_source=dev",
+        "<", ">", "a < b", "x > y", "<p>", "</p>", "<br>", "<br/>", "<div class=\"a > b\" data-x='c < d'>", "</div>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\" target=_blank>", "</a>",
+        "<!-- comment -->", "<!DOCTYPE html>",
+        "<pre>\ncode</pre>", "<pre>\r\ncode</pre>", "<pre><code>\ncode</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Icon</title><path d=\"M0 0\"/></svg>",
+        "<table>\n<thead>\n<tr><th>H</th></tr>\n</thead>\n<tbody>\n<tr><td>D</td></tr>\n</tbody>\n</table>",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<style>.a > .b { color: red; }</style>",
+        "<script>const x = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback</iframe>",
+        "<textarea>\nraw <b>html</b> &amp;</textarea>",
+        "<title>Title &amp; Text</title>",
+        "<xmp><b>x</b></xmp>", "null\x00byte", "\uFEFFbom", "<div unclosed"
+      ]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { pieces.sample(random: rng) }.join
+        expected = legacy_sanitize.call(sample)
+        native = described_class.full_sanitize(sample)
+        native_hits += 1 unless native.nil?
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+
       expect(native_hits).to be > 500
     end
   end
