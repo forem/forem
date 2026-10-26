@@ -193,6 +193,8 @@ en:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           enable_ai_disclosure:
             description: Allow authors to disclose AI tooling usage when publishing or editing posts.
+          appeal_auto_unflag_threshold:
+            description: Minimum AI confidence score (0.0 to 1.0) required to automatically approve an appeal when the AI recommends auto_unflag (only applies to automated restrictions, never human moderator bans). Set above 1.0 (e.g. 1.01) to disable automatic unflagging and route every appeal to human review.
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:
