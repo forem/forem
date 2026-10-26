@@ -101,4 +101,25 @@ RSpec.describe AbExperiment do
       end
     end
   end
+
+  describe "FieldTest native probability calculation and experiment results" do
+    it "computes winning probabilities via FieldTest::BinaryTest.probabilities" do
+      probabilities = FieldTest::BinaryTest.probabilities([
+                                                            { participated: 100, converted: 10 },
+                                                            { participated: 100, converted: 25 },
+                                                          ])
+
+      expect(probabilities.size).to eq(2)
+      expect(probabilities.sum).to be_within(1e-6).of(1.0)
+      expect(probabilities.second).to be > probabilities.first
+    end
+
+    it "computes results with winning probabilities for configured 2-variant experiments" do
+      experiment = FieldTest::Experiment.find(:personalized_email_digests_ab_test)
+      results = experiment.results(goal: "user_clicks_email_link")
+
+      expect(results.keys).to contain_exactly("legacy", "personalized")
+      expect(results.values).to all(include(:participated, :converted, :conversion_rate, :prob_winning))
+    end
+  end
 end
