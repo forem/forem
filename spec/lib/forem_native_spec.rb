@@ -1580,4 +1580,75 @@ RSpec.describe ForemNative do
       expect(positives).to be_between(200, 800)
     end
   end
+
+  describe ".original_host_valid" do
+    let(:legacy_original_host_valid) do
+      lambda do |host|
+        host_without_port = host.split(":").first
+        host_without_port.match?(Middlewares::RestoreOriginalHost::VALID_HOST_REGEXP) ||
+          host_without_port == "localhost"
+      end
+    end
+    let(:middleware) { Middlewares::RestoreOriginalHost.new(->(env) { [200, env, []] }) }
+
+    it "matches the host Regexp across edge cases" do
+      [
+        "mlh.forem.wtf", "sub-domain.example.com", "localhost", "localhost:3000", "DEV.TO", "dev.to:443", "a.bc",
+        "1.2.3.ab", "a.cd:x:y", "a.cd:", "a.b", "a.b2", "a.b-cd", "a..cd", "-a.cd", "a-.cd", "a.cd.", ".a.cd",
+        "a.c1d", "1.2.3.4", "xn--d1a.com", "LOCALHOST", "localhost.:", "a--b.cd", "ab", "invalid host",
+        "host\nname", "host;name", "http://host.com", "dev.to".b, "dev.to".encode("US-ASCII")
+      ].each do |host|
+        expect(described_class.original_host_valid(host)).to eq(legacy_original_host_valid.call(host)), host.inspect
+      end
+    end
+
+    it "declines hosts that need the legacy check and keeps the middleware's legacy result" do
+      ["", ":", ":::", ":3000", "\u212Aa.com", "a.co\u017F", "dév.to", "a.com:\xFF", "\xFF.com".b,
+       "dev.to".encode("UTF-16LE"), nil, :host].each do |host|
+        expect(described_class.original_host_valid(host)).to be_nil, host.inspect
+      end
+      expect(middleware.__send__(:valid_host?, "\u212Aa.com")).to be(true)
+      expect(middleware.__send__(:valid_host?, "dév.to")).to be(false)
+      expect(middleware.__send__(:valid_host?, ":3000")).to be(false)
+      expect { middleware.__send__(:valid_host?, ":::") }.to raise_error(NoMethodError)
+      expect { middleware.__send__(:valid_host?, "a.com:\xFF") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["dev", "to", "DEV", "forem", "com", "a", "b2", "1", "localhost", "xn", "wtf", ".", ".", ".", "-", "-",
+                ":", "443", " ", "_", "/", ";", "\n", "é"]
+      positives = 0
+
+      1_000.times do |iteration|
+        host = if rng.rand < 0.3
+                 Array.new(rng.rand(1..3)) { %w[dev forem mlh sub-domain a1 DEV].sample(random: rng) }.join(".")
+               else
+                 Array.new(rng.rand(1..7)) { tokens.sample(random: rng) }.join
+               end
+        host = "#{host}.#{%w[to com wtf].sample(random: rng)}" if rng.rand < 0.4
+        host = "#{host}:#{rng.rand(1..65_535)}" if rng.rand < 0.2
+        actual = described_class.original_host_valid(host)
+        expected = begin
+          legacy_original_host_valid.call(host)
+        rescue NoMethodError, ArgumentError
+          nil
+        end
+        message = "iteration #{iteration}: #{host.inspect}"
+        if actual.nil?
+          expect(host.ascii_only? && !host.start_with?(":")).to be(false), message
+        else
+          expect(actual).to eq(expected), message
+          positives += 1 if actual
+        end
+        env = { "HTTP_HOST" => "practicaldev.herokuapp.com", "HTTP_FASTLY_ORIG_HOST" => host }
+        if expected.nil?
+          expect { middleware.call(env) }.to raise_error(NoMethodError), message
+        else
+          expect(middleware.call(env)[1]["HTTP_HOST"]).to eq(expected ? host : "practicaldev.herokuapp.com"), message
+        end
+      end
+      expect(positives).to be_between(200, 800)
+    end
+  end
 end

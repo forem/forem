@@ -270,6 +270,16 @@ module ForemNative
       Native.subforem_subdomain_host(host, sld, tld)
     end
 
+    # Whether the original host `Middlewares::RestoreOriginalHost` reads from the Fastly or
+    # X-Forwarded headers on every request is a valid hostname (or `localhost`), ignoring any
+    # `:port`. Returns nil for non-Strings, non-ASCII hosts, and hosts starting with `:` so the
+    # middleware can use its private `legacy_valid_host?`.
+    def original_host_valid(host)
+      return unless host.instance_of?(String)
+
+      Native.original_host_valid(host)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

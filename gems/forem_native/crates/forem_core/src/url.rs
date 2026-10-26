@@ -402,6 +402,47 @@ pub fn subforem_subdomain_host(host: &[u8], sld: &[u8], tld: &[u8]) -> Option<bo
     )
 }
 
+/// Whether `host` passes `Middlewares::RestoreOriginalHost#valid_host?`: the part before its
+/// first `:` matches `/\A[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}\z/i` or is `localhost`.
+///
+/// That `Regexp` means `.`/`-`-separated non-empty alphanumeric labels whose last separator is
+/// a `.` followed by two or more letters. Only ASCII hosts are handled: under `/i` the Kelvin
+/// sign and long s fold onto `k` and `s`, and `split` raises on invalid UTF-8. Hosts with
+/// nothing before the first `:` return `None` too, since `split(":").first` can be `nil`.
+pub fn original_host_valid(host: &[u8]) -> Option<bool> {
+    if !host.is_ascii() {
+        return None;
+    }
+    let end = host
+        .iter()
+        .position(|&byte| byte == b':')
+        .unwrap_or(host.len());
+    let name = &host[..end];
+    if name.is_empty() {
+        return None;
+    }
+    Some(name == b"localhost" || is_dotted_hostname(name))
+}
+
+fn is_dotted_hostname(name: &[u8]) -> bool {
+    let is_separator = |byte: &u8| matches!(byte, b'.' | b'-');
+    let Some(last_separator) = name.iter().rposition(is_separator) else {
+        return false;
+    };
+    let (labels, tld) = name.split_at(last_separator);
+    tld[0] == b'.'
+        && tld.len() > 2
+        && tld[1..].iter().all(u8::is_ascii_alphabetic)
+        && labels.first().is_some_and(u8::is_ascii_alphanumeric)
+        && labels.last().is_some_and(u8::is_ascii_alphanumeric)
+        && labels
+            .iter()
+            .all(|byte| byte.is_ascii_alphanumeric() || is_separator(byte))
+        && !labels
+            .windows(2)
+            .any(|pair| is_separator(&pair[0]) && is_separator(&pair[1]))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -715,5 +756,66 @@ mod tests {
                 "{host:?} {sld:?} {tld:?}"
             );
         }
+    }
+
+    #[test]
+    fn original_host_valid_matches_the_host_regexp() {
+        for (host, expected) in [
+            ("mlh.forem.wtf", true),
+            ("sub-domain.example.com", true),
+            ("localhost", true),
+            ("localhost:3000", true),
+            ("DEV.TO", true),
+            ("dev.to:443", true),
+            ("a.bc", true),
+            ("a-b.cd", true),
+            ("1.2.3.ab", true),
+            ("a.cd:x:y", true),
+            ("a.cd:", true),
+            ("a.b", false),
+            ("a.b2", false),
+            ("a.b-cd", false),
+            ("a..cd", false),
+            ("-a.cd", false),
+            ("a-.cd", false),
+            ("a.cd.", false),
+            (".a.cd", false),
+            ("a.c1d", false),
+            ("1.2.3.4", false),
+            ("xn--d1a.com", false),
+            ("LOCALHOST", false),
+            ("localhost.:", false),
+            ("a.cd-ef", false),
+            ("a--b.cd", false),
+            ("ab", false),
+            ("cd.", false),
+            ("a:b.cd", false),
+            ("invalid host", false),
+            ("host\nname", false),
+            ("host;name", false),
+            ("http://host.com", false),
+        ] {
+            assert_eq!(
+                original_host_valid(host.as_bytes()),
+                Some(expected),
+                "{host:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn original_host_valid_declines_non_ascii_and_empty_names() {
+        for host in [
+            "",
+            ":",
+            ":::",
+            ":3000",
+            "\u{212a}a.com",
+            "a.co\u{17f}",
+            "d\u{e9}v.to",
+        ] {
+            assert_eq!(original_host_valid(host.as_bytes()), None, "{host:?}");
+        }
+        assert_eq!(original_host_valid(b"a.com:\xff"), None);
     }
 }
