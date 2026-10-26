@@ -3,7 +3,8 @@ module Ai
     DEFAULT_EMBEDDING_MODEL = ENV.fetch("GEMINI_EMBEDDING_MODEL", "gemini-embedding-2").freeze
 
 
-    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_EMBEDDING_MODEL, wrapper: nil, affected_user: nil, affected_content: nil)
+    def initialize(api_key: DEFAULT_KEY, model: DEFAULT_EMBEDDING_MODEL, wrapper: nil, affected_user: nil,
+                   affected_content: nil, timeout: nil)
       super
     end
 

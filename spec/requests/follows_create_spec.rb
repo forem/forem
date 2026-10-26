@@ -66,6 +66,13 @@ RSpec.describe "Follows #create" do
     end
   end
 
+  it "raises a missing param error without a followable_type" do
+    expect do
+      post "/follows", headers: headers, params: { followable_id: user.id, verb: "follow" }.to_json
+    end.to raise_error(ActionController::ParameterMissing)
+    expect(current_user.following?(user)).to be(false)
+  end
+
   it "unfollows" do
     current_user.follow(user)
     post "/follows", headers: headers,

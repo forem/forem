@@ -6,7 +6,7 @@ import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToke
 function addFlagUserBehavior(flagButton) {
   const { profileUserId, profileUserName } = flagButton.dataset;
 
-  let isUserFlagged = flagButton.dataset.isUserFlagged === 'true';
+  let isUserFlagged = false;
 
   function flag() {
     const confirmFlag = window.confirm(

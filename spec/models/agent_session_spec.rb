@@ -45,6 +45,13 @@ RSpec.describe AgentSession do
       end
     end
 
+    it "assigns positional indices to messages submitted without them" do
+      unindexed = { "messages" => curated_data["messages"].map { |m| m.except("index") } }
+      session = described_class.create!(user: user, title: "Agy", tool_name: "antigravity_cli",
+                                        curated_data: unindexed)
+      expect(session.reload.messages.pluck("index")).to eq([0, 1, 2, 3])
+    end
+
     it "validates curated_data has messages when present" do
       session = described_class.new(user: user, title: "Test", tool_name: "claude_code",
                                     curated_data: { "not_messages" => [] })
@@ -84,6 +91,34 @@ RSpec.describe AgentSession do
       session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
                                     s3_key: "agent_sessions/#{user.id}/#{uuid}.jsonl")
       expect(session).to be_valid
+    end
+  end
+
+  describe "null byte handling" do
+    it "strips \\u0000 from jsonb and string columns so Postgres accepts them" do
+      session = described_class.create!(
+        user: user,
+        title: "Null\u0000 Title",
+        tool_name: "claude_code",
+        curated_data: {
+          "messages" => [
+            { "role" => "assistant", "content" => [
+              { "type" => "tool_call", "name" => "Bash", "input" => "find . -print0",
+                "output" => "./web/package.json\n\u0000./studio/package.json" },
+            ] },
+          ],
+          "metadata" => { "key\u0000" => "value\u0000" }
+        },
+        session_metadata: { "redactions" => [{ "type" => "x\u0000", "count" => 1 }] },
+        slices: [{ "name" => "slice\u0000", "indices" => [0] }],
+      )
+
+      session.reload
+      expect(session.title).to eq("Null Title")
+      expect(session.messages.first.dig("content", 0, "output")).to eq("./web/package.json\n./studio/package.json")
+      expect(session.metadata).to eq("key" => "value")
+      expect(session.redactions).to eq([{ "type" => "x", "count" => 1 }])
+      expect(session.slices).to eq([{ "name" => "slice", "indices" => [0] }])
     end
   end
 

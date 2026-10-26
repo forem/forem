@@ -32,7 +32,9 @@ class EmailMessage < Ahoy::Message
     html_index = content.index("<html")
     return content if html_index.nil?
 
-    closing_html_index = content.index("</html>") + 7
-    content[html_index..closing_html_index]
+    closing_index = content.index("</html>")
+    return content[html_index..] if closing_index.nil?
+
+    content[html_index..(closing_index + 6)]
   end
 end

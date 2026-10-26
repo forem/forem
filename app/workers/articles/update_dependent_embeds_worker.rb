@@ -4,12 +4,13 @@ module Articles
     sidekiq_options queue: :low_priority, lock: :until_executing, on_conflict: :replace
 
     def perform(article_id)
-      article = Article.find_by(id: article_id)
-      
+      # Only the organization id is needed; skip hydrating the full (wide, TOASTed) article row.
+      organization_id = Article.where(id: article_id).pick(:organization_id)
+
       references = LiquidEmbedReference.where(referenced_type: ["Article", nil], referenced_id: article_id)
-      
-      if article&.organization_id.present?
-        references = references.or(LiquidEmbedReference.where(referenced_type: "Organization", referenced_id: article.organization_id, tag_name: "org_posts"))
+
+      if organization_id.present?
+        references = references.or(LiquidEmbedReference.where(referenced_type: "Organization", referenced_id: organization_id, tag_name: "org_posts"))
       end
 
       references.find_each do |reference|

@@ -176,6 +176,26 @@ RSpec.describe MemoryFirstCache do
     end
   end
 
+  describe ".reset_memory_store!" do
+    it "clears and resets an initialized memory store" do
+      described_class.instance_variable_set(:@memory_store, memory_store)
+
+      described_class.reset_memory_store!
+
+      expect(memory_store).to have_received(:clear).twice
+      expect(described_class.instance_variable_get(:@memory_store)).to be_nil
+    end
+
+    it "does not initialize a new memory store when nil" do
+      described_class.instance_variable_set(:@memory_store, nil)
+      allow(ActiveSupport::Cache::MemoryStore).to receive(:new)
+
+      described_class.reset_memory_store!
+
+      expect(ActiveSupport::Cache::MemoryStore).not_to have_received(:new)
+    end
+  end
+
   describe "memory key generation" do
     it "generates correct memory key format" do
       expect(described_class.send(:memory_key_for, "test_key")).to eq("memory_first:test_key")

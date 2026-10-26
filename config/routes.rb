@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     get "/enter", to: "registrations#new", as: :sign_up
+    get "/users/password", to: redirect("/users/password/new")
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
     post "/users/auth/account_switch/confirm",
@@ -103,6 +104,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :tags, only: :update
+
         resources :agent_sessions, only: %i[index show create] do
           collection do
             post :presign
@@ -114,14 +117,18 @@ Rails.application.routes.draw do
 
         resources :feedback_messages, only: :update
 
+        resources :images, only: :create do
+          post :generate, on: :collection
+        end
+
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited|spam|trusted/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted|base_subscriber/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited|spam|trusted/) do
+          constraints(role: /limited|spam|trusted|base_subscriber/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end
@@ -223,12 +230,16 @@ Rails.application.routes.draw do
     end
     namespace :feeds do
       resources :sources, only: %i[create update destroy]
+      resources :xml_imports, only: %i[create]
     end
     resources :users, only: %i[update]
     resources :reactions, only: %i[index create]
     resources :favorites, only: %i[create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
+    get "/appeal", to: "flag_appeals#new", as: :appeal
+    post "/appeal", to: "flag_appeals#create"
+    get "/appeal/success", to: "flag_appeals#show", as: :appeal_success
     resources :organizations, only: %i[update create destroy]
     resources :follows, only: %i[show create] do
       collection do
@@ -248,6 +259,13 @@ Rails.application.routes.draw do
     resources :ai_image_generations, only: [:create]
     resources :ai_chats, only: %i[index create]
     resources :notifications, only: [:index]
+    resources :co_author_invitations, only: [] do
+      get :candidates, on: :collection, defaults: { format: :json }
+      member do
+        patch :accept
+        patch :decline
+      end
+    end
     resources :tags, only: [:index] do
       collection do
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
@@ -514,6 +532,7 @@ Rails.application.routes.draw do
     # Redirect previous settings changed after https://github.com/forem/forem/pull/11347
     get "/settings/integrations", to: redirect("/settings/extensions")
     get "/settings/misc", to: redirect("/settings")
+    get "/settings/password", to: redirect("/settings/account")
     get "/settings/publishing-from-rss", to: redirect("/settings/extensions")
     get "/settings/ux", to: redirect("/settings/customization")
 

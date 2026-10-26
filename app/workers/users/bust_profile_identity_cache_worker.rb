@@ -5,6 +5,7 @@ module Users
       return unless user
 
       EdgeCache::PurgeByKey.call(user.profile_identity_record_key, fallback_paths: user.profile_cache_bust_paths)
+      EdgeCache::Bust.call([user.path, *user.previous_username_paths]) if user.previous_username_paths.any?
     end
   end
 end

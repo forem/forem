@@ -10,11 +10,17 @@ module Articles
       # we need to cache the ids in advance
       article_comments_ids = article.comments.ids
 
+      # `dependent: :destroy` on reactions decrements public_reactions_count once per
+      # reaction (counter_culture); if the counter has drifted below the real count,
+      # that trips the non-negative check constraint and the delete fails, so
+      # reconcile it first
+      article.sync_reactions_count
+
       article.destroy!
 
       Notification.remove_all(notifiable_ids: article.id, notifiable_type: "Article")
 
-      unless article_comments_ids.blank?
+      if article_comments_ids.present?
         Notification.remove_all(notifiable_ids: article_comments_ids, notifiable_type: "Comment")
       end
 

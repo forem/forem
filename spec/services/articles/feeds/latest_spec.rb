@@ -16,4 +16,24 @@ RSpec.describe Articles::Feeds::Latest, type: :service do
   it "only returns articles with scores above the minimum" do
     expect(described_class.call).not_to include(low_scoring_article)
   end
+
+  it "loads the feed without querying reactions" do
+    create(:reaction, reactable: newest_article, category: "like")
+    reaction_queries = []
+    callback = lambda do |_name, _start, _finish, _id, payload|
+      reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { described_class.call.load }
+
+    expect(reaction_queries).to be_empty
+  end
+
+  it "still returns the reaction categories of each article" do
+    create(:reaction, reactable: newest_article, category: "like")
+
+    story = described_class.call.find { |article| article.id == newest_article.id }
+
+    expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
+  end
 end

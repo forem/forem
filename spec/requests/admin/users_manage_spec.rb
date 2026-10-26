@@ -67,8 +67,12 @@ RSpec.describe "Admin::Users" do
       full_profile
     end
 
-    it "deletes duplicate user" do
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+    it "deletes duplicate user in the background" do
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [user2.id, true, "merge"]) do
+        post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+      end
+
+      sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
 
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
@@ -137,6 +141,38 @@ RSpec.describe "Admin::Users" do
 
       expect(user.roles.first.name).to eq("limited")
       expect(Note.first.content).to eq("limited role added")
+    end
+
+    it "allows admins to assign community leader level 1" do
+      sign_in create(:user, :admin)
+
+      params = {
+        user: { user_status: "Community Leader Level 1", note_for_current_role: "assigning community leader" }
+      }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_1?).to be(true)
+    end
+
+    it "does not allow non-super-admins to assign community leader level 2" do
+      sign_in create(:user, :admin)
+
+      params = { user: { user_status: "Community Leader Level 2", note_for_current_role: "assigning level 2" } }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_2?).to be(false)
+      expect(request.flash["danger"]).to be_present
+    end
+
+    it "allows admins to remove community leader level 1", :aggregate_failures do
+      sign_in create(:user, :admin)
+      user.add_role(:community_leader_level_1)
+      role = user.roles.find_by!(name: "community_leader_level_1")
+
+      delete admin_user_path(user.id), params: { user_id: user.id, role_id: role.id }
+
+      expect(user.reload.community_leader_level_1?).to be(false)
+      expect(request.flash["success"]).to include("Community Leader Level 1")
     end
 
     it "selects new role for user" do
@@ -361,9 +397,42 @@ RSpec.describe "Admin::Users" do
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
-    it "expect flash message" do
+    it "deletes the user's content and purges caches once the background jobs run", :aggregate_failures do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      offender_comment = user.comments.sole
+      profile_keys = user.profile_cache_keys
+
+      # the outer block runs the jobs the deletion job enqueues
+      sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs { post full_delete_admin_user_path(user.id) }
+      end
+
+      expect(User.exists?(user.id)).to be(false)
+      expect(Article.exists?(article.id)).to be(false)
+      expect(Comment.where(commentable: article)).to be_empty
+      expect(Comment.exists?(offender_comment.id)).to be(false)
+      expect(Reaction.where(user_id: user.id)).to be_empty
+      expect(Follow.followable_user(user.id)).to be_empty
+      expect(Article.exists?(article2.id)).to be(true)
+      expect(GDPRDeleteRequest.where(user_id: user.id)).to exist
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(profile_keys, fallback_paths: anything).at_least(:once)
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with(array_including(offender_comment.record_key), fallback_paths: anything)
+    end
+
+    it "enqueues the deletion instead of deleting the user during the request", :aggregate_failures do
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [user.id, true]) do
+        post full_delete_admin_user_path(user.id)
+      end
+      expect(User.exists?(user.id)).to be(true)
+      expect(response).to redirect_to(admin_users_path)
+    end
+
+    it "shows a flash message saying the deletion continues in the background", :aggregate_failures do
       post full_delete_admin_user_path(user.id)
-      expect(request.flash["success"]).to include("fully deleted")
+      expect(request.flash["success"]).to include("is being deleted")
+      expect(request.flash["success"]).to include("removed in the background")
+      expect(request.flash["success"]).not_to include("fully deleted")
     end
   end
 

@@ -105,6 +105,15 @@ RSpec.describe "Api::V1::Comments" do
       )
     end
 
+    it "returns the AI disclosure fields" do
+      root_comment.update!(ai_disclosure_level: :some_ai)
+      get api_comments_path(a_id: article.id), headers: headers
+
+      comment = find_root_comment(response)
+      expect(comment).to include("ai_disclosure_level" => "some_ai")
+      expect(comment).to have_key("ai_disclosure_label")
+    end
+
     context "when a comment is deleted" do
       before do
         child_comment.update(deleted: true)
@@ -245,6 +254,15 @@ RSpec.describe "Api::V1::Comments" do
         "children", 0, "children", 0, "children", 0, "id_code"
       )
       expect(great_grandchild_comment_json_id).to eq(great_grandchild_comment.id_code_generated)
+    end
+
+    it "leaves out replies below the maximum depth" do
+      stub_const("Api::CommentsController::MAX_DEPTH", 2)
+
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("children", 0, "children")).to eq([])
     end
 
     it "sets the correct edge caching surrogate key for all the comments" do

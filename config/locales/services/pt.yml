@@ -3,6 +3,10 @@ pt:
   services:
     analytics_service:
       no_stats: Você não pode visualizar as estatísticas deste artigo
+    appeals:
+      resolver:
+        approved_note: "Recurso nº %{id} aprovado por %{resolver}."
+        automatic: "revisão automática por IA"
     article_with_video_creation_service:
       unpublished_video: Vídeo Não Publicado ~ %{rand}
     authentication:
@@ -124,3 +128,7 @@ pt:
     spam:
       article_handler:
         suspended_too_many: Muitos artigos suspensos
+        marked_spam_repeat_auto_flags: Usuário marcado como spam depois que %{count} de seus artigos do último mês foram sinalizados automaticamente como spam ou violações claras, acionado por autovomit.
+      comment_handler:
+        marked_spam_repeat_auto_flags: Usuário marcado como spam depois que %{count} de seus comentários do último mês foram sinalizados automaticamente como spam, acionado por autovomit.
+        marked_spam_comment_flood: Conta nova marcada como spam depois de comentar em %{count} artigos em um dia, acionado por autovomit.

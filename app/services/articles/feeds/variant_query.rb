@@ -138,8 +138,7 @@ module Articles
         scope = Article.joins(join_fragment)
           .from_subforem
           .minimal_feed_column_select
-          .includes(:distinct_reaction_categories, :context_notes)
-          .includes(:subforem)
+          .includes(:context_notes)
           .order(config.order_by.to_sql)
 
         scope = case comments_variant
