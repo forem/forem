@@ -45,6 +45,54 @@ RSpec.describe BillboardEvent do
     end
   end
 
+  describe "#crawler_user_agent" do
+    let(:crawler_ua) { "Mozilla/5.0 (compatible; GPTBot/1.2)" }
+    let(:human_ua) do
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " \
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    end
+
+    it "flags a crawler user agent on create" do
+      event = create(:billboard_event, user_agent: crawler_ua)
+      expect(event.reload.crawler_user_agent).to be(true)
+    end
+
+    it "flags a human user agent as not a crawler on create" do
+      event = create(:billboard_event, user_agent: human_ua)
+      expect(event.reload.crawler_user_agent).to be(false)
+    end
+
+    it "leaves a missing user agent unclassified" do
+      expect(create(:billboard_event, user_agent: nil).reload.crawler_user_agent).to be_nil
+      expect(create(:billboard_event, user_agent: "").reload.crawler_user_agent).to be_nil
+    end
+
+    it "derives the flag server side, ignoring a supplied value" do
+      event = create(:billboard_event, user_agent: human_ua, crawler_user_agent: true)
+      expect(event.reload.crawler_user_agent).to be(false)
+    end
+
+    it "classifies through create_with_async_commit" do
+      billboard = create(:billboard)
+      id = described_class.create_with_async_commit(billboard: billboard, category: "impression",
+                                                    context_type: "home", user_agent: crawler_ua)
+      expect(described_class.find(id).crawler_user_agent).to be(true)
+    end
+
+    it "leaves a missing user agent unclassified through create_with_async_commit" do
+      billboard = create(:billboard)
+      id = described_class.create_with_async_commit(billboard: billboard, category: "impression",
+                                                    context_type: "home")
+      expect(described_class.find(id).crawler_user_agent).to be_nil
+    end
+
+    it "does not reclassify an existing event on update" do
+      event = create(:billboard_event, user_agent: nil)
+      event.update!(user_agent: crawler_ua)
+      expect(event.reload.crawler_user_agent).to be_nil
+    end
+  end
+
   describe ".add_impression_seconds" do
     context "with an impression last updated 10 seconds ago" do
       let(:user) { create(:user) }

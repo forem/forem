@@ -135,6 +135,43 @@ RSpec.describe "BillboardEvents", type: :request do
       end
     end
 
+    context "when classifying crawler_user_agent" do
+      let(:crawler_ua) { "Mozilla/5.0 (compatible; GPTBot/1.2)" }
+      let(:human_ua) { "Mozilla/5.0 (X11; Linux x86_64) Gecko/20100101 Firefox/128.0" }
+
+      it "flags an event whose user agent matches the crawler list" do
+        post billboard_events_path,
+             params: { billboard_event: base_params },
+             headers: { "User-Agent" => crawler_ua }
+
+        expect(BillboardEvent.last.crawler_user_agent).to be(true)
+      end
+
+      it "flags an event from a human browser as not a crawler" do
+        post billboard_events_path,
+             params: { billboard_event: base_params },
+             headers: { "User-Agent" => human_ua }
+
+        expect(BillboardEvent.last.crawler_user_agent).to be(false)
+      end
+
+      it "leaves the event unclassified when no user agent is available" do
+        post billboard_events_path,
+             params: { billboard_event: base_params },
+             headers: { "User-Agent" => "" }
+
+        expect(BillboardEvent.last.crawler_user_agent).to be_nil
+      end
+
+      it "ignores a client supplied crawler_user_agent" do
+        post billboard_events_path,
+             params: { billboard_event: base_params.merge(crawler_user_agent: true) },
+             headers: { "User-Agent" => human_ua }
+
+        expect(BillboardEvent.last.crawler_user_agent).to be(false)
+      end
+    end
+
     context "when the request comes from an embedding site" do
       let(:embed_origin) { "https://embed.example.com" }
 

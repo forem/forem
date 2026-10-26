@@ -158,4 +158,21 @@ RSpec.describe BillboardEventRollup, type: :service do
     expect(results.first.counts_for).to eq(3)
     expect(results.first.user_agent).to be_nil
   end
+
+  it "does not split compacted groups by crawler_user_agent and discards the flag" do
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: "Mozilla/5.0 (compatible; GPTBot/1.2)")
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: "Mozilla/5.0 Chrome/120.0")
+    create(:billboard_event, billboard: billboard1, user_id: nil, user_agent: nil)
+
+    described_class.rollup(Date.current)
+    results = BillboardEvent.where(created_at: Date.current.all_day)
+    expect(results.count).to eq(1)
+    expect(results.first.counts_for).to eq(3)
+    expect(results.first.crawler_user_agent).to be_nil
+  end
+
+  it "does not add crawler_user_agent as a grouping dimension" do
+    expect(described_class::ATTRIBUTES_DESTROYED).to include(:crawler_user_agent)
+    expect(described_class::ATTRIBUTES_PRESERVED).not_to include(:crawler_user_agent)
+  end
 end

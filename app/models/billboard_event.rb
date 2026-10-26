@@ -7,6 +7,8 @@ class BillboardEvent < ApplicationRecord
   # We also have an article_id param, but not belongs_to because it is not indexed and not designed to be
   # consistently referenced within the application.
 
+  before_validation :classify_crawler_user_agent, on: :create
+
   validate :unique_on_user_if_type_of_conversion_category, on: :create
   validate :only_recent_registrations, on: :create
 
@@ -90,5 +92,12 @@ class BillboardEvent < ApplicationRecord
     return unless user.registered_at < 1.day.ago
 
     errors.add(:user_id, "is not a recent registration")
+  end
+
+  private
+
+  # Diagnostic only. A pattern match does not establish traffic quality.
+  def classify_crawler_user_agent
+    self.crawler_user_agent = user_agent.present? ? BotUserAgent.match?(user_agent) : nil
   end
 end
