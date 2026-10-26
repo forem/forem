@@ -1,0 +1,14 @@
+spec/requests/notifications_spec.rb
+  h_a5e25bc086eb00 816,818-823,825-827,829-834
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "db643e7f5463ddfc77576355370c4c8014be07e3",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
