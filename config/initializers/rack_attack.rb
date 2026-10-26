@@ -24,6 +24,20 @@ module Rack
       admin_keys.include?(api_key)
     end
 
+    # Checks whether the request is from a signed-in user (via session/Warden, remember cookie, or API key)
+    def self.user_signed_in?(request)
+      session = request.env["rack.session"]
+      return true if session && session["warden.user.user.key"].present?
+
+      warden = request.env["warden"]
+      return true if warden.respond_to?(:authenticated?) && warden.authenticated?(:user)
+
+      return true if request.cookies["remember_user_token"].present?
+      return true if request.env["HTTP_API_KEY"].present?
+
+      false
+    end
+
     class Request < ::Rack::Request
       def track_and_return_ip
         fastly_ip = env["HTTP_FASTLY_CLIENT_IP"]
@@ -36,7 +50,13 @@ module Rack
     end
 
     throttle("search_throttle", limit: 5, period: 1) do |request|
-      if request.path.starts_with?("/search/")
+      if request.path.starts_with?("/search/") && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("search_throttle_signed_in", limit: 20, period: 1) do |request|
+      if request.path.starts_with?("/search/") && user_signed_in?(request)
         request.track_and_return_ip
       end
     end
@@ -114,24 +134,39 @@ module Rack
     end
 
     throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
-      if request.path.chomp("/") == "/search/feed_content"
+      if request.path.chomp("/") == "/search/feed_content" && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("search_feed_content_throttle_signed_in", limit: 60, period: 1.minute) do |request|
+      if request.path.chomp("/") == "/search/feed_content" && user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
     throttle("api_search_throttle", limit: 2, period: 1) do |request|
-      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
     throttle("api_search_throttle_per_minute", limit: 10, period: 1.minute) do |request|
-      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_search_key_throttle_per_minute", limit: 10, period: 1.minute) do |request|
+    throttle("api_search_signed_in_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+      if request.get? &&
+          request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) &&
+          user_signed_in?(request) &&
+          !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_key_throttle_per_minute", limit: 30, period: 1.minute) do |request|
       if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
         request.env["HTTP_API_KEY"].presence
       end
@@ -142,9 +177,6 @@ module Rack
         request.track_and_return_ip
       end
     end
-
-    # Removed user_signed_in? helper method - no longer needed
-    # since we removed authentication-based throttling rules
 
     # Removed edge-cached page throttling rules to reduce Redis overhead
     # These pages are edge-cached globally (signed-in vs signed-out only)
