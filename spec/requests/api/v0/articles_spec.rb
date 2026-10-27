@@ -596,6 +596,14 @@ RSpec.describe "Api::V0::Articles" do
         get "/api/articles/me"
         expect(response).to have_http_status(:unauthorized)
       end
+
+      # Regression test for https://github.com/forem/forem/issues/23675
+      it "sets no-store cache headers on the 401 response" do
+        get "/api/articles/me"
+        expect(response).to have_http_status(:unauthorized)
+        expect(response.headers["Cache-Control"]).to eq("no-store")
+        expect(response.headers["Surrogate-Control"]).to eq("no-store")
+      end
     end
 
     context "when request is authenticated" do

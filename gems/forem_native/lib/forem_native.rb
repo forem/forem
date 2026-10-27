@@ -249,6 +249,17 @@ module ForemNative
       Native.quickie_title_html(title, truncate_for_feed ? true : false)
     end
 
+    # Collapses runs of ASCII whitespace (`\s+`, including newlines) to single spaces and strips
+    # leading/trailing ASCII whitespace/NULs, matching `Article#title_for_metadata`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so `Article` can
+    # fall back to `legacy_title_for_metadata`.
+    def title_for_metadata(title)
+      return unless Native.respond_to?(:title_for_metadata)
+      return unless title.instance_of?(String) && title.encoding == Encoding::UTF_8
+
+      Native.title_for_metadata(title)
+    end
+
     # Returns the lowercased host of a (possibly scheme-less) URL without a leading `www.`,
     # matching `Addressable::URI.parse(url).host.downcase.delete_prefix("www.")` after
     # `ArticlesHelper#get_host_without_www` strips the URL and adds a missing `http://`.
@@ -398,6 +409,43 @@ module ForemNative
       return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
 
       Native.escape_colon_emojis_in_codeblock(html)
+    end
+
+    # Looks up a single `:alias:` shortcode name (without surrounding colons) in the embedded
+    # `gemoji` table, returning the raw UTF-8 emoji string or nil if unknown.
+    def emoji_by_alias(alias_name)
+      return unless Native.respond_to?(:emoji_by_alias)
+      return unless alias_name.is_a?(String) && alias_name.encoding.ascii_compatible?
+
+      str = alias_name.instance_of?(String) ? alias_name : alias_name.to_s
+      str = str.encode(Encoding::UTF_8) if str.encoding == Encoding::US_ASCII
+      return unless str.encoding == Encoding::UTF_8
+
+      Native.emoji_by_alias(str)
+    end
+
+    # Strips all Unicode `RGI_Emoji` sequences from `text`, replacing `text.gsub(EmojiRegex::RGIEmoji, "")`
+    # from the removed `emoji_regex` gem.
+    def strip_rgi_emoji(text)
+      return unless Native.respond_to?(:strip_rgi_emoji)
+      return unless text.is_a?(String)
+
+      str = text.instance_of?(String) ? text : text.to_s
+      str = str.encode(Encoding::UTF_8) if str.encoding == Encoding::US_ASCII
+      return unless str.encoding == Encoding::UTF_8
+
+      Native.strip_rgi_emoji(str)
+    end
+
+    # Computes the W3C WCAG 2.0 contrast ratio between two 3- or 6-digit hex color strings
+    # (without `#`), replacing `WCAGColorContrast.ratio(rgb1, rgb2)` from the removed
+    # `wcag_color_contrast` gem. Returns nil if either color is not a valid 3- or 6-digit hex string.
+    def wcag_contrast_ratio(rgb1, rgb2)
+      return unless Native.respond_to?(:wcag_contrast_ratio)
+      return unless rgb1.is_a?(String) && rgb1.encoding.ascii_compatible?
+      return unless rgb2.is_a?(String) && rgb2.encoding.ascii_compatible?
+
+      Native.wcag_contrast_ratio(rgb1.to_s, rgb2.to_s)
     end
 
     private

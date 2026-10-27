@@ -1074,10 +1074,17 @@ class Article < ApplicationRecord
   def title_for_metadata
     return title unless type_of == "status" && title.present?
 
+    ForemNative.title_for_metadata(title) || legacy_title_for_metadata
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 encodings, String subclasses,
+  # invalid byte sequences).
+  def legacy_title_for_metadata
     # For quickies, return a clean single-line version of the title
     # Replace line breaks with spaces and normalize whitespace
     title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
+  private :legacy_title_for_metadata
 
   def series
     # name of series article is part of
@@ -1540,7 +1547,7 @@ class Article < ApplicationRecord
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def fetch_video_duration
@@ -1646,12 +1653,14 @@ class Article < ApplicationRecord
   #
   # @return [String] an array of tag names.
   def validate_tag
-    distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
-      .select('DISTINCT ON ("tag_id") *')
-      .order(:tag_id, updated_at: :desc, id: :desc)
+    if id.present?
+      distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
+        .select('DISTINCT ON ("tag_id") *')
+        .order(:tag_id, updated_at: :desc, id: :desc)
 
-    remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
-    add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+      remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
+      add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+    end
 
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
@@ -1669,7 +1678,7 @@ class Article < ApplicationRecord
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def validate_video
@@ -1857,14 +1866,26 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return if main_image.present?
+    return if main_image.present? || !published
 
-    change = saved_change_to_attribute?(:title) ||
+    change = social_image.blank? ||
+      saved_change_to_attribute?(:title) ||
       saved_change_to_attribute?(:published_at) ||
-      saved_change_to_attribute?(:user_id) # the image shows the author's name, avatar, and brand color
-    return unless (change || social_image.blank?) && published
+      saved_change_to_attribute?(:user_id) || # the image shows the author's name, avatar, and brand color
+      saved_change_to_attribute?(:reading_time) || # the image shows the reading time
+      social_image_quote_changed?
+    return unless change
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
+  # The generated image quotes the opening of the post, so only body edits that
+  # change that quote need a new image.
+  def social_image_quote_changed?
+    return false unless saved_change_to_attribute?(:processed_html)
+
+    Images::SocialImageQuote.from_html(attribute_before_last_save(:processed_html), title) !=
+      Images::SocialImageQuote.call(self)
   end
 
   def calculate_base_scores
