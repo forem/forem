@@ -568,5 +568,28 @@ RSpec.describe NotificationDecorator, type: :decorator do
       end
     end
   end
+
+  describe ".decorate_collection" do
+    it "batches subscription lookups across the collection and preserves precedence" do
+      user = create(:user)
+      article = create(:article)
+      root_comment = create(:comment, commentable: article)
+      reply_comment = create(:comment, commentable: article, parent: root_comment)
+
+      root_sub = create(:notification_subscription, user: user, notifiable: root_comment)
+      article_sub = create(:notification_subscription, user: user, notifiable: article)
+
+      reply_notif = build(:notification, notifiable_type: "Comment", json_data: {
+                            "comment" => { "id" => reply_comment.id, "ancestry" => root_comment.id.to_s,
+                                           "commentable" => { "id" => article.id, "class" => { "name" => "Article" } } }
+                          })
+      article_notif = build(:notification, notifiable_type: "Article",
+                                           json_data: { "article" => { "id" => article.id } })
+
+      decorated_list = described_class.decorate_collection([reply_notif, article_notif])
+
+      expect(decorated_list.map { |n| n.subscription_for(user) }).to eq([root_sub, article_sub])
+    end
+  end
 end
 # rubocop:enable RSpec/MultipleExpectations
