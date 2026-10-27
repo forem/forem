@@ -1,5 +1,10 @@
 module Badges
   class AwardContributorFromGithub
+    # Raised internally when a PR search still hits the rate limit after
+    # exhausting its retries. Signals the batch to stop and resume next run
+    # rather than recording a zero PR count and advancing past the identity.
+    class SearchBudgetExhausted < StandardError; end
+
     BADGE_SLUGS = {
       "dev-contributor": 1,
       "4x-commit-club": 4,
@@ -97,6 +102,7 @@ module Badges
         return
       end
 
+      last_completed_id = cursor
       identities.each do |identity|
         commits_count = contributions_map[identity.uid] || 0
 
@@ -107,16 +113,23 @@ module Badges
 
         contribution_score = [commits_count, pr_count].max
         create_badges_for_user(identity.user_id, contribution_score)
+        last_completed_id = identity.id
       end
 
-      advance_cursor(identities)
+      advance_cursor(identities, last_completed_id)
+    rescue SearchBudgetExhausted => e
+      # Stop the batch: the Search API budget is spent for this run. Leave the
+      # cursor just before the first unresolved identity so the next hourly run
+      # resumes there instead of skipping it with a zero PR count.
+      Rails.logger.warn("[Badges::AwardContributorFromGithub] stopping batch early: #{e.message}")
+      Settings::General.github_contributor_badge_last_identity_id = last_completed_id
     end
 
     # Persist how far this run got. A full batch means more identities remain, so
     # resume after the last processed id; a short batch means we hit the end, so
     # reset to 0 to start over next run.
-    def advance_cursor(identities)
-      next_cursor = identities.size < IDENTITY_BATCH_SIZE ? 0 : identities.last.id
+    def advance_cursor(identities, last_completed_id)
+      next_cursor = identities.size < IDENTITY_BATCH_SIZE ? 0 : last_completed_id
       Settings::General.github_contributor_badge_last_identity_id = next_cursor
     end
 
@@ -126,12 +139,20 @@ module Badges
     def merged_pr_count(repo, github_user)
       query = "repo:#{repo} author:#{github_user} is:merged is:pr"
 
-      SEARCH_MAX_ATTEMPTS.times do
+      SEARCH_MAX_ATTEMPTS.times do |attempt|
+        last_attempt = attempt == SEARCH_MAX_ATTEMPTS - 1
         throttle_search
         search_results = Github::OauthClient.new.search_issues(query)
         return search_results.total_count
       rescue Github::Errors::Error => e
         if search_rate_limited?(e)
+          # Out of retries: stop the whole batch rather than sleeping uselessly
+          # on the final attempt and recording a zero PR count for this identity.
+          if last_attempt
+            raise SearchBudgetExhausted,
+                  "rate limited for #{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts"
+          end
+
           Rails.logger.warn(
             "[Badges::AwardContributorFromGithub] PR search rate limited for " \
             "#{github_user}, waiting #{SEARCH_RATE_LIMIT_WAIT.to_i}s",
@@ -139,7 +160,7 @@ module Badges
           sleep(SEARCH_RATE_LIMIT_WAIT)
           @last_search_at = nil
           next
-        elsif e.is_a?(Github::Errors::ServerError)
+        elsif e.is_a?(Github::Errors::ServerError) && !last_attempt
           Rails.logger.warn(
             "[Badges::AwardContributorFromGithub] PR search server error for " \
             "#{github_user}, retrying in #{SEARCH_SERVER_ERROR_WAIT.to_i}s: #{e.message}",
@@ -153,10 +174,6 @@ module Badges
         return 0
       end
 
-      Rails.logger.error(
-        "[Badges::AwardContributorFromGithub] PR search failed for " \
-        "#{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts (rate limit or server error)",
-      )
       0
     end
 
