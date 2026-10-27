@@ -21,6 +21,13 @@ module Badges
     SEARCH_SERVER_ERROR_WAIT = 5.seconds.freeze
     SEARCH_MAX_ATTEMPTS = 3
 
+    # Upper bound on how many GitHub identities a single run processes. The job
+    # runs hourly; capping the batch keeps one run from issuing an unbounded
+    # number of paced Search API calls (which, at ~2s each, would otherwise let a
+    # large identity table push a run past the next scheduled run). The run
+    # resumes from a persisted cursor so coverage still rotates through everyone.
+    IDENTITY_BATCH_SIZE = 500
+
     REPOSITORIES = [
       "forem/forem"
     ].freeze
@@ -69,11 +76,28 @@ module Badges
         hash[c.id.to_s] = c.contributions
       end
 
-      # Iterate over all GitHub identities rather than only those present in the
+      # Iterate over GitHub identities rather than only those present in the
       # contributors response. GitHub's contributors endpoint lists commit authors
       # only, so an identity with merged PRs but no attributed commits would never
       # appear here and its PR count (the fallback below) would never be checked.
-      Identity.github.find_each do |identity|
+      #
+      # Process at most IDENTITY_BATCH_SIZE identities per run, resuming after the
+      # persisted cursor, so a single hourly run cannot issue an unbounded number
+      # of paced Search API calls. The cursor rotates through the whole table.
+      process_identity_batch(repo, contributions_map)
+    end
+
+    def process_identity_batch(repo, contributions_map)
+      cursor = Settings::General.github_contributor_badge_last_identity_id.to_i
+      identities = Identity.github.where("id > ?", cursor).order(:id).limit(IDENTITY_BATCH_SIZE).to_a
+
+      # Reached the end of the table: wrap back to the start on the next run.
+      if identities.empty? && cursor.positive?
+        Settings::General.github_contributor_badge_last_identity_id = 0
+        return
+      end
+
+      identities.each do |identity|
         commits_count = contributions_map[identity.uid] || 0
 
         # Use Search API to count merged PRs as a fallback/complement to commit counts
@@ -84,6 +108,16 @@ module Badges
         contribution_score = [commits_count, pr_count].max
         create_badges_for_user(identity.user_id, contribution_score)
       end
+
+      advance_cursor(identities)
+    end
+
+    # Persist how far this run got. A full batch means more identities remain, so
+    # resume after the last processed id; a short batch means we hit the end, so
+    # reset to 0 to start over next run.
+    def advance_cursor(identities)
+      next_cursor = identities.size < IDENTITY_BATCH_SIZE ? 0 : identities.last.id
+      Settings::General.github_contributor_badge_last_identity_id = next_cursor
     end
 
     # Counts merged PRs authored by github_user via the Search API, pacing calls
