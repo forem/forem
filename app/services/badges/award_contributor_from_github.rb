@@ -66,7 +66,7 @@ module Badges
         # Use Search API to count merged PRs as a fallback/complement to commit counts
         # this helps contributors who may have attribution issues with commit counts
         pr_count = 0
-        github_user = identity.auth_data_dump&.info&.nickname
+        github_user = github_nickname(identity)
         if github_user
           query = "repo:#{repo} author:#{github_user} is:merged is:pr"
           begin
@@ -79,6 +79,27 @@ module Badges
 
         contribution_score = [commits_count, pr_count].max
         create_badges_for_user(identity.user_id, contribution_score)
+      end
+    end
+
+    # auth_data_dump is serialized YAML and may be an OmniAuth::AuthHash (responds
+    # to #info) or a plain Hash. Support both when reading the GitHub nickname.
+    def github_nickname(identity)
+      dump = identity.auth_data_dump
+      return if dump.blank?
+
+      info =
+        if dump.respond_to?(:info)
+          dump.info
+        elsif dump.respond_to?(:[])
+          dump["info"] || dump[:info]
+        end
+      return if info.blank?
+
+      if info.respond_to?(:nickname)
+        info.nickname
+      elsif info.respond_to?(:[])
+        info["nickname"] || info[:nickname]
       end
     end
 
