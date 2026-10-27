@@ -40,18 +40,16 @@ RSpec.describe "Community", :proper_status do
         quality_author = create(:user, registered: true)
         spam_author = create(:user, registered: true)
 
-        # Spam author has higher total_score (25 * 10 = 250) but 0 reactions.
+        # Spam author has higher total_score (2 * 100 = 200) but 0 reactions.
         # On main (total_score DESC), spam_author wins; on our branch (total_reactions DESC),
         # quality_author wins.
-        25.times do
+        2.times do
           create(:article, user: spam_author, published: true,
-                           score: 10, public_reactions_count: 0)
+                           score: 100, public_reactions_count: 0)
         end
 
         create(:article, user: quality_author, published: true,
                          score: 80, public_reactions_count: 50)
-        create(:article, user: quality_author, published: true,
-                         score: 60, public_reactions_count: 40)
 
         get community_path
 
@@ -63,10 +61,8 @@ RSpec.describe "Community", :proper_status do
 
       it "excludes feed-imported articles when ranking popular community members" do
         feed_bot = create(:user, registered: true)
-        10.times do
-          create(:article, user: feed_bot, published: true, published_from_feed: true,
-                           score: 10, public_reactions_count: 5)
-        end
+        create(:article, user: feed_bot, published: true, published_from_feed: true,
+                         score: 10, public_reactions_count: 5)
 
         get community_path
 
@@ -75,6 +71,7 @@ RSpec.describe "Community", :proper_status do
 
       it "excludes suspended users" do
         suspended_user = create(:user, :suspended)
+        suspended_user.update_column(:score, 10)
         create(:article, user: suspended_user, published: true,
                          score: 50, public_reactions_count: 50)
 
@@ -85,6 +82,7 @@ RSpec.describe "Community", :proper_status do
 
       it "excludes spam users" do
         spam_user = create(:user, :spam)
+        spam_user.update_column(:score, 10)
         create(:article, user: spam_user, published: true,
                          score: 50, public_reactions_count: 50)
 

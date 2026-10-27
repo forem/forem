@@ -32,9 +32,14 @@ class CommunityController < ApplicationController
     exclude_ids = [Settings::General.mascot_user_id, Settings::Community.staff_user_id].compact
     @top_authors = User
       .registered
-      .without_role(:suspended)
-      .without_role(:spam)
       .where("users.score >= ?", 0)
+      .where.not(
+        UserRole.joins(:role)
+          .where("users_roles.user_id = users.id")
+          .where(roles: { name: %w[suspended spam], resource_type: nil, resource_id: nil })
+          .select(1)
+          .arel.exists
+      )
       .joins(:articles)
       .merge(
         Article.from_subforem
