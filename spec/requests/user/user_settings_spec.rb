@@ -111,6 +111,22 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("Manage my RSS feeds")
       end
 
+      it "renders the API key generation form with description and accessible markup" do
+        get user_settings_path(:extensions)
+
+        html = Nokogiri::HTML(response.body)
+        desc = html.at_css("p#api-key-description.crayons-field__description")
+        expect(desc).to be_present
+        expect(desc.text.strip).to eq(I18n.t("views.settings.extensions.api.gen.text"))
+
+        input = html.at_css('input#api_secret_description[name="api_secret[description]"]')
+        expect(input["aria-describedby"]).to eq("api-key-description")
+
+        button = html.at_css('form[action="/users/api_secrets"] button[type="submit"]')
+        expect(button[:class].split).to include("crayons-btn", "crayons-btn--secondary")
+        expect(button[:class].split).not_to include("crayon-btn--secondary")
+      end
+
       it "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
 
