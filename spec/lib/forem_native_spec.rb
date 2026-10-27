@@ -2217,4 +2217,153 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
+    let(:legacy_slugify_heading_anchor) do
+      lambda do |heading_html|
+        text = CGI.unescapeHTML(heading_html.to_s.gsub(/<[^>]*>/, ""))
+        text.strip.downcase.gsub(AgentSessionRenderers::HeadingAnchors::SLUG_DISALLOWED, "").tr(" ", "-")
+      end
+    end
+
+    it "matches HeadingAnchors.slugify across edge cases" do
+      [
+        "",
+        "   \t\n\r\0  ",
+        "!!! ???",
+        "Getting Started",
+        "FAQ &amp; Troubleshooting",
+        "What&#39;s New in v2.0?",
+        "Astro vs WordPress: the practical comparison",
+        "Work through a small-business example_now",
+        "Call <code>run()</code> <em>now</em>",
+        "Überblick über Café",
+        "İstanbul ОΣ 日本語 カタカナ 한글 🎉",
+        "&<i></i>amp; &apos; &quot; &lt;b&gt; &gt; &#x41; &#X42; &#0067; &#1114111;",
+        "unclosed <tag and <a\nb>kept",
+        ". leading-and-trailing ! ",
+      ].each do |heading_html|
+        expected = legacy_slugify_heading_anchor.call(heading_html)
+        expect(described_class.slugify_heading_anchor(heading_html)).to eq(expected), heading_html.inspect
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(heading_html)).to eq(expected), heading_html.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings, non-Strings, surrogate entities, and out-of-domain code points" do
+      [
+        nil,
+        :heading,
+        ActiveSupport::SafeBuffer.new("Getting Started"),
+        "Getting Started".b,
+        "Getting Started".encode("US-ASCII"),
+        "Getting Started".encode("UTF-16LE"),
+        "invalid \xFF byte",
+        "&#xD800;",
+        "&#55296;",
+        "circled Ⓐ",
+      ].each do |input|
+        expect(described_class.slugify_heading_anchor(input)).to be_nil, input.inspect
+      end
+
+      [nil, :heading, ActiveSupport::SafeBuffer.new("Getting <b>Started</b>"), "circled Ⓐ"].each do |input|
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(input))
+          .to eq(legacy_slugify_heading_anchor.call(input)), input.inspect
+      end
+      expect { AgentSessionRenderers::HeadingAnchors.slugify("&#xD800;") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "Getting", "Started", "v2.0?", "example_now", "small-business", " ", "  ", "\t", "\n", "\r", "\0",
+        "<code>", "</code>", "<em>", "</em>", "<a href=\"#x\">", "<span\nclass='y'>", "<unclosed", ">",
+        "&amp;", "&apos;", "&quot;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&#x27;", "&#X1F680;", "&#0065;", "&#1114111;",
+        "Überblick", "Café", "İstanbul", "e\u0301", "ОΣ", "日本語", "カタカナ", "한글", "🎉", "—", "…", ":", "!", "?"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_slugify_heading_anchor.call(sample)
+        actual = described_class.slugify_heading_anchor(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".beautified_url (ApplicationHelper#beautified_url)" do
+    let(:legacy_beautified_url) do
+      lambda do |url|
+        url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
+      rescue StandardError
+        url
+      end
+    end
+    let(:helper_host) { Object.new.extend(ApplicationHelper) }
+
+    it "matches ApplicationHelper#beautified_url across edge cases" do
+      [
+        "",
+        "/",
+        "//",
+        "//github.com/",
+        "/github.com//",
+        "https://github.com",
+        "http://github.com/",
+        "ftp://files.example.com/pub/",
+        "https://github.com?a=3",
+        "https://github.com/?a=3&b=4",
+        "https://github.com/rails",
+        "https://github.com/rails/rails/?tab=readme",
+        "https:/github.com/",
+        "ftp:/files.example.com/",
+        "HTTPS://github.com/",
+        "https://github.com?a=1\nb=2/",
+        "https://github.com/?a=1\n",
+        "https://github.com?a=1\r\nb=2/",
+        "https://github.com?a=1?b=2\n?c=3/",
+        "https://例え.テスト/パス/?q=🎉/",
+      ].each do |url|
+        expected = legacy_beautified_url.call(url)
+        expect(described_class.beautified_url(url)).to eq(expected), url.inspect
+        expect(helper_host.beautified_url(url)).to eq(expected), url.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves the helper's legacy result" do
+      [
+        nil,
+        false,
+        123,
+        :url,
+        ActiveSupport::SafeBuffer.new("https://github.com/"),
+        "https://github.com/".b,
+        "https://github.com/".encode("US-ASCII"),
+        "https://github.com/".encode("UTF-16LE"),
+        "https://github.com/\xFF",
+      ].each do |input|
+        expect(described_class.beautified_url(input)).to be_nil, input.inspect
+        expect(helper_host.beautified_url(input)).to eq(legacy_beautified_url.call(input)), input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "https://", "http://", "ftp://", "HTTPS://", "https:/", "ftp:/", "/", "//",
+        "github.com", "dev.to", "example.com/path", "/rails", "/pub/", "?", "?a=1", "&b=2",
+        "?q=rust&page=2", "\n", "\r\n", "\r", "#frag", "例え.テスト", "🎉", ":"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_beautified_url.call(sample)
+        actual = described_class.beautified_url(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(helper_host.beautified_url(sample)).to eq(expected), message
+      end
+    end
+  end
 end

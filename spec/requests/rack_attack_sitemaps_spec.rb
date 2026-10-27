@@ -18,6 +18,7 @@ RSpec.describe "Rack::Attack Sitemaps Throttling", type: :request do
   let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
 
   before do
+    freeze_time
     Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.reset!
