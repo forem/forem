@@ -5,9 +5,6 @@ RSpec.describe "UserProfiles" do
   let(:organization) { create(:organization) }
   let(:current_user) { create(:user) }
 
-  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
-  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
-
   describe "GET /:username" do
     it "renders to appropriate page" do
       get "/#{user.username}"
@@ -24,7 +21,9 @@ RSpec.describe "UserProfiles" do
     end
 
     it "does not render unpublished pinned stories" do
-      unpublished_article = create(:article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story")
+      unpublished_article = create(
+        :article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story"
+      )
       create(:profile_pin, pinnable: unpublished_article, profile: user)
 
       get "/#{user.username}"
@@ -32,10 +31,12 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("Unpublished Pinned Story")
     end
 
-    context "when has articles" do
+    context "when user has full_post and status articles" do
       before do
         create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
-        Article.create(user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "")
+        Article.create(
+          user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "",
+        )
       end
 
       it "displays only 'full_post' articles and excludes 'status' articles", :aggregate_failures do
@@ -210,27 +211,17 @@ RSpec.describe "UserProfiles" do
         expect(response.body).to include user.profile_image_url
       end
 
-      it "renders organization name properly encoded" do
-        organization.update(name: "Org & < ' \" 1")
+      it "renders organization name, email, summary, and location properly encoded", :aggregate_failures do
+        organization.update(
+          name: "Org & < ' \" 1",
+          email: "t&st&mail@example.com",
+          summary: "Org & < ' \" &quot; 1",
+          location: "123, ave dev & < ' \" &quot; to",
+        )
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.name))
-      end
-
-      it "renders organization email properly encoded" do
-        organization.update(email: "t&st&mail@dev.to")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.email))
-      end
-
-      it "renders organization summary properly encoded" do
-        organization.update(summary: "Org & < ' \" &quot; 1")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.summary))
-      end
-
-      it "renders organization location properly encoded" do
-        organization.update(location: "123, ave dev & < ' \" &quot; to")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
       end
 
@@ -293,7 +284,11 @@ RSpec.describe "UserProfiles" do
         expect(response).to be_successful
       end
 
-      context "redirect_if_inactive_in_subforem_for_organization" do
+      # rubocop:disable RSpec/NestedGroups
+      context "when redirecting inactive organization in subforem" do
+        let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+        let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
         context "when the organization is 'inactive' in the current subforem" do
           before do
             organization.articles.delete_all
@@ -308,7 +303,7 @@ RSpec.describe "UserProfiles" do
             get organization.path, headers: { "Host" => other_subforem.domain }
             expect(response).to have_http_status(:moved_permanently)
             expect(response).to redirect_to(
-              URL.url(organization.slug, default_subforem)
+              URL.url(organization.slug, default_subforem),
             )
           end
         end
@@ -352,11 +347,12 @@ RSpec.describe "UserProfiles" do
             get organization.path, headers: { "Host" => other_subforem.domain }
             expect(response).to have_http_status(:moved_permanently)
             expect(response).to redirect_to(
-              URL.url(organization.slug, default_subforem)
+              URL.url(organization.slug, default_subforem),
             )
           end
         end
       end
+      # rubocop:enable RSpec/NestedGroups
     end
 
     context "when displaying a GitHub repository on the profile" do
