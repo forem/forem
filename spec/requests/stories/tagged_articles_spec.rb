@@ -113,6 +113,19 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
         end
 
+        it "does not fetch or count published articles for unsupported tags", :aggregate_failures do
+          create(:article, user: user, published: true, approved: true, tags: unsupported_tag, score: 5)
+          allow(Rails.cache).to receive(:fetch).and_call_original
+
+          get "/t/#{unsupported_tag.name}"
+
+          expect(response).to have_http_status(:ok)
+          expect(Rails.cache).not_to have_received(:fetch).with(
+            "#{unsupported_tag.cache_key}/article-cached-tagged-count",
+            { expires_in: 72.hours },
+          )
+        end
+
         it "renders normal page if no articles but tag is supported" do
           expect { get "/t/#{tag.name}" }.not_to raise_error
         end
@@ -227,10 +240,17 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
           end
 
-          it "does not render pagination even with many posts" do
+          it "does not render pagination even with many posts", :aggregate_failures do
             create_list(:article, 6, user: user, featured: true, tags: [tag.name], score: 20)
+            allow(Rails.cache).to receive(:fetch).and_call_original
+
             get "/t/#{tag.name}"
+
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+            expect(Rails.cache).not_to have_received(:fetch).with(
+              "#{tag.cache_key}/article-cached-tagged-count",
+              { expires_in: 72.hours },
+            )
           end
 
           it "includes a link to Relevant", :aggregate_failures do
