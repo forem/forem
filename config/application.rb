@@ -134,8 +134,9 @@ module PracticalDeveloper
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
-      # Add routes to reserved words
-      Rails.application.reload_routes!
+      # Add routes to reserved words without bypassing routes.eager_load!
+      Rails.application.reload_routes! if Rails.application.routes.routes.empty?
+      Rails.application.routes.eager_load! if Rails.application.config.eager_load
       top_routes = []
       Rails.application.routes.routes.each do |route|
         route = route.path.spec.to_s
