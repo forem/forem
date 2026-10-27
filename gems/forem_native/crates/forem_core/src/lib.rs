@@ -7,6 +7,8 @@
 //! 3. Compiled to `wasm32-unknown-unknown` (Option B) or standalone Rust services in future phases.
 
 pub mod color;
+pub mod emoji;
+pub(crate) mod emoji_data;
 pub mod fixer;
 pub mod image;
 pub mod markdown;

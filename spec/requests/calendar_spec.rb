@@ -275,12 +275,26 @@ RSpec.describe "Calendar" do
                        end_time: Date.new(2026, 3, 18).in_time_zone + 17.hours)
       end
 
+      let!(:overlapping_event) do
+        create(:event, title: "Overlapping Conference", published: true,
+                       start_time: Date.new(2026, 3, 14).in_time_zone + 9.hours,
+                       end_time: Date.new(2026, 3, 20).in_time_zone + 17.hours)
+      end
+
       it "dots every day it spans" do
         get calendar_path(start: "2026-03-01", end: "2026-03-31")
 
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>10</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>14</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>18</)
+      end
+
+      it "renders each overlapping day once in the calendar grid" do
+        get calendar_path(start: "2026-03-01", end: "2026-03-31")
+
+        march_14_cell = Nokogiri::HTML(response.body).css('[data-calendar-day="2026-03-14"]')
+        expect(march_14_cell.size).to eq(1)
+        expect(march_14_cell.first["class"]).to include("calendar__day--has-event")
       end
 
       it "lists the event when a day within its span is selected" do

@@ -193,6 +193,8 @@ fr:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           enable_ai_disclosure:
             description: "Permettre aux auteurs de divulguer l'utilisation d'outils d'IA lors de la publication ou de l'édition d'articles."
+          appeal_auto_unflag_threshold:
+            description: "Score de confiance minimal de l'IA (de 0,0 à 1,0) requis pour approuver automatiquement un recours lorsque l'IA recommande auto_unflag (s'applique uniquement aux restrictions automatisées, jamais aux suspensions par un modérateur humain). Définissez une valeur supérieure à 1,0 (par ex. 1,01) pour désactiver le désignalement automatique."
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

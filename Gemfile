@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 
 group :production do
-  gem "hypershield", "~> 0.2.2" # Allow admins to query data via internal
+  gem "hypershield", "~> 0.6.1" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
@@ -27,7 +27,7 @@ gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "countries", "~> 5.5" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
+gem "countries", "~> 8.1" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
 gem "customerio", "~> 6.1" # Customer.io App API client; transactional email delivery (see DeliveryMethods::CustomerIo)
 gem "ddtrace", "~> 1.16.2", require: false # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
@@ -174,11 +174,11 @@ group :test do
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
-  gem "pundit-matchers", "~> 1.7" # A set of RSpec matchers for testing Pundit authorisation policies
+  gem "pundit-matchers", "~> 4.0" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rails-controller-testing", "~> 1.0" # Testing helpers for Rails controllers
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "shoulda-matchers", "~> 5.3", require: false # Simple one-liner tests for common Rails functionality
+  gem "shoulda-matchers", "~> 8.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.21.2", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "3.1.0.rc3", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers

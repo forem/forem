@@ -46,7 +46,7 @@ RSpec.describe "Organization index" do
       user.follows.create(followable: organization)
     end
 
-    it "shows the correct button", js: true do
+    it "shows the correct button after follow state loads", js: true do
       visit "/#{organization.slug}"
 
       within(".org-header-actions") do
