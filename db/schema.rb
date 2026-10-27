@@ -867,7 +867,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
     t.float "status_weight", default: 0.0, null: false
     t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
-    t.string "targeting_bucket", default: "all", null: false
+    t.integer "targeting_bucket", default: 0, null: false
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"

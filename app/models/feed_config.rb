@@ -19,6 +19,15 @@ class FeedConfig < ApplicationRecord
   NON_ALL_TARGETING_BUCKETS = (FEED_TARGETING_BUCKETS + [BUCKET_DIGEST]).freeze
   TARGETING_BUCKETS = ([BUCKET_ALL] + NON_ALL_TARGETING_BUCKETS).freeze
 
+  enum :targeting_bucket, {
+    all: 0,
+    feed_new_user: 1,
+    feed_casual_user: 2,
+    feed_active_user: 3,
+    feed_power_user: 4,
+    digest: 5
+  }, prefix: :bucket, validate: true
+
   POWER_USER_MIN_COMMENT_DAYS = 4
   ACTIVE_USER_MIN_PAGEVIEW_DAYS = 3
   ACTIVITY_LOOKBACK = 7.days
@@ -163,7 +172,8 @@ class FeedConfig < ApplicationRecord
   def self.select_for_targeted_bucket(bucket)
     bucket_scope = active.where(targeting_bucket: bucket)
     fallback_scope = active.where(targeting_bucket: [bucket, BUCKET_ALL])
-    bucket_priority_sql = Arel.sql("CASE WHEN targeting_bucket = #{connection.quote(bucket)} THEN 0 ELSE 1 END ASC")
+    bucket_int = targeting_buckets.fetch(bucket.to_s)
+    bucket_priority_sql = Arel.sql("CASE WHEN targeting_bucket = #{bucket_int.to_i} THEN 0 ELSE 1 END ASC")
 
     roll = rand(100)
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs in this bucket
