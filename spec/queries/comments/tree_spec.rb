@@ -22,6 +22,45 @@ RSpec.describe Comments::Tree do
       expect(root_comment.user.association(:roles)).to be_loaded
       expect(root_comment.user.association(:profile)).to be_loaded
       expect(root_comment.user.association(:setting)).to be_loaded
+      expect(root_comment.user.association(:organization_memberships)).to be_loaded
+    end
+
+    it "reuses the passed article and its loaded user instead of re-fetching them" do
+      article.update_column(:user_id, user.id)
+      loaded_article = Article.find(article.id)
+      loaded_article.user
+
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "articles"') || payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(loaded_article)
+      end
+
+      expect(queries).to be_empty
+      nodes = Comment.flatten_arranged_nodes(tree)
+      expect(nodes.map(&:commentable)).to all(be(loaded_article))
+      expect(nodes.map(&:user)).to all(be(loaded_article.user))
+      expect(loaded_article.association(:organization)).to be_loaded
+      expect(loaded_article.user.association(:profile)).to be_loaded
+      expect(loaded_article.user.association(:setting)).to be_loaded
+    end
+
+    it "skips association preloads when all root comments are filtered out" do
+      comment.update_column(:score, -5)
+      other_comment.update_column(:score, -10)
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(article, include_negative: false)
+      end
+
+      expect(tree).to be_empty
+      expect(user_queries).to be_empty
     end
 
     it "returns part of the tree" do
