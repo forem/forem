@@ -326,7 +326,7 @@ class Organization < ApplicationRecord
     return if previously_new_record?
     return unless SOCIAL_IMAGE_TRIGGER_ATTRIBUTES.any? { |attr| saved_change_to_attribute?(attr) }
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   def evaluate_markdown

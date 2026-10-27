@@ -1889,7 +1889,8 @@ class Article < ApplicationRecord
       social_image_quote_changed?
     return unless change
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   # The generated image quotes the opening of the post, so only body edits that
