@@ -7,7 +7,6 @@ ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 group :production do
   gem "hypershield", "~> 0.6.1" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
-  gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
 gem "active_record_union", "~> 1.4" # Adds proper union and union_all methods to ActiveRecord::Relation
@@ -86,6 +85,7 @@ gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 7.0" # Domain name parser based on the Public Suffix List
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 2.0" # Middleware that will make Rack-based apps CORS compatible
+gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "8.0.5" # Ruby on Rails
 gem "ransack", "~> 4.2" # Searching and sorting
