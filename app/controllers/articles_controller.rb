@@ -163,7 +163,8 @@ class ArticlesController < ApplicationController
             cover_image = ApplicationController.helpers.cloud_cover_url(front_matter["cover_image"])
           end
 
-          ai_disclosure_level = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
+          raw_disclosure = front_matter["ai_disclosure_level"] || front_matter["ai_disclosure"]
+          ai_disclosure_level = Article.normalize_ai_disclosure_level(raw_disclosure)&.to_s || raw_disclosure
 
           render json: {
             processed_html: processed_html,

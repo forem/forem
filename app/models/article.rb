@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   include AlgoliaSearchable
   include WebpageTrackable
   include ActivityTrackable
+  include AiDisclosable
 
   acts_as_taggable_on :tags
   resourcify
@@ -159,13 +160,6 @@ class Article < ApplicationRecord
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
-  }
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
   }
 
   enum :automod_label, {
@@ -446,19 +440,53 @@ class Article < ApplicationRecord
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_organization, coder: YAML
 
+  DISALLOWED_TSQUERY_CHARACTERS = /['?\\:‘’ʻʼ"\u0000]/
+  MAX_SEARCH_TSQUERY_TERMS = 10
+  MIN_PREFIX_SEARCH_TERM_LENGTH = 3
+
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
   # is also used for the article search page.
   # The name of the `tsvector` column and its related trigger should be adapted.
-  pg_search_scope :search_articles,
-                  against: :reading_list_document,
-                  using: {
-                    tsearch: {
-                      prefix: true,
-                      tsvector_column: :reading_list_document
-                    }
-                  },
-                  ignoring: :accents
+  #
+  # NOTE: We build the full-text query directly instead of using `pg_search_scope` because:
+  # 1. `pg_search` wraps each term in SQL `unaccent(...)` (which is `STABLE`), preventing
+  #    PostgreSQL from constant-folding the `tsquery` and inspecting `pg_statistic` lexeme
+  #    frequencies. Pre-unaccenting in Ruby produces a single `IMMUTABLE` `to_tsquery` call.
+  # 2. 1-2 character prefix wildcards (e.g. `'i':*`, `'de':*`) force GIN index scans to
+  #    expand and merge hundreds of thousands of dictionary entries upfront.
+  # 3. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
+  #    lets callers that `.reorder(...)`, `.count`, or `.exists?` skip de-TOASTing
+  #    `reading_list_document` for `ts_rank`.
+  scope :search_articles, lambda { |term|
+    tsquery_sql = sanitize_search_articles_tsquery(term)
+    return none if tsquery_sql.nil?
+
+    where("articles.reading_list_document @@ #{tsquery_sql}")
+      .order(Arel.sql("ts_rank(articles.reading_list_document, #{tsquery_sql}, 0) DESC, articles.id ASC"))
+  }
+
+  def self.sanitize_search_articles_tsquery(term)
+    normalized = Unaccent.unaccent(term.to_s)
+      .downcase
+      .gsub(DISALLOWED_TSQUERY_CHARACTERS, " ")
+
+    tokens = normalized
+      .split
+      .grep(/[[:alnum:]]/)
+      .uniq
+      .first(MAX_SEARCH_TSQUERY_TERMS)
+
+    return if tokens.empty?
+
+    query_expression = tokens.map do |token|
+      alnum_length = token.gsub(/[^[:alnum:]]/, "").length
+      prefix_suffix = alnum_length >= MIN_PREFIX_SEARCH_TERM_LENGTH ? ":*" : ""
+      "' #{token} '#{prefix_suffix}"
+    end.join(" & ")
+
+    sanitize_sql_array(["to_tsquery('simple'::regconfig, ?)", query_expression])
+  end
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
@@ -811,10 +839,6 @@ class Article < ApplicationRecord
     else
       title_finalized
     end
-  end
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
   end
 
   def ai_disclosure_label
@@ -1594,20 +1618,7 @@ class Article < ApplicationRecord
       return
     end
 
-    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
-    level = case val_str
-            when "0", "not_disclosed", "unstated", "unknown", "false"
-              :not_disclosed
-            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
-              :no_ai
-            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
-              :some_ai
-            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
-              :fully_autonomous
-            else
-              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
-            end
-
+    level = self.class.normalize_ai_disclosure_level(raw_val)
     self.ai_disclosure_level = level if level
   end
 

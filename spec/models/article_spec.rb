@@ -49,6 +49,61 @@ RSpec.describe Article do
       expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
       expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
     end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      article = build(:article)
+
+      {
+        "ai_generated" => "fully_autonomous",
+        "AI-Generated" => "fully_autonomous",
+        "autonomous" => "fully_autonomous",
+        "full_ai" => "fully_autonomous",
+        "fully_ai" => "fully_autonomous",
+        "100%_ai" => "fully_autonomous",
+        "agent_generated" => "fully_autonomous",
+        "llm" => "fully_autonomous",
+        "5" => "fully_autonomous",
+        5 => "fully_autonomous",
+        true => "fully_autonomous",
+        "ai_assisted" => "some_ai",
+        "AI Assisted" => "some_ai",
+        "assisted" => "some_ai",
+        "some" => "some_ai",
+        "partial_ai" => "some_ai",
+        "hybrid" => "some_ai",
+        "copilot" => "some_ai",
+        "3" => "some_ai",
+        3 => "some_ai",
+        "human" => "no_ai",
+        "human_written" => "no_ai",
+        "hand_written" => "no_ai",
+        "handwritten" => "no_ai",
+        "none" => "no_ai",
+        "no" => "no_ai",
+        "100%_human" => "no_ai",
+        "without_ai" => "no_ai",
+        "1" => "no_ai",
+        1 => "no_ai",
+        "undisclosed" => "not_disclosed",
+        "unspecified" => "not_disclosed",
+        "unknown" => "not_disclosed",
+        "false" => "not_disclosed",
+        "0" => "not_disclosed",
+        0 => "not_disclosed",
+        false => "not_disclosed",
+        "" => "not_disclosed",
+        nil => "not_disclosed"
+      }.each do |input, expected|
+        article.ai_disclosure_level = input
+        expect(article.ai_disclosure_level).to eq(expected), "expected #{input.inspect} to map to #{expected}"
+      end
+    end
+
+    it "raises ArgumentError for completely unrecognized values" do
+      article = build(:article)
+      expect { article.ai_disclosure_level = "banana_split" }
+        .to raise_error(ArgumentError, "'banana_split' is not a valid ai_disclosure_level")
+    end
   end
 
   describe "validations" do
@@ -4632,6 +4687,41 @@ RSpec.describe Article do
       create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
 
       expect(article.comments_blob).to eq("Hello youtube world")
+    end
+  end
+
+  describe ".search_articles" do
+    it "pre-unaccents terms into an immutable to_tsquery expression without a self-join", :aggregate_failures do
+      relation = described_class.search_articles("Café")
+      sql = relation.to_sql
+
+      expect(sql).to include("articles.reading_list_document @@ to_tsquery('simple'::regconfig, ''' cafe '':*')")
+      expect(sql).not_to include("unaccent(")
+      expect(sql).not_to include("INNER JOIN")
+    end
+
+    it "uses prefix matching only on tokens with at least 3 alphanumeric characters", :aggregate_failures do
+      tsquery_sql = described_class.sanitize_search_articles_tsquery("why I switched to ruby")
+
+      expect(tsquery_sql).to eq(
+        "to_tsquery('simple'::regconfig, ''' why '':* & '' i '' & '' switched '':* & '' to '' & '' ruby '':*')",
+      )
+    end
+
+    it "matches accented and unaccented queries against reading_list_document", :aggregate_failures do
+      matching_article = create(:article, title: "São Paulo intermedica guide")
+      create(:article, title: "Unrelated article")
+
+      expect(described_class.search_articles("sao paulo").ids).to eq([matching_article.id])
+      expect(described_class.search_articles("SÃO").ids).to eq([matching_article.id])
+    end
+
+    it "returns an empty relation when given blank or punctuation-only input", :aggregate_failures do
+      create(:article, title: "Sample article")
+
+      expect(described_class.search_articles(nil)).to be_empty
+      expect(described_class.search_articles("   ")).to be_empty
+      expect(described_class.search_articles("??? ::: '''")).to be_empty
     end
   end
 end

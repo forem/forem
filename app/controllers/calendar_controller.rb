@@ -32,15 +32,16 @@ class CalendarController < ApplicationController
   def event_days_between(range_start, range_end)
     scope = Event.published
     scope = scope.where(type_of: params[:type_of]) if valid_type?
+    event_days = Set.new
     scope.where("end_time >= ? AND start_time <= ?",
                 range_start.beginning_of_day, range_end.end_of_day)
       .pluck(:start_time, :end_time)
-      .flat_map do |start_time, end_time|
+      .each do |start_time, end_time|
         start_date = [start_time.in_time_zone.to_date, range_start].max
         end_date = [end_time.in_time_zone.to_date, range_end].min
-        (start_date..end_date).to_a
+        (start_date..end_date).each { |day| event_days.add(day) }
       end
-      .to_set
+    event_days
   end
 
   def calendar_range

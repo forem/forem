@@ -591,6 +591,9 @@ pt:
       feedback:
         title: Limit number of times someone can report abuse
         description: How many times can someone report abuse within any 5 minute period?
+      flag_appeal:
+        title: Limitar o número de recursos de moderação que alguém pode enviar
+        description: Quantos recursos de moderação alguém pode enviar em qualquer período de 5 minutos?
       comment:
         title: Limit number of comments created
         description: How many comments can someone create within any 30 second period?

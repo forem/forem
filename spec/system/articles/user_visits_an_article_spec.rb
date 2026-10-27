@@ -16,7 +16,7 @@ RSpec.describe "Views an article" do
     expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
-  it "shows an article", :js do
+  it "shows an article" do
     visit article.path
     expect(page).to have_content(article.title)
   end

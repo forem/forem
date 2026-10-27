@@ -1,5 +1,9 @@
 //! URL normalization mirroring `Addressable::URI.parse(url).normalize.to_s`.
 
+use std::borrow::Cow;
+
+use crate::psl_data::{PSL_BLOB, PSL_ENTRIES};
+
 /// Normalizes `http`/`https` URLs and `/`-rooted paths the way Addressable 2.9 does:
 /// lowercases the scheme and host, drops a single trailing host dot and the default port,
 /// turns an empty `http(s)` path into `/`, and re-encodes the path, query, and fragment
@@ -443,6 +447,192 @@ fn is_dotted_hostname(name: &[u8]) -> bool {
             .any(|pair| is_separator(&pair[0]) && is_separator(&pair[1]))
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum PslRuleKind {
+    Normal,
+    Wildcard,
+    Exception,
+}
+
+fn lookup_psl_rule(query: &[u8]) -> Option<PslRuleKind> {
+    let idx = PSL_ENTRIES
+        .binary_search_by(|&entry| {
+            let offset = (entry >> 10) as usize;
+            let len = ((entry >> 2) & 0xff) as usize;
+            PSL_BLOB[offset..offset + len].cmp(query)
+        })
+        .ok()?;
+    match PSL_ENTRIES[idx] & 0x3 {
+        0 => Some(PslRuleKind::Normal),
+        1 => Some(PslRuleKind::Wildcard),
+        2 => Some(PslRuleKind::Exception),
+        _ => None,
+    }
+}
+
+fn is_ruby_strip_whitespace(byte: u8) -> bool {
+    matches!(byte, b' ' | b'\t'..=b'\r')
+}
+
+/// Decomposed Public Suffix List components of a valid registrable domain.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PublicSuffixParts<'a> {
+    /// Registrable root domain (`"{sld}.{tld}"`), e.g. `"example.com"`.
+    pub domain: Cow<'a, str>,
+    /// Second-level domain label, e.g. `"example"`.
+    pub sld: Cow<'a, str>,
+    /// Public suffix (effective TLD), e.g. `"com"` or `"co.uk"`.
+    pub tld: Cow<'a, str>,
+}
+
+/// Outcome of checking whether `host` is a single-label subdomain of its Public Suffix List
+/// registrable domain in `Middlewares::SetSubforem`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SubforemSubdomain {
+    /// `host` is a valid PSL domain and matches `/^([^.]+)\.#{sld}\.#{tld}$/`.
+    Subdomain(bool),
+    /// `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`.
+    InvalidDomain,
+}
+
+/// Parses `host` against the Public Suffix List with `default_rule: nil` semantics:
+/// - `Some(Ok(parts))` when `PublicSuffix.parse(host, default_rule: nil)` succeeds,
+/// - `Some(Err(()))` when `PublicSuffix.parse(host, default_rule: nil)` raises
+///   `PublicSuffix::DomainInvalid` (including `PublicSuffix::DomainNotAllowed`),
+/// - `None` for non-ASCII inputs, NUL bytes, embedded newlines, or consecutive dots (`..`)
+///   so Ruby can fall back to `PublicSuffix.parse`.
+pub fn parse_public_suffix(host: &[u8]) -> Option<Result<PublicSuffixParts<'_>, ()>> {
+    if !host.is_ascii() || host.contains(&0) {
+        return None;
+    }
+    let start = host
+        .iter()
+        .position(|&b| !is_ruby_strip_whitespace(b))
+        .unwrap_or(host.len());
+    let end = host
+        .iter()
+        .rposition(|&b| !is_ruby_strip_whitespace(b))
+        .map_or(start, |i| i + 1);
+    let trimmed = &host[start..end];
+    let trimmed = trimmed.strip_suffix(b".").unwrap_or(trimmed);
+
+    if trimmed.is_empty()
+        || trimmed.starts_with(b".")
+        || trimmed.ends_with(b".")
+        || trimmed.windows(3).any(|w| w == b"://")
+    {
+        return Some(Err(()));
+    }
+    if trimmed.contains(&b'\n') || trimmed.windows(2).any(|w| w == b"..") {
+        return None;
+    }
+
+    let has_uppercase = trimmed.iter().any(u8::is_ascii_uppercase);
+    let lower_owned: Vec<u8>;
+    let lower: &[u8] = if has_uppercase {
+        lower_owned = trimmed.to_ascii_lowercase();
+        &lower_owned
+    } else {
+        trimmed
+    };
+
+    // Collect the start byte offset of each dot-separated label in `lower` on the stack
+    // for normal hostnames (<= 16 labels), falling back to a Vec only for deep label chains.
+    let mut stack_starts = [0usize; 16];
+    let mut vec_starts = Vec::new();
+    let mut n = 1usize;
+    for (i, &b) in lower.iter().enumerate() {
+        if b == b'.' {
+            if n < stack_starts.len() {
+                stack_starts[n] = i + 1;
+            } else {
+                if vec_starts.is_empty() {
+                    vec_starts.extend_from_slice(&stack_starts);
+                }
+                vec_starts.push(i + 1);
+            }
+            n += 1;
+        }
+    }
+    let label_starts: &[usize] = if vec_starts.is_empty() {
+        &stack_starts[..n]
+    } else {
+        &vec_starts
+    };
+
+    let mut memo: Option<(PslRuleKind, usize)> = None;
+    for k in 1..=n {
+        let query = &lower[label_starts[n - k]..];
+        let Some(kind) = lookup_psl_rule(query) else {
+            continue;
+        };
+        let r_len = match kind {
+            PslRuleKind::Wildcard => k + 1,
+            PslRuleKind::Normal | PslRuleKind::Exception => k,
+        };
+        match memo {
+            None => memo = Some((kind, r_len)),
+            Some((_, memo_len)) => {
+                if kind == PslRuleKind::Exception {
+                    memo = Some((PslRuleKind::Exception, k));
+                    break;
+                } else if r_len > memo_len {
+                    memo = Some((kind, r_len));
+                }
+            }
+        }
+    }
+
+    let Some((win_kind, win_len)) = memo else {
+        return Some(Err(()));
+    };
+    let tld_labels = match win_kind {
+        PslRuleKind::Exception => win_len - 1,
+        PslRuleKind::Normal | PslRuleKind::Wildcard => win_len,
+    };
+    if n <= tld_labels {
+        return Some(Err(()));
+    }
+
+    let sld_idx = n - tld_labels - 1;
+    let tld_idx = n - tld_labels;
+    let domain_start = label_starts[sld_idx];
+    let tld_start = label_starts[tld_idx];
+    let sld_end = tld_start - 1;
+
+    let slice_cow = |lo: usize, hi: usize| -> Cow<'_, str> {
+        if !trimmed[lo..hi].iter().any(u8::is_ascii_uppercase) {
+            // SAFETY: `trimmed` is verified ASCII above.
+            Cow::Borrowed(unsafe { std::str::from_utf8_unchecked(&trimmed[lo..hi]) })
+        } else {
+            // SAFETY: `lower` is verified ASCII above.
+            Cow::Owned(unsafe { std::str::from_utf8_unchecked(&lower[lo..hi]) }.to_owned())
+        }
+    };
+
+    Some(Ok(PublicSuffixParts {
+        domain: slice_cow(domain_start, lower.len()),
+        sld: slice_cow(domain_start, sld_end),
+        tld: slice_cow(tld_start, lower.len()),
+    }))
+}
+
+/// Registrable root domain (`PublicSuffix.parse(host, default_rule: nil).domain`) for
+/// `Middlewares::SetCookieDomain`, `ApplicationController#root_domain`, and `session_store.rb`.
+pub fn public_suffix_domain(host: &[u8]) -> Option<Result<Cow<'_, str>, ()>> {
+    Some(parse_public_suffix(host)?.map(|parts| parts.domain))
+}
+
+/// Checks whether `host` is a single-label subdomain of its Public Suffix List registrable
+/// domain (`PublicSuffix.parse(host, default_rule: nil)` + `subforem_subdomain_host`).
+pub fn public_suffix_subdomain_host(host: &[u8]) -> Option<SubforemSubdomain> {
+    match parse_public_suffix(host)? {
+        Err(()) => Some(SubforemSubdomain::InvalidDomain),
+        Ok(parts) => subforem_subdomain_host(host, parts.sld.as_bytes(), parts.tld.as_bytes())
+            .map(SubforemSubdomain::Subdomain),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -817,5 +1007,124 @@ mod tests {
             assert_eq!(original_host_valid(host.as_bytes()), None, "{host:?}");
         }
         assert_eq!(original_host_valid(b"a.com:\xff"), None);
+    }
+
+    #[test]
+    fn public_suffix_domain_resolves_normal_wildcard_and_exception_rules() {
+        for (host, expected_domain, expected_sld, expected_tld) in [
+            ("dev.to", "dev.to", "dev", "to"),
+            ("community.example.com", "example.com", "example", "com"),
+            ("a.b.example.co.uk", "example.co.uk", "example", "co.uk"),
+            ("  EXAMPLE.COM. \t\r\n", "example.com", "example", "com"),
+            ("bar.foo.ck", "bar.foo.ck", "bar", "foo.ck"),
+            ("www.ck", "www.ck", "www", "ck"),
+            ("sub.www.ck", "www.ck", "www", "ck"),
+            (
+                "city.kawasaki.jp",
+                "city.kawasaki.jp",
+                "city",
+                "kawasaki.jp",
+            ),
+            (
+                "www.city.kawasaki.jp",
+                "city.kawasaki.jp",
+                "city",
+                "kawasaki.jp",
+            ),
+            (
+                "bar.foo.kawasaki.jp",
+                "bar.foo.kawasaki.jp",
+                "bar",
+                "foo.kawasaki.jp",
+            ),
+            (
+                "my-app.s3.amazonaws.com",
+                "my-app.s3.amazonaws.com",
+                "my-app",
+                "s3.amazonaws.com",
+            ),
+        ] {
+            let parts = parse_public_suffix(host.as_bytes())
+                .expect("accepted")
+                .expect("valid");
+            assert_eq!(parts.domain, expected_domain, "{host:?}");
+            assert_eq!(parts.sld, expected_sld, "{host:?}");
+            assert_eq!(parts.tld, expected_tld, "{host:?}");
+            assert_eq!(
+                public_suffix_domain(host.as_bytes()),
+                Some(Ok(Cow::Borrowed(expected_domain))),
+                "{host:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn public_suffix_domain_rejects_invalid_and_unallowed_domains() {
+        for host in [
+            "",
+            "   ",
+            ".",
+            ".example.com",
+            "example.com..",
+            "..com",
+            "com",
+            "co.uk",
+            "ck",
+            "foo.ck",
+            "kawasaki.jp",
+            "foo.kawasaki.jp",
+            "localhost",
+            "127.0.0.1",
+            "example.invalidtld",
+            "example.com:3000",
+            "http://example.com",
+        ] {
+            assert_eq!(
+                public_suffix_domain(host.as_bytes()),
+                Some(Err(())),
+                "{host:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn public_suffix_domain_declines_non_ascii_and_degenerate_inputs() {
+        for host in [
+            "d\u{e9}v.to",
+            "example.\u{516c}\u{53f8}.cn",
+            "example..com",
+            "foo\nbar.com",
+            "example.com\0",
+        ] {
+            assert_eq!(public_suffix_domain(host.as_bytes()), None, "{host:?}");
+        }
+    }
+
+    #[test]
+    fn public_suffix_subdomain_host_matches_set_subforem_pipeline() {
+        for (host, expected) in [
+            ("community.example.com", SubforemSubdomain::Subdomain(true)),
+            ("example.com", SubforemSubdomain::Subdomain(false)),
+            ("a.b.example.com", SubforemSubdomain::Subdomain(false)),
+            ("SUB.example.com", SubforemSubdomain::Subdomain(true)),
+            ("sub.EXAMPLE.com", SubforemSubdomain::Subdomain(false)),
+            ("sub.example.com.", SubforemSubdomain::Subdomain(false)),
+            ("sub.bbc.co.uk", SubforemSubdomain::Subdomain(true)),
+            ("bbc.co.uk", SubforemSubdomain::Subdomain(false)),
+            ("sub.www.ck", SubforemSubdomain::Subdomain(true)),
+            ("www.ck", SubforemSubdomain::Subdomain(false)),
+            ("sub.foo.ck", SubforemSubdomain::Subdomain(false)),
+            ("foo.ck", SubforemSubdomain::InvalidDomain),
+            ("localhost", SubforemSubdomain::InvalidDomain),
+            ("127.0.0.1", SubforemSubdomain::InvalidDomain),
+        ] {
+            assert_eq!(
+                public_suffix_subdomain_host(host.as_bytes()),
+                Some(expected),
+                "{host:?}"
+            );
+        }
+        assert_eq!(public_suffix_subdomain_host(b"foo_bar.example.com"), None);
+        assert_eq!(public_suffix_subdomain_host("d\u{e9}v.to".as_bytes()), None);
     }
 }

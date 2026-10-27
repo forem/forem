@@ -5,10 +5,10 @@
                       end %>
 
 <% rec_class = case appeal.ai_recommendation
-                when "auto_unflag" then "c-indicator--success"
-                when "confirm_flag" then "c-indicator--danger"
-                else "c-indicator--warning"
-                end %>
+               when "auto_unflag" then "c-indicator--success"
+               when "confirm_flag" then "c-indicator--danger"
+               else "c-indicator--warning"
+               end %>
 
 <% target = appeal.appealable %>
 <% type_label = t("views.admin.flag_appeals.types.#{appeal.appealable_type}", default: appeal.appealable_type) %>
@@ -17,46 +17,45 @@
 
 <% target_label = case appeal.appealable_type
                   when "Comment"
-                    parent_title = target&.commentable&.respond_to?(:title) ? target.commentable.title.truncate(30) : t("views.admin.flag_appeals.post_fallback")
+                    parent_title = target&.commentable.respond_to?(:title) ? target.commentable.title.truncate(30) : t("views.admin.flag_appeals.post_fallback")
                     t("views.admin.flag_appeals.target.comment", title: parent_title)
                   when "Article"
                     t("views.admin.flag_appeals.target.article", title: target&.title&.truncate(30) || appeal.appealable_id)
                   when "User"
-                    t("views.admin.flag_appeals.target.user", username: target&.username || appeal.appealable_id)
+                    t("views.admin.flag_appeals.target.user", username: (target&.username || appeal.appealable_id).to_s.truncate(20))
                   else
                     t("views.admin.flag_appeals.target.other", type: appeal.appealable_type, id: appeal.appealable_id)
                   end %>
 
-<details <%= "open" if defined?(is_open) && is_open %> class="crayons-card my-3" id="accordion-<%= appeal.id %>">
-  <summary class="p-4 cursor-pointer hover:bg-base-5">
-    <div class="flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <strong class="text-base color-base-100"><%= t("views.admin.flag_appeals.appeal_number", id: appeal.id) %></strong>
-        <span class="fs-xs color-base-60 ml-2">
-          <%= t("views.admin.flag_appeals.submitted_html",
-                time: time_ago_in_words(appeal.created_at),
-                user: link_to(appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold"),
-                username: appeal.user.username) %>
-        </span>
-      </div>
+<details <%= "open" if defined?(is_open) && is_open %> class="crayons-card flag-appeal-card border-1 border-solid border-base-10" id="accordion-<%= appeal.id %>">
+  <summary class="p-4 cursor-pointer flex flex-wrap s:flex-nowrap items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center gap-2 flex-1 min-w-0">
+      <%= crayons_icon_tag("chevron-right", width: 16, height: 16, aria_hidden: true, class: "summary-icon shrink-0 color-base-60") %>
+      <strong class="fs-base fw-bold color-base-100 whitespace-nowrap"><%= t("views.admin.flag_appeals.appeal_number", id: appeal.id) %></strong>
+      <span class="fs-xs color-base-60">
+        <%= t("views.admin.flag_appeals.submitted_html",
+              time: time_ago_in_words(appeal.created_at),
+              user: link_to(appeal.user.name, admin_user_path(appeal.user), class: "c-link fw-bold"),
+              username: appeal.user.username) %>
+      </span>
+    </div>
 
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="c-indicator c-indicator--info fs-xs"><%= target_label %></span>
-        <span class="c-indicator <%= rec_class %> fs-xs"><%= t("views.admin.flag_appeals.ai.badge", recommendation: recommendation_label, score: confidence_label) %></span>
-        <span class="c-indicator <%= status_indicator %> fs-xs uppercase font-bold"><%= t("views.admin.flag_appeals.status.#{appeal.status}") %></span>
-        <%= link_to t("views.admin.flag_appeals.link_to_appeal"), admin_flag_appeal_path(appeal), class: "c-link fs-xs ml-1" %>
-      </div>
+    <div class="flex flex-wrap items-center justify-end gap-2 shrink-0">
+      <span class="c-indicator c-indicator--info fs-xs whitespace-nowrap"><%= target_label %></span>
+      <span class="c-indicator <%= rec_class %> fs-xs whitespace-nowrap"><%= t("views.admin.flag_appeals.ai.badge", recommendation: recommendation_label, score: confidence_label) %></span>
+      <span class="c-indicator <%= status_indicator %> fs-xs text-uppercase fw-bold whitespace-nowrap"><%= t("views.admin.flag_appeals.status.#{appeal.status}") %></span>
+      <%= link_to t("views.admin.flag_appeals.link_to_appeal"), admin_flag_appeal_path(appeal), class: "c-link fs-xs whitespace-nowrap ml-1" %>
     </div>
   </summary>
 
-  <div class="crayons-card__body p-4 border-t border-border flex flex-col gap-4">
+  <div class="crayons-card__body p-4 border-0 border-t-1 border-solid border-base-10 flex flex-col gap-4">
     <!-- User & Flagged Target Details Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 m:grid-cols-2 gap-4">
       <!-- Appealing User -->
-      <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
-        <h4 class="fs-xs font-bold uppercase color-base-60"><%= t("views.admin.flag_appeals.appealing_user") %></h4>
+      <div class="crayons-card crayons-card--secondary border-1 border-solid border-base-10 bg-base-0 p-3 flex flex-col gap-1">
+        <h4 class="fs-xs fw-bold text-uppercase color-base-60 mb-0"><%= t("views.admin.flag_appeals.appealing_user") %></h4>
         <div>
-          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link font-bold text-base" %>
+          <%= link_to appeal.user.name, admin_user_path(appeal.user), class: "c-link fw-bold fs-base" %>
           <span class="fs-xs color-base-60">
             (@<%= link_to appeal.user.username, appeal.user.path, target: "_blank", rel: "noopener", class: "c-link" %>)
             • <%= t("views.admin.flag_appeals.user_id", id: appeal.user.id) %>
@@ -73,88 +72,86 @@
       </div>
 
       <!-- Target Entity (WHAT was flagged) -->
-      <div class="crayons-card crayons-card--secondary p-3 flex flex-col gap-1">
-        <h4 class="fs-xs font-bold uppercase color-base-60"><%= t("views.admin.flag_appeals.flagged_item", type: type_label) %></h4>
+      <div class="crayons-card crayons-card--secondary border-1 border-solid border-base-10 bg-base-0 p-3 flex flex-col gap-1">
+        <h4 class="fs-xs fw-bold text-uppercase color-base-60 mb-0"><%= t("views.admin.flag_appeals.flagged_item", type: type_label) %></h4>
         <% if target.present? %>
           <% if target.is_a?(Comment) %>
             <div>
-              <span class="fs-xs color-base-60 font-bold"><%= t("views.admin.flag_appeals.comment_on") %></span>
+              <span class="fs-xs color-base-60 fw-bold"><%= t("views.admin.flag_appeals.comment_on") %></span>
               <% parent = target.commentable %>
               <% if parent.present? && parent.respond_to?(:path) %>
-                <%= link_to parent.title, parent.path, target: "_blank", rel: "noopener", class: "c-link font-bold" %>
+                <%= link_to parent.title, parent.path, target: "_blank", rel: "noopener", class: "c-link fw-bold" %>
               <% else %>
                 <strong><%= parent.respond_to?(:title) ? parent.title : t("views.admin.flag_appeals.discussion_fallback") %></strong>
               <% end %>
             </div>
             <div class="flex items-center gap-3 mt-1">
               <% if target.path.present? %>
-                <%= link_to t("views.admin.flag_appeals.open_comment"), target.path, target: "_blank", rel: "noopener", class: "c-link fs-xs font-bold" %>
+                <%= link_to t("views.admin.flag_appeals.open_comment"), target.path, target: "_blank", rel: "noopener", class: "c-link fs-xs fw-bold" %>
               <% end %>
               <span class="fs-xs color-base-60"><%= t("views.admin.flag_appeals.comment_score_html", score: target.score) %></span>
             </div>
           <% elsif target.is_a?(Article) %>
             <div>
-              <%= link_to target.title, target.path, target: "_blank", rel: "noopener", class: "c-link font-bold text-base" %>
+              <%= link_to target.title, target.path, target: "_blank", rel: "noopener", class: "c-link fw-bold fs-base" %>
             </div>
             <div class="mt-1">
               <span class="fs-xs color-base-60"><%= t("views.admin.flag_appeals.article_score_html", score: target.score) %></span>
             </div>
           <% elsif target.is_a?(User) %>
             <div>
-              <%= link_to "@#{target.username} (#{target.name})", admin_user_path(target), class: "c-link font-bold" %>
+              <%= link_to "@#{target.username} (#{target.name})", admin_user_path(target), class: "c-link fw-bold" %>
             </div>
           <% end %>
         <% else %>
-          <p class="fs-xs color-base-60 italic"><%= t("views.admin.flag_appeals.deleted", type: type_label, id: appeal.appealable_id) %></p>
+          <p class="fs-xs color-base-60 fs-italic mb-0"><%= t("views.admin.flag_appeals.deleted", type: type_label, id: appeal.appealable_id) %></p>
         <% end %>
       </div>
     </div>
 
     <!-- Target Content Preview -->
     <% if target.present? %>
+      <% preview_text = case target
+                        when Comment
+                          target.body_markdown.presence || t("views.admin.flag_appeals.empty_comment")
+                        when Article
+                          target.body_markdown.truncate(500)
+                        when User
+                          t("views.admin.flag_appeals.account_moderation", username: target.username)
+                        end %>
       <div class="flex flex-col gap-1">
-        <h4 class="fs-xs font-bold uppercase color-base-60"><%= t("views.admin.flag_appeals.flagged_content_text") %></h4>
-        <div class="p-3 bg-base-5 rounded border border-border-tertiary fs-sm whitespace-pre-wrap font-mono max-h-48 overflow-y-auto">
-          <% if target.is_a?(Comment) %>
-            <%= target.body_markdown.presence || t("views.admin.flag_appeals.empty_comment") %>
-          <% elsif target.is_a?(Article) %>
-            <%= target.body_markdown.truncate(500) %>
-          <% elsif target.is_a?(User) %>
-            <%= t("views.admin.flag_appeals.account_moderation", username: target.username) %>
-          <% end %>
-        </div>
+        <h4 class="fs-xs fw-bold text-uppercase color-base-60 mb-0"><%= t("views.admin.flag_appeals.flagged_content_text") %></h4>
+        <div class="p-3 bg-base-0 radius-default border-1 border-solid border-base-10 fs-s ff-monospace overflow-y-auto break-word flag-appeal-pre"><%= preview_text %></div>
       </div>
     <% end %>
 
     <!-- User Statement -->
     <div class="flex flex-col gap-1">
-      <h4 class="fs-sm font-bold color-base-80"><%= t("views.admin.flag_appeals.user_statement") %></h4>
-      <div class="p-3 bg-base-5 rounded border border-border-tertiary whitespace-pre-wrap fs-sm">
-        <%= appeal.reason %>
-      </div>
+      <h4 class="fs-xs fw-bold text-uppercase color-base-60 mb-0"><%= t("views.admin.flag_appeals.user_statement") %></h4>
+      <div class="p-3 bg-base-0 radius-default border-1 border-solid border-base-10 fs-s overflow-y-auto break-word flag-appeal-pre"><%= appeal.reason %></div>
     </div>
 
     <!-- AI Assessment Box -->
-    <div class="p-4 rounded border border-accent-brand bg-accent-brand-tint flex flex-col gap-2">
-      <div class="flex items-center justify-between">
-        <h4 class="font-bold text-sm flex items-center gap-2">
-          <%= crayons_icon_tag("robot", class: "w-4 h-4") %>
+    <div class="crayons-notice crayons-notice--info border-1 border-solid border-accent-brand flex flex-col gap-2">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h4 class="fw-bold fs-s flex items-center gap-2 mb-0">
+          <%= crayons_icon_tag("robot", width: 16, height: 16, aria_hidden: true) %>
           <%= t("views.admin.flag_appeals.ai.heading") %>
         </h4>
-        <span class="c-indicator <%= rec_class %> fs-xs font-bold">
+        <span class="c-indicator <%= rec_class %> fs-xs fw-bold">
           <%= t("views.admin.flag_appeals.ai.recommendation", recommendation: recommendation_label) %>
         </span>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div>
+      <div class="flex flex-col m:flex-row gap-4">
+        <div class="shrink-0">
           <span class="fs-xs color-base-60 block"><%= t("views.admin.flag_appeals.ai.confidence") %></span>
           <strong><%= confidence_label %></strong>
         </div>
 
-        <div class="md:col-span-2">
+        <div class="flex-1 min-w-0">
           <span class="fs-xs color-base-60 block"><%= t("views.admin.flag_appeals.ai.summary") %></span>
-          <p class="fs-xs mt-1"><%= appeal.ai_summary.presence || t("views.admin.flag_appeals.ai.pending") %></p>
+          <p class="fs-xs mt-1 mb-0"><%= appeal.ai_summary.presence || t("views.admin.flag_appeals.ai.pending") %></p>
         </div>
       </div>
     </div>
@@ -171,12 +168,12 @@
                            end %>
       <% reject_confirm = t("views.admin.flag_appeals.confirm_reject", id: appeal.id, username: appeal.user.username) %>
 
-      <div class="flex items-center gap-3 pt-3 border-t border-border">
+      <div class="flex items-center gap-3 pt-3 border-0 border-t-1 border-solid border-base-10">
         <%= button_to t("views.admin.flag_appeals.approve_button"), admin_flag_appeal_path(appeal, resolution: "approve"), method: :patch, data: { confirm: approve_confirm }, class: "crayons-btn crayons-btn--primary crayons-btn--s" %>
         <%= button_to t("views.admin.flag_appeals.reject_button"), admin_flag_appeal_path(appeal, resolution: "reject"), method: :patch, data: { confirm: reject_confirm }, class: "crayons-btn crayons-btn--secondary crayons-btn--s" %>
       </div>
     <% else %>
-      <div class="pt-3 border-t border-border color-base-60 fs-xs flex items-center justify-between">
+      <div class="pt-3 border-0 border-t-1 border-solid border-base-10 color-base-60 fs-xs flex items-center justify-between">
         <span><%= t("views.admin.flag_appeals.resolved_by_html", name: appeal.resolved_by&.name || t("views.admin.flag_appeals.system"), date: l(appeal.updated_at, format: :long)) %></span>
       </div>
     <% end %>
