@@ -2217,4 +2217,78 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
+    let(:legacy_slugify_heading_anchor) do
+      lambda do |heading_html|
+        text = CGI.unescapeHTML(heading_html.to_s.gsub(/<[^>]*>/, ""))
+        text.strip.downcase.gsub(AgentSessionRenderers::HeadingAnchors::SLUG_DISALLOWED, "").tr(" ", "-")
+      end
+    end
+
+    it "matches HeadingAnchors.slugify across edge cases" do
+      [
+        "",
+        "   \t\n\r\0  ",
+        "!!! ???",
+        "Getting Started",
+        "FAQ &amp; Troubleshooting",
+        "What&#39;s New in v2.0?",
+        "Astro vs WordPress: the practical comparison",
+        "Work through a small-business example_now",
+        "Call <code>run()</code> <em>now</em>",
+        "Überblick über Café",
+        "İstanbul ОΣ 日本語 カタカナ 한글 🎉",
+        "&<i></i>amp; &apos; &quot; &lt;b&gt; &gt; &#x41; &#X42; &#0067; &#1114111;",
+        "unclosed <tag and <a\nb>kept",
+        ". leading-and-trailing ! ",
+      ].each do |heading_html|
+        expected = legacy_slugify_heading_anchor.call(heading_html)
+        expect(described_class.slugify_heading_anchor(heading_html)).to eq(expected), heading_html.inspect
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(heading_html)).to eq(expected), heading_html.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings, non-Strings, surrogate entities, and out-of-domain code points" do
+      [
+        nil,
+        :heading,
+        ActiveSupport::SafeBuffer.new("Getting Started"),
+        "Getting Started".b,
+        "Getting Started".encode("US-ASCII"),
+        "Getting Started".encode("UTF-16LE"),
+        "invalid \xFF byte",
+        "&#xD800;",
+        "&#55296;",
+        "circled Ⓐ",
+      ].each do |input|
+        expect(described_class.slugify_heading_anchor(input)).to be_nil, input.inspect
+      end
+
+      [nil, :heading, ActiveSupport::SafeBuffer.new("Getting <b>Started</b>"), "circled Ⓐ"].each do |input|
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(input))
+          .to eq(legacy_slugify_heading_anchor.call(input)), input.inspect
+      end
+      expect { AgentSessionRenderers::HeadingAnchors.slugify("&#xD800;") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "Getting", "Started", "v2.0?", "example_now", "small-business", " ", "  ", "\t", "\n", "\r", "\0",
+        "<code>", "</code>", "<em>", "</em>", "<a href=\"#x\">", "<span\nclass='y'>", "<unclosed", ">",
+        "&amp;", "&apos;", "&quot;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&#x27;", "&#X1F680;", "&#0065;", "&#1114111;",
+        "Überblick", "Café", "İstanbul", "e\u0301", "ОΣ", "日本語", "カタカナ", "한글", "🎉", "—", "…", ":", "!", "?"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_slugify_heading_anchor.call(sample)
+        actual = described_class.slugify_heading_anchor(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(sample)).to eq(expected), message
+      end
+    end
+  end
 end
