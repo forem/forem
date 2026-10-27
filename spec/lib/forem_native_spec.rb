@@ -3135,4 +3135,253 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Markdown & Codeblock Processing Pipeline Kernels" do
+    describe ".fixer_fix_all, .fixer_fix_for_preview, and .fixer_fix_for_comment (MarkdownProcessor::Fixer)" do
+      let(:fixer_base) { MarkdownProcessor::Fixer::Base }
+
+      let(:legacy_fix_all) do
+        lambda do |markdown|
+          next unless markdown
+
+          markdown = fixer_base.__send__(:legacy_add_quotes_to_section, markdown, section: "title")
+          markdown = fixer_base.__send__(:legacy_add_quotes_to_section, markdown, section: "description")
+          markdown = fixer_base.__send__(:legacy_lowercase_published, markdown)
+          markdown = fixer_base.__send__(:legacy_convert_new_lines, markdown)
+          markdown = fixer_base.__send__(:legacy_split_tags, markdown)
+          fixer_base.__send__(:legacy_underscores_in_usernames, markdown)
+        end
+      end
+
+      let(:legacy_fix_for_preview) do
+        lambda do |markdown|
+          next unless markdown
+
+          markdown = fixer_base.__send__(:legacy_add_quotes_to_section, markdown, section: "title")
+          markdown = fixer_base.__send__(:legacy_add_quotes_to_section, markdown, section: "description")
+          fixer_base.__send__(:legacy_underscores_in_usernames, markdown)
+        end
+      end
+
+      let(:legacy_fix_for_comment) do
+        lambda do |markdown|
+          next unless markdown
+
+          fixer_base.__send__(:legacy_underscores_in_usernames, markdown)
+        end
+      end
+
+      it "handles edge cases and falls back cleanly on non-UTF-8 or non-plain-String inputs", :aggregate_failures do
+        expect(MarkdownProcessor::Fixer::FixAll.call(nil)).to be_nil
+        expect(MarkdownProcessor::Fixer::FixForPreview.call(nil)).to be_nil
+        expect(MarkdownProcessor::Fixer::FixForComment.call(nil)).to be_nil
+
+        sample = "---\r\ntitle: Hello \"DEV\"\r\ndescription: Post\r\n" \
+                 "Published: true\r\ntags: #ruby #rust\r\n---\r\nHi @_dev_user_!\r\n"
+        expect(described_class.fixer_fix_all(sample)).to eq(legacy_fix_all.call(sample))
+        expect(MarkdownProcessor::Fixer::FixAll.call(sample)).to eq(legacy_fix_all.call(sample))
+        expect(described_class.fixer_fix_for_preview(sample)).to eq(legacy_fix_for_preview.call(sample))
+        expect(MarkdownProcessor::Fixer::FixForPreview.call(sample)).to eq(legacy_fix_for_preview.call(sample))
+        expect(described_class.fixer_fix_for_comment(sample)).to eq(legacy_fix_for_comment.call(sample))
+        expect(MarkdownProcessor::Fixer::FixForComment.call(sample)).to eq(legacy_fix_for_comment.call(sample))
+
+        # Out-of-domain non-UTF-8 string returns nil from ForemNative and falls back to legacy_call
+        ascii_input = "---\r\ntitle: Hello\r\n---\r\n@_user_".encode("US-ASCII")
+        expect(described_class.fixer_fix_all(ascii_input)).to be_nil
+        expect(MarkdownProcessor::Fixer::FixAll.call(ascii_input)).to eq(legacy_fix_all.call(ascii_input))
+      end
+
+      it "passes differential equivalence across 1,000 generated Markdown documents" do
+        rng = Random.new(424_242)
+        titles = [
+          "Hello World", 'A "quoted" title', "'Already single'", '"Already double"', "Title: with colon", "日本語 🎉", ""
+        ]
+        descriptions = ["Short summary", 'Has "quotes" inside', "", '"Wrapped"']
+        published_keys = ["published: true", "Published: false", "PUBLISHED: true", "Publiſhed: false"]
+        tag_lines = ["tags: #ruby #rust #webdev", "tags: ruby, rust", "tags: #a#b", "tags:"]
+        body_tokens = [
+          "Hello @_dev_user_ and @_a_b_c_!",
+          "`@_in_inline_code_`",
+          "```ruby\n@_in_fenced_code_\n```",
+          "Normal paragraph with 🚀 emojis\r\nand CRLF.",
+          "---\nPublished: true\n---",
+        ]
+
+        1_000.times do |iteration|
+          newline = rng.rand < 0.4 ? "\r\n" : "\n"
+          front_matter = [
+            "---",
+            "title: #{titles.sample(random: rng)}",
+            "description: #{descriptions.sample(random: rng)}",
+            published_keys.sample(random: rng),
+            tag_lines.sample(random: rng),
+            "---",
+          ].join(newline)
+          body = Array.new(rng.rand(1..4)) { body_tokens.sample(random: rng) }.join(newline)
+          doc = rng.rand < 0.85 ? "#{front_matter}#{newline}#{body}" : body
+
+          expect(described_class.fixer_fix_all(doc)).to eq(legacy_fix_all.call(doc)), "FixAll iteration #{iteration}"
+          expect(described_class.fixer_fix_for_preview(doc))
+            .to eq(legacy_fix_for_preview.call(doc)), "FixForPreview iteration #{iteration}"
+          expect(described_class.fixer_fix_for_comment(doc))
+            .to eq(legacy_fix_for_comment.call(doc)), "FixForComment iteration #{iteration}"
+        end
+      end
+    end
+
+    describe ".preprocess_markdown_for_finalize (MarkdownProcessor::Parser#preprocess_for_finalize)" do
+      let(:pure_ruby_preprocess_for_finalize) do
+        lambda do |parser, content|
+          content = parser.__send__(:legacy_convert_deeply_nested_links_to_html, content)
+          content = parser.__send__(:legacy_convert_escaped_pipes_outside_codeblocks, content)
+          content = parser.__send__(:legacy_convert_code_tags_to_triple_backticks, content)
+          parser.__send__(:legacy_escape_liquid_tags_in_codeblock, content)
+        end
+      end
+
+      it "detects XSS attempts, transforms markdown, and falls back on out-of-domain inputs" do
+        expect(described_class.preprocess_markdown_for_finalize("hello src='data:text/html,xxx'"))
+          .to eq(:xss_attempt)
+        expect do
+          MarkdownProcessor::Parser.new("").preprocess_for_finalize("hello src='data:text/html,xxx'")
+        end.to raise_error(ArgumentError)
+
+        ascii_md = "plain text".encode("US-ASCII")
+        expect(described_class.preprocess_markdown_for_finalize(ascii_md)).to be_nil
+        parser = MarkdownProcessor::Parser.new("plain text")
+        expect(parser.preprocess_for_finalize(ascii_md))
+          .to eq(pure_ruby_preprocess_for_finalize.call(parser, ascii_md))
+      end
+
+      it "passes differential equivalence across 1,000 generated Markdown documents" do
+        rng = Random.new(424_242)
+        parser = MarkdownProcessor::Parser.new("")
+        fragments = [
+          "Plain paragraph with [link](https://dev.to) and 日本語 🚀.\n",
+          "#{' ' * 16}- Deeply nested [first](https://dev.to/a) and [second](https://dev.to/b)\n",
+          "\t\t\t\t* Tab nested [item](https://example.com)\n",
+          "| col1 | col2 |\n|---|---|\n| a\\|b | `c\\|d` \\\\| |\n",
+          "<code>\nconst x = 1;\n</code>\n",
+          "```ruby\n{% raw %}\nputs 'hi' \\|\n{% endraw %}\n```\n",
+          "``inline {% what %} code`` and `single {% tag %}`\n",
+          "~~~js\nconst s = \"src='data\";\n~~~\n",
+          "src='data:text/html;base64,xxx'\n",
+          "data:text/html,alert(1)\n",
+        ]
+
+        1_000.times do |iteration|
+          doc = Array.new(rng.rand(1..5)) { fragments.sample(random: rng) }.join
+          native_res = described_class.preprocess_markdown_for_finalize(doc)
+
+          if parser.__send__(:legacy_xss_attempt?, doc)
+            expect(native_res).to eq(:xss_attempt), "XSS iteration #{iteration}"
+            expect { parser.preprocess_for_finalize(doc) }.to raise_error(ArgumentError)
+          else
+            expected = pure_ruby_preprocess_for_finalize.call(parser, doc)
+            expect(native_res).to eq(expected), "Ready iteration #{iteration}"
+            expect(parser.preprocess_for_finalize(doc)).to eq(expected), "Caller iteration #{iteration}"
+          end
+        end
+      end
+    end
+
+    describe ".contains_unlabeled_code_blocks, .extract_unlabeled_code_blocks, and .apply_code_block_languages" do
+      let(:fenced_regex) { Articles::DetectCodeBlockLanguages::FENCED_CODE_BLOCK_REGEX }
+
+      let(:legacy_contains) do
+        lambda do |markdown|
+          markdown.to_s.to_enum(:scan, fenced_regex).any? do
+            Regexp.last_match[:info].to_s.strip.blank?
+          end
+        end
+      end
+
+      let(:legacy_extract) do
+        lambda do |markdown|
+          markdown.to_s.to_enum(:scan, fenced_regex).filter_map do
+            match = Regexp.last_match
+            next if match[:info].to_s.strip.present?
+
+            match[:code]
+          end
+        end
+      end
+
+      let(:legacy_apply) do
+        lambda do |markdown, detected_languages|
+          unlabeled_index = -1
+          markdown.gsub(fenced_regex) do
+            match = Regexp.last_match
+            next match[0] if match[:info].to_s.strip.present?
+
+            unlabeled_index += 1
+            language = detected_languages.fetch(unlabeled_index, "plaintext")
+
+            "#{match[:leading]}#{match[:indent]}#{match[:fence]}#{language}\n#{match[:code]}\n" \
+              "#{match[:indent]}#{match[:fence]}#{match[:closing_whitespace]}"
+          end
+        end
+      end
+
+      it "handles edge cases, fence backtracking, NUL/Unicode whitespace info strings, and out-of-domain inputs" do
+        expect(described_class.contains_unlabeled_code_blocks(nil)).to be(false)
+        expect(Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(nil)).to be(false)
+
+        # 4 opening backticks + 3 closing backticks backtracks to fence="```" and info="`", which is not blank
+        backtracked = "````\nputs :hi\n```"
+        expect(described_class.contains_unlabeled_code_blocks(backtracked))
+          .to eq(legacy_contains.call(backtracked))
+        expect(described_class.extract_unlabeled_code_blocks(backtracked))
+          .to eq(legacy_extract.call(backtracked))
+
+        # Out-of-domain non-UTF-8 string returns nil from ForemNative and falls back cleanly
+        ascii_md = "```\nputs :hi\n```".encode("US-ASCII")
+        expect(described_class.contains_unlabeled_code_blocks(ascii_md)).to be_nil
+        expect(described_class.extract_unlabeled_code_blocks(ascii_md)).to be_nil
+        expect(described_class.apply_code_block_languages(ascii_md, ["ruby"])).to be_nil
+        expect(Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(ascii_md)).to be(true)
+      end
+
+      it "passes differential equivalence across 1,000 generated Markdown documents with fenced code blocks" do
+        rng = Random.new(424_242)
+        indents = ["", " ", "  ", "   ", "    "]
+        fences = ["```", "````", "~~~", "~~~~"]
+        infos = ["", " ", "\t", " \0 ", "\u3000", "ruby", "javascript", "python", "plaintext"]
+        codes = ["puts 'hello'", "const x = 1;\nconst y = 2;", "", "```", "日本語 🚀"]
+        trailing_ws = ["", " ", "\t", " \t "]
+        lang_pool = %w[ruby javascript rust python go bash sql html css]
+
+        1_000.times do |iteration|
+          segments = Array.new(rng.rand(1..5)) do
+            if rng.rand < 0.75
+              indent = indents.sample(random: rng)
+              open_fence = fences.sample(random: rng)
+              close_fence = rng.rand < 0.8 ? open_fence : fences.sample(random: rng)
+              info = infos.sample(random: rng)
+              code = codes.sample(random: rng)
+              ws = trailing_ws.sample(random: rng)
+              "#{indent}#{open_fence}#{info}\n#{code}\n#{indent}#{close_fence}#{ws}"
+            else
+              "Paragraph #{rng.rand(1..100)} with `inline` text."
+            end
+          end
+          doc = segments.join("\n")
+          langs = Array.new(rng.rand(0..4)) { lang_pool.sample(random: rng) }
+
+          expected_contains = legacy_contains.call(doc)
+          expected_extract = legacy_extract.call(doc)
+          expected_apply = legacy_apply.call(doc, langs)
+
+          expect(described_class.contains_unlabeled_code_blocks(doc))
+            .to eq(expected_contains), "contains iteration #{iteration}: #{doc.inspect}"
+          expect(Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(doc))
+            .to eq(expected_contains), "caller contains iteration #{iteration}"
+          expect(described_class.extract_unlabeled_code_blocks(doc))
+            .to eq(expected_extract), "extract iteration #{iteration}: #{doc.inspect}"
+          expect(described_class.apply_code_block_languages(doc, langs))
+            .to eq(expected_apply), "apply iteration #{iteration}: #{doc.inspect}"
+        end
+      end
+    end
+  end
 end

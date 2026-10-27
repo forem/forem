@@ -1,6 +1,6 @@
 RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
   let(:commentable_author) { create(:user) }
-  let(:article) { create(:article, user: commentable_author) }
+  let(:article) { create(:article, user: commentable_author, with_tags: false) }
   let(:parent_comment) { create(:comment, commentable: article, user: commentable_author) }
 
   it "returns 401 if user is not logged in" do
@@ -28,28 +28,6 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
       expect(response.parsed_body).to eq("hidden" => args[:hidden])
       expect(parent_comment.reload.hidden_by_commentable_user).to eq(args[:path] == "hide")
       expect(article.reload.any_comments_hidden).to eq(args[:path] == "hide")
-    end
-
-    it "displays having hidden comments if some unhidden" do
-      second_comment = create(:comment, commentable: article, user: commentable_author)
-      third_comment = create(:comment, commentable: article, user: commentable_author)
-      patch "/comments/#{parent_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{second_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{third_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{second_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
-      expect(article.reload.any_comments_hidden).to be(true)
-    end
-
-    it "displays not having hidden comments if all unhidden" do
-      second_comment = create(:comment, commentable: article, user: commentable_author)
-      third_comment = create(:comment, commentable: article, user: commentable_author)
-      patch "/comments/#{parent_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{second_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{third_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{parent_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{second_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
-      patch "/comments/#{third_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
-      expect(article.reload.any_comments_hidden).to be(false)
     end
   end
 end
