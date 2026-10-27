@@ -1,0 +1,24 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 5-6,9,11-26,42-45,49-52,55-56,66-68,73,102-134,150-157
+app/models/feed_config.rb
+  h_f968154a99632d 104-107,112-117
+app/views/admin/feed_configs/index.html.erb
+  h_f968154a99632d 4-6,8-10,14-44,49-51,56,82,84-89,94,97,100,106-122,130,143,145,148,152-163
+app/views/admin/feed_configs/new.html.erb
+  h_f968154a99632d 6-8,16,27
+app/views/admin/feed_configs/show.html.erb
+  h_f968154a99632d 3-18,23,31-32,35-43
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 83,93-111,116,120-121,139-152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fa092d83252c1b9e67c72481c1a9fe41892661cb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
