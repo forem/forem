@@ -73,30 +73,23 @@ class FeedConfig < ApplicationRecord
   end
 
   def self.active_user?(user)
-    return false unless user&.id
+    return false unless user&.id && user.respond_to?(:user_activity)
+
+    recent_views = user.user_activity&.recently_viewed_articles
+    return false if recent_views.blank?
 
     cutoff = ACTIVITY_LOOKBACK.ago
-    if user.respond_to?(:user_activity)
-      recent_views = user.user_activity&.recently_viewed_articles
-      if recent_views.present?
-        activity_days = recent_views.filter_map do |entry|
-          timestamp = entry.is_a?(Array) ? entry[1] : nil
-          next unless timestamp
+    activity_days = recent_views.filter_map do |entry|
+      timestamp = entry.is_a?(Array) ? entry[1] : nil
+      next unless timestamp
 
-          dt = timestamp.to_datetime
-          dt.to_date if dt >= cutoff
-        rescue StandardError
-          nil
-        end.uniq.size
+      dt = timestamp.to_datetime
+      dt.to_date if dt >= cutoff
+    rescue StandardError
+      nil
+    end.uniq.size
 
-        return true if activity_days >= ACTIVE_USER_MIN_PAGEVIEW_DAYS
-      end
-    end
-
-    PageView.where(user_id: user.id)
-      .where("created_at >= ?", cutoff)
-      .distinct
-      .count(Arel.sql("DATE(created_at)")) >= ACTIVE_USER_MIN_PAGEVIEW_DAYS
+    activity_days >= ACTIVE_USER_MIN_PAGEVIEW_DAYS
   end
 
   def self.new_user?(user)

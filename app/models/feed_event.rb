@@ -171,8 +171,10 @@ class FeedEvent < ApplicationRecord
 
   def create_feed_config_offshoot
     # Any time we get qualifying engagement on a proven config, branch off a slightly modified feed config
-    return unless feed_config && !feed_config.archived?
+    return if impression?
+    return unless feed_config_id && feed_config && !feed_config.archived?
     return if feed_config.feed_impressions_count < FeedConfig::LOW_IMPRESSION_COUNT
+    return if click? && context_type != CONTEXT_TYPE_EMAIL && feed_config.targeting_bucket != FeedConfig::BUCKET_DIGEST
 
     target_bucket = offshoot_targeting_bucket
     return unless offshoot_trigger_category?(target_bucket)

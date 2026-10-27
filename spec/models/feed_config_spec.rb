@@ -576,19 +576,23 @@ RSpec.describe FeedConfig, type: :model do
 
     it "returns feed_casual_user for users who signed up over a week ago with < 3 active days" do
       casual_user = create(:user, registered_at: 20.days.ago)
-      create(:page_view, user: casual_user, article: article, created_at: 1.day.ago)
-      create(:page_view, user: casual_user, article: article, created_at: 2.days.ago)
+      create(
+        :user_activity,
+        user: casual_user,
+        recently_viewed_articles: [[article.id, 1.day.ago, 30], [article.id, 2.days.ago, 30]],
+      )
 
+      expect(PageView).not_to receive(:where)
       expect(described_class.targeting_bucket_for(casual_user, context_type: "home"))
         .to eq(described_class::BUCKET_FEED_CASUAL_USER)
     end
 
     it "returns feed_active_user when user has pageviews on at least 3 distinct calendar days in the past week" do
       active_user = create(:user, registered_at: 30.days.ago)
-      [1.day.ago, 2.days.ago, 4.days.ago].each do |timestamp|
-        create(:page_view, user: active_user, article: article, created_at: timestamp)
-      end
+      views = [1.day.ago, 2.days.ago, 4.days.ago].map { |ts| [article.id, ts, 30] }
+      create(:user_activity, user: active_user, recently_viewed_articles: views)
 
+      expect(PageView).not_to receive(:where)
       expect(described_class.targeting_bucket_for(active_user, context_type: "home"))
         .to eq(described_class::BUCKET_FEED_ACTIVE_USER)
     end
@@ -596,9 +600,8 @@ RSpec.describe FeedConfig, type: :model do
     it "does not classify as feed_active_user when 3 pageviews occur on fewer than 3 distinct days" do
       same_day_user = create(:user, registered_at: 30.days.ago)
       day_time = 2.days.ago.beginning_of_day + 10.hours
-      3.times do |i|
-        create(:page_view, user: same_day_user, article: article, created_at: day_time + i.minutes)
-      end
+      views = Array.new(3) { |i| [article.id, day_time + i.minutes, 30] }
+      create(:user_activity, user: same_day_user, recently_viewed_articles: views)
 
       expect(described_class.targeting_bucket_for(same_day_user, context_type: "home"))
         .to eq(described_class::BUCKET_FEED_CASUAL_USER)
@@ -630,9 +633,8 @@ RSpec.describe FeedConfig, type: :model do
     it "prioritizes feed_power_user > feed_active_user > feed_new_user > feed_casual_user" do
       active_new_user = create(:user, registered_at: 2.days.ago)
       today = Time.current
-      [today, 1.day.ago, 2.days.ago].each do |timestamp|
-        create(:page_view, user: active_new_user, article: article, created_at: timestamp)
-      end
+      views = [today, 1.day.ago, 2.days.ago].map { |ts| [article.id, ts, 30] }
+      create(:user_activity, user: active_new_user, recently_viewed_articles: views)
       expect(described_class.targeting_bucket_for(active_new_user)).to eq(described_class::BUCKET_FEED_ACTIVE_USER)
 
       [today, 1.day.ago, 2.days.ago, 3.days.ago].each do |timestamp|

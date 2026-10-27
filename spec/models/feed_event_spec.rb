@@ -517,14 +517,15 @@ RSpec.describe FeedEvent do
 
       it "clones into feed_active_user when an active user reacts or comments, but not on click" do
         active_user = create(:user, registered_at: 30.days.ago)
-        [1.day.ago, 2.days.ago, 3.days.ago].each do |timestamp|
-          create(:page_view, user: active_user, article: article, created_at: timestamp)
-        end
+        views = [1.day.ago, 2.days.ago, 3.days.ago].map { |ts| [article.id, ts, 30] }
+        create(:user_activity, user: active_user, recently_viewed_articles: views)
 
+        allow(FeedConfig).to receive(:targeting_bucket_for).and_call_original
         expect do
           create(:feed_event, feed_config: feed_config, article: article, user: active_user,
                               category: "click", context_type: "home")
         end.not_to change(FeedConfig, :count)
+        expect(FeedConfig).not_to have_received(:targeting_bucket_for)
 
         expect do
           create(:feed_event, feed_config: feed_config, article: article, user: active_user,
