@@ -29,9 +29,7 @@ class VimeoTag < LiquidTagBase
   def get_id(input)
     match = input.match(REGISTRY_REGEXP)
     id = match ? match[:video_id] : input
-    unless id.match?(ID_REGEXP)
-      raise StandardError, I18n.t("liquid_tags.vimeo_tag.invalid_vimeo_id", default: "Invalid Vimeo ID")
-    end
+    raise StandardError, I18n.t("liquid_tags.vimeo_tag.invalid_vimeo_id") unless id.match?(ID_REGEXP)
 
     id
   end
