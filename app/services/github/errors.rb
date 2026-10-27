@@ -1,6 +1,18 @@
 module Github
   module Errors
     class Error < StandardError
+      # HTTP response status from the originating Octokit error, when known, so
+      # callers can classify failures (e.g. 429 rate limiting) by status rather
+      # than by matching message text.
+      attr_reader :response_status
+
+      # Accept the message positionally or via the `message:` keyword (existing
+      # callers use the keyword form), and optionally carry the HTTP status.
+      def initialize(message = nil, response_status: nil, **kwargs)
+        message ||= kwargs[:message]
+        super(message)
+        @response_status = response_status
+      end
     end
 
     class ClientError < Error

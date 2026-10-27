@@ -137,12 +137,11 @@ module Badges
       @last_search_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
-    # Rate limiting is classified by error type: Octokit raises TooManyRequests
-    # (HTTP 429) and TooManyLoginAttempts (abuse detection), which the client
-    # maps to the matching Github::Errors classes. GitHub's secondary rate limit
-    # is returned as a 403 that Octokit surfaces as a generic Forbidden/ClientError
-    # with no distinct type or preserved status, so for that case only we fall
-    # back to matching the documented message text.
+    # Rate limiting is classified first by HTTP status (429), then by error type:
+    # the client maps Octokit's TooManyRequests/TooManyLoginAttempts to the
+    # matching Github::Errors classes. GitHub's secondary rate limit is returned
+    # as a 403 that Octokit surfaces as a generic Forbidden with no distinct type,
+    # so for that case only we fall back to matching the documented message text.
     RATE_LIMIT_ERROR_TYPES = [
       Github::Errors::TooManyRequests,
       Github::Errors::TooManyLoginAttempts,
@@ -150,9 +149,11 @@ module Badges
     SECONDARY_RATE_LIMIT_MESSAGE = /secondary rate limit|abuse detection/i
 
     def search_rate_limited?(error)
+      status = error.respond_to?(:response_status) ? error.response_status : nil
+      return true if status == 429
       return true if RATE_LIMIT_ERROR_TYPES.any? { |type| error.is_a?(type) }
 
-      error.message.to_s.match?(SECONDARY_RATE_LIMIT_MESSAGE)
+      status == 403 && error.message.to_s.match?(SECONDARY_RATE_LIMIT_MESSAGE)
     end
 
     # auth_data_dump is serialized YAML and may be an OmniAuth::AuthHash (responds
