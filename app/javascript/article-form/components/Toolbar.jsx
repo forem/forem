@@ -13,6 +13,7 @@ export const Toolbar = ({ version, textAreaId }) => {
     >
       <MarkdownToolbar
         textAreaId={textAreaId}
+        editorVersion={version}
         additionalPrimaryToolbarElements={[
           <Link
             key="agent-session-link"
