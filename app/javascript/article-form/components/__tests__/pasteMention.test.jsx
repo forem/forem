@@ -38,13 +38,13 @@ const { _mockHandler: mockURLHandler } = require('../pasteURLHelpers');
 describe('<Form /> – paste behavior (regression tests)', () => {
     const baseProps = {
         defaultValue: '',
-        onChange: null,
+        onChange: jest.fn(),
         switchHelpContext: null,
         version: 'v2',
     };
 
     beforeEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
         fetch.resetMocks();
 
         global.Runtime = {

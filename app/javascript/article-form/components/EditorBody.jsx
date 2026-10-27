@@ -88,7 +88,6 @@ export const EditorBody = ({
 
       // For plain text, let the browser handle the paste normally to preserve 
       // the undo stack and avoid modifying stored content (e.g., inserting zero-width spaces).
-      e.preventDefault();
     };
 
     textarea.addEventListener('paste', onPaste);
