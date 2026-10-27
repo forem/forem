@@ -19,16 +19,12 @@ RSpec.describe "ApiSecretsDestroy" do
         expect(response).to have_http_status(:redirect)
       end
 
-      it "cannot delete a non existing secret" do
+      it "cannot delete a non existing secret or another user's secret", :aggregate_failures do
         expect do
           delete "/users/api_secrets/9999"
         end.to raise_error(ActiveRecord::RecordNotFound)
-      end
 
-      it "cannot delete another user's secret" do
-        another_user = create(:user)
-        secret = create(:api_secret, user: another_user)
-
+        secret = create(:api_secret)
         expect do
           delete "/users/api_secrets/#{secret.id}"
         end.to raise_error(Pundit::NotAuthorizedError)

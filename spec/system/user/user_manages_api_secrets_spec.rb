@@ -14,7 +14,7 @@ RSpec.describe "User manages API secrets" do
       sign_in user
     end
 
-    it "generates an API key, stays on the extensions page, and displays the secret", :aggregate_failures do
+    it "generates, displays, and revokes an API key on the extensions page", :aggregate_failures do
       visit "/settings/extensions"
 
       fill_in "api_secret[description]", with: "My Test App"
@@ -30,17 +30,11 @@ RSpec.describe "User manages API secrets" do
 
       find("details", text: "My Test App").click
       expect(page).to have_css("p.ff-monospace", text: secret.secret)
-    end
 
-    it "revokes an existing API key", :aggregate_failures do
-      create(:api_secret, user: user, description: "Old Key")
-
-      visit "/settings/extensions"
-      find("details", text: "Old Key").click
       click_on "Revoke"
 
       expect(page).to have_current_path("/settings/extensions")
-      expect(page).to have_no_text("Old Key")
+      expect(page).to have_no_text("My Test App")
       expect(user.api_secrets.count).to eq(0)
     end
   end
