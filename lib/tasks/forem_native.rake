@@ -284,6 +284,82 @@ namespace :forem_native do
       end
       x.compare!
     end
+
+    puts "\n=== Feed Scoring, UserActivity & Analytics Heatmap Pipeline Benchmark ==="
+    tag_struct = Struct.new(:name, :points)
+    followed_tags = %w[ruby rust javascript webdev ai career devops postgres].each_with_index.map do |name, idx|
+      tag_struct.new(name, (idx + 1) * 1.5)
+    end
+    user_bench = Struct.new(
+      :id, :cached_following_users_ids, :cached_following_organizations_ids, :decorate, :setting
+    ).new(
+      42, (1..25).to_a, (1..10).to_a,
+      Struct.new(:cached_followed_tags).new(followed_tags),
+      Struct.new(:experience_level, :feed_ai_preference).new(5, "minimize_ai")
+    )
+    bench_article_class = Struct.new(
+      :id, :user_id, :organization_id, :cached_tag_list, :cached_label_list,
+      :experience_level_rating, :comments_count, :ai_disclosure_level, :subforem_id
+    ) do
+      def organization_id? = !organization_id.nil? && organization_id != 0
+      def decorate = Struct.new(:cached_tag_list_array).new((cached_tag_list || "").split(", "))
+    end
+    bench_articles = Array.new(35) do |idx|
+      bench_article_class.new(
+        idx + 1, (idx % 30) + 1, idx.even? ? (idx % 12) + 1 : nil,
+        "ruby, rust, webdev, tag#{idx % 5}", ["label_#{idx % 6}", "featured"],
+        (idx % 9) + 1, idx * 2, %w[none some_ai fully_autonomous][idx % 3], (idx % 5) + 1
+      )
+    end
+    score_calc = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: user_bench)
+    exp_feed_bench = Articles::Feeds::LargeForemExperimental.new(user: user_bench)
+    exp_feed_bench.instance_variable_set(:@article_score_applicator, score_calc)
+    end_date_bench = Date.new(2026, 10, 27)
+    start_date_bench = end_date_bench - 364
+    heatmap_svc = UserActivityHeatmapService.new(user_bench, end_date: end_date_bench, days: 365)
+    art_by_day = (0...60).to_h { |i| [(start_date_bench + (i * 6)).iso8601, (i % 4) + 1] }
+    com_by_day = (0...120).to_h { |i| [(start_date_bench + (i * 3)).iso8601, (i % 7) + 1] }
+    react_by_day = (0...180).to_h { |i| [(start_date_bench + (i * 2)).iso8601, (i % 10) + 1] }
+    recent_views_store = Array.new(100) { |i| [i + 1, "2026-10-27T12:00:00Z", (i % 60) + 5] }
+    recent_sub_ids = Array.new(30) { |i| (i % 8) + 1 }
+    followed_sub_ids = [2, 5, 7, 9]
+    discoverable_sub_ids = (1..15).to_a
+
+    legacy_scoring_heatmap_pipeline = lambda do
+      bench_articles.each do |a|
+        score_calc.score_followed_user(a) + score_calc.score_followed_organization(a) +
+          score_calc.__send__(:legacy_score_followed_tags, a) +
+          score_calc.__send__(:legacy_score_experience_level, a, 5) +
+          score_calc.score_comments(a) + score_calc.__send__(:legacy_score_ai_disclosure, a)
+      end
+      recent_views_store.filter_map { |id, _ts, secs| id if secs > 29 }
+      heatmap_svc.__send__(:legacy_build_payload, art_by_day, com_by_day, react_by_day)
+      scores = Hash.new(0)
+      recent_sub_ids.each { |id| scores[id] += 1 }
+      followed_sub_ids.each { |id| scores[id] += 10 }
+      act_ids = scores.keys.sort { |a, b| scores[b] <=> scores[a] }
+      act_ids + (discoverable_sub_ids - act_ids)
+    end
+    native_scoring_heatmap_pipeline = lambda do
+      bench_articles.each { |a| exp_feed_bench.score_single_article(a) }
+      ForemNative.filter_tracked_article_ids(recent_views_store, 29)
+      ForemNative.build_activity_heatmap_payload(
+        start_date_bench.iso8601, end_date_bench.iso8601, art_by_day, com_by_day, react_by_day
+      )
+      ForemNative.order_subforem_ids(recent_sub_ids, followed_sub_ids, discoverable_sub_ids)
+    end
+    sh_ruby_mem = MemoryProfiler.report { 10.times { legacy_scoring_heatmap_pipeline.call } }
+    sh_rust_mem = MemoryProfiler.report { 10.times { native_scoring_heatmap_pipeline.call } }
+    puts "Scoring + Heatmap Pipeline Ruby Legacy allocations (10 runs): " \
+         "#{sh_ruby_mem.total_allocated} objects (#{sh_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Scoring + Heatmap Pipeline Rust Magnus allocations (10 runs): " \
+         "#{sh_rust_mem.total_allocated} objects (#{sh_rust_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (Feed Scoring + Heatmap pipeline)") { legacy_scoring_heatmap_pipeline.call }
+      x.report("Rust Magnus (Feed Scoring + Heatmap pipeline)") { native_scoring_heatmap_pipeline.call }
+      x.compare!
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength
