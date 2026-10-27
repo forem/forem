@@ -51,6 +51,58 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(EdgeCache::BustArticle).to have_received(:call).with(article)
       end
 
+      context "when pre-warming the image optimizer" do
+        let(:optimized_url) { "https://media2.dev.to/dynamic/image/width=1200,height=627,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fexample.com%2Fog.png" }
+
+        before do
+          allow(Images::Optimizer).to receive(:call).and_return(optimized_url)
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("media2.dev.to").and_return(false)
+          allow(HTTParty).to receive(:get)
+          allow(EdgeCache::BustArticle).to receive(:call)
+        end
+
+        it "fetches the optimized social image URL before busting the cache when the author has a sufficient trust score" do
+          article.user.update_column(:score, 100) # author_trust_score == 2
+
+          described_class.call(article)
+
+          expect(Images::Optimizer).to have_received(:call).with(generated_image, width: 1200, height: 627, crop: "crop").ordered
+          expect(HTTParty).to have_received(:get).with(optimized_url, timeout: described_class::PREWARM_TIMEOUT, follow_redirects: false).ordered
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article).ordered
+        end
+
+        it "does not pre-warm the optimizer when the author has a trust score below the threshold" do
+          article.user.update_column(:score, 50) # author_trust_score == 1
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "does not pre-warm when the optimizer URL resolves to a private or loopback host" do
+          article.user.update_column(:score, 100)
+          allow(Images::Optimizer).to receive(:call).and_return("http://127.0.0.1:3000/private")
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("127.0.0.1").and_call_original
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "logs a warning and still busts the article cache if the pre-warm request fails" do
+          article.user.update_column(:score, 100)
+          allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
+          allow(Rails.logger).to receive(:warn)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Social image prewarm failed/)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+      end
+
       context "when an external fetch fails with an HTTP error" do
         it "logs a warning and does not alert Honeybadger" do
           allow(generator).to receive(:generate_image).and_raise(OpenURI::HTTPError.new("404 Not Found", nil))

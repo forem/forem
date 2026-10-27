@@ -1125,12 +1125,13 @@ class User < ApplicationRecord
     return if previously_new_record?
 
     if saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-      Images::SocialImageWorker.perform_async(id, self.class.name)
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
     elsif saved_change_to_attribute?(:username)
       if profile&.id
-        Images::SocialImageWorker.perform_async(profile.id, "Profile")
+        profile_id = profile.id
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(profile_id, "Profile") }
       else
-        Images::SocialImageWorker.perform_async(id, self.class.name)
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
       end
     end
   end
