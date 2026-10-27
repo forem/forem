@@ -154,15 +154,42 @@ RSpec.describe Middlewares::SetSubforem do
       end
 
       it "removes the session cookies on a subdomain of the registrable domain" do
+        allow(PublicSuffix).to receive(:parse)
         middleware.call(Rack::MockRequest.env_for("https://community.example.com/articles"))
+        expect(PublicSuffix).not_to have_received(:parse)
         expect(Rack::Utils).to have_received(:delete_cookie_header!)
           .with(anything, "remember_user_token", domain: "community.example.com")
       end
 
       it "keeps the session cookies on the registrable domain itself" do
+        allow(PublicSuffix).to receive(:parse)
         middleware.call(Rack::MockRequest.env_for("https://example.com/articles"))
+        expect(PublicSuffix).not_to have_received(:parse)
         expect(RequestStore.store[:subforem_id]).to eq(1)
         expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+      end
+
+      it "logs an invalid domain and still normalizes frame headers when the host is localhost" do
+        allow(app).to receive(:call).and_return([200, { "X-Frame-Options" => "SAMEORIGIN" }, ["OK"]])
+        allow(Rails.logger).to receive(:error)
+        allow(PublicSuffix).to receive(:parse)
+
+        _status, headers, _body = middleware.call(
+          Rack::MockRequest.env_for("http://localhost:3000/articles?passed_domain=example.com"),
+        )
+
+        expect(PublicSuffix).not_to have_received(:parse)
+        expect(Rails.logger).to have_received(:error).with("Invalid domain: localhost")
+        expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+        expect(headers).not_to have_key("X-Frame-Options")
+        expect(headers["Content-Security-Policy"]).to eq("frame-ancestors https://example.com https://community.example.com")
+      end
+
+      it "falls back to PublicSuffix.parse for hosts outside [A-Za-z0-9.-]" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("foo_bar.example.com").and_return(2)
+        middleware.call(Rack::MockRequest.env_for("https://foo_bar.example.com/articles"))
+        expect(Rack::Utils).to have_received(:delete_cookie_header!)
+          .with(anything, "remember_user_token", domain: "foo_bar.example.com")
       end
     end
 

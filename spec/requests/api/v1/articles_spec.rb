@@ -1729,6 +1729,14 @@ RSpec.describe "Api::V1::Articles" do
       expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
     end
 
+    it "sets Fastly Surrogate-Key and 1-hour cache control headers", :aggregate_failures do
+      get "/api/articles/search"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).to include("articles", article.record_key)
+      expect(response.headers["Surrogate-Control"]).to include("max-age=3600")
+    end
+
     context "when there is one article returned" do
       it "has correct keys in the response" do
         article.update_columns(organization_id: organization.id)

@@ -6,6 +6,7 @@ RSpec.describe "rendering locals in a partial" do
       allow(Settings::General).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
       article = create(:article)
       comment = create(:comment, processed_html: "hi", score: -100, commentable: article)
+      expect(comment).to receive(:decorate).once.and_call_original
 
       render "comments/comment",
              comment: comment,

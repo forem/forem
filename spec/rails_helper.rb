@@ -29,8 +29,9 @@ require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+# Rake tasks are only needed by `type: :task` specs (see the before(:all) hook below),
+# so avoid loading every task file on each RSpec boot.
 Rake.application = Rake::Application.new
-Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -100,7 +101,23 @@ module PGConnectionBadMatcher
   end
 end
 
+# Parsed once per process rather than once per example.
+FIELD_TEST_EXPERIMENTS = begin
+  Psych.load_file("config/field_test.yml").fetch("experiments", {}).freeze
+rescue StandardError
+  {}.freeze
+end
+
+GEMINI_STUB_RESPONSE_BODY = {
+  "embedding" => { "values" => Array.new(768, 0.0) },
+  "candidates" => [{ "content" => { "parts" => [{ "text" => "mocked text" }] } }]
+}.to_json.freeze
+
 RSpec.configure do |config|
+  config.before(:all, type: :task) do
+    Rails.application.load_tasks unless Rake::Task.task_defined?("fastly:update_configs")
+  end
+
   # Retries spec up to 3 times if there is a PG::ConnectionBad error.
   config.default_retry_count = 3
   config.exceptions_to_retry = [PGConnectionBadMatcher]
@@ -263,7 +280,7 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /generativelanguage.googleapis.com/)
-      .to_return(status: 200, body: { "embedding" => { "values" => Array.new(768, 0.0) }, "candidates" => [ { "content" => { "parts" => [ { "text" => "mocked text" } ] } } ] }.to_json, headers: { "Content-Type" => "application/json" })
+      .to_return(status: 200, body: GEMINI_STUB_RESPONSE_BODY, headers: { "Content-Type" => "application/json" })
 
     stub_request(:any, /robohash.org/)
       .with(headers:
@@ -303,13 +320,8 @@ RSpec.configure do |config|
                  "cache" => true,
                  "cookies" => false }
 
-      begin
-        # Add the field tests that are currently configured (if any).
-        field_tests = Psych.load_file("config/field_test.yml")
-        config["experiments"].merge!(field_tests.fetch("experiments", {}))
-      rescue StandardError
-        # Accept that we may not have experiments.
-      end
+      # Add the field tests that are currently configured (if any).
+      config["experiments"].merge!(FIELD_TEST_EXPERIMENTS.deep_dup)
       allow(FieldTest).to receive(:config).and_return(config)
     end
   end

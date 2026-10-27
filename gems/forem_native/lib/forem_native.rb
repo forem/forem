@@ -71,6 +71,18 @@ module ForemNative
       Native.color_brightness(hex, native_amount, only_values ? true : false)
     end
 
+    # Finds the first seven-character brightness variant for `Color::CompareHex#accent`.
+    # Returns nil outside the strict hex and finite numeric domain so the helper can use
+    # its private `legacy_accent` implementation for Ruby's edge-case semantics.
+    def color_accent(hex, amount = 1)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible?
+
+      native_amount = native_float(amount)
+      return unless native_amount
+
+      Native.color_accent(hex, native_amount)
+    end
+
     # Formats a strict `#rrggbb` hex color as `rgba(r, g, b, a)`, matching
     # `Color::CompareHex#opacity`. Returns nil for malformed hexes and for alphas
     # that would need `%.2f` rounding (anything beyond two decimals, non-finite,
@@ -153,6 +165,16 @@ module ForemNative
       return unless section.instance_of?(String)
 
       Native.fixer_add_quotes_to_section(markdown, section)
+    end
+
+    # Normalizes CRLF line endings to LF, matching `MarkdownProcessor::Fixer::Base.convert_new_lines`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so Fixer can
+    # preserve Ruby's encoding and String-subclass behavior.
+    def fixer_convert_new_lines(markdown)
+      return unless Native.respond_to?(:fixer_convert_new_lines)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_convert_new_lines(markdown)
     end
 
     # Joins `#tag` lists on `tags:` lines into comma-separated values, matching
@@ -270,6 +292,30 @@ module ForemNative
       Native.subforem_subdomain_host(host, sld, tld)
     end
 
+    # Returns the registrable root domain (`PublicSuffix.parse(host, default_rule: nil).domain`),
+    # `false` when `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings, non-ASCII hosts, NUL bytes, embedded newlines,
+    # and consecutive dots (`..`) so the caller can fall back to `PublicSuffix.parse`.
+    def public_suffix_domain(host)
+      return false if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_domain(host)
+    end
+
+    # Checks whether `host` is a single-label subdomain of its Public Suffix List registrable
+    # domain (`PublicSuffix.parse(host, default_rule: nil)` + `/^([^.]+)\.#{sld}\.#{tld}$/`) in
+    # `Middlewares::SetSubforem`: returns `true` or `false` for valid domains, `:invalid` when
+    # `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings and hosts outside `[A-Za-z0-9.-]` so the
+    # middleware can fall back to `PublicSuffix.parse`.
+    def public_suffix_subdomain_host(host)
+      return :invalid if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_subdomain_host(host)
+    end
+
     # Whether the original host `Middlewares::RestoreOriginalHost` reads from the Fastly or
     # X-Forwarded headers on every request is a valid hostname (or `localhost`), ignoring any
     # `:port`. Returns nil for non-Strings, non-ASCII hosts, and hosts starting with `:` so the
@@ -303,6 +349,31 @@ module ForemNative
       return unless html.instance_of?(String)
 
       Native.full_sanitize(html)
+    end
+
+    # Strips `<[^>]*>` tags, unescapes basic and numeric HTML entities, strips ASCII whitespace,
+    # lowercases, removes `HeadingAnchors::SLUG_DISALLOWED` characters, and turns spaces into
+    # hyphens, matching `AgentSessionRenderers::HeadingAnchors.slugify`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8, surrogate numeric
+    # entities, or code points outside the verified Unicode domain) so `HeadingAnchors.slugify`
+    # can fall back to its private `legacy_slugify`.
+    def slugify_heading_anchor(heading_html)
+      return unless Native.respond_to?(:slugify_heading_anchor)
+      return unless heading_html.instance_of?(String) && heading_html.encoding == Encoding::UTF_8
+
+      Native.slugify_heading_anchor(heading_html)
+    end
+
+    # Strips a leading `http://`, `https://`, `ftp://`, or `/` prefix, removes `?` query strings
+    # up to the end of the line, and chomps a trailing `/`, matching
+    # `ApplicationHelper#beautified_url`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so
+    # `ApplicationHelper#beautified_url` can fall back to `legacy_beautified_url`.
+    def beautified_url(url)
+      return unless Native.respond_to?(:beautified_url)
+      return unless url.instance_of?(String) && url.encoding == Encoding::UTF_8
+
+      Native.beautified_url(url)
     end
 
     private
