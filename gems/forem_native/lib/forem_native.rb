@@ -351,6 +351,19 @@ module ForemNative
       Native.full_sanitize(html)
     end
 
+    # Strips `<[^>]*>` tags, unescapes basic and numeric HTML entities, strips ASCII whitespace,
+    # lowercases, removes `HeadingAnchors::SLUG_DISALLOWED` characters, and turns spaces into
+    # hyphens, matching `AgentSessionRenderers::HeadingAnchors.slugify`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8, surrogate numeric
+    # entities, or code points outside the verified Unicode domain) so `HeadingAnchors.slugify`
+    # can fall back to its private `legacy_slugify`.
+    def slugify_heading_anchor(heading_html)
+      return unless Native.respond_to?(:slugify_heading_anchor)
+      return unless heading_html.instance_of?(String) && heading_html.encoding == Encoding::UTF_8
+
+      Native.slugify_heading_anchor(heading_html)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
