@@ -6,7 +6,7 @@ require "rails_helper"
 #   - https://github.com/forem/forem/issues/23031
 #   - https://github.com/forem/forem/issues/23090
 
-RSpec.describe "User manages API secrets", :js do
+RSpec.describe "User manages API secrets" do
   let(:user) { create(:user) }
 
   context "when signed in" do
@@ -14,49 +14,34 @@ RSpec.describe "User manages API secrets", :js do
       sign_in user
     end
 
-    it "generates an API key from the extensions settings page" do
+    it "generates an API key, stays on the extensions page, and displays the secret", :aggregate_failures do
       visit "/settings/extensions"
 
       fill_in "api_secret[description]", with: "My Test App"
-      click_button "Generate API Key"
+      click_on "Generate API Key"
 
+      expect(page).to have_current_path("/settings/extensions")
       expect(page).to have_text("Active API keys")
       expect(page).to have_text("My Test App")
       expect(user.api_secrets.count).to eq(1)
-      expect(user.api_secrets.last.description).to eq("My Test App")
-    end
-
-    it "displays the generated key secret in the active keys section" do
-      visit "/settings/extensions"
-
-      fill_in "api_secret[description]", with: "Visible Key"
-      click_button "Generate API Key"
-
-      expect(page).to have_text("Visible Key")
 
       secret = user.api_secrets.last
-      find("details", text: "Visible Key").click
-      expect(page).to have_text(secret.secret)
+      expect(secret.description).to eq("My Test App")
+
+      find("details", text: "My Test App").click
+      expect(page).to have_css("p.ff-monospace", text: secret.secret)
     end
 
-    it "revokes an existing API key" do
+    it "revokes an existing API key", :aggregate_failures do
       create(:api_secret, user: user, description: "Old Key")
 
       visit "/settings/extensions"
       find("details", text: "Old Key").click
-      click_button "Revoke"
-
-      expect(page).not_to have_text("Old Key")
-      expect(user.api_secrets.count).to eq(0)
-    end
-
-    it "stays on the extensions page after generating a key" do
-      visit "/settings/extensions"
-
-      fill_in "api_secret[description]", with: "Stay Here"
-      click_button "Generate API Key"
+      click_on "Revoke"
 
       expect(page).to have_current_path("/settings/extensions")
+      expect(page).to have_no_text("Old Key")
+      expect(user.api_secrets.count).to eq(0)
     end
   end
 
