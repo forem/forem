@@ -15,7 +15,7 @@ RSpec.describe "User visits a podcast page" do
     end
   end
 
-  it "displays podcast episodes", js: true do
+  it "displays podcast episodes" do
     expect(page).to have_link(class: "crayons-card", visible: :visible, count: 2)
   end
 

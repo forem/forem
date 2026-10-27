@@ -4,6 +4,7 @@ module Api
 
     included do
       before_action :validate_page_limit, only: %i[index search]
+      before_action -> { set_cache_control_headers(1.hour.to_i) }, only: %i[search]
     end
 
     INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
@@ -150,14 +151,16 @@ module Api
       # Load the page once and only re-query (with body_markdown) when it has at most one article, rather than
       # running a separate COUNT over the full search before every load.
       @articles = articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
-      return unless @articles.size == 1
+      if @articles.size == 1
+        # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
+        # return 0-1 results are the slowest searches, so repeating them doubled their cost).
+        @articles = Article.includes([{ user: :profile }, :organization])
+          .where(id: @articles.first.id)
+          .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
+          .decorate
+      end
 
-      # Re-fetch the single hit by primary key rather than re-running the full-text search (rare terms that
-      # return 0-1 results are the slowest searches, so repeating them doubled their cost).
-      @articles = Article.includes([{ user: :profile }, :organization])
-        .where(id: @articles.first.id)
-        .select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION)
-        .decorate
+      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
     end
 
     private

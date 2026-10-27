@@ -4634,4 +4634,39 @@ RSpec.describe Article do
       expect(article.comments_blob).to eq("Hello youtube world")
     end
   end
+
+  describe ".search_articles" do
+    it "pre-unaccents terms into an immutable to_tsquery expression without a self-join", :aggregate_failures do
+      relation = described_class.search_articles("Café")
+      sql = relation.to_sql
+
+      expect(sql).to include("articles.reading_list_document @@ to_tsquery('simple'::regconfig, ''' cafe '':*')")
+      expect(sql).not_to include("unaccent(")
+      expect(sql).not_to include("INNER JOIN")
+    end
+
+    it "uses prefix matching only on tokens with at least 3 alphanumeric characters", :aggregate_failures do
+      tsquery_sql = described_class.sanitize_search_articles_tsquery("why I switched to ruby")
+
+      expect(tsquery_sql).to eq(
+        "to_tsquery('simple'::regconfig, ''' why '':* & '' i '' & '' switched '':* & '' to '' & '' ruby '':*')",
+      )
+    end
+
+    it "matches accented and unaccented queries against reading_list_document", :aggregate_failures do
+      matching_article = create(:article, title: "São Paulo intermedica guide")
+      create(:article, title: "Unrelated article")
+
+      expect(described_class.search_articles("sao paulo").ids).to eq([matching_article.id])
+      expect(described_class.search_articles("SÃO").ids).to eq([matching_article.id])
+    end
+
+    it "returns an empty relation when given blank or punctuation-only input", :aggregate_failures do
+      create(:article, title: "Sample article")
+
+      expect(described_class.search_articles(nil)).to be_empty
+      expect(described_class.search_articles("   ")).to be_empty
+      expect(described_class.search_articles("??? ::: '''")).to be_empty
+    end
+  end
 end

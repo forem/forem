@@ -598,7 +598,7 @@ RSpec.describe "Dashboards" do
       sign_in author
     end
 
-    it "renders subscriptions" do
+    it "renders subscriptions with page heading and subscriber links" do
       user_subscription = create(:user_subscription,
                                  subscriber_id: second_user.id,
                                  subscriber_email: second_user.email,
@@ -607,6 +607,18 @@ RSpec.describe "Dashboards" do
 
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include(user_subscription.subscriber_email)
+
+      html = Nokogiri::HTML(response.body)
+      heading = html.at_css("h1.crayons-title")
+      expect(heading.text.strip).to eq(I18n.t("views.dashboard.subscriptions.heading"))
+
+      profile_link = html.at_css("td.fw-medium a")
+      expect(profile_link[:href]).to eq(user_profile_path(second_user.username))
+      expect(profile_link.text.strip).to eq(second_user.name)
+      expect(profile_link.attributes.keys).to eq(["href"])
+
+      mailto_link = html.at_css("a[href^='mailto:']")
+      expect(mailto_link[:href]).to eq("mailto:#{user_subscription.subscriber_email}")
     end
 
     it "displays a message if no subscriptions are found" do

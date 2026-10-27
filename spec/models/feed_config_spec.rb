@@ -494,6 +494,62 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
       expect(clone.feed_success_score).to eq(0.0)
+      expect(clone.archived).to be(false)
+    end
+
+    it "resets archived to false even if cloned from an archived config" do
+      feed_config.update!(archived: true)
+      feed_config.create_slightly_modified_clone!
+      clone = described_class.last
+      expect(clone.archived).to be(false)
+    end
+  end
+
+  describe "scopes" do
+    let!(:active_config) { create(:feed_config, archived: false) }
+    let!(:archived_config) { create(:feed_config, archived: true) }
+
+    it "filters active and archived configs" do
+      expect(described_class.active).to contain_exactly(active_config)
+      expect(described_class.archived).to contain_exactly(archived_config)
+    end
+  end
+
+  describe ".archive_stale_configs!" do
+    before do
+      stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 3)
+    end
+
+    it "archives configs outside the top limit that are older than 2 days" do
+      top1 = create(:feed_config, feed_success_score: 100.0, created_at: 5.days.ago)
+      top2 = create(:feed_config, feed_success_score: 90.0, created_at: 5.days.ago)
+      top3 = create(:feed_config, feed_success_score: 80.0, created_at: 1.day.ago)
+      outside_top_old = create(:feed_config, feed_success_score: 70.0, created_at: 3.days.ago)
+      outside_top_recent = create(:feed_config, feed_success_score: 10.0, created_at: 1.day.ago)
+
+      described_class.archive_stale_configs!
+
+      expect(top1.reload.archived).to be(false)
+      expect(top2.reload.archived).to be(false)
+      expect(top3.reload.archived).to be(false)
+      expect(outside_top_old.reload.archived).to be(true)
+      expect(outside_top_recent.reload.archived).to be(false)
+    end
+
+    it "does not unarchive already archived configs and excludes them from the top active limit" do
+      archived_top = create(:feed_config, feed_success_score: 100.0, created_at: 5.days.ago, archived: true)
+      active_top1 = create(:feed_config, feed_success_score: 90.0, created_at: 5.days.ago)
+      active_top2 = create(:feed_config, feed_success_score: 80.0, created_at: 5.days.ago)
+      active_top3 = create(:feed_config, feed_success_score: 70.0, created_at: 5.days.ago)
+      outside_old = create(:feed_config, feed_success_score: 50.0, created_at: 5.days.ago)
+
+      described_class.archive_stale_configs!
+
+      expect(archived_top.reload.archived).to be(true)
+      expect(active_top1.reload.archived).to be(false)
+      expect(active_top2.reload.archived).to be(false)
+      expect(active_top3.reload.archived).to be(false)
+      expect(outside_old.reload.archived).to be(true)
     end
   end
 
@@ -507,6 +563,19 @@ RSpec.describe FeedConfig, type: :model do
 
     it "returns the preferred feed config when preferred_id matches" do
       expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
+    end
+
+    it "ignores archived configs when preferred_id or top selection is evaluated" do
+      archived_preferred = create(
+        :feed_config,
+        archived: true,
+        feed_success_score: 999.0,
+        feed_impressions_count: 500,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed(preferred_id: archived_preferred.id)).to eq(proven_top_config)
     end
 
     it "selects uniformly from the newest low-impression pool when roll is < 20" do

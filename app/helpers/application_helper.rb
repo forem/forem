@@ -195,9 +195,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
-  rescue StandardError
-    url
+    ForemNative.beautified_url(url) || legacy_beautified_url(url)
   end
 
   def org_bg_or_white(org)
@@ -601,6 +599,12 @@ module ApplicationHelper
   end
 
   private
+
+  def legacy_beautified_url(url)
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
+  rescue StandardError
+    url
+  end
 
   # Handles the URLs ForemNative declines (non-ASCII hosts, other schemes, dot segments, ...).
   def legacy_normalize_url(url)

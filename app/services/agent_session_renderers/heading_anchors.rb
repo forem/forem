@@ -11,9 +11,14 @@ module AgentSessionRenderers
     FRAGMENT_HREF = /href="#([^"]+)"/
 
     def self.slugify(heading_html)
+      ForemNative.slugify_heading_anchor(heading_html) || legacy_slugify(heading_html)
+    end
+
+    def self.legacy_slugify(heading_html)
       text = CGI.unescapeHTML(heading_html.to_s.gsub(/<[^>]*>/, ""))
       text.strip.downcase.gsub(SLUG_DISALLOWED, "").tr(" ", "-")
     end
+    private_class_method :legacy_slugify
 
     # prefix must be unique per message within the page, e.g.
     # "agent-session-12-3" for message 3 of session 12.
