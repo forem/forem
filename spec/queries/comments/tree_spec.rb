@@ -92,5 +92,54 @@ RSpec.describe Comments::Tree do
       comments = described_class.for_root_comment(comment, include_negative: true)
       expect(comments).to eq(comment => { child_comment => {}, low_comment => {} })
     end
+
+    it "reuses the root comment's loaded article instead of re-fetching it" do
+      root = Comment.find(comment.id)
+      root.commentable
+
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(article_queries).to be_empty
+      nodes = [tree.keys.first, *tree.values.first.keys]
+      expect(nodes.map(&:commentable)).to all(be(root.commentable))
+      expect(root.commentable.association(:organization)).to be_loaded
+    end
+
+    it "preloads user associations onto the returned root comment" do
+      root = Comment.find(comment.id)
+      tree = described_class.for_root_comment(root)
+      root_comment = tree.keys.first
+
+      expect(root_comment.association(:user)).to be_loaded
+      expect(root_comment.user.association(:roles)).to be_loaded
+      expect(root_comment.user.association(:profile)).to be_loaded
+      expect(root_comment.user.association(:setting)).to be_loaded
+      expect(root_comment.user.association(:organization_memberships)).to be_loaded
+    end
+
+    it "reuses the root comment's loaded user instead of re-fetching it" do
+      root = Comment.find(comment.id)
+      root.user
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(user_queries).to be_empty
+      nodes = [tree.keys.first, *tree.values.first.keys]
+      expect(nodes.map(&:user)).to all(be(root.user))
+      expect(root.user.association(:profile)).to be_loaded
+      expect(root.user.association(:setting)).to be_loaded
+    end
   end
 end

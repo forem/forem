@@ -19,30 +19,18 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
   end
 
   context "when logged in as the commentable author" do
-    before do
-      sign_in commentable_author
+    before { sign_in commentable_author }
+
+    it "updates hidden_by_commentable_user, marks article, and returns 200 JSON response", :aggregate_failures do
       patch "/comments/#{parent_comment.id}/#{args[:path]}", headers: { HTTP_ACCEPT: "application/json" }
-    end
 
-    it "sets hidden_by_commentable_user appropriately" do
-      parent_comment.reload
-      expect(parent_comment.hidden_by_commentable_user).to eq(args[:path] == "hide")
-    end
-
-    it "marks article as having hidden comments" do
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq("hidden" => args[:hidden])
+      expect(parent_comment.reload.hidden_by_commentable_user).to eq(args[:path] == "hide")
       expect(article.reload.any_comments_hidden).to eq(args[:path] == "hide")
     end
 
-    it "returns a proper JSON response" do
-      expect(response.parsed_body).to eq("hidden" => args[:hidden])
-    end
-
-    it "returns 200 on a good request" do
-      expect(response).to have_http_status(:ok)
-    end
-
     it "displays having hidden comments if some unhidden" do
-      sign_in commentable_author
       second_comment = create(:comment, commentable: article, user: commentable_author)
       third_comment = create(:comment, commentable: article, user: commentable_author)
       patch "/comments/#{parent_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
@@ -53,7 +41,6 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
     end
 
     it "displays not having hidden comments if all unhidden" do
-      sign_in commentable_author
       second_comment = create(:comment, commentable: article, user: commentable_author)
       third_comment = create(:comment, commentable: article, user: commentable_author)
       patch "/comments/#{parent_comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }

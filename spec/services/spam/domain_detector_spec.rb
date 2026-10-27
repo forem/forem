@@ -94,6 +94,16 @@ RSpec.describe Spam::DomainDetector, type: :service do
         expect(detector.check_and_block_domain!).to be false
         expect(BlockedEmailDomain.where(domain: "example.com")).to be_empty
       end
+
+      it "skips the full-table older-users scan" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          detector.check_and_block_domain!
+        end
+
+        expect(queries.grep(/registered_at </)).to be_empty
+      end
     end
 
     context "when spam users are older than 2 weeks" do

@@ -4,6 +4,7 @@
 /// NaN, infinite) returns `None` so the caller can use the Ruby implementation, which
 /// owns the Bignum / two's-complement (`..f`) / `FloatDomainError` rescue semantics.
 const MAX_CHANNEL: f64 = 9_007_199_254_740_992.0; // 2^53
+const ACCENT_MODIFIERS: [f64; 8] = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6];
 
 /// Parses a strict `#?[0-9a-fA-F]{6}` hex color into its RGB channels.
 ///
@@ -62,6 +63,22 @@ pub fn brightness(hex: &[u8], amount: f64, only_values: bool) -> Option<String> 
     })
 }
 
+/// Equivalent of `Color::CompareHex#accent` for a strict 6-digit hex color.
+/// Returns the first brightness variant with seven characters, or the last variant
+/// when none has that length. Unsupported channels return `None` for Ruby's edge path.
+pub fn accent(hex: &[u8], amount: f64) -> Option<String> {
+    let mut last = None;
+    for modifier in ACCENT_MODIFIERS {
+        let result = brightness(hex, modifier.powf(amount), false)?;
+        let found = result.len() == 7;
+        last = Some(result);
+        if found {
+            break;
+        }
+    }
+    last
+}
+
 /// Largest alpha magnitude formatted natively; keeps `alpha * 100` far inside the
 /// range where every integer is an exact `f64` and the half-ulp error stays tiny.
 const MAX_ALPHA: f64 = 1e9;
@@ -96,6 +113,56 @@ pub fn opacity(hex: &[u8], alpha: f64) -> Option<String> {
         hundredths / 100,
         hundredths % 100
     ))
+}
+
+/// Parses a 3-digit or 6-digit hex color (without `#`, matching `WCAGColorContrast::Ratio`),
+/// where 3-digit `"abc"` is doubled to `"abcabc"` (`rgb << rgb if rgb.size == 3`).
+fn parse_wcag_rgb(rgb: &[u8]) -> Option<[u8; 3]> {
+    match rgb.len() {
+        3 => {
+            let d0 = hex_digit(rgb[0])?;
+            let d1 = hex_digit(rgb[1])?;
+            let d2 = hex_digit(rgb[2])?;
+            Some([(d0 << 4) | d1, (d2 << 4) | d0, (d1 << 4) | d2])
+        }
+        6 => {
+            let r = (hex_digit(rgb[0])? << 4) | hex_digit(rgb[1])?;
+            let g = (hex_digit(rgb[2])? << 4) | hex_digit(rgb[3])?;
+            let b = (hex_digit(rgb[4])? << 4) | hex_digit(rgb[5])?;
+            Some([r, g, b])
+        }
+        _ => None,
+    }
+}
+
+fn srgb_relative_luminance(rgb: [u8; 3]) -> f64 {
+    let channel = |c: u8| -> f64 {
+        let v = f64::from(c) / 255.0;
+        if v <= 0.03928 {
+            v / 12.92
+        } else {
+            ((v + 0.055) / 1.055).powf(2.4)
+        }
+    };
+    0.2126 * channel(rgb[0]) + 0.7152 * channel(rgb[1]) + 0.0722 * channel(rgb[2])
+}
+
+/// Computes the WCAG 2.0 contrast ratio between `rgb1` and `rgb2` (3- or 6-digit hex strings
+/// without `#`), replacing the `wcag_color_contrast` gem (`WCAGColorContrast.ratio(rgb1, rgb2)`).
+///
+/// Returns `None` if either color is not a valid 3- or 6-digit ASCII hex string so the Ruby
+/// caller can raise `Color::Accessibility::InvalidColorError`.
+///
+/// Note: The W3C WCAG 2.x relative luminance and contrast ratio formula is a fixed mathematical
+/// specification and does not depend on any external dataset that needs periodic updating.
+pub fn wcag_contrast_ratio(rgb1: &[u8], rgb2: &[u8]) -> Option<f64> {
+    let l1 = srgb_relative_luminance(parse_wcag_rgb(rgb1)?);
+    let l2 = srgb_relative_luminance(parse_wcag_rgb(rgb2)?);
+    Some(if l1 > l2 {
+        (l1 + 0.05) / (l2 + 0.05)
+    } else {
+        (l2 + 0.05) / (l1 + 0.05)
+    })
 }
 
 #[cfg(test)]
@@ -239,6 +306,19 @@ mod tests {
     }
 
     #[test]
+    fn finds_first_seven_character_accent_variant() {
+        assert_eq!(accent(b"#ccddee", 1.0), Some("#d8eafc".to_string()));
+        assert_eq!(accent(b"#000000", 1.0), Some("#000000".to_string()));
+    }
+
+    #[test]
+    fn defers_malformed_and_out_of_domain_accent_inputs() {
+        assert_eq!(accent(b"#ccddee\n", 1.0), None);
+        assert_eq!(accent(b"#ffffff", f64::INFINITY), None);
+        assert_eq!(accent(b"#010101", 1_000.0), None);
+    }
+
+    #[test]
     fn defers_negative_non_finite_and_huge_channels() {
         assert_eq!(hex("#010101", -0.6), None);
         assert_eq!(hex("#ffffff", f64::NAN), None);
@@ -254,5 +334,36 @@ mod tests {
             values("#ff0001", 4096.0),
             Some("1044480, 0, 4096".to_string())
         );
+    }
+
+    #[test]
+    fn computes_wcag_contrast_ratio_for_6_and_3_digit_hexes() {
+        assert_eq!(wcag_contrast_ratio(b"ffffff", b"000000"), Some(21.0));
+        assert_eq!(wcag_contrast_ratio(b"000000", b"FFFFFF"), Some(21.0));
+        assert_eq!(wcag_contrast_ratio(b"000", b"FFF"), Some(21.0));
+
+        let ratio_123 = wcag_contrast_ratio(b"123", b"FFF").unwrap();
+        assert_eq!((ratio_123 * 100.0).round() / 100.0, 14.1);
+
+        // Color::Accessibility spec examples
+        assert!(wcag_contrast_ratio(b"8a9bb8", b"ffffff").unwrap() < 4.5);
+        assert!(wcag_contrast_ratio(b"041d4a", b"1a3669").unwrap() < 4.5);
+        assert!(wcag_contrast_ratio(b"225CC9", b"ffffff").unwrap() < 10.0);
+        assert!(wcag_contrast_ratio(b"041d4a", b"ffffff").unwrap() >= 4.5);
+        assert!(wcag_contrast_ratio(b"041d4a", b"e6eaf0").unwrap() >= 4.5);
+
+        for invalid in [
+            b"".as_slice(),
+            b"12".as_slice(),
+            b"1234".as_slice(),
+            b"12345".as_slice(),
+            b"1234567".as_slice(),
+            b"#ffffff".as_slice(),
+            b"12345g".as_slice(),
+            b"x12".as_slice(),
+        ] {
+            assert_eq!(wcag_contrast_ratio(invalid, b"ffffff"), None);
+            assert_eq!(wcag_contrast_ratio(b"ffffff", invalid), None);
+        }
     }
 }

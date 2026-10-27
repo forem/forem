@@ -171,6 +171,57 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".color_accent" do
+    let(:legacy_accent) do
+      lambda do |hex, amount|
+        Color::CompareHex::ACCENT_MODIFIERS.each do |modifier|
+          with_brightness = begin
+            rgb = hex.match(/^#?(?<r>..)(?<g>..)(?<b>..)$/).named_captures.to_h do |key, color|
+              [key.to_sym, color.hex]
+            end
+            format("#%<r>02x%<g>02x%<b>02x", rgb.transform_values { |color| (color * (modifier**amount)).round })
+          rescue StandardError
+            hex
+          end
+          break with_brightness if with_brightness.size == 7
+        end
+      end
+    end
+
+    it "matches the legacy reference across strict and malformed colors" do
+      ["#ccddee", "ccddee", "#000000", "#ffffff", "#123456", "#123456\n", "#éééééé", "#🚀🚀🚀"].each do |hex|
+        [1, 0, -1, 0.5, 1.25, 2, Float::INFINITY, Float::NAN].each do |amount|
+          expected = legacy_accent.call(hex, amount)
+          native = described_class.color_accent(hex, amount)
+          expect(native).to eq(expected) unless native.nil?
+          expect(Color::CompareHex.new([hex]).accent(amount)).to eq(expected)
+        end
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated hex colors and amounts" do
+      rng = Random.new(424_242)
+      hex_chars = [*"0".."9", *"a".."f", *"A".."F"]
+      noise_chars = hex_chars + ["#", "-", "+", " ", "_", "x", "g", "\n", "é", "🚀"]
+
+      1_000.times do |iteration|
+        prefix = rng.rand < 0.8 ? "#" : ""
+        hex = if rng.rand < 0.85
+                prefix + Array.new(6) { hex_chars.sample(random: rng) }.join
+              else
+                prefix + Array.new(rng.rand(0..8)) { noise_chars.sample(random: rng) }.join
+              end
+        amount = (rng.rand * 4.0) - 0.5
+        expected = legacy_accent.call(hex, amount)
+        native = described_class.color_accent(hex, amount)
+        actual = Color::CompareHex.new([hex]).accent(amount)
+        message = "iteration #{iteration}: #{hex.inspect} ** #{amount.inspect}"
+        expect(native).to eq(expected), message unless native.nil?
+        expect(actual).to eq(expected), message
+      end
+    end
+  end
+
   describe ".color_opacity" do
     let(:legacy_opacity) do
       lambda do |hex, alpha|
@@ -510,6 +561,52 @@ RSpec.describe ForemNative do
         message = "iteration #{iteration}: #{sample.inspect}"
         expect(described_class.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
         expect(parser.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".fixer_convert_new_lines" do
+    let(:legacy_convert_new_lines) { ->(markdown) { markdown.gsub("\r\n", "\n") } }
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      ["", "plain LF\ntext", "lone CR\r", "\r\n", "\r\r\n", "a\r\nb\r\nc", "🚀\r\n日本\né\rX"]
+    end
+
+    it "matches Ruby's gsub across line ending and Unicode edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_new_lines.call(input)
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), input.inspect
+        expect(fixer.convert_new_lines(input)).to eq(expected), input.inspect
+      end
+      expect(described_class.fixer_convert_new_lines(nil)).to be_nil
+      expect { fixer.convert_new_lines(nil) }.to raise_error(NoMethodError)
+    end
+
+    it "declines unsupported encodings, String subclasses, and invalid bytes" do
+      input = "one\r\ntwo"
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_convert_new_lines(other)).to be_nil
+        result = fixer.convert_new_lines(other)
+        expect(result).to eq(legacy_convert_new_lines.call(other))
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      invalid = "one\r\ntwo\xFF"
+      expect(ForemNative::Native.fixer_convert_new_lines(invalid)).to be_nil
+      expect(fixer.convert_new_lines(invalid)).to eq(legacy_convert_new_lines.call(invalid))
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["word", "\r\n", "\n", "\r", "🚀", "日本", "é", " ", "```ruby", "\t"]
+
+      1_000.times do |iteration|
+        input = Array.new(rng.rand(0..100)) { tokens.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        expected = legacy_convert_new_lines.call(input)
+        message = "iteration #{iteration}: #{input.inspect}"
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), message
+        expect(fixer.convert_new_lines(input)).to eq(expected), message
       end
     end
   end
@@ -1052,6 +1149,7 @@ RSpec.describe ForemNative do
 
     let(:optimizer_cloudflare) do
       lambda do |img_src, **kwargs|
+        allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(domain)
         Images::Optimizer.cloudflare(img_src, **kwargs)
       end
@@ -1751,6 +1849,1290 @@ RSpec.describe ForemNative do
         end
       end
       expect(native_hits).to be > 500
+    end
+  end
+
+  describe ".public_suffix_domain" do
+    let(:legacy_public_suffix_domain) do
+      lambda do |host|
+        PublicSuffix.parse(host, default_rule: nil).domain
+      rescue PublicSuffix::DomainInvalid
+        false
+      end
+    end
+    let(:cookie_middleware) { Middlewares::SetCookieDomain.new(->(env) { [200, env, []] }) }
+
+    it "matches PublicSuffix.parse(host, default_rule: nil).domain across normal, wildcard, and exception rules" do
+      [
+        "dev.to", "DEV.TO", "community.example.com", "a.b.example.co.uk", "  EXAMPLE.COM. \t\r\n",
+        "bar.foo.ck", "www.ck", "sub.www.ck", "city.kawasaki.jp", "www.city.kawasaki.jp",
+        "bar.foo.kawasaki.jp", "my-app.s3.amazonaws.com", "foo_bar.example.com", "example.com".b,
+        "sub.example.com".b, "example.com".encode("US-ASCII"), nil, "", "   ", ".", ".example.com",
+        "example.com..", "..com", "com", "co.uk", "ck", "foo.ck", "kawasaki.jp", "foo.kawasaki.jp",
+        "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000", "http://example.com"
+      ].each do |host|
+        expected = legacy_public_suffix_domain.call(host)
+        actual = described_class.public_suffix_domain(host)
+        expect(actual).to eq(expected), host.inspect
+        expect(actual.encoding).to eq(host.encoding) if actual.is_a?(String)
+        expect(cookie_middleware.root_domain(host)).to eq(expected || host), host.inspect
+      end
+
+      host = +"dev.to"
+      expect(described_class.public_suffix_domain(host)).to equal(host)
+    end
+
+    it "declines non-ASCII, NUL, embedded newlines, and consecutive dots so callers fall back to PublicSuffix" do
+      [
+        "dév.to", "example.公司.cn", "example..com", "foo\nbar.com", "example.com\0",
+        "dev.to".encode("UTF-16LE"), ActiveSupport::SafeBuffer.new("dev.to"), :dev_to
+      ].each do |host|
+        expect(described_class.public_suffix_domain(host)).to be_nil, host.inspect
+      end
+      expect(cookie_middleware.root_domain("sub.example.公司.cn")).to eq("example.公司.cn")
+      expect(cookie_middleware.root_domain("example..com")).to eq("example.com")
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to DEV example com co uk ck www city kawasaki jp amazonaws s3 sub my-site io localhost 127 0 1
+                  invalidtld]
+      tlds = %w[to com io dev co.uk ck www.ck kawasaki.jp city.kawasaki.jp s3.amazonaws.com invalidtld]
+      tokens = labels + [".", ".", "-", "_", ":", "3000", "://", "http", " ", "\t", "\r", "\v", "\f"]
+      accepted = 0
+      valid_count = 0
+
+      20_000.times do |iteration|
+        sample = if rng.rand < 0.5
+                   "#{Array.new(rng.rand(1..3)) { labels.sample(random: rng) }.join('.')}.#{tlds.sample(random: rng)}"
+                 else
+                   Array.new(rng.rand(1..6)) { tokens.sample(random: rng) }.join
+                 end
+        actual = described_class.public_suffix_domain(sample)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_domain.call(sample)
+        valid_count += 1 if expected
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(cookie_middleware.root_domain(sample)).to eq(expected || sample), message
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(valid_count).to be_between(200, 800)
+    end
+  end
+
+  describe ".public_suffix_subdomain_host" do
+    let(:legacy_public_suffix_subdomain_host) do
+      lambda do |host|
+        parsed = PublicSuffix.parse(host, default_rule: nil)
+        !(host =~ /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/).nil?
+      rescue PublicSuffix::DomainInvalid
+        :invalid
+      end
+    end
+
+    it "matches the PublicSuffix.parse + subdomain Regexp pipeline in Middlewares::SetSubforem" do
+      [
+        "community.example.com", "example.com", "a.b.example.com", "SUB.example.com",
+        "sub.EXAMPLE.com", "COMMUNITY.EXAMPLE.COM", "sub.example.com.", "sub.bbc.co.uk",
+        "bbc.co.uk", "a.b.bbc.co.uk", "sub.www.ck", "www.ck", "sub.foo.ck", "bar.sub.foo.ck",
+        "foo.ck", "ck", "com", "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000",
+        "http://example.com", "", ".", ".example.com", nil, "community.example.com".b,
+        "community.example.com".encode("US-ASCII")
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host))
+          .to eq(legacy_public_suffix_subdomain_host.call(host)), host.inspect
+      end
+    end
+
+    it "declines hosts outside [A-Za-z0-9.-] or non-ASCII so SetSubforem can fall back" do
+      [
+        "foo_bar.example.com", "  sub.example.com  ", "dév.to", "sub.example.公司.cn",
+        "sub..example.com", "sub.example.com\n", "sub.example.com".encode("UTF-16LE"),
+        ActiveSupport::SafeBuffer.new("sub.example.com"), :host
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host)).to be_nil, host.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to bbc example com a b sub my-site io DEV 1 - localhost invalid]
+      tlds = %w[to com io co.uk ck www.ck kawasaki.jp city.kawasaki.jp invalid]
+      accepted = 0
+      subdomains = 0
+
+      20_000.times do |iteration|
+        host = if rng.rand < 0.5
+                 "#{labels.sample(random: rng)}.#{labels.sample(random: rng)}.#{tlds.sample(random: rng)}"
+               else
+                 Array.new(rng.rand(1..5)) { labels.sample(random: rng) }.join(".")
+               end
+        actual = described_class.public_suffix_subdomain_host(host)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_subdomain_host.call(host)
+        subdomains += 1 if expected == true
+        expect(actual).to eq(expected), "iteration #{iteration}: #{host.inspect}"
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(subdomains).to be_between(200, 800)
+    end
+  end
+
+  describe ".full_sanitize (ActionView::Base.full_sanitizer.sanitize)" do
+    let(:legacy_sanitize) { ->(html) { ActionView::Base.full_sanitizer.sanitize(html) } }
+
+    let(:edge_cases) do
+      [
+        "",
+        "plain text without markup",
+        "日本語 🎉 café naïve 👨‍👩‍👧‍👦 e\u0301",
+        "<p>Hello <b>world</b>!</p>",
+        "<div class=\"a\" data-x=\"1 > 2\" data-y='3 < 4' disabled>text</div>",
+        "<a href=https://dev.to/ben/post?a=1&amp;b=2 target=_blank rel=noopener>link</a>",
+        "<!DOCTYPE html><!-- comment --><!----><p>doc</p>",
+        "Tom & Jerry &amp; &lt; &gt; &quot; &#39; &#x27; &apos; &nbsp; &#160; &#xA0;",
+        "&#x25B8; &middot; &copy; &reg; &trade; &mdash; &ndash; &hellip; &lsquo; &rsquo; &ldquo; &rdquo; &rarr;",
+        "&euro; &bull; &larr; &uarr; &darr; &harr; &minus; &lowast; &le; &ge; &ne; &equiv; &asymp; &infin;",
+        "&ensp; &emsp; &thinsp; &zwnj; &zwj; &lrm; &rlm; &fnof; &dagger; &Dagger; &permil; &prime; &Prime; &radic;",
+        "&#0; &#128; &#130; &#145; &#146; &#147; &#148; &#150; &#151; &#153; &#159;",
+        "&#xD800; &#xDFFF; &#x110000; &#999999999999999; &#00038; &#128512; &#x1F600; &#X1f680; &#; &#x;",
+        "a < b && c > d\u00A0e\r\nf\rg",
+        "https://dev.to/search?q=rust&sort=latest&page=2",
+        "<pre>\nline 1\nline 2</pre>",
+        "<pre>\r\nline 1\r\nline 2</pre>",
+        "<pre>\rline 1\rline 2</pre>",
+        "<pre>\n\ndouble newline keeps one</pre>",
+        "<pre><code>\nline 1</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Enter &amp; exit</title><g><path d=\"M0 0\"/></g></svg>",
+        "<svg><defs><linearGradient id=\"g\"><stop offset=\"0%\"/></linearGradient></defs><circle r=\"5\"/></svg>",
+        "<svg><svg viewBox=\"0 0 10 10\"><rect width=\"10\" height=\"10\"/></svg></svg>",
+        "<svg/>after",
+        "<table>\n<thead>\n<tr><th>H1</th><th>H2</th></tr>\n</thead>\n" \
+        "<tbody>\n<tr><td>C1</td><td><b>C2</b></td></tr>\n</tbody>\n" \
+        "<tfoot>\n<tr><td>F1</td><td>F2</td></tr>\n</tfoot>\n</table>",
+        "<table><caption>Table <b>Caption</b></caption><colgroup><col span=\"2\"/></colgroup>" \
+        "<tr><th>H</th><td><svg><path d=\"M0 0\"/></svg>Data</td></tr></table>",
+        "<style>.a > .b { content: \"<x>\"; }</style>",
+        "<script>const a = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback <b>text</b></iframe>",
+        "<textarea>\n<b>raw</b> &amp; text</textarea>",
+        "<textarea>\r\n<b>raw</b> &lt;text&gt;</textarea>",
+        "<title>Title &amp; Text</title>",
+      ]
+    end
+
+    it "matches ActionView::Base.full_sanitizer.sanitize across edge cases and editor guide HTML" do
+      edge_cases.each do |html|
+        expected = legacy_sanitize.call(html)
+        expect(described_class.full_sanitize(html)).to eq(expected), html.inspect
+      end
+
+      raw_guide = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb").read
+      guide_without_erb = raw_guide.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")
+      expect(described_class.full_sanitize(guide_without_erb)).to eq(legacy_sanitize.call(guide_without_erb))
+    end
+
+    it "declines malformed table markup, implicit cell closures, scoping elements, and SVG breakouts" do
+      malformed_and_quirky_cases = [
+        # P2 regression: implicit cell closure on </tr> followed by foster-parented stray text
+        "<table><tr><td>A</tr> stray</td></table>",
+        "<table><tr><th>A</tr> stray</th></table>",
+        # Other end tags that implicitly close an open <td> or <th> in HTML5 "in cell" mode
+        "<table><tr><td>A</tbody> stray</td></table>",
+        "<table><thead><tr><td>A</thead> stray</td></tr></table>",
+        "<table><tfoot><tr><td>A</tfoot> stray</td></tr></table>",
+        "<table><tr><td>A</table> stray</td>",
+        "<table><tr><td>A</th> stray</td></tr></table>",
+        "<table><tr><th>A</td> stray</th></tr></table>",
+        # Start tags inside <td>/<th> that implicitly close the cell in HTML5 "in cell" mode
+        "<table><tr><td>A<tr> stray</td></tr></table>",
+        "<table><tr><td>A<td>B</td> stray</tr></table>",
+        "<table><tr><td>A<th>B</th> stray</tr></table>",
+        "<table><tr><td>A<tbody><tr><td>B</td></tr></tbody> stray</tr></table>",
+        "<table><tr><td>A<thead><tr><td>B</td></tr></thead> stray</tr></table>",
+        "<table><tr><td>A<tfoot><tr><td>B</td></tr></tfoot> stray</tr></table>",
+        "<table><tr><td>A<caption>B</caption> stray</tr></table>",
+        "<table><tr><td>A<colgroup><col></colgroup> stray</tr></table>",
+        "<table><tr><td>A<col> stray</td></tr></table>",
+        "<table><tr><td><table><tr><td>nested</td></tr></table></td></tr></table>",
+        # Mismatched section/caption/colgroup/row transitions and foster-parented text/elements
+        "<table><thead><tr><td>A</tr></tbody> stray</thead></table>",
+        "<table><tbody><tr><td>A</td></tr></thead>stray</table>",
+        "<table><caption>A<tr><td>B</td></tr>stray</caption></table>",
+        "<table><caption>A</table>stray",
+        "<table><colgroup>stray</colgroup><tr><td>A</td></tr></table>",
+        "<table><colgroup><span>A</span></colgroup><tr><td>B</td></tr></table>",
+        "<table><col><tr><td>A</td></tr></table>",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<table><b>stray</b><tr><td>1</td></tr></table>",
+        "<table><tr><span>stray</span><td>1</td></tr></table>",
+        "<table><tr>stray<td>1</td></tr></table>",
+        # Unclosed, orphan, or self-closing table elements
+        "<table><tr><td>unclosed",
+        "<table><tr><td>A</td>",
+        "<table><tr><td>A</td></tr>",
+        "</td><td>orphan</td>",
+        "</tr><tr><td>orphan</td></tr>",
+        "</table>",
+        "<table/><tr><td>A</td></tr>",
+        "<table><tr/><td>A</td></table>",
+        "<table><tr><td/>A</tr></table>",
+        "<table><tr><th/>A</tr></table>",
+        # HTML5 scoping elements inside <td> that prevent </td> from closing the cell
+        "<table><tr><td><object>A</td></tr>stray</table>",
+        "<table><tr><td><marquee>A</td></tr>stray</table>",
+        "<table><tr><td><applet>A</td></tr>stray</table>",
+        "<table><tr><td><template>A</td></tr>stray</table>",
+        # SVG foreign-content breakout tags and ancestor HTML end tags inside <svg>
+        "<table><tr><td><svg>A</td></tr>stray</svg></table>",
+        "<div><svg></div><p>after</p></svg>",
+        "<svg><p>breakout</p></svg>",
+        "<svg><div>breakout</div></svg>",
+        "<svg><b>breakout</b></svg>",
+        "<svg><table><tr><td>breakout</td></tr></table></svg>",
+        "<svg><foreignObject><p>html</p></foreignObject></svg>",
+        "<svg><desc>description</desc></svg>",
+        "<svg><title><b>tag in svg title</b></title></svg>",
+        "<svg/></svg>",
+        "</svg>",
+        "<svg><path d=\"M0 0\">",
+        # Other HTML5 tokenizer / tree-builder edge cases
+        "null\x00byte",
+        "\uFEFFbom",
+        "<!-- unclosed",
+        "<!-->abrupt",
+        "<!--->",
+        "<?xml version=\"1.0\"?><span>pi</span>",
+        "<div attr=\"unclosed>",
+        "<div attr=unclosed\"quote>text</div>",
+        "&CounterClockwiseContourIntegral;",
+        "&copy=1",
+        "&notanentity;",
+        "&#123",
+        "&#x1F600",
+        "<pre>&#10;newline entity</pre>",
+        "<textarea>&#10;newline entity</textarea>",
+        "<title><b>tag in title</b></title>",
+        "<script><!--</script><p>visible</p><script>--></script>",
+        "<script><script></script><p>after</p>",
+        "<style/>body { color: red; }",
+        "<script/>alert(1)",
+        "<iframe/>fallback",
+        "<xmp><b>raw</b></xmp>",
+        "<plaintext><b>raw</b>",
+        "<noembed><b>raw</b></noembed>",
+        "<noframes><b>raw</b></noframes>",
+        "<noscript><b>raw</b></noscript>",
+        "<select><option>opt</option><input></select>",
+      ]
+
+      # Specifically verify the P2 reviewer reproduction case foster-parents " stray" before "A"
+      p2_repro = "<table><tr><td>A</tr> stray</td></table>"
+      expect(described_class.full_sanitize(p2_repro)).to be_nil
+      expect(legacy_sanitize.call(p2_repro)).to eq(" strayA")
+
+      malformed_and_quirky_cases.each do |quirky|
+        expect(described_class.full_sanitize(quirky)).to be_nil, quirky.inspect
+        expected = legacy_sanitize.call(quirky)
+        article = build(:article, processed_html: quirky)
+        expect(article.body_text).to eq(expected[0..7000]), quirky.inspect
+      end
+    end
+
+    it "declines non-Strings and non-UTF-8 encodings" do
+      [nil, false, 123, :sym, ActiveSupport::SafeBuffer.new("<p>x</p>"), "<p>x</p>".b,
+       "<p>x</p>".encode("UTF-16LE"), "<p>\xFF</p>"].each do |input|
+        expect(described_class.full_sanitize(input)).to be_nil, input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated HTML fragments" do
+      rng = Random.new(424_242)
+      pieces = [
+        "", "hello", "world", " ", "\n", "\r\n", "\r", "\t", "\u00A0", "é", "日本", "🚀",
+        "&", "&amp;", "&lt;", "&gt;", "&quot;", "&apos;", "&nbsp;", "&middot;", "&copy;", "&mdash;", "&ndash;",
+        "&#39;", "&#x25B8;", "&#160;", "&#0;", "&#128;", "&#146;", "&#128512;", "&#xD800;", "&#;",
+        "&unknown;", "&copy=1", "&#123", "?a=1&b=2&utm_source=dev",
+        "<", ">", "a < b", "x > y", "<p>", "</p>", "<br>", "<br/>", "<div class=\"a > b\" data-x='c < d'>", "</div>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\" target=_blank>", "</a>",
+        "<a href=https://dev.to/ben/post>",
+        "<!-- comment -->", "<!DOCTYPE html>",
+        "<pre>\ncode</pre>", "<pre>\r\ncode</pre>", "<pre><code>\ncode</code></pre>",
+        "<svg viewBox=\"0 0 24 24\"><title>Icon</title><path d=\"M0 0\"/></svg>",
+        "<table>\n<thead>\n<tr><th>H</th></tr>\n</thead>\n<tbody>\n<tr><td>D</td></tr>\n</tbody>\n</table>",
+        "<table><tr><td>1</td></tr>stray<td>2</td></table>",
+        "<table><tr><td>A</tr> stray</td></table>",
+        "<style>.a > .b { color: red; }</style>",
+        "<script>const x = 1 < 2 && 3 > 1;</script>",
+        "<iframe src=\"https://youtube.com/embed/1\">fallback</iframe>",
+        "<textarea>\nraw <b>html</b> &amp;</textarea>",
+        "<title>Title &amp; Text</title>",
+        "<xmp><b>x</b></xmp>", "null\x00byte", "\uFEFFbom", "<div unclosed"
+      ]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { pieces.sample(random: rng) }.join
+        expected = legacy_sanitize.call(sample)
+        native = described_class.full_sanitize(sample)
+        native_hits += 1 unless native.nil?
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+
+      expect(native_hits).to be > 500
+    end
+
+    it "passes adversarial differential equivalence across 1,000 generated table, SVG, and scoping fragments" do
+      rng = Random.new(987_654)
+      table_svg_tokens = [
+        "<table>", "</table>", "<table/>",
+        "<thead>", "</thead>", "<tbody>", "</tbody>", "<tfoot>", "</tfoot>",
+        "<caption>", "</caption>", "<colgroup>", "</colgroup>", "<col>", "<col/>",
+        "<tr>", "</tr>", "<tr/>", "<td>", "</td>", "<td/>", "<th>", "</th>", "<th/>",
+        "<svg>", "</svg>", "<svg/>", "<path d=\"M0 0\"/>", "<g>", "</g>", "<title>", "</title>",
+        "<object>", "</object>", "<marquee>", "</marquee>", "<applet>", "</applet>", "<template>", "</template>",
+        "<p>", "</p>", "<div>", "</div>", "<b>", "</b>", "<br>",
+        "A", "B", "stray", " ", "\n", "&amp;", "&lt;"
+      ]
+
+      1_000.times do |iteration|
+        sample = if rng.rand < 0.25
+                   # Mix valid table structures with random perturbations
+                   "<table><thead><tr><th>#{table_svg_tokens.sample(random: rng)}</th></tr></thead>" \
+                     "<tbody><tr><td>A#{table_svg_tokens.sample(random: rng)}</td>" \
+                     "<td>#{table_svg_tokens.sample(random: rng)}B</td></tr></tbody></table>"
+                 else
+                   "<table>#{Array.new(rng.rand(2..10)) { table_svg_tokens.sample(random: rng) }.join}</table>"
+                 end
+        expected = legacy_sanitize.call(sample)
+        native = described_class.full_sanitize(sample)
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
+    let(:legacy_slugify_heading_anchor) do
+      lambda do |heading_html|
+        text = CGI.unescapeHTML(heading_html.to_s.gsub(/<[^>]*>/, ""))
+        text.strip.downcase.gsub(AgentSessionRenderers::HeadingAnchors::SLUG_DISALLOWED, "").tr(" ", "-")
+      end
+    end
+
+    it "matches HeadingAnchors.slugify across edge cases" do
+      [
+        "",
+        "   \t\n\r\0  ",
+        "!!! ???",
+        "Getting Started",
+        "FAQ &amp; Troubleshooting",
+        "What&#39;s New in v2.0?",
+        "Astro vs WordPress: the practical comparison",
+        "Work through a small-business example_now",
+        "Call <code>run()</code> <em>now</em>",
+        "Überblick über Café",
+        "İstanbul ОΣ 日本語 カタカナ 한글 🎉",
+        "&<i></i>amp; &apos; &quot; &lt;b&gt; &gt; &#x41; &#X42; &#0067; &#1114111;",
+        "unclosed <tag and <a\nb>kept",
+        ". leading-and-trailing ! ",
+      ].each do |heading_html|
+        expected = legacy_slugify_heading_anchor.call(heading_html)
+        expect(described_class.slugify_heading_anchor(heading_html)).to eq(expected), heading_html.inspect
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(heading_html)).to eq(expected), heading_html.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings, non-Strings, surrogate entities, and out-of-domain code points" do
+      [
+        nil,
+        :heading,
+        ActiveSupport::SafeBuffer.new("Getting Started"),
+        "Getting Started".b,
+        "Getting Started".encode("US-ASCII"),
+        "Getting Started".encode("UTF-16LE"),
+        "invalid \xFF byte",
+        "&#xD800;",
+        "&#55296;",
+        "circled Ⓐ",
+      ].each do |input|
+        expect(described_class.slugify_heading_anchor(input)).to be_nil, input.inspect
+      end
+
+      [nil, :heading, ActiveSupport::SafeBuffer.new("Getting <b>Started</b>"), "circled Ⓐ"].each do |input|
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(input))
+          .to eq(legacy_slugify_heading_anchor.call(input)), input.inspect
+      end
+      expect { AgentSessionRenderers::HeadingAnchors.slugify("&#xD800;") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "Getting", "Started", "v2.0?", "example_now", "small-business", " ", "  ", "\t", "\n", "\r", "\0",
+        "<code>", "</code>", "<em>", "</em>", "<a href=\"#x\">", "<span\nclass='y'>", "<unclosed", ">",
+        "&amp;", "&apos;", "&quot;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&#x27;", "&#X1F680;", "&#0065;", "&#1114111;",
+        "Überblick", "Café", "İstanbul", "e\u0301", "ОΣ", "日本語", "カタカナ", "한글", "🎉", "—", "…", ":", "!", "?"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_slugify_heading_anchor.call(sample)
+        actual = described_class.slugify_heading_anchor(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".beautified_url (ApplicationHelper#beautified_url)" do
+    let(:legacy_beautified_url) do
+      lambda do |url|
+        url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
+      rescue StandardError
+        url
+      end
+    end
+    let(:helper_host) { Object.new.extend(ApplicationHelper) }
+
+    it "matches ApplicationHelper#beautified_url across edge cases" do
+      [
+        "",
+        "/",
+        "//",
+        "//github.com/",
+        "/github.com//",
+        "https://github.com",
+        "http://github.com/",
+        "ftp://files.example.com/pub/",
+        "https://github.com?a=3",
+        "https://github.com/?a=3&b=4",
+        "https://github.com/rails",
+        "https://github.com/rails/rails/?tab=readme",
+        "https:/github.com/",
+        "ftp:/files.example.com/",
+        "HTTPS://github.com/",
+        "https://github.com?a=1\nb=2/",
+        "https://github.com/?a=1\n",
+        "https://github.com?a=1\r\nb=2/",
+        "https://github.com?a=1?b=2\n?c=3/",
+        "https://例え.テスト/パス/?q=🎉/",
+      ].each do |url|
+        expected = legacy_beautified_url.call(url)
+        expect(described_class.beautified_url(url)).to eq(expected), url.inspect
+        expect(helper_host.beautified_url(url)).to eq(expected), url.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves the helper's legacy result" do
+      [
+        nil,
+        false,
+        123,
+        :url,
+        ActiveSupport::SafeBuffer.new("https://github.com/"),
+        "https://github.com/".b,
+        "https://github.com/".encode("US-ASCII"),
+        "https://github.com/".encode("UTF-16LE"),
+        "https://github.com/\xFF",
+      ].each do |input|
+        expect(described_class.beautified_url(input)).to be_nil, input.inspect
+        expect(helper_host.beautified_url(input)).to eq(legacy_beautified_url.call(input)), input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "https://", "http://", "ftp://", "HTTPS://", "https:/", "ftp:/", "/", "//",
+        "github.com", "dev.to", "example.com/path", "/rails", "/pub/", "?", "?a=1", "&b=2",
+        "?q=rust&page=2", "\n", "\r\n", "\r", "#frag", "例え.テスト", "🎉", ":"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_beautified_url.call(sample)
+        actual = described_class.beautified_url(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(helper_host.beautified_url(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".parse_emojis (Html::Parser#parse_emojis)" do
+    let(:legacy_parse_emojis) do
+      lambda do |html|
+        out = html.dup
+        out.gsub!(/:([\w+-]+):/) do |match|
+          described_class.emoji_by_alias(Regexp.last_match(1)) || match
+        end
+        out
+      end
+    end
+
+    it "resolves standard, disability, skin-tone, and punctuation gemoji aliases" do
+      expected_aliases = {
+        "joy" => "😂",
+        "+1" => "👍",
+        "-1" => "👎",
+        "100" => "💯",
+        "1234" => "🔢",
+        "1st_place_medal" => "🥇",
+        "8ball" => "🎱",
+        "e-mail" => "📧",
+        "non-potable_water" => "🚱",
+        "guide_dog" => "🦮",
+        "service_dog" => "🐕‍🦺",
+        "person_with_probing_cane" => "🧑‍🦯",
+        "man_with_probing_cane" => "👨‍🦯",
+        "woman_with_probing_cane" => "👩‍🦯",
+        "person_in_motorized_wheelchair" => "🧑‍🦼",
+        "person_in_manual_wheelchair" => "🧑‍🦽",
+        "wheelchair" => "♿",
+        "rocket" => "🚀",
+        "heart" => "❤️",
+        "tada" => "🎉",
+        "zzz" => "💤"
+      }
+
+      expected_aliases.each do |alias_name, raw|
+        expect(described_class.emoji_by_alias(alias_name)).to eq(raw), alias_name
+        token = ":#{alias_name}:"
+        expect(described_class.parse_emojis(token)).to eq(raw), token
+        wrapped = "prefix #{token} suffix"
+        expect(described_class.parse_emojis(wrapped)).to eq("prefix #{raw} suffix"), wrapped
+      end
+
+      expect(described_class.emoji_by_alias("not_a_valid_emoji_alias")).to be_nil
+      expect(described_class.emoji_by_alias("")).to be_nil
+      expect(described_class.emoji_by_alias(nil)).to be_nil
+    end
+
+    it "matches legacy regexp behavior on adjacent, overlapping, and unknown colon patterns" do
+      cases = [
+        "",
+        "plain text without colons",
+        "single : colon and trailing:",
+        ":leading_only",
+        "::",
+        ":::",
+        ":joy:",
+        ":+1: :-1: :100: :e-mail: :non-potable_water: :1st_place_medal:",
+        ":not_an_emoji:",
+        ":not_an_emoji:joy:",
+        ":not_an_emoji::joy:",
+        ":joy:not_an_emoji:",
+        ":joy::not_an_emoji:",
+        ":joy:joy:",
+        ":joy::joy:",
+        ":::joy:::",
+        ":hello world:joy:",
+        ":JOY: :Joy: :joy:",
+        "日本語 :joy: café 👨‍👩‍👧‍👦",
+        "<p>Hello :joy: and <a href=\"https://dev.to:3000/:joy:\">:rocket:</a></p>",
+      ]
+
+      cases.each do |input|
+        expected = legacy_parse_emojis.call(input)
+        actual = described_class.parse_emojis(input)
+        expect(actual).to eq(expected), input.inspect
+        expect(Html::Parser.new(input.dup).parse_emojis.html).to eq(expected), input.inspect
+      end
+
+      unchanged = +"no emojis :not_a_valid_alias: here"
+      expect(described_class.parse_emojis(unchanged)).to equal(unchanged)
+    end
+
+    it "declines non-Strings, SafeBuffer, and non-UTF-8 encodings while Html::Parser falls back cleanly" do
+      [nil, false, 123, :joy, ActiveSupport::SafeBuffer.new(":joy:"), ":joy:".b,
+       ":joy:".encode("US-ASCII"), ":joy:".encode("UTF-16LE"), +":joy:\xFF"].each do |input|
+        expect(described_class.parse_emojis(input)).to be_nil, input.inspect
+      end
+
+      safe_buf = ActiveSupport::SafeBuffer.new("Hello :joy:!")
+      expect(Html::Parser.new(safe_buf).parse_emojis.html).to eq("Hello 😂!")
+      safe_buf_no_emoji = ActiveSupport::SafeBuffer.new("Hello world!")
+      expect(Html::Parser.new(safe_buf_no_emoji).parse_emojis.html).to eq("Hello world!")
+    end
+
+    it "passes differential equivalence across 1,000 generated strings" do
+      rng = Random.new(424_242)
+      known_aliases = %w[
+        joy +1 -1 100 1234 1st_place_medal 8ball e-mail non-potable_water
+        guide_dog service_dog wheelchair rocket heart fire tada star sparkles
+        warning white_check_mark x wave eyes pray clap musclecomputerzzz
+      ]
+      tokens = [
+        ":", "::", ":::", "joy", "+1", "-1", "100", "rocket", "heart", "not_an_emoji", "unknown_123",
+        "JOY", "hello world", " ", "\n", "<p>", "</p>", "<code>", "</code>", "日本語", "🎉",
+        "https://dev.to:3000/path", "a_b-c+d"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..12)) do
+          if rng.rand < 0.35
+            ":#{known_aliases.sample(random: rng)}:"
+          else
+            tokens.sample(random: rng)
+          end
+        end.join
+
+        expected = legacy_parse_emojis.call(sample)
+        actual = described_class.parse_emojis(sample)
+        expect(actual).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".escape_colon_emojis_in_codeblock (Html::Parser#escape_colon_emojis_in_codeblock)" do
+    let(:legacy_escape) do
+      escape_fn = nil
+      escape_fn = lambda do |html|
+        html_doc = Nokogiri::HTML.fragment(html)
+        html_doc.children.each do |el|
+          next if el.name == "code"
+
+          if el.search("code").empty?
+            next if el.parent.blank?
+
+            parsed_html = el.to_html.dup
+            if parsed_html.present?
+              parsed_html.gsub!(/:([\w+-]+):/) do |match|
+                described_class.emoji_by_alias(Regexp.last_match(1)) || match
+              end
+            end
+            el.swap(parsed_html)
+          else
+            el.children = escape_fn.call(el.children.to_html)
+          end
+        end
+        html_doc.to_html
+      end
+      escape_fn
+    end
+
+    it "matches legacy Nokogiri traversal across canonical HTML fragments with and without codeblocks" do
+      canonical_cases = [
+        "",
+        "plain text :joy: and :+1:",
+        "<code>:joy:</code>",
+        "<code>:joy:</code><p>:joy:</p>",
+        "<p>Hello :joy: and <code>:heart:</code> world :+1:!</p>",
+        "<div class=\"highlight\"><pre class=\"highlight ruby\"><code>puts \":joy: :rocket:\"</code></pre></div>" \
+        "<p>Outside :rocket: and <code>:fire:</code>!</p>",
+        "<div><section><article><p>:joy: <code>:heart:</code> :+1:</p></article></section></div>",
+        "<table>\n<thead><tr><th>:joy:</th></tr></thead>\n" \
+        "<tbody><tr>\n<td><code>:joy:</code></td>\n<td>:+1:</td>\n</tr></tbody>\n</table>",
+        "<ul>\n<li>:joy:</li>\n<li>\n<code>:joy:</code> and :+1:</li>\n</ul>",
+        "<p>Line 1 :joy:<br>Line 2 <img src=\"https://dev.to/a.png\" alt=\"pic\"></p><hr>",
+        "<p>:joy: <svg viewbox=\"0 0 24 24\"><path d=\"M0 0\"></path></svg></p>",
+        "<p>Tom &amp; Jerry &lt;3 &gt; :joy: in <a href=\"https://dev.to/a?x=1&amp;y=2\">:rocket:</a></p>",
+        "<p>:not_an_emoji:joy: vs :not_an_emoji::joy: and <code>:not_an_emoji::joy:</code></p>",
+        "<pre><code>:joy:</code>\n</pre>",
+      ]
+
+      canonical_cases.each do |html|
+        expected = legacy_escape.call(html)
+        actual = described_class.escape_colon_emojis_in_codeblock(html)
+        expect(actual).to eq(expected), html.inspect
+        expect(Html::Parser.new(html.dup).escape_colon_emojis_in_codeblock.html).to eq(expected), html.inspect
+      end
+    end
+
+    it "declines non-canonical HTML fragments and edge cases while Html::Parser preserves legacy output" do
+      non_canonical_cases = [
+        "<br/>",
+        "<div/>",
+        "<P>:joy:</P>",
+        "<p CLASS=\"x\">:joy:</p>",
+        "<p class='x'>:joy:</p>",
+        "<p class=x>:joy:</p>",
+        "<td nowrap>:joy:</td>",
+        "<p class=\"a\" class=\"b\">:joy:</p>",
+        "<ul><li></li><li>:joy:</li></ul>",
+        "<div><p>:joy:</p><p>:+1:</p></div>",
+        "<h2>hello<code>:heart:</code></h2>",
+        "<p>&nbsp; &copy; &#39; &#128512; :joy:</p>",
+        "<p>a & b :joy:</p>",
+        "<p>a < b :joy:</p>",
+        "<p>a\x01b :joy:</p>",
+        "<p>a\fb :joy:</p>",
+        "<p title=\"a\x07b\">:joy:</p>",
+        "<p>a\uFFFEb :joy:</p>",
+        "<p>a\uFFFFb :joy:</p>",
+        "<p data-title=\":joy:\">Hello <code>:heart:</code> :+1:</p>",
+        "<p data-title=\":joy:\">Hello :+1:</p>",
+        "<code>outer <code>:joy:</code> inner</code>",
+        "<!-- :joy: --><p>:joy:</p>",
+        "<p>:joy:",
+        "<p><b>:joy:</p></b>",
+        "<custom-element>:joy:</custom-element>",
+        "<a href=\"https://dev.to/hello world\">:joy:</a>",
+      ]
+
+      non_canonical_cases.each do |html|
+        expect(described_class.escape_colon_emojis_in_codeblock(html)).to be_nil, html.inspect
+        expected = legacy_escape.call(html)
+        expect(Html::Parser.new(html.dup).escape_colon_emojis_in_codeblock.html).to eq(expected), html.inspect
+      end
+
+      [nil, false, 123, :sym, ActiveSupport::SafeBuffer.new("<p>:joy:</p>"), "<p>:joy:</p>".b,
+       "<p>:joy:</p>".encode("UTF-16LE"), +"<p>:joy:\xFF</p>"].each do |input|
+        expect(described_class.escape_colon_emojis_in_codeblock(input)).to be_nil, input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated canonical HTML fragments" do
+      rng = Random.new(424_242)
+      text_pieces = [
+        "hello", " :joy: ", " :+1: ", " :not_an_emoji:joy: ", " :not_an_emoji::joy: ",
+        " &amp; ", " &lt; ", " &gt; ", " 日本語 ", " 🚀 ", " plain text "
+      ]
+      inline_fragments = [
+        -> { "<code>#{text_pieces.sample(random: rng)}</code>" },
+        -> { "<strong>#{text_pieces.sample(random: rng)}</strong>" },
+        -> { "<em>#{text_pieces.sample(random: rng)}<code>:joy:</code></em>" },
+        -> { "<a href=\"https://dev.to/post?a=1&amp;b=2\">#{text_pieces.sample(random: rng)}</a>" },
+        -> { "<span class=\"crayons\">#{text_pieces.sample(random: rng)}</span>" },
+        -> { "<br>" },
+        -> { "<img src=\"https://dev.to/img.png\" alt=\"alt\">" },
+      ]
+      block_fragments = [
+        lambda do
+          inner = Array.new(rng.rand(1..4)) do
+            rng.rand < 0.5 ? text_pieces.sample(random: rng) : inline_fragments.sample(random: rng).call
+          end.join
+          "<p>#{inner}</p>"
+        end,
+        lambda do
+          "<div class=\"highlight\"><pre class=\"highlight ruby\">" \
+            "<code>#{text_pieces.sample(random: rng)}</code></pre></div>"
+        end,
+        -> { "<h2>#{text_pieces.sample(random: rng)}<code>:heart:</code> text</h2>" },
+        -> { "<blockquote><p>#{text_pieces.sample(random: rng)}<code>:joy:</code></p></blockquote>" },
+      ]
+
+      native_hits = 0
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..5)) { block_fragments.sample(random: rng).call }.join("\n")
+        expected = legacy_escape.call(sample)
+        actual = described_class.escape_colon_emojis_in_codeblock(sample)
+        native_hits += 1 unless actual.nil?
+        expect(actual).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+
+      expect(native_hits).to eq(1_000)
+    end
+
+    it "passes adversarial differential equivalence across 1,000 arbitrary HTML fragments" do
+      rng = Random.new(987_654)
+      tokens = [
+        "<p>", "</p>", "<div>", "</div>", "<code>", "</code>", "<pre>", "</pre>",
+        "<span>", "</span>", "<ul>", "</ul>", "<li>", "</li>", "<br>", "<br/>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\">", "<a href=':joy:'>", "</a>",
+        ":joy:", ":+1:", ":not_an_emoji:joy:", ":not_an_emoji::joy:", "hello", " ", "\n",
+        "&amp;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&", "<", ">", "<!-- :joy: -->"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { tokens.sample(random: rng) }.join
+        expected = legacy_escape.call(sample)
+        native = described_class.escape_colon_emojis_in_codeblock(sample)
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+        expect(Html::Parser.new(sample.dup).escape_colon_emojis_in_codeblock.html)
+          .to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".title_for_metadata (Article#title_for_metadata)" do
+    let(:legacy_title_for_metadata) do
+      lambda do |title|
+        title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
+      end
+    end
+
+    it "matches Article#title_for_metadata across edge cases" do
+      [
+        "",
+        "   ",
+        "\t\n\r\v\f\0",
+        "This is a regular title",
+        "Line one\nLine two",
+        "First paragraph\n\nSecond paragraph",
+        "Line one\n\n\nLine two",
+        "  \nLine one\nLine two\n  ",
+        "Line one  \n  Line two  \n  \n  Paragraph two",
+        "Check this out\nhttps://example.com\n\nMore text",
+        "These are the best ways to write a quickie:\n\n- Make it short\n- Make it great\n- Make it magoo\n\n" \
+        "This is how you do it.\n\nOr is it how you do it?\n\nI don't know, is it really?\n\n" \
+        "Really?\nReally?\nI dunno.",
+        "\0\t\n\r\v\f  hello\t\r\nworld  \0\n",
+        "a\0 \0b",
+        "a\u00A0\u3000b\nc",
+        "日本語\n\n🎉\tタイトル",
+      ].each do |title|
+        expected = legacy_title_for_metadata.call(title)
+        expect(described_class.title_for_metadata(title)).to eq(expected), title.inspect
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && title.present?
+          article = Article.new(type_of: "status", title: title)
+          expect(article.title_for_metadata).to eq(expected), title.inspect
+        end
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves Article#title_for_metadata fallback" do
+      [
+        nil,
+        false,
+        123,
+        :title,
+        ActiveSupport::SafeBuffer.new("Line one\nLine two"),
+        "Line one\nLine two".b,
+        "Line one\nLine two".encode("US-ASCII"),
+        "Line one\nLine two".encode("UTF-16LE"),
+        +"Line one\nLine two\xFF",
+      ].each do |input|
+        expect(described_class.title_for_metadata(input)).to be_nil, input.inspect
+      end
+
+      if defined?(Article) && Article.method_defined?(:title_for_metadata)
+        article = Article.new(type_of: "status")
+        article.title = "Line one\nLine two".encode("US-ASCII")
+        expect(article.title_for_metadata).to eq("Line one Line two")
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", " ", "  ", "\t", "\n", "\r", "\r\n", "\n\n", "\v", "\f", "\0",
+        "\u00A0", "\u2000", "\u3000", "Line one", "Paragraph", "- bullet",
+        "https://example.com/path?a=1&b=2", "日本語", "🎉", "café", "a\0b"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { tokens.sample(random: rng) }.join
+        expected = legacy_title_for_metadata.call(sample)
+        actual = described_class.title_for_metadata(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && sample.present?
+          article = Article.new(type_of: "status", title: sample)
+          expect(article.title_for_metadata).to eq(expected), message
+        end
+      end
+    end
+  end
+
+  describe ".strip_rgi_emoji (EmojiOnlyValidator & Redcarpet::Render::HTMLRouge#slugify)" do
+    it "strips single, ZWJ, keycap, skin-tone, and flag RGI emojis while preserving non-RGI text",
+       :aggregate_failures do
+      expect(described_class.strip_rgi_emoji("🍀")).to eq("")
+      expect(described_class.strip_rgi_emoji("👍🏽")).to eq("")
+      expect(described_class.strip_rgi_emoji("👨‍👩‍👧‍👦")).to eq("")
+      expect(described_class.strip_rgi_emoji("🏴󠁧󠁢󠁥󠁮󠁧󠁿")).to eq("")
+      expect(described_class.strip_rgi_emoji("#️⃣1️⃣*️⃣")).to eq("")
+      expect(described_class.strip_rgi_emoji("#\uFE0F")).to eq("#\uFE0F")
+      expect(described_class.strip_rgi_emoji("#")).to eq("#")
+      expect(described_class.strip_rgi_emoji("Hello 🚀 World 🎉!")).to eq("Hello  World !")
+
+      unchanged = +"plain text without emojis"
+      expect(described_class.strip_rgi_emoji(unchanged)).to equal(unchanged)
+
+      renderer = Redcarpet::Render::HTMLRouge.new
+      expect(renderer.header("Hello 🚀 World!", 2)).to include('href="#hello-world"')
+    end
+  end
+
+  describe ".wcag_contrast_ratio (Color::Accessibility#low_contrast?)" do
+    let(:legacy_wcag_ratio) do
+      lambda do |rgb1, rgb2|
+        valid = ->(s) { s.is_a?(String) && s.match?(/\A(?:[a-f0-9]{3}|[a-f0-9]{6})\z/i) }
+        return unless valid.call(rgb1) && valid.call(rgb2)
+
+        to_lum = lambda do |rgb|
+          s = rgb.size == 3 ? "#{rgb}#{rgb}" : rgb
+          channels = [s[0, 2], s[2, 2], s[4, 2]].map do |hex|
+            v = hex.to_i(16) / 255.0
+            v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055)**2.4
+          end
+          (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2])
+        end
+
+        l1 = to_lum.call(rgb1)
+        l2 = to_lum.call(rgb2)
+        l1 > l2 ? (l1 + 0.05) / (l2 + 0.05) : (l2 + 0.05) / (l1 + 0.05)
+      end
+    end
+
+    it "matches WCAG 2.0 relative luminance and contrast ratio across 1,000 random color pairs" do
+      expect(described_class.wcag_contrast_ratio("ffffff", "000000")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("000", "FFF")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("invalid", "ffffff")).to be_nil
+
+      rng = Random.new(424_242)
+      hex_chars = "0123456789abcdefABCDEF".chars
+
+      1_000.times do |iteration|
+        c1 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        c2 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        expected = legacy_wcag_ratio.call(c1, c2)
+        actual = described_class.wcag_contrast_ratio(c1, c2)
+        expect(actual).to be_within(1e-12).of(expected), "iteration #{iteration}: #{c1} vs #{c2}"
+      end
+    end
+  end
+
+  describe "Custom Feed & Query-Pipeline Primitives (/stories/feed pattern)" do
+    describe ".activity_distinct_days_since and .activity_pageviews_since (FeedConfig.active_user?)" do
+      let(:legacy_distinct_days) do
+        lambda do |entries, cutoff|
+          entries.filter_map do |entry|
+            timestamp = entry.is_a?(Array) ? entry[1] : nil
+            next unless timestamp
+
+            dt = timestamp.to_datetime
+            dt.to_date if dt >= cutoff
+          rescue StandardError
+            nil
+          end.uniq.size
+        end
+      end
+
+      let(:legacy_pageviews_since) do
+        lambda do |entries, cutoff|
+          entries.count do |entry|
+            timestamp = entry.is_a?(Array) ? entry[1] : nil
+            next false unless timestamp
+
+            timestamp.to_datetime > cutoff
+          rescue StandardError
+            false
+          end
+        end
+      end
+
+      it "handles ISO-8601, SQL timestamps, timezone offsets, TimeWithZone, and malformed entries" do
+        cutoff = Time.utc(2026, 10, 20, 12, 0, 0)
+        entries = [
+          [101, "2026-10-27T14:23:45Z", 30],
+          [102, "2026-10-27T18:00:00.123456Z", 45],
+          [103, "2026-10-26T23:30:00-04:00", 20], # Local date 2026-10-26 even though UTC is 2026-10-27 03:30
+          [104, "2026-10-24 09:15:00 UTC", 15],
+          [105, "2026-10-21", 10],
+          [106, "2026-10-15T12:00:00Z", 10], # Older than cutoff
+          [107, "not-a-timestamp"],
+          [108, nil],
+          "malformed-entry",
+          [],
+        ]
+
+        expect(described_class.activity_distinct_days_since(entries, cutoff))
+          .to eq(legacy_distinct_days.call(entries, cutoff))
+        expect(described_class.activity_pageviews_since(entries, cutoff))
+          .to eq(legacy_pageviews_since.call(entries, cutoff))
+
+        # Defer non-ISO strings containing digits to Ruby fallback
+        non_iso = [[101, "Oct 27, 2026 12:00:00"]]
+        expect(described_class.activity_distinct_days_since(non_iso, cutoff)).to be_nil
+      end
+
+      it "passes differential equivalence across 1,000 generated activity histories" do
+        rng = Random.new(424_242)
+        base_time = Time.utc(2026, 10, 27, 15, 0, 0)
+        cutoff_7d = base_time - 7.days
+        cutoff_24h = base_time - 24.hours
+        offsets = ["Z", "+00:00", "-04:00", "+05:30", "-07:00", " UTC"]
+
+        1_000.times do |iteration|
+          count = rng.rand(0..40)
+          entries = Array.new(count) do
+            case rng.rand(10)
+            when 0
+              [rng.rand(1..500), "invalid-timestamp"]
+            when 1
+              [rng.rand(1..500), nil]
+            else
+              t = base_time - rng.rand(0..(14 * 86_400)).seconds
+              offset = offsets.sample(random: rng)
+              iso = if offset == " UTC"
+                      t.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
+                    elsif offset == "Z"
+                      t.utc.iso8601
+                    else
+                      t.localtime(offset).iso8601
+                    end
+              [rng.rand(1..500), iso, rng.rand(5..120)]
+            end
+          end
+
+          expected_days = legacy_distinct_days.call(entries, cutoff_7d)
+          actual_days = described_class.activity_distinct_days_since(entries, cutoff_7d)
+          expect(actual_days).to eq(expected_days), "iteration #{iteration} distinct days"
+
+          expected_views = legacy_pageviews_since.call(entries, cutoff_24h)
+          actual_views = described_class.activity_pageviews_since(entries, cutoff_24h)
+          expect(actual_views).to eq(expected_views), "iteration #{iteration} pageviews"
+        end
+      end
+    end
+
+    describe ".dynamic_shuffle_count (Articles::Feeds::Custom#calculate_dynamic_shuffle_count)" do
+      let(:legacy_shuffle_count) do
+        lambda do |raw_ts, now_time, weight|
+          most_recent_timestamp = raw_ts.to_datetime
+          hours_since_last_view = ((now_time - most_recent_timestamp) / 1.hour).ceil
+          base_shuffle_count = [21 - hours_since_last_view, 5].max
+          weighted_shuffle_count = (base_shuffle_count * weight).round
+          weighted_shuffle_count.clamp(5, 20)
+        rescue StandardError
+          5
+        end
+      end
+
+      it "passes differential equivalence across 1,000 generated timestamps and shuffle weights" do
+        rng = Random.new(424_242)
+        now_time = Time.utc(2026, 10, 27, 16, 30, 0)
+
+        1_000.times do |iteration|
+          seconds_ago = rng.rand(-3600..(48 * 3600))
+          ts_str = (now_time - seconds_ago.seconds).utc.iso8601(3)
+          weight = (rng.rand * 3.0).round(3)
+
+          expected = legacy_shuffle_count.call(ts_str, now_time, weight)
+          actual = described_class.dynamic_shuffle_count(ts_str, now_time, weight)
+          expect(actual).to eq(expected),
+                            "iteration #{iteration}: ts=#{ts_str} weight=#{weight}"
+        end
+      end
+    end
+
+    describe ".weighted_shuffle (Articles::Feeds::Custom#weighted_shuffle)" do
+      let(:legacy_weighted_shuffle) do
+        lambda do |items, weight, randoms|
+          return items if weight <= 0 || items.size <= 1
+
+          items.each_with_index.sort_by do |_item, index|
+            index + ((randoms[index] * (4 * weight)) - (2 * weight))
+          end.map(&:first)
+        end
+      end
+
+      it "matches legacy Ruby weighted_shuffle permutation across 1,000 generated lists" do
+        rng = Random.new(424_242)
+
+        1_000.times do |iteration|
+          len = rng.rand(0..50)
+          items = (1..len).map { |i| "article_#{i}" }
+          weight = (rng.rand * 5.0).round(4)
+          randoms = Array.new(len) { rng.rand }
+
+          expected = legacy_weighted_shuffle.call(items, weight, randoms)
+          actual = described_class.weighted_shuffle(items, weight, randoms: randoms)
+          expect(actual).to eq(expected), "iteration #{iteration}: len=#{len} weight=#{weight}"
+        end
+      end
+    end
+
+    describe ".format_video_duration (Article#video_duration_in_minutes)" do
+      let(:legacy_video_duration) do
+        lambda do |seconds|
+          duration = ActiveSupport::Duration.build(seconds.to_i).parts
+          duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+          minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
+          return minutes_and_seconds if duration[:hours] < 1
+
+          "#{duration[:hours]}:#{minutes_and_seconds}"
+        end
+      end
+
+      it "matches ActiveSupport::Duration formatting across edge cases and 1,000 random durations" do
+        [0, 1, 9, 59, 60, 61, 323, 599, 600, 3599, 3600, 3661, 36_000, 86_399, 86_400, 90_061,
+         604_800, 2_629_746, 31_556_952, nil].each do |secs|
+          expected = legacy_video_duration.call(secs)
+          expect(described_class.format_video_duration(secs)).to eq(expected), secs.inspect
+          article = Article.new(video_duration_in_seconds: secs)
+          expect(article.video_duration_in_minutes).to eq(expected), secs.inspect
+        end
+
+        expect(described_class.format_video_duration(-5)).to be_nil
+        neg_article = Article.new(video_duration_in_seconds: -5)
+        expect(neg_article.video_duration_in_minutes).to eq(legacy_video_duration.call(-5))
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          secs = rng.rand(0..200_000)
+          expected = legacy_video_duration.call(secs)
+          actual = described_class.format_video_duration(secs)
+          expect(actual).to eq(expected), "iteration #{iteration}: secs=#{secs}"
+        end
+      end
+    end
+
+    describe ".sql_int_list, .sql_string_array_literal, .sql_vector_literal, and .sql_squish" do
+      it "matches Rails/ActiveRecord SQL formatting across 1,000 generated inputs" do
+        expect(described_class.sql_int_list([], "-1")).to eq("-1")
+        expect(described_class.sql_int_list([nil, false, ""], "-1")).to eq("-1")
+        expect(described_class.sql_int_list([10, nil, 20, 30], "-1")).to eq("10,20,30")
+        expect(described_class.sql_string_array_literal(["ruby", "o'reilly"], "text"))
+          .to eq("ARRAY['ruby','o''reilly']::text[]")
+        expect(described_class.sql_vector_literal([0.1, 0.0, -1.5])).to eq("[0.1,0.0,-1.5]")
+        expect(described_class.sql_squish("  SELECT   *\n\tFROM   articles \r\n WHERE id = 1  "))
+          .to eq("SELECT * FROM articles WHERE id = 1")
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          ids = Array.new(rng.rand(0..30)) { rng.rand < 0.2 ? nil : rng.rand(1..100_000) }
+          compact_ids = ids.compact_blank
+          expected_ids = compact_ids.empty? ? "-1" : compact_ids.join(",")
+          expect(described_class.sql_int_list(ids, "-1")).to eq(expected_ids), "iteration #{iteration}"
+
+          floats = Array.new(rng.rand(1..16)) { ((rng.rand * 20.0) - 10.0).round(4) }
+          expect(described_class.sql_vector_literal(floats)).to eq("[#{floats.join(',')}]")
+        end
+      end
+    end
+
+    describe ".feed_config_score_sql (FeedConfig#score_sql)" do
+      include ActiveSupport::Testing::TimeHelpers
+
+      it "matches FeedConfig#legacy_score_sql byte-for-byte across 1,000 randomized configs and user activity states" do
+        rng = Random.new(424_242)
+        tag_pool = %w[ruby rust javascript webdev ai beginners career devops postgres performance]
+        label_pool = %w[featured_candidate staff_pick evergreen deep_dive discussion]
+        lang_pool = %w[en es fr pt de ja]
+
+        travel_to(Time.utc(2026, 10, 27, 15, 0, 0)) do
+          rec_list = instance_double(RecommendedArticlesList, article_ids: [111, 222, 333])
+          rec_relation = instance_double(ActiveRecord::Relation, last: rec_list)
+          allow(rec_relation).to receive(:where).and_return(rec_relation)
+          allow(RecommendedArticlesList).to receive(:where).and_return(rec_relation)
+
+          1_000.times do |iteration|
+            config = FeedConfig.new(
+              feed_success_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              comment_score_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              score_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              organization_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              user_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              follow_status_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              tag_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              subforem_follow_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              label_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recency_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              comment_recency_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              lookback_window_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              precomputed_selections_weight: rng.rand < 0.4 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_article_suppression_rate: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              published_today_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              general_past_day_bonus_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recently_active_past_day_bonus_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_subforem_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              semantic_similarity_weight: rng.rand < 0.4 ? (rng.rand * 10.0).round(3) : 0.0,
+              ai_disclosure_matching_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              autonomous_ai_penalty_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              featured_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              favorited_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              status_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              clickbait_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              compellingness_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              language_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              randomness_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_tag_count_min: 2,
+              recent_tag_count_max: 5,
+              all_time_tag_count_min: 2,
+              all_time_tag_count_max: 5,
+            )
+
+            recent_views = Array.new(rng.rand(0..8)) do
+              [rng.rand(100..999), (Time.current - rng.rand(1..72).hours).utc.iso8601, 30]
+            end
+            tags = tag_pool.sample(rng.rand(0..8), random: rng)
+            labels = label_pool.sample(rng.rand(0..3), random: rng)
+            embedding = rng.rand < 0.5 ? Array.new(16) { ((rng.rand * 2.0) - 1.0).round(4) } : nil
+
+            activity_double = if rng.rand < 0.85
+                                instance_double(
+                                  UserActivity,
+                                  recently_viewed_articles: recent_views,
+                                  alltime_users: Array.new(rng.rand(0..10)) { rng.rand(1..500) },
+                                  recent_users: Array.new(rng.rand(0..5)) { rng.rand < 0.2 ? nil : rng.rand(1..500) },
+                                  alltime_organizations: Array.new(rng.rand(0..6)) { rng.rand(1..200) },
+                                  recent_organizations: Array.new(rng.rand(0..4)) { rng.rand(1..200) },
+                                  alltime_subforems: Array.new(rng.rand(0..4)) { rng.rand(1..20) },
+                                  recent_subforems: Array.new(rng.rand(0..4)) { rng.rand(1..20) },
+                                  relevant_tags: tags,
+                                  recent_labels: labels,
+                                  interest_embedding: embedding,
+                                )
+                              end
+
+            ai_mode = %i[show_all minimize_ai hide_fully_autonomous].sample(random: rng)
+            setting_double = instance_double(
+              Users::Setting,
+              minimize_ai_feed_ai?: ai_mode == :minimize_ai,
+              hide_fully_autonomous_feed_ai?: ai_mode == :hide_fully_autonomous,
+            )
+
+            langs = lang_pool.sample(rng.rand(0..3), random: rng)
+            user_double = Struct.new(
+              :id,
+              :user_activity,
+              :cached_following_users_ids,
+              :cached_following_organizations_ids,
+              :cached_followed_tag_names,
+              :cached_languages,
+              :setting,
+            ).new(
+              42,
+              activity_double,
+              [10, 20],
+              [100, 200],
+              tags,
+              langs,
+              setting_double,
+            )
+
+            root_match = rng.rand < 0.6
+            RequestStore.store[:subforem_id] = 1
+            RequestStore.store[:root_subforem_id] = root_match ? 1 : 2
+            ENV["OPTIMIZED_FEED_TAGS_QUERY"] = rng.rand < 0.5 ? "true" : nil
+
+            seed = rng.rand(1..1_000_000)
+            srand(seed)
+            actual_sql = config.score_sql(user_double)
+            srand(seed)
+            expected_sql = config.__send__(:legacy_score_sql, user_double)
+
+            expect(actual_sql).to eq(expected_sql), "iteration #{iteration}"
+          end
+
+          # Verify out-of-domain float transparently falls back to legacy_score_sql
+          extreme_config = FeedConfig.new(feed_success_weight: 1e-7)
+          minimal_user = Struct.new(
+            :id,
+            :user_activity,
+            :cached_following_users_ids,
+            :cached_following_organizations_ids,
+            :cached_followed_tag_names,
+          ).new(1, nil, [], [], [])
+          expect(extreme_config.score_sql(minimal_user))
+            .to eq(extreme_config.__send__(:legacy_score_sql, minimal_user))
+        end
+      ensure
+        ENV.delete("OPTIMIZED_FEED_TAGS_QUERY")
+        RequestStore.store.delete(:subforem_id)
+        RequestStore.store.delete(:root_subforem_id)
+      end
     end
   end
 end

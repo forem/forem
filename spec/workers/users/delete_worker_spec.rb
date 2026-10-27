@@ -96,6 +96,15 @@ RSpec.describe Users::DeleteWorker, type: :worker do
         end.to change(GDPRDeleteRequest, :count).by(1)
       end
 
+      it "creates a gdpr-delete record with name, email, username, and user_id" do
+        worker.perform(user.id, true)
+        gdpr_request = GDPRDeleteRequest.last
+        expect(gdpr_request.user_id).to eq(user.id)
+        expect(gdpr_request.email).to eq(user.email)
+        expect(gdpr_request.username).to eq(user.username)
+        expect(gdpr_request.name).to eq(user.name)
+      end
+
       # Merges delete the merged-away row through this worker, but nobody
       # requested erasure - the person's content moved to the kept account.
       it "does not create a gdpr-delete record for non-GDPR (merge) deletions" do

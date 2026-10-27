@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/admin/member_manager/users" do
-  let!(:user) do
+  let(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
@@ -13,8 +13,9 @@ RSpec.describe "/admin/member_manager/users" do
 
   describe "GET /admin/member_manager/users" do
     it "renders to appropriate page" do
+      username = user.username
       get admin_users_path
-      expect(response.body).to include(user.username)
+      expect(response.body).to include(username)
     end
 
     it "does not query roles separately for each user displayed" do
@@ -174,6 +175,37 @@ RSpec.describe "/admin/member_manager/users" do
     it "displays a user's current roles in the 'Overview' tab" do
       get admin_user_path(user.id)
       expect(response.body).to include("Roles")
+    end
+
+    it "shows the subforem domain for a subforem moderator role" do
+      subforem = create(:subforem)
+      user.add_role(:subforem_moderator, subforem)
+
+      get admin_user_path(user.id)
+
+      expect(response).to be_successful
+      expect(response.body).to include(subforem.domain)
+    end
+
+    it "does not show an unrelated tag's name for a subforem moderator role" do
+      tag = create(:tag)
+      subforem = create(:subforem, id: tag.id)
+      user.add_role(:subforem_moderator, subforem)
+
+      get admin_user_path(user.id)
+
+      expect(response.body).to include(subforem.domain)
+      expect(response.body).not_to include(tag.name)
+    end
+
+    it "renders the page for a user with a podcast admin role" do
+      podcast = create(:podcast)
+      user.add_role(:podcast_admin, podcast)
+
+      get admin_user_path(user.id)
+
+      expect(response).to be_successful
+      expect(response.body).to include("Podcast Admin")
     end
 
     it "displays a user's current roles in the 'Emails' tab" do

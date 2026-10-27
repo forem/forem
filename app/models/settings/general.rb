@@ -13,13 +13,16 @@ module Settings
     setting :article_published_slack_channel, type: :string, default: "activity"
     # AI confidence needed to auto-approve an appeal. Scores are capped at 1.0, so the 1.01 default
     # disables auto-approval and routes every appeal to human review; lower it to opt in.
-    setting :appeal_auto_unflag_threshold, type: :float, default: 1.01
+    setting :appeal_auto_unflag_threshold,
+            type: :float,
+            default: 1.01,
+            validates: { numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1.01 } }
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current
 
     # Core setup
-    setting :waiting_on_first_user, type: :boolean, default: !User.exists?
+    setting :waiting_on_first_user, type: :boolean, default: proc { !User.exists? }
     setting :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
     # API Tokens
@@ -233,6 +236,23 @@ module Settings
     
         # c) return the raw value
         value
+      end
+
+      # Appeal assessments run in Sidekiq (Appeals::AiReviewWorker), where RequestStore has no
+      # subforem_id, so store the threshold globally (subforem_id: nil) even when saved from a
+      # subforem-scoped admin request.
+      def set_appeal_auto_unflag_threshold(value, subforem_id: nil) # rubocop:disable Lint/UnusedMethodArgument
+        record = find_by(var: "appeal_auto_unflag_threshold", subforem_id: nil) ||
+          new(var: "appeal_auto_unflag_threshold", subforem_id: nil)
+        record.value = convert_string_to_value_type(:float, value)
+        record.save!
+        where(var: "appeal_auto_unflag_threshold").where.not(subforem_id: nil).delete_all
+        clear_cache
+        value
+      end
+
+      def appeal_auto_unflag_threshold=(value)
+        set_appeal_auto_unflag_threshold(value)
       end
     end
   end

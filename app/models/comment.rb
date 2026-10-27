@@ -8,6 +8,7 @@ class Comment < ApplicationRecord
   include Reactable
   include AlgoliaSearchable
   include ActivityTrackable
+  include AiDisclosable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -17,17 +18,6 @@ class Comment < ApplicationRecord
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
-  }
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
-  end
 
   def ai_disclosure_label
     case ai_disclosure_level
@@ -397,23 +387,18 @@ class Comment < ApplicationRecord
 
   def after_create_checks
     create_id_code
-    touch_user
   end
 
   def create_id_code
     update_column(:id_code, id.to_s(26))
   end
 
-  def touch_user
-    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
-  end
-
   def expire_root_fragment
     if root_exists?
       root_record = root
       root_record.touch if root_record&.persisted? && !root_record.destroyed?
-    else
-      touch if persisted? && !destroyed?
+    elsif persisted? && !destroyed? && !saved_changes?
+      touch
     end
   end
 

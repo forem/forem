@@ -127,4 +127,25 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
       expect(episode.slug).to start_with("zachiem-riezhissieram-priezientatsii-i-kak-ikh-sozdaiut")
     end
   end
+
+  context "when item has non-http(s) URLs" do
+    let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/developertea.rss", false).items.first }
+    let(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
+
+    it "ignores javascript: enclosure_url and does not create an episode" do
+      allow(item).to receive(:enclosure_url).and_return("javascript:alert(1)")
+
+      expect do
+        expect(described_class.call(podcast.id, item)).to be_nil
+      end.not_to change(PodcastEpisode, :count)
+    end
+
+    it "strips javascript: website_url from episode attributes" do
+      stub_request(:head, item.enclosure_url).to_return(status: 200)
+      allow(item).to receive(:link).and_return("javascript:alert(1)")
+
+      episode = described_class.call(podcast.id, item)
+      expect(episode.website_url).to be_nil
+    end
+  end
 end

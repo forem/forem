@@ -233,5 +233,21 @@ RSpec.describe Users::Setting do
       end
     end
   end
+
+  describe "#generate_social_images" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    it "enqueues SocialImageWorker for User when brand_color1 changes" do
+      setting.update!(brand_color1: "#0f766e")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(user.id, "User")
+    end
+
+    it "does not enqueue SocialImageWorker when non-displayed settings change" do
+      setting.update!(config_theme: :dark_theme, experience_level: 5)
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+    end
+  end
 end
 # rubocop:enable Layout/LineLength

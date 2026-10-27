@@ -500,6 +500,20 @@ class Billboard < ApplicationRecord
     SurveyCompletion.user_completed_any?(user: user, survey_ids: exclude_survey_ids)
   end
 
+  def render_preview_html(markdown)
+    return if markdown.blank?
+
+    if render_mode == "forem_markdown"
+      renderer = ContentRenderer.new(markdown, source: self, user: creator)
+      renderer.process(prefix_images_options: { width: prefix_width,
+                                                quality: 100,
+                                                synchronous_detail_detection: false }).processed_html.delete("\n")
+    else
+      Html::Parser.new(markdown)
+        .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: false).html
+    end
+  end
+
   private
 
   def update_content_updated_at_if_needed
@@ -643,7 +657,7 @@ class Billboard < ApplicationRecord
   end
 
   def prefix_width
-    placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+    placement_area&.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
   end
 
   def refresh_audience_segment

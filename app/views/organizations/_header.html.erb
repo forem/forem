@@ -8,9 +8,14 @@
     --profile-brand-color: <%= Color::CompareHex.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.88) %>;
   }
 <% if @cover_image_url.present? %>
+  <%# The cover spans the full viewport width, so 1600px covers most 1x screens and 3200px covers 2x. %>
+  <% cover_1x = optimized_image_url(@cover_image_url, width: 1600, random_fallback: false) %>
+  <% cover_2x = optimized_image_url(@cover_image_url, width: 3200, random_fallback: false) %>
   /* === COVER IMAGE MODE === */
   .org-header-cover {
-    background-image: url('<%= optimized_image_url(@cover_image_url, width: 1000, random_fallback: false) %>');
+    background-image: url('<%= cover_1x %>');
+    background-image: -webkit-image-set(url('<%= cover_1x %>') 1x, url('<%= cover_2x %>') 2x);
+    background-image: image-set(url('<%= cover_1x %>') 1x, url('<%= cover_2x %>') 2x);
     background-size: cover;
     background-position: center;
     aspect-ratio: 3 / 1;
@@ -234,8 +239,8 @@
         </span>
         <% if @organization.email.present? %>
           <span class="flex items-center mr-4">
-            <a href="mailto:<%= sanitize @organization.email %>" class="color-base-60 hover:color-base-90">
-              <%= sanitize @organization.email %>
+            <a href="mailto:<%= @organization.email %>" class="color-base-60 hover:color-base-90">
+              <%= @organization.email %>
             </a>
           </span>
         <% end %>

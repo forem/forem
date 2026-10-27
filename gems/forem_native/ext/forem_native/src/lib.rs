@@ -1,6 +1,10 @@
 use std::borrow::Cow;
+use std::sync::atomic::{AtomicU64, Ordering};
+use std::time::{SystemTime, UNIX_EPOCH};
 
-use magnus::{function, prelude::*, Error, Integer, RString, Ruby, Value};
+use magnus::{function, prelude::*, Error, Float, Integer, RArray, RString, Ruby, Value};
+
+static RNG_COUNTER: AtomicU64 = AtomicU64::new(1);
 
 fn split_word_count(text: RString) -> usize {
     // SAFETY: `text.as_slice()` borrows the Ruby String's underlying byte buffer in-place
@@ -22,6 +26,13 @@ fn color_brightness(hex: RString, amount: f64, only_values: bool) -> Option<Stri
     // Returns `nil` for inputs outside the strict `#rrggbb` domain so Ruby can fall back.
     let bytes = unsafe { hex.as_slice() };
     forem_core::color::brightness(bytes, amount, only_values)
+}
+
+fn color_accent(hex: RString, amount: f64) -> Option<String> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
+    // Returns `nil` for malformed hexes or unsupported channel values so Ruby can fall back.
+    let bytes = unsafe { hex.as_slice() };
+    forem_core::color::accent(bytes, amount)
 }
 
 fn color_opacity(hex: RString, alpha: f64) -> Option<String> {
@@ -92,6 +103,19 @@ fn fixer_add_quotes_to_section(
     };
     // Like `sub` without changes, hand back a cheap copy-on-write copy of the input.
     Some(quoted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
+fn fixer_convert_new_lines(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: The borrowed bytes are inspected only by pure forem_core code, and the borrow
+    // ends before any Ruby object is allocated. Invalid UTF-8 is left to the Ruby caller.
+    let converted = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::convert_new_lines(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(converted) => Some(converted),
+        }
+    };
+    Some(converted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
 fn fixer_split_tags(ruby: &Ruby, markdown: RString) -> Option<RString> {
@@ -258,6 +282,22 @@ fn quickie_title_html(title: RString, truncate_for_feed: bool) -> Option<String>
     ))
 }
 
+fn title_for_metadata(ruby: &Ruby, title: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `Article#title_for_metadata` can
+    // fall back to `legacy_title_for_metadata`.
+    let normalized = {
+        let text = unsafe { title.test_as_str() }?;
+        match forem_core::title::title_for_metadata(text) {
+            Cow::Borrowed(slice) if slice.len() == text.len() => None,
+            Cow::Borrowed(slice) => Some(slice.to_owned()),
+            Cow::Owned(owned) => Some(owned),
+        }
+    };
+    Some(normalized.map_or_else(|| RString::new_shared(title), |s| ruby.str_new(&s)))
+}
+
 fn content_includes_title(content: RString, title: RString) -> Option<bool> {
     // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
     // borrows end before returning. `test_as_str` reuses Ruby's cached coderange and returns
@@ -300,6 +340,49 @@ fn subforem_subdomain_host(ruby: &Ruby, host: RString, sld: RString, tld: RStrin
     // the borrows end before returning.
     unsafe {
         forem_core::url::subforem_subdomain_host(host.as_slice(), sld.as_slice(), tld.as_slice())
+    }
+}
+
+fn public_suffix_domain(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we allocate any Ruby objects.
+    let domain = {
+        let bytes = unsafe { host.as_slice() };
+        match forem_core::url::public_suffix_domain(bytes) {
+            None => return ruby.qnil().as_value(),
+            Some(Err(())) => return ruby.qfalse().as_value(),
+            Some(Ok(domain)) => {
+                if domain.as_bytes() == bytes {
+                    None
+                } else {
+                    Some(domain.into_owned().into_bytes())
+                }
+            }
+        }
+    };
+    match domain {
+        None => host.as_value(),
+        Some(bytes) => ruby.enc_str_new(bytes, host.enc_get()).as_value(),
+    }
+}
+
+fn public_suffix_subdomain_host(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we touch the Ruby VM.
+    let outcome = forem_core::url::public_suffix_subdomain_host(unsafe { host.as_slice() });
+    match outcome {
+        None => ruby.qnil().as_value(),
+        Some(forem_core::url::SubforemSubdomain::InvalidDomain) => {
+            ruby.to_symbol("invalid").as_value()
+        }
+        Some(forem_core::url::SubforemSubdomain::Subdomain(true)) => ruby.qtrue().as_value(),
+        Some(forem_core::url::SubforemSubdomain::Subdomain(false)) => ruby.qfalse().as_value(),
     }
 }
 
@@ -359,6 +442,596 @@ fn inline_svg_icon(
     }
 }
 
+fn full_sanitize(html: RString) -> Option<String> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so callers can fall back to `ActionView::Base.full_sanitizer`.
+    forem_core::sanitize::full_sanitize(unsafe { html.test_as_str() }?)
+}
+
+fn slugify_heading_anchor(heading_html: RString) -> Option<String> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before returning. `test_as_str` reuses Ruby's cached coderange and returns
+    // `None` for invalid UTF-8 so `HeadingAnchors.slugify` can fall back to `legacy_slugify`.
+    let text = unsafe { heading_html.test_as_str() }?;
+    forem_core::text::slugify_heading_anchor(text)
+}
+
+fn beautified_url(ruby: &Ruby, url: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `ApplicationHelper#beautified_url`
+    // can fall back to `legacy_beautified_url`.
+    let beautified = {
+        let text = unsafe { url.test_as_str() }?;
+        match forem_core::text::beautified_url(text) {
+            Cow::Borrowed(slice) if slice.len() == text.len() => None,
+            Cow::Borrowed(slice) => Some(slice.to_owned()),
+            Cow::Owned(owned) => Some(owned),
+        }
+    };
+    Some(beautified.map_or_else(|| RString::new_shared(url), |s| ruby.str_new(&s)))
+}
+
+fn parse_emojis(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `Html::Parser` keeps Ruby's semantics.
+    let parsed = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::emoji::parse_emojis(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(parsed) => Some(parsed),
+        }
+    };
+    Some(parsed.map_or(html, |s| ruby.str_new(&s)))
+}
+
+fn escape_colon_emojis_in_codeblock(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. Returns `None` for invalid UTF-8 or
+    // HTML fragments needing Nokogiri normalization so `Html::Parser` falls back to Nokogiri.
+    let escaped = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::emoji::escape_colon_emojis_in_codeblock(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(escaped) => Some(escaped),
+        }
+    };
+    Some(escaped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn emoji_by_alias(alias_name: RString) -> Option<&'static str> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // returned `&'static str` lives in `.rodata`.
+    let text = unsafe { alias_name.test_as_str() }?;
+    forem_core::emoji::lookup_emoji(text)
+}
+
+fn strip_rgi_emoji(ruby: &Ruby, text: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let stripped = {
+        let s = unsafe { text.test_as_str() }?;
+        match forem_core::emoji::strip_rgi_emoji(s) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(stripped) => Some(stripped),
+        }
+    };
+    Some(stripped.map_or(text, |s| ruby.str_new(&s)))
+}
+
+fn wcag_contrast_ratio(rgb1: RString, rgb2: RString) -> Option<f64> {
+    // SAFETY: Same zero-copy `RString` slice borrows; `forem_core` never calls into Ruby.
+    let bytes1 = unsafe { rgb1.as_slice() };
+    let bytes2 = unsafe { rgb2.as_slice() };
+    forem_core::color::wcag_contrast_ratio(bytes1, bytes2)
+}
+
+#[derive(Clone, Copy)]
+enum TimestampEntryOutcome {
+    Parsed(forem_core::feed::ParsedTimestamp),
+    Skip,
+    DeferToRuby,
+}
+
+fn classify_timestamp_value(value: Value) -> TimestampEntryOutcome {
+    if value.is_nil() {
+        return TimestampEntryOutcome::Skip;
+    }
+    if let Some(rstr) = RString::from_value(value) {
+        if !rstr.is_utf8_compatible_encoding() {
+            return TimestampEntryOutcome::DeferToRuby;
+        }
+        // SAFETY: `rstr.as_slice()` borrows the Ruby String's byte buffer in-place.
+        // `forem_core::feed::parse_timestamp` is pure Rust and never touches the Ruby VM.
+        let bytes = unsafe { rstr.as_slice() };
+        if let Some(ts) = forem_core::feed::parse_timestamp(bytes) {
+            return TimestampEntryOutcome::Parsed(ts);
+        }
+        // If there are no ASCII digits (e.g. `"not-a-timestamp"`, `"invalid"`, `""`),
+        // `String#to_datetime` is guaranteed to raise `Date::Error`, which callers rescue as nil.
+        if !bytes.iter().any(|b| b.is_ascii_digit()) {
+            return TimestampEntryOutcome::Skip;
+        }
+        return TimestampEntryOutcome::DeferToRuby;
+    }
+    if value.respond_to("tv_sec", false).unwrap_or(false) {
+        let Ok(tv_sec) = value.funcall::<_, _, i64>("tv_sec", ()) else {
+            return TimestampEntryOutcome::DeferToRuby;
+        };
+        let tv_nsec: u32 = value.funcall("tv_nsec", ()).unwrap_or(0);
+        let utc_offset: i64 = value.funcall("utc_offset", ()).unwrap_or(0);
+        return TimestampEntryOutcome::Parsed(
+            forem_core::feed::ParsedTimestamp::from_epoch_and_offset(tv_sec, tv_nsec, utc_offset),
+        );
+    }
+    if value.respond_to("to_time", false).unwrap_or(false) {
+        let Ok(time_val) = value.funcall::<_, _, Value>("to_time", ()) else {
+            return TimestampEntryOutcome::DeferToRuby;
+        };
+        if time_val.respond_to("tv_sec", false).unwrap_or(false) {
+            let Ok(tv_sec) = time_val.funcall::<_, _, i64>("tv_sec", ()) else {
+                return TimestampEntryOutcome::DeferToRuby;
+            };
+            let tv_nsec: u32 = time_val.funcall("tv_nsec", ()).unwrap_or(0);
+            let utc_offset: i64 = time_val.funcall("utc_offset", ()).unwrap_or(0);
+            return TimestampEntryOutcome::Parsed(
+                forem_core::feed::ParsedTimestamp::from_epoch_and_offset(
+                    tv_sec, tv_nsec, utc_offset,
+                ),
+            );
+        }
+    }
+    TimestampEntryOutcome::DeferToRuby
+}
+
+fn extract_activity_timestamps(entries: RArray) -> Option<Vec<forem_core::feed::ParsedTimestamp>> {
+    // Copy the top-level Value handles so we never hold an `as_slice()` reference across a
+    // fallback `funcall` when an RSpec double stores in-memory `TimeWithZone` objects.
+    let items: Vec<Value> = unsafe { entries.as_slice() }.to_vec();
+    let mut parsed = Vec::with_capacity(items.len());
+    for entry in items {
+        let Some(tuple) = RArray::from_value(entry) else {
+            // Non-Array entries in `recently_viewed_articles` are ignored by `active_user?`.
+            continue;
+        };
+        let ts_val = {
+            let slice = unsafe { tuple.as_slice() };
+            let Some(&val) = slice.get(1) else {
+                continue;
+            };
+            val
+        };
+        match classify_timestamp_value(ts_val) {
+            TimestampEntryOutcome::Parsed(ts) => parsed.push(ts),
+            TimestampEntryOutcome::Skip => continue,
+            TimestampEntryOutcome::DeferToRuby => return None,
+        }
+    }
+    Some(parsed)
+}
+
+fn activity_distinct_days_since(
+    entries: RArray,
+    cutoff_sec: i64,
+    cutoff_nanos: u32,
+) -> Option<usize> {
+    let parsed = extract_activity_timestamps(entries)?;
+    Some(forem_core::feed::count_distinct_activity_days(
+        &parsed,
+        cutoff_sec,
+        cutoff_nanos,
+    ))
+}
+
+fn activity_pageviews_since(entries: RArray, cutoff_sec: i64, cutoff_nanos: u32) -> Option<usize> {
+    let parsed = extract_activity_timestamps(entries)?;
+    Some(forem_core::feed::count_pageviews_since(
+        &parsed,
+        cutoff_sec,
+        cutoff_nanos,
+    ))
+}
+
+fn dynamic_shuffle_count(
+    most_recent: Value,
+    now_sec: i64,
+    now_nanos: u32,
+    shuffle_weight: f64,
+) -> Option<usize> {
+    match classify_timestamp_value(most_recent) {
+        TimestampEntryOutcome::Parsed(ts) => {
+            Some(forem_core::feed::calculate_dynamic_shuffle_count(
+                ts,
+                now_sec,
+                now_nanos,
+                shuffle_weight,
+            ))
+        }
+        TimestampEntryOutcome::Skip => Some(5),
+        TimestampEntryOutcome::DeferToRuby => None,
+    }
+}
+
+#[inline]
+fn extract_f64_value(value: Value) -> Option<f64> {
+    if let Some(fl) = Float::from_value(value) {
+        return Some(fl.to_f64());
+    }
+    if let Some(int) = Integer::from_value(value) {
+        return int.to_i64().ok().map(|v| v as f64);
+    }
+    None
+}
+
+fn weighted_shuffle(
+    ruby: &Ruby,
+    items: RArray,
+    shuffle_weight: f64,
+    randoms: Option<RArray>,
+) -> Option<RArray> {
+    let len = items.len();
+    if len <= 1 || shuffle_weight <= 0.0 || !shuffle_weight.is_finite() {
+        return Some(items);
+    }
+
+    let rand_vec: Vec<f64> = if let Some(r_arr) = randoms {
+        let slice = unsafe { r_arr.as_slice() };
+        if slice.len() < len {
+            return None;
+        }
+        let mut v = Vec::with_capacity(len);
+        for &val in &slice[..len] {
+            v.push(extract_f64_value(val)?);
+        }
+        v
+    } else {
+        let nanos = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map(|d| d.as_nanos() as u64)
+            .unwrap_or(0x5DEECE66D);
+        let seq = RNG_COUNTER.fetch_add(0x9E37_79B9_7F4A_7C15, Ordering::Relaxed);
+        forem_core::feed::xorshift64_star_unit_floats(nanos ^ seq, len)
+    };
+
+    let indices = forem_core::feed::weighted_shuffle_indices(len, shuffle_weight, &rand_vec)?;
+    let source_items: Vec<Value> = unsafe { items.as_slice() }.to_vec();
+    let out = ruby.ary_new_capa(len);
+    for idx in indices {
+        out.push(source_items[idx]).ok()?;
+    }
+    Some(out)
+}
+
+fn format_video_duration(seconds: i64) -> Option<String> {
+    forem_core::feed::format_video_duration(seconds)
+}
+
+fn append_compact_blank_ids(arr: RArray, cap: usize, out: &mut Vec<i64>) -> Option<()> {
+    // SAFETY: `arr.as_slice()` borrows the Ruby Array buffer in-place and we only inspect
+    // immediate Integers, nil/false, or RString byte slices without calling into Ruby.
+    let slice = unsafe { arr.as_slice() };
+    let limit = if cap == 0 {
+        slice.len()
+    } else {
+        cap.min(slice.len())
+    };
+    for &val in &slice[..limit] {
+        if !val.to_bool() {
+            continue;
+        }
+        if let Some(int) = Integer::from_value(val) {
+            out.push(int.to_i64().ok()?);
+            continue;
+        }
+        if let Some(rstr) = RString::from_value(val) {
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            let bytes = unsafe { rstr.as_slice() };
+            if bytes.iter().all(|b| b.is_ascii_whitespace()) {
+                continue;
+            }
+            let text = std::str::from_utf8(bytes).ok()?.trim();
+            let parsed = text.parse::<i64>().ok()?;
+            out.push(parsed);
+            continue;
+        }
+        return None;
+    }
+    Some(())
+}
+
+fn extract_string_vec(arr: RArray, max_items: usize) -> Option<Vec<String>> {
+    // SAFETY: `arr.as_slice()` borrows the Ruby Array buffer in-place and copies UTF-8 strings
+    // out before returning.
+    let slice = unsafe { arr.as_slice() };
+    let limit = if max_items == 0 {
+        slice.len()
+    } else {
+        max_items.min(slice.len())
+    };
+    let mut out = Vec::with_capacity(limit);
+    for &val in &slice[..limit] {
+        let rstr = RString::from_value(val)?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let s = unsafe { rstr.test_as_str() }?;
+        if s.contains('\0') {
+            return None;
+        }
+        out.push(s.to_owned());
+    }
+    Some(out)
+}
+
+fn sql_int_list(ids: RArray, empty_fallback: RString) -> Option<String> {
+    if !empty_fallback.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let mut int_ids = Vec::with_capacity(ids.len());
+    append_compact_blank_ids(ids, 0, &mut int_ids)?;
+    let fallback = unsafe { empty_fallback.test_as_str() }?;
+    Some(forem_core::feed::sql_int_list(&int_ids, fallback))
+}
+
+fn sql_string_array_literal(items: RArray, pg_type: RString) -> Option<String> {
+    if !pg_type.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let strings = extract_string_vec(items, 0)?;
+    let pg_type_str = unsafe { pg_type.test_as_str() }?;
+    Some(forem_core::feed::sql_string_array_literal(
+        &strings,
+        pg_type_str,
+    ))
+}
+
+fn sql_vector_literal(values: RArray) -> Option<String> {
+    let slice = unsafe { values.as_slice() };
+    let mut floats = Vec::with_capacity(slice.len());
+    for &val in slice {
+        floats.push(extract_f64_value(val)?);
+    }
+    forem_core::feed::sql_vector_literal(&floats)
+}
+
+fn sql_squish(sql: RString) -> Option<String> {
+    if !sql.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let text = unsafe { sql.test_as_str() }?;
+    Some(forem_core::feed::sql_squish(text))
+}
+
+fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String> {
+    let w = {
+        let ws = unsafe { weights_arr.as_slice() };
+        if ws.len() < 28 {
+            return None;
+        }
+        forem_core::feed::FeedScoreWeights {
+            feed_success_weight: extract_f64_value(ws[0])?,
+            comment_score_weight: extract_f64_value(ws[1])?,
+            score_weight: extract_f64_value(ws[2])?,
+            organization_follow_weight: extract_f64_value(ws[3])?,
+            user_follow_weight: extract_f64_value(ws[4])?,
+            follow_status_weight: extract_f64_value(ws[5])?,
+            tag_follow_weight: extract_f64_value(ws[6])?,
+            subforem_follow_weight: extract_f64_value(ws[7])?,
+            label_match_weight: extract_f64_value(ws[8])?,
+            recency_weight: extract_f64_value(ws[9])?,
+            comment_recency_weight: extract_f64_value(ws[10])?,
+            lookback_window_weight: extract_f64_value(ws[11])?,
+            precomputed_selections_weight: extract_f64_value(ws[12])?,
+            recent_article_suppression_rate: extract_f64_value(ws[13])?,
+            published_today_weight: extract_f64_value(ws[14])?,
+            general_past_day_bonus_weight: extract_f64_value(ws[15])?,
+            recently_active_past_day_bonus_weight: extract_f64_value(ws[16])?,
+            recent_subforem_weight: extract_f64_value(ws[17])?,
+            semantic_similarity_weight: extract_f64_value(ws[18])?,
+            ai_disclosure_matching_weight: extract_f64_value(ws[19])?,
+            autonomous_ai_penalty_weight: extract_f64_value(ws[20])?,
+            featured_weight: extract_f64_value(ws[21])?,
+            favorited_weight: extract_f64_value(ws[22])?,
+            status_weight: extract_f64_value(ws[23])?,
+            clickbait_score_weight: extract_f64_value(ws[24])?,
+            compellingness_score_weight: extract_f64_value(ws[25])?,
+            language_match_weight: extract_f64_value(ws[26])?,
+            randomness_weight: extract_f64_value(ws[27])?,
+        }
+    };
+
+    let cs: Vec<Value> = unsafe { ctx_arr.as_slice() }.to_vec();
+    if cs.len() < 24 {
+        return None;
+    }
+
+    let has_activity_store = cs[0].to_bool();
+    let optimized_tags_query = cs[10].to_bool();
+    let optimized_tags_limit = Integer::from_value(cs[11])?.to_usize().ok()?;
+    let is_root_subforem = cs[12].to_bool();
+    let ai_pref_code = Integer::from_value(cs[17])?.to_i64().ok()?;
+    let random_seed = Integer::from_value(cs[19])?.to_u32().ok()?;
+    let cutoff_24h_sec = Integer::from_value(cs[20])?.to_i64().ok()?;
+    let cutoff_24h_nanos = Integer::from_value(cs[21])?.to_u32().ok()?;
+    let default_second_pageview_sec = Integer::from_value(cs[22])?.to_i64().ok()?;
+    let cutoff_30d_sec = Integer::from_value(cs[23])?.to_i64().ok()?;
+
+    // Analyze `recently_viewed_articles` in a single pass across all three consumers:
+    // 1. `recent_pageviews_count` (for `recently_active_past_day_bonus_weight`)
+    // 2. `second_latest_pageview_utc_sec` (for `lookback_window_weight`)
+    // 3. `recent_article_ids` (for `recent_article_suppression_rate`)
+    let mut recent_pageviews_count = 0_usize;
+    let mut second_latest_pageview_utc_sec = default_second_pageview_sec;
+    let mut recent_article_ids: Vec<i64> = Vec::new();
+
+    let need_recent_views = w.recently_active_past_day_bonus_weight > 0.0
+        || w.lookback_window_weight > 0.0
+        || (w.recent_article_suppression_rate > 0.0 && has_activity_store);
+
+    if need_recent_views && !cs[1].is_nil() {
+        let views_arr = RArray::from_value(cs[1])?;
+        let view_entries: Vec<Value> = unsafe { views_arr.as_slice() }.to_vec();
+        if w.recent_article_suppression_rate > 0.0 && has_activity_store {
+            recent_article_ids.reserve(view_entries.len());
+        }
+
+        for (idx, entry_val) in view_entries.into_iter().enumerate() {
+            let tuple = RArray::from_value(entry_val)?;
+            let (first_val, second_val) = {
+                let slice = unsafe { tuple.as_slice() };
+                (slice.first().copied(), slice.get(1).copied())
+            };
+
+            if w.recent_article_suppression_rate > 0.0 && has_activity_store {
+                if let Some(id_val) = first_val {
+                    if !id_val.is_nil() {
+                        let int_id = Integer::from_value(id_val)?;
+                        recent_article_ids.push(int_id.to_i64().ok()?);
+                    }
+                }
+            }
+
+            if w.recently_active_past_day_bonus_weight > 0.0
+                || (w.lookback_window_weight > 0.0 && idx == 1)
+            {
+                let ts_val = second_val?;
+                let parsed_ts = match classify_timestamp_value(ts_val) {
+                    TimestampEntryOutcome::Parsed(ts) => ts,
+                    _ => return None,
+                };
+                if w.recently_active_past_day_bonus_weight > 0.0
+                    && parsed_ts.gt_instant(cutoff_24h_sec, cutoff_24h_nanos)
+                {
+                    recent_pageviews_count += 1;
+                }
+                if w.lookback_window_weight > 0.0 && idx == 1 {
+                    second_latest_pageview_utc_sec = parsed_ts.utc_sec;
+                }
+            }
+        }
+    }
+
+    let lookback_window_utc_sec = second_latest_pageview_utc_sec - 18 * 3600;
+
+    let mut organization_follow_ids: Vec<i64> = Vec::new();
+    if w.organization_follow_weight > 0.0 {
+        let cap = Integer::from_value(cs[6])?.to_usize().ok()?;
+        if !cs[5].is_nil() {
+            append_compact_blank_ids(
+                RArray::from_value(cs[5])?,
+                cap,
+                &mut organization_follow_ids,
+            )?;
+        }
+        if !cs[7].is_nil() {
+            append_compact_blank_ids(RArray::from_value(cs[7])?, 0, &mut organization_follow_ids)?;
+        }
+    }
+
+    let mut user_follow_ids: Vec<i64> = Vec::new();
+    if w.user_follow_weight > 0.0 || w.follow_status_weight > 0.0 {
+        let cap = Integer::from_value(cs[3])?.to_usize().ok()?;
+        if !cs[2].is_nil() {
+            append_compact_blank_ids(RArray::from_value(cs[2])?, cap, &mut user_follow_ids)?;
+        }
+        if !cs[4].is_nil() {
+            append_compact_blank_ids(RArray::from_value(cs[4])?, 0, &mut user_follow_ids)?;
+        }
+    }
+
+    let mut subforem_follow_ids: Vec<i64> = Vec::new();
+    if w.subforem_follow_weight > 0.0 && is_root_subforem && !cs[8].is_nil() {
+        append_compact_blank_ids(RArray::from_value(cs[8])?, 0, &mut subforem_follow_ids)?;
+    }
+
+    let tag_names: Vec<String> = if w.tag_follow_weight > 0.0 && !cs[9].is_nil() {
+        let max_tags = if optimized_tags_query {
+            optimized_tags_limit
+        } else {
+            24
+        };
+        extract_string_vec(RArray::from_value(cs[9])?, max_tags)?
+    } else {
+        Vec::new()
+    };
+
+    let label_names: Vec<String> = if w.label_match_weight > 0.0 && !cs[13].is_nil() {
+        extract_string_vec(RArray::from_value(cs[13])?, 0)?
+    } else {
+        Vec::new()
+    };
+
+    let mut precomputed_selection_ids: Vec<i64> = Vec::new();
+    if w.precomputed_selections_weight > 0.0 && !cs[14].is_nil() {
+        append_compact_blank_ids(
+            RArray::from_value(cs[14])?,
+            0,
+            &mut precomputed_selection_ids,
+        )?;
+    }
+
+    let mut recent_subforem_ids: Vec<i64> = Vec::new();
+    if w.recent_subforem_weight > 0.0 && is_root_subforem && !cs[15].is_nil() {
+        append_compact_blank_ids(RArray::from_value(cs[15])?, 0, &mut recent_subforem_ids)?;
+    }
+
+    let mut interest_embedding: Vec<f64> = Vec::new();
+    if w.semantic_similarity_weight > 0.0 && !cs[16].is_nil() {
+        let emb_arr = RArray::from_value(cs[16])?;
+        let slice = unsafe { emb_arr.as_slice() };
+        interest_embedding.reserve(slice.len());
+        for &val in slice {
+            interest_embedding.push(extract_f64_value(val)?);
+        }
+    }
+
+    let languages: Vec<String> =
+        if w.language_match_weight > 0.0 && w.score_weight > 0.0 && !cs[18].is_nil() {
+            extract_string_vec(RArray::from_value(cs[18])?, 0)?
+        } else {
+            Vec::new()
+        };
+
+    let ai_preference = match ai_pref_code {
+        1 => forem_core::feed::AiPreference::MinimizeAi,
+        2 => forem_core::feed::AiPreference::HideFullyAutonomous,
+        _ => forem_core::feed::AiPreference::ShowAll,
+    };
+
+    let ctx = forem_core::feed::FeedScoreContext {
+        recent_pageviews_count,
+        organization_follow_ids: &organization_follow_ids,
+        user_follow_ids: &user_follow_ids,
+        tag_names: &tag_names,
+        optimized_tags_query,
+        optimized_tags_limit,
+        is_root_subforem,
+        subforem_follow_ids: &subforem_follow_ids,
+        label_names: &label_names,
+        lookback_window_utc_sec,
+        second_latest_pageview_utc_sec,
+        precomputed_selection_ids: &precomputed_selection_ids,
+        has_activity_store,
+        recent_article_ids: &recent_article_ids,
+        published_since_24h_utc_sec: cutoff_24h_sec,
+        recent_subforem_ids: &recent_subforem_ids,
+        interest_embedding: &interest_embedding,
+        published_since_30d_utc_sec: cutoff_30d_sec,
+        ai_preference,
+        languages: &languages,
+        random_seed,
+    };
+
+    forem_core::feed::build_feed_config_score_sql(&w, &ctx)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -369,6 +1042,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(calculate_reading_time, 1),
     )?;
     native_mod.define_singleton_method("color_brightness", function!(color_brightness, 3))?;
+    native_mod.define_singleton_method("color_accent", function!(color_accent, 2))?;
     native_mod.define_singleton_method("color_opacity", function!(color_opacity, 2))?;
     native_mod.define_singleton_method(
         "convert_deeply_nested_links_to_html",
@@ -385,6 +1059,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_add_quotes_to_section",
         function!(fixer_add_quotes_to_section, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "fixer_convert_new_lines",
+        function!(fixer_convert_new_lines, 1),
     )?;
     native_mod.define_singleton_method("fixer_split_tags", function!(fixer_split_tags, 1))?;
     native_mod.define_singleton_method(
@@ -410,6 +1088,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
     native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
     native_mod.define_singleton_method("quickie_title_html", function!(quickie_title_html, 2))?;
+    native_mod.define_singleton_method("title_for_metadata", function!(title_for_metadata, 1))?;
     native_mod.define_singleton_method("host_without_www", function!(host_without_www, 1))?;
     native_mod.define_singleton_method(
         "content_includes_title",
@@ -423,7 +1102,49 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "subforem_subdomain_host",
         function!(subforem_subdomain_host, 3),
     )?;
+    native_mod
+        .define_singleton_method("public_suffix_domain", function!(public_suffix_domain, 1))?;
+    native_mod.define_singleton_method(
+        "public_suffix_subdomain_host",
+        function!(public_suffix_subdomain_host, 1),
+    )?;
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;
+    native_mod.define_singleton_method("full_sanitize", function!(full_sanitize, 1))?;
+    native_mod.define_singleton_method(
+        "slugify_heading_anchor",
+        function!(slugify_heading_anchor, 1),
+    )?;
+    native_mod.define_singleton_method("beautified_url", function!(beautified_url, 1))?;
+    native_mod.define_singleton_method("parse_emojis", function!(parse_emojis, 1))?;
+    native_mod.define_singleton_method(
+        "escape_colon_emojis_in_codeblock",
+        function!(escape_colon_emojis_in_codeblock, 1),
+    )?;
+    native_mod.define_singleton_method("emoji_by_alias", function!(emoji_by_alias, 1))?;
+    native_mod.define_singleton_method("strip_rgi_emoji", function!(strip_rgi_emoji, 1))?;
+    native_mod.define_singleton_method("wcag_contrast_ratio", function!(wcag_contrast_ratio, 2))?;
+    native_mod.define_singleton_method(
+        "activity_distinct_days_since",
+        function!(activity_distinct_days_since, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "activity_pageviews_since",
+        function!(activity_pageviews_since, 3),
+    )?;
+    native_mod
+        .define_singleton_method("dynamic_shuffle_count", function!(dynamic_shuffle_count, 4))?;
+    native_mod.define_singleton_method("weighted_shuffle", function!(weighted_shuffle, 3))?;
+    native_mod
+        .define_singleton_method("format_video_duration", function!(format_video_duration, 1))?;
+    native_mod.define_singleton_method("sql_int_list", function!(sql_int_list, 2))?;
+    native_mod.define_singleton_method(
+        "sql_string_array_literal",
+        function!(sql_string_array_literal, 2),
+    )?;
+    native_mod.define_singleton_method("sql_vector_literal", function!(sql_vector_literal, 1))?;
+    native_mod.define_singleton_method("sql_squish", function!(sql_squish, 1))?;
+    native_mod
+        .define_singleton_method("feed_config_score_sql", function!(feed_config_score_sql, 2))?;
     Ok(())
 }

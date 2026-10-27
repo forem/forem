@@ -12,7 +12,9 @@ gems/forem_native/
 ├── crates/
 │   └── forem_core/             # Pure-Rust core library (ZERO Ruby/magnus dependencies)
 │       └── src/
-│           ├── color.rs        # Zero-allocation hex color brightness scaling
+│           ├── color.rs        # Zero-allocation hex color brightness & WCAG contrast
+│           ├── emoji.rs        # Embedded Gemoji & Unicode RGI_Emoji tables
+│           ├── feed.rs         # Composable feed ranking, activity window & SQL scoring kernels
 │           ├── lib.rs
 │           └── markdown.rs     # Zero-allocation Markdown/text algorithms
 ├── ext/

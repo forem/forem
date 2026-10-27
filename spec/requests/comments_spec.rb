@@ -7,7 +7,7 @@ RSpec.describe "Comments" do
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let!(:comment) { create(:comment, commentable: article, user: user) }
+  let(:comment) { create(:comment, commentable: article, user: user) }
 
   describe "agent guidance discovery" do
     before { sign_in user }
@@ -24,14 +24,34 @@ RSpec.describe "Comments" do
   end
 
   describe "GET comment index" do
-    it "returns 200" do
+    it "returns 200 and displays the comment", :aggregate_failures do
       get comment.path
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.processed_html)
     end
 
-    it "displays a comment" do
-      get comment.path
-      expect(response.body).to include(comment.processed_html)
+    it "short-circuits entity lookup on user match and reuses the loaded user", :aggregate_failures do
+      allow(Organization).to receive(:find_by).and_call_original
+      allow(Podcast).to receive(:find_by).and_call_original
+      allow(User).to receive(:staff_account).and_return(nil)
+      comment_path = comment.path
+
+      user_id_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        user_id_queries << sql if sql.include?('FROM "users"') && sql.include?('"users"."id" =')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get comment_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(Organization).not_to have_received(:find_by).with(slug: user.username)
+      expect(Podcast).not_to have_received(:find_by).with(slug: user.username)
+      expect(user_id_queries).to be_empty
     end
 
     context "when there are comments with different score" do
@@ -84,14 +104,16 @@ RSpec.describe "Comments" do
     end
 
     context "when viewing massive comment pages" do
-      let!(:top_level_1) { create(:comment, commentable: article, user: user, score: 100, body_markdown: "Top level one") }
-      let!(:top_level_2) { create(:comment, commentable: article, user: user, score: 50, body_markdown: "Top level two") }
-      let!(:top_level_3) { create(:comment, commentable: article, user: user, score: -10, body_markdown: "Top level three") }
+      let!(:top_level_1) do
+        create(:comment, commentable: article, user: user, score: 100, body_markdown: "Top level one")
+      end
 
       before do
         stub_const("CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED", 2)
         stub_const("CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED", 1)
 
+        create(:comment, commentable: article, user: user, score: 50, body_markdown: "Top level two")
+        create(:comment, commentable: article, user: user, score: 10, body_markdown: "Top level three")
         # Add 2 descendants to top_level_1 which is guaranteed to be first
         create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub one", score: 10)
         create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub two", score: 5)
@@ -108,7 +130,8 @@ RSpec.describe "Comments" do
 
         article.reload
         # Notice confirms that truncation occurred
-        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        text = I18n.t("views.comments.limited_unauthenticated.text_html",
+                      sign_in: "placeholder").split("placeholder").first
         expect(response.body).to include(text)
       end
 
@@ -122,7 +145,8 @@ RSpec.describe "Comments" do
         expect(response.body).to include("Sub one")
         expect(response.body).to include("Sub two")
 
-        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        text = I18n.t("views.comments.limited_unauthenticated.text_html",
+                      sign_in: "placeholder").split("placeholder").first
         expect(response.body).not_to include(text)
       end
     end
@@ -138,16 +162,11 @@ RSpec.describe "Comments" do
     end
 
     context "when the comment is a root" do
-      it "displays the comment hidden message if the comment is hidden" do
+      it "displays the comment hidden message and the comment body if the comment is hidden", :aggregate_failures do
         comment.update(hidden_by_commentable_user: true)
         get comment.path
         hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
         expect(response.body).to include(hidden_comment_message)
-      end
-
-      it "displays the comment anyway if it is hidden" do
-        comment.update(hidden_by_commentable_user: true)
-        get comment.path
         expect(response.body).to include(comment.processed_html)
       end
 
@@ -214,20 +233,16 @@ RSpec.describe "Comments" do
         expect(response.body).not_to include(sibling.processed_html)
       end
 
-      it "shows the hidden comments message in the comment's permalink" do
+      it "shows the hidden comments message and comment body in the comment's permalink", :aggregate_failures do
         get sibling.path
         hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
         expect(response.body).to include(hidden_comment_message)
+        expect(response.body).to include(sibling.processed_html)
       end
 
       it "does not show the sibling comment in the child's comment permalink" do
         get child.path
         expect(response.body).not_to include(sibling.processed_html)
-      end
-
-      it "shows the comment in the permalink" do
-        get sibling.path
-        expect(response.body).to include(sibling.processed_html)
       end
     end
 
@@ -255,14 +270,10 @@ RSpec.describe "Comments" do
         expect(response.body).to include(fourth_level_child.processed_html)
       end
 
-      it "shows the comment in the permalink" do
-        get third_level_child.path
-        expect(response.body).to include(third_level_child.processed_html)
-      end
-
-      it "shows the fourth level child in the hidden comment's permalink" do
+      it "shows the comment and its fourth level child in the hidden comment's permalink", :aggregate_failures do
         fourth_level_child
         get third_level_child.path
+        expect(response.body).to include(third_level_child.processed_html)
         expect(response.body).to include(fourth_level_child.processed_html)
       end
     end
@@ -363,6 +374,12 @@ RSpec.describe "Comments" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "renders comments for a podcast episode index URL" do
+        get "/#{podcast.slug}/#{podcast_episode.slug}/comments"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(podcast_comment.processed_html)
+      end
+
       it "raises 404 when low quality" do
         podcast_comment.update_column(:score, -500)
         expect do
@@ -393,9 +410,10 @@ RSpec.describe "Comments" do
       end
 
       it "shows comment from a deleted post" do
+        comment
         article.destroy
 
-        get comment.path
+        get comment.reload.path
         expect(response.body).to include("Comment from a deleted post")
       end
 
@@ -436,13 +454,9 @@ RSpec.describe "Comments" do
         sign_in user
       end
 
-      it "returns 200" do
+      it "returns 200 and renders the comment body", :aggregate_failures do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response).to have_http_status(:ok)
-      end
-
-      it "returns the comment" do
-        get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response.body).to include CGI.escapeHTML(comment.body_markdown)
       end
     end
@@ -453,9 +467,7 @@ RSpec.describe "Comments" do
       end
 
       it "edit action returns 200" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
+        comment
         article.destroy
 
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
@@ -479,9 +491,7 @@ RSpec.describe "Comments" do
 
     context "when the article is deleted" do
       it "updates body markdown" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
+        comment
         article.destroy
 
         params = { comment: { body_markdown: "{edited comment}" } }
@@ -509,11 +519,8 @@ RSpec.describe "Comments" do
              headers: { HTTP_ACCEPT: "application/json" }
       end
 
-      it "returns 200 on good request" do
+      it "returns 200 and json", :aggregate_failures do
         expect(response).to have_http_status(:ok)
-      end
-
-      it "returns json" do
         expect(response.media_type).to eq("application/json")
       end
     end
