@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   include AlgoliaSearchable
   include WebpageTrackable
   include ActivityTrackable
+  include AiDisclosable
 
   acts_as_taggable_on :tags
   resourcify
@@ -159,13 +160,6 @@ class Article < ApplicationRecord
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
-  }
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
   }
 
   enum :automod_label, {
@@ -845,10 +839,6 @@ class Article < ApplicationRecord
     else
       title_finalized
     end
-  end
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
   end
 
   def ai_disclosure_label
@@ -1628,20 +1618,7 @@ class Article < ApplicationRecord
       return
     end
 
-    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
-    level = case val_str
-            when "0", "not_disclosed", "unstated", "unknown", "false"
-              :not_disclosed
-            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
-              :no_ai
-            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
-              :some_ai
-            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
-              :fully_autonomous
-            else
-              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
-            end
-
+    level = self.class.normalize_ai_disclosure_level(raw_val)
     self.ai_disclosure_level = level if level
   end
 
@@ -1880,14 +1857,26 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return if main_image.present?
+    return if main_image.present? || !published
 
-    change = saved_change_to_attribute?(:title) ||
+    change = social_image.blank? ||
+      saved_change_to_attribute?(:title) ||
       saved_change_to_attribute?(:published_at) ||
-      saved_change_to_attribute?(:user_id) # the image shows the author's name, avatar, and brand color
-    return unless (change || social_image.blank?) && published
+      saved_change_to_attribute?(:user_id) || # the image shows the author's name, avatar, and brand color
+      saved_change_to_attribute?(:reading_time) || # the image shows the reading time
+      social_image_quote_changed?
+    return unless change
 
     Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
+  # The generated image quotes the opening of the post, so only body edits that
+  # change that quote need a new image.
+  def social_image_quote_changed?
+    return false unless saved_change_to_attribute?(:processed_html)
+
+    Images::SocialImageQuote.from_html(attribute_before_last_save(:processed_html), title) !=
+      Images::SocialImageQuote.call(self)
   end
 
   def calculate_base_scores
