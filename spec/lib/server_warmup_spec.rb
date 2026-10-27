@@ -227,6 +227,22 @@ RSpec.describe ServerWarmup, type: :lib do
         a_string_including("[ServerWarmup] Database connection pool warmup failed"),
       )
     end
+
+    it "checks back in the connection even if verify! raises an error after checkout" do
+      failing_conn = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+      allow(failing_conn).to receive(:verify!).and_raise(ActiveRecord::StatementInvalid, "verify failed")
+      mock_pool = instance_double(
+        ActiveRecord::ConnectionAdapters::ConnectionPool,
+        size: 5,
+        checkout: failing_conn,
+      )
+      allow(mock_pool).to receive(:checkin)
+      allow(ActiveRecord::Base).to receive(:connection_pool).and_return(mock_pool)
+      allow(Rails.logger).to receive(:error)
+
+      expect(described_class.warm_database_connections!(1)).to eq(0)
+      expect(mock_pool).to have_received(:checkin).with(failing_conn).once
+    end
   end
 
   describe ".warm_redis_cache_connection!" do
@@ -292,6 +308,61 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(conn2.pinged).to be(true)
       expect(fake_stack.pushed).to eq([conn1, conn2])
       expect(Sidekiq).to have_received(:redis).once
+    end
+
+    it "closes the broken socket and still returns the connection to TimedStack if ping raises" do
+      broken_conn = Class.new do
+        attr_reader :closed
+
+        def ping
+          raise Redis::ConnectionError, "broken pipe"
+        end
+
+        def close
+          @closed = true
+        end
+      end.new
+      fake_stack = Class.new do
+        attr_reader :pushed
+
+        def initialize(conn)
+          @conn = conn
+          @pushed = []
+        end
+
+        def pop(timeout: nil) # rubocop:disable Lint/UnusedMethodArgument
+          @conn
+        end
+
+        def push(conn)
+          @pushed << conn
+        end
+      end.new(broken_conn)
+      redis_pool = Class.new do
+        def initialize(stack)
+          @available = stack
+        end
+
+        def size
+          5
+        end
+      end.new(fake_stack)
+      cache_with_pool = Class.new do
+        attr_reader :redis
+
+        def initialize(redis)
+          @redis = redis
+        end
+
+        def delete(_key); end
+      end.new(redis_pool)
+
+      allow(Rails).to receive(:cache).and_return(cache_with_pool)
+      allow(Rails.logger).to receive(:error)
+
+      expect(described_class.warm_redis_cache_connection!(1)).to eq(0)
+      expect(broken_conn.closed).to be(true)
+      expect(fake_stack.pushed).to eq([broken_conn])
     end
   end
 

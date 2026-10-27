@@ -203,8 +203,8 @@ module ServerWarmup
           break if @traffic_received
 
           conn = pool.checkout
-          conn.verify!
           checked_out << conn
+          conn.verify!
         end
         checked_out.size
       ensure
@@ -416,13 +416,24 @@ module ServerWarmup
           break if @traffic_received
 
           conn = stack.pop(timeout: 2)
-          conn.ping if conn.respond_to?(:ping)
+          next unless conn
+
           checked_out << conn
+          ping_redis_connection(conn)
         end
         checked_out.size
       ensure
         checked_out.each { |conn| stack.push(conn) }
       end
+    end
+
+    def ping_redis_connection(conn)
+      return unless conn.respond_to?(:ping)
+
+      conn.ping
+    rescue StandardError
+      conn.close if conn.respond_to?(:close)
+      raise
     end
 
     def warm_sidekiq_redis_connection!

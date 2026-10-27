@@ -26,5 +26,17 @@ RSpec.describe "Release migrate tasks", type: :task do
 
       expect(db_migrate_task).not_to have_received(:invoke)
     end
+
+    it "logs a warning and falls back to invoking db:migrate if needs_migration? raises an error" do
+      allow(migration_context).to receive(:needs_migration?).and_raise(StandardError, "unexpected migration error")
+      allow(Rails.logger).to receive(:warn)
+
+      Rake::Task["release:migrate_if_pending"].invoke
+
+      expect(db_migrate_task).to have_received(:invoke).once
+      expect(Rails.logger).to have_received(:warn).with(
+        a_string_including("[release:migrate_if_pending] Falling back to db:migrate"),
+      )
+    end
   end
 end
