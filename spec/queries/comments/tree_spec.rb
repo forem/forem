@@ -93,6 +93,27 @@ RSpec.describe Comments::Tree do
       expect(comments).to eq(comment => { child_comment => {}, low_comment => {} })
     end
 
+    it "preloads user associations onto the returned root comment and reuses its loaded user" do
+      root = Comment.find(comment.id)
+      loaded_user = root.user
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(user_queries).to be_empty
+      nodes = [tree.keys.first, *tree.values.first.keys]
+      expect(nodes.map(&:user)).to all(be(loaded_user))
+      expect(root.user.association(:roles)).to be_loaded
+      expect(root.user.association(:profile)).to be_loaded
+      expect(root.user.association(:setting)).to be_loaded
+      expect(root.user.association(:organization_memberships)).to be_loaded
+    end
+
     it "reuses the root comment's loaded article instead of re-fetching it" do
       root = Comment.find(comment.id)
       root.commentable

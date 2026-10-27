@@ -24,21 +24,18 @@ module Comments
       includes = [:user]
       includes << { user: %i[setting profile organization_memberships roles] }
 
-      nodes = root_comment.subtree.includes(*includes).to_a
+      nodes = root_comment.subtree.to_a
+      nodes.map! { |node| node.id == root_comment.id ? root_comment : node }
 
-      # Only include organization for Article commentables. The root comment's
-      # commentable is already loaded, so hand it to every node that shares it;
-      # the preloader then reuses it instead of re-fetching the full row.
-      commentable = root_comment.commentable
-      if commentable.is_a?(Article)
-        nodes.each do |node|
-          next unless node.commentable_type == root_comment.commentable_type &&
-            node.commentable_id == root_comment.commentable_id
-
-          node.association(:commentable).target = commentable
-        end
-        ActiveRecord::Associations::Preloader.new(records: nodes, associations: { commentable: :organization }).call
+      # Only include organization for Article commentables. With root_comment in
+      # nodes, the preloader reuses its loaded user and commentable across the
+      # subtree instead of re-fetching those rows, and preloads nested user
+      # associations onto root_comment itself.
+      if root_comment.commentable.is_a?(Article)
+        includes << { commentable: :organization }
       end
+
+      ActiveRecord::Associations::Preloader.new(records: nodes, associations: includes).call
 
       sub_comments = Comment.arrange_nodes(nodes)[root_comment]
       sub_comments.reject! { |comment| comment.score.negative? } unless include_negative
