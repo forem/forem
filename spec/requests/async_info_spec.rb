@@ -30,6 +30,21 @@ RSpec.describe "AsyncInfo" do
                                                             default_email_optin_allowed param token user])
       end
 
+      it "returns active announcement broadcast data and omits inactive announcements", :aggregate_failures do
+        sign_in create(:user)
+        inactive_broadcast = create(:announcement_broadcast, active: false)
+
+        get "/async_info/base_data"
+        expect(response.parsed_body["broadcast"]).to be_nil
+
+        inactive_broadcast.update!(active: true)
+        get "/async_info/base_data"
+        expect(JSON.parse(response.parsed_body["broadcast"])).to include(
+          "title" => inactive_broadcast.title,
+          "html" => inactive_broadcast.processed_html,
+        )
+      end
+
       it "returns default_email_optin_allowed true if valid match with client geo" do
         sign_in create(:user)
 
