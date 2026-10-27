@@ -180,8 +180,8 @@ export const Article = ({
                   onClick={bookmarkClick}
                   saveable={saveable}
                 />
-                <div className="only-sidebar-menu-item">
-                  <div className="trusted-visible-block align-center">
+                {isArticle && (
+                  <div className="only-sidebar-menu-item trusted-visible-block align-center print-hidden">
                     <button
                       type="button"
                       className="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn"
@@ -193,7 +193,7 @@ export const Article = ({
                       </svg>
                     </button>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

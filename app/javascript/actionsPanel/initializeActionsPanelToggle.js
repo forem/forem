@@ -17,25 +17,27 @@ export function initializeActionsPanel(user, path = '') {
   function toggleModActionsMenu(event) {
     const targetButton =
       event?.currentTarget || event?.target?.closest('.mod-actions-menu-btn');
-    const articlePath = targetButton?.dataset?.articlePath || path;
+    const currentContainerPath =
+      document.getElementById('article-show-container')?.dataset?.path;
+    const articlePath =
+      targetButton?.dataset?.articlePath || currentContainerPath || path;
     if (!articlePath) {
       return;
     }
     const modActionsMenu = getOrCreateModActionsMenu();
-
     const modContainer = document.getElementById('mod-container');
+    const currentSrc = modContainer?.getAttribute('src');
+    const targetSrc = `${articlePath}/actions_panel`;
 
-    if (
-      !modContainer ||
-      modContainer.getAttribute('src') !== `${articlePath}/actions_panel`
-    ) {
+    if (!modContainer || currentSrc !== targetSrc) {
       modActionsMenu.innerHTML = `
-        <iframe id="mod-container" src="${articlePath}/actions_panel" title="Moderation panel actions">
+        <iframe id="mod-container" src="${targetSrc}" title="Moderation panel actions">
         </iframe>
       `;
+      modActionsMenu.classList.add('showing');
+    } else {
+      modActionsMenu.classList.toggle('showing');
     }
-
-    modActionsMenu.classList.toggle('showing');
 
     // showing close icon in the mod panel if it is opened by clicking the button
     const panelDocument = document.getElementById('mod-container')?.contentDocument;
