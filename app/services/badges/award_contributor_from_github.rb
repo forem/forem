@@ -51,13 +51,31 @@ module Badges
 
     def award_multi_commit_contributors(repo)
       contributors = Github::OauthClient.new.contributors(repo)
-      authors_uids = contributors.map(&:id)
+      # Map uid -> contribution count for O(1) lookup
+      contributions_map = contributors.each_with_object({}) do |c, hash|
+        hash[c.id.to_s] = c.contributions
+      end
 
+      authors_uids = contributions_map.keys
       Identity.github.where(uid: authors_uids).find_each do |identity|
-        user_contribution = contributors.detect { |contributor| contributor.id.to_s == identity.uid }
-        next if user_contribution.nil?
+        commits_count = contributions_map[identity.uid] || 0
 
-        create_badges_for_user(identity.user_id, user_contribution.contributions)
+        # Use Search API to count merged PRs as a fallback/complement to commit counts
+        # this helps contributors who may have attribution issues with commit counts
+        pr_count = 0
+        github_user = identity.auth_data_dump&.info&.nickname
+        if github_user
+          query = "repo:#{repo} author:#{github_user} is:merged is:pr"
+          begin
+            search_results = Github::OauthClient.new.search_issues(query)
+            pr_count = search_results.total_count
+          rescue => e
+            Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
+          end
+        end
+
+        contribution_score = [commits_count, pr_count].max
+        create_badges_for_user(identity.user_id, contribution_score)
       end
     end
 

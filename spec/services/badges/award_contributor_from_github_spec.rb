@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Badges::AwardContributorFromGithub, type: :service do
   let(:user) { create(:user) }
-  let(:identity) { create(:identity, user: user, provider: "github", uid: "123456") }
+  let(:identity) { create(:identity, user: user, provider: "github", uid: "123456", auth_data_dump: { "info" => { "nickname" => "francistrdev" } }) }
 
   before do
     allow(Settings::Authentication).to receive(:providers).and_return([:github])
@@ -19,6 +19,7 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
       allow(Github::OauthClient).to receive(:new).and_return(github_client)
       allow(github_client).to receive(:commits).and_return(commits)
       allow(github_client).to receive(:contributors).and_return(contributors)
+      allow(github_client).to receive(:search_issues).and_return(double(total_count: 0))
     end
 
     context "when badges do not exist in the database" do
@@ -40,6 +41,19 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
         expect {
           described_class.call
         }.not_to raise_error
+      end
+    end
+
+    context "when merged PR count exceeds commit count" do
+      let!(:sixteen_x_commit_badge) { create(:badge, title: "16x-commit-club") }
+
+      it "awards the badge based on merged PR count" do
+        allow(github_client).to receive(:contributors).and_return([double(id: "123456", contributions: 1)])
+        allow(github_client).to receive(:search_issues).with(/is:merged is:pr/).and_return(double(total_count: 20))
+
+        described_class.call
+
+        expect(user.badge_achievements.pluck(:badge_id)).to include(sixteen_x_commit_badge.id)
       end
     end
 
