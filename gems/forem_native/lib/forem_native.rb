@@ -249,6 +249,17 @@ module ForemNative
       Native.quickie_title_html(title, truncate_for_feed ? true : false)
     end
 
+    # Collapses runs of ASCII whitespace (`\s+`, including newlines) to single spaces and strips
+    # leading/trailing ASCII whitespace/NULs, matching `Article#title_for_metadata`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so `Article` can
+    # fall back to `legacy_title_for_metadata`.
+    def title_for_metadata(title)
+      return unless Native.respond_to?(:title_for_metadata)
+      return unless title.instance_of?(String) && title.encoding == Encoding::UTF_8
+
+      Native.title_for_metadata(title)
+    end
+
     # Returns the lowercased host of a (possibly scheme-less) URL without a leading `www.`,
     # matching `Addressable::URI.parse(url).host.downcase.delete_prefix("www.")` after
     # `ArticlesHelper#get_host_without_www` strips the URL and adds a missing `http://`.
