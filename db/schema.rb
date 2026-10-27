@@ -248,6 +248,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["hotness_score"], name: "index_articles_on_hotness_score_for_featured_published", order: :desc, where: "((published = true) AND (featured = true))"
     t.index ["id"], name: "index_articles_negative_prev_public_reactions_count", where: "(previous_public_reactions_count < 0)"
     t.index ["id"], name: "index_articles_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["language"], name: "index_articles_on_language"
@@ -1287,6 +1288,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.string "social_image"
     t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"

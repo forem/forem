@@ -648,11 +648,15 @@ class Article < ApplicationRecord
   scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
-                 published.includes(:taggings)
+                 published
                    .select(
                      :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
+
+  def cached_tag_list_array
+    (cached_tag_list || "").split(", ")
+  end
 
   scope :with_video, lambda {
                        published
