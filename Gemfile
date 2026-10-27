@@ -5,7 +5,7 @@ source "https://rubygems.org"
 ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 
 group :production do
-  gem "hypershield", "~> 0.2.2" # Allow admins to query data via internal
+  gem "hypershield", "~> 0.6.1" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
   gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
@@ -174,7 +174,7 @@ group :test do
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
-  gem "pundit-matchers", "~> 1.7" # A set of RSpec matchers for testing Pundit authorisation policies
+  gem "pundit-matchers", "~> 4.0" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rails-controller-testing", "~> 1.0" # Testing helpers for Rails controllers
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby

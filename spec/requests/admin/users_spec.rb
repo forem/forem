@@ -177,6 +177,37 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Roles")
     end
 
+    it "shows the subforem domain for a subforem moderator role" do
+      subforem = create(:subforem)
+      user.add_role(:subforem_moderator, subforem)
+
+      get admin_user_path(user.id)
+
+      expect(response).to be_successful
+      expect(response.body).to include(subforem.domain)
+    end
+
+    it "does not show an unrelated tag's name for a subforem moderator role" do
+      tag = create(:tag)
+      subforem = create(:subforem, id: tag.id)
+      user.add_role(:subforem_moderator, subforem)
+
+      get admin_user_path(user.id)
+
+      expect(response.body).to include(subforem.domain)
+      expect(response.body).not_to include(tag.name)
+    end
+
+    it "renders the page for a user with a podcast admin role" do
+      podcast = create(:podcast)
+      user.add_role(:podcast_admin, podcast)
+
+      get admin_user_path(user.id)
+
+      expect(response).to be_successful
+      expect(response.body).to include("Podcast Admin")
+    end
+
     it "displays a user's current roles in the 'Emails' tab" do
       get "#{admin_user_path(user.id)}?tab=emails"
       expect(response.body).to include("Previous emails")
