@@ -172,7 +172,9 @@ module ApplicationHelper
 
   def tag_colors(tag)
     if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
-      { background: tag.bg_color_hex, color: tag.text_color_hex }
+      colors = { background: tag.bg_color_hex, color: tag.text_color_hex }
+      preloaded_tag_colors[tag.name] = colors if tag.respond_to?(:name) && tag.name.present?
+      colors
     else
       tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
       preloaded_tag_colors[tag_name] ||=
@@ -183,7 +185,7 @@ module ApplicationHelper
   # Reads the cached colors for every tag shown in a story list in one cache round-trip,
   # and batches any cache misses into a single Tag query instead of one per tag.
   def preload_tag_colors(stories)
-    tag_names = stories.compact.reject { |story| story.type_of == "status" }
+    tag_names = Array(stories).compact.reject { |story| story.type_of == "status" }
       .flat_map(&:cached_tag_list_array).uniq - preloaded_tag_colors.keys
     return if tag_names.empty?
 
