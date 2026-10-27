@@ -3,20 +3,29 @@ module Comments
     module_function
 
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
-      includes = [:user]
-      includes << { user: %i[setting profile organization_memberships roles] }
+      includes = [{ user: %i[setting profile organization_memberships roles] }]
+
+      collection = commentable.comments
+        .arrange(order: build_sort_query(order))
+        .to_a[0..limit - 1]
+        .to_h
+      collection.reject! { |comment| comment.score.negative? } unless include_negative
+      records = Comment.flatten_arranged_nodes(collection)
+      return collection if records.empty?
+
+      commentable_user = commentable.user if commentable.respond_to?(:user) && commentable.association(:user).loaded?
+      records.each do |node|
+        node.association(:commentable).target = commentable
+        node.association(:user).target = commentable_user if commentable_user && node.user_id == commentable.user_id
+      end
 
       # Only include organization for Article commentables
       if commentable.is_a?(Article)
         includes << { commentable: :organization }
       end
 
-      collection = commentable.comments
-        .includes(*includes)
-        .arrange(order: build_sort_query(order))
-        .to_a[0..limit - 1]
-        .to_h
-      collection.reject! { |comment| comment.score.negative? } unless include_negative
+      ActiveRecord::Associations::Preloader.new(records: records, associations: includes).call
+
       collection
     end
 
