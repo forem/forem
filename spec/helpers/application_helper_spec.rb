@@ -476,11 +476,13 @@ RSpec.describe ApplicationHelper do
         expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
       end
 
-      it "caches the result to avoid repeated DB queries" do
+      it "caches the result to avoid repeated DB queries and cache reads" do
         Rails.cache.delete("view-helper-ruby/tag_colors")
-        helper.tag_colors("ruby")
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
         expect(Tag).not_to receive(:find_by)
-        helper.tag_colors("ruby")
+        expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+        expect(Rails.cache).to have_received(:fetch).with("view-helper-ruby/tag_colors", expires_in: 5.hours).once
       end
 
       it "returns default colors when the tag does not exist in DB" do
@@ -521,6 +523,25 @@ RSpec.describe ApplicationHelper do
       helper.preload_tag_colors([story, other_story, status_story])
       expect(Rails.cache).to have_received(:fetch_multi)
         .with("view-helper-ruby/tag_colors", "view-helper-unknowntag/tag_colors", expires_in: 5.hours).once
+    end
+
+    it "batches database lookups into a single query when multiple tags miss the cache", :aggregate_failures do
+      create(:tag, name: "javascript", bg_color_hex: "#f7df1e", text_color_hex: "#000000")
+      Rails.cache.delete("view-helper-ruby/tag_colors")
+      Rails.cache.delete("view-helper-javascript/tag_colors")
+      Rails.cache.delete("view-helper-unknowntag/tag_colors")
+      multi_tag_story = build(:article, cached_tag_list: "ruby, javascript, unknowntag").decorate
+
+      allow(Tag).to receive(:where).and_call_original
+      allow(Tag).to receive(:find_by).and_call_original
+
+      helper.preload_tag_colors([multi_tag_story])
+
+      expect(Tag).to have_received(:where).with(name: %w[ruby javascript unknowntag]).once
+      expect(Tag).not_to have_received(:find_by)
+      expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+      expect(helper.tag_colors("javascript")).to eq(background: "#f7df1e", color: "#000000")
+      expect(helper.tag_colors("unknowntag")).to eq(background: "#d6d9e0", color: "#606570")
     end
 
     it "makes tag_colors return the same colors without another cache read or DB lookup" do
