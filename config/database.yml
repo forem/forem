@@ -22,7 +22,7 @@ default: &default
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5).to_i + 5 %>
   connect_timeout: 6
   checkout_timeout: 10
-  idle_timeout: <%= ENV.fetch("DB_IDLE_TIMEOUT", 300).to_i %>
+  idle_timeout: 60
   # Sweeps for dead thread connections every 10 seconds instead of 40
   reaping_frequency: <%= ENV.fetch("REAPING_FREQUENCY", 10).to_i %>
   variables:
