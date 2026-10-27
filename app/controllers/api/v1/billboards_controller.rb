@@ -40,7 +40,28 @@ module Api
         end
       end
 
+      def preview
+        @billboard = Billboard.new(preview_params)
+        @billboard.creator ||= @user
+
+        render json: {
+          processed_html: @billboard.render_preview_html(@billboard.body_markdown),
+          minimized_processed_html: @billboard.render_preview_html(@billboard.minimized_body_markdown)
+        }, status: :ok
+      rescue ContentRenderer::ContentParsingError => e
+        error_unprocessable_entity(ErrorMessages::Clean.call(e.message))
+      end
+
       private
+
+      def preview_params
+        source_params = if params[:billboard].is_a?(ActionController::Parameters)
+                          params[:billboard]
+                        else
+                          params
+                        end
+        source_params.permit(:body_markdown, :minimized_body_markdown, :placement_area, :render_mode)
+      end
 
       def require_admin
         authorize Billboard, :access?, policy_class: InternalPolicy

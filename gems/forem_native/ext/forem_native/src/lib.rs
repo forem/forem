@@ -500,6 +500,33 @@ fn escape_colon_emojis_in_codeblock(ruby: &Ruby, html: RString) -> Option<RStrin
     Some(escaped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+fn emoji_by_alias(alias_name: RString) -> Option<&'static str> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // returned `&'static str` lives in `.rodata`.
+    let text = unsafe { alias_name.test_as_str() }?;
+    forem_core::emoji::lookup_emoji(text)
+}
+
+fn strip_rgi_emoji(ruby: &Ruby, text: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let stripped = {
+        let s = unsafe { text.test_as_str() }?;
+        match forem_core::emoji::strip_rgi_emoji(s) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(stripped) => Some(stripped),
+        }
+    };
+    Some(stripped.map_or(text, |s| ruby.str_new(&s)))
+}
+
+fn wcag_contrast_ratio(rgb1: RString, rgb2: RString) -> Option<f64> {
+    // SAFETY: Same zero-copy `RString` slice borrows; `forem_core` never calls into Ruby.
+    let bytes1 = unsafe { rgb1.as_slice() };
+    let bytes2 = unsafe { rgb2.as_slice() };
+    forem_core::color::wcag_contrast_ratio(bytes1, bytes2)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -589,5 +616,8 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "escape_colon_emojis_in_codeblock",
         function!(escape_colon_emojis_in_codeblock, 1),
     )?;
+    native_mod.define_singleton_method("emoji_by_alias", function!(emoji_by_alias, 1))?;
+    native_mod.define_singleton_method("strip_rgi_emoji", function!(strip_rgi_emoji, 1))?;
+    native_mod.define_singleton_method("wcag_contrast_ratio", function!(wcag_contrast_ratio, 2))?;
     Ok(())
 }

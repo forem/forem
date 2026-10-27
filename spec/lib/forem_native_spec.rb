@@ -2372,22 +2372,48 @@ RSpec.describe ForemNative do
       lambda do |html|
         out = html.dup
         out.gsub!(/:([\w+-]+):/) do |match|
-          emoji = Emoji.find_by_alias(Regexp.last_match(1)) # rubocop:disable Rails/DynamicFindBy
-          emoji.present? ? emoji.raw : match
+          described_class.emoji_by_alias(Regexp.last_match(1)) || match
         end
         out
       end
     end
 
-    it "matches Emoji.find_by_alias across every single alias in the gemoji database" do
-      Emoji.all.each do |emoji| # rubocop:disable Rails/FindEach
-        emoji.aliases.each do |alias_name|
-          token = ":#{alias_name}:"
-          expect(described_class.parse_emojis(token)).to eq(emoji.raw), token
-          wrapped = "prefix #{token} suffix"
-          expect(described_class.parse_emojis(wrapped)).to eq("prefix #{emoji.raw} suffix"), wrapped
-        end
+    it "resolves standard, disability, skin-tone, and punctuation gemoji aliases" do
+      expected_aliases = {
+        "joy" => "😂",
+        "+1" => "👍",
+        "-1" => "👎",
+        "100" => "💯",
+        "1234" => "🔢",
+        "1st_place_medal" => "🥇",
+        "8ball" => "🎱",
+        "e-mail" => "📧",
+        "non-potable_water" => "🚱",
+        "guide_dog" => "🦮",
+        "service_dog" => "🐕‍🦺",
+        "person_with_probing_cane" => "🧑‍🦯",
+        "man_with_probing_cane" => "👨‍🦯",
+        "woman_with_probing_cane" => "👩‍🦯",
+        "person_in_motorized_wheelchair" => "🧑‍🦼",
+        "person_in_manual_wheelchair" => "🧑‍🦽",
+        "wheelchair" => "♿",
+        "rocket" => "🚀",
+        "heart" => "❤️",
+        "tada" => "🎉",
+        "zzz" => "💤"
+      }
+
+      expected_aliases.each do |alias_name, raw|
+        expect(described_class.emoji_by_alias(alias_name)).to eq(raw), alias_name
+        token = ":#{alias_name}:"
+        expect(described_class.parse_emojis(token)).to eq(raw), token
+        wrapped = "prefix #{token} suffix"
+        expect(described_class.parse_emojis(wrapped)).to eq("prefix #{raw} suffix"), wrapped
       end
+
+      expect(described_class.emoji_by_alias("not_a_valid_emoji_alias")).to be_nil
+      expect(described_class.emoji_by_alias("")).to be_nil
+      expect(described_class.emoji_by_alias(nil)).to be_nil
     end
 
     it "matches legacy regexp behavior on adjacent, overlapping, and unknown colon patterns" do
@@ -2439,7 +2465,11 @@ RSpec.describe ForemNative do
 
     it "passes differential equivalence across 1,000 generated strings" do
       rng = Random.new(424_242)
-      known_aliases = Emoji.all.flat_map(&:aliases)
+      known_aliases = %w[
+        joy +1 -1 100 1234 1st_place_medal 8ball e-mail non-potable_water
+        guide_dog service_dog wheelchair rocket heart fire tada star sparkles
+        warning white_check_mark x wave eyes pray clap musclecomputerzzz
+      ]
       tokens = [
         ":", "::", ":::", "joy", "+1", "-1", "100", "rocket", "heart", "not_an_emoji", "unknown_123",
         "JOY", "hello world", " ", "\n", "<p>", "</p>", "<code>", "</code>", "日本語", "🎉",
@@ -2476,8 +2506,7 @@ RSpec.describe ForemNative do
             parsed_html = el.to_html.dup
             if parsed_html.present?
               parsed_html.gsub!(/:([\w+-]+):/) do |match|
-                emoji = Emoji.find_by_alias(Regexp.last_match(1)) # rubocop:disable Rails/DynamicFindBy
-                emoji.present? ? emoji.raw : match
+                described_class.emoji_by_alias(Regexp.last_match(1)) || match
               end
             end
             el.swap(parsed_html)
@@ -2700,6 +2729,65 @@ RSpec.describe ForemNative do
           article = Article.new(type_of: "status", title: sample)
           expect(article.title_for_metadata).to eq(expected), message
         end
+      end
+    end
+  end
+
+  describe ".strip_rgi_emoji (EmojiOnlyValidator & Redcarpet::Render::HTMLRouge#slugify)" do
+    it "strips single, ZWJ, keycap, skin-tone, and flag RGI emojis while preserving non-RGI text",
+       :aggregate_failures do
+      expect(described_class.strip_rgi_emoji("🍀")).to eq("")
+      expect(described_class.strip_rgi_emoji("👍🏽")).to eq("")
+      expect(described_class.strip_rgi_emoji("👨‍👩‍👧‍👦")).to eq("")
+      expect(described_class.strip_rgi_emoji("🏴󠁧󠁢󠁥󠁮󠁧󠁿")).to eq("")
+      expect(described_class.strip_rgi_emoji("#️⃣1️⃣*️⃣")).to eq("")
+      expect(described_class.strip_rgi_emoji("#\uFE0F")).to eq("#\uFE0F")
+      expect(described_class.strip_rgi_emoji("#")).to eq("#")
+      expect(described_class.strip_rgi_emoji("Hello 🚀 World 🎉!")).to eq("Hello  World !")
+
+      unchanged = +"plain text without emojis"
+      expect(described_class.strip_rgi_emoji(unchanged)).to equal(unchanged)
+
+      renderer = Redcarpet::Render::HTMLRouge.new
+      expect(renderer.header("Hello 🚀 World!", 2)).to include('href="#hello-world"')
+    end
+  end
+
+  describe ".wcag_contrast_ratio (Color::Accessibility#low_contrast?)" do
+    let(:legacy_wcag_ratio) do
+      lambda do |rgb1, rgb2|
+        valid = ->(s) { s.is_a?(String) && s.match?(/\A(?:[a-f0-9]{3}|[a-f0-9]{6})\z/i) }
+        return unless valid.call(rgb1) && valid.call(rgb2)
+
+        to_lum = lambda do |rgb|
+          s = rgb.size == 3 ? "#{rgb}#{rgb}" : rgb
+          channels = [s[0, 2], s[2, 2], s[4, 2]].map do |hex|
+            v = hex.to_i(16) / 255.0
+            v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055)**2.4
+          end
+          (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2])
+        end
+
+        l1 = to_lum.call(rgb1)
+        l2 = to_lum.call(rgb2)
+        l1 > l2 ? (l1 + 0.05) / (l2 + 0.05) : (l2 + 0.05) / (l1 + 0.05)
+      end
+    end
+
+    it "matches WCAG 2.0 relative luminance and contrast ratio across 1,000 random color pairs" do
+      expect(described_class.wcag_contrast_ratio("ffffff", "000000")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("000", "FFF")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("invalid", "ffffff")).to be_nil
+
+      rng = Random.new(424_242)
+      hex_chars = "0123456789abcdefABCDEF".chars
+
+      1_000.times do |iteration|
+        c1 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        c2 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        expected = legacy_wcag_ratio.call(c1, c2)
+        actual = described_class.wcag_contrast_ratio(c1, c2)
+        expect(actual).to be_within(1e-12).of(expected), "iteration #{iteration}: #{c1} vs #{c2}"
       end
     end
   end

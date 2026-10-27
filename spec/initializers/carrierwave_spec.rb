@@ -11,6 +11,7 @@ describe CarrierWaveInitializer do
       fog_credentials
       asset_host
       enable_processing
+      move_to_store
     ].each do |key|
       @original_config[key] = CarrierWave::Uploader::Base.send(key) if CarrierWave::Uploader::Base.respond_to?(key)
     end
@@ -28,6 +29,7 @@ describe CarrierWaveInitializer do
     it "configures local file storage without errors" do
       expect { described_class.local_storage_config }.not_to raise_error
       expect(CarrierWave::Uploader::Base.storage).to eq(CarrierWave::Storage::File)
+      expect(CarrierWave::Uploader::Base.move_to_store).to be(true)
     end
   end
 

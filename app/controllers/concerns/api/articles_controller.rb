@@ -163,7 +163,64 @@ module Api
       set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
     end
 
+    def preview
+      authorize(Article)
+
+      article_hash = extract_preview_article_hash
+      markdown = preview_markdown(article_hash)
+      result = ContentRenderer.new(markdown, source: Article.new, user: @user).process_article
+      front_matter = result.front_matter.to_h
+
+      render json: {
+        processed_html: result.processed_html,
+        body_html: result.processed_html,
+        title: front_matter["title"] || article_hash[:title] || params[:title],
+        description: front_matter["description"] || article_hash[:description] || params[:description],
+        tags: preview_tags(front_matter, article_hash),
+        cover_image: preview_cover_image(front_matter, article_hash),
+        reading_time_minutes: result.reading_time,
+        ai_disclosure_level: preview_ai_disclosure_level(front_matter, article_hash)
+      }, status: :ok
+    rescue StandardError => e
+      error_unprocessable_entity(ErrorMessages::Clean.call(e.message))
+    end
+
     private
+
+    def extract_preview_article_hash
+      return params[:article] if params[:article].is_a?(ActionController::Parameters) || params[:article].is_a?(Hash)
+
+      {}
+    end
+
+    def preview_markdown(article_hash)
+      article_hash[:body_markdown] || params[:body_markdown] || params[:article_body]
+    end
+
+    def preview_tags(front_matter, article_hash)
+      raw_tags = front_matter["tags"] || article_hash[:tags] || params[:tags]
+      return unless raw_tags
+
+      raw_tags_input = raw_tags.is_a?(Array) ? raw_tags.join(", ") : raw_tags
+      Article.new.tag_list.add(raw_tags_input, parser: ActsAsTaggableOn::TagParser)
+    end
+
+    def preview_cover_image(front_matter, article_hash)
+      raw_cover_image = if front_matter.key?("cover_image")
+                          front_matter["cover_image"]
+                        else
+                          article_hash[:main_image] || article_hash[:cover_image] ||
+                            params[:main_image] || params[:cover_image]
+                        end
+      ApplicationController.helpers.cloud_cover_url(raw_cover_image) if raw_cover_image
+    end
+
+    def preview_ai_disclosure_level(front_matter, article_hash)
+      front_matter["ai_disclosure_level"] ||
+        front_matter["ai_disclosure"] ||
+        article_hash[:ai_disclosure_level] ||
+        params[:ai_disclosure_level]
+    end
 
     def invalid_tags_present?
       tag_params = [params[:tag], params[:tags], params[:tags_exclude]].flatten.compact
