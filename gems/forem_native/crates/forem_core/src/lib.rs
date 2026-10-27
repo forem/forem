@@ -9,6 +9,7 @@
 pub mod color;
 pub mod emoji;
 pub(crate) mod emoji_data;
+pub mod feed;
 pub mod fixer;
 pub mod image;
 pub mod markdown;
