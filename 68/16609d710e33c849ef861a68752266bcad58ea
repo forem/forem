@@ -1,0 +1,28 @@
+config/locales/pt.yml
+  3b300d9ee498e98c 198-204
+config/locales/en.yml
+  3b300d9ee498e98c 183-189
+config/locales/fr.yml
+  3b300d9ee498e98c 198-204
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "6816609d710e33c849ef861a68752266bcad58ea",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 118,
+      "total_deletions": 0,
+      "accepted_lines": 118,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/8a2f7d9d80d8a862e0e4a4b7b4e40ccb6a76f61b5879291d5bec1f9594b86082"
+    }
+  }
+}

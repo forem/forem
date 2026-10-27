@@ -1,0 +1,19 @@
+app/assets/config/manifest.js
+  s_26a269fa3c3c7f::t_c957484594aaf8 2,6-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c3451638f59dc7abfd8c8044bb369d8fc0320c3f",
+  "prompts": {},
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

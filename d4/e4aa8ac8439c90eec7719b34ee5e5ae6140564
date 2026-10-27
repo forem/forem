@@ -1,0 +1,28 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 117-125,127-128,137,143-146,148
+app/models/organization.rb
+  h_f968154a99632d 132-133
+app/models/user.rb
+  h_f968154a99632d 798-801,803
+app/services/users/update.rb
+  h_f968154a99632d 65-66,68-69
+app/workers/users/bust_profile_identity_cache_worker.rb
+  h_f968154a99632d 8
+spec/requests/user/user_profile_spec.rb
+  h_f968154a99632d 59,65,78-90
+spec/services/users/update_spec.rb
+  h_f968154a99632d 92-111
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_f968154a99632d 8,17-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d4e4aa8ac8439c90eec7719b34ee5e5ae6140564",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+app/assets/images/favorite.svg
+  h_f968154a99632d 1
+app/assets/images/gem.svg
+  h_f968154a99632d 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "4317036a3144fc252bd12bcd6cb5589ac614919c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

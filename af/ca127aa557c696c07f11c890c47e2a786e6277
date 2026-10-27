@@ -1,0 +1,24 @@
+app/controllers/api/v1/pages_controller.rb
+  h_f968154a99632d 5,8-12,21-29,33,38-53,56,61-62,66,72-154,162-163
+app/models/page.rb
+  h_f968154a99632d 81-82
+spec/requests/api/v1/docs/pages_spec.rb
+  h_f968154a99632d 34-37,52,56,60-62,80-83,160,211
+spec/requests/api/v1/pages_spec.rb
+  h_f968154a99632d 222-235,245-451
+spec/swagger_helper.rb
+  h_f968154a99632d 322-329
+swagger/v1/api_v1.json
+  h_f968154a99632d 3761-3772,3794,3839-3848,3912,3961,6706-6716
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "afca127aa557c696c07f11c890c47e2a786e6277",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
