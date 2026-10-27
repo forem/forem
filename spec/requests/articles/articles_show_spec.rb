@@ -4,8 +4,7 @@ RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, :admin) }
   let(:article) do
-    create(:article, user: user, published: true, organization: organization,
-                     tag_list: "javascript, html")
+    create(:article, user: user, published: true, tag_list: "javascript, html")
   end
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
@@ -15,19 +14,19 @@ RSpec.describe "ArticlesShow" do
   describe "GET /:slug (articles)" do
     before do
       allow(Settings::General).to receive(:logo_png).and_return("logo.png")
+    end
+
+    it "returns a 200 status and renders tags, posted-on info, and Article JSON-LD", :aggregate_failures do
       get article.path
-    end
 
-    it "returns a 200 status when navigating to the article's page" do
       expect(response).to have_http_status(:ok)
-    end
 
-    it "exposes the article's tags for anonymous tag tracking" do
       tags = doc.at_css("#article-show-container")["data-article-tags"].split(",")
       expect(tags).to match_array(%w[javascript html])
-    end
 
-    it "renders the proper JSON-LD for an article" do
+      expect(response.body).to include("Posted on")
+      expect(response.body).not_to include("Scheduled for")
+
       expect(response_json).to include(
         "@context" => "http://schema.org",
         "@type" => "Article",
@@ -72,12 +71,13 @@ RSpec.describe "ArticlesShow" do
       expect(response.body).to include('<meta name="author-trust" content="3">')
     end
 
-    it "renders DiscussionForumPosting structured data when article has comments" do
-      create(:comment, commentable: article, user: user)
+    it "renders DiscussionForumPosting and Comment structured data when article has comments", :aggregate_failures do
+      comment = create(:comment, commentable: article, user: user)
       article.update_columns(comments_count: 1, displayed_comments_count: 1)
 
       get article.path
 
+      expect(article.last_comment_at).to be_present
       expect(response_json["mainEntity"]).to include(
         "@type" => "DiscussionForumPosting",
         "@id" => "#article-discussion-#{article.id}",
@@ -105,13 +105,6 @@ RSpec.describe "ArticlesShow" do
           "userInteractionCount" => article.public_reactions_count
         },
       )
-    end
-
-    it "renders Comment structured data for article comments" do
-      comment = create(:comment, commentable: article, user: user)
-      article.update_columns(comments_count: 1, displayed_comments_count: 1)
-
-      get article.path
 
       expect(response_json["mainEntity"]["comment"]).to be_present
       expect(response_json["mainEntity"]["comment"].first).to include(
@@ -136,7 +129,7 @@ RSpec.describe "ArticlesShow" do
       )
     end
 
-    it "renders nested comment structure for replies without extra parent queries" do
+    it "renders nested comment structure for replies without extra parent queries", :aggregate_failures do
       root_comment = create(:comment, commentable: article, user: user)
       reply_comment = create(:comment, commentable: article, user: user, ancestry: root_comment.id.to_s)
       article.update_columns(comments_count: 2, displayed_comments_count: 2)
@@ -175,46 +168,20 @@ RSpec.describe "ArticlesShow" do
         },
       )
     end
-
-    it "caches JSON-LD at view level based on last_comment_at" do
-      create(:comment, commentable: article, user: user)
-      article.update_columns(comments_count: 1, displayed_comments_count: 1)
-
-      # First request should generate JSON-LD
-      get article.path
-      expect(response_json["mainEntity"]).to be_present
-
-      # The cache key includes last_comment_at to invalidate when comments change
-      # This ensures the JSON-LD is regenerated when comments are added/updated
-      expect(article.last_comment_at).to be_present
-    end
-
-    it "renders 'posted on' information" do
-      get article.path
-      expect(response.body).to include("Posted on")
-      expect(response.body).not_to include("Scheduled for")
-    end
   end
 
   describe "GET /:username/:slug (scheduled)" do
-    let(:scheduled_article) { create(:article, published: true, published_at: Date.tomorrow) }
+    let(:scheduled_article) { create(:article, user: user, published: true, published_at: Date.tomorrow) }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
     let(:scheduled_article_path) { scheduled_article.path + query_params }
 
-    it "renders a scheduled article with the article password" do
+    it "renders a scheduled article with scheduled-for info and no edit link when given the article password",
+       :aggregate_failures do
       get scheduled_article_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(scheduled_article.title)
-    end
-
-    it "renders 'scheduled for' information" do
-      get scheduled_article_path
       expect(response.body).to include("Scheduled for")
       expect(response.body).not_to include("Posted on")
-    end
-
-    it "doesn't show edit link when user is not signed in" do
-      get scheduled_article_path
       expect(response.body).not_to include("Click to edit")
     end
 
@@ -294,11 +261,8 @@ RSpec.describe "ArticlesShow" do
     end
 
     describe "GET /:slug (user)" do
-      it "does not render json ld" do
+      it "does not render json ld and renders comment sort button", :aggregate_failures do
         expect(response.body).not_to include "application/ld+json"
-      end
-
-      it "renders comment sort button" do
         expect(response.body).to include "toggle-comments-sort-dropdown"
       end
     end
@@ -310,23 +274,22 @@ RSpec.describe "ArticlesShow" do
     end
 
     describe "GET /:slug (user)" do
-      it "does not render json ld" do
+      it "renders json ld and does not render comment sort button", :aggregate_failures do
         expect(response.body).to include "application/ld+json"
-      end
-
-      it "does not render comment sort button" do
         expect(response.body).not_to include "toggle-comments-sort-dropdown"
       end
     end
   end
 
   context "with comments" do
-    let!(:spam_comment) { create(:comment, score: -450, commentable: article, body_markdown: "Spam comment") }
+    let!(:spam_comment) do
+      create(:comment, score: -450, commentable: article, user: user, body_markdown: "Spam comment")
+    end
 
     before do
-      create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
-      create(:comment, score: -99, commentable: article, body_markdown: "Bad comment")
-      create(:comment, score: -10, commentable: article, body_markdown: "Mediocre comment")
+      create(:comment, score: 10, commentable: article, user: user, body_markdown: "Good comment")
+      create(:comment, score: -99, commentable: article, user: user, body_markdown: "Bad comment")
+      create(:comment, score: -10, commentable: article, user: user, body_markdown: "Mediocre comment")
     end
 
     context "when user signed in" do
@@ -334,37 +297,23 @@ RSpec.describe "ArticlesShow" do
         sign_in user
       end
 
-      it "shows positive comments" do
+      it "shows positive and moderate-negative comments, hides spam comments, and displays filtered count",
+         :aggregate_failures do
         get article.path
         expect(response.body).to include("Good comment")
-      end
-
-      it "shows comments with score from -400 to -75" do
-        get article.path
         expect(response.body).to include("Bad comment")
-      end
-
-      it "hides comments with score < -400 and no comment deleted message" do
-        get article.path
         expect(response.body).not_to include("Spam comment")
         expect(response.body).not_to include("Comment deleted")
-      end
-
-      it "displays children of a low-quality comment and comment deleted message" do
-        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
-        get article.path
-        expect(response.body).to include("Child comment")
-        expect(response.body).to include("Comment deleted") # instead of the low quality one
-      end
-
-      it "displays comments count w/o including super low-quality ones" do
-        get article.path
         expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"3\">(3)</span>")
       end
 
-      it "displays includes spam comments in comments count if they have children" do
-        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+      it "displays children of a low-quality comment with comment deleted message and includes them in count",
+         :aggregate_failures do
+        create(:comment, score: 0, commentable: article, user: user, parent: spam_comment,
+                         body_markdown: "Child comment")
         get article.path
+        expect(response.body).to include("Child comment")
+        expect(response.body).to include("Comment deleted")
         expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
       end
 
@@ -377,20 +326,17 @@ RSpec.describe "ArticlesShow" do
     end
 
     context "when user not signed in" do
-      it "shows positive comments" do
+      it "shows positive comments and hides all negative comments", :aggregate_failures do
         get article.path
         expect(response.body).to include("Good comment")
-      end
-
-      it "hides all negative comments", :aggregate_failures do
-        get article.path
         expect(response.body).not_to include("Bad comment")
         expect(response.body).not_to include("Spam comment")
         expect(response.body).not_to include("Mediocre comment")
       end
 
       it "doesn't show children of a low-quality comment" do
-        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        create(:comment, score: 0, commentable: article, user: user, parent: spam_comment,
+                         body_markdown: "Child comment")
         get article.path
         expect(response.body).not_to include("Child comment")
       end
@@ -403,81 +349,81 @@ RSpec.describe "ArticlesShow" do
         expect(response.body).to include("View full discussion (16 comments)")
       end
     end
+  end
 
-    context "when below post billboard exists" do
-      it "does not render when it is below long article threshold" do
-        article.update_column(:body_markdown, "a" * 888)
-        get article.path
-        expect(response.body).not_to include("body-billboard-container")
-      end
-
-      it "renders when it is above long article threshold" do
-        article.update_column(:body_markdown, "a" * 901)
-        get article.path
-        expect(response.body).to include("body-billboard-container")
-      end
-
-      it "renders the secondary below post billboard slot alongside the primary" do
-        article.update_column(:body_markdown, "a" * 901)
-        get article.path
-        expect(response.body).to include("/bb/post_body_bottom\"")
-        expect(response.body).to include("/bb/post_body_bottom_secondary\"")
-      end
+  context "when a mid-comments billboard exists" do
+    before do
+      create(:comment, score: 10, commentable: article, user: user, body_markdown: "Good comment")
     end
 
-    context "when a billboard placement area is fully cached" do
-      it "loads that placement area from the shared URL and the others in the article's context" do
-        BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
-
-        get article.path
-
-        expect(response.body).to include("\"#{billboard_path(placement_area: :post_comments)}\"")
-        article_path = lambda do |area|
-          article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
-        end
-        expect(response.body).not_to include("\"#{article_path.call(:post_comments)}\"")
-        expect(response.body).to include("\"#{article_path.call(:post_comments_secondary)}\"")
-        expect(response.body).to include("\"#{article_path.call(:post_sidebar)}\"")
-      end
+    it "does not render the billboard if there are fewer than 6 root comments" do
+      create_list(:comment, 6, commentable: article, user: user)
+      get article.path
+      expect(response.body).not_to include("mid-comments-billboard-container")
     end
 
-    context "when rendering secondary billboard placements" do
-      it "renders the primary and secondary sidebar and comments slots in shuffle groups" do
-        get article.path
-        expect(response.body.scan("js-bb-shuffle-group").size).to be >= 2
-        %w[post_sidebar post_sidebar_secondary post_comments post_comments_secondary].each do |area|
-          expect(response.body).to include("/bb/#{area}\"")
-        end
-      end
+    it "renders the billboard if there are 6 or more root comments" do
+      create_list(:comment, 7, commentable: article, user: user)
+      get article.path
+      expect(response.body).to include("mid-comments-billboard-container")
     end
 
-    context "when a mid-comments billboard exists" do
-      it "does not render the billboard if there are fewer than 6 root comments" do
-        create_list(:comment, 6, commentable: article)
-        get article.path
-        expect(response.body).not_to include("mid-comments-billboard-container")
-      end
+    it "does not render the billboard when the first comment has too few children" do
+      first_comment = create(:comment, commentable: article, user: user, score: 100)
+      create_list(:comment, 4, commentable: article, user: user, parent: first_comment)
+      create(:comment, commentable: article, user: user, score: 2)
+      get article.path
+      expect(response.body).not_to include("mid-comments-billboard-container")
+    end
 
-      it "renders the billboard if there are 6 or more root comments" do
-        create_list(:comment, 7, commentable: article)
-        get article.path
-        expect(response.body).to include("mid-comments-billboard-container")
-      end
+    it "renders the billboard when the first comment has enough children" do
+      first_comment = create(:comment, commentable: article, user: user, score: 100)
+      create_list(:comment, 5, commentable: article, user: user, parent: first_comment)
+      create(:comment, commentable: article, user: user, score: 2)
+      get article.path
+      expect(response.body).to include("mid-comments-billboard-container")
+    end
+  end
 
-      it "does not render the billboard when the first comment has too few children" do
-        create(:comment, commentable: article, score: 100)
-        create_list(:comment, 4, commentable: article, parent: Comment.last)
-        create(:comment, commentable: article, score: 2)
-        get article.path
-        expect(response.body).not_to include("mid-comments-billboard-container")
-      end
+  context "when below post billboard exists" do
+    it "does not render when it is below long article threshold" do
+      article.update_column(:body_markdown, "a" * 888)
+      get article.path
+      expect(response.body).not_to include("body-billboard-container")
+    end
 
-      it "renders the billboard when the first comment has enough children" do
-        create(:comment, commentable: article, score: 100)
-        create_list(:comment, 5, commentable: article, parent: Comment.last)
-        create(:comment, commentable: article, score: 2)
-        get article.path
-        expect(response.body).to include("mid-comments-billboard-container")
+    it "renders the primary and secondary below post billboard slots when above long article threshold",
+       :aggregate_failures do
+      article.update_column(:body_markdown, "a" * 901)
+      get article.path
+      expect(response.body).to include("body-billboard-container")
+      expect(response.body).to include("/bb/post_body_bottom\"")
+      expect(response.body).to include("/bb/post_body_bottom_secondary\"")
+    end
+  end
+
+  context "when a billboard placement area is fully cached" do
+    it "loads that placement area from the shared URL and the others in the article's context", :aggregate_failures do
+      BillboardPlacementAreaConfig.create!(placement_area: "post_comments", fully_cached: true)
+
+      get article.path
+
+      expect(response.body).to include("\"#{billboard_path(placement_area: :post_comments)}\"")
+      article_path = lambda do |area|
+        article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+      end
+      expect(response.body).not_to include("\"#{article_path.call(:post_comments)}\"")
+      expect(response.body).to include("\"#{article_path.call(:post_comments_secondary)}\"")
+      expect(response.body).to include("\"#{article_path.call(:post_sidebar)}\"")
+    end
+  end
+
+  context "when rendering secondary billboard placements" do
+    it "renders the primary and secondary sidebar and comments slots in shuffle groups", :aggregate_failures do
+      get article.path
+      expect(response.body.scan("js-bb-shuffle-group").size).to be >= 2
+      %w[post_sidebar post_sidebar_secondary post_comments post_comments_secondary].each do |area|
+        expect(response.body).to include("/bb/#{area}\"")
       end
     end
   end
