@@ -23,35 +23,28 @@ RSpec.describe "Dashboards" do
         article
       end
 
-      it "renders user's articles" do
+      it "renders user's articles, stats link, analytics link, and no pagination for a single page",
+         :aggregate_failures do
         get "/dashboard"
         expect(response.body).to include(CGI.escapeHTML(article.title))
-      end
-
-      it 'shows "STATS" for articles' do
-        article = create(:article, user: user)
-
-        get "/dashboard"
         expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
+        expect(response.body).to include("Analytics")
+        expect(response.body).not_to include("pagination")
       end
 
-      it "renders the delete button for drafts" do
+      it "renders the draft state indicator and delete button for drafts", :aggregate_failures do
         unpublished_article
         get "/dashboard"
-        expect(response.body).to include "Delete"
+        expect(response.body).to include("Draft")
+        expect(response.body).to include("Delete")
       end
 
-      it "renders the draft state indicator" do
-        unpublished_article
-        get "/dashboard"
-        expect(response.body).to include "Draft"
-      end
-
-      it "renders scheduled state indicator" do
+      it "renders the scheduled state indicator and delete button for scheduled articles", :aggregate_failures do
         scheduled_article
         get "/dashboard"
-        expect(response.body).to include "Scheduled"
+        expect(response.body).to include("Scheduled")
+        expect(response.body).to include("Delete")
       end
 
       it "renders the detected language if an article has it" do
@@ -60,12 +53,6 @@ RSpec.describe "Dashboards" do
         get "/dashboard"
         expect(response.body).to include "Language:"
         expect(response.body).to include "Spanish"
-      end
-
-      it "renders the delete button for scheduled article" do
-        scheduled_article
-        get "/dashboard"
-        expect(response.body).to include "Delete"
       end
 
       it "renders subscriptions for articles with subscriptions" do
@@ -84,24 +71,13 @@ RSpec.describe "Dashboards" do
       end
 
       it "renders pagination if minimum amount of posts" do
-        create_list(:article, 52, user: user)
+        stub_const("DashboardsController::ARTICLES_PER_PAGE", 2)
+        create_list(:article, 2, user: user)
         get "/dashboard"
         expect(response.body).to include "pagination"
       end
 
-      it "does not render pagination if less than one full page" do
-        create_list(:article, 3, user: user)
-        get "/dashboard"
-        expect(response.body).not_to include "pagination"
-      end
-
-      it "renders a link to analytics dashboard" do
-        get dashboard_path
-
-        expect(response.body).to include("Analytics")
-      end
-
-      xit "renders a link to analytics for the org" do
+      it "renders a link to analytics for the org", skip: "rendered asynchronously via /dashboard/sidebar" do
         create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
 
         get dashboard_path
@@ -110,15 +86,15 @@ RSpec.describe "Dashboards" do
       end
 
       it "does not render a link to upload a video when enable_video_upload is false" do
-        get dashboard_path
         allow(Settings::General).to receive(:enable_video_upload).and_return(false)
+        get dashboard_path
 
         expect(response.body).not_to include("Upload a video")
       end
 
       it "does not render a link to upload a video for a recent user" do
-        get dashboard_path
         allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+        get dashboard_path
 
         expect(response.body).not_to include("Upload a video")
       end
@@ -126,33 +102,35 @@ RSpec.describe "Dashboards" do
 
     context "when logged in with many archived posts" do
       before do
+        stub_const("DashboardsController::ARTICLES_PER_PAGE", 2)
         sign_in user
 
-        25.times do |i|
-          create(:article, user: user, title: "Archived Post #{i}", archived: true, created_at: Time.current - i.minutes)
+        2.times do |i|
+          create(:article, user: user, title: "Archived Post #{i}", archived: true,
+                           created_at: Time.current - i.minutes)
         end
 
-        26.times do |i|
+        3.times do |i|
           create(:article, user: user, title: "Visible Post #{i}", created_at: 1.day.ago - i.minutes)
         end
       end
 
-      it "shows 25 unarchived posts on the first page" do
+      it "shows unarchived posts on the first page", :aggregate_failures do
         get "/dashboard"
 
         expect(response.body).to include("Visible Post 0")
         expect(response.body).not_to include("Archived Post 0")
-        expect(response.body.scan("spec__dashboard-story").size).to eq(25)
+        expect(response.body.scan("spec__dashboard-story").size).to eq(2)
       end
 
-      it "shows remaining unarchived posts on the next page" do
+      it "shows remaining unarchived posts on the next page", :aggregate_failures do
         get "/dashboard", params: { page: 2 }
 
-        expect(response.body).to include("Visible Post 25")
+        expect(response.body).to include("Visible Post 2")
         expect(response.body).not_to include("Archived Post 0")
       end
 
-      it "shows only archived posts when using archived filter" do
+      it "shows only archived posts when using archived filter", :aggregate_failures do
         get "/dashboard", params: { filter: "archived" }
 
         expect(response.body).to include("Archived Post 0")
@@ -230,7 +208,7 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
-      xit "renders a link to upload a video" do
+      it "renders a link to upload a video", skip: "rendered asynchronously via /dashboard/sidebar" do
         Timecop.freeze(Time.current) do
           user.update!(created_at: 3.weeks.ago)
           allow(Settings::General).to receive(:enable_video_upload).and_return(true)
@@ -275,7 +253,7 @@ RSpec.describe "Dashboards" do
 
       it "renders archived organization articles with the hidden class" do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        archived_article = create(:article, user: user, organization_id: organization.id, archived: true)
+        create(:article, user: user, organization_id: organization.id, archived: true)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
 
@@ -310,7 +288,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_users"
       end
 
-      xit "renders followed users count" do
+      it "renders followed users count", skip: "rendered asynchronously via /dashboard/sidebar" do
         expect(response.body).to include "Following users (1)"
       end
 
@@ -343,7 +321,7 @@ RSpec.describe "Dashboards" do
           get "/dashboard/following_tags"
         end
 
-        xit "renders followed tags count" do
+        it "renders followed tags count", skip: "rendered asynchronously via /dashboard/sidebar" do
           expect(response.body).to include "Following tags (2)"
         end
 
@@ -360,7 +338,7 @@ RSpec.describe "Dashboards" do
           get "/dashboard/hidden_tags"
         end
 
-        xit "renders hidden tags count" do
+        it "renders hidden tags count", skip: "rendered asynchronously via /dashboard/sidebar" do
           expect(response.body).to include "Hidden tags (1)"
         end
 
@@ -384,7 +362,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_organizations"
       end
 
-      xit "renders followed organizations count" do
+      it "renders followed organizations count", skip: "rendered asynchronously via /dashboard/sidebar" do
         expect(response.body).to include "Following organizations (1)"
       end
 
@@ -403,7 +381,7 @@ RSpec.describe "Dashboards" do
         get "/dashboard/following_podcasts"
       end
 
-      xit "renders followed podcast count" do
+      it "renders followed podcast count", skip: "rendered asynchronously via /dashboard/sidebar" do
         expect(response.body).to include "Following podcasts (1)"
       end
 
@@ -450,15 +428,10 @@ RSpec.describe "Dashboards" do
     end
 
     context "when user is signed in" do
-      it "shows page properly" do
+      it "shows page properly and contains back to dashboard button", :aggregate_failures do
         sign_in user
         get "/dashboard/analytics"
         expect(response.body).to include("Analytics")
-      end
-
-      it "page always contain back to dashboard button" do
-        sign_in user
-        get "/dashboard/analytics"
         within "nav" do
           expect(page).to have_link(href: "/dashboard")
         end
@@ -501,20 +474,16 @@ RSpec.describe "Dashboards" do
         sign_in user
       end
 
-      it "renders successfully" do
+      it "renders successfully with add source form when no sources exist", :aggregate_failures do
         get "/dashboard/feed_imports"
         expect(response).to have_http_status(:ok)
-      end
-
-      it "renders add source form when no sources exist" do
-        get "/dashboard/feed_imports"
         expect(response.body).to include("Add a Feed Source")
         expect(response.body).to include("Publishing from RSS")
       end
 
       it "renders existing feed sources with edit controls" do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        source = create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
+        create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
 
         get "/dashboard/feed_imports"
         expect(response.body).to include("My Blog")
@@ -655,19 +624,29 @@ RSpec.describe "Dashboards" do
     end
 
     it "renders pagination if minimum amount of subscriptions" do
-      create_list(:user_subscription,
-                  102, # Current pagination limit is 100
-                  author: author,
-                  user_subscription_sourceable: article_with_user_subscription_tag)
+      now = Time.current
+      records = Array.new(101) do |i|
+        {
+          author_id: author.id,
+          subscriber_id: second_user.id,
+          subscriber_email: "subscriber-#{i}@example.com",
+          user_subscription_sourceable_type: article_with_user_subscription_tag.class.name,
+          user_subscription_sourceable_id: article_with_user_subscription_tag.id,
+          created_at: now,
+          updated_at: now
+        }
+      end
+      UserSubscription.insert_all!(records)
+
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include "pagination"
     end
 
     it "does not render pagination if less than one full page" do
-      create_list(:user_subscription,
-                  5,
-                  author: author,
-                  user_subscription_sourceable: article_with_user_subscription_tag)
+      create(:user_subscription,
+             subscriber: second_user,
+             author: author,
+             user_subscription_sourceable: article_with_user_subscription_tag)
       get "/dashboard/subscriptions", params: params
       expect(response.body).not_to include "pagination"
     end
