@@ -49,6 +49,61 @@ RSpec.describe Article do
       expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
       expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
     end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      article = build(:article)
+
+      {
+        "ai_generated" => "fully_autonomous",
+        "AI-Generated" => "fully_autonomous",
+        "autonomous" => "fully_autonomous",
+        "full_ai" => "fully_autonomous",
+        "fully_ai" => "fully_autonomous",
+        "100%_ai" => "fully_autonomous",
+        "agent_generated" => "fully_autonomous",
+        "llm" => "fully_autonomous",
+        "5" => "fully_autonomous",
+        5 => "fully_autonomous",
+        true => "fully_autonomous",
+        "ai_assisted" => "some_ai",
+        "AI Assisted" => "some_ai",
+        "assisted" => "some_ai",
+        "some" => "some_ai",
+        "partial_ai" => "some_ai",
+        "hybrid" => "some_ai",
+        "copilot" => "some_ai",
+        "3" => "some_ai",
+        3 => "some_ai",
+        "human" => "no_ai",
+        "human_written" => "no_ai",
+        "hand_written" => "no_ai",
+        "handwritten" => "no_ai",
+        "none" => "no_ai",
+        "no" => "no_ai",
+        "100%_human" => "no_ai",
+        "without_ai" => "no_ai",
+        "1" => "no_ai",
+        1 => "no_ai",
+        "undisclosed" => "not_disclosed",
+        "unspecified" => "not_disclosed",
+        "unknown" => "not_disclosed",
+        "false" => "not_disclosed",
+        "0" => "not_disclosed",
+        0 => "not_disclosed",
+        false => "not_disclosed",
+        "" => "not_disclosed",
+        nil => "not_disclosed"
+      }.each do |input, expected|
+        article.ai_disclosure_level = input
+        expect(article.ai_disclosure_level).to eq(expected), "expected #{input.inspect} to map to #{expected}"
+      end
+    end
+
+    it "raises ArgumentError for completely unrecognized values" do
+      article = build(:article)
+      expect { article.ai_disclosure_level = "banana_split" }
+        .to raise_error(ArgumentError, "'banana_split' is not a valid ai_disclosure_level")
+    end
   end
 
   describe "validations" do

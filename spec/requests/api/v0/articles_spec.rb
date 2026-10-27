@@ -1343,6 +1343,17 @@ RSpec.describe "Api::V0::Articles" do
         expect(response.parsed_body["ai_disclosure_label"]).to eq("AI-assisted")
       end
 
+      it "translates similar ai_disclosure_level terms like ai_generated on update" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+        expect do
+          put_article(ai_disclosure_level: "ai_generated")
+          article.reload
+        end.to change(article, :ai_disclosure_level).from("not_disclosed").to("fully_autonomous")
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("fully_autonomous")
+        expect(response.parsed_body["ai_disclosure_label"]).to eq("Fully Autonomous")
+      end
+
       it "does not update ai_disclosure_level when enable_ai_disclosure is false" do
         allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false)
         expect do
