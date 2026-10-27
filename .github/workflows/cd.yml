@@ -1,9 +1,57 @@
 name: CD
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+    paths-ignore:
+      # Tests & test configs
+      - 'spec/**'
+      - 'cypress/**'
+      - 'app/**/*.test.js'
+      - 'app/**/*.test.jsx'
+      - 'app/**/__tests__/**'
+      - 'app/**/__stories__/**'
+      - 'app/**/.storybook/**'
+      - 'jest.config.js'
+      - 'cypress.config.js'
+      - 'cypress.dev.config.js'
+      - 'testSetup.js'
+      - 'customJsDomEnvironment.js'
+      - '.rspec'
+      - '.simplecov'
+      - 'codecov.yml'
+      - 'Guardfile'
+
+      # Documentation & AI context files
+      - 'docs/**'
+      - '*.md'
+      - '.cursorrules'
+      - '.windsurfrules'
+      - '.github/copilot-instructions.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '.github/PULL_REQUEST_TEMPLATE*'
+      - '.yardopts'
+
+      # Linting, developer tools & non-deploy CI workflows
+      - '.github/workflows/**'
+      - '!.github/workflows/cd.yml'
+      - '.buildkite/**'
+      - 'uffizzi/**'
+      - '.rubocop.yml'
+      - '.rubocop_todo.yml'
+      - '.erb-lint.yml'
+      - '.eslintrc.js'
+      - '.eslintignore'
+      - 'app/**/.eslintrc.js'
+      - '.prettierrc.json'
+      - '.prettierignore'
+      - '.lintstagedrc.js'
+      - '.editorconfig'
+      - '.solargraph.yml'
+      - '.gitpod.yml'
+      - '.env_sample'
 
 jobs:
   deploy:
