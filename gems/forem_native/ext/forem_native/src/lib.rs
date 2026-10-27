@@ -278,6 +278,22 @@ fn quickie_title_html(title: RString, truncate_for_feed: bool) -> Option<String>
     ))
 }
 
+fn title_for_metadata(ruby: &Ruby, title: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `Article#title_for_metadata` can
+    // fall back to `legacy_title_for_metadata`.
+    let normalized = {
+        let text = unsafe { title.test_as_str() }?;
+        match forem_core::title::title_for_metadata(text) {
+            Cow::Borrowed(slice) if slice.len() == text.len() => None,
+            Cow::Borrowed(slice) => Some(slice.to_owned()),
+            Cow::Owned(owned) => Some(owned),
+        }
+    };
+    Some(normalized.map_or_else(|| RString::new_shared(title), |s| ruby.str_new(&s)))
+}
+
 fn content_includes_title(content: RString, title: RString) -> Option<bool> {
     // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
     // borrows end before returning. `test_as_str` reuses Ruby's cached coderange and returns
@@ -540,6 +556,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("normalize_url", function!(normalize_url, 1))?;
     native_mod.define_singleton_method("join_url", function!(join_url, 2))?;
     native_mod.define_singleton_method("quickie_title_html", function!(quickie_title_html, 2))?;
+    native_mod.define_singleton_method("title_for_metadata", function!(title_for_metadata, 1))?;
     native_mod.define_singleton_method("host_without_www", function!(host_without_www, 1))?;
     native_mod.define_singleton_method(
         "content_includes_title",

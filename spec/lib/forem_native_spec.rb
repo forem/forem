@@ -2623,4 +2623,84 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".title_for_metadata (Article#title_for_metadata)" do
+    let(:legacy_title_for_metadata) do
+      lambda do |title|
+        title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
+      end
+    end
+
+    it "matches Article#title_for_metadata across edge cases" do
+      [
+        "",
+        "   ",
+        "\t\n\r\v\f\0",
+        "This is a regular title",
+        "Line one\nLine two",
+        "First paragraph\n\nSecond paragraph",
+        "Line one\n\n\nLine two",
+        "  \nLine one\nLine two\n  ",
+        "Line one  \n  Line two  \n  \n  Paragraph two",
+        "Check this out\nhttps://example.com\n\nMore text",
+        "These are the best ways to write a quickie:\n\n- Make it short\n- Make it great\n- Make it magoo\n\n" \
+        "This is how you do it.\n\nOr is it how you do it?\n\nI don't know, is it really?\n\n" \
+        "Really?\nReally?\nI dunno.",
+        "\0\t\n\r\v\f  hello\t\r\nworld  \0\n",
+        "a\0 \0b",
+        "a\u00A0\u3000b\nc",
+        "日本語\n\n🎉\tタイトル",
+      ].each do |title|
+        expected = legacy_title_for_metadata.call(title)
+        expect(described_class.title_for_metadata(title)).to eq(expected), title.inspect
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && title.present?
+          article = Article.new(type_of: "status", title: title)
+          expect(article.title_for_metadata).to eq(expected), title.inspect
+        end
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves Article#title_for_metadata fallback" do
+      [
+        nil,
+        false,
+        123,
+        :title,
+        ActiveSupport::SafeBuffer.new("Line one\nLine two"),
+        "Line one\nLine two".b,
+        "Line one\nLine two".encode("US-ASCII"),
+        "Line one\nLine two".encode("UTF-16LE"),
+        +"Line one\nLine two\xFF",
+      ].each do |input|
+        expect(described_class.title_for_metadata(input)).to be_nil, input.inspect
+      end
+
+      if defined?(Article) && Article.method_defined?(:title_for_metadata)
+        article = Article.new(type_of: "status")
+        article.title = "Line one\nLine two".encode("US-ASCII")
+        expect(article.title_for_metadata).to eq("Line one Line two")
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", " ", "  ", "\t", "\n", "\r", "\r\n", "\n\n", "\v", "\f", "\0",
+        "\u00A0", "\u2000", "\u3000", "Line one", "Paragraph", "- bullet",
+        "https://example.com/path?a=1&b=2", "日本語", "🎉", "café", "a\0b"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { tokens.sample(random: rng) }.join
+        expected = legacy_title_for_metadata.call(sample)
+        actual = described_class.title_for_metadata(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && sample.present?
+          article = Article.new(type_of: "status", title: sample)
+          expect(article.title_for_metadata).to eq(expected), message
+        end
+      end
+    end
+  end
 end
