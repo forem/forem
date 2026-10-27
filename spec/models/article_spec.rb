@@ -3717,6 +3717,51 @@ RSpec.describe Article do
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
+
+    context "when saved inside an open transaction" do
+      self.use_transactional_tests = false
+
+      let!(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
+
+      after do
+        described_class.where(id: article.id).delete_all
+        Users::Setting.where(user_id: user.id).delete_all
+        Users::NotificationSetting.where(user_id: user.id).delete_all
+        Profile.where(user_id: user.id).delete_all
+        User.where(id: user.id).delete_all
+      end
+
+      it "waits until the transaction commits before enqueuing Images::SocialImageWorker" do
+        # Clear any call from the initial `let!(:article)` creation outside our test transaction
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+        end
+
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not enqueue Images::SocialImageWorker if the transaction rolls back" do
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          raise ActiveRecord::Rollback
+        end
+
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
   end
 
   describe "#skip_indexing?" do

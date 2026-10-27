@@ -448,6 +448,120 @@ module ForemNative
       Native.wcag_contrast_ratio(rgb1.to_s, rgb2.to_s)
     end
 
+    # Counts distinct calendar days among `entries` (`[[article_id, timestamp, ...], ...]`)
+    # whose timestamp is `>= cutoff_time`, matching `FeedConfig.active_user?`.
+    # `cutoff_time` may be a `Time`/`TimeWithZone` or integer `cutoff_sec` (with `cutoff_nanos`).
+    # Returns nil for non-Array inputs or unrecognized timestamp formats so callers can
+    # fall back to `legacy_active_user_days`.
+    def activity_distinct_days_since(entries, cutoff_time, cutoff_nanos = 0)
+      return unless Native.respond_to?(:activity_distinct_days_since)
+      return unless entries.is_a?(Array)
+
+      if cutoff_time.is_a?(Integer)
+        Native.activity_distinct_days_since(entries, cutoff_time, cutoff_nanos.to_i)
+      elsif cutoff_time.respond_to?(:tv_sec)
+        nanos = cutoff_time.respond_to?(:tv_nsec) ? cutoff_time.tv_nsec : 0
+        Native.activity_distinct_days_since(entries, cutoff_time.tv_sec, nanos)
+      end
+    end
+
+    # Counts how many `[article_id, timestamp, ...]` entries in `entries` occurred strictly
+    # after `cutoff_time` (`> cutoff_time`).
+    def activity_pageviews_since(entries, cutoff_time, cutoff_nanos = 0)
+      return unless Native.respond_to?(:activity_pageviews_since)
+      return unless entries.is_a?(Array)
+
+      if cutoff_time.is_a?(Integer)
+        Native.activity_pageviews_since(entries, cutoff_time, cutoff_nanos.to_i)
+      elsif cutoff_time.respond_to?(:tv_sec)
+        nanos = cutoff_time.respond_to?(:tv_nsec) ? cutoff_time.tv_nsec : 0
+        Native.activity_pageviews_since(entries, cutoff_time.tv_sec, nanos)
+      end
+    end
+
+    # Computes the recency-weighted top-article shuffle count in `[5..20]` from the most
+    # recent pageview timestamp, `now_time`, and `shuffle_weight`, matching
+    # `Articles::Feeds::Custom#calculate_dynamic_shuffle_count`.
+    def dynamic_shuffle_count(most_recent_timestamp, now_time, shuffle_weight)
+      return unless Native.respond_to?(:dynamic_shuffle_count)
+      return unless now_time.respond_to?(:tv_sec)
+
+      weight = native_float(shuffle_weight)
+      return unless weight
+
+      now_nanos = now_time.respond_to?(:tv_nsec) ? now_time.tv_nsec : 0
+      Native.dynamic_shuffle_count(most_recent_timestamp, now_time.tv_sec, now_nanos, weight)
+    end
+
+    # Reorders `items` using the index-offset weighted shuffle algorithm in
+    # `Articles::Feeds::Custom#weighted_shuffle`. Accepts an optional `randoms:` array
+    # of floats in `[0.0, 1.0)` for deterministic testing.
+    def weighted_shuffle(items, shuffle_weight, randoms: nil)
+      return unless Native.respond_to?(:weighted_shuffle)
+      return unless items.is_a?(Array)
+      return unless randoms.nil? || randoms.is_a?(Array)
+
+      weight = native_float(shuffle_weight)
+      return unless weight
+
+      Native.weighted_shuffle(items, weight, randoms)
+    end
+
+    # Formats a non-negative duration in seconds as `"MM:SS"` or `"H:MM:SS"`, matching
+    # `Article#video_duration_in_minutes`. Returns nil for negative values.
+    def format_video_duration(seconds)
+      return unless Native.respond_to?(:format_video_duration)
+
+      secs = seconds.to_i
+      return if secs.negative? || secs >= 2**62
+
+      Native.format_video_duration(secs)
+    end
+
+    # Formats an Array of IDs (filtering out `blank?` entries) as a comma-separated SQL integer
+    # list string, or `empty_fallback` (default `"-1"`) when empty.
+    def sql_int_list(ids, empty_fallback = "-1")
+      return unless Native.respond_to?(:sql_int_list)
+      return unless ids.is_a?(Array) && empty_fallback.is_a?(String)
+
+      Native.sql_int_list(ids, empty_fallback)
+    end
+
+    # Formats an Array of Strings as a quoted Postgres array literal (`ARRAY['a','b']::text[]`).
+    def sql_string_array_literal(items, pg_type = "text")
+      return unless Native.respond_to?(:sql_string_array_literal)
+      return unless items.is_a?(Array) && pg_type.is_a?(String)
+
+      Native.sql_string_array_literal(items, pg_type)
+    end
+
+    # Formats an Array of numeric values as a bracketed `pgvector` literal (`"[0.1,0.2,...]"`).
+    def sql_vector_literal(values)
+      return unless Native.respond_to?(:sql_vector_literal)
+      return unless values.is_a?(Array)
+
+      Native.sql_vector_literal(values)
+    end
+
+    # Collapses consecutive whitespace runs into a single space and strips leading/trailing
+    # whitespace in a single pass, matching Rails `String#squish`.
+    def sql_squish(sql)
+      return unless Native.respond_to?(:sql_squish)
+      return unless sql.instance_of?(String) && sql.encoding.ascii_compatible?
+
+      Native.sql_squish(sql)
+    end
+
+    # Compiles the complete `FeedConfig#score_sql` expression in a single pass from the
+    # 28 weight floats and 24-element context array. Returns nil if any input is outside
+    # the fast-path domain so `FeedConfig#score_sql` can fall back to `legacy_score_sql`.
+    def feed_config_score_sql(weights, context)
+      return unless Native.respond_to?(:feed_config_score_sql)
+      return unless weights.is_a?(Array) && context.is_a?(Array)
+
+      Native.feed_config_score_sql(weights, context)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

@@ -81,6 +81,8 @@ module Images
       %w[#4545ff #8ee0f5 #1a0450 #7a4af0 #c8c0f5],
     ].freeze
     UNSET_COLORS = %w[#000000 #111212].freeze
+    PREWARM_MIN_TRUST_SCORE = 2
+    PREWARM_TIMEOUT = 5
 
     def self.call(resource = nil)
       new(resource).call
@@ -99,6 +101,7 @@ module Images
       when Article
         @user = @resource.user
         @resource.update_column(:social_image, generate_image(@resource, @user.setting.brand_color1))
+        prewarm_social_image(@resource)
         ## We only need to bust article. All else can fade naturally
         EdgeCache::BustArticle.call(@resource)
       when ::Profile
@@ -138,6 +141,33 @@ module Images
     private
 
     attr_reader :resource
+
+    def prewarm_social_image(article)
+      return if article.social_image.blank? || article.main_image.present?
+      return unless @user&.author_trust_score.to_i >= PREWARM_MIN_TRUST_SCORE
+
+      width, height = if article.published_at.present? && article.published_at <= Time.zone.local(2026, 3, 1)
+                        [1000, 500]
+                      else
+                        [WIDTH, HEIGHT]
+                      end
+      optimized_url = Images::Optimizer.call(article.social_image, width: width, height: height, crop: "crop")
+      return if optimized_url.blank? || optimized_url == article.social_image
+      return unless safe_prewarm_url?(optimized_url)
+
+      HTTParty.get(optimized_url, timeout: PREWARM_TIMEOUT, follow_redirects: false)
+    rescue StandardError => e
+      Rails.logger.warn("[GenerateSocialImageMagickally] Social image prewarm failed: #{e.message}")
+    end
+
+    def safe_prewarm_url?(url)
+      uri = URI.parse(url.to_s)
+      return false if uri.blank? || %w[http https].exclude?(uri.scheme) || uri.host.blank?
+
+      !UnifiedEmbed::Tag.private_ip?(uri.host)
+    rescue URI::Error
+      false
+    end
 
     def update_user_social_image(url)
       profile = @user.profile || @user.create_profile

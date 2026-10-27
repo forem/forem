@@ -93,7 +93,34 @@ Benchmarking a ~5,000-word Markdown article (`36,960` bytes) via `bundle exec ra
 
 ---
 
-## 5. Maintaining Embedded Static Datasets & Removed Gems
+## 5. Second Iteration Pattern: Coarse-Grained Service & Query-Pipeline Kernels (`forem_core::feed`)
+
+While leaf string/color/URL helpers (Section 4) eliminate isolated micro-allocations, request-level service pipelines such as `/stories/feed` (`Stories::FeedsController#show` -> `FeedConfig.select_for_feed` -> `FeedConfig#score_sql` -> `Articles::Feeds::Custom#default_home_feed` -> `show.json.jbuilder`) suffer from **compound multi-step overhead**:
+- The same `UserActivity#recently_viewed_articles` JSONB array is scanned and parsed via `String#to_datetime` (`Date._parse`) hundreds of times per request across `FeedConfig.active_user?`, `FeedConfig#score_sql`, and `Articles::Feeds::Custom#calculate_dynamic_shuffle_count`.
+- Dynamic SQL scoring expression assembly (`FeedConfig#score_sql`) concatenates intermediate follow arrays, quotes tag/label literals in loops, formats 768-float `pgvector` embeddings via `Array#join(',')` (769 string allocations per call), and runs regex `String#squish` passes over multi-KB SQL strings.
+- Post-query candidate ranking (`Articles::Feeds::Custom#weighted_shuffle`) and story serialization (`Article#video_duration_in_minutes`) allocate intermediate tuple arrays, boxed float sort keys, and `ActiveSupport::Duration` hashes on every story.
+
+To optimize service and query-builder pipelines in a general-purpose, reusable way without disrupting ActiveRecord models or controller contracts, follow the **Two-Tier Composable Primitives + Pipeline Kernel Pattern** in `crates/forem_core/src/feed.rs`:
+
+1. **Tier 1 — General-Purpose Composable Primitives**:
+   Expose standalone, zero-allocation building blocks on `forem_core::feed` and `ForemNative` that any feed, digest, notification, or query builder can call independently:
+   - `ForemNative.activity_distinct_days_since(entries, cutoff_time)` & `ForemNative.activity_pageviews_since(entries, cutoff_time)` — zero-allocation ISO-8601/SQL timestamp parsing + Howard Hinnant civil-date window aggregation.
+   - `ForemNative.dynamic_shuffle_count(most_recent_timestamp, now_time, weight)` & `ForemNative.weighted_shuffle(items, shuffle_weight)` — candidate re-ranking and recency-weighted window sizing.
+   - `ForemNative.sql_int_list(ids, empty_fallback)`, `ForemNative.sql_string_array_literal(items, pg_type)`, `ForemNative.sql_vector_literal(values)`, & `ForemNative.sql_squish(sql)` — reusable SQL literal/array/vector/whitespace primitives.
+   - `ForemNative.format_video_duration(seconds)` — zero-`ActiveSupport::Duration` duration formatting for feed JSON serialization.
+2. **Tier 2 — Single-Pass Coarse-Grained Pipeline Kernel**:
+   Compose those Tier 1 primitives into a single-pass Rust pipeline (`ForemNative.feed_config_score_sql` -> `forem_core::feed::build_feed_config_score_sql`) that borrows the Ruby `FeedConfig` weight vector and `UserActivity` arrays in-place (`unsafe { arr.as_slice() }`), scans `recently_viewed_articles` once, and writes the entire multi-KB SQL scoring expression into a single pre-allocated Rust `String`.
+
+Benchmarking the complete `/stories/feed` custom feed pipeline (`FeedConfig.active_user?` + `FeedConfig#score_sql` with 768-float embedding + `calculate_dynamic_shuffle_count` + `weighted_shuffle` + 35x `Article#video_duration_in_minutes`) via `bundle exec rake forem_native:benchmark`:
+
+| Metric | Legacy Ruby (`/stories/feed` pipeline) | Rust (`magnus` + `forem_core::feed`) | Improvement |
+| :--- | :--- | :--- | :--- |
+| **Throughput (`benchmark-ips`)** | `663.7 i/s` | `13,675.9 i/s` | **20.61x faster** |
+| **Ruby Heap Allocations (10 runs)** | `66,159 objects` (`5.49 MB`) | `1,760 objects` (`169.1 KB`) | **97.3% fewer objects / 96.9% less memory** |
+
+---
+
+## 6. Maintaining Embedded Static Datasets & Removed Gems
 
 Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
 

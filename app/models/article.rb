@@ -970,6 +970,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
+    ForemNative.format_video_duration(video_duration_in_seconds) ||
+      legacy_video_duration_in_minutes
+  end
+
+  def legacy_video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
     # add default hours and minutes for the substitutions below
@@ -980,6 +985,7 @@ class Article < ApplicationRecord
 
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
+  private :legacy_video_duration_in_minutes
 
   def body_text
     # Sanitizing processed_html is slow on long posts and a single save asks for it
@@ -1883,7 +1889,8 @@ class Article < ApplicationRecord
       social_image_quote_changed?
     return unless change
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   # The generated image quotes the opening of the post, so only body edits that

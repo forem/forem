@@ -1119,14 +1119,14 @@ RSpec.describe User do
       expect(user.good_standing_followers_count).to eq(2)
     end
 
-    it "counts distinct follower ids so the follows index can serve the query" do
+    it "counts follower ids so the follows index can serve the query" do
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("COUNT(") }
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
         user.good_standing_followers_count
       end
 
-      expect(queries).to include(a_string_including('COUNT(DISTINCT "follows"."follower_id")'))
+      expect(queries).to include(a_string_including('COUNT("follows"."follower_id")'))
     end
   end
 

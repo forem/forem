@@ -2791,4 +2791,348 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Custom Feed & Query-Pipeline Primitives (/stories/feed pattern)" do
+    describe ".activity_distinct_days_since and .activity_pageviews_since (FeedConfig.active_user?)" do
+      let(:legacy_distinct_days) do
+        lambda do |entries, cutoff|
+          entries.filter_map do |entry|
+            timestamp = entry.is_a?(Array) ? entry[1] : nil
+            next unless timestamp
+
+            dt = timestamp.to_datetime
+            dt.to_date if dt >= cutoff
+          rescue StandardError
+            nil
+          end.uniq.size
+        end
+      end
+
+      let(:legacy_pageviews_since) do
+        lambda do |entries, cutoff|
+          entries.count do |entry|
+            timestamp = entry.is_a?(Array) ? entry[1] : nil
+            next false unless timestamp
+
+            timestamp.to_datetime > cutoff
+          rescue StandardError
+            false
+          end
+        end
+      end
+
+      it "handles ISO-8601, SQL timestamps, timezone offsets, TimeWithZone, and malformed entries" do
+        cutoff = Time.utc(2026, 10, 20, 12, 0, 0)
+        entries = [
+          [101, "2026-10-27T14:23:45Z", 30],
+          [102, "2026-10-27T18:00:00.123456Z", 45],
+          [103, "2026-10-26T23:30:00-04:00", 20], # Local date 2026-10-26 even though UTC is 2026-10-27 03:30
+          [104, "2026-10-24 09:15:00 UTC", 15],
+          [105, "2026-10-21", 10],
+          [106, "2026-10-15T12:00:00Z", 10], # Older than cutoff
+          [107, "not-a-timestamp"],
+          [108, nil],
+          "malformed-entry",
+          [],
+        ]
+
+        expect(described_class.activity_distinct_days_since(entries, cutoff))
+          .to eq(legacy_distinct_days.call(entries, cutoff))
+        expect(described_class.activity_pageviews_since(entries, cutoff))
+          .to eq(legacy_pageviews_since.call(entries, cutoff))
+
+        # Defer non-ISO strings containing digits to Ruby fallback
+        non_iso = [[101, "Oct 27, 2026 12:00:00"]]
+        expect(described_class.activity_distinct_days_since(non_iso, cutoff)).to be_nil
+      end
+
+      it "passes differential equivalence across 1,000 generated activity histories" do
+        rng = Random.new(424_242)
+        base_time = Time.utc(2026, 10, 27, 15, 0, 0)
+        cutoff_7d = base_time - 7.days
+        cutoff_24h = base_time - 24.hours
+        offsets = ["Z", "+00:00", "-04:00", "+05:30", "-07:00", " UTC"]
+
+        1_000.times do |iteration|
+          count = rng.rand(0..40)
+          entries = Array.new(count) do
+            case rng.rand(10)
+            when 0
+              [rng.rand(1..500), "invalid-timestamp"]
+            when 1
+              [rng.rand(1..500), nil]
+            else
+              t = base_time - rng.rand(0..(14 * 86_400)).seconds
+              offset = offsets.sample(random: rng)
+              iso = if offset == " UTC"
+                      t.utc.strftime("%Y-%m-%d %H:%M:%S UTC")
+                    elsif offset == "Z"
+                      t.utc.iso8601
+                    else
+                      t.localtime(offset).iso8601
+                    end
+              [rng.rand(1..500), iso, rng.rand(5..120)]
+            end
+          end
+
+          expected_days = legacy_distinct_days.call(entries, cutoff_7d)
+          actual_days = described_class.activity_distinct_days_since(entries, cutoff_7d)
+          expect(actual_days).to eq(expected_days), "iteration #{iteration} distinct days"
+
+          expected_views = legacy_pageviews_since.call(entries, cutoff_24h)
+          actual_views = described_class.activity_pageviews_since(entries, cutoff_24h)
+          expect(actual_views).to eq(expected_views), "iteration #{iteration} pageviews"
+        end
+      end
+    end
+
+    describe ".dynamic_shuffle_count (Articles::Feeds::Custom#calculate_dynamic_shuffle_count)" do
+      let(:legacy_shuffle_count) do
+        lambda do |raw_ts, now_time, weight|
+          most_recent_timestamp = raw_ts.to_datetime
+          hours_since_last_view = ((now_time - most_recent_timestamp) / 1.hour).ceil
+          base_shuffle_count = [21 - hours_since_last_view, 5].max
+          weighted_shuffle_count = (base_shuffle_count * weight).round
+          weighted_shuffle_count.clamp(5, 20)
+        rescue StandardError
+          5
+        end
+      end
+
+      it "passes differential equivalence across 1,000 generated timestamps and shuffle weights" do
+        rng = Random.new(424_242)
+        now_time = Time.utc(2026, 10, 27, 16, 30, 0)
+
+        1_000.times do |iteration|
+          seconds_ago = rng.rand(-3600..(48 * 3600))
+          ts_str = (now_time - seconds_ago.seconds).utc.iso8601(3)
+          weight = (rng.rand * 3.0).round(3)
+
+          expected = legacy_shuffle_count.call(ts_str, now_time, weight)
+          actual = described_class.dynamic_shuffle_count(ts_str, now_time, weight)
+          expect(actual).to eq(expected),
+                            "iteration #{iteration}: ts=#{ts_str} weight=#{weight}"
+        end
+      end
+    end
+
+    describe ".weighted_shuffle (Articles::Feeds::Custom#weighted_shuffle)" do
+      let(:legacy_weighted_shuffle) do
+        lambda do |items, weight, randoms|
+          return items if weight <= 0 || items.size <= 1
+
+          items.each_with_index.sort_by do |_item, index|
+            index + ((randoms[index] * (4 * weight)) - (2 * weight))
+          end.map(&:first)
+        end
+      end
+
+      it "matches legacy Ruby weighted_shuffle permutation across 1,000 generated lists" do
+        rng = Random.new(424_242)
+
+        1_000.times do |iteration|
+          len = rng.rand(0..50)
+          items = (1..len).map { |i| "article_#{i}" }
+          weight = (rng.rand * 5.0).round(4)
+          randoms = Array.new(len) { rng.rand }
+
+          expected = legacy_weighted_shuffle.call(items, weight, randoms)
+          actual = described_class.weighted_shuffle(items, weight, randoms: randoms)
+          expect(actual).to eq(expected), "iteration #{iteration}: len=#{len} weight=#{weight}"
+        end
+      end
+    end
+
+    describe ".format_video_duration (Article#video_duration_in_minutes)" do
+      let(:legacy_video_duration) do
+        lambda do |seconds|
+          duration = ActiveSupport::Duration.build(seconds.to_i).parts
+          duration = duration.reverse_merge(seconds: 0, minutes: 0, hours: 0)
+          minutes_and_seconds = format("%<minutes>02d:%<seconds>02d", duration)
+          return minutes_and_seconds if duration[:hours] < 1
+
+          "#{duration[:hours]}:#{minutes_and_seconds}"
+        end
+      end
+
+      it "matches ActiveSupport::Duration formatting across edge cases and 1,000 random durations" do
+        [0, 1, 9, 59, 60, 61, 323, 599, 600, 3599, 3600, 3661, 36_000, 86_399, 86_400, 90_061,
+         604_800, 2_629_746, 31_556_952, nil].each do |secs|
+          expected = legacy_video_duration.call(secs)
+          expect(described_class.format_video_duration(secs)).to eq(expected), secs.inspect
+          article = Article.new(video_duration_in_seconds: secs)
+          expect(article.video_duration_in_minutes).to eq(expected), secs.inspect
+        end
+
+        expect(described_class.format_video_duration(-5)).to be_nil
+        neg_article = Article.new(video_duration_in_seconds: -5)
+        expect(neg_article.video_duration_in_minutes).to eq(legacy_video_duration.call(-5))
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          secs = rng.rand(0..200_000)
+          expected = legacy_video_duration.call(secs)
+          actual = described_class.format_video_duration(secs)
+          expect(actual).to eq(expected), "iteration #{iteration}: secs=#{secs}"
+        end
+      end
+    end
+
+    describe ".sql_int_list, .sql_string_array_literal, .sql_vector_literal, and .sql_squish" do
+      it "matches Rails/ActiveRecord SQL formatting across 1,000 generated inputs" do
+        expect(described_class.sql_int_list([], "-1")).to eq("-1")
+        expect(described_class.sql_int_list([nil, false, ""], "-1")).to eq("-1")
+        expect(described_class.sql_int_list([10, nil, 20, 30], "-1")).to eq("10,20,30")
+        expect(described_class.sql_string_array_literal(["ruby", "o'reilly"], "text"))
+          .to eq("ARRAY['ruby','o''reilly']::text[]")
+        expect(described_class.sql_vector_literal([0.1, 0.0, -1.5])).to eq("[0.1,0.0,-1.5]")
+        expect(described_class.sql_squish("  SELECT   *\n\tFROM   articles \r\n WHERE id = 1  "))
+          .to eq("SELECT * FROM articles WHERE id = 1")
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          ids = Array.new(rng.rand(0..30)) { rng.rand < 0.2 ? nil : rng.rand(1..100_000) }
+          compact_ids = ids.compact_blank
+          expected_ids = compact_ids.empty? ? "-1" : compact_ids.join(",")
+          expect(described_class.sql_int_list(ids, "-1")).to eq(expected_ids), "iteration #{iteration}"
+
+          floats = Array.new(rng.rand(1..16)) { ((rng.rand * 20.0) - 10.0).round(4) }
+          expect(described_class.sql_vector_literal(floats)).to eq("[#{floats.join(',')}]")
+        end
+      end
+    end
+
+    describe ".feed_config_score_sql (FeedConfig#score_sql)" do
+      include ActiveSupport::Testing::TimeHelpers
+
+      it "matches FeedConfig#legacy_score_sql byte-for-byte across 1,000 randomized configs and user activity states" do
+        rng = Random.new(424_242)
+        tag_pool = %w[ruby rust javascript webdev ai beginners career devops postgres performance]
+        label_pool = %w[featured_candidate staff_pick evergreen deep_dive discussion]
+        lang_pool = %w[en es fr pt de ja]
+
+        travel_to(Time.utc(2026, 10, 27, 15, 0, 0)) do
+          rec_list = instance_double(RecommendedArticlesList, article_ids: [111, 222, 333])
+          rec_relation = instance_double(ActiveRecord::Relation, last: rec_list)
+          allow(rec_relation).to receive(:where).and_return(rec_relation)
+          allow(RecommendedArticlesList).to receive(:where).and_return(rec_relation)
+
+          1_000.times do |iteration|
+            config = FeedConfig.new(
+              feed_success_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              comment_score_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              score_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              organization_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              user_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              follow_status_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              tag_follow_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              subforem_follow_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              label_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recency_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              comment_recency_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              lookback_window_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              precomputed_selections_weight: rng.rand < 0.4 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_article_suppression_rate: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              published_today_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              general_past_day_bonus_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recently_active_past_day_bonus_weight: rng.rand < 0.6 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_subforem_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              semantic_similarity_weight: rng.rand < 0.4 ? (rng.rand * 10.0).round(3) : 0.0,
+              ai_disclosure_matching_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              autonomous_ai_penalty_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              featured_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              favorited_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              status_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              clickbait_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              compellingness_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              language_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              randomness_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              recent_tag_count_min: 2,
+              recent_tag_count_max: 5,
+              all_time_tag_count_min: 2,
+              all_time_tag_count_max: 5,
+            )
+
+            recent_views = Array.new(rng.rand(0..8)) do
+              [rng.rand(100..999), (Time.current - rng.rand(1..72).hours).utc.iso8601, 30]
+            end
+            tags = tag_pool.sample(rng.rand(0..8), random: rng)
+            labels = label_pool.sample(rng.rand(0..3), random: rng)
+            embedding = rng.rand < 0.5 ? Array.new(16) { ((rng.rand * 2.0) - 1.0).round(4) } : nil
+
+            activity_double = if rng.rand < 0.85
+                                instance_double(
+                                  UserActivity,
+                                  recently_viewed_articles: recent_views,
+                                  alltime_users: Array.new(rng.rand(0..10)) { rng.rand(1..500) },
+                                  recent_users: Array.new(rng.rand(0..5)) { rng.rand < 0.2 ? nil : rng.rand(1..500) },
+                                  alltime_organizations: Array.new(rng.rand(0..6)) { rng.rand(1..200) },
+                                  recent_organizations: Array.new(rng.rand(0..4)) { rng.rand(1..200) },
+                                  alltime_subforems: Array.new(rng.rand(0..4)) { rng.rand(1..20) },
+                                  recent_subforems: Array.new(rng.rand(0..4)) { rng.rand(1..20) },
+                                  relevant_tags: tags,
+                                  recent_labels: labels,
+                                  interest_embedding: embedding,
+                                )
+                              end
+
+            ai_mode = %i[show_all minimize_ai hide_fully_autonomous].sample(random: rng)
+            setting_double = instance_double(
+              Users::Setting,
+              minimize_ai_feed_ai?: ai_mode == :minimize_ai,
+              hide_fully_autonomous_feed_ai?: ai_mode == :hide_fully_autonomous,
+            )
+
+            langs = lang_pool.sample(rng.rand(0..3), random: rng)
+            user_double = Struct.new(
+              :id,
+              :user_activity,
+              :cached_following_users_ids,
+              :cached_following_organizations_ids,
+              :cached_followed_tag_names,
+              :cached_languages,
+              :setting,
+            ).new(
+              42,
+              activity_double,
+              [10, 20],
+              [100, 200],
+              tags,
+              langs,
+              setting_double,
+            )
+
+            root_match = rng.rand < 0.6
+            RequestStore.store[:subforem_id] = 1
+            RequestStore.store[:root_subforem_id] = root_match ? 1 : 2
+            ENV["OPTIMIZED_FEED_TAGS_QUERY"] = rng.rand < 0.5 ? "true" : nil
+
+            seed = rng.rand(1..1_000_000)
+            srand(seed)
+            actual_sql = config.score_sql(user_double)
+            srand(seed)
+            expected_sql = config.__send__(:legacy_score_sql, user_double)
+
+            expect(actual_sql).to eq(expected_sql), "iteration #{iteration}"
+          end
+
+          # Verify out-of-domain float transparently falls back to legacy_score_sql
+          extreme_config = FeedConfig.new(feed_success_weight: 1e-7)
+          minimal_user = Struct.new(
+            :id,
+            :user_activity,
+            :cached_following_users_ids,
+            :cached_following_organizations_ids,
+            :cached_followed_tag_names,
+          ).new(1, nil, [], [], [])
+          expect(extreme_config.score_sql(minimal_user))
+            .to eq(extreme_config.__send__(:legacy_score_sql, minimal_user))
+        end
+      ensure
+        ENV.delete("OPTIMIZED_FEED_TAGS_QUERY")
+        RequestStore.store.delete(:subforem_id)
+        RequestStore.store.delete(:root_subforem_id)
+      end
+    end
+  end
 end
