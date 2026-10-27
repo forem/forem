@@ -98,6 +98,36 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(generate_and_parse_markdown(code_block)).to include("----")
   end
 
+  it "renders deeply nested lists without dropping text" do
+    # Redcarpet drops text at nesting levels >= 5 (16+ spaces)
+    # 17 spaces + marker + text
+    markdown = "                 * Deeply nested list item"
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("Deeply nested list item")
+  end
+
+  it "does not rewrite list-shaped lines inside fenced code blocks" do
+    markdown = <<~MARKDOWN
+      ```
+                   * This should remain untouched
+      ```
+    MARKDOWN
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("               * This should remain untouched")
+  end
+
+  it "does not merge following line when list marker has no trailing text" do
+    markdown = <<~MARKDOWN
+                   * 
+    Next line
+    MARKDOWN
+    output = generate_and_parse_markdown(markdown)
+    expect(output).to include("Next line")
+    expect(output).not_to include(" * Next line")
+  end
+
+
+
   it "correctly renders escaped code blocks with more than 3 backticks" do
     # This is the reproduction case from issue #17991
     # Input: ```` ```javascript ````

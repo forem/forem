@@ -44,8 +44,10 @@ module MarkdownProcessor
 
         # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
         content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
+        # Workaround for Redcarpet dropping text in deeply nested lists
+        content_normalized_lists = normalize_overly_nested_lists(content_with_fixed_links)
         # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
-        content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+        content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_normalized_lists)
 
         code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
         escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
@@ -76,20 +78,35 @@ module MarkdownProcessor
 
     # Prevent Redcarpet from dropping text in deeply nested lists
     def normalize_overly_nested_lists(content)
-      content.gsub(/^([ \t]+)([-*+]|\d+\.)\s+(.*)$/) do
-        indent = Regexp.last_match(1)
-        marker = Regexp.last_match(2)
-        text   = Regexp.last_match(3)
+      current_fence_marker = nil
 
-        normalized_indent =
-          if indent.include?("\t")
-            indent[0, 4]
-          else
-            indent[0, MAX_LIST_INDENT_SPACES]
-          end
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
 
-        "#{normalized_indent}#{marker} #{text}"
-      end
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
+          indent = Regexp.last_match(1)
+          marker = Regexp.last_match(2)
+          text   = Regexp.last_match(3)
+
+          normalized_indent =
+            if indent.include?("\t")
+              indent[0, 4]
+            else
+              indent[0, MAX_LIST_INDENT_SPACES]
+            end
+
+          "#{normalized_indent}#{marker} #{text}"
+        end
+      end.join
     end
 
     def convert_deeply_nested_links_to_html(content)
