@@ -4231,6 +4231,13 @@ RSpec.describe Article do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
     end
+
+    it "escapes angle brackets in the title" do
+      article.title = "<img src=x onerror=alert(1)>\nSecond line"
+      expected = "<p class=\"quickie-paragraph\">&lt;img src=x onerror=alert(1)&gt;<br>Second line</p>"
+      expect(article.title_finalized).to eq(expected)
+      expect(article.title_finalized).not_to include("<img")
+    end
   end
 
   describe "#extract_url_from_status_title" do

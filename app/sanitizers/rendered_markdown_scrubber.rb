@@ -2,6 +2,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/
   TABLE_CELL_TAGS = %w[td th].freeze
   ALLOWED_TEXT_ALIGN = %w[left center right].freeze
+  CODEBLOCK_HIGHLIGHT_TAGS = %w[div pre code].freeze
 
   def initialize
     super
@@ -18,17 +19,19 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   # Overrides scrub_attributes in
   # https://github.com/rails/rails-html-sanitizer/blob/master/lib/rails/html/scrubbers.rb
   def scrub_attributes(node)
+    scrub_valid_attributes(node)
+
     # We only want to call super if we aren't in a codeblock
     # because the `class` attribute will be stripped
     if inside_codeblock?(node)
       node.attribute_nodes.each do |attr|
+        attr.remove if attr.name != "class" && scrub_attribute?(attr.name)
         scrub_attribute(node, attr)
       end
 
       scrub_css_attribute(node)
     else
       alignment = cell_text_align(node)
-      scrub_valid_attributes(node)
       super
       node["style"] = "text-align: #{alignment}" if alignment
     end
@@ -63,8 +66,8 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   end
 
   def inside_codeblock?(node)
-    node.attributes["class"]&.value&.include?("highlight") ||
-      (node.name == "span" && node.ancestors.first.name == "code")
+    (CODEBLOCK_HIGHLIGHT_TAGS.include?(node.name) && node.attributes["class"]&.value&.include?("highlight")) ||
+      (node.name == "span" && node.ancestors.first&.name == "code")
   end
 
   def valid_codeblock_div?(node)
