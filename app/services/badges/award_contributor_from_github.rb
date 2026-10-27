@@ -56,8 +56,11 @@ module Badges
         hash[c.id.to_s] = c.contributions
       end
 
-      authors_uids = contributions_map.keys
-      Identity.github.where(uid: authors_uids).find_each do |identity|
+      # Iterate over all GitHub identities rather than only those present in the
+      # contributors response. GitHub's contributors endpoint lists commit authors
+      # only, so an identity with merged PRs but no attributed commits would never
+      # appear here and its PR count (the fallback below) would never be checked.
+      Identity.github.find_each do |identity|
         commits_count = contributions_map[identity.uid] || 0
 
         # Use Search API to count merged PRs as a fallback/complement to commit counts
