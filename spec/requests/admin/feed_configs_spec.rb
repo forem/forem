@@ -80,7 +80,7 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response.body).not_to include("Feed Config ##{low_impression_config.id}</h2>")
       end
 
-      it "excludes archived feed configs from index and top performer" do
+      it "excludes archived feed configs from index and top performer by default" do
         archived_config = create(
           :feed_config,
           feed_success_score: 999.0,
@@ -90,15 +90,35 @@ RSpec.describe "/admin/advanced/feed_configs" do
         get_resource
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Feed Config ##{top_config.id}")
-        expect(response.body).not_to include("Feed Config ##{archived_config.id}")
+        expect(response.body).not_to include("##{archived_config.id}</a>")
+      end
+
+      it "supports filtering by status via mode=archived and mode=all" do
+        archived_config = create(
+          :feed_config,
+          feed_success_score: 999.0,
+          feed_impressions_count: 5000,
+          archived: true,
+        )
+        get admin_feed_configs_path(mode: "archived")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("##{archived_config.id}</a>")
+        expect(response.body).not_to include("##{other_config.id}</a>")
+
+        get admin_feed_configs_path(mode: "all")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("##{archived_config.id}</a>")
+        expect(response.body).to include("##{top_config.id}</a>")
       end
     end
 
     describe "GET /admin/advanced/feed_configs/:id" do
-      it "renders the show view for the feed config" do
+      it "renders the show view for the feed config including bucket and status badges" do
         get admin_feed_config_path(top_config)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Feed Config ##{top_config.id}")
+        expect(response.body).to include("Best in #{top_config.targeting_bucket}")
+        expect(response.body).to include("Active")
         expect(response.body).to include("ai_disclosure_matching_weight")
       end
     end
@@ -115,6 +135,20 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include('value="5.0"')
         expect(response.body).to include("selected=\"selected\" value=\"#{FeedConfig::BUCKET_FEED_CASUAL_USER}\"")
+      end
+
+      it "pre-populates from the best config for a specific bucket when filter is passed" do
+        digest_best = create(
+          :feed_config,
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          feed_success_score: 40.0,
+          feed_impressions_count: 100,
+          ai_disclosure_matching_weight: 7.5,
+        )
+        get new_admin_feed_config_path(filter: digest_best.targeting_bucket)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('value="7.5"')
+        expect(response.body).to include("selected=\"selected\" value=\"#{FeedConfig::BUCKET_DIGEST}\"")
       end
     end
 

@@ -101,19 +101,20 @@ class FeedConfig < ApplicationRecord
   end
 
   def self.archive_stale_configs!
-    top_ids = TARGETING_BUCKETS.flat_map do |bucket|
-      active
-        .where(targeting_bucket: bucket)
+    cutoff = ARCHIVE_AGE_THRESHOLD.ago
+    TARGETING_BUCKETS.each do |bucket|
+      bucket_scope = active.where(targeting_bucket: bucket)
+      top_ids = bucket_scope
         .order(feed_success_score: :desc, id: :desc)
         .limit(ARCHIVE_TOP_LIMIT)
         .ids
-    end
 
-    active
-      .where("created_at < ?", ARCHIVE_AGE_THRESHOLD.ago)
-      .where.not(id: top_ids)
-      .in_batches(of: 1000)
-      .update_all(archived: true, updated_at: Time.current)
+      bucket_scope
+        .where("created_at < ?", cutoff)
+        .where.not(id: top_ids)
+        .in_batches(of: 1000)
+        .update_all(archived: true, updated_at: Time.current)
+    end
   end
 
   def self.select_for_feed(preferred_id: nil, user: nil, context_type: nil, targeting_bucket: nil)
