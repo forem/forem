@@ -16,6 +16,9 @@ module Badges
     # When a search is still rate limited, wait for the next limit window before
     # retrying rather than giving up and leaving the identity with a zero count.
     SEARCH_RATE_LIMIT_WAIT = 60.seconds.freeze
+    # Transient server errors (5xx) are retried with a short backoff instead of
+    # being recorded as a zero PR count on the first failure.
+    SEARCH_SERVER_ERROR_WAIT = 5.seconds.freeze
     SEARCH_MAX_ATTEMPTS = 3
 
     REPOSITORIES = [
@@ -102,6 +105,14 @@ module Badges
           sleep(SEARCH_RATE_LIMIT_WAIT)
           @last_search_at = nil
           next
+        elsif e.is_a?(Github::Errors::ServerError)
+          Rails.logger.warn(
+            "[Badges::AwardContributorFromGithub] PR search server error for " \
+            "#{github_user}, retrying in #{SEARCH_SERVER_ERROR_WAIT.to_i}s: #{e.message}",
+          )
+          sleep(SEARCH_SERVER_ERROR_WAIT)
+          @last_search_at = nil
+          next
         end
 
         Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
@@ -109,8 +120,8 @@ module Badges
       end
 
       Rails.logger.error(
-        "[Badges::AwardContributorFromGithub] PR search still rate limited for " \
-        "#{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts",
+        "[Badges::AwardContributorFromGithub] PR search failed for " \
+        "#{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts (rate limit or server error)",
       )
       0
     end
@@ -126,9 +137,22 @@ module Badges
       @last_search_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
 
+    # Rate limiting is classified by error type: Octokit raises TooManyRequests
+    # (HTTP 429) and TooManyLoginAttempts (abuse detection), which the client
+    # maps to the matching Github::Errors classes. GitHub's secondary rate limit
+    # is returned as a 403 that Octokit surfaces as a generic Forbidden/ClientError
+    # with no distinct type or preserved status, so for that case only we fall
+    # back to matching the documented message text.
+    RATE_LIMIT_ERROR_TYPES = [
+      Github::Errors::TooManyRequests,
+      Github::Errors::TooManyLoginAttempts,
+    ].freeze
+    SECONDARY_RATE_LIMIT_MESSAGE = /secondary rate limit|abuse detection/i
+
     def search_rate_limited?(error)
-      message = error.message.to_s
-      message.match?(/rate limit|too many requests|abuse detection|secondary rate/i)
+      return true if RATE_LIMIT_ERROR_TYPES.any? { |type| error.is_a?(type) }
+
+      error.message.to_s.match?(SECONDARY_RATE_LIMIT_MESSAGE)
     end
 
     # auth_data_dump is serialized YAML and may be an OmniAuth::AuthHash (responds

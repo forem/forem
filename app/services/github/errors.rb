@@ -23,5 +23,14 @@ module Github
 
     class RepositoryUnavailable < ClientError
     end
+
+    # Octokit raises these for primary rate-limit (HTTP 429) and abuse/secondary
+    # rate-limit (HTTP 403) responses. handle_error maps them by class name so
+    # callers can classify rate limiting by type rather than by message text.
+    class TooManyRequests < ClientError
+    end
+
+    class TooManyLoginAttempts < ClientError
+    end
   end
 end
