@@ -335,4 +335,31 @@ RSpec.describe "Api::V1::Comments" do
       end
     end
   end
+
+  describe "POST /api/comments/preview" do
+    let(:api_secret) { create(:api_secret) }
+    let(:auth_headers) do
+      headers.merge("api-key" => api_secret.secret, "content-type" => "application/json")
+    end
+
+    it "returns 401 when unauthenticated" do
+      post preview_api_comments_path,
+           params: { body_markdown: "Hello **world**" }.to_json,
+           headers: headers.merge("content-type" => "application/json")
+
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "renders comment markdown preview without persisting a comment" do
+      expect do
+        post preview_api_comments_path,
+             params: { comment: { body_markdown: "Hello **world** from [link](https://example.com)" } }.to_json,
+             headers: auth_headers
+      end.not_to change(Comment, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["processed_html"]).to include("<strong>world</strong>")
+      expect(response.parsed_body["processed_html"]).to include("nofollow")
+    end
+  end
 end

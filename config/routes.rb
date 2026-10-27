@@ -89,10 +89,12 @@ Rails.application.routes.draw do
         resources :recommended_articles_lists, only: %i[index show create update]
 
         resources :billboards, only: %i[index show create update] do
+          post "preview", on: :collection
           put "unpublish", on: :member
         end
         # temporary keeping both routes while transitioning (renaming) display_ads => billboards
         resources :display_ads, only: %i[index show create update], controller: :billboards do
+          post "preview", on: :collection
           put "unpublish", on: :member
         end
 
@@ -102,7 +104,9 @@ Rails.application.routes.draw do
           put "remove_users", on: :member
         end
 
-        resources :pages, only: %i[index show create update destroy]
+        resources :pages, only: %i[index show create update destroy] do
+          post :preview, on: :collection
+        end
 
         resources :tags, only: :update
 
