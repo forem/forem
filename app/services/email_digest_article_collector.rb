@@ -153,7 +153,10 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.select_for_feed
+    feed_config = FeedConfig.select_for_feed(
+      user: @user,
+      context_type: FeedEvent::CONTEXT_TYPE_EMAIL,
+    )
     return unless feed_config
 
     set_subforem_context

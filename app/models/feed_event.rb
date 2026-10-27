@@ -170,13 +170,42 @@ class FeedEvent < ApplicationRecord
   end
 
   def create_feed_config_offshoot
-    # Any time we get a reaction or comment on a proven config, branch off a slightly modified feed config
+    # Any time we get qualifying engagement on a proven config, branch off a slightly modified feed config
     return unless feed_config && !feed_config.archived?
-    return unless %w[reaction comment].include?(category)
     return if feed_config.feed_impressions_count < FeedConfig::LOW_IMPRESSION_COUNT
 
-    ThrottledCall.perform("create_feed_config_offshoot", throttle_for: 5.minutes) do
-      feed_config.create_slightly_modified_clone!
+    target_bucket = offshoot_targeting_bucket
+    return unless offshoot_trigger_category?(target_bucket)
+
+    ThrottledCall.perform("create_feed_config_offshoot_#{target_bucket}", throttle_for: 5.minutes) do
+      feed_config.create_slightly_modified_clone!(
+        user: user,
+        context_type: context_type,
+        targeting_bucket: target_bucket,
+      )
+    end
+  end
+
+  def offshoot_targeting_bucket
+    if context_type == CONTEXT_TYPE_EMAIL || feed_config.targeting_bucket == FeedConfig::BUCKET_DIGEST
+      FeedConfig::BUCKET_DIGEST
+    elsif user.present?
+      FeedConfig.targeting_bucket_for(user, context_type: context_type)
+    elsif FeedConfig::NON_ALL_TARGETING_BUCKETS.include?(feed_config.targeting_bucket)
+      feed_config.targeting_bucket
+    else
+      FeedConfig::BUCKET_FEED_CASUAL_USER
+    end
+  end
+
+  def offshoot_trigger_category?(target_bucket)
+    case target_bucket
+    when FeedConfig::BUCKET_DIGEST
+      %w[click extended_pageview reaction comment].include?(category)
+    when FeedConfig::BUCKET_FEED_NEW_USER, FeedConfig::BUCKET_FEED_CASUAL_USER
+      %w[reaction comment extended_pageview].include?(category)
+    else
+      %w[reaction comment].include?(category)
     end
   end
 

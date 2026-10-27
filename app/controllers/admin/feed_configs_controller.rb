@@ -3,9 +3,12 @@ module Admin
     layout "admin"
 
     def index
-      @best_feed_config = best_feed_config
-      @top_pool_ids = top_pool_ids
-      @new_pool_ids = FeedConfig.active
+      @selected_bucket = params[:filter] if FeedConfig::TARGETING_BUCKETS.include?(params[:filter])
+      base_scope = @selected_bucket ? FeedConfig.active.for_targeting_bucket(@selected_bucket) : FeedConfig.active
+
+      @best_feed_config = best_feed_config(base_scope)
+      @top_pool_ids = top_pool_ids(base_scope)
+      @new_pool_ids = base_scope
         .where("feed_impressions_count < ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order(created_at: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
@@ -20,7 +23,7 @@ module Admin
                        { feed_success_score: :desc, created_at: :desc }
                      end
 
-      @feed_configs = FeedConfig.active.order(order_clause).page(params[:page]).per(25)
+      @feed_configs = base_scope.order(order_clause).page(params[:page]).per(25)
     end
 
     def show
@@ -39,9 +42,12 @@ module Admin
                          config.feed_impressions_count = 0
                          config.feed_success_score = 0.0
                          config.archived = false
+                         if config.targeting_bucket == FeedConfig::BUCKET_ALL
+                           config.targeting_bucket = FeedConfig::BUCKET_FEED_CASUAL_USER
+                         end
                        end
                      else
-                       FeedConfig.new
+                       FeedConfig.new(targeting_bucket: FeedConfig::BUCKET_FEED_CASUAL_USER)
                      end
     end
 
@@ -70,29 +76,29 @@ module Admin
 
     private
 
-    def top_pool_ids
-      ids = FeedConfig.active
+    def top_pool_ids(scope = FeedConfig.active)
+      ids = scope
         .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order(feed_success_score: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
         .ids
       return ids if ids.any?
 
-      FeedConfig.active
+      scope
         .where("feed_impressions_count > 0")
         .order(feed_success_score: :desc)
         .limit(FeedConfig::TOP_POOL_LIMIT)
         .ids
     end
 
-    def best_feed_config
-      FeedConfig.active
+    def best_feed_config(scope = FeedConfig.active)
+      scope
         .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
         .order("feed_success_score DESC NULLS LAST")
         .first ||
-        FeedConfig.active.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
-        FeedConfig.active.order("feed_success_score DESC NULLS LAST").first ||
-        FeedConfig.active.last
+        scope.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
+        scope.order("feed_success_score DESC NULLS LAST").first ||
+        scope.last
     end
 
     def feed_config_params
@@ -130,6 +136,7 @@ module Admin
         :status_weight,
         :subforem_follow_weight,
         :tag_follow_weight,
+        :targeting_bucket,
         :user_follow_weight,
       )
     end

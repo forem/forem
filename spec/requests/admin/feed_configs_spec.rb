@@ -63,6 +63,14 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "supports filtering by targeting_bucket via the filter parameter" do
+        digest_config = create(:feed_config, targeting_bucket: FeedConfig::BUCKET_DIGEST, feed_success_score: 42.0)
+        get admin_feed_configs_path(filter: FeedConfig::BUCKET_DIGEST)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Feed Config ##{digest_config.id}")
+        expect(response.body).not_to include("Feed Config ##{top_config.id}")
+      end
+
       it "prefers a config with impressions >= LOW_IMPRESSION_COUNT as the best performing config" do
         untested_config = create(:feed_config, feed_success_score: 999.0, feed_impressions_count: 0)
         low_impression_config = create(:feed_config, feed_success_score: 500.0, feed_impressions_count: 15)
@@ -102,10 +110,11 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response.body).to include('value="10.0"')
       end
 
-      it "pre-populates with specified clone_from_id config when passed" do
+      it "pre-populates with specified clone_from_id config when passed and defaults 'all' to non-all bucket" do
         get new_admin_feed_config_path(clone_from_id: other_config.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include('value="5.0"')
+        expect(response.body).to include("selected=\"selected\" value=\"#{FeedConfig::BUCKET_FEED_CASUAL_USER}\"")
       end
     end
 

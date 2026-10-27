@@ -334,6 +334,28 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(collector.feed_config_id).to eq(active_config.id)
       end
 
+      it "prioritizes digest targeting_bucket configs and excludes feed-only buckets" do
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER,
+          feed_success_score: 999.0,
+          feed_impressions_count: 500,
+        )
+        digest_config = create(
+          :feed_config,
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          feed_success_score: 10.0,
+          feed_impressions_count: 100,
+        )
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        collector = described_class.new(user)
+        articles = collector.articles_to_send
+        expect(articles.length).to be >= 3
+        expect(collector.feed_config_id).to eq(digest_config.id)
+      end
+
       it "does not set feed_config_id when fallback to legacy occurs" do
         other_user = create(:user)
         # Only 2 eligible articles → personalized returns nil → fallback to legacy

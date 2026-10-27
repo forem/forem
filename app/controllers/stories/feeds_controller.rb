@@ -68,7 +68,11 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-               @feed_config = FeedConfig.select_for_feed(preferred_id: params[:item])
+               @feed_config = FeedConfig.select_for_feed(
+                 preferred_id: params[:item],
+                 user: current_user,
+                 context_type: FeedEvent::CONTEXT_TYPE_HOME,
+               )
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else

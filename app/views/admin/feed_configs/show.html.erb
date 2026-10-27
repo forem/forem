@@ -13,7 +13,11 @@
 <div class="grid grid-cols-1 m:grid-cols-2 gap-6 mb-6">
   <div class="crayons-card p-6">
     <h2 class="fs-base fw-bold mb-4">Performance Metrics</h2>
-    <dl class="grid grid-cols-2 gap-4">
+    <dl class="grid grid-cols-3 gap-4">
+      <div>
+        <dt class="fs-xs color-base-60">Targeting Bucket</dt>
+        <dd class="fs-l fw-bold color-base-90"><code><%= @feed_config.targeting_bucket %></code></dd>
+      </div>
       <div>
         <dt class="fs-xs color-base-60">Success Score</dt>
         <dd class="fs-l fw-bold color-base-90"><%= @feed_config.feed_success_score.round(4) %></dd>
