@@ -10,6 +10,17 @@ class NotificationDecorator < ApplicationDecorator
     alias_method :class_name, :name
   end.freeze
 
+  attr_writer :collection_notifications, :preloaded_subscriptions
+
+  def self.decorate_collection(objects)
+    decorated = super
+    preloaded = {}.compare_by_identity
+    decorated.each do |notification|
+      notification.collection_notifications = decorated
+      notification.preloaded_subscriptions = preloaded
+    end
+  end
+
   # returns a stub notifiable object with name and id
   def mocked_object(type)
     return NOTIFIABLE_STUB.new("", nil) if json_data.blank?
@@ -85,6 +96,13 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def subscription_to_notifiable_for(user, **notifiable)
+    if user&.notification_subscriptions.is_a?(ActiveRecord::Relation)
+      map = preloaded_subscriptions_for(user)
+      return Array(notifiable[:notifiable_id]).filter_map do |id|
+        map[[notifiable[:notifiable_type], Integer(id, exception: false)]]
+      end.min_by(&:id)
+    end
+
     user.notification_subscriptions.for_notifiable(**notifiable).first
   end
 
@@ -248,6 +266,24 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   private
+
+  def preloaded_subscriptions_for(user)
+    @preloaded_subscriptions ||= {}.compare_by_identity
+    @preloaded_subscriptions[user] ||= begin
+      notifications = @collection_notifications || [self]
+      comment_ids = notifications.flat_map { |n| n.comment_ancestry ? [n.comment_id, *n.comment_ancestry.split("/")] : [] } # rubocop:disable Layout/LineLength
+        .filter_map { |id| Integer(id, exception: false) }.uniq
+      article_ids = notifications.flat_map { |n| [n.commentable_article_id, n.article_id] }
+        .filter_map { |id| Integer(id, exception: false) }.uniq
+
+      scope = user.notification_subscriptions
+      clauses = []
+      clauses << scope.where(notifiable_type: "Comment", notifiable_id: comment_ids) if comment_ids.any?
+      clauses << scope.where(notifiable_type: "Article", notifiable_id: article_ids) if article_ids.any?
+
+      clauses.any? ? clauses.reduce(:or).index_by { |sub| [sub.notifiable_type, sub.notifiable_id] } : {}
+    end
+  end
 
   def action_inquirer
     @action_inquirer ||= ActiveSupport::StringInquirer.new(action&.downcase || "")
