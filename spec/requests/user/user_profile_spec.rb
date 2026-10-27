@@ -67,6 +67,53 @@ RSpec.describe "UserProfiles" do
       expect(published_count_queries.size).to eq(1)
     end
 
+    it "skips badge_achievements queries when user has no badges", :aggregate_failures do
+      badge_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        badge_queries << sql if sql.include?('"badge_achievements"') || sql.include?('"badges"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(badge_queries).to be_empty
+    end
+
+    it "queries badge_achievements on fragment cache miss and skips on cache hit", :aggregate_failures do
+      badge = create(:badge)
+      create(:badge_achievement, user: user, badge: badge)
+      user.reload
+
+      original_cache_store = ActionController::Base.cache_store
+      original_perform_caching = ActionController::Base.perform_caching
+      ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+      ActionController::Base.perform_caching = true
+
+      miss_queries = []
+      miss_cb = ->(*, payload) { miss_queries << payload[:sql] if payload[:sql].include?('"badge_achievements"') }
+      ActiveSupport::Notifications.subscribed(miss_cb, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include(CGI.escapeHTML(badge.title))
+      expect(miss_queries.size).to eq(1)
+
+      hit_queries = []
+      hit_cb = ->(*, payload) { hit_queries << payload[:sql] if payload[:sql].include?('"badge_achievements"') }
+      ActiveSupport::Notifications.subscribed(hit_cb, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include(CGI.escapeHTML(badge.title))
+      expect(hit_queries).to be_empty
+    ensure
+      ActionController::Base.perform_caching = original_perform_caching
+      ActionController::Base.cache_store = original_cache_store
+    end
+
     it "calls user by their username in the 'more info' area" do
       get "/#{user.username}"
       expect(response.body).to include "More info about @#{user.username}"
