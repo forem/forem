@@ -296,20 +296,7 @@ export const useTextAreaAutoResize = () => {
     const measureElementHeight = (el) => {
       if (!el) return 0;
 
-      // Use placeholder as the content height when the field is empty so
-      // the default height equals what the user sees.
-      let height;
-      const isTextArea = el.tagName === 'TEXTAREA';
-      if (isTextArea && !el.value && el.placeholder) {
-        const original = el.value;
-        el.value = el.placeholder;
-        // Assumes your helper returns { height }
-        height = calculateTextAreaHeight(el).height;
-        el.value = original;
-      } else {
-        height = calculateTextAreaHeight(el).height;
-      }
-      return height;
+      return calculateTextAreaHeight(el).height;
     };
 
     const measureAll = () => {
@@ -350,21 +337,30 @@ export const useTextAreaAutoResize = () => {
     textArea.addEventListener('input', debouncedInput);
 
     // Recalculate on element resize/layout shifts
-    const resizeObserver = new ResizeObserver(debounceAction(resizeTextArea, 300));
+    const debouncedResize = debounceAction(resizeTextArea, 300);
+    const resizeObserver = new ResizeObserver(debouncedResize);
     resizeObserver.observe(textArea);
 
     // If fonts load async, recalc
+    let isFontsReadyResolved = false;
     try {
       if (document?.fonts?.ready) {
-        document.fonts.ready.then(() => resizeTextArea());
+        document.fonts.ready.then(() => {
+          if (!isFontsReadyResolved) {
+            resizeTextArea();
+          }
+        });
       }
     } catch (_) {
       // ignore
     }
 
     return () => {
+      isFontsReadyResolved = true;
       if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       resizeObserver.disconnect();
+      debouncedResize.cancel();
+      debouncedInput.cancel();
       textArea.removeEventListener('input', debouncedInput);
     };
   }, [textArea, additionalElements, constrainToContentHeight]);
