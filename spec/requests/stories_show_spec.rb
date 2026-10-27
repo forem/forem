@@ -586,5 +586,39 @@ RSpec.describe "StoriesShow" do
         expect(response.body).not_to include("data-cue-close-label=")
       end
     end
+
+    it "renders the organization's generated social_image in og:image and twitter:image:src when present" do
+      org.update_column(:social_image, "https://example.com/org-social-card.png")
+
+      get org.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/org-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/org-social-card.png"')
+    end
+  end
+
+  describe "GET /:username (user)" do
+    it "renders the user's generated social_image in og:image and twitter:image:src when present" do
+      user.profile.update_column(
+        :data,
+        user.profile.data.merge("social_image" => "https://example.com/user-social-card.png"),
+      )
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/user-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/user-social-card.png"')
+    end
+
+    it "falls back to Settings::General.main_social_image when social_image is blank" do
+      allow(Settings::General).to receive(:main_social_image).and_return("https://example.com/default-main-social.png")
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/default-main-social.png"')
+    end
   end
 end

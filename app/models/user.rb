@@ -13,6 +13,8 @@ class User < ApplicationRecord
     included do
       has_one :profile, dependent: :delete
 
+      delegate :social_image, to: :profile, allow_nil: true
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -1122,10 +1124,15 @@ class User < ApplicationRecord
   def generate_social_images
     return if previously_new_record?
 
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
-
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    if saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+      Images::SocialImageWorker.perform_async(id, self.class.name)
+    elsif saved_change_to_attribute?(:username)
+      if profile&.id
+        Images::SocialImageWorker.perform_async(profile.id, "Profile")
+      else
+        Images::SocialImageWorker.perform_async(id, self.class.name)
+      end
+    end
   end
 
   def create_users_settings_and_notification_settings_records
