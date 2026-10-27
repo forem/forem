@@ -71,6 +71,18 @@ module ForemNative
       Native.color_brightness(hex, native_amount, only_values ? true : false)
     end
 
+    # Finds the first seven-character brightness variant for `Color::CompareHex#accent`.
+    # Returns nil outside the strict hex and finite numeric domain so the helper can use
+    # its private `legacy_accent` implementation for Ruby's edge-case semantics.
+    def color_accent(hex, amount = 1)
+      return unless hex.is_a?(String) && hex.encoding.ascii_compatible?
+
+      native_amount = native_float(amount)
+      return unless native_amount
+
+      Native.color_accent(hex, native_amount)
+    end
+
     # Formats a strict `#rrggbb` hex color as `rgba(r, g, b, a)`, matching
     # `Color::CompareHex#opacity`. Returns nil for malformed hexes and for alphas
     # that would need `%.2f` rounding (anything beyond two decimals, non-finite,
@@ -153,6 +165,16 @@ module ForemNative
       return unless section.instance_of?(String)
 
       Native.fixer_add_quotes_to_section(markdown, section)
+    end
+
+    # Normalizes CRLF line endings to LF, matching `MarkdownProcessor::Fixer::Base.convert_new_lines`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so Fixer can
+    # preserve Ruby's encoding and String-subclass behavior.
+    def fixer_convert_new_lines(markdown)
+      return unless Native.respond_to?(:fixer_convert_new_lines)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_convert_new_lines(markdown)
     end
 
     # Joins `#tag` lists on `tags:` lines into comma-separated values, matching
@@ -268,6 +290,30 @@ module ForemNative
       return unless host.instance_of?(String) && sld.instance_of?(String) && tld.instance_of?(String)
 
       Native.subforem_subdomain_host(host, sld, tld)
+    end
+
+    # Returns the registrable root domain (`PublicSuffix.parse(host, default_rule: nil).domain`),
+    # `false` when `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings, non-ASCII hosts, NUL bytes, embedded newlines,
+    # and consecutive dots (`..`) so the caller can fall back to `PublicSuffix.parse`.
+    def public_suffix_domain(host)
+      return false if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_domain(host)
+    end
+
+    # Checks whether `host` is a single-label subdomain of its Public Suffix List registrable
+    # domain (`PublicSuffix.parse(host, default_rule: nil)` + `/^([^.]+)\.#{sld}\.#{tld}$/`) in
+    # `Middlewares::SetSubforem`: returns `true` or `false` for valid domains, `:invalid` when
+    # `PublicSuffix.parse(host, default_rule: nil)` raises `PublicSuffix::DomainInvalid`
+    # (including `nil`), or `nil` for non-Strings and hosts outside `[A-Za-z0-9.-]` so the
+    # middleware can fall back to `PublicSuffix.parse`.
+    def public_suffix_subdomain_host(host)
+      return :invalid if host.nil?
+      return unless host.instance_of?(String)
+
+      Native.public_suffix_subdomain_host(host)
     end
 
     # Whether the original host `Middlewares::RestoreOriginalHost` reads from the Fastly or

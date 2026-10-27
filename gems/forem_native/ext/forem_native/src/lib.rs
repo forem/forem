@@ -24,6 +24,13 @@ fn color_brightness(hex: RString, amount: f64, only_values: bool) -> Option<Stri
     forem_core::color::brightness(bytes, amount, only_values)
 }
 
+fn color_accent(hex: RString, amount: f64) -> Option<String> {
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
+    // Returns `nil` for malformed hexes or unsupported channel values so Ruby can fall back.
+    let bytes = unsafe { hex.as_slice() };
+    forem_core::color::accent(bytes, amount)
+}
+
 fn color_opacity(hex: RString, alpha: f64) -> Option<String> {
     // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
     // Returns `nil` for malformed hexes and alphas needing rounding so Ruby can fall back.
@@ -92,6 +99,19 @@ fn fixer_add_quotes_to_section(
     };
     // Like `sub` without changes, hand back a cheap copy-on-write copy of the input.
     Some(quoted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
+fn fixer_convert_new_lines(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: The borrowed bytes are inspected only by pure forem_core code, and the borrow
+    // ends before any Ruby object is allocated. Invalid UTF-8 is left to the Ruby caller.
+    let converted = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::convert_new_lines(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(converted) => Some(converted),
+        }
+    };
+    Some(converted.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
 }
 
 fn fixer_split_tags(ruby: &Ruby, markdown: RString) -> Option<RString> {
@@ -303,6 +323,49 @@ fn subforem_subdomain_host(ruby: &Ruby, host: RString, sld: RString, tld: RStrin
     }
 }
 
+fn public_suffix_domain(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we allocate any Ruby objects.
+    let domain = {
+        let bytes = unsafe { host.as_slice() };
+        match forem_core::url::public_suffix_domain(bytes) {
+            None => return ruby.qnil().as_value(),
+            Some(Err(())) => return ruby.qfalse().as_value(),
+            Some(Ok(domain)) => {
+                if domain.as_bytes() == bytes {
+                    None
+                } else {
+                    Some(domain.into_owned().into_bytes())
+                }
+            }
+        }
+    };
+    match domain {
+        None => host.as_value(),
+        Some(bytes) => ruby.enc_str_new(bytes, host.enc_get()).as_value(),
+    }
+}
+
+fn public_suffix_subdomain_host(ruby: &Ruby, host: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, host) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Same zero-copy `RString` slice borrow; `forem_core` never calls into Ruby, and
+    // the borrow ends before we touch the Ruby VM.
+    let outcome = forem_core::url::public_suffix_subdomain_host(unsafe { host.as_slice() });
+    match outcome {
+        None => ruby.qnil().as_value(),
+        Some(forem_core::url::SubforemSubdomain::InvalidDomain) => {
+            ruby.to_symbol("invalid").as_value()
+        }
+        Some(forem_core::url::SubforemSubdomain::Subdomain(true)) => ruby.qtrue().as_value(),
+        Some(forem_core::url::SubforemSubdomain::Subdomain(false)) => ruby.qfalse().as_value(),
+    }
+}
+
 fn original_host_valid(ruby: &Ruby, host: RString) -> Option<bool> {
     if !is_ascii_compatible_host(ruby, host) {
         return None;
@@ -379,6 +442,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(calculate_reading_time, 1),
     )?;
     native_mod.define_singleton_method("color_brightness", function!(color_brightness, 3))?;
+    native_mod.define_singleton_method("color_accent", function!(color_accent, 2))?;
     native_mod.define_singleton_method("color_opacity", function!(color_opacity, 2))?;
     native_mod.define_singleton_method(
         "convert_deeply_nested_links_to_html",
@@ -395,6 +459,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_add_quotes_to_section",
         function!(fixer_add_quotes_to_section, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "fixer_convert_new_lines",
+        function!(fixer_convert_new_lines, 1),
     )?;
     native_mod.define_singleton_method("fixer_split_tags", function!(fixer_split_tags, 1))?;
     native_mod.define_singleton_method(
@@ -432,6 +500,12 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "subforem_subdomain_host",
         function!(subforem_subdomain_host, 3),
+    )?;
+    native_mod
+        .define_singleton_method("public_suffix_domain", function!(public_suffix_domain, 1))?;
+    native_mod.define_singleton_method(
+        "public_suffix_subdomain_host",
+        function!(public_suffix_subdomain_host, 1),
     )?;
     native_mod.define_singleton_method("original_host_valid", function!(original_host_valid, 1))?;
     native_mod.define_singleton_method("inline_svg_icon", function!(inline_svg_icon, 7))?;

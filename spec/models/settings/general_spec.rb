@@ -107,6 +107,33 @@ RSpec.describe Settings::General do
       end
     end
 
+    describe "validating :appeal_auto_unflag_threshold" do
+      it "defaults to 1.01" do
+        expect(described_class.appeal_auto_unflag_threshold).to eq(1.01)
+      end
+
+      it "accepts values between 0 and 1.01" do
+        expect { described_class.appeal_auto_unflag_threshold = 0.84 }.not_to raise_error
+        expect(described_class.appeal_auto_unflag_threshold).to eq(0.84)
+      end
+
+      it "rejects values outside 0..1.01" do
+        expect { described_class.appeal_auto_unflag_threshold = -0.1 }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { described_class.appeal_auto_unflag_threshold = 1.5 }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "persists globally with subforem_id nil even when RequestStore[:subforem_id] is set" do
+        RequestStore.store[:subforem_id] = 99
+        described_class.appeal_auto_unflag_threshold = 0.75
+
+        RequestStore.store[:subforem_id] = nil
+        expect(described_class.appeal_auto_unflag_threshold).to eq(0.75)
+        expect(described_class.where(var: "appeal_auto_unflag_threshold").where.not(subforem_id: nil)).to be_empty
+      ensure
+        RequestStore.store[:subforem_id] = nil
+      end
+    end
+
     describe "validating algolia settings" do
       it "only accepts strings" do
         expect(described_class.get_setting(:algolia_application_id)[:type]).to eq(:string)

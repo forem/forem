@@ -14,6 +14,7 @@ RSpec.describe ArticlePolicy do
   let(:admin) { create(:user, :admin) }
   let(:trusted) { create(:user, :trusted) }
   let(:other_users) { create(:user) }
+  let(:users_scope) { User.where(id: [super_admin.id, author.id, suspended_user.id]) }
   let(:author) { create(:user) }
   let(:moderator) { create(:user, :super_moderator) }
   let(:tag_mod) { create(:user, :tag_moderator) }
@@ -25,7 +26,6 @@ RSpec.describe ArticlePolicy do
 
   describe ".scope_users_authorized_to_action" do
     before do
-      User.destroy_all
       super_admin
       author
       suspended_user
@@ -35,7 +35,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
       it "omits suspended and regular users" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to contain_exactly(super_admin)
       end
     end
@@ -44,7 +44,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false) }
 
       it "omits only suspended users" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to contain_exactly(author, super_admin)
       end
     end
@@ -59,13 +59,13 @@ RSpec.describe ArticlePolicy do
       end
 
       it "returns users authorized to create in a root subforem" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results.map(&:id)).to eq User.with_any_role(:admin, :super_admin).map(&:id)
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
+        expect(results.map(&:id)).to eq users_scope.with_any_role(:admin, :super_admin).map(&:id)
       end
 
       it "returns an empty result for create actions when no admins" do
-        User.with_any_role(:admin, :super_admin).map { |u| u.remove_role(:super_admin); u.remove_role(:admin) }
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        users_scope.with_any_role(:admin, :super_admin).map { |u| u.remove_role(:super_admin); u.remove_role(:admin) }
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to be_empty
       end
     end
