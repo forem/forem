@@ -5,6 +5,17 @@ const TAGS_LINE: &str = "\ntags:";
 const PUBLISHED_KEY: &str = "published: ";
 const CODEBLOCK_MARKER: &str = "```";
 
+/// Replaces CRLF line endings with LF, matching `String#gsub("\\r\\n", "\\n")`.
+///
+/// Returns `Cow::Borrowed` when the input contains no CRLF pair.
+pub fn convert_new_lines(markdown: &str) -> Cow<'_, str> {
+    if !markdown.as_bytes().windows(2).any(|pair| pair == b"\r\n") {
+        return Cow::Borrowed(markdown);
+    }
+
+    Cow::Owned(markdown.replace("\r\n", "\n"))
+}
+
 /// Quotes `<section>: value` lines inside the front matter, matching
 /// `MarkdownProcessor::Fixer::Base.add_quotes_to_section`:
 ///
@@ -376,6 +387,15 @@ fn find(haystack: &str, needle: &str, from: usize) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn converts_crlf_pairs_and_preserves_other_bytes() {
+        assert_eq!(convert_new_lines(""), "");
+        assert!(matches!(convert_new_lines("LF\nonly\r"), Cow::Borrowed(_)));
+        assert_eq!(convert_new_lines("a\r\nb\r\nc"), "a\nb\nc");
+        assert_eq!(convert_new_lines("🚀\r\n日本\rX\n"), "🚀\n日本\rX\n");
+        assert_eq!(convert_new_lines("\r\r\n"), "\r\n");
+    }
 
     fn quote(markdown: &str, section: &str) -> String {
         add_quotes_to_section(markdown, section)

@@ -20,6 +20,10 @@ Rails.application.configure do
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
   config.action_view.cache_template_loading = true
 
+  # Skip walking the whole Sprockets manifest to verify precompilation when specs
+  # (e.g. factories) call asset_path.
+  config.assets.check_precompiled_asset = false
+
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.

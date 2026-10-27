@@ -156,21 +156,20 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username])
-    @organization = Organization.find_by(slug: params[:username])
-    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
-    if @podcast
-      handle_podcast_index
-    elsif @organization
+    if (@user = User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", "")))
+      handle_user_index
+    elsif (@organization = Organization.find_by(slug: params[:username]))
       handle_organization_index
-    elsif @page
+    elsif (@page = Page.find_by(slug: params[:username], is_top_level_path: true))
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
         handle_page_display
       else
         not_found
       end
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
+      handle_podcast_index
     else
-      handle_user_index
+      redirect_to_changed_username_profile
     end
   end
 
@@ -311,7 +310,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", ""))
+    @user ||= User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return

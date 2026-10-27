@@ -4,27 +4,44 @@ class FeedConfig < ApplicationRecord
 
   has_many :feed_events, dependent: :nullify
 
+  ARCHIVE_TOP_LIMIT = 1000
+  ARCHIVE_AGE_THRESHOLD = 2.days
+
+  scope :active, -> { where(archived: false) }
+  scope :archived, -> { where(archived: true) }
+
+  def self.archive_stale_configs!
+    top_ids = active.order(feed_success_score: :desc, id: :desc).limit(ARCHIVE_TOP_LIMIT).select(:id)
+
+    active
+      .where("created_at < ?", ARCHIVE_AGE_THRESHOLD.ago)
+      .where.not(id: top_ids)
+      .in_batches(of: 1000)
+      .update_all(archived: true, updated_at: Time.current)
+  end
+
   def self.select_for_feed(preferred_id: nil)
     if preferred_id.present?
-      preferred = find_by(id: preferred_id)
+      preferred = active.find_by(id: preferred_id)
       return preferred if preferred
     end
 
     roll = rand(100)
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs
-                 where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
+                 active
+                   .where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
                    .order(created_at: :desc)
                    .limit(TOP_POOL_LIMIT)
                    .sample
                elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
-                 order("RANDOM()").limit(1).first
+                 active.order("RANDOM()").limit(1).first
                end
 
     selected ||
-      where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT).order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      where("feed_impressions_count > 0").order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      first_or_create
+      active.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT).order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      active.where("feed_impressions_count > 0").order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      active.order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      active.first_or_create
   end
 
   def score_sql(user)
@@ -260,6 +277,7 @@ class FeedConfig < ApplicationRecord
     clone.all_time_tag_count_max = clone.all_time_tag_count_min if clone.all_time_tag_count_max < clone.all_time_tag_count_min
     clone.feed_impressions_count = 0
     clone.feed_success_score = 0.0
+    clone.archived = false
     clone.save
   end
 end
