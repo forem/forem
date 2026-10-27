@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "User visits a homepage" do
   context "when user hasn't logged in" do
-    it "shows the sign-in block, popular tags block, and search link tag", :aggregate_failures do
+    it "shows the sign-in block, tags block, and search link", :aggregate_failures do
       create(:tag, name: "ruby")
       create(:tag, name: "webdev")
 
@@ -18,8 +18,8 @@ RSpec.describe "User visits a homepage" do
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
         end
       end
-
       expect(page).to have_text("Popular Tags")
+
       expect(page).to have_css("link[rel='search'][title='#{community_name}']", visible: :hidden)
     end
 
@@ -47,18 +47,19 @@ RSpec.describe "User visits a homepage" do
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/> </svg>",
                display_to: :all,
                position: 1)
-        visit "/"
       end
 
-      it "shows expected links when signed out and hides the Other section when empty", :aggregate_failures do
+      it "shows expected signed-out links, hides logged-in links, and toggles the Other section", :aggregate_failures do
+        visit "/"
+
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_css(".sidebar-navigation-link", count: 2)
           expect(page).to have_css(".default-navigation-links .sidebar-navigation-link", count: 2)
         end
 
         within("nav[data-testid='other-nav']", match: :first) do
-          expect(page).to have_css(".other-navigation-links")
           expect(page).to have_css(".sidebar-navigation-link", count: 2)
+          expect(page).to have_css(".other-navigation-links")
         end
 
         NavigationLink.other_section.destroy_all
@@ -96,11 +97,10 @@ RSpec.describe "User visits a homepage" do
         user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
         user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
         user.update!(following_tags_count: 3)
-
-        visit "/"
       end
 
-      it "shows the followed tags ordered by weight and name", :aggregate_failures, :js do
+      it "shows followed tags ordered by weight and name", :aggregate_failures, :js do
+        visit "/"
         expect(page).to have_css("body[data-loaded='true']")
         expect(page).to have_text("My Tags")
         expect(page).to have_css("#sidebar-nav-followed-tags a", text: "#ruby")
@@ -138,13 +138,13 @@ RSpec.describe "User visits a homepage" do
         visit "/"
       end
 
-      it "shows the expected navigation links, urls, and order when signed in", :aggregate_failures do
+      it "shows the correct navigation_links, urls, and logged_in links", :aggregate_failures do
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
           expect(page).to have_text(navigation_link_3.name)
           expect(page).to have_link(href: navigation_link_1.url)
           expect(page).to have_link(href: navigation_link_3.url)
-          expect(page).to have_css(".sidebar-navigation-link", count: 3)
+          expect(page).to have_css(".sidebar-navigation-link", count: 3) # it's count: 2 when signed in
           expect(page).to have_css(".default-navigation-links li:nth-child(2)", text: "Beauty")
         end
 
