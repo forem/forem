@@ -1074,10 +1074,17 @@ class Article < ApplicationRecord
   def title_for_metadata
     return title unless type_of == "status" && title.present?
 
+    ForemNative.title_for_metadata(title) || legacy_title_for_metadata
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 encodings, String subclasses,
+  # invalid byte sequences).
+  def legacy_title_for_metadata
     # For quickies, return a clean single-line version of the title
     # Replace line breaks with spaces and normalize whitespace
     title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
+  private :legacy_title_for_metadata
 
   def series
     # name of series article is part of
