@@ -397,23 +397,18 @@ class Comment < ApplicationRecord
 
   def after_create_checks
     create_id_code
-    touch_user
   end
 
   def create_id_code
     update_column(:id_code, id.to_s(26))
   end
 
-  def touch_user
-    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
-  end
-
   def expire_root_fragment
     if root_exists?
       root_record = root
       root_record.touch if root_record&.persisted? && !root_record.destroyed?
-    else
-      touch if persisted? && !destroyed?
+    elsif persisted? && !destroyed? && !saved_changes?
+      touch
     end
   end
 

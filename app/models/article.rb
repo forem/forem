@@ -1550,7 +1550,7 @@ class Article < ApplicationRecord
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def fetch_video_duration
@@ -1669,12 +1669,14 @@ class Article < ApplicationRecord
   #
   # @return [String] an array of tag names.
   def validate_tag
-    distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
-      .select('DISTINCT ON ("tag_id") *')
-      .order(:tag_id, updated_at: :desc, id: :desc)
+    if id.present?
+      distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
+        .select('DISTINCT ON ("tag_id") *')
+        .order(:tag_id, updated_at: :desc, id: :desc)
 
-    remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
-    add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+      remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
+      add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+    end
 
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
@@ -1692,7 +1694,7 @@ class Article < ApplicationRecord
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def validate_video
