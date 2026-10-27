@@ -183,6 +183,33 @@ RSpec.describe "Api::V1::Billboards" do
         expect(billboard1.reload).not_to be_published
       end
     end
+
+    describe "POST /api/billboards/preview" do
+      it "renders processed_html and minimized_processed_html without saving a billboard" do
+        expect do
+          post preview_api_billboards_path,
+               params: {
+                 body_markdown: "## Billboard Headline\n\nCheck this out!",
+                 minimized_body_markdown: "**Minimized copy**",
+                 placement_area: "post_sidebar"
+               }.to_json,
+               headers: auth_header
+        end.not_to change(Billboard, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["processed_html"]).to include("Billboard Headline")
+        expect(response.parsed_body["minimized_processed_html"]).to include("<strong>Minimized copy</strong>")
+      end
+
+      it "returns 422 when markdown contains an invalid liquid tag" do
+        post preview_api_billboards_path,
+             params: { body_markdown: "{% link invalid_link_that_does_not_exist %}" }.to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
+    end
   end
 
   context "when unauthenticated and get to index" do

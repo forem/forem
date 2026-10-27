@@ -1496,6 +1496,21 @@ RSpec.describe User do
       expect(loaded_user.cached_role_names).to include("base_subscriber")
       expect(Rails.cache).not_to have_received(:fetch)
     end
+
+    it "memoizes role names when Rails.cache is NullStore and invalidates on role change or reload" do
+      unloaded_user = described_class.find(user.id)
+      allow(Rails.cache).to receive(:fetch).and_call_original
+
+      expect(unloaded_user.cached_role_names).to eq([])
+      expect(unloaded_user.cached_role_names).to eq([])
+      expect(Rails.cache).to have_received(:fetch).once
+
+      unloaded_user.add_role(:base_subscriber)
+      expect(unloaded_user.cached_role_names).to include("base_subscriber")
+
+      unloaded_user.reload
+      expect(unloaded_user.cached_role_names).to include("base_subscriber")
+    end
   end
 
   describe ".mascot_account" do

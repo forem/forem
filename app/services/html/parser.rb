@@ -148,24 +148,8 @@ module Html
     end
 
     def escape_colon_emojis_in_codeblock
-      html_doc = Nokogiri::HTML.fragment(@html)
-
-      html_doc.children.each do |el|
-        next if el.name == "code"
-
-        if el.search("code").empty?
-          if el.parent.present?
-            parsed_html = Html::Parser.new(el.to_html).parse_emojis.html
-            el.swap(parsed_html)
-          end
-        else
-          el.children = self.class.new(el.children.to_html)
-            .escape_colon_emojis_in_codeblock
-            .html
-        end
-      end
-
-      @html = html_doc.to_html
+      @html = ForemNative.escape_colon_emojis_in_codeblock(@html) ||
+        legacy_escape_colon_emojis_in_codeblock
 
       self
     end
@@ -253,10 +237,7 @@ module Html
     def parse_emojis
       return self if @html.blank?
 
-      @html.gsub!(/:([\w+-]+):/) do |match|
-        emoji = Emoji.find_by_alias(Regexp.last_match(1)) # rubocop:disable Rails/DynamicFindBy
-        emoji.present? ? emoji.raw : match
-      end
+      @html = ForemNative.parse_emojis(@html) || legacy_parse_emojis
 
       self
     end
@@ -314,6 +295,36 @@ module Html
 
     def possibly_raw_tag_syntax?(array)
       (RAW_TAG_DELIMITERS & array).any?
+    end
+
+    def legacy_escape_colon_emojis_in_codeblock
+      html_doc = Nokogiri::HTML.fragment(@html)
+
+      html_doc.children.each do |el|
+        next if el.name == "code"
+
+        if el.search("code").empty?
+          if el.parent.present?
+            parsed_html = Html::Parser.new(el.to_html).parse_emojis.html
+            el.swap(parsed_html)
+          end
+        else
+          el.children = self.class.new(el.children.to_html)
+            .escape_colon_emojis_in_codeblock
+            .html
+        end
+      end
+
+      html_doc.to_html
+    end
+
+    # Handles non-plain-String inputs (such as ActiveSupport::SafeBuffer or non-UTF-8 strings)
+    # using the embedded gemoji lookup table in ForemNative (see `crates/forem_core/src/emoji_data.rs`).
+    def legacy_parse_emojis
+      @html.gsub!(/:([\w+-]+):/) do |match|
+        ForemNative.emoji_by_alias(Regexp.last_match(1)) || match
+      end
+      @html
     end
   end
 end

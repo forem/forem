@@ -2,47 +2,196 @@ class FeedConfig < ApplicationRecord
   LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
 
+  BUCKET_ALL = "all".freeze
+  BUCKET_FEED_NEW_USER = "feed_new_user".freeze
+  BUCKET_FEED_CASUAL_USER = "feed_casual_user".freeze
+  BUCKET_FEED_ACTIVE_USER = "feed_active_user".freeze
+  BUCKET_FEED_POWER_USER = "feed_power_user".freeze
+  BUCKET_DIGEST = "digest".freeze
+
+  FEED_TARGETING_BUCKETS = [
+    BUCKET_FEED_NEW_USER,
+    BUCKET_FEED_CASUAL_USER,
+    BUCKET_FEED_ACTIVE_USER,
+    BUCKET_FEED_POWER_USER,
+  ].freeze
+
+  NON_ALL_TARGETING_BUCKETS = (FEED_TARGETING_BUCKETS + [BUCKET_DIGEST]).freeze
+  TARGETING_BUCKETS = ([BUCKET_ALL] + NON_ALL_TARGETING_BUCKETS).freeze
+
+  enum :targeting_bucket, {
+    all: 0,
+    feed_new_user: 1,
+    feed_casual_user: 2,
+    feed_active_user: 3,
+    feed_power_user: 4,
+    digest: 5
+  }, prefix: :bucket, validate: true
+
+  POWER_USER_MIN_COMMENT_DAYS = 4
+  ACTIVE_USER_MIN_PAGEVIEW_DAYS = 3
+  ACTIVITY_LOOKBACK = 7.days
+
   has_many :feed_events, dependent: :nullify
+
+  validates :targeting_bucket, inclusion: { in: TARGETING_BUCKETS }, presence: true
 
   ARCHIVE_TOP_LIMIT = 1000
   ARCHIVE_AGE_THRESHOLD = 2.days
 
   scope :active, -> { where(archived: false) }
   scope :archived, -> { where(archived: true) }
+  scope :for_targeting_bucket, ->(bucket) { where(targeting_bucket: bucket) }
 
-  def self.archive_stale_configs!
-    top_ids = active.order(feed_success_score: :desc, id: :desc).limit(ARCHIVE_TOP_LIMIT).select(:id)
+  def self.targeting_bucket_for(user = nil, context_type: nil)
+    return BUCKET_DIGEST if context_type.to_s.in?([FeedEvent::CONTEXT_TYPE_EMAIL, BUCKET_DIGEST])
+    return BUCKET_FEED_CASUAL_USER unless user
 
-    active
-      .where("created_at < ?", ARCHIVE_AGE_THRESHOLD.ago)
-      .where.not(id: top_ids)
-      .in_batches(of: 1000)
-      .update_all(archived: true, updated_at: Time.current)
+    if power_user?(user)
+      BUCKET_FEED_POWER_USER
+    elsif active_user?(user)
+      BUCKET_FEED_ACTIVE_USER
+    elsif new_user?(user)
+      BUCKET_FEED_NEW_USER
+    else
+      BUCKET_FEED_CASUAL_USER
+    end
   end
 
-  def self.select_for_feed(preferred_id: nil)
+  def self.power_user?(user)
+    return false unless user&.id
+
+    cutoff = ACTIVITY_LOOKBACK.ago
+    if user.respond_to?(:last_comment_at) && user.last_comment_at.present? && user.last_comment_at < cutoff
+      return false
+    end
+
+    Comment.where(user_id: user.id)
+      .where("created_at >= ?", cutoff)
+      .distinct
+      .count(Arel.sql("DATE(created_at)")) >= POWER_USER_MIN_COMMENT_DAYS
+  end
+
+  def self.active_user?(user)
+    return false unless user&.id && user.respond_to?(:user_activity)
+
+    recent_views = user.user_activity&.recently_viewed_articles
+    return false if recent_views.blank?
+
+    cutoff = ACTIVITY_LOOKBACK.ago
+    activity_days = recent_views.filter_map do |entry|
+      timestamp = entry.is_a?(Array) ? entry[1] : nil
+      next unless timestamp
+
+      dt = timestamp.to_datetime
+      dt.to_date if dt >= cutoff
+    rescue StandardError
+      nil
+    end.uniq.size
+
+    activity_days >= ACTIVE_USER_MIN_PAGEVIEW_DAYS
+  end
+
+  def self.new_user?(user)
+    return false unless user
+
+    signup_time = (user.respond_to?(:registered_at) && user.registered_at) ||
+      (user.respond_to?(:created_at) && user.created_at)
+    signup_time.present? && signup_time >= ACTIVITY_LOOKBACK.ago
+  end
+
+  def self.archive_stale_configs!
+    cutoff = ARCHIVE_AGE_THRESHOLD.ago
+    TARGETING_BUCKETS.each do |bucket|
+      bucket_scope = active.where(targeting_bucket: bucket)
+      top_ids = bucket_scope
+        .order(feed_success_score: :desc, id: :desc)
+        .limit(ARCHIVE_TOP_LIMIT)
+        .ids
+
+      bucket_scope
+        .where("created_at < ?", cutoff)
+        .where.not(id: top_ids)
+        .in_batches(of: 1000)
+        .update_all(archived: true, updated_at: Time.current)
+    end
+  end
+
+  def self.select_for_feed(preferred_id: nil, user: nil, context_type: nil, targeting_bucket: nil)
     if preferred_id.present?
       preferred = active.find_by(id: preferred_id)
       return preferred if preferred
     end
 
+    bucket = resolve_selection_bucket(user: user, context_type: context_type, targeting_bucket: targeting_bucket)
+    if bucket.present? && bucket != BUCKET_ALL
+      select_for_targeted_bucket(bucket)
+    else
+      select_from_scope(active)
+    end
+  end
+
+  def self.resolve_selection_bucket(user: nil, context_type: nil, targeting_bucket: nil)
+    if targeting_bucket.present? && TARGETING_BUCKETS.include?(targeting_bucket.to_s)
+      targeting_bucket.to_s
+    elsif user.present? || context_type.present?
+      targeting_bucket_for(user, context_type: context_type)
+    end
+  end
+  private_class_method :resolve_selection_bucket
+
+  def self.select_from_scope(scope)
     roll = rand(100)
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs
-                 active
+                 scope
                    .where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
                    .order(created_at: :desc)
                    .limit(TOP_POOL_LIMIT)
                    .sample
                elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
-                 active.order("RANDOM()").limit(1).first
+                 scope.order("RANDOM()").limit(1).first
                end
 
+    proven_pool = scope.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT)
+    tested_pool = scope.where("feed_impressions_count > 0")
+
     selected ||
-      active.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT).order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      active.where("feed_impressions_count > 0").order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      active.order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
-      active.first_or_create
+      proven_pool.order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      tested_pool.order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      scope.order(feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      scope.first_or_create
   end
+  private_class_method :select_from_scope
+
+  def self.select_for_targeted_bucket(bucket)
+    bucket_scope = active.where(targeting_bucket: bucket)
+    fallback_scope = active.where(targeting_bucket: [bucket, BUCKET_ALL])
+    bucket_int = targeting_buckets.fetch(bucket.to_s)
+    bucket_priority_sql = Arel.sql("CASE WHEN targeting_bucket = #{bucket_int.to_i} THEN 0 ELSE 1 END ASC")
+
+    roll = rand(100)
+    selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs in this bucket
+                 bucket_low_imp = bucket_scope.where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
+                 fallback_low_imp = fallback_scope.where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
+                 low_imp_scope = bucket_low_imp.exists? ? bucket_low_imp : fallback_low_imp
+                 low_imp_scope
+                   .order(created_at: :desc)
+                   .limit(TOP_POOL_LIMIT)
+                   .sample
+               elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
+                 (bucket_scope.exists? ? bucket_scope : fallback_scope).order("RANDOM()").limit(1).first
+               end
+
+    proven_fallback = fallback_scope.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT)
+    tested_fallback = fallback_scope.where("feed_impressions_count > 0")
+
+    selected ||
+      proven_fallback.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      tested_fallback.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      fallback_scope.order(bucket_priority_sql, feed_success_score: :desc).limit(rand(1..TOP_POOL_LIMIT)).sample ||
+      bucket_scope.first_or_create
+  end
+  private_class_method :select_for_targeted_bucket
 
   def score_sql(user)
     activity_store = user.user_activity
@@ -238,7 +387,7 @@ class FeedConfig < ApplicationRecord
     SQL
   end
 
-  def create_slightly_modified_clone!
+  def create_slightly_modified_clone!(user: nil, context_type: nil, targeting_bucket: nil)
     clone = dup
     clone.comment_recency_weight = comment_recency_weight * rand(0.9..1.1)
     clone.comment_score_weight = comment_score_weight * rand(0.9..1.1)
@@ -275,9 +424,28 @@ class FeedConfig < ApplicationRecord
     clone.all_time_tag_count_min = [all_time_tag_count_min + rand(-1..1), 0].max if all_time_tag_count_min.positive?
     clone.all_time_tag_count_max = [all_time_tag_count_max + rand(-1..1), 12].min if all_time_tag_count_max.positive?
     clone.all_time_tag_count_max = clone.all_time_tag_count_min if clone.all_time_tag_count_max < clone.all_time_tag_count_min
+    clone.targeting_bucket = cloned_targeting_bucket(
+      user: user,
+      context_type: context_type,
+      requested_bucket: targeting_bucket,
+    )
     clone.feed_impressions_count = 0
     clone.feed_success_score = 0.0
     clone.archived = false
-    clone.save
+    clone.tap(&:save)
+  end
+
+  private
+
+  def cloned_targeting_bucket(user: nil, context_type: nil, requested_bucket: nil)
+    if requested_bucket.present? && NON_ALL_TARGETING_BUCKETS.include?(requested_bucket.to_s)
+      requested_bucket.to_s
+    elsif context_type.present? || user.present?
+      self.class.targeting_bucket_for(user, context_type: context_type)
+    elsif NON_ALL_TARGETING_BUCKETS.include?(targeting_bucket)
+      targeting_bucket
+    else
+      BUCKET_FEED_CASUAL_USER
+    end
   end
 end

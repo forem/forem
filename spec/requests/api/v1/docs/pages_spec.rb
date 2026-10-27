@@ -254,6 +254,64 @@ RSpec.describe "api/v1/pages" do
       end
     end
   end
+
+  path "/api/pages/preview" do
+    describe "post to preview a page" do
+      post("preview a page") do
+        tags "pages"
+        description(<<-DESCRIBE.strip)
+        Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.
+        DESCRIBE
+        operationId "previewPage"
+        produces "application/json"
+        consumes "application/json"
+
+        parameter name: :page, in: :body,
+                  description: "Page content to preview.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      body_markdown: { type: :string, description: "The text (in markdown) of the page" },
+                      body_html: { type: :string, description: "Raw HTML for site admin pages when body_markdown is omitted", nullable: true },
+                      organization_id: { type: :integer, format: :int64, nullable: true,
+                                         description: "The ID of the organization the page belongs to, if previewing an organization page" }
+                    }
+                  }
+
+        let(:page) do
+          {
+            body_markdown: "# Hi, this is a Page Preview"
+          }
+        end
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+          schema type: :object,
+                 properties: {
+                   processed_html: { type: :string }
+                 }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "422", "unprocessable" do
+          let(:"api-key") { api_secret.secret }
+          let(:page) { { body_markdown: "{% link invalid_link_that_does_not_exist %}" } }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable Layout/LineLength

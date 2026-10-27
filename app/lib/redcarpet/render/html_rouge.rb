@@ -109,7 +109,9 @@ module Redcarpet
 
       def slugify(string)
         stripped_string = ForemNative.full_sanitize(string) || ActionView::Base.full_sanitizer.sanitize(string)
-        stripped_string.downcase.gsub(EmojiRegex::RGIEmoji, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
+        downcased = stripped_string.downcase
+        without_emoji = ForemNative.strip_rgi_emoji(downcased) || downcased
+        without_emoji.strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
       end
 
       def allowed_uri?(uri, allow_data: false)

@@ -2366,4 +2366,429 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".parse_emojis (Html::Parser#parse_emojis)" do
+    let(:legacy_parse_emojis) do
+      lambda do |html|
+        out = html.dup
+        out.gsub!(/:([\w+-]+):/) do |match|
+          described_class.emoji_by_alias(Regexp.last_match(1)) || match
+        end
+        out
+      end
+    end
+
+    it "resolves standard, disability, skin-tone, and punctuation gemoji aliases" do
+      expected_aliases = {
+        "joy" => "😂",
+        "+1" => "👍",
+        "-1" => "👎",
+        "100" => "💯",
+        "1234" => "🔢",
+        "1st_place_medal" => "🥇",
+        "8ball" => "🎱",
+        "e-mail" => "📧",
+        "non-potable_water" => "🚱",
+        "guide_dog" => "🦮",
+        "service_dog" => "🐕‍🦺",
+        "person_with_probing_cane" => "🧑‍🦯",
+        "man_with_probing_cane" => "👨‍🦯",
+        "woman_with_probing_cane" => "👩‍🦯",
+        "person_in_motorized_wheelchair" => "🧑‍🦼",
+        "person_in_manual_wheelchair" => "🧑‍🦽",
+        "wheelchair" => "♿",
+        "rocket" => "🚀",
+        "heart" => "❤️",
+        "tada" => "🎉",
+        "zzz" => "💤"
+      }
+
+      expected_aliases.each do |alias_name, raw|
+        expect(described_class.emoji_by_alias(alias_name)).to eq(raw), alias_name
+        token = ":#{alias_name}:"
+        expect(described_class.parse_emojis(token)).to eq(raw), token
+        wrapped = "prefix #{token} suffix"
+        expect(described_class.parse_emojis(wrapped)).to eq("prefix #{raw} suffix"), wrapped
+      end
+
+      expect(described_class.emoji_by_alias("not_a_valid_emoji_alias")).to be_nil
+      expect(described_class.emoji_by_alias("")).to be_nil
+      expect(described_class.emoji_by_alias(nil)).to be_nil
+    end
+
+    it "matches legacy regexp behavior on adjacent, overlapping, and unknown colon patterns" do
+      cases = [
+        "",
+        "plain text without colons",
+        "single : colon and trailing:",
+        ":leading_only",
+        "::",
+        ":::",
+        ":joy:",
+        ":+1: :-1: :100: :e-mail: :non-potable_water: :1st_place_medal:",
+        ":not_an_emoji:",
+        ":not_an_emoji:joy:",
+        ":not_an_emoji::joy:",
+        ":joy:not_an_emoji:",
+        ":joy::not_an_emoji:",
+        ":joy:joy:",
+        ":joy::joy:",
+        ":::joy:::",
+        ":hello world:joy:",
+        ":JOY: :Joy: :joy:",
+        "日本語 :joy: café 👨‍👩‍👧‍👦",
+        "<p>Hello :joy: and <a href=\"https://dev.to:3000/:joy:\">:rocket:</a></p>",
+      ]
+
+      cases.each do |input|
+        expected = legacy_parse_emojis.call(input)
+        actual = described_class.parse_emojis(input)
+        expect(actual).to eq(expected), input.inspect
+        expect(Html::Parser.new(input.dup).parse_emojis.html).to eq(expected), input.inspect
+      end
+
+      unchanged = +"no emojis :not_a_valid_alias: here"
+      expect(described_class.parse_emojis(unchanged)).to equal(unchanged)
+    end
+
+    it "declines non-Strings, SafeBuffer, and non-UTF-8 encodings while Html::Parser falls back cleanly" do
+      [nil, false, 123, :joy, ActiveSupport::SafeBuffer.new(":joy:"), ":joy:".b,
+       ":joy:".encode("US-ASCII"), ":joy:".encode("UTF-16LE"), +":joy:\xFF"].each do |input|
+        expect(described_class.parse_emojis(input)).to be_nil, input.inspect
+      end
+
+      safe_buf = ActiveSupport::SafeBuffer.new("Hello :joy:!")
+      expect(Html::Parser.new(safe_buf).parse_emojis.html).to eq("Hello 😂!")
+      safe_buf_no_emoji = ActiveSupport::SafeBuffer.new("Hello world!")
+      expect(Html::Parser.new(safe_buf_no_emoji).parse_emojis.html).to eq("Hello world!")
+    end
+
+    it "passes differential equivalence across 1,000 generated strings" do
+      rng = Random.new(424_242)
+      known_aliases = %w[
+        joy +1 -1 100 1234 1st_place_medal 8ball e-mail non-potable_water
+        guide_dog service_dog wheelchair rocket heart fire tada star sparkles
+        warning white_check_mark x wave eyes pray clap musclecomputerzzz
+      ]
+      tokens = [
+        ":", "::", ":::", "joy", "+1", "-1", "100", "rocket", "heart", "not_an_emoji", "unknown_123",
+        "JOY", "hello world", " ", "\n", "<p>", "</p>", "<code>", "</code>", "日本語", "🎉",
+        "https://dev.to:3000/path", "a_b-c+d"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..12)) do
+          if rng.rand < 0.35
+            ":#{known_aliases.sample(random: rng)}:"
+          else
+            tokens.sample(random: rng)
+          end
+        end.join
+
+        expected = legacy_parse_emojis.call(sample)
+        actual = described_class.parse_emojis(sample)
+        expect(actual).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".escape_colon_emojis_in_codeblock (Html::Parser#escape_colon_emojis_in_codeblock)" do
+    let(:legacy_escape) do
+      escape_fn = nil
+      escape_fn = lambda do |html|
+        html_doc = Nokogiri::HTML.fragment(html)
+        html_doc.children.each do |el|
+          next if el.name == "code"
+
+          if el.search("code").empty?
+            next if el.parent.blank?
+
+            parsed_html = el.to_html.dup
+            if parsed_html.present?
+              parsed_html.gsub!(/:([\w+-]+):/) do |match|
+                described_class.emoji_by_alias(Regexp.last_match(1)) || match
+              end
+            end
+            el.swap(parsed_html)
+          else
+            el.children = escape_fn.call(el.children.to_html)
+          end
+        end
+        html_doc.to_html
+      end
+      escape_fn
+    end
+
+    it "matches legacy Nokogiri traversal across canonical HTML fragments with and without codeblocks" do
+      canonical_cases = [
+        "",
+        "plain text :joy: and :+1:",
+        "<code>:joy:</code>",
+        "<code>:joy:</code><p>:joy:</p>",
+        "<p>Hello :joy: and <code>:heart:</code> world :+1:!</p>",
+        "<div class=\"highlight\"><pre class=\"highlight ruby\"><code>puts \":joy: :rocket:\"</code></pre></div>" \
+        "<p>Outside :rocket: and <code>:fire:</code>!</p>",
+        "<div><section><article><p>:joy: <code>:heart:</code> :+1:</p></article></section></div>",
+        "<table>\n<thead><tr><th>:joy:</th></tr></thead>\n" \
+        "<tbody><tr>\n<td><code>:joy:</code></td>\n<td>:+1:</td>\n</tr></tbody>\n</table>",
+        "<ul>\n<li>:joy:</li>\n<li>\n<code>:joy:</code> and :+1:</li>\n</ul>",
+        "<p>Line 1 :joy:<br>Line 2 <img src=\"https://dev.to/a.png\" alt=\"pic\"></p><hr>",
+        "<p>:joy: <svg viewbox=\"0 0 24 24\"><path d=\"M0 0\"></path></svg></p>",
+        "<p>Tom &amp; Jerry &lt;3 &gt; :joy: in <a href=\"https://dev.to/a?x=1&amp;y=2\">:rocket:</a></p>",
+        "<p>:not_an_emoji:joy: vs :not_an_emoji::joy: and <code>:not_an_emoji::joy:</code></p>",
+        "<pre><code>:joy:</code>\n</pre>",
+      ]
+
+      canonical_cases.each do |html|
+        expected = legacy_escape.call(html)
+        actual = described_class.escape_colon_emojis_in_codeblock(html)
+        expect(actual).to eq(expected), html.inspect
+        expect(Html::Parser.new(html.dup).escape_colon_emojis_in_codeblock.html).to eq(expected), html.inspect
+      end
+    end
+
+    it "declines non-canonical HTML fragments and edge cases while Html::Parser preserves legacy output" do
+      non_canonical_cases = [
+        "<br/>",
+        "<div/>",
+        "<P>:joy:</P>",
+        "<p CLASS=\"x\">:joy:</p>",
+        "<p class='x'>:joy:</p>",
+        "<p class=x>:joy:</p>",
+        "<td nowrap>:joy:</td>",
+        "<p class=\"a\" class=\"b\">:joy:</p>",
+        "<ul><li></li><li>:joy:</li></ul>",
+        "<div><p>:joy:</p><p>:+1:</p></div>",
+        "<h2>hello<code>:heart:</code></h2>",
+        "<p>&nbsp; &copy; &#39; &#128512; :joy:</p>",
+        "<p>a & b :joy:</p>",
+        "<p>a < b :joy:</p>",
+        "<p>a\x01b :joy:</p>",
+        "<p>a\fb :joy:</p>",
+        "<p title=\"a\x07b\">:joy:</p>",
+        "<p>a\uFFFEb :joy:</p>",
+        "<p>a\uFFFFb :joy:</p>",
+        "<p data-title=\":joy:\">Hello <code>:heart:</code> :+1:</p>",
+        "<p data-title=\":joy:\">Hello :+1:</p>",
+        "<code>outer <code>:joy:</code> inner</code>",
+        "<!-- :joy: --><p>:joy:</p>",
+        "<p>:joy:",
+        "<p><b>:joy:</p></b>",
+        "<custom-element>:joy:</custom-element>",
+        "<a href=\"https://dev.to/hello world\">:joy:</a>",
+      ]
+
+      non_canonical_cases.each do |html|
+        expect(described_class.escape_colon_emojis_in_codeblock(html)).to be_nil, html.inspect
+        expected = legacy_escape.call(html)
+        expect(Html::Parser.new(html.dup).escape_colon_emojis_in_codeblock.html).to eq(expected), html.inspect
+      end
+
+      [nil, false, 123, :sym, ActiveSupport::SafeBuffer.new("<p>:joy:</p>"), "<p>:joy:</p>".b,
+       "<p>:joy:</p>".encode("UTF-16LE"), +"<p>:joy:\xFF</p>"].each do |input|
+        expect(described_class.escape_colon_emojis_in_codeblock(input)).to be_nil, input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated canonical HTML fragments" do
+      rng = Random.new(424_242)
+      text_pieces = [
+        "hello", " :joy: ", " :+1: ", " :not_an_emoji:joy: ", " :not_an_emoji::joy: ",
+        " &amp; ", " &lt; ", " &gt; ", " 日本語 ", " 🚀 ", " plain text "
+      ]
+      inline_fragments = [
+        -> { "<code>#{text_pieces.sample(random: rng)}</code>" },
+        -> { "<strong>#{text_pieces.sample(random: rng)}</strong>" },
+        -> { "<em>#{text_pieces.sample(random: rng)}<code>:joy:</code></em>" },
+        -> { "<a href=\"https://dev.to/post?a=1&amp;b=2\">#{text_pieces.sample(random: rng)}</a>" },
+        -> { "<span class=\"crayons\">#{text_pieces.sample(random: rng)}</span>" },
+        -> { "<br>" },
+        -> { "<img src=\"https://dev.to/img.png\" alt=\"alt\">" },
+      ]
+      block_fragments = [
+        lambda do
+          inner = Array.new(rng.rand(1..4)) do
+            rng.rand < 0.5 ? text_pieces.sample(random: rng) : inline_fragments.sample(random: rng).call
+          end.join
+          "<p>#{inner}</p>"
+        end,
+        lambda do
+          "<div class=\"highlight\"><pre class=\"highlight ruby\">" \
+            "<code>#{text_pieces.sample(random: rng)}</code></pre></div>"
+        end,
+        -> { "<h2>#{text_pieces.sample(random: rng)}<code>:heart:</code> text</h2>" },
+        -> { "<blockquote><p>#{text_pieces.sample(random: rng)}<code>:joy:</code></p></blockquote>" },
+      ]
+
+      native_hits = 0
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..5)) { block_fragments.sample(random: rng).call }.join("\n")
+        expected = legacy_escape.call(sample)
+        actual = described_class.escape_colon_emojis_in_codeblock(sample)
+        native_hits += 1 unless actual.nil?
+        expect(actual).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+
+      expect(native_hits).to eq(1_000)
+    end
+
+    it "passes adversarial differential equivalence across 1,000 arbitrary HTML fragments" do
+      rng = Random.new(987_654)
+      tokens = [
+        "<p>", "</p>", "<div>", "</div>", "<code>", "</code>", "<pre>", "</pre>",
+        "<span>", "</span>", "<ul>", "</ul>", "<li>", "</li>", "<br>", "<br/>",
+        "<a href=\"https://dev.to?a=1&amp;b=2\">", "<a href=':joy:'>", "</a>",
+        ":joy:", ":+1:", ":not_an_emoji:joy:", ":not_an_emoji::joy:", "hello", " ", "\n",
+        "&amp;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&", "<", ">", "<!-- :joy: -->"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { tokens.sample(random: rng) }.join
+        expected = legacy_escape.call(sample)
+        native = described_class.escape_colon_emojis_in_codeblock(sample)
+        expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+        expect(Html::Parser.new(sample.dup).escape_colon_emojis_in_codeblock.html)
+          .to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".title_for_metadata (Article#title_for_metadata)" do
+    let(:legacy_title_for_metadata) do
+      lambda do |title|
+        title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
+      end
+    end
+
+    it "matches Article#title_for_metadata across edge cases" do
+      [
+        "",
+        "   ",
+        "\t\n\r\v\f\0",
+        "This is a regular title",
+        "Line one\nLine two",
+        "First paragraph\n\nSecond paragraph",
+        "Line one\n\n\nLine two",
+        "  \nLine one\nLine two\n  ",
+        "Line one  \n  Line two  \n  \n  Paragraph two",
+        "Check this out\nhttps://example.com\n\nMore text",
+        "These are the best ways to write a quickie:\n\n- Make it short\n- Make it great\n- Make it magoo\n\n" \
+        "This is how you do it.\n\nOr is it how you do it?\n\nI don't know, is it really?\n\n" \
+        "Really?\nReally?\nI dunno.",
+        "\0\t\n\r\v\f  hello\t\r\nworld  \0\n",
+        "a\0 \0b",
+        "a\u00A0\u3000b\nc",
+        "日本語\n\n🎉\tタイトル",
+      ].each do |title|
+        expected = legacy_title_for_metadata.call(title)
+        expect(described_class.title_for_metadata(title)).to eq(expected), title.inspect
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && title.present?
+          article = Article.new(type_of: "status", title: title)
+          expect(article.title_for_metadata).to eq(expected), title.inspect
+        end
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves Article#title_for_metadata fallback" do
+      [
+        nil,
+        false,
+        123,
+        :title,
+        ActiveSupport::SafeBuffer.new("Line one\nLine two"),
+        "Line one\nLine two".b,
+        "Line one\nLine two".encode("US-ASCII"),
+        "Line one\nLine two".encode("UTF-16LE"),
+        +"Line one\nLine two\xFF",
+      ].each do |input|
+        expect(described_class.title_for_metadata(input)).to be_nil, input.inspect
+      end
+
+      if defined?(Article) && Article.method_defined?(:title_for_metadata)
+        article = Article.new(type_of: "status")
+        article.title = "Line one\nLine two".encode("US-ASCII")
+        expect(article.title_for_metadata).to eq("Line one Line two")
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", " ", "  ", "\t", "\n", "\r", "\r\n", "\n\n", "\v", "\f", "\0",
+        "\u00A0", "\u2000", "\u3000", "Line one", "Paragraph", "- bullet",
+        "https://example.com/path?a=1&b=2", "日本語", "🎉", "café", "a\0b"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..10)) { tokens.sample(random: rng) }.join
+        expected = legacy_title_for_metadata.call(sample)
+        actual = described_class.title_for_metadata(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        if defined?(Article) && Article.method_defined?(:title_for_metadata) && sample.present?
+          article = Article.new(type_of: "status", title: sample)
+          expect(article.title_for_metadata).to eq(expected), message
+        end
+      end
+    end
+  end
+
+  describe ".strip_rgi_emoji (EmojiOnlyValidator & Redcarpet::Render::HTMLRouge#slugify)" do
+    it "strips single, ZWJ, keycap, skin-tone, and flag RGI emojis while preserving non-RGI text",
+       :aggregate_failures do
+      expect(described_class.strip_rgi_emoji("🍀")).to eq("")
+      expect(described_class.strip_rgi_emoji("👍🏽")).to eq("")
+      expect(described_class.strip_rgi_emoji("👨‍👩‍👧‍👦")).to eq("")
+      expect(described_class.strip_rgi_emoji("🏴󠁧󠁢󠁥󠁮󠁧󠁿")).to eq("")
+      expect(described_class.strip_rgi_emoji("#️⃣1️⃣*️⃣")).to eq("")
+      expect(described_class.strip_rgi_emoji("#\uFE0F")).to eq("#\uFE0F")
+      expect(described_class.strip_rgi_emoji("#")).to eq("#")
+      expect(described_class.strip_rgi_emoji("Hello 🚀 World 🎉!")).to eq("Hello  World !")
+
+      unchanged = +"plain text without emojis"
+      expect(described_class.strip_rgi_emoji(unchanged)).to equal(unchanged)
+
+      renderer = Redcarpet::Render::HTMLRouge.new
+      expect(renderer.header("Hello 🚀 World!", 2)).to include('href="#hello-world"')
+    end
+  end
+
+  describe ".wcag_contrast_ratio (Color::Accessibility#low_contrast?)" do
+    let(:legacy_wcag_ratio) do
+      lambda do |rgb1, rgb2|
+        valid = ->(s) { s.is_a?(String) && s.match?(/\A(?:[a-f0-9]{3}|[a-f0-9]{6})\z/i) }
+        return unless valid.call(rgb1) && valid.call(rgb2)
+
+        to_lum = lambda do |rgb|
+          s = rgb.size == 3 ? "#{rgb}#{rgb}" : rgb
+          channels = [s[0, 2], s[2, 2], s[4, 2]].map do |hex|
+            v = hex.to_i(16) / 255.0
+            v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055)**2.4
+          end
+          (0.2126 * channels[0]) + (0.7152 * channels[1]) + (0.0722 * channels[2])
+        end
+
+        l1 = to_lum.call(rgb1)
+        l2 = to_lum.call(rgb2)
+        l1 > l2 ? (l1 + 0.05) / (l2 + 0.05) : (l2 + 0.05) / (l1 + 0.05)
+      end
+    end
+
+    it "matches WCAG 2.0 relative luminance and contrast ratio across 1,000 random color pairs" do
+      expect(described_class.wcag_contrast_ratio("ffffff", "000000")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("000", "FFF")).to eq(21.0)
+      expect(described_class.wcag_contrast_ratio("invalid", "ffffff")).to be_nil
+
+      rng = Random.new(424_242)
+      hex_chars = "0123456789abcdefABCDEF".chars
+
+      1_000.times do |iteration|
+        c1 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        c2 = Array.new([3, 6].sample(random: rng)) { hex_chars.sample(random: rng) }.join
+        expected = legacy_wcag_ratio.call(c1, c2)
+        actual = described_class.wcag_contrast_ratio(c1, c2)
+        expect(actual).to be_within(1e-12).of(expected), "iteration #{iteration}: #{c1} vs #{c2}"
+      end
+    end
+  end
 end
