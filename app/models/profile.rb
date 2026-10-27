@@ -78,9 +78,9 @@ class Profile < ApplicationRecord
   end
 
   def social_image_details_changed?
-    saved_change_to_summary? ||
-      saved_change_to_location? ||
-      saved_change_to_website_url?
+    (saved_change_to_summary? && summary_before_last_save.to_s != summary.to_s) ||
+      (saved_change_to_location? && location_before_last_save.to_s != location.to_s) ||
+      (saved_change_to_website_url? && website_url_before_last_save.to_s != website_url.to_s)
   end
 
   def profile_details_changed_for_cache?

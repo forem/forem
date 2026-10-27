@@ -156,6 +156,12 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       profile.update!(field.attribute_name => "Zig")
       expect(Images::SocialImageWorker).not_to have_received(:perform_async)
     end
+
+    it "does not enqueue SocialImageWorker when blank fields are updated from nil to empty string" do
+      blank_profile = create(:user).profile
+      blank_profile.update!(summary: "", location: "", website_url: "")
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+    end
   end
 
   describe "onboarding checklist" do

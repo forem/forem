@@ -103,6 +103,8 @@ module Images
         EdgeCache::BustArticle.call(@resource)
       when ::Profile
         @user = @resource.user
+        return unless @user
+
         update_user_social_image(generate_image(@user, @user.setting.brand_color1))
       when User
         @user = @resource
