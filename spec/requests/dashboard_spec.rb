@@ -214,8 +214,6 @@ RSpec.describe "Dashboards" do
   end
 
   describe "GET /dashboard/organization" do
-    let(:organization) { create(:organization) }
-
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/organization"
@@ -224,12 +222,15 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in" do
-      it "renders user's organization articles" do
+      it "renders user's organization articles and hides archived organization articles", :aggregate_failures do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        article.update(organization_id: organization.id)
+        create(:article, user: user, organization_id: organization.id, archived: true)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).to include "crayons-logo"
+
+        expect(response.body).to include("crayons-logo")
+        html = Nokogiri::HTML(response.body)
+        expect(html.css(".story-archived.hidden")).to be_present
       end
 
       it "does not render the delete button for other org member's drafts" do
@@ -240,16 +241,6 @@ RSpec.describe "Dashboards" do
         get "/dashboard/organization/#{organization.id}"
         expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
-      end
-
-      it "renders archived organization articles with the hidden class" do
-        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        create(:article, user: user, organization_id: organization.id, archived: true)
-        sign_in user
-        get "/dashboard/organization/#{organization.id}"
-
-        html = Nokogiri::HTML(response.body)
-        expect(html.css(".story-archived.hidden")).to be_present
       end
     end
 
@@ -387,24 +378,16 @@ RSpec.describe "Dashboards" do
       end
     end
 
-    context "when user is an org admin" do
-      it "shows page properly" do
-        org = create(:organization)
-        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+    context "when user is an org admin or member" do
+      it "shows page properly for both admin and member memberships", :aggregate_failures do
+        membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
 
         sign_in user
-        get "/dashboard/analytics/org/#{org.id}"
+        get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
-      end
-    end
 
-    context "when user is an org member" do
-      it "shows page properly" do
-        org = create(:organization)
-        create(:organization_membership, user: user, organization: org)
-
-        sign_in user
-        get "/dashboard/analytics/org/#{org.id}"
+        membership.update!(type_of_user: "member")
+        get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
       end
     end
@@ -442,41 +425,29 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include("No import history yet")
       end
 
-      it "shows import history when feed source exists" do
+      it "shows health warning when feed is degraded or failing", :aggregate_failures do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
-        create(:feed_import_log, user: user, feed_source: source)
-
-        get "/dashboard/feed_imports"
-        expect(response.body).to include("Completed")
-      end
-
-      it "shows health warning when feed is degraded" do
-        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
 
         get "/dashboard/feed_imports"
         expect(response.body).to include("recent failures")
-      end
 
-      it "shows health warning when feed is failing" do
-        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :failing)
-
+        source.update!(status: :failing)
         get "/dashboard/feed_imports"
         expect(response.body).to include("failing consistently")
       end
 
-      it "shows skipped items in collapsible section on first-time logs" do
+      it "shows import history and skipped items in collapsible section on first-time logs", :aggregate_failures do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
         source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
         log = create(:feed_import_log, user: user, feed_source: source,
                                        items_imported: 1, items_skipped: 3)
-        create(:feed_import_item, :imported, import_log: log, feed_item_title: "My New Article")
+        create(:feed_import_item, :imported, import_log: log, article: article, feed_item_title: "My New Article")
         create_list(:feed_import_item, 3, :skipped, import_log: log)
 
         get "/dashboard/feed_imports"
 
+        expect(response.body).to include("Completed")
         expect(response.body).to include("My New Article")
         expect(response.body).to include("Show 3 skipped duplicates")
       end
@@ -510,7 +481,8 @@ RSpec.describe "Dashboards" do
       sign_in author
     end
 
-    it "renders subscriptions with page heading and subscriber links" do
+    it "renders subscriptions with page heading, subscriber links, and no pagination for a single page",
+       :aggregate_failures do
       user_subscription = create(:user_subscription,
                                  subscriber_id: second_user.id,
                                  subscriber_email: second_user.email,
@@ -519,6 +491,7 @@ RSpec.describe "Dashboards" do
 
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include(user_subscription.subscriber_email)
+      expect(response.body).not_to include("pagination")
 
       html = Nokogiri::HTML(response.body)
       heading = html.at_css("h1.crayons-title")
@@ -539,12 +512,7 @@ RSpec.describe "Dashboards" do
     end
 
     it "raises unauthorized when trying to access a source the user doesn't own" do
-      unauthorized_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-      create(:user_subscription,
-             subscriber_id: second_user.id,
-             subscriber_email: second_user.email,
-             author_id: unauthorized_article.user_id,
-             user_subscription_sourceable: unauthorized_article)
+      unauthorized_article = create(:article, user: second_user)
       unauthorized_article_params = { source_type: unauthorized_article.class.name, source_id: unauthorized_article.id }
 
       expect do
@@ -552,17 +520,13 @@ RSpec.describe "Dashboards" do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "raises an error for disallowed source_types" do
-      invalid_source_type_params = { source_type: "Comment", source_id: 1 }
+    it "raises an error for disallowed source_types or when the source can't be found", :aggregate_failures do
       expect do
-        get "/dashboard/subscriptions", params: invalid_source_type_params
+        get "/dashboard/subscriptions", params: { source_type: "Comment", source_id: 1 }
       end.to raise_error(ActiveRecord::RecordNotFound)
-    end
 
-    it "raises an error when the source can't be found" do
-      nonexistent_article_params = { source_type: article.class.name, source_id: article.id + 999 }
       expect do
-        get "/dashboard/subscriptions", params: nonexistent_article_params
+        get "/dashboard/subscriptions", params: { source_type: "Article", source_id: 0 }
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
@@ -584,15 +548,6 @@ RSpec.describe "Dashboards" do
 
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include "pagination"
-    end
-
-    it "does not render pagination if less than one full page" do
-      create(:user_subscription,
-             subscriber: second_user,
-             author: author,
-             user_subscription_sourceable: article_with_user_subscription_tag)
-      get "/dashboard/subscriptions", params: params
-      expect(response.body).not_to include "pagination"
     end
   end
 end
