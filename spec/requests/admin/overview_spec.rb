@@ -52,26 +52,24 @@ RSpec.describe "/admin" do
   end
 
   describe "analytics" do
-    subject(:body) { response.body }
-
-    before do
+    it "renders activity statistics and stats cards", :aggregate_failures do
       get admin_path
-    end
 
-    it { is_expected.to include("Activity Statistics") }
-    it { is_expected.to include("Published Posts") }
-    it { is_expected.to include("Comments") }
-    it { is_expected.to include("Public Reactions") }
-    it { is_expected.to include("New Users") }
+      expect(response.body).to include("Activity Statistics")
+      expect(response.body).to include("Published Posts")
+      expect(response.body).to include("Comments")
+      expect(response.body).to include("Public Reactions")
+      expect(response.body).to include("New Users")
+    end
   end
 
   describe "GET /admin/stats" do
-    it "returns stats for the past 7 days by default" do
+    it "returns stats for the past 7 days by default", :aggregate_failures do
       # Set super_admin registered_at outside the time period
       super_admin.update_column(:registered_at, 30.days.ago)
-      
+
       user = create(:user, registered_at: 10.days.ago)
-      
+
       article1 = create(:article, :past, past_published_at: 3.days.ago, user: user)
       article2 = create(:article, :past, past_published_at: 5.days.ago, user: user)
       create(:article, :past, past_published_at: 10.days.ago, user: user)
@@ -82,7 +80,7 @@ RSpec.describe "/admin" do
       get admin_stats_path
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json["published_posts"]).to eq(2)
       expect(json["comments"]).to eq(1)
       expect(json["public_reactions"]).to eq(1)
@@ -90,41 +88,37 @@ RSpec.describe "/admin" do
       expect(json["period"]).to eq(7)
     end
 
-    it "returns stats for the past 30 days when specified" do
-      user = create(:user, registered_at: 40.days.ago)
-      
-      create(:article, :past, past_published_at: 15.days.ago, user: user)
-      create(:article, :past, past_published_at: 5.days.ago, user: user)
-      create(:article, :past, past_published_at: 35.days.ago, user: user)
+    it "returns stats for the past 30 days when specified", :aggregate_failures do
+      create(:article, :past, past_published_at: 15.days.ago, user: super_admin)
+      create(:article, :past, past_published_at: 5.days.ago, user: super_admin)
+      create(:article, :past, past_published_at: 35.days.ago, user: super_admin)
 
       get admin_stats_path, params: { period: 30 }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json["published_posts"]).to eq(2)
       expect(json["period"]).to eq(30)
     end
 
-    it "returns stats for the past 90 days when specified" do
-      user = create(:user, registered_at: 110.days.ago)
-      
-      create(:article, :past, past_published_at: 50.days.ago, user: user)
-      create(:article, :past, past_published_at: 5.days.ago, user: user)
-      create(:article, :past, past_published_at: 100.days.ago, user: user)
+    it "returns stats for the past 90 days when specified", :aggregate_failures do
+      create(:article, :past, past_published_at: 50.days.ago, user: super_admin)
+      create(:article, :past, past_published_at: 5.days.ago, user: super_admin)
+      create(:article, :past, past_published_at: 100.days.ago, user: super_admin)
 
       get admin_stats_path, params: { period: 90 }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json["published_posts"]).to eq(2)
       expect(json["period"]).to eq(90)
     end
 
-    it "defaults to 7 days for invalid period values" do
+    it "defaults to 7 days for invalid period values", :aggregate_failures do
       get admin_stats_path, params: { period: 999 }
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
+      json = response.parsed_body
       expect(json["period"]).to eq(7)
     end
   end
