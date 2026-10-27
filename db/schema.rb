@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -272,6 +272,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
     t.index ["type_of", "published", "score", "published_at"], name: "index_articles_on_type_of_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
+    t.index ["user_id", "published_at"], name: "index_articles_on_user_id_and_published_at_for_published", order: { published_at: :desc }, where: "(published = true)"
     t.index ["user_id"], name: "index_articles_on_user_id"
     t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
     t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
