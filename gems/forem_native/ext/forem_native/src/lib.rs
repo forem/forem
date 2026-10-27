@@ -892,11 +892,8 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
             if w.recent_article_suppression_rate > 0.0 && has_activity_store {
                 if let Some(id_val) = first_val {
                     if !id_val.is_nil() {
-                        if let Some(int_id) = Integer::from_value(id_val) {
-                            recent_article_ids.push(int_id.to_i64().ok()?);
-                        } else {
-                            return None;
-                        }
+                        let int_id = Integer::from_value(id_val)?;
+                        recent_article_ids.push(int_id.to_i64().ok()?);
                     }
                 }
             }
