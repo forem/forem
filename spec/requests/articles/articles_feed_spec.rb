@@ -51,15 +51,14 @@ RSpec.describe "ArticlesFeed" do
       queries
     end
 
-    it "renders categories with a single articles query and one batched taggings preload" do
+    it "renders categories from cached_tag_list with a single articles query and no taggings query" do
       queries = article_and_tagging_queries { get "/feed/#{user.username}" }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("<category>ruby</category>")
       expect(response.body).to include("<category>rails</category>")
       expect(queries.count { |sql| sql.include?('FROM "articles"') }).to eq(1)
-      # tag_list reads taggings (via acts-as-taggable-on custom_contexts), so the preload must stay batched.
-      expect(queries.count { |sql| sql.include?('FROM "taggings"') }).to eq(1)
+      expect(queries.grep(/FROM "taggings"/)).to be_empty
       expect(queries.grep(/FROM "tags"/)).to be_empty
     end
 

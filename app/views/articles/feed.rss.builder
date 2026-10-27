@@ -58,7 +58,7 @@ xml.rss(:version => "2.0",
         xml.link article_link
         xml.guid article_link
         xml.description descriptions[article.id]
-        article.tag_list.each do |tag_name|
+        article.cached_tag_list_array.each do |tag_name|
           xml.category tag_name
         end
       end
