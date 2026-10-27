@@ -5,6 +5,7 @@ RSpec.shared_examples "#sync_reactions_count" do |reactable_type|
     before do
       create(:reaction, points: 1, reactable: reactable)
       create(:reaction, points: 0, reactable: reactable)
+      reactable.update_column(:public_reactions_count, 0)
     end
 
     it "syncs reactions count" do
