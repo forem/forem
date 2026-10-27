@@ -710,5 +710,16 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
       expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
     end
+
+    it "permutes candidates via ForemNative.weighted_shuffle and falls back cleanly if nil" do
+      candidates = [high_score_article, medium_score_article, low_score_article]
+      shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
+      expect(shuffled).to match_array(candidates)
+
+      allow(ForemNative).to receive(:weighted_shuffle).and_return(nil)
+      fallback_shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
+      expect(fallback_shuffled).to match_array(candidates)
+    end
   end
 end
+

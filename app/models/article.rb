@@ -970,6 +970,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
+    ForemNative.format_video_duration(video_duration_in_seconds) ||
+      legacy_video_duration_in_minutes
+  end
+
+  def legacy_video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
     # add default hours and minutes for the substitutions below
@@ -980,6 +985,7 @@ class Article < ApplicationRecord
 
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
+  private :legacy_video_duration_in_minutes
 
   def body_text
     # Sanitizing processed_html is slow on long posts and a single save asks for it
