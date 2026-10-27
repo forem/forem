@@ -4,7 +4,7 @@ RSpec.describe "Api::V0::Videos" do
   let(:user) { create(:user, created_at: 1.month.ago) }
 
   def create_article(article_params = {})
-    article = create(:article, :video, user: user, title: "video-#{rand(10_000)}")
+    article = create(:article, :video, user: user, title: "video-#{SecureRandom.hex(8)}")
     article.update_columns(article_params) if article_params.any?
     article
   end
@@ -49,8 +49,9 @@ RSpec.describe "Api::V0::Videos" do
       get api_videos_path
 
       response_video = response.parsed_body.first
-      expected_keys = %w[type_of id path cloudinary_video_url title user_id video video_duration_in_minutes video_source_url
-                         user]
+      expected_keys = %w[
+        type_of id path cloudinary_video_url title user_id video video_duration_in_minutes video_source_url user
+      ]
       expect(response_video.keys).to match_array(expected_keys)
 
       %w[id path cloudinary_video_url title user_id video video_duration_in_minutes video_source_url].each do |attr|
@@ -71,7 +72,7 @@ RSpec.describe "Api::V0::Videos" do
     end
 
     it "supports pagination" do
-      3.times { create(:article, :video, user: user, title: "video-#{rand(10_000)}") }
+      3.times { create_article }
 
       get api_videos_path, params: { page: 1, per_page: 2 }
       expect(response.parsed_body.length).to eq(2)
@@ -85,7 +86,7 @@ RSpec.describe "Api::V0::Videos" do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
       allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
 
-      3.times { create(:article, :video, user: user, title: "video-#{rand(10_000)}") }
+      3.times { create_article }
 
       get api_videos_path, params: { per_page: 10 }
       expect(response.parsed_body.count).to eq(2)

@@ -74,4 +74,40 @@ RSpec.describe Redcarpet::Render::HTMLRouge do
       expect(Rails.logger).to have_received(:error).with(/Mermaid block rendering failed/)
     end
   end
+
+  describe "URI scheme and attribute formatting in links and images" do
+    it "omits unsupported URI schemes from links" do
+      output = markdown.render("[click](javascript:alert(1))")
+
+      expect(output).to include("<a>click</a>")
+      expect(output).not_to include("javascript:")
+    end
+
+    it "omits HTML-entity-encoded unsupported URI schemes from links" do
+      output = markdown.render("[click](javascript&#58;alert(1))")
+
+      expect(output).to include("<a>click</a>")
+      expect(output).not_to include("javascript")
+    end
+
+    it "omits data: and vbscript: URI schemes from links" do
+      expect(markdown.render("[click](data:text/html,<script>alert(1)</script>)")).not_to include("data:")
+      expect(markdown.render("[click](vbscript:msgbox(1))")).not_to include("vbscript:")
+    end
+
+    it "ignores unsupported URI schemes in images" do
+      expect(markdown.render("![alt](javascript:alert(1))")).not_to include("javascript:")
+      expect(markdown.render("![alt](data:text/html,<script>alert(1)</script>)")).not_to include("data:text/html")
+    end
+
+    it "escapes double quotes in image alt and title attributes" do
+      output = markdown.render('![x" onerror="alert(1)](https://example.com/a.png "title" onload="alert(2)")')
+      doc = Nokogiri::HTML.fragment(output)
+      img = doc.at_css("img")
+
+      expect(img).to be_present
+      expect(img["onerror"]).to be_nil
+      expect(img["onload"]).to be_nil
+    end
+  end
 end

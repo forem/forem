@@ -33,8 +33,12 @@ RSpec.describe GitPitchTag, type: :liquid_tag do
 
     it "rejects invalid gitpitch url" do
       expect do
-        generate_new_liquid("really_long_invalid_link")
+        generate_tag("really_long_invalid_link")
       end.to raise_error(StandardError)
+
+      bad_links.each do |link|
+        expect { generate_tag(link) }.to raise_error(StandardError)
+      end
     end
 
     it "accepts valid gitpitch url" do

@@ -106,6 +106,7 @@ module MarkdownProcessor
     def add_target_blank_to_outbound_links(html)
       app_domain = Settings::General.app_domain
       doc = Nokogiri::HTML.fragment(html)
+      scrub_unsafe_uris(doc)
       doc.css('a[href^="http"]').each do |link|
         href = link["href"]
         next unless href&.exclude?(app_domain)
@@ -283,6 +284,22 @@ module MarkdownProcessor
         .wrap_all_figures_with_tags
         .wrap_mentions_with_links
         .html
+    end
+
+    URI_ATTRIBUTES = %w[href src].freeze
+
+    def scrub_unsafe_uris(doc)
+      doc.css("[href], [src]").each do |node|
+        node.attribute_nodes.each do |attr|
+          next unless URI_ATTRIBUTES.include?(attr.name)
+
+          if node.name == "a" && attr.name == "href" && attr.value.to_s.gsub(/[\x00-\x20]+/, "").match?(/\Adata:/i)
+            attr.remove
+          else
+            Loofah::HTML5::Scrub.scrub_uri_attribute(attr)
+          end
+        end
+      end
     end
   end
 end
