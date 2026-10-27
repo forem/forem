@@ -448,23 +448,32 @@ RSpec.describe Html::Parser, type: :service do
       expect(html_parser).to be_a described_class
     end
 
-    # rubocop:disable Rails/DynamicFindBy
     it "converts emoji names wrapped in colons into unicode" do
-      joy_emoji_unicode = Emoji.find_by_alias("joy").raw
+      joy_emoji_unicode = ForemNative.emoji_by_alias("joy")
       parsed_html = described_class.new(":joy:").parse_emojis.html
       expect(parsed_html).to include(joy_emoji_unicode)
     end
 
     it "converts disability emojis as well", :aggregate_failures do
-      disability_emojis = %w[
-        guide_dog service_dog person_with_probing_cane man_with_probing_cane woman_with_probing_cane probing_cane
-        person_in_motorized_wheelchair man_in_motorized_wheelchair woman_in_motorized_wheelchair
-        person_in_manual_wheelchair man_in_manual_wheelchair woman_in_manual_wheelchair manual_wheelchair
-        motorized_wheelchair wheelchair
-      ]
+      disability_emojis = {
+        "guide_dog" => "🦮",
+        "service_dog" => "🐕‍🦺",
+        "person_with_probing_cane" => "🧑‍🦯",
+        "man_with_probing_cane" => "👨‍🦯",
+        "woman_with_probing_cane" => "👩‍🦯",
+        "probing_cane" => "🦯",
+        "person_in_motorized_wheelchair" => "🧑‍🦼",
+        "man_in_motorized_wheelchair" => "👨‍🦼",
+        "woman_in_motorized_wheelchair" => "👩‍🦼",
+        "person_in_manual_wheelchair" => "🧑‍🦽",
+        "man_in_manual_wheelchair" => "👨‍🦽",
+        "woman_in_manual_wheelchair" => "👩‍🦽",
+        "manual_wheelchair" => "🦽",
+        "motorized_wheelchair" => "🦼",
+        "wheelchair" => "♿"
+      }
 
-      disability_emojis.each do |emoji|
-        unicode = Emoji.find_by_alias(emoji).raw
+      disability_emojis.each do |emoji, unicode|
         parsed_html = described_class.new(":#{emoji}:").parse_emojis.html
         expect(parsed_html).to include(unicode)
       end
@@ -475,6 +484,5 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(emoji_text).parse_emojis.html
       expect(parsed_html).to include(emoji_text)
     end
-    # rubocop:enable Rails/DynamicFindBy
   end
 end

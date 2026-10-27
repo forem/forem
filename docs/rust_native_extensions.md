@@ -90,3 +90,25 @@ Benchmarking a ~5,000-word Markdown article (`36,960` bytes) via `bundle exec ra
 | :--- | :--- | :--- | :--- |
 | **Throughput (`benchmark-ips`)** | `723.1 i/s` | `38,732.1 i/s` | **53.56x faster** |
 | **Ruby Heap Allocations (10 runs)** | `99,640 objects` (`10.81 MB`) | `0 objects` (`0 B`) | **100% allocation elimination** |
+
+---
+
+## 5. Maintaining Embedded Static Datasets & Removed Gems
+
+Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
+
+| Gem / Standard | Status in `Gemfile` | `forem_core` Module & Data File | Needs Periodic Data Updates? |
+| :--- | :--- | :--- | :--- |
+| **`wcag_color_contrast`** | **Removed** | `crates/forem_core/src/color.rs` (`wcag_contrast_ratio`) | **No** — Implements the fixed W3C WCAG 2.x relative luminance & contrast ratio formula. Pure math; no external data tables. |
+| **`gemoji`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`EMOJI_BLOB`, `EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream [`github/gemoji`](https://github.com/github/gemoji) (`db/emoji.json`) is a static JSON mapping of `:shortcode:` aliases to UTF-8 emoji sequences. Only changes when adopting a new Unicode Emoji release or adding custom shortcodes. |
+| **`emoji_regex`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`RGI_EMOJI_BLOB`, `RGI_EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream `emoji_regex` is a static list of Unicode `RGI_Emoji` sequences derived from Unicode's [`emoji-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-sequences.txt) and [`emoji-zwj-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt). Only changes when adopting a new Unicode Emoji release. |
+| **`public_suffix`** | Transitive dep of `addressable` | `crates/forem_core/src/url.rs` & `psl_data.rs` (`PSL_BLOB`, `PSL_ENTRIES`) | **When `public_suffix` is bumped** — Mirrors the Mozilla Public Suffix List (`data/list.txt` inside the `public_suffix` gem). Regenerate `psl_data.rs` whenever `bundle update public_suffix` updates `Gemfile.lock`. |
+
+### How to Refresh `emoji_data.rs` or `psl_data.rs`
+1. **Updating `emoji_data.rs` (Unicode Emoji / Gemoji)**:
+   - `EMOJI_BLOB` and `EMOJI_ENTRIES` store all sorted `(alias, raw_utf8)` pairs from GitHub's `db/emoji.json` (`https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json`), where each `u32` entry packs `(offset << 11) | (alias_len << 5) | raw_len`.
+   - `RGI_EMOJI_BLOB` and `RGI_EMOJI_ENTRIES` store all unique UTF-8 `RGI_Emoji` sequences sorted by `(first_char_utf8_bytes, Reverse(byte_len), full_utf8_bytes)`, where each `u32` entry packs `(offset << 8) | (byte_len << 2) | (first_char_utf8_len - 1)`.
+2. **Updating `psl_data.rs` (Mozilla Public Suffix List)**:
+   - `PSL_BLOB` and `PSL_ENTRIES` store all ASCII rules from `PublicSuffix::List.default` (`Gem.loaded_specs["public_suffix"].full_gem_path + "/data/list.txt"`), sorted by rule label bytes with each `u32` entry packing `(offset << 10) | (len << 2) | kind`.
+3. **Rebuilding Precompiled Binaries**:
+   - After updating any `.rs` data file in `crates/forem_core/src/`, run `bundle exec rake forem_native:rust_test` and recompile the committed platform binaries (`arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`, and `x86_64-linux/forem_native.so`).
