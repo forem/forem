@@ -211,6 +211,38 @@ fn is_slug_allowed(c: char) -> bool {
     c.is_alphanumeric() || matches!(c, '-' | ' ' | '_' | '\u{0300}'..='\u{036F}')
 }
 
+/// Normalizes a URL for display, matching `ApplicationHelper#beautified_url`:
+/// `url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")`.
+///
+/// 1. Strips a single leading `"https://"`, `"http://"`, `"ftp://"`, or `"/"` prefix.
+/// 2. Strips from the first `'?'` up to the end of the line (all characters except `'\n'`,
+///    matching Ruby's `.` without `/m`).
+/// 3. Strips a single trailing `'/'` (`String#chomp("/")`).
+pub fn beautified_url(url: &str) -> Cow<'_, str> {
+    let after_prefix = url
+        .strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))
+        .or_else(|| url.strip_prefix("ftp://"))
+        .or_else(|| url.strip_prefix('/'))
+        .unwrap_or(url);
+
+    if let Some(q_idx) = after_prefix.find('?') {
+        let after_q = &after_prefix[q_idx + 1..];
+        if let Some(nl_rel) = after_q.find('\n') {
+            let tail = &after_q[nl_rel..];
+            let tail = tail.strip_suffix('/').unwrap_or(tail);
+            let mut out = String::with_capacity(q_idx + tail.len());
+            out.push_str(&after_prefix[..q_idx]);
+            out.push_str(tail);
+            return Cow::Owned(out);
+        }
+        let before_q = &after_prefix[..q_idx];
+        return Cow::Borrowed(before_q.strip_suffix('/').unwrap_or(before_q));
+    }
+
+    Cow::Borrowed(after_prefix.strip_suffix('/').unwrap_or(after_prefix))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -357,5 +389,48 @@ mod tests {
             Some("x10ffff")
         );
         assert_eq!(slugify_heading_anchor("circled Ⓐ"), None);
+    }
+
+    #[test]
+    fn beautifies_urls_matching_application_helper() {
+        assert_eq!(beautified_url("https://github.com"), "github.com");
+        assert_eq!(beautified_url("http://github.com/"), "github.com");
+        assert_eq!(
+            beautified_url("ftp://files.example.com/pub/"),
+            "files.example.com/pub"
+        );
+        assert_eq!(beautified_url("https://github.com?a=3"), "github.com");
+        assert_eq!(beautified_url("https://github.com/?a=3&b=4"), "github.com");
+        assert_eq!(
+            beautified_url("https://github.com/rails"),
+            "github.com/rails"
+        );
+        assert_eq!(
+            beautified_url("https://github.com/rails/rails/?tab=readme"),
+            "github.com/rails/rails"
+        );
+    }
+
+    #[test]
+    fn beautifies_urls_across_prefixes_newlines_and_unicode() {
+        assert_eq!(beautified_url(""), "");
+        assert_eq!(beautified_url("/"), "");
+        assert_eq!(beautified_url("//github.com/"), "/github.com");
+        assert_eq!(beautified_url("/github.com//"), "github.com/");
+        assert_eq!(beautified_url("https:/github.com/"), "https:/github.com");
+        assert_eq!(beautified_url("HTTPS://github.com/"), "HTTPS://github.com");
+        assert_eq!(
+            beautified_url("https://github.com?a=1\nb=2/"),
+            "github.com\nb=2"
+        );
+        assert_eq!(beautified_url("https://github.com/?a=1\n"), "github.com/\n");
+        assert_eq!(
+            beautified_url("https://github.com?a=1\r\nb=2/"),
+            "github.com\nb=2"
+        );
+        assert_eq!(
+            beautified_url("https://例え.テスト/パス/?q=🎉/"),
+            "例え.テスト/パス"
+        );
     }
 }

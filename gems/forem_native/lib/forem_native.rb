@@ -364,6 +364,18 @@ module ForemNative
       Native.slugify_heading_anchor(heading_html)
     end
 
+    # Strips a leading `http://`, `https://`, `ftp://`, or `/` prefix, removes `?` query strings
+    # up to the end of the line, and chomps a trailing `/`, matching
+    # `ApplicationHelper#beautified_url`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so
+    # `ApplicationHelper#beautified_url` can fall back to `legacy_beautified_url`.
+    def beautified_url(url)
+      return unless Native.respond_to?(:beautified_url)
+      return unless url.instance_of?(String) && url.encoding == Encoding::UTF_8
+
+      Native.beautified_url(url)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

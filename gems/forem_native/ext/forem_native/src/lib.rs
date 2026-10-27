@@ -440,6 +440,22 @@ fn slugify_heading_anchor(heading_html: RString) -> Option<String> {
     forem_core::text::slugify_heading_anchor(text)
 }
 
+fn beautified_url(ruby: &Ruby, url: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `ApplicationHelper#beautified_url`
+    // can fall back to `legacy_beautified_url`.
+    let beautified = {
+        let text = unsafe { url.test_as_str() }?;
+        match forem_core::text::beautified_url(text) {
+            Cow::Borrowed(slice) if slice.len() == text.len() => None,
+            Cow::Borrowed(slice) => Some(slice.to_owned()),
+            Cow::Owned(owned) => Some(owned),
+        }
+    };
+    Some(beautified.map_or_else(|| RString::new_shared(url), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -522,5 +538,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "slugify_heading_anchor",
         function!(slugify_heading_anchor, 1),
     )?;
+    native_mod.define_singleton_method("beautified_url", function!(beautified_url, 1))?;
     Ok(())
 }
