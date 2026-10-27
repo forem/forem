@@ -338,5 +338,46 @@ RSpec.describe "Calendar" do
         expect(response.body).to include('value="2026-03-12"')
       end
     end
+
+    context "with query efficiency" do
+      it "skips the agenda events query when the grid check finds no events in the selected range", :aggregate_errors do
+        user = create(:user)
+        login_as(user)
+
+        event_queries = []
+        signup_queries = []
+        callback = lambda do |*, payload|
+          next if payload[:name] == "SCHEMA"
+
+          event_queries << payload[:sql] if payload[:sql].include?('FROM "events"')
+          signup_queries << payload[:sql] if payload[:sql].include?('FROM "event_signups"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path(start: "2025-01-15", end: "2025-01-15")
+        end
+
+        expect(response).to have_http_status(:success)
+        expect(response.body).to include(I18n.t("views.calendar.empty"))
+        expect(event_queries.size).to eq(1)
+        expect(signup_queries).to be_empty
+      end
+
+      it "omits heavy body and metadata columns from the agenda events query", :aggregate_errors do
+        event_queries = []
+        callback = lambda do |*, payload|
+          next if payload[:name] == "SCHEMA"
+
+          event_queries << payload[:sql] if payload[:sql].include?('FROM "events"') && payload[:sql].include?("LIMIT")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        expect(event_queries.size).to eq(1)
+        expect(event_queries.first).not_to include("body_markdown", "processed_html", "full_details", '"events".*')
+      end
+    end
   end
 end
