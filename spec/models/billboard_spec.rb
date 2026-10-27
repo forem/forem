@@ -1489,6 +1489,28 @@ RSpec.describe Billboard do
       expect(display_ad_queries.size).to eq(1)
       expect(display_ad_queries.first).to include("impressions_count <")
     end
+
+    it "executes only one display_ads query for new_and_priority and new_only when falling back" do
+      described_class.where(id: billboards.map(&:id))
+        .update_all(impressions_count: described_class::LOW_IMPRESSION_COUNT + 100, priority: false)
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+
+      %w[new_and_priority new_only].each do |strategy|
+        config.update!(selection_weights: { "random_selection" => 0, "new_and_priority" => 0,
+                                            "new_only" => 0, "weighted_performance" => 0, strategy => 100 })
+        display_ad_queries = []
+        callback = lambda do |*, payload|
+          display_ad_queries << payload[:sql] if payload[:sql].to_s.include?('"display_ads"') && !payload[:cached]
+        end
+        result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.select_billboard_by_weighted_strategy(relation, area)
+        end
+
+        expect(billboards).to include(result)
+        expect(display_ad_queries.size).to eq(1)
+      end
+    end
   end
 
   describe "#bust_billboard_cache (when being taken down)" do

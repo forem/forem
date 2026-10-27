@@ -217,13 +217,13 @@ class Billboard < ApplicationRecord
       # If it doesn't get engagement, it stays in this area.
       billboards_for_display.sample
     when "new_and_priority"
-      # Here we sample from only billboards with fewer impressions or priority billboards (with a fallback
-      # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation, article_id) || billboards_for_display.sample
+      # Sample from billboards with fewer impressions or priority billboards, falling back
+      # to any candidate billboard in the same query if none qualify.
+      weighted_random_selection(billboards_for_display, article_id, area: area)
     when "new_only"
-      # Here we sample from only billboards with fewer impressions (with a fallback)
-      billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
+      # Sample from billboards with fewer impressions, falling back to top-performing
+      # candidate billboards in the same query if none qualify.
+      new_only_random_selection(billboards_for_display, area)
     when "weighted_performance"
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
       # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
@@ -246,53 +246,61 @@ class Billboard < ApplicationRecord
   end
   private_class_method :no_billboards_available?
 
-  def self.weighted_random_selection(relation, target_article_id = nil)
+  def self.weighted_random_selection(relation, target_article_id = nil, area: nil)
     base_query = relation.to_sql
     return if base_query.blank?
 
     random_val = rand.to_f
-    if FeatureFlag.enabled?(:article_id_adjusted_weight)
-      condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
-      query = <<-SQL
-        WITH base AS (#{base_query}),
-        weighted AS (
-          SELECT *,
-            CASE
-              WHEN #{condition} THEN weight * 10
-              ELSE weight
-            END AS adjusted_weight,
-          SUM(CASE
-                WHEN #{condition} THEN weight * 10
-                ELSE weight
-              END) OVER () AS total_weight,
-          SUM(CASE
-                WHEN #{condition} THEN weight * 10
-                ELSE weight
-              END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-          FROM base
-        )
-        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-        WHERE running_weight >= ? * total_weight
-        ORDER BY running_weight ASC
-        LIMIT 1
-      SQL
-    else
-      query = <<-SQL
-        WITH base AS (#{base_query}),
-        weighted AS (
-          SELECT *, weight,
-          SUM(weight) OVER () AS total_weight,
-          SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-          FROM base
-        )
-        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-        WHERE running_weight >= ? * total_weight
-        ORDER BY running_weight ASC
-        LIMIT 1
-      SQL
+    weight_expr = if FeatureFlag.enabled?(:article_id_adjusted_weight) && target_article_id.present?
+                    "CASE WHEN #{target_article_id.to_i} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+                  else
+                    "weight"
+                  end
+    if area.present?
+      seldom_seen_filter = "WHERE impressions_count < #{low_impression_count(area).to_i} OR priority = TRUE"
+      fallback_union = "UNION ALL (SELECT * FROM base WHERE NOT EXISTS (SELECT 1 FROM preferred) " \
+                       "ORDER BY RANDOM() LIMIT 1)"
     end
-    relation.find_by_sql([query, random_val, random_val]).first
+
+    query = <<~SQL
+      WITH base AS (#{base_query}),
+      weighted AS (
+        SELECT id,
+          SUM(#{weight_expr}) OVER () AS total_weight,
+          SUM(#{weight_expr}) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+        FROM base
+        #{seldom_seen_filter}
+      ),
+      preferred AS (
+        SELECT id FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      )
+      SELECT * FROM base
+      WHERE id = (SELECT id FROM preferred)
+      #{fallback_union}
+      LIMIT 1
+    SQL
+    relation.find_by_sql([query, random_val]).first
   end
+
+  def self.new_only_random_selection(relation, area)
+    base_query = relation.to_sql
+    return if base_query.blank?
+
+    query = <<~SQL
+      WITH base AS (#{base_query}),
+      preferred AS (SELECT * FROM base WHERE impressions_count < ? ORDER BY RANDOM() LIMIT 1)
+      SELECT * FROM preferred
+      UNION ALL
+      (SELECT * FROM (SELECT * FROM base LIMIT ?) fallback
+       WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)
+      LIMIT 1
+    SQL
+    relation.find_by_sql([query, low_impression_count(area).to_i, rand(1..15)]).first
+  end
+  private_class_method :new_only_random_selection
 
   # Origins (e.g. "https://embed.example.com") allowed to record billboard events cross-origin.
   def self.embed_origins
