@@ -8,6 +8,7 @@ class Comment < ApplicationRecord
   include Reactable
   include AlgoliaSearchable
   include ActivityTrackable
+  include AiDisclosable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -17,17 +18,6 @@ class Comment < ApplicationRecord
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
-  }
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
-  end
 
   def ai_disclosure_label
     case ai_disclosure_level

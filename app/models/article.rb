@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   include AlgoliaSearchable
   include WebpageTrackable
   include ActivityTrackable
+  include AiDisclosable
 
   acts_as_taggable_on :tags
   resourcify
@@ -159,13 +160,6 @@ class Article < ApplicationRecord
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
-  }
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
   }
 
   enum :automod_label, {
@@ -804,10 +798,6 @@ class Article < ApplicationRecord
     else
       title_finalized
     end
-  end
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
   end
 
   def ai_disclosure_label
@@ -1568,20 +1558,7 @@ class Article < ApplicationRecord
       return
     end
 
-    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
-    level = case val_str
-            when "0", "not_disclosed", "unstated", "unknown", "false"
-              :not_disclosed
-            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
-              :no_ai
-            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
-              :some_ai
-            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
-              :fully_autonomous
-            else
-              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
-            end
-
+    level = self.class.normalize_ai_disclosure_level(raw_val)
     self.ai_disclosure_level = level if level
   end
 
