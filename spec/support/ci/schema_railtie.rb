@@ -12,6 +12,7 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
         ActiveRecord::Migration.suppress_messages do
           ActiveRecord::Tasks::DatabaseTasks.load_schema_current(:ruby, Rails.root.join("db/schema.rb"))
         end
+        ActiveRecord.maintain_test_schema = false
       end
     end
   end
