@@ -892,4 +892,38 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include('id="main-minimal-stylesheet"')
     end
   end
+
+  describe "GET /:username top-level entity lookup short-circuiting" do
+    it "skips podcast, organization, and top-level page slug queries when a user matches", :aggregate_failures do
+      user = create(:user)
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "podcasts"/)).to be_empty
+      expect(queries.grep(/FROM "organizations" WHERE "organizations"\."slug"/)).to be_empty
+      expect(queries.grep(/FROM "pages" WHERE "pages"\."slug"/)).to be_empty
+    end
+
+    it "skips top-level page and podcast slug queries when an organization matches", :aggregate_failures do
+      organization = create(:organization)
+      user = create(:user)
+      create(:organization_membership, organization: organization, user: user, type_of_user: "member")
+      create(:article, organization: organization, user: user, published: true)
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{organization.slug}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "podcasts"/)).to be_empty
+      expect(queries.grep(/FROM "pages" WHERE "pages"\."slug" = '#{organization.slug}'/)).to be_empty
+    end
+  end
 end

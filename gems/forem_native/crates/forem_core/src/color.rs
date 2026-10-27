@@ -4,6 +4,7 @@
 /// NaN, infinite) returns `None` so the caller can use the Ruby implementation, which
 /// owns the Bignum / two's-complement (`..f`) / `FloatDomainError` rescue semantics.
 const MAX_CHANNEL: f64 = 9_007_199_254_740_992.0; // 2^53
+const ACCENT_MODIFIERS: [f64; 8] = [1.14, 1.08, 1.06, 0.96, 0.9, 0.8, 0.7, 0.6];
 
 /// Parses a strict `#?[0-9a-fA-F]{6}` hex color into its RGB channels.
 ///
@@ -60,6 +61,22 @@ pub fn brightness(hex: &[u8], amount: f64, only_values: bool) -> Option<String> 
     } else {
         format!("#{r:02x}{g:02x}{b:02x}")
     })
+}
+
+/// Equivalent of `Color::CompareHex#accent` for a strict 6-digit hex color.
+/// Returns the first brightness variant with seven characters, or the last variant
+/// when none has that length. Unsupported channels return `None` for Ruby's edge path.
+pub fn accent(hex: &[u8], amount: f64) -> Option<String> {
+    let mut last = None;
+    for modifier in ACCENT_MODIFIERS {
+        let result = brightness(hex, modifier.powf(amount), false)?;
+        let found = result.len() == 7;
+        last = Some(result);
+        if found {
+            break;
+        }
+    }
+    last
 }
 
 /// Largest alpha magnitude formatted natively; keeps `alpha * 100` far inside the
@@ -236,6 +253,19 @@ mod tests {
         assert_eq!(hex("#ffffff", 0.0), Some("#000000".to_string()));
         assert_eq!(hex("#000000", -1.0), Some("#000000".to_string()));
         assert_eq!(hex("#010101", -0.4), Some("#000000".to_string()));
+    }
+
+    #[test]
+    fn finds_first_seven_character_accent_variant() {
+        assert_eq!(accent(b"#ccddee", 1.0), Some("#d8eafc".to_string()));
+        assert_eq!(accent(b"#000000", 1.0), Some("#000000".to_string()));
+    }
+
+    #[test]
+    fn defers_malformed_and_out_of_domain_accent_inputs() {
+        assert_eq!(accent(b"#ccddee\n", 1.0), None);
+        assert_eq!(accent(b"#ffffff", f64::INFINITY), None);
+        assert_eq!(accent(b"#010101", 1_000.0), None);
     }
 
     #[test]

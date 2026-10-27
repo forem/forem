@@ -71,6 +71,19 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response.body).not_to include("Feed Config ##{untested_config.id}</h2>")
         expect(response.body).not_to include("Feed Config ##{low_impression_config.id}</h2>")
       end
+
+      it "excludes archived feed configs from index and top performer" do
+        archived_config = create(
+          :feed_config,
+          feed_success_score: 999.0,
+          feed_impressions_count: 5000,
+          archived: true,
+        )
+        get_resource
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Feed Config ##{top_config.id}")
+        expect(response.body).not_to include("Feed Config ##{archived_config.id}")
+      end
     end
 
     describe "GET /admin/advanced/feed_configs/:id" do

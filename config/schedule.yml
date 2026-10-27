@@ -202,6 +202,10 @@ feed_import_log_cleanup:
   description: "Deletes feed import logs older than 90 days (runs daily at 04:00 UTC)"
   cron: "0 4 * * *"
   class: "Feeds::ImportLogCleanupWorker"
+archive_stale_feed_configs:
+  description: "Archives feed configs outside the top 1000 in success score that are older than 2 days (runs daily at 04:30 UTC)"
+  cron: "30 4 * * *"
+  class: "Feeds::ArchiveStaleConfigsWorker"
 survey_daily_email:
   description: "Send DEV Pulse Survey emails to eligible users for active surveys (runs hourly at minute 15)"
   cron: "15 * * * *"

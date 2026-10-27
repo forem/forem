@@ -171,6 +171,57 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".color_accent" do
+    let(:legacy_accent) do
+      lambda do |hex, amount|
+        Color::CompareHex::ACCENT_MODIFIERS.each do |modifier|
+          with_brightness = begin
+            rgb = hex.match(/^#?(?<r>..)(?<g>..)(?<b>..)$/).named_captures.to_h do |key, color|
+              [key.to_sym, color.hex]
+            end
+            format("#%<r>02x%<g>02x%<b>02x", rgb.transform_values { |color| (color * (modifier**amount)).round })
+          rescue StandardError
+            hex
+          end
+          break with_brightness if with_brightness.size == 7
+        end
+      end
+    end
+
+    it "matches the legacy reference across strict and malformed colors" do
+      ["#ccddee", "ccddee", "#000000", "#ffffff", "#123456", "#123456\n", "#éééééé", "#🚀🚀🚀"].each do |hex|
+        [1, 0, -1, 0.5, 1.25, 2, Float::INFINITY, Float::NAN].each do |amount|
+          expected = legacy_accent.call(hex, amount)
+          native = described_class.color_accent(hex, amount)
+          expect(native).to eq(expected) unless native.nil?
+          expect(Color::CompareHex.new([hex]).accent(amount)).to eq(expected)
+        end
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated hex colors and amounts" do
+      rng = Random.new(424_242)
+      hex_chars = [*"0".."9", *"a".."f", *"A".."F"]
+      noise_chars = hex_chars + ["#", "-", "+", " ", "_", "x", "g", "\n", "é", "🚀"]
+
+      1_000.times do |iteration|
+        prefix = rng.rand < 0.8 ? "#" : ""
+        hex = if rng.rand < 0.85
+                prefix + Array.new(6) { hex_chars.sample(random: rng) }.join
+              else
+                prefix + Array.new(rng.rand(0..8)) { noise_chars.sample(random: rng) }.join
+              end
+        amount = (rng.rand * 4.0) - 0.5
+        expected = legacy_accent.call(hex, amount)
+        native = described_class.color_accent(hex, amount)
+        actual = Color::CompareHex.new([hex]).accent(amount)
+        message = "iteration #{iteration}: #{hex.inspect} ** #{amount.inspect}"
+        expect(native).to eq(expected), message unless native.nil?
+        expect(actual).to eq(expected), message
+      end
+    end
+  end
+
   describe ".color_opacity" do
     let(:legacy_opacity) do
       lambda do |hex, alpha|
@@ -510,6 +561,52 @@ RSpec.describe ForemNative do
         message = "iteration #{iteration}: #{sample.inspect}"
         expect(described_class.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
         expect(parser.convert_escaped_pipes_outside_codeblocks(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".fixer_convert_new_lines" do
+    let(:legacy_convert_new_lines) { ->(markdown) { markdown.gsub("\r\n", "\n") } }
+    let(:fixer) { MarkdownProcessor::Fixer::Base }
+
+    let(:edge_cases) do
+      ["", "plain LF\ntext", "lone CR\r", "\r\n", "\r\r\n", "a\r\nb\r\nc", "🚀\r\n日本\né\rX"]
+    end
+
+    it "matches Ruby's gsub across line ending and Unicode edge cases" do
+      edge_cases.each do |input|
+        expected = legacy_convert_new_lines.call(input)
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), input.inspect
+        expect(fixer.convert_new_lines(input)).to eq(expected), input.inspect
+      end
+      expect(described_class.fixer_convert_new_lines(nil)).to be_nil
+      expect { fixer.convert_new_lines(nil) }.to raise_error(NoMethodError)
+    end
+
+    it "declines unsupported encodings, String subclasses, and invalid bytes" do
+      input = "one\r\ntwo"
+      [input.b, input.dup.force_encoding(Encoding::US_ASCII), ActiveSupport::SafeBuffer.new(input)].each do |other|
+        expect(described_class.fixer_convert_new_lines(other)).to be_nil
+        result = fixer.convert_new_lines(other)
+        expect(result).to eq(legacy_convert_new_lines.call(other))
+        expect(result.encoding).to eq(other.encoding)
+      end
+
+      invalid = "one\r\ntwo\xFF"
+      expect(ForemNative::Native.fixer_convert_new_lines(invalid)).to be_nil
+      expect(fixer.convert_new_lines(invalid)).to eq(legacy_convert_new_lines.call(invalid))
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = ["word", "\r\n", "\n", "\r", "🚀", "日本", "é", " ", "```ruby", "\t"]
+
+      1_000.times do |iteration|
+        input = Array.new(rng.rand(0..100)) { tokens.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        expected = legacy_convert_new_lines.call(input)
+        message = "iteration #{iteration}: #{input.inspect}"
+        expect(described_class.fixer_convert_new_lines(input)).to eq(expected), message
+        expect(fixer.convert_new_lines(input)).to eq(expected), message
       end
     end
   end
@@ -1755,6 +1852,139 @@ RSpec.describe ForemNative do
     end
   end
 
+  describe ".public_suffix_domain" do
+    let(:legacy_public_suffix_domain) do
+      lambda do |host|
+        PublicSuffix.parse(host, default_rule: nil).domain
+      rescue PublicSuffix::DomainInvalid
+        false
+      end
+    end
+    let(:cookie_middleware) { Middlewares::SetCookieDomain.new(->(env) { [200, env, []] }) }
+
+    it "matches PublicSuffix.parse(host, default_rule: nil).domain across normal, wildcard, and exception rules" do
+      [
+        "dev.to", "DEV.TO", "community.example.com", "a.b.example.co.uk", "  EXAMPLE.COM. \t\r\n",
+        "bar.foo.ck", "www.ck", "sub.www.ck", "city.kawasaki.jp", "www.city.kawasaki.jp",
+        "bar.foo.kawasaki.jp", "my-app.s3.amazonaws.com", "foo_bar.example.com", "example.com".b,
+        "sub.example.com".b, "example.com".encode("US-ASCII"), nil, "", "   ", ".", ".example.com",
+        "example.com..", "..com", "com", "co.uk", "ck", "foo.ck", "kawasaki.jp", "foo.kawasaki.jp",
+        "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000", "http://example.com"
+      ].each do |host|
+        expected = legacy_public_suffix_domain.call(host)
+        actual = described_class.public_suffix_domain(host)
+        expect(actual).to eq(expected), host.inspect
+        expect(actual.encoding).to eq(host.encoding) if actual.is_a?(String)
+        expect(cookie_middleware.root_domain(host)).to eq(expected || host), host.inspect
+      end
+
+      host = +"dev.to"
+      expect(described_class.public_suffix_domain(host)).to equal(host)
+    end
+
+    it "declines non-ASCII, NUL, embedded newlines, and consecutive dots so callers fall back to PublicSuffix" do
+      [
+        "dév.to", "example.公司.cn", "example..com", "foo\nbar.com", "example.com\0",
+        "dev.to".encode("UTF-16LE"), ActiveSupport::SafeBuffer.new("dev.to"), :dev_to
+      ].each do |host|
+        expect(described_class.public_suffix_domain(host)).to be_nil, host.inspect
+      end
+      expect(cookie_middleware.root_domain("sub.example.公司.cn")).to eq("example.公司.cn")
+      expect(cookie_middleware.root_domain("example..com")).to eq("example.com")
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to DEV example com co uk ck www city kawasaki jp amazonaws s3 sub my-site io localhost 127 0 1
+                  invalidtld]
+      tlds = %w[to com io dev co.uk ck www.ck kawasaki.jp city.kawasaki.jp s3.amazonaws.com invalidtld]
+      tokens = labels + [".", ".", "-", "_", ":", "3000", "://", "http", " ", "\t", "\r", "\v", "\f"]
+      accepted = 0
+      valid_count = 0
+
+      20_000.times do |iteration|
+        sample = if rng.rand < 0.5
+                   "#{Array.new(rng.rand(1..3)) { labels.sample(random: rng) }.join('.')}.#{tlds.sample(random: rng)}"
+                 else
+                   Array.new(rng.rand(1..6)) { tokens.sample(random: rng) }.join
+                 end
+        actual = described_class.public_suffix_domain(sample)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_domain.call(sample)
+        valid_count += 1 if expected
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(cookie_middleware.root_domain(sample)).to eq(expected || sample), message
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(valid_count).to be_between(200, 800)
+    end
+  end
+
+  describe ".public_suffix_subdomain_host" do
+    let(:legacy_public_suffix_subdomain_host) do
+      lambda do |host|
+        parsed = PublicSuffix.parse(host, default_rule: nil)
+        !(host =~ /^([^.]+)\.#{parsed.sld}\.#{parsed.tld}$/).nil?
+      rescue PublicSuffix::DomainInvalid
+        :invalid
+      end
+    end
+
+    it "matches the PublicSuffix.parse + subdomain Regexp pipeline in Middlewares::SetSubforem" do
+      [
+        "community.example.com", "example.com", "a.b.example.com", "SUB.example.com",
+        "sub.EXAMPLE.com", "COMMUNITY.EXAMPLE.COM", "sub.example.com.", "sub.bbc.co.uk",
+        "bbc.co.uk", "a.b.bbc.co.uk", "sub.www.ck", "www.ck", "sub.foo.ck", "bar.sub.foo.ck",
+        "foo.ck", "ck", "com", "localhost", "127.0.0.1", "example.invalidtld", "example.com:3000",
+        "http://example.com", "", ".", ".example.com", nil, "community.example.com".b,
+        "community.example.com".encode("US-ASCII")
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host))
+          .to eq(legacy_public_suffix_subdomain_host.call(host)), host.inspect
+      end
+    end
+
+    it "declines hosts outside [A-Za-z0-9.-] or non-ASCII so SetSubforem can fall back" do
+      [
+        "foo_bar.example.com", "  sub.example.com  ", "dév.to", "sub.example.公司.cn",
+        "sub..example.com", "sub.example.com\n", "sub.example.com".encode("UTF-16LE"),
+        ActiveSupport::SafeBuffer.new("sub.example.com"), :host
+      ].each do |host|
+        expect(described_class.public_suffix_subdomain_host(host)).to be_nil, host.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 accepted generated inputs" do
+      rng = Random.new(424_242)
+      labels = %w[dev to bbc example com a b sub my-site io DEV 1 - localhost invalid]
+      tlds = %w[to com io co.uk ck www.ck kawasaki.jp city.kawasaki.jp invalid]
+      accepted = 0
+      subdomains = 0
+
+      20_000.times do |iteration|
+        host = if rng.rand < 0.5
+                 "#{labels.sample(random: rng)}.#{labels.sample(random: rng)}.#{tlds.sample(random: rng)}"
+               else
+                 Array.new(rng.rand(1..5)) { labels.sample(random: rng) }.join(".")
+               end
+        actual = described_class.public_suffix_subdomain_host(host)
+        next if actual.nil?
+
+        accepted += 1
+        expected = legacy_public_suffix_subdomain_host.call(host)
+        subdomains += 1 if expected == true
+        expect(actual).to eq(expected), "iteration #{iteration}: #{host.inspect}"
+        break if accepted == 1_000
+      end
+      expect(accepted).to eq(1_000)
+      expect(subdomains).to be_between(200, 800)
+    end
+  end
+
   describe ".full_sanitize (ActionView::Base.full_sanitizer.sanitize)" do
     let(:legacy_sanitize) { ->(html) { ActionView::Base.full_sanitizer.sanitize(html) } }
 
@@ -1984,6 +2214,155 @@ RSpec.describe ForemNative do
         expected = legacy_sanitize.call(sample)
         native = described_class.full_sanitize(sample)
         expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
+      end
+    end
+  end
+
+  describe ".slugify_heading_anchor (AgentSessionRenderers::HeadingAnchors.slugify)" do
+    let(:legacy_slugify_heading_anchor) do
+      lambda do |heading_html|
+        text = CGI.unescapeHTML(heading_html.to_s.gsub(/<[^>]*>/, ""))
+        text.strip.downcase.gsub(AgentSessionRenderers::HeadingAnchors::SLUG_DISALLOWED, "").tr(" ", "-")
+      end
+    end
+
+    it "matches HeadingAnchors.slugify across edge cases" do
+      [
+        "",
+        "   \t\n\r\0  ",
+        "!!! ???",
+        "Getting Started",
+        "FAQ &amp; Troubleshooting",
+        "What&#39;s New in v2.0?",
+        "Astro vs WordPress: the practical comparison",
+        "Work through a small-business example_now",
+        "Call <code>run()</code> <em>now</em>",
+        "Überblick über Café",
+        "İstanbul ОΣ 日本語 カタカナ 한글 🎉",
+        "&<i></i>amp; &apos; &quot; &lt;b&gt; &gt; &#x41; &#X42; &#0067; &#1114111;",
+        "unclosed <tag and <a\nb>kept",
+        ". leading-and-trailing ! ",
+      ].each do |heading_html|
+        expected = legacy_slugify_heading_anchor.call(heading_html)
+        expect(described_class.slugify_heading_anchor(heading_html)).to eq(expected), heading_html.inspect
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(heading_html)).to eq(expected), heading_html.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings, non-Strings, surrogate entities, and out-of-domain code points" do
+      [
+        nil,
+        :heading,
+        ActiveSupport::SafeBuffer.new("Getting Started"),
+        "Getting Started".b,
+        "Getting Started".encode("US-ASCII"),
+        "Getting Started".encode("UTF-16LE"),
+        "invalid \xFF byte",
+        "&#xD800;",
+        "&#55296;",
+        "circled Ⓐ",
+      ].each do |input|
+        expect(described_class.slugify_heading_anchor(input)).to be_nil, input.inspect
+      end
+
+      [nil, :heading, ActiveSupport::SafeBuffer.new("Getting <b>Started</b>"), "circled Ⓐ"].each do |input|
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(input))
+          .to eq(legacy_slugify_heading_anchor.call(input)), input.inspect
+      end
+      expect { AgentSessionRenderers::HeadingAnchors.slugify("&#xD800;") }.to raise_error(ArgumentError)
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "Getting", "Started", "v2.0?", "example_now", "small-business", " ", "  ", "\t", "\n", "\r", "\0",
+        "<code>", "</code>", "<em>", "</em>", "<a href=\"#x\">", "<span\nclass='y'>", "<unclosed", ">",
+        "&amp;", "&apos;", "&quot;", "&lt;", "&gt;", "&nbsp;", "&#39;", "&#x27;", "&#X1F680;", "&#0065;", "&#1114111;",
+        "Überblick", "Café", "İstanbul", "e\u0301", "ОΣ", "日本語", "カタカナ", "한글", "🎉", "—", "…", ":", "!", "?"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_slugify_heading_anchor.call(sample)
+        actual = described_class.slugify_heading_anchor(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(AgentSessionRenderers::HeadingAnchors.slugify(sample)).to eq(expected), message
+      end
+    end
+  end
+
+  describe ".beautified_url (ApplicationHelper#beautified_url)" do
+    let(:legacy_beautified_url) do
+      lambda do |url|
+        url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
+      rescue StandardError
+        url
+      end
+    end
+    let(:helper_host) { Object.new.extend(ApplicationHelper) }
+
+    it "matches ApplicationHelper#beautified_url across edge cases" do
+      [
+        "",
+        "/",
+        "//",
+        "//github.com/",
+        "/github.com//",
+        "https://github.com",
+        "http://github.com/",
+        "ftp://files.example.com/pub/",
+        "https://github.com?a=3",
+        "https://github.com/?a=3&b=4",
+        "https://github.com/rails",
+        "https://github.com/rails/rails/?tab=readme",
+        "https:/github.com/",
+        "ftp:/files.example.com/",
+        "HTTPS://github.com/",
+        "https://github.com?a=1\nb=2/",
+        "https://github.com/?a=1\n",
+        "https://github.com?a=1\r\nb=2/",
+        "https://github.com?a=1?b=2\n?c=3/",
+        "https://例え.テスト/パス/?q=🎉/",
+      ].each do |url|
+        expected = legacy_beautified_url.call(url)
+        expect(described_class.beautified_url(url)).to eq(expected), url.inspect
+        expect(helper_host.beautified_url(url)).to eq(expected), url.inspect
+      end
+    end
+
+    it "declines non-UTF-8 strings and non-Strings and preserves the helper's legacy result" do
+      [
+        nil,
+        false,
+        123,
+        :url,
+        ActiveSupport::SafeBuffer.new("https://github.com/"),
+        "https://github.com/".b,
+        "https://github.com/".encode("US-ASCII"),
+        "https://github.com/".encode("UTF-16LE"),
+        "https://github.com/\xFF",
+      ].each do |input|
+        expect(described_class.beautified_url(input)).to be_nil, input.inspect
+        expect(helper_host.beautified_url(input)).to eq(legacy_beautified_url.call(input)), input.inspect
+      end
+    end
+
+    it "passes differential equivalence across 1,000 generated inputs" do
+      rng = Random.new(424_242)
+      tokens = [
+        "", "https://", "http://", "ftp://", "HTTPS://", "https:/", "ftp:/", "/", "//",
+        "github.com", "dev.to", "example.com/path", "/rails", "/pub/", "?", "?a=1", "&b=2",
+        "?q=rust&page=2", "\n", "\r\n", "\r", "#frag", "例え.テスト", "🎉", ":"
+      ]
+
+      1_000.times do |iteration|
+        sample = Array.new(rng.rand(1..8)) { tokens.sample(random: rng) }.join
+        expected = legacy_beautified_url.call(sample)
+        actual = described_class.beautified_url(sample)
+        message = "iteration #{iteration}: #{sample.inspect}"
+        expect(actual).to eq(expected), message
+        expect(helper_host.beautified_url(sample)).to eq(expected), message
       end
     end
   end

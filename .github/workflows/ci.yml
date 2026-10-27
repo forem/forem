@@ -21,6 +21,7 @@ env:
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
   YARN_ENABLE_HARDENED_MODE: 0
+  RUBYOPT: "--yjit"
 
 jobs:
   build:
@@ -118,7 +119,7 @@ jobs:
 
       - name: Install ImageMagick and wait for services
         run: |
-          (sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)) &
+          (command -v identify >/dev/null 2>&1 || sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)) &
           im_pid=$!
 
           echo "Waiting for Postgres..."

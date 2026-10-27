@@ -109,6 +109,8 @@
   <h3 class="crayons-subtitle-2 mb-4"><%= t("views.admin.organizations.org_features.heading") %></h3>
 
   <% org_actor = FeatureFlag::Actor[@organization] %>
+  <%# Read flags uncached so the buttons show the value just saved on any web worker. %>
+  <% org_flags = FeatureFlag.uncached %>
 
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
@@ -116,7 +118,7 @@
         <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.readme.label") %></h4>
         <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.readme.description") %></p>
       </div>
-      <% readme_enabled = FeatureFlag.enabled?(:org_readme, org_actor) %>
+      <% readme_enabled = org_flags.enabled?(:org_readme, org_actor) %>
       <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_readme" %>
         <%= hidden_field_tag :enabled, !readme_enabled %>
@@ -137,7 +139,7 @@
         <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.lead_forms.label") %></h4>
         <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.lead_forms.description") %></p>
       </div>
-      <% lead_forms_enabled = FeatureFlag.enabled?(:org_lead_forms, org_actor) %>
+      <% lead_forms_enabled = org_flags.enabled?(:org_lead_forms, org_actor) %>
       <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_lead_forms" %>
         <%= hidden_field_tag :enabled, !lead_forms_enabled %>
@@ -158,7 +160,7 @@
         <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.dofollow_links.label") %></h4>
         <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.dofollow_links.description") %></p>
       </div>
-      <% dofollow_enabled = FeatureFlag.enabled?(:org_dofollow_links, org_actor) %>
+      <% dofollow_enabled = org_flags.enabled?(:org_dofollow_links, org_actor) %>
       <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_dofollow_links" %>
         <%= hidden_field_tag :enabled, !dofollow_enabled %>
@@ -179,7 +181,7 @@
         <h4 class="fw-bold mb-1"><%= t("views.admin.organizations.org_features.verification.label", default: "Organization Verification Access") %></h4>
         <p class="fs-s color-base-60"><%= t("views.admin.organizations.org_features.verification.description", default: "Allow this organization to request and display a verified badge.") %></p>
       </div>
-      <% verification_enabled = FeatureFlag.enabled?(:org_verification, org_actor) %>
+      <% verification_enabled = org_flags.enabled?(:org_verification, org_actor) %>
       <%= form_tag update_org_feature_admin_organization_path(@organization), method: :patch, class: "flex items-center gap-2" do %>
         <%= hidden_field_tag :feature, "org_verification" %>
         <%= hidden_field_tag :enabled, !verification_enabled %>

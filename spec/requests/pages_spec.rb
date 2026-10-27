@@ -516,6 +516,66 @@ RSpec.describe "Pages" do
         get "/report-abuse", headers: { referer: url }
         expect(response.body).to include(url)
       end
+
+      it "prefills a valid multibyte UTF-8 referer sent as ASCII-8BIT and strips ?i=i" do
+        referer = "https://dev.to/user/caf\xC3\xA9?i=i".b
+        get "/report-abuse", headers: { "HTTP_REFERER" => referer }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body.encoding).to eq(Encoding::UTF_8)
+        expect(response.body).to be_valid_encoding
+        expect(response.body).to include("https://dev.to/user/café")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "ignores an ASCII-8BIT referer containing invalid UTF-8 bytes without raising Encoding::CompatibilityError" do
+        malformed_referer = "1 \xC0\xA7\xC0\xA2%2527%2522".b
+        get "/report-abuse", headers: { "HTTP_REFERER" => malformed_referer }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body.encoding).to eq(Encoding::UTF_8)
+        expect(response.body).to be_valid_encoding
+        expect(response.body).not_to include("%2527%2522")
+      end
+    end
+
+    context "when provided query parameters" do
+      it "falls back from blank reported_url to url param" do
+        url = "https://dev.to/some-post?i=i"
+        get "/report-abuse", params: { reported_url: "", url: url }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("https://dev.to/some-post")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "falls back from whitespace-only reported_url and url params to referer" do
+        valid_referer = "https://dev.to/fallback-post?i=i"
+        get "/report-abuse", params: { reported_url: "   ", url: "" }, headers: { "HTTP_REFERER" => valid_referer.b }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("https://dev.to/fallback-post")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "ignores non-string url or billboard params without raising an error" do
+        get "/report-abuse", params: { reported_url: ["invalid"], url: { nested: "value" }, billboard: ["123"] }
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "ignores a malformed billboard param that cannot generate an admin billboard path" do
+        get "/report-abuse", params: { billboard: "." }
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "prefills the admin billboard path when a valid billboard id is provided" do
+        get "/report-abuse", params: { billboard: "42" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(admin_billboard_path("42"))
+      end
     end
   end
 end

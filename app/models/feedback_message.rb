@@ -65,6 +65,14 @@ class FeedbackMessage < ApplicationRecord
     feedback_type == "abuse-reports"
   end
 
+  def reported_url=(value)
+    if value.is_a?(String)
+      value = value.dup.force_encoding(Encoding::UTF_8) unless value.encoding == Encoding::UTF_8
+      value = value.scrub("") unless value.valid_encoding?
+    end
+    super(value)
+  end
+
   def user_types(user_id)
     types = []
     types << "Affected" if user_id == affected_id

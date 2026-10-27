@@ -36,8 +36,15 @@ module MarkdownProcessor
       end
 
       def self.convert_new_lines(markdown)
+        ForemNative.fixer_convert_new_lines(markdown) || legacy_convert_new_lines(markdown)
+      end
+
+      # Handles inputs the native method declines (non-UTF-8 encodings, String subclasses,
+      # and invalid byte sequences).
+      def self.legacy_convert_new_lines(markdown)
         markdown.gsub("\r\n", "\n")
       end
+      private_class_method :legacy_convert_new_lines
 
       def self.split_tags(markdown)
         ForemNative.fixer_split_tags(markdown) || legacy_split_tags(markdown)
