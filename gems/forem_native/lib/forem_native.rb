@@ -207,6 +207,65 @@ module ForemNative
       Native.fixer_underscores_in_usernames(markdown)
     end
 
+    # Runs the complete 6-step `MarkdownProcessor::Fixer::FixAll` pipeline in a single Rust pass.
+    def fixer_fix_all(markdown)
+      return unless Native.respond_to?(:fixer_fix_all)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_fix_all(markdown)
+    end
+
+    # Runs the 3-step `MarkdownProcessor::Fixer::FixForPreview` pipeline in a single Rust pass.
+    def fixer_fix_for_preview(markdown)
+      return unless Native.respond_to?(:fixer_fix_for_preview)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_fix_for_preview(markdown)
+    end
+
+    # Runs the `MarkdownProcessor::Fixer::FixForComment` pipeline in a single Rust pass.
+    def fixer_fix_for_comment(markdown)
+      return unless Native.respond_to?(:fixer_fix_for_comment)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.fixer_fix_for_comment(markdown)
+    end
+
+    # Fuses the five pre-Redcarpet steps in `MarkdownProcessor::Parser#finalize` into a single call.
+    # Returns `:xss_attempt`, the preprocessed String, or nil for out-of-domain inputs.
+    def preprocess_markdown_for_finalize(content)
+      return unless Native.respond_to?(:preprocess_markdown_for_finalize)
+      return unless content.instance_of?(String) && content.encoding == Encoding::UTF_8
+
+      Native.preprocess_markdown_for_finalize(content)
+    end
+
+    # Checks whether `markdown` contains any unlabeled fenced code blocks.
+    def contains_unlabeled_code_blocks(markdown)
+      return false if markdown.nil?
+      return unless Native.respond_to?(:contains_unlabeled_code_blocks)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.contains_unlabeled_code_blocks(markdown)
+    end
+
+    # Extracts the inner code strings of all unlabeled fenced code blocks in `markdown`.
+    def extract_unlabeled_code_blocks(markdown)
+      return unless Native.respond_to?(:extract_unlabeled_code_blocks)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+
+      Native.extract_unlabeled_code_blocks(markdown)
+    end
+
+    # Applies `languages` in order to each unlabeled fenced code block in `markdown`.
+    def apply_code_block_languages(markdown, languages)
+      return unless Native.respond_to?(:apply_code_block_languages)
+      return unless markdown.instance_of?(String) && markdown.encoding == Encoding::UTF_8
+      return unless languages.is_a?(Array)
+
+      Native.apply_code_block_languages(markdown, languages)
+    end
+
     # Builds the `https://{domain}/{directory}/image/{options*}/{src}` Cloudflare Images URL,
     # matching the `Addressable::Template` expansion in `Images::Optimizer.cloudflare`.
     # Returns nil for values other than nil, Integers, and valid UTF-8 Strings (and for text

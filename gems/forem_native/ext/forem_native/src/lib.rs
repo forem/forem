@@ -161,6 +161,117 @@ fn fixer_underscores_in_usernames(ruby: &Ruby, markdown: RString) -> Option<RStr
     Some(escaped.map_or(markdown, |s| ruby.str_new(&s)))
 }
 
+fn fixer_fix_all(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `FixAll.call` falls back to Ruby.
+    let fixed = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::fix_all(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(fixed) => Some(fixed),
+        }
+    };
+    Some(fixed.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
+fn fixer_fix_for_preview(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let fixed = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::fix_for_preview(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(fixed) => Some(fixed),
+        }
+    };
+    Some(fixed.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
+fn fixer_fix_for_comment(ruby: &Ruby, markdown: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let fixed = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::fixer::fix_for_comment(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(fixed) => Some(fixed),
+        }
+    };
+    Some(fixed.map_or(markdown, |s| ruby.str_new(&s)))
+}
+
+fn preprocess_markdown_for_finalize(ruby: &Ruby, content: RString) -> Value {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we touch the Ruby VM or allocate Ruby objects.
+    let outcome = {
+        let Some(text) = (unsafe { content.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        match forem_core::markdown::preprocess_for_finalize(text) {
+            forem_core::markdown::FinalizePreprocessOutcome::XssAttempt => Err(()),
+            forem_core::markdown::FinalizePreprocessOutcome::Ready(Cow::Borrowed(_)) => Ok(None),
+            forem_core::markdown::FinalizePreprocessOutcome::Ready(Cow::Owned(s)) => Ok(Some(s)),
+        }
+    };
+    match outcome {
+        Err(()) => ruby.to_symbol("xss_attempt").as_value(),
+        Ok(None) => RString::new_shared(content).as_value(),
+        Ok(Some(s)) => ruby.str_new(&s).as_value(),
+    }
+}
+
+fn contains_unlabeled_code_blocks(markdown: RString) -> Option<bool> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let text = unsafe { markdown.test_as_str() }?;
+    Some(forem_core::markdown::contains_unlabeled_code_blocks(text))
+}
+
+fn extract_unlabeled_code_blocks(ruby: &Ruby, markdown: RString) -> Option<RArray> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and all
+    // slices are copied into owned Rust Strings before allocating the Ruby Array.
+    let blocks: Vec<String> = {
+        let text = unsafe { markdown.test_as_str() }?;
+        forem_core::markdown::extract_unlabeled_code_blocks(text)
+            .into_iter()
+            .map(str::to_owned)
+            .collect()
+    };
+    let ary = ruby.ary_new_capa(blocks.len());
+    for block in blocks {
+        ary.push(ruby.str_new(&block)).ok()?;
+    }
+    Some(ary)
+}
+
+fn apply_code_block_languages(
+    ruby: &Ruby,
+    markdown: RString,
+    languages: RArray,
+) -> Option<RString> {
+    // SAFETY: Borrow `languages` and `markdown` in-place without calling into the Ruby VM.
+    let lang_vec: Vec<String> = {
+        let slice = unsafe { languages.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_owned());
+        }
+        out
+    };
+    let updated = {
+        let text = unsafe { markdown.test_as_str() }?;
+        match forem_core::markdown::apply_code_block_languages(text, &lang_vec) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(markdown), |s| ruby.str_new(&s)))
+}
+
 fn convert_code_tags_to_triple_backticks(ruby: &Ruby, content: RString) -> Option<RString> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
     // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
@@ -1072,6 +1183,27 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "fixer_underscores_in_usernames",
         function!(fixer_underscores_in_usernames, 1),
+    )?;
+    native_mod.define_singleton_method("fixer_fix_all", function!(fixer_fix_all, 1))?;
+    native_mod
+        .define_singleton_method("fixer_fix_for_preview", function!(fixer_fix_for_preview, 1))?;
+    native_mod
+        .define_singleton_method("fixer_fix_for_comment", function!(fixer_fix_for_comment, 1))?;
+    native_mod.define_singleton_method(
+        "preprocess_markdown_for_finalize",
+        function!(preprocess_markdown_for_finalize, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "contains_unlabeled_code_blocks",
+        function!(contains_unlabeled_code_blocks, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_unlabeled_code_blocks",
+        function!(extract_unlabeled_code_blocks, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "apply_code_block_languages",
+        function!(apply_code_block_languages, 2),
     )?;
     native_mod.define_singleton_method(
         "convert_code_tags_to_triple_backticks",

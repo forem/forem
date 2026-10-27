@@ -196,6 +196,94 @@ namespace :forem_native do
       end
       x.compare!
     end
+
+    puts "\n=== Markdown & Codeblock Processing Pipeline Benchmark (FixAll + Finalize Preprocess + Codeblocks) ==="
+    pipeline_markdown = <<~MD * 15
+      ---
+      title: Deep Dive into Native Rust Pipelines
+      description: How fused single-pass kernels eliminate intermediate Ruby allocations
+      Published: true
+      tags: #ruby #rust #performance #webdev
+      ---
+
+      Hello @_dev_team_! Here is a table with escaped pipes:
+      | Feature | Status |
+      |---|---|
+      | Fused FixAll\\|Finalize | Fast\\|Safe |
+
+                      - Deeply nested [Forem Repo](https://github.com/forem/forem)
+
+      ```
+      def compute(items)
+        items.map(&:to_s)
+      end
+      ```
+
+      ```ruby
+      {% raw %}
+      puts "Already labeled codeblock"
+      {% endraw %}
+      ```
+
+      ```
+      const total = items.reduce((a, b) => a + b, 0);
+      ```
+    MD
+
+    detected_langs = Array.new(30) { |i| i.even? ? "ruby" : "javascript" }
+    parser_instance = MarkdownProcessor::Parser.new(pipeline_markdown)
+    article_struct = Struct.new(:body_markdown).new(pipeline_markdown)
+    detector_instance = Articles::DetectCodeBlockLanguages.new(article_struct)
+
+    fixer_class = MarkdownProcessor::Fixer::FixAll
+    legacy_md_pipeline = lambda do
+      fixed = fixer_class.__send__(:legacy_add_quotes_to_section, pipeline_markdown, section: "title")
+      fixed = fixer_class.__send__(:legacy_add_quotes_to_section, fixed, section: "description")
+      fixed = fixer_class.__send__(:legacy_lowercase_published, fixed)
+      fixed = fixer_class.__send__(:legacy_convert_new_lines, fixed)
+      fixed = fixer_class.__send__(:legacy_split_tags, fixed)
+      fixed = fixer_class.__send__(:legacy_underscores_in_usernames, fixed)
+
+      parser_instance.__send__(:legacy_xss_attempt?, fixed)
+      preprocessed = parser_instance.__send__(:legacy_convert_deeply_nested_links_to_html, fixed)
+      preprocessed = parser_instance.__send__(:legacy_convert_escaped_pipes_outside_codeblocks, preprocessed)
+      preprocessed = parser_instance.__send__(:legacy_convert_code_tags_to_triple_backticks, preprocessed)
+      parser_instance.__send__(:legacy_escape_liquid_tags_in_codeblock, preprocessed)
+
+      Articles::DetectCodeBlockLanguages.__send__(:legacy_contains_unlabeled_code_blocks?, fixed)
+      detector_instance.__send__(:legacy_extract_unlabeled_blocks)
+      detector_instance.__send__(:legacy_apply_languages, detected_langs)
+    end
+
+    native_md_pipeline = lambda do
+      fixed = MarkdownProcessor::Fixer::FixAll.call(pipeline_markdown)
+      parser_instance.preprocess_for_finalize(fixed)
+      Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(fixed)
+      ForemNative.extract_unlabeled_code_blocks(fixed)
+      ForemNative.apply_code_block_languages(fixed, detected_langs)
+    end
+
+    legacy_md_pipeline.call
+    native_md_pipeline.call
+
+    md_ruby_mem = MemoryProfiler.report { 10.times { legacy_md_pipeline.call } }
+    md_rust_mem = MemoryProfiler.report { 10.times { native_md_pipeline.call } }
+
+    puts "Markdown Pipeline Ruby Legacy allocations (10 runs): " \
+         "#{md_ruby_mem.total_allocated} objects (#{md_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Markdown Pipeline Rust Magnus allocations (10 runs): " \
+         "#{md_rust_mem.total_allocated} objects (#{md_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (Markdown & Codeblock pipeline)") do
+        legacy_md_pipeline.call
+      end
+      x.report("Rust Magnus (Markdown & Codeblock pipeline)") do
+        native_md_pipeline.call
+      end
+      x.compare!
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength
