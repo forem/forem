@@ -8,6 +8,16 @@ module Badges
       "32x-commit-club": 32
     }.freeze
 
+    # GitHub's authenticated Search API allows 30 requests per minute. Space the
+    # per-identity PR searches out so a run over many identities stays within
+    # that limit instead of bursting and tripping the rate limiter.
+    SEARCH_REQUESTS_PER_MINUTE = 30
+    SEARCH_MIN_INTERVAL = (60.0 / SEARCH_REQUESTS_PER_MINUTE).seconds.freeze
+    # When a search is still rate limited, wait for the next limit window before
+    # retrying rather than giving up and leaving the identity with a zero count.
+    SEARCH_RATE_LIMIT_WAIT = 60.seconds.freeze
+    SEARCH_MAX_ATTEMPTS = 3
+
     REPOSITORIES = [
       "forem/forem"
     ].freeze
@@ -65,21 +75,60 @@ module Badges
 
         # Use Search API to count merged PRs as a fallback/complement to commit counts
         # this helps contributors who may have attribution issues with commit counts
-        pr_count = 0
         github_user = github_nickname(identity)
-        if github_user
-          query = "repo:#{repo} author:#{github_user} is:merged is:pr"
-          begin
-            search_results = Github::OauthClient.new.search_issues(query)
-            pr_count = search_results.total_count
-          rescue => e
-            Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
-          end
-        end
+        pr_count = github_user ? merged_pr_count(repo, github_user) : 0
 
         contribution_score = [commits_count, pr_count].max
         create_badges_for_user(identity.user_id, contribution_score)
       end
+    end
+
+    # Counts merged PRs authored by github_user via the Search API, pacing calls
+    # to stay within the authenticated rate limit. On a rate-limit response it
+    # waits for the next window and retries rather than returning a zero count.
+    def merged_pr_count(repo, github_user)
+      query = "repo:#{repo} author:#{github_user} is:merged is:pr"
+
+      SEARCH_MAX_ATTEMPTS.times do
+        throttle_search
+        search_results = Github::OauthClient.new.search_issues(query)
+        return search_results.total_count
+      rescue Github::Errors::Error => e
+        if search_rate_limited?(e)
+          Rails.logger.warn(
+            "[Badges::AwardContributorFromGithub] PR search rate limited for " \
+            "#{github_user}, waiting #{SEARCH_RATE_LIMIT_WAIT.to_i}s",
+          )
+          sleep(SEARCH_RATE_LIMIT_WAIT)
+          @last_search_at = nil
+          next
+        end
+
+        Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
+        return 0
+      end
+
+      Rails.logger.error(
+        "[Badges::AwardContributorFromGithub] PR search still rate limited for " \
+        "#{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts",
+      )
+      0
+    end
+
+    # Space successive Search API calls at least SEARCH_MIN_INTERVAL apart.
+    def throttle_search
+      now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      if @last_search_at
+        elapsed = now - @last_search_at
+        remaining = SEARCH_MIN_INTERVAL.to_f - elapsed
+        sleep(remaining) if remaining.positive?
+      end
+      @last_search_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    def search_rate_limited?(error)
+      message = error.message.to_s
+      message.match?(/rate limit|too many requests|abuse detection|secondary rate/i)
     end
 
     # auth_data_dump is serialized YAML and may be an OmniAuth::AuthHash (responds
