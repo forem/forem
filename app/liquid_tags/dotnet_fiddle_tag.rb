@@ -2,7 +2,7 @@ require "uri"
 
 class DotnetFiddleTag < LiquidTagBase
   PARTIAL = "liquids/dotnetfiddle".freeze
-  REGISTRY_REGEXP = %r{https://dotnetfiddle\.net(?:/Widget)?/(?<id>[\w-]+)}
+  REGISTRY_REGEXP = %r{\Ahttps://dotnetfiddle\.net(?:/Widget)?/(?<id>[\w-]+)/?\z}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -28,10 +28,7 @@ class DotnetFiddleTag < LiquidTagBase
     insert_widget(link, match)
   end
 
-  def insert_widget(link, match)
-    uri = URI(link)
-    return link if uri.path.include?("Widget")
-
+  def insert_widget(_link, match)
     "https://dotnetfiddle.net/Widget/#{match[:id]}"
   end
 end

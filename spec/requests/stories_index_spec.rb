@@ -926,4 +926,58 @@ RSpec.describe "StoriesIndex" do
       expect(queries.grep(/FROM "pages" WHERE "pages"\."slug" = '#{organization.slug}'/)).to be_empty
     end
   end
+
+  describe "GET / home feed context note and organization preloading" do
+    let(:user) { create(:user) }
+
+    it "preloads context notes in one query across featured, pinned, and feed stories", :aggregate_failures do
+      stories = create_list(:article, 3, user: user, published: true, score: 10, hotness_score: 100)
+      pinned = create(:article, user: user, published: true, score: 10, hotness_score: 50)
+      PinnedArticle.set(pinned)
+      create(:context_note, article: stories.first, content: "first home note")
+      create(:context_note, article: stories.first, content: "second home note")
+      create(:context_note, article: pinned, content: "pinned home note")
+
+      context_note_queries = 0
+      callback = lambda do |*, payload|
+        context_note_queries += 1 if payload[:sql].include?('FROM "context_notes"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/" }
+
+      expect(response).to have_http_status(:ok)
+      expect(context_note_queries).to eq(1)
+      expect(response.body).to include("first home note", "pinned home note")
+      expect(response.body).not_to include("second home note")
+    ensure
+      PinnedArticle.remove
+    end
+
+    it "batches organization lookups for signed-out home feed renders", :aggregate_failures do
+      org = create(:organization)
+      count_org_queries = lambda do
+        org_queries = 0
+        callback = lambda do |*, payload|
+          org_queries += 1 if payload[:sql].include?('FROM "organizations"')
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/" }
+        org_queries
+      end
+
+      create(:article, user: user, organization: org, published: true, score: 10, hotness_score: 100)
+      count_org_queries.call
+      baseline = count_org_queries.call
+      expect(response).to have_http_status(:ok)
+
+      create_list(:article, 2, user: user, organization: org, published: true, score: 10, hotness_score: 90)
+      2.times do
+        create(:article, user: user, organization: create(:organization),
+                         published: true, score: 10, hotness_score: 80)
+      end
+
+      expect(count_org_queries.call).to be <= baseline
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(org.name))
+    end
+  end
 end

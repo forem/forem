@@ -318,10 +318,11 @@ module Html
       html_doc.to_html
     end
 
+    # Handles non-plain-String inputs (such as ActiveSupport::SafeBuffer or non-UTF-8 strings)
+    # using the embedded gemoji lookup table in ForemNative (see `crates/forem_core/src/emoji_data.rs`).
     def legacy_parse_emojis
       @html.gsub!(/:([\w+-]+):/) do |match|
-        emoji = Emoji.find_by_alias(Regexp.last_match(1)) # rubocop:disable Rails/DynamicFindBy
-        emoji.present? ? emoji.raw : match
+        ForemNative.emoji_by_alias(Regexp.last_match(1)) || match
       end
       @html
     end

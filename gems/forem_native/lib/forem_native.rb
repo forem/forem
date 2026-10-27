@@ -249,6 +249,17 @@ module ForemNative
       Native.quickie_title_html(title, truncate_for_feed ? true : false)
     end
 
+    # Collapses runs of ASCII whitespace (`\s+`, including newlines) to single spaces and strips
+    # leading/trailing ASCII whitespace/NULs, matching `Article#title_for_metadata`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so `Article` can
+    # fall back to `legacy_title_for_metadata`.
+    def title_for_metadata(title)
+      return unless Native.respond_to?(:title_for_metadata)
+      return unless title.instance_of?(String) && title.encoding == Encoding::UTF_8
+
+      Native.title_for_metadata(title)
+    end
+
     # Returns the lowercased host of a (possibly scheme-less) URL without a leading `www.`,
     # matching `Addressable::URI.parse(url).host.downcase.delete_prefix("www.")` after
     # `ArticlesHelper#get_host_without_www` strips the URL and adds a missing `http://`.
@@ -398,6 +409,157 @@ module ForemNative
       return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
 
       Native.escape_colon_emojis_in_codeblock(html)
+    end
+
+    # Looks up a single `:alias:` shortcode name (without surrounding colons) in the embedded
+    # `gemoji` table, returning the raw UTF-8 emoji string or nil if unknown.
+    def emoji_by_alias(alias_name)
+      return unless Native.respond_to?(:emoji_by_alias)
+      return unless alias_name.is_a?(String) && alias_name.encoding.ascii_compatible?
+
+      str = alias_name.instance_of?(String) ? alias_name : alias_name.to_s
+      str = str.encode(Encoding::UTF_8) if str.encoding == Encoding::US_ASCII
+      return unless str.encoding == Encoding::UTF_8
+
+      Native.emoji_by_alias(str)
+    end
+
+    # Strips all Unicode `RGI_Emoji` sequences from `text`, replacing `text.gsub(EmojiRegex::RGIEmoji, "")`
+    # from the removed `emoji_regex` gem.
+    def strip_rgi_emoji(text)
+      return unless Native.respond_to?(:strip_rgi_emoji)
+      return unless text.is_a?(String)
+
+      str = text.instance_of?(String) ? text : text.to_s
+      str = str.encode(Encoding::UTF_8) if str.encoding == Encoding::US_ASCII
+      return unless str.encoding == Encoding::UTF_8
+
+      Native.strip_rgi_emoji(str)
+    end
+
+    # Computes the W3C WCAG 2.0 contrast ratio between two 3- or 6-digit hex color strings
+    # (without `#`), replacing `WCAGColorContrast.ratio(rgb1, rgb2)` from the removed
+    # `wcag_color_contrast` gem. Returns nil if either color is not a valid 3- or 6-digit hex string.
+    def wcag_contrast_ratio(rgb1, rgb2)
+      return unless Native.respond_to?(:wcag_contrast_ratio)
+      return unless rgb1.is_a?(String) && rgb1.encoding.ascii_compatible?
+      return unless rgb2.is_a?(String) && rgb2.encoding.ascii_compatible?
+
+      Native.wcag_contrast_ratio(rgb1.to_s, rgb2.to_s)
+    end
+
+    # Counts distinct calendar days among `entries` (`[[article_id, timestamp, ...], ...]`)
+    # whose timestamp is `>= cutoff_time`, matching `FeedConfig.active_user?`.
+    # `cutoff_time` may be a `Time`/`TimeWithZone` or integer `cutoff_sec` (with `cutoff_nanos`).
+    # Returns nil for non-Array inputs or unrecognized timestamp formats so callers can
+    # fall back to `legacy_active_user_days`.
+    def activity_distinct_days_since(entries, cutoff_time, cutoff_nanos = 0)
+      return unless Native.respond_to?(:activity_distinct_days_since)
+      return unless entries.is_a?(Array)
+
+      if cutoff_time.is_a?(Integer)
+        Native.activity_distinct_days_since(entries, cutoff_time, cutoff_nanos.to_i)
+      elsif cutoff_time.respond_to?(:tv_sec)
+        nanos = cutoff_time.respond_to?(:tv_nsec) ? cutoff_time.tv_nsec : 0
+        Native.activity_distinct_days_since(entries, cutoff_time.tv_sec, nanos)
+      end
+    end
+
+    # Counts how many `[article_id, timestamp, ...]` entries in `entries` occurred strictly
+    # after `cutoff_time` (`> cutoff_time`).
+    def activity_pageviews_since(entries, cutoff_time, cutoff_nanos = 0)
+      return unless Native.respond_to?(:activity_pageviews_since)
+      return unless entries.is_a?(Array)
+
+      if cutoff_time.is_a?(Integer)
+        Native.activity_pageviews_since(entries, cutoff_time, cutoff_nanos.to_i)
+      elsif cutoff_time.respond_to?(:tv_sec)
+        nanos = cutoff_time.respond_to?(:tv_nsec) ? cutoff_time.tv_nsec : 0
+        Native.activity_pageviews_since(entries, cutoff_time.tv_sec, nanos)
+      end
+    end
+
+    # Computes the recency-weighted top-article shuffle count in `[5..20]` from the most
+    # recent pageview timestamp, `now_time`, and `shuffle_weight`, matching
+    # `Articles::Feeds::Custom#calculate_dynamic_shuffle_count`.
+    def dynamic_shuffle_count(most_recent_timestamp, now_time, shuffle_weight)
+      return unless Native.respond_to?(:dynamic_shuffle_count)
+      return unless now_time.respond_to?(:tv_sec)
+
+      weight = native_float(shuffle_weight)
+      return unless weight
+
+      now_nanos = now_time.respond_to?(:tv_nsec) ? now_time.tv_nsec : 0
+      Native.dynamic_shuffle_count(most_recent_timestamp, now_time.tv_sec, now_nanos, weight)
+    end
+
+    # Reorders `items` using the index-offset weighted shuffle algorithm in
+    # `Articles::Feeds::Custom#weighted_shuffle`. Accepts an optional `randoms:` array
+    # of floats in `[0.0, 1.0)` for deterministic testing.
+    def weighted_shuffle(items, shuffle_weight, randoms: nil)
+      return unless Native.respond_to?(:weighted_shuffle)
+      return unless items.is_a?(Array)
+      return unless randoms.nil? || randoms.is_a?(Array)
+
+      weight = native_float(shuffle_weight)
+      return unless weight
+
+      Native.weighted_shuffle(items, weight, randoms)
+    end
+
+    # Formats a non-negative duration in seconds as `"MM:SS"` or `"H:MM:SS"`, matching
+    # `Article#video_duration_in_minutes`. Returns nil for negative values.
+    def format_video_duration(seconds)
+      return unless Native.respond_to?(:format_video_duration)
+
+      secs = seconds.to_i
+      return if secs.negative? || secs >= 2**62
+
+      Native.format_video_duration(secs)
+    end
+
+    # Formats an Array of IDs (filtering out `blank?` entries) as a comma-separated SQL integer
+    # list string, or `empty_fallback` (default `"-1"`) when empty.
+    def sql_int_list(ids, empty_fallback = "-1")
+      return unless Native.respond_to?(:sql_int_list)
+      return unless ids.is_a?(Array) && empty_fallback.is_a?(String)
+
+      Native.sql_int_list(ids, empty_fallback)
+    end
+
+    # Formats an Array of Strings as a quoted Postgres array literal (`ARRAY['a','b']::text[]`).
+    def sql_string_array_literal(items, pg_type = "text")
+      return unless Native.respond_to?(:sql_string_array_literal)
+      return unless items.is_a?(Array) && pg_type.is_a?(String)
+
+      Native.sql_string_array_literal(items, pg_type)
+    end
+
+    # Formats an Array of numeric values as a bracketed `pgvector` literal (`"[0.1,0.2,...]"`).
+    def sql_vector_literal(values)
+      return unless Native.respond_to?(:sql_vector_literal)
+      return unless values.is_a?(Array)
+
+      Native.sql_vector_literal(values)
+    end
+
+    # Collapses consecutive whitespace runs into a single space and strips leading/trailing
+    # whitespace in a single pass, matching Rails `String#squish`.
+    def sql_squish(sql)
+      return unless Native.respond_to?(:sql_squish)
+      return unless sql.instance_of?(String) && sql.encoding.ascii_compatible?
+
+      Native.sql_squish(sql)
+    end
+
+    # Compiles the complete `FeedConfig#score_sql` expression in a single pass from the
+    # 28 weight floats and 24-element context array. Returns nil if any input is outside
+    # the fast-path domain so `FeedConfig#score_sql` can fall back to `legacy_score_sql`.
+    def feed_config_score_sql(weights, context)
+      return unless Native.respond_to?(:feed_config_score_sql)
+      return unless weights.is_a?(Array) && context.is_a?(Array)
+
+      Native.feed_config_score_sql(weights, context)
     end
 
     private

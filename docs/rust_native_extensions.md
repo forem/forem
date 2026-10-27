@@ -90,3 +90,52 @@ Benchmarking a ~5,000-word Markdown article (`36,960` bytes) via `bundle exec ra
 | :--- | :--- | :--- | :--- |
 | **Throughput (`benchmark-ips`)** | `723.1 i/s` | `38,732.1 i/s` | **53.56x faster** |
 | **Ruby Heap Allocations (10 runs)** | `99,640 objects` (`10.81 MB`) | `0 objects` (`0 B`) | **100% allocation elimination** |
+
+---
+
+## 5. Second Iteration Pattern: Coarse-Grained Service & Query-Pipeline Kernels (`forem_core::feed`)
+
+While leaf string/color/URL helpers (Section 4) eliminate isolated micro-allocations, request-level service pipelines such as `/stories/feed` (`Stories::FeedsController#show` -> `FeedConfig.select_for_feed` -> `FeedConfig#score_sql` -> `Articles::Feeds::Custom#default_home_feed` -> `show.json.jbuilder`) suffer from **compound multi-step overhead**:
+- The same `UserActivity#recently_viewed_articles` JSONB array is scanned and parsed via `String#to_datetime` (`Date._parse`) hundreds of times per request across `FeedConfig.active_user?`, `FeedConfig#score_sql`, and `Articles::Feeds::Custom#calculate_dynamic_shuffle_count`.
+- Dynamic SQL scoring expression assembly (`FeedConfig#score_sql`) concatenates intermediate follow arrays, quotes tag/label literals in loops, formats 768-float `pgvector` embeddings via `Array#join(',')` (769 string allocations per call), and runs regex `String#squish` passes over multi-KB SQL strings.
+- Post-query candidate ranking (`Articles::Feeds::Custom#weighted_shuffle`) and story serialization (`Article#video_duration_in_minutes`) allocate intermediate tuple arrays, boxed float sort keys, and `ActiveSupport::Duration` hashes on every story.
+
+To optimize service and query-builder pipelines in a general-purpose, reusable way without disrupting ActiveRecord models or controller contracts, follow the **Two-Tier Composable Primitives + Pipeline Kernel Pattern** in `crates/forem_core/src/feed.rs`:
+
+1. **Tier 1 — General-Purpose Composable Primitives**:
+   Expose standalone, zero-allocation building blocks on `forem_core::feed` and `ForemNative` that any feed, digest, notification, or query builder can call independently:
+   - `ForemNative.activity_distinct_days_since(entries, cutoff_time)` & `ForemNative.activity_pageviews_since(entries, cutoff_time)` — zero-allocation ISO-8601/SQL timestamp parsing + Howard Hinnant civil-date window aggregation.
+   - `ForemNative.dynamic_shuffle_count(most_recent_timestamp, now_time, weight)` & `ForemNative.weighted_shuffle(items, shuffle_weight)` — candidate re-ranking and recency-weighted window sizing.
+   - `ForemNative.sql_int_list(ids, empty_fallback)`, `ForemNative.sql_string_array_literal(items, pg_type)`, `ForemNative.sql_vector_literal(values)`, & `ForemNative.sql_squish(sql)` — reusable SQL literal/array/vector/whitespace primitives.
+   - `ForemNative.format_video_duration(seconds)` — zero-`ActiveSupport::Duration` duration formatting for feed JSON serialization.
+2. **Tier 2 — Single-Pass Coarse-Grained Pipeline Kernel**:
+   Compose those Tier 1 primitives into a single-pass Rust pipeline (`ForemNative.feed_config_score_sql` -> `forem_core::feed::build_feed_config_score_sql`) that borrows the Ruby `FeedConfig` weight vector and `UserActivity` arrays in-place (`unsafe { arr.as_slice() }`), scans `recently_viewed_articles` once, and writes the entire multi-KB SQL scoring expression into a single pre-allocated Rust `String`.
+
+Benchmarking the complete `/stories/feed` custom feed pipeline (`FeedConfig.active_user?` + `FeedConfig#score_sql` with 768-float embedding + `calculate_dynamic_shuffle_count` + `weighted_shuffle` + 35x `Article#video_duration_in_minutes`) via `bundle exec rake forem_native:benchmark`:
+
+| Metric | Legacy Ruby (`/stories/feed` pipeline) | Rust (`magnus` + `forem_core::feed`) | Improvement |
+| :--- | :--- | :--- | :--- |
+| **Throughput (`benchmark-ips`)** | `663.7 i/s` | `13,675.9 i/s` | **20.61x faster** |
+| **Ruby Heap Allocations (10 runs)** | `66,159 objects` (`5.49 MB`) | `1,760 objects` (`169.1 KB`) | **97.3% fewer objects / 96.9% less memory** |
+
+---
+
+## 6. Maintaining Embedded Static Datasets & Removed Gems
+
+Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_core`) after porting their functionality into `gems/forem_native`. Because some of these libraries wrap static upstream standards or registries, contributors should be aware of which modules are pure math versus which embed static data tables that may occasionally be refreshed:
+
+| Gem / Standard | Status in `Gemfile` | `forem_core` Module & Data File | Needs Periodic Data Updates? |
+| :--- | :--- | :--- | :--- |
+| **`wcag_color_contrast`** | **Removed** | `crates/forem_core/src/color.rs` (`wcag_contrast_ratio`) | **No** — Implements the fixed W3C WCAG 2.x relative luminance & contrast ratio formula. Pure math; no external data tables. |
+| **`gemoji`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`EMOJI_BLOB`, `EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream [`github/gemoji`](https://github.com/github/gemoji) (`db/emoji.json`) is a static JSON mapping of `:shortcode:` aliases to UTF-8 emoji sequences. Only changes when adopting a new Unicode Emoji release or adding custom shortcodes. |
+| **`emoji_regex`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`RGI_EMOJI_BLOB`, `RGI_EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream `emoji_regex` is a static list of Unicode `RGI_Emoji` sequences derived from Unicode's [`emoji-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-sequences.txt) and [`emoji-zwj-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt). Only changes when adopting a new Unicode Emoji release. |
+| **`public_suffix`** | Transitive dep of `addressable` | `crates/forem_core/src/url.rs` & `psl_data.rs` (`PSL_BLOB`, `PSL_ENTRIES`) | **When `public_suffix` is bumped** — Mirrors the Mozilla Public Suffix List (`data/list.txt` inside the `public_suffix` gem). Regenerate `psl_data.rs` whenever `bundle update public_suffix` updates `Gemfile.lock`. |
+
+### How to Refresh `emoji_data.rs` or `psl_data.rs`
+1. **Updating `emoji_data.rs` (Unicode Emoji / Gemoji)**:
+   - `EMOJI_BLOB` and `EMOJI_ENTRIES` store all sorted `(alias, raw_utf8)` pairs from GitHub's `db/emoji.json` (`https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json`), where each `u32` entry packs `(offset << 11) | (alias_len << 5) | raw_len`.
+   - `RGI_EMOJI_BLOB` and `RGI_EMOJI_ENTRIES` store all unique UTF-8 `RGI_Emoji` sequences sorted by `(first_char_utf8_bytes, Reverse(byte_len), full_utf8_bytes)`, where each `u32` entry packs `(offset << 8) | (byte_len << 2) | (first_char_utf8_len - 1)`.
+2. **Updating `psl_data.rs` (Mozilla Public Suffix List)**:
+   - `PSL_BLOB` and `PSL_ENTRIES` store all ASCII rules from `PublicSuffix::List.default` (`Gem.loaded_specs["public_suffix"].full_gem_path + "/data/list.txt"`), sorted by rule label bytes with each `u32` entry packing `(offset << 10) | (len << 2) | kind`.
+3. **Rebuilding Precompiled Binaries**:
+   - After updating any `.rs` data file in `crates/forem_core/src/`, run `bundle exec rake forem_native:rust_test` and recompile the committed platform binaries (`arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`, and `x86_64-linux/forem_native.so`).

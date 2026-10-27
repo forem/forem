@@ -127,11 +127,17 @@ module Articles
       end
 
       def weighted_shuffle(arr, shuffle_weight)
+        list = arr.is_a?(Array) ? arr : arr.to_a
+        ForemNative.weighted_shuffle(list, shuffle_weight) ||
+          legacy_weighted_shuffle(list, shuffle_weight)
+      end
+
+      def legacy_weighted_shuffle(arr, shuffle_weight)
         # Each element gets a new sort key: its original index plus a random offset.
         # We choose the random offset uniformly from -2*shuffle_weight to 2*shuffle_weight.
         # The average absolute offset then is (2*shuffle_weight)/2 = shuffle_weight.
-        arr.each_with_index.sort_by do |item, index|
-          index + (rand * (4 * shuffle_weight) - 2 * shuffle_weight)
+        arr.each_with_index.sort_by do |_item, index|
+          index + ((rand * (4 * shuffle_weight)) - (2 * shuffle_weight))
         end.map(&:first)
       end
 
@@ -163,29 +169,34 @@ module Articles
       end
 
       def calculate_dynamic_shuffle_count
-        return 5 unless @user&.user_activity&.recently_viewed_articles&.any?
-        
+        recent_views = @user&.user_activity&.recently_viewed_articles
+        return 5 unless recent_views&.any?
+
         # Get the most recent page view timestamp
-        most_recent_page_view = @user.user_activity.recently_viewed_articles.first
-        return 5 unless most_recent_page_view&.size >= 2
-        
-        begin
-          most_recent_timestamp = most_recent_page_view[1].to_datetime
-          hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
-          
-          # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
-          # Minimum of 5 (original behavior)
-          base_shuffle_count = [21 - hours_since_last_view, 5].max
-          
-          # Apply the weight multiplier
-          weighted_shuffle_count = (base_shuffle_count * @feed_config.recent_page_views_shuffle_weight).round
-          
-          # Ensure minimum of 5 and maximum of 20
-          [[weighted_shuffle_count, 5].max, 20].min
-        rescue StandardError
-          # If there's any error parsing the timestamp, fall back to default
-          5
-        end
+        most_recent_page_view = recent_views.first
+        return 5 unless most_recent_page_view.is_a?(Array) && most_recent_page_view.size >= 2
+
+        weight = @feed_config.recent_page_views_shuffle_weight
+        ForemNative.dynamic_shuffle_count(most_recent_page_view[1], Time.current, weight) ||
+          legacy_calculate_dynamic_shuffle_count(most_recent_page_view[1], weight)
+      end
+
+      def legacy_calculate_dynamic_shuffle_count(raw_timestamp, weight = @feed_config.recent_page_views_shuffle_weight)
+        most_recent_timestamp = raw_timestamp.to_datetime
+        hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
+
+        # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
+        # Minimum of 5 (original behavior)
+        base_shuffle_count = [21 - hours_since_last_view, 5].max
+
+        # Apply the weight multiplier
+        weighted_shuffle_count = (base_shuffle_count * weight).round
+
+        # Ensure minimum of 5 and maximum of 20
+        weighted_shuffle_count.clamp(5, 20)
+      rescue StandardError
+        # If there's any error parsing the timestamp, fall back to default
+        5
       end
 
       # Preserve the public interface

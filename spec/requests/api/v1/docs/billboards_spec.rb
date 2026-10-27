@@ -263,6 +263,68 @@ RSpec.describe "api/v1/billboards" do
       end
     end
   end
+
+  path "/api/billboards/preview" do
+    describe "POST /billboards/preview" do
+      post "Preview a billboard" do
+        tags "billboards"
+        description(<<-DESCRIBE.strip)
+        Render a billboard's Markdown/HTML copy into `processed_html` and `minimized_processed_html` without saving it.
+        DESCRIBE
+        operationId "previewBillboard"
+        produces "application/json"
+        consumes "application/json"
+
+        parameter name: :billboard, in: :body,
+                  description: "Billboard markdown and rendering parameters to preview.",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      body_markdown: { type: :string, description: "The text (in markdown or raw HTML) of the ad" },
+                      minimized_body_markdown: {
+                        type: :string, nullable: true, description: "Optional minimized markdown copy"
+                      },
+                      placement_area: { type: :string, enum: Billboard::ALLOWED_PLACEMENT_AREAS, nullable: true },
+                      render_mode: { type: :string, enum: Billboard.render_modes.keys, default: "forem_markdown" }
+                    }
+                  }
+
+        let(:billboard) do
+          {
+            body_markdown: "# Billboard Preview",
+            placement_area: "post_comments"
+          }
+        end
+
+        response(200, "successful") do
+          let(:"api-key") { api_secret.secret }
+          schema type: :object,
+                 properties: {
+                   processed_html: { type: :string, nullable: true },
+                   minimized_processed_html: { type: :string, nullable: true }
+                 }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { "invalid" }
+          add_examples
+
+          run_test!
+        end
+
+        response "422", "unprocessable" do
+          let(:"api-key") { api_secret.secret }
+          let(:billboard) { { body_markdown: "{% link invalid_link_that_does_not_exist %}" } }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable RSpec/VariableName

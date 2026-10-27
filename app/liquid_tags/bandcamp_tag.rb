@@ -4,11 +4,13 @@ require 'json'
 
 class BandcampTag < LiquidTagBase
   PARTIAL = "liquids/bandcamp".freeze
-  BANDCAMP_URL_REGEX = %r{https?://[^/]+\.bandcamp\.com/(?<type>album|track)/(?<slug>[^/?#]+)}i
+  # rubocop:disable Layout/LineLength
+  BANDCAMP_URL_REGEX = %r{\Ahttps?://[a-z0-9-]+\.bandcamp\.com/(?<type>album|track)/(?<slug>[\w-]+)(?:[/?#][^\s"<>]*)?\z}i
+  # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, input, _parse_context)
     super
-    @raw_input_url = input.strip
+    @raw_input_url = strip_tags(input)
     match = @raw_input_url.match(BANDCAMP_URL_REGEX)
     if match
       @embed_type = match[:type]&.downcase
@@ -25,9 +27,11 @@ class BandcampTag < LiquidTagBase
 
     scraped_ids = fetch_bandcamp_ids_from_page_data(@raw_input_url)
 
-    unless scraped_ids && scraped_ids[:item_id] && (@embed_type == "album" || (@embed_type == "track" && scraped_ids[:album_id]))
+    unless valid_scraped_ids?(scraped_ids)
       Rails.logger.error "[BandcampTag] Failed to extract sufficient IDs for: #{@raw_input_url}. Data: #{scraped_ids.inspect}"
-      return "<p>Could not get sufficient embed data for this Bandcamp #{@embed_type}. <a href=\"#{@raw_input_url}\" target=\"_blank\" rel=\"noopener noreferrer\">View on Bandcamp</a></p>"
+      escaped_url = ERB::Util.html_escape(@raw_input_url)
+      return "<p>Could not get sufficient embed data for this Bandcamp #{@embed_type}. " \
+             "<a href=\"#{escaped_url}\" target=\"_blank\" rel=\"noopener noreferrer\">View on Bandcamp</a></p>"
     end
 
     player_path_segments = []
@@ -80,6 +84,12 @@ class BandcampTag < LiquidTagBase
   end
 
   private
+
+  def valid_scraped_ids?(scraped_ids)
+    return false unless scraped_ids && scraped_ids[:item_id].to_s.match?(/\A\d+\z/)
+
+    @embed_type == "album" || (@embed_type == "track" && scraped_ids[:album_id].to_s.match?(/\A\d+\z/))
+  end
 
   def fetch_bandcamp_ids_from_page_data(page_url)
     Rails.logger.info "[BandcampTag] Fetching page data from: #{page_url}"
