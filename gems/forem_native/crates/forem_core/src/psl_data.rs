@@ -1,9 +1,14 @@
-//! Auto-generated ASCII rule table from `public_suffix` 7.0.5 (`data/list.txt`).
+//! Auto-generated ASCII rule table from `public_suffix` 7.0.5 (`data/list.txt`, Mozilla Public Suffix List).
 //!
 //! Each `u32` entry in `PSL_ENTRIES` packs:
 //! - bits `10..32`: byte offset into `PSL_BLOB`
 //! - bits `2..10`: byte length of the rule key
 //! - bits `0..2`: rule kind (`0` = Normal, `1` = Wildcard, `2` = Exception)
+//!
+//! ## Maintenance & Updating
+//! Whenever the `public_suffix` gem or the Mozilla Public Suffix List (`https://publicsuffix.org/list/public_suffix_list.dat`)
+//! is updated, regenerate this file so `forem_core::url::public_suffix_domain` stays in sync with `PublicSuffix.parse`.
+//! See `docs/rust_native_extensions.md` ("Maintaining Embedded Static Datasets") for instructions.
 
 pub(crate) static PSL_BLOB: &[u8] = b"\
     0.bg001.test.code-builder-stg.platform.salesforce.com0am.jp0e.vc0emm.com0g0.jp0j\
