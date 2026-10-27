@@ -34,6 +34,30 @@ RSpec.describe "Comments" do
       expect(response.body).to include(comment.processed_html)
     end
 
+    it "short-circuits entity lookup on user match and reuses the loaded user", :aggregate_failures do
+      allow(Organization).to receive(:find_by).and_call_original
+      allow(Podcast).to receive(:find_by).and_call_original
+      allow(User).to receive(:staff_account).and_return(nil)
+      comment_path = comment.path
+
+      user_id_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        user_id_queries << sql if sql.include?('FROM "users"') && sql.include?('"users"."id" =')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get comment_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(Organization).not_to have_received(:find_by).with(slug: user.username)
+      expect(Podcast).not_to have_received(:find_by).with(slug: user.username)
+      expect(user_id_queries).to be_empty
+    end
+
     context "when there are comments with different score" do
       let!(:spam_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
@@ -361,6 +385,12 @@ RSpec.describe "Comments" do
       it "is successful" do
         get podcast_comment.path
         expect(response).to have_http_status(:ok)
+      end
+
+      it "renders comments for a podcast episode index URL" do
+        get "/#{podcast.slug}/#{podcast_episode.slug}/comments"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(podcast_comment.processed_html)
       end
 
       it "raises 404 when low quality" do
