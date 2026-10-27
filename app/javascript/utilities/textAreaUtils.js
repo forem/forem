@@ -269,99 +269,45 @@ export const getSelectionData = ({ selectionStart, selectionEnd, value }) => ({
  */
 export const useTextAreaAutoResize = () => {
   const [textArea, setTextArea] = useState(null);
-  const [constrainToContentHeight, setConstrainToContentHeight] = useState(false);
+  const [constrainToContentHeight, setConstrainToContentHeight] =
+    useState(false);
   const [additionalElements, setAdditionalElements] = useState([]);
-  const rafIdRef = useRef(null);
-  const lastAppliedPxRef = useRef('');
 
   useLayoutEffect(() => {
-    if (!textArea) return;
+    if (!textArea) {
+      return;
+    }
 
-    const allElements = [textArea, ...additionalElements];
-
-    // Apply smoothing once to each element for less "jumpy" visuals.
-    allElements.forEach((el) => {
-      if (!el) return;
-      // Avoid duplicating transitions if already present.
-      const needsMinMax = !/min-height|max-height/.test(el.style.transition || '');
-      if (needsMinMax) {
-        const existing = el.style.transition ? el.style.transition + ', ' : '';
-        el.style.transition = `${existing}min-height 120ms ease, max-height 120ms ease`;
-      }
-      el.style.overflow = 'hidden'; // prevents scrollbar flicker while resizing
-      el.style.willChange = (el.style.willChange || '').includes('height') ? el.style.willChange : `${el.style.willChange ? el.style.willChange + ', ' : ''}height`;
-    });
-
-    // Measure function that defaults to placeholder height when empty.
-    const measureElementHeight = (el) => {
-      if (!el) return 0;
-
-      return calculateTextAreaHeight(el).height;
-    };
-
-    const measureAll = () => {
-      const heights = allElements.map(measureElementHeight);
-      return Math.max(...heights, 0);
-    };
-
-    // Batch DOM writes to the next animation frame to avoid per-keystroke jitter.
     const resizeTextArea = () => {
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
-      rafIdRef.current = requestAnimationFrame(() => {
-        const height = Math.ceil(measureAll()); // rounding mitigates +/-1px oscillation
-        const px = `${height}px`;
+      const allElements = [textArea, ...additionalElements].filter(Boolean);
+      const allContentHeights = allElements.map(
+        (element) => calculateTextAreaHeight(element).height,
+      );
+      const height = Math.max(...allContentHeights, 0);
+      const newHeight = `${height}px`;
 
-        // Avoid redundant writes—prevents transition restarts and "glitch".
-        if (lastAppliedPxRef.current === px) return;
-
-        allElements.forEach((el) => {
-          if (!el) return;
-          el.style.minHeight = px;
-          if (constrainToContentHeight) {
-            el.style.maxHeight = px;
-          } else {
-            el.style.removeProperty('max-height');
-          }
-        });
-
-        lastAppliedPxRef.current = px;
+      allElements.forEach((element) => {
+        element.style['min-height'] = newHeight;
+        if (constrainToContentHeight) {
+          element.style['max-height'] = newHeight;
+        } else {
+          element.style.removeProperty('max-height');
+        }
       });
     };
 
-    // Initial measurement before paint (useLayoutEffect) for correct first frame.
     resizeTextArea();
 
-    // Smooth out on typing: tiny debounce so it doesn’t jump every single character,
-    // but still feels real-time.
-    const debouncedInput = debounceAction(resizeTextArea, 80);
-    textArea.addEventListener('input', debouncedInput);
-
-    // Recalculate on element resize/layout shifts
-    const debouncedResize = debounceAction(resizeTextArea, 300);
-    const resizeObserver = new ResizeObserver(debouncedResize);
+    const resizeCallback = debounceAction(() => resizeTextArea(), { time: 300 });
+    const resizeObserver = new ResizeObserver(resizeCallback);
     resizeObserver.observe(textArea);
 
-    // If fonts load async, recalc
-    let isFontsReadyResolved = false;
-    try {
-      if (document?.fonts?.ready) {
-        document.fonts.ready.then(() => {
-          if (!isFontsReadyResolved) {
-            resizeTextArea();
-          }
-        });
-      }
-    } catch (_) {
-      // ignore
-    }
+    textArea.addEventListener('input', resizeTextArea);
 
     return () => {
-      isFontsReadyResolved = true;
-      if (rafIdRef.current) cancelAnimationFrame(rafIdRef.current);
       resizeObserver.disconnect();
-      debouncedResize.cancel();
-      debouncedInput.cancel();
-      textArea.removeEventListener('input', debouncedInput);
+      resizeCallback.cancel();
+      textArea.removeEventListener('input', resizeTextArea);
     };
   }, [textArea, additionalElements, constrainToContentHeight]);
 
