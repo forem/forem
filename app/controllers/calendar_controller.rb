@@ -1,5 +1,10 @@
 class CalendarController < ApplicationController
   EVENTS_PER_PAGE = 12
+  AGENDA_COLUMNS = %i[
+    id title start_time end_time type_of event_name_slug event_variation_slug
+    delegate_to_page page_id organization_id user_id
+  ].freeze
+  private_constant :AGENDA_COLUMNS
 
   def index
     @range_start, @range_end = calendar_range
@@ -11,9 +16,14 @@ class CalendarController < ApplicationController
 
     @event_day_set = event_days_between(@grid_start, @grid_end)
 
-    agenda = published_events.where("end_time >= ? AND start_time <= ?",
-                                    @range_start.beginning_of_day, @range_end.end_of_day)
-    @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
+    agenda = if range_may_have_events?
+               published_events.where("end_time >= ? AND start_time <= ?",
+                                      @range_start.beginning_of_day, @range_end.end_of_day)
+                 .order(start_time: :asc)
+             else
+               Event.none
+             end
+    @events = agenda.page(params[:page]).per(EVENTS_PER_PAGE)
 
     @events_by_day = @events.group_by { |event| event.start_time.to_date }
     @user_signup_event_ids = signed_up_event_ids
@@ -22,9 +32,17 @@ class CalendarController < ApplicationController
   private
 
   def published_events
-    events = Event.published.includes(:page, :organization, :user)
+    events = Event.published.select(AGENDA_COLUMNS).includes(:page, :organization, :user)
     events = events.where(type_of: params[:type_of]) if valid_type?
     events
+  end
+
+  # When the selected range falls entirely inside the already-queried grid window,
+  # `@event_day_set` already contains every day covered by a matching published event.
+  def range_may_have_events?
+    return true unless @range_start >= @grid_start && @range_end <= @grid_end
+
+    @event_day_set.any? { |day| day.between?(@range_start, @range_end) }
   end
 
   # Every day within the grid window that a published event covers (a multi-day
@@ -84,6 +102,9 @@ class CalendarController < ApplicationController
   def signed_up_event_ids
     return Set.new unless user_signed_in?
 
-    EventSignup.where(user: current_user, event: @events.map(&:id)).pluck(:event_id).to_set
+    event_ids = @events.map(&:id)
+    return Set.new if event_ids.empty?
+
+    EventSignup.where(user: current_user, event: event_ids).pluck(:event_id).to_set
   end
 end
