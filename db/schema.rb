@@ -1288,6 +1288,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_163000) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.string "social_image"
     t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"

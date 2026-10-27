@@ -109,17 +109,39 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates an image for each published article without an organization or cover" do
+      it "generates the user profile image and an image for each published article without an organization or cover" do
         described_class.call(user)
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
         [article, article_with_custom_subforem, article_without_subforem].each do |art|
           expect(generator).to have_received(:generate_image).with(art, user.setting.brand_color1)
         end
         expect(generator).not_to have_received(:generate_image).with(second_article, anything)
       end
 
-      it "stores the generated image on the articles" do
+      it "stores the generated image on the user profile and articles and busts user edge cache" do
+        allow(EdgeCache::BustUser).to receive(:call)
         described_class.call(user)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
         expect(article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
+      end
+    end
+
+    context "when resource is a Profile" do
+      let(:generator) { described_class.new(user.profile) }
+
+      before do
+        allow(described_class).to receive(:new).and_return(generator)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
+      end
+
+      it "generates only the user profile image without regenerating their articles" do
+        allow(EdgeCache::BustUser).to receive(:call)
+        described_class.call(user.profile)
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
+        expect(generator).not_to have_received(:generate_image).with(article, anything)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
       end
     end
 
@@ -131,14 +153,18 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates the image with the organization's color" do
+      it "generates the organization profile image and article images with the organization's color" do
         described_class.call(organization)
+        expect(generator).to have_received(:generate_image).with(organization, organization.bg_color_hex).once
         expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
       end
 
-      it "stores the generated image on the article" do
+      it "stores the generated image on the organization and article and busts organization edge cache" do
+        allow(EdgeCache::BustOrganization).to receive(:call)
         described_class.call(organization)
+        expect(organization.reload.social_image).to eq("https://example.com/og.png")
         expect(second_article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, organization.slug)
       end
     end
 
@@ -223,6 +249,21 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       %i[@logo_image @author_image @rounded_mask].each do |ivar|
         expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
       end
+    end
+
+    it "renders a 1200x627 profile card image for a User and cleans up tempfiles" do
+      user.profile.update_columns(summary: "Builds distributed systems and writes about Postgres.", location: "Austin, TX", website_url: "https://example.dev")
+      expect(generator.send(:generate_image, user, "#0f766e")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
+      %i[@logo_image @author_image @rounded_mask].each do |ivar|
+        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+      end
+    end
+
+    it "renders a 1200x627 profile card image for an Organization" do
+      generator.instance_variable_set(:@user, organization)
+      expect(generator.send(:generate_image, organization, "#1d4ed8")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
     end
   end
 
@@ -322,6 +363,77 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     it "shows at least one minute of reading time" do
       article.reading_time = 0
       expect(generator.send(:meta_line, article)).to end_with("1 min read")
+    end
+  end
+
+  describe "#profile_bio" do
+    let(:generator) { described_class.new(user) }
+
+    it "returns the cleaned and word-boundary truncated bio when present" do
+      user.profile.summary = "word " * 50
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to be <= described_class::MAX_BIO_LENGTH
+      expect(text).to end_with("…")
+    end
+
+    it "truncates continuous unbroken strings without spaces" do
+      user.profile.summary = "x" * 200
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to eq(described_class::MAX_BIO_LENGTH)
+      expect(text).to end_with("…")
+    end
+
+    it "falls back to the localized empty bio string when blank" do
+      user.profile.summary = "   \u{1F680}  "
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(false)
+      expect(text).to eq(I18n.t("views.users.empty"))
+    end
+
+    it "uses summary or tag_line for an Organization" do
+      organization.summary = ""
+      organization.tag_line = "Open source cloud tooling"
+      text, present = generator.send(:profile_bio, organization)
+      expect(present).to be(true)
+      expect(text).to eq("Open source cloud tooling")
+    end
+  end
+
+  describe "#profile_meta_line" do
+    let(:generator) { described_class.new(user) }
+
+    it "joins present location, cleaned website url, and joined date" do
+      user.profile.location = "Austin, TX"
+      user.profile.website_url = "https://www.samrivera.dev/"
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Austin, TX  ·  samrivera.dev  ·  Joined #{user.created_at.strftime('%b %Y')}")
+    end
+
+    it "omits blank location and website while still showing joined date" do
+      user.profile.location = ""
+      user.profile.website_url = nil
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Joined #{user.created_at.strftime('%b %Y')}")
+    end
+  end
+
+  describe "#profile_brand_color" do
+    let(:generator) { described_class.new(user) }
+    let(:palette) { generator.send(:palette_for, nil, 1) }
+
+    it "uses the accent color when brand color is unset" do
+      expect(generator.send(:profile_brand_color, "#000000", palette)).to eq(generator.send(:accent_color, palette))
+    end
+
+    it "preserves dark brand colors with good contrast against white text" do
+      expect(generator.send(:profile_brand_color, "#0f766e", palette)).to eq("#0f766e")
+    end
+
+    it "darkens overly bright brand colors so white text remains readable" do
+      shaded = generator.send(:profile_brand_color, "#fff23a", palette)
+      expect(generator.send(:luminance, shaded)).to be <= 0.35
     end
   end
 
