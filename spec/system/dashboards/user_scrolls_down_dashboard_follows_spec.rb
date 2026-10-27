@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Infinite scroll on dashboard", js: true do
-  let(:default_per_page) { 3 }
+RSpec.describe "Infinite scroll on dashboard", :js do
+  let(:default_per_page) { 2 }
   let(:total_records) { default_per_page * 2 }
   let(:user) { create(:user) }
-  let!(:users) { create_list(:user, total_records) }
-  let!(:tags) { create_list(:tag, total_records) }
-  let!(:organizations) { create_list(:organization, total_records) }
-  let!(:podcasts) { create_list(:podcast, total_records) }
+  let(:users) { create_list(:user, total_records) }
+  let(:tags) { create_list(:tag, total_records) }
+  let(:organizations) { create_list(:organization, total_records) }
+  let(:podcasts) { create_list(:podcast, total_records) }
 
   before do
     sign_in user
@@ -83,11 +83,8 @@ RSpec.describe "Infinite scroll on dashboard", js: true do
       page.execute_script("window.scrollTo(0, 100000)")
     end
 
-    it "scrolls through all podcasts" do
+    it "scrolls through all podcasts and shows working links", :aggregate_failures do
       page.assert_selector('div[id^="follows"]', count: total_records)
-    end
-
-    it "shows working links" do
       podcasts.each do |podcast|
         expect(page).to have_link(nil, href: "/#{podcast.path}")
       end

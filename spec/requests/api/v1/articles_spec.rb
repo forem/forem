@@ -2341,4 +2341,73 @@ RSpec.describe "Api::V1::Articles" do
       end
     end
   end
+
+  describe "POST /api/articles/preview" do
+    it "returns 401 when unauthenticated" do
+      post "/api/articles/preview", params: { article: { body_markdown: "# Hello" } }.to_json, headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "renders markdown and parses front matter without persisting an article" do
+      markdown = <<~MARKDOWN
+        ---
+        title: Preview Title
+        description: Preview description
+        tags: ruby, rails
+        cover_image: https://example.com/cover.png
+        ai_disclosure_level: some_ai
+        ---
+
+        **Bold preview content**
+      MARKDOWN
+
+      expect do
+        post "/api/articles/preview",
+             params: { article: { body_markdown: markdown } }.to_json,
+             headers: auth_headers
+      end.not_to change(Article, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include(
+        "title" => "Preview Title",
+        "description" => "Preview description",
+        "tags" => %w[ruby rails],
+        "ai_disclosure_level" => "some_ai",
+        "reading_time_minutes" => a_kind_of(Integer),
+      )
+      expect(response.parsed_body["processed_html"]).to include("<strong>Bold preview content</strong>")
+      expect(response.parsed_body["body_html"]).to eq(response.parsed_body["processed_html"])
+      expect(response.parsed_body["cover_image"]).to include("example.com/cover.png")
+    end
+
+    it "supports top-level article_body or body_markdown and fallback article attributes" do
+      post "/api/articles/preview",
+           params: {
+             article: {
+               title: "JSON Title",
+               body_markdown: "_Italic body_",
+               tags: %w[discuss webdev],
+               ai_disclosure_level: "no_ai"
+             }
+           }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include(
+        "title" => "JSON Title",
+        "tags" => %w[discuss webdev],
+        "ai_disclosure_level" => "no_ai",
+      )
+      expect(response.parsed_body["processed_html"]).to include("<em>Italic body</em>")
+    end
+
+    it "returns 422 when liquid tag parsing fails" do
+      post "/api/articles/preview",
+           params: { article: { body_markdown: "{% link invalid_link_that_does_not_exist %}" } }.to_json,
+           headers: auth_headers
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to be_present
+    end
+  end
 end
