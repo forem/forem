@@ -74,7 +74,7 @@ RSpec.describe "/admin/moderation/reports" do
 
     context "when there are more than 25 reports" do
       it "paginates the reports" do
-        create_list(:feedback_message, 30, :abuse_report, status: "Open")
+        create_list(:feedback_message, 26, :abuse_report, status: "Open") # rubocop:disable FactoryBot/ExcessiveCreateList
         sign_in admin
         get admin_reports_path
         expect(response).to have_http_status :ok
@@ -119,15 +119,10 @@ RSpec.describe "/admin/moderation/reports" do
         sign_in admin
       end
 
-      it "returns a JSON with an outcome key and Success value" do
+      it "updates the status of the feedback message and returns Success", :aggregate_failures do
         post save_status_admin_reports_path, params: save_status_params
 
         expect(response.parsed_body).to eq("outcome" => "Success")
-      end
-
-      it "updates the status of the feedback message" do
-        post save_status_admin_reports_path, params: save_status_params
-
         expect(FeedbackMessage.last.status).to eq("Resolved")
       end
     end
@@ -157,16 +152,11 @@ RSpec.describe "/admin/moderation/reports" do
         sign_in admin
       end
 
-      it "returns a JSON with an outcome key and Success value" do
-        post send_email_admin_reports_path, params: send_email_params
-
-        expect(response.parsed_body).to eq("outcome" => "Success")
-      end
-
-      it "creates a new email message with the same params" do
+      it "creates a new email message and returns Success", :aggregate_failures do
         allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         post send_email_admin_reports_path, params: send_email_params
 
+        expect(response.parsed_body).to eq("outcome" => "Success")
         expect(EmailMessage.last.attributes).to include(email_message_attributes)
       end
     end
@@ -188,8 +178,10 @@ RSpec.describe "/admin/moderation/reports" do
         sign_in admin
       end
 
-      it "renders the proper JSON response" do
-        post create_note_admin_reports_path, params: note_params
+      it "creates a note, queues a slack message, and renders the JSON response", :aggregate_failures do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
+          post create_note_admin_reports_path, params: note_params
+        end
 
         expected_response = {
           outcome: "Success",
@@ -197,18 +189,7 @@ RSpec.describe "/admin/moderation/reports" do
           author_name: admin.name
         }.stringify_keys
         expect(response.parsed_body).to eq(expected_response)
-      end
-
-      it "creates a note with the correct params" do
-        post create_note_admin_reports_path, params: note_params
-
         expect(Note.last.attributes).to include(note_params)
-      end
-
-      it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
-          post create_note_admin_reports_path, params: note_params
-        end
       end
     end
   end
