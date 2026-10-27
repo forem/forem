@@ -451,6 +451,16 @@ RSpec.describe ApplicationHelper do
         expect(Tag).not_to receive(:find_by)
         helper.tag_colors(tag)
       end
+
+      it "memoizes the tag's colors by name so subsequent string lookups skip cache and DB", :aggregate_failures do
+        helper.tag_colors(tag)
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        allow(Tag).to receive(:find_by).and_call_original
+
+        expect(helper.tag_colors(tag.name)).to eq(background: "#ff0000", color: "#ffffff")
+        expect(Rails.cache).not_to have_received(:fetch)
+        expect(Tag).not_to have_received(:find_by)
+      end
     end
 
     context "when given an ActsAsTaggableOn::Tag object (as returned by follow.followable)" do
@@ -563,6 +573,7 @@ RSpec.describe ApplicationHelper do
     it "skips the cache when there are no tags to preload" do
       allow(Rails.cache).to receive(:fetch_multi).and_call_original
       helper.preload_tag_colors([status_story])
+      helper.preload_tag_colors(nil)
       expect(Rails.cache).not_to have_received(:fetch_multi)
     end
   end
