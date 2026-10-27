@@ -60,6 +60,16 @@ module ServerWarmup
     taggings
   ].freeze
 
+  SETTINGS_MODEL_NAMES = %w[
+    Settings::General
+    Settings::UserExperience
+    Settings::Community
+    Settings::Authentication
+    Settings::Smtp
+    Settings::RateLimit
+    Settings::Campaign
+  ].freeze
+
   DEFAULT_PREBOOT_KEEPALIVE_INTERVAL = 25
 
   @keepalive_mutex = Mutex.new
@@ -76,12 +86,15 @@ module ServerWarmup
     end
 
     # Runs in the Puma master process after `preload_app!` and immediately before `nakayoshi_fork`
-    # and worker forking. Preloads ActiveRecord schemas, primary keys, generated attribute methods,
-    # and L1 in-memory caches (`MemoryFirstCache` & `Flipper`) so Copy-on-Write shares them across
-    # all workers, then cleanly disconnects all parent sockets before `fork`.
+    # and worker forking. Preloads routes (Journey AST & GTG simulator), I18n translations,
+    # ActionView templates, ActiveRecord schemas, primary keys, generated attribute methods,
+    # and L1/L2 caches so Copy-on-Write shares them across all workers, then cleanly
+    # disconnects all parent sockets before `fork`.
     def before_fork
       return unless warmup_enabled?
 
+      preload_routes_and_i18n!
+      preload_view_templates!
       preload_model_schemas!
       warm_in_memory_caches!
     rescue StandardError => e
@@ -92,8 +105,8 @@ module ServerWarmup
 
     # Runs in each forked Puma worker process on boot (inside Heroku's Preboot window).
     # Establishes the worker's ActiveRecord connection pool, pre-connects and initializes
-    # PostgreSQL OID type maps for worker threads, warms the Redis cache client, refreshes
-    # L1 caches, and keeps idle connections warm until live traffic arrives.
+    # PostgreSQL OID type maps for worker threads, warms the Redis cache and Sidekiq pools,
+    # refreshes L1 caches, and keeps idle connections warm until live traffic arrives.
     def on_worker_boot
       ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
       return unless warmup_enabled?
@@ -127,6 +140,42 @@ module ServerWarmup
     def reset_state!
       stop_preboot_keepalive!
       @traffic_received = false
+    end
+
+    def preload_routes_and_i18n!
+      if defined?(Rails) && Rails.respond_to?(:application) && Rails.application
+        Rails.application.reload_routes! if Rails.application.routes.routes.empty?
+        Rails.application.routes.eager_load!
+      end
+
+      if defined?(I18n) && I18n.respond_to?(:backend) && I18n.backend.respond_to?(:eager_load!)
+        I18n.backend.eager_load!
+      end
+    rescue StandardError => e
+      log_error("Routes and I18n preload failed", e)
+    end
+
+    def preload_view_templates!
+      return 0 unless defined?(ActionController::Base) && defined?(ActionView::LookupContext::DetailsKey)
+
+      view_context = ActionView::LookupContext::DetailsKey.view_context_class.empty
+      compiled_count = 0
+
+      ActionController::Base.view_paths.paths.each do |resolver|
+        next unless resolver.respond_to?(:all_template_paths)
+
+        unbound_cache = resolver.instance_variable_get(:@unbound_templates)
+        next unless unbound_cache.respond_to?(:compute_if_absent)
+
+        resolver.all_template_paths.each do |template_path|
+          compiled_count += compile_template_path(resolver, unbound_cache, template_path, view_context)
+        end
+      end
+
+      compiled_count
+    rescue StandardError => e
+      log_error("View template preload failed", e)
+      0
     end
 
     def preload_model_schemas!
@@ -166,21 +215,21 @@ module ServerWarmup
       0
     end
 
-    def warm_redis_cache_connection!
-      return unless defined?(Rails) && Rails.respond_to?(:cache) && Rails.cache
+    def warm_redis_cache_connection!(target_count = worker_thread_count)
+      return 0 unless defined?(Rails) && Rails.respond_to?(:cache) && Rails.cache
 
-      if Rails.cache.respond_to?(:redis)
-        redis_client = Rails.cache.redis
-        if redis_client.respond_to?(:with)
-          redis_client.with(&:ping)
-        elsif redis_client.respond_to?(:ping)
-          redis_client.ping
-        end
-      else
-        Rails.cache.read("subforem_default_id")
-      end
+      warmed = if Rails.cache.respond_to?(:redis)
+                 warm_redis_client_pool(Rails.cache.redis, target_count)
+               else
+                 Rails.cache.read("subforem_default_id")
+                 1
+               end
+
+      warm_sidekiq_redis_connection!
+      warmed
     rescue StandardError => e
       log_error("Redis cache connection warmup failed", e)
+      0
     end
 
     def warm_in_memory_caches!
@@ -188,6 +237,7 @@ module ServerWarmup
 
       warm_flipper_cache!
       warm_subforem_caches!
+      warm_settings_caches!
     rescue StandardError => e
       log_error("In-memory cache warmup failed", e)
     ensure
@@ -238,6 +288,25 @@ module ServerWarmup
       log_error("Subforem cache warmup failed", e)
     end
 
+    def warm_settings_caches!
+      subforem_ids = if defined?(Subforem) && Subforem.table_exists?
+                       Subforem.cached_id_to_domain_hash.keys
+                     else
+                       []
+                     end
+      target_subforem_ids = [nil, *subforem_ids].uniq
+
+      SETTINGS_MODEL_NAMES.filter_map(&:safe_constantize).each do |model|
+        next unless model.respond_to?(:table_exists?) && model.table_exists?
+
+        target_subforem_ids.each do |subforem_id|
+          model.__send__(:all_settings, subforem_id)
+        end
+      end
+    rescue StandardError => e
+      log_error("Settings cache warmup failed", e)
+    end
+
     def disconnect_parent_connections!
       clear_request_store!
       if defined?(ActiveRecord::Base)
@@ -248,9 +317,9 @@ module ServerWarmup
       log_error("Parent connection cleanup failed", e)
     end
 
-    # Keeps the worker's pre-warmed database connections and L1 caches warm across
-    # Heroku's ~160s Preboot window so `AR Pool Reaper` (`idle_timeout: 60`) does not
-    # disconnect idle connections before router cutover. Automatically exits as soon
+    # Keeps the worker's pre-warmed database/Redis connections and L1 caches warm across
+    # Heroku's ~160s Preboot window so connection reapers or idle socket timeouts do not
+    # disconnect pooled sockets before router cutover. Automatically exits as soon
     # as live traffic arrives or the Preboot window elapses.
     def start_preboot_keepalive!(
       duration_seconds: preboot_keepalive_seconds,
@@ -295,12 +364,73 @@ module ServerWarmup
         break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
 
         warm_database_connections!
+        warm_redis_cache_connection!
         warm_flipper_cache!
       end
     rescue StandardError => e
       log_error("Preboot keepalive exited unexpectedly", e)
     ensure
       clear_request_store!
+    end
+
+    def compile_template_path(resolver, unbound_cache, template_path, view_context)
+      unbound_list = unbound_cache.compute_if_absent(template_path.virtual) do
+        resolver.__send__(:unbound_templates_from_path, template_path)
+      end
+
+      compiled = 0
+      Array(unbound_list).each do |unbound_template|
+        template = unbound_template.bind_locals([])
+        template.__send__(:compile!, view_context)
+        compiled += 1
+      rescue StandardError => e
+        log_error("Template compile failed for #{template_path.virtual}", e)
+      end
+      compiled
+    rescue StandardError => e
+      log_error("Template lookup failed for #{template_path.virtual}", e)
+      0
+    end
+
+    def warm_redis_client_pool(redis_client, target_count)
+      stack = redis_client.instance_variable_get(:@available)
+      if stack.respond_to?(:pop) && stack.respond_to?(:push) && redis_client.respond_to?(:size)
+        warm_pooled_redis_stack(stack, [target_count.to_i, redis_client.size].min)
+      elsif redis_client.respond_to?(:with)
+        redis_client.with(&:ping)
+        1
+      elsif redis_client.respond_to?(:ping)
+        redis_client.ping
+        1
+      else
+        0
+      end
+    end
+
+    def warm_pooled_redis_stack(stack, count)
+      return 0 if count <= 0
+
+      checked_out = []
+      begin
+        count.times do
+          break if @traffic_received
+
+          conn = stack.pop(timeout: 2)
+          conn.ping if conn.respond_to?(:ping)
+          checked_out << conn
+        end
+        checked_out.size
+      ensure
+        checked_out.each { |conn| stack.push(conn) }
+      end
+    end
+
+    def warm_sidekiq_redis_connection!
+      return unless defined?(Sidekiq) && Sidekiq.respond_to?(:redis)
+
+      Sidekiq.redis(&:ping)
+    rescue StandardError => e
+      log_error("Sidekiq Redis connection warmup failed", e)
     end
 
     def wait_for_stop_signal(queue, timeout_seconds)
@@ -364,13 +494,19 @@ module ServerWarmup
     end
 
     def close_redis_cache_connection!
-      return unless defined?(Rails) && Rails.respond_to?(:cache) && Rails.cache.respond_to?(:redis)
+      if defined?(Rails) && Rails.respond_to?(:cache) && Rails.cache.respond_to?(:redis)
+        redis_client = Rails.cache.redis
+        if redis_client.respond_to?(:reload)
+          redis_client.reload { |conn| conn.close if conn.respond_to?(:close) }
+        elsif redis_client.respond_to?(:with)
+          redis_client.with { |conn| conn.close if conn.respond_to?(:close) }
+        elsif redis_client.respond_to?(:close)
+          redis_client.close
+        end
+      end
 
-      redis_client = Rails.cache.redis
-      if redis_client.respond_to?(:with)
-        redis_client.with { |conn| conn.close if conn.respond_to?(:close) }
-      elsif redis_client.respond_to?(:close)
-        redis_client.close
+      if defined?(Sidekiq) && Sidekiq.respond_to?(:redis_pool)
+        Sidekiq.redis_pool.reload { |conn| conn.close if conn.respond_to?(:close) }
       end
     rescue StandardError => e
       log_error("Redis connection close failed", e)
