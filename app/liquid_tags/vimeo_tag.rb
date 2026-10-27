@@ -1,8 +1,9 @@
 class VimeoTag < LiquidTagBase
   PARTIAL = "liquids/vimeo".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{(?:https?://)?(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d*)}
+  REGISTRY_REGEXP = %r{(?:https?://)?(?:player\.|www\.)?vimeo\.com/(?:video/|embed/|watch)?(?:ondemand/\w+/)?(?<video_id>\d+)}
   # rubocop:enable Layout/LineLength
+  ID_REGEXP = /\A\d+\z/
 
   def initialize(_tag_name, token, _parse_context)
     super
@@ -27,7 +28,12 @@ class VimeoTag < LiquidTagBase
 
   def get_id(input)
     match = input.match(REGISTRY_REGEXP)
-    match ? match[:video_id] : input
+    id = match ? match[:video_id] : input
+    unless id.match?(ID_REGEXP)
+      raise StandardError, I18n.t("liquid_tags.vimeo_tag.invalid_vimeo_id", default: "Invalid Vimeo ID")
+    end
+
+    id
   end
 end
 

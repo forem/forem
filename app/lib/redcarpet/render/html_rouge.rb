@@ -20,46 +20,51 @@ module Redcarpet
       end
 
       def image(link, title, alt_text)
+        return "" unless allowed_uri?(link, allow_data: true)
+
         # Check if the URL is an image and process accordingly
-        if %r{\Ahttps?://}.match?(link)
-          modified_url = MediaStore.find_by(original_url: link)&.output_url || link
-          title_attr = title ? %( title="#{title}") : ""
-          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
-          %(<img src="#{modified_url}"#{title_attr}#{alt_text_attr}/>)
-        else
-          title_attr = title ? %( title="#{title}") : ""
-          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
-          %(<img src="#{link}"#{title_attr}#{alt_text_attr}/>)
-        end
+        url = if %r{\Ahttps?://}.match?(link)
+                MediaStore.find_by(original_url: link)&.output_url || link
+              else
+                link
+              end
+        safe_url = escape_uri_attribute(url)
+        title_attr = title ? %( title="#{escape_attribute(title)}") : ""
+        alt_text_attr = alt_text ? %( alt="#{escape_attribute(alt_text)}") : ""
+        %(<img src="#{safe_url}"#{title_attr}#{alt_text_attr}/>)
       end
 
-      def link(link, _title, content) # rubocop:disable Metrics/PerceivedComplexity
+      def link(link, _title, content) # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
         # Regex to capture src, alt, and title attributes from an img tag
         if content&.include?("<img") && (doc = Nokogiri::HTML(content))
           image_url = doc.at_css("img")["src"]
           alt_text = doc.at_css("img")["alt"] || nil
           title = doc.at_css("img")["title"] || nil
           modified_content = image(image_url, title, alt_text) # Call your image method with title and alt text
-          %(<a href="#{link}">#{modified_content}</a>)
+          return %(<a>#{modified_content}</a>) unless allowed_uri?(link)
+
+          %(<a href="#{escape_uri_attribute(link)}">#{modified_content}</a>)
         else
           # Proceed with normal link rendering if no image is detected
           return if %r{<a\s.+/a>}.match?(content)
+          return %(<a>#{content}</a>) unless allowed_uri?(link)
 
           link_attributes = ""
           @options[:link_attributes]&.each do |attribute, value|
-            link_attributes += %( #{attribute}="#{value}")
+            link_attributes += %( #{attribute}="#{escape_attribute(value)}")
           end
-          if (%r{https?://\S+}.match? link) || link.nil?
-            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
-          elsif %r{\w+:}.match?(link)
+          safe_link = escape_uri_attribute(link)
+          if (%r{\Ahttps?://\S+}.match? link) || link.nil?
+            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
+          elsif /\A\w+:/.match?(link)
             # Handle links with protocols (mailto:, tel:, ftp:, etc.)
-            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
           elsif /\.{1}/.match? link
-            %(<a href="//#{link}"#{link_attributes}>#{content}</a>)
+            %(<a href="//#{safe_link}"#{link_attributes}>#{content}</a>)
           elsif link.start_with?("#")
-            %(<a href="#{link}"#{link_attributes}>#{content}</a>)
+            %(<a href="#{safe_link}"#{link_attributes}>#{content}</a>)
           else
-            %(<a href="#{app_protocol}#{app_domain}#{link}"#{link_attributes}>#{content}</a>)
+            %(<a href="#{app_protocol}#{app_domain}#{safe_link}"#{link_attributes}>#{content}</a>)
           end
         end
       end
@@ -105,6 +110,32 @@ module Redcarpet
       def slugify(string)
         stripped_string = ForemNative.full_sanitize(string) || ActionView::Base.full_sanitizer.sanitize(string)
         stripped_string.downcase.gsub(EmojiRegex::RGIEmoji, "").strip.gsub(/[[:punct:]]/u, "").gsub(/\s+/, "-")
+      end
+
+      def allowed_uri?(uri, allow_data: false)
+        return true if uri.nil?
+
+        unescaped = fully_unescape_html(uri.to_s).strip
+        return false if !allow_data && unescaped.gsub(/[\x00-\x20]+/, "").match?(/\Adata:/i)
+
+        Loofah::HTML5::Scrub.allowed_uri?(unescaped)
+      end
+
+      def fully_unescape_html(str)
+        prev = nil
+        while str != prev
+          prev = str
+          str = CGI.unescape_html(str)
+        end
+        str
+      end
+
+      def escape_attribute(value)
+        ERB::Util.html_escape(CGI.unescapeHTML(value.to_s))
+      end
+
+      def escape_uri_attribute(uri)
+        uri.to_s.gsub('"', "&quot;").gsub("<", "&lt;").gsub(">", "&gt;")
       end
     end
   end
