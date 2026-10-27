@@ -456,6 +456,34 @@ fn beautified_url(ruby: &Ruby, url: RString) -> Option<RString> {
     Some(beautified.map_or_else(|| RString::new_shared(url), |s| ruby.str_new(&s)))
 }
 
+fn parse_emojis(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. `test_as_str` reuses Ruby's cached
+    // coderange and returns `None` for invalid UTF-8 so `Html::Parser` keeps Ruby's semantics.
+    let parsed = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::emoji::parse_emojis(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(parsed) => Some(parsed),
+        }
+    };
+    Some(parsed.map_or(html, |s| ruby.str_new(&s)))
+}
+
+fn escape_colon_emojis_in_codeblock(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects. Returns `None` for invalid UTF-8 or
+    // HTML fragments needing Nokogiri normalization so `Html::Parser` falls back to Nokogiri.
+    let escaped = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::emoji::escape_colon_emojis_in_codeblock(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(escaped) => Some(escaped),
+        }
+    };
+    Some(escaped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -539,5 +567,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(slugify_heading_anchor, 1),
     )?;
     native_mod.define_singleton_method("beautified_url", function!(beautified_url, 1))?;
+    native_mod.define_singleton_method("parse_emojis", function!(parse_emojis, 1))?;
+    native_mod.define_singleton_method(
+        "escape_colon_emojis_in_codeblock",
+        function!(escape_colon_emojis_in_codeblock, 1),
+    )?;
     Ok(())
 }

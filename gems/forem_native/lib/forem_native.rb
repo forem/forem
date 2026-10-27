@@ -376,6 +376,30 @@ module ForemNative
       Native.beautified_url(url)
     end
 
+    # Replaces `:([\w+-]+):` shortcodes with their `Emoji.find_by_alias($1)&.raw` Unicode sequences,
+    # matching `Html::Parser#parse_emojis`.
+    # Returns nil for anything but a plain UTF-8 String (and for invalid UTF-8) so `Html::Parser`
+    # can fall back to `legacy_parse_emojis`.
+    def parse_emojis(html)
+      return unless Native.respond_to?(:parse_emojis)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.parse_emojis(html)
+    end
+
+    # Replaces `:([\w+-]+):` shortcodes outside `<code>...</code>` elements on canonical
+    # `Nokogiri::HTML.fragment(html).to_html` fragments, matching
+    # `Html::Parser#escape_colon_emojis_in_codeblock`.
+    # Returns nil for anything but a plain UTF-8 String, invalid UTF-8, or HTML fragments that
+    # need Nokogiri's HTML4 tree builder or serializer normalization so `Html::Parser` can fall
+    # back to `legacy_escape_colon_emojis_in_codeblock`.
+    def escape_colon_emojis_in_codeblock(html)
+      return unless Native.respond_to?(:escape_colon_emojis_in_codeblock)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.escape_colon_emojis_in_codeblock(html)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
