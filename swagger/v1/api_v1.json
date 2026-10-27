@@ -1248,6 +1248,81 @@
         }
       }
     },
+    "/api/articles/preview": {
+      "post": {
+        "summary": "Preview an article",
+        "tags": [
+          "articles"
+        ],
+        "description": "This endpoint allows the client to preview an article's rendered HTML and parsed front matter without saving it to the database.",
+        "operationId": "previewArticle",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Article Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    },
+                    "body_html": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true
+                    },
+                    "cover_image": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "reading_time_minutes": {
+                      "type": "integer"
+                    },
+                    "ai_disclosure_level": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Article"
+              }
+            }
+          },
+          "description": "Article markdown and optional attributes to preview"
+        }
+      }
+    },
     "/api/segments": {
       "get": {
         "summary": "Manually managed audience segments",
@@ -2097,6 +2172,104 @@
         }
       }
     },
+    "/api/billboards/preview": {
+      "post": {
+        "summary": "Preview a billboard",
+        "tags": [
+          "billboards"
+        ],
+        "description": "Render a billboard's Markdown/HTML copy into `processed_html` and `minimized_processed_html` without saving it.",
+        "operationId": "previewBillboard",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "minimized_processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown or raw HTML) of the ad"
+                  },
+                  "minimized_body_markdown": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional minimized markdown copy"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "sidebar_right_second",
+                      "sidebar_right_third",
+                      "feed_first",
+                      "feed_second",
+                      "feed_third",
+                      "home_hero",
+                      "footer",
+                      "page_fixed_bottom",
+                      "post_fixed_bottom",
+                      "post_body_bottom",
+                      "post_body_bottom_secondary",
+                      "post_sidebar",
+                      "post_sidebar_secondary",
+                      "post_comments",
+                      "post_comments_secondary",
+                      "post_comments_mid",
+                      "digest_first",
+                      "digest_second",
+                      "external_feed"
+                    ],
+                    "nullable": true
+                  },
+                  "render_mode": {
+                    "type": "string",
+                    "enum": [
+                      "forem_markdown",
+                      "raw"
+                    ],
+                    "default": "forem_markdown"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Billboard markdown and rendering parameters to preview."
+        }
+      }
+    },
     "/api/comments": {
       "get": {
         "summary": "Comments",
@@ -2196,6 +2369,58 @@
           "404": {
             "description": "Comment Not Found"
           }
+        }
+      }
+    },
+    "/api/comments/preview": {
+      "post": {
+        "summary": "Preview a comment",
+        "tags": [
+          "comments"
+        ],
+        "description": "This endpoint allows the client to preview a comment's rendered HTML from Markdown without saving it.",
+        "operationId": "previewComment",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Comment Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The comment body in Markdown format"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Comment markdown to preview"
         }
       }
     },
@@ -3990,6 +4215,69 @@
           "422": {
             "description": "unprocessable"
           }
+        }
+      }
+    },
+    "/api/pages/preview": {
+      "post": {
+        "summary": "preview a page",
+        "tags": [
+          "pages"
+        ],
+        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.",
+        "operationId": "previewPage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the page"
+                  },
+                  "body_html": {
+                    "type": "string",
+                    "description": "Raw HTML for site admin pages when body_markdown is omitted",
+                    "nullable": true
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "nullable": true,
+                    "description": "The ID of the organization the page belongs to, if previewing an organization page"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Page content to preview."
         }
       }
     },
