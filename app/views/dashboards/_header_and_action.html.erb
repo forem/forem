@@ -7,6 +7,36 @@
       </div>
     </div>
     <%= render "analytics" if params[:action] == "show" %>
+    <% if FeatureFlag.enabled?(:community_favorites) && params[:which] != "organization" && (@unlimited_favorites || @gems_to_give_count.to_i.positive?) %>
+      <div class="crayons-card crayons-card--secondary p-3 m:p-4 mt-3 flex flex-col m:flex-row items-start m:items-center justify-between gap-3" data-testid="dashboard-gems-to-give-banner">
+        <div class="flex items-start m:items-center gap-3">
+          <span class="inline-flex items-center justify-center p-2 radius-default shrink-0" style="background: var(--reaction-favorite-bg, rgba(217, 119, 6, 0.12)); color: var(--reaction-favorite-color, #d97706);">
+            <%= crayons_icon_tag("favorite-filled", native: true, title: t("views.dashboard.article.gem")) %>
+          </span>
+          <div>
+            <% if @unlimited_favorites %>
+              <strong class="block color-base-90 fs-base"><%= t("views.dashboard.gems_to_give.unlimited_heading") %></strong>
+              <span class="color-base-70 fs-s"><%= t("views.dashboard.gems_to_give.unlimited_body") %></span>
+            <% elsif @user&.community_leader? %>
+              <strong class="block color-base-90 fs-base"><%= t("views.dashboard.gems_to_give.leader_heading", count: @gems_to_give_count) %></strong>
+              <span class="color-base-70 fs-s"><%= t("views.dashboard.gems_to_give.leader_body", count: @gems_to_give_count) %></span>
+            <% else %>
+              <strong class="block color-base-90 fs-base"><%= t("views.dashboard.gems_to_give.earned_heading", count: @gems_to_give_count) %></strong>
+              <span class="color-base-70 fs-s"><%= t("views.dashboard.gems_to_give.earned_body", count: @gems_to_give_count) %></span>
+            <% end %>
+          </div>
+        </div>
+        <% if @user&.community_leader? %>
+          <a href="<%= curation_path %>" class="crayons-btn crayons-btn--outlined crayons-btn--s shrink-0">
+            <%= t("views.dashboard.gems_to_give.curation_cta") %>
+          </a>
+        <% else %>
+          <a href="<%= root_path %>" class="crayons-btn crayons-btn--outlined crayons-btn--s shrink-0">
+            <%= t("views.dashboard.gems_to_give.explore_cta") %>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
   </header>
 
   <div class="crayons-layout__sidebar-left">

@@ -22,6 +22,20 @@ RSpec.describe Favorites::Remove, type: :service do
     expect(comment.reload.favorited_by_user_id).to be_nil
   end
 
+  it "touches ancestor comments and the previous favoriter when removing a comment favorite" do
+    article = create(:article)
+    root = create(:comment, commentable: article)
+    reply = create(:comment, commentable: article, parent: root, favorited_by_user: leader, favorited_at: Time.current)
+    Comment.where(id: [root.id, reply.id]).update_all(updated_at: 1.day.ago)
+    User.where(id: leader.id).update_all(updated_at: 1.day.ago)
+
+    described_class.call(favoritable: reply, admin: admin)
+
+    expect(root.reload.updated_at).to be > 1.minute.ago
+    expect(reply.reload.updated_at).to be > 1.minute.ago
+    expect(leader.reload.updated_at).to be > 1.minute.ago
+  end
+
   it "audit-logs the removal" do
     article = create(:article, favorited_by_user: leader, favorited_at: Time.current)
     allow(Audit::Logger).to receive(:log).and_call_original

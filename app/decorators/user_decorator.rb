@@ -120,6 +120,8 @@ class UserDecorator < ApplicationDecorator
       body_class << "user-role--#{name}"
     end
 
+    body_class << "gem-allowance-available" if earned_favorites_count.positive?
+
     # Backfill ten-x-hacker-theme because the ios app looks for it to render native dark shell.
     body_class << "ten-x-hacker-theme" if setting.config_theme == "dark_theme"
     body_class.join(" ")

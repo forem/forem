@@ -4,11 +4,26 @@ import { checkUserLoggedIn } from '@utilities/checkUserLoggedIn';
 import { globalFeatureFlagEnabled } from '@utilities/featureFlags';
 import { FavoriteControl } from '../favoriteControl/FavoriteControl';
 
-function initializeFavoriteControls(currentUser) {
+let latestUser = null;
+let commentObserver = null;
+
+function userSignature(user) {
+  if (!user) return 'anon';
+  return `${user.id}:${Boolean(user.community_leader)}:${
+    user.favorite_allowance === null ? 'unlimited' : user.favorite_allowance
+  }`;
+}
+
+export function initializeFavoriteControls(currentUser) {
+  latestUser = currentUser;
+  const sig = userSignature(currentUser);
   const nodes = document.querySelectorAll('[data-favorite-control]');
 
   for (const node of nodes) {
-    if (node.dataset.initialized === 'true') {
+    if (
+      node.dataset.initialized === 'true' &&
+      node.dataset.userSignature === sig
+    ) {
       continue;
     }
 
@@ -60,8 +75,29 @@ function initializeFavoriteControls(currentUser) {
       node,
     );
 
+    const wrapper = node.closest('[data-gem-action-wrapper]');
+    if (wrapper) {
+      wrapper.classList.remove('community-leader-visible-block');
+    }
+
     node.dataset.initialized = 'true';
+    node.dataset.userSignature = sig;
   }
+}
+
+function observeCommentsContainer() {
+  if (commentObserver) {
+    commentObserver.disconnect();
+    commentObserver = null;
+  }
+  const container = document.getElementById('comment-trees-container');
+  if (!container || typeof MutationObserver === 'undefined') {
+    return;
+  }
+  commentObserver = new MutationObserver(() => {
+    initializeFavoriteControls(latestUser);
+  });
+  commentObserver.observe(container, { childList: true, subtree: true });
 }
 
 function mount() {
@@ -78,11 +114,25 @@ function mount() {
 
   getUserDataAndCsrfTokenSafely().then(({ currentUser }) => {
     initializeFavoriteControls(currentUser);
+    observeCommentsContainer();
   });
 }
 
+window.addEventListener('forem:user-data-loaded', (event) => {
+  if (!globalFeatureFlagEnabled('community_favorites')) {
+    return;
+  }
+  const freshUser = event?.detail?.user;
+  if (freshUser) {
+    initializeFavoriteControls(freshUser);
+    observeCommentsContainer();
+  }
+});
+
 mount();
 
-window.InstantClick.on('change', () => {
-  mount();
-});
+if (window.InstantClick) {
+  window.InstantClick.on('change', () => {
+    mount();
+  });
+}

@@ -258,6 +258,109 @@ describe('<FavoriteControl />', () => {
         addCloseButton: true,
       });
     });
+
+    it('synchronizes document.body.dataset.user, localStorage, and body classes when spending the last gem', async () => {
+      const initialUser = {
+        id: CURRENT_USER_ID,
+        favorite_allowance: 1,
+        community_leader: false,
+        config_body_class: 'light-theme gem-allowance-available',
+      };
+      document.body.dataset.user = JSON.stringify(initialUser);
+      document.body.classList.add('gem-allowance-available');
+      localStorage.setItem('current_user', JSON.stringify(initialUser));
+      localStorage.setItem('config_body_class', initialUser.config_body_class);
+
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: 0 }),
+      });
+
+      const { getByLabelText, findByLabelText } = renderControl({
+        currentUser: initialUser,
+      });
+
+      fireEvent.click(getByLabelText('Pick as gem'));
+
+      await findByLabelText('Picked as gem by you');
+
+      expect(JSON.parse(document.body.dataset.user).favorite_allowance).toBe(0);
+      expect(JSON.parse(localStorage.getItem('current_user')).favorite_allowance).toBe(0);
+      expect(localStorage.getItem('config_body_class')).not.toContain('gem-allowance-available');
+      expect(document.body.classList.contains('gem-allowance-available')).toBe(false);
+    });
+
+    it('synchronizes sibling controls on the page when a gem is picked', async () => {
+      const nonLeaderWithOneGem = {
+        id: CURRENT_USER_ID,
+        favorite_allowance: 1,
+        community_leader: false,
+      };
+
+      makeFavorite.mockResolvedValue({
+        ok: true,
+        json: async () => ({ success: true, remaining_allowance: 0 }),
+      });
+
+      const { getAllByLabelText, findAllByLabelText, queryByRole } = render(
+        <div>
+          <FavoriteControl
+            {...defaultProps}
+            currentUser={nonLeaderWithOneGem}
+            variant="article"
+            favoritableType="Article"
+            favoritableId="3"
+          />
+          <FavoriteControl
+            {...defaultProps}
+            currentUser={nonLeaderWithOneGem}
+            variant="dropdown"
+            favoritableType="Article"
+            favoritableId="3"
+          />
+          <FavoriteControl
+            {...defaultProps}
+            currentUser={nonLeaderWithOneGem}
+            variant="comment"
+            favoritableType="Comment"
+            favoritableId="99"
+          />
+        </div>,
+      );
+
+      const buttons = getAllByLabelText('Pick as gem');
+      expect(buttons).toHaveLength(3);
+
+      fireEvent.click(buttons[0]);
+
+      const favoritedIndicators = await findAllByLabelText('Picked as gem by you');
+      expect(favoritedIndicators).toHaveLength(2);
+      // The unfavorited comment control should now hide since remaining_allowance is 0 for a non-leader
+      expect(queryByRole('button', { name: 'Pick as gem' })).toBeNull();
+    });
+
+    it('updates visibility when currentUser prop refreshes from stale localStorage to fresh async_info data', () => {
+      const staleUser = {
+        id: CURRENT_USER_ID,
+        favorite_allowance: 0,
+        community_leader: false,
+      };
+      const freshUser = {
+        id: CURRENT_USER_ID,
+        favorite_allowance: 1,
+        community_leader: false,
+      };
+
+      const { container, rerender, getByRole } = render(
+        <FavoriteControl {...defaultProps} currentUser={staleUser} />,
+      );
+
+      expect(container).toBeEmptyDOMElement();
+
+      rerender(<FavoriteControl {...defaultProps} currentUser={freshUser} />);
+
+      expect(getByRole('button')).toBeInTheDocument();
+    });
   });
 
   describe('already-favorited state', () => {

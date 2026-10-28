@@ -131,6 +131,27 @@ RSpec.describe "Favorites" do
       expect(response.body).to include("data-favoritable-id=\"#{article.id}\"")
     end
 
+    it "renders both desktop and mobile dropdown favorite controls even when signed out", :aggregate_failures do
+      get article.path
+
+      html = Nokogiri::HTML(response.body)
+      expect(html.css('[data-favorite-control][data-variant="article"]')).to be_present
+      expect(html.css('[data-favorite-control][data-variant="dropdown"]')).to be_present
+    end
+
+    it "does not hide an already-favorited article behind community-leader-visible-block", :aggregate_failures do
+      article.update!(favorited_by_user: leader, favorited_at: Time.current)
+
+      get article.path
+
+      html = Nokogiri::HTML(response.body)
+      wrappers = html.css("[data-gem-action-wrapper]")
+      expect(wrappers.size).to eq(2)
+      wrappers.each do |wrapper|
+        expect(wrapper["class"]).not_to include("community-leader-visible-block")
+      end
+    end
+
     it "renders no mount node when the feature flag is disabled" do
       FeatureFlag.disable(:community_favorites)
       sign_in create(:user)

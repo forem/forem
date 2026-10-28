@@ -63,6 +63,7 @@ fr:
             longest_streak: Plus longue série
             best_day: Meilleur jour
       article:
+        gem: Gemme
         heading:
           text_html: "%{archived}%{title}"
           archived: "[Archived] "
@@ -284,6 +285,25 @@ fr:
       summary:
         reactions: Total post reactions
         views: Total post views
+        comments: Total des commentaires
+        gems: Publications avec Gemme
         listings: Listings created
         credits: Credits available
         lt_500: "< 500"
+      gems_to_give:
+        earned_heading:
+          one: "Vous avez %{count} Gemme à offrir !"
+          other: "Vous avez %{count} Gemmes à offrir !"
+        earned_body:
+          one: "Quelqu'un a attribué une Gemme à votre travail — vous pouvez la transmettre pour mettre en avant une publication ou un commentaire que vous aimez."
+          other: "Votre travail a reçu des Gemmes — vous pouvez les transmettre pour mettre en avant des publications ou des commentaires que vous aimez."
+        leader_heading:
+          one: "Il vous reste %{count} Gemme à attribuer"
+          other: "Il vous reste %{count} Gemmes à attribuer"
+        leader_body:
+          one: "Utilisez votre Gemme restante pour mettre en valeur une publication ou un commentaire remarquable."
+          other: "Utilisez vos Gemmes restantes pour mettre en valeur des publications ou des commentaires remarquables."
+        unlimited_heading: "Vous disposez de Gemmes illimitées"
+        unlimited_body: "Mettez en valeur les meilleures publications et commentaires de la communauté."
+        explore_cta: "Explorer le fil"
+        curation_cta: "Tableau de curation"

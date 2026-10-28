@@ -15,6 +15,7 @@ module Favorites
     def call
       previous_favoriter_id = favoritable.favorited_by_user_id
       favoritable.update!(favorited_by_user_id: nil, favorited_at: nil)
+      bust_cache(previous_favoriter_id)
       log_audit(previous_favoriter_id)
       Result.new(success?: true, favoritable: favoritable)
     end
@@ -22,6 +23,13 @@ module Favorites
     private
 
     attr_reader :favoritable, :admin
+
+    def bust_cache(previous_favoriter_id)
+      if favoritable.is_a?(Comment)
+        Comment.where(id: favoritable.path_ids).update_all(updated_at: Time.current)
+      end
+      User.where(id: previous_favoriter_id).touch_all if previous_favoriter_id
+    end
 
     def log_audit(previous_favoriter_id)
       Audit::Logger.log(:moderator, admin,

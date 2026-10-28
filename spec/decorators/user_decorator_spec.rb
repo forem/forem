@@ -141,6 +141,12 @@ RSpec.describe UserDecorator, type: :decorator do
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)
       end
+
+      it "appends gem-allowance-available when user has earned favorites" do
+        user.update!(earned_favorites_count: 1)
+
+        expect(user.decorate.config_body_class).to include("gem-allowance-available")
+      end
     end
   end
 

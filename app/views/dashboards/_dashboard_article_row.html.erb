@@ -67,6 +67,13 @@
           <% end %>
         </span>
 
+        <% if FeatureFlag.enabled?(:community_favorites) && article.favorited? %>
+          <span class="flex items-center p-1 ml-1 fw-medium" style="color: var(--reaction-favorite-color, #d97706);" title="<%= t("favorites.favorited") %>" data-testid="dashboard-article-gem-<%= article.id %>">
+            <%= crayons_icon_tag("small-favorite-filled", native: true, class: "mr-1", title: t("favorites.favorited")) %>
+            <span><%= t("views.dashboard.article.gem") %></span>
+          </span>
+        <% end %>
+
         <% if article.user_subscriptions_count > 0 %>
           <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost-dimmed crayons-btn--s" title="<%= t("views.dashboard.article.subscriptions.title") %>">
             <%= crayons_icon_tag("small-data", class: "mr-1", title: t("views.dashboard.article.subscriptions.icon")) %>

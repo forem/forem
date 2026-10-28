@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { Icon, Modal, ButtonNew as Button } from '@crayons';
 import FavoriteSVG from '@images/favorite.svg';
 import FavoriteFilledSVG from '@images/favorite-filled.svg';
@@ -78,6 +78,65 @@ const Tooltip = ({ label }) => (
   </span>
 );
 
+export const FAVORITE_UPDATED_EVENT = 'forem:favorite-updated';
+
+export const syncStoredUserAllowance = (remainingAllowance) => {
+  if (typeof document === 'undefined') return;
+
+  const hasGems = remainingAllowance === null || remainingAllowance > 0;
+  document.body?.classList?.toggle('gem-allowance-available', hasGems);
+
+  try {
+    const rawUser =
+      document.body?.dataset?.user ||
+      (typeof window !== 'undefined' &&
+        window.localStorage?.getItem('current_user'));
+    if (!rawUser) return;
+
+    const parsedUser = JSON.parse(rawUser);
+    parsedUser.favorite_allowance = remainingAllowance;
+
+    if (typeof parsedUser.config_body_class === 'string') {
+      const classes = parsedUser.config_body_class
+        .split(/\s+/)
+        .filter(Boolean)
+        .filter((c) => c !== 'gem-allowance-available');
+      if (hasGems && !parsedUser.community_leader) {
+        classes.push('gem-allowance-available');
+      }
+      parsedUser.config_body_class = classes.join(' ');
+    }
+
+    const serialized = JSON.stringify(parsedUser);
+    if (document.body?.dataset) {
+      document.body.dataset.user = serialized;
+    }
+    if (
+      typeof window !== 'undefined' &&
+      typeof window.browserStoreCache === 'function'
+    ) {
+      window.browserStoreCache('set', parsedUser);
+    } else if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem('current_user', serialized);
+      if (parsedUser.config_body_class) {
+        window.localStorage.setItem(
+          'config_body_class',
+          parsedUser.config_body_class,
+        );
+      }
+    }
+  } catch (e) {
+    // Ignore storage errors in restricted browsing modes
+  }
+};
+
+const broadcastFavoriteUpdate = (detail) => {
+  if (typeof window === 'undefined' || typeof window.dispatchEvent !== 'function') {
+    return;
+  }
+  window.dispatchEvent(new CustomEvent(FAVORITE_UPDATED_EVENT, { detail }));
+};
+
 /**
  * Control for marking content as favorite.
  */
@@ -109,10 +168,61 @@ export const FavoriteControl = ({
   const [favoritedById, setFavoritedById] = useState(
     initialFavoritedByUserId ? Number(initialFavoritedByUserId) : null,
   );
+  const [allowance, setAllowance] = useState(
+    currentUser !== undefined && currentUser !== null
+      ? currentUser.favorite_allowance
+      : 0,
+  );
   const [submitting, setSubmitting] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showExhaustedModal, setShowExhaustedModal] = useState(false);
   const [remainingAllowance, setRemainingAllowance] = useState(null);
+
+  useEffect(() => {
+    setAllowance(
+      currentUser !== undefined && currentUser !== null
+        ? currentUser.favorite_allowance
+        : 0,
+    );
+  }, [currentUser?.id, currentUser?.favorite_allowance]);
+
+  useEffect(() => {
+    if (initialFavorited === 'true' || initialFavorited === true) {
+      setFavorited(true);
+    }
+    if (initialFavoritedByUserId) {
+      setFavoritedById(Number(initialFavoritedByUserId));
+    }
+  }, [initialFavorited, initialFavoritedByUserId]);
+
+  useEffect(() => {
+    const handleFavoriteUpdated = (event) => {
+      const detail = event.detail || {};
+      if (
+        detail.favoritableType === favoritableType &&
+        String(detail.favoritableId) === String(favoritableId)
+      ) {
+        if (detail.favorited !== undefined) {
+          setFavorited(Boolean(detail.favorited));
+        }
+        if (detail.favoritedByUserId !== undefined) {
+          setFavoritedById(
+            detail.favoritedByUserId != null
+              ? Number(detail.favoritedByUserId)
+              : null,
+          );
+        }
+      }
+      if (detail.remainingAllowance !== undefined) {
+        setAllowance(detail.remainingAllowance);
+      }
+    };
+
+    window.addEventListener(FAVORITE_UPDATED_EVENT, handleFavoriteUpdated);
+    return () => {
+      window.removeEventListener(FAVORITE_UPDATED_EVENT, handleFavoriteUpdated);
+    };
+  }, [favoritableType, favoritableId]);
 
   const userId = currentUser?.id ?? null;
   const favoritedByCurrentUser =
@@ -262,10 +372,10 @@ export const FavoriteControl = ({
   // Community leaders and users with favorite allowance get the control
   const canSeeControl =
     currentUser?.community_leader === true ||
-    (currentUser?.favorite_allowance != null && currentUser.favorite_allowance > 0);
+    (allowance != null && allowance > 0);
 
   if (!canSeeControl) {
-    return null;
+    return showExhaustedModal ? renderExhaustedModal() : null;
   }
 
   // A user can't favorite their own content
@@ -276,7 +386,7 @@ export const FavoriteControl = ({
   const onClick = async () => {
     if (submitting) return;
 
-    if (currentUser?.favorite_allowance != null && currentUser.favorite_allowance <= 0) {
+    if (allowance != null && allowance <= 0) {
       setShowExhaustedModal(true);
       return;
     }
@@ -289,13 +399,22 @@ export const FavoriteControl = ({
         const remaining =
           data.remaining_allowance !== undefined
             ? data.remaining_allowance
-            : currentUser?.favorite_allowance != null
-              ? Math.max(0, currentUser.favorite_allowance - 1)
+            : allowance != null
+              ? Math.max(0, allowance - 1)
               : null;
         setFavorited(true);
         setFavoritedById(userId);
+        setAllowance(remaining);
         setRemainingAllowance(remaining);
         setShowSuccessModal(true);
+        syncStoredUserAllowance(remaining);
+        broadcastFavoriteUpdate({
+          favoritableType,
+          favoritableId,
+          favorited: true,
+          favoritedByUserId: userId,
+          remainingAllowance: remaining,
+        });
         return;
       }
 
@@ -304,7 +423,18 @@ export const FavoriteControl = ({
       if (code === 'already_favorited') {
         setFavorited(true);
         setFavoritedById(null);
+        broadcastFavoriteUpdate({
+          favoritableType,
+          favoritableId,
+          favorited: true,
+          favoritedByUserId: null,
+        });
       } else if (code === 'no_allowance') {
+        setAllowance(0);
+        syncStoredUserAllowance(0);
+        broadcastFavoriteUpdate({
+          remainingAllowance: 0,
+        });
         setShowExhaustedModal(true);
         return;
       }

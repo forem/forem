@@ -50,9 +50,13 @@ class DashboardsController < ApplicationController
       @has_archived_articles = @articles.where(archived: true).exists?
     end
 
-    @reactions_count = @articles.sum(:public_reactions_count)
-    @comments_count = @articles.sum(:comments_count)
-    @page_views_count = @articles.sum(:page_views_count)
+    @reactions_count, @comments_count, @page_views_count, @gemmed_posts_count =
+      @articles.pick(
+        Arel.sql("COALESCE(SUM(articles.public_reactions_count), 0)"),
+        Arel.sql("COALESCE(SUM(articles.comments_count), 0)"),
+        Arel.sql("COALESCE(SUM(articles.page_views_count), 0)"),
+        Arel.sql("COUNT(articles.favorited_by_user_id)"),
+      )
 
     filtered_articles = @articles
     filtered_articles = filtered_articles.where(archived: @show_archived) if params[:which] != "organization"
@@ -206,6 +210,11 @@ class DashboardsController < ApplicationController
             end
     # NOTE: later we expect @user so the `||` is a bit misleading.
     authorize (@user || User), :dashboard_show?
+
+    return unless @user
+
+    @unlimited_favorites = @user.unlimited_favorites?
+    @gems_to_give_count = @user.favorite_allowance_for_client
   end
 
   def follows_limit(default: LIMIT_PER_PAGE_DEFAULT, max: LIMIT_PER_PAGE_MAX)
