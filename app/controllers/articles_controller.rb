@@ -33,13 +33,13 @@ class ArticlesController < ApplicationController
     #              do with a comment.
     skip_authorization
 
-    @articles = Article.feed.order(published_at: :desc).page(params[:page].to_i).per(12)
+    @articles = Article.feed.select(:cached_user_name).order(published_at: :desc).page(params[:page].to_i).per(12)
     @latest = request.path == latest_feed_path
 
     @organization = custom_domain_org
     if @organization
       @user = @organization
-      @articles = @articles.where(organization_id: @organization.id).includes(:user)
+      @articles = @articles.where(organization_id: @organization.id)
       if params[:tag]
         handle_tag_feed
       end
@@ -51,11 +51,9 @@ class ArticlesController < ApplicationController
                   elsif @latest
                     @articles
                       .where("score > ?", Articles::Feeds::Latest::MINIMUM_SCORE)
-                      .includes(:user)
                   else
                     @articles
                       .with_at_least_home_feed_minimum_score
-                      .includes(:user)
                   end
     end
 
@@ -316,17 +314,17 @@ class ArticlesController < ApplicationController
     if (@user = User.find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
-      @articles = @articles.where(organization_id: @user.id).includes(:user)
+      @articles = @articles.where(organization_id: @user.id)
     end
   end
 
   def handle_tag_feed
-    tag_name = Tag.aliased_name(params[:tag])
-    return unless tag_name
+    tag = Tag.select(:id, :name, :alias_for).find_by(name: params[:tag].to_s.downcase)
+    return unless tag
 
-    @tag = Tag.find_by(name: tag_name)
-    # The feed template renders each article's author name, so preload users to avoid an N+1.
-    @articles = @articles.cached_tagged_with(tag_name).includes(:user)
+    tag_name = tag.alias_for.presence || tag.name
+    @tag = tag.alias_for.present? ? Tag.select(:id, :name).find_by(name: tag_name) : tag
+    @articles = @articles.cached_tagged_with(tag_name)
   end
 
   def set_article
