@@ -107,6 +107,32 @@ RSpec.describe Settings::General do
       end
     end
 
+    describe ".limit_post_creation_to_admins" do
+      before do
+        allow(Spaces::BustCachesForSpaceChangeWorker).to receive(:perform_async)
+      end
+
+      it "defaults to the limit_post_creation_to_admins FeatureFlag state" do
+        FeatureFlag.enable(:limit_post_creation_to_admins)
+        expect(described_class.limit_post_creation_to_admins).to be(true)
+
+        FeatureFlag.disable(:limit_post_creation_to_admins)
+        expect(described_class.limit_post_creation_to_admins).to be(false)
+      end
+
+      it "syncs the FeatureFlag and busts caches when enabled or disabled", :aggregate_failures do
+        described_class.limit_post_creation_to_admins = true
+        expect(described_class.limit_post_creation_to_admins).to be(true)
+        expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(true)
+        expect(Spaces::BustCachesForSpaceChangeWorker).to have_received(:perform_async).once
+
+        described_class.limit_post_creation_to_admins = false
+        expect(described_class.limit_post_creation_to_admins).to be(false)
+        expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(false)
+        expect(Spaces::BustCachesForSpaceChangeWorker).to have_received(:perform_async).twice
+      end
+    end
+
     describe "validating :appeal_auto_unflag_threshold" do
       it "defaults to 1.01" do
         expect(described_class.appeal_auto_unflag_threshold).to eq(1.01)

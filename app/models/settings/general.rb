@@ -72,6 +72,9 @@ module Settings
     setting :enable_video_upload, type: :boolean, default: false
     setting :enable_agent_sessions, type: :boolean, default: true
     setting :enable_ai_disclosure, type: :boolean, default: false
+    setting :limit_post_creation_to_admins,
+            type: :boolean,
+            default: proc { FeatureFlag.enabled?(:limit_post_creation_to_admins) }
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil
@@ -253,6 +256,25 @@ module Settings
 
       def appeal_auto_unflag_threshold=(value)
         set_appeal_auto_unflag_threshold(value)
+      end
+
+      alias __orig_set_limit_post_creation_to_admins set_limit_post_creation_to_admins
+
+      def set_limit_post_creation_to_admins(value, subforem_id: nil)
+        __orig_set_limit_post_creation_to_admins(value, subforem_id: subforem_id)
+
+        if convert_string_to_value_type(:boolean, value)
+          FeatureFlag.enable(:limit_post_creation_to_admins)
+        else
+          FeatureFlag.disable(:limit_post_creation_to_admins)
+        end
+
+        Spaces::BustCachesForSpaceChangeWorker.perform_async
+        value
+      end
+
+      def limit_post_creation_to_admins=(value)
+        set_limit_post_creation_to_admins(value)
       end
     end
   end
