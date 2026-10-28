@@ -1631,7 +1631,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
+        "description": "Award a badge to a user. Requires administrator privileges.  Successful writes log `api_badge_achievement_create` with the actor and target ids in the admin API audit log.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1751,7 +1751,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.",
+        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.  Successful writes log `api_badge_achievement_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1809,7 +1809,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Create a new badge. Requires administrator privileges.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
+        "description": "Create a new badge. Requires administrator privileges.  Successful writes log `api_badge_create` with the actor and target ids in the admin API audit log.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
         "parameters": [
 
         ],
@@ -1900,7 +1900,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.",
+        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.  Successful writes log `api_badge_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1959,7 +1959,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.",
+        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.  Successful writes log `api_badge_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
