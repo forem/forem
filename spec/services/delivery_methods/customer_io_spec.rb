@@ -134,4 +134,35 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(request_double).to have_received(:attach).with("export.zip", "zipbytes")
     expect(api_client).to have_received(:send_email).with(request_double)
   end
+
+  describe "invalid recipient email addresses" do
+    it "skips sending and logs a warning when the to address contains a comma" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: "member@example,com",
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+      allow(Rails.logger).to receive(:warn)
+
+      described_class.new({}).deliver!(invalid_mail)
+
+      expect(api_client).not_to have_received(:send_email)
+      expect(Rails.logger).to have_received(:warn)
+        .with(include("[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address:"))
+    end
+
+    it "skips sending when the to address is wrapped in quotes" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: '"member@example.com"',
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+
+      described_class.new({}).deliver!(invalid_mail)
+
+      expect(api_client).not_to have_received(:send_email)
+    end
+  end
 end
