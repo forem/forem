@@ -621,6 +621,97 @@ module ForemNative
       Native.feed_config_score_sql(weights, context)
     end
 
+    # Scores an article's `cached_tag_list` against followed tag names and point values.
+    def score_followed_tags(cached_tag_list, followed_tag_names, followed_tag_points,
+                            followed_tag_weight = 1.0, not_followed_tag_score = 0.0)
+      return unless Native.respond_to?(:score_followed_tags)
+      return unless (cached_tag_list.nil? || cached_tag_list.instance_of?(String)) &&
+        followed_tag_names.is_a?(Array) && followed_tag_points.is_a?(Array)
+
+      weight = native_float(followed_tag_weight)
+      miss_score = native_float(not_followed_tag_score)
+      return unless weight && miss_score
+
+      Native.score_followed_tags(cached_tag_list || "", followed_tag_names, followed_tag_points, weight, miss_score)
+    end
+
+    # Computes the experience-level distance penalty (`-((article_rating - user_rating).abs / 2.0) * weight`).
+    def score_experience_level(article_rating, user_rating, xp_level_weight = 1.0)
+      return unless Native.respond_to?(:score_experience_level)
+
+      weight = native_float(xp_level_weight)
+      return unless (article_rating.is_a?(Integer) || article_rating.is_a?(Float)) &&
+        (user_rating.is_a?(Integer) || user_rating.is_a?(Float)) && weight
+
+      Native.score_experience_level(article_rating, user_rating, weight)
+    end
+
+    # Scores an article's AI disclosure level against a user's `feed_ai_preference`.
+    def score_ai_disclosure(ai_preference, ai_disclosure_level,
+                            some_ai_penalty = -10.0, fully_autonomous_penalty = -25.0)
+      return unless Native.respond_to?(:score_ai_disclosure)
+      return unless (ai_preference.nil? || ai_preference.instance_of?(String)) &&
+        (ai_disclosure_level.nil? || ai_disclosure_level.instance_of?(String))
+
+      some_pen = native_float(some_ai_penalty)
+      auto_pen = native_float(fully_autonomous_penalty)
+      Native.score_ai_disclosure(ai_preference, ai_disclosure_level, some_pen, auto_pen) if some_pen && auto_pen
+    end
+
+    # Computes the 6-component composite score for `LargeForemExperimental#score_single_article`.
+    def score_article_for_user(user_context, *article_args)
+      return unless Native.respond_to?(:score_article_for_user) && user_context.is_a?(Array)
+
+      args = article_args.size == 1 && article_args.first.is_a?(Array) ? article_args.first : article_args
+      return unless args.size == 7
+
+      Native.score_article_for_user(user_context, args[0], args[1], args[2], args[3], args[4], args[5], args[6])
+    end
+
+    # Ranks and sorts `articles` for `Articles::Feeds::Basic#default_home_feed` in a single pass.
+    def rank_articles_for_basic_feed(articles, user_context, article_tuples)
+      return unless Native.respond_to?(:rank_articles_for_basic_feed)
+      return unless articles.is_a?(Array) && user_context.is_a?(Array) && article_tuples.is_a?(Array)
+
+      Native.rank_articles_for_basic_feed(articles, user_context, article_tuples)
+    end
+
+    # Filters `(article_id, time_tracked_in_seconds)` pairs where `seconds > min_seconds_exclusive`.
+    def filter_tracked_article_ids(entries, min_seconds_exclusive = 29)
+      return unless Native.respond_to?(:filter_tracked_article_ids) && entries.is_a?(Array)
+
+      threshold = native_float(min_seconds_exclusive)
+      Native.filter_tracked_article_ids(entries, threshold) if threshold
+    end
+
+    # Aggregates `recent_tags`, `recent_labels`, `recent_organizations`, `recent_users`, and `recent_subforems`.
+    def aggregate_recent_activity_metadata(tag_lists, label_lists, org_ids, user_ids, subforem_ids, max_labels = 5)
+      return unless Native.respond_to?(:aggregate_recent_activity_metadata)
+      return unless [tag_lists, label_lists, org_ids, user_ids, subforem_ids].all?(Array) &&
+        max_labels.is_a?(Integer) && max_labels >= 0
+
+      Native.aggregate_recent_activity_metadata(tag_lists, label_lists, org_ids, user_ids, subforem_ids, max_labels)
+    end
+
+    # Scores and orders subforem IDs for `UserDecorator#ordered_subforems`.
+    def order_subforem_ids(recent_ids, followed_ids, discoverable_ids)
+      return unless Native.respond_to?(:order_subforem_ids)
+      return unless recent_ids.is_a?(Array) && followed_ids.is_a?(Array) && discoverable_ids.is_a?(Array)
+
+      Native.order_subforem_ids(recent_ids, followed_ids, discoverable_ids)
+    end
+
+    # Builds the 366-day activity heatmap payload Hash in a single pass for `UserActivityHeatmapService#build_payload`.
+    def build_activity_heatmap_payload(start_date_iso, end_date_iso, articles_by_day, comments_by_day, reactions_by_day)
+      return unless Native.respond_to?(:build_activity_heatmap_payload)
+      return unless start_date_iso.instance_of?(String) && end_date_iso.instance_of?(String) &&
+        [articles_by_day, comments_by_day, reactions_by_day].all?(Hash)
+
+      Native.build_activity_heatmap_payload(
+        start_date_iso, end_date_iso, articles_by_day, comments_by_day, reactions_by_day
+      )
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
