@@ -51,6 +51,12 @@ RSpec.describe FeedbackMessage do
 
         expect(new_abuse_report).to be_valid
       end
+
+      it "rejects unsafe URI schemes in reported_url" do
+        unsafe_report = build(:feedback_message, :abuse_report, reported_url: "javascript:alert(1)")
+        expect(unsafe_report).not_to be_valid
+        expect(unsafe_report.errors[:reported_url]).to be_present
+      end
     end
 
     describe "validations for a bug report" do

@@ -37,37 +37,25 @@ RSpec.describe "/admin/customization/config" do
         sign_in(super_admin)
       end
 
-      it "updates settings admin action taken" do
+      it "updates settings admin action taken and expires cached agent guidance", :aggregate_failures do
+        allow(EdgeCache::Bust).to receive(:call)
+
         expect do
           post admin_settings_general_settings_path, params: {
             settings_general: { health_check_token: "token" }
           }
         end.to change(Settings::General, :admin_action_taken_at)
-      end
-
-      it "expires cached agent guidance after a settings change" do
-        allow(EdgeCache::Bust).to receive(:call)
-
-        post admin_settings_general_settings_path, params: {
-          settings_general: { health_check_token: "token" }
-        }
 
         expect(EdgeCache::Bust).to have_received(:call).with("/llms.txt")
       end
 
       describe "API tokens" do
-        it "updates the health_check_token" do
+        it "updates health_check_token and video_encoder_key", :aggregate_failures do
           token = rand(20).to_s
           post admin_settings_general_settings_path, params: {
-            settings_general: { health_check_token: token }
+            settings_general: { health_check_token: token, video_encoder_key: "123abc" }
           }
-          expect(Settings::General.health_check_token).to eq token
-        end
-
-        it "sets video_encoder_key" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { video_encoder_key: "123abc" }
-          }
+          expect(Settings::General.health_check_token).to eq(token)
           expect(Settings::General.video_encoder_key).to eq("123abc")
         end
       end
@@ -257,21 +245,13 @@ RSpec.describe "/admin/customization/config" do
         end
       end
 
-      describe "Google Universal Analytics Reporting" do
-        it "updates ga_tracking_id" do
+      describe "Google Analytics Reporting" do
+        it "updates ga_tracking_id and ga_analytics_4_id", :aggregate_failures do
           post admin_settings_general_settings_path, params: {
-            settings_general: { ga_tracking_id: "abc" }
+            settings_general: { ga_tracking_id: "abc", ga_analytics_4_id: "def" }
           }
           expect(Settings::General.ga_tracking_id).to eq("abc")
-        end
-      end
-
-      describe "Google Analytics 4 Reporting" do
-        it "updates ga_analytics_4_id" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { ga_analytics_4_id: "abc" }
-          }
-          expect(Settings::General.ga_analytics_4_id).to eq("abc")
+          expect(Settings::General.ga_analytics_4_id).to eq("def")
         end
       end
 
@@ -404,59 +384,36 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Newsletter" do
-        it "updates mailchimp_api_key" do
+        it "updates mailchimp settings", :aggregate_failures do
           post admin_settings_general_settings_path, params: {
-            settings_general: { mailchimp_api_key: "abc" }
+            settings_general: {
+              mailchimp_api_key: "api-key",
+              mailchimp_newsletter_id: "news-id",
+              mailchimp_tag_moderators_id: "tag-mod-id",
+              mailchimp_community_moderators_id: "comm-mod-id"
+            }
           }
-          expect(Settings::General.mailchimp_api_key).to eq("abc")
-        end
-
-        it "updates mailchimp_newsletter_id" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { mailchimp_newsletter_id: "abc" }
-          }
-          expect(Settings::General.mailchimp_newsletter_id).to eq("abc")
-        end
-
-        it "updates mailchimp_tag_moderators_id" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { mailchimp_tag_moderators_id: "abc" }
-          }
-          expect(Settings::General.mailchimp_tag_moderators_id).to eq("abc")
-        end
-
-        it "updates mailchimp_community_moderators_id" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { mailchimp_community_moderators_id: "abc" }
-          }
-          expect(Settings::General.mailchimp_community_moderators_id).to eq("abc")
+          expect(Settings::General.mailchimp_api_key).to eq("api-key")
+          expect(Settings::General.mailchimp_newsletter_id).to eq("news-id")
+          expect(Settings::General.mailchimp_tag_moderators_id).to eq("tag-mod-id")
+          expect(Settings::General.mailchimp_community_moderators_id).to eq("comm-mod-id")
         end
       end
 
       describe "Onboarding" do
-        it "removes space suggested_tags" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { suggested_tags: "hey, haha,hoho, bobo fofo" }
-          }
-          expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "downcases suggested_tags" do
+        it "removes spaces and downcases suggested_tags" do
           post admin_settings_general_settings_path, params: {
             settings_general: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }
           }
           expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
 
-        it "enables display_sidebar_onboarding_checklist" do
+        it "enables and disables display_sidebar_onboarding_checklist", :aggregate_failures do
           post admin_settings_general_settings_path, params: {
             settings_general: { display_sidebar_onboarding_checklist: "1" }
           }
           expect(Settings::General.display_sidebar_onboarding_checklist).to be(true)
-        end
 
-        it "disables display_sidebar_onboarding_checklist" do
-          Settings::General.display_sidebar_onboarding_checklist = true
           post admin_settings_general_settings_path, params: {
             settings_general: { display_sidebar_onboarding_checklist: "0" }
           }
@@ -668,25 +625,12 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Tags" do
-        it "removes space sidebar_tags" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { sidebar_tags: "hey, haha,hoho, bobo fofo" }
-          }
-          expect(Settings::General.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "downcases sidebar_tags" do
+        it "removes spaces, downcases, and creates missing sidebar_tags", :aggregate_failures do
           post admin_settings_general_settings_path, params: {
             settings_general: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }
           }
           expect(Settings::General.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "creates tags if they do not exist" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: { sidebar_tags: "bobofogololo, spla, bla" }
-          }
-          expect(Tag.find_by(name: "bobofogololo")).to be_valid
+          expect(Tag.find_by(name: "bobofofo")).to be_valid
         end
       end
 
@@ -802,15 +746,30 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "AI Disclosure" do
-        it "defaults enable_ai_disclosure to false" do
+        it "defaults enable_ai_disclosure to false and updates it to true", :aggregate_failures do
           expect(Settings::General.enable_ai_disclosure).to be(false)
-        end
 
-        it "updates enable_ai_disclosure to true" do
           post admin_settings_general_settings_path, params: {
             settings_general: { enable_ai_disclosure: "1" }
           }
           expect(Settings::General.enable_ai_disclosure).to be(true)
+        end
+      end
+
+      describe "Post Permissions" do
+        it "defaults limit_post_creation_to_admins to false and updates it to true", :aggregate_failures do
+          expect(Settings::General.limit_post_creation_to_admins).to be(false)
+
+          post admin_settings_general_settings_path, params: {
+            settings_general: { limit_post_creation_to_admins: "1" }
+          }
+          expect(Settings::General.limit_post_creation_to_admins).to be(true)
+          expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(true)
+        end
+
+        it "redirects legacy /admin/content_manager/spaces path to /admin/customization/config" do
+          get "/admin/content_manager/spaces"
+          expect(response).to redirect_to("/admin/customization/config")
         end
       end
     end

@@ -74,5 +74,17 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect(result).to be_empty
       expect(Article).not_to have_received(:cached_tagged_with_any)
     end
+
+    it "orders published user articles by published_at descending with a matching partial index" do
+      relation = described_class.call(article, user)
+      index = ActiveRecord::Base.connection.indexes(:articles).detect do |idx|
+        idx.name == "index_articles_on_user_id_and_published_at_for_published"
+      end
+
+      expect(relation.where_values_hash).to include("user_id" => user.id, "published" => true)
+      expect(index).to have_attributes(columns: %w[user_id published_at],
+                                       orders: { "published_at" => :desc },
+                                       where: "(published = true)")
+    end
   end
 end

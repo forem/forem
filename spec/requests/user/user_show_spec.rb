@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow" do
-  let!(:profile) do
+  let(:profile) do
     create(
       :profile,
       :with_DEV_info,
@@ -154,8 +154,6 @@ RSpec.describe "UserShow" do
 
       before do
         sign_in trusted
-
-        get user.path
       end
 
       it "**does** include 'suspended'" do
@@ -166,7 +164,7 @@ RSpec.describe "UserShow" do
     end
   end
 
-  context "redirect_if_inactive_in_subforem_for_user" do
+  context "when redirecting inactive user in subforem" do
     let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
     let!(:other_subforem)   { create(:subforem, domain: "other.com") }
 
@@ -187,7 +185,7 @@ RSpec.describe "UserShow" do
         get user.path, headers: { "Host" => other_subforem.domain }
         expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to(
-          URL.url(user.username, default_subforem)
+          URL.url(user.username, default_subforem),
         )
       end
     end
@@ -224,9 +222,27 @@ RSpec.describe "UserShow" do
         get user.path, headers: { "Host" => other_subforem.domain }
         expect(response).to have_http_status(:moved_permanently)
         expect(response).to redirect_to(
-          URL.url(user.username, default_subforem)
+          URL.url(user.username, default_subforem),
         )
       end
+    end
+  end
+
+  describe "profile query optimizations" do
+    it "queries member_organizations only once when rendering the sidebar" do
+      org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "member")
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(1)
+      expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
+      expect(Nokogiri::HTML(response.body).at_css("a[href='/#{org.slug}'] h4")&.text).to eq(org.name)
     end
   end
 end

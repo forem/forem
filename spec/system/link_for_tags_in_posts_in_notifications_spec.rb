@@ -1,9 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Link on tags for post in notifications" do
-  let(:js_tag) { create(:tag, name: "javascript") }
-  let(:ruby_tag) { create(:tag, name: "ruby") }
-
   let(:article) do
     create(:article, tags: "javascript, ruby")
   end
@@ -13,7 +10,7 @@ RSpec.describe "Link on tags for post in notifications" do
       visit "/dashboard"
     end
 
-    it "shows the sign-with page", js: true do
+    it "shows the sign-with page" do
       Authentication::Providers.enabled.each do |provider_name|
         provider = Authentication::Providers.get!(provider_name)
 
@@ -27,9 +24,9 @@ RSpec.describe "Link on tags for post in notifications" do
       sign_in article.user
     end
 
-    it "shows articles", js: true do
+    it "shows articles" do
       visit "/dashboard"
-      expect(page).to have_selector(".spec__dashboard-story", count: 1)
+      expect(page).to have_css(".spec__dashboard-story", count: 1)
     end
   end
 end

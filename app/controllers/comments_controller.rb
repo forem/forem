@@ -14,7 +14,6 @@ class CommentsController < ApplicationController
   def index
     skip_authorization
     @comment = Comment.new
-    @podcast = Podcast.find_by(slug: params[:username])
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
     redirect_if_different_subforem if @root_comment
@@ -27,11 +26,10 @@ class CommentsController < ApplicationController
       not_found if !@is_admin && @root_comment.score < Comment::HIDE_THRESHOLD && !@root_comment.has_children?
     end
 
+    set_user
     if @podcast
-      @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
     else
-      set_user
       set_commentable
       @discussion_lock = @commentable.discussion_lock if @commentable.is_a?(Article)
       not_found unless comment_should_be_visible?
@@ -305,15 +303,25 @@ class CommentsController < ApplicationController
   end
 
   def set_user
-    @user = User.find_by(username: params[:username]) ||
-      Organization.find_by(slug: params[:username]) ||
+    if (@user = User.find_by(username: params[:username]) || Organization.find_by(slug: params[:username]))
+      @root_comment.association(:user).target = @user if @user.is_a?(User) && @root_comment&.user_id == @user.id
+    elsif (@podcast = Podcast.find_by(slug: params[:username]))
+      @user = @podcast
+    else
       not_found
+    end
   end
 
   def set_commentable
     @commentable = @root_comment&.commentable ||
       @user.articles.find_by(slug: params[:slug]) || nil
-    @article = @commentable if @commentable.is_a?(Article)
+    return unless @commentable.is_a?(Article)
+
+    @article = @commentable
+    @article.association(:user).target = @user if @user.is_a?(User) && @article.user_id == @user.id
+    return unless @user.is_a?(Organization) && @article.organization_id == @user.id
+
+    @article.association(:organization).target = @user
   end
 
   # Use callbacks to share common setup or constraints between actions.

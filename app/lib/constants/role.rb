@@ -42,7 +42,6 @@ module Constants
       "Resource Admin: RequestRedirect" => { name: "single_resource_admin", resource_type: "RequestRedirect" },
       "Resource Admin: ResponseTemplate" => { name: "single_resource_admin", resource_type: "ResponseTemplate" },
       "Resource Admin: Subforem" => { name: "single_resource_admin", resource_type: "Subforem" },
-      "Resource Admin: Space" => { name: "single_resource_admin", resource_type: "Space" },
       "Resource Admin: ProfileField" => { name: "single_resource_admin", resource_type: "ProfileField" },
       "Resource Admin: ProfileFieldGroup" => { name: "single_resource_admin", resource_type: "ProfileFieldGroup" }
     }.freeze

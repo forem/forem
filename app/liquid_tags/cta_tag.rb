@@ -1,5 +1,6 @@
 class CtaTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
+  include LiquidTagHelpers
 
   PARTIAL = "liquids/cta".freeze
   # at some point we may want to pass in options to dictate which type of CTA the user wants to use,
@@ -9,7 +10,8 @@ class CtaTag < Liquid::Block
 
   def initialize(_tag_name, options, _parse_context)
     super
-    @link = strip_tags(options.strip)
+    @link = fully_unescape_html(strip_tags(options.strip)).strip
+    validate_url!(@link, "link", allow_blank: false)
   end
 
   def render(_context)
