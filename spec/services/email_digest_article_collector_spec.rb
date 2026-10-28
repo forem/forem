@@ -514,6 +514,49 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         antifollowed_paths = antifollowed_articles.map(&:path)
         expect(articles.none? { |a| antifollowed_paths.include?(a.path) }).to be true
       end
+
+      it "uses two-stage candidate pre-filtering when semantic_similarity_weight is active" do
+        interest_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        aligned_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        orthogonal_embedding = [0.0, 1.0, 0.0] + Array.new(765, 0.0)
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          score_weight: 1.0,
+          semantic_similarity_weight: 100.0,
+          randomness_weight: 0.0,
+        )
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_call_original
+
+        other_user = create(:user)
+        a1 = create(:article, score: 80, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a2 = create(:article, score: 50, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a3 = create(:article, score: 40, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a1.update_column(:semantic_embedding, orthogonal_embedding)
+        a2.update_column(:semantic_embedding, aligned_embedding)
+        a3.update_column(:semantic_embedding, orthogonal_embedding)
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("articles.semantic_embedding <=>")
+        end
+
+        result = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          result = described_class.new(user).articles_to_send
+        end
+
+        expect(executed_sql.size).to eq(1)
+        expect(executed_sql.first).to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(result.first.path).to eq(a2.path)
+      end
     end
   end
 
