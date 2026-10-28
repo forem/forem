@@ -154,7 +154,7 @@ module Badges
       # global; it assumes REPOSITORIES has a single entry. If more repos are
       # added, make the marker per-repo so one repo does not advance it past
       # another's unscanned window.
-      Settings::General.github_contributor_prs_scanned_through = today.iso8601
+      Settings::General.github_contributor_prs_scanned_through = today.iso8601 unless @scan_incomplete
     rescue SearchBudgetExhausted => e
       # Out of Search API budget for this run. The marker is left unchanged, so
       # the next scheduled run re-scans this window; nothing is skipped
