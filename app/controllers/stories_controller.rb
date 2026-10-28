@@ -337,7 +337,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
     set_surrogate_key_header(*@user.profile_cache_keys)
-    set_user_json_ld
+    set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
@@ -541,6 +541,10 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_stories
+    @pinned_stories = []
+    @stories = []
+    return unless @user.articles_count.positive?
+
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate
