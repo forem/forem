@@ -49,7 +49,7 @@ RSpec.describe "api/v1/billboards" do
       post "Create a billboard" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        Create a new billboard.
+        Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.
 
         ### Parameter Options & Tips:
         - **body_markdown**: The HTML/Markdown advertisement copy.
@@ -157,7 +157,7 @@ RSpec.describe "api/v1/billboards" do
       put "Update a billboard by ID" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        Update an existing billboard's configurations.
+        Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.
 
         ### Integration Guidance:
         - Allows changing placement area, geolocations, target segments, or text copy.
@@ -218,7 +218,7 @@ RSpec.describe "api/v1/billboards" do
       put "Unpublish a billboard" do
         tags "billboards"
         description(<<-DESCRIBE.strip)
-        Remove a billboard from active rotation by unpublishing it.
+        Remove a billboard from active rotation by unpublishing it.  Successful writes log `api_billboard_unpublish` with the actor and target ids in the admin API audit log.
 
         ### Usage:
         - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.

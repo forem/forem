@@ -195,6 +195,7 @@ module Admin
         :all_time_tag_count_min,
         :recently_active_past_day_bonus_weight,
         :score_weight,
+        :semantic_candidate_limit,
         :semantic_similarity_weight,
         :shuffle_weight,
         :status_weight,

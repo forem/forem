@@ -221,6 +221,20 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
+  def descendants(depth_options = {})
+    scope = super
+    return scope unless commentable_id && commentable_type
+
+    scope.where(commentable_id: commentable_id, commentable_type: commentable_type)
+  end
+
+  def subtree(depth_options = {})
+    scope = super
+    return scope unless commentable_id && commentable_type
+
+    scope.where(commentable_id: commentable_id, commentable_type: commentable_type)
+  end
+
   def by_staff_account?
     user == User.staff_account
   end
@@ -359,7 +373,10 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
+    return unless parent_exists? && (parent.depth > 1 && parent.has_children?)
+
+    last_descendant_id = parent.descendant_ids.last
+    self.parent_id = last_descendant_id if last_descendant_id
   end
 
   def wrap_timestamps_if_video_present!

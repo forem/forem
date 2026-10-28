@@ -642,6 +642,31 @@ RSpec.describe User do
         end
       end
 
+      it "rejects syntactically malformed email addresses" do
+        malformed_emails = [
+          "member@example,com",
+          '"member@example.com"',
+          "user@localhost",
+          "user..name@example.com",
+        ]
+
+        malformed_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "does not invalidate existing persisted accounts with legacy email formats on unrelated updates" do
+        user = create(:user)
+        user.update_column(:email, "member@example,com")
+        user.reload
+
+        expect(user.update(name: "Updated Name")).to be(true)
+        expect(user.errors[:email]).to be_empty
+      end
+
       it { is_expected.not_to allow_value("  ").for(:name) }
 
       it { is_expected.to validate_presence_of(:articles_count) }
