@@ -49,6 +49,13 @@ RSpec.describe Users::RemoveRole, type: :service do
       user.reload
       expect(user.tag_moderator?(tag: tag)).to be true
     end
+
+    it "touches the resource" do
+      tag.update_columns(updated_at: 1.day.ago)
+      expect do
+        described_class.call(user: user, role: "tag_moderator", resource_type: "Tag", resource_id: tag.id)
+      end.to(change { tag.reload.updated_at })
+    end
   end
 
   it "returns an error if there is an issue removing the role" do
@@ -68,5 +75,21 @@ RSpec.describe Users::RemoveRole, type: :service do
     allow(profile).to receive(:touch)
     described_class.call(user: user, role: :spam, resource_type: nil)
     expect(profile).to have_received(:touch)
+  end
+
+  context "when removing a community leader role" do
+    let(:user) { create(:user, :community_leader_level_1) }
+
+    it "removes the role, touches the user, and resaves the user's articles", :aggregate_failures do
+      allow(user).to receive(:touch).and_call_original
+      allow(Users::ResaveArticlesWorker).to receive(:perform_async)
+
+      result = described_class.call(user: user, role: "community_leader_level_1", resource_type: nil)
+
+      expect(result.success).to be(true)
+      expect(user.reload.community_leader?).to be(false)
+      expect(user).to have_received(:touch)
+      expect(Users::ResaveArticlesWorker).to have_received(:perform_async).with(user.id)
+    end
   end
 end

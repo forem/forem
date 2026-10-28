@@ -8,6 +8,8 @@ class Article < ApplicationRecord
   include PgSearch::Model
   include AlgoliaSearchable
   include WebpageTrackable
+  include ActivityTrackable
+  include AiDisclosable
 
   acts_as_taggable_on :tags
   resourcify
@@ -58,6 +60,27 @@ class Article < ApplicationRecord
   BIDI_CONTROL_CHARACTERS = /[\u061C\u200E\u200F\u202a-\u202e\u2066-\u2069]/
 
   MAX_TAG_LIST_SIZE = 4
+
+  # Hosts a user may link as a cover video via `video_source_url`. Used by the
+  # web and API controllers' param whitelists; mirrored on the frontend in
+  # app/javascript/article-form/components/CoverVideoLink.jsx.
+  LINKED_VIDEO_SOURCE_PATTERNS = [
+    %r{\Ahttps?://(www\.)?(youtube\.com/watch\?v=|youtu\.be/)},
+    %r{\Ahttps?://player\.mux\.com/},
+    %r{\Ahttps?://(www\.)?twitch\.tv/videos/},
+  ].freeze
+
+  # Fields embedded in Published/CoAuthor notifications (see Notifications.article_data).
+  # crossposted_at feeds readable_publish_date via displayable_published_at.
+  NOTIFICATION_DATA_ATTRIBUTES = %w[title path cached_tag_list published_at crossposted_at reading_time
+                                    user_id organization_id].freeze
+
+  # Author-visible edits, for the article_updated CDP event. Rows churn on score
+  # recalcs, counter caches and last_comment_at. Mirrors User::SYNC_TRIGGER_KEYS.
+  TRACKABLE_UPDATE_KEYS = %w[
+    title body_markdown cached_tag_list main_image description canonical_url
+    edited_at collection_id subforem_id
+  ].freeze
 
   # Filter out anything that isn't a word, space, punctuation mark,
   # recognized emoji, and other auxiliary marks.
@@ -125,6 +148,14 @@ class Article < ApplicationRecord
     I18n.t("models.article.unique_url", email: ForemInstance.contact_email)
   end
 
+  # Whether a user-submitted `video_source_url` may be mass-assigned.
+  # A blank value is allowed so the cover video can be removed.
+  def self.permitted_video_source_url?(url)
+    return true if url.blank?
+
+    LINKED_VIDEO_SOURCE_PATTERNS.any? { |pattern| url.to_s.match?(pattern) }
+  end
+
   enum :type_of, {
     full_post: 0,
     status: 1,
@@ -170,6 +201,7 @@ class Article < ApplicationRecord
   has_one :discussion_lock, dependent: :delete
 
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :ai_audits, as: :affected_content, dependent: :nullify
@@ -313,6 +345,13 @@ class Article < ApplicationRecord
   before_save :set_caches
   before_save :detect_language
   before_create :create_password
+  after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
+  after_update :withdraw_pending_co_author_invitations, if: lambda {
+    saved_change_to_organization_id? && organization_id.present?
+  }
+  after_update :refresh_co_author_invitation_notifications, if: lambda {
+    saved_change_to_title? || saved_change_to_path? || saved_change_to_published?
+  }
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
@@ -321,9 +360,15 @@ class Article < ApplicationRecord
   after_save :generate_social_image
   after_save :generate_context_notes
 
+  after_update_commit :notify_co_author_changes, if: proc { |article|
+    article.published? && article.saved_change_to_co_author_ids?
+  }
+
+  # Notifications embed these fields (see Notifications.article_data and user/organization data),
+  # so refresh them only when one changes, not on every touch (e.g. last_comment_at on each comment).
   after_update_commit :update_notifications, if: proc { |article|
-                                                   article.notifications.any? && !article.saved_changes.empty?
-                                                 }
+    article.saved_changes.keys.intersect?(NOTIFICATION_DATA_ATTRIBUTES) && article.notifications.any?
+  }
   after_update_commit :update_notification_subscriptions, if: proc { |article|
     article.saved_change_to_user_id?
   }
@@ -395,19 +440,53 @@ class Article < ApplicationRecord
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_organization, coder: YAML
 
+  DISALLOWED_TSQUERY_CHARACTERS = /['?\\:‘’ʻʼ"\u0000]/
+  MAX_SEARCH_TSQUERY_TERMS = 10
+  MIN_PREFIX_SEARCH_TERM_LENGTH = 3
+
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
   # is also used for the article search page.
   # The name of the `tsvector` column and its related trigger should be adapted.
-  pg_search_scope :search_articles,
-                  against: :reading_list_document,
-                  using: {
-                    tsearch: {
-                      prefix: true,
-                      tsvector_column: :reading_list_document
-                    }
-                  },
-                  ignoring: :accents
+  #
+  # NOTE: We build the full-text query directly instead of using `pg_search_scope` because:
+  # 1. `pg_search` wraps each term in SQL `unaccent(...)` (which is `STABLE`), preventing
+  #    PostgreSQL from constant-folding the `tsquery` and inspecting `pg_statistic` lexeme
+  #    frequencies. Pre-unaccenting in Ruby produces a single `IMMUTABLE` `to_tsquery` call.
+  # 2. 1-2 character prefix wildcards (e.g. `'i':*`, `'de':*`) force GIN index scans to
+  #    expand and merge hundreds of thousands of dictionary entries upfront.
+  # 3. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
+  #    lets callers that `.reorder(...)`, `.count`, or `.exists?` skip de-TOASTing
+  #    `reading_list_document` for `ts_rank`.
+  scope :search_articles, lambda { |term|
+    tsquery_sql = sanitize_search_articles_tsquery(term)
+    return none if tsquery_sql.nil?
+
+    where("articles.reading_list_document @@ #{tsquery_sql}")
+      .order(Arel.sql("ts_rank(articles.reading_list_document, #{tsquery_sql}, 0) DESC, articles.id ASC"))
+  }
+
+  def self.sanitize_search_articles_tsquery(term)
+    normalized = Unaccent.unaccent(term.to_s)
+      .downcase
+      .gsub(DISALLOWED_TSQUERY_CHARACTERS, " ")
+
+    tokens = normalized
+      .split
+      .grep(/[[:alnum:]]/)
+      .uniq
+      .first(MAX_SEARCH_TSQUERY_TERMS)
+
+    return if tokens.empty?
+
+    query_expression = tokens.map do |token|
+      alnum_length = token.gsub(/[^[:alnum:]]/, "").length
+      prefix_suffix = alnum_length >= MIN_PREFIX_SEARCH_TERM_LENGTH ? ":*" : ""
+      "' #{token} '#{prefix_suffix}"
+    end.join(" & ")
+
+    sanitize_sql_array(["to_tsquery('simple'::regconfig, ?)", query_expression])
+  end
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
@@ -432,6 +511,10 @@ class Article < ApplicationRecord
   scope :approved, -> { where(approved: true) }
 
   scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
+  def favorited?
+    favorited_by_user_id.present?
+  end
 
   scope :from_subforem, lambda { |subforem_id = nil|
     return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
@@ -504,7 +587,7 @@ class Article < ApplicationRecord
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height, :type_of, :edited_at, :processed_html, :subforem_id,
-           :favorited_by_user_id)
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :minimal_feed_column_select, lambda {
@@ -516,7 +599,7 @@ class Article < ApplicationRecord
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height, :type_of, :edited_at, :subforem_id,
-           :favorited_by_user_id)
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -527,7 +610,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at, :edited_at,
            :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score, :type_of,
-           :favorited_by_user_id)
+           :favorited_by_user_id, :ai_disclosure_level)
   }
 
   scope :sorting, lambda { |value|
@@ -553,12 +636,11 @@ class Article < ApplicationRecord
     end
   }
 
-  # @note This includes the `featured` scope, which may or may not be
-  #       something we expose going forward.  However, it was
-  #       something used in two of the three queries we had that
-  #       included the where `score > Settings::UserExperience.home_feed_minimum_score`
+  # @note This includes the `featured` and `favorited` scopes, which allows
+  #       featured and community favorite (gemmed) articles to bypass the
+  #       home feed minimum score threshold.
   scope :with_at_least_home_feed_minimum_score, lambda {
-    featured.or(
+    featured.or(favorited).or(
       where(score: Settings::UserExperience.home_feed_minimum_score..),
     )
   }
@@ -566,11 +648,15 @@ class Article < ApplicationRecord
   scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
-                 published.includes(:taggings)
+                 published
                    .select(
                      :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
+
+  def cached_tag_list_array
+    (cached_tag_list || "").split(", ")
+  end
 
   scope :with_video, lambda {
                        published
@@ -695,8 +781,14 @@ class Article < ApplicationRecord
   def title_finalized
     return title unless title.present?
 
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title)&.html_safe || legacy_title_finalized(safe_title)
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_title_finalized(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # First handle line breaks and paragraphs
-    processed_title = title.dup
+    processed_title = source_title.dup
 
     # Convert double line breaks to paragraph breaks (with optional whitespace)
     processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
@@ -738,6 +830,8 @@ class Article < ApplicationRecord
     end.html_safe
   end
 
+  private :legacy_title_finalized
+
   def title_finalized_for_feed
     return title_finalized unless type_of == "status" && title.present?
 
@@ -752,11 +846,31 @@ class Article < ApplicationRecord
     end
   end
 
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.article.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.article.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.article.ai_disclosure.no_ai")
+    else
+      I18n.t("models.article.ai_disclosure.not_disclosed")
+    end
+  end
+
   def truncate_title_for_feed
     return title_finalized unless title.present?
 
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title, truncate_for_feed: true)&.html_safe ||
+      legacy_truncate_title_for_feed(safe_title)
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_truncate_title_for_feed(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # Split the title into lines to find a good truncation point
-    lines = title.split("\n")
+    lines = source_title.split("\n")
 
     # Take first 6 lines (leaving room for "read more" indicator)
     truncated_lines = lines.first(6)
@@ -809,6 +923,8 @@ class Article < ApplicationRecord
     end.html_safe
   end
 
+  private :legacy_truncate_title_for_feed
+
   def flare_tag
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
@@ -825,7 +941,7 @@ class Article < ApplicationRecord
 
   def published_timestamp
     return "" unless published
-    return "" unless crossposted_at || published_at
+    return "" unless (has_attribute?(:crossposted_at) ? crossposted_at : nil) || published_at
 
     displayable_published_at.utc.iso8601
   end
@@ -854,6 +970,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
+    ForemNative.format_video_duration(video_duration_in_seconds) ||
+      legacy_video_duration_in_minutes
+  end
+
+  def legacy_video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
     # add default hours and minutes for the substitutions below
@@ -864,9 +985,16 @@ class Article < ApplicationRecord
 
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
+  private :legacy_video_duration_in_minutes
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
+    # Sanitizing processed_html is slow on long posts and a single save asks for it
+    # several times (description, language detection), so reuse it until the HTML changes.
+    html = processed_html
+    return @body_text if defined?(@body_text) && @body_text_html == html
+
+    @body_text_html = html.dup
+    @body_text = full_sanitize(html)[0..7000]
   end
 
   def touch_by_reaction
@@ -876,7 +1004,29 @@ class Article < ApplicationRecord
   def comments_blob
     return "" if comments_count.zero?
 
-    ActionView::Base.full_sanitizer.sanitize(comments.pluck(:body_markdown).join(" "))[0..2200]
+    raw_markdown = comments.pluck(:body_markdown).join(" ")
+    # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
+    return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
+
+    full_sanitize(raw_markdown)[0..2200]
+  end
+
+  def full_sanitize(html)
+    ForemNative.full_sanitize(html) || ActionView::Base.full_sanitizer.sanitize(html)
+  end
+
+  private :full_sanitize
+
+  # Request-local memo of comment trees loaded for this instance, keyed by query options, so
+  # articles#show can share one tree between its JSON-LD and the rendered comment area.
+  def comment_tree(limit:, order:, include_negative:)
+    @comment_trees ||= {}
+    @comment_trees[[limit, order, include_negative]] ||=
+      Comments::Tree.for_commentable(self, limit: limit, order: order, include_negative: include_negative)
+  end
+
+  def loaded_comment_trees
+    @comment_trees&.values || []
   end
 
   def url
@@ -931,16 +1081,23 @@ class Article < ApplicationRecord
   end
 
   def displayable_published_at
-    crossposted_at.presence || published_at
+    (has_attribute?(:crossposted_at) ? crossposted_at.presence : nil) || published_at
   end
 
   def title_for_metadata
     return title unless type_of == "status" && title.present?
 
+    ForemNative.title_for_metadata(title) || legacy_title_for_metadata
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 encodings, String subclasses,
+  # invalid byte sequences).
+  def legacy_title_for_metadata
     # For quickies, return a clean single-line version of the title
     # Replace line breaks with spaces and normalize whitespace
     title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
+  private :legacy_title_for_metadata
 
   def series
     # name of series article is part of
@@ -1010,6 +1167,7 @@ class Article < ApplicationRecord
     established_user_adjustment = (user.score.to_i > 100 && !clear_and_obvious_spam? && !likely_spam?) ? Settings::UserExperience.index_minimum_score.to_i : 0
 
     self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment + base_subscriber_adjustment + user_featured_count_adjustment + user_negative_count_adjustment + context_note_adjustment + automod_label_adjustment + badge_reputation_bonus + organization_baseline_score + established_user_adjustment
+    self.score = (score * 1.1).to_i + 10 if favorited?
     accepted_max = [max_score, user&.max_score.to_i].min
     accepted_max = [max_score, user&.max_score.to_i].max if accepted_max.zero?
     self.score = baseline_score if baseline_score.positive? && score < baseline_score
@@ -1017,7 +1175,7 @@ class Article < ApplicationRecord
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score
-    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
+    calculated_comment_score = comments.pluck(:score).sum { |value| [value, -1].max }
     comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
                       accepted_max
                     else
@@ -1173,7 +1331,17 @@ class Article < ApplicationRecord
   end
 
   def generate_video_embed_url
-    return if video_source_url.blank?
+    if video_source_url.blank?
+      # The cover video was removed: drop the embed derived from it. Only Mux
+      # derives the thumbnail from the source URL, so user-provided thumbnails
+      # are kept.
+      if video_source_url_was.present?
+        self.video = nil
+        self.video_thumbnail_url = nil if video_thumbnail_url&.include?("image.mux.com")
+      end
+      self.video_source_url = nil
+      return
+    end
 
     if video_source_url.include?("youtube.com") || video_source_url.include?("youtu.be")
       begin
@@ -1392,7 +1560,7 @@ class Article < ApplicationRecord
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def fetch_video_duration
@@ -1412,7 +1580,7 @@ class Article < ApplicationRecord
   end
 
   def update_notifications
-    Notification.update_notifications(self, I18n.t("models.article.published"))
+    Notification.update_notifications(self, %w[Published CoAuthor])
   end
 
   def update_notification_subscriptions
@@ -1421,7 +1589,8 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache(destroying: true)
-    article_ids = user.article_ids.dup
+    user&.touch(:last_article_at)
+    article_ids = user ? user.article_ids.dup : []
     if organization
       organization.touch(:last_article_at)
       article_ids.concat organization.article_ids
@@ -1442,6 +1611,7 @@ class Article < ApplicationRecord
     self.published_at ||= parse_date(hash["date"]) if published
 
     set_main_image(hash)
+    set_ai_disclosure_from_front_matter(hash)
     self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
     update_description = hash["description"].present? || hash["title"].present?
@@ -1452,6 +1622,24 @@ class Article < ApplicationRecord
 
     collection = Collection.find_series(hash["series"], user, organization: organization)
     self.collection_id = collection.id
+  end
+
+  def set_ai_disclosure_from_front_matter(hash)
+    return unless Settings::General.enable_ai_disclosure
+
+    raw_val = hash["ai_disclosure_level"] || hash["ai_disclosure"]
+
+    if raw_val.nil?
+      if hash["ai_generated"] == true || hash["ai_generated"] == "true"
+        self.ai_disclosure_level = :fully_autonomous
+      elsif hash["ai_assisted"] == true || hash["ai_assisted"] == "true"
+        self.ai_disclosure_level = :some_ai
+      end
+      return
+    end
+
+    level = self.class.normalize_ai_disclosure_level(raw_val)
+    self.ai_disclosure_level = level if level
   end
 
   def set_main_image(hash)
@@ -1478,12 +1666,14 @@ class Article < ApplicationRecord
   #
   # @return [String] an array of tag names.
   def validate_tag
-    distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
-      .select('DISTINCT ON ("tag_id") *')
-      .order(:tag_id, updated_at: :desc, id: :desc)
+    if id.present?
+      distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
+        .select('DISTINCT ON ("tag_id") *')
+        .order(:tag_id, updated_at: :desc, id: :desc)
 
-    remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
-    add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+      remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
+      add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+    end
 
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
@@ -1501,7 +1691,7 @@ class Article < ApplicationRecord
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def validate_video
@@ -1558,8 +1748,16 @@ class Article < ApplicationRecord
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
 
+  # Co-authors who accepted an invitation consented to the credit themselves, so they don't need
+  # to be members of the organization (e.g. a co-authored personal post moved under an org).
   def validate_co_authors_belong_to_organization
-    return if OrganizationMembership.active.where(organization_id: organization_id, user_id: co_author_ids).count == co_author_ids.count
+    accepted_ids = new_record? ? [] : co_author_invitations.accepted.pluck(:user_id)
+    org_credited_ids = co_author_ids - accepted_ids
+    return if org_credited_ids.empty?
+
+    org_member_count = OrganizationMembership.active
+      .where(organization_id: organization_id, user_id: org_credited_ids).count
+    return if org_member_count == org_credited_ids.count
 
     errors.add(:co_author_ids, I18n.t("models.article.invalid_coauthor"))
   end
@@ -1670,7 +1868,7 @@ class Article < ApplicationRecord
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list published archived]).present?
 
-    user.touch(:latest_article_updated_at)
+    user&.touch(:latest_article_updated_at)
     organization&.touch(:latest_article_updated_at)
   end
 
@@ -1681,12 +1879,27 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return if main_image.present?
+    return if main_image.present? || !published
 
-    change = saved_change_to_attribute?(:title) || saved_change_to_attribute?(:published_at)
-    return unless (change || social_image.blank?) && published
+    change = social_image.blank? ||
+      saved_change_to_attribute?(:title) ||
+      saved_change_to_attribute?(:published_at) ||
+      saved_change_to_attribute?(:user_id) || # the image shows the author's name, avatar, and brand color
+      saved_change_to_attribute?(:reading_time) || # the image shows the reading time
+      social_image_quote_changed?
+    return unless change
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+  end
+
+  # The generated image quotes the opening of the post, so only body edits that
+  # change that quote need a new image.
+  def social_image_quote_changed?
+    return false unless saved_change_to_attribute?(:processed_html)
+
+    Images::SocialImageQuote.from_html(attribute_before_last_save(:processed_html), title) !=
+      Images::SocialImageQuote.call(self)
   end
 
   def calculate_base_scores
@@ -1700,7 +1913,8 @@ class Article < ApplicationRecord
                   saved_change_to_published? ||
                   published_at > 1.minute.ago
 
-    Articles::HandleSpamWorker.perform_async(id)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
   end
 
   def async_bust
@@ -1718,7 +1932,7 @@ class Article < ApplicationRecord
   end
 
   def detect_code_block_languages
-    return unless Ai::Base::DEFAULT_KEY.present?
+    return unless Ai::FunctionConfig.available?(:code_block_language_detection)
     return unless saved_change_to_body_markdown?
     return unless ::Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?(body_markdown)
 
@@ -1766,6 +1980,78 @@ class Article < ApplicationRecord
       Organizations::RecompilePagesWorker.perform_async(org_id)
     end
   end
+
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_published / _boosted / _updated / _unpublished / _deleted.
+  # Drafts stay silent until they go live.
+
+  # body_markdown is deliberately absent; it can run to hundreds of KB.
+  def trackable_activity_payload
+    {
+      "title" => title,
+      "description" => description,
+      "path" => path,
+      "type_of" => type_of,
+      "published_at" => published_at&.iso8601,
+      "tag_list" => cached_tag_list.to_s.split(",").map(&:strip).reject(&:blank?),
+      "organization_id" => organization_id,
+      "subforem_id" => subforem_id
+    }
+  end
+
+  # A draft was never announced, so neither its edits nor its deletion emit.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then publication_event if published?
+    when :updated then trackable_update_event
+    when :destroyed then "article_deleted" if published?
+    end
+  end
+
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (published? ? publication_event : "article_unpublished") if changed_keys.include?("published")
+    return unless published?
+
+    "article_updated" if changed_keys.intersect?(TRACKABLE_UPDATE_KEYS)
+  end
+
+  # The quickie composer (articleReactions.js) posts a status embedding the
+  # boosted article, which emits article_boosted instead of article_published.
+  def publication_event
+    boosted_id = boosted_article_id
+    return "article_published" unless boosted_id
+
+    ["article_boosted", {
+      "boosted_article_id" => boosted_id,
+      "boosted_article_user_id" => Article.where(id: boosted_id).pick(:user_id)
+    }]
+  end
+
+  # body_url is an attr_accessor set during the create request, so this only
+  # resolves on create; a status published later falls back to _published.
+  def boosted_article_id
+    return unless status? && body_url.present?
+
+    type, id = LiquidEmbedExtractor.derive_reference("embed", body_url)
+    id if type == "Article"
+  end
+
+  # Going live also reports each challenge the post enters, as its own event so
+  # Customer.io can trigger on it without parsing tag_list. Challenge tags added
+  # to an already-published post don't emit.
+  def emit_activity_event(phase, **)
+    super
+    return unless published?
+    return unless phase == :created || (phase == :updated && trackable_changed_keys.include?("published"))
+
+    tag_names = cached_tag_list.to_s.split(",").map(&:strip).compact_blank
+    Event.challenges_entered_by(tag_names, at: published_at || Time.current).each do |challenge|
+      enqueue_trackable_event("challenge_submitted", properties_override: challenge.challenge_trackable_properties)
+    end
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event,
+          :publication_event, :boosted_article_id, :emit_activity_event
 
   private
 
@@ -1868,6 +2154,33 @@ class Article < ApplicationRecord
        saved_change_to_main_image?
       Articles::UpdateDependentEmbedsWorker.perform_async(id)
     end
+  end
+
+  def notify_co_author_changes
+    before, after = saved_change_to_co_author_ids
+    removed_user_ids = Array.wrap(before).map(&:to_i) - Array.wrap(after).map(&:to_i)
+
+    Notification.send_to_co_authors(self, removed_user_ids)
+  end
+
+  # Keeps accepted invitations in step with co_author_ids when the credit list is edited directly
+  # (org co-author picker, admin tools), so an accepted invitation always means a credited co-author.
+  def remove_uncredited_co_author_invitations
+    co_author_invitations.accepted.where.not(user_id: co_author_ids).destroy_all
+  end
+
+  # Invitations are only for personal posts, so any still pending lapse when the post moves under
+  # an organization. Co-authors who already accepted stay credited.
+  def withdraw_pending_co_author_invitations
+    co_author_invitations.pending.destroy_all
+  end
+
+  def refresh_co_author_invitation_notifications
+    article_data = { "id" => id, "title" => title, "path" => current_state_path }
+    Notification.where(notifiable_type: "CoAuthorInvitation", notifiable_id: co_author_invitations.select(:id))
+      .find_each do |notification|
+        notification.update!(json_data: notification.json_data.merge("article" => article_data))
+      end
   end
 
   def cleanup_memberships_if_unpublished

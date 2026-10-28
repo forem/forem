@@ -167,6 +167,9 @@ fr:
           onboarding_newsletter_opt_in_subhead:
             description: "Newsletter checkbox subheading"
             placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+          geos_with_allowed_anonymous_tracking:
+            description: "Pays ou régions (ex. US, CA, US-CA) où les visiteurs non connectés reçoivent un identifiant anonyme dans leur navigateur ainsi qu'un historique des tags qu'ils lisent, afin de leur proposer un meilleur contenu. N'indiquez que les lieux où ce stockage est autorisé sans consentement préalable (ex. pas l'UE ni le Royaume-Uni). Si ces données servent à la publicité, elles doivent aussi y être autorisées à cette fin et/ou être compatibles avec votre bannière de cookies. Laissez vide pour désactiver partout."
+            placeholder: 'Codes de pays ou de région séparés par des virgules, ex. US,CA'
           geos_with_allowed_default_email_opt_in:
             description: 'List of countries where the default email opt-in is allowed by admin'
             placeholder: 'List of valid countries: comma separated, letters only e.g. US,CA'
@@ -188,6 +191,15 @@ fr:
             description: "Afficher la liste des premiers pas dans la barre latérale droite pour les nouveaux utilisateurs."
           enable_agent_sessions:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
+          enable_ai_disclosure:
+            description: "Permettre aux auteurs de divulguer l'utilisation d'outils d'IA lors de la publication ou de l'édition d'articles."
+          limit_post_creation_to_admins:
+            description: "Seuls les administrateurs peuvent créer de nouveaux articles (y compris au nom d'une organisation) ; les brouillons existants peuvent toujours être modifiés et publiés par leurs auteurs, et les autres membres peuvent réagir et commenter."
+            cache_expiry_note:
+              one: "Remarque : les modifications de l'interface peuvent prendre jusqu'à %{count} minute pour s'appliquer à tous les membres en raison du cache."
+              other: "Remarque : les modifications de l'interface peuvent prendre jusqu'à %{count} minutes pour s'appliquer à tous les membres en raison du cache."
+          appeal_auto_unflag_threshold:
+            description: "Score de confiance minimal de l'IA (de 0,0 à 1,0) requis pour approuver automatiquement un recours lorsque l'IA recommande auto_unflag (s'applique uniquement aux restrictions automatisées, jamais aux suspensions par un modérateur humain). Définissez une valeur supérieure à 1,0 (par ex. 1,01) pour désactiver le désignalement automatique."
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

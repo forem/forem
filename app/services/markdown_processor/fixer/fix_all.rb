@@ -9,6 +9,12 @@ module MarkdownProcessor
         split_tags
         underscores_in_usernames
       ].freeze
+
+      def self.call(markdown)
+        return unless markdown
+
+        ForemNative.fixer_fix_all(markdown) || legacy_call(markdown)
+      end
     end
   end
 end

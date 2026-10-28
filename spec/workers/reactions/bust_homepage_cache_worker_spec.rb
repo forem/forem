@@ -22,6 +22,26 @@ RSpec.describe Reactions::BustHomepageCacheWorker, type: :worker do
       expect(cache_bust).to have_received(:call).with("?i=i")
     end
 
+    it "doesn't load the article or bust the homepage when the article is not featured" do
+      unfeatured = create(:article, featured: false)
+      reaction = create(:reaction, reactable: unfeatured, user: user)
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+
+      expect do
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { worker.perform(reaction.id) }
+      end.not_to(change { unfeatured.reload.updated_at })
+
+      expect(queries.grep(/SELECT "articles"\.\*/)).to be_empty
+      expect(cache_bust).not_to have_received(:call)
+    end
+
+    it "touches the featured article it busts" do
+      reaction = create(:reaction, reactable: article, user: user)
+
+      expect { worker.perform(reaction.id) }.to(change { article.reload.updated_at })
+    end
+
     it "doesn't bust the homepage cache when reactable is a Comment" do
       comment = create(:comment, commentable: article)
       comment_reaction = create(:reaction, reactable: comment, user: user)

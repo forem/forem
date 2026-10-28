@@ -181,7 +181,7 @@ fr:
         community_bots:
           heading: Bots de la Communauté
           manage_button: Gérer les Bots
-          moderator_notice_html: "<strong>Note :</strong> La gestion des bots communautaires est actuellement disponible uniquement pour les administrateurs du site. Cette fonctionnalité sera bientôt disponible pour les leaders de communauté."
+          moderator_notice_html: "<strong>Note :</strong> La gestion des bots communautaires est actuellement disponible uniquement pour les administrateurs du site. Cette fonctionnalité sera bientôt disponible pour les curateurs de communauté."
           created_label: Créé
           api_secrets_label: Secrets API
           view_button: Voir

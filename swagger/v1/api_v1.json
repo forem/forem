@@ -3,7 +3,7 @@
   "info": {
     "title": "Forem API V1",
     "version": "1.0.0",
-    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication. Instances that\n        enable delegated access additionally accept an `Authorization: Bearer` token\n        issued by their configured delegation service on every endpoint that accepts\n        an api-key.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
   },
   "paths": {
     "/api/agent_sessions": {
@@ -83,6 +83,7 @@
                     "type": "string",
                     "description": "Tool that produced the session (e.g. claude_code, codex).",
                     "enum": [
+                      "antigravity_cli",
                       "claude_code",
                       "codex",
                       "gemini_cli",
@@ -129,6 +130,94 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AgentSessionShow"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "404": {
+            "description": "not found"
+          }
+        }
+      }
+    },
+    "/api/agent_sessions/presign": {
+      "post": {
+        "summary": "request a presigned URL to upload raw session transcript to S3",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.",
+        "operationId": "presignAgentSession",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "s3_key": {
+                      "type": "string"
+                    },
+                    "presigned_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "s3_key",
+                    "presigned_url"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "503": {
+            "description": "service unavailable"
+          }
+        }
+      }
+    },
+    "/api/agent_sessions/{id}/raw_url": {
+      "get": {
+        "summary": "request a presigned S3 GET URL to download the raw session transcript",
+        "tags": [
+          "agent_sessions"
+        ],
+        "description": "Retrieve a temporary presigned GET URL to download the original raw transcript file from S3.",
+        "operationId": "getAgentSessionRawUrl",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The unique slug or ID of the agent session.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "my-session-abc123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "raw_url": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "raw_url"
+                  ]
                 }
               }
             }
@@ -477,7 +566,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: A comma-separated list of tags (up to 4 tags). Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.",
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV/Forem that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but are referred to as articles within the code.\n\n### Body Parameter Tips:\n- **title**: A compelling and descriptive title for the article.\n- **body_markdown**: The main text of the article in Markdown format. You can use standard Markdown as well as Forem-specific Liquid tags (e.g., `{% embed ... %}`). You can also include YAML front matter at the very beginning of the markdown to specify metadata such as tags, series, and cover image.\n- **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.\n- **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.\n- **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.\n- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.\n- **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.\n- **description**: A short summary of the article used for previews and SEO meta description.\n- **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`).",
         "operationId": "createArticle",
         "parameters": [
 
@@ -765,7 +854,7 @@
         "tags": [
           "articles"
         ],
-        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
+        "description": "This endpoint allows the client to update an existing article by its unique numerical `id`.\n\n### Authorization Constraints:\n- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.\n- Edits by anyone other than the author are recorded in the audit log.\n- Returns `404` if the article does not exist or the API key's user may not edit it.\n- Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.\n- Setting `published: false` on an already published article will revert it to draft status.",
         "operationId": "updateArticle",
         "parameters": [
           {
@@ -1057,7 +1146,7 @@
         "tags": [
           "articles"
         ],
-        "description": "Allows authenticated clients to search articles using Forem's semantic embeddings database.",
+        "description": "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) and semantic embeddings search pipeline, with optional Jev shortlist re-ranking.",
         "parameters": [
           {
             "name": "q",
@@ -1072,7 +1161,7 @@
             "name": "per_page",
             "in": "query",
             "required": false,
-            "description": "Limit of articles returned (default 10, max 50).",
+            "description": "Limit of articles returned (default 30, max 100).",
             "schema": {
               "type": "integer"
             }
@@ -1156,6 +1245,81 @@
           "401": {
             "description": "unauthorized"
           }
+        }
+      }
+    },
+    "/api/articles/preview": {
+      "post": {
+        "summary": "Preview an article",
+        "tags": [
+          "articles"
+        ],
+        "description": "This endpoint allows the client to preview an article's rendered HTML and parsed front matter without saving it to the database.",
+        "operationId": "previewArticle",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Article Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    },
+                    "body_html": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true
+                    },
+                    "cover_image": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "reading_time_minutes": {
+                      "type": "integer"
+                    },
+                    "ai_disclosure_level": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Article"
+              }
+            }
+          },
+          "description": "Article markdown and optional attributes to preview"
         }
       }
     },
@@ -1467,7 +1631,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.",
+        "description": "Award a badge to a user. Requires administrator privileges.  Successful writes log `api_badge_achievement_create` with the actor and target ids in the admin API audit log.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1481,6 +1645,35 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "achievement_id": {
+                      "type": "integer",
+                      "description": "ID of the conflicting achievement awarding the badge to the user."
+                    }
+                  },
+                  "required": [
+                    "errors",
+                    "achievement_id"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -1503,6 +1696,10 @@
                       },
                       "include_default_description": {
                         "type": "boolean"
+                      },
+                      "metadata": {
+                        "type": "object",
+                        "additionalProperties": true
                       }
                     },
                     "required": [
@@ -1554,7 +1751,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.",
+        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.  Successful writes log `api_badge_achievement_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1612,7 +1809,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Create a new badge. Requires administrator privileges.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
+        "description": "Create a new badge. Requires administrator privileges.  Successful writes log `api_badge_create` with the actor and target ids in the admin API audit log.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
         "parameters": [
 
         ],
@@ -1703,7 +1900,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.",
+        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.  Successful writes log `api_badge_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1762,7 +1959,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.",
+        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.  Successful writes log `api_badge_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1812,7 +2009,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Create a new billboard.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
+        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
         "parameters": [
 
         ],
@@ -1890,7 +2087,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Update an existing billboard's configurations.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
+        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
         "parameters": [
           {
             "name": "id",
@@ -1947,7 +2144,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Remove a billboard from active rotation by unpublishing it.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
+        "description": "Remove a billboard from active rotation by unpublishing it.  Successful writes log `api_billboard_unpublish` with the actor and target ids in the admin API audit log.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
         "parameters": [
           {
             "name": "id",
@@ -1972,6 +2169,104 @@
           "401": {
             "description": "unauthorized"
           }
+        }
+      }
+    },
+    "/api/billboards/preview": {
+      "post": {
+        "summary": "Preview a billboard",
+        "tags": [
+          "billboards"
+        ],
+        "description": "Render a billboard's Markdown/HTML copy into `processed_html` and `minimized_processed_html` without saving it.",
+        "operationId": "previewBillboard",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "minimized_processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown or raw HTML) of the ad"
+                  },
+                  "minimized_body_markdown": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional minimized markdown copy"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "sidebar_right_second",
+                      "sidebar_right_third",
+                      "feed_first",
+                      "feed_second",
+                      "feed_third",
+                      "home_hero",
+                      "footer",
+                      "page_fixed_bottom",
+                      "post_fixed_bottom",
+                      "post_body_bottom",
+                      "post_body_bottom_secondary",
+                      "post_sidebar",
+                      "post_sidebar_secondary",
+                      "post_comments",
+                      "post_comments_secondary",
+                      "post_comments_mid",
+                      "digest_first",
+                      "digest_second",
+                      "external_feed"
+                    ],
+                    "nullable": true
+                  },
+                  "render_mode": {
+                    "type": "string",
+                    "enum": [
+                      "forem_markdown",
+                      "raw"
+                    ],
+                    "default": "forem_markdown"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Billboard markdown and rendering parameters to preview."
         }
       }
     },
@@ -2074,6 +2369,58 @@
           "404": {
             "description": "Comment Not Found"
           }
+        }
+      }
+    },
+    "/api/comments/preview": {
+      "post": {
+        "summary": "Preview a comment",
+        "tags": [
+          "comments"
+        ],
+        "description": "This endpoint allows the client to preview a comment's rendered HTML from Markdown without saving it.",
+        "operationId": "previewComment",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Comment Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The comment body in Markdown format"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Comment markdown to preview"
         }
       }
     },
@@ -2651,6 +2998,185 @@
         }
       }
     },
+    "/api/events": {
+      "get": {
+        "summary": "Retrieve events",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a list of events on the platform.\n\n### Query Parameters:\n- **type_of**: Filter events by their type (`live_stream`, `takeover`, `other`, `challenge`).",
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "type_of",
+            "in": "query",
+            "required": false,
+            "description": "Filter events by type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "live_stream",
+                "takeover",
+                "other",
+                "challenge"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Event"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Create a new event. Requires administrator privileges.\n\nSuccessful writes log `api_event_create` with the actor and target ids in the admin API audit log.",
+        "operationId": "createEvent",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "Event created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to create."
+        }
+      }
+    },
+    "/api/events/{id}": {
+      "get": {
+        "summary": "Retrieve an event",
+        "tags": [
+          "events"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve a single event by ID.",
+        "operationId": "getEventById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested event",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Update an existing event. Requires administrator privileges.\n\nSuccessful writes log `api_event_update` with the actor and target ids in the admin API audit log.",
+        "operationId": "updateEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to update.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Event updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Event"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventInput"
+              }
+            }
+          },
+          "description": "Event parameters to update."
+        }
+      },
+      "delete": {
+        "summary": "Delete an event",
+        "tags": [
+          "events"
+        ],
+        "description": "Delete an event. Requires administrator privileges.\n\nSuccessful writes log `api_event_destroy` with the actor and target ids in the admin API audit log.",
+        "operationId": "deleteEvent",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the event to delete.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Event deleted"
+          }
+        }
+      }
+    },
     "/api/feedback_messages/{id}": {
       "patch": {
         "summary": "Update a feedback message's status (Admin)",
@@ -2940,6 +3466,132 @@
         }
       }
     },
+    "/api/images": {
+      "post": {
+        "summary": "upload an image",
+        "tags": [
+          "images"
+        ],
+        "description": "Upload an image and get back a URL hosted by this Forem.\n\n### Using the URL:\n- Embed it in an article's `body_markdown`, e.g. `![A description](URL)`.\n- Set it as an article's cover image by passing it as `main_image` when creating or updating an article.\n\n### Limits:\n- One image per request, sent as `multipart/form-data` in the `image` field.\n- Allowed types: jpg, jpeg, jpe, gif, png, ico, bmp, dng, webp. Max 25MB.\n- Rate limited per user to a configurable number of uploads per configurable window (by default 10 per hour). Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable this endpoint.",
+        "operationId": "uploadImage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUrl"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          },
+          "429": {
+            "description": "too many requests"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "image": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The image file to upload."
+                  }
+                },
+                "required": [
+                  "image"
+                ]
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
+    "/api/images/generate": {
+      "post": {
+        "summary": "generate an image with AI",
+        "tags": [
+          "images"
+        ],
+        "description": "Generate an image from a text prompt and get back a URL hosted by this Forem.\n\nThe image follows this Forem's cover image style and, unless `aspect_ratio` is given, is sized for its cover images. Use the URL in `body_markdown` or as an article's `main_image`, just like an uploaded image.\n\n### Limits:\n- `prompt` is required and may be up to 1000 characters.\n- Rate limited per user to a configurable number of generations per configurable window (by default 3 per day). Every attempt counts, including failed ones. Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable this endpoint.\n- Returns `503` if AI image generation is not configured on this Forem.",
+        "operationId": "generateImage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ImageUrl"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          },
+          "429": {
+            "description": "too many requests"
+          },
+          "503": {
+            "description": "AI image generation unavailable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "prompt": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "description": "A description of the image to generate."
+                  },
+                  "aspect_ratio": {
+                    "type": "string",
+                    "enum": [
+                      "1:1",
+                      "2:3",
+                      "3:2",
+                      "3:4",
+                      "4:3",
+                      "4:5",
+                      "5:4",
+                      "9:16",
+                      "16:9",
+                      "21:9"
+                    ],
+                    "description": "Aspect ratio of the image. Defaults to this Forem's cover image shape."
+                  }
+                },
+                "required": [
+                  "prompt"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/instance": {
       "get": {
         "summary": "Retrieve instance configuration details",
@@ -2953,6 +3605,47 @@
         "responses": {
           "200": {
             "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/v1/openapi.json": {
+      "get": {
+        "summary": "OpenAPI description",
+        "tags": [
+          "openapi"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve the machine-readable OpenAPI contract for this Forem instance.\n\nAutomated clients should use this document instead of inferring endpoint schemas from responses or errors.",
+        "operationId": "getOpenAPIDescription",
+        "responses": {
+          "200": {
+            "description": "The OpenAPI description",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "openapi",
+                    "info",
+                    "paths"
+                  ],
+                  "properties": {
+                    "openapi": {
+                      "type": "string"
+                    },
+                    "info": {
+                      "type": "object"
+                    },
+                    "paths": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -3290,6 +3983,18 @@
           "pages"
         ],
         "description": "Retrieve details for all Page objects in the system.\n\n        ### Pages Overview:\n        - Pages are custom static or dynamic views hosted on the Forem instance.\n        - Publicly visible unless restricted.\n        - Helpful for building custom menus, rendering site policies, or embedding custom forms.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter pages belonging to a specific organization ID, ordered by position.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful",
@@ -3311,7 +4016,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Create a new custom page. Requires administrative privileges.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe.\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts).",
+        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
         "parameters": [
 
         ],
@@ -3355,6 +4060,16 @@
                   "is_top_level_path": {
                     "type": "boolean",
                     "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The ID of the organization the page belongs to"
+                  },
+                  "position": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "Display order position for organization pages"
                   },
                   "template": {
                     "type": "string",
@@ -3419,7 +4134,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Update an existing page's details by ID. Requires administrative privileges.",
+        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -3468,7 +4183,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Delete a custom page from the system by ID. Requires administrative privileges.",
+        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -3500,6 +4215,69 @@
           "422": {
             "description": "unprocessable"
           }
+        }
+      }
+    },
+    "/api/pages/preview": {
+      "post": {
+        "summary": "preview a page",
+        "tags": [
+          "pages"
+        ],
+        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.",
+        "operationId": "previewPage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the page"
+                  },
+                  "body_html": {
+                    "type": "string",
+                    "description": "Raw HTML for site admin pages when body_markdown is omitted",
+                    "nullable": true
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "nullable": true,
+                    "description": "The ID of the organization the page belongs to, if previewing an organization page"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Page content to preview."
         }
       }
     },
@@ -4528,6 +5306,224 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Create a tag before it appears on an article.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful creation writes an admin API audit entry.\nAccepts a required alphanumeric name of at most 30 characters, plus the optional fields accepted by tag update.\nReturns the same fields as tag update.  A duplicate name returns 422 with an error and the existing tag's id, without changing that tag.",
+        "operationId": "createTag",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "The created tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invalid tag or duplicate name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "Existing tag id, present only for duplicate names"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "javascript"
+                  },
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag name and optional display fields"
+        }
+      }
+    },
+    "/api/tags/supported": {
+      "get": {
+        "summary": "Supported tags",
+        "tags": [
+          "tags"
+        ],
+        "security": [
+
+        ],
+        "description": "Retrieve every tag supported on the platform (or current subforem), ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Not paginated: returns the complete list of supported tags in a single response.\n- Edge cached; changes to a tag's supported status are purged from the cache automatically.",
+        "operationId": "getSupportedTags",
+        "responses": {
+          "200": {
+            "description": "A List of all supported tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags/{id}": {
+      "put": {
+        "summary": "Update a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Update a tag's display details and wiki by ID.\n\nRequires an API key that belongs to a super admin, an admin, or a user with the `single_resource_admin` role on Tag. Each update is written to the admin API audit log.\n\n### Body Parameter Guidelines:\n- All fields are optional; only the fields you send are changed.\n- **pretty_name**: Display name for the tag, e.g. `JavaScript` for `javascript`.\n- **short_summary**: Short description shown with the tag.\n- **wiki_body_markdown**: Markdown body of the tag's wiki.\n- **supported**: Whether the tag is supported on the platform.\n- **bg_color_hex** / **text_color_hex**: Tag colors as hexadecimal values, e.g. `#1E90FF`.\n- **context_note_instructions**: Instructions shown to people who add a context note to a post with this tag.\n\nThe tag's `name` cannot be changed. The response has the fields of an item in `GET /api/tags` plus every editable field, so callers can confirm the edit.",
+        "operationId": "updateTag",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag to update.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The updated tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag not found"
+          },
+          "422": {
+            "description": "Unprocessable entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag fields to update"
+        }
       }
     },
     "/api/trends": {
@@ -4897,13 +5893,81 @@
         }
       }
     },
+    "/api/users/{id}/base_subscriber": {
+      "put": {
+        "summary": "Add base_subscriber role for a User",
+        "tags": [
+          "users"
+        ],
+        "description": "Assign the base_subscriber role to a user.\n\n### Base Subscriber Details:\n- Requires an admin role or the `super_moderator` role.\n- Uses the same path as granting \"Base Subscriber\" in the admin UI: adds the role, adds a note to the user, and sends the user the base subscriber email.\n- Idempotent: if the user already has the role, nothing changes (no note, no email) and the response is still 204.",
+        "operationId": "addBaseSubscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to assign the base_subscriber role.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "base_subscriber role assigned to the user successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Unknown User ID"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove base_subscriber role from a User",
+        "tags": [
+          "users"
+        ],
+        "description": "Remove the base_subscriber role from a user. Other roles are not changed. Requires an admin role or the `super_moderator` role.",
+        "operationId": "removeBaseSubscriber",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to remove the base_subscriber role from.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully removed the base_subscriber role from a user"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Unknown User ID"
+          }
+        }
+      }
+    },
     "/api/users/me": {
       "get": {
         "summary": "The authenticated user",
         "tags": [
           "users"
         ],
-        "description": "This endpoint allows the client to retrieve information about the authenticated user.\n\n### Usage Tips:\n- Requires a valid `api-key` header to identify the user.\n- Useful for checking permissions, verifying linking state, or retrieving user-specific profile settings.",
+        "description": "Returned only for delegated Bearer tokens, on any Bearer-capable endpoint, when the configured JWKS endpoint cannot be reached or returns an unusable key set and no cached keys remain. Invalid tokens are 401, never 503.",
         "operationId": "getUserMe",
         "responses": {
           "200": {
@@ -4921,6 +5985,9 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "503": {
+            "description": "Delegated access unavailable"
           }
         }
       }
@@ -5281,7 +6348,7 @@
           "users",
           "admin"
         ],
-        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter). Requires Super Admin credentials.",
+        "description": "Update a user's email notification preferences (e.g., unsubscribing them from the system newsletter or the periodic digest). Any subset of the listed properties may be supplied; at least one is required. Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -5309,6 +6376,24 @@
                     "properties": {
                       "email_newsletter": {
                         "type": "boolean"
+                      },
+                      "email_digest_periodic": {
+                        "type": "boolean"
+                      },
+                      "email_comment_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_follower_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_mention_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_unread_notifications": {
+                        "type": "boolean"
+                      },
+                      "email_badge_notifications": {
+                        "type": "boolean"
                       }
                     }
                   }
@@ -5330,7 +6415,7 @@
           "users",
           "admin"
         ],
-        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account once the merge completes successfully.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
+        "description": "Merge a duplicate user account into a target main account.\n\n### Account Merging Behavior:\n- Transfers all comments, articles, reactions, and follows to the target user (`merge_user_id`).\n- Deletes/destroys the source user account in the background once its content has been transferred, so it may still exist briefly after this request returns.\n- High risk! Action is permanent and irreversible.\n- Requires Super Admin credentials.",
         "parameters": [
           {
             "name": "id",
@@ -5652,6 +6737,11 @@
       "api-key": [
 
       ]
+    },
+    {
+      "bearer_auth": [
+
+      ]
     }
   ],
   "components": {
@@ -5661,6 +6751,12 @@
         "name": "api-key",
         "in": "header",
         "description": "API Key authentication.\n\nAuthentication for some endpoints, like write operations on the\nArticles API require a DEV API key.\n\nAll authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.\n\n### Getting an API key\n\nTo obtain one, please follow these steps:\n\n  - visit https://dev.to/settings/extensions\n  - in the \"DEV API Keys\" section create a new key by adding a\n    description and clicking on \"Generate API Key\"\n\n    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)\n\n  - You'll see the newly generated key in the same view\n    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+      },
+      "bearer_auth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Short-lived RS256 RFC 9068 access token issued by the configured delegation service and verified against its configured JWKS. The issuer authorizes the client and requested operation before minting the token; Forem validates the token and resolves its subject and owner to a local user. An invalid token returns 401; an unavailable trust dependency with no usable cached key returns 503."
       }
     },
     "parameters": {
@@ -5752,6 +6848,19 @@
       }
     },
     "schemas": {
+      "ImageUrl": {
+        "description": "An image hosted by this Forem, usable in body_markdown or as an article's main_image",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "url"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
       "ArticleFlareTag": {
         "description": "Flare tag of the article",
         "type": "object",
@@ -5864,6 +6973,20 @@
             "type": "integer",
             "format": "int32"
           },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
+          },
           "user": {
             "$ref": "#/components/schemas/SharedUser"
           },
@@ -5975,11 +7098,25 @@
                 "type": "string"
               },
               "tags": {
-                "type": "string"
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Up to 4 tags, as an array of strings"
               },
               "organization_id": {
                 "type": "integer",
                 "nullable": true
+              },
+              "ai_disclosure_level": {
+                "type": "string",
+                "enum": [
+                  "not_disclosed",
+                  "no_ai",
+                  "some_ai",
+                  "fully_autonomous"
+                ],
+                "description": "Level of AI tooling usage disclosure"
               }
             }
           }
@@ -6071,8 +7208,64 @@
           "text_color_hex": {
             "type": "string",
             "nullable": true
+          },
+          "short_summary": {
+            "type": "string",
+            "nullable": true
           }
         }
+      },
+      "ExtendedTag": {
+        "description": "Representation of a tag with its editable fields, returned when a tag is updated",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "pretty_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "short_summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "supported": {
+            "type": "boolean"
+          },
+          "wiki_body_markdown": {
+            "type": "string",
+            "nullable": true
+          },
+          "context_note_instructions": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "text_color_hex": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "pretty_name",
+          "short_summary",
+          "supported",
+          "wiki_body_markdown",
+          "context_note_instructions",
+          "bg_color_hex",
+          "text_color_hex"
+        ]
       },
       "Page": {
         "description": "Representation of a page object",
@@ -6107,6 +7300,17 @@
           "social_image": {
             "type": "object",
             "nullable": true
+          },
+          "organization_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true,
+            "description": "The ID of the organization the page belongs to, if any"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Display order position for organization pages"
           },
           "template": {
             "type": "string",
@@ -6440,6 +7644,20 @@
             "description": "Podcast image url",
             "type": "string",
             "format": "url"
+          },
+          "ai_disclosure_level": {
+            "type": "string",
+            "enum": [
+              "not_disclosed",
+              "no_ai",
+              "some_ai",
+              "fully_autonomous"
+            ],
+            "description": "Level of AI tooling usage disclosure"
+          },
+          "ai_disclosure_label": {
+            "type": "string",
+            "description": "Human-readable label of AI disclosure"
           }
         }
       },
@@ -6512,11 +7730,15 @@
               "page_fixed_bottom",
               "post_fixed_bottom",
               "post_body_bottom",
+              "post_body_bottom_secondary",
               "post_sidebar",
+              "post_sidebar_secondary",
               "post_comments",
+              "post_comments_secondary",
               "post_comments_mid",
               "digest_first",
-              "digest_second"
+              "digest_second",
+              "external_feed"
             ],
             "description": "Identifies which area of site layout the ad can appear in"
           },
@@ -6919,7 +8141,8 @@
             "enum": [
               "community_pulse",
               "industry",
-              "fun"
+              "fun",
+              "beta_testing"
             ],
             "description": "Survey category"
           },
@@ -7017,7 +8240,8 @@
                 "enum": [
                   "community_pulse",
                   "industry",
-                  "fun"
+                  "fun",
+                  "beta_testing"
                 ],
                 "description": "Survey category"
               },
@@ -7026,7 +8250,8 @@
                 "enum": [
                   "community_pulse",
                   "industry",
-                  "fun"
+                  "fun",
+                  "beta_testing"
                 ],
                 "description": "Survey category (alias of survey_type_of)"
               },
@@ -7551,6 +8776,11 @@
           "include_default_description": {
             "type": "boolean"
           },
+          "metadata": {
+            "type": "object",
+            "description": "Key/value data supplied for context",
+            "additionalProperties": true
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -7651,6 +8881,200 @@
           "description",
           "logo_image_url",
           "cover_image_url"
+        ]
+      },
+      "Event": {
+        "description": "Representation of an event",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "title": {
+            "type": "string"
+          },
+          "event_name_slug": {
+            "type": "string"
+          },
+          "event_variation_slug": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "full_details": {
+            "type": "string",
+            "nullable": true,
+            "description": "Full text dump of all event details, intended for agent and API consumption."
+          },
+          "type_of": {
+            "type": "string",
+            "enum": [
+              "live_stream",
+              "takeover",
+              "other",
+              "challenge"
+            ]
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "primary_stream_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "broadcast_config": {
+            "type": "string",
+            "enum": [
+              "no_broadcast",
+              "tagged_broadcast",
+              "global_broadcast"
+            ]
+          },
+          "broadcast_ended_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "organization_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "page_id": {
+            "type": "integer",
+            "format": "int64",
+            "nullable": true
+          },
+          "data": {
+            "type": "object",
+            "nullable": true
+          },
+          "tags_array": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cached_tag_list": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "event_name_slug",
+          "event_variation_slug",
+          "type_of",
+          "start_time",
+          "end_time",
+          "published",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "EventInput": {
+        "description": "Representation of an Event to be created/updated",
+        "type": "object",
+        "properties": {
+          "event": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "event_name_slug": {
+                "type": "string"
+              },
+              "event_variation_slug": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string",
+                "nullable": true
+              },
+              "full_details": {
+                "type": "string",
+                "nullable": true,
+                "description": "Full text dump of all event details."
+              },
+              "primary_stream_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "start_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "end_time": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "type_of": {
+                "type": "string",
+                "enum": [
+                  "live_stream",
+                  "takeover",
+                  "other",
+                  "challenge"
+                ]
+              },
+              "organization_id": {
+                "type": "integer",
+                "nullable": true
+              },
+              "tag_list": {
+                "type": "string",
+                "nullable": true
+              },
+              "data": {
+                "type": "object",
+                "nullable": true
+              }
+            },
+            "required": [
+              "title",
+              "event_name_slug",
+              "event_variation_slug",
+              "start_time",
+              "end_time"
+            ]
+          }
+        },
+        "required": [
+          "event"
         ]
       }
     }

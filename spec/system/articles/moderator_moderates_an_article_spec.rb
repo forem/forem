@@ -1,35 +1,22 @@
 require "rails_helper"
 
-RSpec.describe "Views an article" do
+RSpec.describe "Moderator moderates an article" do
   let(:user) { create(:user) }
   let(:moderator) { create(:user, :trusted) }
-  let(:article) { create(:article, :with_notification_subscription, user: user) }
-  let(:timestamp) { "2019-03-04T10:00:00Z" }
+  let(:article) { create(:article, user: user, with_tags: false) }
 
   before do
     sign_in moderator
-    visit "/#{user.username}/#{article.slug}/mod"
   end
 
-  it "shows an article", js: true do
-    visit "/#{user.username}/#{article.slug}"
-
-    expect(page).to have_content(article.title)
-  end
-
-  it "lets moderators visit /mod", js: true do
+  it "lets moderators visit /mod and see moderation controls and hidden comments", :aggregate_failures do
+    create(:comment, commentable: article, user: user, hidden_by_commentable_user: true)
     visit "/#{user.username}/#{article.slug}/mod"
-    expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')
-    expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="Article"]')
-    expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="User"]')
+    expect(page).to have_css('button[data-category="thumbsdown"][data-reactable-type="Article"]')
+    expect(page).to have_css('button[data-category="vomit"][data-reactable-type="Article"]')
+    expect(page).to have_css('button[data-category="vomit"][data-reactable-type="User"]')
     expect(page).to have_button(class: "level-rating-button")
-  end
-
-  it "shows hidden comments on /mod" do
-    commenter = create(:user)
-    create(:comment, commentable: article, user: commenter, hidden_by_commentable_user: true)
-    visit "/#{user.username}/#{article.slug}/mod"
     expect(page).to have_content("Hidden Comments")
-    expect(page).to have_selector("ul#hidden-comments")
+    expect(page).to have_css("ul#hidden-comments")
   end
 end

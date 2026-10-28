@@ -13,6 +13,14 @@ RSpec.describe Favorites::Create, type: :service do
     expect(article.favorited_at).to be_present
   end
 
+  it "triggers async_score_calc on the favorited article" do
+    allow(article).to receive(:async_score_calc)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:async_score_calc)
+  end
+
   it "creates an audit log entry" do
     allow(Audit::Logger).to receive(:log).and_call_original
 
@@ -32,12 +40,75 @@ RSpec.describe Favorites::Create, type: :service do
       .to have_received(:call).with(favoritable: article, favoriter: leader)
   end
 
+  it "enqueues the gem received email for the author" do
+    allow(Favorites::SendGemReceivedEmailWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(Favorites::SendGemReceivedEmailWorker).to have_received(:perform_async).with("Article", article.id)
+  end
+
+  it "does not enqueue the gem received email when the favorite fails" do
+    article.update_columns(favorited_by_user_id: create(:user).id)
+    allow(Favorites::SendGemReceivedEmailWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(Favorites::SendGemReceivedEmailWorker).not_to have_received(:perform_async)
+  end
+
   it "favorites a comment" do
     comment = create(:comment, commentable: article, user: author)
     result = described_class.call(favoritable: comment, user: leader)
 
     expect(result.success?).to be true
     expect(comment.reload.favorited_by_user_id).to eq(leader.id)
+  end
+
+  it "triggers async_score_calc on the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(comment).to receive(:async_score_calc)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(comment).to have_received(:async_score_calc)
+  end
+
+  it "purges the edge cache of the favorited article" do
+    allow(article).to receive(:purge)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(article).to have_received(:purge)
+  end
+
+  it "busts the edge cache of the favorited comment" do
+    comment = create(:comment, commentable: article, user: author)
+    allow(Comments::BustCacheWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: comment, user: leader)
+
+    expect(Comments::BustCacheWorker).to have_received(:perform_async).with(comment.id)
+  end
+
+  it "expires the comment tree fragment by touching the comment and its ancestors" do
+    root = create(:comment, commentable: article, user: author)
+    reply = create(:comment, commentable: article, user: author, parent: root)
+    Comment.where(id: [root.id, reply.id]).update_all(updated_at: 1.day.ago)
+
+    described_class.call(favoritable: reply, user: leader)
+
+    expect(root.reload.updated_at).to be > 1.minute.ago
+    expect(reply.reload.updated_at).to be > 1.minute.ago
+  end
+
+  it "does not bust caches when the favorite is rejected" do
+    own_article = create(:article, user: leader)
+    allow(own_article).to receive(:purge)
+
+    described_class.call(favoritable: own_article, user: leader)
+
+    expect(own_article).not_to have_received(:purge)
   end
 
   it "rejects an already-favorited record" do
@@ -97,6 +168,33 @@ RSpec.describe Favorites::Create, type: :service do
       expect(result.error).to eq(:no_allowance)
       expect(article.reload.favorited_by_user_id).to be_nil
       expect(article.reload.favorited_at).to be_nil
+    end
+  end
+
+  describe "favoriting by admin curators" do
+    let(:admin_curator) { create(:user, :admin, :community_leader_level_1) }
+
+    before do
+      allow(Settings::UserExperience)
+        .to receive(:community_leader_l1_favorite_allowance).and_return(1)
+    end
+
+    it "keeps favoriting past the leader budget" do
+      described_class.call(favoritable: create(:article, user: author), user: admin_curator)
+
+      result = described_class.call(favoritable: article, user: admin_curator)
+
+      expect(result.success?).to be true
+      expect(article.reload.favorited_by_user_id).to eq(admin_curator.id)
+    end
+
+    it "leaves an admin who does not curate metered" do
+      admin = create(:user, :admin)
+
+      result = described_class.call(favoritable: article, user: admin)
+
+      expect(result.error).to eq(:no_allowance)
+      expect(article.reload.favorited_by_user_id).to be_nil
     end
   end
 

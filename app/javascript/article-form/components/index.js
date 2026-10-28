@@ -1,3 +1,4 @@
+export * from './AiDisclosureModal';
 export * from './EditorActions';
 export * from './Form';
 export * from './Header';

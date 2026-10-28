@@ -39,6 +39,19 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:message_data]).to eq("name" => "Sloan")
   end
 
+  # The App API treats a from in the request as an override of the sender
+  # identity configured on the transactional message, so sending the Rails-side
+  # default would make every template send from ForemInstance.from_email_address.
+  it "omits the from when a transactional_message_id is present so the template's sender is used" do
+    message = delivered_message(transactional_message_id: "dev_test_template")
+    expect(message).not_to have_key(:from)
+  end
+
+  it "still lets a mailer override the sender explicitly through the delivery options" do
+    message = delivered_message(transactional_message_id: "dev_test_template", from: "custom@dev.to")
+    expect(message[:from]).to eq("custom@dev.to")
+  end
+
   it "forwards the one-click unsubscribe headers so RFC 8058 survives the Customer.io render" do
     mail["List-Unsubscribe"] = "<https://dev.to/email_subscriptions/unsubscribe?ut=token>"
     mail["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
@@ -82,6 +95,35 @@ RSpec.describe DeliveryMethods::CustomerIo do
     expect(message[:body]).to eq("<p>html export</p>")
   end
 
+  # Customer.io renders its own template, so Ahoy's rewriting of the
+  # ActionMailer body never reaches the recipient. The payload has to carry the
+  # tracking params instead or Ahoy::EmailClicksController is never called.
+  describe "click tracking in the payload" do
+    let(:article_url) { "https://#{Settings::General.app_domain}/ben/some-post" }
+
+    it "decorates message_data links using the token Ahoy set on the mail" do
+      mail.ahoy_data = { token: "tok123", campaign: nil }
+
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      params = Rack::Utils.parse_query(Addressable::URI.parse(message[:message_data]["url"]).query)
+      expect(params["ahoy_click"]).to eq("true")
+      expect(params["t"]).to eq("tok123")
+    end
+
+    it "leaves message_data alone when Ahoy did not set a token" do
+      message = delivered_message(
+        transactional_message_id: "dev_test_template",
+        message_data: { "url" => article_url },
+      )
+
+      expect(message[:message_data]["url"]).to eq(article_url)
+    end
+  end
+
   it "attaches mail attachments to the request" do
     mail.attachments["export.zip"] = "zipbytes"
     request_double = instance_double(Customerio::SendEmailRequest, attach: nil, message: {})
@@ -91,5 +133,71 @@ RSpec.describe DeliveryMethods::CustomerIo do
 
     expect(request_double).to have_received(:attach).with("export.zip", "zipbytes")
     expect(api_client).to have_received(:send_email).with(request_double)
+  end
+
+  describe "invalid recipient email addresses" do
+    it "skips sending and logs a warning when the to address contains a comma" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: "member@example,com",
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+      allow(Rails.logger).to receive(:warn)
+
+      described_class.new({}).deliver!(invalid_mail)
+
+      expect(api_client).not_to have_received(:send_email)
+      expect(invalid_mail.perform_deliveries).to be(false)
+      expect(Rails.logger).to have_received(:warn)
+        .with(include("[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address:"))
+    end
+
+    it "skips sending when the to address is wrapped in quotes" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: '"member@example.com"',
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+
+      described_class.new({}).deliver!(invalid_mail)
+
+      expect(api_client).not_to have_received(:send_email)
+      expect(invalid_mail.perform_deliveries).to be(false)
+    end
+
+    it "handles an unparsable To field that Mail returns as a raw String without raising" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: "member@@example.com",
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+      allow(Rails.logger).to receive(:warn)
+
+      expect { described_class.new({}).deliver!(invalid_mail) }.not_to raise_error
+
+      expect(api_client).not_to have_received(:send_email)
+      expect(invalid_mail.perform_deliveries).to be(false)
+      expect(Rails.logger).to have_received(:warn)
+        .with(include("[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address:"))
+    end
+
+    it "marks the message as not delivered so Mail delivery observers (Ahoy) do not record it as sent" do
+      invalid_mail = Mail.new(
+        from: "DEV Community <hello@example.com>",
+        to: "member@example,com",
+        subject: "Confirm your account",
+        body: "<p>Hello</p>",
+      )
+      invalid_mail.ahoy_data = { token: "tok123", campaign: nil }
+      invalid_mail.delivery_method(described_class, {})
+
+      expect { invalid_mail.deliver }
+        .not_to change(EmailMessage, :count)
+
+      expect(api_client).not_to have_received(:send_email)
+    end
   end
 end

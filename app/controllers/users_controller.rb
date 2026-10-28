@@ -171,15 +171,15 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by(secret: params[:org_secret].strip))
+    secret = params[:org_secret].is_a?(String) ? params[:org_secret].strip : nil
+    if secret.present? && (@organization = Organization.find_by(secret: secret))
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
       flash[:settings_notice] =
         I18n.t("users_controller.joined_org", organization_name: @organization.name)
-      redirect_to "/settings/organization"
     else
       flash[:error] = I18n.t("users_controller.invalid_secret")
-      redirect_to "/settings/organization"
     end
+    redirect_to "/settings/organization"
   end
 
   def leave_org
@@ -249,6 +249,9 @@ class UsersController < ApplicationController
     set_current_tab("account")
 
     if @user.update_with_password(password_params)
+      bypass_sign_in(@user)
+      remember_me(@user) if cookies[:remember_user_token].present?
+      flash[:settings_notice] = I18n.t("devise.passwords.updated_not_active")
       redirect_to user_settings_path(@tab)
     else
       Honeycomb.add_field("error", @user.errors.messages.compact_blank)

@@ -381,6 +381,105 @@ RSpec.describe "Api::V1::Docs::Users" do
       end
     end
   end
+
+  describe "PUT /users/:id/base_subscriber" do
+    path "/api/users/{id}/base_subscriber" do
+      put "Add base_subscriber role for a User" do
+        tags "users"
+        description "Assign the base_subscriber role to a user.
+
+### Base Subscriber Details:
+- Requires an admin role or the `super_moderator` role.
+- Uses the same path as granting \"Base Subscriber\" in the admin UI: adds the role, adds a note to the user, and sends the user the base subscriber email.
+- Idempotent: if the user already has the role, nothing changes (no note, no email) and the response is still 204."
+        operationId "addBaseSubscriber"
+        produces "application/json"
+        parameter name: :id, in: :path, required: true,
+                  description: "The ID of the user to assign the base_subscriber role.",
+                  schema: {
+                    type: :integer,
+                    format: :int32,
+                    minimum: 1
+                  },
+                  example: 1
+
+        response "204", "base_subscriber role assigned to the user successfully" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { banned_user.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:id) { banned_user.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Unknown User ID" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { 10_000 }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "DELETE /users/:id/base_subscriber" do
+    before do
+      banned_user.add_role(:base_subscriber)
+    end
+
+    path "/api/users/{id}/base_subscriber" do
+      delete "Remove base_subscriber role from a User" do
+        tags "users"
+        description "Remove the base_subscriber role from a user. Other roles are not changed. Requires an admin role or the `super_moderator` role."
+        operationId "removeBaseSubscriber"
+        produces "application/json"
+        parameter name: :id, in: :path, required: true,
+                  description: "The ID of the user to remove the base_subscriber role from.",
+                  schema: {
+                    type: :integer,
+                    format: :int32,
+                    minimum: 1
+                  },
+                  example: 1
+
+        response "204", "Successfully removed the base_subscriber role from a user" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { banned_user.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:id) { banned_user.id }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Unknown User ID" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { 10_000 }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 # rubocop:enable RSpec/VariableName
 # rubocop:enable RSpec/EmptyExampleGroup

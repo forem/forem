@@ -5,27 +5,30 @@ require "rails_helper"
 RSpec.describe ArticlePolicy do
   subject(:method_call) { policy.public_send(policy_method) }
 
-  let(:organization) { org_admin&.organizations&.first }
+  let(:instantiated_users) { {} }
+  let(:organization) { instantiated_users[:org_admin]&.organizations&.first }
 
-  let(:org_admin) { create(:user, :org_admin) }
+  let(:org_admin) { instantiated_users[:org_admin] = create(:user, :org_admin) }
   let(:anyone) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
-  let(:suspended_user) { create(:user, :suspended) }
+  let(:suspended_user) { instantiated_users[:author] = create(:user, :suspended) }
   let(:admin) { create(:user, :admin) }
   let(:trusted) { create(:user, :trusted) }
   let(:other_users) { create(:user) }
-  let(:author) { create(:user) }
+  let(:users_scope) { User.where(id: [super_admin.id, author.id, suspended_user.id]) }
+  let(:author) { instantiated_users[:author] = create(:user) }
   let(:moderator) { create(:user, :super_moderator) }
   let(:tag_mod) { create(:user, :tag_moderator) }
   let(:tagmod_tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
   let(:random_tag) { create(:tag, name: "randomtag") }
 
-  let(:resource) { build(:article, user: author, organization: organization) }
+  let(:resource) do
+    build(:article, user_id: instantiated_users[:author]&.id || -1, organization: organization, with_tags: false)
+  end
   let(:policy) { described_class.new(user, resource) }
 
   describe ".scope_users_authorized_to_action" do
     before do
-      User.destroy_all
       super_admin
       author
       suspended_user
@@ -35,7 +38,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
 
       it "omits suspended and regular users" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to contain_exactly(super_admin)
       end
     end
@@ -44,7 +47,7 @@ RSpec.describe ArticlePolicy do
       before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false) }
 
       it "omits only suspended users" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to contain_exactly(author, super_admin)
       end
     end
@@ -54,18 +57,23 @@ RSpec.describe ArticlePolicy do
     #
     context "when is_root_subforem? is true" do
       before do
-        allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false)
-        allow(described_class).to receive(:is_root_subforem?).and_return(true)
+        allow(described_class).to receive_messages(
+          limit_post_creation_to_admins?: false,
+          is_root_subforem?: true,
+        )
       end
 
       it "returns users authorized to create in a root subforem" do
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results.map(&:id)).to eq User.with_any_role(:admin, :super_admin).map(&:id)
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
+        expect(results.map(&:id)).to eq users_scope.with_any_role(:admin, :super_admin).map(&:id)
       end
 
       it "returns an empty result for create actions when no admins" do
-        User.with_any_role(:admin, :super_admin).map { |u| u.remove_role(:super_admin); u.remove_role(:admin) }
-        results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
+        users_scope.with_any_role(:admin, :super_admin).each do |u|
+          u.remove_role(:super_admin)
+          u.remove_role(:admin)
+        end
+        results = described_class.scope_users_authorized_to_action(users_scope: users_scope, action: :create?).to_a
         expect(results).to be_empty
       end
     end
@@ -88,28 +96,14 @@ RSpec.describe ArticlePolicy do
     end
 
     context "when is_root_subforem? is true" do
-      subject { described_class.include_hidden_dom_class_for?(query: :create?) }
+      before { allow(described_class).to receive(:is_root_subforem?).and_return(true) }
 
-      before do
-        # Let's test the scenario with limit_post_creation_to_admins? = false
-        # and also verify limit_post_creation_to_admins? = true scenario.
-        allow(described_class).to receive(:is_root_subforem?).and_return(true)
-      end
+      it "returns true to hide the DOM regardless of limit_post_creation_to_admins?", :aggregate_failures do
+        allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false)
+        expect(described_class.include_hidden_dom_class_for?(query: :create?)).to be(true)
 
-      context "and limit_post_creation_to_admins? is false" do
-        before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false) }
-
-        it "returns true to hide the DOM" do
-          expect(described_class.include_hidden_dom_class_for?(query: :create?)).to eq(true)
-        end
-      end
-
-      context "and limit_post_creation_to_admins? is true" do
-        before { allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true) }
-
-        it "still returns true to hide the DOM" do
-          expect(described_class.include_hidden_dom_class_for?(query: :create?)).to eq(true)
-        end
+        allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(true)
+        expect(described_class.include_hidden_dom_class_for?(query: :create?)).to be(true)
       end
     end
   end
@@ -132,14 +126,17 @@ RSpec.describe ArticlePolicy do
       it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
 
       context "when is_root_subforem? is true" do
-        let(:user) { author } # or any user
+        let(:user) { author }
+
         before do
-          allow(described_class).to receive(:is_root_subforem?).and_return(true)
-          allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(false)
+          allow(described_class).to receive_messages(
+            is_root_subforem?: true,
+            limit_post_creation_to_admins?: false,
+          )
         end
 
         it "returns false regardless of user role" do
-          expect(method_call).to eq(false)
+          expect(method_call).to be(false)
         end
       end
     end
@@ -155,11 +152,21 @@ RSpec.describe ArticlePolicy do
 
       context "when user has published articles" do
         before do
-          create(:article, published: true, user: user)
+          create(:article, published: true, user: user, with_tags: false)
         end
 
         it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
         it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+      end
+
+      context "when user has only unpublished articles" do
+        before do
+          create(:article, published: false, user: user, with_tags: false)
+        end
+
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+        it_behaves_like "permitted roles", to: %i[anyone], is_root_subforem?: true
       end
 
       context "when user has no published articles" do
@@ -183,7 +190,6 @@ RSpec.describe ArticlePolicy do
 
   describe "#allow_tag_adjustment?" do
     let(:policy_method) { :allow_tag_adjustment? }
-    let(:resource) { create(:article, tags: tagmod_tag, user: author, organization: organization) }
 
     it_behaves_like "it requires an authenticated user"
     it_behaves_like "permitted roles", to: %i[super_admin admin moderator tag_mod]
@@ -194,19 +200,19 @@ RSpec.describe ArticlePolicy do
     subject(:policy) { described_class.new(tag_mod, resource) }
 
     context "when article includes tagmod_tag, has no room for more tags, and no relevant adjustments" do
-      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
+      let(:resource) { build(:article, user_id: -1, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
 
       it { is_expected.to be_tag_moderator_eligible }
     end
 
     context "when article has room for more tags and no relevant adjustments" do
-      let(:resource) { create(:article, tags: "tagtwo, tagthree, #{tagmod_tag}") }
+      let(:resource) { build(:article, user_id: -1, tags: "tagtwo, tagthree, #{tagmod_tag}") }
 
       it { is_expected.to be_tag_moderator_eligible }
     end
 
     context "when an irrelevant tag has been adjusted" do
-      let(:resource) { create(:article, tags: "tagtwo, tagthree, #{random_tag}, #{tagmod_tag}") }
+      let(:resource) { create(:article, user: tag_mod, tags: "tagtwo, tagthree, #{random_tag}, #{tagmod_tag}") }
 
       it "is tag_moderator_eligible" do
         create(
@@ -222,13 +228,13 @@ RSpec.describe ArticlePolicy do
     end
 
     context "when article excludes tagmod_tag, has no room for more tags, and no relevant adjustments" do
-      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, tagfive") }
+      let(:resource) { build(:article, user_id: -1, tags: "tagtwo, tagthree, tagfour, tagfive") }
 
       it { is_expected.to be_tag_moderator_eligible }
     end
 
     context "when tag moderator's tag has been adjusted" do
-      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
+      let(:resource) { create(:article, user: tag_mod, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
 
       it "is not tag_moderator_eligible" do
         create(
@@ -245,8 +251,6 @@ RSpec.describe ArticlePolicy do
 
     context "when user is not a tag moderator" do
       subject(:policy) { described_class.new(anyone, resource) }
-
-      let(:resource) { create(:article, tags: tagmod_tag.to_s) }
 
       it { is_expected.not_to be_tag_moderator_eligible }
     end
@@ -287,7 +291,7 @@ RSpec.describe ArticlePolicy do
       let(:policy_method) { method_name }
 
       context "when published article" do
-        let(:resource) { create(:article, user: author, organization: organization) }
+        let(:resource) { super().tap { |article| article.published = true } }
 
         it_behaves_like "it requires an authenticated user"
         it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
@@ -296,7 +300,14 @@ RSpec.describe ArticlePolicy do
 
       context "when unpublished article" do
         let(:resource) do
-          build(:article, user: author, organization: organization, published: false, published_at: nil)
+          build(
+            :article,
+            user_id: instantiated_users[:author]&.id || -1,
+            organization: organization,
+            published: false,
+            published_at: nil,
+            with_tags: false,
+          )
         end
 
         it_behaves_like "it requires an authenticated user"

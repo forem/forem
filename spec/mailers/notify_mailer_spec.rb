@@ -37,6 +37,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[comment.user])
+        link_mlh_identity(comment.user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -79,6 +80,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -134,6 +136,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user2])
+        link_mlh_identity(user2)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -175,6 +178,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -234,6 +238,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[article.user])
+        link_mlh_identity(article.user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -244,6 +249,110 @@ RSpec.describe NotifyMailer do
         expect(settings[:transactional_message_id]).to eq("dev_video_upload_complete")
         expect(settings[:message_data]["article_title"]).to eq(article.title)
         expect(settings[:message_data]["article_url"]).to eq("#{URL.article(article)}/edit")
+      end
+    end
+  end
+
+  describe "#gem_received_email" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:email) { described_class.with(favoritable: article).gem_received_email }
+
+    before { article.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+    include_examples "#renders_proper_email_headers"
+    include_examples "#renders_one_click_unsubscribe_headers"
+    include_examples "#delivers_via_smtp_by_default"
+
+    it "renders proper subject and receiver", :aggregate_failures do
+      expect(email.subject).to eq("💎 Your post was picked as a gem")
+      expect(email.to).to eq([user.email])
+    end
+
+    it "explains the gem and links to the post", :aggregate_failures do
+      expect(email.html_part.body).to include("Gems are rare")
+      expect(email.html_part.body).to include(CGI.escapeHTML(article.title))
+      expect(email.text_part.body).to include(URL.article(article))
+    end
+
+    it "invites a regular member to pass a gem on", :aggregate_failures do
+      expect(email.html_part.body).to include("You have a gem to give")
+      expect(email.text_part.body).to include("Share the love!")
+    end
+
+    it "does not offer a gem to pass on to a community leader" do
+      user.add_role(:community_leader_level_1)
+
+      expect(email.html_part.body).not_to include("You have a gem to give")
+    end
+
+    it "does not offer a gem to pass on to a suspended author" do
+      user.add_role(:suspended)
+
+      expect(email.html_part.body).not_to include("You have a gem to give")
+    end
+
+    it "does not send when the author has turned off badge emails" do
+      user.notification_setting.update!(email_badge_notifications: false)
+
+      expect(email.message).to be_a(ActionMailer::Base::NullMail)
+    end
+
+    context "when the post belongs to a non-default subforem" do
+      let!(:default_subforem) { create(:subforem, domain: "default.example.com") }
+      let!(:gem_subforem) { create(:subforem, domain: "gems.example.com") }
+
+      before do
+        article.update_columns(subforem_id: gem_subforem.id)
+        allow(Subforem).to receive_messages(
+          cached_default_id: default_subforem.id,
+          cached_default_domain: default_subforem.domain,
+          cached_id_to_domain_hash: { default_subforem.id => default_subforem.domain,
+                                      gem_subforem.id => gem_subforem.domain },
+        )
+        allow(Settings::Community).to receive(:community_name).and_call_original
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: gem_subforem.id).and_return("Gem Community")
+      end
+
+      it "brands the email and links for the community where the gem was given", :aggregate_failures do
+        expect(email[:from].display_names).to eq(["Gem Community"])
+        expect(email.text_part.body).to include("more people on Gem Community find it")
+        expect(email.text_part.body).to include("The Gem Community Team")
+        expect(email.text_part.body).to include("#{URL.protocol}gems.example.com/\n")
+        # Ahoy wraps links for click tracking, so check the wrapped target.
+        expect(email.html_part.body).to include("u=#{CGI.escape("#{URL.protocol}gems.example.com/")}\"")
+        expect(email.html_part.body).not_to include("default.example.com")
+      end
+    end
+
+    context "when the favorite is a comment" do
+      let(:email) { described_class.with(favoritable: comment).gem_received_email }
+
+      before { comment.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current) }
+
+      it "describes the comment and links to it", :aggregate_failures do
+        expect(email.subject).to eq("💎 Your comment was picked as a gem")
+        expect(email.text_part.body).to include("your comment on \"#{article.title}\"")
+        expect(email.text_part.body).to include(URL.comment(comment))
+      end
+    end
+
+    context "when routed through Customer.io" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
+        FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
+      end
+
+      after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
+
+      it "sends the Forem-rendered body instead of a Customer.io template", :aggregate_failures do
+        settings = email.message.delivery_method.settings
+
+        expect(email.message.delivery_method).to be_a(DeliveryMethods::CustomerIo)
+        expect(settings[:transactional_message_id]).to be_nil
+        expect(email.html_part.body).to include("Gems are rare")
       end
     end
   end
@@ -284,6 +393,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -451,6 +561,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -488,6 +599,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -528,6 +640,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -589,6 +702,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -621,6 +735,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -662,6 +777,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -711,6 +827,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -753,6 +870,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -792,6 +910,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -855,6 +974,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -874,6 +994,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
@@ -925,6 +1046,7 @@ RSpec.describe NotifyMailer do
         allow(ApplicationConfig).to receive(:[]).and_call_original
         allow(ApplicationConfig).to receive(:[]).with("CUSTOMERIO_APP_KEY").and_return("app-key")
         FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[user])
+        link_mlh_identity(user)
       end
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }

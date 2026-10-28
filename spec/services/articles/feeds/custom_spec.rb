@@ -124,6 +124,32 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result).not_to include(a)
       end
 
+      context "when articles belong to the current subforem" do
+        let(:subforem) { create(:subforem) }
+
+        before do
+          Article.where(id: [high_score_article.id, medium_score_article.id, low_score_article.id])
+            .update_all(subforem_id: subforem.id)
+          RequestStore.store[:subforem_id] = subforem.id
+        end
+
+        after { RequestStore.store.delete(:subforem_id) }
+
+        it "loads the feed without querying subforems" do
+          subforem_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+          end
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            feed.default_home_feed.to_a
+          end
+
+          expect(result).to contain_exactly(high_score_article, medium_score_article, low_score_article)
+          expect(subforem_queries).to be_empty
+        end
+      end
+
       context "when user has antifollowed tags" do
         let!(:hidden_article) do
           a = create(:article, published: true, score: 70, tags: "hidden")
@@ -610,4 +636,242 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         .to eq(feed.method(:default_home_feed))
     end
   end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) do
+      a = create(:article, published: true, score: 90, ai_disclosure_level: :no_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:some_ai_article) do
+      a = create(:article, published: true, score: 85, ai_disclosure_level: :some_ai)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    let!(:autonomous_article) do
+      a = create(:article, published: true, score: 80, ai_disclosure_level: :fully_autonomous)
+      a.update_column(:published_at, Time.current - 1.day)
+      a
+    end
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article)
+        expect(result).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in the feed" do
+        result = feed.default_home_feed.to_a
+        expect(result).to include(no_ai_article, some_ai_article, autonomous_article)
+      end
+    end
+  end
+
+  describe "performance optimizations" do
+    it "preloads the requested comments_variant to prevent downstream N+1 queries" do
+      result = feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments")
+      first_article = result.first
+      expect(first_article.association(:more_inclusive_recent_good_comments)).to be_loaded
+    end
+
+    it "uses limited_column_select avoiding heavy text and vector columns" do
+      result = feed.default_home_feed.to_a
+      first_article = result.first
+      expect(first_article.has_attribute?(:title)).to be true
+      expect(first_article.has_attribute?(:body_markdown)).to be false
+      expect(first_article.has_attribute?(:semantic_embedding)).to be false
+    end
+
+    it "loads the feed without querying reactions" do
+      create(:reaction, reactable: high_score_article, category: "like")
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { feed.default_home_feed.to_a }
+
+      expect(reaction_queries).to be_empty
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: high_score_article, category: "like")
+
+      story = feed.default_home_feed.to_a.find { |article| article.id == high_score_article.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
+    end
+
+    it "permutes candidates via ForemNative.weighted_shuffle and falls back cleanly if nil" do
+      candidates = [high_score_article, medium_score_article, low_score_article]
+      shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
+      expect(shuffled).to match_array(candidates)
+
+      allow(ForemNative).to receive(:weighted_shuffle).and_return(nil)
+      fallback_shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
+      expect(fallback_shuffled).to match_array(candidates)
+    end
+
+    context "when semantic_similarity_weight is active for a user with an interest_embedding" do
+      let(:interest_embedding) { [1.0, 0.0, 0.0] + Array.new(765, 0.0) }
+      let(:aligned_embedding) { [1.0, 0.0, 0.0] + Array.new(765, 0.0) }
+      let(:orthogonal_embedding) { [0.0, 1.0, 0.0] + Array.new(765, 0.0) }
+      let!(:user_activity) { create(:user_activity, user: user) }
+
+      before do
+        allow(feed_config).to receive(:score_sql).and_call_original
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        high_score_article.update_column(:semantic_embedding, orthogonal_embedding)
+        medium_score_article.update_column(:semantic_embedding, aligned_embedding)
+        low_score_article.update_column(:semantic_embedding, orthogonal_embedding)
+        FeedConfig.new.attributes.each_key do |attr|
+          feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+        end
+        feed_config.score_weight = 1.0
+        feed_config.semantic_similarity_weight = 100.0
+      end
+
+      it "uses two-stage candidate pre-filtering to bound semantic vector evaluation and ranks by combined score" do
+        allow(feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        result = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          result = feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.size).to eq(1)
+        query_sql = executed_sql.first
+        expect(query_sql).to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(query_sql).to include("articles.semantic_embedding <=>")
+        # medium_score_article (50 + 100 = 150) outranks high_score_article (100 + 0 = 100)
+        expect(result.first).to eq(medium_score_article)
+      end
+
+      it "respects the variable semantic_candidate_limit on feed_config when semantic_similarity_weight > 0" do
+        custom_page_feed = described_class.new(
+          user: user,
+          number_of_articles: 18,
+          page: 1,
+          feed_config: feed_config,
+        )
+
+        feed_config.semantic_candidate_limit = 120
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(120)
+
+        feed_config.semantic_candidate_limit = 550
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(550)
+
+        feed_config.semantic_candidate_limit = 50
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT)
+
+        feed_config.semantic_candidate_limit = 2000
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT)
+
+        page_two_large_feed = described_class.new(
+          user: user,
+          number_of_articles: 100,
+          page: 2,
+          feed_config: feed_config,
+        )
+        feed_config.semantic_candidate_limit = 100
+        expect(page_two_large_feed.__send__(:semantic_candidate_limit)).to eq(100)
+      end
+
+      it "keeps candidate windows disjoint across pages so no candidate is skipped or duplicated" do
+        # Create 3 additional articles so we have 6 eligible articles total:
+        # base scores: [100, 50, 40, 30, 20, 10]
+        article_40 = create(:article, published: true, score: 40)
+        article_40.update_column(:published_at, Time.current - 1.day)
+        article_40.update_column(:semantic_embedding, orthogonal_embedding)
+
+        article_30 = create(:article, published: true, score: 30)
+        article_30.update_column(:published_at, Time.current - 1.day)
+        # Give the 4th base-score article (in window 2 when window_size=3) a huge semantic boost
+        # so its computed_score (30 + 100 = 130) exceeds window-1 articles (100, 40)
+        article_30.update_column(:semantic_embedding, aligned_embedding)
+
+        article_20 = create(:article, published: true, score: 20)
+        article_20.update_column(:published_at, Time.current - 1.day)
+        article_20.update_column(:semantic_embedding, orthogonal_embedding)
+
+        allow(feed_config).to receive(:effective_semantic_candidate_limit).and_return(3)
+
+        # 1) Page size == window size (3): page 1 covers window 0, page 2 covers window 1
+        page1_feed = described_class.new(user: user, number_of_articles: 3, page: 1, feed_config: feed_config)
+        page2_feed = described_class.new(user: user, number_of_articles: 3, page: 2, feed_config: feed_config)
+        allow(page1_feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+        allow(page2_feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+
+        page1_ids = page1_feed.default_home_feed.map(&:id)
+        page2_ids = page2_feed.default_home_feed.map(&:id)
+
+        # Window 0 ([100, 50, 40]) ranked by computed_score -> [50 (+100=150), 100 (+0=100), 40 (+0=40)]
+        expect(page1_ids).to eq([medium_score_article.id, high_score_article.id, article_40.id])
+        # Window 1 ([30, 20, 10]) ranked by computed_score -> [30 (+100=130), 20 (+0=20), 10 (+0=10)]
+        # article_30 is NOT skipped and article_40 is NOT duplicated on page 2
+        expect(page2_ids).to eq([article_30.id, article_20.id, low_score_article.id])
+        expect(page1_ids & page2_ids).to be_empty
+
+        # 2) Page size straddling the window boundary (page_size=2 across window_size=3)
+        straddle_pages = (1..3).flat_map do |page_num|
+          paged = described_class.new(user: user, number_of_articles: 2, page: page_num, feed_config: feed_config)
+          allow(paged).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+          paged.default_home_feed.map(&:id)
+        end
+
+        expect(straddle_pages).to eq(page1_ids + page2_ids)
+      end
+
+      it "ignores semantic_candidate_limit completely when semantic_similarity_weight is 0.0" do
+        feed_config.semantic_similarity_weight = 0.0
+        feed_config.semantic_candidate_limit = 450
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.first).not_to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(executed_sql.first).not_to include("articles.semantic_embedding <=>")
+      end
+
+      it "falls back to direct semantic scoring when all non-semantic weights are zero" do
+        FeedConfig.new.attributes.each_key do |attr|
+          feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+        end
+        feed_config.semantic_similarity_weight = 50.0
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.first).not_to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(executed_sql.first).to include("articles.semantic_embedding <=>")
+      end
+    end
+  end
 end
+

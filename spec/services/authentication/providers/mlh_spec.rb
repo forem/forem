@@ -22,6 +22,12 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
     end
   end
 
+  describe ".persist_credentials?" do
+    it "is false so bearer material never outlives the callback request" do
+      expect(described_class.persist_credentials?).to be(false)
+    end
+  end
+
   describe ".sign_in_path" do
     it "returns the correct sign in path without callback_url param" do
       path = described_class.sign_in_path
@@ -36,9 +42,14 @@ RSpec.describe Authentication::Providers::Mlh, type: :service do
   end
 
   describe "#new_user_data" do
-    it "maps email, name, and username, leaving users.mlh_username untouched" do
+    it "maps email, name, username, and profile_image, leaving users.mlh_username untouched" do
       data = provider.new_user_data
-      expect(data).to eq(email: "test@example.com", name: "MLH User", username: "test")
+      expect(data).to match(
+        email: "test@example.com",
+        name: "MLH User",
+        username: "test",
+        profile_image: be_a(File),
+      )
     end
 
     it "generates a unique username" do

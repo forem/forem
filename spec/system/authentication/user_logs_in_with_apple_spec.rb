@@ -10,24 +10,14 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
   context "when a user is new" do
     context "when using valid credentials" do
-      it "creates a new user" do
+      it "creates and remembers a new user, logs in, and redirects to the onboarding", :aggregate_failures do
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
-      end
-
-      it "logs in and redirects to the onboarding" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
-      end
-
-      it "remembers the user" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -92,8 +82,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
       it "notifies Datadog about an OAuth unauthorized error" do
         request = double
-        allow(request).to receive(:code).and_return(401)
-        allow(request).to receive(:message).and_return("unauthorized")
+        allow(request).to receive_messages(code: 401, message: "unauthorized")
         error = OAuth::Unauthorized.new(request)
         omniauth_setup_authentication_error(error)
 
@@ -126,27 +115,16 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         OmniAuth.config.mock_auth[:apple].info.first_name = "X" * 101
       end
 
-      it "does not create a new user" do
+      it "does not create a new user, redirects to registration, and does not log errors", :aggregate_failures do
+        allow(Rails.error).to receive(:report)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
-      end
-
-      it "redirects to the registration page" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
-      end
-
-      it "does not log errors to Honeybadger" do
-        allow(Honeybadger).to receive(:notify)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        expect(Honeybadger).not_to have_received(:notify)
+        expect(Rails.error).not_to have_received(:report)
       end
     end
   end

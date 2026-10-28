@@ -38,8 +38,10 @@ module Moderator
     end
 
     def remove_mod_roles
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:trusted)
       @user.remove_role(:tag_moderator)
+      CommunityLeaders::Remove.call(@user)
       @user.notification_setting.update(email_tag_mod_newsletter: false)
       Mailchimp::Bot.new(user).manage_tag_moderator_list
       @user.notification_setting.update(email_community_mod_newsletter: false)
@@ -47,6 +49,7 @@ module Moderator
     end
 
     def remove_tag_moderator_role
+      Tag.with_role(:tag_moderator, @user).find_each(&:touch)
       @user.remove_role(:tag_moderator)
       Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
@@ -134,6 +137,7 @@ module Moderator
     end
 
     def assign_community_leader_role(role)
+      check_super_admin if role == :community_leader_level_2 || user.community_leader_level_2?
       remove_negative_roles
       CommunityLeaders::Add.call(user, role)
     end

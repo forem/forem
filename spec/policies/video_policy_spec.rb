@@ -16,7 +16,7 @@ RSpec.describe VideoPolicy do
 
     context "when user is suspended" do
       let(:enabled) { true }
-      let(:user) { create(:user, :suspended) }
+      let(:user) { build(:user, :suspended) }
 
       it { within_block_is_expected.to raise_error(ApplicationPolicy::UserSuspendedError) }
     end

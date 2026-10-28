@@ -4,20 +4,55 @@ require "requests/shared_examples/comment_hide_or_unhide_request"
 RSpec.describe "Comments" do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
-  let(:article) { create(:article, user: user) }
+  let(:article) { create(:article, user: user, with_tags: false) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let!(:comment) { create(:comment, commentable: article, user: user) }
+  let(:comment) { create(:comment, commentable: article, user: user) }
+
+  describe "agent guidance discovery" do
+    before { sign_in user }
+
+    it "links to site guidance without advertising an unlaunched comment workflow" do
+      allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+
+      get article.path
+
+      expect(response.body).to include('rel="describedby"')
+      expect(response.body).not_to include("data-agent-posting-policy")
+      expect(response.body).not_to include("Review our AI disclosure policy")
+    end
+  end
 
   describe "GET comment index" do
-    it "returns 200" do
+    it "returns 200 and displays the comment without noindex", :aggregate_failures do
       get comment.path
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.processed_html)
+      expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
     end
 
-    it "displays a comment" do
-      get comment.path
-      expect(response.body).to include(comment.processed_html)
+    it "short-circuits entity lookup on user match and reuses the loaded user", :aggregate_failures do
+      allow(Organization).to receive(:find_by).and_call_original
+      allow(Podcast).to receive(:find_by).and_call_original
+      allow(User).to receive(:staff_account).and_return(nil)
+      comment_path = comment.path
+
+      user_id_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        user_id_queries << sql if sql.include?('FROM "users"') && sql.include?('"users"."id" =')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get comment_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(Organization).not_to have_received(:find_by).with(slug: user.username)
+      expect(Podcast).not_to have_received(:find_by).with(slug: user.username)
+      expect(user_id_queries).to be_empty
     end
 
     context "when there are comments with different score" do
@@ -53,31 +88,29 @@ RSpec.describe "Comments" do
         expect(response.body).to include("child-of-a-spam-comment")
       end
 
-      it "displays only comments with positive score for signed out user", :aggregate_failures do
-        get "#{article.path}/comments"
-        expect(response.body).not_to include("mediocre-comment")
-        expect(response.body).not_to include("bad-comment")
-        expect(response.body).to include("good-comment")
-        expect(response.body).not_to include("spammer-comment")
-      end
-
-      it "doesn't display children of negative comments for signed out user" do
+      it "displays only positive-score comments and hides children of negative comments for signed out user",
+         :aggregate_failures do
         create(:comment, user: user, parent: mediocre_comment, commentable: article,
                          body_markdown: "child-of-a-negative-comment")
         get "#{article.path}/comments"
-        expect(response.body).not_to include("child-of-a-negative-comment")
+        expect(response.body).to include("good-comment")
+        expect(response.body).not_to include(
+          "mediocre-comment", "bad-comment", "spammer-comment", "child-of-a-negative-comment"
+        )
       end
     end
 
     context "when viewing massive comment pages" do
-      let!(:top_level_1) { create(:comment, commentable: article, user: user, score: 100, body_markdown: "Top level one") }
-      let!(:top_level_2) { create(:comment, commentable: article, user: user, score: 50, body_markdown: "Top level two") }
-      let!(:top_level_3) { create(:comment, commentable: article, user: user, score: -10, body_markdown: "Top level three") }
+      let!(:top_level_1) do
+        create(:comment, commentable: article, user: user, score: 100, body_markdown: "Top level one")
+      end
 
       before do
         stub_const("CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED", 2)
         stub_const("CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED", 1)
 
+        create(:comment, commentable: article, user: user, score: 50, body_markdown: "Top level two")
+        create(:comment, commentable: article, user: user, score: 10, body_markdown: "Top level three")
         # Add 2 descendants to top_level_1 which is guaranteed to be first
         create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub one", score: 10)
         create(:comment, parent: top_level_1, commentable: article, user: user, body_markdown: "Sub two", score: 5)
@@ -94,7 +127,8 @@ RSpec.describe "Comments" do
 
         article.reload
         # Notice confirms that truncation occurred
-        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        text = I18n.t("views.comments.limited_unauthenticated.text_html",
+                      sign_in: "placeholder").split("placeholder").first
         expect(response.body).to include(text)
       end
 
@@ -108,7 +142,8 @@ RSpec.describe "Comments" do
         expect(response.body).to include("Sub one")
         expect(response.body).to include("Sub two")
 
-        text = I18n.t("views.comments.limited_unauthenticated.text_html", sign_in: "placeholder").split("placeholder").first
+        text = I18n.t("views.comments.limited_unauthenticated.text_html",
+                      sign_in: "placeholder").split("placeholder").first
         expect(response.body).not_to include(text)
       end
     end
@@ -124,17 +159,12 @@ RSpec.describe "Comments" do
     end
 
     context "when the comment is a root" do
-      it "displays the comment hidden message if the comment is hidden" do
+      it "displays the hidden message, comment body, and unhidden child in its permalink", :aggregate_failures do
+        child_comment = create(:comment, parent: comment, user: user, commentable: article)
         comment.update(hidden_by_commentable_user: true)
         get comment.path
         hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
-        expect(response.body).to include(hidden_comment_message)
-      end
-
-      it "displays the comment anyway if it is hidden" do
-        comment.update(hidden_by_commentable_user: true)
-        get comment.path
-        expect(response.body).to include(comment.processed_html)
+        expect(response.body).to include(hidden_comment_message, comment.processed_html, child_comment.processed_html)
       end
 
       it "displays noindex if comment has score of less than 0" do
@@ -143,22 +173,10 @@ RSpec.describe "Comments" do
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
       end
 
-      it "does not display noindex if comment has 0 or more score" do
-        get comment.path
-        expect(response.body).not_to include('<meta name="googlebot" content="noindex">')
-      end
-
       it "displays noindex if commentable has score of less than 0" do
         comment.commentable.update_column(:score, -5)
         get comment.path
         expect(response.body).to include('<meta name="googlebot" content="noindex">')
-      end
-
-      it "displays child comment if it's not hidden" do
-        child_comment = create(:comment, parent: comment, user: user, commentable: article)
-        comment.update(hidden_by_commentable_user: true)
-        get comment.path
-        expect(response.body).to include(child_comment.processed_html)
       end
     end
 
@@ -174,46 +192,35 @@ RSpec.describe "Comments" do
 
     context "when the comment is two levels nested and hidden" do # child of a child
       let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
-      let(:child_of_child) do
+
+      it "marks the comment as hidden in the child's permalink and article comments section", :aggregate_failures do
         create(:comment, parent_id: child.id, commentable: article, user: user, hidden_by_commentable_user: true)
-      end
 
-      it "does not display the hidden comment in the child's permalink" do
         get child.path
-        expect(response.body).not_to include(child_of_child.processed_html)
-      end
+        expect(response.body).to include("element-hidden-by-commentable-user", "comment-hidden-by-author-text")
 
-      it "does not display the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
-        expect(response.body).not_to include(child_of_child.processed_html)
+        expect(response.body).to include("element-hidden-by-commentable-user", "comment-hidden-by-author-text")
       end
     end
 
     context "when the comment is a sibling of a child comment and is hidden" do
       let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
-      let(:sibling) do
+      let!(:sibling) do
         create(:comment, parent: comment, commentable: article, user: user, hidden_by_commentable_user: true)
       end
 
-      it "does not display the hidden comment in the article's comments section" do
+      it "shows the hidden sibling only in its own permalink", :aggregate_failures do
         get "#{article.path}/comments"
-        expect(response.body).not_to include(sibling.processed_html)
-      end
+        expect(response.body).to include("element-hidden-by-commentable-user", "comment-hidden-by-author-text")
 
-      it "shows the hidden comments message in the comment's permalink" do
-        get sibling.path
-        hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
-        expect(response.body).to include(hidden_comment_message)
-      end
-
-      it "does not show the sibling comment in the child's comment permalink" do
         get child.path
         expect(response.body).not_to include(sibling.processed_html)
-      end
 
-      it "shows the comment in the permalink" do
         get sibling.path
-        expect(response.body).to include(sibling.processed_html)
+        hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
+        expect(response.body).to include(hidden_comment_message, sibling.processed_html)
+        expect(response.body).not_to include("element-hidden-by-commentable-user")
       end
     end
 
@@ -228,28 +235,18 @@ RSpec.describe "Comments" do
       end
 
       # When opening a hidden comment by a permalink we want to see the full thread including hidden comments.
-      it "shows hidden child comments in its parent's permalink when parent is also hidden" do
-        third_level_child
+      it "renders hidden comments and their children across parent and hidden permalinks", :aggregate_failures do
+        fourth_level_child
+
+        get second_level_child.path
+        expect(response.body).to include(fourth_level_child.processed_html)
+
+        get third_level_child.path
+        expect(response.body).to include(third_level_child.processed_html, fourth_level_child.processed_html)
+
         child.update_column(:hidden_by_commentable_user, true)
         get child.path
         expect(response.body).to include(third_level_child.processed_html)
-      end
-
-      it "shows the hidden comment's child in its parent's permalink if the child is not hidden explicitly" do
-        fourth_level_child
-        get second_level_child.path
-        expect(response.body).to include(fourth_level_child.processed_html)
-      end
-
-      it "shows the comment in the permalink" do
-        get third_level_child.path
-        expect(response.body).to include(third_level_child.processed_html)
-      end
-
-      it "shows the fourth level child in the hidden comment's permalink" do
-        fourth_level_child
-        get third_level_child.path
-        expect(response.body).to include(fourth_level_child.processed_html)
       end
     end
 
@@ -258,52 +255,33 @@ RSpec.describe "Comments" do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "low-comment")
       end
 
-      it "raises 404 when no children" do
-        expect do
-          get low_comment.path
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+      it "raises 404 when childless for anonymous and regular users, but renders for admins", :aggregate_failures do
+        expect { get low_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
 
-      it "renders success when no children + admin signed in", :aggregate_failures do
+        sign_in user
+        expect { get low_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
+
         sign_in admin
         get low_comment.path
         expect(response).to be_successful
         expect(response.body).to include("low-comment")
       end
 
-      it "raises 404 when has children and not signed in" do
+      it "handles low-quality comments with children across anonymous, signed-in, and admin viewers",
+         :aggregate_failures do
         create(:comment, commentable: article, user: user, parent: low_comment,
                          body_markdown: "child of a low-quality comment")
-        expect do
-          get low_comment.path
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
+        expect { get low_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
 
-      it "raises 404 when no children + user signed in" do
-        sign_in user
-        expect do
-          get low_comment.path
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "is displayed as deleted when has children + user signed in", :aggregate_failures do
-        create(:comment, commentable: article, user: user, parent: low_comment,
-                         body_markdown: "child of a low-quality comment")
         sign_in user
         get low_comment.path
         expect(response).to have_http_status(:ok)
-        expect(response.body).to include("Comment deleted")
-        expect(response.body).to include("child of a low-quality comment")
-      end
+        expect(response.body).to include("Comment deleted", "child of a low-quality comment")
 
-      it "displays text when there are children + admin signed in", :aggregate_failures do
-        create(:comment, commentable: article, user: user, parent: low_comment,
-                         body_markdown: "child of a low-quality comment")
         sign_in admin
         get low_comment.path
         expect(response).to be_successful
-        expect(response.body).to include("low-comment")
-        expect(response.body).to include("child of a low-quality comment")
+        expect(response.body).to include("low-comment", "child of a low-quality comment")
       end
 
       it "hides negative children for signed out" do
@@ -319,10 +297,13 @@ RSpec.describe "Comments" do
         create(:comment, commentable: article, user: user, score: -100, body_markdown: "low-comment")
       end
 
-      it "raises 404 when no children + not signed in" do
-        expect do
-          get low_comment.path
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "raises 404 when not signed in and displays with a low quality marker when signed in", :aggregate_failures do
+        expect { get low_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
+
+        sign_in user
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low quality")
       end
 
       it "raises 404 when has children and not signed in" do
@@ -332,28 +313,21 @@ RSpec.describe "Comments" do
           get low_comment.path
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
-
-      it "is displayed with a low quality marker when user signed in" do
-        sign_in user
-        get low_comment.path
-        expect(response).to be_successful
-        expect(response.body).to include("low quality")
-      end
     end
 
     context "when the comment is for a podcast's episode" do
       let!(:podcast_comment) { create(:comment, commentable: podcast_episode, user: user) }
 
-      it "is successful" do
+      it "renders permalink and episode index URL and raises 404 when low quality", :aggregate_failures do
         get podcast_comment.path
         expect(response).to have_http_status(:ok)
-      end
 
-      it "raises 404 when low quality" do
+        get "/#{podcast.slug}/#{podcast_episode.slug}/comments"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(podcast_comment.processed_html)
+
         podcast_comment.update_column(:score, -500)
-        expect do
-          get podcast_comment.path
-        end.to raise_error(ActiveRecord::RecordNotFound)
+        expect { get podcast_comment.path }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
@@ -370,18 +344,25 @@ RSpec.describe "Comments" do
     end
 
     context "when the article is deleted" do
-      it "raises not found when listing article comments" do
+      it "raises not found on article comments index and shows comment from a deleted post", :aggregate_failures do
         path = "#{article.path}/comments"
-
+        comment
         article.destroy
 
         expect { get path }.to raise_error(ActiveRecord::RecordNotFound)
+
+        get comment.reload.path
+        expect(response.body).to include("Comment from a deleted post")
       end
 
-      it "shows comment from a deleted post" do
+      it "shows a low-quality comment from a deleted post to a signed-in user", :aggregate_failures do
+        low_comment = create(:comment, commentable: article, user: user, score: -500, body_markdown: "low-comment")
+        create(:comment, commentable: article, user: user, parent: low_comment, body_markdown: "child comment")
         article.destroy
+        sign_in user
 
-        get comment.path
+        get low_comment.reload.path
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment from a deleted post")
       end
     end
@@ -411,13 +392,9 @@ RSpec.describe "Comments" do
         sign_in user
       end
 
-      it "returns 200" do
+      it "returns 200 and renders the comment body", :aggregate_failures do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response).to have_http_status(:ok)
-      end
-
-      it "returns the comment" do
-        get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response.body).to include CGI.escapeHTML(comment.body_markdown)
       end
     end
@@ -428,9 +405,7 @@ RSpec.describe "Comments" do
       end
 
       it "edit action returns 200" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
+        comment
         article.destroy
 
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
@@ -454,9 +429,7 @@ RSpec.describe "Comments" do
 
     context "when the article is deleted" do
       it "updates body markdown" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
+        comment
         article.destroy
 
         params = { comment: { body_markdown: "{edited comment}" } }
@@ -484,11 +457,8 @@ RSpec.describe "Comments" do
              headers: { HTTP_ACCEPT: "application/json" }
       end
 
-      it "returns 200 on good request" do
+      it "returns 200 and json", :aggregate_failures do
         expect(response).to have_http_status(:ok)
-      end
-
-      it "returns json" do
         expect(response.media_type).to eq("application/json")
       end
     end
@@ -589,8 +559,8 @@ RSpec.describe "Comments" do
 
     context "with notifications" do
       let(:user2) { create(:user) }
-      let(:article)  { create(:article, :with_notification_subscription, user: user) }
-      let(:comment)  { create(:comment, commentable: article, user: user2) }
+      let(:article) { create(:article, :with_notification_subscription, user: user, with_tags: false) }
+      let(:comment) { create(:comment, commentable: article, user: user2) }
 
       before do
         sign_in user
@@ -617,7 +587,7 @@ RSpec.describe "Comments" do
 
     context "with hiding child comments" do
       let(:commentable_author) { create(:user) }
-      let(:article) { create(:article, user: commentable_author) }
+      let(:article) { create(:article, user: commentable_author, with_tags: false) }
       let(:parent_comment) { create(:comment, commentable: article, user: commentable_author) }
       let!(:child_comment) { create(:comment, commentable: article, parent: parent_comment) }
 
@@ -625,22 +595,15 @@ RSpec.describe "Comments" do
         sign_in commentable_author
       end
 
-      it "hides child comment when hide_children is passed" do
-        patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
-                                                     headers: { HTTP_ACCEPT: "application/json" }
-        child_comment.reload
-        expect(child_comment.hidden_by_commentable_user).to be true
-      end
-
-      it "hides second level child if hide_children is passed" do
+      it "hides child and second-level child comments when hide_children is passed", :aggregate_failures do
         second_level_child = create(:comment, parent: child_comment, commentable: article, user: user)
         patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "1" },
                                                      headers: { HTTP_ACCEPT: "application/json" }
-        second_level_child.reload
-        expect(second_level_child.hidden_by_commentable_user).to be true
+        expect(child_comment.reload.hidden_by_commentable_user).to be true
+        expect(second_level_child.reload.hidden_by_commentable_user).to be true
       end
 
-      it "hides child comment when hide_children is not passed" do
+      it "does not hide child comment when hide_children is 0" do
         patch "/comments/#{parent_comment.id}/hide", params: { hide_children: "0" },
                                                      headers: { HTTP_ACCEPT: "application/json" }
         child_comment.reload
@@ -651,7 +614,7 @@ RSpec.describe "Comments" do
     context "with comment by staff account" do
       let(:staff_account) { create(:user) }
       let(:commentable_author) { create(:user) }
-      let(:article) { create(:article, user: commentable_author) }
+      let(:article) { create(:article, user: commentable_author, with_tags: false) }
       let(:comment) { create(:comment, commentable: article, user: staff_account) }
 
       before do
@@ -672,12 +635,25 @@ RSpec.describe "Comments" do
 
   describe "PATCH /comments/:comment_id/unhide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "unhide", hidden: "false"
+
+    it "updates article any_comments_hidden when some vs all comments are unhidden", :aggregate_failures do
+      sign_in commentable_author
+      second_comment = create(:comment, commentable: article, user: commentable_author,
+                                        hidden_by_commentable_user: true)
+      parent_comment.update_column(:hidden_by_commentable_user, true)
+
+      patch "/comments/#{second_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
+      expect(article.reload.any_comments_hidden).to be(true)
+
+      patch "/comments/#{parent_comment.id}/unhide", headers: { HTTP_ACCEPT: "application/json" }
+      expect(article.reload.any_comments_hidden).to be(false)
+    end
   end
 
   describe "DELETE /comments/:comment_id" do
     # we're using local article and comments, to avoid removing data used by other tests,
     # which will incur in ordering issues
-    let!(:article) { create(:article, user: user) }
+    let!(:article) { create(:article, user: user, with_tags: false) }
     let!(:comment) { create(:comment, commentable: article, user: user) }
 
     before { sign_in user }

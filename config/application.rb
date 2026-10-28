@@ -19,6 +19,15 @@ require "sprockets/railtie"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# Better Stack's Rails integration has to load before the app boots; only load it when configured
+# (see config/initializers/betterstack.rb).
+require "logtail-rails" if Rails.env.production? && ENV["BETTERSTACK_SOURCE_TOKEN"].present?
+# Same for the Better Stack errors pilot (see config/initializers/sentry.rb).
+if Rails.env.production? && ENV["BETTER_STACK_ERRORS_DSN"].present?
+  require "sentry-rails"
+  require "sentry-sidekiq"
+end
+
 if defined?(Anyway)
   Anyway.loaders.delete(:secrets)
 end
@@ -125,8 +134,9 @@ module PracticalDeveloper
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do
-      # Add routes to reserved words
-      Rails.application.reload_routes!
+      # Add routes to reserved words without bypassing routes.eager_load!
+      Rails.application.reload_routes! if Rails.application.routes.routes.empty?
+      Rails.application.routes.eager_load! if Rails.application.config.eager_load
       top_routes = []
       Rails.application.routes.routes.each do |route|
         route = route.path.spec.to_s

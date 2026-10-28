@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 env:
-  COVERAGE: true
+  COVERAGE: "false"
   RAILS_ENV: test
   NODE_ENV: test
   DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
@@ -21,6 +21,7 @@ env:
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
   YARN_ENABLE_HARDENED_MODE: 0
+  RUBYOPT: "--yjit"
 
 jobs:
   build:
@@ -30,29 +31,84 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
-      - name: Install ImageMagick
-        run: sudo apt-get update && sudo apt-get install -y imagemagick
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !vendor/cache/*.gem
+          sparse-checkout-cone-mode: false
+      - name: Prepare workspace and ImageMagick package
+        id: prep
+        run: |
+          echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+          echo "lockfile_hash=$(sha256sum Gemfile.lock | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "os_version=$(. /etc/os-release && echo "$VERSION_ID")" >> "$GITHUB_OUTPUT"
+          mkdir -p .ci-debs
+          (cd .ci-debs && apt-get download imagemagick-6.q16 2>/dev/null || true)
+          tar --exclude='./.git' \
+              --exclude='./vendor/bundle' \
+              --exclude='./vendor/cache/*.gem' \
+              --exclude='./node_modules' \
+              --exclude='./public/assets' \
+              --exclude='./app/assets/builds' \
+              --exclude='./tmp/cache/assets' \
+              --use-compress-program="zstd -T0 -1" \
+              -cf /tmp/workspace.tar.zst .
+      - name: Upload workspace artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-workspace-${{ github.run_id }}
+          path: /tmp/workspace.tar.zst
+          compression-level: 0
+          retention-days: 5
+          overwrite: true
+      - name: Check pre-compiled assets cache
+        uses: actions/cache/restore@v5
+        id: assetscache-lookup
+        with:
+          lookup-only: true
+          path: |
+            public/assets
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+      - name: Check Bundler cache
+        uses: actions/cache/restore@v5
+        id: bundlercache-lookup
+        with:
+          lookup-only: true
+          path: vendor/bundle
+          key: setup-ruby-bundler-cache-v6-ubuntu-${{ steps.prep.outputs.os_version }}-x64-ruby-${{ steps.prep.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ steps.prep.outputs.lockfile_hash }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
         with:
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
+      - name: Populate vendor/cache on Bundler cache miss
+        if: steps.bundlercache-lookup.outputs.cache-hit != 'true'
+        run: git sparse-checkout disable
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true' || steps.bundlercache-lookup.outputs.cache-hit != 'true'
+        with:
+          bundler-cache: true
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
       - run: yarn install --immutable
-        if: steps.assetscache.outputs.cache-hit != 'true'
-      - run: bundle exec rails assets:precompile
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
+      - run: |
+          rm -rf public/assets
+          SKIP_YARN_INSTALL=true bundle exec rails assets:precompile
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
 
   rspec:
     runs-on: ubuntu-latest
@@ -64,82 +120,85 @@ jobs:
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
 
-    services:
-      postgres:
-        image: pgvector/pgvector:pg13
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        # ADDED: Options to make the healthcheck more reliable
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        # ADDED: Options to make the healthcheck more reliable
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [15]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+        ci_node_total: [30]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Start Postgres and Redis in background
+        run: |
+          RUNNER_TRACKING_ID="" nohup bash -c '
+            docker run -d --rm --name ci-postgres \
+              -p 5432:5432 \
+              --tmpfs /var/lib/postgresql/data:rw \
+              -e POSTGRES_PASSWORD=postgres \
+              -e POSTGRES_DB=Forem_test \
+              pgvector/pgvector:pg13 \
+              postgres -c fsync=off -c full_page_writes=off >/tmp/postgres-start.log 2>&1 &
+            docker run -d --rm --name ci-redis \
+              -p 6379:6379 \
+              redis:7-alpine \
+              redis-server --save "" --appendonly no >/tmp/redis-start.log 2>&1 &
+            wait
+          ' >/dev/null 2>&1 </dev/null &
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-workspace-${{ github.run_id }}
+          path: /tmp
+      - name: Extract workspace and install ImageMagick
+        run: |
+          tar --use-compress-program=unzstd -xf /tmp/workspace.tar.zst -C "$GITHUB_WORKSPACE"
+          rm -f /tmp/workspace.tar.zst
+          if compgen -G ".ci-debs/imagemagick-6.q16_*.deb" >/dev/null; then
+            sudo dpkg-deb -x .ci-debs/imagemagick-6.q16_*.deb /
+            for bin in /usr/bin/*-im6.q16; do
+              [ -e "$bin" ] || continue
+              base="${bin%-im6.q16}"
+              sudo ln -sf "$bin" "$base"
+              sudo ln -sf "$bin" "${base}-im6"
+            done
+          fi
+          rm -rf .ci-debs
+          cp .env_sample .env
       - name: Restore compiled assets
         uses: actions/cache/restore@v5
         with:
           fail-on-cache-miss: true
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
-      # MODIFIED: Added postgresql-client and redis-tools for the wait step
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y imagemagick postgresql-client redis-tools
-
-      # NEW: This is the fix. It waits until Postgres and Redis are fully ready
       - name: Wait for services
         run: |
+          if ! identify -version >/dev/null 2>&1; then
+            sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)
+          fi
+
           echo "Waiting for Postgres..."
-          until pg_isready -h localhost -p 5432 -U postgres; do
-            sleep 2
-          done
+          if ! timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres -d Forem_test >/dev/null 2>&1; do sleep 0.2; done'; then
+            cat /tmp/postgres-start.log || true
+            docker logs ci-postgres || true
+            exit 1
+          fi
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          until redis-cli -h localhost -p 6379 ping; do
-            sleep 2
-          done
+          if ! timeout 60 bash -c 'until timeout 1 bash -c "</dev/tcp/localhost/6379" 2>/dev/null; do sleep 0.2; done'; then
+            cat /tmp/redis-start.log || true
+            docker logs ci-redis || true
+            exit 1
+          fi
           echo "Redis is ready."
-
-      - run: cp .env_sample .env
-
-      # MODIFIED: Replaced db:test:prepare with the more explicit, modern commands
-      - name: Setup Database
-        run: |
-          bin/rails db:create
-          bin/rails db:schema:load
-          bin/rails javascript:build
 
       - name: RSpec
         id: rspec
@@ -159,10 +218,3 @@ jobs:
             tmp/capybara
             tmp/csvs
             tmp/rspec*.xml
-      - name: Rename folder
-        run: if [ -d "coverage/simplecov" ]; then mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}; fi
-      - name: Upload test coverage result
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-rspec-${{ matrix.ci_node_index }}
-          path: coverage/

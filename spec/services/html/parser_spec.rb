@@ -28,6 +28,25 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(html).remove_nested_linebreak_in_list.html
       expect(parsed_html).not_to include("<br>")
     end
+
+    it "removes uppercase linebreaks nested in lists" do
+      parsed_html = described_class.new("<ul><li>a<BR>b</li></ul>").remove_nested_linebreak_in_list.html
+      expect(parsed_html).not_to include("<br>")
+    end
+  end
+
+  describe "#wrap_all_tables with uppercase tags" do
+    it "wraps uppercase table tags" do
+      parsed_html = described_class.new("<TABLE><tr><td>a</td></tr></TABLE>").wrap_all_tables.html
+      expect(parsed_html).to include("table-wrapper-paragraph")
+    end
+  end
+
+  describe "#add_control_class_to_codeblock with entity-encoded class" do
+    it "still adds the control class when the class marker uses character references" do
+      parsed_html = described_class.new('<div class="high&#108;ight">x</div>').add_control_class_to_codeblock.html
+      expect(parsed_html).to include("js-code-highlight")
+    end
   end
 
   describe "#prefix_all_images" do
@@ -99,9 +118,31 @@ RSpec.describe Html::Parser, type: :service do
     end
 
     it "wraps image in link" do
-      html = "<p><img src='https://image.com/image.jpg'></p"
+      html = "<p><img src='https://image.com/image.jpg'></p>"
       parsed_html = described_class.new(html).wrap_all_images_in_links.html
-      expect(parsed_html).to include("<a")
+      expected = "<a href=\"https://image.com/image.jpg\" class=\"article-body-image-wrapper\">" \
+                 "<img src=\"https://image.com/image.jpg\"></a>"
+      expect(parsed_html).to include(expected)
+    end
+
+    it "does not wrap images already inside a link" do
+      html = "<p><a href='https://example.com'><img src='https://image.com/image.jpg'></a></p>"
+      parsed_html = described_class.new(html).wrap_all_images_in_links.html
+      doc = Nokogiri::HTML.fragment(parsed_html)
+      expect(doc.css("a").size).to eq(1)
+      expect(doc.at_css("a")["href"]).to eq("https://example.com")
+    end
+
+    it "safely escapes src attributes containing quotes without injecting event handlers" do
+      html = "<p><img src=\"https://github.com/any/repo/badge.svg?x=&#x27;onmouseover=&#x27;alert(1)\" alt=\"B\"></p>"
+      parsed_html = described_class.new(html).wrap_all_images_in_links.html
+      doc = Nokogiri::HTML.fragment(parsed_html)
+
+      link = doc.at_css("a")
+      expect(link).to be_present
+      expect(link["onmouseover"]).to be_nil
+      expect(link["class"]).to eq("article-body-image-wrapper")
+      expect(doc.xpath("//*[@onmouseover]")).to be_empty
     end
   end
 
@@ -197,6 +238,16 @@ RSpec.describe Html::Parser, type: :service do
       html = "<div class='highlight__panel'>Hello World</div>"
       parsed_html = described_class.new(html).add_fullscreen_button_to_panel.html
       expect(parsed_html).to include("Enter fullscreen mode")
+    end
+
+    it "skips SVG rendering and DOM parsing when no highlight panel is present" do
+      parser = described_class.new("<p>Hello World</p>")
+      allow(parser).to receive(:inline_svg_tag)
+      allow(Nokogiri::HTML).to receive(:fragment)
+
+      expect(parser.add_fullscreen_button_to_panel.html).to eq("<p>Hello World</p>")
+      expect(parser).not_to have_received(:inline_svg_tag)
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
     end
   end
 
@@ -426,23 +477,32 @@ RSpec.describe Html::Parser, type: :service do
       expect(html_parser).to be_a described_class
     end
 
-    # rubocop:disable Rails/DynamicFindBy
     it "converts emoji names wrapped in colons into unicode" do
-      joy_emoji_unicode = Emoji.find_by_alias("joy").raw
+      joy_emoji_unicode = ForemNative.emoji_by_alias("joy")
       parsed_html = described_class.new(":joy:").parse_emojis.html
       expect(parsed_html).to include(joy_emoji_unicode)
     end
 
     it "converts disability emojis as well", :aggregate_failures do
-      disability_emojis = %w[
-        guide_dog service_dog person_with_probing_cane man_with_probing_cane woman_with_probing_cane probing_cane
-        person_in_motorized_wheelchair man_in_motorized_wheelchair woman_in_motorized_wheelchair
-        person_in_manual_wheelchair man_in_manual_wheelchair woman_in_manual_wheelchair manual_wheelchair
-        motorized_wheelchair wheelchair
-      ]
+      disability_emojis = {
+        "guide_dog" => "🦮",
+        "service_dog" => "🐕‍🦺",
+        "person_with_probing_cane" => "🧑‍🦯",
+        "man_with_probing_cane" => "👨‍🦯",
+        "woman_with_probing_cane" => "👩‍🦯",
+        "probing_cane" => "🦯",
+        "person_in_motorized_wheelchair" => "🧑‍🦼",
+        "man_in_motorized_wheelchair" => "👨‍🦼",
+        "woman_in_motorized_wheelchair" => "👩‍🦼",
+        "person_in_manual_wheelchair" => "🧑‍🦽",
+        "man_in_manual_wheelchair" => "👨‍🦽",
+        "woman_in_manual_wheelchair" => "👩‍🦽",
+        "manual_wheelchair" => "🦽",
+        "motorized_wheelchair" => "🦼",
+        "wheelchair" => "♿"
+      }
 
-      disability_emojis.each do |emoji|
-        unicode = Emoji.find_by_alias(emoji).raw
+      disability_emojis.each do |emoji, unicode|
         parsed_html = described_class.new(":#{emoji}:").parse_emojis.html
         expect(parsed_html).to include(unicode)
       end
@@ -453,6 +513,5 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(emoji_text).parse_emojis.html
       expect(parsed_html).to include(emoji_text)
     end
-    # rubocop:enable Rails/DynamicFindBy
   end
 end

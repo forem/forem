@@ -23,6 +23,7 @@ module Users
     enum :config_homepage_feed, { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          suffix: :feed
     enum :feed_status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
+    enum :feed_ai_preference, { show_all: 0, minimize_ai: 1, hide_fully_autonomous: 2 }, suffix: :feed_ai
 
     validates :brand_color1,
               format: { with: HEX_COLOR_REGEXP,
@@ -39,6 +40,7 @@ module Users
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
+    after_update :generate_social_images, if: :saved_change_to_brand_color1?
     after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
 
     def resolved_font_name
@@ -83,6 +85,10 @@ module Users
 
     def display_email_setting_changed_for_cache?
       saved_change_to_display_email_on_profile?
+    end
+
+    def generate_social_images
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(user_id, "User") }
     end
   end
 end

@@ -13,7 +13,7 @@ class Survey < ApplicationRecord
   has_many :poll_votes, through: :polls
   has_many :survey_completions, dependent: :destroy
   
-  enum :type_of, { community_pulse: 0, industry: 1, fun: 2 }
+  enum :type_of, { community_pulse: 0, industry: 1, fun: 2, beta_testing: 3 }
 
   accepts_nested_attributes_for :polls, allow_destroy: true
   validates_associated :polls
@@ -28,13 +28,16 @@ class Survey < ApplicationRecord
     # Get the latest session for this user and survey
     latest_session = get_latest_session(user)
 
-    # Check if user has voted or skipped all polls in the latest session
-    user_votes_count = user.poll_votes.where(poll_id: poll_ids, session_start: latest_session).count
-    user_skips_count = user.poll_skips.where(poll_id: poll_ids, session_start: latest_session).count
-    user_text_responses_count = user.poll_text_responses.where(poll_id: poll_ids, session_start: latest_session).count
+    # Check if user has voted, skipped, or submitted a text response for all distinct polls in the latest session
+    voted_poll_ids = user.poll_votes.where(poll_id: poll_ids, session_start: latest_session).distinct.pluck(:poll_id)
+    skipped_poll_ids = user.poll_skips.where(poll_id: poll_ids, session_start: latest_session).distinct.pluck(:poll_id)
+    text_poll_ids = user.poll_text_responses
+      .where(poll_id: poll_ids, session_start: latest_session)
+      .distinct
+      .pluck(:poll_id)
 
-    total_responses = user_votes_count + user_skips_count + user_text_responses_count
-    total_responses >= poll_ids.count
+    responded_poll_ids = voted_poll_ids | skipped_poll_ids | text_poll_ids
+    (poll_ids - responded_poll_ids).empty?
   end
 
   # Check if a user can submit this survey (based on allow_resubmission setting)
@@ -82,6 +85,15 @@ class Survey < ApplicationRecord
 
   def target_based?
     target_response_count.to_i > 0 && target_completion_date.present?
+  end
+
+  def extra_email_context_html
+    return if extra_email_context_paragraph.blank?
+
+    MarkdownProcessor::Parser.new(extra_email_context_paragraph).evaluate_markdown(
+      allowed_tags: MarkdownProcessor::AllowedTags::EMAIL_SURVEY,
+      allowed_attributes: MarkdownProcessor::AllowedAttributes::EMAIL_SURVEY,
+    )&.strip
   end
 
   private

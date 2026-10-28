@@ -9,12 +9,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let!(:article_without_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: nil) }
   let(:organization) { create(:organization) }
   let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
-  let(:background_image) { instance_double(MiniMagick::Image) }
   let(:default_logo_url) { "https://example.com/default_logo.png" }
   let(:custom_logo_url) { "https://example.com/custom_logo.png" }
+  let(:generated_image) { "https://example.com/og.png" }
 
   before do
     allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+    allow(Settings::General).to receive(:resized_logo).and_return(nil)
     allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
     allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
   end
@@ -23,117 +24,131 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   # rubocop:disable Layout/LineLength
   # rubocop:disable RSpec/VerifiedDoubles
   # rubocop:disable RSpec/ContextWording
-  # rubocop:disable Style/Semicolon
   # rubocop:disable RSpec/NestedGroups
+  # rubocop:disable RSpec/AnyInstance
   describe ".call" do
     context "when resource is an Article" do
       let(:generator) { described_class.new(article) }
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:read_files)
-        allow(generator).to receive(:add_logo)
-        allow(generator).to receive(:add_text)
-        allow(generator).to receive(:add_profile_image)
-        allow(generator).to receive(:upload_result).and_return("image_url")
-        allow(generator).to receive(:generate_magickally)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "calls the class methods" do
+      it "generates the image with the author's brand color" do
         described_class.call(article)
-        expect(generator).to have_received(:generate_magickally).once
+        expect(generator).to have_received(:generate_image).with(article, user.setting.brand_color1).once
       end
 
-      it "updates article to have social image" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
+      it "stores the generated image on the article" do
         described_class.call(article)
-        expect(article.reload.social_image).to eq("https://www.example.com")
-      end
-
-      it "converts black color to off-black" do
-        allow(background_image).to receive(:combine_options).with(any_args) do |&block|
-          command = MiniMagick::CommandBuilder.new(:mogrify)
-          block.call(command)
-          expect(command.args.join(" ")).to include("fill '#111212'")
-        end
-
-        described_class.call(article)
+        expect(article.reload.social_image).to eq("https://example.com/og.png")
       end
 
       it "busts article cache" do
-        allow(EdgeCache::BustArticle).to receive(:call).with(article)
+        allow(EdgeCache::BustArticle).to receive(:call)
         described_class.call(article)
+        expect(EdgeCache::BustArticle).to have_received(:call).with(article)
       end
 
-      it "passes the article to read_files" do
-        described_class.call(article)
-        expect(generator).to have_received(:read_files).with(article)
+      context "when pre-warming the image optimizer" do
+        let(:optimized_url) { "https://media2.dev.to/dynamic/image/width=1200,height=627,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fexample.com%2Fog.png" }
+
+        before do
+          allow(Images::Optimizer).to receive(:call).and_return(optimized_url)
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("media2.dev.to").and_return(false)
+          allow(HTTParty).to receive(:get)
+          allow(EdgeCache::BustArticle).to receive(:call)
+        end
+
+        it "fetches the optimized social image URL before busting the cache when the author has a sufficient trust score" do
+          article.user.update_column(:score, 100) # author_trust_score == 2
+
+          described_class.call(article)
+
+          expect(Images::Optimizer).to have_received(:call).with(generated_image, width: 1200, height: 627, crop: "crop").ordered
+          expect(HTTParty).to have_received(:get).with(optimized_url, timeout: described_class::PREWARM_TIMEOUT, follow_redirects: false).ordered
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article).ordered
+        end
+
+        it "does not pre-warm the optimizer when the author has a trust score below the threshold" do
+          article.user.update_column(:score, 50) # author_trust_score == 1
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "does not pre-warm when the optimizer URL resolves to a private or loopback host" do
+          article.user.update_column(:score, 100)
+          allow(Images::Optimizer).to receive(:call).and_return("http://127.0.0.1:3000/private")
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("127.0.0.1").and_call_original
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "logs a warning and still busts the article cache if the pre-warm request fails" do
+          article.user.update_column(:score, 100)
+          allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
+          allow(Rails.logger).to receive(:warn)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Social image prewarm failed/)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
       end
 
       context "when an external fetch fails with an HTTP error" do
         it "logs a warning and does not alert Honeybadger" do
-          allow(generator).to receive(:read_files).and_raise(OpenURI::HTTPError.new("504 Gateway Timeout", StringIO.new))
+          allow(generator).to receive(:generate_image).and_raise(OpenURI::HTTPError.new("404 Not Found", nil))
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
-          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed: 404 Not Found/)
+          expect(Rails.error).not_to have_received(:report)
         end
       end
 
       context "when an external fetch times out" do
         it "logs a warning and does not alert Honeybadger" do
-          allow(generator).to receive(:read_files).and_raise(Net::ReadTimeout)
+          allow(generator).to receive(:generate_image).and_raise(Net::ReadTimeout)
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
-          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed:/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.logger).to have_received(:warn).with(/Image fetch failed/)
+          expect(Rails.error).not_to have_received(:report)
         end
       end
 
       context "when MiniMagick throws an error" do
         it "logs a warning and does not alert Honeybadger if it is a status 15 SIGTERM" do
-          allow(generator).to receive(:generate_magickally).and_raise(MiniMagick::Error, "mogrify failed with status: 15")
+          allow(generator).to receive(:generate_image).and_raise(MiniMagick::Error.new("`convert` failed with status: 15"))
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
-          expect(Rails.logger).to have_received(:warn).with(/MiniMagick terminated by SIGTERM/)
-          expect(Honeybadger).not_to have_received(:notify)
+          expect(Rails.logger).to have_received(:warn).with(/SIGTERM/)
+          expect(Rails.error).not_to have_received(:report)
         end
 
         it "alerts Honeybadger for other MiniMagick errors" do
-          error = MiniMagick::Error.new("mogrify failed with status: 1")
-          allow(generator).to receive(:generate_magickally).and_raise(error)
-          allow(Honeybadger).to receive(:notify)
+          error = MiniMagick::Error.new("`convert` failed with status: 1")
+          allow(generator).to receive(:generate_image).and_raise(error)
+          allow(Rails.error).to receive(:report)
 
           described_class.call(article)
 
-          expect(Honeybadger).to have_received(:notify).with(error)
-        end
-      end
-
-      context "with custom subforem" do
-        let(:generator) { described_class.new(article_with_custom_subforem) }
-
-        it "passes the article with custom subforem to read_files" do
-          described_class.call(article_with_custom_subforem)
-          expect(generator).to have_received(:read_files).with(article_with_custom_subforem)
-        end
-      end
-
-      context "without subforem" do
-        let(:generator) { described_class.new(article_without_subforem) }
-
-        it "passes the article without subforem to read_files" do
-          described_class.call(article_without_subforem)
-          expect(generator).to have_received(:read_files).with(article_without_subforem)
+          expect(Rails.error).to have_received(:report).with(error)
         end
       end
     end
@@ -143,99 +158,42 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:read_files)
-        allow(generator).to receive(:generate_magickally)
-        allow(user).to receive(:profile_image_90).and_return("https://www.example.com/image.png")
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "calls the class methods for each published article" do
+      it "generates the user profile image and an image for each published article without an organization or cover" do
         described_class.call(user)
-        expect(generator).to have_received(:generate_magickally).at_least(:once)
-          .with(
-            title: article.title,
-            date: article.readable_publish_date,
-            author_name: user.name,
-            color: user.setting.brand_color1,
-          )
-      end
-
-      it "updates article to have social image" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
-        described_class.call(user)
-        expect(article.reload.social_image).to eq("https://www.example.com")
-      end
-
-      it "calls read_files with each article" do
-        described_class.call(user)
-        expect(generator).to have_received(:read_files).at_least(:once)
-      end
-
-      it "processes articles with different subforems correctly" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
-        described_class.call(user)
-        
-        # Verify that read_files was called for each article
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
         [article, article_with_custom_subforem, article_without_subforem].each do |art|
-          expect(generator).to have_received(:read_files).with(art) if art.organization_id.nil? && art.main_image.nil?
+          expect(generator).to have_received(:generate_image).with(art, user.setting.brand_color1)
         end
+        expect(generator).not_to have_received(:generate_image).with(second_article, anything)
       end
 
-      context "caching optimization" do
-        let!(:article2_same_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
-        let!(:article3_same_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
+      it "stores the generated image on the user profile and articles and busts user edge cache" do
+        allow(EdgeCache::BustUser).to receive(:call)
+        described_class.call(user)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
+        expect(article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
+      end
+    end
 
-        before do
-          # Clear the existing stubs for these tests
-          RSpec::Mocks.space.proxy_for(Settings::General).reset
-          
-          # Don't stub read_files for this test - we want to test the real caching behavior
-          allow(described_class).to receive(:new).and_call_original
-          allow(MiniMagick::Image).to receive(:open).and_return(double(combine_options: nil, resize: nil, composite: nil))
-          allow_any_instance_of(described_class).to receive(:generate_magickally).and_return("https://www.example.com")
-        end
+    context "when resource is a Profile" do
+      let(:generator) { described_class.new(user.profile) }
 
-        it "caches logo URL for consecutive articles with the same subforem" do
-          # Set up fresh stubs for this specific test
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
-          allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          
-          described_class.call(user)
-          
-          # Cache is invalidated when switching between subforems, so we expect:
-          # 1st call for initial default subforem articles
-          # 1 call for custom subforem
-          # May be called again for default after switching to custom (depending on order)
-          # The optimization is that consecutive same-subforem articles only call it once
-          expect(Settings::General).to have_received(:logo_png).with(subforem_id: default_subforem.id).at_least(:once).at_most(2).times
-          expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
-        end
+      before do
+        allow(described_class).to receive(:new).and_return(generator)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
+      end
 
-        it "avoids redundant logo_png calls compared to no caching" do
-          call_count = 0
-          allow(Settings::General).to receive(:logo_png) do |args|
-            call_count += 1
-            args[:subforem_id] == default_subforem.id ? default_logo_url : custom_logo_url
-          end
-          allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          
-          described_class.call(user)
-          
-          # Without caching, would be called 5 times (once per article)
-          # With caching, called much fewer times (2-3 times depending on order)
-          expect(call_count).to be < 5
-        end
-
-        it "still creates fresh MiniMagick image objects for each article" do
-          allow(Settings::General).to receive(:logo_png).and_return(default_logo_url)
-          allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          
-          described_class.call(user)
-          
-          # Should open images for each article (4 files per article: template, logo, author, mask)
-          # We have 5 articles without org and without main_image (article, article_with_custom_subforem, article_without_subforem, article2_same_subforem, article3_same_subforem)
-          expect(MiniMagick::Image).to have_received(:open).at_least(16).times
-        end
+      it "generates only the user profile image without regenerating their articles" do
+        allow(EdgeCache::BustUser).to receive(:call)
+        described_class.call(user.profile)
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
+        expect(generator).not_to have_received(:generate_image).with(article, anything)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
       end
     end
 
@@ -244,424 +202,482 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       before do
         allow(described_class).to receive(:new).and_return(generator)
-        allow(generator).to receive(:read_files)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "calls the class methods for each published article" do
-        allow(generator).to receive(:generate_magickally)
+      it "generates the organization profile image and article images with the organization's color" do
         described_class.call(organization)
-        expect(generator).to have_received(:generate_magickally).once
+        expect(generator).to have_received(:generate_image).with(organization, organization.bg_color_hex).once
+        expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
       end
 
-      it "updates article to have social image" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
+      it "stores the generated image on the organization and article and busts organization edge cache" do
+        allow(EdgeCache::BustOrganization).to receive(:call)
         described_class.call(organization)
-        expect(generator).to have_received(:generate_magickally).once
-        expect(second_article.reload.social_image).to eq("https://www.example.com")
-      end
-
-      it "calls read_files with the article" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
-        described_class.call(organization)
-        expect(generator).to have_received(:read_files).with(second_article)
-      end
-
-      it "passes article with custom subforem to read_files" do
-        allow(generator).to receive(:generate_magickally).and_return("https://www.example.com")
-        described_class.call(organization)
-        expect(generator).to have_received(:read_files).with(second_article)
-        expect(second_article.subforem_id).to eq(custom_subforem.id)
-      end
-
-      context "caching optimization" do
-        let!(:org_article2) { create(:article, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
-        let!(:org_article3) { create(:article, organization_id: organization.id, with_main_image: false, subforem: default_subforem) }
-
-        before do
-          # Clear the existing stubs for these tests
-          RSpec::Mocks.space.proxy_for(Settings::General).reset
-          
-          allow(described_class).to receive(:new).and_call_original
-          allow(MiniMagick::Image).to receive(:open).and_return(double(combine_options: nil, resize: nil, composite: nil))
-          allow_any_instance_of(described_class).to receive(:generate_magickally).and_return("https://www.example.com")
-        end
-
-        it "only fetches logo URL once per unique subforem" do
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
-          allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          
-          described_class.call(organization)
-          
-          # We have 2 articles with custom_subforem and 1 with default_subforem
-          expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
-          expect(Settings::General).to have_received(:logo_png).with(subforem_id: default_subforem.id).once
-        end
-
-        it "still creates fresh MiniMagick image objects for each article" do
-          allow(Settings::General).to receive(:logo_png).and_return(default_logo_url)
-          allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          
-          described_class.call(organization)
-          
-          # Should open images for each article (3 articles)
-          expect(MiniMagick::Image).to have_received(:open).at_least(9).times
-        end
+        expect(organization.reload.social_image).to eq("https://example.com/og.png")
+        expect(second_article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, organization.slug)
       end
     end
 
-    context "when calculate_font_size" do
-      let(:generator) { described_class.new(article) }
-
-      it "returns the correct font size for short text" do
-        expect(generator.send(:calculate_font_size, "short text")).to eq(110)
-      end
-
-      it "returns the correct font size for medium text" do
-        medium_text = "This is a slightly longer text."
-        expect(generator.send(:calculate_font_size, medium_text)).to eq(96)
-      end
-
-      it "returns the correct font size for medium-to-long text" do
-        medium_long_text = "This is a slightly longer text. Slightly longer."
-        expect(generator.send(:calculate_font_size, medium_long_text)).to eq(81)
-      end
-
-      it "returns the correct font size for medium-to-long text" do
-        almost_long_text = "This is a slightly longer text. Slightly longer than the last."
-        expect(generator.send(:calculate_font_size, almost_long_text)).to eq(75)
-      end
-
-      it "returns the correct font size for long text" do
-        long_text = "This is a very long text that is definitely more than 70 characters long
-          and should return a smaller font size"
-        expect(generator.send(:calculate_font_size, long_text)).to eq(62)
-      end
-    end
-
-    context "wrap_text" do
-      let(:generator) { described_class.new(article) }
-
-      it "returns the same text when the text length is less than 40" do
-        text = "This is a short text"
-        expect(generator.send(:wrap_text, text)).to eq(text)
-      end
-
-      it "returns wrapped text when the text length is between 40 and 70" do
-        text = "This is a slightly longer text that is about 50 characters long and should be wrapped"
-        wrapped_text = "This is a slightly longer text that\nis about 50 characters long and\nshould be wrapped"
-        expect(generator.send(:wrap_text, text)).to eq(wrapped_text)
-      end
-
-      it "returns wrapped text when the text length is more than 70" do
-        text = "This is a very long text that is definitely more than 70 characters long and should be wrapped over multiple lines"
-        wrapped_text = "This is a very long text that is\ndefinitely more than 70 characters\nlong and should be wrapped over\nmultiple lines"
-        expect(generator.send(:wrap_text, text)).to eq(wrapped_text)
-      end
-    end
-
-    context "add_text" do
-      let(:generator) { described_class.new(article) }
-      let(:result_image) { double(MiniMagick::Tool::Convert) }
+    context "caching optimization" do
+      let(:image) { double(destroy!: nil) }
 
       before do
-        allow(generator).to receive_messages(calculate_font_size: 40, wrap_text: "Wrapped Text")
-        allow(result_image).to receive(:combine_options) { |&block| block.call(result_image); result_image }
-        allow(result_image).to receive(:gravity)
-        allow(result_image).to receive(:pointsize)
-        allow(result_image).to receive(:draw)
-        allow(result_image).to receive(:fill)
-        allow(result_image).to receive(:font)
-        generator.instance_variable_set(:@background_image, result_image)
+        create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem)
+        RSpec::Mocks.space.proxy_for(Settings::General).reset
+        allow(Settings::General).to receive(:resized_logo).and_return(nil)
+        allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+        allow(MiniMagick::Image).to receive(:open).and_return(double)
+        allow_any_instance_of(described_class).to receive_messages(render_quote: image, render_text: image, draw_background: image, generate_magickally: "https://www.example.com")
       end
 
-      it "adds title, date, and author_name text to the image" do
-        generator.send(:add_text, result_image, "title", "date", "author_name")
-        expect(result_image).to have_received(:combine_options).exactly(3).times
+      it "fetches the logo URL at most once per run of same-subforem articles" do
+        allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
+        allow(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
+
+        described_class.call(user)
+
+        expect(Settings::General).to have_received(:logo_png).with(subforem_id: default_subforem.id).at_least(:once).at_most(2).times
+        expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
       end
 
-      it "truncates text longer than 128" do
-        allow(generator).to receive(:wrap_text).and_return("whatever")
-        text = "This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines. This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines."
-        truncated_text = "This is a very long text that is definitely more than 128 characters long and should be wrapped over multiple lines. This is ..."
-        generator.send(:add_text, result_image, text, "date", "author_name")
-        expect(generator).to have_received(:wrap_text).with(truncated_text)
-      end
-    end
+      it "still opens fresh MiniMagick images for each article" do
+        allow(Settings::General).to receive(:logo_png).and_return(default_logo_url)
 
-    context "escape_for_draw" do
-      let(:generator) { described_class.new(article) }
+        described_class.call(user)
 
-      it "escapes backslashes before other characters" do
-        expect(generator.send(:escape_for_draw, 'a\\b')).to eq('a\\\\b')
-      end
-
-      it "escapes double-quotes" do
-        expect(generator.send(:escape_for_draw, 'say "hello"')).to eq('say \\"hello\\"')
-      end
-
-      it "escapes @ to prevent ImageMagick indirect file reads" do
-        expect(generator.send(:escape_for_draw, 'user@example')).to eq('user\\@example')
-      end
-
-      it "escapes % to prevent ImageMagick format sequences" do
-        expect(generator.send(:escape_for_draw, '50%')).to eq('50\\%')
-      end
-
-      it "does not raise on CJK and Unicode characters" do
-        unicode_name = "FrancisTR\u1d05\u1d07\u1d20 (\u3063\u25d4\u25e1\u25d4)\u3063"
-        expect { generator.send(:escape_for_draw, unicode_name) }.not_to raise_error
-      end
-
-      it "returns clean ASCII strings unchanged" do
-        expect(generator.send(:escape_for_draw, 'Jane Doe')).to eq('Jane Doe')
-      end
-    end
-
-    context "add_profile_image" do
-      let(:user) { create(:user) }
-      let(:article) { create(:article, user_id: user.id, with_main_image: false) }
-      let(:generator) { described_class.new(article) }
-      let(:result_image) { double(MiniMagick::Tool::Convert) }
-      let(:author_image) { double(MiniMagick::Tool::Convert) }
-      let(:rounded_mask) { double(MiniMagick::Tool::Convert) }
-
-      before do
-        allow(result_image).to receive(:composite).and_return(result_image)
-        allow(author_image).to receive(:collapse!)
-        allow(author_image).to receive(:format)
-        allow(author_image).to receive(:resize)
-        allow(rounded_mask).to receive(:resize)
-
-        generator.instance_variable_set(:@background_image, result_image)
-        generator.instance_variable_set(:@author_image, author_image)
-        generator.instance_variable_set(:@rounded_mask, rounded_mask)
-      end
-
-      it "adds the profile image and rounded mask to the image after collapsing animation frames" do
-        generator.send(:add_profile_image, result_image)
-        expect(author_image).to have_received(:collapse!)
-        expect(author_image).to have_received(:format).with("png")
-        expect(author_image).to have_received(:resize).with("77x77")
-        expect(rounded_mask).to have_received(:resize).with("77x77")
-        expect(result_image).to have_received(:composite).twice
-      end
-
-      it "gracefully rescues a Timeout::Error, logs to Honeybadger, and returns the bare result image without an avatar" do
-        allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
-        allow(Honeybadger).to receive(:notify)
-
-        expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
-        expect(Honeybadger).to have_received(:notify).with(instance_of(Timeout::Error))
-        # Ensure that resize was safely aborted and not called after the exception
-        expect(author_image).not_to have_received(:resize)
-        expect(result_image).not_to have_received(:composite)
-      end
-    end
-
-    context "add_logo" do
-      let(:user) { create(:user) }
-      let(:article) { create(:article, user_id: user.id, with_main_image: false) }
-      let(:generator) { described_class.new(article) }
-      let(:result_image) { double(MiniMagick::Tool::Convert) }
-      let(:logo_image) { double(MiniMagick::Tool::Convert) }
-
-      before do
-        allow(result_image).to receive(:composite).and_return(result_image)
-        allow(logo_image).to receive(:combine_options).and_yield(logo_image)
-        allow(logo_image).to receive(:resize)
-        allow(logo_image).to receive(:stroke)
-        allow(logo_image).to receive(:strokewidth)
-        allow(logo_image).to receive(:fill)
-        allow(logo_image).to receive(:draw)
-
-        generator.instance_variable_set(:@background_image, result_image)
-        generator.instance_variable_set(:@logo_image, logo_image)
-      end
-
-      context "when logo image is present" do
-        it "adds the logo to the image" do
-          generator.send(:add_logo, result_image)
-
-          expect(logo_image).to have_received(:combine_options)
-          expect(logo_image).to have_received(:stroke).with("white")
-          expect(logo_image).to have_received(:strokewidth).with("4")
-          expect(logo_image).to have_received(:fill).with("none")
-          expect(logo_image).to have_received(:draw).with("rectangle 0,0 1200,1200")
-          expect(logo_image).to have_received(:resize).with("77x77")
-          expect(result_image).to have_received(:composite).with(logo_image)
-        end
-      end
-
-      context "when logo image is not present" do
-        before do
-          generator.instance_variable_set(:@logo_image, nil)
-        end
-
-        it "does not attempt to add the logo to the image" do
-          generator.send(:add_logo, result_image)
-          expect(result_image).not_to have_received(:composite)
-        end
-      end
-
-      context "upload_result" do
-        let(:generator) { described_class.new(article) }
-        let(:result_image) { double(MiniMagick::Tool::Convert) }
-        let(:tempfile) { instance_double(Tempfile, path: "/tmp/output.png") }
-        let(:uploader) { instance_double(ArticleImageUploader) }
-
-        before do
-          allow(Tempfile).to receive(:new).and_return(tempfile)
-          allow(tempfile).to receive(:close)
-          allow(tempfile).to receive(:unlink)
-          allow(result_image).to receive(:write)
-
-          allow(ArticleImageUploader).to receive(:new).and_return(uploader)
-          allow(uploader).to receive(:store!)
-          allow(uploader).to receive(:url).and_return("http://example.com/social_image.png")
-
-          generator.instance_variable_set(:@background_image, result_image)
-        end
-
-        it "creates a tempfile, writes the image, uploads the image, then cleans up the tempfile" do
-          expect(generator.send(:upload_result, result_image)).to eq "http://example.com/social_image.png"
-
-          expect(Tempfile).to have_received(:new).with(["output", ".png"])
-          expect(result_image).to have_received(:write).with(tempfile.path)
-          expect(ArticleImageUploader).to have_received(:new)
-          expect(uploader).to have_received(:store!).with(tempfile)
-          expect(tempfile).to have_received(:close)
-          expect(tempfile).to have_received(:unlink)
-          expect(uploader).to have_received(:url)
-        end
-      end
-    end
-
-    context "read_files" do
-      let(:instance) { described_class.new(article) }
-
-      before do
-        allow(MiniMagick::Image).to receive(:open) # stub the actual image opening
-        instance.instance_variable_set(:@user, article.user)
-        described_class.send(:public, :read_files)
-      end
-
-      it "opens the template, logo, author image, and rounded mask with default subforem logo" do
-        expect(MiniMagick::Image).to receive(:open).with(Images::TEMPLATE_PATH)
-        expect(MiniMagick::Image).to receive(:open).with(default_logo_url)
-        expect(MiniMagick::Image).to receive(:open).with("https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png") # backup link
-        expect(MiniMagick::Image).to receive(:open).with(Images::ROUNDED_MASK_PATH)
-        instance.read_files(article)
-      end
-
-      it "uses the article's subforem logo" do
-        expect(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
-        expect(MiniMagick::Image).to receive(:open).with(default_logo_url)
-        instance.read_files(article)
-      end
-
-      context "with custom subforem" do
-        let(:instance) { described_class.new(article_with_custom_subforem) }
-
-        before do
-          instance.instance_variable_set(:@user, article_with_custom_subforem.user)
-        end
-
-        it "uses the custom subforem logo" do
-          expect(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).and_return(custom_logo_url)
-          expect(MiniMagick::Image).to receive(:open).with(custom_logo_url)
-          instance.read_files(article_with_custom_subforem)
-        end
-      end
-
-      context "without subforem" do
-        let(:instance) { described_class.new(article_without_subforem) }
-
-        before do
-          instance.instance_variable_set(:@user, article_without_subforem.user)
-        end
-
-        it "falls back to default subforem logo" do
-          expect(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
-          expect(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(default_logo_url)
-          expect(MiniMagick::Image).to receive(:open).with(default_logo_url)
-          instance.read_files(article_without_subforem)
-        end
-      end
-
-      context "when logo_url is nil" do
-        it "does not attempt to open the logo image" do
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return(nil)
-          expect(MiniMagick::Image).not_to receive(:open).with(nil)
-          instance.read_files(article)
-        end
-      end
-
-      context "when logo_url is blank string" do
-        it "does not attempt to open the logo image" do
-          allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return("")
-          expect(MiniMagick::Image).not_to receive(:open).with("")
-          instance.read_files(article)
-        end
-      end
-
-      context "caching behavior" do
-        it "caches the logo URL and only fetches it once for the same subforem" do
-          expect(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).once.and_return(default_logo_url)
-          
-          # Call read_files multiple times with articles from the same subforem
-          instance.read_files(article)
-          instance.read_files(article)
-          instance.read_files(article)
-        end
-
-        it "fetches logo URL again when subforem changes" do
-          expect(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).once.and_return(default_logo_url)
-          expect(Settings::General).to receive(:logo_png).with(subforem_id: custom_subforem.id).once.and_return(custom_logo_url)
-          
-          instance.read_files(article)
-          instance.instance_variable_set(:@user, article_with_custom_subforem.user)
-          instance.read_files(article_with_custom_subforem)
-        end
-
-        it "still creates fresh MiniMagick image objects each time" do
-          # Create unique mock objects for each call
-          allow(MiniMagick::Image).to receive(:open) do |path|
-            double("MiniMagick::Image for #{path}")
-          end
-          
-          # First call
-          instance.read_files(article)
-          first_background = instance.instance_variable_get(:@background_image)
-          first_logo = instance.instance_variable_get(:@logo_image)
-          
-          # Second call with same article
-          instance.read_files(article)
-          second_background = instance.instance_variable_get(:@background_image)
-          second_logo = instance.instance_variable_get(:@logo_image)
-          
-          # Objects should be different (fresh opens)
-          expect(second_background).not_to equal(first_background)
-          expect(second_logo).not_to equal(first_logo)
-        end
-
-        it "caches author image URL and only calculates it once for the same user" do
-          # Call read_files multiple times with articles from the same user
-          instance.read_files(article)
-          cached_url = instance.instance_variable_get(:@cached_author_image_url)
-          
-          instance.read_files(article)
-          second_cached_url = instance.instance_variable_get(:@cached_author_image_url)
-          
-          expect(cached_url).to eq(second_cached_url)
-        end
+        # logo, author image, and mask for each of the 4 eligible articles
+        expect(MiniMagick::Image).to have_received(:open).at_least(12).times
       end
     end
   end
-  # rubocop:enable Style/Send
+
+  describe "layout" do
+    let(:stack) { described_class::WINDOW_STACK_OFFSET * described_class::WINDOW_STACK_DEPTH }
+    let(:card_bottom) { described_class::WINDOW_Y + described_class::WINDOW_HEIGHT + stack }
+
+    it "keeps the card above the bottom area where X overlays the post title" do
+      expect(card_bottom).to be <= described_class::HEIGHT - described_class::X_KEEP_CLEAR
+    end
+
+    it "centers the card vertically" do
+      bottom_margin = described_class::HEIGHT - card_bottom
+      expect((described_class::WINDOW_Y - bottom_margin).abs).to be <= 1
+    end
+  end
+
+  describe "#generate_image" do
+    let(:generator) { described_class.new(article) }
+    let(:written) { [] }
+
+    before do
+      generator.instance_variable_set(:@user, user)
+      allow(generator).to receive(:read_files) do
+        generator.instance_variable_set(:@logo_image, MiniMagick::Image.open(Rails.root.join("spec/fixtures/files/podcast.png").to_s))
+        generator.instance_variable_set(:@author_image, MiniMagick::Image.open(Rails.root.join("spec/fixtures/files/800x600.png").to_s))
+        generator.instance_variable_set(:@rounded_mask, MiniMagick::Image.open(Images::ROUNDED_MASK_PATH))
+      end
+      allow(generator).to receive(:upload_result) do |result|
+        written << [result.width, result.height]
+        "https://example.com/#{written.size}.png"
+      end
+    end
+
+    it "renders a 1200x627 image with ImageMagick" do
+      expect(generator.send(:generate_image, article, "#3b49df")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
+    end
+
+    it "quotes the opening of the article" do
+      allow(generator).to receive(:render_quote).and_call_original
+      generator.send(:generate_image, article, nil)
+      expect(generator).to have_received(:render_quote).with(Images::SocialImageQuote.call(article))
+    end
+
+    it "cleans up intermediate and opened tempfiles after rendering" do
+      generator.send(:generate_image, article, "#3b49df")
+
+      %i[@logo_image @author_image @rounded_mask].each do |ivar|
+        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+      end
+    end
+
+    it "renders a 1200x627 profile card image for a User and cleans up tempfiles" do
+      user.profile.update_columns(summary: "Builds distributed systems and writes about Postgres.", location: "Austin, TX", website_url: "https://example.dev")
+      expect(generator.send(:generate_image, user, "#0f766e")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
+      %i[@logo_image @author_image @rounded_mask].each do |ivar|
+        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+      end
+    end
+
+    it "renders a 1200x627 profile card image for an Organization" do
+      generator.instance_variable_set(:@user, organization)
+      expect(generator.send(:generate_image, organization, "#1d4ed8")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
+    end
+  end
+
+  describe "#render_text" do
+    let(:generator) { described_class.new(article) }
+
+    it "does not let a leading @ read a file into the image" do
+      file = Tempfile.new(["secret", ".txt"])
+      file.write("x")
+      file.flush
+
+      image = generator.send(:render_text, "label", "@#{file.path}", Images::BOLD_FONT_PATH, 28, "black")
+
+      # Rendering the one-character file content would be far narrower than the path.
+      expect(image.width).to be > 200
+    ensure
+      image&.destroy!
+      file&.close!
+    end
+
+    it "renders a blank string without raising an ImageMagick error" do
+      image = generator.send(:render_text, "label", "", Images::BOLD_FONT_PATH, 28, "black")
+      expect(image.width).to be >= 1
+    ensure
+      image&.destroy!
+    end
+  end
+
+  describe "#palette_for" do
+    let(:generator) { described_class.new(article) }
+
+    it "uses a default palette, chosen by the seed, when the color is unset" do
+      %w[#000000 #111212].push(nil, "", "not-a-color").each do |color|
+        expect(generator.send(:palette_for, color, 5)).to eq(described_class::DEFAULT_PALETTES[5 % described_class::DEFAULT_PALETTES.size])
+      end
+    end
+
+    it "builds an analogous palette that starts with the brand color" do
+      palette = generator.send(:palette_for, "#0f9d8a", 1)
+      expect(palette.first).to eq("#0f9d8a")
+      expect(palette.size).to eq(5)
+      expect(palette).to all(match(/\A#\h{6}\z/))
+    end
+
+    it "expands three-digit hex colors" do
+      expect(generator.send(:palette_for, "#FC0", 1).first).to eq("#ffcc00")
+    end
+
+    it "rotates hue with floating-point division for grayscale brand colors" do
+      palette = generator.send(:palette_for, "#808080", 1)
+      # +38 degrees from 0 is warm amber (green > blue), not pure red (green == blue)
+      _, r, g, b = *palette[1].match(/\A#(..)(..)(..)\z/)
+      expect(r.to_i(16)).to be > g.to_i(16)
+      expect(g.to_i(16)).to be > b.to_i(16)
+    end
+  end
+
+  describe "#accent_color" do
+    let(:generator) { described_class.new(article) }
+
+    it "uses the first dark color in the palette" do
+      expect(generator.send(:accent_color, %w[#fff23a #12004a #3333ff])).to eq("#12004a")
+    end
+
+    it "falls back to the community's primary brand color for light palettes" do
+      allow(Settings::UserExperience).to receive(:primary_brand_color_hex).and_return("#123456")
+      expect(generator.send(:accent_color, %w[#fff23a #ffffff])).to eq("#123456")
+    end
+  end
+
+  describe "#display_name" do
+    let(:generator) { described_class.new(article) }
+
+    it "turns stylized Unicode letters into plain ones the fonts can render" do
+      expect(generator.send(:display_name, "\u{1D413}\u{1D421}\u{1D41E} \u{1D40B}\u{1D41A}\u{1D433}\u{1D432}")).to eq("The Lazy")
+    end
+
+    it "drops emoji and truncates long names" do
+      expect(generator.send(:display_name, "Jess \u{1F984}")).to eq("Jess")
+      expect(generator.send(:display_name, "a" * 60).length).to eq(described_class::MAX_NAME_LENGTH)
+    end
+
+    it "falls back to the username when the name is emoji-only" do
+      generator.instance_variable_set(:@user, user)
+      expect(generator.send(:display_name, "\u{1F525}\u{1F984}")).to eq(user.username)
+    end
+  end
+
+  describe "#meta_line" do
+    let(:generator) { described_class.new(article) }
+
+    it "shows the date and reading time" do
+      article.reading_time = 7
+      expect(generator.send(:meta_line, article)).to eq("#{article.readable_publish_date}  ·  7 min read")
+    end
+
+    it "shows at least one minute of reading time" do
+      article.reading_time = 0
+      expect(generator.send(:meta_line, article)).to end_with("1 min read")
+    end
+  end
+
+  describe "#profile_bio" do
+    let(:generator) { described_class.new(user) }
+
+    it "returns the cleaned and word-boundary truncated bio when present" do
+      user.profile.summary = "word " * 50
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to be <= described_class::MAX_BIO_LENGTH
+      expect(text).to end_with("…")
+    end
+
+    it "truncates continuous unbroken strings without spaces" do
+      user.profile.summary = "x" * 200
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to eq(described_class::MAX_BIO_LENGTH)
+      expect(text).to end_with("…")
+    end
+
+    it "falls back to the localized empty bio string when blank" do
+      user.profile.summary = "   \u{1F680}  "
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(false)
+      expect(text).to eq(I18n.t("views.users.empty"))
+    end
+
+    it "uses summary or tag_line for an Organization" do
+      organization.summary = ""
+      organization.tag_line = "Open source cloud tooling"
+      text, present = generator.send(:profile_bio, organization)
+      expect(present).to be(true)
+      expect(text).to eq("Open source cloud tooling")
+    end
+  end
+
+  describe "#profile_meta_line" do
+    let(:generator) { described_class.new(user) }
+
+    it "joins present location, cleaned website url, and joined date" do
+      user.profile.location = "Austin, TX"
+      user.profile.website_url = "https://www.samrivera.dev/"
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Austin, TX  ·  samrivera.dev  ·  Joined #{user.created_at.strftime('%b %Y')}")
+    end
+
+    it "omits blank location and website while still showing joined date" do
+      user.profile.location = ""
+      user.profile.website_url = nil
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Joined #{user.created_at.strftime('%b %Y')}")
+    end
+  end
+
+  describe "#profile_brand_color" do
+    let(:generator) { described_class.new(user) }
+    let(:palette) { generator.send(:palette_for, nil, 1) }
+
+    it "uses the accent color when brand color is unset" do
+      expect(generator.send(:profile_brand_color, "#000000", palette)).to eq(generator.send(:accent_color, palette))
+    end
+
+    it "preserves dark brand colors with good contrast against white text" do
+      expect(generator.send(:profile_brand_color, "#0f766e", palette)).to eq("#0f766e")
+    end
+
+    it "darkens overly bright brand colors so white text remains readable" do
+      shaded = generator.send(:profile_brand_color, "#fff23a", palette)
+      expect(generator.send(:luminance, shaded)).to be <= 0.35
+    end
+  end
+
+  describe "#escape_text" do
+    let(:generator) { described_class.new(article) }
+
+    it "escapes backslashes before other characters" do
+      expect(generator.send(:escape_text, 'a\\b')).to eq('a\\\\b')
+    end
+
+    it "escapes double-quotes" do
+      expect(generator.send(:escape_text, 'say "hello"')).to eq('say \\"hello\\"')
+    end
+
+    it "escapes @ to prevent ImageMagick indirect file reads" do
+      expect(generator.send(:escape_text, "user@example")).to eq("user\\@example")
+    end
+
+    it "escapes % to prevent ImageMagick format sequences" do
+      expect(generator.send(:escape_text, "50%")).to eq("50\\%")
+    end
+
+    it "does not raise on CJK and Unicode characters" do
+      unicode_name = "FrancisTRᴅᴇᴠ (っ◔◡◔)っ"
+      expect { generator.send(:escape_text, unicode_name) }.not_to raise_error
+    end
+  end
+
+  describe "#add_profile_image" do
+    let(:generator) { described_class.new(article) }
+    let(:result_image) { double(MiniMagick::Image) }
+    let(:author_image) { double(MiniMagick::Image) }
+    let(:rounded_mask) { double(MiniMagick::Image) }
+
+    before do
+      allow(result_image).to receive_messages(composite: result_image, combine_options: result_image)
+      allow(author_image).to receive(:collapse!)
+      allow(author_image).to receive(:format)
+      allow(author_image).to receive(:resize)
+      allow(rounded_mask).to receive(:resize)
+
+      generator.instance_variable_set(:@author_image, author_image)
+      generator.instance_variable_set(:@rounded_mask, rounded_mask)
+    end
+
+    it "adds the profile image and rounded mask after collapsing animation frames" do
+      generator.send(:add_profile_image, result_image)
+      expect(author_image).to have_received(:collapse!)
+      expect(author_image).to have_received(:format).with("png")
+      expect(author_image).to have_received(:resize).with("64x64!")
+      expect(rounded_mask).to have_received(:resize).with("64x64")
+      expect(result_image).to have_received(:composite).twice
+    end
+
+    it "gracefully rescues a Timeout::Error, reports it, and returns the image without an avatar" do
+      allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
+      expect(author_image).not_to have_received(:resize)
+      expect(result_image).not_to have_received(:composite)
+    end
+  end
+
+  describe "#add_logo" do
+    let(:generator) { described_class.new(article) }
+    let(:result_image) { double(MiniMagick::Image) }
+    let(:logo_image) { double(MiniMagick::Image) }
+
+    before do
+      allow(result_image).to receive(:composite).and_return(result_image)
+      allow(logo_image).to receive(:resize)
+      generator.instance_variable_set(:@logo_image, logo_image)
+    end
+
+    it "scales the logo to the window's title bar and adds it" do
+      generator.send(:add_logo, result_image)
+      expect(logo_image).to have_received(:resize).with("x#{described_class::LOGO_HEIGHT}")
+      expect(result_image).to have_received(:composite).with(logo_image)
+    end
+
+    it "does not add a logo when there is none" do
+      generator.instance_variable_set(:@logo_image, nil)
+      expect(generator.send(:add_logo, result_image)).to eq(result_image)
+      expect(result_image).not_to have_received(:composite)
+    end
+  end
+
+  describe "#upload_result" do
+    let(:generator) { described_class.new(article) }
+    let(:result_image) { double(MiniMagick::Image) }
+    let(:tempfile) { instance_double(Tempfile, path: "/tmp/output.png") }
+    let(:uploader) { instance_double(ArticleImageUploader) }
+
+    before do
+      allow(Tempfile).to receive(:new).and_return(tempfile)
+      allow(tempfile).to receive(:close)
+      allow(tempfile).to receive(:unlink)
+      allow(result_image).to receive(:combine_options)
+      allow(result_image).to receive(:format)
+      allow(result_image).to receive(:write)
+      allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+      allow(uploader).to receive(:store!)
+      allow(uploader).to receive(:url).and_return("http://example.com/social_image.png")
+    end
+
+    it "writes an 8-bit PNG, uploads it, then cleans up the tempfile" do
+      expect(generator.send(:upload_result, result_image)).to eq "http://example.com/social_image.png"
+
+      expect(result_image).to have_received(:format).with("png")
+      expect(Tempfile).to have_received(:new).with(["output", ".png"])
+      expect(result_image).to have_received(:write).with(tempfile.path)
+      expect(uploader).to have_received(:store!).with(tempfile)
+      expect(tempfile).to have_received(:close)
+      expect(tempfile).to have_received(:unlink)
+    end
+  end
+
+  describe "#read_files" do
+    let(:instance) { described_class.new(article) }
+
+    before do
+      allow(MiniMagick::Image).to receive(:open)
+      instance.instance_variable_set(:@user, article.user)
+    end
+
+    it "opens the logo, author image, and rounded mask" do
+      instance.send(:read_files, article)
+      expect(MiniMagick::Image).to have_received(:open).with(default_logo_url)
+      expect(MiniMagick::Image).to have_received(:open).with(Images::Profile::BACKUP_LINK)
+      expect(MiniMagick::Image).to have_received(:open).with(Images::ROUNDED_MASK_PATH)
+    end
+
+    it "prefers the community's horizontal header logo" do
+      allow(Settings::General).to receive(:resized_logo).with(subforem_id: default_subforem.id).and_return("https://example.com/header_logo.png")
+      instance.send(:read_files, article)
+      expect(MiniMagick::Image).to have_received(:open).with("https://example.com/header_logo.png")
+      expect(MiniMagick::Image).not_to have_received(:open).with(default_logo_url)
+    end
+
+    context "with custom subforem" do
+      it "uses the custom subforem logo" do
+        instance.send(:read_files, article_with_custom_subforem)
+        expect(MiniMagick::Image).to have_received(:open).with(custom_logo_url)
+      end
+    end
+
+    context "without subforem" do
+      it "falls back to default subforem logo" do
+        instance.send(:read_files, article_without_subforem)
+        expect(MiniMagick::Image).to have_received(:open).with(default_logo_url)
+      end
+    end
+
+    context "when there is no logo" do
+      it "does not attempt to open the logo image" do
+        allow(Settings::General).to receive(:logo_png).with(subforem_id: default_subforem.id).and_return("")
+        instance.send(:read_files, article)
+        expect(MiniMagick::Image).not_to have_received(:open).with("")
+        expect(instance.instance_variable_get(:@logo_image)).to be_nil
+      end
+    end
+
+    context "caching behavior" do
+      it "fetches the logo URL once for the same subforem" do
+        3.times { instance.send(:read_files, article) }
+        expect(Settings::General).to have_received(:logo_png).with(subforem_id: default_subforem.id).once
+      end
+
+      it "fetches the logo URL again when the subforem changes" do
+        instance.send(:read_files, article)
+        instance.send(:read_files, article_with_custom_subforem)
+        expect(Settings::General).to have_received(:logo_png).with(subforem_id: default_subforem.id).once
+        expect(Settings::General).to have_received(:logo_png).with(subforem_id: custom_subforem.id).once
+      end
+
+      it "still creates fresh MiniMagick image objects each time" do
+        allow(MiniMagick::Image).to receive(:open) { |path| double("MiniMagick::Image for #{path}") }
+
+        instance.send(:read_files, article)
+        first_logo = instance.instance_variable_get(:@logo_image)
+        instance.send(:read_files, article)
+
+        expect(instance.instance_variable_get(:@logo_image)).not_to equal(first_logo)
+      end
+    end
+  end
+  # rubocop:enable RSpec/AnyInstance
+  # rubocop:enable RSpec/NestedGroups
+  # rubocop:enable RSpec/ContextWording
   # rubocop:enable RSpec/VerifiedDoubles
   # rubocop:enable Layout/LineLength
-  # rubocop:enable RSpec/ContextWording
-  # rubocop:enable Style/Semicolon
-  # rubocop:enable RSpec/NestedGroups
+  # rubocop:enable Style/Send
 end

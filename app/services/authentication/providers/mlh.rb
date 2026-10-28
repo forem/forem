@@ -15,6 +15,12 @@ module Authentication
         SETTINGS_URL
       end
 
+      # MLH access is brokered upstream; Forem never needs the bearer token
+      # after the callback, so it is not carried through an account switch.
+      def self.persist_credentials?
+        false
+      end
+
       def self.sign_in_path(**kwargs)
         # For MLH, we do not inject a callback_url param; OmniAuth will use its
         # configured callback path, which must match the URL registered in MyMLH.
@@ -28,7 +34,8 @@ module Authentication
         {
           email: info.email.to_s,
           name: info.name,
-          username: Users::UsernameGenerator.call([user_nickname])
+          username: Users::UsernameGenerator.call([user_nickname]),
+          profile_image: Images::ProfileImageGenerator.call
         }
       end
 

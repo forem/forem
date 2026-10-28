@@ -23,6 +23,18 @@ RSpec.describe "Pages" do
       expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
+    it "sets the page's surrogate key on a top-level page" do
+      page = create(:page, is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
+    it "sets the page's surrogate key on the InstantClick fetch of a top-level page" do
+      page = create(:page, is_top_level_path: true)
+      get "/#{page.slug}?i=0123456789"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
     context "with a null byte in the slug URL" do
       it "returns a 400 Bad Request error without raising an unhandled exception for default formats" do
         get "/page/%00.env"
@@ -149,6 +161,12 @@ RSpec.describe "Pages" do
   end
 
   describe "GET /slug/slug/slug/etc." do
+    it "keys a nested top-level page on its own slug, not its parent's" do
+      page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.headers["Surrogate-Key"]).to eq("show-page-#{page.slug}")
+    end
+
     it "renders proper page when slug has one subdirectory" do
       page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
       get "/#{page.slug}"
@@ -183,6 +201,38 @@ RSpec.describe "Pages" do
     it "returns not found when five directories, but no page" do
       # 6+ directories will be a non-valid page, so just further testing routing error
       expect { get "/heyhey/hey/hey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    context "when subforem filtering is disabled" do
+      around do |example|
+        original = ENV.fetch("NO_SUBFOREM_FILTER", nil)
+        ENV["NO_SUBFOREM_FILTER"] = "true"
+        example.run
+      ensure
+        ENV["NO_SUBFOREM_FILTER"] = original
+      end
+
+      def page_queries_during(&)
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "pages"') }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record", &)
+        queries
+      end
+
+      it "looks up a missing slug once before returning not found" do
+        queries = page_queries_during do
+          expect { get "/heyhey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        expect(queries.size).to eq(1)
+      end
+
+      it "still renders a page from another subforem" do
+        page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true,
+                             subforem_id: create(:subforem).id)
+        get "/#{page.slug}"
+        expect(response.body).to include(CGI.escapeHTML(page.title))
+      end
     end
 
     it "returns routing error when 7+ directories" do
@@ -371,6 +421,8 @@ RSpec.describe "Pages" do
 
       before do
         allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+        allow(ApplicationConfig).to receive(:[]).and_call_original
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
         FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
       end
 
@@ -378,6 +430,81 @@ RSpec.describe "Pages" do
         get "http://blog.mlh.com/robots.txt"
 
         expect(response.body).to include("Sitemap: http://blog.mlh.com/sitemap-index.xml")
+      end
+
+      it "serves agent guidance with links on the requested domain" do
+        get "http://blog.mlh.com/llms.txt"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("http://blog.mlh.com/api/v1/openapi.json")
+        expect(response.body).to include("http://forem.com/code-of-conduct")
+      end
+    end
+  end
+
+  describe "GET /.well-known/ai.txt" do
+    it "does not publish an experimental policy document" do
+      expect { get "/.well-known/ai.txt" }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe "GET /api/v1/openapi.json" do
+    it "serves the generated OpenAPI description" do
+      get "/api/v1/openapi.json"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body["paths"]).to be_present
+    end
+
+    it "redirects the paths automated clients probe for a spec" do
+      %w[/openapi.json /api-docs /api_docs /api/docs /api/v1/docs
+         /api/v1/docs/api_v1.json /api_docs/v1.json /swagger/v1/api_v1.json
+         /.well-known/openapi.json].each do |probe_path|
+        get probe_path
+        expect(response).to redirect_to("/api/v1/openapi.json")
+      end
+    end
+  end
+
+  describe "GET /llms.txt" do
+    it "renders the agent guidance" do
+      get "/llms.txt"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("text/plain")
+      expect(response.body).to include("# #{Settings::Community.community_name}")
+      expect(response.body).to include("## API")
+      expect(response.body).to include(URL.url("api/v1/openapi.json"))
+      expect(response.body).not_to include(".well-known/ai.txt")
+    end
+
+    context "when AI disclosure is enabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true) }
+
+      it "documents nuanced disclosure requirements before its file lists" do
+        get "/llms.txt"
+
+        disclosure_position = response.body.index("ai_disclosure_level")
+        api_position = response.body.index("## API")
+
+        expect(disclosure_position).to be < api_position
+        expect(response.body).not_to include("## AI disclosure")
+        expect(response.body).to include("AI-assisted and fully autonomous articles are allowed")
+        expect(response.body).to include("some_ai")
+        expect(response.body).to include("fully_autonomous")
+        expect(response.body).to include("human remains accountable")
+        expect(response.body).not_to include("comment[ai_disclosure_level]")
+      end
+    end
+
+    context "when AI disclosure is disabled" do
+      before { allow(Settings::General).to receive(:enable_ai_disclosure).and_return(false) }
+
+      it "omits the disclosure instructions" do
+        get "/llms.txt"
+
+        expect(response.body).not_to include("ai_disclosure_level")
       end
     end
   end
@@ -388,6 +515,66 @@ RSpec.describe "Pages" do
         url = Faker::Internet.url
         get "/report-abuse", headers: { referer: url }
         expect(response.body).to include(url)
+      end
+
+      it "prefills a valid multibyte UTF-8 referer sent as ASCII-8BIT and strips ?i=i" do
+        referer = "https://dev.to/user/caf\xC3\xA9?i=i".b
+        get "/report-abuse", headers: { "HTTP_REFERER" => referer }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body.encoding).to eq(Encoding::UTF_8)
+        expect(response.body).to be_valid_encoding
+        expect(response.body).to include("https://dev.to/user/café")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "ignores an ASCII-8BIT referer containing invalid UTF-8 bytes without raising Encoding::CompatibilityError" do
+        malformed_referer = "1 \xC0\xA7\xC0\xA2%2527%2522".b
+        get "/report-abuse", headers: { "HTTP_REFERER" => malformed_referer }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body.encoding).to eq(Encoding::UTF_8)
+        expect(response.body).to be_valid_encoding
+        expect(response.body).not_to include("%2527%2522")
+      end
+    end
+
+    context "when provided query parameters" do
+      it "falls back from blank reported_url to url param" do
+        url = "https://dev.to/some-post?i=i"
+        get "/report-abuse", params: { reported_url: "", url: url }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("https://dev.to/some-post")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "falls back from whitespace-only reported_url and url params to referer" do
+        valid_referer = "https://dev.to/fallback-post?i=i"
+        get "/report-abuse", params: { reported_url: "   ", url: "" }, headers: { "HTTP_REFERER" => valid_referer.b }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("https://dev.to/fallback-post")
+        expect(response.body).not_to include("?i=i")
+      end
+
+      it "ignores non-string url or billboard params without raising an error" do
+        get "/report-abuse", params: { reported_url: ["invalid"], url: { nested: "value" }, billboard: ["123"] }
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "ignores a malformed billboard param that cannot generate an admin billboard path" do
+        get "/report-abuse", params: { billboard: "." }
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "prefills the admin billboard path when a valid billboard id is provided" do
+        get "/report-abuse", params: { billboard: "42" }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(admin_billboard_path("42"))
       end
     end
   end

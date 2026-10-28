@@ -8,9 +8,21 @@ en:
     if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   favorites:
-    favorite: Favorite
-    favorited: Favorited
-    favorited_by_you: Favorited by you
+    favorite: Pick as gem
+    favorited: Picked as gem
+    favorited_by_you: Picked as gem by you
+    modal:
+      title: Gem Picked!
+      body: You've picked this as a community gem!
+      remaining_zero: You have no more gems left to give out today.
+      remaining_one: You have 1 more gem left to give out today.
+      remaining_other: You have %{count} more gems left to give out today.
+      remaining_unlimited: You have unlimited gems to give out.
+      close: Got it
+    modal_exhausted:
+      title: Out of Gems
+      body: You have no more gems left to give out today. Your allowance will refresh soon!
+      close: Got it
   core:
     add_comment: Add comment
     beta: beta
@@ -20,6 +32,7 @@ en:
     follow: Follow
     follow_back: Follow back
     following: Following
+    image_upload_server_error: A server error has occurred!
     like: Like
     loading: loading...
     reaction: Reaction
@@ -39,6 +52,14 @@ en:
     article_form_co_authors: Co-authors
     article_form_co_authors_description: Add up to 4 co-authors from %{org_name}.
     article_form_co_authors_placeholder: Add up to 4...
+    article_form_co_author_invitations_description: Invite people who follow you. They'll be credited once they accept from their notifications.
+    article_form_co_author_invitations_placeholder: Search your followers...
+    article_form_co_author_invitations_declined: 'Declined: %{names}'
+    article_form_co_author_invitation_new: Invite on save
+    article_form_co_author_invitation_pending: Pending
+    article_form_co_author_invitation_accepted: Accepted
+    article_form_co_author_invitation_edit: Edit %{name}
+    article_form_co_author_invitation_remove: Remove %{name}
     comments_preview: Preview
     comments_continue_editing: Continue editing
     survey_enter_response: Enter your response here...

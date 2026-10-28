@@ -12,16 +12,16 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         let(:user) { create(:user) }
         let(:tag) { create(:tag) }
         let(:org) { create(:organization) }
-        let(:article) { create(:article, tags: tag.name, score: 5) }
+        let(:article) { create(:article, user: user, tags: tag.name, score: 5) }
         let(:unsupported_tag) { create(:tag, supported: false) }
 
         before do
           stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
-          create(:article, tags: tag.name, score: 5)
         end
 
         context "with caching headers" do
           it "renders page and sets proper headers", :aggregate_failures do
+            article
             get "/t/#{tag.name}"
 
             renders_page
@@ -59,8 +59,24 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).to include('href="/assets/tags')
         end
 
+        it "renders stories without loading processed_html", :aggregate_failures do
+          article
+          queries = []
+          callback = lambda do |*, payload|
+            queries << payload[:sql] if payload[:sql].include?("\"articles\".\"title\"")
+          end
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get "/t/#{tag.name}"
+          end
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(article.title))
+          expect(queries).not_to be_empty
+          expect(queries.grep(/processed_html/)).to be_empty
+        end
+
         it "renders page when tag is not supported but has at least one approved article" do
-          create(:article, :past, published: true, approved: true, tags: unsupported_tag,
+          create(:article, :past, user: user, published: true, approved: true, tags: unsupported_tag,
                                   past_published_at: 5.years.ago)
 
           get "/t/#{unsupported_tag.name}/top/week"
@@ -78,13 +94,12 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         end
 
         it "returns not found if no published posts and tag not supported" do
-          Article.destroy_all
-          tag.update_column(:supported, false)
-          expect { get "/t/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
+          expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it "renders not found if there are approved but scheduled posts" do
-          create(:article, published: true, approved: true, tags: unsupported_tag, published_at: 1.hour.from_now)
+          create(:article, user: user, published: true, approved: true, tags: unsupported_tag,
+                           published_at: 1.hour.from_now)
           expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
@@ -98,8 +113,20 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
         end
 
+        it "does not fetch or count published articles for unsupported tags", :aggregate_failures do
+          create(:article, user: user, published: true, approved: true, tags: unsupported_tag, score: 5)
+          allow(Rails.cache).to receive(:fetch).and_call_original
+
+          get "/t/#{unsupported_tag.name}"
+
+          expect(response).to have_http_status(:ok)
+          expect(Rails.cache).not_to have_received(:fetch).with(
+            "#{unsupported_tag.cache_key}/article-cached-tagged-count",
+            { expires_in: 72.hours },
+          )
+        end
+
         it "renders normal page if no articles but tag is supported" do
-          Article.destroy_all
           expect { get "/t/#{tag.name}" }.not_to raise_error
         end
 
@@ -116,14 +143,14 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
 
         it "displays articles with score > -20 on top/week", :aggregate_failures do
           article
-          bad_article = create(:article, tags: tag.name, score: -30)
+          bad_article = create(:article, user: user, tags: tag.name, score: -30)
           get "/t/#{tag.name}/top/week"
           expect(response.body).to include(CGI.escapeHTML(article.title))
           expect(response.body).not_to include(CGI.escapeHTML(bad_article.title))
         end
 
         it "includes articles older than 5 years on top/infinity" do
-          ancient_article = create(:article, :past, tags: tag.name, score: 500,
+          ancient_article = create(:article, :past, user: user, tags: tag.name, score: 500,
                                                     past_published_at: 6.years.ago)
           get "/t/#{tag.name}/top/infinity"
           expect(response.body).to include(CGI.escapeHTML(ancient_article.title))
@@ -152,19 +179,33 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         end
 
         context "when the tag has moderators" do
-          let(:six_badge_mod) { create(:user, badge_achievements_count: 6) }
-          let(:three_badge_mod) { create(:user, badge_achievements_count: 3) }
-          let(:ten_badge_mod) { create(:user, badge_achievements_count: 10) }
-          let(:two_badge_mod) { create(:user, badge_achievements_count: 2) }
-          let(:eight_badge_mod) { create(:user, badge_achievements_count: 8) }
-          let(:mods) { [six_badge_mod, three_badge_mod, ten_badge_mod, two_badge_mod, eight_badge_mod] }
+          let(:mod_user) { create(:user, username: "tag_mod_alpha") }
+          let(:new_mod_user) { create(:user, username: "tag_mod_beta") }
 
           before do
-            mods.each { |mod| mod.add_role(:tag_moderator, tag) }
+            sign_in user
+            TagModerators::Add.call(mod_user.id, tag.id)
           end
 
-          def nth_avatar(user_position)
-            ".widget-user-pic:nth-child(#{user_position})"
+          it "updates the cached sidebar when a new moderator is added", :aggregate_failures do
+            get "/t/#{tag.name}"
+            expect(response.body).to include(mod_user.username)
+            expect(response.body).not_to include(new_mod_user.username)
+
+            TagModerators::Add.call(new_mod_user.id, tag.id)
+
+            get "/t/#{tag.name}"
+            expect(response.body).to include(new_mod_user.username)
+          end
+
+          it "updates the cached sidebar when a moderator is removed", :aggregate_failures do
+            get "/t/#{tag.name}"
+            expect(response.body).to include(mod_user.username)
+
+            TagModerators::Remove.call(mod_user, tag)
+
+            get "/t/#{tag.name}"
+            expect(response.body).not_to include(mod_user.username)
           end
         end
 
@@ -199,10 +240,17 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
           end
 
-          it "does not render pagination even with many posts" do
-            create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+          it "does not render pagination even with many posts", :aggregate_failures do
+            create_list(:article, 6, user: user, featured: true, tags: [tag.name], score: 20)
+            allow(Rails.cache).to receive(:fetch).and_call_original
+
             get "/t/#{tag.name}"
+
             expect(response.body).not_to include('<span class="olderposts-pagenumber">')
+            expect(Rails.cache).not_to have_received(:fetch).with(
+              "#{tag.cache_key}/article-cached-tagged-count",
+              { expires_in: 72.hours },
+            )
           end
 
           it "includes a link to Relevant", :aggregate_failures do
@@ -212,13 +260,60 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expected_tag = "<a data-text=\"Relevant\" href=\"/t/#{tag.name}\""
             expect(response.body).to include(expected_tag)
           end
+
+          it "queries active discuss threads for the sidebar on page 1" do
+            discuss_article = create(:article, user: user, tags: "#{tag.name}, discuss", score: 10)
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(Articles::ActiveThreadsQuery).to have_received(:call).with(
+              tags: [tag.name, "discuss"],
+              time_ago: nil,
+            ).once
+            expect(response.body).to include(CGI.escapeHTML(discuss_article.title))
+          end
         end
 
         context "without user signed in" do
-          let(:tag) { create(:tag) }
+          it "does not execute Articles::ActiveThreadsQuery for signed-out requests" do
+            allow(Articles::ActiveThreadsQuery).to receive(:call).and_call_original
+
+            get "/t/#{tag.name}"
+
+            expect(response).to have_http_status(:ok)
+            expect(Articles::ActiveThreadsQuery).not_to have_received(:call)
+          end
+
+          it "does not query organizations once per org story", :aggregate_failures do
+            count_org_queries = lambda do
+              org_queries = 0
+              callback = lambda do |*, payload|
+                org_queries += 1 if payload[:sql].include?("FROM \"organizations\"")
+              end
+              ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+                get "/t/#{tag.name}"
+              end
+              org_queries
+            end
+
+            create_list(:article, 2, user: user, organization: org, tags: tag.name, score: 5)
+            # Warm-up render: the first request pays one-off lookups unrelated to stories.
+            count_org_queries.call
+            baseline = count_org_queries.call
+            expect(response).to have_http_status(:ok)
+
+            create_list(:article, 3, user: user, organization: org, tags: tag.name, score: 5)
+            3.times { create(:article, user: user, organization: create(:organization), tags: tag.name, score: 5) }
+
+            expect(count_org_queries.call).to be <= baseline
+            expect(response).to have_http_status(:ok)
+            expect(response.body).to include(CGI.escapeHTML(org.name))
+          end
 
           it "renders tag index properly with many posts", :aggregate_failures do
-            create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+            stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 2)
+            create_list(:article, 3, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}"
 
             shows_sign_in_notice
@@ -252,14 +347,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include('<span class="olderposts-pagenumber">')
           end
 
-          it "does not include sidebar for page tag" do
-            create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
-            get "/t/#{tag.name}/page/2"
-            expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
-          end
-
           it "renders proper page 1", :aggregate_failures do
-            create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}/page/1"
 
             renders_title(tag)
@@ -274,10 +362,12 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include("<link rel=\"canonical\" href=\"http://forem.test/t/#{tag.name}\" />")
           end
 
-          it "renders proper page 2", :aggregate_failures do
-            create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+          it "renders proper page 2 without right sidebar", :aggregate_failures do
+            stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 2)
+            create_list(:article, 3, user: user, featured: true, tags: [tag.name], score: 20)
             get "/t/#{tag.name}/page/2"
 
+            expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
             renders_page_2_title(tag)
             renders_page_2_canonical_url(tag)
           end

@@ -192,6 +192,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).not_to include("subforem_id IN") # Added expectation
         expect(sql).not_to include("articles.type_of = 1 AND articles.user_id IN")
       end
+
+      it "does not query RecommendedArticlesList when precomputed_selections_weight is zero" do
+        expect(RecommendedArticlesList).not_to receive(:where)
+        feed_config.score_sql(user)
+      end
+
+      it "does not query user languages when language_match_weight is zero" do
+        feed_config.language_match_weight = 0.0
+        expect(user).not_to receive(:languages)
+        feed_config.score_sql(user)
+      end
     end
 
     context "when all base weights are zero" do
@@ -236,6 +247,7 @@ RSpec.describe FeedConfig, type: :model do
         feed_config.recent_article_suppression_rate = 2.0
         feed_config.published_today_weight         = 3.0
         feed_config.featured_weight                = 4.0
+        feed_config.favorited_weight               = 4.5
         feed_config.clickbait_score_weight         = 5.0
         feed_config.compellingness_score_weight    = 6.0
         feed_config.language_match_weight          = 7.0
@@ -277,6 +289,11 @@ RSpec.describe FeedConfig, type: :model do
       it "includes the featured weight" do
         sql = feed_config.score_sql(user)
         expect(sql).to include("CASE WHEN articles.featured = TRUE THEN 4.0")
+      end
+
+      it "includes the favorited weight" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.favorited_by_user_id IS NOT NULL THEN 4.5")
       end
 
       it "includes the status weight" do
@@ -369,6 +386,7 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.recent_article_suppression_rate = 13.0
       feed_config.published_today_weight         = 14.0
       feed_config.featured_weight                = 15.0
+      feed_config.favorited_weight               = 15.2
       feed_config.status_weight                  = 15.5
       feed_config.clickbait_score_weight         = 16.0
       feed_config.compellingness_score_weight    = 17.0
@@ -378,6 +396,8 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.subforem_follow_weight        = 21.0 # Added new weight
       feed_config.recent_page_views_shuffle_weight = 22.0
       feed_config.follow_status_weight          = 23.0
+      feed_config.ai_disclosure_matching_weight = 24.0
+      feed_config.autonomous_ai_penalty_weight  = 25.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -409,6 +429,7 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_article_suppression_rate).to eq(13.0 * 1.1)
       expect(clone.published_today_weight).to eq(14.0 * 1.1)
       expect(clone.featured_weight).to eq(15.0 * 1.1)
+      expect(clone.favorited_weight).to eq(15.2 * 1.1)
       expect(clone.status_weight).to eq(15.5 * 1.1)
       expect(clone.clickbait_score_weight).to eq(16.0 * 1.1)
       expect(clone.compellingness_score_weight).to eq(17.0 * 1.1)
@@ -418,6 +439,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.subforem_follow_weight).to eq(21.0 * 1.1) # Added expectation
       expect(clone.recent_page_views_shuffle_weight).to eq(22.0 * 1.1)
       expect(clone.follow_status_weight).to eq(23.0 * 1.1)
+      expect(clone.ai_disclosure_matching_weight).to eq(24.0 * 1.1)
+      expect(clone.autonomous_ai_penalty_weight).to eq(25.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -439,6 +462,7 @@ RSpec.describe FeedConfig, type: :model do
         "general_past_day_bonus_weight",
         "recently_active_past_day_bonus_weight",
         "featured_weight",
+        "favorited_weight",
         "status_weight",
         "clickbait_score_weight",
         "compellingness_score_weight",
@@ -446,6 +470,8 @@ RSpec.describe FeedConfig, type: :model do
         "subforem_follow_weight", # Added new weight to check
         "recent_page_views_shuffle_weight",
         "follow_status_weight",
+        "ai_disclosure_matching_weight",
+        "autonomous_ai_penalty_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",
@@ -457,7 +483,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(feed_config.reload.attributes.slice(*original_attrs.keys)).to eq(original_attrs)
     end
 
-    it "adjusts tag count ranges with +/- offsets and resets impressions" do
+    it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
+      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -466,12 +493,424 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
+      expect(clone.feed_success_score).to eq(0.0)
+      expect(clone.archived).to be(false)
+    end
+
+    it "resets archived to false even if cloned from an archived config" do
+      feed_config.update!(archived: true)
+      feed_config.create_slightly_modified_clone!
+      clone = described_class.last
+      expect(clone.archived).to be(false)
+    end
+
+    it "never generates an 'all' targeting_bucket when cloning an 'all' config" do
+      feed_config.update!(targeting_bucket: described_class::BUCKET_ALL)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.targeting_bucket).to eq(described_class::BUCKET_FEED_CASUAL_USER)
+      expect(clone.targeting_bucket).not_to eq(described_class::BUCKET_ALL)
+    end
+
+    it "preserves a specific parent targeting_bucket when no user or context is passed" do
+      feed_config.update!(targeting_bucket: described_class::BUCKET_DIGEST)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.targeting_bucket).to eq(described_class::BUCKET_DIGEST)
+    end
+
+    it "assigns targeting_bucket based on context_type and user when cloning" do
+      new_user = create(:user, registered_at: 2.days.ago)
+      casual_user = create(:user, registered_at: 30.days.ago)
+
+      digest_clone = feed_config.create_slightly_modified_clone!(
+        user: new_user,
+        context_type: FeedEvent::CONTEXT_TYPE_EMAIL,
+      )
+      expect(digest_clone.targeting_bucket).to eq(described_class::BUCKET_DIGEST)
+
+      new_user_clone = feed_config.create_slightly_modified_clone!(
+        user: new_user,
+        context_type: FeedEvent::CONTEXT_TYPE_HOME,
+      )
+      expect(new_user_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_NEW_USER)
+
+       casual_clone = feed_config.create_slightly_modified_clone!(
+        user: casual_user,
+        context_type: FeedEvent::CONTEXT_TYPE_HOME,
+      )
+      expect(casual_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "keeps semantic_candidate_limit unchanged when semantic_similarity_weight is 0.0" do
+      feed_config.update!(semantic_similarity_weight: 0.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(200)
+    end
+
+    it "mutates semantic_candidate_limit by +/- 10% clamped to 100..1000 when semantic_similarity_weight > 0" do
+      feed_config.update!(semantic_similarity_weight: 10.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(220)
+
+      feed_config.update!(semantic_candidate_limit: 960)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.semantic_candidate_limit).to eq(described_class::MAX_SEMANTIC_CANDIDATE_LIMIT)
+
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(semantic_candidate_limit: 105)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.semantic_candidate_limit).to eq(described_class::MIN_SEMANTIC_CANDIDATE_LIMIT)
+    end
+  end
+
+  describe "validations and targeting_bucket" do
+    it "defaults targeting_bucket to 'all' and validates inclusion in TARGETING_BUCKETS" do
+      config = described_class.new
+      expect(config.targeting_bucket).to eq(described_class::BUCKET_ALL)
+      expect(config).to be_valid
+
+      described_class::TARGETING_BUCKETS.each do |bucket|
+        config.targeting_bucket = bucket
+        expect(config).to be_valid
+      end
+
+      config.targeting_bucket = "invalid_bucket"
+      expect(config).not_to be_valid
+    end
+
+    it "defaults semantic_candidate_limit to 200 and validates integer range 100..1000" do
+      config = described_class.new
+      expect(config.semantic_candidate_limit).to eq(described_class::DEFAULT_SEMANTIC_CANDIDATE_LIMIT)
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MIN_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MAX_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = 99
+      expect(config).not_to be_valid
+
+      config.semantic_candidate_limit = 1001
+      expect(config).not_to be_valid
+    end
+  end
+
+  describe ".targeting_bucket_for" do
+    let(:article) { create(:article) }
+
+    it "returns digest when context_type is email or digest regardless of user type" do
+      new_user = create(:user, registered_at: 1.day.ago)
+      expect(described_class.targeting_bucket_for(new_user, context_type: "email"))
+        .to eq(described_class::BUCKET_DIGEST)
+      expect(described_class.targeting_bucket_for(new_user, context_type: "digest"))
+        .to eq(described_class::BUCKET_DIGEST)
+    end
+
+    it "returns feed_new_user for users who signed up in the past week without active/power thresholds" do
+      new_user = create(:user, registered_at: 3.days.ago)
+      expect(described_class.targeting_bucket_for(new_user, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_NEW_USER)
+    end
+
+    it "returns feed_casual_user for users who signed up over a week ago with < 3 active days" do
+      casual_user = create(:user, registered_at: 20.days.ago)
+      create(
+        :user_activity,
+        user: casual_user,
+        recently_viewed_articles: [[article.id, 1.day.ago, 30], [article.id, 2.days.ago, 30]],
+      )
+
+      expect(PageView).not_to receive(:where)
+      expect(described_class.targeting_bucket_for(casual_user, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "returns feed_active_user when user has pageviews on at least 3 distinct calendar days in the past week" do
+      active_user = create(:user, registered_at: 30.days.ago)
+      views = [1.day.ago, 2.days.ago, 4.days.ago].map { |ts| [article.id, ts, 30] }
+      create(:user_activity, user: active_user, recently_viewed_articles: views)
+
+      expect(PageView).not_to receive(:where)
+      expect(described_class.targeting_bucket_for(active_user, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_ACTIVE_USER)
+    end
+
+    it "does not classify as feed_active_user when 3 pageviews occur on fewer than 3 distinct days" do
+      same_day_user = create(:user, registered_at: 30.days.ago)
+      day_time = 2.days.ago.beginning_of_day + 10.hours
+      views = Array.new(3) { |i| [article.id, day_time + i.minutes, 30] }
+      create(:user_activity, user: same_day_user, recently_viewed_articles: views)
+
+      expect(described_class.targeting_bucket_for(same_day_user, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "returns feed_power_user when user has commented on at least 4 distinct calendar days in the past week" do
+      power_user = create(:user, registered_at: 30.days.ago)
+      [1.day.ago, 2.days.ago, 3.days.ago, 5.days.ago].each do |timestamp|
+        create(:comment, user: power_user, commentable: article, created_at: timestamp)
+      end
+      power_user.update_column(:last_comment_at, 1.day.ago)
+
+      expect(described_class.targeting_bucket_for(power_user, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_POWER_USER)
+    end
+
+    it "does not classify as feed_power_user when 4 comments occur on fewer than 4 distinct days" do
+      commenter = create(:user, registered_at: 30.days.ago)
+      day_time = 1.day.ago.beginning_of_day + 12.hours
+      4.times do |i|
+        create(:comment, user: commenter, commentable: article, created_at: day_time + i.minutes)
+      end
+      commenter.update_column(:last_comment_at, day_time)
+
+      expect(described_class.targeting_bucket_for(commenter, context_type: "home"))
+        .to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "prioritizes feed_power_user > feed_active_user > feed_new_user > feed_casual_user" do
+      active_new_user = create(:user, registered_at: 2.days.ago)
+      today = Time.current
+      views = [today, 1.day.ago, 2.days.ago].map { |ts| [article.id, ts, 30] }
+      create(:user_activity, user: active_new_user, recently_viewed_articles: views)
+      expect(described_class.targeting_bucket_for(active_new_user)).to eq(described_class::BUCKET_FEED_ACTIVE_USER)
+
+      [today, 1.day.ago, 2.days.ago, 3.days.ago].each do |timestamp|
+        create(:comment, user: active_new_user, commentable: article, created_at: timestamp)
+      end
+      active_new_user.update_column(:last_comment_at, today)
+      expect(described_class.targeting_bucket_for(active_new_user)).to eq(described_class::BUCKET_FEED_POWER_USER)
+    end
+  end
+
+  describe "scopes" do
+    let!(:active_config) { create(:feed_config, archived: false) }
+    let!(:archived_config) { create(:feed_config, archived: true) }
+
+    it "filters active and archived configs" do
+      expect(described_class.active).to contain_exactly(active_config)
+      expect(described_class.archived).to contain_exactly(archived_config)
+    end
+  end
+
+  describe ".archive_stale_configs!" do
+    before do
+      stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 3)
+    end
+
+    it "archives configs outside the top limit that are older than 2 days" do
+      top1 = create(:feed_config, feed_success_score: 100.0, created_at: 5.days.ago)
+      top2 = create(:feed_config, feed_success_score: 90.0, created_at: 5.days.ago)
+      top3 = create(:feed_config, feed_success_score: 80.0, created_at: 1.day.ago)
+      outside_top_old = create(:feed_config, feed_success_score: 70.0, created_at: 3.days.ago)
+      outside_top_recent = create(:feed_config, feed_success_score: 10.0, created_at: 1.day.ago)
+
+      described_class.archive_stale_configs!
+
+      expect(top1.reload.archived).to be(false)
+      expect(top2.reload.archived).to be(false)
+      expect(top3.reload.archived).to be(false)
+      expect(outside_top_old.reload.archived).to be(true)
+      expect(outside_top_recent.reload.archived).to be(false)
+    end
+
+    it "does not unarchive already archived configs and excludes them from the top active limit" do
+      archived_top = create(:feed_config, feed_success_score: 100.0, created_at: 5.days.ago, archived: true)
+      active_top1 = create(:feed_config, feed_success_score: 90.0, created_at: 5.days.ago)
+      active_top2 = create(:feed_config, feed_success_score: 80.0, created_at: 5.days.ago)
+      active_top3 = create(:feed_config, feed_success_score: 70.0, created_at: 5.days.ago)
+      outside_old = create(:feed_config, feed_success_score: 50.0, created_at: 5.days.ago)
+
+      described_class.archive_stale_configs!
+
+      expect(archived_top.reload.archived).to be(true)
+      expect(active_top1.reload.archived).to be(false)
+      expect(active_top2.reload.archived).to be(false)
+      expect(active_top3.reload.archived).to be(false)
+      expect(outside_old.reload.archived).to be(true)
+    end
+
+    it "retains up to ARCHIVE_TOP_LIMIT configs independently per targeting_bucket" do
+      3.times do |i|
+        create(:feed_config, targeting_bucket: described_class::BUCKET_FEED_ACTIVE_USER,
+                             feed_success_score: 100.0 - i, created_at: 5.days.ago)
+      end
+      stale_active = create(:feed_config, targeting_bucket: described_class::BUCKET_FEED_ACTIVE_USER,
+                                          feed_success_score: 10.0, created_at: 5.days.ago)
+      digest_top = create(:feed_config, targeting_bucket: described_class::BUCKET_DIGEST,
+                                        feed_success_score: 1.0, created_at: 5.days.ago)
+
+      described_class.archive_stale_configs!
+
+      expect(stale_active.reload.archived).to be(true)
+      expect(digest_top.reload.archived).to be(false)
+    end
+  end
+
+  describe ".select_for_feed" do
+    let!(:proven_top_config) do
+      create(:feed_config, feed_success_score: 1.5, feed_impressions_count: 500, created_at: 5.days.ago)
+    end
+    let!(:new_config) do
+      create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 10, created_at: 1.hour.ago)
+    end
+
+    it "returns the preferred feed config when preferred_id matches" do
+      expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
+    end
+
+    it "ignores archived configs when preferred_id or top selection is evaluated" do
+      archived_preferred = create(
+        :feed_config,
+        archived: true,
+        feed_success_score: 999.0,
+        feed_impressions_count: 500,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed(preferred_id: archived_preferred.id)).to eq(proven_top_config)
+    end
+
+    it "selects uniformly from the newest low-impression pool when roll is < 20" do
+      allow(described_class).to receive(:rand).with(100).and_return(10)
+
+      expect(described_class.select_for_feed).to eq(new_config)
+    end
+
+    it "selects a random feed config when roll is between 20 and 24" do
+      allow(described_class).to receive(:rand).with(100).and_return(22)
+
+      expect([proven_top_config, new_config]).to include(described_class.select_for_feed)
+    end
+
+    it "selects from proven top performers (>= LOW_IMPRESSION_COUNT) when roll is >= 25" do
+      unproven_clone = create(
+        :feed_config,
+        feed_success_score: 9.9,
+        feed_impressions_count: 0,
+        created_at: 1.minute.ago,
+      )
+      noisy_low_impression_config = create(
+        :feed_config,
+        feed_success_score: 12.0,
+        feed_impressions_count: 15,
+        created_at: 2.minutes.ago,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(proven_top_config)
+      expect(selected).not_to eq(unproven_clone)
+      expect(selected).not_to eq(noisy_low_impression_config)
+    end
+
+    it "falls back to configs with > 0 impressions when no config has reached LOW_IMPRESSION_COUNT" do
+      proven_top_config.destroy!
+      unproven_clone = create(:feed_config, feed_success_score: 9.9, feed_impressions_count: 0)
+      low_impression_winner = create(:feed_config, feed_success_score: 2.5, feed_impressions_count: 15)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(low_impression_winner)
+      expect(selected).not_to eq(unproven_clone)
+    end
+
+    it "falls back to score order when all configs have 0 impressions, and creates one when none exist" do
+      described_class.delete_all
+      zero_imp_config = create(:feed_config, feed_success_score: 0.5, feed_impressions_count: 0)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed).to eq(zero_imp_config)
+
+      described_class.delete_all
+      expect { described_class.select_for_feed }.to change(described_class, :count).from(0).to(1)
+    end
+
+    context "with targeting_bucket segmentation" do
+      let!(:digest_config) do
+        create(:feed_config, targeting_bucket: described_class::BUCKET_DIGEST,
+                             feed_success_score: 5.0, feed_impressions_count: 100)
+      end
+      let!(:power_config) do
+        create(:feed_config, targeting_bucket: described_class::BUCKET_FEED_POWER_USER,
+                             feed_success_score: 50.0, feed_impressions_count: 500)
+      end
+
+      it "selects configs matching the resolved bucket and never selects other specific buckets" do
+        allow(described_class).to receive(:rand).with(100).and_return(50)
+        allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+        selected_digest = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        expect(selected_digest).to eq(digest_config)
+
+        selected_power = described_class.select_for_feed(targeting_bucket: described_class::BUCKET_FEED_POWER_USER)
+        expect(selected_power).to eq(power_config)
+      end
+
+      it "falls back to 'all' configs when a specific bucket has no configs yet" do
+        allow(described_class).to receive(:rand).with(100).and_return(50)
+        allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+        new_user = create(:user, registered_at: 1.day.ago)
+        selected = described_class.select_for_feed(user: new_user, context_type: FeedEvent::CONTEXT_TYPE_HOME)
+        expect(selected).to eq(proven_top_config)
+        expect(selected.targeting_bucket).to eq(described_class::BUCKET_ALL)
+      end
+
+      it "creates a config in the target bucket when no matching or 'all' configs exist" do
+        described_class.delete_all
+        created = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        expect(created.targeting_bucket).to eq(described_class::BUCKET_DIGEST)
+      end
+
+      it "prioritizes low-impression bucket configs in a single query when roll < 20" do
+        low_imp_digest = create(
+          :feed_config,
+          targeting_bucket: described_class::BUCKET_DIGEST,
+          feed_impressions_count: 5,
+          created_at: 1.minute.ago,
+        )
+        allow(described_class).to receive(:rand).with(100).and_return(10)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(low_imp_digest)
+        expect(queries.size).to eq(1)
+      end
+
+      it "prioritizes bucket configs over 'all' configs in a single query when roll is 20..24" do
+        allow(described_class).to receive(:rand).with(100).and_return(22)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(digest_config)
+        expect(queries.size).to eq(1)
+      end
     end
   end
 
   describe "#score_sql" do
     let(:user) { create(:user) }
-    let(:feed_config) { FeedConfig.new(semantic_similarity_weight: 10.0) }
+    let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
     let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
 
     it "includes semantic embedding calculation when activity store has a vector" do
@@ -482,6 +921,151 @@ RSpec.describe FeedConfig, type: :model do
       sql = feed_config.score_sql(user)
       expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
       expect(sql).to include("* 10.0")
+    end
+
+    context "when ai_disclosure_matching_weight is positive" do
+      before { feed_config.ai_disclosure_matching_weight = 12.0 }
+
+      context "when user has minimize_ai feed preference" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "scales AI disclosure penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 WHEN articles.ai_disclosure_level = 5 THEN -24.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has hide_fully_autonomous feed preference" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "scales some_ai penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has show_all feed preference" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "does not include user AI disclosure penalty terms" do
+          sql = feed_config.score_sql(user)
+          expect(sql).not_to include("articles.ai_disclosure_level = 3")
+        end
+      end
+    end
+
+    context "when ai_disclosure_matching_weight is 0" do
+      before do
+        feed_config.ai_disclosure_matching_weight = 0.0
+        user.setting.update(feed_ai_preference: :minimize_ai)
+      end
+
+      it "does not include AI disclosure matching penalty terms" do
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("articles.ai_disclosure_level = 3")
+      end
+    end
+
+    context "when autonomous_ai_penalty_weight is positive" do
+      before { feed_config.autonomous_ai_penalty_weight = 25.0 }
+
+      it "includes the autonomous AI penalty weight term" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
+      end
+    end
+
+    context "when comparing native Rust kernel with legacy_score_sql" do
+      it "produces identical SQL across all scoring weights and activity signals" do
+        now = Time.utc(2026, 4, 18, 12, 0, 0)
+        allow(Time).to receive(:current).and_return(now)
+
+        user_activity = create(
+          :user_activity,
+          user: user,
+          recently_viewed_articles: [[101, (now - 2.hours).iso8601, 45], [102, (now - 2.days).iso8601, 30]],
+          recent_users: [10],
+          recent_organizations: [100],
+          recent_tags: [["ruby", 5.0], ["rust", 3.0]],
+          alltime_tags: %w[webdev postgres],
+          recent_labels: ["featured-label"],
+          recent_subforems: [1, 2],
+          alltime_users: [10, 20],
+          alltime_organizations: [100, 200],
+          alltime_subforems: [1, 2, 3],
+        )
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        user.setting.update(feed_ai_preference: :minimize_ai)
+
+        full_config = described_class.new(
+          feed_success_weight: 1.25,
+          comment_score_weight: 2.5,
+          score_weight: 3.0,
+          organization_follow_weight: 4.0,
+          user_follow_weight: 5.0,
+          tag_follow_weight: 6.0,
+          label_match_weight: 3.5,
+          recency_weight: 7.0,
+          comment_recency_weight: 8.0,
+          lookback_window_weight: 9.0,
+          precomputed_selections_weight: 0.0,
+          subforem_follow_weight: 4.5,
+          recent_subforem_weight: 2.0,
+          recent_article_suppression_rate: 10.0,
+          published_today_weight: 3.0,
+          general_past_day_bonus_weight: 2.0,
+          recently_active_past_day_bonus_weight: 1.5,
+          featured_weight: 4.0,
+          favorited_weight: 4.5,
+          status_weight: 2.0,
+          follow_status_weight: 3.0,
+          clickbait_score_weight: 5.0,
+          compellingness_score_weight: 6.0,
+          language_match_weight: 7.0,
+          semantic_similarity_weight: 10.0,
+          randomness_weight: 8.0,
+          ai_disclosure_matching_weight: 12.0,
+          autonomous_ai_penalty_weight: 25.0,
+          recent_tag_count_min: 2,
+          recent_tag_count_max: 2,
+          all_time_tag_count_min: 2,
+          all_time_tag_count_max: 2,
+        )
+        allow(full_config).to receive(:rand).with(2..2).and_return(2)
+        allow(full_config).to receive(:rand).with(10_000).and_return(424)
+
+        native_sql = full_config.score_sql(user)
+        legacy_sql = full_config.__send__(:legacy_score_sql, user)
+
+        expect(native_sql).to eq(legacy_sql)
+
+        native_base_sql = full_config.base_score_sql(user)
+        legacy_base_sql = full_config.__send__(:legacy_score_sql, user, include_semantic: false)
+
+        expect(native_base_sql).to eq(legacy_base_sql)
+        expect(native_base_sql).not_to include("semantic_embedding")
+        expect(full_config.semantic_similarity_active?(user)).to be(true)
+        expect(full_config.semantic_similarity_sql(user)).to include(
+          "(1 - (articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]')) * 10.0",
+        )
+      end
+    end
+
+    describe "#base_score_sql, #semantic_similarity_active?, and #semantic_similarity_sql" do
+      it "returns false and '0' when user has no interest_embedding or weight is zero" do
+        expect(feed_config.semantic_similarity_active?(user)).to be(false)
+        expect(feed_config.semantic_similarity_sql(user)).to eq("0")
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        expect(feed_config.semantic_similarity_active?(user)).to be(true)
+
+        zero_weight_config = described_class.new(semantic_similarity_weight: 0.0, score_weight: 2.0)
+        expect(zero_weight_config.semantic_similarity_active?(user)).to be(false)
+        expect(zero_weight_config.semantic_similarity_sql(user)).to eq("0")
+        expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
+        expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
+      end
     end
   end
 end

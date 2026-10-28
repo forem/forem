@@ -275,12 +275,26 @@ RSpec.describe "Calendar" do
                        end_time: Date.new(2026, 3, 18).in_time_zone + 17.hours)
       end
 
+      let!(:overlapping_event) do
+        create(:event, title: "Overlapping Conference", published: true,
+                       start_time: Date.new(2026, 3, 14).in_time_zone + 9.hours,
+                       end_time: Date.new(2026, 3, 20).in_time_zone + 17.hours)
+      end
+
       it "dots every day it spans" do
         get calendar_path(start: "2026-03-01", end: "2026-03-31")
 
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>10</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>14</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>18</)
+      end
+
+      it "renders each overlapping day once in the calendar grid" do
+        get calendar_path(start: "2026-03-01", end: "2026-03-31")
+
+        march_14_cell = Nokogiri::HTML(response.body).css('[data-calendar-day="2026-03-14"]')
+        expect(march_14_cell.size).to eq(1)
+        expect(march_14_cell.first["class"]).to include("calendar__day--has-event")
       end
 
       it "lists the event when a day within its span is selected" do
@@ -322,6 +336,51 @@ RSpec.describe "Calendar" do
         expect(response.body).to include('name="end"')
         expect(response.body).to include('value="2026-03-10"')
         expect(response.body).to include('value="2026-03-12"')
+      end
+    end
+
+    context "with query efficiency" do
+      it "skips the agenda and signup queries when no event days fall in the in-grid range" do
+        login_as(create(:user))
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path(start: "2025-01-15", end: "2025-01-15")
+        end
+
+        event_queries = queries.grep(/FROM "events"/)
+        expect(event_queries.size).to eq(1)
+        expect(queries.grep(/FROM "event_signups"/)).to be_empty
+      end
+
+      it "still queries the agenda when the selected range is outside the displayed month grid" do
+        march_event = create(:event, title: "March Event Viewed From April", published: true,
+                                     start_time: Date.new(2026, 3, 10).in_time_zone + 9.hours,
+                                     end_time: Date.new(2026, 3, 10).in_time_zone + 11.hours)
+
+        get calendar_path(start: "2026-03-10", end: "2026-03-12", month: "2026-04")
+
+        expect(response.body).to include(march_event.title)
+      end
+
+      it "selects only agenda columns without hydrating body_markdown or processed_html" do
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        agenda_query = queries.grep(/FROM "events".*ORDER BY/m).first
+        expect(agenda_query).to be_present
+        expect(agenda_query).not_to include('"events".*')
+        expect(agenda_query).not_to include("body_markdown")
+        expect(agenda_query).not_to include("processed_html")
       end
     end
   end

@@ -36,6 +36,18 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
       described_class.call(feed_events_data)
       expect(FeedEvent).to have_received(:bulk_update_counters_by_article_id).with(match_array(articles.map(&:id)))
     end
+
+    it "calls bulk_update_counters_by_feed_config_id for feed_config_ids" do
+      feed_config = create(:feed_config)
+      events_with_config = feed_events_data.map { |event| event.merge(feed_config_id: feed_config.id) }
+      allow(FeedEvent).to receive(:bulk_update_counters_by_feed_config_id)
+
+      described_class.call(events_with_config)
+
+      expect(FeedEvent).to have_received(:bulk_update_counters_by_feed_config_id).with(
+        Array.new(articles.size, feed_config.id),
+      )
+    end
   end
 
   context "when there are more than 5 events" do
@@ -103,17 +115,18 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
 
   context "when there is only one valid item in the list" do
     let(:article) { create(:article) }
+    let(:feed_config) { create(:feed_config) }
     let(:feed_event_data) do
       [
         feed_event(article: article, user: user, category: :click, context_type: "foobar"),
-        feed_event(article: article, user: second_user, category: :impression),
+        feed_event(article: article, user: second_user, category: :impression, feed_config_id: feed_config.id),
       ]
     end
 
-    it "handles it appropriately" do
+    it "handles it appropriately and preserves feed_config_id" do
       expect { described_class.call(feed_event_data) }.to change(FeedEvent, :count).by(1)
-      expect(FeedEvent.pluck(:article_id, :user_id, :category)).to contain_exactly(
-        [article.id, second_user.id, "impression"],
+      expect(FeedEvent.pluck(:article_id, :user_id, :category, :feed_config_id)).to contain_exactly(
+        [article.id, second_user.id, "impression", feed_config.id],
       )
     end
   end

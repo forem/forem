@@ -16,7 +16,15 @@ module Api
       achievement = BadgeAchievement.new(badge_achievement_params)
 
       if achievement.save
+        payload = {
+          "action" => "api_badge_achievement_create", "badge_achievement_id" => achievement.id,
+          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id,
+          "target_user_id" => achievement.user_id
+        }
+        Audit::Logger.log(:admin_api, @user, payload)
         render json: achievement, status: :created
+      elsif (existing = existing_achievement_for(achievement))
+        render json: { errors: achievement.errors.full_messages, achievement_id: existing.id }, status: :conflict
       else
         render json: { errors: achievement.errors.full_messages }, status: :unprocessable_entity
       end
@@ -25,6 +33,14 @@ module Api
     def destroy
       achievement = BadgeAchievement.find(params[:id])
       achievement.destroy
+      if achievement.destroyed?
+        payload = {
+          "action" => "api_badge_achievement_destroy", "badge_achievement_id" => achievement.id,
+          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id,
+          "target_user_id" => achievement.user_id
+        }
+        Audit::Logger.log(:admin_api, @user, payload)
+      end
       head :no_content
     end
 
@@ -35,8 +51,15 @@ module Api
         :user_id,
         :badge_id,
         :rewarding_context_message_markdown,
-        :include_default_description
+        :include_default_description,
+        metadata: {},
       )
+    end
+
+    def existing_achievement_for(achievement)
+      return unless achievement.errors.of_kind?(:badge_id, :taken)
+
+      BadgeAchievement.find_by(user_id: achievement.user_id, badge_id: achievement.badge_id)
     end
 
     def require_admin

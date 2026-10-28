@@ -1,0 +1,12 @@
+---
+fr:
+  views:
+    events:
+      challenge:
+        upcoming: À VENIR
+        starts_on: "Commence le %{date}"
+      meta:
+        title: Événements à venir
+        description: Découvrez les événements virtuels, défis, streams et hackathons à venir.
+      view_on_calendar: Voir sur le calendrier
+      no_events: Aucun événement à venir n'est programmé pour le moment. Revenez bientôt !

@@ -209,6 +209,7 @@ const initializeShowHideRoles = () => {
 };
 
 let cachedFiltersModalContent;
+let cachedFiltersModalTitle;
 
 export const initializeFiltersModal = () => {
   document.querySelectorAll('.js-open-filter-modal-btn').forEach((button) => {
@@ -217,11 +218,16 @@ export const initializeFiltersModal = () => {
       if (!cachedFiltersModalContent) {
         const filterModalContent = document.querySelector('.js-filters-modal');
         cachedFiltersModalContent = filterModalContent.innerHTML;
+        // The header is hidden for this modal, so reuse the (translated) heading in its content as the dialog's accessible name
+        cachedFiltersModalTitle = filterModalContent
+          .querySelector('h2')
+          ?.textContent.trim();
         filterModalContent.remove();
       }
 
       showWindowModal({
         modalContent: cachedFiltersModalContent,
+        title: cachedFiltersModalTitle,
         showHeader: false,
         sheet: true,
         sheetAlign: 'right',

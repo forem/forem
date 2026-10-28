@@ -7,10 +7,19 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
   let(:detector) { described_class.new(user.id) }
 
   describe "#call" do
+    # The reaction-count gate contexts below only need to land on the right side of
+    # MIN_REACTIONS_THRESHOLD. Each reaction builds its own article and author, so a
+    # small stubbed threshold avoids creating hundreds of records per example.
+    shared_context "with a small reaction threshold" do
+      before { stub_const("#{described_class}::MIN_REACTIONS_THRESHOLD", 5) }
+    end
+
     context "when user has insufficient reactions" do
+      include_context "with a small reaction threshold"
+
       before do
-        # Create fewer than 50 reactions over 3 months
-        create_list(:reaction, 30, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        # Create fewer reactions than the threshold over 3 months
+        create_list(:reaction, 4, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns false" do
@@ -19,9 +28,11 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when user has sufficient reactions but they're too old" do
+      include_context "with a small reaction threshold"
+
       before do
-        # Create 60 reactions but they're older than 3 months
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 4.months.ago)
+        # Create more reactions than the threshold but they're older than 3 months
+        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 4.months.ago)
       end
 
       it "returns false" do
@@ -32,8 +43,10 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when user is admin" do
       let(:user) { create(:user, :admin) }
 
+      include_context "with a small reaction threshold"
+
       before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns false" do
@@ -44,8 +57,10 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     context "when user is trusted" do
       let(:user) { create(:user, :trusted) }
 
+      include_context "with a small reaction threshold"
+
       before do
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns false" do
@@ -54,9 +69,11 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
     end
 
     context "when no potential ring is found" do
+      include_context "with a small reaction threshold"
+
       before do
         # Create enough reactions but no other users with similar patterns
-        create_list(:reaction, 60, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
+        create_list(:reaction, 6, user: user, reactable_type: "Article", category: "like", created_at: 2.months.ago)
       end
 
       it "returns false" do
@@ -167,6 +184,81 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         expect(Note.where(noteable: ring_member1, reason: "reaction_ring_detection")).to exist
         expect(Note.where(noteable: ring_member2, reason: "reaction_ring_detection")).to exist
         expect(Note.where(noteable: ring_member3, reason: "reaction_ring_detection")).to exist
+      end
+
+      it "loads the triggering user's reacted authors only once" do
+        reacted_author_queries = 0
+        callback = lambda do |*, payload|
+          # Only the reactions-rooted pluck; the similar-patterns query is
+          # rooted at users and also binds the triggering user's id.
+          next unless payload[:sql].include?('FROM "reactions"')
+          next unless payload[:sql].include?("JOIN articles ON reactions.reactable_id = articles.id")
+          next unless payload[:sql].include?('"reactions"."user_id" =')
+
+          binds = payload[:type_casted_binds]
+          binds = binds.call if binds.respond_to?(:call)
+          reacted_author_queries += 1 if Array(binds).include?(user.id) ||
+            payload[:sql].match?(/"reactions"\."user_id" = #{user.id}\b/)
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(reacted_author_queries).to eq(1)
+      end
+
+      it "plucks each ring member's reacted-to authors only once" do
+        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
+        member_plucks = Hash.new(0)
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          next unless sql.include?('FROM "reactions"')
+          next unless sql.include?("JOIN articles ON reactions.reactable_id = articles.id")
+
+          binds = payload[:type_casted_binds]
+          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
+
+          member_ids.each do |id|
+            member_plucks[id] += 1 if binds.include?(id) || sql.match?(/"reactions"\."user_id" = #{id}\b/)
+          end
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(member_plucks.values_at(*member_ids)).to eq([1, 1, 1])
+      end
+
+      it "checks ring members' admin roles without a roles COUNT query per member" do
+        member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
+        member_role_counts = 0
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          next unless sql.include?('SELECT COUNT(*) FROM "roles"')
+
+          binds = payload[:type_casted_binds]
+          binds = Array(binds.respond_to?(:call) ? binds.call : binds)
+          member_role_counts += 1 if member_ids.any? do |id|
+            binds.include?(id) || sql.match?(/"users_roles"\."user_id" = #{id}\b/)
+          end
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(detector.call).to be true
+        end
+
+        expect(member_role_counts).to eq(0)
+      end
+
+      it "still skips ring members who are admins" do
+        ring_member3.add_role(:admin)
+
+        # The two remaining members fall below the minimum ring size
+        expect(detector.call).to be false
+        expect(ring_member1.reload.reputation_modifier).to eq(1.0)
+        expect(ring_member3.reload.reputation_modifier).to eq(1.0)
       end
     end
 

@@ -110,6 +110,19 @@ RSpec.describe "SurveysController", type: :request do
         expect(json_response["completed"]).to be true
         expect(json_response["allow_resubmission"]).to be false
       end
+
+      it "returns an array of option IDs for multiple-choice polls" do
+        mc_poll = create(:poll, :multiple_choice, survey: survey)
+        mc_opt1 = mc_poll.poll_options.first
+        mc_opt2 = mc_poll.poll_options.second
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt1, session_start: 1)
+        create(:poll_vote, user: user, poll: mc_poll, poll_option: mc_opt2, session_start: 1)
+
+        get "/surveys/#{survey.id}/votes"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["votes"][mc_poll.id.to_s]).to contain_exactly(mc_opt1.id, mc_opt2.id)
+      end
     end
   end
 end

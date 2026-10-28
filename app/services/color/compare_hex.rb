@@ -19,6 +19,36 @@ module Color
     end
 
     def brightness(amount = 1, only_values: false)
+      ForemNative.color_brightness(smallest, amount, only_values: only_values) ||
+        legacy_brightness(amount, only_values)
+    end
+
+    # Returns the first valid hex string it finds (# + 6 digits)
+    def accent(amount = 1)
+      ForemNative.color_accent(smallest, amount) || legacy_accent(amount)
+    end
+
+    def opacity(value = 0.0)
+      ForemNative.color_opacity(smallest, value) || legacy_opacity(value)
+    end
+
+    private
+
+    def legacy_accent(amount)
+      ACCENT_MODIFIERS.each do |modifier|
+        with_brightness = brightness(modifier**amount)
+        break with_brightness if with_brightness.size == 7
+      end
+    end
+
+    # Handles the inputs ForemNative declines (malformed hexes, alphas needing rounding).
+    def legacy_opacity(value)
+      rgba = hex_to_rgb_hash(smallest).merge(a: value)
+      format(OPACITY_FORMAT, rgba)
+    end
+
+    # Handles the inputs ForemNative declines (malformed hexes, negative or non-finite channels).
+    def legacy_brightness(amount, only_values)
       rgb = hex_to_rgb_hash(smallest).transform_values do |color|
         (color * amount).round
       end
@@ -26,21 +56,6 @@ module Color
     rescue StandardError
       smallest
     end
-
-    # Returns the first valid hex string it finds (# + 6 digits)
-    def accent(amount = 1)
-      ACCENT_MODIFIERS.each do |modifier|
-        with_brightness = brightness(modifier**amount)
-        break with_brightness if with_brightness.size == 7
-      end
-    end
-
-    def opacity(value = 0.0)
-      rgba = hex_to_rgb_hash(smallest).merge(a: value)
-      format(OPACITY_FORMAT, rgba)
-    end
-
-    private
 
     def hex_to_rgb_hash(hex)
       hex.match(RGB_REGEX).named_captures.to_h do |key, color|

@@ -2,8 +2,10 @@ module UrlDomainHelper
   module_function
 
   def normalize_url(url)
-    url = "https://#{url}" unless url.match?(%r{\Ahttps?://}i)
-    url
+    return url if url.match?(%r{\Ahttps?://}i)
+    return "" if url.match?(/\A[a-z][a-z0-9+.-]*:/i)
+
+    "https://#{url}"
   end
 
   def extract_host(url)
