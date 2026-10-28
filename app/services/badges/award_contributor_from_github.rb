@@ -34,14 +34,28 @@ module Badges
     SEARCH_SERVER_ERROR_WAIT = 5.seconds.freeze
     SEARCH_MAX_ATTEMPTS = 3
 
-    # How far back to look for merged PRs when gathering candidate contributor
-    # uids. The job runs hourly; a window comfortably wider than the cadence
-    # tolerates missed or delayed runs without dropping recent contributors.
-    RECENT_MERGED_PR_WINDOW = 14.days
-    # Cap the single candidate-gathering Search page. GitHub's Search API allows
-    # up to 100 results per page; one page of recent merged PRs is plenty to
-    # surface active contributors without paginating across many requests.
+    # GitHub's Search API returns at most 100 results per page and caps any
+    # single query at 1000 total results (10 pages). To gather *every* author who
+    # has ever had a PR merged - not just recent ones - we walk the full history
+    # in dated slices (see MERGED_PR_SLICE), each small enough to stay under that
+    # 1000-result ceiling, and page through each slice.
     SEARCH_PR_AUTHOR_PAGE_SIZE = 100
+    SEARCH_PR_AUTHOR_MAX_PAGES = 10
+    # Width of each dated slice of merged-PR history. Chosen so a single slice is
+    # very unlikely to contain more than 1000 merged PRs (GitHub's per-query
+    # result cap); narrower slices cost more requests but guarantee completeness.
+    MERGED_PR_SLICE = 30.days
+    # Earliest date the full-history backfill scans from. forem/forem predates
+    # this, but no PR was merged before it, so starting here avoids scanning empty
+    # slices back to the epoch.
+    MERGED_PR_HISTORY_START = Date.new(2018, 1, 1)
+    # Fallback look-back for an hourly run when no scan marker is set yet (i.e. no
+    # backfill has run). Keeps a fresh instance working - recent contributors are
+    # still picked up - while the one-time rake backfill covers the deep history.
+    MERGED_PR_FALLBACK_WINDOW = 14.days
+    # Safety overlap subtracted from the stored marker on each hourly run so a PR
+    # merged right around the previous run's boundary is not missed between runs.
+    MERGED_PR_SCAN_OVERLAP = 2.days
 
     # Rate limiting is classified first by HTTP status (429), then by error type:
     # the client maps Octokit's TooManyRequests/TooManyLoginAttempts to the
@@ -68,8 +82,17 @@ module Badges
       new(msg).call
     end
 
-    def initialize(msg)
+    # One-time (or occasional) full-history backfill. Walks every merged PR from
+    # MERGED_PR_HISTORY_START to today to seed badges for long-standing
+    # contributors, then records the scan marker so subsequent hourly #call runs
+    # only scan forward from here. Intended to be invoked from a rake task.
+    def self.backfill(msg = I18n.t("services.badges.thank_you"))
+      new(msg, full_history: true).call
+    end
+
+    def initialize(msg, full_history: false)
       @msg = msg
+      @full_history = full_history
     end
 
     def call
@@ -110,20 +133,53 @@ module Badges
       # Resolve only the GitHub identities that could plausibly earn a badge for
       # this repo rather than scanning the entire Identity.github table (1M+ rows
       # in production, almost all with zero PRs here). Candidates come from GitHub
-      # itself: commit contributors unioned with the authors of recently merged
-      # PRs. The latter covers contributors with merged PRs but no attributed
-      # commits, who would otherwise be missed by the contributors endpoint.
+      # itself: commit contributors unioned with the authors of PRs merged within
+      # the scan window. A backfill run scans the full history; an hourly run only
+      # scans forward from the persisted marker, so the deep history is read once
+      # rather than every hour. The PR-author union covers contributors with
+      # merged PRs but no attributed commits, who the contributors endpoint omits.
+      today = Time.current.utc.to_date
+      scan_start = scan_start_date(today)
+
       candidate_uids = contributions_map.keys.to_set
-      candidate_uids.merge(recent_merged_pr_author_uids(repo))
+      candidate_uids.merge(merged_pr_author_uids(repo, scan_start, today))
 
       Identity.github.where(uid: candidate_uids.to_a).find_each do |identity|
         process_candidate_identity(repo, identity, contributions_map)
       end
+
+      # Only advance the marker once the scan for this window completed without
+      # running out of Search budget, so an aborted run re-scans the same window
+      # next time instead of skipping past unscanned dates. NOTE: the marker is
+      # global; it assumes REPOSITORIES has a single entry. If more repos are
+      # added, make the marker per-repo so one repo does not advance it past
+      # another's unscanned window.
+      Settings::General.github_contributor_prs_scanned_through = today.iso8601
     rescue SearchBudgetExhausted => e
-      # Out of Search API budget for this run. Remaining candidates are picked up
-      # on the next scheduled run; nothing is skipped permanently since the
-      # candidate set is rederived from GitHub each time.
+      # Out of Search API budget for this run. The marker is left unchanged, so
+      # the next scheduled run re-scans this window; nothing is skipped
+      # permanently since the candidate set is rederived from GitHub each time.
       Rails.logger.warn("[Badges::AwardContributorFromGithub] stopping run early: #{e.message}")
+    end
+
+    # Determines the earliest merge date to scan for candidate PR authors.
+    # - Backfill run: the full history start.
+    # - Hourly run with a marker: just before the marker (minus a small overlap)
+    #   so PRs merged near the previous boundary are not missed between runs.
+    # - Hourly run with no marker yet (no backfill done): a short recent window so
+    #   a fresh instance still awards recent contributors.
+    def scan_start_date(today)
+      return MERGED_PR_HISTORY_START if @full_history
+
+      marker = Settings::General.github_contributor_prs_scanned_through.presence
+      if marker
+        Date.iso8601(marker) - MERGED_PR_SCAN_OVERLAP.in_days.to_i
+      else
+        today - MERGED_PR_FALLBACK_WINDOW.in_days.to_i
+      end
+    rescue ArgumentError
+      # Corrupt marker value: fall back to the recent window rather than failing.
+      today - MERGED_PR_FALLBACK_WINDOW.in_days.to_i
     end
 
     def process_candidate_identity(repo, identity, contributions_map)
@@ -154,21 +210,54 @@ module Badges
       awarded_badge_ids.size < badge_slugs_with_id.size
     end
 
-    # Collects uids of users who authored recently merged PRs in the repo, via a
-    # single paced Search API page (capped at SEARCH_PR_AUTHOR_PAGE_SIZE). Returns
-    # a Set of uid Strings. Failures degrade gracefully to an empty set so commit
-    # contributors are still processed.
-    def recent_merged_pr_author_uids(repo)
-      since = RECENT_MERGED_PR_WINDOW.ago.utc.to_date.iso8601
-      query = "repo:#{repo} is:pr is:merged merged:>=#{since}"
+    # Collects the uids of users who had a PR merged in the repo between
+    # scan_start and scan_end (inclusive). GitHub's Search API caps a single
+    # query at 1000 results, so the range is walked in dated slices
+    # (MERGED_PR_SLICE wide) and each slice is paged through. Returns a Set of uid
+    # Strings. Errors on any slice/page degrade gracefully (that page is skipped)
+    # so the run still proceeds with whatever authors were gathered plus the
+    # commit contributors.
+    def merged_pr_author_uids(repo, scan_start, scan_end)
+      uids = Set.new
+      slice_days = MERGED_PR_SLICE.in_days.to_i
+      slice_start = scan_start
+
+      while slice_start <= scan_end
+        slice_end = [slice_start + (slice_days - 1), scan_end].min
+        gather_slice_author_uids(repo, slice_start, slice_end, uids)
+        slice_start = slice_end + 1
+      end
+
+      uids
+    end
+
+    # Pages through one dated slice of merged PRs, adding each PR author's uid to
+    # the shared set. A slice narrower than MERGED_PR_SLICE keeps each query under
+    # GitHub's 1000-result cap; if a slice ever exceeds it, SEARCH_PR_AUTHOR_MAX_PAGES
+    # still bounds the paging so the run stays within its request budget.
+    def gather_slice_author_uids(repo, slice_start, slice_end, uids)
+      range = "#{slice_start.iso8601}..#{slice_end.iso8601}"
+      query = "repo:#{repo} is:pr is:merged merged:#{range}"
+
+      (1..SEARCH_PR_AUTHOR_MAX_PAGES).each do |page|
+        items = search_merged_pr_page(query, page)
+        uids.merge(items.filter_map { |item| item.user&.id&.to_s })
+        # Fewer than a full page means we reached the end of this slice.
+        break if items.size < SEARCH_PR_AUTHOR_PAGE_SIZE
+      end
+    end
+
+    # Fetches one paced page of merged-PR search results. Returns the page's
+    # items, or an empty array on error so paging stops without aborting the run.
+    def search_merged_pr_page(query, page)
       throttle_search
-      results = search_client.search_issues(query, per_page: SEARCH_PR_AUTHOR_PAGE_SIZE)
-      results.items.filter_map { |item| item.user&.id&.to_s }.to_set
+      search_client.search_issues(query, per_page: SEARCH_PR_AUTHOR_PAGE_SIZE, page: page).items
     rescue Github::Errors::Error => e
       Rails.logger.warn(
-        "[Badges::AwardContributorFromGithub] could not list recent merged PR authors for #{repo}: #{e.message}",
+        "[Badges::AwardContributorFromGithub] could not list merged PR authors " \
+        "for #{query} (page #{page}): #{e.message}",
       )
-      Set.new
+      []
     end
 
     # Counts merged PRs authored by github_user via the Search API, pacing calls
