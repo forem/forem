@@ -155,6 +155,45 @@ RSpec.describe "Api::V1::Analytics" do
           anything,
         )
       end
+
+      it "loads ArticleActivity rows only once per dashboard request and returns all-time totals" do
+        article = create(
+          :article,
+          :past,
+          user: user,
+          published: true,
+          past_published_at: Time.zone.parse("2019-01-01"),
+        )
+        ArticleActivity.create!(
+          article: article,
+          total_page_views: 150,
+          daily_page_views: {
+            "2019-01-10" => { "total" => 100, "sum_read_seconds" => 200, "logged_in_count" => 10 },
+            "2019-03-30" => { "total" => 50, "sum_read_seconds" => 100, "logged_in_count" => 5 }
+          },
+          daily_reactions: {},
+          daily_comments: { "2019-01-10" => 3, "2019-03-30" => 2 },
+          daily_referrers: {},
+        )
+
+        activity_queries = 0
+        callback = lambda do |*, payload|
+          next if %w[SCHEMA TRANSACTION].include?(payload[:name])
+
+          activity_queries += 1 if payload[:sql].include?('"article_activities"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/analytics/dashboard?start=2019-03-29&end=2019-04-01&article_id=#{article.id}", headers: v1_headers
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(activity_queries).to eq(1)
+        body = response.parsed_body
+        expect(body.dig("totals", "page_views", "total")).to eq(150)
+        expect(body.dig("totals", "comments", "total")).to eq(5)
+        expect(body.dig("historical", "2019-03-30", "page_views", "total")).to eq(50)
+      end
     end
   end
 
