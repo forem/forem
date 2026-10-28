@@ -755,6 +755,23 @@ RSpec.describe "/admin/customization/config" do
           expect(Settings::General.enable_ai_disclosure).to be(true)
         end
       end
+
+      describe "Post Permissions" do
+        it "defaults limit_post_creation_to_admins to false and updates it to true", :aggregate_failures do
+          expect(Settings::General.limit_post_creation_to_admins).to be(false)
+
+          post admin_settings_general_settings_path, params: {
+            settings_general: { limit_post_creation_to_admins: "1" }
+          }
+          expect(Settings::General.limit_post_creation_to_admins).to be(true)
+          expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(true)
+        end
+
+        it "redirects legacy /admin/content_manager/spaces path to /admin/customization/config" do
+          get "/admin/content_manager/spaces"
+          expect(response).to redirect_to("/admin/customization/config")
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups
