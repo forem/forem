@@ -1,5 +1,6 @@
 class ProfilePinsController < ApplicationController
   before_action :authenticate_user!, only: %i[create update]
+  before_action :check_suspended, only: %i[create update]
 
   def create
     @profile_pin = ProfilePin.new

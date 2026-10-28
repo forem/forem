@@ -6,7 +6,7 @@ class ArticlesController < ApplicationController
   before_action :set_article, only: %i[edit manage update destroy stats admin_unpublish admin_featured_toggle]
   # NOTE: Consider pushing this check into the associated Policy.  We could choose to raise a
   #       different error which we could then rescue as part of our exception handling.
-  before_action :check_suspended, only: %i[new create update]
+  before_action :check_suspended, only: %i[new create update edit manage]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 

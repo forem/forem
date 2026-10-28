@@ -1,3 +1,4 @@
+<% read_only = current_user&.actively_spam_or_suspended? %>
 <div class="dashboard-story js-dashboard-story spec__dashboard-story single-article <%= "story-unpublished" unless article.published %> <%= "story-archived" if article.archived %> <%= "hidden" if article.archived && !@show_archived %>">
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
@@ -33,9 +34,9 @@
 
   <div class="fs-s color-base-60">
     <% if !article.published? %>
-      <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.draft") %></a>
+      <%= read_only ? tag.span(t("views.dashboard.article.draft"), class: "c-indicator c-indicator--warning") : link_to(t("views.dashboard.article.draft"), "#{article.path}/edit", class: "c-indicator c-indicator--warning") %>
     <% elsif article.scheduled? %>
-      <a href="<%= article.path %>/edit" class="c-indicator c-indicator--warning"><%= t("views.dashboard.article.scheduled") %></a>
+      <%= read_only ? tag.span(t("views.dashboard.article.scheduled"), class: "c-indicator c-indicator--warning") : link_to(t("views.dashboard.article.scheduled"), "#{article.path}/edit", class: "c-indicator c-indicator--warning") %>
     <% else %>
       <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
         <span class="flex items-center p-1" title="<%= t("views.dashboard.article.reactions.title") %>">
@@ -78,6 +79,10 @@
   </div>
 
   <div class="dashboard-story__actions">
+    <% if read_only %>
+      <%# Spam-flagged and suspended accounts get a read-only dashboard: stats only, no write actions. %>
+      <a href="<%= article.path %>/stats" class="crayons-btn crayons-btn--ghost crayons-btn--s"><%= t("views.dashboard.article.stats") %></a>
+    <% else %>
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s"><%= t("views.dashboard.article.delete") %></a>
 
@@ -152,5 +157,6 @@
         <% end %>
       </div>
     </div>
+    <% end %>
   </div>
 </div>

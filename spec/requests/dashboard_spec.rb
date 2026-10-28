@@ -213,6 +213,118 @@ RSpec.describe "Dashboards" do
     end
   end
 
+  describe "GET /dashboard for spam-flagged and suspended accounts" do
+    let(:notice_selector) { "[data-testid='suspended-account-notice']" }
+    let(:write_action_hrefs) do
+      ["#{article.path}/edit", "#{article.path}/manage", "#{unpublished_article.path}/edit"]
+    end
+
+    %i[spam suspended].each do |role|
+      context "when the user has the #{role} role" do
+        before do
+          article
+          unpublished_article
+          user.add_role(role)
+          sign_in user
+        end
+
+        it "renders the dashboard with existing posts and an appeal banner instead of a 404", :aggregate_failures do
+          get dashboard_path
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(article.title), CGI.escapeHTML(unpublished_article.title))
+
+          notice = Nokogiri::HTML(response.body).at_css(notice_selector)
+          expect(notice["data-account-status"]).to eq(role.to_s)
+          expect(notice.at_css("a[href='#{appeal_path}']")).to be_present
+        end
+
+        it "hides write actions but keeps read-only links such as stats", :aggregate_failures do
+          get dashboard_path
+
+          page = Nokogiri::HTML(response.body)
+          write_action_hrefs.each { |href| expect(page.at_css("a[href='#{href}']")).to be_nil }
+          expect(page.at_css("form.js-archive-toggle")).to be_nil
+          expect(page.at_css("a[href='#{article.path}/stats']")).to be_present
+        end
+
+        it "shows the banner on the other dashboard views", :aggregate_failures do
+          [dashboard_following_tags_path, dashboard_following_users_path, dashboard_hidden_tags_path].each do |path|
+            get path
+
+            expect(response).to have_http_status(:ok)
+            expect(Nokogiri::HTML(response.body).at_css("#{notice_selector} a[href='#{appeal_path}']")).to be_present
+          end
+        end
+
+        it "does not raise when every post is archived and the empty state hides the new post link",
+           :aggregate_failures do
+          article.update_columns(archived: true)
+          unpublished_article.update_columns(archived: true)
+
+          get dashboard_path
+
+          expect(response).to have_http_status(:ok)
+          expect(Nokogiri::HTML(response.body).at_css("main#main-content a[href='/new']")).to be_nil
+        end
+
+        it "still forbids creating or editing posts", :aggregate_failures do
+          get "/new"
+          expect(response).to have_http_status(:forbidden)
+
+          get "#{article.path}/edit"
+          expect(response).to have_http_status(:forbidden)
+
+          get "#{article.path}/manage"
+          expect(response).to have_http_status(:forbidden)
+
+          expect do
+            post articles_path, params: { article: { title: "New", body_markdown: "Hello", published: true } }
+          end.not_to change(Article, :count)
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it "still lets the user reach the appeal form", :aggregate_failures do
+          get appeal_path
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+    end
+
+    context "when a spam-flagged user has no posts" do
+      it "redirects to following tags (not a 404) where the appeal banner is shown", :aggregate_failures do
+        user.add_role(:spam)
+        sign_in user
+
+        get dashboard_path
+        expect(response).to redirect_to(dashboard_following_tags_path)
+
+        follow_redirect!
+        expect(response).to have_http_status(:ok)
+        expect(Nokogiri::HTML(response.body).at_css("#{notice_selector}[data-account-status='spam']")).to be_present
+      end
+    end
+
+    context "when the user is in good standing" do
+      before do
+        article
+        unpublished_article
+        sign_in user
+      end
+
+      it "keeps write actions and shows no banner", :aggregate_failures do
+        get dashboard_path
+
+        page = Nokogiri::HTML(response.body)
+        expect(page.at_css(notice_selector)).to be_nil
+        expect(page.at_css("a[href='#{article.path}/edit']")).to be_present
+        expect(page.at_css("a[href='#{article.path}/manage']")).to be_present
+        expect(page.at_css("form.js-archive-toggle")).to be_present
+      end
+    end
+  end
+
   describe "GET /dashboard/organization" do
     context "when not logged in" do
       it "redirects to /enter" do
