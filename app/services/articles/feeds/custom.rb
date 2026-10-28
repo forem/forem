@@ -3,8 +3,7 @@ module Articles
     TIME_AGO_MAX = Rails.env.production? ? 10.days.ago : 90.days.ago
 
     class Custom
-      SEMANTIC_CANDIDATE_BUFFER = 150
-      SEMANTIC_CANDIDATE_MIN_LIMIT = 200
+      SEMANTIC_CANDIDATE_MIN_LIMIT = FeedConfig::DEFAULT_SEMANTIC_CANDIDATE_LIMIT
 
       def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil, feed_config: nil)
         @user = user
@@ -126,7 +125,19 @@ module Articles
       end
 
       def semantic_candidate_limit
-        [(@page * @number_of_articles) + SEMANTIC_CANDIDATE_BUFFER, SEMANTIC_CANDIDATE_MIN_LIMIT].max
+        configured_limit = if @feed_config.respond_to?(:effective_semantic_candidate_limit)
+                             @feed_config.effective_semantic_candidate_limit
+                           elsif @feed_config.respond_to?(:semantic_candidate_limit) &&
+                               @feed_config.semantic_candidate_limit.present?
+                             @feed_config.semantic_candidate_limit.to_i.clamp(
+                               FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT,
+                               FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT,
+                             )
+                           else
+                             SEMANTIC_CANDIDATE_MIN_LIMIT
+                           end
+
+        [configured_limit, @page * @number_of_articles].max
       end
 
       def score_sql_method

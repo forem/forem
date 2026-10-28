@@ -761,6 +761,44 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result.first).to eq(medium_score_article)
       end
 
+      it "respects the variable semantic_candidate_limit on feed_config when semantic_similarity_weight > 0" do
+        custom_page_feed = described_class.new(
+          user: user,
+          number_of_articles: 18,
+          page: 1,
+          feed_config: feed_config,
+        )
+
+        feed_config.semantic_candidate_limit = 120
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(120)
+
+        feed_config.semantic_candidate_limit = 550
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(550)
+
+        feed_config.semantic_candidate_limit = 50
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT)
+
+        feed_config.semantic_candidate_limit = 2000
+        expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT)
+      end
+
+      it "ignores semantic_candidate_limit completely when semantic_similarity_weight is 0.0" do
+        feed_config.semantic_similarity_weight = 0.0
+        feed_config.semantic_candidate_limit = 450
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.first).not_to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(executed_sql.first).not_to include("articles.semantic_embedding <=>")
+      end
+
       it "falls back to direct semantic scoring when all non-semantic weights are zero" do
         FeedConfig.new.attributes.each_key do |attr|
           feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
