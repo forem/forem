@@ -420,6 +420,7 @@ module Badges
       throttle_search
       search_client.search_issues(query, per_page: SEARCH_PR_AUTHOR_PAGE_SIZE, page: page).items
     rescue Github::Errors::Error => e
+      @scan_incomplete = true
       Rails.logger.warn(
         "[Badges::AwardContributorFromGithub] could not list merged PR authors " \
         "for #{query} (page #{page}): #{e.message}",
