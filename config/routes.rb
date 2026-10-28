@@ -108,7 +108,12 @@ Rails.application.routes.draw do
           post :preview, on: :collection
         end
 
-        resources :tags, only: %i[create update]
+        resources :tags, only: %i[create update] do
+          member do
+            post :moderators, action: :add_moderator
+            delete :moderators, action: :remove_moderator
+          end
+        end
 
         resources :agent_sessions, only: %i[index show create] do
           collection do
