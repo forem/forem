@@ -1580,6 +1580,174 @@ fn build_activity_heatmap_payload(
     Some(root)
 }
 
+fn link_heading_anchor_fragments(
+    ruby: &Ruby,
+    html: RString,
+    ids_by_slug: RHash,
+) -> Option<RString> {
+    if !html.is_utf8_compatible_encoding() {
+        return None;
+    }
+    if ids_by_slug.is_empty() {
+        return Some(RString::new_shared(html));
+    }
+    let has_fragment_href = {
+        let text = unsafe { html.test_as_str() }?;
+        text.contains("href=\"#")
+    };
+    if !has_fragment_href {
+        return Some(RString::new_shared(html));
+    }
+
+    let mut raw_pairs: Vec<(Value, Value)> = Vec::with_capacity(ids_by_slug.len());
+    ids_by_slug
+        .foreach(|k: Value, v: Value| {
+            raw_pairs.push((k, v));
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+
+    let mut pairs: Vec<(String, String)> = Vec::with_capacity(raw_pairs.len());
+    for (k, v) in raw_pairs {
+        let ks = RString::from_value(k)?;
+        let vs = RString::from_value(v)?;
+        if !ks.is_utf8_compatible_encoding() || !vs.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let k_str = unsafe { ks.test_as_str() }?.to_owned();
+        let v_str = unsafe { vs.test_as_str() }?.to_owned();
+        pairs.push((k_str, v_str));
+    }
+
+    let linked = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::text::link_heading_anchor_fragments(text, &pairs)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(s) => Some(s),
+        }
+    };
+    Some(linked.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn scrub_sensitive_text(ruby: &Ruby, text: RString, tool_output: bool) -> Option<RString> {
+    if !text.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let scrubbed = {
+        let s = unsafe { text.test_as_str() }?;
+        match forem_core::scrubber::scrub_sensitive_text(s, tool_output)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(owned) => Some(owned),
+        }
+    };
+    Some(scrubbed.map_or_else(|| RString::new_shared(text), |s| ruby.str_new(&s)))
+}
+
+fn scrub_sensitive_text_with_counts(
+    ruby: &Ruby,
+    text: RString,
+    tool_output: bool,
+) -> Option<RArray> {
+    if !text.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let (scrubbed_opt, counts) = {
+        let s = unsafe { text.test_as_str() }?;
+        let (scrubbed, counts) =
+            forem_core::scrubber::scrub_sensitive_text_with_counts(s, tool_output)?;
+        let owned = match scrubbed {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(o) => Some(o),
+        };
+        (owned, counts)
+    };
+    let r_str = scrubbed_opt.map_or_else(|| RString::new_shared(text), |s| ruby.str_new(&s));
+    let r_counts = ruby.ary_new_capa(counts.len());
+    for (name, count) in counts {
+        let pair = ruby.ary_new_capa(2);
+        pair.push(ruby.str_new(name)).ok()?;
+        pair.push(count).ok()?;
+        r_counts.push(pair).ok()?;
+    }
+    let out = ruby.ary_new_capa(2);
+    out.push(r_str).ok()?;
+    out.push(r_counts).ok()?;
+    Some(out)
+}
+
+fn scrub_agent_session_messages(ruby: &Ruby, messages: RArray) -> Option<RArray> {
+    let msg_vals: Vec<Value> = unsafe { messages.as_slice() }.to_vec();
+    let k_content = ruby.str_new("content");
+    let k_type = ruby.str_new("type");
+    let k_text = ruby.str_new("text");
+    let k_input = ruby.str_new("input");
+    let k_output = ruby.str_new("output");
+
+    let mut acc = forem_core::scrubber::RedactionAccumulator::new();
+    let mut mutations: Vec<(RHash, RString, String)> = Vec::new();
+
+    for msg_val in msg_vals {
+        let msg_hash = RHash::from_value(msg_val)?;
+        let Some(content_val) = msg_hash.lookup::<_, Option<Value>>(k_content).ok()? else {
+            continue;
+        };
+        if !content_val.to_bool() {
+            continue;
+        }
+        let content_ary = RArray::from_value(content_val)?;
+        let block_vals: Vec<Value> = unsafe { content_ary.as_slice() }.to_vec();
+
+        for block_val in block_vals {
+            let block_hash = RHash::from_value(block_val)?;
+            let type_val = block_hash.lookup::<_, Option<Value>>(k_type).ok()?;
+            let is_tool_output = type_val
+                .and_then(RString::from_value)
+                .is_some_and(|rs| unsafe { rs.as_slice() } == b"tool_call");
+
+            for (key_rstr, tool_out) in
+                [(k_text, false), (k_input, is_tool_output), (k_output, true)]
+            {
+                let Some(field_val) = block_hash.lookup::<_, Option<Value>>(key_rstr).ok()? else {
+                    continue;
+                };
+                if !field_val.to_bool() {
+                    continue;
+                }
+                let field_rstr = RString::from_value(field_val)?;
+                if !field_rstr.is_utf8_compatible_encoding() {
+                    return None;
+                }
+                let scrubbed_opt = {
+                    let s = unsafe { field_rstr.test_as_str() }?;
+                    match forem_core::scrubber::scrub_sensitive_text_into_accumulator(
+                        s, tool_out, &mut acc,
+                    )? {
+                        Cow::Borrowed(_) => None,
+                        Cow::Owned(owned) => Some(owned),
+                    }
+                };
+                if let Some(new_str) = scrubbed_opt {
+                    mutations.push((block_hash, key_rstr, new_str));
+                }
+            }
+        }
+    }
+
+    for (block_hash, key_rstr, new_str) in mutations {
+        block_hash.aset(key_rstr, ruby.str_new(&new_str)).ok()?;
+    }
+
+    let counts = acc.into_counts();
+    let result_ary = ruby.ary_new_capa(counts.len());
+    for (name, count) in counts {
+        let pair = ruby.ary_new_capa(2);
+        pair.push(ruby.str_new(name)).ok()?;
+        pair.push(count).ok()?;
+        result_ary.push(pair).ok()?;
+    }
+    Some(result_ary)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -1741,6 +1909,20 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "build_activity_heatmap_payload",
         function!(build_activity_heatmap_payload, 5),
+    )?;
+    native_mod.define_singleton_method(
+        "link_heading_anchor_fragments",
+        function!(link_heading_anchor_fragments, 2),
+    )?;
+    native_mod
+        .define_singleton_method("scrub_sensitive_text", function!(scrub_sensitive_text, 2))?;
+    native_mod.define_singleton_method(
+        "scrub_sensitive_text_with_counts",
+        function!(scrub_sensitive_text_with_counts, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "scrub_agent_session_messages",
+        function!(scrub_agent_session_messages, 1),
     )?;
     Ok(())
 }

@@ -15,6 +15,7 @@ pub mod image;
 pub mod markdown;
 pub(crate) mod psl_data;
 pub mod sanitize;
+pub mod scrubber;
 pub mod svg;
 pub mod text;
 pub mod title;
