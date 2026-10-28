@@ -5671,6 +5671,9 @@
           "401": {
             "description": "Unauthorized"
           },
+          "404": {
+            "description": "Tag or user not found"
+          },
           "422": {
             "description": "The user is not a moderator of the tag"
           }

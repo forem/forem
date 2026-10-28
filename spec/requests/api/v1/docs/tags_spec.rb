@@ -321,6 +321,14 @@ It supports pagination, each page will contain 10 tags by default."
         run_test!
       end
 
+      response "404", "Tag or user not found" do
+        let(:"api-key") { api_secret.secret }
+        let(:moderator_params) { { username: "nobody-here" } }
+        add_examples
+
+        run_test!
+      end
+
       response "422", "The user is not a moderator of the tag" do
         let(:"api-key") { api_secret.secret }
         add_examples
