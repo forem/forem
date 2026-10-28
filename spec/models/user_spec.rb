@@ -658,6 +658,15 @@ RSpec.describe User do
         end
       end
 
+      it "does not invalidate existing persisted accounts with legacy email formats on unrelated updates" do
+        user = create(:user)
+        user.update_column(:email, "member@example,com")
+        user.reload
+
+        expect(user.update(name: "Updated Name")).to be(true)
+        expect(user.errors[:email]).to be_empty
+      end
+
       it { is_expected.not_to allow_value("  ").for(:name) }
 
       it { is_expected.to validate_presence_of(:articles_count) }

@@ -5,10 +5,15 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let(:default_subforem) { create(:subforem, domain: "default.test") }
   let(:custom_subforem) { create(:subforem, domain: "custom.test") }
   let!(:article) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
-  let!(:article_with_custom_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem) }
+  let!(:article_with_custom_subforem) do
+    create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem)
+  end
   let!(:article_without_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: nil) }
   let(:organization) { create(:organization) }
-  let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
+  let!(:second_article) do
+    create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false,
+                     subforem: custom_subforem)
+  end
   let(:default_logo_url) { "https://example.com/default_logo.png" }
   let(:custom_logo_url) { "https://example.com/custom_logo.png" }
   let(:generated_image) { "https://example.com/og.png" }
@@ -548,6 +553,57 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
       expect(author_image).not_to have_received(:resize)
       expect(result_image).not_to have_received(:composite)
+    end
+
+    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them" do
+      sigterm_error = MiniMagick::Error.new("`composite` failed with status: 15 and error:")
+      allow(result_image).to receive(:composite).and_raise(sigterm_error)
+      allow(Rails.error).to receive(:report)
+
+      expect { generator.send(:add_profile_image, result_image) }.to raise_error(sigterm_error)
+      expect(Rails.error).not_to have_received(:report)
+    end
+  end
+
+  describe "#add_profile_card_avatar" do
+    let(:generator) { described_class.new(user) }
+    let(:result_image) { double(MiniMagick::Image, destroy!: nil) }
+    let(:author_image) { double(MiniMagick::Image) }
+    let(:rounded_mask) { double(MiniMagick::Image) }
+    let(:circular_avatar) { double(MiniMagick::Image, destroy!: nil, tempfile: nil) }
+
+    before do
+      allow(result_image).to receive_messages(composite: result_image, combine_options: result_image)
+      allow(author_image).to receive(:collapse!)
+      allow(author_image).to receive(:format)
+      allow(author_image).to receive(:resize)
+      allow(author_image).to receive(:composite).with(rounded_mask).and_return(circular_avatar)
+      allow(rounded_mask).to receive(:resize)
+
+      generator.instance_variable_set(:@author_image, author_image)
+      generator.instance_variable_set(:@rounded_mask, rounded_mask)
+    end
+
+    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them and cleans up the circular avatar" do
+      sigterm_error = MiniMagick::Error.new(
+        "`mogrify -fill white -stroke none -draw circle 203,200 203,138 /tmp/mini_magick.miff` failed with status: 15 and error:",
+      )
+      allow(result_image).to receive(:combine_options).and_raise(sigterm_error)
+      allow(Rails.error).to receive(:report)
+
+      expect { generator.send(:add_profile_card_avatar, result_image) }.to raise_error(sigterm_error)
+      expect(Rails.error).not_to have_received(:report)
+      expect(result_image).not_to have_received(:composite)
+      expect(circular_avatar).to have_received(:destroy!)
+    end
+
+    it "reports non-SIGTERM errors, cleans up the circular avatar, and returns the image without an avatar" do
+      error = MiniMagick::Error.new("`mogrify` failed with status: 1 and error:")
+      allow(author_image).to receive(:collapse!).and_raise(error)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
+      expect(Rails.error).to have_received(:report).with(error)
     end
   end
 

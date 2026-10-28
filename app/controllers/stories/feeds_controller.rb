@@ -191,8 +191,10 @@ module Stories
       if @page <= 2 && perform_caching && records.any?
         vc = view_context
         digest_path = vc.digest_path_from_template(lookup_context.find("stories/feeds/show", [], false, [], formats: [:json]))
-        keys = records.index_by { |r| story_cache_key(r, vc, digest_path) }
-        records = keys.except(*Rails.cache.read_multi(*keys.keys).keys).values
+        @story_cache_keys = {}
+        keys = records.index_by { |r| @story_cache_keys[r.id] = story_cache_key(r, vc, digest_path) }
+        @cached_story_fragments = Rails.cache.read_multi(*keys.keys)
+        records = keys.except(*@cached_story_fragments.keys).values
       end
       return if records.empty?
 
