@@ -37,6 +37,22 @@ RSpec.describe "/admin/content_manager/tags" do
       get edit_admin_tag_path(tag.id)
       expect(response).to have_http_status :ok
     end
+
+    it "renders supported and suggested checkboxes with accessible descriptions" do
+      get edit_admin_tag_path(tag.id)
+
+      html = Nokogiri::HTML(response.body)
+
+      supported_box = html.at_css('input[type="checkbox"]#tag_supported')
+      expect(supported_box["aria-describedby"]).to eq("tag-supported-description")
+      expect(html.css('label[for="tag_supported"] p')).to be_empty
+      expect(html.css("p#tag-supported-description.crayons-field__description")).to be_present
+
+      suggested_box = html.at_css('input[type="checkbox"]#tag_suggested')
+      expect(suggested_box["aria-describedby"]).to eq("tag-suggested-description")
+      expect(html.css('label[for="tag_suggested"] p')).to be_empty
+      expect(html.css("p#tag-suggested-description.crayons-field__description")).to be_present
+    end
   end
 
   describe "POST /admin/content_manager/tags" do

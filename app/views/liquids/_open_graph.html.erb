@@ -1,16 +1,18 @@
 <div class="crayons-card c-embed text-styles text-styles--secondary">
+  <% safe_url = url.to_s.match?(%r{\Ahttps?://}i) ? url : "#" %>
   <% if page.main_properties_present? %>
+    <% safe_page_url = page.respond_to?(:url) && page.url.to_s.match?(%r{\Ahttps?://}i) ? page.url : safe_url %>
     <div class="c-embed__content">
       <% if page.image %>
         <div class="c-embed__cover">
-          <a href="<%= page.url %>" class="c-link align-middle" target="_blank" rel="noopener noreferrer">
+          <a href="<%= safe_page_url %>" class="c-link align-middle" target="_blank" rel="noopener noreferrer">
             <img alt="" src="<%= page.image %>" height="auto" loading="lazy" class="m-0">
           </a>
         </div>
       <% end %>
       <div class="c-embed__body">
         <h2 class="fs-xl lh-tight">
-          <a href="<%= page.url %>" target="_blank" rel="noopener noreferrer" class="c-link">
+          <a href="<%= safe_page_url %>" target="_blank" rel="noopener noreferrer" class="c-link">
             <%= page.title %>
           </a>
         </h2>
@@ -34,7 +36,7 @@
   <% else %>
     <div class="c-embed__content">
       <div class="c-embed__body flex items-center justify-between">
-        <a href="<%= url %>" target="_blank" rel="noopener noreferrer" class="c-link fw-bold flex items-center">
+        <a href="<%= safe_url %>" target="_blank" rel="noopener noreferrer" class="c-link fw-bold flex items-center">
           <span class="mr-2"><%= url_domain %></span>
           <%= crayons_icon_tag("external-link", class: "crayons-icon--l", aria_hidden: true, height: 40, width: 40) %>
         </a>

@@ -239,8 +239,8 @@
         </span>
         <% if @organization.email.present? %>
           <span class="flex items-center mr-4">
-            <a href="mailto:<%= sanitize @organization.email %>" class="color-base-60 hover:color-base-90">
-              <%= sanitize @organization.email %>
+            <a href="mailto:<%= @organization.email %>" class="color-base-60 hover:color-base-90">
+              <%= @organization.email %>
             </a>
           </span>
         <% end %>

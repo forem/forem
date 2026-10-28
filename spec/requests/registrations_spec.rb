@@ -358,6 +358,52 @@ RSpec.describe "Registrations" do
                   password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
       end
+
+      it "renders the registration form with validation errors when a concurrent signup hits RecordNotUnique" do
+        existing_user = create(:user, email: "duplicate@example.com")
+        allow_any_instance_of(User).to receive(:save).and_raise(
+          ActiveRecord::RecordNotUnique.new(
+            'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_users_on_email"',
+          ),
+        )
+
+        expect do
+          post "/users", params: {
+            user: {
+              name: "Concurrent User",
+              username: "concurrent_user",
+              email: existing_user.email,
+              password: "PaSSw0rd_yo000",
+              password_confirmation: "PaSSw0rd_yo000"
+            }
+          }
+        end.not_to raise_error
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Email has already been taken")
+      end
+
+      it "adds a fallback email error when RecordNotUnique revalidation finds no errors" do
+        allow_any_instance_of(User).to receive(:save).and_raise(
+          ActiveRecord::RecordNotUnique.new(
+            'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_users_on_email"',
+          ),
+        )
+        allow_any_instance_of(User).to receive(:validate).and_return(true)
+
+        post "/users", params: {
+          user: {
+            name: "Concurrent User",
+            username: "concurrent_user",
+            email: "unique@example.com",
+            password: "PaSSw0rd_yo000",
+            password_confirmation: "PaSSw0rd_yo000"
+          }
+        }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Email has already been taken")
+      end
     end
 
     context "when email registration is allowed and confirmation is required" do

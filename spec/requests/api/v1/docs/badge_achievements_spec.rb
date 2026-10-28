@@ -35,7 +35,7 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements" do
       post "Create a badge achievement" do
         tags "badge_achievements"
-        description "Award a badge to a user. Requires administrator privileges.
+        description "Award a badge to a user. Requires administrator privileges.  Successful writes log `api_badge_achievement_create` with the actor and target ids in the admin API audit log.
 
 ### Integration Tips:
 - **user_id**: The numeric ID of the user receiving the badge.
@@ -126,7 +126,7 @@ RSpec.describe "Api::V1::Docs::BadgeAchievements" do
     path "/api/badge_achievements/{id}" do
       delete "Delete a badge achievement" do
         tags "badge_achievements"
-        description "Revoke a badge award by deleting the badge achievement. Requires administrator privileges."
+        description "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.  Successful writes log `api_badge_achievement_destroy` with the actor and target ids in the admin API audit log."
         produces "application/json"
         parameter name: :id, in: :path, required: true,
                   description: "Badge achievement unique ID to delete.",

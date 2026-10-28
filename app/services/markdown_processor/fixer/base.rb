@@ -16,8 +16,13 @@ module MarkdownProcessor
       def self.call(markdown)
         return unless markdown
 
+        legacy_call(markdown)
+      end
+
+      def self.legacy_call(markdown)
         fix_methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
       end
+      private_class_method :legacy_call
 
       def self.fix_methods
         self::METHODS

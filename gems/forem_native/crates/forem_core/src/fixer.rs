@@ -137,16 +137,22 @@ pub fn split_tags(markdown: &str) -> Cow<'_, str> {
     let mut out: Option<String> = None;
     // Everything before `copied` is already in `out`.
     let mut copied = 0;
+    let mut search_from = 0;
 
-    while let Some(start) = find(markdown, TAGS_LINE, copied) {
+    while let Some(start) = find(markdown, TAGS_LINE, search_from) {
         let Some(newline) = find(markdown, "\n", start + TAGS_LINE.len()) else {
             break;
         };
         let end = newline + 1;
+        search_from = end;
+        let segment = &markdown[start..end];
+        if !segment.contains('#') && !segment.contains(":,") {
+            continue;
+        }
 
         let out = out.get_or_insert_with(|| String::with_capacity(markdown.len()));
         out.push_str(&markdown[copied..start]);
-        let joined = markdown[start..end].replace(" #", ",").replace('#', "");
+        let joined = segment.replace(" #", ",").replace('#', "");
         out.push_str(&joined.replace(":,", ": "));
         copied = end;
     }
@@ -382,6 +388,55 @@ fn push_escaped_double_quotes(content: &str, out: &mut String) {
 /// an ASCII byte, so it is always a char boundary.
 fn find(haystack: &str, needle: &str, from: usize) -> Option<usize> {
     haystack.get(from..)?.find(needle).map(|index| index + from)
+}
+
+#[inline]
+fn chain_cow<'a>(input: Cow<'a, str>, f: impl FnOnce(&str) -> Cow<'_, str>) -> Cow<'a, str> {
+    match f(&input) {
+        Cow::Borrowed(_) => input,
+        Cow::Owned(s) => Cow::Owned(s),
+    }
+}
+
+/// Runs the complete `MarkdownProcessor::Fixer::FixAll` pipeline in a single Rust pass
+/// without intermediate Ruby `String` allocations or repeated FFI crossings:
+/// 1. `add_quotes_to_section("title")`
+/// 2. `add_quotes_to_section("description")`
+/// 3. `lowercase_published`
+/// 4. `convert_new_lines`
+/// 5. `split_tags`
+/// 6. `underscores_in_usernames`
+///
+/// Returns `Cow::Borrowed` when none of the six passes alter `markdown`.
+pub fn fix_all(markdown: &str) -> Cow<'_, str> {
+    let step = add_quotes_to_section(markdown, "title").unwrap_or(Cow::Borrowed(markdown));
+    let step = chain_cow(step, |s| {
+        add_quotes_to_section(s, "description").unwrap_or(Cow::Borrowed(s))
+    });
+    let step = chain_cow(step, lowercase_published);
+    let step = chain_cow(step, convert_new_lines);
+    let step = chain_cow(step, split_tags);
+    chain_cow(step, underscores_in_usernames)
+}
+
+/// Runs the `MarkdownProcessor::Fixer::FixForPreview` pipeline in a single Rust pass:
+/// 1. `add_quotes_to_section("title")`
+/// 2. `add_quotes_to_section("description")`
+/// 3. `underscores_in_usernames`
+///
+/// Returns `Cow::Borrowed` when none of the three passes alter `markdown`.
+pub fn fix_for_preview(markdown: &str) -> Cow<'_, str> {
+    let step = add_quotes_to_section(markdown, "title").unwrap_or(Cow::Borrowed(markdown));
+    let step = chain_cow(step, |s| {
+        add_quotes_to_section(s, "description").unwrap_or(Cow::Borrowed(s))
+    });
+    chain_cow(step, underscores_in_usernames)
+}
+
+/// Runs the `MarkdownProcessor::Fixer::FixForComment` pipeline (`underscores_in_usernames`).
+#[inline]
+pub fn fix_for_comment(markdown: &str) -> Cow<'_, str> {
+    underscores_in_usernames(markdown)
 }
 
 #[cfg(test)]
@@ -660,5 +715,28 @@ mod tests {
             underscores_in_usernames("x`@_a_b_ @_a_"),
             "x`@\\_a\\_b_ @_a_"
         );
+    }
+
+    #[test]
+    fn fix_all_fuses_all_six_fixer_passes() {
+        let input = "---\r\ntitle: Hello \"World\"\r\ndescription: A post\r\nPublished: true\r\ntags: #ruby #rust\r\n---\r\nHi @_dev_user_!\r\n";
+        let expected = "---\ntitle: \"Hello \\\"World\\\"\"\ndescription: \"A post\"\npublished: true\ntags: ruby,rust\n---\nHi @\\_dev\\_user\\_!\n";
+        assert_eq!(fix_all(input), expected);
+
+        let clean = "---\ntitle: \"Already Quoted\"\ndescription: \"Clean\"\npublished: false\ntags: ruby,rust\n---\nHello world\n";
+        assert!(matches!(fix_all(clean), Cow::Borrowed(_)));
+    }
+
+    #[test]
+    fn fix_for_preview_and_comment_run_subset_pipelines() {
+        let input = "---\ntitle: Preview\ndescription: Sub\nPublished: true\ntags: #ruby #rust\n---\nHi @_dev_!\r\n";
+        let expected_preview = "---\ntitle: \"Preview\"\ndescription: \"Sub\"\nPublished: true\ntags: #ruby #rust\n---\nHi @\\_dev\\_!\r\n";
+        assert_eq!(fix_for_preview(input), expected_preview);
+
+        let clean = "---\ntitle: \"Preview\"\ndescription: \"Sub\"\n---\nPlain body\n";
+        assert!(matches!(fix_for_preview(clean), Cow::Borrowed(_)));
+
+        assert_eq!(fix_for_comment("Hello @_a_b_!"), "Hello @\\_a\\_b\\_!");
+        assert!(matches!(fix_for_comment("Plain comment"), Cow::Borrowed(_)));
     }
 }

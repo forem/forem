@@ -35,6 +35,11 @@ module Stories
     private
 
     def set_number_of_articles(tag:)
+      @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
+      # stories/tagged_articles/_sidebar only renders pagination (which reads
+      # @num_published_articles) for signed-out requests on supported tags.
+      return if user_signed_in? || !tag.supported?
+
       @num_published_articles = if tag.requires_approval?
                                   tag.articles.published.from_subforem.approved.count
                                 else
@@ -43,8 +48,6 @@ module Stories
                                     tagged_count(tag: tag)
                                   end
                                 end
-
-      @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     end
 
     # @raise [ActiveRecord::NotFound] if we don't have an "established" tag

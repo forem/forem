@@ -1,22 +1,59 @@
 <header class="flex items-center mb-6">
   <div>
     <h1 class="crayons-title">Feed Configurations</h1>
-    <p class="color-base-60 text-sm">Manage, inspect, and deploy algorithmic feed scoring models.</p>
+    <p class="color-base-60 text-sm">
+      Manage, inspect, and deploy segmented algorithmic feed scoring models across targeting buckets.
+    </p>
   </div>
-  <a href="<%= new_admin_feed_config_path %>" class="crayons-btn ml-auto" role="button">
-    <%= crayons_icon_tag(:plus, class: "mr-1") %> Create New Feed Config
+  <a href="<%= new_admin_feed_config_path(filter: @selected_bucket) %>" class="crayons-btn ml-auto" role="button">
+    <%= crayons_icon_tag(:plus, class: "mr-1") %>
+    <%= @selected_bucket.present? && @selected_bucket != FeedConfig::BUCKET_ALL ? "Create New (#{@selected_bucket})" : "Create New Feed Config" %>
   </a>
 </header>
+
+<% if @bucket_stats.present? %>
+  <div class="grid grid-cols-2 m:grid-cols-3 l:grid-cols-6 gap-3 mb-6">
+    <% FeedConfig::TARGETING_BUCKETS.each do |bucket| %>
+      <% stats = @bucket_stats[bucket] || {} %>
+      <% is_selected = @selected_bucket == bucket %>
+      <%= link_to admin_feed_configs_path(filter: is_selected ? nil : bucket, mode: params[:mode], sort: params[:sort]),
+                  class: "crayons-card p-3 block no-underline border #{is_selected ? 'border-teal-500 bg-teal-50 dark:bg-teal-950' : ''}" do %>
+        <div class="flex items-center justify-between mb-1">
+          <code class="fs-xs fw-bold color-base-90"><%= bucket %></code>
+          <% if is_selected %>
+            <span class="c-indicator c-indicator--success fs-xs">Filtered</span>
+          <% end %>
+        </div>
+        <div class="fs-xs color-base-70">
+          <strong><%= number_with_delimiter(stats[:active_count].to_i) %></strong> / <%= number_with_delimiter(FeedConfig::ARCHIVE_TOP_LIMIT) %> active
+          &middot; <%= number_with_delimiter(stats[:archived_count].to_i) %> archived
+        </div>
+        <div class="fs-xs color-base-60 mt-1">
+          <% if stats[:best_config].present? %>
+            Best: <strong>#<%= stats[:best_config].id %></strong> (<%= stats[:best_config].feed_success_score.round(3) %>)
+          <% elsif bucket != FeedConfig::BUCKET_ALL %>
+            <em>Fallback to <code>all</code></em>
+          <% else %>
+            <em>No active configs</em>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
 
 <% if @best_feed_config.present? %>
   <div class="crayons-card p-6 mb-6 border border-teal-500 bg-teal-50 dark:bg-teal-950">
     <div class="flex items-center justify-between mb-4">
       <div>
-        <span class="c-indicator c-indicator--success mr-2">Top Performer</span>
+        <span class="c-indicator c-indicator--success mr-2">
+          <%= @selected_bucket.present? ? "Top Performer (#{@selected_bucket})" : "Top Performer (Overall)" %>
+        </span>
         <h2 class="fs-l fw-bold inline-block">Feed Config #<%= @best_feed_config.id %></h2>
+        <span class="c-indicator ml-2"><%= @best_feed_config.targeting_bucket %></span>
       </div>
       <div>
-        <%= link_to "Clone & Modify as New", new_admin_feed_config_path(clone_from_id: @best_feed_config.id), class: "crayons-btn crayons-btn--secondary mr-2" %>
+        <%= link_to "Clone & Modify as New", new_admin_feed_config_path(clone_from_id: @best_feed_config.id, filter: @selected_bucket), class: "crayons-btn crayons-btn--secondary mr-2" %>
         <%= link_to "View Details", admin_feed_config_path(@best_feed_config), class: "crayons-btn crayons-btn--outlined" %>
       </div>
     </div>
@@ -42,29 +79,55 @@
 <% end %>
 
 <div class="crayons-card p-6 grid gap-6">
-  <div class="flex items-center justify-between">
+  <div class="flex flex-wrap items-center justify-between gap-4">
     <div class="text-sm color-base-60">
-      <strong>Exposure Split:</strong> 75% Top <%= FeedConfig::TOP_POOL_LIMIT %> by Score (&ge; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 20% Newest <%= FeedConfig::TOP_POOL_LIMIT %> (&lt; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 5% Random
+      <div>
+        <strong>Exposure Split (per bucket):</strong> 75% Top <%= FeedConfig::TOP_POOL_LIMIT %> by Score (&ge; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 20% Newest <%= FeedConfig::TOP_POOL_LIMIT %> (&lt; <%= FeedConfig::LOW_IMPRESSION_COUNT %> impressions) &middot; 5% Random
+      </div>
+      <div class="fs-xs color-base-50 mt-1">
+        <strong>Archival Policy:</strong> Retains up to <%= number_with_delimiter(FeedConfig::ARCHIVE_TOP_LIMIT) %> top active configs per targeting bucket; configs older than <%= FeedConfig::ARCHIVE_AGE_THRESHOLD.inspect %> outside their bucket's top <%= number_with_delimiter(FeedConfig::ARCHIVE_TOP_LIMIT) %> are automatically archived.
+      </div>
     </div>
     <nav class="crayons-tabs" aria-label="Sort feed configs">
       <ul class="crayons-tabs__list">
         <li>
-          <%= link_to "Top Score", admin_feed_configs_path(sort: "score"), class: "crayons-tabs__item #{params[:sort].blank? || params[:sort] == 'score' ? 'crayons-tabs__item--current' : ''}" %>
+          <%= link_to "Top Score", admin_feed_configs_path(sort: "score", filter: @selected_bucket, mode: params[:mode]), class: "crayons-tabs__item #{params[:sort].blank? || params[:sort] == 'score' ? 'crayons-tabs__item--current' : ''}" %>
         </li>
         <li>
-          <%= link_to "Newest", admin_feed_configs_path(sort: "newest"), class: "crayons-tabs__item #{params[:sort] == 'newest' ? 'crayons-tabs__item--current' : ''}" %>
+          <%= link_to "Newest", admin_feed_configs_path(sort: "newest", filter: @selected_bucket, mode: params[:mode]), class: "crayons-tabs__item #{params[:sort] == 'newest' ? 'crayons-tabs__item--current' : ''}" %>
         </li>
         <li>
-          <%= link_to "Most Impressions", admin_feed_configs_path(sort: "impressions"), class: "crayons-tabs__item #{params[:sort] == 'impressions' ? 'crayons-tabs__item--current' : ''}" %>
+          <%= link_to "Most Impressions", admin_feed_configs_path(sort: "impressions", filter: @selected_bucket, mode: params[:mode]), class: "crayons-tabs__item #{params[:sort] == 'impressions' ? 'crayons-tabs__item--current' : ''}" %>
         </li>
       </ul>
     </nav>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4 border-t pt-4">
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="fs-xs fw-bold color-base-60 mr-1">Bucket:</span>
+      <%= link_to "All Buckets", admin_feed_configs_path(sort: params[:sort], mode: params[:mode]), class: "crayons-btn crayons-btn--s #{@selected_bucket.blank? ? 'crayons-btn--primary' : 'crayons-btn--outlined'}" %>
+      <% FeedConfig::TARGETING_BUCKETS.each do |bucket| %>
+        <% bucket_stat = @bucket_stats&.dig(bucket) || {} %>
+        <% bucket_count = @status_mode == "archived" ? bucket_stat[:archived_count].to_i : (@status_mode == "all" ? bucket_stat[:active_count].to_i + bucket_stat[:archived_count].to_i : bucket_stat[:active_count].to_i) %>
+        <%= link_to "#{bucket} (#{bucket_count})", admin_feed_configs_path(sort: params[:sort], filter: bucket, mode: params[:mode]), class: "crayons-btn crayons-btn--s #{@selected_bucket == bucket ? 'crayons-btn--primary' : 'crayons-btn--outlined'}" %>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="fs-xs fw-bold color-base-60 mr-1">Status:</span>
+      <%= link_to "Active (#{number_with_delimiter(@total_active_count.to_i)})", admin_feed_configs_path(sort: params[:sort], filter: @selected_bucket, mode: "active"), class: "crayons-btn crayons-btn--s #{@status_mode == 'active' ? 'crayons-btn--primary' : 'crayons-btn--outlined'}" %>
+      <%= link_to "Archived (#{number_with_delimiter(@total_archived_count.to_i)})", admin_feed_configs_path(sort: params[:sort], filter: @selected_bucket, mode: "archived"), class: "crayons-btn crayons-btn--s #{@status_mode == 'archived' ? 'crayons-btn--primary' : 'crayons-btn--outlined'}" %>
+      <%= link_to "All (#{number_with_delimiter(@total_active_count.to_i + @total_archived_count.to_i)})", admin_feed_configs_path(sort: params[:sort], filter: @selected_bucket, mode: "all"), class: "crayons-btn crayons-btn--s #{@status_mode == 'all' ? 'crayons-btn--primary' : 'crayons-btn--outlined'}" %>
+    </div>
   </div>
 
   <table class="crayons-table">
     <thead>
       <tr>
         <th scope="col">Config ID</th>
+        <th scope="col">Targeting Bucket</th>
+        <th scope="col">Status</th>
         <th scope="col">Success Score</th>
         <th scope="col">Impressions</th>
         <th scope="col">AI Weights (Matching / Penalty)</th>
@@ -77,13 +140,25 @@
         <tr>
           <td>
             <strong><%= link_to "##{config.id}", admin_feed_config_path(config) %></strong>
-            <% if config.id == @best_feed_config&.id %>
+            <% if !config.archived? && (config.id == @best_feed_config&.id || @bucket_best_ids&.include?(config.id)) %>
               <span class="c-indicator c-indicator--success ml-1">Best</span>
-            <% elsif @top_pool_ids&.include?(config.id) %>
+            <% elsif !config.archived? && @top_pool_ids&.include?(config.id) %>
               <span class="c-indicator c-indicator--info ml-1">Top <%= FeedConfig::TOP_POOL_LIMIT %></span>
             <% end %>
-            <% if @new_pool_ids&.include?(config.id) %>
+            <% if !config.archived? && @new_pool_ids&.include?(config.id) %>
               <span class="c-indicator c-indicator--warning ml-1">New Pool</span>
+            <% end %>
+          </td>
+          <td>
+            <%= link_to admin_feed_configs_path(filter: config.targeting_bucket, mode: params[:mode], sort: params[:sort]), class: "no-underline" do %>
+              <code><%= config.targeting_bucket %></code>
+            <% end %>
+          </td>
+          <td>
+            <% if config.archived? %>
+              <span class="c-indicator">Archived</span>
+            <% else %>
+              <span class="c-indicator c-indicator--success">Active</span>
             <% end %>
           </td>
           <td><%= config.feed_success_score.round(4) %></td>

@@ -39,4 +39,23 @@ RSpec.describe TwitchTag, type: :liquid_tag do
     assert_parses_clip clip_slug, "#{clip_slug}&autoplay=true"
     assert_parses_video video_id, "#{video_id}&muted=true"
   end
+
+  context "when Twitch player URL has reordered query params" do
+    it "accepts player url with parent param before video param" do
+      url = "https://player.twitch.tv/?parent=localhost&video=#{video_id}&autoplay=false"
+      assert_parses_video video_id, url
+    end
+
+    it "accepts player url with multiple params before video param" do
+      url = "https://player.twitch.tv/?autoplay=false&parent=localhost&video=#{video_id}"
+      assert_parses_video video_id, url
+    end
+
+    it "rejects non-Twitch URLs containing player.twitch.tv in the path" do
+      url = "https://example.com/player.twitch.tv/?video=#{video_id}"
+      expect do
+        Liquid::Template.parse("{% twitch #{url} %}").render
+      end.to raise_error(StandardError, I18n.t("liquid_tags.twitch_tag.invalid_twitch_id"))
+    end
+  end
 end

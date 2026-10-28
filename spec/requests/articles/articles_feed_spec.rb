@@ -51,20 +51,53 @@ RSpec.describe "ArticlesFeed" do
       queries
     end
 
-    it "renders categories with a single articles query and one batched taggings preload" do
+    it "renders categories from cached_tag_list with a single articles query and no taggings query" do
       queries = article_and_tagging_queries { get "/feed/#{user.username}" }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("<category>ruby</category>")
       expect(response.body).to include("<category>rails</category>")
       expect(queries.count { |sql| sql.include?('FROM "articles"') }).to eq(1)
-      # tag_list reads taggings (via acts-as-taggable-on custom_contexts), so the preload must stay batched.
-      expect(queries.count { |sql| sql.include?('FROM "taggings"') }).to eq(1)
+      expect(queries.grep(/FROM "taggings"/)).to be_empty
       expect(queries.grep(/FROM "tags"/)).to be_empty
     end
 
     it "returns not found when the requested page is past the last article" do
       expect { get "/feed/#{user.username}?page=50" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  context "with home and tag feeds" do
+    let(:tag) { create(:tag, name: "rssperf") }
+
+    before { create(:article, user: article.user, tags: tag.name, score: 10) }
+
+    it "renders dc:creator from cached_user_name without querying users on the home feed" do
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/feed" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<dc:creator>#{article.user.name}</dc:creator>")
+      expect(user_queries).to be_empty
+    end
+
+    it "queries tags only once and skips users queries on a direct tag feed" do
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        queries << sql if sql.match?(/FROM "(tags|users)"/) && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/feed/tag/#{tag.name}" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<dc:creator>#{article.user.name}</dc:creator>")
+      expect(queries.grep(/FROM "tags"/).size).to eq(1)
+      expect(queries.grep(/FROM "users"/)).to be_empty
     end
   end
 end

@@ -2,6 +2,9 @@
 pt:
   views:
     events:
+      challenge:
+        upcoming: EM BREVE
+        starts_on: "Começa em %{date}"
       meta:
         title: Próximos Eventos
         description: Descubra os próximos eventos virtuais, desafios, transmissões e hackathons.

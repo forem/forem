@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Editor" do
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
+
   describe "GET /new" do
     subject(:request_call) { get new_path }
-
-    let(:user) { create(:user) }
 
     context "when not authenticated" do
       it { is_expected.to eq(200) }
@@ -23,9 +24,6 @@ RSpec.describe "Editor" do
   end
 
   describe "GET /:article/edit" do
-    let(:user) { create(:user) }
-    let(:article) { create(:article, user: user) }
-
     context "when not logged-in" do
       it "redirects to /enter" do
         get "/#{user.username}/#{article.slug}/edit"
@@ -43,8 +41,6 @@ RSpec.describe "Editor" do
   end
 
   describe "co-author invitations in the editor" do
-    let(:user) { create(:user) }
-    let(:article) { create(:article, user: user) }
     let(:edit_path) { "/#{user.username}/#{article.slug}/edit" }
 
     before { sign_in user }
@@ -81,7 +77,7 @@ RSpec.describe "Editor" do
       end
 
       it "leaves the picker out for someone editing another user's post" do
-        admin = create(:user, :super_admin)
+        admin = create(:user, :super_admin, :without_profile, profile_image: nil)
         sign_in admin
 
         get edit_path
@@ -92,8 +88,6 @@ RSpec.describe "Editor" do
   end
 
   describe "POST /articles/preview" do
-    let(:user) { create(:user) }
-    let(:article) { create(:article, user: user) }
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
 
     context "when not logged-in" do
@@ -108,12 +102,7 @@ RSpec.describe "Editor" do
         sign_in user
       end
 
-      it "returns json" do
-        post "/articles/preview", headers: headers
-        expect(response.media_type).to eq("application/json")
-      end
-
-      it "returns successfully with frontmatter" do
+      it "returns json successfully with frontmatter", :aggregate_failures do
         article_body = <<~MARKDOWN
           ---
           ---
@@ -127,6 +116,7 @@ RSpec.describe "Editor" do
              as: :json
 
         expect(response).to be_successful
+        expect(response.media_type).to eq("application/json")
       end
 
       it "ignores a cover_image given as a list instead of raising" do

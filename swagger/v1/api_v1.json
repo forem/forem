@@ -1248,6 +1248,81 @@
         }
       }
     },
+    "/api/articles/preview": {
+      "post": {
+        "summary": "Preview an article",
+        "tags": [
+          "articles"
+        ],
+        "description": "This endpoint allows the client to preview an article's rendered HTML and parsed front matter without saving it to the database.",
+        "operationId": "previewArticle",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Article Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    },
+                    "body_html": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "description": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true
+                    },
+                    "cover_image": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "reading_time_minutes": {
+                      "type": "integer"
+                    },
+                    "ai_disclosure_level": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Article"
+              }
+            }
+          },
+          "description": "Article markdown and optional attributes to preview"
+        }
+      }
+    },
     "/api/segments": {
       "get": {
         "summary": "Manually managed audience segments",
@@ -1556,7 +1631,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
+        "description": "Award a badge to a user. Requires administrator privileges.  Successful writes log `api_badge_achievement_create` with the actor and target ids in the admin API audit log.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1676,7 +1751,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.",
+        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.  Successful writes log `api_badge_achievement_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1734,7 +1809,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Create a new badge. Requires administrator privileges.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
+        "description": "Create a new badge. Requires administrator privileges.  Successful writes log `api_badge_create` with the actor and target ids in the admin API audit log.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
         "parameters": [
 
         ],
@@ -1825,7 +1900,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.",
+        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.  Successful writes log `api_badge_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1884,7 +1959,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.",
+        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.  Successful writes log `api_badge_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1934,7 +2009,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Create a new billboard.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
+        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
         "parameters": [
 
         ],
@@ -2012,7 +2087,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Update an existing billboard's configurations.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
+        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
         "parameters": [
           {
             "name": "id",
@@ -2069,7 +2144,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Remove a billboard from active rotation by unpublishing it.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
+        "description": "Remove a billboard from active rotation by unpublishing it.  Successful writes log `api_billboard_unpublish` with the actor and target ids in the admin API audit log.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
         "parameters": [
           {
             "name": "id",
@@ -2094,6 +2169,104 @@
           "401": {
             "description": "unauthorized"
           }
+        }
+      }
+    },
+    "/api/billboards/preview": {
+      "post": {
+        "summary": "Preview a billboard",
+        "tags": [
+          "billboards"
+        ],
+        "description": "Render a billboard's Markdown/HTML copy into `processed_html` and `minimized_processed_html` without saving it.",
+        "operationId": "previewBillboard",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "minimized_processed_html": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown or raw HTML) of the ad"
+                  },
+                  "minimized_body_markdown": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Optional minimized markdown copy"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "sidebar_right_second",
+                      "sidebar_right_third",
+                      "feed_first",
+                      "feed_second",
+                      "feed_third",
+                      "home_hero",
+                      "footer",
+                      "page_fixed_bottom",
+                      "post_fixed_bottom",
+                      "post_body_bottom",
+                      "post_body_bottom_secondary",
+                      "post_sidebar",
+                      "post_sidebar_secondary",
+                      "post_comments",
+                      "post_comments_secondary",
+                      "post_comments_mid",
+                      "digest_first",
+                      "digest_second",
+                      "external_feed"
+                    ],
+                    "nullable": true
+                  },
+                  "render_mode": {
+                    "type": "string",
+                    "enum": [
+                      "forem_markdown",
+                      "raw"
+                    ],
+                    "default": "forem_markdown"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Billboard markdown and rendering parameters to preview."
         }
       }
     },
@@ -2196,6 +2369,58 @@
           "404": {
             "description": "Comment Not Found"
           }
+        }
+      }
+    },
+    "/api/comments/preview": {
+      "post": {
+        "summary": "Preview a comment",
+        "tags": [
+          "comments"
+        ],
+        "description": "This endpoint allows the client to preview a comment's rendered HTML from Markdown without saving it.",
+        "operationId": "previewComment",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendered Comment Preview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The comment body in Markdown format"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Comment markdown to preview"
         }
       }
     },
@@ -2822,7 +3047,7 @@
         "tags": [
           "events"
         ],
-        "description": "Create a new event. Requires administrator privileges.",
+        "description": "Create a new event. Requires administrator privileges.\n\nSuccessful writes log `api_event_create` with the actor and target ids in the admin API audit log.",
         "operationId": "createEvent",
         "parameters": [
 
@@ -2891,7 +3116,7 @@
         "tags": [
           "events"
         ],
-        "description": "Update an existing event. Requires administrator privileges.",
+        "description": "Update an existing event. Requires administrator privileges.\n\nSuccessful writes log `api_event_update` with the actor and target ids in the admin API audit log.",
         "operationId": "updateEvent",
         "parameters": [
           {
@@ -2932,7 +3157,7 @@
         "tags": [
           "events"
         ],
-        "description": "Delete an event. Requires administrator privileges.",
+        "description": "Delete an event. Requires administrator privileges.\n\nSuccessful writes log `api_event_destroy` with the actor and target ids in the admin API audit log.",
         "operationId": "deleteEvent",
         "parameters": [
           {
@@ -3791,7 +4016,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
+        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
         "parameters": [
 
         ],
@@ -3909,7 +4134,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.",
+        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -3958,7 +4183,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.",
+        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -3990,6 +4215,69 @@
           "422": {
             "description": "unprocessable"
           }
+        }
+      }
+    },
+    "/api/pages/preview": {
+      "post": {
+        "summary": "preview a page",
+        "tags": [
+          "pages"
+        ],
+        "description": "Render a page's Markdown (including organization Liquid tags when `organization_id` is supplied) into HTML without saving it.",
+        "operationId": "previewPage",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "processed_html": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          },
+          "422": {
+            "description": "unprocessable"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the page"
+                  },
+                  "body_html": {
+                    "type": "string",
+                    "description": "Raw HTML for site admin pages when body_markdown is omitted",
+                    "nullable": true
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "nullable": true,
+                    "description": "The ID of the organization the page belongs to, if previewing an organization page"
+                  }
+                }
+              }
+            }
+          },
+          "description": "Page content to preview."
         }
       }
     },
@@ -5017,6 +5305,109 @@
               }
             }
           }
+        }
+      },
+      "post": {
+        "summary": "Create a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Create a tag before it appears on an article.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful creation writes an admin API audit entry.\nAccepts a required alphanumeric name of at most 30 characters, plus the optional fields accepted by tag update.\nReturns the same fields as tag update.  A duplicate name returns 422 with an error and the existing tag's id, without changing that tag.",
+        "operationId": "createTag",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "The created tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invalid tag or duplicate name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "Existing tag id, present only for duplicate names"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "javascript"
+                  },
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag name and optional display fields"
         }
       }
     },

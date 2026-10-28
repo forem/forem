@@ -3,6 +3,15 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article, currentUserId = null) {
+  function escapeHTML(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
   if (article && article.class_name === 'Tag') {
     return `<article class="crayons-story">
@@ -14,13 +23,13 @@ function buildArticleHTML(article, currentUserId = null) {
           </span>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-2">
-              <a href="/t/${article.name}" class="c-link">
-                ${article.name}
+              <a href="/t/${escapeHTML(article.name)}" class="c-link">
+                ${escapeHTML(article.name)}
               </a>
             </h3>
             ${
               article.short_summary
-                ? `<div class="truncate-at-3">${article.short_summary}</div>`
+                ? `<div class="truncate-at-3">${filterXSS(article.short_summary)}</div>`
                 : ''
             }
           </div>
@@ -31,16 +40,16 @@ function buildArticleHTML(article, currentUserId = null) {
   if (article && article.class_name === 'PodcastEpisode') {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
-          <a href="${article.podcast.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.podcast.image_url}" alt="${article.podcast.title}" loading="lazy" />
+          <a href="${escapeHTML(article.podcast.slug)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.podcast.image_url)}" alt="${escapeHTML(article.podcast.title)}" loading="lazy" />
           </a>
           <div class="pt-2 flex-1">
             <p class="crayons-podcast-episode__author">
-              ${article.podcast.title}
+              ${escapeHTML(article.podcast.title)}
             </p>
             <h2 class="crayons-podcast-episode__title crayons-story__title mb-0">
-              <a href="${article.path}" id="article-link-${article.id}">
-                ${article.podcast.title}
+              <a href="${escapeHTML(article.path)}" id="article-link-${article.id}">
+                ${escapeHTML(article.podcast.title)}
               </a>
             </h2>
           </div>
@@ -52,17 +61,17 @@ function buildArticleHTML(article, currentUserId = null) {
     const html = `
       <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
-          <a href="${article.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.profile_image.url}" alt="" loading="lazy" />
+          <a href="${escapeHTML(article.slug)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.profile_image.url)}" alt="" loading="lazy" />
           </a>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-1">
-              <a href="${article.slug}" class="c-link"> ${article.name} </a>
+              <a href="${escapeHTML(article.slug)}" class="c-link"> ${escapeHTML(article.name)} </a>
             </h3>
-            <p class="crayons-story__slug-segment">@${article.slug}</p>
+            <p class="crayons-story__slug-segment">@${escapeHTML(article.slug)}</p>
             ${
               article.summary
-                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                ? `<div class="truncate-at-3 top-margin-4">${escapeHTML(article.summary)}</div>`
                 : ''
             }
           </div>
@@ -90,17 +99,17 @@ function buildArticleHTML(article, currentUserId = null) {
     const html = `
       <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
-          <a href="${article.username}" class="crayons-podcast-episode__cover">
-            <img src="${article.profile_image.url}" alt="" loading="lazy" />
+          <a href="${escapeHTML(article.username)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.profile_image.url)}" alt="" loading="lazy" />
           </a>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-1">
-              <a href="${article.username}" class="c-link"> ${article.name} </a>
+              <a href="${escapeHTML(article.username)}" class="c-link"> ${escapeHTML(article.name)} </a>
             </h3>
-            <p class="crayons-story__slug-segment">@${article.username}</p>
+            <p class="crayons-story__slug-segment">@${escapeHTML(article.username)}</p>
             ${
               article.summary
-                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                ? `<div class="truncate-at-3 top-margin-4">${escapeHTML(article.summary)}</div>`
                 : ''
             }
           </div>
@@ -165,7 +174,7 @@ function buildArticleHTML(article, currentUserId = null) {
       commentsCount = article.comments_count || '0';
     }
 
-    var commentsAriaLabelText = `aria-label="Add a comment to post - ${article.title}"`;
+    var commentsAriaLabelText = `aria-label="Add a comment to post - ${escapeHTML(article.title)}"`;
 
     if (article.class_name !== 'User') {
       commentsDisplay =
@@ -242,7 +251,7 @@ function buildArticleHTML(article, currentUserId = null) {
     if (article.class_name === 'PodcastEpisode') {
       picUrl = article.main_image;
       profileUsername = article.slug;
-      userName = article.title;
+      userName = escapeHTML(article.title);
     } else {
       picUrl = article.user.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/');
       profileUsername = article.user.username;
@@ -265,17 +274,17 @@ function buildArticleHTML(article, currentUserId = null) {
     ) {
       organizationLogo =
         '<a href="/' +
-        article.organization.slug +
+        escapeHTML(article.organization.slug) +
         '" class="crayons-logo crayons-logo--l"><img alt="' +
-        article.organization.name +
+        escapeHTML(article.organization.name) +
         ' logo" src="' +
         article.organization.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/') +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
         '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
-        article.organization.slug +
+        escapeHTML(article.organization.slug) +
         '" class="crayons-story__secondary fw-medium">' +
-        article.organization.name +
+        escapeHTML(article.organization.name) +
         '</a></span>';
       organizationClasses =
         'crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted';
@@ -371,8 +380,13 @@ function buildArticleHTML(article, currentUserId = null) {
       if (firstSnippetChar.toLowerCase() !== firstSnippetChar.toUpperCase()) {
         startingEllipsis = '…';
       }
+      var sanitizedSnippets = article.highlight.body_text.map(function (snippet) {
+        return escapeHTML(snippet)
+          .replace(/&lt;mark&gt;/g, '<mark>')
+          .replace(/&lt;\/mark&gt;/g, '</mark>');
+      });
       bodyTextSnippet =
-        startingEllipsis + article.highlight.body_text.join('...') + '…';
+        startingEllipsis + sanitizedSnippets.join('...') + '…';
       if (bodyTextSnippet.length > 0) {
         searchSnippetHTML =
           '<div class="crayons-story__snippet mb-1">' +
@@ -422,7 +436,7 @@ function buildArticleHTML(article, currentUserId = null) {
           class="c-btn c-btn--icon-alone bookmark-button"
           data-reactable-id="${article.id}"
           data-article-author-id="${article.user_id}"
-          aria-label="Save post ${article.title} to reading list">
+          aria-label="Save post ${escapeHTML(article.title)} to reading list">
           <span class="bm-initial crayons-icon c-btn__icon">${saveSVG}</span>
           <span class="bm-success crayons-icon c-btn__icon">${saveFilledSVG}</span>
         </button>

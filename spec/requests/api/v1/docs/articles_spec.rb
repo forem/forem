@@ -663,6 +663,66 @@ will remain."
       end
     end
   end
+
+  describe "POST /api/articles/preview" do
+    path "/api/articles/preview" do
+      post "Preview an article" do
+        tags "articles"
+        description "This endpoint allows the client to preview an article's rendered HTML and parsed front matter without saving it to the database."
+        operationId "previewArticle"
+        produces "application/json"
+        consumes "application/json"
+        parameter name: :article,
+                  in: :body,
+                  description: "Article markdown and optional attributes to preview",
+                  schema: { "$ref": "#/components/schemas/Article" }
+
+        response "200", "Rendered Article Preview" do
+          let(:"api-key") { api_secret.secret }
+          let(:article) do
+            {
+              article: {
+                title: "Preview article",
+                body_markdown: "**Preview** body for the article",
+                tags: %w[ruby rails],
+                ai_disclosure_level: "some_ai"
+              }
+            }
+          end
+          schema type: :object,
+                 properties: {
+                   processed_html: { type: :string },
+                   body_html: { type: :string },
+                   title: { type: :string, nullable: true },
+                   description: { type: :string, nullable: true },
+                   tags: { type: :array, items: { type: :string }, nullable: true },
+                   cover_image: { type: :string, nullable: true },
+                   reading_time_minutes: { type: :integer },
+                   ai_disclosure_level: { type: :string, nullable: true }
+                 }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:article) { { article: { body_markdown: "Hello" } } }
+          add_examples
+
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:article) { { article: { body_markdown: "{% link invalid_link_that_does_not_exist %}" } } }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
   # rubocop:enable RSpec/VariableName
   # rubocop:enable RSpec/EmptyExampleGroup
   # rubocop:enable Layout/LineLength
