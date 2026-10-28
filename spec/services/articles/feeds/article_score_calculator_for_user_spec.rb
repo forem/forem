@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
   let(:user) { create(:user) }
-  let!(:article) { create(:article) }
+  let(:article) { create(:article, with_tags: false) }
   let(:applicator) { described_class.new(user: user) }
 
   describe "#score_followed_user" do
@@ -23,7 +23,7 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
 
   describe "#score_followed_organization" do
     let(:organization) { create(:organization) }
-    let(:article) { create(:article, organization: organization) }
+    let(:article) { create(:article, organization: organization, user: user, with_tags: false) }
 
     context "when article is from a followed organization" do
       before { user.follow(organization) }
@@ -40,7 +40,7 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
     end
 
     context "when article has no organization" do
-      let(:article) { create(:article) }
+      let(:article) { build_stubbed(:article, organization_id: nil) }
 
       it "returns a score of 0" do
         expect(applicator.score_followed_organization(article)).to eq 0
@@ -112,7 +112,7 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
   end
 
   describe "#score_experience_level" do
-    let(:article) { create(:article, experience_level_rating: 7) }
+    let(:article) { build_stubbed(:article, experience_level_rating: 7) }
 
     context "when user has a further experience level" do
       let(:user) { create(:user) }
@@ -157,18 +157,10 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
   end
 
   describe "#score_comments" do
-    let(:applicator) { described_class.new(user: user, config: { comment_weight: 1 }) }
-    let(:article_with_one_comment) { create(:article) }
-    let(:article_with_five_comments) { create(:article) }
-
-    before do
-      create(:comment, user: user, commentable: article_with_one_comment)
-      create_list(:comment, 5, user: user, commentable: article_with_five_comments)
-      article_with_one_comment.update_score
-      article_with_five_comments.update_score
-      article_with_one_comment.reload
-      article_with_five_comments.reload
-    end
+    let(:applicator) { described_class.new(user: nil, config: { comment_weight: 1 }) }
+    let(:article) { build_stubbed(:article, comments_count: 0) }
+    let(:article_with_one_comment) { build_stubbed(:article, comments_count: 1) }
+    let(:article_with_five_comments) { build_stubbed(:article, comments_count: 5) }
 
     context "when comment_weight is default of 0" do
       it "returns 0 for uncommented articles" do
@@ -200,10 +192,10 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
   end
 
   describe "#score_ai_disclosure" do
-    let(:not_disclosed_article) { create(:article, ai_disclosure_level: :not_disclosed) }
-    let(:no_ai_article) { create(:article, ai_disclosure_level: :no_ai) }
-    let(:some_ai_article) { create(:article, ai_disclosure_level: :some_ai) }
-    let(:fully_autonomous_article) { create(:article, ai_disclosure_level: :fully_autonomous) }
+    let(:not_disclosed_article) { build_stubbed(:article, ai_disclosure_level: :not_disclosed) }
+    let(:no_ai_article) { build_stubbed(:article, ai_disclosure_level: :no_ai) }
+    let(:some_ai_article) { build_stubbed(:article, ai_disclosure_level: :some_ai) }
+    let(:fully_autonomous_article) { build_stubbed(:article, ai_disclosure_level: :fully_autonomous) }
 
     context "when user has show_all preference" do
       before { user.setting.update(feed_ai_preference: :show_all) }

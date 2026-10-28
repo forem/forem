@@ -1,46 +1,43 @@
+# rubocop:disable Layout/ArgumentAlignment, Layout/TrailingWhitespace, RSpec/AnyInstance, RSpec/LeadingSubject, RSpec/MessageSpies, RSpec/NestedGroups, RSpec/SubjectStub, Rails/DurationArithmetic, Style/CollectionMethods, Style/Send, Style/SlicingWithRange, Style/TrailingCommaInArguments, Style/TrailingCommaInArrayLiteral
 require "rails_helper"
 
 RSpec.describe Articles::Feeds::Custom, type: :service do
-  # In test environment, TIME_AGO_MAX is 90.days.ago.
-  let(:user) { create(:user) }
-  # Stub feed_config to return a string rather than a Proc.
-  let(:feed_config) { build(:feed_config) }
-  before do
-    allow(feed_config).to receive(:score_sql).with(user).and_return("articles.score")
-  end
-
-  # Create articles that are published within the allowed time window.
-  let!(:high_score_article) do
-    a = create(:article, published: true, score: 100)
-    a.update_column(:published_at, Time.current - 1.day)
-    a
-  end
-
-  let!(:medium_score_article) do
-    a = create(:article, published: true, score: 50)
-    a.update_column(:published_at, Time.current - 2.days)
-    a
-  end
-
-  let!(:low_score_article) do
-    a = create(:article, published: true, score: 10)
-    a.update_column(:published_at, Time.current - 5.days)
-    a
-  end
-
-  # Create an article published outside of the allowed window.
-  let!(:old_article) do
-    a = create(:article, published: true, score: 80)
-    a.update_column(:published_at, Time.current - 100.days)
-    a
-  end
-
   subject(:feed) do
     described_class.new(
       user: user,
       number_of_articles: 100,
       page: 1,
-      feed_config: feed_config
+      feed_config: feed_config,
+    )
+  end
+
+  # In test environment, TIME_AGO_MAX is 90.days.ago.
+  let(:user) { create(:user) }
+  let(:author) { create(:user) }
+  # Stub feed_config to return a string rather than a Proc.
+  let(:feed_config) { build(:feed_config) }
+
+  # Create articles that are published within the allowed time window.
+  let(:high_score_article) { create_feed_article(score: 100, days_ago: 1) }
+  let(:medium_score_article) { create_feed_article(score: 50, days_ago: 2) }
+  let(:low_score_article) { create_feed_article(score: 10, days_ago: 5) }
+
+  # Create an article published outside of the allowed window.
+  let(:old_article) { create_feed_article(score: 80, days_ago: 100) }
+
+  before do
+    allow(feed_config).to receive(:score_sql).with(user).and_return("articles.score")
+  end
+
+  def create_feed_article(score:, days_ago: 1, **attrs)
+    create(
+      :article,
+      user: author,
+      published: true,
+      score: score,
+      past_published_at: days_ago.days.ago,
+      with_tags: attrs.key?(:tags),
+      **attrs,
     )
   end
 
@@ -58,6 +55,8 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
 
     context "when valid feed_config and user are provided" do
+      before { [high_score_article, medium_score_article, low_score_article, old_article] }
+
       it "returns only articles published after TIME_AGO_MAX sorted by computed score descending" do
         result = feed.default_home_feed.to_a
 
@@ -100,10 +99,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
       it "applies pagination via limit and offset" do
         # Create extra articles so that we can test pagination.
-        30.times do
-          a = create(:article, published: true, score: 20)
-          a.update_column(:published_at, Time.current - 1.day)
-        end
+        2.times { create_feed_article(score: 20) }
 
         paged_feed = described_class.new(
           user: user,
@@ -185,49 +181,11 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
 
       context "when all articles are recent (within a week)" do
-        let!(:recent_article_1) do
-          a = create(:article, published: true, score: 100)
-          a.update_column(:published_at, Time.current - 1.day)
-          a
-        end
-
-        let!(:recent_article_2) do
-          a = create(:article, published: true, score: 90)
-          a.update_column(:published_at, Time.current - 2.days)
-          a
-        end
-
-        let!(:recent_article_3) do
-          a = create(:article, published: true, score: 80)
-          a.update_column(:published_at, Time.current - 3.days)
-          a
-        end
-
-        let!(:recent_article_4) do
-          a = create(:article, published: true, score: 70)
-          a.update_column(:published_at, Time.current - 4.days)
-          a
-        end
-
-        let!(:recent_article_5) do
-          a = create(:article, published: true, score: 60)
-          a.update_column(:published_at, Time.current - 5.days)
-          a
-        end
-
-        let!(:recent_article_6) do
-          a = create(:article, published: true, score: 50)
-          a.update_column(:published_at, Time.current - 6.days)
-          a
-        end
-
-        let!(:recent_article_7) do
-          a = create(:article, published: true, score: 40)
-          a.update_column(:published_at, Time.current - 7.days)
-          a
-        end
-
         it "randomly shuffles the top 5 articles while keeping the rest in order" do
+          [90, 80, 70, 60].each_with_index do |score, idx|
+            create_feed_article(score: score, days_ago: idx + 2)
+          end
+
           # Create a feed with only recent articles to ensure shuffling is triggered
           recent_feed = described_class.new(
             user: user,
@@ -259,8 +217,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         it "does not shuffle when not all articles are recent" do
           # Create one old article to make the feed not entirely recent
           # Give it a high score so it appears in the feed
-          old_recent_article = create(:article, published: true, score: 200)
-          old_recent_article.update_column(:published_at, Time.current - 10.days)
+          create_feed_article(score: 200, days_ago: 10)
           
           # Use a larger feed to ensure the old article is included
           large_feed = described_class.new(
@@ -295,12 +252,6 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
             feed_config: feed_config
           )
           
-          # Delete the extra articles to leave only 3
-          recent_article_4.destroy
-          recent_article_5.destroy
-          recent_article_6.destroy
-          recent_article_7.destroy
-          
           result = small_feed.default_home_feed.to_a
           
           # Should contain at least 3 articles (may be more due to other test data)
@@ -330,13 +281,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
 
       it "uses default shuffle behavior (top 5) regardless of page view recency" do
-        # Create 10 recent articles
-        articles = []
-        10.times do |i|
-          a = create(:article, published: true, score: 100 - i)
-          a.update_column(:published_at, Time.current - 1.day)
-          articles << a
-        end
+        5.times { |i| create_feed_article(score: 100 - i) }
 
         # Set recent page view that would normally trigger larger shuffle
         user_activity.update!(recently_viewed_articles: [[123, 30.minutes.ago]])
@@ -363,11 +308,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
 
       it "shuffles only top 5 articles (default behavior)" do
-        # Create 10 recent articles
-        10.times do |i|
-          a = create(:article, published: true, score: 100 - i)
-          a.update_column(:published_at, Time.current - 1.day)
-        end
+        5.times { |i| create_feed_article(score: 100 - i) }
 
         result = feed.default_home_feed.to_a
         expect(result.size).to be >= 5
@@ -385,13 +326,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         end
 
         it "shuffles top 20 articles" do
-          # Create 25 recent articles to test the 20 limit
-          articles = []
-          25.times do |i|
-            a = create(:article, published: true, score: 100 - i)
-            a.update_column(:published_at, Time.current - 1.day)
-            articles << a
-          end
+          20.times { |i| create_feed_article(score: 100 - i) }
 
           # Mock the shuffle behavior to verify count
           allow_any_instance_of(Array).to receive(:shuffle).and_call_original
@@ -407,12 +342,6 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         end
 
         it "shuffles top 18 articles" do
-          # Create 25 recent articles
-          25.times do |i|
-            a = create(:article, published: true, score: 100 - i)
-            a.update_column(:published_at, Time.current - 1.day)
-          end
-
           # Test that the logic calculates 18 for 2 hours ago
           custom_feed = described_class.new(
             user: user,
@@ -432,12 +361,6 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         end
 
         it "shuffles minimum 5 articles" do
-          # Create 10 recent articles
-          10.times do |i|
-            a = create(:article, published: true, score: 100 - i)
-            a.update_column(:published_at, Time.current - 1.day)
-          end
-
           custom_feed = described_class.new(
             user: user,
             number_of_articles: 15,
@@ -678,12 +601,14 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
   describe "performance optimizations" do
     it "preloads the requested comments_variant to prevent downstream N+1 queries" do
+      high_score_article
       result = feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments")
       first_article = result.first
       expect(first_article.association(:more_inclusive_recent_good_comments)).to be_loaded
     end
 
     it "uses limited_column_select avoiding heavy text and vector columns" do
+      high_score_article
       result = feed.default_home_feed.to_a
       first_article = result.first
       expect(first_article.has_attribute?(:title)).to be true
@@ -692,7 +617,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
 
     it "loads the feed without querying reactions" do
-      create(:reaction, reactable: high_score_article, category: "like")
+      create(:reaction, reactable: high_score_article, user: user, category: "like")
       reaction_queries = []
       callback = lambda do |_name, _start, _finish, _id, payload|
         reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
@@ -704,7 +629,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
 
     it "still returns the reaction categories of each article" do
-      create(:reaction, reactable: high_score_article, category: "like")
+      create(:reaction, reactable: high_score_article, user: user, category: "like")
 
       story = feed.default_home_feed.to_a.find { |article| article.id == high_score_article.id }
 
@@ -712,7 +637,7 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
 
     it "permutes candidates via ForemNative.weighted_shuffle and falls back cleanly if nil" do
-      candidates = [high_score_article, medium_score_article, low_score_article]
+      candidates = build_stubbed_list(:article, 3)
       shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
       expect(shuffled).to match_array(candidates)
 
@@ -874,4 +799,4 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     end
   end
 end
-
+# rubocop:enable Layout/ArgumentAlignment, Layout/TrailingWhitespace, RSpec/AnyInstance, RSpec/LeadingSubject, RSpec/MessageSpies, RSpec/NestedGroups, RSpec/SubjectStub, Rails/DurationArithmetic, Style/CollectionMethods, Style/Send, Style/SlicingWithRange, Style/TrailingCommaInArguments, Style/TrailingCommaInArrayLiteral
