@@ -2,7 +2,7 @@ class ArticlePolicy < ApplicationPolicy
   MAX_TAG_LIST_SIZE = 4
 
   def self.limit_post_creation_to_admins?
-    FeatureFlag.enabled?(:limit_post_creation_to_admins)
+    Settings::General.limit_post_creation_to_admins
   end
 
   def self.is_root_subforem?
