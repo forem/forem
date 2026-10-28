@@ -43,10 +43,8 @@ RSpec.describe "Community", :proper_status do
         # Spam author has higher total_score (2 * 100 = 200) but 0 reactions.
         # On main (total_score DESC), spam_author wins; on our branch (total_reactions DESC),
         # quality_author wins.
-        2.times do
-          create(:article, user: spam_author, published: true,
-                           score: 100, public_reactions_count: 0)
-        end
+        create_list(:article, 2, user: spam_author, published: true,
+                                 score: 100, public_reactions_count: 0)
 
         create(:article, user: quality_author, published: true,
                          score: 80, public_reactions_count: 50)

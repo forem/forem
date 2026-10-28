@@ -38,7 +38,7 @@ class CommunityController < ApplicationController
           .where("users_roles.user_id = users.id")
           .where(roles: { name: %w[suspended spam], resource_type: nil, resource_id: nil })
           .select(1)
-          .arel.exists
+          .arel.exists,
       )
       .joins(:articles)
       .merge(
@@ -46,14 +46,14 @@ class CommunityController < ApplicationController
           .published
           .where(published_from_feed: false)
           .where("published_at > ?", 30.days.ago)
-          .where("articles.score >= ?", 0)
+          .where("articles.score >= ?", 0),
       )
       .then { |scope| exclude_ids.any? ? scope.where.not(id: exclude_ids) : scope }
       .select(
         "users.*",
         "COUNT(articles.id) as recent_articles_count",
         "SUM(articles.public_reactions_count) as total_reactions",
-        "SUM(articles.score) as total_score"
+        "SUM(articles.score) as total_score",
       )
       .group("users.id")
       .order("total_reactions DESC, total_score DESC, recent_articles_count DESC")
