@@ -7,7 +7,7 @@ set -euo pipefail
 
 export DOCKER_BUILDKIT=1
 
-CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
+CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|gems/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
 
 function should_build_pr_containers {
   if [[ "${FORCE_CONTAINER_BUILD:-}" == "true" || "${FORCE_CONTAINER_BUILD:-}" == "1" ]]; then

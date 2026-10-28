@@ -67,6 +67,7 @@ RSpec.describe "Buildkite container build triggers" do
         Gemfile
         Gemfile.lock
         vendor/cache/rack-2.2.8.gem
+        gems/forem_native/Cargo.toml
         .nvmrc
         package.json
         yarn.lock
@@ -185,6 +186,8 @@ RSpec.describe "Buildkite container build triggers" do
           echo "$@" >> "#{curl_log}"
           if [[ "$*" == *"/pulls/24395/files"* ]]; then
             echo '[{"filename":"app/models/article.rb"},{"filename":"spec/models/article_spec.rb"}]'
+          elif [[ "$*" == *"/pulls/24395"* ]]; then
+            echo '{"changed_files":2,"base":{"repo":{"full_name":"forem/forem"},"ref":"main"},"head":{"repo":{"full_name":"fork/forem"},"ref":"patch-1","sha":"deadbeef"},"user":{"login":"contributor"}}'
           fi
         SH
 
@@ -208,10 +211,16 @@ RSpec.describe "Buildkite container build triggers" do
       end
     end
 
-    it "triggers Buildkite when the PR modifies a container-relevant file" do
+    it "checks subsequent pages when a PR has more than 100 changed files" do
       Dir.mktmpdir do |tmpdir|
         curl_log = File.join(tmpdir, "curl.log")
         event_path = File.join(tmpdir, "event.json")
+        page1_json = File.join(tmpdir, "page1.json")
+
+        File.write(
+          page1_json,
+          Array.new(100) { |i| { filename: "app/models/model_#{i}.rb" } }.to_json,
+        )
 
         File.write(event_path, {
           issue: { number: 24_396 },
@@ -225,10 +234,12 @@ RSpec.describe "Buildkite container build triggers" do
         write_executable(File.join(tmpdir, "curl"), <<~SH)
           #!/bin/bash
           echo "$@" >> "#{curl_log}"
-          if [[ "$*" == *"/pulls/24396/files"* ]]; then
-            echo '[{"filename":"Containerfile"},{"filename":"app/models/article.rb"}]'
+          if [[ "$*" == *"/pulls/24396/files?per_page=100&page=1"* ]]; then
+            cat "#{page1_json}"
+          elif [[ "$*" == *"/pulls/24396/files?per_page=100&page=2"* ]]; then
+            echo '[{"filename":"gems/forem_native/src/lib.rs"}]'
           elif [[ "$*" == *"/pulls/24396"* ]]; then
-            echo '{"base":{"repo":{"full_name":"forem/forem"},"ref":"main"},"head":{"repo":{"full_name":"fork/forem"},"ref":"patch-1","sha":"deadbeef"},"user":{"login":"contributor"}}'
+            echo '{"changed_files":101,"base":{"repo":{"full_name":"forem/forem"},"ref":"main"},"head":{"repo":{"full_name":"fork/forem"},"ref":"patch-1","sha":"deadbeef"},"user":{"login":"contributor"}}'
           elif [[ "$*" == *"/users/contributor"* ]]; then
             echo '{"name":"Contributor","email":null}'
           elif [[ "$*" == *"api.buildkite.com"* ]]; then
@@ -250,8 +261,54 @@ RSpec.describe "Buildkite container build triggers" do
 
         expect(status.exitstatus).to eq(0)
         expect(output).to include("Container-relevant files changed in PR #24396:")
-        expect(output).to include("Containerfile")
+        expect(output).to include("gems/forem_native/src/lib.rs")
         expect(output).to include("https://buildkite.com/forem/build-containers/builds/1")
+        expect(File.read(curl_log)).to include("api.buildkite.com")
+      end
+    end
+
+    it "propagates FORCE_CONTAINER_BUILD in the Buildkite payload when /ci containers is used" do
+      Dir.mktmpdir do |tmpdir|
+        curl_log = File.join(tmpdir, "curl.log")
+        event_path = File.join(tmpdir, "event.json")
+
+        File.write(event_path, {
+          issue: { number: 24_397 },
+          comment: {
+            body: "/ci containers",
+            html_url: "https://github.com/forem/forem/pull/24397#issuecomment-1",
+            user: { login: "maintainer" }
+          }
+        }.to_json)
+
+        write_executable(File.join(tmpdir, "curl"), <<~SH)
+          #!/bin/bash
+          echo "$@" >> "#{curl_log}"
+          if [[ "$*" == *"/pulls/24397"* ]]; then
+            echo '{"changed_files":1,"base":{"repo":{"full_name":"forem/forem"},"ref":"main"},"head":{"repo":{"full_name":"fork/forem"},"ref":"patch-1","sha":"deadbeef"},"user":{"login":"contributor"}}'
+          elif [[ "$*" == *"/users/contributor"* ]]; then
+            echo '{"name":"Contributor","email":null}'
+          elif [[ "$*" == *"api.buildkite.com"* ]]; then
+            echo '{"web_url":"https://buildkite.com/forem/build-containers/builds/2"}'
+          fi
+        SH
+
+        env = {
+          "PATH" => "#{tmpdir}:#{ENV.fetch('PATH', '')}",
+          "BUILDKITE_API_ACCESS_TOKEN" => "test-buildkite-token",
+          "PIPELINE" => "forem/build-containers",
+          "GITHUB_TOKEN" => "test-gh-token",
+          "GITHUB_REPOSITORY" => "forem/forem",
+          "GITHUB_EVENT_PATH" => event_path,
+          "PULL_REQUEST_ID" => "24397",
+          "BUILD_ENV_VARS" => '{"CUSTOM_VAR":"1"}'
+        }
+
+        output, status = Open3.capture2e(env, create_pr_build_script)
+
+        expect(status.exitstatus).to eq(0)
+        expect(output).to include('"FORCE_CONTAINER_BUILD":"true"')
+        expect(output).to include('"CUSTOM_VAR":"1"')
         expect(File.read(curl_log)).to include("api.buildkite.com")
       end
     end

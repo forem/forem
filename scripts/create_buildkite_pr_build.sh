@@ -44,33 +44,72 @@ URI=https://api.github.com
 API_HEADER="Accept: application/vnd.github.v3+json"
 AUTH_HEADER="Authorization: token $GITHUB_TOKEN"
 
-CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
+CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|gems/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
 
 COMMENT_BODY=""
 if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
   COMMENT_BODY=$(jq -r ".comment.body // empty" "${GITHUB_EVENT_PATH}")
 fi
 
-if [[ "${FORCE_CONTAINER_BUILD:-}" != "true" && "${FORCE_CONTAINER_BUILD:-}" != "1" && "${COMMENT_BODY}" != *"/ci containers"* ]]; then
-  PULL_REQUEST_FILES_RESPONSE=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
-            "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}/files?per_page=100")
-
-  if echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -e 'type == "array"' >/dev/null 2>&1; then
-    CHANGED_FILES=$(echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -r ".[].filename")
-    MATCHING_FILES=$(echo "${CHANGED_FILES}" | grep -E "${CONTAINER_BUILD_PATHS_REGEX}" || true)
-
-    if [[ -z "${MATCHING_FILES}" ]]; then
-      echo "No container-relevant files changed in PR #${PULL_REQUEST_ID}; skipping Buildkite container build."
-      exit 0
-    fi
-
-    echo "Container-relevant files changed in PR #${PULL_REQUEST_ID}:"
-    echo "${MATCHING_FILES}"
-  fi
+FORCE_BUILD=false
+if [[ "${FORCE_CONTAINER_BUILD:-}" == "true" || "${FORCE_CONTAINER_BUILD:-}" == "1" || "${COMMENT_BODY}" == *"/ci containers"* ]]; then
+  FORCE_BUILD=true
 fi
 
 PULL_REQUEST_INFO=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
           "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}")
+
+if [[ "${FORCE_BUILD}" != "true" ]]; then
+  PR_CHANGED_FILES_COUNT=$(echo "${PULL_REQUEST_INFO}" | jq -r ".changed_files // 0" 2>/dev/null || echo "0")
+
+  if [[ "${PR_CHANGED_FILES_COUNT}" =~ ^[0-9]+$ ]] && (( PR_CHANGED_FILES_COUNT > 3000 )); then
+    echo "PR #${PULL_REQUEST_ID} has ${PR_CHANGED_FILES_COUNT} changed files (> 3000 API limit); proceeding with Buildkite container build."
+  else
+    PAGE=1
+    FILES_CHECK_COMPLETE=true
+    MATCHING_FILES=""
+
+    while (( PAGE <= 30 )); do
+      PULL_REQUEST_FILES_RESPONSE=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+                "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}/files?per_page=100&page=${PAGE}")
+
+      if ! echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -e 'type == "array"' >/dev/null 2>&1; then
+        FILES_CHECK_COMPLETE=false
+        break
+      fi
+
+      CHANGED_FILES=$(echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -r ".[].filename")
+      PAGE_MATCHING_FILES=$(echo "${CHANGED_FILES}" | grep -E "${CONTAINER_BUILD_PATHS_REGEX}" || true)
+
+      if [[ -n "${PAGE_MATCHING_FILES}" ]]; then
+        MATCHING_FILES="${PAGE_MATCHING_FILES}"
+        break
+      fi
+
+      PAGE_COUNT=$(echo "${PULL_REQUEST_FILES_RESPONSE}" | jq 'length')
+      if (( PAGE_COUNT < 100 )); then
+        break
+      fi
+
+      if (( PAGE == 30 )); then
+        FILES_CHECK_COMPLETE=false
+        break
+      fi
+
+      PAGE=$((PAGE + 1))
+    done
+
+    if [[ -n "${MATCHING_FILES}" ]]; then
+      echo "Container-relevant files changed in PR #${PULL_REQUEST_ID}:"
+      echo "${MATCHING_FILES}"
+    elif [[ "${FILES_CHECK_COMPLETE}" == "true" ]]; then
+      echo "No container-relevant files changed in PR #${PULL_REQUEST_ID}; skipping Buildkite container build."
+      exit 0
+    else
+      echo "Could not inspect all changed files in PR #${PULL_REQUEST_ID}; proceeding with Buildkite container build."
+    fi
+  fi
+fi
 
 PULL_REQUEST_BASE_REPO=$(echo "${PULL_REQUEST_INFO}" | jq -r ".base.repo.full_name")
 PULL_REQUEST_BASE_BRANCH=$(echo "${PULL_REQUEST_INFO}" | jq -r ".base.ref")
@@ -128,8 +167,12 @@ JSON=$(
 )
 
 # Merge in the build environment variables, if they specified any
+if [[ "${FORCE_BUILD}" == "true" ]]; then
+  JSON=$(echo "${JSON}" | jq -c '{env: {FORCE_CONTAINER_BUILD: "true"}} + .')
+fi
+
 if [[ "${BUILD_ENV_VARS:-}" ]]; then
-  if ! JSON=$(echo "${JSON}" | jq -c --argjson BUILD_ENV_VARS "${BUILD_ENV_VARS}" '. + {env: $BUILD_ENV_VARS}'); then
+  if ! JSON=$(echo "${JSON}" | jq -c --argjson BUILD_ENV_VARS "${BUILD_ENV_VARS}" '. + {env: ((.env // {}) + $BUILD_ENV_VARS)}'); then
     echo ""
     echo "Error: BUILD_ENV_VARS provided invalid JSON: ${BUILD_ENV_VARS}"
     exit 1
