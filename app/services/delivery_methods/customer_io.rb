@@ -20,10 +20,11 @@ module DeliveryMethods
     end
 
     def deliver!(mail)
-      recipient = mail.to&.join(",")
-      unless recipient.present? && EmailValidator.valid?(recipient, mode: :strict)
+      recipient = Array(mail.to).join(",")
+      unless mail.to.is_a?(Array) && recipient.present? && EmailValidator.valid?(recipient, mode: :strict)
+        mail.perform_deliveries = false
         Rails.logger.warn(
-          "[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address: #{recipient.inspect}",
+          "[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address: #{mail.to.inspect}",
         )
         return
       end
