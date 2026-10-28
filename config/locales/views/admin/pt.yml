@@ -12,6 +12,15 @@ pt:
         reports: Relatórios
         settings: Configurações
       users:
+        delete:
+          heading: Excluir a conta de %{user}
+          onsubmit: Tem certeza? Esta ação é irreversível.
+          desc2: Uma vez excluído, todos os dados relacionados a %{user} serão removidos do nosso banco de dados.
+          notice: Somente administradores podem excluir usuários.
+          activity_threshold_notice: Somente Super Admins podem excluir usuários com %{count} ou mais publicações e comentários publicados.
+          super_admin_notice: Somente Super Admins podem excluir contas de administrador.
+          self_delete_notice: Você não pode excluir sua própria conta pelo painel de administração.
+          submit: Excluir agora
         content_flags:
           description: Sinalizações feitas nas publicações e comentários deste membro, incluindo as geradas automaticamente pela moderação. Marcar uma como inválida restaura a pontuação do conteúdo.
           no_flags: Nenhuma sinalização recebida nas publicações ou comentários deste usuário até o momento.
@@ -61,7 +70,6 @@ pt:
         unsuspend: Dessuspender
         ban: Banir
         unban: Desbanir
-        delete: Excluir
         edit: Editar
         view: Visualizar
         status: Status
@@ -219,7 +227,6 @@ pt:
         save_changes: Salvar alterações
         cancel: Cancelar
         update: Atualizar
-        delete: Excluir
         confirm: Confirmar
         back: Voltar
         next: Próximo
@@ -245,7 +252,6 @@ pt:
         new: Novo
         add: Adicionar
         remove: Remover
-        delete: Excluir
         save: Salvar
         cancel: Cancelar
         confirm: Confirmar

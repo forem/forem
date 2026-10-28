@@ -15,6 +15,7 @@ article_methods_to_include = %i[
 ]
 
 json.array!(@stories) do |article|
+  cached_story = @cached_story_fragments&.[](@story_cache_keys&.[](article.id))
   # Build explicit cache key with all factors that affect the rendered article
   # Using explicit fields instead of updated_at because update_column bypasses timestamp updates
   cache_key = [
@@ -28,11 +29,11 @@ json.array!(@stories) do |article|
     article.cached_user, # Text field containing serialized user data
     article.cached_organization, # Text field containing serialized organization data
     I18n.locale,
-  ].join("-")
+  ].join("-") unless cached_story
   
   # Only cache for pages 1-2 since those get the most traffic
   # Cache expires after 6 hours to ensure freshness
-  json.cache_if! @page <= 2, cache_key, expires_in: 6.hours do
+  cached_story ? json.merge!(cached_story) : json.cache_if!(@page <= 2, cache_key, expires_in: 6.hours) do
     json.extract! article, *article_attributes_to_include
 
     # Optimize user data - only call as_json once

@@ -60,6 +60,14 @@ RSpec.describe Podcast do
       expect(podcast2.errors[:feed_url]).to be_present
     end
 
+    it "rejects javascript: URLs in website_url and platform URLs" do
+      %i[website_url itunes_url overcast_url android_url soundcloud_url].each do |field|
+        invalid_podcast = build(:podcast, field => "javascript:alert(1)")
+        expect(invalid_podcast).not_to be_valid
+        expect(invalid_podcast.errors[field]).to be_present
+      end
+    end
+
     it "validates main_color_hex" do
       podcast2 = build(:podcast, main_color_hex: "#FFFFFF")
 

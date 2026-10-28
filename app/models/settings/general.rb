@@ -22,7 +22,7 @@ module Settings
     setting :admin_action_taken_at, type: :datetime, default: Time.current
 
     # Core setup
-    setting :waiting_on_first_user, type: :boolean, default: !User.exists?
+    setting :waiting_on_first_user, type: :boolean, default: proc { !User.exists? }
     setting :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
     # API Tokens
@@ -72,6 +72,9 @@ module Settings
     setting :enable_video_upload, type: :boolean, default: false
     setting :enable_agent_sessions, type: :boolean, default: true
     setting :enable_ai_disclosure, type: :boolean, default: false
+    setting :limit_post_creation_to_admins,
+            type: :boolean,
+            default: proc { FeatureFlag.enabled?(:limit_post_creation_to_admins) }
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil
@@ -253,6 +256,46 @@ module Settings
 
       def appeal_auto_unflag_threshold=(value)
         set_appeal_auto_unflag_threshold(value)
+      end
+
+      alias __orig_set_limit_post_creation_to_admins set_limit_post_creation_to_admins
+
+      # Updates the limit_post_creation_to_admins setting, preserving subforem independence
+      # while keeping the legacy global FeatureFlag synchronized for unscoped updates.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @param subforem_id [Integer, nil] optional subforem scope
+      # @return [Object] the raw value passed in
+      def set_limit_post_creation_to_admins(value, subforem_id: nil)
+        effective_subforem_id =
+          subforem_id || RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id]
+        if effective_subforem_id.present? && !exists?(var: "limit_post_creation_to_admins", subforem_id: nil)
+          __orig_set_limit_post_creation_to_admins(
+            FeatureFlag.enabled?(:limit_post_creation_to_admins),
+            subforem_id: nil,
+          )
+        end
+
+        __orig_set_limit_post_creation_to_admins(value, subforem_id: subforem_id)
+
+        if effective_subforem_id.nil?
+          if convert_string_to_value_type(:boolean, value)
+            FeatureFlag.enable(:limit_post_creation_to_admins)
+          else
+            FeatureFlag.disable(:limit_post_creation_to_admins)
+          end
+        end
+
+        Spaces::BustCachesForSpaceChangeWorker.perform_async
+        value
+      end
+
+      # Assigns the limit_post_creation_to_admins setting using the current request scope.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @return [Object] the raw value passed in
+      def limit_post_creation_to_admins=(value)
+        set_limit_post_creation_to_admins(value)
       end
     end
   end

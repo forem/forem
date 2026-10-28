@@ -6,6 +6,7 @@ class Profile < ApplicationRecord
 
   store_accessor :data, :social_image
 
+  after_update :generate_social_image, if: :social_image_details_changed?
   after_commit :bust_user_profile_details_cache, on: :update, if: :profile_details_changed_for_cache?
   after_commit :complete_onboarding_profile_item, on: :update, if: :profile_details_changed_for_cache?
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
@@ -70,6 +71,16 @@ class Profile < ApplicationRecord
 
   def bust_user_profile_details_cache
     Users::BustProfileDetailsCacheWorker.perform_async(user_id)
+  end
+
+  def generate_social_image
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+  end
+
+  def social_image_details_changed?
+    (saved_change_to_summary? && summary_before_last_save.to_s != summary.to_s) ||
+      (saved_change_to_location? && location_before_last_save.to_s != location.to_s) ||
+      (saved_change_to_website_url? && website_url_before_last_save.to_s != website_url.to_s)
   end
 
   def profile_details_changed_for_cache?

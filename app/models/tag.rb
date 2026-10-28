@@ -127,6 +127,14 @@ class Tag < ActsAsTaggableOn::Tag
     find_by(name: word.downcase)&.alias_for.presence || word.downcase
   end
 
+  def self.find_preferred_aliases_for(words)
+    return [] if words.blank?
+
+    downcased = words.map(&:downcase)
+    aliases = where(name: downcased).where.not(alias_for: [nil, ""]).pluck(:name, :alias_for).to_h
+    downcased.map { |word| aliases[word] || word }
+  end
+
   # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
   # we'll preserve existing behavior.  And when true, we're testing out new behavior.  This way we
   # can push up changes and refactor towards improvements without unleashing a large pull request

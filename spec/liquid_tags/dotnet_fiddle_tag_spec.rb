@@ -8,6 +8,7 @@ RSpec.describe DotnetFiddleTag, type: :liquid_tag do
       //evil.com/?dotnetfiddle.net
       https://dotnetfiddle.net.evil.com
       https://dotnetfiddle.net/some_username/pen/" onload='alert("xss")'
+      javascript:alert(1)//https://dotnetfiddle.net/Widget/v2kx9jcd
     )
 
     def generate_new_liquid(link)

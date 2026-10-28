@@ -1,0 +1,19 @@
+<% scope = "mailers.notify_mailer.gem_received" -%>
+<%= t("greeting", scope: scope, name: @user.name) %>
+
+<%= t(@comment ? "comment_intro" : "article_intro", scope: scope, title: @title) %>
+
+<%= t("why", scope: scope, community: @community_name) %>
+
+<%= @favoritable_url %>
+<% if @can_pay_forward -%>
+
+<%= t("pay_forward_heading", scope: scope) %>
+
+<%= t("pay_forward", scope: scope, community: @community_name) %>
+
+<%= URL.url("/", @subforem_domain) %>
+<% end -%>
+
+<%= t("sign_off", scope: scope, community: @community_name) %>
+<%= t("team", scope: scope, community: @community_name) %>
