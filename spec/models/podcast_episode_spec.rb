@@ -33,6 +33,16 @@ RSpec.describe PodcastEpisode do
       expect(ep2).not_to be_valid
       expect(ep2.errors[:media_url]).to be_present
     end
+
+    it "rejects javascript: URLs in media_url and website_url" do
+      ep_bad_media = build(:podcast_episode, media_url: "javascript:alert(1)")
+      expect(ep_bad_media).not_to be_valid
+      expect(ep_bad_media.errors[:media_url]).to be_present
+
+      ep_bad_website = build(:podcast_episode, website_url: "javascript:alert(1)")
+      expect(ep_bad_website).not_to be_valid
+      expect(ep_bad_website.errors[:website_url]).to be_present
+    end
   end
 
   describe "#search_id" do

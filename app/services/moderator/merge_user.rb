@@ -99,17 +99,17 @@ module Moderator
 
     def merge_reactions
       @delete_user.reactions.update_all(user_id: @keep_user.id)
-      @keep_user.reactions_count = @keep_user.reactions.size
+      @keep_user.update_column(:reactions_count, @keep_user.reactions.size)
     end
 
     def merge_comments
       @delete_user.comments.update_all(user_id: @keep_user.id)
-      @keep_user.comments_count = @keep_user.comments.size
+      @keep_user.update_column(:comments_count, @keep_user.comments.size)
     end
 
     def merge_articles
       @delete_user.articles.update_all(user_id: @keep_user.id)
-      @keep_user.articles_count = @keep_user.articles.size
+      @keep_user.update_column(:articles_count, @keep_user.articles.size)
     end
   end
 end

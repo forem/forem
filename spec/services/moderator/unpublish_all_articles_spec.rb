@@ -3,23 +3,15 @@ require "rails_helper"
 RSpec.describe Moderator::UnpublishAllArticles, type: :service do
   let!(:user) { create(:user) }
   let!(:admin) { create(:user, :admin) }
-  let!(:articles) { create_list(:article, 3, user: user) }
+  let!(:articles) { create_list(:article, 3, user: user, with_tags: false) }
   let!(:comments) { create_list(:comment, 3, user: user, commentable: articles.sample) }
 
-  it "unpublishes all articles" do
+  it "unpublishes all articles, soft-deletes related comments, and applies proper frontmatter", :aggregate_failures do
     expect do
       described_class.call(target_user_id: user.id, action_user_id: admin.id)
     end.to change { user.articles.published.size }.from(3).to(0)
-  end
+      .and change { user.comments.where(deleted: false).size }.from(3).to(0)
 
-  it "unpublishes related comments" do
-    expect do
-      described_class.call(target_user_id: user.id, action_user_id: admin.id)
-    end.to change { user.comments.where(deleted: false).size }.from(3).to(0)
-  end
-
-  it "applies proper frontmatter", :aggregate_failures do
-    described_class.call(target_user_id: user.id, action_user_id: admin.id)
     articles.each(&:reload)
     expect(articles.map { |a| a.body_markdown.include?("published: false") }.uniq).to eq([true])
     expect(articles.map { |a| a.body_markdown.include?("published: true") }.uniq).to eq([false])

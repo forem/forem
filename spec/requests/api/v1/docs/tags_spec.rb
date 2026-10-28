@@ -16,7 +16,8 @@ describe "GET /tags" do
 ### Integration Tips:
 - Bypasses authentication (can be accessed publicly).
 - Ordered by overall popularity/usage metrics on the platform.
-- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.
+- Useful for autocomplete inputs in article editors and tag selection screens in settings.
+- Supports global navigation and explore lists.
 
 It supports pagination, each page will contain 10 tags by default."
       operationId "getTags"
@@ -30,6 +31,75 @@ It supports pagination, each page will contain 10 tags by default."
         add_examples
 
         run_test!
+      end
+    end
+  end
+
+  path "/api/tags" do
+    post "Create a tag" do
+      tags "tags"
+      description(<<~DESCRIBE.strip)
+        Create a tag before it appears on an article.
+
+        Requires an API key for an admin, super admin, or single resource admin on Tag.  Each successful creation writes an admin API audit entry.
+        Accepts a required alphanumeric name of at most 30 characters, plus the optional fields accepted by tag update.
+        Returns the same fields as tag update.  A duplicate name returns 422 with an error and the existing tag's id, without changing that tag.
+      DESCRIBE
+      operationId "createTag"
+      produces "application/json"
+      consumes "application/json"
+
+      parameter name: :tag_params, in: :body, required: true,
+                description: "Tag name and optional display fields",
+                schema: {
+                  type: :object,
+                  required: ["name"],
+                  properties: {
+                    name: { type: :string, maxLength: 30, example: "javascript" },
+                    pretty_name: { type: :string, nullable: true },
+                    short_summary: { type: :string, nullable: true },
+                    wiki_body_markdown: { type: :string, nullable: true },
+                    supported: { type: :boolean },
+                    bg_color_hex: { type: :string, nullable: true, example: "#1E90FF" },
+                    text_color_hex: { type: :string, nullable: true, example: "#FFFFFF" },
+                    context_note_instructions: { type: :string, nullable: true }
+                  }
+                }
+
+      let(:Accept) { "application/vnd.forem.api-v1+json" }
+      let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
+      let(:tag_params) { { name: "javascript", pretty_name: "JavaScript", supported: true } }
+
+      response "201", "The created tag" do
+        let(:"api-key") { api_secret.secret }
+        schema "$ref": "#/components/schemas/ExtendedTag"
+        add_examples
+
+        run_test!
+      end
+
+      response "401", "Unauthorized" do
+        let(:"api-key") { "invalid" }
+        add_examples
+
+        run_test!
+      end
+
+      response "422", "Invalid tag or duplicate name" do
+        let(:"api-key") { api_secret.secret }
+        let!(:existing_tag) { create(:tag, name: "javascript") }
+        schema type: :object,
+               required: %w[error status],
+               properties: {
+                 error: { type: :string },
+                 status: { type: :integer, example: 422 },
+                 id: { type: :integer, description: "Existing tag id, present only for duplicate names" }
+               }
+        add_examples
+
+        run_test! do |response|
+          expect(response.parsed_body["id"]).to eq(existing_tag.id)
+        end
       end
     end
   end

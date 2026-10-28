@@ -46,6 +46,10 @@ RSpec.describe KotlinTag, type: :liquid_tag do
         expect do
           generate_new_liquid(invalid_url_typo)
         end.to raise_error(StandardError)
+
+        expect do
+          generate_new_liquid("javascript:alert(1)//https://pl.kotl.in/owreUFFUG")
+        end.to raise_error(StandardError)
       end
     end
   end

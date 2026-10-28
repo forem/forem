@@ -49,7 +49,7 @@ RSpec.describe "User visits a homepage" do
                position: 1)
       end
 
-      it "shows expected signed-out links, hides logged-in links, and toggles the Other section", :aggregate_failures do
+      it "shows expected signed-out links, toggles the Other section, and orders links", :aggregate_failures do
         visit "/"
 
         within("nav[data-testid='main-nav']", match: :first) do
@@ -63,12 +63,6 @@ RSpec.describe "User visits a homepage" do
         end
 
         NavigationLink.other_section.destroy_all
-        visit "/"
-
-        expect(page).to have_no_css("nav[data-testid='other-nav']")
-      end
-
-      it "shows links in their correct section and order", :aggregate_failures do
         create(:navigation_link,
                name: "Mock",
                icon: "<svg xmlns='http://www.w3.org/2000/svg'/> </svg>",
@@ -76,6 +70,7 @@ RSpec.describe "User visits a homepage" do
                position: 3)
         visit "/"
 
+        expect(page).to have_no_css("nav[data-testid='other-nav']")
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_css(".default-navigation-links li:nth-child(1)", text: "Shop")
           expect(page).to have_css(".default-navigation-links li:nth-child(2)", text: "Mock")
@@ -134,11 +129,9 @@ RSpec.describe "User visits a homepage" do
                position: nil)
       end
 
-      before do
-        visit "/"
-      end
-
       it "shows the correct navigation_links, urls, and logged_in links", :aggregate_failures do
+        visit "/"
+
         within("nav[data-testid='main-nav']", match: :first) do
           expect(page).to have_text(navigation_link_1.name)
           expect(page).to have_text(navigation_link_3.name)

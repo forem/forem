@@ -1,11 +1,9 @@
-require_relative "../../app/lib/honeycomb/noise_cancelling_sampler"
+honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"].presence
 
-if Rails.env.test?
-  Honeycomb.configure do |config|
-    config.client = Libhoney::TestClient.new
-  end
-else
-  honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"]
+if honeycomb_api_key
+  require "honeycomb-beeline"
+  require_relative "../../app/lib/honeycomb/noise_cancelling_sampler"
+
   release_footprint = ApplicationConfig["RELEASE_FOOTPRINT"]
 
   # Honeycomb automatic Rails integration
@@ -23,12 +21,7 @@ else
   ].freeze
 
   Honeycomb.configure do |config|
-    config.write_key = honeycomb_api_key.presence
-
-    # libhoney client will automatically fall back to using a null transmission
-    # when no write key is provided, but it will log a warning (visible in a few places)
-    # explicitly override the client to disable the warning
-    config.client = Libhoney::NullClient.new unless config.write_key
+    config.write_key = honeycomb_api_key
 
     if ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
       config.dataset = "background-work"
@@ -52,5 +45,29 @@ else
         Honeycomb::NoiseCancellingSampler.sample(fields)
       end
     end
+  end
+
+  if defined?(Honeycomb::Rails::Middleware) && !ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
+    Rails.application.config.middleware.insert_after(
+      ActionDispatch::ShowExceptions,
+      Honeycomb::Rails::Middleware,
+      client: Honeycomb.client,
+    )
+  end
+else
+  module Honeycomb
+    @client = nil
+  end
+end
+
+module Honeycomb
+  def self.add_field(key, value)
+    @client&.add_field(key, value)
+  end
+
+  def self.start_span(**fields, &block)
+    return @client.start_span(**fields, &block) if @client
+
+    block ? yield(self) : self
   end
 end

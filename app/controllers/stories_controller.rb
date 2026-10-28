@@ -334,11 +334,10 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
-    @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
     set_surrogate_key_header(*@user.profile_cache_keys)
-    set_user_json_ld
+    set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
@@ -436,7 +435,10 @@ class StoriesController < ApplicationController
 
     @stories = ArticleDecorator.decorate_collection(@stories)
     # Featured and pinned last: the feed renders those instances, not their @stories duplicates.
-    preload_reaction_counts([*@stories, @featured_story, @pinned_article].compact)
+    feed_stories = [*@stories, @featured_story, @pinned_article].compact
+    preload_context_notes(feed_stories)
+    preload_reaction_counts(feed_stories)
+    preload_organizations(feed_stories) unless user_signed_in?
   end
 
   def assign_article_show_variables
@@ -539,6 +541,10 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_stories
+    @pinned_stories = []
+    @stories = []
+    return unless @user.articles_count.positive?
+
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate

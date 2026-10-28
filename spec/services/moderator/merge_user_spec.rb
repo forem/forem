@@ -38,6 +38,9 @@ RSpec.describe Moderator::MergeUser, type: :service do
       expect(article.reload.user_id).to eq(keep_user.id)
       expect(comment.reload.user_id).to eq(keep_user.id)
       expect(reaction.reload.user_id).to eq(keep_user.id)
+      expect(keep_user.reload.articles_count).to eq(1)
+      expect(keep_user.comments_count).to eq(1)
+      expect(keep_user.reactions_count).to eq(1)
 
       sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
 

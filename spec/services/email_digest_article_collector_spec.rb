@@ -334,6 +334,28 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(collector.feed_config_id).to eq(active_config.id)
       end
 
+      it "prioritizes digest targeting_bucket configs and excludes feed-only buckets" do
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER,
+          feed_success_score: 999.0,
+          feed_impressions_count: 500,
+        )
+        digest_config = create(
+          :feed_config,
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          feed_success_score: 10.0,
+          feed_impressions_count: 100,
+        )
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        collector = described_class.new(user)
+        articles = collector.articles_to_send
+        expect(articles.length).to be >= 3
+        expect(collector.feed_config_id).to eq(digest_config.id)
+      end
+
       it "does not set feed_config_id when fallback to legacy occurs" do
         other_user = create(:user)
         # Only 2 eligible articles → personalized returns nil → fallback to legacy
@@ -491,6 +513,50 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         articles = described_class.new(user).articles_to_send
         antifollowed_paths = antifollowed_articles.map(&:path)
         expect(articles.none? { |a| antifollowed_paths.include?(a.path) }).to be true
+      end
+
+      it "uses two-stage candidate pre-filtering when semantic_similarity_weight is active" do
+        interest_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        aligned_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        orthogonal_embedding = [0.0, 1.0, 0.0] + Array.new(765, 0.0)
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          score_weight: 1.0,
+          semantic_similarity_weight: 100.0,
+          semantic_candidate_limit: 350,
+          randomness_weight: 0.0,
+        )
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_call_original
+
+        other_user = create(:user)
+        a1 = create(:article, score: 80, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a2 = create(:article, score: 50, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a3 = create(:article, score: 40, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a1.update_column(:semantic_embedding, orthogonal_embedding)
+        a2.update_column(:semantic_embedding, aligned_embedding)
+        a3.update_column(:semantic_embedding, orthogonal_embedding)
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("articles.semantic_embedding <=>")
+        end
+
+        result = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          result = described_class.new(user).articles_to_send
+        end
+
+        expect(executed_sql.size).to eq(1)
+        expect(executed_sql.first).to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(result.first.path).to eq(a2.path)
       end
     end
   end

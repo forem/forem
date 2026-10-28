@@ -53,14 +53,10 @@ module Articles
 
       # @api private
       def score_single_article(article, base_article_points: 0)
-        article_points = base_article_points
-        article_points += score_followed_user(article)
-        article_points += score_followed_organization(article)
-        article_points += score_followed_tags(article)
-        article_points += score_experience_level(article)
-        article_points += score_comments(article)
-        article_points += score_ai_disclosure(article)
-        article_points
+        @article_score_applicator.score_for_experimental(
+          article,
+          base_article_points: base_article_points,
+        ) || legacy_score_single_article(article, base_article_points: base_article_points)
       end
 
       delegate(:score_followed_user,
@@ -104,6 +100,17 @@ module Articles
       end
 
       private
+
+      def legacy_score_single_article(article, base_article_points: 0)
+        article_points = base_article_points
+        article_points += score_followed_user(article)
+        article_points += score_followed_organization(article)
+        article_points += score_followed_tags(article)
+        article_points += score_experience_level(article)
+        article_points += score_comments(article)
+        article_points += score_ai_disclosure(article)
+        article_points
+      end
 
       def featured_story_from(stories:, must_have_main_image:)
         return stories.first unless must_have_main_image
