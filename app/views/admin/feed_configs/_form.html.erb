@@ -142,6 +142,11 @@
         <%= f.number_field :semantic_similarity_weight, step: "any", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
+        <%= f.label :semantic_candidate_limit, "Semantic Candidate Limit", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Pre-filtered candidate pool size (100–1000) when Semantic Similarity Weight &gt; 0.</p>
+        <%= f.number_field :semantic_candidate_limit, min: FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT, max: FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT, step: 1, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
         <%= f.label :randomness_weight, "Randomness Weight", class: "crayons-field__label" %>
         <%= f.number_field :randomness_weight, step: "any", class: "crayons-textfield" %>
       </div>
