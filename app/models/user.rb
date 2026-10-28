@@ -183,7 +183,7 @@ class User < ApplicationRecord
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
   validates :credits_count, presence: true
-  validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validates :email, length: { maximum: 254 }, email: { mode: :strict }, allow_nil: true
   validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
