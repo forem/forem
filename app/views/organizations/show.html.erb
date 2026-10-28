@@ -2,7 +2,7 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
-  <% unless @stories.sum(&:score).positive? %>
+  <% unless (@pinned_stories.to_a + @stories.to_a).sum(&:score).positive? %>
       <meta name="robots" content="noindex">
       <meta name="robots" content="nofollow">
   <% end %>

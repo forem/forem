@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   include AlgoliaSearchable
   include WebpageTrackable
   include ActivityTrackable
+  include AiDisclosable
 
   acts_as_taggable_on :tags
   resourcify
@@ -159,13 +160,6 @@ class Article < ApplicationRecord
     full_post: 0,
     status: 1,
     fullscreen_embed: 2
-  }
-
-  enum :ai_disclosure_level, {
-    not_disclosed: 0,
-    no_ai: 1,
-    some_ai: 3,
-    fully_autonomous: 5
   }
 
   enum :automod_label, {
@@ -451,19 +445,53 @@ class Article < ApplicationRecord
   # @see https://api.rubyonrails.org/classes/ActiveRecord/AttributeMethods/Serialization/ClassMethods.html#method-i-serialize
   serialize :cached_organization, coder: YAML
 
+  DISALLOWED_TSQUERY_CHARACTERS = /['?\\:‘’ʻʼ"\u0000]/
+  MAX_SEARCH_TSQUERY_TERMS = 10
+  MIN_PREFIX_SEARCH_TERM_LENGTH = 3
+
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
   # is also used for the article search page.
   # The name of the `tsvector` column and its related trigger should be adapted.
-  pg_search_scope :search_articles,
-                  against: :reading_list_document,
-                  using: {
-                    tsearch: {
-                      prefix: true,
-                      tsvector_column: :reading_list_document
-                    }
-                  },
-                  ignoring: :accents
+  #
+  # NOTE: We build the full-text query directly instead of using `pg_search_scope` because:
+  # 1. `pg_search` wraps each term in SQL `unaccent(...)` (which is `STABLE`), preventing
+  #    PostgreSQL from constant-folding the `tsquery` and inspecting `pg_statistic` lexeme
+  #    frequencies. Pre-unaccenting in Ruby produces a single `IMMUTABLE` `to_tsquery` call.
+  # 2. 1-2 character prefix wildcards (e.g. `'i':*`, `'de':*`) force GIN index scans to
+  #    expand and merge hundreds of thousands of dictionary entries upfront.
+  # 3. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
+  #    lets callers that `.reorder(...)`, `.count`, or `.exists?` skip de-TOASTing
+  #    `reading_list_document` for `ts_rank`.
+  scope :search_articles, lambda { |term|
+    tsquery_sql = sanitize_search_articles_tsquery(term)
+    return none if tsquery_sql.nil?
+
+    where("articles.reading_list_document @@ #{tsquery_sql}")
+      .order(Arel.sql("ts_rank(articles.reading_list_document, #{tsquery_sql}, 0) DESC, articles.id ASC"))
+  }
+
+  def self.sanitize_search_articles_tsquery(term)
+    normalized = Unaccent.unaccent(term.to_s)
+      .downcase
+      .gsub(DISALLOWED_TSQUERY_CHARACTERS, " ")
+
+    tokens = normalized
+      .split
+      .grep(/[[:alnum:]]/)
+      .uniq
+      .first(MAX_SEARCH_TSQUERY_TERMS)
+
+    return if tokens.empty?
+
+    query_expression = tokens.map do |token|
+      alnum_length = token.gsub(/[^[:alnum:]]/, "").length
+      prefix_suffix = alnum_length >= MIN_PREFIX_SEARCH_TERM_LENGTH ? ":*" : ""
+      "' #{token} '#{prefix_suffix}"
+    end.join(" & ")
+
+    sanitize_sql_array(["to_tsquery('simple'::regconfig, ?)", query_expression])
+  end
 
   # [@jgaskins] We use an index on `published`, but since it's a boolean value
   #   the Postgres query planner often skips it due to lack of diversity of the
@@ -625,11 +653,15 @@ class Article < ApplicationRecord
   scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
-                 published.includes(:taggings)
+                 published
                    .select(
                      :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
+
+  def cached_tag_list_array
+    (cached_tag_list || "").split(", ")
+  end
 
   scope :with_video, lambda {
                        published
@@ -754,8 +786,14 @@ class Article < ApplicationRecord
   def title_finalized
     return title unless title.present?
 
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title)&.html_safe || legacy_title_finalized(safe_title)
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_title_finalized(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # First handle line breaks and paragraphs
-    processed_title = title.dup
+    processed_title = source_title.dup
 
     # Convert double line breaks to paragraph breaks (with optional whitespace)
     processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
@@ -797,6 +835,8 @@ class Article < ApplicationRecord
     end.html_safe
   end
 
+  private :legacy_title_finalized
+
   def title_finalized_for_feed
     return title_finalized unless type_of == "status" && title.present?
 
@@ -809,10 +849,6 @@ class Article < ApplicationRecord
     else
       title_finalized
     end
-  end
-
-  def ai_disclosed?
-    some_ai? || fully_autonomous?
   end
 
   def ai_disclosure_label
@@ -831,8 +867,15 @@ class Article < ApplicationRecord
   def truncate_title_for_feed
     return title_finalized unless title.present?
 
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title, truncate_for_feed: true)&.html_safe ||
+      legacy_truncate_title_for_feed(safe_title)
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
+  def legacy_truncate_title_for_feed(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # Split the title into lines to find a good truncation point
-    lines = title.split("\n")
+    lines = source_title.split("\n")
 
     # Take first 6 lines (leaving room for "read more" indicator)
     truncated_lines = lines.first(6)
@@ -885,6 +928,8 @@ class Article < ApplicationRecord
     end.html_safe
   end
 
+  private :legacy_truncate_title_for_feed
+
   def flare_tag
     @flare_tag ||= FlareTag.new(self).tag_hash
   end
@@ -930,6 +975,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
+    ForemNative.format_video_duration(video_duration_in_seconds) ||
+      legacy_video_duration_in_minutes
+  end
+
+  def legacy_video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
     # add default hours and minutes for the substitutions below
@@ -940,6 +990,7 @@ class Article < ApplicationRecord
 
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
+  private :legacy_video_duration_in_minutes
 
   def body_text
     # Sanitizing processed_html is slow on long posts and a single save asks for it
@@ -948,7 +999,7 @@ class Article < ApplicationRecord
     return @body_text if defined?(@body_text) && @body_text_html == html
 
     @body_text_html = html.dup
-    @body_text = ActionView::Base.full_sanitizer.sanitize(html)[0..7000]
+    @body_text = full_sanitize(html)[0..7000]
   end
 
   def touch_by_reaction
@@ -962,8 +1013,14 @@ class Article < ApplicationRecord
     # The sanitizer strips tags and entity-encodes &, < and >; without those characters it is a no-op.
     return raw_markdown[0..2200] unless raw_markdown.match?(/[<>&]/)
 
-    ActionView::Base.full_sanitizer.sanitize(raw_markdown)[0..2200]
+    full_sanitize(raw_markdown)[0..2200]
   end
+
+  def full_sanitize(html)
+    ForemNative.full_sanitize(html) || ActionView::Base.full_sanitizer.sanitize(html)
+  end
+
+  private :full_sanitize
 
   # Request-local memo of comment trees loaded for this instance, keyed by query options, so
   # articles#show can share one tree between its JSON-LD and the rendered comment area.
@@ -1035,10 +1092,17 @@ class Article < ApplicationRecord
   def title_for_metadata
     return title unless type_of == "status" && title.present?
 
+    ForemNative.title_for_metadata(title) || legacy_title_for_metadata
+  end
+
+  # Handles the titles ForemNative declines (non-UTF-8 encodings, String subclasses,
+  # invalid byte sequences).
+  def legacy_title_for_metadata
     # For quickies, return a clean single-line version of the title
     # Replace line breaks with spaces and normalize whitespace
     title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip
   end
+  private :legacy_title_for_metadata
 
   def series
     # name of series article is part of
@@ -1116,7 +1180,7 @@ class Article < ApplicationRecord
 
     # Calculate comment_score and apply max_score limits
     # Each comment can contribute a minimum of -1 to the total score
-    calculated_comment_score = comments.sum { |comment| [comment.score, -1].max }
+    calculated_comment_score = comments.pluck(:score).sum { |value| [value, -1].max }
     comment_score = if accepted_max.positive? && accepted_max < calculated_comment_score
                       accepted_max
                     else
@@ -1501,7 +1565,7 @@ class Article < ApplicationRecord
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def fetch_video_duration
@@ -1579,20 +1643,7 @@ class Article < ApplicationRecord
       return
     end
 
-    val_str = raw_val.to_s.strip.downcase.tr("-", "_")
-    level = case val_str
-            when "0", "not_disclosed", "unstated", "unknown", "false"
-              :not_disclosed
-            when "1", "no_ai", "no", "none", "human", "hand_written", "handwritten", "100%_human"
-              :no_ai
-            when "3", "some_ai", "some", "assisted", "ai_assisted", "ai_assist"
-              :some_ai
-            when "5", "fully_autonomous", "autonomous", "full", "ai_generated", "generated", "fully_ai"
-              :fully_autonomous
-            else
-              Article.ai_disclosure_levels.key?(val_str) ? val_str.to_sym : nil
-            end
-
+    level = self.class.normalize_ai_disclosure_level(raw_val)
     self.ai_disclosure_level = level if level
   end
 
@@ -1620,12 +1671,14 @@ class Article < ApplicationRecord
   #
   # @return [String] an array of tag names.
   def validate_tag
-    distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
-      .select('DISTINCT ON ("tag_id") *')
-      .order(:tag_id, updated_at: :desc, id: :desc)
+    if id.present?
+      distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
+        .select('DISTINCT ON ("tag_id") *')
+        .order(:tag_id, updated_at: :desc, id: :desc)
 
-    remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
-    add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+      remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
+      add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
+    end
 
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
@@ -1643,7 +1696,7 @@ class Article < ApplicationRecord
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
+    self.tag_list = Tag.find_preferred_aliases_for(tag_list)
   end
 
   def validate_video
@@ -1831,14 +1884,27 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return if main_image.present?
+    return if main_image.present? || !published
 
-    change = saved_change_to_attribute?(:title) ||
+    change = social_image.blank? ||
+      saved_change_to_attribute?(:title) ||
       saved_change_to_attribute?(:published_at) ||
-      saved_change_to_attribute?(:user_id) # the image shows the author's name, avatar, and brand color
-    return unless (change || social_image.blank?) && published
+      saved_change_to_attribute?(:user_id) || # the image shows the author's name, avatar, and brand color
+      saved_change_to_attribute?(:reading_time) || # the image shows the reading time
+      social_image_quote_changed?
+    return unless change
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+  end
+
+  # The generated image quotes the opening of the post, so only body edits that
+  # change that quote need a new image.
+  def social_image_quote_changed?
+    return false unless saved_change_to_attribute?(:processed_html)
+
+    Images::SocialImageQuote.from_html(attribute_before_last_save(:processed_html), title) !=
+      Images::SocialImageQuote.call(self)
   end
 
   def calculate_base_scores

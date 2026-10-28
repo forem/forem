@@ -149,7 +149,7 @@ module ApplicationHelper
 
     return unless (image_url = url.presence || fallback_image)
 
-    normalized_url = Addressable::URI.parse(image_url).normalize.to_s
+    normalized_url = ForemNative.normalize_url(image_url) || legacy_normalize_url(image_url)
     Images::Optimizer.call(normalized_url, width: width, quality: quality, fetch_format: fetch_format)
   end
 
@@ -167,27 +167,35 @@ module ApplicationHelper
     CloudCoverUrl.new(url, subforem_id).call
   end
 
+  DEFAULT_TAG_COLORS = { background: "#d6d9e0", color: "#606570" }.freeze
+  private_constant :DEFAULT_TAG_COLORS
+
   def tag_colors(tag)
     if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
-      { background: tag.bg_color_hex, color: tag.text_color_hex }
+      colors = { background: tag.bg_color_hex, color: tag.text_color_hex }
+      preloaded_tag_colors[tag.name] = colors if tag.respond_to?(:name) && tag.name.present?
+      colors
     else
       tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
-      preloaded_tag_colors.fetch(tag_name) do
+      preloaded_tag_colors[tag_name] ||=
         Rails.cache.fetch(tag_colors_cache_key(tag_name), expires_in: 5.hours) { find_tag_colors(tag_name) }
-      end
     end
   end
 
   # Reads the cached colors for every tag shown in a story list in one cache round-trip,
-  # so render_tag_link doesn't make a separate cache read per tag.
+  # and batches any cache misses into a single Tag query instead of one per tag.
   def preload_tag_colors(stories)
-    tag_names = stories.reject { |story| story.type_of == "status" }
+    tag_names = Array(stories).compact.reject { |story| story.type_of == "status" }
       .flat_map(&:cached_tag_list_array).uniq - preloaded_tag_colors.keys
     return if tag_names.empty?
 
     names_by_key = tag_names.index_by { |tag_name| tag_colors_cache_key(tag_name) }
-    Rails.cache.fetch_multi(*names_by_key.keys, expires_in: 5.hours) { |key| find_tag_colors(names_by_key[key]) }
-      .each { |key, colors| preloaded_tag_colors[names_by_key[key]] = colors }
+    missing_colors = nil
+    colors_by_key = Rails.cache.fetch_multi(*names_by_key.keys, expires_in: 5.hours) do |key|
+      missing_colors ||= find_tag_colors_by_name(tag_names)
+      missing_colors[names_by_key[key]]
+    end
+    colors_by_key.each { |key, colors| preloaded_tag_colors[names_by_key[key]] = colors }
   end
 
   def any_enabled_auth_providers?
@@ -195,9 +203,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
-  rescue StandardError
-    url
+    ForemNative.beautified_url(url) || legacy_beautified_url(url)
   end
 
   def org_bg_or_white(org)
@@ -462,8 +468,12 @@ module ApplicationHelper
     URL.organization(organization)
   end
 
+  # The pg_class estimate only moves when VACUUM/ANALYZE refreshes table stats,
+  # so serve it from the in-process cache instead of querying on every auth render.
   def estimated_user_count
-    @estimated_user_count ||= User.registered.estimated_count
+    @estimated_user_count ||= MemoryFirstCache.fetch("estimated_user_count", redis_expires_in: 10.minutes) do
+      User.registered.estimated_count
+    end
   end
 
   def display_estimated_user_count?
@@ -598,6 +608,17 @@ module ApplicationHelper
 
   private
 
+  def legacy_beautified_url(url)
+    url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")
+  rescue StandardError
+    url
+  end
+
+  # Handles the URLs ForemNative declines (non-ASCII hosts, other schemes, dot segments, ...).
+  def legacy_normalize_url(url)
+    Addressable::URI.parse(url).normalize.to_s
+  end
+
   def preloaded_tag_colors
     @preloaded_tag_colors ||= {}
   end
@@ -610,8 +631,14 @@ module ApplicationHelper
     if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
       { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
     else
-      { background: "#d6d9e0", color: "#606570" }
+      DEFAULT_TAG_COLORS.dup
     end
+  end
+
+  def find_tag_colors_by_name(tag_names)
+    found = Tag.where(name: tag_names).pluck(:name, :bg_color_hex, :text_color_hex)
+      .to_h { |name, bg, text| [name, { background: bg, color: text }] }
+    tag_names.index_with { |name| found[name] || DEFAULT_TAG_COLORS.dup }
   end
 end
 

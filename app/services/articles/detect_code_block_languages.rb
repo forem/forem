@@ -33,10 +33,18 @@ module Articles
     end
 
     def self.contains_unlabeled_code_blocks?(markdown)
+      result = ForemNative.contains_unlabeled_code_blocks(markdown)
+      return result unless result.nil?
+
+      legacy_contains_unlabeled_code_blocks?(markdown)
+    end
+
+    def self.legacy_contains_unlabeled_code_blocks?(markdown)
       markdown.to_s.to_enum(:scan, FENCED_CODE_BLOCK_REGEX).any? do
         Regexp.last_match[:info].to_s.strip.blank?
       end
     end
+    private_class_method :legacy_contains_unlabeled_code_blocks?
 
     # Rouge tag => human-readable name for the Jev Choice options, e.g. "ruby" => "Ruby".
     def self.language_criteria
@@ -127,9 +135,14 @@ module Articles
     # --- Gemini ---
 
     def extract_unlabeled_blocks
+      ForemNative.extract_unlabeled_code_blocks(article.body_markdown) ||
+        legacy_extract_unlabeled_blocks
+    end
+
+    def legacy_extract_unlabeled_blocks
       article.body_markdown.to_enum(:scan, FENCED_CODE_BLOCK_REGEX).filter_map do
         match = Regexp.last_match
-        next unless match[:info].to_s.strip.blank?
+        next if match[:info].to_s.strip.present?
 
         match[:code]
       end
@@ -187,11 +200,16 @@ module Articles
     end
 
     def apply_languages(detected_languages)
+      ForemNative.apply_code_block_languages(article.body_markdown, detected_languages) ||
+        legacy_apply_languages(detected_languages)
+    end
+
+    def legacy_apply_languages(detected_languages)
       unlabeled_index = -1
 
       article.body_markdown.gsub(FENCED_CODE_BLOCK_REGEX) do
         match = Regexp.last_match
-        next match[0] unless match[:info].to_s.strip.blank?
+        next match[0] if match[:info].to_s.strip.present?
 
         unlabeled_index += 1
         language = detected_languages.fetch(unlabeled_index, "plaintext")

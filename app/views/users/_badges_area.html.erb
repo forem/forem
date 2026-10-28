@@ -7,6 +7,7 @@
 
   <div class="crayons-card__body">
     <% grid_class ||= "grid-cols-3 s:grid-cols-4 m:grid-cols-2" %>
+    <% grouped_badges ||= @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id) %>
     <div class="grid gap-4 <%= grid_class %> align-center items-center js-profile-badges">
       <% grouped_badges.each_with_index do |(badge_id, badge_achievements), i| %>
       <% achievement = badge_achievements.first %>

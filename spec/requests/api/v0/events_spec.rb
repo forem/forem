@@ -78,6 +78,29 @@ RSpec.describe "Api::V0::Events" do
         expect(json.pluck("id")).to include(published_event.id, challenge_event.id, stream_event.id)
       end
     end
+
+    context "when events have tags" do
+      before do
+        create_list(:event, 3, published: true).each { |event| event.update!(tag_list: "ruby, webdev") }
+      end
+
+      it "returns each event's tag_list and loads taggings in one query" do
+        taggings_queries = 0
+        count_taggings = lambda do |*, payload|
+          taggings_queries += 1 if payload[:sql].include?('FROM "taggings"')
+        end
+
+        ActiveSupport::Notifications.subscribed(count_taggings, "sql.active_record") do
+          get "/api/events"
+        end
+
+        json = response.parsed_body
+        tagged = json.reject { |event| event["id"] == published_event.id }
+        expect(tagged.size).to eq(3)
+        expect(tagged.pluck("tag_list")).to all(contain_exactly("ruby", "webdev"))
+        expect(taggings_queries).to eq(1)
+      end
+    end
   end
 
   describe "GET /api/events/:id" do

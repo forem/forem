@@ -40,6 +40,7 @@ module Users
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
+    after_update :generate_social_images, if: :saved_change_to_brand_color1?
     after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
 
     def resolved_font_name
@@ -84,6 +85,10 @@ module Users
 
     def display_email_setting_changed_for_cache?
       saved_change_to_display_email_on_profile?
+    end
+
+    def generate_social_images
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(user_id, "User") }
     end
   end
 end

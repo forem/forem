@@ -58,6 +58,24 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(queries.grep(/\ASELECT/)).to contain_exactly(a_string_starting_with('SELECT "display_ads"."id" FROM'))
     end
 
+    it "inserts the event in a single statement that keeps synchronous_commit off" do
+      billboard
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?(BillboardEvent.table_name) }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        post bb_tabulations_path, params: { billboard_event: base_params }
+      end
+
+      expect(queries.size).to eq(1)
+      expect(queries.first).to start_with("SET LOCAL synchronous_commit TO OFF; INSERT")
+      event = BillboardEvent.last
+      expect(response.parsed_body).to eq("id" => event.id)
+      expect(event).to have_attributes(billboard_id: billboard.id, user_id: user.id, geolocation: "test-geo",
+                                       counts_for: 1, seconds_visible: 10)
+      expect(event.created_at).to be_within(1.minute).of(Time.current)
+      expect(event.updated_at).to eq(event.created_at)
+    end
+
     it "does not create an event for a billboard that does not exist" do
       missing_id_params = { billboard_event: base_params.merge(billboard_id: billboard.id + 1000) }
       expect { post bb_tabulations_path, params: missing_id_params }.not_to change(BillboardEvent, :count)

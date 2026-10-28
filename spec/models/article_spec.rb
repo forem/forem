@@ -49,6 +49,61 @@ RSpec.describe Article do
       expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
       expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
     end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      article = build(:article)
+
+      {
+        "ai_generated" => "fully_autonomous",
+        "AI-Generated" => "fully_autonomous",
+        "autonomous" => "fully_autonomous",
+        "full_ai" => "fully_autonomous",
+        "fully_ai" => "fully_autonomous",
+        "100%_ai" => "fully_autonomous",
+        "agent_generated" => "fully_autonomous",
+        "llm" => "fully_autonomous",
+        "5" => "fully_autonomous",
+        5 => "fully_autonomous",
+        true => "fully_autonomous",
+        "ai_assisted" => "some_ai",
+        "AI Assisted" => "some_ai",
+        "assisted" => "some_ai",
+        "some" => "some_ai",
+        "partial_ai" => "some_ai",
+        "hybrid" => "some_ai",
+        "copilot" => "some_ai",
+        "3" => "some_ai",
+        3 => "some_ai",
+        "human" => "no_ai",
+        "human_written" => "no_ai",
+        "hand_written" => "no_ai",
+        "handwritten" => "no_ai",
+        "none" => "no_ai",
+        "no" => "no_ai",
+        "100%_human" => "no_ai",
+        "without_ai" => "no_ai",
+        "1" => "no_ai",
+        1 => "no_ai",
+        "undisclosed" => "not_disclosed",
+        "unspecified" => "not_disclosed",
+        "unknown" => "not_disclosed",
+        "false" => "not_disclosed",
+        "0" => "not_disclosed",
+        0 => "not_disclosed",
+        false => "not_disclosed",
+        "" => "not_disclosed",
+        nil => "not_disclosed"
+      }.each do |input, expected|
+        article.ai_disclosure_level = input
+        expect(article.ai_disclosure_level).to eq(expected), "expected #{input.inspect} to map to #{expected}"
+      end
+    end
+
+    it "raises ArgumentError for completely unrecognized values" do
+      article = build(:article)
+      expect { article.ai_disclosure_level = "banana_split" }
+        .to raise_error(ArgumentError, "'banana_split' is not a valid ai_disclosure_level")
+    end
   end
 
   describe "validations" do
@@ -1112,13 +1167,11 @@ RSpec.describe Article do
       it "sanitizes processed_html only once while it is unchanged" do
         article = build(:article)
         article.processed_html = "<p>Some text</p>"
-        sanitizer = ActionView::Base.full_sanitizer
-        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
-        allow(sanitizer).to receive(:sanitize).and_call_original
+        allow(ForemNative).to receive(:full_sanitize).and_call_original
 
         3.times { article.body_text }
 
-        expect(sanitizer).to have_received(:sanitize).once
+        expect(ForemNative).to have_received(:full_sanitize).once
       end
 
       it "recomputes when processed_html changes" do
@@ -1141,13 +1194,11 @@ RSpec.describe Article do
 
       it "sanitizes once when saving a draft with a blank description" do
         article = build(:article, published: false, description: nil)
-        sanitizer = ActionView::Base.full_sanitizer
-        allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
-        allow(sanitizer).to receive(:sanitize).and_call_original
+        allow(ForemNative).to receive(:full_sanitize).and_call_original
 
         article.save!
 
-        expect(sanitizer).to have_received(:sanitize).with(article.processed_html).once
+        expect(ForemNative).to have_received(:full_sanitize).with(article.processed_html).once
       end
     end
 
@@ -2666,7 +2717,7 @@ RSpec.describe Article do
     end
 
     let(:reactions) { double("reactions", sum: 10, privileged_category: double("privileged_category", sum: 5)) } # rubocop:disable RSpec/VerifiedDoubles
-    let(:comments) { double("comments", sum: 3) } # rubocop:disable RSpec/VerifiedDoubles
+    let(:comments) { double("comments", pluck: [3]) } # rubocop:disable RSpec/VerifiedDoubles
 
     it "stably sets the correct blackbox values" do
       article.update_score
@@ -2892,6 +2943,17 @@ RSpec.describe Article do
         # Total: -1 + -1 + 10 + -1 = 7
         expect(article.reload.comment_score).to eq(7)
       end
+
+      it "reads only comment scores instead of loading full comment rows" do
+        create(:comment, commentable: article, score: 4)
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { article.update_score }
+
+        expect(queries).to all(start_with('SELECT "comments"."score"'))
+        expect(article.reload.comment_score).to eq(4)
+      end
     end
 
     context "triggering LinkedDomains::UpdateScoreWorker" do
@@ -2946,7 +3008,7 @@ RSpec.describe Article do
   describe "automod_label adjustments" do
     before do
       allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
-      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(article).to receive(:comments).and_return(double(pluck: []))
       allow(BlackBox).to receive(:article_hotness_score).and_return(0)
     end
 
@@ -3089,7 +3151,7 @@ RSpec.describe Article do
   describe "established_user_adjustment in update_score" do
     before do
       allow(article).to receive(:reactions).and_return(double(sum: 0, privileged_category: double(sum: 0)))
-      allow(article).to receive(:comments).and_return(double(sum: 0))
+      allow(article).to receive(:comments).and_return(double(pluck: []))
       allow(BlackBox).to receive(:article_hotness_score).and_return(0)
       allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(12)
     end
@@ -3603,10 +3665,40 @@ RSpec.describe Article do
     end
 
     context "when title or published_at attribute changes but published is false" do
-      it "does not trigger the Images::SocialImageWorker" do
+      it "does not trigger the Images::SocialImageWorker or parse the quote" do
+        allow(Images::SocialImageQuote).to receive(:from_html)
         article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: false\n---\n\n# Hello World"
         article.save
+        expect(Images::SocialImageQuote).not_to have_received(:from_html)
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when the generated image's quote or reading time could change" do
+      # Long enough (80+ characters) that the quote doesn't also pull in the next paragraph.
+      let(:opening) { "The opening paragraph is quoted on the generated social image, so changing it matters." }
+      let(:article) do
+        body = "---\ntitle: Quote Trigger\npublished: true\n---\n\n#{opening}\n\nLater text here."
+        create(:article, title: "Quote Trigger", body_markdown: body)
+      end
+
+      before do
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
+      end
+
+      it "triggers the Images::SocialImageWorker when the opening paragraph changes" do
+        article.update(body_markdown: article.body_markdown.sub(opening, "A brand new opening for this post."))
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not trigger the Images::SocialImageWorker when only later text changes" do
+        article.update(body_markdown: article.body_markdown.sub("Later text here.", "Later words here."))
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+
+      it "triggers the Images::SocialImageWorker when the reading time changes" do
+        article.update(body_markdown: "#{article.body_markdown}\n\n#{'word ' * 600}")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
       end
     end
 
@@ -3622,6 +3714,51 @@ RSpec.describe Article do
 
       it "does not trigger the Images::SocialImageWorker when the author is unchanged" do
         article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when saved inside an open transaction" do
+      self.use_transactional_tests = false
+
+      let!(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
+
+      after do
+        described_class.where(id: article.id).delete_all
+        Users::Setting.where(user_id: user.id).delete_all
+        Users::NotificationSetting.where(user_id: user.id).delete_all
+        Profile.where(user_id: user.id).delete_all
+        User.where(id: user.id).delete_all
+      end
+
+      it "waits until the transaction commits before enqueuing Images::SocialImageWorker" do
+        # Clear any call from the initial `let!(:article)` creation outside our test transaction
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+        end
+
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not enqueue Images::SocialImageWorker if the transaction rolls back" do
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          raise ActiveRecord::Rollback
+        end
+
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
@@ -4139,6 +4276,13 @@ RSpec.describe Article do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
     end
+
+    it "escapes angle brackets in the title" do
+      article.title = "<img src=x onerror=alert(1)>\nSecond line"
+      expected = "<p class=\"quickie-paragraph\">&lt;img src=x onerror=alert(1)&gt;<br>Second line</p>"
+      expect(article.title_finalized).to eq(expected)
+      expect(article.title_finalized).not_to include("<img")
+    end
   end
 
   describe "#extract_url_from_status_title" do
@@ -4599,11 +4743,13 @@ RSpec.describe Article do
       sanitizer = ActionView::Base.full_sanitizer
       allow(ActionView::Base).to receive(:full_sanitizer).and_return(sanitizer)
       allow(sanitizer).to receive(:sanitize).and_call_original
+      allow(ForemNative).to receive(:full_sanitize).and_call_original
 
       blob = article.comments_blob
 
       expect(blob.length).to eq(2201)
       expect(blob).to eq("a" * 2201)
+      expect(ForemNative).not_to have_received(:full_sanitize)
       expect(sanitizer).not_to have_received(:sanitize)
     end
 
@@ -4623,6 +4769,41 @@ RSpec.describe Article do
       create(:comment, commentable: article, body_markdown: "<p>Hello <b>youtube</b> world</p>")
 
       expect(article.comments_blob).to eq("Hello youtube world")
+    end
+  end
+
+  describe ".search_articles" do
+    it "pre-unaccents terms into an immutable to_tsquery expression without a self-join", :aggregate_failures do
+      relation = described_class.search_articles("Café")
+      sql = relation.to_sql
+
+      expect(sql).to include("articles.reading_list_document @@ to_tsquery('simple'::regconfig, ''' cafe '':*')")
+      expect(sql).not_to include("unaccent(")
+      expect(sql).not_to include("INNER JOIN")
+    end
+
+    it "uses prefix matching only on tokens with at least 3 alphanumeric characters", :aggregate_failures do
+      tsquery_sql = described_class.sanitize_search_articles_tsquery("why I switched to ruby")
+
+      expect(tsquery_sql).to eq(
+        "to_tsquery('simple'::regconfig, ''' why '':* & '' i '' & '' switched '':* & '' to '' & '' ruby '':*')",
+      )
+    end
+
+    it "matches accented and unaccented queries against reading_list_document", :aggregate_failures do
+      matching_article = create(:article, title: "São Paulo intermedica guide")
+      create(:article, title: "Unrelated article")
+
+      expect(described_class.search_articles("sao paulo").ids).to eq([matching_article.id])
+      expect(described_class.search_articles("SÃO").ids).to eq([matching_article.id])
+    end
+
+    it "returns an empty relation when given blank or punctuation-only input", :aggregate_failures do
+      create(:article, title: "Sample article")
+
+      expect(described_class.search_articles(nil)).to be_empty
+      expect(described_class.search_articles("   ")).to be_empty
+      expect(described_class.search_articles("??? ::: '''")).to be_empty
     end
   end
 end

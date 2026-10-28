@@ -1,6 +1,6 @@
 class GitPitchTag < LiquidTagBase
   PARTIAL = "liquids/gitpitch".freeze
-  URL_REGEXP = %r{(http|https)://gitpitch.com/[a-zA-Z0-9\-/]*}
+  URL_REGEXP = %r{\A(http|https)://gitpitch\.com/[a-zA-Z0-9\-/]+\z}
 
   def initialize(_tag_name, link, _parse_context)
     super

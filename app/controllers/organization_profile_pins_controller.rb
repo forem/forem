@@ -12,7 +12,9 @@ class OrganizationProfilePinsController < ApplicationController
     if @profile_pin.save
       flash[:success] = I18n.t("views.pins.pinned")
     else
-      flash[:error] = @profile_pin.errors.full_messages.to_sentence.presence || I18n.t("views.pins.error")
+      error_message = @profile_pin.errors.full_messages.to_sentence.presence || I18n.t("views.pins.error")
+      flash[:error] = error_message
+      flash[:pins_error] = error_message
     end
 
     bust_organization_page

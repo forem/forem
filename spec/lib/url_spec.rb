@@ -86,6 +86,12 @@ RSpec.describe URL, type: :lib do
       expect(described_class.url(uri)).to eq("https://dev.to/admin#test")
     end
 
+    it "falls back to Addressable for references ForemNative declines" do
+      expect(described_class.url("/a/../t/c%2B%2B?q=a b")).to eq("https://dev.to/t/c++?q=a%20b")
+      expect(described_class.url("https://Other.com/x")).to eq("https://other.com/x")
+      expect(described_class.url(Addressable::URI.parse("terms"))).to eq("https://dev.to/terms")
+    end
+
     context "when passed a domain string" do
       it "creates a URL with the specified domain" do
         expect(described_class.url("/feed", "subdomain.example.com")).to eq("https://subdomain.example.com/feed")

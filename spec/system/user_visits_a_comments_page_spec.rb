@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", js: true do
+RSpec.describe "Views an article" do
   let(:user) { create(:user) }
   let(:co_author) { create(:user) }
   let(:article) { create(:article, user: user, co_author_ids: [co_author.id]) }
@@ -18,18 +18,23 @@ RSpec.describe "Views an article", js: true do
   end
 
   it "shows op marker on author and co-author comments" do
-    create(:comment, user: user, commentable: article)
-    create(:comment, user: co_author, commentable: article)
+    author_comment = create(:comment, user: user, commentable: article)
+    co_author_comment = create(:comment, user: co_author, commentable: article)
     visit "#{article.path}/comments"
 
-    expect(page).to have_selector(".spec-op-author[data-tooltip='Author']", visible: :visible, count: 2)
+    [author_comment, co_author_comment].each do |comment|
+      expect(page).to have_selector("#comment-node-#{comment.id} .spec-op-author[data-tooltip='Author']", count: 2)
+    end
   end
 
   it "shows special op marker on ama articles" do
-    create(:comment, user: user, commentable: ama_article)
+    ama_comment = create(:comment, user: user, commentable: ama_article)
     visit "#{ama_article.path}/comments"
 
-    expect(page).to have_selector(".spec-op-author[data-tooltip='Ask Me Anything']", visible: :visible)
+    expect(page).to have_selector(
+      "#comment-node-#{ama_comment.id} .spec-op-author[data-tooltip='Ask Me Anything']",
+      count: 2,
+    )
   end
 
   it "shows a thread" do
@@ -40,7 +45,7 @@ RSpec.describe "Views an article", js: true do
     expect(page).to have_selector(".comment--deep-1#comment-node-#{child_comment.id}", visible: :visible, count: 1)
   end
 
-  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :aggregate_failures do
+  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :js, :aggregate_failures do
     depth2_comment = create(:comment, parent: child_comment, commentable: article)
     depth3_comment = create(:comment, parent: depth2_comment, commentable: article)
     depth4_comment = create(:comment, parent: depth3_comment, commentable: article)

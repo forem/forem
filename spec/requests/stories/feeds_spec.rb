@@ -278,6 +278,19 @@ RSpec.describe "Stories::Feeds" do
         )
       end
 
+      it "excludes articles by blocked authors when feed_strategy is basic", :aggregate_failures do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+        hot_story = create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago)
+
+        get stories_feed_path
+        expect(response.parsed_body.pluck("id")).to include(hot_story.id, article.id)
+
+        create(:user_block, blocker: user, blocked: hot_story.user)
+        get stories_feed_path
+        expect(response.parsed_body.pluck("id")).to include(article.id)
+        expect(response.parsed_body.pluck("id")).not_to include(hot_story.id)
+      end
+
       it "does not set cache control headers for edge caching" do
         get stories_feed_path
 
@@ -825,6 +838,39 @@ RSpec.describe "Stories::Feeds" do
       expect(response_article["feed_config"]).to eq(feed_config.id)
     end
 
+    it "does not select archived feed configs when feed_strategy is configured" do
+      archived_config = create(:feed_config, archived: true, feed_success_score: 1000.0)
+      active_config = create(:feed_config, archived: false, feed_success_score: 10.0)
+      sign_in user
+
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get stories_feed_path(page: 1, item: archived_config.id)
+      response_article = response.parsed_body.detect { |item| item["id"] == article.id }
+      expect(response_article["feed_config"]).to eq(active_config.id)
+    end
+
+    it "selects a feed config matching the user's targeting_bucket and ignores digest configs" do
+      create(
+        :feed_config,
+        targeting_bucket: FeedConfig::BUCKET_DIGEST,
+        feed_success_score: 999.0,
+        feed_impressions_count: 500,
+      )
+      new_user_config = create(
+        :feed_config,
+        targeting_bucket: FeedConfig::BUCKET_FEED_NEW_USER,
+        feed_success_score: 10.0,
+        feed_impressions_count: 100,
+      )
+      user.update!(registered_at: 1.day.ago)
+      sign_in user
+
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get stories_feed_path(page: 1)
+      response_article = response.parsed_body.detect { |item| item["id"] == article.id }
+      expect(response_article["feed_config"]).to eq(new_user_config.id)
+    end
+
     it "renders configured feed payload using limited_column_select with preloaded comments" do
       feed_config = create(:feed_config)
       sign_in user
@@ -1016,6 +1062,33 @@ RSpec.describe "Stories::Feeds" do
         get stories_feed_path(type_of: "discover")
         expect(response).to have_http_status(:ok)
       end
+    end
+  end
+
+  describe "N+1 query prevention" do
+    it "batch-preloads context_notes, comments, reaction counts, and caches org custom domains across stories" do
+      org_two = create(:organization, name: "OrgTwo")
+      second_article = create(:article, featured: true, user: user, organization: org_two)
+      create(:comment, commentable: article, user: user, score: 10)
+      create(:comment, commentable: second_article, user: user, score: 10)
+      create(:reaction, reactable: article, category: "like", user: user)
+      create(:reaction, reactable: second_article, category: "unicorn", user: user)
+
+      # Warm host and org custom domain caches with an initial request
+      get stories_feed_path(timeframe: "latest")
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get stories_feed_path(timeframe: "latest")
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.map { |a| a["id"] }).to include(article.id, second_article.id)
+      expect(queries.grep(/FROM "organizations"/).size).to eq(0)
+      expect(queries.grep(/FROM "context_notes"/).size).to eq(1)
+      expect(queries.grep(/FROM "comments"/).size).to eq(1)
+      expect(queries.grep(/FROM "reactions"/).size).to be <= 1
     end
   end
 end

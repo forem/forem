@@ -133,6 +133,19 @@ RSpec.describe "StoriesShow" do
       expect(response.body).to include(" articleuser-#{article.user_id}")
     end
 
+    it "reads the article's tag colors in one cache batch" do
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+
+      get article.path
+
+      tags = article.decorate.cached_tag_list_array
+      tag_color_keys = tags.map { |tag| "view-helper-#{tag}/tag_colors" }
+      expect(Rails.cache).to have_received(:fetch_multi).with(*tag_color_keys, expires_in: 5.hours).once
+      expect(Rails.cache).not_to have_received(:fetch).with(a_string_ending_with("/tag_colors"), any_args)
+      expect(response.body).to include(*tags.map { |tag| %(href="/t/#{tag}") })
+    end
+
     ###
 
     it "renders date-no-year if article published this year" do
@@ -535,6 +548,23 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    context "when the organization has a cover image" do
+      before { org.update!(cover_image: fixture_file_upload("800x600.png", "image/png")) }
+
+      it "serves the cover at 1600px for 1x screens and 3200px for 2x screens" do
+        allow(Images::Optimizer).to receive(:call).and_call_original
+
+        get org.path
+
+        expect(response).to have_http_status(:ok)
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 1600))
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 3200))
+        expect(response.body).to include("image-set(")
+      end
+    end
+
     context "with comment cue popup data attributes" do
       it "renders cue data attributes when the flag is fully enabled globally" do
         allow(FeatureFlag).to receive(:enabled?).and_call_original
@@ -555,6 +585,40 @@ RSpec.describe "StoriesShow" do
         expect(response.body).not_to include("data-cue-message=")
         expect(response.body).not_to include("data-cue-close-label=")
       end
+    end
+
+    it "renders the organization's generated social_image in og:image and twitter:image:src when present" do
+      org.update_column(:social_image, "https://example.com/org-social-card.png")
+
+      get org.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/org-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/org-social-card.png"')
+    end
+  end
+
+  describe "GET /:username (user)" do
+    it "renders the user's generated social_image in og:image and twitter:image:src when present" do
+      user.profile.update_column(
+        :data,
+        user.profile.data.merge("social_image" => "https://example.com/user-social-card.png"),
+      )
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/user-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/user-social-card.png"')
+    end
+
+    it "falls back to Settings::General.main_social_image when social_image is blank" do
+      allow(Settings::General).to receive(:main_social_image).and_return("https://example.com/default-main-social.png")
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/default-main-social.png"')
     end
   end
 end

@@ -24,7 +24,9 @@ module MarkdownProcessor
 
     def initialize(content, source: nil, user: nil,
                    liquid_tag_options: {})
-      @content = (content || "").gsub(/!\[Image Description\]/i, "![ ]")
+      content ||= ""
+      @content = ForemNative.strip_default_image_alt_text(content) ||
+        legacy_strip_default_image_alt_text(content)
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
@@ -35,15 +37,7 @@ module MarkdownProcessor
         options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
         renderer = Redcarpet::Render::HTMLRouge.new(options)
         markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-        catch_xss_attempts(@content)
-
-        # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
-        content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-        # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
-        content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
-
-        code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
-        escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
+        escaped_content = preprocess_for_finalize(@content)
         html = markdown.render(escaped_content)
         sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
 
@@ -104,6 +98,7 @@ module MarkdownProcessor
     def add_target_blank_to_outbound_links(html)
       app_domain = Settings::General.app_domain
       doc = Nokogiri::HTML.fragment(html)
+      scrub_unsafe_uris(doc)
       doc.css('a[href^="http"]').each do |link|
         href = link["href"]
         next unless href&.exclude?(app_domain)
@@ -166,8 +161,9 @@ module MarkdownProcessor
     end
 
     def catch_xss_attempts(markdown)
-      markdown_without_code_blocks = markdown.gsub(CODE_BLOCKS_REGEX, "")
-      return unless markdown_without_code_blocks.match?(Regexp.union(BAD_XSS_REGEX))
+      xss_attempt = ForemNative.markdown_xss_attempt(markdown)
+      xss_attempt = legacy_xss_attempt?(markdown) if xss_attempt.nil?
+      return unless xss_attempt
 
       raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
     end
@@ -179,6 +175,49 @@ module MarkdownProcessor
     end
 
     def convert_code_tags_to_triple_backticks(content)
+      ForemNative.convert_code_tags_to_triple_backticks(content) ||
+        legacy_convert_code_tags_to_triple_backticks(content)
+    end
+
+    def preprocess_for_finalize(content)
+      result = ForemNative.preprocess_markdown_for_finalize(content)
+      if result == :xss_attempt
+        raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
+      end
+
+      result || legacy_preprocess_for_finalize(content)
+    end
+
+    private
+
+    def legacy_preprocess_for_finalize(content)
+      catch_xss_attempts(content)
+
+      # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
+      content_with_fixed_links = convert_deeply_nested_links_to_html(content)
+      # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
+      content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+
+      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
+      escape_liquid_tags_in_codeblock(code_tag_content)
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_strip_default_image_alt_text(content)
+      content.gsub(/!\[Image Description\]/i, "![ ]")
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_xss_attempt?(markdown)
+      markdown_without_code_blocks = markdown.gsub(CODE_BLOCKS_REGEX, "")
+      markdown_without_code_blocks.match?(Regexp.union(BAD_XSS_REGEX))
+    end
+
+    # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
+    # invalid byte sequences).
+    def legacy_convert_code_tags_to_triple_backticks(content)
       # return content if there is not a <code> tag
       return content unless /^<code>$/.match?(content)
 
@@ -188,8 +227,6 @@ module MarkdownProcessor
       # Convert all multiline code tags to triple backticks
       content.gsub(%r{^</?code>$}, "\n```\n")
     end
-
-    private
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).
@@ -260,6 +297,22 @@ module MarkdownProcessor
         .wrap_all_figures_with_tags
         .wrap_mentions_with_links
         .html
+    end
+
+    URI_ATTRIBUTES = %w[href src].freeze
+
+    def scrub_unsafe_uris(doc)
+      doc.css("[href], [src]").each do |node|
+        node.attribute_nodes.each do |attr|
+          next unless URI_ATTRIBUTES.include?(attr.name)
+
+          if node.name == "a" && attr.name == "href" && attr.value.to_s.gsub(/[\x00-\x20]+/, "").match?(/\Adata:/i)
+            attr.remove
+          else
+            Loofah::HTML5::Scrub.scrub_uri_attribute(attr)
+          end
+        end
+      end
     end
   end
 end

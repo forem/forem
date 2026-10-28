@@ -17,7 +17,9 @@ module Api
         if params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
           @events = @events.where(type_of: params[:type_of])
         end
-        render json: @events.order(created_at: :desc)
+        # Serializing tag_list reads each event's taggings (acts-as-taggable-on's
+        # custom context check), so preload them in one query instead of one per event.
+        render json: @events.includes(:taggings).order(created_at: :desc)
       end
 
       def show
@@ -34,6 +36,7 @@ module Api
         @event.user_id = @user.id if @event.user_id.blank?
 
         if @event.save
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_create", "event_id" => @event.id })
           render json: @event, status: :created
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -44,6 +47,7 @@ module Api
         authorize @event
         # Prevents arbitrary user hijacking via parameters:
         if @event.update(event_params.except(:user_id))
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_update", "event_id" => @event.id })
           render json: @event
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -53,6 +57,9 @@ module Api
       def destroy
         authorize @event
         @event.destroy
+        if @event.destroyed?
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_destroy", "event_id" => @event.id })
+        end
         head :no_content
       end
 

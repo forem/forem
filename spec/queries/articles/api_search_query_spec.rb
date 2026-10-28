@@ -29,6 +29,41 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       expect(articles.count).to eq(0)
       Settings::UserExperience.index_minimum_score = 0
     end
+
+    it "orders matching articles by hotness_score expression without computing ts_rank or walking the B-tree index",
+       :aggregate_failures do
+      low_hotness = Article.find_by(title: "Top ten Interview tips")
+      high_hotness = Article.find_by(title: "Top ten Ruby tips")
+      low_hotness.update_columns(hotness_score: 10)
+      high_hotness.update_columns(hotness_score: 100)
+
+      relation = described_class.call({ q: "tips" })
+      sql = relation.to_sql
+
+      expect(relation.map(&:id)).to eq([high_hotness.id, low_hotness.id])
+      expect(sql).to include("(articles.hotness_score + 0) DESC")
+      expect(sql).not_to include("ts_rank")
+      expect(sql).not_to include("INNER JOIN")
+    end
+
+    it "orders by score expression when both q and top parameters are present", :aggregate_failures do
+      low_score = Article.find_by(title: "Top ten Interview tips")
+      high_score = Article.find_by(title: "Top ten Ruby tips")
+      low_score.update_columns(score: 5, hotness_score: 500)
+      high_score.update_columns(score: 50, hotness_score: 5)
+
+      relation = described_class.call({ q: "tips", top: 7 })
+      sql = relation.to_sql
+
+      expect(relation.map(&:id)).to eq([high_score.id, low_score.id])
+      expect(sql).to include("(articles.score + 0) DESC")
+      expect(sql).not_to include("ts_rank")
+    end
+
+    it "falls back to DEFAULT_PER_PAGE when per_page is blank or non-positive" do
+      relation = described_class.call({ q: "tips", per_page: "" })
+      expect(relation.limit_value).to eq(described_class::DEFAULT_PER_PAGE)
+    end
   end
 
   context "when there is a top parameter" do

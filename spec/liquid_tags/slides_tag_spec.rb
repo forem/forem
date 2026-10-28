@@ -92,6 +92,16 @@ RSpec.describe "Slides and Slide liquid tags", type: :liquid_tag do
         parse('{% slides %}{% slide alt="No image" %}{% endslides %}')
       end.to raise_error(StandardError, /requires at least one of/)
     end
+
+    it "rejects javascript: and HTML-entity-encoded javascript: URLs in slide options" do
+      expect do
+        parse('{% slides %}{% slide image="https://example.com/1.jpg" link="javascript:alert(1)" %}{% endslides %}')
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+
+      expect do
+        parse('{% slides %}{% slide image="https://example.com/1.jpg" link="javascript&#58;alert(1)" %}{% endslides %}')
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+    end
   end
 
   describe "content filtering" do

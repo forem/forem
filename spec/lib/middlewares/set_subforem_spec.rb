@@ -123,6 +123,76 @@ RSpec.describe Middlewares::SetSubforem do
       end
     end
 
+    context "when the request host is a bare hostname or a subdomain" do
+      before do
+        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+        allow(Subforem).to receive(:cached_id_by_domain).with("example.com").and_return(1)
+        allow(Subforem).to receive(:cached_id_by_domain).with("community.example.com").and_return(2)
+        allow(Subforem).to receive_messages(cached_default_id: 1, cached_root_id: nil, cached_root_domain: nil,
+                                            cached_default_domain: "example.com",
+                                            cached_id_to_domain_hash: { 1 => "example.com",
+                                                                        2 => "community.example.com" },
+                                            cached_all_domains: ["example.com", "community.example.com"])
+        allow(Settings::General).to receive(:app_domain).and_return("example.com")
+        allow(Rack::Utils).to receive(:delete_cookie_header!)
+      end
+
+      it "drops the port from a passed_domain before looking up the subforem" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=community.example.com:3000"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "keeps the host from a passed_domain URL" do
+        middleware.call(Rack::MockRequest.env_for("https://example.com/?passed_domain=http://community.example.com/x"))
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "falls back to the request host when passed_domain is not valid UTF-8" do
+        env = Rack::MockRequest.env_for("https://community.example.com/auth_pass/iframe?passed_domain=%C0%AF")
+        expect { middleware.call(env) }.not_to raise_error
+        expect(RequestStore.store[:subforem_id]).to eq(2)
+      end
+
+      it "removes the session cookies on a subdomain of the registrable domain" do
+        allow(PublicSuffix).to receive(:parse)
+        middleware.call(Rack::MockRequest.env_for("https://community.example.com/articles"))
+        expect(PublicSuffix).not_to have_received(:parse)
+        expect(Rack::Utils).to have_received(:delete_cookie_header!)
+          .with(anything, "remember_user_token", domain: "community.example.com")
+      end
+
+      it "keeps the session cookies on the registrable domain itself" do
+        allow(PublicSuffix).to receive(:parse)
+        middleware.call(Rack::MockRequest.env_for("https://example.com/articles"))
+        expect(PublicSuffix).not_to have_received(:parse)
+        expect(RequestStore.store[:subforem_id]).to eq(1)
+        expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+      end
+
+      it "logs an invalid domain and still normalizes frame headers when the host is localhost" do
+        allow(app).to receive(:call).and_return([200, { "X-Frame-Options" => "SAMEORIGIN" }, ["OK"]])
+        allow(Rails.logger).to receive(:error)
+        allow(PublicSuffix).to receive(:parse)
+
+        _status, headers, _body = middleware.call(
+          Rack::MockRequest.env_for("http://localhost:3000/articles?passed_domain=example.com"),
+        )
+
+        expect(PublicSuffix).not_to have_received(:parse)
+        expect(Rails.logger).to have_received(:error).with("Invalid domain: localhost")
+        expect(Rack::Utils).not_to have_received(:delete_cookie_header!)
+        expect(headers).not_to have_key("X-Frame-Options")
+        expect(headers["Content-Security-Policy"]).to eq("frame-ancestors https://example.com https://community.example.com")
+      end
+
+      it "falls back to PublicSuffix.parse for hosts outside [A-Za-z0-9.-]" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("foo_bar.example.com").and_return(2)
+        middleware.call(Rack::MockRequest.env_for("https://foo_bar.example.com/articles"))
+        expect(Rack::Utils).to have_received(:delete_cookie_header!)
+          .with(anything, "remember_user_token", domain: "foo_bar.example.com")
+      end
+    end
+
     context "when a request has an empty body and a multipart Content-Type header" do
       let(:env) do
         Rack::MockRequest.env_for(

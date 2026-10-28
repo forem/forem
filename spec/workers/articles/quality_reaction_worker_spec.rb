@@ -247,6 +247,24 @@ RSpec.describe Articles::QualityReactionWorker, type: :worker do
                                                                                                                              ]).select(:reactable_id)).count} eligible articles, skipping max_score)",
         )
       end
+
+      it "uses a correlated NOT EXISTS anti-join and avoids duplicate post-reaction COUNT queries" do
+        count_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          next if payload[:name] == "SCHEMA"
+
+          sql = payload[:sql]
+          count_queries << sql if sql.include?("SELECT COUNT(*) FROM (SELECT 1 AS one FROM \"articles\"")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.new.perform
+        end
+
+        expect(count_queries.size).to eq(2)
+        expect(count_queries).to all(include("NOT (EXISTS (SELECT 1 FROM \"reactions\""))
+        expect(count_queries).to all(include("reactions.reactable_id = articles.id"))
+      end
     end
 
     context "when articles are older than 1 day" do

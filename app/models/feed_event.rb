@@ -113,7 +113,11 @@ class FeedEvent < ApplicationRecord
 
   def self.update_single_feed_config_counters(feed_config_id, throttle_key_suffix: nil)
     throttle_key = ["feed_config_feed_success_score", feed_config_id, throttle_key_suffix].compact.join("_")
+    executed = false
+    impressions_total = 0
+
     ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
+      executed = true
       # Total events, distinct users, and position-weighted click sum per category
       # in a single pass over the feed config's events. The NULL flag keeps parity
       # with distinct.pluck(:user_id).size, which counts a NULL user_id as one distinct value.
@@ -130,7 +134,8 @@ class FeedEvent < ApplicationRecord
         distinct_users[category] = users
         clicks_score = position_weighted_sum.to_f if category == "click"
       end
-      return unless totals["impression"]
+      impressions_total = totals["impression"].to_i
+      next if impressions_total.zero?
 
       # Calculate score based on distinct users
       reactions_score = distinct_users["reaction"] * REACTION_SCORE_MULTIPLIER * 2
@@ -142,9 +147,13 @@ class FeedEvent < ApplicationRecord
       # Update the feed config counters
       FeedConfig.where(id: feed_config_id).update_all(
         feed_success_score: score,
-        feed_impressions_count: totals["impression"],
+        feed_impressions_count: impressions_total,
       )
     end
+
+    return unless executed && impressions_total < FeedConfig::LOW_IMPRESSION_COUNT
+
+    Rails.cache.delete(format(ThrottledCall::KEY_TEMPLATE, key: throttle_key))
   end
 
   private
@@ -161,11 +170,45 @@ class FeedEvent < ApplicationRecord
   end
 
   def create_feed_config_offshoot
-    # Any time we get a reaction or comment, we branch off a slightly modified feed based on the success of the current one
-    return unless feed_config
-    return unless %w[reaction comment].include?(category)
+    # Any time we get qualifying engagement on a proven config, branch off a slightly modified feed config
+    return if impression?
+    return unless feed_config_id && feed_config && !feed_config.archived?
+    return if feed_config.feed_impressions_count < FeedConfig::LOW_IMPRESSION_COUNT
+    return if click? && context_type != CONTEXT_TYPE_EMAIL && feed_config.targeting_bucket != FeedConfig::BUCKET_DIGEST
 
-    feed_config.create_slightly_modified_clone!
+    target_bucket = offshoot_targeting_bucket
+    return unless offshoot_trigger_category?(target_bucket)
+
+    ThrottledCall.perform("create_feed_config_offshoot_#{target_bucket}", throttle_for: 5.minutes) do
+      feed_config.create_slightly_modified_clone!(
+        user: user,
+        context_type: context_type,
+        targeting_bucket: target_bucket,
+      )
+    end
+  end
+
+  def offshoot_targeting_bucket
+    if context_type == CONTEXT_TYPE_EMAIL || feed_config.targeting_bucket == FeedConfig::BUCKET_DIGEST
+      FeedConfig::BUCKET_DIGEST
+    elsif user.present?
+      FeedConfig.targeting_bucket_for(user, context_type: context_type)
+    elsif FeedConfig::NON_ALL_TARGETING_BUCKETS.include?(feed_config.targeting_bucket)
+      feed_config.targeting_bucket
+    else
+      FeedConfig::BUCKET_FEED_CASUAL_USER
+    end
+  end
+
+  def offshoot_trigger_category?(target_bucket)
+    case target_bucket
+    when FeedConfig::BUCKET_DIGEST
+      %w[click extended_pageview reaction comment].include?(category)
+    when FeedConfig::BUCKET_FEED_NEW_USER, FeedConfig::BUCKET_FEED_CASUAL_USER
+      %w[reaction comment extended_pageview].include?(category)
+    else
+      %w[reaction comment].include?(category)
+    end
   end
 
   # @see AbExperiment::GoalConversionHandler
