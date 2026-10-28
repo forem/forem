@@ -99,6 +99,19 @@ module AgentSessionParsers
 
     def scrub
       messages = @data["messages"] || []
+      if (native_counts = ForemNative.scrub_agent_session_messages(messages))
+        redactions = native_counts.map do |name, count|
+          Redaction.new(pattern_name: name, match_count: count)
+        end
+        return Result.new(scrubbed_data: @data, redactions: redactions)
+      end
+
+      legacy_scrub(messages)
+    end
+
+    private
+
+    def legacy_scrub(messages)
       messages.each { |msg| scrub_message(msg) }
 
       redactions = @redaction_counts
@@ -107,8 +120,6 @@ module AgentSessionParsers
 
       Result.new(scrubbed_data: @data, redactions: redactions)
     end
-
-    private
 
     def scrub_message(message)
       (message["content"] || []).each do |block|
@@ -129,6 +140,16 @@ module AgentSessionParsers
     end
 
     def scrub_text(text, tool_output: false)
+      if (native_result = ForemNative.scrub_sensitive_text_with_counts(text, tool_output: tool_output))
+        scrubbed, counts = native_result
+        counts.each { |name, count| @redaction_counts[name] += count }
+        return scrubbed
+      end
+
+      legacy_scrub_text(text, tool_output: tool_output)
+    end
+
+    def legacy_scrub_text(text, tool_output: false)
       PATTERNS.each do |pattern|
         next if tool_output && SKIP_IN_TOOL_OUTPUT.include?(pattern[:name])
 

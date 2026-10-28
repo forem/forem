@@ -712,6 +712,42 @@ module ForemNative
       )
     end
 
+    # Rewrites `href="#slug"` intra-document fragment links in `html` using `ids_by_slug`,
+    # matching `AgentSessionRenderers::HeadingAnchors#link_fragments`.
+    def link_heading_anchor_fragments(html, ids_by_slug)
+      return unless Native.respond_to?(:link_heading_anchor_fragments)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8 && ids_by_slug.is_a?(Hash)
+
+      Native.link_heading_anchor_fragments(html, ids_by_slug)
+    end
+
+    # Scrubs `text` across all 51 `AgentSessionParsers::SensitiveDataScrubber::PATTERNS`,
+    # returning the scrubbed String (or nil for out-of-domain inputs).
+    def scrub_sensitive_text(text, tool_output: false)
+      return unless Native.respond_to?(:scrub_sensitive_text)
+      return unless text.instance_of?(String) && text.encoding == Encoding::UTF_8
+
+      Native.scrub_sensitive_text(text, tool_output ? true : false)
+    end
+
+    # Scrubs `text` across all 51 `AgentSessionParsers::SensitiveDataScrubber::PATTERNS`,
+    # returning `[scrubbed_text, [[pattern_name, count], ...]]` (or nil for out-of-domain inputs).
+    def scrub_sensitive_text_with_counts(text, tool_output: false)
+      return unless Native.respond_to?(:scrub_sensitive_text_with_counts)
+      return unless text.instance_of?(String) && text.encoding == Encoding::UTF_8
+
+      Native.scrub_sensitive_text_with_counts(text, tool_output ? true : false)
+    end
+
+    # Scrubs all message content blocks in `messages` in a single FFI pass for
+    # `AgentSessionParsers::SensitiveDataScrubber#scrub`, returning `[[pattern_name, count], ...]`
+    # sorted descending by `count` with Ruby `sort_by` tie-breaking.
+    def scrub_agent_session_messages(messages)
+      return unless Native.respond_to?(:scrub_agent_session_messages) && messages.is_a?(Array)
+
+      Native.scrub_agent_session_messages(messages)&.sort_by { |_, count| -count }
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
