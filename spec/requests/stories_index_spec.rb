@@ -925,6 +925,55 @@ RSpec.describe "StoriesIndex" do
       expect(queries.grep(/FROM "podcasts"/)).to be_empty
       expect(queries.grep(/FROM "pages" WHERE "pages"\."slug" = '#{organization.slug}'/)).to be_empty
     end
+
+    it "skips article, profile pin, and followed tag queries when articles_count and following_tags_count are zero",
+       :aggregate_failures do
+      user = create(:user)
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "articles"/)).to be_empty
+      expect(queries.grep(/FROM "profile_pins"/)).to be_empty
+      expect(queries.grep(/FROM "tags" INNER JOIN "follows"/)).to be_empty
+    end
+
+    it "queries member organizations only once when rendering the profile sidebar", :aggregate_failures do
+      organization = create(:organization)
+      user = create(:user)
+      create(:organization_membership, organization: organization, user: user, type_of_user: "member")
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(organization.name))
+      expect(queries.grep(/FROM "organization_memberships" WHERE "organization_memberships"\."user_id"/))
+        .to have_attributes(size: 1)
+      expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/))
+        .to have_attributes(size: 1)
+    end
+
+    it "skips JSON-LD generation for internal navigation and signed-in profile requests", :aggregate_failures do
+      user = create(:user)
+
+      get "/#{user.username}"
+      expect(response.body).to include('type="application/ld+json"')
+
+      get "/#{user.username}", params: { i: "i" }
+      expect(response.body).not_to include('type="application/ld+json"')
+
+      sign_in user
+      get "/#{user.username}"
+      expect(response.body).not_to include('type="application/ld+json"')
+    end
   end
 
   describe "GET / home feed context note and organization preloading" do
