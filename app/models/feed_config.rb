@@ -181,15 +181,15 @@ class FeedConfig < ApplicationRecord
 
     roll = rand(100)
     selected = if roll < 20 # 20% of the time, prioritize the newest low-impression configs in this bucket
-                 bucket_low_imp = bucket_scope.where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
-                 fallback_low_imp = fallback_scope.where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
-                 low_imp_scope = bucket_low_imp.exists? ? bucket_low_imp : fallback_low_imp
-                 low_imp_scope
-                   .order(created_at: :desc)
+                 low_imp_candidates = fallback_scope
+                   .where("feed_impressions_count < ?", LOW_IMPRESSION_COUNT)
+                   .order(bucket_priority_sql, created_at: :desc)
                    .limit(TOP_POOL_LIMIT)
-                   .sample
+                   .to_a
+                 bucket_candidates = low_imp_candidates.select { |c| c.targeting_bucket == bucket.to_s }
+                 (bucket_candidates.presence || low_imp_candidates).sample
                elsif roll < 25 # 5% of the time, pick a random config so none are completely starved
-                 (bucket_scope.exists? ? bucket_scope : fallback_scope).order("RANDOM()").limit(1).first
+                 fallback_scope.order(bucket_priority_sql, Arel.sql("RANDOM()")).limit(1).first
                end
 
     proven_fallback = fallback_scope.where("feed_impressions_count >= ?", LOW_IMPRESSION_COUNT)
@@ -203,9 +203,41 @@ class FeedConfig < ApplicationRecord
   end
   private_class_method :select_for_targeted_bucket
 
-  def score_sql(user)
-    ForemNative.feed_config_score_sql(*native_score_sql_payload(user)) ||
-      legacy_score_sql(user)
+  def score_sql(user, include_semantic: true)
+    ForemNative.feed_config_score_sql(*native_score_sql_payload(user, include_semantic: include_semantic)) ||
+      legacy_score_sql(user, include_semantic: include_semantic)
+  end
+
+  def base_score_sql(user)
+    ForemNative.feed_config_score_sql(*native_score_sql_payload(user, include_semantic: false)) ||
+      legacy_score_sql(user, include_semantic: false)
+  end
+
+  def semantic_similarity_active?(user)
+    return false unless semantic_similarity_weight.positive? && user.respond_to?(:user_activity)
+
+    activity_store = user.user_activity
+    activity_store.respond_to?(:interest_embedding) && activity_store.interest_embedding.present?
+  end
+
+  def semantic_similarity_sql(user)
+    return "0" unless semantic_similarity_active?(user)
+
+    embedding_values = user.user_activity.interest_embedding.to_a
+    embedding_literal = "[#{embedding_values.join(',')}]"
+    embedding_sql = self.class.connection.quote(embedding_literal)
+    semantic_similarity_published_since = self.class.connection.quote(30.days.ago.utc.to_fs(:db))
+
+    <<~SQL.squish
+      (
+        CASE
+          WHEN articles.semantic_embedding IS NOT NULL
+            AND articles.published_at >= #{semantic_similarity_published_since}
+          THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight}
+          ELSE 0
+        END
+      )
+    SQL
   end
 
   def create_slightly_modified_clone!(user: nil, context_type: nil, targeting_bucket: nil)
@@ -297,7 +329,7 @@ class FeedConfig < ApplicationRecord
     end
   end
 
-  def native_score_sql_payload(user) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def native_score_sql_payload(user, include_semantic: true) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     activity_store = user.user_activity
     tag_names = resolve_relevant_tag_names(user, activity_store)
 
@@ -330,7 +362,8 @@ class FeedConfig < ApplicationRecord
                                  .last&.article_ids
                              end
 
-    interest_embedding = if semantic_similarity_weight.positive? &&
+    effective_semantic_weight = include_semantic ? semantic_similarity_weight : 0.0
+    interest_embedding = if effective_semantic_weight.positive? &&
         activity_store.respond_to?(:interest_embedding) &&
         activity_store.interest_embedding.present?
                            activity_store.interest_embedding.to_a
@@ -349,7 +382,7 @@ class FeedConfig < ApplicationRecord
                          else
                            now_sec - (4 * 86_400)
                          end
-    cutoff_30d_sec = !utc_zone && semantic_similarity_weight.positive? ? 30.days.ago.tv_sec : now_sec - (30 * 86_400)
+    cutoff_30d_sec = !utc_zone && effective_semantic_weight.positive? ? 30.days.ago.tv_sec : now_sec - (30 * 86_400)
 
     weights = [
       feed_success_weight,
@@ -370,7 +403,7 @@ class FeedConfig < ApplicationRecord
       general_past_day_bonus_weight,
       recently_active_past_day_bonus_weight,
       recent_subforem_weight,
-      semantic_similarity_weight,
+      effective_semantic_weight,
       ai_disclosure_matching_weight,
       autonomous_ai_penalty_weight,
       featured_weight,
@@ -412,7 +445,7 @@ class FeedConfig < ApplicationRecord
     [weights, context]
   end
 
-  def legacy_score_sql(user) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+  def legacy_score_sql(user, include_semantic: true) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     activity_store = user.user_activity
 
     recent_pageviews_count = activity_store&.recently_viewed_articles&.count do |_, timestamp|
@@ -565,24 +598,7 @@ class FeedConfig < ApplicationRecord
       end
     end
 
-    if semantic_similarity_weight.positive? &&
-        activity_store.respond_to?(:interest_embedding) &&
-        activity_store.interest_embedding.present?
-      embedding_values = activity_store.interest_embedding.to_a
-      embedding_literal = "[#{embedding_values.join(',')}]"
-      embedding_sql = self.class.connection.quote(embedding_literal)
-      semantic_similarity_published_since = self.class.connection.quote(30.days.ago.utc.to_fs(:db))
-      terms << <<~SQL.squish
-        (
-          CASE
-            WHEN articles.semantic_embedding IS NOT NULL
-              AND articles.published_at >= #{semantic_similarity_published_since}
-            THEN (1 - (articles.semantic_embedding <=> #{embedding_sql})) * #{semantic_similarity_weight}
-            ELSE 0
-          END
-        )
-      SQL
-    end
+    terms << semantic_similarity_sql(user) if include_semantic && semantic_similarity_active?(user)
 
     if ai_disclosure_matching_weight.positive?
       user_setting = user.respond_to?(:setting) ? user.setting : nil

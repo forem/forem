@@ -3,6 +3,9 @@ module Articles
     TIME_AGO_MAX = Rails.env.production? ? 10.days.ago : 90.days.ago
 
     class Custom
+      SEMANTIC_CANDIDATE_BUFFER = 150
+      SEMANTIC_CANDIDATE_MIN_LIMIT = 200
+
       def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil, feed_config: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -64,13 +67,28 @@ module Articles
         base_query = Article.published
           .with_at_least_home_feed_minimum_score
           .where("articles.published_at > ?", lookback)
+          .from_subforem
+
+        computed_score_sql = if two_stage_semantic_scoring?
+                               base_score_sql = @feed_config.base_score_sql(@user)
+                               if base_score_sql == "(0)"
+                                 score_sql_method
+                               else
+                                 candidate_ids = build_semantic_candidate_ids_query(lookback, user_data, base_score_sql)
+                                 base_query = base_query.where(id: candidate_ids)
+                                 "(#{base_score_sql} + #{@feed_config.semantic_similarity_sql(@user)})"
+                               end
+                             else
+                               score_sql_method
+                             end
+
+        base_query = base_query
           .limited_column_select
-          .select("(#{score_sql_method}) as computed_score")
+          .select("(#{computed_score_sql}) as computed_score")
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
           .includes(:context_notes)
-          .from_subforem
 
         comments_assoc = case comments_variant.to_s
                          when "more_inclusive_recent_good_comments"
@@ -86,6 +104,29 @@ module Articles
                          end
 
         base_query.includes(comments_assoc)
+      end
+
+      def two_stage_semantic_scoring?
+        @feed_config.respond_to?(:semantic_similarity_active?) &&
+          @feed_config.semantic_similarity_active?(@user)
+      end
+
+      def build_semantic_candidate_ids_query(lookback, user_data, base_score_sql)
+        candidate_scope = Article.published
+          .with_at_least_home_feed_minimum_score
+          .where("articles.published_at > ?", lookback)
+          .from_subforem
+        candidate_scope = apply_user_filters(candidate_scope, user_data)
+        candidate_scope = apply_subforem_filters(candidate_scope)
+
+        candidate_scope
+          .select(:id)
+          .order(Arel.sql("#{base_score_sql} DESC"))
+          .limit(semantic_candidate_limit)
+      end
+
+      def semantic_candidate_limit
+        [(@page * @number_of_articles) + SEMANTIC_CANDIDATE_BUFFER, SEMANTIC_CANDIDATE_MIN_LIMIT].max
       end
 
       def score_sql_method
