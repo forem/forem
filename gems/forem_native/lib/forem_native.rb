@@ -832,6 +832,20 @@ module ForemNative
       Native.extract_mentioned_usernames(html)
     end
 
+    # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching
+    # `CalendarHelper#legacy_calendar_grid_days_html`. Days are `Date#jd` Integers. Returns `nil`
+    # for grids, paths, or `type_of` values outside the plain-ASCII, 1583-9999 fast path.
+    def calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected,
+                                range_start_jd, range_end_jd, today_jd, base_path, type_of)
+      return unless Native.respond_to?(:calendar_grid_days_html)
+      return unless [grid_start_jd, grid_end_jd, display_month, range_start_jd, range_end_jd, today_jd].all?(Integer)
+      return unless event_day_jds.instance_of?(Array) && base_path.instance_of?(String)
+      return unless type_of.nil? || type_of.instance_of?(String)
+
+      Native.calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected ? true : false,
+                                     range_start_jd, range_end_jd, today_jd, base_path, type_of)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

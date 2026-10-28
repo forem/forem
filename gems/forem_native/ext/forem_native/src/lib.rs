@@ -1874,6 +1874,48 @@ fn wrap_mentions_with_links(
     Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+#[allow(clippy::too_many_arguments)]
+fn calendar_grid_days_html(
+    grid_start_jd: Integer,
+    grid_end_jd: Integer,
+    display_month: Integer,
+    event_day_jds: RArray,
+    selected: bool,
+    range_start_jd: Integer,
+    range_end_jd: Integer,
+    today_jd: Integer,
+    base_path: RString,
+    type_of: Option<RString>,
+) -> Option<String> {
+    let event_day_jds = extract_strict_i64_vec(event_day_jds)?;
+    let selected_range = if selected {
+        Some((range_start_jd.to_i64().ok()?, range_end_jd.to_i64().ok()?))
+    } else {
+        None
+    };
+    let (grid_start_jd, grid_end_jd) = (grid_start_jd.to_i64().ok()?, grid_end_jd.to_i64().ok()?);
+    let display_month = u32::try_from(display_month.to_i64().ok()?).ok()?;
+    let today_jd = today_jd.to_i64().ok()?;
+    if !base_path.is_utf8_compatible_encoding()
+        || type_of.is_some_and(|value| !value.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before the owned `String` is returned.
+    let grid = forem_core::calendar::CalendarGrid {
+        grid_start_jd,
+        grid_end_jd,
+        display_month,
+        event_day_jds: &event_day_jds,
+        selected_range,
+        today_jd,
+        base_path: unsafe { base_path.as_slice() },
+        type_of: type_of.as_ref().map(|value| unsafe { value.as_slice() }),
+    };
+    forem_core::calendar::build_calendar_grid_days_html(&grid)
+}
+
 fn extract_mentioned_usernames(ruby: &Ruby, html: RString) -> Option<RArray> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and all
     // Strings are owned before allocating the Ruby Array.
@@ -2096,6 +2138,10 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "extract_mentioned_usernames",
         function!(extract_mentioned_usernames, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "calendar_grid_days_html",
+        function!(calendar_grid_days_html, 10),
     )?;
     Ok(())
 }
