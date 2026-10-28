@@ -405,14 +405,63 @@ RSpec.describe "Admin::Users" do
       expect(request.flash["success"]).not_to include("fully deleted")
     end
 
-    it "allows admins to delete users" do
+    it "allows admins to delete users below the published activity threshold", :aggregate_failures do
       sign_in create(:user, :admin)
+
+      get admin_user_path(user.id)
+      expect(response.body).to include(full_delete_admin_user_path(user))
 
       sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
         post full_delete_admin_user_path(user.id)
       end
 
       expect(response).to redirect_to(admin_users_path)
+    end
+
+    it "restricts deleting users at or above the published activity threshold to super admins", :aggregate_failures do
+      create_list(:article, 3, user: user, published: true)
+      create_list(:comment, 2, user: user, commentable: article2, deleted: false)
+      admin = create(:user, :admin)
+      sign_in admin
+
+      get admin_user_path(user.id)
+      expect(response.body).to include(
+        I18n.t("views.admin.users.delete.activity_threshold_notice",
+               count: UserPolicy::ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT),
+      )
+      expect(response.body).not_to include(full_delete_admin_user_path(user))
+
+      expect do
+        post full_delete_admin_user_path(user.id)
+      end.to raise_error(Pundit::NotAuthorizedError)
+
+      sign_in super_admin
+
+      get admin_user_path(user.id)
+      expect(response.body).to include(
+        I18n.t("views.admin.users.delete.activity_threshold_notice",
+               count: UserPolicy::ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT),
+      )
+      expect(response.body).to include(full_delete_admin_user_path(user))
+
+      sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
+        post full_delete_admin_user_path(user.id)
+      end
+
+      expect(response).to redirect_to(admin_users_path)
+    end
+
+    it "forbids admins from deleting other admins or super admins", :aggregate_failures do
+      admin = create(:user, :admin)
+      sign_in admin
+
+      expect do
+        post full_delete_admin_user_path(super_admin.id)
+      end.to raise_error(Pundit::NotAuthorizedError)
+
+      expect do
+        post full_delete_admin_user_path(admin.id)
+      end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 

@@ -161,6 +161,9 @@ fr:
           onsubmit: Are you sure? This action is irreversible.
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Seuls les administrateurs peuvent supprimer des utilisateurs.
+          activity_threshold_notice: Seuls les Super Admins peuvent supprimer les utilisateurs ayant %{count} publications et commentaires publiés ou plus.
+          super_admin_notice: Seuls les Super Admins peuvent supprimer des comptes administrateur.
+          self_delete_notice: Vous ne pouvez pas supprimer votre propre compte depuis le panneau d'administration.
           submit: Delete now
         export:
           heading: Export %{user}'s data

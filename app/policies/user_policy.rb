@@ -1,4 +1,6 @@
 class UserPolicy < ApplicationPolicy
+  ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT = 5
+
   PERMITTED_ATTRIBUTES = %i[
     reaction_notifications
     available_for
@@ -77,7 +79,17 @@ class UserPolicy < ApplicationPolicy
   alias request_destroy? edit?
 
   def admin_delete?
-    user_any_admin?
+    return false unless user_any_admin? && not_self?
+    return true if user_super_admin?
+
+    !record.any_admin? && !above_admin_delete_activity_limit?
+  end
+
+  def above_admin_delete_activity_limit?
+    published_articles_count = record.articles.published.count
+    published_comments_count = record.comments.where(deleted: false).count
+
+    (published_articles_count + published_comments_count) >= ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT
   end
 
   def join_org?
