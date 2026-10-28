@@ -61,18 +61,21 @@ module Authentication
       # always be the same on each login so we use the email hash as suffix to
       # avoid collisions with other registrations with the same first_name
       def user_nickname
+        identifier_hash = Digest::SHA512.hexdigest((info.email.presence || auth_payload.uid).to_s)
+
         if info.first_name.present? || info.last_name.present?
           # We sometimes get `info.first_name` and `info.last_name`
-          [
+          name_prefix = [
             info.first_name&.downcase,
             info.last_name&.downcase,
-            Digest::SHA512.hexdigest(info.email),
-          ].join("_")[0...25]
+          ].join("_")[0...16]
+
+          [name_prefix, identifier_hash].join("_")[0...25]
         else
           # This covers an edge case where the Apple Id has already given
           # permissions to the forem auth and we don't have anything else
-          # to work with other than the email
-          ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
+          # to work with other than the email or uid
+          ["user", identifier_hash].join("_")[0...15]
         end
       end
 

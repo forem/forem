@@ -41,6 +41,13 @@ module AgentSessionRenderers
     # Rewrites href="#slug" to the scoped id when the slug is a heading of this
     # message. Other fragment links are left untouched.
     def link_fragments(html)
+      ForemNative.link_heading_anchor_fragments(html, @ids_by_slug) ||
+        legacy_link_fragments(html)
+    end
+
+    private
+
+    def legacy_link_fragments(html)
       html.gsub(FRAGMENT_HREF) do |match|
         fragment = Addressable::URI.unencode_component(CGI.unescapeHTML(Regexp.last_match(1)))
         id = @ids_by_slug[fragment] || @ids_by_slug[fragment.downcase]

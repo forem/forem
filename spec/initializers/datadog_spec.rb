@@ -30,6 +30,7 @@ RSpec.describe "Datadog and metrics initializer" do # rubocop:disable RSpec/Desc
 
       expect(Kernel).not_to have_received(:require).with("ddtrace")
       expect(Kernel).not_to have_received(:require).with("datadog/statsd")
+      expect(Kernel).not_to have_received(:require).with("logtail")
       expect(ForemStatsClient).to be_a(Betterstack::StatsClient)
       expect do
         ForemStatsClient.increment("test.stat", tags: ["env:test"])

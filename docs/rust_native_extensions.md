@@ -108,8 +108,9 @@ To optimize service and query-builder pipelines in a general-purpose, reusable w
    - `ForemNative.dynamic_shuffle_count(most_recent_timestamp, now_time, weight)` & `ForemNative.weighted_shuffle(items, shuffle_weight)` — candidate re-ranking and recency-weighted window sizing.
    - `ForemNative.sql_int_list(ids, empty_fallback)`, `ForemNative.sql_string_array_literal(items, pg_type)`, `ForemNative.sql_vector_literal(values)`, & `ForemNative.sql_squish(sql)` — reusable SQL literal/array/vector/whitespace primitives.
    - `ForemNative.format_video_duration(seconds)` — zero-`ActiveSupport::Duration` duration formatting for feed JSON serialization.
+   - `ForemNative.score_followed_tags(...)`, `ForemNative.score_experience_level(...)`, `ForemNative.score_ai_disclosure(...)`, `ForemNative.filter_tracked_article_ids(...)`, & `ForemNative.order_subforem_ids(...)` — reusable article-scoring, pageview filtering, and subforem ordering primitives.
 2. **Tier 2 — Single-Pass Coarse-Grained Pipeline Kernel**:
-   Compose those Tier 1 primitives into a single-pass Rust pipeline (`ForemNative.feed_config_score_sql` -> `forem_core::feed::build_feed_config_score_sql`) that borrows the Ruby `FeedConfig` weight vector and `UserActivity` arrays in-place (`unsafe { arr.as_slice() }`), scans `recently_viewed_articles` once, and writes the entire multi-KB SQL scoring expression into a single pre-allocated Rust `String`.
+   Compose those Tier 1 primitives into single-pass Rust pipelines (`ForemNative.feed_config_score_sql`, `ForemNative.score_article_for_user`, `ForemNative.rank_articles_for_basic_feed`, `ForemNative.aggregate_recent_activity_metadata`, and `ForemNative.build_activity_heatmap_payload`) that borrow Ruby arrays and hashes in-place, scan shared inputs once, and return pre-sized results across a single FFI call.
 
 Benchmarking the complete `/stories/feed` custom feed pipeline (`FeedConfig.active_user?` + `FeedConfig#score_sql` with 768-float embedding + `calculate_dynamic_shuffle_count` + `weighted_shuffle` + 35x `Article#video_duration_in_minutes`) via `bundle exec rake forem_native:benchmark`:
 

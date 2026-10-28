@@ -159,6 +159,9 @@ module Constants
             description: I18n.t("lib.constants.settings.general.enable_ai_disclosure.description",
                                 default: "Allow authors to disclose AI tooling usage when publishing or editing posts.")
           },
+          limit_post_creation_to_admins: {
+            description: I18n.t("lib.constants.settings.general.limit_post_creation_to_admins.description")
+          },
           appeal_auto_unflag_threshold: {
             description: I18n.t("lib.constants.settings.general.appeal_auto_unflag_threshold.description"),
             placeholder: 1.01

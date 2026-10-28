@@ -13,7 +13,6 @@ class AdminMenu
     ]
 
     scope :content_manager, "dashboard-line", [
-      item(name: "spaces", controller: "spaces"),
       item(name: "posts", controller: "articles"),
       item(name: "comments", controller: "comments"),
       item(name: "badges", children: [

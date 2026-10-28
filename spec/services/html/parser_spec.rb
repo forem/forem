@@ -28,6 +28,25 @@ RSpec.describe Html::Parser, type: :service do
       parsed_html = described_class.new(html).remove_nested_linebreak_in_list.html
       expect(parsed_html).not_to include("<br>")
     end
+
+    it "removes uppercase linebreaks nested in lists" do
+      parsed_html = described_class.new("<ul><li>a<BR>b</li></ul>").remove_nested_linebreak_in_list.html
+      expect(parsed_html).not_to include("<br>")
+    end
+  end
+
+  describe "#wrap_all_tables with uppercase tags" do
+    it "wraps uppercase table tags" do
+      parsed_html = described_class.new("<TABLE><tr><td>a</td></tr></TABLE>").wrap_all_tables.html
+      expect(parsed_html).to include("table-wrapper-paragraph")
+    end
+  end
+
+  describe "#add_control_class_to_codeblock with entity-encoded class" do
+    it "still adds the control class when the class marker uses character references" do
+      parsed_html = described_class.new('<div class="high&#108;ight">x</div>').add_control_class_to_codeblock.html
+      expect(parsed_html).to include("js-code-highlight")
+    end
   end
 
   describe "#prefix_all_images" do
@@ -219,6 +238,16 @@ RSpec.describe Html::Parser, type: :service do
       html = "<div class='highlight__panel'>Hello World</div>"
       parsed_html = described_class.new(html).add_fullscreen_button_to_panel.html
       expect(parsed_html).to include("Enter fullscreen mode")
+    end
+
+    it "skips SVG rendering and DOM parsing when no highlight panel is present" do
+      parser = described_class.new("<p>Hello World</p>")
+      allow(parser).to receive(:inline_svg_tag)
+      allow(Nokogiri::HTML).to receive(:fragment)
+
+      expect(parser.add_fullscreen_button_to_panel.html).to eq("<p>Hello World</p>")
+      expect(parser).not_to have_received(:inline_svg_tag)
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
     end
   end
 

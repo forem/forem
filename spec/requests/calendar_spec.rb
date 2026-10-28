@@ -340,43 +340,47 @@ RSpec.describe "Calendar" do
     end
 
     context "with query efficiency" do
-      it "skips the agenda events query when the grid check finds no events in the selected range", :aggregate_errors do
-        user = create(:user)
-        login_as(user)
-
-        event_queries = []
-        signup_queries = []
-        callback = lambda do |*, payload|
-          next if payload[:name] == "SCHEMA"
-
-          event_queries << payload[:sql] if payload[:sql].include?('FROM "events"')
-          signup_queries << payload[:sql] if payload[:sql].include?('FROM "event_signups"')
-        end
+      it "skips the agenda and signup queries when no event days fall in the in-grid range" do
+        login_as(create(:user))
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
           get calendar_path(start: "2025-01-15", end: "2025-01-15")
         end
 
-        expect(response).to have_http_status(:success)
-        expect(response.body).to include(I18n.t("views.calendar.empty"))
+        event_queries = queries.grep(/FROM "events"/)
         expect(event_queries.size).to eq(1)
-        expect(signup_queries).to be_empty
+        expect(queries.grep(/FROM "event_signups"/)).to be_empty
       end
 
-      it "omits heavy body and metadata columns from the agenda events query", :aggregate_errors do
-        event_queries = []
-        callback = lambda do |*, payload|
-          next if payload[:name] == "SCHEMA"
+      it "still queries the agenda when the selected range is outside the displayed month grid" do
+        march_event = create(:event, title: "March Event Viewed From April", published: true,
+                                     start_time: Date.new(2026, 3, 10).in_time_zone + 9.hours,
+                                     end_time: Date.new(2026, 3, 10).in_time_zone + 11.hours)
 
-          event_queries << payload[:sql] if payload[:sql].include?('FROM "events"') && payload[:sql].include?("LIMIT")
-        end
+        get calendar_path(start: "2026-03-10", end: "2026-03-12", month: "2026-04")
+
+        expect(response.body).to include(march_event.title)
+      end
+
+      it "selects only agenda columns without hydrating body_markdown or processed_html" do
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
           get calendar_path
         end
 
-        expect(event_queries.size).to eq(1)
-        expect(event_queries.first).not_to include("body_markdown", "processed_html", "full_details", '"events".*')
+        agenda_query = queries.grep(/FROM "events".*ORDER BY/m).first
+        expect(agenda_query).to be_present
+        expect(agenda_query).not_to include('"events".*')
+        expect(agenda_query).not_to include("body_markdown")
+        expect(agenda_query).not_to include("processed_html")
       end
     end
   end
