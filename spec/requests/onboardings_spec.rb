@@ -1,12 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Onboardings" do
-  let(:user) do
-    create(:user,
-           saw_onboarding: false,
-           _skip_creating_profile: true,
-           profile: create(:profile, location: "Llama Town"))
-  end
+  let(:user) { create(:user, saw_onboarding: false) }
 
   describe "GET /onboarding" do
     it "redirects user if unauthenticated" do
@@ -14,26 +9,20 @@ RSpec.describe "Onboardings" do
       expect(response).to redirect_to("/magic_links/new")
     end
 
-    it "return 200 when authenticated" do
+    it "renders the onboarding container and community data attributes when authenticated", :aggregate_failures do
       sign_in user
       get onboarding_url
+
       expect(response).to have_http_status(:ok)
-    end
-
-    it "contains proper data attribute keys" do
-      sign_in user
-      get onboarding_url
-      expect(response.body).to include("data-community-description")
-      expect(response.body).to include("data-community-logo")
-      expect(response.body).to include("data-community-background-color")
-      expect(response.body).to include("data-community-name")
-    end
-
-    it "contains proper data attribute values if the onboarding config is present" do
-      sign_in user
-      get onboarding_url
-
-      expect(response.body).to include(Settings::Community.community_description)
+      expect(response.body).to include(
+        "onboarding-container",
+        "Onboarding",
+        "data-community-description",
+        "data-community-logo",
+        "data-community-background-color",
+        "data-community-name",
+        Settings::Community.community_description,
+      )
     end
   end
 
@@ -59,21 +48,13 @@ RSpec.describe "Onboardings" do
         create(:article, user: other_user, tags: [tag.name])
       end
 
-      it "returns follow suggestions for an authenticated user" do
+      it "returns follow suggestions with profile images for an authenticated user", :aggregate_failures do
         sign_in user
 
         get users_and_organizations_onboarding_path
 
         response_user = response.parsed_body.first
         expect(response_user["id"]).to eq(other_user.id)
-      end
-
-      it "returns follow suggestions that have profile images" do
-        sign_in user
-
-        get users_and_organizations_onboarding_path
-
-        response_user = response.parsed_body.first
         expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
       end
     end
@@ -90,22 +71,13 @@ RSpec.describe "Onboardings" do
         allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
       end
 
-      it "returns organization follow suggestions for an authenticated user" do
+      it "returns organization follow suggestions with profile images for an authenticated user", :aggregate_failures do
         sign_in user
 
         get users_and_organizations_onboarding_path
 
         response_org_ids = response.parsed_body.pluck("id")
-        expect(response_org_ids.size).to eq(2)
-
-        suggested_org_ids = suggested_orgs.map(&:id)
-        expect(response_org_ids).to match_array(suggested_org_ids)
-      end
-
-      it "returns organization follow suggestions that have profile images" do
-        sign_in user
-
-        get users_and_organizations_onboarding_path
+        expect(response_org_ids).to match_array(suggested_orgs.map(&:id))
 
         response_org = response.parsed_body.first
         expect(response_org.keys).to match_array(expected_json_keys)
@@ -154,25 +126,18 @@ RSpec.describe "Onboardings" do
       allow(Settings::General).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
-    it "returns tags" do
-      create(:tag, name: Settings::General.suggested_tags.first)
-
-      get tags_onboarding_path, headers: headers
-
-      expect(response.parsed_body.size).to eq(1)
-    end
-
-    it "returns tags with the correct json representation" do
+    it "returns tags with the correct json representation and edge caching surrogate key", :aggregate_failures do
       tag = create(:tag, name: Settings::General.suggested_tags.first)
 
       get tags_onboarding_path, headers: headers
 
+      expect(response.parsed_body.size).to eq(1)
       response_tag = response.parsed_body.first
-      expect(response_tag.keys).to \
-        match_array(OnboardingsController::TAG_ONBOARDING_ATTRIBUTES.map(&:to_s))
+      expect(response_tag.keys).to match_array(OnboardingsController::TAG_ONBOARDING_ATTRIBUTES.map(&:to_s))
       expect(response_tag["id"]).to eq(tag.id)
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag["taggings_count"]).to eq(tag.taggings_count)
+      expect(response.headers["surrogate-key"].split.to_set).to eq(["tags", tag.record_key].to_set)
     end
 
     it "returns suggested and supported tags" do
@@ -183,15 +148,6 @@ RSpec.describe "Onboardings" do
 
       expect(response.parsed_body.filter { |t| t["name"] == not_suggested_but_supported.name }).not_to be_empty
       expect(response.parsed_body.filter { |t| t["name"] == neither_suggested_nor_supported.name }).to be_empty
-    end
-
-    it "sets the correct edge caching surrogate key for all tags" do
-      tag = create(:tag, name: Settings::General.suggested_tags.first)
-
-      get tags_onboarding_path, headers: headers
-
-      expected_key = ["tags", tag.record_key].to_set
-      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 
@@ -224,6 +180,20 @@ RSpec.describe "Onboardings" do
         expect do
           patch "/onboarding", params: params
         end.to change(user.profile, :location).to("Galactic Empire")
+      end
+
+      it "ignores a summary sent under user params instead of raising" do
+        params = { user: { name: "Wilhuff Tarkin", summary: "Grand Moff" } }
+        patch "/onboarding", params: params
+        expect(response).to have_http_status(:ok)
+        expect(user.reload.name).to eq("Wilhuff Tarkin")
+      end
+
+      it "updates the user's profile summary" do
+        params = { profile: { summary: "Grand Moff" } }
+        expect do
+          patch "/onboarding", params: params
+        end.to change { user.profile.reload.summary }.to("Grand Moff")
       end
 
       it "does not update the user's last_onboarding_page if it is empty" do
@@ -316,14 +286,12 @@ RSpec.describe "Onboardings" do
 
     before do
       sign_in user
-      challenge_tag
-      education_tag
-      featured_org
       allow(FeatureFlag).to receive(:enabled?).with(:onboarding_custom_actions).and_return(true)
     end
 
     context "when following challenges" do
-      it "follows the 'devchallenge' tag" do
+      it "follows the 'devchallenge' tag", :aggregate_failures do
+        challenge_tag
         patch "/onboarding/custom_actions", params: { follow_challenges: true }, as: :json
         expect(Follow.where(followable_id: challenge_tag.id, followable_type: "ActsAsTaggableOn::Tag",
                             follower_id: user.id).size).to eq(1)
@@ -332,7 +300,8 @@ RSpec.describe "Onboardings" do
     end
 
     context "when following education tracks" do
-      it "follows the 'deved' tag" do
+      it "follows the 'deved' tag", :aggregate_failures do
+        education_tag
         patch "/onboarding/custom_actions", params: { follow_education_tracks: true }, as: :json
         expect(Follow.where(followable_id: education_tag.id, followable_type: "ActsAsTaggableOn::Tag",
                             follower_id: user.id).size).to eq(1)
@@ -341,7 +310,8 @@ RSpec.describe "Onboardings" do
     end
 
     context "when following featured accounts" do
-      it "follows the 'googleai' organization" do
+      it "follows the 'googleai' organization", :aggregate_failures do
+        featured_org
         patch "/onboarding/custom_actions", params: { follow_featured_accounts: true }, as: :json
         expect(Follow.where(followable_id: featured_org.id, followable_type: "Organization",
                             follower_id: user.id).size).to eq(1)
@@ -350,7 +320,10 @@ RSpec.describe "Onboardings" do
     end
 
     context "when multiple params are provided" do
-      it "follows the appropriate tags and organizations" do
+      it "follows the appropriate tags and organizations", :aggregate_failures do
+        challenge_tag
+        education_tag
+        featured_org
         patch "/onboarding/custom_actions", params: {
           follow_challenges: true,
           follow_education_tracks: true,
@@ -364,7 +337,7 @@ RSpec.describe "Onboardings" do
     end
 
     context "when params are false or not present" do
-      it "does not follow any tags or organizations" do
+      it "does not follow any tags or organizations", :aggregate_failures do
         patch "/onboarding/custom_actions", params: {
           follow_challenges: false,
           follow_education_tracks: false,
@@ -375,43 +348,6 @@ RSpec.describe "Onboardings" do
         expect(user.following_organizations).to be_empty
         expect(response).to have_http_status(:ok)
       end
-    end
-  end
-
-  describe "subforem selection in onboarding" do
-    let(:user) { create(:user, saw_onboarding: false) }
-    let(:subforem) { create(:subforem, discoverable: true, domain: "test.example.com") }
-    let(:root_subforem) { create(:subforem, root: true, domain: "root.example.com") }
-
-    before do
-      sign_in user
-    end
-
-    it "shows subforem selection when user comes from a subforem" do
-      # Simulate user coming from a specific subforem
-      allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-
-      get "/onboarding"
-
-      expect(response).to have_http_status(:ok)
-      # Check that the onboarding container is present
-      expect(response.body).to include("onboarding-container")
-      # Check that the Onboarding JavaScript is loaded
-      expect(response.body).to include("Onboarding")
-    end
-
-    it "includes subforem data in the onboarding page" do
-      # Create some test subforems
-      subforem
-      root_subforem
-
-      get "/onboarding"
-
-      expect(response).to have_http_status(:ok)
-      # Check that the onboarding container is present
-      expect(response.body).to include("onboarding-container")
-      # Check that the Onboarding JavaScript is loaded
-      expect(response.body).to include("Onboarding")
     end
   end
 end

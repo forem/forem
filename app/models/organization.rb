@@ -129,7 +129,8 @@ class Organization < ApplicationRecord
   def check_for_slug_change
     return unless slug_changed?
 
-    self.old_old_slug = old_slug
+    previous_old = old_slug == slug ? old_old_slug : old_slug
+    self.old_old_slug = previous_old == slug ? nil : previous_old
     self.old_slug = slug_was
     Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end
@@ -221,6 +222,9 @@ class Organization < ApplicationRecord
   HEADER_CTA_MAX_TEXT = 40
   HEADER_CTA_MAX_URL = 200
   HEADER_CTA_MAX_LINKS = 12
+  SOCIAL_IMAGE_TRIGGER_ATTRIBUTES = %i[
+    name slug profile_image bg_color_hex summary tag_line location url
+  ].freeze
 
   def validate_header_cta
     return if header_cta.blank?
@@ -319,10 +323,10 @@ class Organization < ApplicationRecord
   end
 
   def generate_social_images
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
+    return if previously_new_record?
+    return unless SOCIAL_IMAGE_TRIGGER_ATTRIBUTES.any? { |attr| saved_change_to_attribute?(attr) }
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   def evaluate_markdown

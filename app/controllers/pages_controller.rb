@@ -102,10 +102,12 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    billboard_url = admin_billboard_path(params[:billboard]) if params[:billboard].present?
-    reported_url = params[:reported_url] || params[:url] || request.referer.presence
+    reported_url =
+      valid_utf8_string(params[:reported_url]) ||
+      valid_utf8_string(params[:url]) ||
+      valid_utf8_string(request.referer)
     @feedback_message = FeedbackMessage.new(
-      reported_url: billboard_url || reported_url&.chomp("?i=i"),
+      reported_url: billboard_abuse_url || reported_url&.chomp("?i=i"),
     )
     render "pages/report_abuse"
   end
@@ -161,7 +163,12 @@ class PagesController < ApplicationController
   private
 
   def proper_page_by_slug
-    Page.from_subforem.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
+    subforem_pages = Page.from_subforem
+    # When subforem filtering is off, the scoped lookup is the same query as the fallback,
+    # so a missing slug would otherwise hit the database twice before raising.
+    return Page.find_by!(slug: params[:slug]) if subforem_pages.where_clause.empty?
+
+    subforem_pages.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
   end
 
   def redirect_daily_thread_request(daily_thread)
@@ -179,5 +186,21 @@ class PagesController < ApplicationController
 
   def combined_fragmented_slug
     (0..5).filter_map { |i| params["slug_#{i}"] }.join("/")
+  end
+
+  def billboard_abuse_url
+    billboard_id = valid_utf8_string(params[:billboard])
+    admin_billboard_path(billboard_id) if billboard_id
+  rescue ActionController::UrlGenerationError
+    nil
+  end
+
+  def valid_utf8_string(value)
+    return unless value.is_a?(String)
+
+    utf8 = value.encoding == Encoding::UTF_8 ? value : value.dup.force_encoding(Encoding::UTF_8)
+    return unless utf8.valid_encoding?
+
+    utf8.presence
   end
 end

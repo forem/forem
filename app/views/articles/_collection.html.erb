@@ -1,11 +1,13 @@
+<%# Load the series once: size/pluck (and collection_link's count) would each run their own query. %>
+<% articles = articles.to_a %>
 <% collection_size = articles.size %>
-<% slugs = articles.pluck(:slug) %>
+<% slugs = articles.map(&:slug) %>
 
 <% if collection && collection_size > 1 %>
   <nav class="series-switcher crayons-card crayons-card--secondary">
     <header class="crayons-card__header">
       <h2 class="crayons-subtitle-2">
-        <%= collection_link(collection) %>
+        <%= collection_link(collection, size: collection_size) %>
       </h2>
     </header>
 

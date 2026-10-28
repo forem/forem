@@ -29,6 +29,12 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect(sticky.decorate.cached_tag_list_array).to be_a(Array)
     end
 
+    it "returns at most two articles" do
+      result = described_class.call(article, user)
+      expect(other_articles.size).to eq(3)
+      expect(result.size).to eq(2)
+    end
+
     it "excludes the current article" do
       result = described_class.call(article, user)
       expect(result.map(&:id)).not_to include(article.id)
@@ -47,11 +53,38 @@ RSpec.describe Articles::GetUserStickies, type: :service do
       expect { sticky.processed_html }.to raise_error(ActiveModel::MissingAttributeError)
     end
 
-    it "handles article with nil cached_tag_list" do
+    it "handles article with nil cached_tag_list without querying empty tags" do
       article.update_column(:cached_tag_list, nil)
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+
       result = described_class.call(article.reload, user)
-      # Should not raise, just returns empty or unfiltered results
+
       expect(result).to be_a(ActiveRecord::Relation)
+      expect(result).to be_empty
+      expect(Article).not_to have_received(:cached_tagged_with_any)
+    end
+
+    it "returns an empty relation when cached_tag_list only contains discuss" do
+      article.update_column(:cached_tag_list, "discuss")
+      allow(Article).to receive(:cached_tagged_with_any).and_call_original
+
+      result = described_class.call(article.reload, user)
+
+      expect(result).to be_a(ActiveRecord::Relation)
+      expect(result).to be_empty
+      expect(Article).not_to have_received(:cached_tagged_with_any)
+    end
+
+    it "orders published user articles by published_at descending with a matching partial index" do
+      relation = described_class.call(article, user)
+      index = ActiveRecord::Base.connection.indexes(:articles).detect do |idx|
+        idx.name == "index_articles_on_user_id_and_published_at_for_published"
+      end
+
+      expect(relation.where_values_hash).to include("user_id" => user.id, "published" => true)
+      expect(index).to have_attributes(columns: %w[user_id published_at],
+                                       orders: { "published_at" => :desc },
+                                       where: "(published = true)")
     end
   end
 end

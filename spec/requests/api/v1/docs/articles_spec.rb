@@ -35,7 +35,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 - **published**: Set to `true` to immediately publish the article and make it visible in feeds. Set to `false` (default) to save it as a draft.
 - **tags**: An array of up to 4 tag strings, e.g. `['ruby', 'rails']`. Tags help categorize your post and improve discoverability.
 - **series**: Group articles together by specifying a series name. If the series does not exist, it will be created.
-- **main_image**: Absolute URL of the cover image for the article.
+- **main_image**: Absolute URL of the cover image for the article. Use `POST /api/images` to upload an image, or `POST /api/images/generate` to generate one, and get back a URL to use here or in `body_markdown`.
 - **canonical_url**: If this post was originally published elsewhere, specify the canonical URL to maintain SEO integrity.
 - **description**: A short summary of the article used for previews and SEO meta description.
 - **ai_disclosure_level**: AI tooling usage disclosure (`not_disclosed`, `no_ai`, `some_ai`, `fully_autonomous`)."
@@ -286,7 +286,9 @@ belonging to the requested collection, ordered by ascending publication date.",
         description "This endpoint allows the client to update an existing article by its unique numerical `id`.
 
 ### Authorization Constraints:
-- The API key provided must belong to the author of the article.
+- The API key provided must belong to the author of the article, an admin of the article's organization, or a site admin.
+- Edits by anyone other than the author are recorded in the audit log.
+- Returns `404` if the article does not exist or the API key's user may not edit it.
 - Supports updating individual fields such as `title`, `body_markdown`, `published`, `tags`, `ai_disclosure_level`, etc.
 - Setting `published: false` on an already published article will revert it to draft status."
         operationId "updateArticle"
@@ -590,7 +592,8 @@ will remain."
     path "/api/articles/semantic_search" do
       get "Perform a semantic fuzzy search on articles" do
         tags "articles"
-        description "Allows authenticated clients to search articles using Forem's semantic embeddings database."
+        description "Allows authenticated clients to search articles using Forem's hybrid lexical (Algolia/database) " \
+                    "and semantic embeddings search pipeline, with optional Jev shortlist re-ranking."
         produces "application/json"
         parameter name: :q, in: :query, required: true,
                   description: "The search query term to match semantically.",
@@ -655,6 +658,66 @@ will remain."
           let(:page) { nil }
           let(:threshold) { nil }
           add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "POST /api/articles/preview" do
+    path "/api/articles/preview" do
+      post "Preview an article" do
+        tags "articles"
+        description "This endpoint allows the client to preview an article's rendered HTML and parsed front matter without saving it to the database."
+        operationId "previewArticle"
+        produces "application/json"
+        consumes "application/json"
+        parameter name: :article,
+                  in: :body,
+                  description: "Article markdown and optional attributes to preview",
+                  schema: { "$ref": "#/components/schemas/Article" }
+
+        response "200", "Rendered Article Preview" do
+          let(:"api-key") { api_secret.secret }
+          let(:article) do
+            {
+              article: {
+                title: "Preview article",
+                body_markdown: "**Preview** body for the article",
+                tags: %w[ruby rails],
+                ai_disclosure_level: "some_ai"
+              }
+            }
+          end
+          schema type: :object,
+                 properties: {
+                   processed_html: { type: :string },
+                   body_html: { type: :string },
+                   title: { type: :string, nullable: true },
+                   description: { type: :string, nullable: true },
+                   tags: { type: :array, items: { type: :string }, nullable: true },
+                   cover_image: { type: :string, nullable: true },
+                   reading_time_minutes: { type: :integer },
+                   ai_disclosure_level: { type: :string, nullable: true }
+                 }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:article) { { article: { body_markdown: "Hello" } } }
+          add_examples
+
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:article) { { article: { body_markdown: "{% link invalid_link_that_does_not_exist %}" } } }
+          add_examples
+
           run_test!
         end
       end

@@ -2,7 +2,7 @@ class ArticlePolicy < ApplicationPolicy
   MAX_TAG_LIST_SIZE = 4
 
   def self.limit_post_creation_to_admins?
-    FeatureFlag.enabled?(:limit_post_creation_to_admins)
+    Settings::General.limit_post_creation_to_admins
   end
 
   def self.is_root_subforem?
@@ -43,7 +43,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def has_existing_articles_or_can_create_new_ones?
     require_user!
-    return true if user.articles.published.from_subforem.exists?
+    return true if user.articles.from_subforem.exists?
 
     create?
   rescue ApplicationPolicy::NotAuthorizedError

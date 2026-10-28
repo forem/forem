@@ -116,6 +116,7 @@ pt:
       removed: Usuário foi removido com sucesso de %{org}
       updated: Usuário foi atualizado com sucesso para %{type}
     organizations_controller:
+      name_updated: Nome da organização atualizado com sucesso.
       credit_updated: Créditos atualizados com sucesso
       deletion_scheduled: 'Exclusão da organização "%{organization_name}" está agendada.'
       error: 'Sua organização, %{organization_name}, não pôde ser excluída: %{error}.'
@@ -206,6 +207,11 @@ pt:
       article_busted: 'Artigo #%{article} foi quebrado com sucesso'
       social_images_queued: 'Regeneração de imagens sociais em fila para @%{user}'
       user_not_found: 'Usuário não encontrado'
+    flag_appeals_controller:
+      approved: "Recurso aprovado e usuário/conteúdo restabelecido com sucesso."
+      rejected: "Recurso rejeitado."
+      invalid_action: "Ação de resolução inválida."
+      already_resolved: "Este recurso já foi resolvido."
     users_controller:
       role_removed: 'Função: %{role} foi removida com sucesso do usuário!'
       updated: Usuário foi atualizado
@@ -214,7 +220,7 @@ pt:
       exported: 'Dados exportados para %{receiver}. O trabalho será concluído em breve.'
       banished: Este usuário está sendo banido em segundo plano. O trabalho será concluído em breve.
       the_page: a página
-      full_delete_html: '@%{user} (e-mail: %{email}, ID do usuário: %{id}) foi completamente excluído. Se for uma exclusão GDPR, exclua-os do Mailchimp e Google Analytics e confirme em %{the_page}.'
+      full_delete_html: '@%{user} (e-mail: %{email}, ID do usuário: %{id}) está sendo excluído. A conta e o conteúdo estão sendo removidos em segundo plano, o que pode levar alguns minutos para contas com muita atividade. Se for uma exclusão GDPR, quando a exclusão terminar, exclua-os do Mailchimp e Google Analytics e confirme em %{the_page}.'
       no_email: sem e-mail
       unpublished: As postagens estão sendo despublicadas em segundo plano. O trabalho será concluído em breve.
       identity_removed: 'A identidade %{provider} foi excluída com sucesso e respaldada.'

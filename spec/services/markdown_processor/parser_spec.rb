@@ -692,6 +692,27 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       code_block = "```ada\n with Ada.Directories;\n```"
       expect(generate_and_parse_markdown(code_block)).to include("highlight ada")
     end
+
+    %w[gjs gts].each do |hint|
+      it "adds #{hint} syntax highlighting to Ember template tag codeblocks" do
+        code_block = <<~MARKDOWN
+          ```#{hint}
+          import UiList from 'my-app/components/ui/list';
+
+          <template>
+            <UiList @items={{@items}} />
+          </template>
+          ```
+        MARKDOWN
+
+        output = generate_and_parse_markdown(code_block)
+
+        expect(output).to include("highlight #{hint}")
+        expect(output).to exclude("highlight plaintext")
+        expect(output).to include('<span class="k">import</span>')
+        expect(output).to include('<span class="k">template</span>')
+      end
+    end
   end
 
   context "when rendering mermaid diagrams" do
@@ -944,6 +965,52 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(output).to include("<table")
       expect(output).not_to include("text-align")
       expect(output).not_to include("style=")
+    end
+  end
+
+  describe "#calculate_reading_time" do
+    let(:three_hundred_words) { Array.new(300, "word").join(" ") }
+
+    it "calculates reading time via MarkdownProcessor::ReadingTime" do
+      expect(described_class.new(three_hundred_words).calculate_reading_time).to eq(2)
+    end
+  end
+
+  describe "URI and attribute handling across Markdown and Liquid passes" do
+    it "rejects non-http(s) URLs in cta liquid tags" do
+      markdown = "{% cta javascript:alert(1) %}Press this button{% endcta %}"
+
+      expect do
+        generate_and_parse_markdown(markdown)
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+    end
+
+    it "escapes quotes in markdown image attributes during the second pass" do
+      markdown = "<div>\n![x\" onerror=\"alert(1)](https://example.com/a.png)\n</div>"
+      output = generate_and_parse_markdown(markdown)
+      doc = Nokogiri::HTML.fragment(output)
+      img = doc.at_css("img")
+
+      expect(img).to be_present
+      expect(img["onerror"]).to be_nil
+    end
+
+    it "omits non-http(s) links during the second pass" do
+      markdown = "<div>\n[click](javascript:alert(1))\n</div>"
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).not_to include("javascript:")
+    end
+
+    it "removes unsupported attributes from elements with highlight classes or nested in code tags" do
+      img_payload = '<img class="highlight" src="https://example.com/x.png" onerror="alert(1)">'
+      span_payload = '<code><span onclick="alert(1)">click</span></code>'
+
+      img_output = generate_and_parse_markdown(img_payload)
+      span_output = generate_and_parse_markdown(span_payload)
+
+      expect(img_output).not_to include("onerror")
+      expect(span_output).not_to include("onclick")
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -248,6 +248,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["hotness_score"], name: "index_articles_on_hotness_score_for_featured_published", order: :desc, where: "((published = true) AND (featured = true))"
     t.index ["id"], name: "index_articles_negative_prev_public_reactions_count", where: "(previous_public_reactions_count < 0)"
     t.index ["id"], name: "index_articles_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["language"], name: "index_articles_on_language"
@@ -261,6 +262,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at", "score"], name: "index_articles_on_published_at_and_score", order: { published_at: :desc }, where: "(published = true)"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["published_at"], name: "index_articles_on_published_at_for_suggest_stickies", where: "((published = true) AND ((score > 25) OR (comment_score > 15)))"
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["semantic_embedding"], name: "index_articles_on_semantic_embedding", opclass: :vector_cosine_ops, using: :hnsw
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
@@ -270,6 +272,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["type_of", "published", "score", "published_at"], name: "index_articles_on_type_of_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
     t.index ["type_of"], name: "index_articles_on_type_of"
     t.index ["user_id", "published", "score", "published_at"], name: "index_articles_on_user_id_published_score_published_at", order: { published_at: :desc }, where: "(published = true)"
+    t.index ["user_id", "published_at"], name: "index_articles_on_user_id_and_published_at_for_published", order: { published_at: :desc }, where: "(published = true)"
     t.index ["user_id"], name: "index_articles_on_user_id"
     t.check_constraint "previous_public_reactions_count >= 0", name: "check_articles_previous_public_reactions_count_non_negative"
     t.check_constraint "public_reactions_count >= 0", name: "check_articles_public_reactions_count_non_negative"
@@ -305,6 +308,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
+    t.index ["rewarder_id"], name: "index_badge_achievements_on_rewarder_id", where: "(rewarder_id IS NOT NULL)"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
@@ -334,6 +338,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
   create_table "billboard_placement_area_configs", force: :cascade do |t|
     t.integer "cache_expiry_seconds", default: 180, null: false
     t.datetime "created_at", null: false
+    t.boolean "fully_cached", default: false, null: false
+    t.boolean "hidden_by_default", default: false, null: false
     t.string "placement_area", null: false
     t.jsonb "selection_weights", default: {}, null: false
     t.integer "signed_in_rate", default: 100, null: false
@@ -454,6 +460,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["published"], name: "index_classified_listings_on_published"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
+  end
+
+  create_table "co_author_invitations", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "responded_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_id", "user_id"], name: "index_co_author_invitations_on_article_id_and_user_id", unique: true
+    t.index ["user_id"], name: "index_co_author_invitations_on_user_id"
   end
 
   create_table "collections", force: :cascade do |t|
@@ -658,6 +675,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.string "geolocation"
     t.integer "seconds_visible", default: 10, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "user_agent"
     t.bigint "user_id"
     t.index ["created_at"], name: "index_display_ad_events_on_created_at_brin", using: :brin
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
@@ -719,6 +737,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["include_subforem_ids"], name: "index_display_ads_on_include_subforem_ids", using: :gin
     t.index ["organization_id"], name: "index_display_ads_on_organization_id"
     t.index ["page_id"], name: "index_display_ads_on_page_id"
+    t.index ["placement_area", "success_rate"], name: "index_display_ads_on_placement_area_and_success_rate", order: { success_rate: :desc }, where: "((approved = true) AND (published = true))"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["prefer_paired_with_billboard_id"], name: "index_display_ads_on_prefer_paired_with_billboard_id"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
@@ -776,6 +795,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
 
   create_table "events", force: :cascade do |t|
     t.string "bg_color_hex"
+    t.text "body_markdown"
     t.integer "broadcast_config", default: 0
     t.datetime "broadcast_ended_at"
     t.string "cached_tag_list"
@@ -793,6 +813,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.bigint "organization_id"
     t.bigint "page_id"
     t.string "primary_stream_url"
+    t.text "processed_html"
     t.boolean "published", default: false
     t.datetime "start_time", null: false
     t.text "tags_array", default: [], array: true
@@ -814,6 +835,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.float "ai_disclosure_matching_weight", default: 0.0, null: false
     t.integer "all_time_tag_count_max", default: 0
     t.integer "all_time_tag_count_min", default: 0
+    t.boolean "archived", default: false, null: false
     t.float "autonomous_ai_penalty_weight", default: 0.0, null: false
     t.float "clickbait_score_weight", default: 0.0, null: false
     t.float "comment_recency_weight", default: 1.0
@@ -847,9 +869,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.float "status_weight", default: 0.0, null: false
     t.float "subforem_follow_weight", default: 0.0, null: false
     t.float "tag_follow_weight", default: 1.0
+    t.integer "targeting_bucket", default: 0, null: false
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
-    t.index ["feed_success_score"], name: "index_feed_configs_on_feed_success_score"
+    t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
   end
 
   create_table "feed_events", force: :cascade do |t|
@@ -880,6 +903,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.datetime "updated_at", null: false
     t.index ["article_id"], name: "index_feed_import_items_on_article_id"
     t.index ["feed_import_log_id"], name: "index_feed_import_items_on_feed_import_log_id"
+    t.index ["feed_import_log_id", "status"], name: "index_feed_import_items_on_feed_import_log_id_and_status"
   end
 
   create_table "feed_import_logs", force: :cascade do |t|
@@ -959,6 +983,25 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
   end
 
+  create_table "flag_appeals", force: :cascade do |t|
+    t.float "ai_confidence_score"
+    t.integer "ai_recommendation", default: 1, null: false
+    t.text "ai_summary"
+    t.bigint "appealable_id", null: false
+    t.string "appealable_type", null: false
+    t.datetime "created_at", null: false
+    t.text "reason", null: false
+    t.bigint "resolved_by_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["appealable_type", "appealable_id"], name: "index_flag_appeals_on_appealable"
+    t.index ["resolved_by_id"], name: "index_flag_appeals_on_resolved_by_id"
+    t.index ["status"], name: "index_flag_appeals_on_status"
+    t.index ["user_id", "appealable_type", "appealable_id"], name: "index_flag_appeals_on_pending_user_target", unique: true, where: "(status = ANY (ARRAY[0, 1]))"
+    t.index ["user_id"], name: "index_flag_appeals_on_user_id"
+  end
+
   create_table "flipper_features", force: :cascade do |t|
     t.datetime "created_at", precision: nil, null: false
     t.string "key", null: false
@@ -990,6 +1033,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
     t.index ["followable_id", "followable_type"], name: "fk_followables"
+    t.index ["followable_type", "followable_id", "blocked", "created_at"], name: "index_follows_on_followable_blocked_and_created_at"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 
@@ -1181,6 +1225,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
     t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
+    t.index ["user_id"], name: "index_notifications_on_user_id_unread", where: "(read = false)"
   end
 
   create_table "onboarding_checklists", force: :cascade do |t|
@@ -1245,6 +1290,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.text "proof"
     t.string "secret"
     t.string "slug"
+    t.string "social_image"
     t.jsonb "social_links", default: {}, null: false
     t.integer "spent_credits_count", default: 0, null: false
     t.string "story"
@@ -1266,6 +1312,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["currently_paused_promotional_billboards"], name: "idx_orgs_on_currently_paused_promo_billboards"
     t.index ["custom_domain"], name: "index_organizations_on_custom_domain", unique: true, where: "((custom_domain IS NOT NULL) AND ((custom_domain)::text <> ''::text))"
     t.index ["ideal_daily_promoted_billboard_impressions"], name: "idx_orgs_on_ideal_daily_promoted_bb_impressions"
+    t.index ["old_old_slug"], name: "index_organizations_on_old_old_slug"
+    t.index ["old_slug"], name: "index_organizations_on_old_slug"
     t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
     t.index ["tls_subscription_id"], name: "index_organizations_on_tls_subscription_id", unique: true, where: "((tls_subscription_id IS NOT NULL) AND ((tls_subscription_id)::text <> ''::text))"
@@ -1642,6 +1690,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
     t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
     t.index ["user_id"], name: "index_segmented_users_on_user_id"
+  end
+
+  create_table "settings_ai_functions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "subforem_id"
+    t.datetime "updated_at", null: false
+    t.text "value"
+    t.string "var", null: false
+    t.index ["subforem_id"], name: "index_settings_ai_functions_on_subforem_id"
+    t.index ["var", "subforem_id"], name: "index_settings_ai_functions_on_var_and_subforem_id", unique: true
   end
 
   create_table "settings_authentications", force: :cascade do |t|
@@ -2142,6 +2200,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
     t.bigint "role_id"
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
 
@@ -2220,6 +2279,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "organizations", on_delete: :cascade
   add_foreign_key "classified_listings", "users", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "articles", on_delete: :cascade
+  add_foreign_key "co_author_invitations", "users", on_delete: :cascade
   add_foreign_key "collections", "organizations", on_delete: :nullify
   add_foreign_key "collections", "users", on_delete: :cascade
   add_foreign_key "comments", "users", column: "favorited_by_user_id", on_delete: :nullify
@@ -2260,6 +2321,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_15_160000) do
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "flag_appeals", "users", on_delete: :cascade
   add_foreign_key "github_repos", "users", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade

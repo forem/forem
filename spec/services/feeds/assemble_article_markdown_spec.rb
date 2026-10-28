@@ -177,4 +177,61 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
       expect(body).to include("title: A title")
     end
   end
+
+  context "when parsing Medium posts with gist iframes" do
+    let(:feed_source_url) { "https://medium.com/@author/my-post" }
+    let(:content) do
+      <<~HTML
+        <p>Before iframe</p>
+        <iframe src="https://medium.com/media/123/href">
+          <a href="https://medium.com/media/123/href">https://medium.com/media/123/href</a>
+        </iframe>
+        <p>After iframe</p>
+      HTML
+    end
+
+    context "when remote_fetches is false" do
+      let(:feeds_assemble_article_markdown) do
+        described_class.new(item, user, feed, feed_source_url, remote_fetches: false)
+      end
+
+      it "does not make outbound network requests to resolve gist iframes" do
+        allow(HTTParty).to receive(:head)
+
+        body = feeds_assemble_article_markdown.call
+        expect(body).not_to include("{% gist")
+        expect(HTTParty).not_to have_received(:head)
+      end
+    end
+
+    context "when iframe link host does not match medium.com (SSRF attempt)" do
+      let(:content) do
+        <<~HTML
+          <p>Before iframe</p>
+          <iframe src="http://169.254.169.254/medium.com/media/123/href">
+            <a href="http://169.254.169.254/medium.com/media/123/href">http://169.254.169.254/medium.com/media/123/href</a>
+          </iframe>
+          <p>After iframe</p>
+        HTML
+      end
+
+      it "refuses to make HTTP requests to unauthorized hosts" do
+        allow(HTTParty).to receive(:head)
+
+        feeds_assemble_article_markdown.call
+        expect(HTTParty).not_to have_received(:head)
+      end
+    end
+
+    context "when feed host is not medium.com" do
+      let(:feed_source_url) { "https://evil-medium.com/posts/1" }
+
+      it "does not process gist iframes for non-medium domains" do
+        allow(HTTParty).to receive(:head)
+
+        feeds_assemble_article_markdown.call
+        expect(HTTParty).not_to have_received(:head)
+      end
+    end
+  end
 end

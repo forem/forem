@@ -2,16 +2,21 @@ require "rails_helper"
 
 RSpec.describe "Api::V1::Comments" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
-  let(:article) { create(:article) }
-  let!(:root_comment) { create(:comment, commentable: article) }
-  let!(:child_comment) do
-    create(:comment, commentable: article, parent: root_comment)
+  let(:user) { create(:user) }
+  let(:article) { create(:article, user: user) }
+  let(:root_comment) { create(:comment, commentable: article, user: user) }
+  let(:child_comment) do
+    create(:comment, commentable: article, parent: root_comment, user: user)
   end
-  let!(:grandchild_comment) do
-    create(:comment, commentable: article, parent: child_comment)
+  let(:grandchild_comment) do
+    create(:comment, commentable: article, parent: child_comment, user: user)
   end
-  let!(:great_grandchild_comment) do
-    create(:comment, commentable: article, parent: grandchild_comment)
+  let(:great_grandchild_comment) do
+    create(:comment, commentable: article, parent: grandchild_comment, user: user)
+  end
+
+  def build_comment_tree
+    great_grandchild_comment
   end
 
   def find_root_comment(response)
@@ -43,50 +48,31 @@ RSpec.describe "Api::V1::Comments" do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns comments for article" do
+    it "returns the nested comment tree and metadata for an article", :aggregate_failures do
+      build_comment_tree
+
       get api_comments_path(a_id: article.id), headers: headers
 
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.size).to eq(1)
-    end
-
-    it "does not include children comments in the root list" do
-      get api_comments_path(a_id: article.id), headers: headers
-
-      expected_ids = article.comments.roots.map(&:id_code_generated)
-      response_ids = response.parsed_body.pluck("id_code")
-      expect(response_ids).to match_array(expected_ids)
-    end
-
-    it "includes children comments in the children list" do
-      get api_comments_path(a_id: article.id), headers: headers
+      expect(response.parsed_body.pluck("id_code")).to match_array(article.comments.roots.map(&:id_code_generated))
 
       child_comment_json = find_child_comment(response)
       expect(child_comment_json["id_code"]).to eq(child_comment.id_code_generated)
-    end
-
-    it "includes grandchildren comments in the children-children list" do
-      get api_comments_path(a_id: article.id), headers: headers
 
       root_comment_json = find_root_comment(response)
-      grandchild_comment_json_id = root_comment_json.dig(
-        "children", 0, "children", 0, "id_code"
+      expect(root_comment_json).to include("created_at" => root_comment.created_at.utc.iso8601)
+      expect(root_comment_json.dig("children", 0, "children", 0, "id_code")).to eq(
+        grandchild_comment.id_code_generated,
       )
-      expect(grandchild_comment_json_id).to eq(grandchild_comment.id_code_generated)
-    end
-
-    it "includes great-grandchildren comments in the children-children-children list" do
-      get api_comments_path(a_id: article.id), headers: headers
-
-      root_comment_json = find_root_comment(response)
-      great_grandchild_comment_json_id = root_comment_json.dig(
-        "children", 0, "children", 0, "children", 0, "id_code"
+      expect(root_comment_json.dig("children", 0, "children", 0, "children", 0, "id_code")).to eq(
+        great_grandchild_comment.id_code_generated,
       )
-      expect(great_grandchild_comment_json_id).to eq(great_grandchild_comment.id_code_generated)
     end
 
     it "sets the correct edge caching surrogate key for all the comments" do
-      sibling_root_comment = create(:comment, commentable: article)
+      build_comment_tree
+      sibling_root_comment = create(:comment, commentable: article, user: user)
 
       get api_comments_path(a_id: article.id), headers: headers
 
@@ -98,86 +84,61 @@ RSpec.describe "Api::V1::Comments" do
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
-    it "returns date created" do
+    it "returns the AI disclosure fields", :aggregate_failures do
+      root_comment.update!(ai_disclosure_level: :some_ai)
       get api_comments_path(a_id: article.id), headers: headers
-      expect(find_root_comment(response)).to include(
-        "created_at" => root_comment.created_at.utc.iso8601,
-      )
+
+      comment = find_root_comment(response)
+      expect(comment).to include("ai_disclosure_level" => "some_ai")
+      expect(comment).to have_key("ai_disclosure_label")
     end
 
     context "when a comment is deleted" do
       before do
+        grandchild_comment
         child_comment.update(deleted: true)
       end
 
-      it "appears in the thread" do
+      it "appears in the thread with deleted body_html, empty user, and intact children", :aggregate_failures do
         get api_comments_path(a_id: article.id), headers: headers
 
-        expect(find_child_comment(response)["id_code"]).to eq(child_comment.id_code_generated)
-      end
-
-      it "replaces the body_html" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["body_html"]).to eq("<p>#{Comment.title_deleted}</p>")
-      end
-
-      it "does not render the user information" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["user"]).to be_empty
-      end
-
-      it "still has children comments" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["children"]).not_to be_empty
+        deleted_child = find_child_comment(response)
+        expect(deleted_child["id_code"]).to eq(child_comment.id_code_generated)
+        expect(deleted_child["body_html"]).to eq("<p>#{Comment.title_deleted}</p>")
+        expect(deleted_child["user"]).to be_empty
+        expect(deleted_child["children"]).not_to be_empty
       end
     end
 
     context "when a comment is hidden" do
       before do
+        grandchild_comment
         child_comment.update(hidden_by_commentable_user: true)
       end
 
-      it "appears in the thread" do
+      it "appears in the thread with hidden body_html, empty user, and intact children", :aggregate_failures do
         get api_comments_path(a_id: article.id), headers: headers
 
-        expect(find_child_comment(response)["id_code"]).to eq(child_comment.id_code_generated)
-      end
-
-      it "replaces the body_html" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["body_html"]).to eq("<p>#{Comment.title_hidden}</p>")
-      end
-
-      it "does not render the user information" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["user"]).to be_empty
-      end
-
-      it "still has children comments" do
-        get api_comments_path(a_id: article.id), headers: headers
-
-        expect(find_child_comment(response)["children"]).not_to be_empty
+        hidden_child = find_child_comment(response)
+        expect(hidden_child["id_code"]).to eq(child_comment.id_code_generated)
+        expect(hidden_child["body_html"]).to eq("<p>#{Comment.title_hidden}</p>")
+        expect(hidden_child["user"]).to be_empty
+        expect(hidden_child["children"]).not_to be_empty
       end
     end
 
     context "when getting by podcast episode id" do
       let(:podcast) { create(:podcast) }
       let(:podcast_episode) { create(:podcast_episode, podcast: podcast) }
-      let(:comment) { create(:comment, commentable: podcast_episode) }
-
-      before { comment }
+      let(:comment) { create(:comment, commentable: podcast_episode, user: user) }
 
       it "not found if bad podcast episode id" do
         get api_comments_path(p_id: "asdfghjkl"), headers: headers
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns comment if good podcast episode id" do
+      it "returns comment if good podcast episode id", :aggregate_failures do
+        comment
         get api_comments_path(p_id: podcast_episode.id), headers: headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body.size).to eq(1)
@@ -186,12 +147,13 @@ RSpec.describe "Api::V1::Comments" do
 
     context "when using pagination" do
       before do
-        create_list(:comment, 5, commentable: article)
+        build_comment_tree
+        create_list(:comment, 3, commentable: article, user: user)
       end
 
       it "doesn't paginate w/o page param" do
         get api_comments_path(a_id: article.id, per_page: 2), headers: headers
-        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+        expect(response.parsed_body.size).to eq(4) # 4 root comments (+ 3 children)
       end
 
       it "paginates with page param" do
@@ -199,9 +161,9 @@ RSpec.describe "Api::V1::Comments" do
         expect(response.parsed_body.size).to eq(2)
       end
 
-      it "paginates with page param using default per_page" do
+      it "paginates with page param using default per_page", :aggregate_failures do
         get api_comments_path(a_id: article.id, page: 1), headers: headers
-        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+        expect(response.parsed_body.size).to eq(4) # 4 root comments (+ 3 children)
         expect(find_root_comment(response)).to include(
           "created_at" => root_comment.created_at.utc.iso8601,
         )
@@ -216,39 +178,20 @@ RSpec.describe "Api::V1::Comments" do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "returns the comment" do
+    it "returns the comment, its nested descendants, and edge caching surrogate key", :aggregate_failures do
+      build_comment_tree
+
       get api_comment_path(root_comment.id_code_generated), headers: headers
+
       expect(response).to have_http_status(:ok)
-
       expect(response.parsed_body["id_code"]).to eq(root_comment.id_code_generated)
-    end
-
-    it "includes children comments in the children list" do
-      get api_comment_path(root_comment.id_code_generated), headers: headers
-
       expect(find_child_comment(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
-    end
-
-    it "includes grandchildren comments in the children-children list" do
-      get api_comment_path(root_comment.id_code_generated), headers: headers
-
-      grandchild_comment_json_id = response.parsed_body.dig(
-        "children", 0, "children", 0, "id_code"
+      expect(response.parsed_body.dig("children", 0, "children", 0, "id_code")).to eq(
+        grandchild_comment.id_code_generated,
       )
-      expect(grandchild_comment_json_id).to eq(grandchild_comment.id_code_generated)
-    end
-
-    it "includes great-grandchildren comments in the children-children-children list" do
-      get api_comment_path(root_comment.id_code_generated), headers: headers
-
-      great_grandchild_comment_json_id = response.parsed_body.dig(
-        "children", 0, "children", 0, "children", 0, "id_code"
+      expect(response.parsed_body.dig("children", 0, "children", 0, "children", 0, "id_code")).to eq(
+        great_grandchild_comment.id_code_generated,
       )
-      expect(great_grandchild_comment_json_id).to eq(great_grandchild_comment.id_code_generated)
-    end
-
-    it "sets the correct edge caching surrogate key for all the comments" do
-      get api_comment_path(root_comment.id_code_generated), headers: headers
 
       expected_key = [
         "comments", root_comment.record_key, child_comment.record_key,
@@ -257,64 +200,75 @@ RSpec.describe "Api::V1::Comments" do
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
+    it "leaves out replies below the maximum depth", :aggregate_failures do
+      grandchild_comment
+      stub_const("Api::CommentsController::MAX_DEPTH", 2)
+
+      get api_comment_path(root_comment.id_code_generated), headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("children", 0, "children")).to eq([])
+    end
+
     context "when a comment is deleted" do
       before do
+        grandchild_comment
         child_comment.update(deleted: true)
       end
 
-      it "appears in the thread" do
+      it "appears in the thread with deleted body_html, empty user, and intact children", :aggregate_failures do
         get api_comment_path(root_comment.id_code_generated), headers: headers
 
-        expect(find_child_comment(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
-      end
-
-      it "replaces the body_html" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
-
-        expect(find_child_comment(response, :show)["body_html"]).to eq("<p>[deleted]</p>")
-      end
-
-      it "does not render the user information" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
-
-        expect(find_child_comment(response, :show)["user"]).to be_empty
-      end
-
-      it "still has children comments" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
-
-        expect(find_child_comment(response, :show)["children"]).not_to be_empty
+        deleted_child = find_child_comment(response, :show)
+        expect(deleted_child["id_code"]).to eq(child_comment.id_code_generated)
+        expect(deleted_child["body_html"]).to eq("<p>[deleted]</p>")
+        expect(deleted_child["user"]).to be_empty
+        expect(deleted_child["children"]).not_to be_empty
       end
     end
 
     context "when a comment is hidden" do
       before do
+        grandchild_comment
         child_comment.update(hidden_by_commentable_user: true)
       end
 
-      it "appears in the thread" do
+      it "appears in the thread with hidden body_html, empty user, and intact children", :aggregate_failures do
         get api_comment_path(root_comment.id_code_generated), headers: headers
 
-        expect(find_child_comment(response, :show)["id_code"]).to eq(child_comment.id_code_generated)
+        hidden_child = find_child_comment(response, :show)
+        expect(hidden_child["id_code"]).to eq(child_comment.id_code_generated)
+        expect(hidden_child["body_html"]).to eq("<p>[hidden by post author]</p>")
+        expect(hidden_child["user"]).to be_empty
+        expect(hidden_child["children"]).not_to be_empty
       end
+    end
+  end
 
-      it "replaces the body_html" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
+  describe "POST /api/comments/preview" do
+    let(:api_secret) { create(:api_secret) }
+    let(:auth_headers) do
+      headers.merge("api-key" => api_secret.secret, "content-type" => "application/json")
+    end
 
-        expect(find_child_comment(response, :show)["body_html"]).to eq("<p>[hidden by post author]</p>")
-      end
+    it "returns 401 when unauthenticated" do
+      post preview_api_comments_path,
+           params: { body_markdown: "Hello **world**" }.to_json,
+           headers: headers.merge("content-type" => "application/json")
 
-      it "does not render the user information" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
+      expect(response).to have_http_status(:unauthorized)
+    end
 
-        expect(find_child_comment(response, :show)["user"]).to be_empty
-      end
+    it "renders comment markdown preview without persisting a comment" do
+      expect do
+        post preview_api_comments_path,
+             params: { comment: { body_markdown: "Hello **world** from [link](https://example.com)" } }.to_json,
+             headers: auth_headers
+      end.not_to change(Comment, :count)
 
-      it "still has children comments" do
-        get api_comment_path(root_comment.id_code_generated), headers: headers
-
-        expect(find_child_comment(response, :show)["children"]).not_to be_empty
-      end
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["processed_html"]).to include("<strong>world</strong>")
+      expect(response.parsed_body["processed_html"]).to include("nofollow")
     end
   end
 end

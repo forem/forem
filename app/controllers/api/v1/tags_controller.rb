@@ -3,7 +3,63 @@ module Api
     class TagsController < ApiController
       include Api::TagsController
 
-      before_action :set_cache_control_headers, only: %i[index]
+      # A subset of Admin::TagsController::ALLOWED_PARAMS: plain attributes that
+      # need no extra side effects beyond the Tag model's own callbacks.
+      UPDATE_PARAMS = %i[
+        pretty_name short_summary wiki_body_markdown supported
+        bg_color_hex text_color_hex context_note_instructions
+      ].freeze
+
+      before_action :set_cache_control_headers, only: %i[index supported]
+      before_action :authenticate_with_api_key!, only: %i[create update]
+      before_action :authorize_admin, only: %i[create update]
+
+      def create
+        @tag = Tag.new(params.permit(:name, *UPDATE_PARAMS))
+        # Tags created from posts are lowercased (ActsAsTaggableOn.force_lowercase); match that here.
+        @tag.name = @tag.name.downcase if @tag.name
+
+        if save_tag
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_tag_create", "tag_id" => @tag.id })
+          render :update, status: :created
+        else
+          error = { error: @tag.errors.full_messages.to_sentence, status: 422 }
+          error[:id] = Tag.find_by!(name: @tag.name).id if @tag.errors.of_kind?(:name, :taken)
+          render json: error, status: :unprocessable_entity
+        end
+      end
+
+      def update
+        @tag = Tag.find(params[:id])
+        @tag.update!(tag_params)
+
+        payload = {
+          "action" => "api_tag_update",
+          "tag_id" => @tag.id,
+          "tag_name" => @tag.name,
+          "params" => tag_params.to_h
+        }
+        Audit::Logger.log(:admin_api, @user, payload)
+      end
+
+      private
+
+      def save_tag
+        @tag.save
+      rescue ActiveRecord::RecordNotUnique
+        raise unless Tag.exists?(name: @tag.name)
+
+        @tag.errors.add(:name, :taken)
+        false
+      end
+
+      def authorize_admin
+        authorize Tag, :access?, policy_class: InternalPolicy
+      end
+
+      def tag_params
+        params.permit(UPDATE_PARAMS)
+      end
     end
   end
 end

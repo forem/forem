@@ -20,52 +20,42 @@ RSpec.describe "Dashboards" do
     context "when logged in" do
       before do
         sign_in user
+      end
+
+      it "renders user's articles, stats link, analytics link, and no pagination for a single page",
+         :aggregate_failures do
         article
-      end
-
-      it "renders user's articles" do
         get "/dashboard"
+
         expect(response.body).to include(CGI.escapeHTML(article.title))
-      end
-
-      it 'shows "STATS" for articles' do
-        article = create(:article, user: user)
-
-        get "/dashboard"
         expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
+        expect(response.body).to include("Analytics")
+        expect(response.body).not_to include("pagination")
       end
 
-      it "renders the delete button for drafts" do
+      it "renders the draft state indicator and delete button for drafts", :aggregate_failures do
         unpublished_article
         get "/dashboard"
-        expect(response.body).to include "Delete"
+
+        expect(response.body).to include("Draft")
+        expect(response.body).to include("Delete")
       end
 
-      it "renders the draft state indicator" do
-        unpublished_article
-        get "/dashboard"
-        expect(response.body).to include "Draft"
-      end
-
-      it "renders scheduled state indicator" do
+      it "renders the scheduled state indicator and delete button for scheduled articles", :aggregate_failures do
         scheduled_article
         get "/dashboard"
-        expect(response.body).to include "Scheduled"
+
+        expect(response.body).to include("Scheduled")
+        expect(response.body).to include("Delete")
       end
 
-      it "renders the detected language if an article has it" do
-        article
+      it "renders the detected language if an article has it", :aggregate_failures do
         article.update_column(:language, :es)
         get "/dashboard"
-        expect(response.body).to include "Language:"
-        expect(response.body).to include "Spanish"
-      end
 
-      it "renders the delete button for scheduled article" do
-        scheduled_article
-        get "/dashboard"
-        expect(response.body).to include "Delete"
+        expect(response.body).to include("Language:")
+        expect(response.body).to include("Spanish")
       end
 
       it "renders subscriptions for articles with subscriptions" do
@@ -84,78 +74,56 @@ RSpec.describe "Dashboards" do
       end
 
       it "renders pagination if minimum amount of posts" do
-        create_list(:article, 52, user: user)
+        stub_const("DashboardsController::ARTICLES_PER_PAGE", 2)
+        create_list(:article, 3, user: user)
         get "/dashboard"
         expect(response.body).to include "pagination"
       end
 
-      it "does not render pagination if less than one full page" do
-        create_list(:article, 3, user: user)
-        get "/dashboard"
-        expect(response.body).not_to include "pagination"
-      end
-
-      it "renders a link to analytics dashboard" do
-        get dashboard_path
-
-        expect(response.body).to include("Analytics")
-      end
-
-      xit "renders a link to analytics for the org" do
-        create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
-
-        get dashboard_path
-
-        expect(response.body).to include(CGI.escapeHTML("Analytics for #{organization.name}"))
-      end
-
-      it "does not render a link to upload a video when enable_video_upload is false" do
-        get dashboard_path
+      it "does not render a link to upload a video when enable_video_upload is false or for a recent user",
+         :aggregate_failures do
         allow(Settings::General).to receive(:enable_video_upload).and_return(false)
-
-        expect(response.body).not_to include("Upload a video")
-      end
-
-      it "does not render a link to upload a video for a recent user" do
         get dashboard_path
-        allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+        expect(response.body).not_to include("Upload a video")
 
+        allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+        get dashboard_path
         expect(response.body).not_to include("Upload a video")
       end
     end
 
     context "when logged in with many archived posts" do
       before do
+        stub_const("DashboardsController::ARTICLES_PER_PAGE", 2)
         sign_in user
 
-        25.times do |i|
-          create(:article, user: user, title: "Archived Post #{i}", archived: true, created_at: Time.current - i.minutes)
+        2.times do |i|
+          create(:article, user: user, title: "Archived Post #{i}", archived: true,
+                           created_at: Time.current - i.minutes)
         end
 
-        26.times do |i|
+        3.times do |i|
           create(:article, user: user, title: "Visible Post #{i}", created_at: 1.day.ago - i.minutes)
         end
       end
 
-      it "shows 25 unarchived posts on the first page" do
+      it "shows unarchived posts on the first page and remaining on the next page", :aggregate_failures do
         get "/dashboard"
 
-        expect(response.body).to include("Visible Post 0")
-        expect(response.body).not_to include("Archived Post 0")
-        expect(response.body.scan("spec__dashboard-story").size).to eq(25)
-      end
+        expect(response.body).to include("Visible Post 0", "Visible Post 1")
+        expect(response.body).not_to include("Archived Post 0", "Visible Post 2")
+        expect(response.body.scan("spec__dashboard-story").size).to eq(2)
 
-      it "shows remaining unarchived posts on the next page" do
         get "/dashboard", params: { page: 2 }
 
-        expect(response.body).to include("Visible Post 25")
+        expect(response.body).to include("Visible Post 2")
         expect(response.body).not_to include("Archived Post 0")
       end
 
-      it "shows only archived posts when using archived filter" do
+      it "shows only archived posts when using archived filter", :aggregate_failures do
         get "/dashboard", params: { filter: "archived" }
 
-        expect(response.body).to include("Archived Post 0")
+        expect(response.body).to include("Archived Post 0", "Archived Post 1")
         expect(response.body).not_to include("Visible Post 0")
 
         html = Nokogiri::HTML(response.body)
@@ -183,14 +151,54 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when logged in with only draft articles and cannot create new ones" do
+      it "does not redirect away from the dashboard" do
+        sign_in user
+        unpublished_article
+        allow(ArticlePolicy).to receive(:limit_post_creation_to_admins?).and_return(true)
+
+        get dashboard_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(unpublished_article.title))
+      end
+    end
+
     describe "sidebar sidebar fetch" do
       it "assigns the agent_sessions_count utilizing the counter cache" do
         sign_in user
         user.reload.update!(agent_sessions_count: 5)
 
         get "/dashboard/sidebar", params: { state: "show" }, xhr: true
-        
+
         expect(assigns(:agent_sessions_count)).to eq(5)
+      end
+
+      it "assigns posts_count based on non-archived full posts only, ignoring statuses and archived posts" do
+        sign_in user
+        create(:article, user: user)
+        create(:article, user: user, type_of: "status", body_markdown: "", main_image: nil)
+        create(:article, user: user, archived: true)
+
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        expect(assigns(:posts_count)).to eq(1)
+        expect(response.body).to include('<span class="c-indicator">1</span>')
+      end
+
+      it "renders a link to analytics for an admin organization and upload video for eligible users",
+         :aggregate_failures do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
+        Timecop.freeze(Time.current) do
+          user.update!(created_at: 3.weeks.ago)
+          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+
+          sign_in user
+          get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+          expect(response.body).to include(CGI.escapeHTML("Analytics for #{organization.name}"))
+          expect(response.body).to include("Upload a video")
+        end
       end
     end
 
@@ -203,25 +211,9 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include(CGI.escapeHTML(article.title))
       end
     end
-
-    context "when logged in as a non recent user with enable_video_upload set to true on the Forem" do
-      xit "renders a link to upload a video" do
-        Timecop.freeze(Time.current) do
-          user.update!(created_at: 3.weeks.ago)
-          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
-
-          sign_in user
-          get dashboard_path
-
-          expect(response.body).to include("Upload a video")
-        end
-      end
-    end
   end
 
   describe "GET /dashboard/organization" do
-    let(:organization) { create(:organization) }
-
     context "when not logged in" do
       it "redirects to /enter" do
         get "/dashboard/organization"
@@ -230,12 +222,15 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in" do
-      it "renders user's organization articles" do
+      it "renders user's organization articles and hides archived organization articles", :aggregate_failures do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        article.update(organization_id: organization.id)
+        create(:article, user: user, organization_id: organization.id, archived: true)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).to include "crayons-logo"
+
+        expect(response.body).to include("crayons-logo")
+        html = Nokogiri::HTML(response.body)
+        expect(html.css(".story-archived.hidden")).to be_present
       end
 
       it "does not render the delete button for other org member's drafts" do
@@ -246,16 +241,6 @@ RSpec.describe "Dashboards" do
         get "/dashboard/organization/#{organization.id}"
         expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
-      end
-
-      it "renders archived organization articles with the hidden class" do
-        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
-        archived_article = create(:article, user: user, organization_id: organization.id, archived: true)
-        sign_in user
-        get "/dashboard/organization/#{organization.id}"
-
-        html = Nokogiri::HTML(response.body)
-        expect(html.css(".story-archived.hidden")).to be_present
       end
     end
 
@@ -278,18 +263,12 @@ RSpec.describe "Dashboards" do
     end
 
     describe "followed users section" do
-      before do
+      it "lists followed users" do
         sign_in user
         user.follow second_user
         user.reload
         get "/dashboard/following_users"
-      end
 
-      xit "renders followed users count" do
-        expect(response.body).to include "Following users (1)"
-      end
-
-      it "lists followed users" do
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
     end
@@ -312,58 +291,28 @@ RSpec.describe "Dashboards" do
         user.reload
       end
 
-      # rubocop:disable RSpec/NestedGroups
-      describe "followed tags section" do
-        before do
-          get "/dashboard/following_tags"
-        end
+      it "lists followed tags on following_tags and hidden tags on hidden_tags", :aggregate_failures do
+        get "/dashboard/following_tags"
 
-        xit "renders followed tags count" do
-          expect(response.body).to include "Following tags (2)"
-        end
+        expect(response.body).to include first_followed_tag.name
+        expect(response.body).to include second_followed_tag.name
+        expect(response.body).not_to include antifollowed_tag.name
 
-        it "lists followed tags" do
-          expect(response.body).to include first_followed_tag.name
-          expect(response.body).to include second_followed_tag.name
+        get "/dashboard/hidden_tags"
 
-          expect(response.body).not_to include antifollowed_tag.name
-        end
+        expect(response.body).not_to include first_followed_tag.name
+        expect(response.body).not_to include second_followed_tag.name
+        expect(response.body).to include antifollowed_tag.name
       end
-
-      describe "hidden tags section" do
-        before do
-          get "/dashboard/hidden_tags"
-        end
-
-        xit "renders hidden tags count" do
-          expect(response.body).to include "Hidden tags (1)"
-        end
-
-        it "lists hidden tags" do
-          expect(response.body).not_to include first_followed_tag.name
-          expect(response.body).not_to include second_followed_tag.name
-
-          expect(response.body).to include antifollowed_tag.name
-        end
-      end
-      # rubocop:enable RSpec/NestedGroups
     end
 
     describe "followed organizations section" do
-      let(:organization) { create(:organization) }
-
-      before do
+      it "lists followed organizations" do
         sign_in user
         user.follow organization
         user.reload
         get "/dashboard/following_organizations"
-      end
 
-      xit "renders followed organizations count" do
-        expect(response.body).to include "Following organizations (1)"
-      end
-
-      it "lists followed organizations" do
         expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
@@ -371,18 +320,12 @@ RSpec.describe "Dashboards" do
     describe "followed podcasts section" do
       let(:podcast) { create(:podcast) }
 
-      before do
+      it "lists followed podcasts" do
         sign_in user
         user.follow podcast
         user.reload
         get "/dashboard/following_podcasts"
-      end
 
-      xit "renders followed podcast count" do
-        expect(response.body).to include "Following podcasts (1)"
-      end
-
-      it "lists followed podcasts" do
         expect(response.body).to include podcast.name
       end
     end
@@ -425,39 +368,26 @@ RSpec.describe "Dashboards" do
     end
 
     context "when user is signed in" do
-      it "shows page properly" do
+      it "shows page properly and contains back to dashboard button", :aggregate_failures do
         sign_in user
         get "/dashboard/analytics"
         expect(response.body).to include("Analytics")
-      end
-
-      it "page always contain back to dashboard button" do
-        sign_in user
-        get "/dashboard/analytics"
         within "nav" do
           expect(page).to have_link(href: "/dashboard")
         end
       end
     end
 
-    context "when user is an org admin" do
-      it "shows page properly" do
-        org = create(:organization)
-        create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+    context "when user is an org admin or member" do
+      it "shows page properly for both admin and member memberships", :aggregate_failures do
+        membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
 
         sign_in user
-        get "/dashboard/analytics/org/#{org.id}"
+        get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
-      end
-    end
 
-    context "when user is an org member" do
-      it "shows page properly" do
-        org = create(:organization)
-        create(:organization_membership, user: user, organization: org)
-
-        sign_in user
-        get "/dashboard/analytics/org/#{org.id}"
+        membership.update!(type_of_user: "member")
+        get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
       end
     end
@@ -476,70 +406,48 @@ RSpec.describe "Dashboards" do
         sign_in user
       end
 
-      it "renders successfully" do
+      it "renders successfully with add source form when no sources exist", :aggregate_failures do
         get "/dashboard/feed_imports"
         expect(response).to have_http_status(:ok)
-      end
-
-      it "renders add source form when no sources exist" do
-        get "/dashboard/feed_imports"
         expect(response.body).to include("Add a Feed Source")
         expect(response.body).to include("Publishing from RSS")
       end
 
-      it "renders existing feed sources with edit controls" do
+      it "renders existing feed sources with edit controls and empty import state when no imports exist",
+         :aggregate_failures do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        source = create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
+        create(:feed_source, user: user, name: "My Blog", feed_url: "https://example.com/feed.xml")
 
         get "/dashboard/feed_imports"
         expect(response.body).to include("My Blog")
         expect(response.body).to include("Your Feed Sources")
         expect(response.body).to include("Edit")
+        expect(response.body).to include("No import history yet")
       end
 
-      it "shows import history when feed source exists" do
+      it "shows health warning when feed is degraded or failing", :aggregate_failures do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
-        create(:feed_import_log, user: user, feed_source: source)
-
-        get "/dashboard/feed_imports"
-        expect(response.body).to include("Completed")
-      end
-
-      it "shows health warning when feed is degraded" do
-        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
+        source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :degraded)
 
         get "/dashboard/feed_imports"
         expect(response.body).to include("recent failures")
-      end
 
-      it "shows health warning when feed is failing" do
-        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml", status: :failing)
-
+        source.update!(status: :failing)
         get "/dashboard/feed_imports"
         expect(response.body).to include("failing consistently")
       end
 
-      it "shows empty import state when source exists but no imports" do
-        allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-        create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
-
-        get "/dashboard/feed_imports"
-        expect(response.body).to include("No import history yet")
-      end
-
-      it "shows skipped items in collapsible section on first-time logs" do
+      it "shows import history and skipped items in collapsible section on first-time logs", :aggregate_failures do
         allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
         source = create(:feed_source, user: user, feed_url: "https://example.com/feed.xml")
         log = create(:feed_import_log, user: user, feed_source: source,
                                        items_imported: 1, items_skipped: 3)
-        create(:feed_import_item, :imported, import_log: log, feed_item_title: "My New Article")
+        create(:feed_import_item, :imported, import_log: log, article: article, feed_item_title: "My New Article")
         create_list(:feed_import_item, 3, :skipped, import_log: log)
 
         get "/dashboard/feed_imports"
 
+        expect(response.body).to include("Completed")
         expect(response.body).to include("My New Article")
         expect(response.body).to include("Show 3 skipped duplicates")
       end
@@ -573,7 +481,8 @@ RSpec.describe "Dashboards" do
       sign_in author
     end
 
-    it "renders subscriptions" do
+    it "renders subscriptions with page heading, subscriber links, and no pagination for a single page",
+       :aggregate_failures do
       user_subscription = create(:user_subscription,
                                  subscriber_id: second_user.id,
                                  subscriber_email: second_user.email,
@@ -582,6 +491,19 @@ RSpec.describe "Dashboards" do
 
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include(user_subscription.subscriber_email)
+      expect(response.body).not_to include("pagination")
+
+      html = Nokogiri::HTML(response.body)
+      heading = html.at_css("h1.crayons-title")
+      expect(heading.text.strip).to eq(I18n.t("views.dashboard.subscriptions.heading"))
+
+      profile_link = html.at_css("td.fw-medium a")
+      expect(profile_link[:href]).to eq(user_profile_path(second_user.username))
+      expect(profile_link.text.strip).to eq(second_user.name)
+      expect(profile_link.attributes.keys).to eq(["href"])
+
+      mailto_link = html.at_css("a[href^='mailto:']")
+      expect(mailto_link[:href]).to eq("mailto:#{user_subscription.subscriber_email}")
     end
 
     it "displays a message if no subscriptions are found" do
@@ -590,12 +512,7 @@ RSpec.describe "Dashboards" do
     end
 
     it "raises unauthorized when trying to access a source the user doesn't own" do
-      unauthorized_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-      create(:user_subscription,
-             subscriber_id: second_user.id,
-             subscriber_email: second_user.email,
-             author_id: unauthorized_article.user_id,
-             user_subscription_sourceable: unauthorized_article)
+      unauthorized_article = create(:article, user: second_user)
       unauthorized_article_params = { source_type: unauthorized_article.class.name, source_id: unauthorized_article.id }
 
       expect do
@@ -603,36 +520,34 @@ RSpec.describe "Dashboards" do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "raises an error for disallowed source_types" do
-      invalid_source_type_params = { source_type: "Comment", source_id: 1 }
+    it "raises an error for disallowed source_types or when the source can't be found", :aggregate_failures do
       expect do
-        get "/dashboard/subscriptions", params: invalid_source_type_params
+        get "/dashboard/subscriptions", params: { source_type: "Comment", source_id: 1 }
       end.to raise_error(ActiveRecord::RecordNotFound)
-    end
 
-    it "raises an error when the source can't be found" do
-      nonexistent_article_params = { source_type: article.class.name, source_id: article.id + 999 }
       expect do
-        get "/dashboard/subscriptions", params: nonexistent_article_params
+        get "/dashboard/subscriptions", params: { source_type: "Article", source_id: 0 }
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "renders pagination if minimum amount of subscriptions" do
-      create_list(:user_subscription,
-                  102, # Current pagination limit is 100
-                  author: author,
-                  user_subscription_sourceable: article_with_user_subscription_tag)
+      allow(UserSubscription).to receive(:max_per_page).and_return(2)
+      now = Time.current
+      records = Array.new(3) do |i|
+        {
+          author_id: author.id,
+          subscriber_id: second_user.id,
+          subscriber_email: "subscriber-#{i}@example.com",
+          user_subscription_sourceable_type: article_with_user_subscription_tag.class.name,
+          user_subscription_sourceable_id: article_with_user_subscription_tag.id,
+          created_at: now,
+          updated_at: now
+        }
+      end
+      UserSubscription.insert_all!(records)
+
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include "pagination"
-    end
-
-    it "does not render pagination if less than one full page" do
-      create_list(:user_subscription,
-                  5,
-                  author: author,
-                  user_subscription_sourceable: article_with_user_subscription_tag)
-      get "/dashboard/subscriptions", params: params
-      expect(response.body).not_to include "pagination"
     end
   end
 end

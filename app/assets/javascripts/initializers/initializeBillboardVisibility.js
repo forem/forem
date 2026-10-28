@@ -34,6 +34,7 @@ function trackAdImpression(adBox) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -106,6 +107,7 @@ function trackAdClick(adBox, event, currentPath) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -165,7 +167,8 @@ function observeBillboards() {
         if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
           elem.dataset.isBillboardVisible = 'true';
           setTimeout(function () {
-            if (elem.dataset.isBillboardVisible === 'true') {
+            // Billboards hidden by their placement area record no impressions until revealed
+            if (elem.dataset.isBillboardVisible === 'true' && elem.dataset.placementHidden !== 'true') {
               trackAdImpression(elem);
               startPollingBillboard(elem);
             }

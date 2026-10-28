@@ -18,7 +18,11 @@ Rails.application.configure do
   config.enable_reloading = true
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
-  config.action_view.cache_template_loading = false
+  config.action_view.cache_template_loading = true
+
+  # Skip walking the whole Sprockets manifest to verify precompilation when specs
+  # (e.g. factories) call asset_path.
+  config.assets.check_precompiled_asset = false
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
@@ -75,7 +79,7 @@ Rails.application.configure do
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
-    Bullet.enable = true
+    Bullet.enable = ENV["BULLET"].present?
     Bullet.raise = false
 
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)

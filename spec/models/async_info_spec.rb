@@ -23,6 +23,18 @@ RSpec.describe AsyncInfo do
         .to eq(%w[js-policy-article-create js-policy-article-moderate])
     end
 
+    it "toggles js-policy-article-create visibility based on limit_post_creation_to_admins and admin role",
+       :aggregate_failures do
+      allow(FeatureFlag).to receive(:enabled?).with(:limit_post_creation_to_admins).and_return(true)
+
+      non_admin_policies = described_class.to_hash(user: user, context: context).fetch(:policies)
+      expect(non_admin_policies).to include(dom_class: "js-policy-article-create", visible: false)
+
+      user.add_role(:admin)
+      admin_policies = described_class.to_hash(user: user, context: context).fetch(:policies)
+      expect(admin_policies).to include(dom_class: "js-policy-article-create", visible: true)
+    end
+
     it "reflects the user's community leader status" do
       expect(async_info[:community_leader]).to be(false)
 
@@ -68,6 +80,16 @@ RSpec.describe AsyncInfo do
 
       expect(payload[:admin]).to be(true)
       expect(role_queries.size).to eq(3)
+    end
+
+    it "sets apple_auth to true for both @privaterelay.appleid.com and @private.icloud.com addresses" do
+      expect(async_info[:apple_auth]).to be(false)
+
+      allow(user).to receive(:email).and_return("relay@privaterelay.appleid.com")
+      expect(described_class.to_hash(user: user, context: context)[:apple_auth]).to be(true)
+
+      allow(user).to receive(:email).and_return("relay@private.icloud.com")
+      expect(described_class.to_hash(user: user, context: context)[:apple_auth]).to be(true)
     end
   end
 end

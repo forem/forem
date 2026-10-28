@@ -21,7 +21,8 @@
             </h3>
           </header>
           <p class="mb-1"><%= report.message %></p>
-          <p class="fs-s color-secondary"><%= t("views.admin.users.reports.for_html", url: link_to(report.reported_url, report.reported_url, class: "c-link", target: "_blank", rel: "noopener")) %></p>
+          <% report_url_content = report.reported_url.to_s.match?(%r{\A(https?://|/[^/])}i) ? link_to(report.reported_url, report.reported_url, class: "c-link", target: "_blank", rel: "noopener") : ERB::Util.html_escape(report.reported_url) %>
+          <p class="fs-s color-secondary"><%= t("views.admin.users.reports.for_html", url: report_url_content) %></p>
         </div>
       </article>
     <% end %>

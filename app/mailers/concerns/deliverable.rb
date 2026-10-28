@@ -17,9 +17,18 @@ module Deliverable
   # stops every Forem-side broadcast anyway.
   CUSTOMERIO_BROADCAST_PASSTHROUGH_FLAG = :customerio_broadcast_passthrough
 
+  # Backoff is 2^n seconds capped at 5 minutes, so 20 holds span ~1 hour.
+  CUSTOMERIO_LINK_HOLD_ATTEMPTS = 20
+
   included do
     before_action :set_perform_deliveries
     after_action  :set_delivery_options
+  end
+
+  # Kept so hold_until_linked can replay the exact mailer call.
+  def process(method_name, *args)
+    @customerio_action_args = args
+    super
   end
 
   # Mailer actions call this before mail() to attach the Customer.io
@@ -49,6 +58,8 @@ module Deliverable
     return unless @_mail_was_called
 
     if deliver_via_customerio?
+      return hold_until_linked if customerio_recipient && customerio_mlh_uid.blank?
+
       # Deliverable on a Customer.io-only instance (no SMTP creds) must still
       # send, so the per-message flag overrides the SMTP-based default above.
       message.perform_deliveries = true
@@ -140,12 +151,37 @@ module Deliverable
   end
 
   # People in Customer.io are keyed by MLH Core user id (DEV profiles were
-  # stitched via the dev:<id> anonymous id); fall back to email for
-  # recipients without a linked Core account.
+  # stitched via the dev:<id> anonymous id). Users are never keyed by email --
+  # hold_until_linked waits for the id instead -- so email only identifies
+  # recipients who are not users at all.
   def customerio_identifiers
-    mlh_uid = customerio_recipient&.identities&.where(provider: "mlh")&.pick(:uid)
-    return { id: mlh_uid } if mlh_uid.present?
+    customerio_recipient ? { id: customerio_mlh_uid } : { email: mail.to.first }
+  end
 
-    { email: mail.to.first }
+  def customerio_mlh_uid
+    return @customerio_mlh_uid if defined?(@customerio_mlh_uid)
+
+    @customerio_mlh_uid = customerio_recipient&.identities&.where(provider: "mlh")&.pick(:uid)
+  end
+
+  # A new user's mlh identity lands seconds after signup (76% within 5s, 97%
+  # within 2m), but signup-time mail (confirmation, magic link) goes out first.
+  # Keying that send by email would mint a Customer.io person Core's id-keyed
+  # person never merges with, so skip it and re-run the same mailer call once
+  # the link has had time to land. Users who never link are ones Core rejected
+  # (disposable domains, no email); after ~1h they are dropped, not mailed.
+  def hold_until_linked
+    message.perform_deliveries = false
+    attempt = params.to_h.fetch(:customerio_link_hold, 0) + 1
+    if attempt > CUSTOMERIO_LINK_HOLD_ATTEMPTS
+      Rails.logger.warn(
+        "[Deliverable] dropped #{self.class.name}##{action_name} for unlinked user #{customerio_recipient.id}",
+      )
+      return
+    end
+
+    self.class.with(params.to_h.merge(customerio_link_hold: attempt))
+      .public_send(action_name, *@customerio_action_args)
+      .deliver_later(wait: [2**attempt, 300].min.seconds)
   end
 end

@@ -13,6 +13,8 @@ class User < ApplicationRecord
     included do
       has_one :profile, dependent: :delete
 
+      delegate :social_image, to: :profile, allow_nil: true
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -77,6 +79,7 @@ class User < ApplicationRecord
   has_many :scheduled_automations, dependent: :destroy
   has_many :ahoy_visits, class_name: "Ahoy::Visit", dependent: :delete_all
   has_many :api_secrets, dependent: :delete_all
+  has_many :flag_appeals, dependent: :destroy
   has_many :agent_sessions, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :event_signups, dependent: :destroy
@@ -94,6 +97,7 @@ class User < ApplicationRecord
                             inverse_of: :blocked, dependent: :delete_all
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id,
                             inverse_of: :blocker, dependent: :delete_all
+  has_many :co_author_invitations, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :concept_accesses, dependent: :delete_all
@@ -209,7 +213,7 @@ class User < ApplicationRecord
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
 
-  validate :non_banished_username, :username_changed?
+  validate :non_banished_username, if: :username_changed?
 
   unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
 
@@ -341,7 +345,12 @@ class User < ApplicationRecord
   end
 
   def self.staff_account
-    find_by(id: Settings::Community.staff_user_id)
+    staff_id = Settings::Community.staff_user_id
+    return if staff_id.blank?
+
+    RequestStore.fetch(:"staff_account_user_#{staff_id}") do
+      find_by(id: staff_id)
+    end
   end
 
   def self.mascot_account
@@ -359,7 +368,10 @@ class User < ApplicationRecord
   def good_standing_followers_count
     cache_key = "#{cache_key_with_version}/good_standing_followers_count"
     Rails.cache.fetch(cache_key, expires_in: 24.hours) do
-      Follow.non_suspended("User", id).count
+      # follower_id is unique per followable here, so COUNT(DISTINCT follower_id) equals
+      # COUNT(DISTINCT id) but can be served by an index-only scan on
+      # index_follows_on_followable_and_follower instead of fetching every follows heap row.
+      Follow.non_suspended("User", id).count(:follower_id)
     end
   end
 
@@ -507,10 +519,22 @@ class User < ApplicationRecord
   end
 
   def cached_role_names
+    return roles.map(&:name) if association(:roles).loaded?
+    if defined?(@cached_role_names) && @cached_role_names && Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+      return @cached_role_names
+    end
+
     cache_key = "user-#{id}/role_names"
-    Rails.cache.fetch(cache_key, expires_in: 200.hours) do
+    result = Rails.cache.fetch(cache_key, expires_in: 200.hours) do
       roles.pluck(:name)
     end
+    @cached_role_names = result if Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+    result
+  end
+
+  def reload(*args)
+    @cached_role_names = nil
+    super
   end
 
   def cached_base_subscriber?
@@ -518,7 +542,29 @@ class User < ApplicationRecord
   end
 
   def cached_community_leader?
-    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
+    role_names = cached_role_names
+    CommunityLeaders::ROLES.any? { |role| role_names.include?(role.to_s) }
+  end
+
+  # Fast negative path via cached_role_names so non-suspended users never hit the database,
+  # paired with an authoritative role check when the cache reports "suspended" so a lifted
+  # suspension is never shown stale UI.
+  def actively_suspended?
+    return false unless cached_role_names.include?("suspended")
+    return true if suspended?
+
+    @cached_role_names = nil
+    Rails.cache.delete("user-#{id}/role_names")
+    false
+  end
+
+  def actively_spam_or_suspended?
+    return false unless (cached_role_names & %w[spam suspended]).any?
+    return true if spam_or_suspended?
+
+    @cached_role_names = nil
+    Rails.cache.delete("user-#{id}/role_names")
+    false
   end
 
   def processed_website_url
@@ -714,7 +760,11 @@ class User < ApplicationRecord
   #
   # @return [Array<String>] an array of tag names
   def moderator_for_tags_not_cached
-    Tag.with_role(:tag_moderator, self).pluck(:name)
+    tag_ids = roles.where(name: "tag_moderator", resource_type: "Tag").pluck(:resource_id)
+    return Tag.with_role(:tag_moderator, self).pluck(:name) if tag_ids.include?(nil)
+    return [] if tag_ids.empty?
+
+    Tag.where(id: tag_ids).pluck(:name)
   end
 
   # When you need the "up to the moment" names of the subforems moderated
@@ -794,8 +844,12 @@ class User < ApplicationRecord
     [profile_identity_record_key, profile_image_record_key]
   end
 
+  def previous_username_paths
+    [old_username, old_old_username].compact_blank.uniq.reject { |name| name == username }.map { |name| "/#{name}" }
+  end
+
   def profile_cache_bust_paths
-    [path, "/profile_preview_cards/#{id}", "/api/users/#{id}"]
+    ([path, "/profile_preview_cards/#{id}", "/api/users/#{id}"] + previous_username_paths).uniq
   end
 
   def remove_from_mailchimp_newsletters
@@ -893,10 +947,10 @@ class User < ApplicationRecord
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
       email.present? &&
-      !has_role?(:suspended) &&
-      !has_role?(:spam) &&
+      score.to_i >= 0 &&
       notification_setting&.email_newsletter? &&
-      score.to_i >= 0
+      !has_role?(:suspended) &&
+      !has_role?(:spam)
 
     return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
 
@@ -1068,10 +1122,18 @@ class User < ApplicationRecord
   private
 
   def generate_social_images
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
+    return if previously_new_record?
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    if saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+    elsif saved_change_to_attribute?(:username)
+      if profile&.id
+        profile_id = profile.id
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(profile_id, "Profile") }
+      else
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+      end
+    end
   end
 
   def create_users_settings_and_notification_settings_records
@@ -1211,11 +1273,14 @@ class User < ApplicationRecord
     )
   end
 
+  # super is Devise's !confirmed?: without it, users confirmed at creation
+  # (OAuth signups via skip_confirmation!) still get a confirmation email.
   def confirmation_required?
-    ForemInstance.smtp_enabled?
+    ForemInstance.smtp_enabled? && super
   end
 
   def update_user_roles_cache(role)
+    @cached_role_names = nil
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")
@@ -1226,8 +1291,14 @@ class User < ApplicationRecord
 
     # Check for spam patterns when user gets spam or suspended role
     if role.name.in?(%w[spam suspended])
-      Spam::DomainDetector.new(self).check_and_block_domain!
+      # The domain scan can hit the statement timeout, so keep it out of this
+      # callback: an error here rolls back the role grant (and aborts a banish).
+      Spam::DomainDetectorWorker.perform_async(id)
       calculate_score
+      # Article scores include a spam penalty that also governs Algolia indexability,
+      # so rescore on every grant/removal regardless of which code path changed the role.
+      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+      articles.published.find_each(&:async_score_calc)
     end
 
     sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"

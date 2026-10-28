@@ -553,6 +553,23 @@ en:
       upload:
         title: Limit number of images uploaded
         description: How many images can someone upload within any 30 second period?
+      api_upload:
+        title: Limit number of images uploaded via the API
+        description: How many images can someone upload via the API within the API
+          image upload window? Set to 0 to disable API image uploads.
+      api_upload_window:
+        title: API image upload window (seconds)
+        description: Length of the window, in seconds, for the API image upload limit
+          (e.g. 3600 for one hour).
+      api_generation:
+        title: Limit number of AI images generated via the API
+        description: How many AI images can someone generate via the API within the
+          API image generation window? Failed attempts count too. Set to 0 to disable
+          API image generation.
+      api_generation_window:
+        title: API AI image generation window (seconds)
+        description: Length of the window, in seconds, for the API AI image generation
+          limit (e.g. 86400 for one day).
       user:
         title: Limit number of changes someone can make to their account
         description: How many changes can someone make to their user account within
@@ -567,6 +584,9 @@ en:
       feedback:
         title: Limit number of times someone can report abuse
         description: How many times can someone report abuse within any 5 minute period?
+      flag_appeal:
+        title: Limit number of moderation appeals someone can submit
+        description: How many moderation flag appeals can someone submit within any 5 minute period?
       comment:
         title: Limit number of comments created
         description: How many comments can someone create within any 30 second period?

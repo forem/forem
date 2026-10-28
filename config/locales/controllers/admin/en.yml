@@ -151,6 +151,7 @@ en:
       removed: User was successfully removed from %{org}
       updated: User was successfully updated to %{type}
     organizations_controller:
+      name_updated: Organization name updated successfully.
       credit_updated: Successfully updated credits
       deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
@@ -245,6 +246,11 @@ en:
       link_busted: '%{link} was successfully busted'
       social_images_queued: 'Social image regeneration queued for @%{user}'
       user_not_found: 'User not found'
+    flag_appeals_controller:
+      approved: Appeal approved and user/content successfully reinstated.
+      rejected: Appeal rejected.
+      invalid_action: Invalid resolution action.
+      already_resolved: This appeal has already been resolved.
     users_controller:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!
@@ -252,7 +258,7 @@ en:
       confirm_sent: Confirmation email sent!
       verify_sent: Verification email sent!
       manual_verification_sent: Email manually verified!
-      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
+      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) is being deleted. Their account and content are being removed in the background, which can take a few minutes for accounts with a lot of activity. If this is a GDPR delete, once the deletion finishes, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
       no_email: no email
       parameter_missing: Both subject and body are required!
       role_removed: 'Role: %{role} has been successfully removed from the user!'

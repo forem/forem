@@ -9,30 +9,35 @@ class AnalyticsService
   # The most recent DAILY_HISTORY_DAYS still resolve daily.
   DAILY_HISTORY_DAYS = 180
 
-  def initialize(user_or_org, start_date: "", end_date: "", article_id: nil)
+  def initialize(user_or_org, start_date: "", end_date: "", article_id: nil, default_start_to_floor: false)
     @user_or_org = user_or_org
     @article_id = article_id
-    @start_date = Time.zone.parse(start_date.to_s)&.beginning_of_day
-    @end_date = Time.zone.parse(end_date.to_s)&.end_of_day || Time.current.end_of_day
-
-    # Clamp start_date to the owner's registration date so we don't generate
-    # a long tail of empty zero buckets predating the account.
-    @start_date = clamp_start_to_scope_floor(@start_date)
+    @raw_start_date = start_date
+    @raw_end_date = end_date
+    @default_start_to_floor = default_start_to_floor
 
     load_data
   end
 
+  def start_date_floor
+    scope_floor_at.to_date
+  end
+
   # Computes total counts for comments, reactions, follows and page views
-  def totals
-    if (fast = totals_from_activities)
+  def totals(ignore_date_range: false)
+    if (fast = totals_from_activities(ignore_date_range: ignore_date_range))
       return fast
     end
 
+    comment_scope = ignore_date_range ? unscoped_comment_data : comment_data
+    reaction_scope = ignore_date_range ? unscoped_reaction_data : reaction_data
+    page_view_scope = ignore_date_range ? unscoped_page_view_data : page_view_data
+
     {
-      comments: { total: comment_data.size },
+      comments: { total: comment_scope.size },
       follows: { total: follow_data.size },
-      reactions: calculate_reactions_totals,
-      page_views: calculate_page_views_totals
+      reactions: calculate_reactions_totals(reaction_scope),
+      page_views: calculate_page_views_totals(page_view_scope)
     }
   end
 
@@ -82,14 +87,10 @@ class AnalyticsService
   # via reactions (excl. bookmarks) and comments, excluding self-interactions.
   # Comments are weighted 6x, reactions 1x.
   def top_contributors(limit: 20)
-    return [] unless article_data.exists?
+    return [] if article_ids.empty?
 
-    # Use subqueries to avoid loading all IDs into memory for large datasets,
-    # but use the direct array for single articles to prevent Postgres sequential scans
-    article_ids_subquery = @article_id ? [@article_id] : article_data.select(:id)
-
-    # Determine author IDs to exclude self-interactions
-    author_ids = @article_id ? article_data.pluck(:user_id) : article_data.distinct.pluck(:user_id)
+    # Use already-loaded article_ids and author_ids instead of re-querying articles
+    article_ids_subquery = @article_id ? article_ids : article_data.select(:id)
 
     # Reactions (excl readinglist/self) → weight 1
     reactions_sql = Reaction.for_analytics
@@ -114,11 +115,7 @@ class AnalyticsService
       .group(:user_id)
 
     # UNION and aggregate
-    union_sql = "(" \
-      "#{reactions_query.to_sql}" \
-      " UNION ALL " \
-      "#{comments_query.to_sql}" \
-    ")"
+    union_sql = "(#{reactions_query.to_sql} UNION ALL #{comments_query.to_sql})"
 
     rows = ActiveRecord::Base.connection.select_all(
       "SELECT user_id, SUM(reactions_count)::int AS reactions_count, " \
@@ -127,7 +124,7 @@ class AnalyticsService
       "GROUP BY user_id ORDER BY score DESC, user_id ASC LIMIT #{limit.to_i}",
     )
 
-    user_ids = rows.map { |r| r["user_id"] }
+    user_ids = rows.pluck("user_id")
     users_by_id = User.where(id: user_ids).index_by(&:id)
 
     rows.filter_map do |row|
@@ -155,30 +152,28 @@ class AnalyticsService
 
     total_followers = follower_scope.count
     return { total_followers: 0, engaged_followers: 0, ratio: 0.0 } if total_followers.zero?
-    return { total_followers: total_followers, engaged_followers: 0, ratio: 0.0 } unless article_data.exists?
+    return { total_followers: total_followers, engaged_followers: 0, ratio: 0.0 } if article_ids.empty?
 
-    follower_ids_subquery = follower_scope.select(:follower_id)
-    article_ids_subquery = @article_id ? [@article_id] : article_data.select(:id)
+    article_ids_subquery = @article_id ? article_ids : article_data.select(:id)
 
-    # Followers who reacted (excl readinglist)
+    # First collect the distinct user_ids who reacted or commented in the period,
+    # then check which of those engaged users are non-blocked followers via the
+    # unique (followable_id, followable_type, follower_id, follower_type) index.
     reacting_scope = Reaction.for_analytics
       .where(reactable_id: article_ids_subquery, reactable_type: "Article")
       .where.not(category: "readinglist")
-      .where(user_id: follower_ids_subquery)
     reacting_scope = reacting_scope.where(created_at: start_date..end_date) if start_date && end_date
 
-    # Followers who commented (score > 0)
     commenting_scope = Comment
       .where(commentable_id: article_ids_subquery, commentable_type: "Article")
       .where("score > 0")
-      .where(user_id: follower_ids_subquery)
     commenting_scope = commenting_scope.where(created_at: start_date..end_date) if start_date && end_date
 
-    engaged_count = ActiveRecord::Base.connection.select_value(
-      "SELECT COUNT(DISTINCT user_id) FROM (" \
-      "#{reacting_scope.select(:user_id).to_sql} UNION ALL #{commenting_scope.select(:user_id).to_sql}" \
-      ") AS engaged",
-    ).to_i
+    engaged_users_sql = "#{reacting_scope.select(:user_id).to_sql} UNION #{commenting_scope.select(:user_id).to_sql}"
+    engaged_count = follower_scope
+      .where(follower_type: "User")
+      .where("follower_id IN (#{engaged_users_sql})")
+      .count
 
     {
       total_followers: total_followers,
@@ -190,30 +185,28 @@ class AnalyticsService
   private
 
   attr_reader(
-    :user_or_org, :article_id, :start_date, :end_date,
-    :article_data, :article_ids, :reaction_data, :comment_data, :follow_data, :page_view_data
+    :user_or_org, :article_id, :start_date, :end_date, :start_iso, :end_iso,
+    :article_data, :article_ids, :author_ids, :reaction_data, :comment_data, :follow_data, :page_view_data,
+    :unscoped_reaction_data, :unscoped_comment_data, :unscoped_page_view_data
   )
 
   def load_data
-    @article_data = Article.published.from_subforem.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
-    if @article_id
-      @article_data = @article_data.where(id: @article_id)
-
-      # check article_id is published and belongs to the user/org
-      raise ArgumentError, I18n.t("services.analytics_service.no_stats") unless @article_data.exists?
-    end
-
-    @article_ids = @article_data.ids
+    load_article_scope
+    resolve_date_bounds
 
     # prepare relations for metrics
-    @comment_data = Comment
+    @unscoped_comment_data = Comment
       .where(commentable_id: article_ids, commentable_type: "Article")
       .where("score > 0")
     @follow_data = Follow
       .where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-    @reaction_data = Reaction.for_analytics
+    @unscoped_reaction_data = Reaction.for_analytics
       .where(reactable_id: article_ids, reactable_type: "Article")
-    @page_view_data = PageView.where(article_id: article_ids)
+    @unscoped_page_view_data = PageView.where(article_id: article_ids)
+
+    @comment_data = @unscoped_comment_data
+    @reaction_data = @unscoped_reaction_data
+    @page_view_data = @unscoped_page_view_data
 
     # filter data by date if needed
     return unless start_date && end_date
@@ -223,10 +216,38 @@ class AnalyticsService
     @page_view_data = @page_view_data.where(created_at: @start_date..@end_date)
   end
 
-  def calculate_reactions_totals
+  def load_article_scope
+    @article_data = Article.published.from_subforem.where("#{user_or_org.class.name.downcase}_id" => user_or_org.id)
+    if @article_id
+      @article_data = @article_data.where(id: @article_id)
+      row = @article_data.pick(:id, :user_id, :published_at)
+
+      # check article_id is published and belongs to the user/org
+      raise ArgumentError, I18n.t("services.analytics_service.no_stats") unless row
+
+      id, user_id, published_at = row
+      @article_ids = [id]
+      @author_ids = [user_id]
+      @article_published_at = published_at
+    else
+      @article_ids = @article_data.ids
+      @author_ids = user_or_org.is_a?(User) ? [user_or_org.id] : @article_data.distinct.pluck(:user_id)
+    end
+  end
+
+  def resolve_date_bounds
+    parsed_start = Time.zone.parse(@raw_start_date.to_s)&.beginning_of_day
+    parsed_start ||= scope_floor_at&.beginning_of_day if @default_start_to_floor
+    @start_date = clamp_start_to_scope_floor(parsed_start)
+    @end_date = Time.zone.parse(@raw_end_date.to_s)&.end_of_day || Time.current.end_of_day
+    @start_iso = @start_date&.to_date&.iso8601
+    @end_iso = @end_date&.to_date&.iso8601
+  end
+
+  def calculate_reactions_totals(scope = reaction_data)
     # NOTE: the order of the keys needs to be the same as the one of the counts
     keys = %i[total like readinglist unicorn exploding_head raised_hands fire unique_reactors]
-    counts = reaction_data.pick(
+    counts = scope.pick(
       Arel.sql("COUNT(*)"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
@@ -246,9 +267,9 @@ class AnalyticsService
     end
   end
 
-  def calculate_page_views_totals
+  def calculate_page_views_totals(scope = page_view_data)
     total_views = article_data.sum(:page_views_count)
-    logged_in_page_view_data = page_view_data.where.not(user_id: nil)
+    logged_in_page_view_data = scope.where.not(user_id: nil)
     average = logged_in_page_view_data.pick(Arel.sql("AVG(time_tracked_in_seconds)"))
     average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
@@ -265,8 +286,13 @@ class AnalyticsService
   end
 
   def calculate_follows_stats_per_day(follow_data)
+    # follow_data is intentionally unbounded (totals need all-time follows), so
+    # bound it to the charted buckets here; otherwise every follow the owner ever
+    # received is grouped. The lower bound covers the first weekly bucket and both
+    # ends are padded by a day so DATE() bucketing is unaffected.
+    window = (start_date.beginning_of_week - 1.day)..(end_date + 1.day)
     # AR returns a hash with date => count, we transform it using ISO dates for convenience
-    follow_data.group(bucket_sql).count.transform_keys(&:iso8601)
+    follow_data.where(created_at: window).group(bucket_sql).count.transform_keys(&:iso8601)
   end
 
   def calculate_reactions_stats_per_day(reaction_data)
@@ -369,7 +395,7 @@ class AnalyticsService
   # available but fall back to the current system if it isn't".
   def grouped_by_day_from_activities
     activities = scoped_activities
-    return nil if activities.nil?
+    return if activities.nil?
 
     # Aggregate raw counters across articles (storage shape, not response shape)
     # so we can correctly derive bucket-level averages.
@@ -395,13 +421,13 @@ class AnalyticsService
 
   # Returns a totals hash matching #totals using only article_activity rows.
   # Returns nil if the cache doesn't yet cover all in-scope articles.
-  def totals_from_activities
+  def totals_from_activities(ignore_date_range: false)
     activities = scoped_activities
-    return nil if activities.nil?
+    return if activities.nil?
 
-    pv = aggregate_page_view_counters(activities)
-    rx = aggregate_reaction_counters(activities)
-    cm = aggregate_comment_counters(activities)
+    pv = aggregate_page_view_counters(activities, ignore_date_range: ignore_date_range)
+    rx = aggregate_reaction_counters(activities, ignore_date_range: ignore_date_range)
+    cm = aggregate_comment_counters(activities, ignore_date_range: ignore_date_range)
     pv_iso_dates = pv.keys
     rx_iso_dates = rx.keys
     cm_iso_dates = cm.keys
@@ -417,7 +443,7 @@ class AnalyticsService
   # Returns referrers in the same shape as #referrers using activity rows.
   def referrers_from_activities(top: 20)
     activities = scoped_activities
-    return nil if activities.nil?
+    return if activities.nil?
 
     counts = Hash.new(0)
     activities.each do |a|
@@ -439,7 +465,7 @@ class AnalyticsService
 
     if article_ids.empty?
       @scoped_activities = nil
-      return nil
+      return
     end
 
     activities = ArticleActivity.where(article_id: article_ids).index_by(&:article_id)
@@ -451,41 +477,46 @@ class AnalyticsService
       # raw-table path; the cache is warm on the next visit.
       Articles::BackfillActivitiesWorker.perform_async(missing.sort)
       @scoped_activities = nil
-      return nil
+      return
     end
 
     @scoped_activities = activities.values
   end
 
   def iso_in_range?(iso)
-    return true unless start_date && end_date
+    return true unless start_iso && end_iso
 
-    d = Date.iso8601(iso)
-    d >= start_date.to_date && d <= end_date.to_date
-  rescue ArgumentError
-    false
+    iso >= start_iso && iso <= end_iso
   end
 
   # Aggregates the raw counter shape stored in daily_page_views across all
   # in-scope articles, returning {iso => {total, sum_read_seconds, logged_in_count}}.
-  def aggregate_page_view_counters(activities)
-    return @pv_raw if defined?(@pv_raw)
+  def aggregate_page_view_counters(activities, ignore_date_range: false)
+    if ignore_date_range
+      return @pv_raw_all_time if defined?(@pv_raw_all_time)
+    elsif defined?(@pv_raw)
+      return @pv_raw
+    end
 
     out = Hash.new { |h, k| h[k] = { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 } }
     activities.each do |a|
       a[:daily_page_views].each do |iso, raw|
-        next unless iso_in_range?(iso)
+        next if !ignore_date_range && !iso_in_range?(iso)
 
         out[iso]["total"] += raw["total"].to_i
         out[iso]["sum_read_seconds"] += raw["sum_read_seconds"].to_i
         out[iso]["logged_in_count"] += raw["logged_in_count"].to_i
       end
     end
-    @pv_raw = out
+    ignore_date_range ? (@pv_raw_all_time = out) : (@pv_raw = out)
   end
 
-  def aggregate_reaction_counters(activities)
-    return @rx_raw if defined?(@rx_raw)
+  def aggregate_reaction_counters(activities, ignore_date_range: false)
+    if ignore_date_range
+      return @rx_raw_all_time if defined?(@rx_raw_all_time)
+    elsif defined?(@rx_raw)
+      return @rx_raw
+    end
 
     out = Hash.new do |h, k|
       h[k] = { "total" => 0, "like" => 0, "readinglist" => 0, "unicorn" => 0,
@@ -494,28 +525,32 @@ class AnalyticsService
     end
     activities.each do |a|
       a[:daily_reactions].each do |iso, raw|
-        next unless iso_in_range?(iso)
+        next if !ignore_date_range && !iso_in_range?(iso)
 
         ArticleActivity::REACTION_CATEGORIES.each { |c| out[iso][c] += raw[c].to_i }
         out[iso]["total"] += raw["total"].to_i
         out[iso]["reactor_ids"].concat(Array(raw["reactor_ids"]))
       end
     end
-    @rx_raw = out
+    ignore_date_range ? (@rx_raw_all_time = out) : (@rx_raw = out)
   end
 
-  def aggregate_comment_counters(activities)
-    return @cm_raw if defined?(@cm_raw)
+  def aggregate_comment_counters(activities, ignore_date_range: false)
+    if ignore_date_range
+      return @cm_raw_all_time if defined?(@cm_raw_all_time)
+    elsif defined?(@cm_raw)
+      return @cm_raw
+    end
 
     out = Hash.new(0)
     activities.each do |a|
       a[:daily_comments].each do |iso, n|
-        next unless iso_in_range?(iso)
+        next if !ignore_date_range && !iso_in_range?(iso)
 
         out[iso] += n.to_i
       end
     end
-    @cm_raw = out
+    ignore_date_range ? (@cm_raw_all_time = out) : (@cm_raw = out)
   end
 
   # Returns the list of ISO date strings that contribute to a given bucket
@@ -534,13 +569,13 @@ class AnalyticsService
     end
   end
 
-  def sum_reaction_bucket(rx, iso_dates)
+  def sum_reaction_bucket(rx_map, iso_dates)
     base = { total: 0, like: 0, readinglist: 0, unicorn: 0,
              exploding_head: 0, raised_hands: 0, fire: 0, unique_reactors: 0 }
     reactor_set = Set.new
     iso_dates.each do |d|
-      sub = rx[d]
-      next if sub.nil? || (sub.respond_to?(:empty?) && sub.empty?)
+      sub = rx_map[d]
+      next if sub.blank?
 
       base[:total] += sub["total"].to_i
       ArticleActivity::REACTION_CATEGORIES.each { |c| base[c.to_sym] += sub[c].to_i }
@@ -550,13 +585,13 @@ class AnalyticsService
     base
   end
 
-  def sum_page_view_bucket(pv, iso_dates)
+  def sum_page_view_bucket(pv_map, iso_dates)
     total = 0
     sum_read = 0
     logged_count = 0
     iso_dates.each do |d|
-      sub = pv[d]
-      next if sub.nil? || sub.empty?
+      sub = pv_map[d]
+      next if sub.blank?
 
       total += sub["total"].to_i
       sum_read += sub["sum_read_seconds"].to_i

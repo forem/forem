@@ -146,6 +146,36 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when the placement area is fully cached" do
+    let!(:untargeted) { create_billboard }
+
+    it "only offers billboards that don't target anything about the individual request" do
+      tagged = create_billboard(cached_tag_list: "ruby")
+      excludes_article = create_billboard(exclude_article_ids: "11")
+      for_segment = create_billboard(audience_segment: create(:audience_segment))
+      for_page = create_billboard(page_id: create(:page).id)
+      for_role = create_billboard(target_role_names: ["editor"])
+      excludes_role = create_billboard(exclude_role_names: ["editor"])
+      excludes_survey_takers = create_billboard(exclude_survey_completions: true, exclude_survey_ids: [1])
+      desktop_only = create_billboard(browser_context: :desktop)
+
+      expect(filter_billboards(user_signed_in: true, fully_cached: true)).to contain_exactly(untargeted)
+
+      # Without that filtering, a response shared by every signed-in visitor would include these
+      expect(filter_billboards(user_signed_in: true)).to include(
+        tagged, excludes_article, for_page, excludes_role, excludes_survey_takers, desktop_only
+      )
+      expect(filter_billboards(user_signed_in: true)).not_to include(for_segment, for_role)
+    end
+
+    it "still respects whether the visitor is signed in" do
+      logged_out_only = create_billboard(display_to: :logged_out)
+
+      expect(filter_billboards(user_signed_in: true, fully_cached: true)).not_to include(logged_out_only)
+      expect(filter_billboards(user_signed_in: false, fully_cached: true)).to include(logged_out_only)
+    end
+  end
+
   context "when considering page_id" do
     let(:page) { create(:page) }
     let(:page_bb) { create_billboard page_id: page.id }
@@ -192,6 +222,19 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       filtered = filter_billboards organization_id: nil, permit_adjacent_sponsors: false
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
+    end
+
+    it "does not preload organizations for every candidate billboard" do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] }
+      filtered = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        filtered = filter_billboards(organization_id: nil).to_a
+      end
+
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
+      expect(queries.grep(/FROM "organizations"/)).to be_empty
+      expect(filtered.find { |bb| bb.id == external_ad.id }.organization).to eq(organization)
     end
   end
 
@@ -566,6 +609,40 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         # Should render standard untagged boards if no mapping aligns securely:
         expect(filtered).to include(standard_bb)
       end
+    end
+  end
+
+  context "when considering survey completion exclusion" do
+    let(:user) { create(:user) }
+    let(:survey) { create(:survey) }
+    let!(:survey_bb) do
+      create_billboard(exclude_survey_completions: true, exclude_survey_ids: [survey.id])
+    end
+
+    it "excludes the billboard when the signed-in user completed a matching survey" do
+      create(:survey_completion, user: user, survey: survey)
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).not_to include(survey_bb)
+    end
+
+    it "includes the billboard when the signed-in user has not completed a matching survey" do
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).to include(survey_bb)
+    end
+
+    it "executes a single SQL query for signed-in users without extra pre-queries" do
+      uid = user.id
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        if !payload[:cached] && sql.match?(/FROM "(display_ads|segmented_users|survey_completions)"/)
+          queries << sql
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(filter_billboards(user_signed_in: true, user_id: uid).to_a).to include(survey_bb)
+      end
+
+      expect(queries.size).to eq(1)
     end
   end
 end

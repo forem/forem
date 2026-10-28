@@ -2,9 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Views an article" do
   let(:user) { create(:user) }
-  let(:article) do
-    create(:article, :with_notification_subscription, user: user)
-  end
+  let(:article) { create(:article, user: user) }
 
   before do
     sign_in user
@@ -16,12 +14,12 @@ RSpec.describe "Views an article" do
     expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
-  it "shows an article", :js do
+  it "shows an article" do
     visit article.path
     expect(page).to have_content(article.title)
   end
 
-  it "shows non-negative comments", :js do
+  it "shows non-negative comments" do
     comments = create_list(:comment, 4, commentable: article)
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
@@ -54,16 +52,12 @@ RSpec.describe "Views an article" do
     # js helpers to ensure the datetime is locale. However, testing locale
     # datetimes has proven to be very flaky which is why the js is not included
     # here
-    it "shows the readable publish date" do
+    it "shows the readable publish date and embeds the published timestamp", :aggregate_failures do
       visit article.path
+
       expect(page).to have_css("article time", text: article.readable_publish_date.gsub("  ", " "))
-    end
-
-    it "embeds the published timestamp" do
-      visit article.path
-
       selector = "article time[datetime='#{article.decorate.published_timestamp}']"
-      expect(page).to have_selector(selector)
+      expect(page).to have_css(selector)
     end
 
     context "when articles have long markdowns and different published dates" do
@@ -96,12 +90,12 @@ RSpec.describe "Views an article" do
   end
 
   describe "when articles belong to a collection" do
-    let(:collection) { create(:collection) }
+    let(:collection) { create(:collection, user: user) }
     let(:articles_selector) { "//div[@class='series-switcher__list']//a" }
 
     context "with regular articles" do
       it "lists the articles in ascending published_at order" do
-        articles = create_list(:article, 2)
+        articles = create_list(:article, 2, user: user)
         articles.first.update(published_at: 1.week.ago)
         articles.each { |a| a.update_columns(collection_id: collection.id) }
 
@@ -114,9 +108,9 @@ RSpec.describe "Views an article" do
     end
 
     context "when a crossposted article is between two regular articles" do
-      let(:article1) { create(:article) }
-      let(:crossposted_article) { create(:article) }
-      let(:article2) { create(:article) }
+      let(:article1) { create(:article, user: user) }
+      let(:crossposted_article) { create(:article, user: user) }
+      let(:article2) { create(:article, user: user) }
 
       it "lists the articles in ascending order considering crossposted_at" do
         article1.update_columns(
@@ -152,14 +146,10 @@ RSpec.describe "Views an article" do
     let(:scheduled_article_path) { scheduled_article.path + query_params }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
 
-    it "shows the article edit link for the author", :js do
+    it "shows the article edit link and hides the manage link for the author", :aggregate_failures, :js do
       visit scheduled_article_path
       edit_link = find("a#author-click-to-edit")
       expect(edit_link.matches_style?(display: "inline-block")).to be true
-    end
-
-    it "doesn't show the article manage link, even for the author", :js do
-      visit scheduled_article_path
       expect(page).to have_no_link("article-action-space-manage")
     end
 

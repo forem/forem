@@ -66,7 +66,7 @@ class AsyncInfo
           visible: visible?(record: Article, query: :moderate?)
         },
       ],
-      apple_auth: user.email.to_s.end_with?("@privaterelay.appleid.com")
+      apple_auth: user.email.to_s.end_with?("@privaterelay.appleid.com", "@private.icloud.com")
     }
   end
 

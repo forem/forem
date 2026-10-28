@@ -57,13 +57,6 @@ module Api
     # per-IP Rack::Attack api_throttle (3 GETs/sec), halves middleware overhead,
     # and gives the client a consistent point-in-time snapshot across panels.
     def dashboard
-      # When `start` is omitted (Infinity range), fall back to the owner's
-      # registration timestamp so we don't fabricate years of empty buckets
-      # before the account existed. AnalyticsService also clamps internally,
-      # but resolving here keeps the serialized `start_date_floor` consistent
-      # with the data the dashboard actually charts.
-      effective_start = params[:start].presence || @owner_start_floor.iso8601
-
       # No HTTP or server-side cache: the dashboard is a personal/owner-scoped
       # view that must reflect new activity (page views, reactions, comments)
       # immediately. Reads now hit the ArticleActivity fast-path (single
@@ -74,17 +67,19 @@ module Api
 
       dated = AnalyticsService.new(
         @owner,
-        start_date: effective_start, end_date: params[:end], article_id: params[:article_id],
+        start_date: params[:start],
+        end_date: params[:end],
+        article_id: params[:article_id],
+        default_start_to_floor: true,
       )
-      all_time = AnalyticsService.new(@owner, article_id: analytics_params[:article_id])
 
       data = {
         historical: dated.grouped_by_day,
-        totals: all_time.totals,
+        totals: dated.totals(ignore_date_range: true),
         referrers: dated.referrers,
         top_contributors: dated.top_contributors,
         follower_engagement: dated.follower_engagement,
-        start_date_floor: @owner_start_floor.iso8601
+        start_date_floor: dated.start_date_floor.iso8601
       }
 
       render json: data.to_json
@@ -119,22 +114,6 @@ module Api
 
     def load_owner
       @owner = @org || @user
-      @owner_start_floor = compute_start_floor.to_date
-    end
-
-    # Earliest meaningful date for the current request scope. For per-article
-    # views this is the article's publication date — articles can live in an
-    # organization created long after they were published (cross-posts), so
-    # clamping to the org's creation date would silently hide pre-org
-    # activity. For owner-wide views this is the owner's registration / org
-    # creation date.
-    def compute_start_floor
-      if (article_id = analytics_params[:article_id]).present?
-        published_at = Article.where(id: article_id).pick(:published_at)
-        return published_at if published_at
-      end
-
-      (@owner.respond_to?(:registered_at) && @owner.registered_at) || @owner.created_at
     end
 
     def validate_date_params

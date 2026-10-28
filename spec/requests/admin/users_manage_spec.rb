@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Users" do
-  let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
-  let!(:user2) { create(:user, twitter_username: "Twitter") }
+  let(:user) { create(:user, twitter_username: nil, old_username: "username") }
+  let(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article, user: user) }
@@ -14,8 +14,6 @@ RSpec.describe "Admin::Users" do
   before do
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     sign_in super_admin
-    dependents_for_offending_user_article
-    offender_activity_on_other_content
   end
 
   def dependents_for_offending_user_article
@@ -63,53 +61,38 @@ RSpec.describe "Admin::Users" do
   end
 
   context "when merging users" do
-    before do
+    it "merges content, relationships, profile info, and social usernames, and deletes duplicate user",
+       :aggregate_failures do
+      dependents_for_offending_user_article
+      offender_activity_on_other_content
       full_profile
-    end
 
-    it "deletes duplicate user" do
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+      expected_articles_count = user.articles.count + user2.articles.count
+      expected_comments_count = user.comments.count + user2.comments.count
+      expected_reactions_count = user.reactions.count + user2.reactions.count
+      expected_follows_count = user.follows.count + user2.follows.count
+      expected_mentions_count = user.mentions.count + user2.mentions.count
+
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [user2.id, true, "merge"]) do
+        post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
+      end
+
+      expect(user.comments.count).to eq(expected_comments_count)
+      expect(user.articles.count).to eq(expected_articles_count)
+      expect(user.reactions.count).to eq(expected_reactions_count)
+      expect(user.follows.count).to eq(expected_follows_count)
+      expect(Follow.followable_user(user.id).count).to eq(1)
+      expect(user.mentions.count).to eq(expected_mentions_count)
+      expect(user.github_repos.any?).to be true
+      expect(user.badge_achievements.any?).to be true
+      expect(user.reload.twitter_username).to eq("Twitter")
+
+      sidekiq_perform_enqueued_jobs(only: Users::DeleteWorker)
 
       expect { User.find(user2.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
-    it "merges all content" do
-      expected_articles_count = user.articles.count + user2.articles.count
-      expected_comments_count = user.comments.count + user2.comments.count
-      expected_reactions_count = user.reactions.count + user2.reactions.count
-
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
-
-      expect(user.comments.count).to eq(expected_articles_count)
-      expect(user.articles.count).to eq(expected_comments_count)
-      expect(user.reactions.count).to eq(expected_reactions_count)
-    end
-
-    it "merges all relationships" do
-      expected_follows_count = user.follows.count + user2.follows.count
-      expected_mentions_count = user.mentions.count + user2.mentions.count
-
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
-
-      expect(user.follows.count).to eq(expected_follows_count)
-      expect(Follow.followable_user(user.id).count).to eq(1)
-      expect(user.mentions.count).to eq(expected_mentions_count)
-    end
-
-    it "merges misc profile info" do
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
-
-      expect(user.github_repos.any?).to be true
-      expect(user.badge_achievements.any?).to be true
-    end
-
-    it "merges social identities and usernames" do
-      post merge_admin_user_path(user.id), params: { user: { merge_user_id: user2.id } }
-
-      expect(user.reload.twitter_username).to eq("Twitter")
-    end
-
-    it "merges an identity on a single account into the other" do
+    it "merges an identity on a single account into the other", :aggregate_failures do
       omniauth_mock_twitter_payload
       omniauth_mock_github_payload
       create(:identity, user: user, provider: "twitter")
@@ -137,6 +120,38 @@ RSpec.describe "Admin::Users" do
 
       expect(user.roles.first.name).to eq("limited")
       expect(Note.first.content).to eq("limited role added")
+    end
+
+    it "allows admins to assign community leader level 1" do
+      sign_in create(:user, :admin)
+
+      params = {
+        user: { user_status: "Community Leader Level 1", note_for_current_role: "assigning community leader" }
+      }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_1?).to be(true)
+    end
+
+    it "does not allow non-super-admins to assign community leader level 2" do
+      sign_in create(:user, :admin)
+
+      params = { user: { user_status: "Community Leader Level 2", note_for_current_role: "assigning level 2" } }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.reload.community_leader_level_2?).to be(false)
+      expect(request.flash["danger"]).to be_present
+    end
+
+    it "allows admins to remove community leader level 1", :aggregate_failures do
+      sign_in create(:user, :admin)
+      user.add_role(:community_leader_level_1)
+      role = user.roles.find_by!(name: "community_leader_level_1")
+
+      delete admin_user_path(user.id), params: { user_id: user.id, role_id: role.id }
+
+      expect(user.reload.community_leader_level_1?).to be(false)
+      expect(request.flash["success"]).to include("Community Leader Level 1")
     end
 
     it "selects new role for user" do
@@ -176,7 +191,7 @@ RSpec.describe "Admin::Users" do
       expect(Note.last.content).to eq("general note about whatever")
     end
 
-    it "updates profile fields and records a note" do
+    it "updates profile fields and records a note", :aggregate_failures do
       user.profile.update!(
         summary: "Old summary",
         location: "Old location",
@@ -348,31 +363,53 @@ RSpec.describe "Admin::Users" do
       Notification.send_new_follower_notification_without_delay(follow)
     end
 
-    before do
+    it "deletes the user's content and purges caches once the background jobs run", :aggregate_failures do
+      dependents_for_offending_user_article
+      offender_activity_on_other_content
       create_mutual_follows
       create_mention
       create(:badge_achievement, rewarder: rewarder, rewarding_context_message: "yay", user: user)
+
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      offender_comment = user.comments.sole
+      profile_keys = user.profile_cache_keys
+
+      # the outer block runs the jobs the deletion job enqueues
+      sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs { post full_delete_admin_user_path(user.id) }
+      end
+
+      expect(User.exists?(user.id)).to be(false)
+      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect(Article.exists?(article.id)).to be(false)
+      expect(Comment.where(commentable: article)).to be_empty
+      expect(Comment.exists?(offender_comment.id)).to be(false)
+      expect(Reaction.where(user_id: user.id)).to be_empty
+      expect(Follow.followable_user(user.id)).to be_empty
+      expect(Article.exists?(article2.id)).to be(true)
+      expect(GDPRDeleteRequest.where(user_id: user.id)).to exist
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(profile_keys, fallback_paths: anything).at_least(:once)
+      expect(EdgeCache::PurgeByKey).to have_received(:call)
+        .with(array_including(offender_comment.record_key), fallback_paths: anything)
     end
 
-    it "raises a 'record not found' error after deletion" do
-      sidekiq_perform_enqueued_jobs do
+    it "enqueues the deletion and sets a background deletion flash message without deleting inline",
+       :aggregate_failures do
+      sidekiq_assert_enqueued_with(job: Users::DeleteWorker, args: [user.id, true]) do
         post full_delete_admin_user_path(user.id)
       end
-      expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "expect flash message" do
-      post full_delete_admin_user_path(user.id)
-      expect(request.flash["success"]).to include("fully deleted")
+      expect(User.exists?(user.id)).to be(true)
+      expect(response).to redirect_to(admin_users_path)
+      expect(request.flash["success"]).to include("is being deleted")
+      expect(request.flash["success"]).to include("removed in the background")
+      expect(request.flash["success"]).not_to include("fully deleted")
     end
   end
 
   context "when handling credits" do
-    before do
+    it "adds the proper amount of credits for organizations", :aggregate_failures do
       create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
-    end
 
-    it "adds the proper amount of credits for organizations" do
       put admin_user_path(super_admin.id), params: {
         user: {
           add_org_credits: 5,
@@ -383,8 +420,10 @@ RSpec.describe "Admin::Users" do
       expect(organization.reload.unspent_credits_count).to eq 5
     end
 
-    it "removes the proper amount of credits for organizations" do
+    it "removes the proper amount of credits for organizations", :aggregate_failures do
+      create(:organization_membership, user: super_admin, organization: organization, type_of_user: "admin")
       Credit.add_to(organization, 10)
+
       put admin_user_path(super_admin.id), params: {
         user: {
           remove_org_credits: 5,
@@ -395,7 +434,7 @@ RSpec.describe "Admin::Users" do
       expect(organization.reload.unspent_credits_count).to eq 5
     end
 
-    it "add the proper amount of credits to a user" do
+    it "add the proper amount of credits to a user", :aggregate_failures do
       put admin_user_path(super_admin.id), params: {
         user: {
           add_credits: 5
@@ -405,7 +444,7 @@ RSpec.describe "Admin::Users" do
       expect(super_admin.reload.unspent_credits_count).to eq 5
     end
 
-    it "removes the proper amount of credits from a user" do
+    it "removes the proper amount of credits from a user", :aggregate_failures do
       Credit.add_to(super_admin, 10)
       put admin_user_path(super_admin.id), params: {
         user: {

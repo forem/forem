@@ -324,6 +324,7 @@ en:
               resource_admin_billboard: Billboard Admin
               resource_admin_data_update_script: Data Update Script Admin
               resource_admin_feedback_message: Feedback Message Admin
+              resource_admin_flag_appeal: Flag Appeal Admin
               resource_admin_html_variant: HTML Variant Admin
               resource_admin_listing_category: Listing Category Admin
               resource_admin_page: Page Admin
@@ -346,6 +347,8 @@ en:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
+              community_leader_level_1: Community Leader Level 1
+              community_leader_level_2: Community Leader Level 2
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
@@ -500,6 +503,7 @@ en:
           "Resource Admin: Billboard": "Resource Admin: Billboard"
           "Resource Admin: DataUpdateScript": "Resource Admin: DataUpdateScript"
           "Resource Admin: FeedbackMessage": "Resource Admin: FeedbackMessage"
+          "Resource Admin: FlagAppeal": "Resource Admin: FlagAppeal"
           "Resource Admin: HtmlVariant": "Resource Admin: HtmlVariant"
           "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
           "Resource Admin: Page": "Resource Admin: Page"
@@ -606,6 +610,11 @@ en:
             created_at: Created At
             actions: Actions
       organizations:
+        name:
+          heading: Organization Name
+          description: Update this organization's display name.
+          label: Organization name
+          submit: Update Name
         profile:
           id: ID %{organizationid}
           since_html: Organization since %{time}
@@ -749,3 +758,16 @@ en:
             day_before: "1 Day Before"
             hour_before: "1 Hour Before"
             none: "None"
+      billboard_placement_area_configs:
+        index:
+          visibility: Visibility
+          hidden_by_default: Hidden by default
+          visible: Visible
+          caching: Caching
+          fully_cached: Fully cached
+          standard_caching: Standard
+        edit:
+          hidden_by_default: Hidden by default
+          hidden_by_default_desc_html: Billboards are still delivered to this placement area but render hidden, and record no impressions, until frontend logic reveals them with %{reveal_call}. Rendered billboards carry %{placement_attribute}.
+          fully_cached: Fully cached
+          fully_cached_desc: Serve one cached response per visitor location for this placement area, shared by every article and page and by signed-in visitors too, using the cache expiry above. Only billboards that don't target tags, articles, pages, audience segments, roles, survey completions or browser types are shown here. Articles whose authors opt out of nearby sponsors keep the standard behavior. Only affects billboards loaded separately from the page, not ones rendered into it (such as the home page sidebar).

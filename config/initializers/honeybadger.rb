@@ -35,7 +35,8 @@ Rails.application.reloader.to_prepare do
     config.exceptions.ignore += honeybadger_exceptions_to_ignore
     config.request.filter_keys += %w[authorization]
     config.sidekiq.attempt_threshold = 10
-    config.breadcrumbs.enabled = true
+    # Breadcrumbs subscribe to every ActiveSupport notification, which is pure overhead in tests.
+    config.breadcrumbs.enabled = !Rails.env.test?
 
     config.before_notify do |notice|
       notice.ignore! if notice.error_class == "SignalException" && notice.error_message&.include?("SIGHUP")

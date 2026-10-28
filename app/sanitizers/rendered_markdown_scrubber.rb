@@ -2,6 +2,7 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   LIQUID_TAG_SYNTAX_REGEX = /\{%|%\}/
   TABLE_CELL_TAGS = %w[td th].freeze
   ALLOWED_TEXT_ALIGN = %w[left center right].freeze
+  CODEBLOCK_HIGHLIGHT_TAGS = %w[div pre code].freeze
 
   def initialize
     super
@@ -18,17 +19,21 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   # Overrides scrub_attributes in
   # https://github.com/rails/rails-html-sanitizer/blob/master/lib/rails/html/scrubbers.rb
   def scrub_attributes(node)
+    return if node.attribute_nodes.empty?
+
+    scrub_valid_attributes(node)
+
     # We only want to call super if we aren't in a codeblock
     # because the `class` attribute will be stripped
     if inside_codeblock?(node)
       node.attribute_nodes.each do |attr|
+        attr.remove if attr.name != "class" && scrub_attribute?(attr.name)
         scrub_attribute(node, attr)
       end
 
       scrub_css_attribute(node)
     else
       alignment = cell_text_align(node)
-      scrub_valid_attributes(node)
       super
       node["style"] = "text-align: #{alignment}" if alignment
     end
@@ -57,23 +62,24 @@ class RenderedMarkdownScrubber < Rails::Html::PermitScrubber
   end
 
   def scrub_valid_attributes(node)
-    node.attributes.each_value do |attribute|
-      attribute.value = attribute.value.remove(LIQUID_TAG_SYNTAX_REGEX)
+    node.attribute_nodes.each do |attribute|
+      value = attribute.value
+      next unless value.include?("{%") || value.include?("%}")
+
+      attribute.value = value.remove(LIQUID_TAG_SYNTAX_REGEX)
     end
   end
 
   def inside_codeblock?(node)
-    node.attributes["class"]&.value&.include?("highlight") ||
-      (node.name == "span" && node.ancestors.first.name == "code")
+    (CODEBLOCK_HIGHLIGHT_TAGS.include?(node.name) && node["class"]&.include?("highlight")) ||
+      (node.name == "span" && node.parent&.name == "code")
   end
 
   def valid_codeblock_div?(node)
     node.name == "div" &&
-      node.attributes.count == 1 &&
+      node["class"] == "highlight" &&
+      node.attribute_nodes.size == 1 &&
       node.children.first&.name == "pre" &&
-      node.parent.name == "#document-fragment" &&
-      node.attributes.values.any? do |attribute_value|
-        attribute_value.value == "highlight"
-      end
+      node.parent.name == "#document-fragment"
   end
 end

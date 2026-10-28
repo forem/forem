@@ -23,6 +23,20 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
       expect(result.third).to eq article
       expect(result).not_to include(low_scoring_article)
     end
+
+    it "loads the feed without querying reactions" do
+      create(:reaction, reactable: hot_story, category: "like")
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        feed.feed.to_a
+      end
+
+      expect(reaction_queries).to be_empty
+    end
   end
 
   context "with a user" do
