@@ -3718,6 +3718,25 @@ RSpec.describe Article do
       end
     end
 
+    context "when the article has a video thumbnail and no cover" do
+      before do
+        article.update_columns(main_image: nil, social_image: nil,
+                               video_thumbnail_url: "https://image.mux.com/abc123/thumbnail.webp")
+      end
+
+      it "does not trigger the Images::SocialImageWorker because the video thumbnail is shared instead" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+
+      it "triggers the Images::SocialImageWorker once the video thumbnail is gone" do
+        article.update_columns(video_thumbnail_url: nil)
+        article.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+    end
+
     context "when saved inside an open transaction" do
       self.use_transactional_tests = false
 

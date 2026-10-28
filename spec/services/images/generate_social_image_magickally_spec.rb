@@ -170,6 +170,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(generator).not_to have_received(:generate_image).with(second_article, anything)
       end
 
+      it "skips articles with a video thumbnail, which is shared instead" do
+        video_article = create(:article, user_id: user.id, with_main_image: false,
+                                         video_thumbnail_url: "https://image.mux.com/abc123/thumbnail.webp")
+        described_class.call(user)
+        expect(generator).not_to have_received(:generate_image).with(video_article, anything)
+      end
+
       it "stores the generated image on the user profile and articles and busts user edge cache" do
         allow(EdgeCache::BustUser).to receive(:call)
         described_class.call(user)
@@ -209,6 +216,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         described_class.call(organization)
         expect(generator).to have_received(:generate_image).with(organization, organization.bg_color_hex).once
         expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
+      end
+
+      it "skips articles with a video thumbnail, which is shared instead" do
+        video_article = create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false,
+                                         video_thumbnail_url: "https://image.mux.com/abc123/thumbnail.webp")
+        described_class.call(organization)
+        expect(generator).not_to have_received(:generate_image).with(video_article, anything)
       end
 
       it "stores the generated image on the organization and article and busts organization edge cache" do
