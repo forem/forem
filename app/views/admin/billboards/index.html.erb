@@ -21,10 +21,10 @@
   <table class="crayons-table" width="100%">
     <thead>
       <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Placement Area</th>
-        <th scope="col">Display to User Group</th>
-        <th scope="col">Type</th>
+        <th scope="col"><%= sort_link(@q, :name, { aria: { label: "Sort by Name" } }) %></th>
+        <th scope="col"><%= sort_link(@q, :placement_area, { aria: { label: "Sort by Placement Area" } }) %></th>
+        <th scope="col"><%= sort_link(@q, :display_to, { aria: { label: "Sort by Display To" } }) %></th>
+        <th scope="col"><%= sort_link(@q, :type_of, { aria: { label: "Sort by Type" } }) %></th>
         <th scope="col">Public?</th>
         <th scope="col">Success Rate</th>
       </tr>
