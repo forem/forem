@@ -3384,4 +3384,213 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Feed Scoring, User Activity & Analytics Heatmap Kernels" do
+    describe ".score_followed_tags, .score_experience_level, .score_ai_disclosure, " \
+             ".score_article_for_user, and .rank_articles_for_basic_feed" do
+      let(:tag_struct) { Struct.new(:name, :points) }
+      let(:setting_struct) { Struct.new(:experience_level, :feed_ai_preference) }
+      let(:user_decorator_struct) { Struct.new(:cached_followed_tags) }
+      let(:user_struct) do
+        Struct.new(:cached_following_users_ids, :cached_following_organizations_ids, :decorate, :setting)
+      end
+      let(:article_decorator_struct) { Struct.new(:cached_tag_list_array) }
+      let(:article_struct) do
+        Struct.new(
+          :id, :user_id, :organization_id, :cached_tag_list,
+          :experience_level_rating, :comments_count, :ai_disclosure_level
+        ) do
+          def organization_id? = !organization_id.nil? && organization_id != 0
+          def decorate = Struct.new(:cached_tag_list_array).new((cached_tag_list || "").split(", "))
+        end
+      end
+
+      it "handles edge cases, integer vs float division, nil users, and out-of-domain fallback", :aggregate_failures do
+        expect(described_class.score_followed_tags("ruby, rust, ", %w[ruby rust go], [2.5, 4.0, 1.0], 1.0, 0.0))
+          .to eq(6.5)
+        expect(described_class.score_followed_tags("", %w[ruby], [2.5], 1.0, -0.5)).to eq(-0.5)
+        expect(described_class.score_followed_tags(nil, %w[ruby], [2.5], 1.0, 0.0)).to eq(0.0)
+        expect(described_class.score_followed_tags("ruby", %w[ruby], [1.0, 2.0], 1.0, 0.0)).to be_nil
+        expect(described_class.score_experience_level(8, 5, 1.0)).to eq(-1.0)
+        expect(described_class.score_experience_level(8.0, 5, 1.0)).to eq(-1.5)
+        expect(described_class.score_experience_level(nil, 5, 1.0)).to be_nil
+        expect(described_class.score_experience_level("invalid", 5, 1.0)).to be_nil
+        expect(described_class.score_ai_disclosure("minimize_ai", "some_ai", -10, -25)).to eq(-10.0)
+        expect(described_class.score_ai_disclosure("minimize_ai", "fully_autonomous", -10, -25)).to eq(-25.0)
+        expect(described_class.score_ai_disclosure("hide_fully_autonomous", "some_ai", -10, -25)).to eq(-10.0)
+        expect(described_class.score_ai_disclosure("hide_fully_autonomous", "fully_autonomous", -10, -25)).to eq(0.0)
+        expect(described_class.score_ai_disclosure("show_all", "fully_autonomous", -10, -25)).to eq(0.0)
+        expect(described_class.score_ai_disclosure(nil, "some_ai", -10, -25)).to eq(0.0)
+        expect(described_class.score_ai_disclosure(:symbol_out_of_domain, "some_ai", -10, -25)).to be_nil
+
+        double_only_decorate = Struct.new(:decorate).new(article_decorator_struct.new(%w[ruby rust]))
+        user = user_struct.new(
+          [1], [10],
+          user_decorator_struct.new([tag_struct.new("ruby", 3.0), tag_struct.new("go", 2.0)]),
+          setting_struct.new(5, "minimize_ai")
+        )
+        calc = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: user)
+        expect(calc.score_followed_tags(double_only_decorate)).to eq(3.0)
+      end
+
+      it "passes differential equivalence across 1,000 randomized users, articles, and feed batches" do
+        rng = Random.new(424_242)
+        tag_pool = %w[ruby rust javascript webdev ai beginners career devops postgres testing]
+        ai_prefs = ["show_all", "minimize_ai", "hide_fully_autonomous", nil]
+        ai_levels = ["none", "some_ai", "fully_autonomous", nil]
+
+        1_000.times do |iteration|
+          has_user = rng.rand < 0.9
+          int_mode = iteration.even?
+          followed_tags = Array.new(rng.rand(0..6)) do
+            pts = int_mode ? rng.rand(1..2).to_f : ((rng.rand * 10.0) - 2.0).round(2)
+            tag_struct.new(tag_pool.sample(random: rng), pts)
+          end
+          user_xp = rng.rand < 0.7 ? rng.rand(1..10) : ((rng.rand * 9.0) + 1.0).round(1)
+          setting = rng.rand < 0.9 ? setting_struct.new(user_xp, ai_prefs.sample(random: rng)) : nil
+          user = if has_user
+                   user_struct.new(
+                     Array.new(rng.rand(0..8)) { rng.rand(1..30) }, Array.new(rng.rand(0..5)) { rng.rand(1..15) },
+                     user_decorator_struct.new(followed_tags), setting
+                   )
+                 end
+          config = if int_mode
+                     {}
+                   else
+                     {
+                       comment_weight: (rng.rand * 1.5).round(2), followed_user_score: rng.rand(1..5),
+                       xp_level_weight: rng.rand < 0.5 ? 1 : (rng.rand * 2.0).round(2),
+                       not_followed_user_score: rng.rand < 0.3 ? -1 : 0, followed_org_score: rng.rand(1..4),
+                       followed_tag_weight: rng.rand < 0.5 ? 1 : (rng.rand * 2.0).round(2),
+                       not_followed_tag_score: rng.rand < 0.3 ? -0.5 : 0, not_followed_org_score: 0,
+                       some_ai_penalty: -rng.rand(5..15), fully_autonomous_penalty: -rng.rand(15..35)
+                     }
+                   end
+          calc = Articles::Feeds::ArticleScoreCalculatorForUser.new(user: user, config: config)
+          exp_feed = Articles::Feeds::LargeForemExperimental.new(user: user)
+          exp_feed.instance_variable_set(:@article_score_applicator, calc)
+          basic_feed = Articles::Feeds::Basic.new(user: user)
+          basic_feed.instance_variable_set(:@article_score_applicator, calc)
+          articles = Array.new(rng.rand(1..40)) do |idx|
+            tags_str = rng.rand < 0.15 ? nil : tag_pool.sample(rng.rand(0..4), random: rng).join(", ")
+            art_xp = rng.rand < 0.7 ? rng.rand(1..10) : ((rng.rand * 9.0) + 1.0).round(1)
+            article_struct.new(
+              idx + 1, rng.rand(1..35), rng.rand < 0.4 ? rng.rand(0..15) : nil,
+              tags_str, art_xp, rng.rand(0..50), ai_levels.sample(random: rng)
+            )
+          end
+          sample_article = articles.first
+          base_pts = rng.rand(0..10)
+          actual_single = exp_feed.score_single_article(sample_article, base_article_points: base_pts)
+          expected_single = exp_feed.__send__(
+            :legacy_score_single_article, sample_article, base_article_points: base_pts
+          )
+          expect(actual_single).to be_within(1e-12).of(expected_single), "single score iteration #{iteration}"
+          next unless has_user
+
+          expect(calc.rank_for_basic_feed(articles).map(&:id))
+            .to eq(basic_feed.__send__(:legacy_rank_articles, articles).map(&:id)), "basic rank iteration #{iteration}"
+        end
+      end
+    end
+
+    describe ".filter_tracked_article_ids, .aggregate_recent_activity_metadata, and .order_subforem_ids" do
+      let(:article_row_struct) do
+        Struct.new(:cached_tag_list, :cached_label_list, :organization_id, :user_id, :subforem_id) do
+          def decorate
+            tags = cached_tag_list.is_a?(Array) ? cached_tag_list : (cached_tag_list || "").split(", ")
+            Struct.new(:cached_tag_list_array).new(tags)
+          end
+        end
+      end
+
+      it "filters tracked pageviews, aggregates metadata, and orders subforems across 1,000 randomized histories" do
+        expect(described_class.filter_tracked_article_ids([[10, "2026-10-27T10:00:00Z", 45], [20, nil, 29]], 29))
+          .to eq([10])
+        expect(described_class.filter_tracked_article_ids(["invalid"], 29)).to be_nil
+        expect(described_class.order_subforem_ids([10, 20, 10], [20, 30], [40, 10, 20, 30, 50]))
+          .to eq([20, 30, 10, 40, 50])
+        expect(described_class.order_subforem_ids(["invalid"], [1], [1])).to be_nil
+        rng = Random.new(424_242)
+        tag_pool = %w[ruby rust javascript webdev ai beginners career devops postgres testing]
+        label_pool = %w[l1 l2 l3 l4 l5 l6 l7 l8]
+
+        1_000.times do |iteration|
+          store = Array.new(rng.rand(0..25)) { [rng.rand(1..500), "2026-10-27T12:00:00Z", rng.rand(0..90)] }
+          expect(described_class.filter_tracked_article_ids(store, 29))
+            .to eq(store.filter_map { |id, _ts, secs| id if secs > 29 }), "filter iteration #{iteration}"
+          rows = Array.new(rng.rand(0..15)) do
+            tags = if rng.rand < 0.2
+                     tag_pool.sample(rng.rand(0..3), random: rng)
+                   else
+                     rng.rand < 0.15 ? nil : tag_pool.sample(rng.rand(0..4), random: rng).join(", ")
+                   end
+            article_row_struct.new(
+              tags, rng.rand < 0.2 ? nil : label_pool.sample(rng.rand(0..4), random: rng),
+              rng.rand < 0.4 ? nil : rng.rand(1..20), rng.rand < 0.2 ? nil : rng.rand(1..50),
+              rng.rand < 0.3 ? nil : rng.rand(1..10)
+            )
+          end
+          actual_agg = described_class.aggregate_recent_activity_metadata(
+            rows.map(&:cached_tag_list), rows.map(&:cached_label_list),
+            rows.map(&:organization_id), rows.map(&:user_id), rows.map(&:subforem_id), 5
+          )
+          expected_agg = [
+            rows.map { |a| a.decorate.cached_tag_list_array }.flatten.uniq.compact,
+            rows.map(&:cached_label_list).flatten.uniq.compact.first(5),
+            rows.map(&:organization_id).uniq.compact, rows.map(&:user_id).uniq.compact, rows.filter_map(&:subforem_id)
+          ]
+          expect(actual_agg).to eq(expected_agg), "aggregate iteration #{iteration}"
+
+          recent_sub = Array.new(rng.rand(0..15)) { rng.rand(1..12) }
+          followed_sub = Array.new(rng.rand(0..8)) { rng.rand(1..12) }
+          discoverable_sub = (1..12).to_a.sample(rng.rand(0..12), random: rng)
+          scores = Hash.new(0)
+          recent_sub.each { |id| scores[id] += 1 }
+          followed_sub.each { |id| scores[id] += 10 }
+          activity_ids = scores.keys.sort { |a, b| scores[b] <=> scores[a] }
+          expect(described_class.order_subforem_ids(recent_sub, followed_sub, discoverable_sub))
+            .to eq(activity_ids + (discoverable_sub - activity_ids)), "order_subforem_ids iteration #{iteration}"
+        end
+      end
+    end
+
+    describe ".build_activity_heatmap_payload (UserActivityHeatmapService#build_payload)" do
+      let(:user_stub) { Struct.new(:id).new(42) }
+
+      it "matches UserActivityHeatmapService#legacy_build_payload across Date/String keys and 1,000 random windows" do
+        service = UserActivityHeatmapService.new(user_stub, end_date: Date.new(2026, 3, 15), days: 30)
+        articles = { Date.new(2026, 3, 10) => 2, Date.new(2026, 3, 15) => 1 }
+        comments = { "2026-03-10" => 3, "2026-03-12" => 4 }
+        reactions = { Date.new(2026, 3, 15) => 5 }
+
+        allow(service).to receive_messages(
+          articles_by_day: articles, comments_by_day: comments, reactions_by_day: reactions,
+        )
+        expect(service.__send__(:build_payload))
+          .to eq(service.__send__(:legacy_build_payload, articles, comments, reactions))
+        expect(
+          described_class.build_activity_heatmap_payload("2026-03-01", "2026-03-05", { "March 1, 2026" => 1 }, {}, {}),
+        ).to be_nil
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          end_date = Date.new(2024, 1, 1) + rng.rand(0..900)
+          days = rng.rand(1..366)
+          start_date = end_date - (days - 1)
+          svc = UserActivityHeatmapService.new(user_stub, end_date: end_date, days: days)
+
+          art_map = Array.new(rng.rand(0..20)).to_h { [start_date + rng.rand(-1..days), rng.rand(1..10)] }
+          com_map = Array.new(rng.rand(0..20)).to_h { [start_date + rng.rand(-1..days), rng.rand(1..20)] }
+          react_map = Array.new(rng.rand(0..20)).to_h { [start_date + rng.rand(-1..days), rng.rand(1..30)] }
+
+          actual = described_class.build_activity_heatmap_payload(
+            start_date.iso8601, end_date.iso8601, art_map, com_map, react_map
+          )
+          expected = svc.__send__(:legacy_build_payload, art_map, com_map, react_map)
+          expect(actual).to eq(expected), "heatmap iteration #{iteration}"
+        end
+      end
+    end
+  end
 end

@@ -9,27 +9,65 @@ RSpec.describe "/admin" do
   end
 
   describe "Notices" do
-    it "does not show warning if deployed at is recent" do
-      allow(ForemInstance).to receive(:deployed_at).and_return(1.day.ago)
+    it "does not show notice if deployed at is recent" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(9.days.ago)
       get admin_path
 
-      expect(response.body).not_to include("If you stay out of date for too long")
+      expect(response.body).not_to include('data-testid="deployment-drift-notice"')
     end
 
-    it "shows warning notice if deployed at is over two weeks ago" do
-      allow(ForemInstance).to receive(:deployed_at).and_return(3.weeks.ago)
+    it "shows neutral notice if deployed at is over 10 days ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(11.days.ago)
       get admin_path
 
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
+      expect(response.body).to include("this deployment is starting to drift")
+      expect(response.body).not_to include("crayons-notice--warning")
+      expect(response.body).not_to include("crayons-notice--danger")
+    end
+
+    it "shows warning notice if deployed at is over three weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(4.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
       expect(response.body).to include("If you stay out of date for too long")
       expect(response.body).to include("crayons-notice--warning")
     end
 
-    it "shows danger notice if deployed at is over four weeks ago" do
-      allow(ForemInstance).to receive(:deployed_at).and_return(5.weeks.ago)
+    it "shows danger notice if deployed at is over six weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(7.weeks.ago)
       get admin_path
 
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
       expect(response.body).to include("If you stay out of date for too long")
       expect(response.body).to include("crayons-notice--danger")
+    end
+
+    it "shows major drift caution notice if deployed at is over 12 weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(13.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
+      expect(response.body).to include("Caution: Major deployment drift detected.")
+      expect(response.body).to include("as soon as possible")
+      expect(response.body).to include("crayons-notice--danger")
+    end
+
+    it "parses string ISO8601 timestamps from ForemInstance.deployed_at" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(4.weeks.ago.iso8601)
+      get admin_path
+
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
+      expect(response.body).to include("crayons-notice--warning")
+    end
+
+    it "renders the drift notice across other admin pages" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(4.weeks.ago)
+      get admin_config_path
+
+      expect(response.body).to include('data-testid="deployment-drift-notice"')
+      expect(response.body).to include("crayons-notice--warning")
     end
   end
 

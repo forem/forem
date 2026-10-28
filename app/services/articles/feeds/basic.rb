@@ -28,6 +28,13 @@ module Articles
         if (hidden_tags = @user.cached_antifollowed_tag_names).any?
           articles = articles.not_cached_tagged_with_any(hidden_tags)
         end
+
+        @article_score_applicator.rank_for_basic_feed(articles) || legacy_rank_articles(articles)
+      end
+
+      private
+
+      def legacy_rank_articles(articles)
         articles.sort_by.with_index do |article, index|
           tag_score = score_followed_tags(article)
           user_score = score_followed_user(article)
@@ -40,8 +47,6 @@ module Articles
           tag_score + org_score + user_score + ai_score - index
         end.reverse!
       end
-
-      private
 
       # Alias :feed to preserve past implementations, but favoring a
       # convergence of interface implementations.
