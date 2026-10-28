@@ -13,6 +13,11 @@ module Html
     include InlineSvg::ActionView::Helpers
     include ApplicationHelper
 
+    ALERT_TYPES = %w[note tip important warning caution].freeze
+    # The marker must be followed by whitespace or the end of the text node, so
+    # `[!NOTE]worthy` stays an ordinary blockquote.
+    ALERT_TOKEN = /\A\[!(#{ALERT_TYPES.join('|')})\](?=\s|\z)\s*/i
+
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
     END_RAW_TAG = "{----% endraw %----}".freeze
@@ -129,6 +134,31 @@ module Html
       self
     end
 
+    def transform_markdown_alerts
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.css("blockquote").each do |blockquote|
+        first = blockquote.element_children.first
+        next unless first&.name == "p"
+
+        leading = first.children.first
+        next unless leading&.text?
+
+        match = leading.content.match(ALERT_TOKEN)
+        next unless match
+
+        alert_type = match[1].downcase
+        strip_alert_token(first)
+
+        blockquote["data-alert"] = alert_type
+        blockquote.prepend_child(alert_label_node(doc, alert_type))
+      end
+
+      @html = doc.to_html
+
+      self
+    end
+
     def remove_empty_paragraphs
       return self if @html.blank? || !@html.match?(/<p/i)
 
@@ -226,6 +256,27 @@ module Html
 
     def img_of_size(source, width = 880, quality: "auto")
       Images::Optimizer.call(source, width: width, quality: quality).gsub(",", "%2C")
+    end
+
+    def strip_alert_token(paragraph)
+      text_node = paragraph.children.detect { |child| child.text? && child.content.match?(ALERT_TOKEN) }
+      return unless text_node
+
+      text_node.content = text_node.content.sub(ALERT_TOKEN, "")
+
+      # the newline after the token leaves a leading <br> behind
+      while (leading = paragraph.children.first) && blank?(leading)
+        leading.remove
+      end
+
+      paragraph.remove if all_children_are_blank?(paragraph)
+    end
+
+    def alert_label_node(doc, alert_type)
+      label = Nokogiri::XML::Node.new("p", doc)
+      label["data-alert-label"] = alert_type
+      label.content = I18n.t("services.html.parser.alerts.#{alert_type}")
+      label
     end
 
     def all_children_are_blank?(node)
