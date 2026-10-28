@@ -2,23 +2,23 @@ require "rails_helper"
 
 RSpec.describe "Leaderboards" do
   describe "GET /leaderboard" do
-    let!(:user_high) { create(:user, name: "Alice", username: "alice", badge_achievements_count: 5) }
-    let!(:user_low) { create(:user, name: "Bob", username: "bob", badge_achievements_count: 2) }
-    let!(:user_suspended) { create(:user, :suspended, name: "Charlie", username: "charlie", badge_achievements_count: 10) }
-    let!(:user_spam) { create(:user, :spam, name: "David", username: "david", badge_achievements_count: 12) }
+    let!(:user_high) { create_leaderboard_user(name: "Alice", username: "alice", badge_achievements_count: 5) }
+    let!(:user_low) { create_leaderboard_user(name: "Bob", username: "bob", badge_achievements_count: 2) }
 
-    it "renders the leaderboard page successfully" do
-      get "/leaderboard"
-      expect(response).to have_http_status(:ok)
+    def create_leaderboard_user(*traits, **attrs)
+      create(:user, :without_profile, *traits, profile_image: nil, **attrs)
     end
 
-    it "sets 1-minute edge cache headers" do
+    it "renders the leaderboard with 1-minute edge cache headers and descending badge order", :aggregate_failures do
       get "/leaderboard"
+
+      expect(response).to have_http_status(:ok)
       expect(response.headers["Cache-Control"]).to eq("public, no-cache")
       expect(response.headers["Surrogate-Control"]).to include("max-age=60")
+      expect(response.body.index(user_high.name)).to be < response.body.index(user_low.name)
     end
 
-    it "displays the user's recent badges" do
+    it "displays the user's recent badges", :aggregate_failures do
       badge = create(:badge, title: "Super Author", slug: "super-author")
       create(:badge_achievement, user: user_high, badge: badge)
 
@@ -27,7 +27,10 @@ RSpec.describe "Leaderboards" do
       expect(response.body).to include(CGI.escapeHTML(badge.badge_image_url))
     end
 
-    it "displays only registered, non-suspended, non-spam users ordered by badge achievements count" do
+    it "displays only registered, non-suspended, non-spam users", :aggregate_failures do
+      create_leaderboard_user(:suspended, name: "Charlie", username: "charlie", badge_achievements_count: 10)
+      create_leaderboard_user(:spam, name: "David", username: "david", badge_achievements_count: 12)
+
       get "/leaderboard"
 
       # Alice and Bob should be displayed
@@ -42,22 +45,22 @@ RSpec.describe "Leaderboards" do
       # Charlie and David should NOT be displayed as they are suspended/spam
       expect(response.body).not_to include("Charlie")
       expect(response.body).not_to include("@charlie")
- 
+
       expect(response.body).not_to include("David")
       expect(response.body).not_to include("@david")
     end
 
-    it "excludes users with 0 badge achievements" do
-      create(:user, name: "ZeroBadgeUser", username: "zerobadge", badge_achievements_count: 0)
+    it "excludes users with 0 badge achievements", :aggregate_failures do
+      create_leaderboard_user(name: "ZeroBadgeUser", username: "zerobadge", badge_achievements_count: 0)
 
       get "/leaderboard"
       expect(response.body).not_to include("ZeroBadgeUser")
       expect(response.body).not_to include("@zerobadge")
     end
 
-    it "excludes mascot and staff accounts" do
-      mascot = create(:user, name: "MascotUser", username: "mascot_user", badge_achievements_count: 8)
-      staff = create(:user, name: "StaffUser", username: "staff_user", badge_achievements_count: 7)
+    it "excludes mascot and staff accounts", :aggregate_failures do
+      mascot = create_leaderboard_user(name: "MascotUser", username: "mascot_user", badge_achievements_count: 8)
+      staff = create_leaderboard_user(name: "StaffUser", username: "staff_user", badge_achievements_count: 7)
 
       allow(Settings::General).to receive(:mascot_user_id).and_return(mascot.id)
       allow(Settings::Community).to receive(:staff_user_id).and_return(staff.id)
@@ -70,23 +73,25 @@ RSpec.describe "Leaderboards" do
       expect(response.body).not_to include("@staff_user")
     end
 
-    it "lists users in descending order of badge achievements count" do
-      get "/leaderboard"
-
-      # Since Alice has 5 badges and Bob has 2, Alice should appear before Bob
-      alice_position = response.body.index("Alice")
-      bob_position = response.body.index("Bob")
-
-      expect(alice_position).to be < bob_position
-    end
-
     it "limits the results to 100 users" do
-      # Create 105 more users
-      create_list(:user, 105, badge_achievements_count: 1)
+      now = Time.current
+      User.insert_all(
+        Array.new(105) do |i|
+          {
+            name: "Leaderboard User #{i}",
+            username: "leaderboard_user_#{i}",
+            email: "leaderboard_#{i}@example.com",
+            registered: true,
+            badge_achievements_count: 1,
+            created_at: now,
+            updated_at: now
+          }
+        end,
+      )
 
       get "/leaderboard"
       # There should be exactly 100 rows rendered
-      row_count = response.body.scan(/leaderboard-row/).length
+      row_count = response.body.scan("leaderboard-row").length
       expect(row_count).to eq(100)
     end
 
