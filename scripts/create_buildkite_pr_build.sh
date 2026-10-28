@@ -44,6 +44,31 @@ URI=https://api.github.com
 API_HEADER="Accept: application/vnd.github.v3+json"
 AUTH_HEADER="Authorization: token $GITHUB_TOKEN"
 
+CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
+
+COMMENT_BODY=""
+if [[ -n "${GITHUB_EVENT_PATH:-}" && -f "${GITHUB_EVENT_PATH}" ]]; then
+  COMMENT_BODY=$(jq -r ".comment.body // empty" "${GITHUB_EVENT_PATH}")
+fi
+
+if [[ "${FORCE_CONTAINER_BUILD:-}" != "true" && "${FORCE_CONTAINER_BUILD:-}" != "1" && "${COMMENT_BODY}" != *"/ci containers"* ]]; then
+  PULL_REQUEST_FILES_RESPONSE=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
+            "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}/files?per_page=100")
+
+  if echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -e 'type == "array"' >/dev/null 2>&1; then
+    CHANGED_FILES=$(echo "${PULL_REQUEST_FILES_RESPONSE}" | jq -r ".[].filename")
+    MATCHING_FILES=$(echo "${CHANGED_FILES}" | grep -E "${CONTAINER_BUILD_PATHS_REGEX}" || true)
+
+    if [[ -z "${MATCHING_FILES}" ]]; then
+      echo "No container-relevant files changed in PR #${PULL_REQUEST_ID}; skipping Buildkite container build."
+      exit 0
+    fi
+
+    echo "Container-relevant files changed in PR #${PULL_REQUEST_ID}:"
+    echo "${MATCHING_FILES}"
+  fi
+fi
+
 PULL_REQUEST_INFO=$(curl -X GET -s -H "${AUTH_HEADER}" -H "${API_HEADER}" \
           "${URI}/repos/${GITHUB_REPOSITORY}/pulls/${PULL_REQUEST_ID}")
 
