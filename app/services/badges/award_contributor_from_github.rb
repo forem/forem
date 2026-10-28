@@ -1,8 +1,8 @@
 module Badges
   class AwardContributorFromGithub
     # Raised internally when a PR search still hits the rate limit after
-    # exhausting its retries. Signals the batch to stop and resume next run
-    # rather than recording a zero PR count and advancing past the identity.
+    # exhausting its retries. Signals the run to stop; remaining candidates are
+    # rederived from GitHub and picked up on the next scheduled run.
     class SearchBudgetExhausted < StandardError; end
 
     BADGE_SLUGS = {
@@ -13,10 +13,18 @@ module Badges
       "32x-commit-club": 32
     }.freeze
 
-    # GitHub's authenticated Search API allows 30 requests per minute. Space the
-    # per-identity PR searches out so a run over many identities stays within
-    # that limit instead of bursting and tripping the rate limiter.
-    SEARCH_REQUESTS_PER_MINUTE = 30
+    # Highest contribution count any badge requires. Once a user's commit count
+    # reaches this, a merged-PR lookup can never raise their score into a higher
+    # tier, so the paced Search API call is skipped for them.
+    MAX_BADGE_THRESHOLD = BADGE_SLUGS.values.max
+
+    # This service authenticates with OAuth App client_id/client_secret (no user
+    # access token; see #search_client), which GitHub subjects to the lower
+    # unauthenticated-style Search API limit of 10 requests per minute rather
+    # than the 30/min allowed for user-authenticated requests. Pace per-identity
+    # PR searches to that 10/min ceiling so a run over many identities does not
+    # burst past the limit and trip the rate limiter.
+    SEARCH_REQUESTS_PER_MINUTE = 10
     SEARCH_MIN_INTERVAL = (60.0 / SEARCH_REQUESTS_PER_MINUTE).seconds.freeze
     # When a search is still rate limited, wait for the next limit window before
     # retrying rather than giving up and leaving the identity with a zero count.
@@ -26,12 +34,31 @@ module Badges
     SEARCH_SERVER_ERROR_WAIT = 5.seconds.freeze
     SEARCH_MAX_ATTEMPTS = 3
 
-    # Upper bound on how many GitHub identities a single run processes. The job
-    # runs hourly; capping the batch keeps one run from issuing an unbounded
-    # number of paced Search API calls (which, at ~2s each, would otherwise let a
-    # large identity table push a run past the next scheduled run). The run
-    # resumes from a persisted cursor so coverage still rotates through everyone.
-    IDENTITY_BATCH_SIZE = 500
+    # How far back to look for merged PRs when gathering candidate contributor
+    # uids. The job runs hourly; a window comfortably wider than the cadence
+    # tolerates missed or delayed runs without dropping recent contributors.
+    RECENT_MERGED_PR_WINDOW = 14.days
+    # Cap the single candidate-gathering Search page. GitHub's Search API allows
+    # up to 100 results per page; one page of recent merged PRs is plenty to
+    # surface active contributors without paginating across many requests.
+    SEARCH_PR_AUTHOR_PAGE_SIZE = 100
+
+    # Rate limiting is classified first by HTTP status (429), then by error type:
+    # the client maps Octokit's TooManyRequests/TooManyLoginAttempts to the
+    # matching Github::Errors classes. GitHub's secondary rate limit is returned
+    # as a 403 that Octokit surfaces as a generic Forbidden with no distinct type,
+    # so for that case only we fall back to matching the documented message text.
+    RATE_LIMIT_ERROR_TYPES = [
+      Github::Errors::TooManyRequests,
+      Github::Errors::TooManyLoginAttempts,
+    ].freeze
+    SECONDARY_RATE_LIMIT_MESSAGE = /secondary rate limit|abuse detection/i
+
+    # GitHub usernames: 1-39 chars, alphanumeric or single hyphens (not leading,
+    # trailing, or consecutive). Validating before building the Search query
+    # prevents a blank or malformed nickname from producing an empty `author:`
+    # qualifier, which GitHub would ignore and match every merged PR in the repo.
+    GITHUB_USERNAME_REGEX = /\A[a-z\d](?:[a-z\d]|-(?=[a-z\d])){0,38}\z/i
 
     REPOSITORIES = [
       "forem/forem"
@@ -75,62 +102,73 @@ module Badges
     end
 
     def award_multi_commit_contributors(repo)
-      contributors = Github::OauthClient.new.contributors(repo)
-      # Map uid -> contribution count for O(1) lookup
-      contributions_map = contributors.each_with_object({}) do |c, hash|
+      # Map uid (as String) -> commit contribution count for O(1) lookup.
+      contributions_map = Github::OauthClient.new.contributors(repo).each_with_object({}) do |c, hash|
         hash[c.id.to_s] = c.contributions
       end
 
-      # Iterate over GitHub identities rather than only those present in the
-      # contributors response. GitHub's contributors endpoint lists commit authors
-      # only, so an identity with merged PRs but no attributed commits would never
-      # appear here and its PR count (the fallback below) would never be checked.
-      #
-      # Process at most IDENTITY_BATCH_SIZE identities per run, resuming after the
-      # persisted cursor, so a single hourly run cannot issue an unbounded number
-      # of paced Search API calls. The cursor rotates through the whole table.
-      process_identity_batch(repo, contributions_map)
-    end
+      # Resolve only the GitHub identities that could plausibly earn a badge for
+      # this repo rather than scanning the entire Identity.github table (1M+ rows
+      # in production, almost all with zero PRs here). Candidates come from GitHub
+      # itself: commit contributors unioned with the authors of recently merged
+      # PRs. The latter covers contributors with merged PRs but no attributed
+      # commits, who would otherwise be missed by the contributors endpoint.
+      candidate_uids = contributions_map.keys.to_set
+      candidate_uids.merge(recent_merged_pr_author_uids(repo))
 
-    def process_identity_batch(repo, contributions_map)
-      cursor = Settings::General.github_contributor_badge_last_identity_id.to_i
-      identities = Identity.github.where("id > ?", cursor).order(:id).limit(IDENTITY_BATCH_SIZE).to_a
-
-      # Reached the end of the table: wrap back to the start on the next run.
-      if identities.empty? && cursor.positive?
-        Settings::General.github_contributor_badge_last_identity_id = 0
-        return
+      Identity.github.where(uid: candidate_uids.to_a).find_each do |identity|
+        process_candidate_identity(repo, identity, contributions_map)
       end
-
-      last_completed_id = cursor
-      identities.each do |identity|
-        commits_count = contributions_map[identity.uid] || 0
-
-        # Use Search API to count merged PRs as a fallback/complement to commit counts
-        # this helps contributors who may have attribution issues with commit counts
-        github_user = github_nickname(identity)
-        pr_count = github_user ? merged_pr_count(repo, github_user) : 0
-
-        contribution_score = [commits_count, pr_count].max
-        create_badges_for_user(identity.user_id, contribution_score)
-        last_completed_id = identity.id
-      end
-
-      advance_cursor(identities, last_completed_id)
     rescue SearchBudgetExhausted => e
-      # Stop the batch: the Search API budget is spent for this run. Leave the
-      # cursor just before the first unresolved identity so the next hourly run
-      # resumes there instead of skipping it with a zero PR count.
-      Rails.logger.warn("[Badges::AwardContributorFromGithub] stopping batch early: #{e.message}")
-      Settings::General.github_contributor_badge_last_identity_id = last_completed_id
+      # Out of Search API budget for this run. Remaining candidates are picked up
+      # on the next scheduled run; nothing is skipped permanently since the
+      # candidate set is rederived from GitHub each time.
+      Rails.logger.warn("[Badges::AwardContributorFromGithub] stopping run early: #{e.message}")
     end
 
-    # Persist how far this run got. A full batch means more identities remain, so
-    # resume after the last processed id; a short batch means we hit the end, so
-    # reset to 0 to start over next run.
-    def advance_cursor(identities, last_completed_id)
-      next_cursor = identities.size < IDENTITY_BATCH_SIZE ? 0 : last_completed_id
-      Settings::General.github_contributor_badge_last_identity_id = next_cursor
+    def process_candidate_identity(repo, identity, contributions_map)
+      commits_count = contributions_map[identity.uid] || 0
+
+      # Short-circuit the paced Search API call when it cannot change the outcome:
+      # the commit count already clears the top badge threshold, or the user
+      # already holds every badge we could award. This keeps the expensive,
+      # rate-limited search to the handful of users for whom it actually matters.
+      pr_count =
+        if search_pr_count_needed?(identity.user_id, commits_count)
+          github_user = github_nickname(identity)
+          github_user ? merged_pr_count(repo, github_user) : 0
+        else
+          0
+        end
+
+      create_badges_for_user(identity.user_id, [commits_count, pr_count].max)
+    end
+
+    # True only when a merged-PR lookup could still award a badge the user does
+    # not already have: the commit count falls short of the highest threshold and
+    # at least one badge slug remains unawarded for this user.
+    def search_pr_count_needed?(user_id, commits_count)
+      return false if commits_count >= MAX_BADGE_THRESHOLD
+
+      awarded_badge_ids = BadgeAchievement.where(user_id: user_id, badge_id: badge_slugs_with_id.values).pluck(:badge_id)
+      awarded_badge_ids.size < badge_slugs_with_id.size
+    end
+
+    # Collects uids of users who authored recently merged PRs in the repo, via a
+    # single paced Search API page (capped at SEARCH_PR_AUTHOR_PAGE_SIZE). Returns
+    # a Set of uid Strings. Failures degrade gracefully to an empty set so commit
+    # contributors are still processed.
+    def recent_merged_pr_author_uids(repo)
+      since = RECENT_MERGED_PR_WINDOW.ago.utc.to_date.iso8601
+      query = "repo:#{repo} is:pr is:merged merged:>=#{since}"
+      throttle_search
+      results = search_client.search_issues(query, per_page: SEARCH_PR_AUTHOR_PAGE_SIZE)
+      results.items.filter_map { |item| item.user&.id&.to_s }.to_set
+    rescue Github::Errors::Error => e
+      Rails.logger.warn(
+        "[Badges::AwardContributorFromGithub] could not list recent merged PR authors for #{repo}: #{e.message}",
+      )
+      Set.new
     end
 
     # Counts merged PRs authored by github_user via the Search API, pacing calls
@@ -141,43 +179,68 @@ module Badges
 
       SEARCH_MAX_ATTEMPTS.times do |attempt|
         last_attempt = attempt == SEARCH_MAX_ATTEMPTS - 1
-        throttle_search
-        search_results = Github::OauthClient.new.search_issues(query)
-        return search_results.total_count
-      rescue Github::Errors::Error => e
-        if search_rate_limited?(e)
-          # Out of retries: stop the whole batch rather than sleeping uselessly
-          # on the final attempt and recording a zero PR count for this identity.
-          if last_attempt
-            raise SearchBudgetExhausted,
-                  "rate limited for #{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts"
-          end
-
-          Rails.logger.warn(
-            "[Badges::AwardContributorFromGithub] PR search rate limited for " \
-            "#{github_user}, waiting #{SEARCH_RATE_LIMIT_WAIT.to_i}s",
-          )
-          sleep(SEARCH_RATE_LIMIT_WAIT)
-          @last_search_at = nil
-          next
-        elsif e.is_a?(Github::Errors::ServerError) && !last_attempt
-          Rails.logger.warn(
-            "[Badges::AwardContributorFromGithub] PR search server error for " \
-            "#{github_user}, retrying in #{SEARCH_SERVER_ERROR_WAIT.to_i}s: #{e.message}",
-          )
-          sleep(SEARCH_SERVER_ERROR_WAIT)
-          @last_search_at = nil
-          next
-        end
-
-        Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
-        return 0
+        count = attempt_merged_pr_count(query, github_user, last_attempt)
+        return count if count
       end
 
       0
     end
 
-    # Space successive Search API calls at least SEARCH_MIN_INTERVAL apart.
+    # Performs a single paced Search API call. Returns the merged PR count on
+    # success, or nil when a retryable error occurred and the loop should retry.
+    def attempt_merged_pr_count(query, github_user, last_attempt)
+      throttle_search
+      # per_page: 1 keeps the single fetched page minimal since only total_count
+      # is read; auto-pagination is disabled on the memoized client (see
+      # #search_client) so Octokit does not follow rels[:next] across every page.
+      search_client.search_issues(query, per_page: 1).total_count
+    rescue Github::Errors::Error => e
+      handle_search_error(e, github_user, last_attempt) == :retry ? nil : 0
+    end
+
+    # Memoized client dedicated to the Search API. Octokit.auto_paginate is
+    # enabled globally (config/initializers/octokit.rb), which would make
+    # search_issues follow rels[:next] across up to 10 pages and concatenate all
+    # items in memory even though we only need total_count. Disable it on this
+    # instance and reuse the single client across all identities/attempts rather
+    # than instantiating a fresh Octokit::Client on every call.
+    def search_client
+      @search_client ||= Github::OauthClient.new.tap do |client|
+        client.auto_paginate = false
+      end
+    end
+
+    def handle_search_error(e, github_user, last_attempt)
+      if search_rate_limited?(e)
+        # Out of retries: stop the whole batch rather than sleeping uselessly
+        # on the final attempt and recording a zero PR count for this identity.
+        if last_attempt
+          raise SearchBudgetExhausted,
+                "rate limited for #{github_user} after #{SEARCH_MAX_ATTEMPTS} attempts"
+        end
+
+        Rails.logger.warn(
+          "[Badges::AwardContributorFromGithub] PR search rate limited for " \
+          "#{github_user}, waiting #{SEARCH_RATE_LIMIT_WAIT.to_i}s",
+        )
+        sleep(SEARCH_RATE_LIMIT_WAIT)
+        @last_search_at = nil
+        # Returning :retry to indicate we should continue the loop
+        return :retry
+      elsif e.is_a?(Github::Errors::ServerError) && !last_attempt
+        Rails.logger.warn(
+          "[Badges::AwardContributorFromGithub] PR search server error for " \
+          "#{github_user}, retrying in #{SEARCH_SERVER_ERROR_WAIT.to_i}s: #{e.message}",
+        )
+        sleep(SEARCH_SERVER_ERROR_WAIT)
+        @last_search_at = nil
+        return :retry
+      end
+
+      Rails.logger.error("[Badges::AwardContributorFromGithub] PR search failed for #{github_user}: #{e.message}")
+      0
+    end
+
     def throttle_search
       now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       if @last_search_at
@@ -187,17 +250,6 @@ module Badges
       end
       @last_search_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     end
-
-    # Rate limiting is classified first by HTTP status (429), then by error type:
-    # the client maps Octokit's TooManyRequests/TooManyLoginAttempts to the
-    # matching Github::Errors classes. GitHub's secondary rate limit is returned
-    # as a 403 that Octokit surfaces as a generic Forbidden with no distinct type,
-    # so for that case only we fall back to matching the documented message text.
-    RATE_LIMIT_ERROR_TYPES = [
-      Github::Errors::TooManyRequests,
-      Github::Errors::TooManyLoginAttempts,
-    ].freeze
-    SECONDARY_RATE_LIMIT_MESSAGE = /secondary rate limit|abuse detection/i
 
     def search_rate_limited?(error)
       status = error.respond_to?(:response_status) ? error.response_status : nil
@@ -221,11 +273,19 @@ module Badges
         end
       return if info.blank?
 
-      if info.respond_to?(:nickname)
-        info.nickname
-      elsif info.respond_to?(:[])
-        info["nickname"] || info[:nickname]
-      end
+      nickname =
+        if info.respond_to?(:nickname)
+          info.nickname
+        elsif info.respond_to?(:[])
+          info["nickname"] || info[:nickname]
+        end
+
+      # Reject blank or malformed nicknames so we never build a query with an
+      # empty `author:` qualifier (which would match every merged PR in the repo).
+      nickname = nickname.to_s.strip.presence
+      return unless nickname&.match?(GITHUB_USERNAME_REGEX)
+
+      nickname
     end
 
     def create_badges_for_user(user_id, commits_count)

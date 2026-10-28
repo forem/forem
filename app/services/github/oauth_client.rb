@@ -107,11 +107,9 @@ module Github
     # classes (e.g. the ArgumentError-based InvalidRepository) keep their own
     # initializer signature.
     def raise_github_error(error_class, message, status)
-      if error_class <= Github::Errors::Error
-        raise error_class.new(message, response_status: status)
-      else
-        raise error_class, message
-      end
+      raise error_class.new(message, response_status: status) if error_class <= Github::Errors::Error
+
+      raise error_class, message
     end
 
     def target

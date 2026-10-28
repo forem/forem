@@ -198,12 +198,6 @@ module Settings
             default: "This is a premium feature. Contact our partnerships team to learn more."
     setting :org_features_cta_url, type: :string
 
-    # Resumable cursor for Badges::AwardContributorFromGithub. The hourly run
-    # processes a bounded batch of GitHub identities starting after this id and
-    # persists the last id it handled, so successive runs continue where the
-    # previous one stopped instead of rescanning every identity each hour.
-    setting :github_contributor_badge_last_identity_id, type: :integer, default: 0
-
     def self.algolia_search_enabled?
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end
