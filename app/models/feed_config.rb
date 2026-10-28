@@ -79,7 +79,7 @@ class FeedConfig < ApplicationRecord
     return false if recent_views.blank?
 
     now = Time.current
-    activity_days = if now.utc_offset.zero?
+    activity_days = if Time.zone&.tzinfo&.name == "Etc/UTC"
                       ForemNative.activity_distinct_days_since(recent_views, now.tv_sec - (7 * 86_400), now.tv_nsec)
                     else
                       ForemNative.activity_distinct_days_since(recent_views, ACTIVITY_LOOKBACK.ago)
@@ -342,7 +342,7 @@ class FeedConfig < ApplicationRecord
     now = Time.current
     now_sec = now.tv_sec
     now_nanos = now.tv_nsec
-    utc_zone = now.utc_offset.zero?
+    utc_zone = Time.zone&.tzinfo&.name == "Etc/UTC"
     missing_second_view = activity_store&.recently_viewed_articles&.second.nil?
     default_second_sec = if !utc_zone && lookback_window_weight.positive? && missing_second_view
                            4.days.ago.tv_sec

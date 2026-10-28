@@ -69,7 +69,8 @@ class Reaction < ApplicationRecord
   after_commit :check_for_reaction_ring, on: :create
   after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
-  after_commit :enqueue_user_reading_list_activity_update, on: %i[create destroy update], if: :reading_list_article_reaction?
+  after_commit :enqueue_user_reading_list_activity_update,
+               on: %i[create destroy update], if: :reading_list_article_reaction?
 
   class << self
     def count_for_article(id)
@@ -122,7 +123,8 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      article_vomits.where(status: "confirmed").where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold
+      recent_article_ids = user.articles.where("published_at > ?", 1.month.ago).ids
+      article_vomits.where(status: "confirmed", reactable_id: recent_article_ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -134,7 +136,8 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      comment_vomits.where(status: "confirmed").where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold
+      recent_comment_ids = user.comments.where("created_at > ?", 1.month.ago).ids
+      comment_vomits.where(status: "confirmed", reactable_id: recent_comment_ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -161,12 +164,12 @@ class Reaction < ApplicationRecord
     end
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["category", "created_at", "id", "id_value", "points", "reactable_id", "reactable_type", "status", "updated_at", "user_id"]
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[category created_at id id_value points reactable_id reactable_type status updated_at user_id]
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["user", "reactable"]
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user reactable]
   end
 
   # no need to send notification if:
@@ -347,10 +350,11 @@ class Reaction < ApplicationRecord
   def check_for_reaction_ring
     # Only check for public reactions on articles
     return unless visible_to_public? && reactable_type == "Article"
-    
+
     # Only check if user has enough reactions to potentially be in a ring
-    return unless user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count >= 50
-    
+    recent_reactions_count = user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count
+    return unless recent_reactions_count >= Spam::ReactionRingDetector::MIN_REACTIONS_THRESHOLD
+
     # Schedule ring detection asynchronously
     Spam::ReactionRingDetectionWorker.perform_async(user_id)
   end

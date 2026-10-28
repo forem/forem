@@ -44,9 +44,13 @@
             <% end %>
           </div>
 
-          <div class="mt-4 flex items-center gap-2">
+          <div class="mt-4 flex flex-wrap items-center gap-2">
             <span class="fs-s color-base-60 font-bold">Challenge Status:</span>
-            <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
+            <% now = Time.current %>
+            <% if @event.start_time > now %>
+              <span class="inline-block shrink-0 px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;"><%= t("views.events.challenge.upcoming") %></span>
+              <span class="fs-s color-base-60"><%= t("views.events.challenge.starts_on", date: l(@event.start_time.to_date, format: :long)) %></span>
+            <% elsif @event.end_time >= now %>
               <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
             <% else %>
               <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;">ENDED</span>

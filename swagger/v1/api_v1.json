@@ -5306,6 +5306,109 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "Create a tag",
+        "tags": [
+          "tags"
+        ],
+        "description": "Create a tag before it appears on an article.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful creation writes an admin API audit entry.\nAccepts a required alphanumeric name of at most 30 characters, plus the optional fields accepted by tag update.\nReturns the same fields as tag update.  A duplicate name returns 422 with an error and the existing tag's id, without changing that tag.",
+        "operationId": "createTag",
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "The created tag",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExtendedTag"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Invalid tag or duplicate name",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "status"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer",
+                      "example": 422
+                    },
+                    "id": {
+                      "type": "integer",
+                      "description": "Existing tag id, present only for duplicate names"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 30,
+                    "example": "javascript"
+                  },
+                  "pretty_name": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "short_summary": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "wiki_body_markdown": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "supported": {
+                    "type": "boolean"
+                  },
+                  "bg_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#1E90FF"
+                  },
+                  "text_color_hex": {
+                    "type": "string",
+                    "nullable": true,
+                    "example": "#FFFFFF"
+                  },
+                  "context_note_instructions": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "Tag name and optional display fields"
+        }
       }
     },
     "/api/tags/supported": {
