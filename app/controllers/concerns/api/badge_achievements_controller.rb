@@ -18,7 +18,8 @@ module Api
       if achievement.save
         payload = {
           "action" => "api_badge_achievement_create", "badge_achievement_id" => achievement.id,
-          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id
+          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id,
+          "target_user_id" => achievement.user_id
         }
         Audit::Logger.log(:admin_api, @user, payload)
         render json: achievement, status: :created
@@ -35,7 +36,8 @@ module Api
       if achievement.destroyed?
         payload = {
           "action" => "api_badge_achievement_destroy", "badge_achievement_id" => achievement.id,
-          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id
+          "badge_id" => achievement.badge_id, "user_id" => achievement.user_id,
+          "target_user_id" => achievement.user_id
         }
         Audit::Logger.log(:admin_api, @user, payload)
       end

@@ -45,18 +45,23 @@ RSpec.describe "Badge API audit logs" do
              headers: headers
 
         expect(response).to have_http_status(:created)
+        expect(AuditLog.on_user(recipient)).to include(AuditLog.last)
         expect_audit("api_badge_achievement_create", "badge_achievement_id" => response.parsed_body["id"],
-                                                     "badge_id" => badge.id, "user_id" => recipient.id)
+                                                     "badge_id" => badge.id, "user_id" => recipient.id,
+                                                     "target_user_id" => recipient.id)
       end
 
       it "logs an achievement deletion with the badge and recipient ids" do
+        recipient = achievement.user
         delete api_badge_achievement_path(achievement.id), headers: headers
 
         expect(response).to have_http_status(:no_content)
         expect(BadgeAchievement.exists?(achievement.id)).to be(false)
+        expect(AuditLog.on_user(recipient)).to include(AuditLog.last)
         expect_audit("api_badge_achievement_destroy", "badge_achievement_id" => achievement.id,
                                                       "badge_id" => achievement.badge_id,
-                                                      "user_id" => achievement.user_id)
+                                                      "user_id" => achievement.user_id,
+                                                      "target_user_id" => recipient.id)
       end
 
       it "does not log an invalid badge creation" do
