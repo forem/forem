@@ -361,7 +361,10 @@ body {
 
     &[data-alert] {
       border-left-color: var(--alert-accent, var(--base-20));
-      background: var(--card-color-secondary);
+      background: var(--card-secondary-bg);
+      // Subtle accent tint so the callout stays visible when the card and
+      // secondary backgrounds match (e.g. dark theme). Falls back to the line above.
+      background: color-mix(in srgb, var(--alert-accent, var(--base-20)) 10%, var(--card-secondary-bg));
       border-radius: 0 var(--radius) var(--radius) 0;
       padding: calc(var(--content-rhythm) * 0.6) var(--content-rhythm);
 
