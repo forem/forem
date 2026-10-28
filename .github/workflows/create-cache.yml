@@ -22,9 +22,11 @@ jobs:
             /*
             !vendor/cache/*.gem
           sparse-checkout-cone-mode: false
-      - name: Read Ruby version
+      - name: Read Ruby version and lockfile hash
         id: ruby-ver
-        run: echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+          echo "lockfile_hash=$(sha256sum Gemfile.lock | awk '{print $1}')" >> "$GITHUB_OUTPUT"
       - name: Check pre-compiled assets cache
         uses: actions/cache/restore@v5
         id: assetscache-lookup
@@ -41,7 +43,7 @@ jobs:
         with:
           lookup-only: true
           path: vendor/bundle
-          key: setup-ruby-bundler-cache-v6-ubuntu-24.04-x64-ruby-${{ steps.ruby-ver.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ hashFiles('Gemfile.lock') }}
+          key: setup-ruby-bundler-cache-v6-ubuntu-24.04-x64-ruby-${{ steps.ruby-ver.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ steps.ruby-ver.outputs.lockfile_hash }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache

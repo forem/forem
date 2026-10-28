@@ -41,6 +41,7 @@ jobs:
         id: prep
         run: |
           echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+          echo "lockfile_hash=$(sha256sum Gemfile.lock | awk '{print $1}')" >> "$GITHUB_OUTPUT"
           mkdir -p .ci-debs
           (cd .ci-debs && apt-get download imagemagick-6.q16 2>/dev/null || true)
           tar --exclude='./.git' \
@@ -76,7 +77,7 @@ jobs:
         with:
           lookup-only: true
           path: vendor/bundle
-          key: setup-ruby-bundler-cache-v6-ubuntu-24.04-x64-ruby-${{ steps.prep.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ hashFiles('Gemfile.lock') }}
+          key: setup-ruby-bundler-cache-v6-ubuntu-24.04-x64-ruby-${{ steps.prep.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ steps.prep.outputs.lockfile_hash }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
