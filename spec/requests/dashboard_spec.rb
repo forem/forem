@@ -268,7 +268,7 @@ RSpec.describe "Dashboards" do
           expect(Nokogiri::HTML(response.body).at_css("main#main-content a[href='/new']")).to be_nil
         end
 
-        it "still forbids creating or editing posts", :aggregate_failures do
+        it "still forbids creating, editing and deleting posts", :aggregate_failures do
           get "/new"
           expect(response).to have_http_status(:forbidden)
 
@@ -276,6 +276,12 @@ RSpec.describe "Dashboards" do
           expect(response).to have_http_status(:forbidden)
 
           get "#{article.path}/manage"
+          expect(response).to have_http_status(:forbidden)
+
+          get "#{article.path}/delete_confirm"
+          expect(response).to have_http_status(:forbidden)
+
+          expect { delete article_path(article.id) }.not_to change(Article, :count)
           expect(response).to have_http_status(:forbidden)
 
           expect do
