@@ -780,6 +780,60 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
         feed_config.semantic_candidate_limit = 2000
         expect(custom_page_feed.__send__(:semantic_candidate_limit)).to eq(FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT)
+
+        page_two_large_feed = described_class.new(
+          user: user,
+          number_of_articles: 100,
+          page: 2,
+          feed_config: feed_config,
+        )
+        feed_config.semantic_candidate_limit = 100
+        expect(page_two_large_feed.__send__(:semantic_candidate_limit)).to eq(100)
+      end
+
+      it "keeps candidate windows disjoint across pages so no candidate is skipped or duplicated" do
+        # Create 3 additional articles so we have 6 eligible articles total:
+        # base scores: [100, 50, 40, 30, 20, 10]
+        article_40 = create(:article, published: true, score: 40)
+        article_40.update_column(:published_at, Time.current - 1.day)
+        article_40.update_column(:semantic_embedding, orthogonal_embedding)
+
+        article_30 = create(:article, published: true, score: 30)
+        article_30.update_column(:published_at, Time.current - 1.day)
+        # Give the 4th base-score article (in window 2 when window_size=3) a huge semantic boost
+        # so its computed_score (30 + 100 = 130) exceeds window-1 articles (100, 40)
+        article_30.update_column(:semantic_embedding, aligned_embedding)
+
+        article_20 = create(:article, published: true, score: 20)
+        article_20.update_column(:published_at, Time.current - 1.day)
+        article_20.update_column(:semantic_embedding, orthogonal_embedding)
+
+        allow(feed_config).to receive(:effective_semantic_candidate_limit).and_return(3)
+
+        # 1) Page size == window size (3): page 1 covers window 0, page 2 covers window 1
+        page1_feed = described_class.new(user: user, number_of_articles: 3, page: 1, feed_config: feed_config)
+        page2_feed = described_class.new(user: user, number_of_articles: 3, page: 2, feed_config: feed_config)
+        allow(page1_feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+        allow(page2_feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+
+        page1_ids = page1_feed.default_home_feed.map(&:id)
+        page2_ids = page2_feed.default_home_feed.map(&:id)
+
+        # Window 0 ([100, 50, 40]) ranked by computed_score -> [50 (+100=150), 100 (+0=100), 40 (+0=40)]
+        expect(page1_ids).to eq([medium_score_article.id, high_score_article.id, article_40.id])
+        # Window 1 ([30, 20, 10]) ranked by computed_score -> [30 (+100=130), 20 (+0=20), 10 (+0=10)]
+        # article_30 is NOT skipped and article_40 is NOT duplicated on page 2
+        expect(page2_ids).to eq([article_30.id, article_20.id, low_score_article.id])
+        expect(page1_ids & page2_ids).to be_empty
+
+        # 2) Page size straddling the window boundary (page_size=2 across window_size=3)
+        straddle_pages = (1..3).flat_map do |page_num|
+          paged = described_class.new(user: user, number_of_articles: 2, page: page_num, feed_config: feed_config)
+          allow(paged).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+          paged.default_home_feed.map(&:id)
+        end
+
+        expect(straddle_pages).to eq(page1_ids + page2_ids)
       end
 
       it "ignores semantic_candidate_limit completely when semantic_similarity_weight is 0.0" do
