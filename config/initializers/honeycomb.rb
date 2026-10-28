@@ -47,11 +47,13 @@ if honeycomb_api_key
     end
   end
 
-  Rails.application.config.middleware.insert_after(
-    ActionDispatch::ShowExceptions,
-    Honeycomb::Rails::Middleware,
-    client: Honeycomb.client,
-  )
+  if defined?(Honeycomb::Rails::Middleware) && !ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
+    Rails.application.config.middleware.insert_after(
+      ActionDispatch::ShowExceptions,
+      Honeycomb::Rails::Middleware,
+      client: Honeycomb.client,
+    )
+  end
 else
   module Honeycomb
     @client = nil

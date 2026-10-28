@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Honeycomb initializer" do # rubocop:disable RSpec/DescribeClass
   let(:initializer_path) { Rails.root.join("config/initializers/honeycomb.rb") }
+  let!(:original_client) { Honeycomb.instance_variable_get(:@client) }
 
   before do
     allow(ApplicationConfig).to receive(:[]).and_call_original
@@ -11,6 +12,7 @@ RSpec.describe "Honeycomb initializer" do # rubocop:disable RSpec/DescribeClass
   after do
     allow(ApplicationConfig).to receive(:[]).with("HONEYCOMB_API_KEY").and_return(nil)
     load initializer_path
+    Honeycomb.instance_variable_set(:@client, original_client)
   end
 
   context "when HONEYCOMB_API_KEY is unset" do
@@ -53,6 +55,26 @@ RSpec.describe "Honeycomb initializer" do # rubocop:disable RSpec/DescribeClass
         Honeycomb::Rails::Middleware,
         client: client_double,
       )
+    end
+
+    context "when HONEYCOMB_DISABLE_AUTOCONFIGURE is set" do
+      before do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("HONEYCOMB_DISABLE_AUTOCONFIGURE").and_return("true")
+      end
+
+      it "configures the background-work dataset and skips mounting Honeycomb::Rails::Middleware" do
+        hide_const("Honeycomb::Rails")
+        config_spy = Honeycomb::Configuration.new
+        allow(Honeycomb).to receive(:configure).and_yield(config_spy)
+
+        expect { load initializer_path }.not_to raise_error
+
+        expect(Honeycomb).to have_received(:configure)
+        expect(config_spy.write_key).to eq("hc-api-key")
+        expect(config_spy.notification_events).to be_empty
+        expect(Rails.application.config.middleware).not_to have_received(:insert_after)
+      end
     end
   end
 end

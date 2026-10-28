@@ -20,6 +20,8 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
     }
   end
 
+  let!(:original_client) { Honeycomb.instance_variable_get(:@client) }
+
   before do
     require "honeycomb-beeline"
     Honeycomb.configure do |config|
@@ -32,6 +34,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
 
   after do
     load Rails.root.join("config/initializers/honeycomb.rb")
+    Honeycomb.instance_variable_set(:@client, original_client)
   end
 
   it "sends an event with expected keys" do
