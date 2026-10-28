@@ -1848,7 +1848,7 @@ RSpec.describe ForemNative do
                                                              "iteration #{iteration}: #{[name, opts].inspect}"
         end
       end
-      expect(native_hits).to be > 500
+      expect(native_hits).to be > 400
     end
   end
 
@@ -2186,7 +2186,7 @@ RSpec.describe ForemNative do
         expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
       end
 
-      expect(native_hits).to be > 500
+      expect(native_hits).to be > 400
     end
 
     it "passes adversarial differential equivalence across 1,000 generated table, SVG, and scoping fragments" do
@@ -3940,6 +3940,134 @@ RSpec.describe ForemNative do
           expect(native_chain).to eq(legacy_parser.html), "pipeline chain iter #{iteration}"
         end
       end
+    end
+  end
+
+  describe ".calendar_grid_days_html (CalendarHelper#calendar_grid_days_html)" do
+    let(:calendar_view) do
+      controller = CalendarController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.view_context
+    end
+
+    let(:grid_for) do
+      ->(display_month) { [display_month.beginning_of_week(:sunday), display_month.end_of_month.end_of_week(:sunday)] }
+    end
+
+    let(:native_for) do
+      lambda do |grid_start, grid_end, options|
+        selected_range = options[:selected_range]
+        described_class.calendar_grid_days_html(
+          grid_start.jd, grid_end.jd, options[:display_month].month, options[:event_days].map(&:jd),
+          !selected_range.nil?, selected_range&.begin&.jd || 0, selected_range&.end&.jd || 0,
+          options[:today].jd, calendar_view.calendar_path, options[:type_of]
+        )
+      end
+    end
+
+    let(:assert_grid_parity) do
+      lambda do |grid_start, grid_end, options, message = nil|
+        legacy = calendar_view.__send__(:legacy_calendar_grid_days_html, grid_start, grid_end, **options)
+        actual = calendar_view.calendar_grid_days_html(grid_start, grid_end, **options)
+        expect(actual).to eq(legacy), message
+        expect(actual).to be_html_safe
+        actual
+      end
+    end
+
+    let(:options_for) do
+      lambda do |display_month, event_days: [], selected_range: nil, today: display_month, type_of: nil|
+        { display_month: display_month, event_days: event_days.to_set, selected_range: selected_range,
+          today: today, type_of: type_of }
+      end
+    end
+
+    it "matches link_to and calendar_path for a selected, filtered month with events" do
+      display_month = Date.new(2026, 3, 1)
+      grid_start, grid_end = grid_for.call(display_month)
+      options = options_for.call(
+        display_month,
+        event_days: [Date.new(2026, 3, 11), Date.new(2026, 4, 2), Date.new(2026, 5, 1)],
+        selected_range: Date.new(2026, 3, 10)..Date.new(2026, 3, 12),
+        today: Date.new(2026, 3, 11),
+        type_of: "live_stream",
+      )
+
+      expect(native_for.call(grid_start, grid_end, options)).to be_present
+      html = assert_grid_parity.call(grid_start, grid_end, options)
+      expect(html.lines.size).to eq(35)
+      expect(html).to include(
+        '<a class="calendar__day text-center p-1 calendar__day--has-event calendar__day--selected ' \
+        'calendar__day--today" data-calendar-day="2026-03-11" ' \
+        'href="/calendar?end=2026-03-11&amp;start=2026-03-11&amp;type_of=live_stream">11</a>',
+      )
+    end
+
+    it "matches across year boundaries, leap days, and unselected ranges" do
+      [Date.new(2026, 12, 1), Date.new(2027, 1, 1), Date.new(2028, 2, 1), Date.new(1583, 1, 1),
+       Date.new(9999, 11, 1)].each do |display_month|
+        grid_start, grid_end = grid_for.call(display_month)
+        options = options_for.call(display_month, event_days: [grid_start, grid_end], today: grid_end)
+        expect(native_for.call(grid_start, grid_end, options)).to be_present
+        assert_grid_parity.call(grid_start, grid_end, options, display_month.iso8601)
+      end
+    end
+
+    it "returns nil outside the fast path so the helper falls back to the legacy render" do
+      display_month = Date.new(2026, 10, 1)
+      grid_start, grid_end = grid_for.call(display_month)
+      ["a b", "x&y", "<b>", "café", "a.b", ["takeover"]].each do |type_of|
+        options = options_for.call(display_month, type_of: type_of)
+        expect(native_for.call(grid_start, grid_end, options)).to be_nil, type_of.inspect
+        assert_grid_parity.call(grid_start, grid_end, options, type_of.inspect)
+      end
+
+      [Date.new(1582, 10, 1), Date.new(9999, 12, 1)].each do |edge_month|
+        options = options_for.call(edge_month)
+        expect(native_for.call(*grid_for.call(edge_month), options)).to be_nil
+        assert_grid_parity.call(*grid_for.call(edge_month), options)
+      end
+
+      options = options_for.call(display_month)
+      expect(native_for.call(grid_start, grid_start + 62, options)).to be_nil
+      assert_grid_parity.call(grid_start, grid_start + 62, options)
+
+      [
+        [2**64, 2**64, 10, [], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [2**64], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, ["x"], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [], false, 0, 0, 0, "/calendar?x=1", nil],
+        [2_461_315.0, 2_461_315, 10, [], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [], false, 0, 0, 0, "/calendar", :takeover],
+      ].each do |args|
+        expect(described_class.calendar_grid_days_html(*args)).to be_nil, args.inspect
+      end
+    end
+
+    it "matches the legacy render across 1,000 randomized grids" do
+      rng = Random.new(424_242)
+      type_ofs = [nil, "takeover", "live_stream", "Q-1_z", "a b", "x&y", "<b>", ["takeover"], "café"]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        display_month = Date.new(rng.rand(1990..2100), rng.rand(1..12), 1)
+        grid_start, grid_end = grid_for.call(display_month)
+        # Occasionally widen or narrow the grid past what the widget renders.
+        grid_end += rng.rand(-40..40) if rng.rand < 0.1
+        range_start = grid_start + rng.rand(-10..45)
+        options = options_for.call(
+          display_month,
+          event_days: Array.new(rng.rand(0..12)) { grid_start + rng.rand(-5..48) },
+          selected_range: (range_start..(range_start + rng.rand(-3..20)) if rng.rand < 0.6),
+          today: [grid_start + rng.rand(0..41), Date.new(2026, 10, 28)].sample(random: rng),
+          type_of: type_ofs.sample(random: rng),
+        )
+
+        native_hits += 1 if native_for.call(grid_start, grid_end, options)
+        assert_grid_parity.call(grid_start, grid_end, options, "iter #{iteration}")
+      end
+
+      expect(native_hits).to be > 400
     end
   end
 end

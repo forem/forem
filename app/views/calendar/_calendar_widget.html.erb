@@ -19,19 +19,12 @@
   </div>
 
   <div class="grid grid-cols-7 gap-1" data-calendar-grid data-type-of="<%= params[:type_of] %>">
-    <% (grid_start..grid_end).each do |day| %>
-      <%
-        classes = ["calendar__day", "text-center", "p-1"]
-        classes << "color-base-30" unless day.month == @display_month.month
-        classes << "calendar__day--has-event" if @event_day_set.include?(day)
-        classes << "calendar__day--selected" if params[:start].present? && day >= @range_start && day <= @range_end
-        classes << "calendar__day--today" if day == today
-      %>
-      <%= link_to day.day,
-            calendar_path(start: day.iso8601, end: day.iso8601, type_of: params[:type_of].presence),
-            class: classes.join(" "),
-            data: { calendar_day: day.iso8601 } %>
-    <% end %>
+    <%= calendar_grid_days_html(grid_start, grid_end,
+                                display_month: @display_month,
+                                event_days: @event_day_set,
+                                selected_range: (@range_start..@range_end if params[:start].present?),
+                                today: today,
+                                type_of: params[:type_of].presence) %>
   </div>
 
   <p class="fs-s color-base-50 mt-3 mb-2"><%= t("views.calendar.hint") %></p>
