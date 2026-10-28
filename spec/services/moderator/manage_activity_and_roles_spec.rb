@@ -16,136 +16,29 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   end
 
   shared_examples_for "elevated role" do |status|
-    context "when user is in limited role" do
-      before { user.add_role(:limited) }
+    it "adding #{status} also removes negative roles", :aggregate_failures do
+      negative_roles = %w[limited suspended warned spam comment_suspended]
+      negative_roles.each { |role| user.add_role(role.to_sym) }
+      expect(user.roles.pluck(:name)).to include(*negative_roles)
 
-      it "adding #{status} also removes the limited role" do
-        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("limited") # confirm assumptions
-      end
-    end
+      manage_roles_for(user, user_status: status)
 
-    context "when user is in suspended role" do
-      before { user.add_role(:suspended) }
-
-      it "adding #{status} also removes the suspended role" do
-        expect(user.roles.pluck(:name)).to include("suspended") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("suspended") # confirm assumptions
-      end
-    end
-
-    context "when user is in warned role" do
-      before { user.add_role(:warned) }
-
-      it "adding #{status} also removes the warned role" do
-        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("warned") # confirm assumptions
-      end
-    end
-
-    context "when user is in spam role" do
-      before { user.add_role(:spam) }
-
-      it "adding #{status} also removes the spam role" do
-        expect(user.roles.pluck(:name)).to include("spam") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("spam") # confirm assumptions
-      end
-    end
-
-    context "when user is in comment_suspended role" do
-      before { user.add_role(:comment_suspended) }
-
-      it "adding #{status} also removes the comment_suspended role" do
-        expect(user.roles.pluck(:name)).to include("comment_suspended") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("comment_suspended") # confirm assumptions
-      end
+      expect(user.roles.pluck(:name)).not_to include(*negative_roles)
     end
   end
 
   shared_examples_for "negative role" do |status|
-    context "when user is in trusted role" do
-      before { user.add_role(:trusted) }
+    it "adding #{status} removes moderator roles and ignores admin, limited, and warned roles", :aggregate_failures do
+      removed_roles = %w[trusted tag_moderator community_leader_level_1]
+      ignored_roles = %w[admin super_moderator tech_admin limited warned]
+      (removed_roles + ignored_roles).each { |role| user.add_role(role.to_sym) }
+      expect(user.roles.pluck(:name)).to include(*removed_roles, *ignored_roles)
 
-      it "adding #{status} removes the trusted role" do
-        expect(user.roles.pluck(:name)).to include("trusted") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("trusted") # confirm assumptions
-      end
-    end
+      manage_roles_for(user, user_status: status)
 
-    context "when user is in tag_moderator role" do
-      before { user.add_role(:tag_moderator) }
-
-      it "adding #{status} removes the tag_moderator role" do
-        expect(user.roles.pluck(:name)).to include("tag_moderator") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("tag_moderator") # confirm assumptions
-      end
-    end
-
-    context "when user is in community_leader_level_1 role" do
-      before { user.add_role(:community_leader_level_1) }
-
-      it "adding #{status} removes the community_leader_level_1 role" do
-        expect(user.roles.pluck(:name)).to include("community_leader_level_1")
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).not_to include("community_leader_level_1")
-      end
-    end
-
-    context "when user is in admin role" do
-      before { user.add_role(:admin) }
-
-      it "adding #{status} ignores the admin role" do
-        expect(user.roles.pluck(:name)).to include("admin") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).to include("admin") # confirm assumptions
-      end
-    end
-
-    context "when user is in super_moderator role" do
-      before { user.add_role(:super_moderator) }
-
-      it "adding #{status} ignores the super_moderator role" do
-        expect(user.roles.pluck(:name)).to include("super_moderator") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).to include("super_moderator") # confirm assumptions
-      end
-    end
-
-    context "when user is in tech_admin role" do
-      before { user.add_role(:tech_admin) }
-
-      it "adding #{status} ignores the tech_admin role" do
-        expect(user.roles.pluck(:name)).to include("tech_admin") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).to include("tech_admin") # confirm assumptions
-      end
-    end
-
-    context "when user is in limited role" do
-      before { user.add_role(:limited) }
-
-      it "adding #{status} ignores the limited role" do
-        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
-      end
-    end
-
-    context "when user is in warned role" do
-      before { user.add_role(:warned) }
-
-      it "adding #{status} ignores the warned role" do
-        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
-        manage_roles_for user, user_status: status
-        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
-      end
+      role_names = user.roles.pluck(:name)
+      expect(role_names).not_to include(*removed_roles)
+      expect(role_names).to include(*ignored_roles)
     end
   end
 
@@ -293,31 +186,25 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
 
   describe "removes reports when adding the spam role" do
     let(:spam_user) { create(:user) }
-    let(:spam_article) { create(:article, user: spam_user) }
+    let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
     let!(:report) do
       create(:feedback_message, category: "spam", status: "Open", reported_url: URL.url(spam_article.path))
     end
 
-    it "calls ResolveSpamReports" do
-      allow(Users::ResolveSpamReports).to receive(:call)
+    it "calls ResolveSpamReports and resolves the report", :aggregate_failures do
+      allow(Users::ResolveSpamReports).to receive(:call).and_call_original
       sidekiq_perform_enqueued_jobs do
         manage_roles_for(spam_user, user_status: "Spam")
       end
       expect(Users::ResolveSpamReports).to have_received(:call).with(spam_user)
-    end
-
-    it "actually removes the report" do
-      sidekiq_perform_enqueued_jobs do
-        manage_roles_for(spam_user, user_status: "Spam")
-      end
       expect(report.reload.status).to eq("Resolved")
     end
   end
 
   describe "confirms flag reactions when adding the spam role" do
     let(:spam_user) { create(:user) }
-    let(:spam_article) { create(:article, user: spam_user) }
-    let!(:flag) do
+    let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
+    let(:flag) do
       create(:reaction, category: "vomit", status: "valid", reactable: spam_article, user: admin)
     end
 
@@ -330,37 +217,31 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       end
     end
 
-    it "calls ConfirmFlagReactionsWorker" do
-      allow(Users::ConfirmFlagReactions).to receive(:call)
+    it "calls ConfirmFlagReactions and confirms the flag", :aggregate_failures do
+      flag
+      allow(Users::ConfirmFlagReactions).to receive(:call).and_call_original
       sidekiq_perform_enqueued_jobs do
         manage_roles_for(spam_user, user_status: "Spam")
       end
       expect(Users::ConfirmFlagReactions).to have_received(:call).with(spam_user)
-    end
-
-    it "actually confirms the flag" do
-      sidekiq_perform_enqueued_jobs do
-        manage_roles_for(spam_user, user_status: "Spam")
-      end
       expect(flag.reload.status).to eq("confirmed")
     end
   end
 
   describe "busts user profile header cache when adding the spam role" do
     it "touches profile" do
-      spam_user = create(:user)
       profile = instance_double(Profile)
-      allow(spam_user).to receive(:profile).and_return(profile)
+      allow(user).to receive(:profile).and_return(profile)
       allow(profile).to receive(:touch)
-      manage_roles_for(spam_user, user_status: "Spam")
+      manage_roles_for(user, user_status: "Spam")
       expect(profile).to have_received(:touch)
     end
   end
 
   describe "removes notifications when adding the spam role" do
-    let(:nice_article) { create(:article, user: user) }
+    let(:nice_article) { create(:article, user: user, with_tags: false) }
     let(:spam_user) { create(:user) }
-    let(:spam_article) { create(:article, user: spam_user) }
+    let(:spam_article) { create(:article, user: spam_user, with_tags: false) }
     let(:spam_follow) { create(:follow, follower: spam_user, followable: user) }
     let(:spam_comment) { create(:comment, user: spam_user, commentable: nice_article) }
 
@@ -386,34 +267,12 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       admin.add_role(:admin)
     end
 
-    it "raises exception when trying to upgrade user to super admin" do
-      expect do
-        manage_roles_for(user, user_status: "Super Admin")
-      end.to raise_error(StandardError)
-    end
-
-    it "raises exception when trying to upgrade user to admin" do
-      expect do
-        manage_roles_for(user, user_status: "Admin")
-      end.to raise_error(StandardError)
-    end
-
-    it "raises exception when trying to upgrade user to single resource admin" do
-      expect do
-        manage_roles_for(user, user_status: "Resource Admin: Article")
-      end.to raise_error(StandardError)
-    end
-
-    it "raises exception when trying to upgrade user to super moderator" do
-      expect do
-        manage_roles_for(user, user_status: "Super Moderator")
-      end.to raise_error(StandardError)
-    end
-
-    it "raises exception when trying to assign community leader level 2" do
-      expect do
-        manage_roles_for(user, user_status: "Community Leader Level 2")
-      end.to raise_error(StandardError)
+    it "raises exception when trying to upgrade user to restricted roles", :aggregate_failures do
+      ["Super Admin", "Admin", "Resource Admin: Article", "Super Moderator", "Community Leader Level 2"].each do |role|
+        expect do
+          manage_roles_for(user, user_status: role)
+        end.to raise_error(StandardError)
+      end
     end
 
     it "raises exception when trying to downgrade a community leader level 2 user to level 1" do
