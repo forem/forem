@@ -611,4 +611,38 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       end
     end
   end
+
+  context "when considering survey completion exclusion" do
+    let(:user) { create(:user) }
+    let(:survey) { create(:survey) }
+    let!(:survey_bb) do
+      create_billboard(exclude_survey_completions: true, exclude_survey_ids: [survey.id])
+    end
+
+    it "excludes the billboard when the signed-in user completed a matching survey" do
+      create(:survey_completion, user: user, survey: survey)
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).not_to include(survey_bb)
+    end
+
+    it "includes the billboard when the signed-in user has not completed a matching survey" do
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).to include(survey_bb)
+    end
+
+    it "executes a single SQL query for signed-in users without extra pre-queries" do
+      uid = user.id
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        if !payload[:cached] && sql.match?(/FROM "(display_ads|segmented_users|survey_completions)"/)
+          queries << sql
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(filter_billboards(user_signed_in: true, user_id: uid).to_a).to include(survey_bb)
+      end
+
+      expect(queries.size).to eq(1)
+    end
+  end
 end

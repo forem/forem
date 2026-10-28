@@ -828,6 +828,44 @@ RSpec.describe FeedConfig, type: :model do
         created = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
         expect(created.targeting_bucket).to eq(described_class::BUCKET_DIGEST)
       end
+
+      it "prioritizes low-impression bucket configs in a single query when roll < 20" do
+        low_imp_digest = create(
+          :feed_config,
+          targeting_bucket: described_class::BUCKET_DIGEST,
+          feed_impressions_count: 5,
+          created_at: 1.minute.ago,
+        )
+        allow(described_class).to receive(:rand).with(100).and_return(10)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(low_imp_digest)
+        expect(queries.size).to eq(1)
+      end
+
+      it "prioritizes bucket configs over 'all' configs in a single query when roll is 20..24" do
+        allow(described_class).to receive(:rand).with(100).and_return(22)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(digest_config)
+        expect(queries.size).to eq(1)
+      end
     end
   end
 
@@ -961,6 +999,33 @@ RSpec.describe FeedConfig, type: :model do
         legacy_sql = full_config.__send__(:legacy_score_sql, user)
 
         expect(native_sql).to eq(legacy_sql)
+
+        native_base_sql = full_config.base_score_sql(user)
+        legacy_base_sql = full_config.__send__(:legacy_score_sql, user, include_semantic: false)
+
+        expect(native_base_sql).to eq(legacy_base_sql)
+        expect(native_base_sql).not_to include("semantic_embedding")
+        expect(full_config.semantic_similarity_active?(user)).to be(true)
+        expect(full_config.semantic_similarity_sql(user)).to include(
+          "(1 - (articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]')) * 10.0",
+        )
+      end
+    end
+
+    describe "#base_score_sql, #semantic_similarity_active?, and #semantic_similarity_sql" do
+      it "returns false and '0' when user has no interest_embedding or weight is zero" do
+        expect(feed_config.semantic_similarity_active?(user)).to be(false)
+        expect(feed_config.semantic_similarity_sql(user)).to eq("0")
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        expect(feed_config.semantic_similarity_active?(user)).to be(true)
+
+        zero_weight_config = described_class.new(semantic_similarity_weight: 0.0, score_weight: 2.0)
+        expect(zero_weight_config.semantic_similarity_active?(user)).to be(false)
+        expect(zero_weight_config.semantic_similarity_sql(user)).to eq("0")
+        expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
+        expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
       end
     end
   end

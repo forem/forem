@@ -720,6 +720,66 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       fallback_shuffled = feed.__send__(:weighted_shuffle, candidates, 1.5)
       expect(fallback_shuffled).to match_array(candidates)
     end
+
+    context "when semantic_similarity_weight is active for a user with an interest_embedding" do
+      let(:interest_embedding) { [1.0, 0.0, 0.0] + Array.new(765, 0.0) }
+      let(:aligned_embedding) { [1.0, 0.0, 0.0] + Array.new(765, 0.0) }
+      let(:orthogonal_embedding) { [0.0, 1.0, 0.0] + Array.new(765, 0.0) }
+      let!(:user_activity) { create(:user_activity, user: user) }
+
+      before do
+        allow(feed_config).to receive(:score_sql).and_call_original
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        high_score_article.update_column(:semantic_embedding, orthogonal_embedding)
+        medium_score_article.update_column(:semantic_embedding, aligned_embedding)
+        low_score_article.update_column(:semantic_embedding, orthogonal_embedding)
+        FeedConfig.new.attributes.each_key do |attr|
+          feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+        end
+        feed_config.score_weight = 1.0
+        feed_config.semantic_similarity_weight = 100.0
+      end
+
+      it "uses two-stage candidate pre-filtering to bound semantic vector evaluation and ranks by combined score" do
+        allow(feed).to receive(:shuffle_top_five_if_recent) { |articles| articles }
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        result = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          result = feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.size).to eq(1)
+        query_sql = executed_sql.first
+        expect(query_sql).to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(query_sql).to include("articles.semantic_embedding <=>")
+        # medium_score_article (50 + 100 = 150) outranks high_score_article (100 + 0 = 100)
+        expect(result.first).to eq(medium_score_article)
+      end
+
+      it "falls back to direct semantic scoring when all non-semantic weights are zero" do
+        FeedConfig.new.attributes.each_key do |attr|
+          feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+        end
+        feed_config.semantic_similarity_weight = 50.0
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("computed_score")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.default_home_feed.to_a
+        end
+
+        expect(executed_sql.first).not_to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(executed_sql.first).to include("articles.semantic_embedding <=>")
+      end
+    end
   end
 end
 
