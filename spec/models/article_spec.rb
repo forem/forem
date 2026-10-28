@@ -49,6 +49,61 @@ RSpec.describe Article do
       expect(some_ai_article.ai_disclosure_label).to eq("AI-assisted")
       expect(autonomous_article.ai_disclosure_label).to eq("Fully Autonomous")
     end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      article = build(:article)
+
+      {
+        "ai_generated" => "fully_autonomous",
+        "AI-Generated" => "fully_autonomous",
+        "autonomous" => "fully_autonomous",
+        "full_ai" => "fully_autonomous",
+        "fully_ai" => "fully_autonomous",
+        "100%_ai" => "fully_autonomous",
+        "agent_generated" => "fully_autonomous",
+        "llm" => "fully_autonomous",
+        "5" => "fully_autonomous",
+        5 => "fully_autonomous",
+        true => "fully_autonomous",
+        "ai_assisted" => "some_ai",
+        "AI Assisted" => "some_ai",
+        "assisted" => "some_ai",
+        "some" => "some_ai",
+        "partial_ai" => "some_ai",
+        "hybrid" => "some_ai",
+        "copilot" => "some_ai",
+        "3" => "some_ai",
+        3 => "some_ai",
+        "human" => "no_ai",
+        "human_written" => "no_ai",
+        "hand_written" => "no_ai",
+        "handwritten" => "no_ai",
+        "none" => "no_ai",
+        "no" => "no_ai",
+        "100%_human" => "no_ai",
+        "without_ai" => "no_ai",
+        "1" => "no_ai",
+        1 => "no_ai",
+        "undisclosed" => "not_disclosed",
+        "unspecified" => "not_disclosed",
+        "unknown" => "not_disclosed",
+        "false" => "not_disclosed",
+        "0" => "not_disclosed",
+        0 => "not_disclosed",
+        false => "not_disclosed",
+        "" => "not_disclosed",
+        nil => "not_disclosed"
+      }.each do |input, expected|
+        article.ai_disclosure_level = input
+        expect(article.ai_disclosure_level).to eq(expected), "expected #{input.inspect} to map to #{expected}"
+      end
+    end
+
+    it "raises ArgumentError for completely unrecognized values" do
+      article = build(:article)
+      expect { article.ai_disclosure_level = "banana_split" }
+        .to raise_error(ArgumentError, "'banana_split' is not a valid ai_disclosure_level")
+    end
   end
 
   describe "validations" do
@@ -3610,10 +3665,40 @@ RSpec.describe Article do
     end
 
     context "when title or published_at attribute changes but published is false" do
-      it "does not trigger the Images::SocialImageWorker" do
+      it "does not trigger the Images::SocialImageWorker or parse the quote" do
+        allow(Images::SocialImageQuote).to receive(:from_html)
         article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: false\n---\n\n# Hello World"
         article.save
+        expect(Images::SocialImageQuote).not_to have_received(:from_html)
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when the generated image's quote or reading time could change" do
+      # Long enough (80+ characters) that the quote doesn't also pull in the next paragraph.
+      let(:opening) { "The opening paragraph is quoted on the generated social image, so changing it matters." }
+      let(:article) do
+        body = "---\ntitle: Quote Trigger\npublished: true\n---\n\n#{opening}\n\nLater text here."
+        create(:article, title: "Quote Trigger", body_markdown: body)
+      end
+
+      before do
+        article.update_columns(main_image: nil, social_image: "https://example.com/social.png")
+      end
+
+      it "triggers the Images::SocialImageWorker when the opening paragraph changes" do
+        article.update(body_markdown: article.body_markdown.sub(opening, "A brand new opening for this post."))
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not trigger the Images::SocialImageWorker when only later text changes" do
+        article.update(body_markdown: article.body_markdown.sub("Later text here.", "Later words here."))
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+
+      it "triggers the Images::SocialImageWorker when the reading time changes" do
+        article.update(body_markdown: "#{article.body_markdown}\n\n#{'word ' * 600}")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
       end
     end
 
@@ -3629,6 +3714,51 @@ RSpec.describe Article do
 
       it "does not trigger the Images::SocialImageWorker when the author is unchanged" do
         article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when saved inside an open transaction" do
+      self.use_transactional_tests = false
+
+      let!(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
+
+      after do
+        described_class.where(id: article.id).delete_all
+        Users::Setting.where(user_id: user.id).delete_all
+        Users::NotificationSetting.where(user_id: user.id).delete_all
+        Profile.where(user_id: user.id).delete_all
+        User.where(id: user.id).delete_all
+      end
+
+      it "waits until the transaction commits before enqueuing Images::SocialImageWorker" do
+        # Clear any call from the initial `let!(:article)` creation outside our test transaction
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+        end
+
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(article.id, "Article")
+      end
+
+      it "does not enqueue Images::SocialImageWorker if the transaction rolls back" do
+        RSpec::Mocks.space.proxy_for(Images::SocialImageWorker).reset
+        allow(Images::SocialImageWorker).to receive(:perform_async)
+
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+
+        described_class.transaction do
+          article.save!
+          raise ActiveRecord::Rollback
+        end
+
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
@@ -4145,6 +4275,13 @@ RSpec.describe Article do
     it "handles whitespace around line breaks" do
       article.title = "Line one\n  \n  Line two"
       expect(article.title_finalized).to eq("<p class=\"quickie-paragraph\">Line one</p><p class=\"quickie-paragraph\">Line two</p>")
+    end
+
+    it "escapes angle brackets in the title" do
+      article.title = "<img src=x onerror=alert(1)>\nSecond line"
+      expected = "<p class=\"quickie-paragraph\">&lt;img src=x onerror=alert(1)&gt;<br>Second line</p>"
+      expect(article.title_finalized).to eq(expected)
+      expect(article.title_finalized).not_to include("<img")
     end
   end
 

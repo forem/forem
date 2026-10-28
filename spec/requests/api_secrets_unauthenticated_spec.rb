@@ -10,33 +10,26 @@ require "rails_helper"
 # config/application.rb — so users saw a 404 "page not found" instead of
 # being redirected to login.
 
-RSpec.describe "ApiSecrets unauthenticated access", type: :request, proper_status: true do
+RSpec.describe "ApiSecrets unauthenticated access", :proper_status do
   describe "POST /users/api_secrets (unauthenticated)" do
-    it "redirects to the magic link sign-in page" do
-      post "/users/api_secrets", params: { api_secret: { description: "My App" } }
-      expect(response).to redirect_to(new_magic_link_path)
-    end
-
-    it "does not create an API secret" do
+    it "does not create an API secret and redirects to the magic link sign-in page", :aggregate_failures do
       expect do
         post "/users/api_secrets", params: { api_secret: { description: "My App" } }
       end.not_to change(ApiSecret, :count)
+
+      expect(response).to redirect_to(new_magic_link_path)
     end
   end
 
   describe "DELETE /users/api_secrets/:id (unauthenticated)" do
-    let(:api_secret) { create(:api_secret) }
+    let!(:api_secret) { create(:api_secret) }
 
-    it "redirects to the magic link sign-in page" do
-      delete "/users/api_secrets/#{api_secret.id}"
-      expect(response).to redirect_to(new_magic_link_path)
-    end
-
-    it "does not delete the API secret" do
-      api_secret # ensure created before the expect block
+    it "does not delete the API secret and redirects to the magic link sign-in page", :aggregate_failures do
       expect do
         delete "/users/api_secrets/#{api_secret.id}"
       end.not_to change(ApiSecret, :count)
+
+      expect(response).to redirect_to(new_magic_link_path)
     end
   end
 end

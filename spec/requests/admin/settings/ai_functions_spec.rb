@@ -110,7 +110,8 @@ RSpec.describe "/admin/settings/ai_functions" do
   end
 
   describe "GET /admin/customization/config" do
-    it "renders a model picker for each configurable function" do
+    it "renders a model picker for each configurable function, threshold, and flag appeal rate limit fields",
+       :aggregate_failures do
       Settings::AiFunctions.set_global_function_models("content_moderation" => "jev")
       sign_in super_admin
 
@@ -122,17 +123,9 @@ RSpec.describe "/admin/settings/ai_functions" do
       expect(response.body).to include("TypeSafe Jev: #{Ai::TypeSafe::Client::DEFAULT_MODEL}")
       expect(response.body).to include("settings_ai_functions[function_models][spam_escalation]")
       expect(response.body).to include("settings_ai_functions[spam_escalation_threshold]")
-      expect(response.body).not_to include("settings_ai_functions[function_models][embeddings]")
-    end
-
-    it "renders the appeal auto-unflag threshold and flag appeal rate limit fields" do
-      sign_in super_admin
-
-      get admin_config_path
-
-      expect(response).to have_http_status(:ok)
       expect(response.body).to include("settings_ai_functions[appeal_auto_unflag_threshold]")
       expect(response.body).to include("settings_rate_limit[flag_appeal_creation]")
+      expect(response.body).not_to include("settings_ai_functions[function_models][embeddings]")
     end
   end
 end

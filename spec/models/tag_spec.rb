@@ -171,6 +171,18 @@ RSpec.describe Tag do
     end
   end
 
+  describe ".find_preferred_aliases_for" do
+    it "resolves preferred aliases in batch while preserving tag order" do
+      create(:tag, name: "rails")
+      create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.find_preferred_aliases_for(%w[RoR something])).to eq(%w[rails something])
+    end
+
+    it "returns an empty array for blank input" do
+      expect(described_class.find_preferred_aliases_for([])).to eq([])
+    end
+  end
+
   describe ".followed_tags_for" do
     let(:saved_user) { create(:user) }
     let(:tag1) { create(:tag) }

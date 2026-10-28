@@ -56,6 +56,11 @@ class BillboardsController < ApplicationController
   end
 
   def contextual_billboard
+    if BillboardPlacementAreaConfig.delivery_rate_for(placement_area: placement_area,
+                                                      user_signed_in: user_signed_in?) <= 0
+      return
+    end
+
     if params[:username].present? && params[:slug].present?
       path = "/#{params[:username].downcase}/#{params[:slug].downcase}"
       articles = Article.select(*ARTICLE_TARGETING_COLUMNS, ADJACENT_SPONSORS_PERMITTED)

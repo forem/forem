@@ -23,4 +23,17 @@ RSpec.describe ArticleApiIndexService do
       expect(relation.limit_value).to eq(10)
     end
   end
+
+  describe "#get default base_articles" do
+    it "orders published featured articles by hotness_score descending with a matching partial index" do
+      relation = described_class.new({}).get
+      index = ActiveRecord::Base.connection.indexes(:articles).detect do |idx|
+        idx.name == "index_articles_on_hotness_score_for_featured_published"
+      end
+
+      expect(relation.where_values_hash).to include("published" => true, "featured" => true)
+      expect(index).to have_attributes(columns: ["hotness_score"], orders: :desc,
+                                       where: "((published = true) AND (featured = true))")
+    end
+  end
 end

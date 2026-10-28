@@ -37,15 +37,7 @@ module MarkdownProcessor
         options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
         renderer = Redcarpet::Render::HTMLRouge.new(options)
         markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-        catch_xss_attempts(@content)
-
-        # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
-        content_with_fixed_links = convert_deeply_nested_links_to_html(@content)
-        # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
-        content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
-
-        code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
-        escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
+        escaped_content = preprocess_for_finalize(@content)
         html = markdown.render(escaped_content)
         sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
 
@@ -106,6 +98,7 @@ module MarkdownProcessor
     def add_target_blank_to_outbound_links(html)
       app_domain = Settings::General.app_domain
       doc = Nokogiri::HTML.fragment(html)
+      scrub_unsafe_uris(doc)
       doc.css('a[href^="http"]').each do |link|
         href = link["href"]
         next unless href&.exclude?(app_domain)
@@ -186,7 +179,28 @@ module MarkdownProcessor
         legacy_convert_code_tags_to_triple_backticks(content)
     end
 
+    def preprocess_for_finalize(content)
+      result = ForemNative.preprocess_markdown_for_finalize(content)
+      if result == :xss_attempt
+        raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
+      end
+
+      result || legacy_preprocess_for_finalize(content)
+    end
+
     private
+
+    def legacy_preprocess_for_finalize(content)
+      catch_xss_attempts(content)
+
+      # Workaround for Redcarpet dropping link text at nesting levels >= 5 (16+ spaces)
+      content_with_fixed_links = convert_deeply_nested_links_to_html(content)
+      # Workaround for Redcarpet not honouring \| as an escaped pipe inside tables (issue #18111)
+      content_with_fixed_pipes = convert_escaped_pipes_outside_codeblocks(content_with_fixed_links)
+
+      code_tag_content = convert_code_tags_to_triple_backticks(content_with_fixed_pipes)
+      escape_liquid_tags_in_codeblock(code_tag_content)
+    end
 
     # Handles the inputs ForemNative declines (non-UTF-8 encodings, String subclasses,
     # invalid byte sequences).
@@ -277,12 +291,29 @@ module MarkdownProcessor
         .add_control_panel_to_codeblock
         .add_fullscreen_button_to_panel
         .wrap_all_tables
+        .transform_markdown_alerts
         .remove_empty_paragraphs
         .escape_colon_emojis_in_codeblock
         .unescape_raw_tag_in_codeblocks
         .wrap_all_figures_with_tags
         .wrap_mentions_with_links
         .html
+    end
+
+    URI_ATTRIBUTES = %w[href src].freeze
+
+    def scrub_unsafe_uris(doc)
+      doc.css("[href], [src]").each do |node|
+        node.attribute_nodes.each do |attr|
+          next unless URI_ATTRIBUTES.include?(attr.name)
+
+          if node.name == "a" && attr.name == "href" && attr.value.to_s.gsub(/[\x00-\x20]+/, "").match?(/\Adata:/i)
+            attr.remove
+          else
+            Loofah::HTML5::Scrub.scrub_uri_attribute(attr)
+          end
+        end
+      end
     end
   end
 end

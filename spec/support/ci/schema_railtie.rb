@@ -1,3 +1,9 @@
+module CiKnapsackProSkipShallowFetch
+  def shallow_repository?
+    false
+  end
+end
+
 if ENV["CI"] && !defined?(CiSchemaRailtie)
   ENV["RAILS_ENV"] = "test"
   ENV["RUBY_DEBUG_ENABLE"] ||= "0"
@@ -12,6 +18,7 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
         ActiveRecord::Migration.suppress_messages do
           ActiveRecord::Tasks::DatabaseTasks.load_schema_current(:ruby, Rails.root.join("db/schema.rb"))
         end
+        ActiveRecord.maintain_test_schema = false
       end
     end
   end
@@ -42,5 +49,9 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
     end
 
     KnapsackPro::Adapters::RSpecAdapter.singleton_class.prepend(CiKnapsackProForkedDetector)
+  end
+
+  if defined?(KnapsackPro::RepositoryAdapters::GitAdapter)
+    KnapsackPro::RepositoryAdapters::GitAdapter.prepend(CiKnapsackProSkipShallowFetch)
   end
 end

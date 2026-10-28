@@ -298,6 +298,12 @@ RSpec.configure do |config|
             }).to_return(status: 200, body: "", headers: {})
     stub_request(:get, %r{assets/\d+(-\w+)?\.png})
       .to_return(status: 200, body: "", headers: {})
+    stub_request(:get, Images::Profile::BACKUP_LINK)
+      .to_return(
+        status: 200,
+        body: Rails.root.join("app/assets/images/1.png").binread,
+        headers: { "Content-Type" => "image/png" },
+      )
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)

@@ -96,6 +96,24 @@ RSpec.describe Follow do
         expect(result.map(&:follower).all?(User)).to be(true)
       end
 
+      it "excludes a follower with both a good role and a suspended role", :aggregate_failures do
+        trusted_follower = create(:user, :trusted, :tag_moderator)
+        trusted_follower.follow(user_2)
+        trusted_then_suspended = create(:user, :trusted, :suspended)
+        trusted_then_suspended.follow(user_2)
+
+        result = described_class.non_suspended(user_2.class.name, user_2.id)
+        expect(result.map(&:follower)).to include(trusted_follower)
+        expect(result.map(&:follower)).not_to include(trusted_then_suspended)
+      end
+
+      it "uses a NOT EXISTS anti-join against users_roles instead of LEFT JOIN + DISTINCT" do
+        sql = described_class.non_suspended(user_2.class.name, user_2.id).to_sql
+        expect(sql).to include("NOT EXISTS")
+        expect(sql).not_to include("LEFT JOIN")
+        expect(sql).not_to include("DISTINCT")
+      end
+
       # Additional test cases for more edge cases
     end
   end

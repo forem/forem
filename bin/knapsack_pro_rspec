@@ -9,7 +9,7 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
   KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
   KNAPSACK_PRO_CI_NODE_RETRY_COUNT=0 \
   SPEC_OPTS="${SPEC_OPTS} --require ./spec/support/ci/schema_railtie" \
-  bundle exec rake "knapsack_pro:rspec[${RSPEC_ARGS}]"
+  bundle exec ruby -r knapsack_pro -r ./spec/support/ci/schema_railtie -e "KnapsackPro::Runners::RSpecRunner.run('${RSPEC_ARGS}')"
 else
   SLOW_SPECS="spec/models/article_spec.rb"
   SLOW_SPECS="${SLOW_SPECS},spec/services/feeds/import_spec.rb"

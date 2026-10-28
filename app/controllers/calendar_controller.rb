@@ -1,5 +1,10 @@
 class CalendarController < ApplicationController
   EVENTS_PER_PAGE = 12
+  AGENDA_COLUMNS = %i[
+    id title type_of start_time end_time event_name_slug event_variation_slug
+    delegate_to_page page_id organization_id user_id
+  ].freeze
+  private_constant :AGENDA_COLUMNS
 
   def index
     @range_start, @range_end = calendar_range
@@ -11,20 +16,31 @@ class CalendarController < ApplicationController
 
     @event_day_set = event_days_between(@grid_start, @grid_end)
 
-    agenda = published_events.where("end_time >= ? AND start_time <= ?",
-                                    @range_start.beginning_of_day, @range_end.end_of_day)
-    @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
-
-    @events_by_day = @events.group_by { |event| event.start_time.to_date }
+    if range_has_events?
+      agenda = published_events.where("end_time >= ? AND start_time <= ?",
+                                      @range_start.beginning_of_day, @range_end.end_of_day)
+      @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
+      @events_by_day = @events.group_by { |event| event.start_time.to_date }
+    else
+      @events = Event.none.page(params[:page]).per(EVENTS_PER_PAGE)
+      @events_by_day = {}
+    end
     @user_signup_event_ids = signed_up_event_ids
   end
 
   private
 
   def published_events
-    events = Event.published.includes(:page, :organization, :user)
+    events = Event.published.select(AGENDA_COLUMNS).includes(:page, :organization, :user)
     events = events.where(type_of: params[:type_of]) if valid_type?
     events
+  end
+
+  def range_has_events?
+    return true if @range_start < @grid_start || @range_end > @grid_end
+    return false if @event_day_set.empty?
+
+    (@range_start..@range_end).any? { |day| @event_day_set.include?(day) }
   end
 
   # Every day within the grid window that a published event covers (a multi-day
@@ -82,7 +98,7 @@ class CalendarController < ApplicationController
   end
 
   def signed_up_event_ids
-    return Set.new unless user_signed_in?
+    return Set.new unless user_signed_in? && @events_by_day.any?
 
     EventSignup.where(user: current_user, event: @events.map(&:id)).pluck(:event_id).to_set
   end

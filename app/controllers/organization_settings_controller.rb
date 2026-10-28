@@ -23,14 +23,18 @@ class OrganizationSettingsController < ApplicationController
       return
     end
 
-    unless same_domain?(verification_url, @organization.url)
+    normalized_verification_url = UrlDomainHelper.normalize_url(verification_url)
+    unless same_domain?(normalized_verification_url, @organization.url)
       flash[:verification_error] = I18n.t("views.organization_settings.verification.domain_mismatch")
       redirect_to organization_settings_path(@organization.slug, anchor: "section-verification")
       return
     end
 
-    @organization.update_columns(verification_url: verification_url,
-                                   verification_status: Organization::VERIFICATION_STATUS_PENDING, verification_error: nil)
+    @organization.update_columns(
+      verification_url: normalized_verification_url,
+      verification_status: Organization::VERIFICATION_STATUS_PENDING,
+      verification_error: nil,
+    )
     Organizations::VerifyLinkbackWorker.perform_async(@organization.id)
 
     flash[:verification_notice] = I18n.t("views.organization_settings.verification.check_started")
