@@ -1,13 +1,30 @@
 require "rails_helper"
 
 RSpec.describe "Organizations Invite" do
-  let(:admin_user) { create(:user) }
+  let(:admin_user) { create(:user, :without_profile, profile_image: nil) }
   let(:organization) { create(:organization) }
-  let(:invited_user) { create(:user) }
+  let(:invited_user) { create(:user, :without_profile, profile_image: nil) }
 
   before do
     create(:organization_membership, user: admin_user, organization: organization, type_of_user: "admin")
     sign_in admin_user
+  end
+
+  def seed_pending_invitations(count, base_time:, step: 1.minute)
+    now = Time.current
+    users = Array.new(count) do |i|
+      slug = "pending_invite_#{SecureRandom.hex(6)}_#{i}"
+      { name: "Pending Invite #{i}", username: slug, email: "#{slug}@example.com",
+        registered: true, created_at: now, updated_at: now }
+    end
+    user_ids = User.insert_all(users, returning: %i[id]).rows.flatten
+    OrganizationMembership.insert_all(
+      user_ids.each_with_index.map do |user_id, i|
+        timestamp = base_time + (i * step)
+        { user_id: user_id, organization_id: organization.id, type_of_user: "pending",
+          invitation_token: SecureRandom.urlsafe_base64(32), created_at: timestamp, updated_at: timestamp }
+      end,
+    )
   end
 
   describe "POST /organizations/:id/invite" do
@@ -25,8 +42,9 @@ RSpec.describe "Organizations Invite" do
       end
 
       it "sends an invitation email" do
-        mail_double = double("mail", deliver_now: true)
-        allow(OrganizationInvitationMailer).to receive(:with).and_return(double(invitation_email: mail_double))
+        mail_double = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
+        mailer = Struct.new(:invitation_email).new(mail_double)
+        allow(OrganizationInvitationMailer).to receive(:with).and_return(mailer)
 
         post organization_invite_path(organization.id), params: { username: invited_user.username }
 
@@ -70,23 +88,16 @@ RSpec.describe "Organizations Invite" do
         expect(membership.invitation_token).to be_nil
       end
 
-      it "sends a notification email (not invitation)" do
-        mail_double = double("mail", deliver_now: true)
-        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_return(double(member_added_email: mail_double))
+      it "sends a notification email and does not send an invitation email", :aggregate_failures do
+        allow(OrganizationInvitationMailer).to receive(:with)
+        mail_double = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
+        mailer = Struct.new(:member_added_email).new(mail_double)
+        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_return(mailer)
 
         post organization_invite_path(organization.id), params: { username: invited_user.username }
 
         expect(OrganizationMembershipNotificationMailer).to have_received(:with).with(membership_id: kind_of(Integer))
         expect(mail_double).to have_received(:deliver_now)
-      end
-
-      it "does not send an invitation email" do
-        allow(OrganizationInvitationMailer).to receive(:with)
-        mail_double = double("mail", deliver_now: true)
-        allow(OrganizationMembershipNotificationMailer).to receive(:with).and_return(double(member_added_email: mail_double))
-
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
-
         expect(OrganizationInvitationMailer).not_to have_received(:with)
       end
 
@@ -155,26 +166,14 @@ RSpec.describe "Organizations Invite" do
 
     context "when daily invitation rate limit is reached" do
       before do
-        # Create 3 pending invitations today (the limit is 3 per day)
-        today_start = Time.zone.now.beginning_of_day
-        3.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: today_start + i.minutes)
-        end
+        seed_pending_invitations(3, base_time: Time.zone.now.beginning_of_day)
       end
 
-      it "does not create a new membership" do
+      it "does not create a new membership and redirects with rate limit error message", :aggregate_failures do
         expect do
           post organization_invite_path(organization.id), params: { username: invited_user.username }
         end.not_to change(OrganizationMembership, :count)
-      end
 
-      it "redirects with rate limit error message" do
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
         expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("daily invitation limit")
         expect(flash[:error]).to include("3")
@@ -183,36 +182,15 @@ RSpec.describe "Organizations Invite" do
 
     context "when total outstanding invitations limit is reached" do
       before do
-        # Create 10 pending invitations (the limit is 10 outstanding)
-        # Create only 2 from today (so daily limit of 3 is not reached)
-        # Create 8 from previous days to reach the outstanding limit
-        today_start = Time.zone.now.beginning_of_day
-        2.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: today_start + i.minutes)
-        end
-        8.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: 2.days.ago + i.hours)
-        end
+        seed_pending_invitations(2, base_time: Time.zone.now.beginning_of_day)
+        seed_pending_invitations(8, base_time: 2.days.ago, step: 1.hour)
       end
 
-      it "does not create a new membership" do
+      it "does not create a new membership and redirects with max outstanding error message", :aggregate_failures do
         expect do
           post organization_invite_path(organization.id), params: { username: invited_user.username }
         end.not_to change(OrganizationMembership, :count)
-      end
 
-      it "redirects with max outstanding error message" do
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
         expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("maximum outstanding invitations")
         expect(flash[:error]).to include("10")
@@ -221,26 +199,14 @@ RSpec.describe "Organizations Invite" do
 
     context "when daily limit is not reached but total outstanding limit is" do
       before do
-        # Create 10 pending invitations, all from previous days
-        # This should hit the outstanding limit but not the daily limit
-        10.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: 2.days.ago + i.hours)
-        end
+        seed_pending_invitations(10, base_time: 2.days.ago, step: 1.hour)
       end
 
-      it "checks outstanding limit first and does not create a new membership" do
+      it "checks outstanding limit and redirects with max outstanding error message", :aggregate_failures do
         expect do
           post organization_invite_path(organization.id), params: { username: invited_user.username }
         end.not_to change(OrganizationMembership, :count)
-      end
 
-      it "redirects with max outstanding error message (not daily limit)" do
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
         expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("maximum outstanding invitations")
         expect(flash[:error]).not_to include("daily invitation limit")
@@ -249,27 +215,14 @@ RSpec.describe "Organizations Invite" do
 
     context "when both limits are checked and daily limit is reached first" do
       before do
-        # Create 3 pending invitations today (hits daily limit of 3)
-        today_start = Time.zone.now.beginning_of_day
-        3.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: today_start + i.minutes)
-        end
-        # Note: Total outstanding is only 3, so outstanding limit (10) is not reached
+        seed_pending_invitations(3, base_time: Time.zone.now.beginning_of_day)
       end
 
-      it "checks daily limit first and does not create a new membership" do
+      it "checks daily limit first and redirects with daily limit error message", :aggregate_failures do
         expect do
           post organization_invite_path(organization.id), params: { username: invited_user.username }
         end.not_to change(OrganizationMembership, :count)
-      end
 
-      it "redirects with daily limit error message" do
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
         expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to include("daily invitation limit")
       end
@@ -278,34 +231,15 @@ RSpec.describe "Organizations Invite" do
     context "when fully trusted organization bypasses rate limits" do
       before do
         organization.update(fully_trusted: true)
-        # Create many pending invitations to test that limits are bypassed
-        today_start = Time.zone.now.beginning_of_day
-        5.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: today_start + i.minutes)
-        end
-        5.times do |i|
-          user = create(:user)
-          create(:organization_membership,
-                 user: user,
-                 organization: organization,
-                 type_of_user: "pending",
-                 created_at: 2.days.ago + i.hours)
-        end
+        seed_pending_invitations(5, base_time: Time.zone.now.beginning_of_day)
+        seed_pending_invitations(5, base_time: 2.days.ago, step: 1.hour)
       end
 
-      it "creates a membership even when limits would normally be exceeded" do
+      it "creates a membership and redirects with success message", :aggregate_failures do
         expect do
           post organization_invite_path(organization.id), params: { username: invited_user.username }
         end.to change(OrganizationMembership, :count).by(1)
-      end
 
-      it "does not redirect with error message" do
-        post organization_invite_path(organization.id), params: { username: invited_user.username }
         expect(response).to redirect_to(organization_settings_path(organization.slug, anchor: "section-invitations"))
         expect(flash[:error]).to be_nil
         expect(flash[:settings_notice]).to include("Successfully added")
@@ -399,4 +333,3 @@ RSpec.describe "Organizations Invite" do
     end
   end
 end
-
