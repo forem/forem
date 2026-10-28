@@ -227,4 +227,22 @@ RSpec.describe "UserShow" do
       end
     end
   end
+
+  describe "profile query optimizations" do
+    it "queries member_organizations only once when rendering the sidebar" do
+      org = create(:organization)
+      create(:organization_membership, user: user, organization: org, type_of_user: "member")
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(1)
+      expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
+      expect(Nokogiri::HTML(response.body).at_css("a[href='/#{org.slug}'] h4")&.text).to eq(org.name)
+    end
+  end
 end
