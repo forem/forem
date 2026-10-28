@@ -49,7 +49,7 @@ RSpec.describe "api/v1/pages" do
       post("pages") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).
+        Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.
 
         ### Body Parameter Guidelines:
         - **title**: Heading displayed at the top of the page.
@@ -157,7 +157,7 @@ RSpec.describe "api/v1/pages" do
       put("update details for a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.
+        Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.
         DESCRIBE
 
         produces "application/json"
@@ -208,7 +208,7 @@ RSpec.describe "api/v1/pages" do
       delete("remove a page") do
         tags "pages"
         description(<<-DESCRIBE.strip)
-        Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.
+        Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.
         DESCRIBE
 
         produces "application/json"
@@ -244,7 +244,7 @@ RSpec.describe "api/v1/pages" do
           before do
             fake_page = instance_double(Page, destroy: false)
             allow(Page).to receive(:find).and_return(fake_page)
-            allow(fake_page).to receive(:errors).and_return(double(full_messages: ["error"]))
+            allow(fake_page).to receive(:errors).and_return(instance_double(ActiveModel::Errors, full_messages: ["error"]))
           end
 
           add_examples

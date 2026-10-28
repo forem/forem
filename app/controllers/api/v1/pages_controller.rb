@@ -28,6 +28,7 @@ module Api
         end
 
         if @page.save
+          log_page_write("api_page_create")
           render json: @page, status: :ok
         else
           render_validation_error
@@ -36,7 +37,10 @@ module Api
 
       def update
         if page_admin?
-          return render json: @page, status: :ok if @page.update(permitted_params)
+          if @page.update(permitted_params)
+            log_page_write("api_page_update")
+            return render json: @page, status: :ok
+          end
 
           return render_validation_error
         end
@@ -51,6 +55,7 @@ module Api
         return render_validation_error if @page.errors.any?
 
         if @page.save
+          log_page_write("api_page_update")
           render json: @page, status: :ok
         else
           render_validation_error
@@ -61,6 +66,7 @@ module Api
         authorize_org_admin!(@page.organization) unless page_admin?
 
         if @page.destroy
+          log_page_write("api_page_destroy")
           render json: @page, status: :ok
         else
           render_validation_error
@@ -89,6 +95,10 @@ module Api
       end
 
       private
+
+      def log_page_write(action)
+        Audit::Logger.log(:admin_api, @user, { "action" => action, "page_id" => @page.id })
+      end
 
       def extract_preview_page_hash
         return params[:page] if params[:page].is_a?(ActionController::Parameters) || params[:page].is_a?(Hash)
