@@ -533,11 +533,32 @@ RSpec.describe FeedConfig, type: :model do
       )
       expect(new_user_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_NEW_USER)
 
-      casual_clone = feed_config.create_slightly_modified_clone!(
+       casual_clone = feed_config.create_slightly_modified_clone!(
         user: casual_user,
         context_type: FeedEvent::CONTEXT_TYPE_HOME,
       )
       expect(casual_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "keeps semantic_candidate_limit unchanged when semantic_similarity_weight is 0.0" do
+      feed_config.update!(semantic_similarity_weight: 0.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(200)
+    end
+
+    it "mutates semantic_candidate_limit by +/- 10% clamped to 100..1000 when semantic_similarity_weight > 0" do
+      feed_config.update!(semantic_similarity_weight: 10.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(220)
+
+      feed_config.update!(semantic_candidate_limit: 960)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.semantic_candidate_limit).to eq(described_class::MAX_SEMANTIC_CANDIDATE_LIMIT)
+
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(semantic_candidate_limit: 105)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.semantic_candidate_limit).to eq(described_class::MIN_SEMANTIC_CANDIDATE_LIMIT)
     end
   end
 
@@ -553,6 +574,24 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       config.targeting_bucket = "invalid_bucket"
+      expect(config).not_to be_valid
+    end
+
+    it "defaults semantic_candidate_limit to 200 and validates integer range 100..1000" do
+      config = described_class.new
+      expect(config.semantic_candidate_limit).to eq(described_class::DEFAULT_SEMANTIC_CANDIDATE_LIMIT)
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MIN_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MAX_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = 99
+      expect(config).not_to be_valid
+
+      config.semantic_candidate_limit = 1001
       expect(config).not_to be_valid
     end
   end

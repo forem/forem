@@ -201,10 +201,15 @@ class EmailDigestArticleCollector
         feed_config.semantic_similarity_active?(@user)
       base_score_sql = feed_config.base_score_sql(@user)
       if base_score_sql != "(0)"
+        candidate_limit = if feed_config.respond_to?(:effective_semantic_candidate_limit)
+                            feed_config.effective_semantic_candidate_limit
+                          else
+                            SEMANTIC_CANDIDATE_LIMIT
+                          end
         candidate_ids = filtered_scope
           .select(:id)
           .order(Arel.sql("#{base_score_sql} DESC"))
-          .limit(SEMANTIC_CANDIDATE_LIMIT)
+          .limit(candidate_limit)
         return [
           filtered_scope.where(id: candidate_ids),
           "(#{base_score_sql} + #{feed_config.semantic_similarity_sql(@user)})",

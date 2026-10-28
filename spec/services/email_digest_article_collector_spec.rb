@@ -527,6 +527,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
           targeting_bucket: FeedConfig::BUCKET_DIGEST,
           score_weight: 1.0,
           semantic_similarity_weight: 100.0,
+          semantic_candidate_limit: 350,
           randomness_weight: 0.0,
         )
         allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)

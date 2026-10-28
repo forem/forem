@@ -32,9 +32,19 @@ class FeedConfig < ApplicationRecord
   ACTIVE_USER_MIN_PAGEVIEW_DAYS = 3
   ACTIVITY_LOOKBACK = 7.days
 
+  DEFAULT_SEMANTIC_CANDIDATE_LIMIT = 200
+  MIN_SEMANTIC_CANDIDATE_LIMIT = 100
+  MAX_SEMANTIC_CANDIDATE_LIMIT = 1000
+
   has_many :feed_events, dependent: :nullify
 
   validates :targeting_bucket, inclusion: { in: TARGETING_BUCKETS }, presence: true
+  validates :semantic_candidate_limit,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: MIN_SEMANTIC_CANDIDATE_LIMIT,
+              less_than_or_equal_to: MAX_SEMANTIC_CANDIDATE_LIMIT
+            }
 
   ARCHIVE_TOP_LIMIT = 1000
   ARCHIVE_AGE_THRESHOLD = 2.days
@@ -220,6 +230,12 @@ class FeedConfig < ApplicationRecord
     activity_store.respond_to?(:interest_embedding) && activity_store.interest_embedding.present?
   end
 
+  def effective_semantic_candidate_limit
+    (semantic_candidate_limit.presence || DEFAULT_SEMANTIC_CANDIDATE_LIMIT)
+      .to_i
+      .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
+  end
+
   def semantic_similarity_sql(user)
     return "0" unless semantic_similarity_active?(user)
 
@@ -247,6 +263,11 @@ class FeedConfig < ApplicationRecord
     clone.feed_success_weight = feed_success_weight * rand(0.9..1.1)
     clone.label_match_weight = label_match_weight * rand(0.9..1.1)
     clone.semantic_similarity_weight = semantic_similarity_weight * rand(0.9..1.1)
+    if semantic_similarity_weight.positive?
+      clone.semantic_candidate_limit = (effective_semantic_candidate_limit * rand(0.9..1.1))
+        .round
+        .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
+    end
     clone.lookback_window_weight = lookback_window_weight * rand(0.9..1.1)
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)
     clone.precomputed_selections_weight = precomputed_selections_weight * rand(0.9..1.1)

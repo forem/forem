@@ -32,7 +32,7 @@ module Comments
     def for_root_comment(root_comment, include_negative: false)
       includes = [{ user: %i[setting profile organization_memberships roles] }]
 
-      nodes = root_comment.subtree.to_a
+      nodes = [root_comment, *root_comment.descendants.to_a]
       sub_comments = Comment.arrange_nodes(nodes)[root_comment]
       sub_comments.reject! { |comment| comment.score.negative? } unless include_negative
       tree = { root_comment => sub_comments }

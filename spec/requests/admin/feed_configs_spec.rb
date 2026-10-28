@@ -10,7 +10,9 @@ RSpec.describe "/admin/advanced/feed_configs" do
         favorited_weight: 8.5,
         user_follow_weight: 2.0,
         tag_follow_weight: 3.0,
-        score_weight: 1.5
+        score_weight: 1.5,
+        semantic_similarity_weight: 12.0,
+        semantic_candidate_limit: 350
       }
     }
   end
@@ -160,6 +162,8 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(new_config.autonomous_ai_penalty_weight).to eq(25.0)
         expect(new_config.favorited_weight).to eq(8.5)
         expect(new_config.user_follow_weight).to eq(2.0)
+        expect(new_config.semantic_similarity_weight).to eq(12.0)
+        expect(new_config.semantic_candidate_limit).to eq(350)
         expect(response).to redirect_to(admin_feed_config_path(new_config))
       end
     end
