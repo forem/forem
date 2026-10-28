@@ -21,9 +21,17 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
   end
 
   before do
+    require "honeycomb-beeline"
+    Honeycomb.configure do |config|
+      config.client = Libhoney::TestClient.new
+    end
     Sidekiq::Testing.server_middleware do |chain|
       chain.add described_class
     end
+  end
+
+  after do
+    load Rails.root.join("config/initializers/honeycomb.rb")
   end
 
   it "sends an event with expected keys" do
