@@ -32,9 +32,13 @@ class UserActivity < ApplicationRecord
     self.recently_viewed_articles = recently_viewed_store
     assign_recent_article_metadata(recent_articles.to_a)
     self.alltime_tags = user.cached_followed_tag_names
-    self.alltime_users = Follow.follower_user(user_id).pluck(:followable_id)
-    self.alltime_organizations = Follow.follower_organization(user_id).pluck(:followable_id)
-    self.alltime_subforems = Follow.follower_subforem(user_id).pluck(:followable_id)
+    # One fk_follows scan for all three followable types instead of one scan per type.
+    followed_ids = Follow.where(follower_id: user_id, followable_type: %w[User Organization Subforem])
+      .pluck(:followable_type, :followable_id)
+      .group_by(&:first)
+    self.alltime_users = followed_ids.fetch("User", []).map(&:last)
+    self.alltime_organizations = followed_ids.fetch("Organization", []).map(&:last)
+    self.alltime_subforems = followed_ids.fetch("Subforem", []).map(&:last)
     self.alltime_reading_list_articles = Reaction.readinglist.unarchived.only_articles
       .where(user_id: user_id).order(created_at: :desc).pluck(:reactable_id)
   end
