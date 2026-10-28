@@ -648,11 +648,15 @@ class Article < ApplicationRecord
   scope :featured, -> { where(featured: true) }
 
   scope :feed, lambda {
-                 published.includes(:taggings)
+                 published
                    .select(
                      :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :slug
                    )
                }
+
+  def cached_tag_list_array
+    (cached_tag_list || "").split(", ")
+  end
 
   scope :with_video, lambda {
                        published
@@ -777,13 +781,14 @@ class Article < ApplicationRecord
   def title_finalized
     return title unless title.present?
 
-    ForemNative.quickie_title_html(title)&.html_safe || legacy_title_finalized
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title)&.html_safe || legacy_title_finalized(safe_title)
   end
 
   # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
-  def legacy_title_finalized
+  def legacy_title_finalized(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # First handle line breaks and paragraphs
-    processed_title = title.dup
+    processed_title = source_title.dup
 
     # Convert double line breaks to paragraph breaks (with optional whitespace)
     processed_title.gsub!(/\n\s*\n/, "</p><p class=\"quickie-paragraph\">")
@@ -857,13 +862,15 @@ class Article < ApplicationRecord
   def truncate_title_for_feed
     return title_finalized unless title.present?
 
-    ForemNative.quickie_title_html(title, truncate_for_feed: true)&.html_safe || legacy_truncate_title_for_feed
+    safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
+    ForemNative.quickie_title_html(safe_title, truncate_for_feed: true)&.html_safe ||
+      legacy_truncate_title_for_feed(safe_title)
   end
 
   # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
-  def legacy_truncate_title_for_feed
+  def legacy_truncate_title_for_feed(source_title = title.to_s.gsub("<", "&lt;").gsub(">", "&gt;"))
     # Split the title into lines to find a good truncation point
-    lines = title.split("\n")
+    lines = source_title.split("\n")
 
     # Take first 6 lines (leaving room for "read more" indicator)
     truncated_lines = lines.first(6)
@@ -963,6 +970,11 @@ class Article < ApplicationRecord
   end
 
   def video_duration_in_minutes
+    ForemNative.format_video_duration(video_duration_in_seconds) ||
+      legacy_video_duration_in_minutes
+  end
+
+  def legacy_video_duration_in_minutes
     duration = ActiveSupport::Duration.build(video_duration_in_seconds.to_i).parts
 
     # add default hours and minutes for the substitutions below
@@ -973,6 +985,7 @@ class Article < ApplicationRecord
 
     "#{duration[:hours]}:#{minutes_and_seconds}"
   end
+  private :legacy_video_duration_in_minutes
 
   def body_text
     # Sanitizing processed_html is slow on long posts and a single save asks for it
@@ -1876,7 +1889,8 @@ class Article < ApplicationRecord
       social_image_quote_changed?
     return unless change
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    # Enqueue after commit so the worker sees the saved article (and its published state).
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   # The generated image quotes the opening of the post, so only body edits that

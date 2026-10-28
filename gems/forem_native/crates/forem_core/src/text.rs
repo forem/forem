@@ -211,6 +211,182 @@ fn is_slug_allowed(c: char) -> bool {
     c.is_alphanumeric() || matches!(c, '-' | ' ' | '_' | '\u{0300}'..='\u{036F}')
 }
 
+/// Rewrites `href="#([^"]+)"` intra-document fragment links in `html` using `ids_by_slug`,
+/// matching `AgentSessionRenderers::HeadingAnchors#link_fragments`:
+/// 1. Unescapes HTML entities via `CGI.unescapeHTML` (`unescape_cgi_html`).
+/// 2. Percent-decodes URI components via `Addressable::URI.unencode_component`.
+/// 3. Looks up `ids_by_slug[fragment] || ids_by_slug[fragment.downcase]`.
+/// 4. When found, rewrites the attribute to `href="##{ERB::Util.html_escape(id)}"`.
+///
+/// Returns `Some(Cow::Borrowed(html))` when no fragment link is rewritten, `Some(Cow::Owned(_))`
+/// when one or more fragment links are rewritten, or `None` if an entity or percent-decoded
+/// sequence falls outside the verified UTF-8 / Unicode lowercase domain so the caller can fall
+/// back to `legacy_link_fragments`.
+pub fn link_heading_anchor_fragments<'a, K: AsRef<str>, V: AsRef<str>>(
+    html: &'a str,
+    ids_by_slug: &[(K, V)],
+) -> Option<Cow<'a, str>> {
+    const PREFIX: &[u8] = b"href=\"#";
+
+    if ids_by_slug.is_empty() || html.len() < PREFIX.len() + 2 {
+        return Some(Cow::Borrowed(html));
+    }
+
+    let bytes = html.as_bytes();
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i + PREFIX.len() + 2 <= bytes.len() {
+        let Some(rel) = find_subslice(&bytes[i..], PREFIX) else {
+            break;
+        };
+        let match_start = i + rel;
+        let frag_start = match_start + PREFIX.len();
+        let Some(quote_rel) = bytes[frag_start..].iter().position(|&b| b == b'"') else {
+            break;
+        };
+        let frag_end = frag_start + quote_rel;
+        if frag_end == frag_start {
+            // `href="#"` has an empty capture group so `/href="#([^"]+)"/` does not match here.
+            i = frag_end + 1;
+            continue;
+        }
+
+        let raw_frag = &html[frag_start..frag_end];
+        let unescaped = unescape_cgi_html(raw_frag)?;
+        let decoded = unencode_uri_component(&unescaped)?;
+
+        let matched_id = lookup_slug_id(ids_by_slug, &decoded)?;
+        if let Some(id) = matched_id {
+            let buf = out.get_or_insert_with(|| String::with_capacity(html.len() + 32));
+            buf.push_str(&html[last_copied..frag_start]);
+            push_erb_html_escaped(buf, id);
+            buf.push('"');
+            last_copied = frag_end + 1;
+        }
+
+        i = frag_end + 1;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(html)),
+        Some(mut s) => {
+            s.push_str(&html[last_copied..]);
+            Some(Cow::Owned(s))
+        }
+    }
+}
+
+#[inline]
+fn find_subslice(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+    if needle.is_empty() {
+        return Some(0);
+    }
+    let first = needle[0];
+    let mut pos = 0;
+    while pos + needle.len() <= haystack.len() {
+        let rel = haystack[pos..].iter().position(|&b| b == first)?;
+        let idx = pos + rel;
+        if idx + needle.len() > haystack.len() {
+            return None;
+        }
+        if &haystack[idx..idx + needle.len()] == needle {
+            return Some(idx);
+        }
+        pos = idx + 1;
+    }
+    None
+}
+
+fn unencode_uri_component(input: &str) -> Option<Cow<'_, str>> {
+    if !input.contains('%') {
+        return Some(Cow::Borrowed(input));
+    }
+
+    let bytes = input.as_bytes();
+    let mut out: Option<Vec<u8>> = None;
+    let mut last_copied = 0usize;
+    let mut i = 0usize;
+
+    while i < bytes.len() {
+        if bytes[i] == b'%' {
+            if let (Some(&h1), Some(&h2)) = (bytes.get(i + 1), bytes.get(i + 2)) {
+                if let (Some(d1), Some(d2)) = (hex_nibble(h1), hex_nibble(h2)) {
+                    let buf = out.get_or_insert_with(|| Vec::with_capacity(bytes.len()));
+                    buf.extend_from_slice(&bytes[last_copied..i]);
+                    buf.push((d1 << 4) | d2);
+                    i += 3;
+                    last_copied = i;
+                    continue;
+                }
+            }
+        }
+        i += 1;
+    }
+
+    match out {
+        None => Some(Cow::Borrowed(input)),
+        Some(mut vec) => {
+            vec.extend_from_slice(&bytes[last_copied..]);
+            String::from_utf8(vec).ok().map(Cow::Owned)
+        }
+    }
+}
+
+#[inline]
+fn hex_nibble(b: u8) -> Option<u8> {
+    match b {
+        b'0'..=b'9' => Some(b - b'0'),
+        b'a'..=b'f' => Some(b - b'a' + 10),
+        b'A'..=b'F' => Some(b - b'A' + 10),
+        _ => None,
+    }
+}
+
+fn lookup_slug_id<'a, K: AsRef<str>, V: AsRef<str>>(
+    ids_by_slug: &'a [(K, V)],
+    fragment: &str,
+) -> Option<Option<&'a str>> {
+    for (k, v) in ids_by_slug {
+        if k.as_ref() == fragment {
+            return Some(Some(v.as_ref()));
+        }
+    }
+
+    let mut lower = String::with_capacity(fragment.len());
+    for ch in fragment.chars() {
+        if !is_supported_slug_char(ch) {
+            return None;
+        }
+        for lc in ch.to_lowercase() {
+            lower.push(lc);
+        }
+    }
+
+    for (k, v) in ids_by_slug {
+        if k.as_ref() == lower {
+            return Some(Some(v.as_ref()));
+        }
+    }
+
+    Some(None)
+}
+
+#[inline]
+fn push_erb_html_escaped(out: &mut String, s: &str) {
+    for ch in s.chars() {
+        match ch {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '"' => out.push_str("&quot;"),
+            '\'' => out.push_str("&#39;"),
+            _ => out.push(ch),
+        }
+    }
+}
+
 /// Normalizes a URL for display, matching `ApplicationHelper#beautified_url`:
 /// `url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")`.
 ///
@@ -432,5 +608,47 @@ mod tests {
             beautified_url("https://例え.テスト/パス/?q=🎉/"),
             "例え.テスト/パス"
         );
+    }
+
+    #[test]
+    fn links_heading_anchor_fragments_matching_ruby() {
+        let ids = vec![
+            (
+                "getting-started".to_string(),
+                "agent-session-7-3-getting-started".to_string(),
+            ),
+            (
+                "faq--troubleshooting".to_string(),
+                "agent-session-7-3-faq--troubleshooting".to_string(),
+            ),
+            (
+                "überblick".to_string(),
+                "agent-session-7-3-überblick".to_string(),
+            ),
+        ];
+
+        let html = "<a href=\"#getting-started\">Go</a> <a href=\"#faq--troubleshooting\">FAQ</a>";
+        assert_eq!(
+            link_heading_anchor_fragments(html, &ids).as_deref(),
+            Some(
+                "<a href=\"#agent-session-7-3-getting-started\">Go</a> \
+                 <a href=\"#agent-session-7-3-faq--troubleshooting\">FAQ</a>"
+            )
+        );
+
+        assert_eq!(
+            link_heading_anchor_fragments("<a href=\"#%C3%BCberblick\">x</a>", &ids).as_deref(),
+            Some("<a href=\"#agent-session-7-3-überblick\">x</a>")
+        );
+        assert_eq!(
+            link_heading_anchor_fragments("<a href=\"#Getting-Started\">x</a>", &ids).as_deref(),
+            Some("<a href=\"#agent-session-7-3-getting-started\">x</a>")
+        );
+
+        let unchanged =
+            "<a href=\"#missing\">x</a> <a href=\"https://example.com/#getting-started\">y</a>";
+        let res = link_heading_anchor_fragments(unchanged, &ids).unwrap();
+        assert!(matches!(res, Cow::Borrowed(_)));
+        assert_eq!(res, unchanged);
     }
 }

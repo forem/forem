@@ -60,6 +60,7 @@ class FeedbackMessage < ApplicationRecord
             }
   validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: reporter_uniqueness_msg },
                           if: -> { abuse_report? && reporter_id.present? }
+  validate :validate_reported_url_scheme, if: -> { reported_url.present? }
 
   def abuse_report?
     feedback_type == "abuse-reports"
@@ -142,5 +143,15 @@ class FeedbackMessage < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["offender", "reporter", "affected", "reported"]
+  end
+
+  private
+
+  def validate_reported_url_scheme
+    cleaned = reported_url.gsub(/[\x00-\x20]+/, "")
+    return unless cleaned.match?(/\A[a-z][a-z0-9+.-]*:/i)
+    return if cleaned.match?(%r{\Ahttps?://}i)
+
+    errors.add(:reported_url, :invalid)
   end
 end

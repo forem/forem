@@ -3,8 +3,8 @@ namespace :app_initializer do
   task setup: :environment do
     puts "\n== Preparing database =="
 
-    unless ENV["SKIP_MIGRATIONS"] == "yes"
-      system("bin/rails db:prepare") || exit!(1)
+    if ENV["SKIP_MIGRATIONS"] != "yes" && ReleaseMigrate.needs_migration?
+      Kernel.system("bin/rails db:prepare") || exit!(1)
       Rake::Task["release:migrate_if_pending"].invoke
     end
 

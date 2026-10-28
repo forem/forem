@@ -2,16 +2,27 @@ require "rails_helper"
 
 RSpec.describe ApiSecret do
   describe "validations" do
-    subject { create(:api_secret) }
+    subject { build(:api_secret, user: build_stubbed(:user)) }
 
     it { is_expected.to belong_to(:user) }
     it { is_expected.to validate_presence_of(:description) }
     it { is_expected.to validate_length_of(:description).is_at_most(300) }
 
-    it "validates the number of keys a user already has" do
+    it "validates the number of keys a user already has", :aggregate_failures do
       user = create(:user)
-      create_list(:api_secret, 9, user_id: user.id)
-      invalid_secret = create(:api_secret, user_id: user.id)
+      now = Time.current
+      described_class.insert_all!(
+        Array.new(10) do |i|
+          {
+            user_id: user.id,
+            description: "Key #{i}",
+            secret: "secret_token_#{i}",
+            created_at: now,
+            updated_at: now
+          }
+        end,
+      )
+      invalid_secret = build(:api_secret, user: user)
 
       expect(invalid_secret).not_to be_valid
       expect(invalid_secret.errors.full_messages.join).to include("limit of 10 per user has been reached")

@@ -42,13 +42,11 @@ RSpec.describe "User visits articles by tag" do
       visit "/t/functional"
     end
 
-    it "shows the following button", :js do
+    it "shows the following button and top level sort options", :aggregate_failures, :js do
       wait_for_javascript
 
       within("header.spec__tag-header") { expect(page).to have_button(I18n.t("core.following")) }
-    end
 
-    it "shows top level sort options" do
       within("#on-page-nav-controls") do
         expect(page).to have_link("Relevant", href: "/t/functional")
         expect(page).to have_link("Top", href: "/t/functional/top/week")

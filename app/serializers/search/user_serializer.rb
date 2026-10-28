@@ -18,7 +18,7 @@ module Search
     end
 
     attribute :profile_fields do |user|
-      user.profile&.data&.map(&HASH_TRANSFORM)
+      user.profile&.data&.except("social_image")&.map(&HASH_TRANSFORM)
     end
   end
 end

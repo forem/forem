@@ -5,10 +5,15 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let(:default_subforem) { create(:subforem, domain: "default.test") }
   let(:custom_subforem) { create(:subforem, domain: "custom.test") }
   let!(:article) { create(:article, user_id: user.id, with_main_image: false, subforem: default_subforem) }
-  let!(:article_with_custom_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem) }
+  let!(:article_with_custom_subforem) do
+    create(:article, user_id: user.id, with_main_image: false, subforem: custom_subforem)
+  end
   let!(:article_without_subforem) { create(:article, user_id: user.id, with_main_image: false, subforem: nil) }
   let(:organization) { create(:organization) }
-  let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false, subforem: custom_subforem) }
+  let!(:second_article) do
+    create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false,
+                     subforem: custom_subforem)
+  end
   let(:default_logo_url) { "https://example.com/default_logo.png" }
   let(:custom_logo_url) { "https://example.com/custom_logo.png" }
   let(:generated_image) { "https://example.com/og.png" }
@@ -49,6 +54,58 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(EdgeCache::BustArticle).to receive(:call)
         described_class.call(article)
         expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+      end
+
+      context "when pre-warming the image optimizer" do
+        let(:optimized_url) { "https://media2.dev.to/dynamic/image/width=1200,height=627,fit=cover,gravity=auto,format=auto/https%3A%2F%2Fexample.com%2Fog.png" }
+
+        before do
+          allow(Images::Optimizer).to receive(:call).and_return(optimized_url)
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("media2.dev.to").and_return(false)
+          allow(HTTParty).to receive(:get)
+          allow(EdgeCache::BustArticle).to receive(:call)
+        end
+
+        it "fetches the optimized social image URL before busting the cache when the author has a sufficient trust score" do
+          article.user.update_column(:score, 100) # author_trust_score == 2
+
+          described_class.call(article)
+
+          expect(Images::Optimizer).to have_received(:call).with(generated_image, width: 1200, height: 627, crop: "crop").ordered
+          expect(HTTParty).to have_received(:get).with(optimized_url, timeout: described_class::PREWARM_TIMEOUT, follow_redirects: false).ordered
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article).ordered
+        end
+
+        it "does not pre-warm the optimizer when the author has a trust score below the threshold" do
+          article.user.update_column(:score, 50) # author_trust_score == 1
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "does not pre-warm when the optimizer URL resolves to a private or loopback host" do
+          article.user.update_column(:score, 100)
+          allow(Images::Optimizer).to receive(:call).and_return("http://127.0.0.1:3000/private")
+          allow(UnifiedEmbed::Tag).to receive(:private_ip?).with("127.0.0.1").and_call_original
+
+          described_class.call(article)
+
+          expect(HTTParty).not_to have_received(:get)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
+
+        it "logs a warning and still busts the article cache if the pre-warm request fails" do
+          article.user.update_column(:score, 100)
+          allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
+          allow(Rails.logger).to receive(:warn)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/Social image prewarm failed/)
+          expect(EdgeCache::BustArticle).to have_received(:call).with(article)
+        end
       end
 
       context "when an external fetch fails with an HTTP error" do
@@ -109,17 +166,39 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates an image for each published article without an organization or cover" do
+      it "generates the user profile image and an image for each published article without an organization or cover" do
         described_class.call(user)
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
         [article, article_with_custom_subforem, article_without_subforem].each do |art|
           expect(generator).to have_received(:generate_image).with(art, user.setting.brand_color1)
         end
         expect(generator).not_to have_received(:generate_image).with(second_article, anything)
       end
 
-      it "stores the generated image on the articles" do
+      it "stores the generated image on the user profile and articles and busts user edge cache" do
+        allow(EdgeCache::BustUser).to receive(:call)
         described_class.call(user)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
         expect(article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
+      end
+    end
+
+    context "when resource is a Profile" do
+      let(:generator) { described_class.new(user.profile) }
+
+      before do
+        allow(described_class).to receive(:new).and_return(generator)
+        allow(generator).to receive(:generate_image).and_return(generated_image)
+      end
+
+      it "generates only the user profile image without regenerating their articles" do
+        allow(EdgeCache::BustUser).to receive(:call)
+        described_class.call(user.profile)
+        expect(generator).to have_received(:generate_image).with(user, user.setting.brand_color1).once
+        expect(generator).not_to have_received(:generate_image).with(article, anything)
+        expect(user.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustUser).to have_received(:call).with(user)
       end
     end
 
@@ -131,14 +210,18 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:generate_image).and_return(generated_image)
       end
 
-      it "generates the image with the organization's color" do
+      it "generates the organization profile image and article images with the organization's color" do
         described_class.call(organization)
+        expect(generator).to have_received(:generate_image).with(organization, organization.bg_color_hex).once
         expect(generator).to have_received(:generate_image).with(second_article, organization.bg_color_hex).once
       end
 
-      it "stores the generated image on the article" do
+      it "stores the generated image on the organization and article and busts organization edge cache" do
+        allow(EdgeCache::BustOrganization).to receive(:call)
         described_class.call(organization)
+        expect(organization.reload.social_image).to eq("https://example.com/og.png")
         expect(second_article.reload.social_image).to eq("https://example.com/og.png")
+        expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, organization.slug)
       end
     end
 
@@ -223,6 +306,21 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       %i[@logo_image @author_image @rounded_mask].each do |ivar|
         expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
       end
+    end
+
+    it "renders a 1200x627 profile card image for a User and cleans up tempfiles" do
+      user.profile.update_columns(summary: "Builds distributed systems and writes about Postgres.", location: "Austin, TX", website_url: "https://example.dev")
+      expect(generator.send(:generate_image, user, "#0f766e")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
+      %i[@logo_image @author_image @rounded_mask].each do |ivar|
+        expect(generator.instance_variable_get(ivar).tempfile.path).to be_nil
+      end
+    end
+
+    it "renders a 1200x627 profile card image for an Organization" do
+      generator.instance_variable_set(:@user, organization)
+      expect(generator.send(:generate_image, organization, "#1d4ed8")).to eq("https://example.com/1.png")
+      expect(written).to eq([[1200, 627]])
     end
   end
 
@@ -325,6 +423,77 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
     end
   end
 
+  describe "#profile_bio" do
+    let(:generator) { described_class.new(user) }
+
+    it "returns the cleaned and word-boundary truncated bio when present" do
+      user.profile.summary = "word " * 50
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to be <= described_class::MAX_BIO_LENGTH
+      expect(text).to end_with("…")
+    end
+
+    it "truncates continuous unbroken strings without spaces" do
+      user.profile.summary = "x" * 200
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(true)
+      expect(text.length).to eq(described_class::MAX_BIO_LENGTH)
+      expect(text).to end_with("…")
+    end
+
+    it "falls back to the localized empty bio string when blank" do
+      user.profile.summary = "   \u{1F680}  "
+      text, present = generator.send(:profile_bio, user)
+      expect(present).to be(false)
+      expect(text).to eq(I18n.t("views.users.empty"))
+    end
+
+    it "uses summary or tag_line for an Organization" do
+      organization.summary = ""
+      organization.tag_line = "Open source cloud tooling"
+      text, present = generator.send(:profile_bio, organization)
+      expect(present).to be(true)
+      expect(text).to eq("Open source cloud tooling")
+    end
+  end
+
+  describe "#profile_meta_line" do
+    let(:generator) { described_class.new(user) }
+
+    it "joins present location, cleaned website url, and joined date" do
+      user.profile.location = "Austin, TX"
+      user.profile.website_url = "https://www.samrivera.dev/"
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Austin, TX  ·  samrivera.dev  ·  Joined #{user.created_at.strftime('%b %Y')}")
+    end
+
+    it "omits blank location and website while still showing joined date" do
+      user.profile.location = ""
+      user.profile.website_url = nil
+      line = generator.send(:profile_meta_line, user)
+      expect(line).to eq("Joined #{user.created_at.strftime('%b %Y')}")
+    end
+  end
+
+  describe "#profile_brand_color" do
+    let(:generator) { described_class.new(user) }
+    let(:palette) { generator.send(:palette_for, nil, 1) }
+
+    it "uses the accent color when brand color is unset" do
+      expect(generator.send(:profile_brand_color, "#000000", palette)).to eq(generator.send(:accent_color, palette))
+    end
+
+    it "preserves dark brand colors with good contrast against white text" do
+      expect(generator.send(:profile_brand_color, "#0f766e", palette)).to eq("#0f766e")
+    end
+
+    it "darkens overly bright brand colors so white text remains readable" do
+      shaded = generator.send(:profile_brand_color, "#fff23a", palette)
+      expect(generator.send(:luminance, shaded)).to be <= 0.35
+    end
+  end
+
   describe "#escape_text" do
     let(:generator) { described_class.new(article) }
 
@@ -384,6 +553,57 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
       expect(author_image).not_to have_received(:resize)
       expect(result_image).not_to have_received(:composite)
+    end
+
+    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them" do
+      sigterm_error = MiniMagick::Error.new("`composite` failed with status: 15 and error:")
+      allow(result_image).to receive(:composite).and_raise(sigterm_error)
+      allow(Rails.error).to receive(:report)
+
+      expect { generator.send(:add_profile_image, result_image) }.to raise_error(sigterm_error)
+      expect(Rails.error).not_to have_received(:report)
+    end
+  end
+
+  describe "#add_profile_card_avatar" do
+    let(:generator) { described_class.new(user) }
+    let(:result_image) { double(MiniMagick::Image, destroy!: nil) }
+    let(:author_image) { double(MiniMagick::Image) }
+    let(:rounded_mask) { double(MiniMagick::Image) }
+    let(:circular_avatar) { double(MiniMagick::Image, destroy!: nil, tempfile: nil) }
+
+    before do
+      allow(result_image).to receive_messages(composite: result_image, combine_options: result_image)
+      allow(author_image).to receive(:collapse!)
+      allow(author_image).to receive(:format)
+      allow(author_image).to receive(:resize)
+      allow(author_image).to receive(:composite).with(rounded_mask).and_return(circular_avatar)
+      allow(rounded_mask).to receive(:resize)
+
+      generator.instance_variable_set(:@author_image, author_image)
+      generator.instance_variable_set(:@rounded_mask, rounded_mask)
+    end
+
+    it "re-raises status 15 SIGTERM MiniMagick errors without reporting them and cleans up the circular avatar" do
+      sigterm_error = MiniMagick::Error.new(
+        "`mogrify -fill white -stroke none -draw circle 203,200 203,138 /tmp/mini_magick.miff` failed with status: 15 and error:",
+      )
+      allow(result_image).to receive(:combine_options).and_raise(sigterm_error)
+      allow(Rails.error).to receive(:report)
+
+      expect { generator.send(:add_profile_card_avatar, result_image) }.to raise_error(sigterm_error)
+      expect(Rails.error).not_to have_received(:report)
+      expect(result_image).not_to have_received(:composite)
+      expect(circular_avatar).to have_received(:destroy!)
+    end
+
+    it "reports non-SIGTERM errors, cleans up the circular avatar, and returns the image without an avatar" do
+      error = MiniMagick::Error.new("`mogrify` failed with status: 1 and error:")
+      allow(author_image).to receive(:collapse!).and_raise(error)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
+      expect(Rails.error).to have_received(:report).with(error)
     end
   end
 

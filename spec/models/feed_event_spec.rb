@@ -493,6 +493,71 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when cloning into specific targeting buckets" do
+      before { feed_config }
+
+      it "clones into feed_new_user for a recently registered user on reaction, comment, or extended_pageview" do
+        new_user = create(:user, registered_at: 2.days.ago)
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "extended_pageview", context_type: "home")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_FEED_NEW_USER)
+      end
+
+      it "clones into digest for email context on click or extended_pageview" do
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: user,
+                              category: "click", context_type: "email")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_DIGEST)
+      end
+
+      it "clones into feed_active_user when an active user reacts or comments, but not on click" do
+        active_user = create(:user, registered_at: 30.days.ago)
+        views = [1.day.ago, 2.days.ago, 3.days.ago].map { |ts| [article.id, ts, 30] }
+        create(:user_activity, user: active_user, recently_viewed_articles: views)
+
+        allow(FeedConfig).to receive(:targeting_bucket_for).and_call_original
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: active_user,
+                              category: "click", context_type: "home")
+        end.not_to change(FeedConfig, :count)
+        expect(FeedConfig).not_to have_received(:targeting_bucket_for)
+
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: active_user,
+                              category: "reaction", context_type: "home")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_FEED_ACTIVE_USER)
+      end
+
+      it "throttles independently per targeting bucket", :throttled_call do
+        feed_config
+        new_user = create(:user, registered_at: 1.day.ago)
+        casual_user = create(:user, registered_at: 30.days.ago)
+
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "reaction", context_type: "home")
+          create(:feed_event, feed_config: feed_config, article: article, user: casual_user,
+                              category: "reaction", context_type: "home")
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "click", context_type: "email")
+        end.to change(FeedConfig, :count).by(3)
+
+        buckets = FeedConfig.order(:id).last(3).map(&:targeting_bucket)
+        expect(buckets).to contain_exactly(
+          FeedConfig::BUCKET_FEED_NEW_USER,
+          FeedConfig::BUCKET_FEED_CASUAL_USER,
+          FeedConfig::BUCKET_DIGEST,
+        )
+      end
+    end
+
     context "when feed_config has fewer than LOW_IMPRESSION_COUNT impressions" do
       let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1) }
 

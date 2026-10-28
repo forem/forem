@@ -88,7 +88,7 @@ Sidekiq.configure_server do |config|
     # First in our chain so the middlewares below and the job all see a fresh RequestStore.
     chain.prepend Sidekiq::RequestStoreMiddleware
     chain.add Sidekiq::TransactionSafeRescue
-    chain.add Sidekiq::HoneycombMiddleware
+    chain.add Sidekiq::HoneycombMiddleware if ApplicationConfig["HONEYCOMB_API_KEY"].present?
     chain.add SidekiqUniqueJobs::Middleware::Client
     chain.add SidekiqUniqueJobs::Middleware::Server
     chain.add Sidekiq::SidekiqConnectionCleanup

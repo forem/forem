@@ -94,6 +94,11 @@ RSpec.describe StackblitzTag, type: :liquid_tag do
     it "removes invalid parameters" do
       liquid = generate_new_liquid("ball-demo foo=bar bar=baz showSidebar=1")
       expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?showSidebar=1")
+
+      invalid_param_liquid = generate_new_liquid('ball-demo file=foo"onload="alert(1) showSidebar=1')
+      rendered = invalid_param_liquid.render
+      expect(rendered).to include("https://stackblitz.com/edit/ball-demo?showSidebar=1")
+      expect(rendered).not_to include("onload")
     end
 
     it "rejects XSS attempts" do

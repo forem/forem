@@ -49,6 +49,26 @@ module Images
     META_POINTSIZE = 22
     MAX_NAME_LENGTH = 40
 
+    PROFILE_STRIP_HEIGHT = 72
+    PROFILE_AVATAR_SIZE = 112
+    PROFILE_NAME_MAX_POINTSIZE = 38
+    PROFILE_NAME_MIN_POINTSIZE = 24
+    PROFILE_HANDLE_POINTSIZE = 22
+    PROFILE_FOLLOW_WIDTH = 136
+    PROFILE_FOLLOW_HEIGHT = 46
+    PROFILE_FOLLOW_POINTSIZE = 21
+    PROFILE_BIO_WIDTH = WINDOW_WIDTH - 88
+    PROFILE_BIO_MAX_HEIGHT = 126
+    PROFILE_BIO_MAX_POINTSIZE = 34
+    PROFILE_BIO_MIN_POINTSIZE = 22
+    PROFILE_FOOTER_HEIGHT = 70
+    PROFILE_META_MAX_POINTSIZE = 22
+    PROFILE_META_MIN_POINTSIZE = 16
+    MAX_BIO_LENGTH = 160
+    MAX_HANDLE_LENGTH = 32
+    MAX_LOCATION_LENGTH = 34
+    MAX_WEBSITE_LENGTH = 38
+
     TEXT_COLOR = "black".freeze
     SECONDARY_TEXT_COLOR = "#525252".freeze
     DIVIDER_COLOR = "#d8d8d8".freeze
@@ -61,6 +81,8 @@ module Images
       %w[#4545ff #8ee0f5 #1a0450 #7a4af0 #c8c0f5],
     ].freeze
     UNSET_COLORS = %w[#000000 #111212].freeze
+    PREWARM_MIN_TRUST_SCORE = 2
+    PREWARM_TIMEOUT = 5
 
     def self.call(resource = nil)
       new(resource).call
@@ -75,28 +97,38 @@ module Images
     end
 
     def call
-      if @resource.is_a?(Article)
+      case @resource
+      when Article
         @user = @resource.user
         @resource.update_column(:social_image, generate_image(@resource, @user.setting.brand_color1))
+        prewarm_social_image(@resource)
         ## We only need to bust article. All else can fade naturally
         EdgeCache::BustArticle.call(@resource)
-      elsif @resource.is_a?(User)
+      when ::Profile
+        @user = @resource.user
+        return unless @user
+
+        update_user_social_image(generate_image(@user, @user.setting.brand_color1))
+      when User
         @user = @resource
+        update_user_social_image(generate_image(@user, @user.setting.brand_color1))
         @resource.articles.published.where(organization_id: nil, main_image: nil).find_each do |article|
           article.update_column(:social_image, generate_image(article, @user.setting.brand_color1))
         end
       else # Organization
         @user = @resource
+        @resource.update_column(:social_image, generate_image(@resource, @user.bg_color_hex))
+        EdgeCache::BustOrganization.call(@resource, @resource.slug)
         @resource.articles.published.where(main_image: nil).find_each do |article|
           article.update_column(:social_image, generate_image(article, @user.bg_color_hex))
         end
       end
-    rescue OpenURI::HTTPError, Timeout::Error, Net::OpenTimeout, Net::ReadTimeout => e
+    rescue OpenURI::HTTPError, Timeout::Error => e
       # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
       Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
     rescue MiniMagick::Error => e
       # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
-      if e.message.include?("status: 15")
+      if sigterm_error?(e)
         Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
       else
         Rails.error.report(e)
@@ -110,16 +142,51 @@ module Images
 
     attr_reader :resource
 
-    def generate_image(article, color)
-      read_files(article)
-      palette = palette_for(color, article.id)
+    def prewarm_social_image(article)
+      return if article.social_image.blank? || article.main_image.present?
+      return unless @user&.author_trust_score.to_i >= PREWARM_MIN_TRUST_SCORE
+
+      width, height = if article.published_at.present? && article.published_at <= Time.zone.local(2026, 3, 1)
+                        [1000, 500]
+                      else
+                        [WIDTH, HEIGHT]
+                      end
+      optimized_url = Images::Optimizer.call(article.social_image, width: width, height: height, crop: "crop")
+      return if optimized_url.blank? || optimized_url == article.social_image
+      return unless safe_prewarm_url?(optimized_url)
+
+      HTTParty.get(optimized_url, timeout: PREWARM_TIMEOUT, follow_redirects: false)
+    rescue StandardError => e
+      Rails.logger.warn("[GenerateSocialImageMagickally] Social image prewarm failed: #{e.message}")
+    end
+
+    def safe_prewarm_url?(url)
+      uri = URI.parse(url.to_s)
+      return false if uri.blank? || %w[http https].exclude?(uri.scheme) || uri.host.blank?
+
+      !UnifiedEmbed::Tag.private_ip?(uri.host)
+    rescue URI::Error
+      false
+    end
+
+    def update_user_social_image(url)
+      profile = @user.profile || @user.create_profile
+      profile.update_column(:data, (profile.data || {}).merge("social_image" => url))
+      EdgeCache::BustUser.call(@user)
+    end
+
+    def generate_image(subject, color)
+      return generate_profile_image(subject, color) unless subject.is_a?(Article)
+
+      read_files(subject)
+      palette = palette_for(color, subject.id)
       card = {
-        quote_image: render_quote(SocialImageQuote.call(article)),
+        quote_image: render_quote(SocialImageQuote.call(subject)),
         name_image: render_text("label", display_name(@user.name), BOLD_FONT_PATH, NAME_POINTSIZE, TEXT_COLOR),
-        meta_image: render_text("label", meta_line(article), MEDIUM_FONT_PATH, META_POINTSIZE, SECONDARY_TEXT_COLOR),
+        meta_image: render_text("label", meta_line(subject), MEDIUM_FONT_PATH, META_POINTSIZE, SECONDARY_TEXT_COLOR),
         accent: accent_color(palette)
       }
-      background = draw_background(palette, article.id)
+      background = draw_background(palette, subject.id)
       generate_magickally(background, card)
     ensure
       [background, @logo_image, @author_image, @rounded_mask,
@@ -128,12 +195,55 @@ module Images
       end
     end
 
+    def generate_profile_image(subject, color)
+      read_files(subject)
+      palette = palette_for(color, subject.id)
+      brand = profile_brand_color(color, palette)
+      bio_text, bio_present = profile_bio(subject)
+      bio_color = bio_present ? TEXT_COLOR : SECONDARY_TEXT_COLOR
+      name_max_width = WINDOW_WIDTH - 44 - PROFILE_AVATAR_SIZE - 22 - PROFILE_FOLLOW_WIDTH - 64
+
+      card = {
+        profile: true,
+        brand_color: brand,
+        name_image: render_text_to_fit(
+          display_name(subject.name), BOLD_FONT_PATH,
+          PROFILE_NAME_MAX_POINTSIZE, PROFILE_NAME_MIN_POINTSIZE, TEXT_COLOR, name_max_width
+        ),
+        handle_image: render_text(
+          "label", display_handle(subject.username), MEDIUM_FONT_PATH, PROFILE_HANDLE_POINTSIZE, SECONDARY_TEXT_COLOR
+        ),
+        follow_image: render_text("label", follow_label(subject), BOLD_FONT_PATH, PROFILE_FOLLOW_POINTSIZE, "white"),
+        bio_image: render_bio(bio_text, bio_color),
+        meta_image: render_text_to_fit(
+          profile_meta_line(subject), MEDIUM_FONT_PATH,
+          PROFILE_META_MAX_POINTSIZE, PROFILE_META_MIN_POINTSIZE, SECONDARY_TEXT_COLOR, PROFILE_BIO_WIDTH
+        )
+      }
+      background = draw_background(palette, subject.id)
+      generate_magickally(background, card)
+    ensure
+      [background, @logo_image, @author_image, @rounded_mask,
+       *card&.values_at(:name_image, :handle_image, :follow_image, :bio_image, :meta_image)].each do |image|
+        destroy_image(image)
+      end
+    end
+
     def generate_magickally(background, card)
-      draw_window(background)
-      result = add_logo(background)
-      result = add_quote(result, card[:quote_image], card[:accent])
-      result = add_profile_image(result)
-      result = add_byline(result, card[:name_image], card[:meta_image])
+      if card[:profile]
+        draw_profile_window(background, card[:brand_color])
+        result = add_logo(background)
+        result = add_profile_header(result, card[:name_image], card[:handle_image], card[:follow_image])
+        result = add_profile_bio(result, card[:bio_image])
+        result = add_profile_card_avatar(result)
+        result = add_profile_meta(result, card[:meta_image])
+      else
+        draw_window(background)
+        result = add_logo(background)
+        result = add_quote(result, card[:quote_image], card[:accent])
+        result = add_profile_image(result)
+        result = add_byline(result, card[:name_image], card[:meta_image])
+      end
       upload_result(result)
     ensure
       destroy_image(result) unless result.equal?(background)
@@ -194,6 +304,66 @@ module Images
       end
     end
 
+    def draw_profile_window(result, brand_color)
+      x0 = WINDOW_X
+      x1 = WINDOW_X + WINDOW_WIDTH
+      y1 = WINDOW_Y + WINDOW_HEIGHT
+      bar_y = WINDOW_Y + WINDOW_BAR_HEIGHT
+      strip_y = bar_y + PROFILE_STRIP_HEIGHT
+      btn_x1 = x1 - 44
+      btn_x0 = btn_x1 - PROFILE_FOLLOW_WIDTH
+      btn_y0 = strip_y + 18
+      btn_y1 = btn_y0 + PROFILE_FOLLOW_HEIGHT
+
+      result.combine_options do |c|
+        draw_window_stack(c, x0, x1, y1)
+        c.stroke "none"
+        c.fill brand_color
+        c.draw "rectangle #{x0 + 2},#{bar_y} #{x1 - 2},#{strip_y}"
+        draw_profile_window_borders(c, x0, x1, y1, bar_y, strip_y)
+        draw_window_dots(c, x1, WINDOW_Y + (WINDOW_BAR_HEIGHT / 2))
+        c.draw "roundrectangle #{btn_x0 + 3},#{btn_y0 + 3} #{btn_x1 + 3},#{btn_y1 + 3} 10,10"
+        c.fill brand_color
+        c.stroke TEXT_COLOR
+        c.strokewidth "3"
+        c.draw "roundrectangle #{btn_x0},#{btn_y0} #{btn_x1},#{btn_y1} 10,10"
+        c.stroke DIVIDER_COLOR
+        c.strokewidth "2"
+        c.draw "line #{x0 + 44},#{y1 - PROFILE_FOOTER_HEIGHT} #{x1 - 44},#{y1 - PROFILE_FOOTER_HEIGHT}"
+      end
+    end
+
+    def draw_window_stack(cmd, left_x, right_x, bottom_y)
+      cmd.fill "white"
+      cmd.stroke TEXT_COLOR
+      cmd.strokewidth WINDOW_STROKE.to_s
+      WINDOW_STACK_DEPTH.downto(1) do |depth|
+        offset = depth * WINDOW_STACK_OFFSET
+        cmd.draw "roundrectangle #{left_x + offset},#{WINDOW_Y + offset} #{right_x + offset},#{bottom_y + offset} " \
+                 "#{WINDOW_RADIUS},#{WINDOW_RADIUS}"
+      end
+      cmd.draw "roundrectangle #{left_x},#{WINDOW_Y} #{right_x},#{bottom_y} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
+    end
+
+    def draw_profile_window_borders(cmd, left_x, right_x, bottom_y, bar_y, strip_y)
+      cmd.fill "none"
+      cmd.stroke TEXT_COLOR
+      cmd.strokewidth WINDOW_STROKE.to_s
+      cmd.draw "roundrectangle #{left_x},#{WINDOW_Y} #{right_x},#{bottom_y} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
+      cmd.draw "line #{left_x},#{bar_y} #{right_x},#{bar_y}"
+      cmd.strokewidth "3"
+      cmd.draw "line #{left_x},#{strip_y} #{right_x},#{strip_y}"
+    end
+
+    def draw_window_dots(cmd, right_x, dot_y)
+      cmd.stroke "none"
+      cmd.fill TEXT_COLOR
+      3.times do |i|
+        dot_x = right_x - 34 - (i * 22)
+        cmd.draw "circle #{dot_x},#{dot_y} #{dot_x + 6},#{dot_y}"
+      end
+    end
+
     def add_logo(result)
       return result unless @logo_image
 
@@ -229,7 +399,33 @@ module Images
       pointsize = QUOTE_MAX_POINTSIZE - (quote.length > 90 ? 4 : 0) - (quote.length > 140 ? 6 : 0)
       loop do
         image = render_text("caption", quote, BOLD_FONT_PATH, pointsize, TEXT_COLOR, width: QUOTE_WIDTH)
-        return image if image.height <= QUOTE_MAX_HEIGHT || pointsize <= QUOTE_MIN_POINTSIZE
+        fits = !image.respond_to?(:height) || image.height <= QUOTE_MAX_HEIGHT || pointsize <= QUOTE_MIN_POINTSIZE
+        return image if fits
+
+        image.destroy!
+        pointsize -= 2
+      end
+    end
+
+    def render_bio(bio, color)
+      pointsize = PROFILE_BIO_MAX_POINTSIZE - (bio.length > 90 ? 4 : 0)
+      loop do
+        image = render_text("caption", bio, MEDIUM_FONT_PATH, pointsize, color, width: PROFILE_BIO_WIDTH)
+        fits = !image.respond_to?(:height) ||
+          image.height <= PROFILE_BIO_MAX_HEIGHT ||
+          pointsize <= PROFILE_BIO_MIN_POINTSIZE
+        return image if fits
+
+        image.destroy!
+        pointsize -= 2
+      end
+    end
+
+    def render_text_to_fit(text, font, max_pointsize, min_pointsize, color, max_width)
+      pointsize = max_pointsize
+      loop do
+        image = render_text("label", text, font, pointsize, color)
+        return image if !image.respond_to?(:width) || image.width <= max_width || pointsize <= min_pointsize
 
         image.destroy!
         pointsize -= 2
@@ -288,11 +484,109 @@ module Images
         c.strokewidth "3"
         c.draw "circle #{x + radius},#{y + radius} #{x + radius},#{y - 1}"
       end
-    rescue Timeout::Error, StandardError => e
+    rescue StandardError => e
+      raise if sigterm_error?(e)
+
       Rails.error.report(e)
       # If processing the profile picture triggers a mogrify lockup,
       # gracefully fall back to returning the social image without their avatar.
       result
+    end
+
+    def add_profile_card_avatar(result)
+      x = WINDOW_X + 44
+      y = WINDOW_Y + WINDOW_BAR_HEIGHT + 18
+      radius = PROFILE_AVATAR_SIZE / 2
+      cx = x + radius
+      cy = y + radius
+
+      @author_image.collapse!
+      @author_image.format("png")
+      @author_image.resize "#{PROFILE_AVATAR_SIZE}x#{PROFILE_AVATAR_SIZE}!"
+      @rounded_mask.resize "#{PROFILE_AVATAR_SIZE}x#{PROFILE_AVATAR_SIZE}!"
+
+      # Cut transparent corners using the circular mask so the avatar can overlap the brand strip cleanly.
+      circular_avatar = @author_image.composite(@rounded_mask) do |c|
+        c.alpha "Set"
+        c.compose "DstOut"
+        c.define "png:color-type=6"
+      end
+
+      # White halo ring behind the avatar separates it from the brand strip.
+      result.combine_options do |c|
+        c.fill "white"
+        c.stroke "none"
+        c.draw "circle #{cx},#{cy} #{cx},#{cy - radius - 6}"
+      end
+
+      result = composite_onto(result, circular_avatar) do |c|
+        c.compose "Over"
+        c.geometry "+#{x}+#{y}"
+      end
+
+      result.combine_options do |c|
+        c.fill "none"
+        c.stroke TEXT_COLOR
+        c.strokewidth "3"
+        c.draw "circle #{cx},#{cy} #{cx},#{cy - radius}"
+      end
+    rescue StandardError => e
+      raise if sigterm_error?(e)
+
+      Rails.error.report(e)
+      result
+    ensure
+      destroy_image(circular_avatar) unless circular_avatar.equal?(@author_image)
+    end
+
+    def add_profile_header(result, name_image, handle_image, follow_image)
+      strip_y = WINDOW_Y + WINDOW_BAR_HEIGHT + PROFILE_STRIP_HEIGHT
+      text_x = WINDOW_X + 44 + PROFILE_AVATAR_SIZE + 22
+      name_y = strip_y + 10
+      handle_y = name_y + (name_image.respond_to?(:height) ? [name_image.height - 4, 38].max : 42)
+
+      result = composite_onto(result, name_image) do |c|
+        c.compose "Over"
+        c.geometry "+#{text_x}+#{name_y}"
+      end
+      result = composite_onto(result, handle_image) do |c|
+        c.compose "Over"
+        c.geometry "+#{text_x}+#{handle_y}"
+      end
+
+      btn_x0 = WINDOW_X + WINDOW_WIDTH - 44 - PROFILE_FOLLOW_WIDTH
+      btn_y0 = strip_y + 18
+      follow_w = follow_image.respond_to?(:width) ? follow_image.width : 70
+      follow_h = follow_image.respond_to?(:height) ? follow_image.height : 26
+      follow_x = btn_x0 + [(PROFILE_FOLLOW_WIDTH - follow_w) / 2, 8].max
+      follow_y = btn_y0 + [(PROFILE_FOLLOW_HEIGHT - follow_h) / 2, 4].max
+
+      composite_onto(result, follow_image) do |c|
+        c.compose "Over"
+        c.geometry "+#{follow_x}+#{follow_y}"
+      end
+    end
+
+    def add_profile_bio(result, bio_image)
+      bio_top = WINDOW_Y + WINDOW_BAR_HEIGHT + PROFILE_STRIP_HEIGHT + 98
+      bio_h = bio_image.respond_to?(:height) ? bio_image.height : 40
+      bio_y = bio_top + [(PROFILE_BIO_MAX_HEIGHT - bio_h) / 2, 0].max
+
+      composite_onto(result, bio_image) do |c|
+        c.compose "Over"
+        c.geometry "+#{WINDOW_X + 44}+#{bio_y}"
+      end
+    end
+
+    def add_profile_meta(result, meta_image)
+      footer_top = WINDOW_Y + WINDOW_HEIGHT - PROFILE_FOOTER_HEIGHT
+      meta_h = meta_image.respond_to?(:height) ? meta_image.height : 28
+      meta_y = footer_top + [(PROFILE_FOOTER_HEIGHT - meta_h) / 2, 8].max
+
+      composite_onto(result, meta_image) do |c|
+        c.compose "Over"
+        c.geometry "+#{WINDOW_X + 44}+#{meta_y}"
+      end
     end
 
     def add_byline(result, name_image, meta_image)
@@ -322,17 +616,72 @@ module Images
       image.destroy!
     end
 
+    def sigterm_error?(error)
+      error.is_a?(MiniMagick::Error) && error.message.include?("status: 15")
+    end
+
     def escape_text(text)
       text.to_s.gsub(/[\\"@%]/, "\\" => "\\\\", '"' => '\\"', "@" => "\\@", "%" => "\\%")
     end
 
     # NFKC turns "fancy" Unicode letters into plain ones the fonts can render.
-    def display_name(name)
-      cleaned = name.to_s.unicode_normalize(:nfkc)
+    def clean_text(text)
+      text.to_s.unicode_normalize(:nfkc)
         .gsub(/[\p{Extended_Pictographic}\uFE0F\u200D]/, "")
         .squish
+    end
+
+    def display_name(name)
+      cleaned = clean_text(name)
       cleaned = @user&.username.to_s if cleaned.blank?
       cleaned.truncate(MAX_NAME_LENGTH)
+    end
+
+    def display_handle(username)
+      cleaned = clean_text(username).delete_prefix("@")
+      "@#{cleaned.truncate(MAX_HANDLE_LENGTH)}"
+    end
+
+    def follow_label(subject)
+      scope = subject.is_a?(Organization) ? "views.organizations.follow" : "views.users.follow"
+      I18n.t(scope, default: "Follow")
+    end
+
+    def profile_bio(subject)
+      raw_bio = if subject.is_a?(Organization)
+                  subject.summary.presence || subject.tag_line.presence
+                else
+                  subject.tag_line
+                end
+      cleaned = clean_text(raw_bio)
+      if cleaned.blank?
+        empty_key = subject.is_a?(Organization) ? "views.organizations.empty" : "views.users.empty"
+        return [I18n.t(empty_key, default: "404 bio not found"), false]
+      end
+
+      truncated = if cleaned.length > MAX_BIO_LENGTH && cleaned.include?(" ")
+                    cleaned.truncate(MAX_BIO_LENGTH, separator: /\s/, omission: "…")
+                  else
+                    cleaned.truncate(MAX_BIO_LENGTH, omission: "…")
+                  end
+      [truncated, true]
+    end
+
+    def profile_meta_line(subject)
+      location = clean_text(subject.profile&.location).truncate(MAX_LOCATION_LENGTH).presence
+      website = clean_website_url(subject.profile&.website_url)
+      joined = if subject.respond_to?(:created_at) && subject.created_at.present?
+                 "Joined #{subject.created_at.strftime('%b %Y')}"
+               end
+      [location, website, joined].compact_blank.join("  \u00B7  ")
+    end
+
+    def clean_website_url(url)
+      cleaned = clean_text(url)
+        .sub(%r{\Ahttps?://}i, "")
+        .sub(/\Awww\./i, "")
+        .chomp("/")
+      cleaned.truncate(MAX_WEBSITE_LENGTH).presence
     end
 
     def meta_line(article)
@@ -382,6 +731,15 @@ module Images
         Settings::UserExperience.primary_brand_color_hex
     end
 
+    def profile_brand_color(color, palette)
+      hex = normalize_hex(color)
+      return accent_color(palette) if hex.nil? || UNSET_COLORS.include?(hex)
+      return hex if luminance(hex) <= 0.35
+
+      hue, saturation, _lightness = hex_to_hsl(hex)
+      hsl_to_hex(hue, [saturation, 0.55].max, 0.28)
+    end
+
     def normalize_hex(color)
       value = color.to_s.strip.downcase
       value = "##{value[1] * 2}#{value[2] * 2}#{value[3] * 2}" if value.match?(/\A#\h{3}\z/)
@@ -426,9 +784,9 @@ module Images
         .zip([0.2126, 0.7152, 0.0722]).sum { |channel, weight| channel * weight }
     end
 
-    def read_files(article)
-      # Get the subforem_id for this article
-      subforem_id = article.subforem_id || Subforem.cached_default_id
+    def read_files(subject = nil)
+      # Get the subforem_id for this subject
+      subforem_id = (subject.respond_to?(:subforem_id) && subject.subforem_id) || Subforem.cached_default_id
       user_id = @user&.id
 
       # Fetch logo URL only if subforem has changed. Prefer the horizontal header logo.

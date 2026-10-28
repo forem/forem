@@ -92,7 +92,7 @@ namespace :admin do
   end
 
   scope :content_manager do
-    resources :spaces, only: %i[index update]
+    get "spaces", to: redirect("/admin/customization/config")
     resources :articles, only: %i[index show update] do
       member do
         delete :unpin

@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "feedback_messages" do
-  let(:user) { create(:user) }
-
   before do
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
   end
@@ -37,21 +35,17 @@ RSpec.describe "feedback_messages" do
         mock_recaptcha_verification
       end
 
-      it "creates a feedback message" do
+      it "creates a feedback message and queues a slack message to be sent", :aggregate_failures do
         expect do
-          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
+            post feedback_messages_path, params: valid_abuse_report_params, headers: headers
+          end
         end.to change(FeedbackMessage, :count).by(1)
 
         feedback_message = FeedbackMessage.last
         expect(feedback_message.message).to eq(
           valid_abuse_report_params[:feedback_message][:message],
         )
-      end
-
-      it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
-          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-        end
       end
 
       it "doesn't try to send an email" do
@@ -63,7 +57,7 @@ RSpec.describe "feedback_messages" do
       end
 
       it "ignores a submitted offender_id in favor of trusted derived data" do
-        offender = create(:user)
+        offender = build_stubbed(:user)
         reported_user = create(:user)
         params_with_offender_id = valid_abuse_report_params.deep_dup
         params_with_offender_id[:feedback_message][:reported_url] = "/#{reported_user.username}"
@@ -104,8 +98,7 @@ RSpec.describe "feedback_messages" do
 
     context "when rate limit is reached" do
       it "returns a 429" do
-        user = create(:user)
-        limiter = user.rate_limiter
+        limiter = RateLimitChecker.new
         allow(RateLimitChecker).to receive(:new) { limiter }
         allow(limiter).to receive(:limit_by_action).and_return(true)
 
@@ -117,15 +110,11 @@ RSpec.describe "feedback_messages" do
     context "with valid params but recaptcha not passed" do
       before { mock_recaptcha_config_enabled }
 
-      it "rerenders page" do
-        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-        expect(response.body).to include("Make sure the forms are filled")
-      end
-
-      it "doesn't queues a slack message" do
+      it "rerenders page and doesn't queue a slack message", :aggregate_failures do
         sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+        expect(response.body).to include("Make sure the forms are filled")
       end
     end
 
@@ -137,16 +126,13 @@ RSpec.describe "feedback_messages" do
         sign_in user
       end
 
-      it "creates a feedback message reported by the user without recaptcha" do
-        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
-      end
-
-      it "queues a slack message to be sent" do
+      it "creates a feedback message reported by the user without recaptcha and queues a slack message",
+         :aggregate_failures do
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
       end
 
       it "sends an email when no cache" do
@@ -183,7 +169,7 @@ RSpec.describe "feedback_messages" do
             method.call(key, *args, &block)
           end
         end
-        
+
         expect do
           perform_enqueued_jobs do
             post feedback_messages_path, params: valid_abuse_report_params, headers: headers
@@ -208,16 +194,13 @@ RSpec.describe "feedback_messages" do
         sign_in user
       end
 
-      it "fails to create a feedback message reported without recaptcha" do
-        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
-      end
-
-      it "doesn't queue a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(0, only: Slack::Messengers::Worker) do
+      it "fails to create a feedback message without recaptcha and doesn't queue a slack message",
+         :aggregate_failures do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(false)
       end
     end
 
@@ -229,16 +212,13 @@ RSpec.describe "feedback_messages" do
         sign_in user
       end
 
-      it "creates a feedback message reported by the moderator without recaptcha" do
-        post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-
-        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
-      end
-
-      it "queues a slack message to be sent" do
+      it "creates a feedback message reported by the moderator without recaptcha and queues a slack message",
+         :aggregate_failures do
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params, headers: headers
         end
+
+        expect(FeedbackMessage.exists?(reporter_id: user.id)).to be(true)
       end
     end
 
@@ -248,26 +228,14 @@ RSpec.describe "feedback_messages" do
         mock_recaptcha_verification
       end
 
-      it "does not add any user as the reporter" do
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
+      it "creates an anonymous report, queues a slack message, and redirects to the index page",
+         :aggregate_failures do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+          post "/feedback_messages", params: valid_abuse_report_params, headers: headers
+        end
 
         expect(FeedbackMessage.last.reporter).to be_nil
-      end
-
-      it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
-          post feedback_messages_path, params: valid_abuse_report_params, headers: headers
-        end
-      end
-
-      it "redirects to the index page" do
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
-
         expect(response).to redirect_to(feedback_messages_path)
-      end
-
-      it "redirects and continues to the index page with the correct message" do
-        post "/feedback_messages", params: valid_abuse_report_params, headers: headers
 
         follow_redirect!
 

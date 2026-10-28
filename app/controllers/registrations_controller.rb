@@ -86,6 +86,10 @@ class RegistrationsController < Devise::RegistrationsController
     check_allowed_email(resource) if resource.email.present?
     resource.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
     resource.save if resource.email.present?
+  rescue ActiveRecord::RecordNotUnique
+    User.uncached { resource.validate }
+    resource.errors.add(:email, :taken) if resource.errors.empty?
+    false
   end
 
   def store_referer_location_if_safe

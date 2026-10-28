@@ -642,6 +642,31 @@ RSpec.describe User do
         end
       end
 
+      it "rejects syntactically malformed email addresses" do
+        malformed_emails = [
+          "member@example,com",
+          '"member@example.com"',
+          "user@localhost",
+          "user..name@example.com",
+        ]
+
+        malformed_emails.each do |email|
+          user = build(:user, email: email)
+
+          expect(user).not_to be_valid
+          expect(user.errors[:email]).to include("is invalid")
+        end
+      end
+
+      it "does not invalidate existing persisted accounts with legacy email formats on unrelated updates" do
+        user = create(:user)
+        user.update_column(:email, "member@example,com")
+        user.reload
+
+        expect(user.update(name: "Updated Name")).to be(true)
+        expect(user.errors[:email]).to be_empty
+      end
+
       it { is_expected.not_to allow_value("  ").for(:name) }
 
       it { is_expected.to validate_presence_of(:articles_count) }
@@ -1119,14 +1144,14 @@ RSpec.describe User do
       expect(user.good_standing_followers_count).to eq(2)
     end
 
-    it "counts distinct follower ids so the follows index can serve the query" do
+    it "counts follower ids so the follows index can serve the query" do
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("COUNT(") }
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
         user.good_standing_followers_count
       end
 
-      expect(queries).to include(a_string_including('COUNT(DISTINCT "follows"."follower_id")'))
+      expect(queries).to include(a_string_including('COUNT("follows"."follower_id")'))
     end
   end
 
@@ -1677,21 +1702,26 @@ RSpec.describe User do
 
   describe "#generate_social_images" do
     before do
-      create(:article, user: user)
       allow(Images::SocialImageWorker).to receive(:perform_async)
     end
 
-    context "when the name or profile_image has changed and the user has articles" do
-      it "calls SocialImageWorker.perform_async" do
-        user.name = "New name for this user!"
-        user.save
-        expect(Images::SocialImageWorker).to have_received(:perform_async)
+    context "when name or profile_image changes" do
+      it "enqueues SocialImageWorker for User even when the user has no articles" do
+        user.update!(name: "New name for this user!")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(user.id, "User")
       end
     end
 
-    context "when the name or profile_image has not changed or the user has no articles" do
+    context "when only username changes" do
+      it "enqueues SocialImageWorker for Profile so only the profile card regenerates" do
+        user.update!(username: "#{user.username}_new")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(user.profile.id, "Profile")
+      end
+    end
+
+    context "when non-displayed attributes change" do
       it "does not call SocialImageWorker.perform_async" do
-        user.save
+        user.update!(twitter_username: "new_handle", last_comment_at: Time.current)
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end

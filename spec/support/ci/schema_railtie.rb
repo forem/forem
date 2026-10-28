@@ -1,3 +1,9 @@
+module CiKnapsackProSkipShallowFetch
+  def shallow_repository?
+    false
+  end
+end
+
 if ENV["CI"] && !defined?(CiSchemaRailtie)
   ENV["RAILS_ENV"] = "test"
   ENV["RUBY_DEBUG_ENABLE"] ||= "0"
@@ -43,5 +49,9 @@ if ENV["CI"] && !defined?(CiSchemaRailtie)
     end
 
     KnapsackPro::Adapters::RSpecAdapter.singleton_class.prepend(CiKnapsackProForkedDetector)
+  end
+
+  if defined?(KnapsackPro::RepositoryAdapters::GitAdapter)
+    KnapsackPro::RepositoryAdapters::GitAdapter.prepend(CiKnapsackProSkipShallowFetch)
   end
 end
