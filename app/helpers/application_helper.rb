@@ -167,27 +167,35 @@ module ApplicationHelper
     CloudCoverUrl.new(url, subforem_id).call
   end
 
+  DEFAULT_TAG_COLORS = { background: "#d6d9e0", color: "#606570" }.freeze
+  private_constant :DEFAULT_TAG_COLORS
+
   def tag_colors(tag)
     if tag.respond_to?(:bg_color_hex) && tag.respond_to?(:text_color_hex)
-      { background: tag.bg_color_hex, color: tag.text_color_hex }
+      colors = { background: tag.bg_color_hex, color: tag.text_color_hex }
+      preloaded_tag_colors[tag.name] = colors if tag.respond_to?(:name) && tag.name.present?
+      colors
     else
       tag_name = tag.respond_to?(:name) ? tag.name : tag.to_s
-      preloaded_tag_colors.fetch(tag_name) do
+      preloaded_tag_colors[tag_name] ||=
         Rails.cache.fetch(tag_colors_cache_key(tag_name), expires_in: 5.hours) { find_tag_colors(tag_name) }
-      end
     end
   end
 
   # Reads the cached colors for every tag shown in a story list in one cache round-trip,
-  # so render_tag_link doesn't make a separate cache read per tag.
+  # and batches any cache misses into a single Tag query instead of one per tag.
   def preload_tag_colors(stories)
-    tag_names = stories.reject { |story| story.type_of == "status" }
+    tag_names = Array(stories).compact.reject { |story| story.type_of == "status" }
       .flat_map(&:cached_tag_list_array).uniq - preloaded_tag_colors.keys
     return if tag_names.empty?
 
     names_by_key = tag_names.index_by { |tag_name| tag_colors_cache_key(tag_name) }
-    Rails.cache.fetch_multi(*names_by_key.keys, expires_in: 5.hours) { |key| find_tag_colors(names_by_key[key]) }
-      .each { |key, colors| preloaded_tag_colors[names_by_key[key]] = colors }
+    missing_colors = nil
+    colors_by_key = Rails.cache.fetch_multi(*names_by_key.keys, expires_in: 5.hours) do |key|
+      missing_colors ||= find_tag_colors_by_name(tag_names)
+      missing_colors[names_by_key[key]]
+    end
+    colors_by_key.each { |key, colors| preloaded_tag_colors[names_by_key[key]] = colors }
   end
 
   def any_enabled_auth_providers?
@@ -623,8 +631,14 @@ module ApplicationHelper
     if (found_tag = Tag.select(%i[bg_color_hex text_color_hex]).find_by(name: tag_name))
       { background: found_tag.bg_color_hex, color: found_tag.text_color_hex }
     else
-      { background: "#d6d9e0", color: "#606570" }
+      DEFAULT_TAG_COLORS.dup
     end
+  end
+
+  def find_tag_colors_by_name(tag_names)
+    found = Tag.where(name: tag_names).pluck(:name, :bg_color_hex, :text_color_hex)
+      .to_h { |name, bg, text| [name, { background: bg, color: text }] }
+    tag_names.index_with { |name| found[name] || DEFAULT_TAG_COLORS.dup }
   end
 end
 

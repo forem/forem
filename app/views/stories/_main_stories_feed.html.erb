@@ -1,3 +1,4 @@
+<% preload_tag_colors([@pinned_article, @featured_story, *@stories].compact) %>
 <% if should_show_latest_spam_suppression?(@stories) %>
   <div class="crayons-story">
     <p class="crayons-story__body">

@@ -28,6 +28,7 @@ module Api
         end
 
         if @page.save
+          log_page_write("api_page_create")
           render json: @page, status: :ok
         else
           render_validation_error
@@ -36,7 +37,10 @@ module Api
 
       def update
         if page_admin?
-          return render json: @page, status: :ok if @page.update(permitted_params)
+          if @page.update(permitted_params)
+            log_page_write("api_page_update")
+            return render json: @page, status: :ok
+          end
 
           return render_validation_error
         end
@@ -51,6 +55,7 @@ module Api
         return render_validation_error if @page.errors.any?
 
         if @page.save
+          log_page_write("api_page_update")
           render json: @page, status: :ok
         else
           render_validation_error
@@ -61,13 +66,52 @@ module Api
         authorize_org_admin!(@page.organization) unless page_admin?
 
         if @page.destroy
+          log_page_write("api_page_destroy")
           render json: @page, status: :ok
         else
           render_validation_error
         end
       end
 
+      def preview
+        page_hash = extract_preview_page_hash
+        org_id = params[:organization_id].presence || page_hash[:organization_id].presence
+        @organization = Organization.find_by(id: org_id) if org_id.present?
+        authorize_org_admin!(@organization) unless page_admin?
+
+        body_markdown = params.key?(:body_markdown) ? params[:body_markdown] : page_hash[:body_markdown]
+        body_html = params.key?(:body_html) ? params[:body_html] : page_hash[:body_html]
+
+        processed_html = if body_markdown.blank? && body_html.present? && page_admin? && @organization.nil?
+                           body_html
+                         else
+                           renderer = ContentRenderer.new(body_markdown.to_s, source: @organization, user: @user)
+                           renderer.process(link_attributes: link_attributes_for_org(@organization)).processed_html
+                         end
+
+        render json: { processed_html: processed_html }, status: :ok
+      rescue ContentRenderer::ContentParsingError => e
+        error_unprocessable_entity(ErrorMessages::Clean.call(e.message))
+      end
+
       private
+
+      def log_page_write(action)
+        Audit::Logger.log(:admin_api, @user, { "action" => action, "page_id" => @page.id })
+      end
+
+      def extract_preview_page_hash
+        return params[:page] if params[:page].is_a?(ActionController::Parameters) || params[:page].is_a?(Hash)
+
+        {}
+      end
+
+      def link_attributes_for_org(organization)
+        return {} unless organization
+        return {} if FeatureFlag.enabled?(:org_dofollow_links, FeatureFlag::Actor[organization])
+
+        { rel: "nofollow ugc" }
+      end
 
       def set_page
         @page = Page.find(params[:id])

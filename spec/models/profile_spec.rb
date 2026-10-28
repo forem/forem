@@ -130,6 +130,40 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
     end
   end
 
+  describe "#generate_social_image" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    it "enqueues SocialImageWorker for Profile when summary changes" do
+      profile.update!(summary: "Updated bio")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(profile.id, "Profile")
+    end
+
+    it "enqueues SocialImageWorker for Profile when location changes" do
+      profile.update!(location: "Toronto, ON")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(profile.id, "Profile")
+    end
+
+    it "enqueues SocialImageWorker for Profile when website_url changes" do
+      profile.update!(website_url: "https://example.com")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(profile.id, "Profile")
+    end
+
+    it "does not enqueue SocialImageWorker when non-displayed profile fields change" do
+      field = create(:profile_field, label: "Currently learning")
+      described_class.refresh_attributes!
+      profile.update!(field.attribute_name => "Zig")
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue SocialImageWorker when blank fields are updated from nil to empty string" do
+      blank_profile = create(:user).profile
+      blank_profile.update!(summary: "", location: "", website_url: "")
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+    end
+  end
+
   describe "onboarding checklist" do
     before { allow(Settings::General).to receive(:display_sidebar_onboarding_checklist).and_return(true) }
 

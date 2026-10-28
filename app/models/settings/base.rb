@@ -207,7 +207,7 @@ module Settings
             query.each do |record|
               # The first time we set a var will be the subforem-specific row if it exists,
               # else the global one will remain.
-              result[record.var] ||= record.value
+              result[record.var] = record.value if result[record.var].nil?
             end
             result.with_indifferent_access
           end

@@ -1,5 +1,16 @@
 <div class="flex flex-col gap-6">
   <fieldset class="border p-4 rounded-md">
+    <legend class="fw-bold px-2 text-base color-base-90">🎯 Targeting Bucket</legend>
+    <div class="grid grid-cols-1 m:grid-cols-2 gap-4 mt-2">
+      <div class="crayons-field">
+        <%= f.label :targeting_bucket, "Targeting Bucket", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Specifies which user segment or surface this configuration targets.</p>
+        <%= f.select :targeting_bucket, FeedConfig::NON_ALL_TARGETING_BUCKETS.map { |b| [b.humanize, b] }, {}, class: "crayons-select" %>
+      </div>
+    </div>
+  </fieldset>
+
+  <fieldset class="border p-4 rounded-md">
     <legend class="fw-bold px-2 text-base color-base-90">🤖 AI & Disclosure Controls</legend>
     <div class="grid grid-cols-1 m:grid-cols-2 gap-4 mt-2">
       <div class="crayons-field">
@@ -129,6 +140,11 @@
       <div class="crayons-field">
         <%= f.label :semantic_similarity_weight, "Semantic Similarity Weight", class: "crayons-field__label" %>
         <%= f.number_field :semantic_similarity_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :semantic_candidate_limit, "Semantic Candidate Limit", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Pre-filtered candidate pool size (100–1000) when Semantic Similarity Weight &gt; 0.</p>
+        <%= f.number_field :semantic_candidate_limit, min: FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT, max: FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT, step: 1, class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
         <%= f.label :randomness_weight, "Randomness Weight", class: "crayons-field__label" %>

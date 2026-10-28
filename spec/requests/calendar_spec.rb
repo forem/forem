@@ -338,5 +338,50 @@ RSpec.describe "Calendar" do
         expect(response.body).to include('value="2026-03-12"')
       end
     end
+
+    context "with query efficiency" do
+      it "skips the agenda and signup queries when no event days fall in the in-grid range" do
+        login_as(create(:user))
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path(start: "2025-01-15", end: "2025-01-15")
+        end
+
+        event_queries = queries.grep(/FROM "events"/)
+        expect(event_queries.size).to eq(1)
+        expect(queries.grep(/FROM "event_signups"/)).to be_empty
+      end
+
+      it "still queries the agenda when the selected range is outside the displayed month grid" do
+        march_event = create(:event, title: "March Event Viewed From April", published: true,
+                                     start_time: Date.new(2026, 3, 10).in_time_zone + 9.hours,
+                                     end_time: Date.new(2026, 3, 10).in_time_zone + 11.hours)
+
+        get calendar_path(start: "2026-03-10", end: "2026-03-12", month: "2026-04")
+
+        expect(response.body).to include(march_event.title)
+      end
+
+      it "selects only agenda columns without hydrating body_markdown or processed_html" do
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        agenda_query = queries.grep(/FROM "events".*ORDER BY/m).first
+        expect(agenda_query).to be_present
+        expect(agenda_query).not_to include('"events".*')
+        expect(agenda_query).not_to include("body_markdown")
+        expect(agenda_query).not_to include("processed_html")
+      end
+    end
   end
 end

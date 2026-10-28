@@ -1,11 +1,93 @@
-//! Emoji shortcode expansion and `<code>`-aware HTML emoji replacement matching
-//! `Html::Parser#parse_emojis` and `Html::Parser#escape_colon_emojis_in_codeblock`.
+//! Emoji shortcode expansion, `<code>`-aware HTML emoji replacement, and Unicode `RGI_Emoji`
+//! stripping matching `Html::Parser#parse_emojis`, `Html::Parser#escape_colon_emojis_in_codeblock`,
+//! `EmojiOnlyValidator`, and `Redcarpet::Render::HTMLRouge#slugify`.
+//!
+//! Replaces the runtime `gemoji` and `emoji_regex` Ruby gems. See `emoji_data.rs` and
+//! `docs/rust_native_extensions.md` for instructions on occasionally updating the static
+//! Unicode Emoji / Gemoji tables when new Unicode Emoji revisions are adopted.
 
 use std::borrow::Cow;
 
-use crate::emoji_data::{EMOJI_BLOB, EMOJI_ENTRIES, MAX_EMOJI_ALIAS_LEN};
+use crate::emoji_data::{
+    EMOJI_BLOB, EMOJI_ENTRIES, MAX_EMOJI_ALIAS_LEN, RGI_EMOJI_BLOB, RGI_EMOJI_ENTRIES,
+};
 
 const MAX_TAG_DEPTH: usize = 64;
+
+/// Strips all Unicode `RGI_Emoji` sequences from `text`, matching
+/// `text.gsub(EmojiRegex::RGIEmoji, "")` from the `emoji_regex` gem.
+///
+/// Returns `Cow::Borrowed(text)` without allocating when `text` contains no RGI emoji.
+pub fn strip_rgi_emoji(text: &str) -> Cow<'_, str> {
+    let bytes = text.as_bytes();
+    // Fast path: every RGI emoji sequence either starts with a non-ASCII UTF-8 lead byte (>= 0x80)
+    // or is one of the 12 keycap sequences (`[#*0-9]\u{FE0F}\u{20E3}`) containing `0xEF 0xB8 0x8F`.
+    if bytes.is_ascii() {
+        return Cow::Borrowed(text);
+    }
+
+    let mut out: Option<String> = None;
+    let mut last_copied = 0usize;
+    let mut pos = 0usize;
+
+    while pos < bytes.len() {
+        let b0 = bytes[pos];
+        let first_char_len = match b0 {
+            b'#' | b'*' | b'0'..=b'9' if bytes.get(pos + 1) == Some(&0xEF) => 1,
+            0xC0..=0xDF => 2,
+            0xE0..=0xEF => 3,
+            0xF0..=0xF7 => 4,
+            _ => {
+                pos += 1;
+                continue;
+            }
+        };
+
+        if let Some(match_len) = match_rgi_emoji_at(&bytes[pos..], first_char_len) {
+            let buf = out.get_or_insert_with(|| String::with_capacity(text.len()));
+            buf.push_str(&text[last_copied..pos]);
+            pos += match_len;
+            last_copied = pos;
+        } else {
+            pos += first_char_len;
+        }
+    }
+
+    match out {
+        None => Cow::Borrowed(text),
+        Some(mut s) => {
+            s.push_str(&text[last_copied..]);
+            Cow::Owned(s)
+        }
+    }
+}
+
+#[inline]
+fn match_rgi_emoji_at(rem: &[u8], first_char_len: usize) -> Option<usize> {
+    if rem.len() < 3 || rem.len() < first_char_len {
+        return None;
+    }
+
+    let first_char_bytes = &rem[..first_char_len];
+    let idx = RGI_EMOJI_ENTRIES.partition_point(|&packed| {
+        let off = (packed >> 8) as usize;
+        let f_len = ((packed & 0x03) as usize) + 1;
+        &RGI_EMOJI_BLOB[off..off + f_len] < first_char_bytes
+    });
+
+    for &packed in &RGI_EMOJI_ENTRIES[idx..] {
+        let off = (packed >> 8) as usize;
+        let f_len = ((packed & 0x03) as usize) + 1;
+        if &RGI_EMOJI_BLOB[off..off + f_len] != first_char_bytes {
+            break;
+        }
+        let b_len = ((packed >> 2) & 0x3F) as usize;
+        if rem.starts_with(&RGI_EMOJI_BLOB[off..off + b_len]) {
+            return Some(b_len);
+        }
+    }
+    None
+}
 
 /// Looks up a `gemoji` alias (the capture group inside `:([\w+-]+):`) in the static sorted table.
 #[inline]
@@ -770,6 +852,33 @@ mod tests {
                 None,
                 "expected None for {quirky:?}"
             );
+        }
+    }
+
+    #[test]
+    fn strips_rgi_emojis_matching_emoji_regex() {
+        assert!(matches!(strip_rgi_emoji("plain ascii"), Cow::Borrowed(_)));
+        assert!(matches!(strip_rgi_emoji("café 日本語"), Cow::Borrowed(_)));
+
+        // Keycaps: "#️⃣" (U+0023 U+FE0F U+20E3) is RGI, whereas "#️" (U+0023 U+FE0F) and "#" are not.
+        assert_eq!(strip_rgi_emoji("#️⃣"), "");
+        assert_eq!(strip_rgi_emoji("#\u{FE0F}"), "#\u{FE0F}");
+        assert_eq!(strip_rgi_emoji("#"), "#");
+        assert_eq!(strip_rgi_emoji("1️⃣*️⃣9️⃣"), "");
+
+        // Single, ZWJ, skin-tone, and flag sequences
+        assert_eq!(strip_rgi_emoji("🍀"), "");
+        assert_eq!(strip_rgi_emoji("👍🏽"), "");
+        assert_eq!(strip_rgi_emoji("👨‍👩‍👧‍👦"), "");
+        assert_eq!(strip_rgi_emoji("🏴󠁧󠁢󠁥󠁮󠁧󠁿"), "");
+        assert_eq!(strip_rgi_emoji("hello 🚀 world 👨‍👩‍👧‍👦!"), "hello  world !");
+
+        // Every entry in RGI_EMOJI_ENTRIES strips to empty
+        for &packed in &RGI_EMOJI_ENTRIES {
+            let off = (packed >> 8) as usize;
+            let b_len = ((packed >> 2) & 0x3F) as usize;
+            let seq = std::str::from_utf8(&RGI_EMOJI_BLOB[off..off + b_len]).unwrap();
+            assert_eq!(strip_rgi_emoji(seq), "", "failed to strip {seq:?}");
         }
     }
 }

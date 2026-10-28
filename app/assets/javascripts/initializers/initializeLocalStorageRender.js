@@ -4,6 +4,7 @@ function initializeLocalStorageRender() {
     if (userData) {
       document.body.dataset.user = userData;
       initializeBaseUserData();
+      initializeOnboardingTaskCard();
       initializeReadingListIcons();
       initializeFavoritedMarkers();
       initializeBillboardVisibility();

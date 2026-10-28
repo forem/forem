@@ -112,8 +112,8 @@ module Users
       # We don't update `data` directly. This uses the store_accessors instead.
       @profile.assign_attributes(@updated_profile_attributes)
 
-      # Before saving, filter out obsolete profile fields
-      @profile.data.slice!(*Profile.attributes)
+      # Before saving, filter out obsolete profile fields while preserving generated social_image
+      @profile.data.slice!(*Profile.attributes, "social_image")
 
       @profile.save!
     end

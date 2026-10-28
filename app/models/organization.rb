@@ -222,6 +222,9 @@ class Organization < ApplicationRecord
   HEADER_CTA_MAX_TEXT = 40
   HEADER_CTA_MAX_URL = 200
   HEADER_CTA_MAX_LINKS = 12
+  SOCIAL_IMAGE_TRIGGER_ATTRIBUTES = %i[
+    name slug profile_image bg_color_hex summary tag_line location url
+  ].freeze
 
   def validate_header_cta
     return if header_cta.blank?
@@ -320,10 +323,10 @@ class Organization < ApplicationRecord
   end
 
   def generate_social_images
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
+    return if previously_new_record?
+    return unless SOCIAL_IMAGE_TRIGGER_ATTRIBUTES.any? { |attr| saved_change_to_attribute?(attr) }
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   def evaluate_markdown

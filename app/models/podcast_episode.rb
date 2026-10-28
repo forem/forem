@@ -19,7 +19,8 @@ class PodcastEpisode < ApplicationRecord
 
   validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true, url: { schemes: %w[https http] }
+  validates :website_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :reactions_count, presence: true
   validates :slug, presence: true
   validates :title, presence: true

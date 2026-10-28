@@ -21,6 +21,7 @@ module Stories
       preload_additional_subforem_settings
 
       add_pinned_article
+      preload_feed_associations
 
       # Add edge cache headers for signed out users only
       return if user_signed_in?
@@ -68,7 +69,11 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-               @feed_config = FeedConfig.select_for_feed(preferred_id: params[:item])
+               @feed_config = FeedConfig.select_for_feed(
+                 preferred_id: params[:item],
+                 user: current_user,
+                 context_type: FeedEvent::CONTEXT_TYPE_HOME,
+               )
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else
@@ -158,6 +163,7 @@ module Stories
 
       @articles = left_scope
         .or(right_scope)
+        .limited_column_select
         .where("score > -10")
         .order("published_at DESC")
         .page(@page)
@@ -173,10 +179,54 @@ module Stories
 
       @articles = left_scope
         .or(right_scope)
+        .limited_column_select
         .where("score > -10")
         .order("hotness_score DESC")
         .page(@page)
         .per(25)
+    end
+
+    def preload_feed_associations
+      records = @stories.map(&:object)
+      if @page <= 2 && perform_caching && records.any?
+        vc = view_context
+        digest_path = vc.digest_path_from_template(lookup_context.find("stories/feeds/show", [], false, [], formats: [:json]))
+        @story_cache_keys = {}
+        keys = records.index_by { |r| @story_cache_keys[r.id] = story_cache_key(r, vc, digest_path) }
+        @cached_story_fragments = Rails.cache.read_multi(*keys.keys)
+        records = keys.except(*@cached_story_fragments.keys).values
+      end
+      return if records.empty?
+
+      notes_missing = records.reject { |r| r.association(:context_notes).loaded? }
+      if notes_missing.any?
+        ActiveRecord::Associations::Preloader.new(
+          records: notes_missing, associations: :context_notes, scope: ContextNote.order(:id),
+        ).call
+      end
+
+      comments_assoc = @comments_variant.to_sym
+      comments_missing = records.select { |r| r.comments_count.positive? && !r.association(comments_assoc).loaded? }
+      if comments_missing.any?
+        ranked = Comment.where(
+          commentable_type: "Article", commentable_id: comments_missing.map(&:id),
+          score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false
+        ).select("comments.id, ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS rn")
+        ActiveRecord::Associations::Preloader.new(
+          records: comments_missing, associations: comments_assoc,
+          scope: Comment.where(id: Comment.from(ranked, :ranked_comments).where("rn <= 3").select(:id)).includes(:user)
+        ).call
+      end
+
+      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
+    end
+
+    def story_cache_key(rec, vc, digest_path)
+      raw_key = ["article", rec.id, rec.updated_at, rec.edited_at, rec.last_comment_at, rec.public_reactions_count,
+                 rec.favorited_by_user_id, rec.cached_user, rec.cached_organization, I18n.locale].join("-")
+      ActiveSupport::Cache.expand_cache_key(
+        combined_fragment_cache_key(vc.cache_fragment_name(raw_key, digest_path: digest_path)), :jbuilder
+      )
     end
 
     def preload_common_settings

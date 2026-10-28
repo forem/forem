@@ -22,6 +22,45 @@ RSpec.describe Comments::Tree do
       expect(root_comment.user.association(:roles)).to be_loaded
       expect(root_comment.user.association(:profile)).to be_loaded
       expect(root_comment.user.association(:setting)).to be_loaded
+      expect(root_comment.user.association(:organization_memberships)).to be_loaded
+    end
+
+    it "reuses the passed article and its loaded user instead of re-fetching them" do
+      article.update_column(:user_id, user.id)
+      loaded_article = Article.find(article.id)
+      loaded_article.user
+
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "articles"') || payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(loaded_article)
+      end
+
+      expect(queries).to be_empty
+      nodes = Comment.flatten_arranged_nodes(tree)
+      expect(nodes.map(&:commentable)).to all(be(loaded_article))
+      expect(nodes.map(&:user)).to all(be(loaded_article.user))
+      expect(loaded_article.association(:organization)).to be_loaded
+      expect(loaded_article.user.association(:profile)).to be_loaded
+      expect(loaded_article.user.association(:setting)).to be_loaded
+    end
+
+    it "skips association preloads when all root comments are filtered out" do
+      comment.update_column(:score, -5)
+      other_comment.update_column(:score, -10)
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(article, include_negative: false)
+      end
+
+      expect(tree).to be_empty
+      expect(user_queries).to be_empty
     end
 
     it "returns part of the tree" do
@@ -109,6 +148,57 @@ RSpec.describe Comments::Tree do
       nodes = [tree.keys.first, *tree.values.first.keys]
       expect(nodes.map(&:commentable)).to all(be(root.commentable))
       expect(root.commentable.association(:organization)).to be_loaded
+    end
+
+    it "preloads user associations onto the returned root comment" do
+      root = Comment.find(comment.id)
+      tree = described_class.for_root_comment(root)
+      root_comment = tree.keys.first
+
+      expect(root_comment.association(:user)).to be_loaded
+      expect(root_comment.user.association(:roles)).to be_loaded
+      expect(root_comment.user.association(:profile)).to be_loaded
+      expect(root_comment.user.association(:setting)).to be_loaded
+      expect(root_comment.user.association(:organization_memberships)).to be_loaded
+    end
+
+    it "reuses the root comment's loaded user instead of re-fetching it" do
+      root = Comment.find(comment.id)
+      root.user
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(user_queries).to be_empty
+      nodes = [tree.keys.first, *tree.values.first.keys]
+      expect(nodes.map(&:user)).to all(be(root.user))
+      expect(root.user.association(:profile)).to be_loaded
+      expect(root.user.association(:setting)).to be_loaded
+    end
+
+    it "scopes descendant lookup by commentable and avoids re-fetching root_comment by id", :aggregate_failures do
+      root = Comment.find(comment.id)
+
+      comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(tree).to eq(comment => { child_comment => {} })
+      expect(comment_queries.size).to eq(1)
+      expect(comment_queries.first).to include('"comments"."commentable_id"')
+      expect(comment_queries.first).to include('"comments"."commentable_type"')
+      expect(comment_queries.first).not_to include('"comments"."id" =')
     end
   end
 end
