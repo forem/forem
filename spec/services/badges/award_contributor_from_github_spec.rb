@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Badges::AwardContributorFromGithub, type: :service do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:user) { create(:user) }
   let(:identity) { create(:identity, user: user, provider: "github", uid: "123456", auth_data_dump: { "info" => { "nickname" => "francistrdev" } }) }
 
