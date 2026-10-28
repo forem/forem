@@ -19,7 +19,7 @@ module Api
         # Tags created from posts are lowercased (ActsAsTaggableOn.force_lowercase); match that here.
         @tag.name = @tag.name.downcase if @tag.name
 
-        if @tag.save
+        if save_tag
           Audit::Logger.log(:admin_api, @user, { "action" => "api_tag_create", "tag_id" => @tag.id })
           render :update, status: :created
         else
@@ -43,6 +43,15 @@ module Api
       end
 
       private
+
+      def save_tag
+        @tag.save
+      rescue ActiveRecord::RecordNotUnique
+        raise unless Tag.exists?(name: @tag.name)
+
+        @tag.errors.add(:name, :taken)
+        false
+      end
 
       def authorize_admin
         authorize Tag, :access?, policy_class: InternalPolicy

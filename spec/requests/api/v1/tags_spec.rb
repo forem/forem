@@ -206,6 +206,34 @@ RSpec.describe "Api::V1::Tags" do
         expect(AuditLog.where(slug: "api_tag_create")).not_to exist
       end
 
+      it "returns the existing id when a concurrent create wins the name" do
+        existing = create(:tag, name: "javascript", pretty_name: "Existing")
+        candidate = Tag.new(tag_params)
+        allow(Tag).to receive(:new).and_return(candidate)
+        allow(candidate).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
+
+        expect do
+          post api_tags_path, params: tag_params.to_json, headers: auth_headers
+        end.not_to change(Tag, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body).to include(
+          "id" => existing.id, "error" => a_string_including("Name"), "status" => 422,
+        )
+        expect(existing.reload.pretty_name).to eq("Existing")
+        expect(AuditLog.where(slug: "api_tag_create")).not_to exist
+      end
+
+      it "does not mask an unrelated unique constraint error" do
+        candidate = Tag.new(tag_params)
+        allow(Tag).to receive(:new).and_return(candidate)
+        allow(candidate).to receive(:save).and_raise(ActiveRecord::RecordNotUnique)
+
+        expect do
+          post api_tags_path, params: tag_params.to_json, headers: auth_headers
+        end.to raise_error(ActiveRecord::RecordNotUnique)
+      end
+
       ["bad-name", "x" * 31, ""].each do |name|
         it "rejects the invalid name #{name.inspect} with model validation errors" do
           expect do
