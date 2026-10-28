@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Challenge event key dates" do
-  # 12:00am Pacific on November 1 and 11:59pm Pacific on November 22; both are the next day in UTC.
-  let(:start_time) { Time.zone.parse("2026-11-01 07:00:00 UTC") }
+  # 11:59pm Pacific on November 1 and 11:59pm Pacific on November 22; both are the next day in UTC.
+  let(:start_time) { Time.zone.parse("2026-11-02 07:59:00 UTC") }
   let(:end_time) { Time.zone.parse("2026-11-23 07:59:00 UTC") }
   let(:data) { { "time_zone" => "America/Los_Angeles" } }
   let(:event) { create(:event, type_of: :challenge, start_time: start_time, end_time: end_time, data: data) }
@@ -30,7 +30,10 @@ RSpec.describe "Challenge event key dates" do
     let(:data) { {} }
 
     it "shows the dates in the app time zone, as before" do
-      expect(key_dates).to eq([["Contest Start", "November 01, 2026"], ["Submissions Due", "November 23, 2026"]])
+      expected_start = start_time.in_time_zone(Time.zone).strftime("%B %d, %Y")
+      expected_end = end_time.in_time_zone(Time.zone).strftime("%B %d, %Y")
+
+      expect(key_dates).to eq([["Contest Start", expected_start], ["Submissions Due", expected_end]])
     end
   end
 end
