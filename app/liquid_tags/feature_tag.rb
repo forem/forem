@@ -37,9 +37,13 @@ class FeatureTag < Liquid::Block
     wallet
   ].freeze
 
-  # "rocket" was documented in the editor help but never shipped an asset, and
-  # "sparkles" is used by a published org page; neither has a matching SVG
-  LEGACY_ICON_ALIASES = { "rocket" => "lightning", "sparkles" => "sparkle-heart" }.freeze
+  # "rocket" was documented in the editor help, and "sparkles" and "zap" are
+  # used in published content; none of the three shipped a matching SVG
+  LEGACY_ICON_ALIASES = {
+    "rocket" => "lightning",
+    "sparkles" => "sparkle-heart",
+    "zap" => "lightning"
+  }.freeze
 
   ICON_ASSET_GLOB = "app/assets/images/*.svg".freeze
 

@@ -133,6 +133,14 @@ RSpec.describe FeatureTag, type: :liquid_tag do
       expect(aliased).to match(/<svg/)
       expect(aliased).to eq(direct)
     end
+
+    it "renders the legacy zap name used by a published article as the lightning icon" do
+      aliased = render_feature('title="Fast" icon="zap"')
+      direct = render_feature('title="Fast" icon="lightning"')
+
+      expect(aliased).to match(/<svg/)
+      expect(aliased).to eq(direct)
+    end
   end
 
   describe "article integration" do
