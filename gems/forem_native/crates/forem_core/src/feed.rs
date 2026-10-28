@@ -1107,6 +1107,492 @@ pub fn build_feed_config_score_sql(
     }
 }
 
+/// Splits a `cached_tag_list` string on `", "` while stripping trailing empty segments.
+pub fn split_cached_tag_list(cached_tag_list: &str) -> Vec<&str> {
+    if cached_tag_list.is_empty() {
+        return Vec::new();
+    }
+    let mut parts: Vec<&str> = cached_tag_list.split(", ").collect();
+    while parts.last() == Some(&"") {
+        parts.pop();
+    }
+    parts
+}
+
+/// Scores an article's `cached_tag_list` against a user's followed tags and their point values.
+pub fn score_followed_tags<S: AsRef<str>>(
+    cached_tag_list: &str,
+    names: &[S],
+    points: &[f64],
+    tag_weight: f64,
+    unfollowed_score: f64,
+) -> Option<f64> {
+    if names.len() != points.len() || !tag_weight.is_finite() || !unfollowed_score.is_finite() {
+        return None;
+    }
+    if names.is_empty() {
+        return Some(0.0);
+    }
+    let tags = split_cached_tag_list(cached_tag_list);
+    let mut sum = 0.0_f64;
+    for (name, &pts) in names.iter().zip(points.iter()) {
+        if !pts.is_finite() {
+            return None;
+        }
+        sum += if tags.contains(&name.as_ref()) {
+            pts * tag_weight
+        } else {
+            unfollowed_score
+        };
+    }
+    sum.is_finite().then_some(sum)
+}
+
+/// Computes the experience-level distance penalty when at least one rating is a `Float`.
+#[inline]
+pub fn score_experience_level(article_xp: f64, user_xp: f64, weight: f64) -> Option<f64> {
+    if !article_xp.is_finite() || !user_xp.is_finite() || !weight.is_finite() {
+        return None;
+    }
+    let score = -(((article_xp - user_xp).abs() / 2.0) * weight);
+    score.is_finite().then_some(score)
+}
+
+/// Computes the experience-level distance penalty when both ratings are Ruby `Integer`s.
+#[inline]
+pub fn score_experience_level_int(article_xp: i64, user_xp: i64, weight: f64) -> Option<f64> {
+    if !weight.is_finite() {
+        return None;
+    }
+    let half = article_xp.checked_sub(user_xp)?.checked_abs()? / 2;
+    let score = -((half as f64) * weight);
+    score.is_finite().then_some(score)
+}
+
+/// Scores an article's AI disclosure level against a user's `feed_ai_preference`.
+#[inline]
+pub fn score_ai_disclosure(
+    pref: Option<&str>,
+    level: Option<&str>,
+    some_penalty: f64,
+    auto_penalty: f64,
+) -> Option<f64> {
+    if !some_penalty.is_finite() || !auto_penalty.is_finite() {
+        return None;
+    }
+    Some(match (pref, level) {
+        (Some("minimize_ai"), Some("some_ai"))
+        | (Some("hide_fully_autonomous"), Some("some_ai")) => some_penalty,
+        (Some("minimize_ai"), Some("fully_autonomous")) => auto_penalty,
+        _ => 0.0,
+    })
+}
+
+/// Pre-extracted user context and `[comment_w, xp_w, f_user, nf_user, nil_tag, f_tag_w, nf_tag, f_org, nf_org, some_ai, auto_ai]` weights.
+#[derive(Debug, Clone)]
+pub struct UserArticleScoreContext<'a, S: AsRef<str> = &'a str> {
+    pub has_user: bool,
+    pub following_user_ids: &'a [i64],
+    pub following_org_ids: &'a [i64],
+    pub followed_tag_names: &'a [S],
+    pub followed_tag_points: &'a [f64],
+    pub user_xp: (f64, bool, i64),
+    pub ai_preference: Option<&'a str>,
+    pub weights: [f64; 11],
+}
+
+/// Pre-extracted attributes of a single candidate article for feed scoring.
+#[derive(Debug, Clone)]
+pub struct ArticleScoreInput<'a> {
+    pub user_id: Option<i64>,
+    pub organization_id: Option<i64>,
+    pub cached_tag_list: &'a str,
+    pub xp: (f64, bool, i64),
+    pub comments_count: i64,
+    pub ai_disclosure_level: Option<&'a str>,
+    pub base_article_points: f64,
+}
+
+fn score_shared<S: AsRef<str>>(
+    ctx: &UserArticleScoreContext<'_, S>,
+    a: &ArticleScoreInput<'_>,
+) -> Option<[f64; 4]> {
+    let w = &ctx.weights;
+    if !w[2].is_finite()
+        || !w[3].is_finite()
+        || !w[4].is_finite()
+        || !w[7].is_finite()
+        || !w[8].is_finite()
+    {
+        return None;
+    }
+    let u = if a
+        .user_id
+        .is_some_and(|id| ctx.following_user_ids.contains(&id))
+    {
+        w[2]
+    } else {
+        w[3]
+    };
+    let o = if a
+        .organization_id
+        .is_some_and(|id| id != 0 && ctx.following_org_ids.contains(&id))
+    {
+        w[7]
+    } else {
+        w[8]
+    };
+    let t = if ctx.has_user {
+        score_followed_tags(
+            a.cached_tag_list,
+            ctx.followed_tag_names,
+            ctx.followed_tag_points,
+            w[5],
+            w[6],
+        )?
+    } else {
+        w[4]
+    };
+    let ai = if ctx.has_user {
+        score_ai_disclosure(ctx.ai_preference, a.ai_disclosure_level, w[9], w[10])?
+    } else {
+        0.0
+    };
+    Some([u, o, t, ai])
+}
+
+/// Computes the 6-component composite score for `LargeForemExperimental#score_single_article`.
+pub fn score_article_for_user<S: AsRef<str>>(
+    ctx: &UserArticleScoreContext<'_, S>,
+    a: &ArticleScoreInput<'_>,
+) -> Option<f64> {
+    if !a.base_article_points.is_finite() || !ctx.weights[0].is_finite() {
+        return None;
+    }
+    let [u, o, t, ai] = score_shared(ctx, a)?;
+    let xp = if a.xp.1 && ctx.user_xp.1 {
+        score_experience_level_int(a.xp.2, ctx.user_xp.2, ctx.weights[1])?
+    } else {
+        score_experience_level(a.xp.0, ctx.user_xp.0, ctx.weights[1])?
+    };
+    let c = (a.comments_count as f64) * ctx.weights[0];
+    let total = a.base_article_points + u + o + t + xp + c + ai;
+    (c.is_finite() && total.is_finite()).then_some(total)
+}
+
+fn cruby_sift_down(arr: &mut [(f64, usize)], mut root: usize, n: usize) {
+    let tmp = arr[root];
+    while 2 * root + 1 < n {
+        let mut child = 2 * root + 1;
+        if child + 1 < n && arr[child].0 < arr[child + 1].0 {
+            child += 1;
+        }
+        if tmp.0 >= arr[child].0 {
+            break;
+        }
+        arr[root] = arr[child];
+        root = child;
+    }
+    arr[root] = tmp;
+}
+
+/// Matches CRuby 3.3 `rb_uniform_quicksort_intro_2` (`enum.c`) used by `Enumerable#sort_by`.
+fn cruby_introsort(arr: &mut [(f64, usize)], mut depth: usize) {
+    let mut hi = arr.len();
+    while hi > 16 {
+        if depth == 0 {
+            for i in (0..(hi / 2)).rev() {
+                cruby_sift_down(arr, i, hi);
+            }
+            for i in (1..hi).rev() {
+                arr.swap(0, i);
+                cruby_sift_down(arr, 0, i);
+            }
+            return;
+        }
+        depth -= 1;
+        let (a, b, c) = (arr[0].0, arr[hi / 2].0, arr[hi - 1].0);
+        let pivot = if a < b {
+            if b < c {
+                b
+            } else if c < a {
+                a
+            } else {
+                c
+            }
+        } else if c < b {
+            b
+        } else if a < c {
+            a
+        } else {
+            c
+        };
+        let (mut left, mut right) = (0, hi - 1);
+        loop {
+            while arr[left].0 < pivot {
+                left += 1;
+            }
+            while arr[right].0 > pivot {
+                right -= 1;
+            }
+            if right < left {
+                break;
+            }
+            arr.swap(left, right);
+            left += 1;
+            if right == 0 || right - 1 < left {
+                right = right.wrapping_sub(1);
+                break;
+            }
+            right -= 1;
+        }
+        let right_start = right.wrapping_add(1);
+        if hi - right_start > 1 {
+            cruby_introsort(&mut arr[right_start..hi], depth);
+        }
+        hi = left;
+    }
+    for i in 1..hi {
+        let tmp = arr[i];
+        let mut j = i;
+        while j > 0 && arr[j - 1].0 > tmp.0 {
+            arr[j] = arr[j - 1];
+            j -= 1;
+        }
+        arr[j] = tmp;
+    }
+}
+
+/// Computes the sorted index permutation for `Articles::Feeds::Basic#default_home_feed`.
+pub fn rank_basic_feed_indices<S: AsRef<str>>(
+    ctx: &UserArticleScoreContext<'_, S>,
+    articles: &[ArticleScoreInput<'_>],
+) -> Option<Vec<usize>> {
+    let mut keyed: Vec<(f64, usize)> = Vec::with_capacity(articles.len());
+    for (idx, a) in articles.iter().enumerate() {
+        let [u, o, t, ai] = score_shared(ctx, a)?;
+        let score = t + o + u + ai - (idx as f64);
+        if !score.is_finite() {
+            return None;
+        }
+        keyed.push((score, idx));
+    }
+    if keyed.len() > 1 && keyed.windows(2).any(|w| w[0].0 > w[1].0) {
+        let depth = 2 * ((usize::BITS - 1 - keyed.len().leading_zeros()) as usize);
+        cruby_introsort(&mut keyed, depth);
+    }
+    Some(keyed.into_iter().rev().map(|(_, idx)| idx).collect())
+}
+
+/// Filters `(article_id, time_tracked_in_seconds)` pageview pairs where `seconds > min_seconds_exclusive`.
+pub fn filter_tracked_article_ids(entries: &[(i64, f64)], min_sec: f64) -> Option<Vec<i64>> {
+    if !min_sec.is_finite() || entries.iter().any(|&(_, s)| !s.is_finite()) {
+        return None;
+    }
+    Some(
+        entries
+            .iter()
+            .filter_map(|&(id, s)| (s > min_sec).then_some(id))
+            .collect(),
+    )
+}
+
+/// Tag source for an article in `aggregate_recent_activity_metadata`.
+#[derive(Debug, Clone)]
+pub enum ArticleTagSource<'a> {
+    CommaSeparated(&'a str),
+    PreSplit(&'a [String]),
+}
+
+/// Aggregates `(recent_tags, recent_labels, recent_organizations, recent_users, recent_subforems)`.
+#[allow(clippy::type_complexity)]
+pub fn aggregate_recent_activity_metadata(
+    tag_sources: &[ArticleTagSource<'_>],
+    label_lists: &[Vec<String>],
+    org_ids: &[Option<i64>],
+    user_ids: &[Option<i64>],
+    subforem_ids: &[Option<i64>],
+    max_labels: usize,
+) -> (Vec<String>, Vec<String>, Vec<i64>, Vec<i64>, Vec<i64>) {
+    let mut tags: Vec<String> = Vec::new();
+    for src in tag_sources {
+        match src {
+            ArticleTagSource::CommaSeparated(s) => {
+                for t in split_cached_tag_list(s) {
+                    if !tags.iter().any(|x| x == t) {
+                        tags.push(t.to_owned());
+                    }
+                }
+            }
+            ArticleTagSource::PreSplit(list) => {
+                for t in list.iter() {
+                    if !tags.contains(t) {
+                        tags.push(t.clone());
+                    }
+                }
+            }
+        }
+    }
+    let mut labels: Vec<String> = Vec::with_capacity(max_labels);
+    if max_labels > 0 {
+        'lbl: for list in label_lists {
+            for l in list {
+                if !labels.contains(l) {
+                    labels.push(l.clone());
+                    if labels.len() >= max_labels {
+                        break 'lbl;
+                    }
+                }
+            }
+        }
+    }
+    let dedup_i64 = |items: &[Option<i64>]| -> Vec<i64> {
+        let mut out = Vec::new();
+        for &id in items.iter().flatten() {
+            if !out.contains(&id) {
+                out.push(id);
+            }
+        }
+        out
+    };
+    (
+        tags,
+        labels,
+        dedup_i64(org_ids),
+        dedup_i64(user_ids),
+        subforem_ids.iter().copied().flatten().collect(),
+    )
+}
+
+/// Scores and orders subforem IDs for `UserDecorator#ordered_subforems`.
+pub fn order_subforem_ids(recent: &[i64], followed: &[i64], discoverable: &[i64]) -> Vec<i64> {
+    let mut scored: Vec<(i64, i64)> = Vec::with_capacity(recent.len() + followed.len());
+    for (&id, d) in recent
+        .iter()
+        .map(|i| (i, 1_i64))
+        .chain(followed.iter().map(|i| (i, 10_i64)))
+    {
+        if let Some(e) = scored.iter_mut().find(|(k, _)| *k == id) {
+            e.1 = e.1.saturating_add(d);
+        } else {
+            scored.push((id, d));
+        }
+    }
+    scored.sort_by_key(|a| std::cmp::Reverse(a.1));
+    let mut out: Vec<i64> = scored.iter().map(|&(id, _)| id).collect();
+    for &id in discoverable {
+        if !scored.iter().any(|&(sid, _)| sid == id) {
+            out.push(id);
+        }
+    }
+    out
+}
+
+/// Parses a strict 10-byte ISO-8601 date `"YYYY-MM-DD"` into days since `1970-01-01`.
+#[inline]
+pub fn parse_iso_date_days(bytes: &[u8]) -> Option<i64> {
+    if bytes.len() != 10 || bytes[4] != b'-' || bytes[7] != b'-' {
+        return None;
+    }
+    let (y, m, d) = (
+        parse_4_digits(bytes, 0)?,
+        parse_2_digits(bytes, 5)?,
+        parse_2_digits(bytes, 8)?,
+    );
+    ((1..=12).contains(&m) && d >= 1 && d <= days_in_month(y, m)).then(|| days_from_civil(y, m, d))
+}
+
+/// Formats days since `1970-01-01` as an ISO-8601 `"YYYY-MM-DD"` string.
+#[inline]
+pub fn format_iso_date_days(days: i64) -> String {
+    let (y, m, d) = civil_from_days(days);
+    format!("{y:04}-{m:02}-{d:02}")
+}
+
+/// Complete payload structure returned by `UserActivityHeatmapService#build_payload`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct HeatmapPayload {
+    pub start_date: String,
+    pub end_date: String,
+    pub days: Vec<(String, i64, i64, i64, i64)>,
+    pub totals: [i64; 4],
+    pub max: i64,
+}
+
+fn populate_heatmap_buckets(
+    entries: &[(i64, i64)],
+    start_days: i64,
+    window_len: usize,
+    buckets: &mut [i64],
+) -> Option<i64> {
+    let mut deduped: Vec<(i64, i64)> = Vec::with_capacity(entries.len());
+    for &(day, count) in entries {
+        if let Some(e) = deduped.iter_mut().find(|(d, _)| *d == day) {
+            e.1 = count;
+        } else {
+            deduped.push((day, count));
+        }
+    }
+    let mut sum = 0_i64;
+    for &(day, count) in &deduped {
+        sum = sum.checked_add(count)?;
+        if day >= start_days && ((day - start_days) as usize) < window_len {
+            buckets[(day - start_days) as usize] = count;
+        }
+    }
+    Some(sum)
+}
+
+/// Builds the complete daily activity heatmap rows, totals, and maximum.
+pub fn build_activity_heatmap(
+    start_days: i64,
+    end_days: i64,
+    articles: &[(i64, i64)],
+    comments: &[(i64, i64)],
+    reactions: &[(i64, i64)],
+) -> Option<HeatmapPayload> {
+    let window_len = if end_days < start_days {
+        0
+    } else {
+        let diff = end_days.checked_sub(start_days)?;
+        if diff > 10_000 {
+            return None;
+        }
+        (diff as usize) + 1
+    };
+    let (mut ab, mut cb, mut rb) = (
+        vec![0_i64; window_len],
+        vec![0_i64; window_len],
+        vec![0_i64; window_len],
+    );
+    let ta = populate_heatmap_buckets(articles, start_days, window_len, &mut ab)?;
+    let tc = populate_heatmap_buckets(comments, start_days, window_len, &mut cb)?;
+    let tr = populate_heatmap_buckets(reactions, start_days, window_len, &mut rb)?;
+    let tall = ta.checked_add(tc)?.checked_add(tr)?;
+    let mut days = Vec::with_capacity(window_len);
+    let mut max = 0_i64;
+    for i in 0..window_len {
+        let total = ab[i].checked_add(cb[i])?.checked_add(rb[i])?;
+        if i == 0 || total > max {
+            max = total;
+        }
+        days.push((
+            format_iso_date_days(start_days + (i as i64)),
+            ab[i],
+            cb[i],
+            rb[i],
+            total,
+        ));
+    }
+    Some(HeatmapPayload {
+        start_date: format_iso_date_days(start_days),
+        end_date: format_iso_date_days(end_days),
+        days,
+        totals: [ta, tc, tr, tall],
+        max,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1277,5 +1763,108 @@ mod tests {
             build_feed_config_score_sql(&weights, &ctx).as_deref(),
             Some("(0)")
         );
+    }
+
+    #[test]
+    fn split_and_score_primitives_and_ranking() {
+        assert_eq!(
+            split_cached_tag_list("ruby, rails, "),
+            vec!["ruby", "rails"]
+        );
+        let names = ["ruby".to_string(), "rust".to_string()];
+        let points = [2.0, 3.0];
+        assert_eq!(
+            score_followed_tags("ruby, webdev, rust", &names, &points, 1.0, 0.0),
+            Some(5.0)
+        );
+        assert_eq!(score_experience_level(8.0, 1.0, 1.0), Some(-3.5));
+        assert_eq!(score_experience_level_int(8, 1, 1.0), Some(-3.0));
+        assert_eq!(
+            score_ai_disclosure(Some("minimize_ai"), Some("some_ai"), -10.0, -25.0),
+            Some(-10.0)
+        );
+        let ctx = UserArticleScoreContext {
+            has_user: true,
+            following_user_ids: &[10, 20],
+            following_org_ids: &[100],
+            followed_tag_names: &names,
+            followed_tag_points: &points,
+            user_xp: (5.0, false, 5),
+            ai_preference: Some("minimize_ai"),
+            weights: [0.2, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, -10.0, -25.0],
+        };
+        let a0 = ArticleScoreInput {
+            user_id: Some(99),
+            organization_id: None,
+            cached_tag_list: "js",
+            xp: (5.0, false, 5),
+            comments_count: 5,
+            ai_disclosure_level: Some("no_ai"),
+            base_article_points: 0.0,
+        };
+        let a1 = ArticleScoreInput {
+            user_id: Some(10),
+            organization_id: Some(100),
+            cached_tag_list: "ruby, rust",
+            xp: (7.0, false, 7),
+            comments_count: 10,
+            ai_disclosure_level: Some("some_ai"),
+            base_article_points: 0.0,
+        };
+        assert_eq!(score_article_for_user(&ctx, &a1), Some(-2.0));
+        let a2 = ArticleScoreInput {
+            ai_disclosure_level: Some("no_ai"),
+            ..a1
+        };
+        assert_eq!(
+            rank_basic_feed_indices(&ctx, &[a0, a2]).unwrap(),
+            vec![1, 0]
+        );
+    }
+
+    #[test]
+    fn activity_metadata_subforems_and_heatmap() {
+        assert_eq!(
+            filter_tracked_article_ids(&[(1, 120.0), (2, 29.0), (3, 30.0)], 29.0).unwrap(),
+            vec![1, 3]
+        );
+        let pre_split = ["tag2".to_string(), "tag3".to_string()];
+        let tag_sources = [
+            ArticleTagSource::CommaSeparated("tag1, tag2"),
+            ArticleTagSource::PreSplit(&pre_split),
+        ];
+        let labels = [
+            vec!["l1".to_string(), "l2".to_string()],
+            vec![
+                "l2".to_string(),
+                "l3".to_string(),
+                "l4".to_string(),
+                "l5".to_string(),
+                "l6".to_string(),
+            ],
+        ];
+        let meta = aggregate_recent_activity_metadata(
+            &tag_sources,
+            &labels,
+            &[Some(10), Some(10), None, Some(20)],
+            &[Some(1), Some(2), Some(1)],
+            &[Some(101), None, Some(101), Some(202)],
+            5,
+        );
+        assert_eq!(meta.0, vec!["tag1", "tag2", "tag3"]);
+        assert_eq!(meta.1, vec!["l1", "l2", "l3", "l4", "l5"]);
+        assert_eq!((meta.2, meta.3), (vec![10, 20], vec![1, 2]));
+        assert_eq!(meta.4, vec![101, 101, 202]);
+        assert_eq!(
+            order_subforem_ids(&[1, 1, 3], &[1, 2], &[1, 2, 3, 4, 5]),
+            vec![1, 2, 3, 4, 5]
+        );
+        let (start, end) = (
+            parse_iso_date_days(b"2026-10-25").unwrap(),
+            parse_iso_date_days(b"2026-10-27").unwrap(),
+        );
+        let p = build_activity_heatmap(start, end, &[(start, 1)], &[(start + 1, 2)], &[(end, 3)])
+            .unwrap();
+        assert_eq!((p.days.len(), p.totals[3], p.max), (3, 6, 3));
     }
 }

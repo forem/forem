@@ -10,7 +10,13 @@ module ServerWarmup
     Subforem
     Billboard
     BillboardEvent
+    BillboardPlacementAreaConfig
     Page
+    PageView
+    Event
+    ApiSecret
+    RequestRedirect
+    EmailAuthorization
     Profile
     Users::Setting
     Users::NotificationSetting
@@ -70,6 +76,74 @@ module ServerWarmup
     Settings::Campaign
   ].freeze
 
+  CORE_CONTROLLER_NAMES = %w[
+    ApplicationController
+    StoriesController
+    Stories::TaggedArticlesController
+    Stories::ArticlesSearchController
+    Stories::FeedsController
+    ArticlesController
+    CommentsController
+    ReactionsController
+    AsyncInfoController
+    BillboardsController
+    AuthPassController
+    PageViewsController
+    FollowsController
+    ProfilesController
+    ProfilePreviewCardsController
+    SidebarsController
+    SearchController
+    NotificationsController
+    DashboardsController
+    PagesController
+    TagsController
+    OrganizationsController
+    UsersController
+  ].freeze
+
+  PARTIAL_LOCALS_MAP = {
+    "articles/_single_story" => [
+      %i[featured story],
+      %i[featured feed_style_preference show_organization story],
+      %i[curation_view featured story],
+      %i[featured pinned story],
+    ],
+    "articles/_article_item" => [
+      %i[article],
+      %i[article show_on_individual_article_only],
+    ],
+    "articles/_bottom_content" => [%i[articles]],
+    "articles/_collection" => [%i[rendered_article]],
+    "articles/_conduct_and_abuse_actions" => [%i[page]],
+    "articles/_liquid" => [%i[article title]],
+    "articles/_quickie_form" => [%i[expanded]],
+    "articles/_reaction_button" => [%i[aria_label category description image_active_path image_path]],
+    "articles/_video_player" => [%i[article meta_tags]],
+    "articles/_widget_list_item" => [%i[plucked_article show_comment_count]],
+    "comments/_comment" => [%i[comment is_individual_comment]],
+    "comments/_comment_avatar" => [%i[comment]],
+    "comments/_comment_date" => [%i[decorated_comment]],
+    "comments/_comment_footer" => [%i[comment commentable is_childless]],
+    "comments/_comment_header" => [%i[comment commentable decorated_comment]],
+    "comments/_comment_quality_marker" => [%i[comment decorated_comment]],
+    "comments/_form" => [
+      %i[commentable],
+      %i[commentable commentable_type],
+    ],
+    "comments/_sort_option" => [%i[sort_order]],
+    "layouts/_main_nav" => [%i[context]],
+    "layouts/_styles" => [%i[qualifier]],
+    "shared/_auth_widget" => [%i[source tracking_id]],
+    "shared/_billboard" => [
+      %i[billboard data_context_type],
+      %i[anonymous_tracking_allowed billboard data_context_type hidden_by_default viewer_country],
+    ],
+    "shared/_billboard_header" => [%i[billboard]],
+    "shared/_profile_card_content" => [%i[actor context]],
+    "shared/_profile_preview_card" => [%i[actor id]]
+  }.freeze
+
   DEFAULT_PREBOOT_KEEPALIVE_INTERVAL = 25
 
   @keepalive_mutex = Mutex.new
@@ -95,6 +169,7 @@ module ServerWarmup
 
       preload_routes_and_i18n!
       preload_view_templates!
+      preload_controller_view_contexts!
       preload_model_schemas!
       warm_in_memory_caches!
     rescue StandardError => e
@@ -130,7 +205,12 @@ module ServerWarmup
     end
 
     def mark_traffic_received!
+      return if @traffic_received
+
       @traffic_received = true
+      @shutdown_queue&.push(:stop)
+    rescue StandardError
+      nil
     end
 
     def traffic_received?
@@ -176,6 +256,23 @@ module ServerWarmup
     rescue StandardError => e
       log_error("View template preload failed", e)
       0
+    end
+
+    def preload_controller_view_contexts!
+      controllers_to_preload.each do |controller|
+        next unless controller.respond_to?(:view_context_class)
+
+        controller.view_context_class
+      rescue StandardError => e
+        log_error("View context preload failed for #{controller}", e)
+      end
+
+      PublicSuffix::List.default if defined?(PublicSuffix::List) && PublicSuffix::List.respond_to?(:default)
+      if defined?(Rails) && Rails.respond_to?(:application) && Rails.application.respond_to?(:app)
+        Rails.application.app
+      end
+    rescue StandardError => e
+      log_error("Controller view contexts preload failed", e)
     end
 
     def preload_model_schemas!
@@ -225,7 +322,7 @@ module ServerWarmup
                  1
                end
 
-      warm_sidekiq_redis_connection!
+      warm_sidekiq_redis_connection! unless @traffic_received
       warmed
     rescue StandardError => e
       log_error("Redis cache connection warmup failed", e)
@@ -238,6 +335,7 @@ module ServerWarmup
       warm_flipper_cache!
       warm_subforem_caches!
       warm_settings_caches!
+      warm_billboard_caches!
     rescue StandardError => e
       log_error("In-memory cache warmup failed", e)
     ensure
@@ -245,18 +343,14 @@ module ServerWarmup
     end
 
     def warm_flipper_cache!
-      return unless defined?(Flipper)
+      return if @traffic_received || !defined?(Flipper)
 
       preloaded = Flipper.respond_to?(:preload_all) ? Flipper.preload_all : []
       if Flipper.respond_to?(:preload) && preloaded.present?
         Flipper.preload(Array(preloaded).map { |f| f.key.to_sym })
       end
 
-      if defined?(MemoryFirstCache) && defined?(FeatureFlag) && FeatureFlag.respond_to?(:all)
-        MemoryFirstCache.fetch("enabled_global_feature_flags", redis_expires_in: 10.minutes) do
-          FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
-        end
-      end
+      warm_enabled_feature_flags_cache! unless @traffic_received
     rescue StandardError => e
       log_error("Flipper cache warmup failed", e)
     end
@@ -305,6 +399,14 @@ module ServerWarmup
       end
     rescue StandardError => e
       log_error("Settings cache warmup failed", e)
+    end
+
+    def warm_billboard_caches!
+      return unless defined?(BillboardPlacementAreaConfig) && BillboardPlacementAreaConfig.table_exists?
+
+      BillboardPlacementAreaConfig.all_configs
+    rescue StandardError => e
+      log_error("Billboard cache warmup failed", e)
     end
 
     def disconnect_parent_connections!
@@ -364,7 +466,11 @@ module ServerWarmup
         break if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= deadline
 
         warm_database_connections!
+        break if @traffic_received
+
         warm_redis_cache_connection!
+        break if @traffic_received
+
         warm_flipper_cache!
       end
     rescue StandardError => e
@@ -378,18 +484,33 @@ module ServerWarmup
         resolver.__send__(:unbound_templates_from_path, template_path)
       end
 
+      locals_sets = locals_sets_for_template(template_path.virtual)
       compiled = 0
       Array(unbound_list).each do |unbound_template|
-        template = unbound_template.bind_locals([])
-        template.__send__(:compile!, view_context)
-        compiled += 1
-      rescue StandardError => e
-        log_error("Template compile failed for #{template_path.virtual}", e)
+        locals_sets.each do |locals|
+          template = unbound_template.bind_locals(locals)
+          template.__send__(:compile!, view_context)
+          compiled += 1
+        rescue StandardError => e
+          log_error("Template compile failed for #{template_path.virtual}", e)
+        end
       end
       compiled
     rescue StandardError => e
       log_error("Template lookup failed for #{template_path.virtual}", e)
       0
+    end
+
+    def locals_sets_for_template(virtual_path)
+      sets = [[]]
+      basename = File.basename(virtual_path.to_s)
+      if basename.start_with?("_")
+        local_name = basename.delete_prefix("_").to_sym
+        sets << [local_name]
+        sets << [local_name, :"#{local_name}_counter", :"#{local_name}_iteration"].sort
+      end
+      sets.concat(PARTIAL_LOCALS_MAP[virtual_path]) if PARTIAL_LOCALS_MAP.key?(virtual_path)
+      sets.uniq
     end
 
     def warm_redis_client_pool(redis_client, target_count)
@@ -444,6 +565,14 @@ module ServerWarmup
       log_error("Sidekiq Redis connection warmup failed", e)
     end
 
+    def warm_enabled_feature_flags_cache!
+      return unless defined?(MemoryFirstCache) && defined?(FeatureFlag) && FeatureFlag.respond_to?(:all)
+
+      MemoryFirstCache.fetch("enabled_global_feature_flags", redis_expires_in: 10.minutes) do
+        FeatureFlag.all.select { |_, state| state == :on }.keys.join(" ")
+      end
+    end
+
     def wait_for_stop_signal(queue, timeout_seconds)
       queue.pop(timeout: timeout_seconds) == :stop
     rescue StandardError
@@ -461,6 +590,16 @@ module ServerWarmup
       @traffic_hook_registered = true
     rescue StandardError => e
       log_error("Traffic hook registration failed", e)
+    end
+
+    def controllers_to_preload
+      core_controllers = CORE_CONTROLLER_NAMES.filter_map(&:safe_constantize)
+      descendants = if defined?(ApplicationController)
+                      ApplicationController.descendants
+                    else
+                      []
+                    end
+      core_controllers | descendants
     end
 
     def models_to_preload

@@ -183,6 +183,19 @@ RSpec.describe UserActivity, type: :model do
         expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
       end
 
+      it "loads followed users, organizations and subforems in a single follows query" do
+        create(:follow, follower: user, followable: create(:tag))
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        follows_queries = queries.grep(/\ASELECT .* FROM "follows"/)
+        expect(follows_queries.size).to eq(1)
+        expect(activity.alltime_users).to contain_exactly(other_user.id)
+        expect(activity.alltime_organizations).to contain_exactly(other_org.id)
+        expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
+      end
+
       it "populates alltime_reading_list_articles from user's reading list reactions" do
         create(:reaction, category: "readinglist", user: user, reactable: article1)
         activity.set_activity!

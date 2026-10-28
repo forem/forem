@@ -10,14 +10,16 @@ class NotificationDecorator < ApplicationDecorator
     alias_method :class_name, :name
   end.freeze
 
-  attr_writer :collection_notifications, :preloaded_subscriptions
+  attr_writer :collection_notifications, :preloaded_subscriptions, :preloaded_reactions
 
   def self.decorate_collection(objects)
     decorated = super
     preloaded = {}.compare_by_identity
+    preloaded_reactions = {}.compare_by_identity
     decorated.each do |notification|
       notification.collection_notifications = decorated
       notification.preloaded_subscriptions = preloaded
+      notification.preloaded_reactions = preloaded_reactions
     end
   end
 
@@ -141,7 +143,15 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def any_cached_reactions_for_object?(user, object_type = "article", category: "like")
-    Reaction.cached_any_reactions_for?(mocked_object(object_type), user, category)
+    target = mocked_object(object_type)
+    if user&.reactions.is_a?(ActiveRecord::Relation) && %w[article comment].include?(object_type.to_s)
+      target_id = Integer(target.id, exception: false)
+      return false if target_id.nil? || %w[Article Comment].exclude?(target.class_name)
+
+      return preloaded_reactions_for(user).include?([target.class_name, target_id, category.to_s])
+    end
+
+    Reaction.cached_any_reactions_for?(target, user, category)
   end
 
   def article_id
@@ -282,6 +292,30 @@ class NotificationDecorator < ApplicationDecorator
       clauses << scope.where(notifiable_type: "Article", notifiable_id: article_ids) if article_ids.any?
 
       clauses.any? ? clauses.reduce(:or).index_by { |sub| [sub.notifiable_type, sub.notifiable_id] } : {}
+    end
+  end
+
+  def preloaded_reactions_for(user)
+    @preloaded_reactions ||= {}.compare_by_identity
+    @preloaded_reactions[user] ||= begin
+      notifications = @collection_notifications || [self]
+      target_ids_by_type = Hash.new { |h, k| h[k] = [] }
+      notifications.each do |n|
+        article_id = Integer(n.article_id, exception: false)
+        target_ids_by_type["Article"] << article_id if article_id
+        comment_id = Integer(n.comment_id, exception: false)
+        target_ids_by_type["Comment"] << comment_id if comment_id
+      end
+
+      reactable_ids = target_ids_by_type.values.flatten.uniq
+      if reactable_ids.any?
+        user.reactions
+          .where(reactable_id: reactable_ids, reactable_type: target_ids_by_type.keys)
+          .pluck(:reactable_type, :reactable_id, :category)
+          .to_set
+      else
+        Set.new
+      end
     end
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_28_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1033,6 +1033,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
     t.index ["followable_id", "followable_type"], name: "fk_followables"
+    t.index ["followable_type", "followable_id", "blocked", "created_at"], name: "index_follows_on_followable_blocked_and_created_at"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 

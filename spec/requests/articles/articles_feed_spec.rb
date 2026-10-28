@@ -66,4 +66,38 @@ RSpec.describe "ArticlesFeed" do
       expect { get "/feed/#{user.username}?page=50" }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  context "with home and tag feeds" do
+    let(:tag) { create(:tag, name: "rssperf") }
+
+    before { create(:article, user: article.user, tags: tag.name, score: 10) }
+
+    it "renders dc:creator from cached_user_name without querying users on the home feed" do
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/feed" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<dc:creator>#{article.user.name}</dc:creator>")
+      expect(user_queries).to be_empty
+    end
+
+    it "queries tags only once and skips users queries on a direct tag feed" do
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        queries << sql if sql.match?(/FROM "(tags|users)"/) && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/feed/tag/#{tag.name}" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<dc:creator>#{article.user.name}</dc:creator>")
+      expect(queries.grep(/FROM "tags"/).size).to eq(1)
+      expect(queries.grep(/FROM "users"/)).to be_empty
+    end
+  end
 end
