@@ -13,9 +13,10 @@
           <%= f.check_box :limit_post_creation_to_admins, checked: Settings::General.limit_post_creation_to_admins, class: "crayons-checkbox" %>
           <div class="mt-0">
             <%= admin_config_label :limit_post_creation_to_admins %>
-            <p class="crayons-field__description">
-              Only admins can publish posts (including on behalf of an organization). Other members can only react to and comment on posts. Note: UI changes may take up to <%= pluralize(AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY, "minute") %> to take effect for all members due to caching.
-            </p>
+            <%= admin_config_description(
+                  "#{Constants::Settings::General.details[:limit_post_creation_to_admins][:description]} " \
+                  "#{t('lib.constants.settings.general.limit_post_creation_to_admins.cache_expiry_note', count: AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY)}",
+                ) %>
           </div>
         </div>
       </fieldset>

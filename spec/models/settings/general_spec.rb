@@ -131,6 +131,17 @@ RSpec.describe Settings::General do
         expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(false)
         expect(Spaces::BustCachesForSpaceChangeWorker).to have_received(:perform_async).twice
       end
+
+      it "keeps subforem settings independent without mutating the global FeatureFlag", :aggregate_failures do
+        FeatureFlag.enable(:limit_post_creation_to_admins)
+        described_class.set_limit_post_creation_to_admins(false, subforem_id: 101)
+
+        expect(described_class.limit_post_creation_to_admins(subforem_id: 101)).to be(false)
+        expect(described_class.limit_post_creation_to_admins(subforem_id: 202)).to be(true)
+        expect(FeatureFlag.enabled?(:limit_post_creation_to_admins)).to be(true)
+      ensure
+        FeatureFlag.disable(:limit_post_creation_to_admins)
+      end
     end
 
     describe "validating :appeal_auto_unflag_threshold" do

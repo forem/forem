@@ -194,7 +194,10 @@ en:
           enable_ai_disclosure:
             description: Allow authors to disclose AI tooling usage when publishing or editing posts.
           limit_post_creation_to_admins:
-            description: Only admins can publish posts. Other members can only react to and comment on posts.
+            description: Only admins can create new posts (including on behalf of an organization); existing drafts can still be edited and published by their authors, and other members can react to and comment on posts.
+            cache_expiry_note:
+              one: "Note: UI changes may take up to %{count} minute to take effect for all members due to caching."
+              other: "Note: UI changes may take up to %{count} minutes to take effect for all members due to caching."
           appeal_auto_unflag_threshold:
             description: Minimum AI confidence score (0.0 to 1.0) required to automatically approve an appeal when the AI recommends auto_unflag (only applies to automated restrictions, never human moderator bans). Set above 1.0 (e.g. 1.01) to disable automatic unflagging and route every appeal to human review.
           video:
