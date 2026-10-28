@@ -7,7 +7,6 @@ ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 group :production do
   gem "hypershield", "~> 0.6.1" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
-  gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
 gem "active_record_union", "~> 1.4" # Adds proper union and union_all methods to ActiveRecord::Relation
@@ -26,7 +25,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "counter_culture", "~> 3.14" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "countries", "~> 8.1" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
 gem "customerio", "~> 6.1" # Customer.io App API client; transactional email delivery (see DeliveryMethods::CustomerIo)
 gem "ddtrace", "~> 1.16.2", require: false # ddtrace is Datadog’s tracing client for Ruby.
@@ -47,7 +46,7 @@ gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically co
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 5.1" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.11.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.11.0", require: false # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
@@ -86,6 +85,7 @@ gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 7.0" # Domain name parser based on the Public Suffix List
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 2.0" # Middleware that will make Rack-based apps CORS compatible
+gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "8.0.5" # Ruby on Rails
 gem "ransack", "~> 4.2" # Searching and sorting

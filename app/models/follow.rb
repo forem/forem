@@ -31,12 +31,18 @@ class Follow < ApplicationRecord
   # Follows from users who don't have suspended or spam role
   scope :non_suspended, lambda { |followable_type, followable_id|
     joins("INNER JOIN users ON users.id = follows.follower_id")
-      .joins("LEFT JOIN users_roles ON users_roles.user_id = users.id")
-      .joins("LEFT JOIN roles ON roles.id = users_roles.role_id")
-      .where(followable_type: followable_type, followable_id: followable_id)
-      .where("follows.follower_type = 'User'")
-      .where("roles.name NOT IN (?) OR roles.name IS NULL", %w[suspended spam])
-      .distinct
+      .where(followable_type: followable_type, followable_id: followable_id, follower_type: "User")
+      .where(<<~SQL.squish, %w[suspended spam])
+        NOT EXISTS (
+          SELECT 1
+          FROM users_roles
+          INNER JOIN roles ON roles.id = users_roles.role_id
+          WHERE users_roles.user_id = follows.follower_id
+            AND roles.name IN (?)
+            AND roles.resource_type IS NULL
+            AND roles.resource_id IS NULL
+        )
+      SQL
   }
 
   counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },

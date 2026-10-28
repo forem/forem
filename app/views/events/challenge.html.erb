@@ -10,7 +10,7 @@
   <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
-<div class="crayons-layout event-show-layout container">
+<div class="crayons-layout event-show-layout container grid-cols-1">
   <!-- Banner Image -->
   <% banner_image = @event.cover_image.presence&.url || @event.data&.dig('banner_image_url') %>
   <% if banner_image.present? %>
@@ -54,7 +54,7 @@
           </div>
         </header>
 
-        <div class="crayons-article__body text-lg">
+        <div class="crayons-article__body text-styles text-lg">
           <% if @event.body_markdown.blank? && @event.data&.dig('body_markdown').present? %>
             <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
           <% else %>
@@ -74,7 +74,7 @@
           <h2 class="crayons-title mb-4"><%= prompt_title %></h2>
           
           <% if prompt_markdown.present? %>
-            <div class="crayons-article__body mb-4">
+            <div class="crayons-article__body text-styles mb-4">
               <%= MarkdownProcessor::Parser.new(prompt_markdown).finalize.html_safe %>
             </div>
           <% end %>
@@ -109,7 +109,7 @@
       <% if how_to_participate.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">How To Participate</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(how_to_participate).finalize.html_safe %>
           </div>
         </div>
@@ -120,7 +120,7 @@
       <% if faq_markdown.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">Frequently Asked Questions</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(faq_markdown).finalize.html_safe %>
           </div>
         </div>
@@ -131,7 +131,7 @@
       <% if rules_markdown.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">Rules</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(rules_markdown).finalize.html_safe %>
           </div>
         </div>
@@ -139,7 +139,7 @@
     </main>
 
     <!-- Sidebar Right Column -->
-    <aside class="w-100 m:w-80 flex-shrink-0">
+    <aside class="w-100 m:w-25 shrink-0">
       <% if @event.end_time > Time.current %>
         <div class="crayons-card p-4 mb-6 text-center">
           <h3 class="font-bold mb-2">Join the Challenge</h3>

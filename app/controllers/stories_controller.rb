@@ -334,7 +334,6 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
-    @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
     set_surrogate_key_header(*@user.profile_cache_keys)

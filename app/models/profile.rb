@@ -74,7 +74,7 @@ class Profile < ApplicationRecord
   end
 
   def generate_social_image
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   def social_image_details_changed?

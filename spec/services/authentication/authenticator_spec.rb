@@ -141,6 +141,22 @@ RSpec.describe Authentication::Authenticator, type: :service do
           "identity.created", tags: ["provider:apple"]
         )
       end
+
+      it "does not match an existing user by a colliding apple_username when uid and email do not match" do
+        auth_payload.info.email = nil
+        colliding_nickname = Authentication::Providers::Apple.new(auth_payload).user_nickname
+        existing_user = create(:user, apple_username: colliding_nickname)
+
+        authenticated_user = nil
+        expect do
+          authenticated_user = service.call
+        end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+        expect(authenticated_user).not_to eq(existing_user)
+        expect(authenticated_user.apple_username).to be_present
+        expect(authenticated_user.apple_username).not_to eq(colliding_nickname)
+        expect(Identity.find_by(provider: "apple", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      end
     end
 
     describe "existing user" do

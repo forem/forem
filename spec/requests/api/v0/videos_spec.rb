@@ -10,43 +10,16 @@ RSpec.describe "Api::V0::Videos" do
   end
 
   describe "GET /api/videos" do
-    it "returns articles with videos" do
-      create_article
-
-      get api_videos_path
-
-      expect(response.parsed_body.size).to eq(1)
-    end
-
-    it "does not return unpublished video articles" do
-      article = create_article
-      article.update_columns(published: false)
-
-      get api_videos_path
-
-      expect(response.parsed_body.size).to eq(0)
-    end
-
-    it "does not return regular articles without videos" do
-      create(:article)
-
-      get api_videos_path
-
-      expect(response.parsed_body.size).to eq(0)
-    end
-
-    it "does not return video articles with a score that is too low" do
+    it "returns only eligible video articles with the correct json representation and surrogate key",
+       :aggregate_failures do
+      video_article = create_article
+      create_article(published: false)
+      create(:article, user: user)
       create_article(score: -4)
 
       get api_videos_path
 
-      expect(response.parsed_body.size).to eq(0)
-    end
-
-    it "returns video articles with the correct json representation", :aggregate_failures do
-      video_article = create_article
-
-      get api_videos_path
+      expect(response.parsed_body.size).to eq(1)
 
       response_video = response.parsed_body.first
       expected_keys = %w[
@@ -59,6 +32,9 @@ RSpec.describe "Api::V0::Videos" do
       end
 
       expect(response_video["user"]["name"]).to eq(video_article.user.name)
+
+      expected_key = ["videos", "articles", video_article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
 
     it "orders video articles by descending hotness score" do
@@ -90,15 +66,6 @@ RSpec.describe "Api::V0::Videos" do
 
       get api_videos_path, params: { per_page: 10 }
       expect(response.parsed_body.count).to eq(2)
-    end
-
-    it "sets the correct edge caching surrogate key for all video articles" do
-      video_article = create_article
-
-      get api_videos_path
-
-      expected_key = ["videos", "articles", video_article.record_key].to_set
-      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
 end

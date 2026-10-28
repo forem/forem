@@ -897,5 +897,71 @@ RSpec.describe FeedConfig, type: :model do
         expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
       end
     end
+
+    context "when comparing native Rust kernel with legacy_score_sql" do
+      it "produces identical SQL across all scoring weights and activity signals" do
+        now = Time.utc(2026, 4, 18, 12, 0, 0)
+        allow(Time).to receive(:current).and_return(now)
+
+        user_activity = create(
+          :user_activity,
+          user: user,
+          recently_viewed_articles: [[101, (now - 2.hours).iso8601, 45], [102, (now - 2.days).iso8601, 30]],
+          recent_users: [10],
+          recent_organizations: [100],
+          recent_tags: [["ruby", 5.0], ["rust", 3.0]],
+          alltime_tags: %w[webdev postgres],
+          recent_labels: ["featured-label"],
+          recent_subforems: [1, 2],
+          alltime_users: [10, 20],
+          alltime_organizations: [100, 200],
+          alltime_subforems: [1, 2, 3],
+        )
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        user.setting.update(feed_ai_preference: :minimize_ai)
+
+        full_config = described_class.new(
+          feed_success_weight: 1.25,
+          comment_score_weight: 2.5,
+          score_weight: 3.0,
+          organization_follow_weight: 4.0,
+          user_follow_weight: 5.0,
+          tag_follow_weight: 6.0,
+          label_match_weight: 3.5,
+          recency_weight: 7.0,
+          comment_recency_weight: 8.0,
+          lookback_window_weight: 9.0,
+          precomputed_selections_weight: 0.0,
+          subforem_follow_weight: 4.5,
+          recent_subforem_weight: 2.0,
+          recent_article_suppression_rate: 10.0,
+          published_today_weight: 3.0,
+          general_past_day_bonus_weight: 2.0,
+          recently_active_past_day_bonus_weight: 1.5,
+          featured_weight: 4.0,
+          favorited_weight: 4.5,
+          status_weight: 2.0,
+          follow_status_weight: 3.0,
+          clickbait_score_weight: 5.0,
+          compellingness_score_weight: 6.0,
+          language_match_weight: 7.0,
+          semantic_similarity_weight: 10.0,
+          randomness_weight: 8.0,
+          ai_disclosure_matching_weight: 12.0,
+          autonomous_ai_penalty_weight: 25.0,
+          recent_tag_count_min: 2,
+          recent_tag_count_max: 2,
+          all_time_tag_count_min: 2,
+          all_time_tag_count_max: 2,
+        )
+        allow(full_config).to receive(:rand).with(2..2).and_return(2)
+        allow(full_config).to receive(:rand).with(10_000).and_return(424)
+
+        native_sql = full_config.score_sql(user)
+        legacy_sql = full_config.__send__(:legacy_score_sql, user)
+
+        expect(native_sql).to eq(legacy_sql)
+      end
+    end
   end
 end

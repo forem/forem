@@ -590,6 +590,39 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
       expect(decorated_list.map { |n| n.subscription_for(user) }).to eq([root_sub, article_sub])
     end
+
+    it "batches reaction existence lookups across the collection across categories" do
+      user = create(:user, :trusted)
+      article = create(:article)
+      comment = create(:comment, commentable: article)
+
+      create(:reaction, user: user, reactable: article, category: "like")
+      create(:reaction, user: user, reactable: comment, category: "thumbsdown")
+
+      article_notif = build(:notification, notifiable_type: "Article", json_data: {
+                              "article" => { "id" => article.id, "class" => { "name" => "Article" } }
+                            })
+      comment_notif = build(:notification, notifiable_type: "Comment", json_data: {
+                              "comment" => { "id" => comment.id, "class" => { "name" => "Comment" } }
+                            })
+
+      decorated_list = described_class.decorate_collection([article_notif, comment_notif])
+      allow(Reaction).to receive(:cached_any_reactions_for?)
+      reaction_selects = 0
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        reaction_selects += 1 if payload[:sql].include?('FROM "reactions"')
+      end
+
+      expect(decorated_list.first.any_cached_reactions_for_object?(user)).to be(true)
+      expect(decorated_list.first.any_cached_reactions_for_object?(user, category: "readinglist")).to be(false)
+      expect(
+        decorated_list.second.any_cached_reactions_for_object?(user, "comment", category: "thumbsdown"),
+      ).to be(true)
+      expect(decorated_list.second.any_cached_reactions_for_object?(user, "comment", category: "like")).to be(false)
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+      expect(Reaction).not_to have_received(:cached_any_reactions_for?)
+      expect(reaction_selects).to eq(1)
+    end
   end
 end
 # rubocop:enable RSpec/MultipleExpectations

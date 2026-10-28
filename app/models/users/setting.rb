@@ -88,7 +88,7 @@ module Users
     end
 
     def generate_social_images
-      Images::SocialImageWorker.perform_async(user_id, "User")
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(user_id, "User") }
     end
   end
 end
