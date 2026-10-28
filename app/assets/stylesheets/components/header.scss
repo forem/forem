@@ -58,6 +58,15 @@
   .crayons-textfield {
     padding-left: 40px;
   }
+
+  .search-powered-by {
+    flex-shrink: 0;
+    white-space: nowrap;
+
+    @media (min-width: $breakpoint-s) {
+      margin-top: var(--su-1);
+    }
+  }
 }
 
 .crayons-header--search-typeahead {
