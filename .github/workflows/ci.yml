@@ -31,6 +31,35 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !vendor/cache/*.gem
+          sparse-checkout-cone-mode: false
+      - name: Prepare workspace and ImageMagick package
+        id: prep
+        run: |
+          echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+          mkdir -p .ci-debs
+          (cd .ci-debs && apt-get download imagemagick-6.q16 2>/dev/null || true)
+          tar --exclude='./.git' \
+              --exclude='./vendor/bundle' \
+              --exclude='./vendor/cache/*.gem' \
+              --exclude='./node_modules' \
+              --exclude='./public/assets' \
+              --exclude='./app/assets/builds' \
+              --exclude='./tmp/cache/assets' \
+              --use-compress-program="zstd -T0 -1" \
+              -cf /tmp/workspace.tar.zst .
+      - name: Upload workspace artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-workspace-${{ github.run_id }}
+          path: /tmp/workspace.tar.zst
+          compression-level: 0
+          retention-days: 1
+          overwrite: true
       - name: Check pre-compiled assets cache
         uses: actions/cache/restore@v5
         id: assetscache-lookup
@@ -41,6 +70,13 @@ jobs:
             app/assets/builds
             tmp/cache/assets
           key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+      - name: Check Bundler cache
+        uses: actions/cache/restore@v5
+        id: bundlercache-lookup
+        with:
+          lookup-only: true
+          path: vendor/bundle
+          key: setup-ruby-bundler-cache-v6-ubuntu-24.04-x64-ruby-${{ steps.prep.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ hashFiles('Gemfile.lock') }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
@@ -52,9 +88,12 @@ jobs:
             tmp/cache/assets
           key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v4-
+      - name: Populate vendor/cache on Bundler cache miss
+        if: steps.bundlercache-lookup.outputs.cache-hit != 'true'
+        run: git sparse-checkout disable
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true' || steps.bundlercache-lookup.outputs.cache-hit != 'true'
         with:
           bundler-cache: true
       - uses: actions/setup-node@v6
@@ -79,21 +118,6 @@ jobs:
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
 
-    services:
-      postgres:
-        image: pgvector/pgvector:pg13
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: Forem_test
-        ports:
-          - 5432:5432
-        options: >-
-          --tmpfs /var/lib/postgresql/data:rw
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-
     strategy:
       fail-fast: false
       matrix:
@@ -101,7 +125,42 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Start Postgres and Redis in background
+        run: |
+          RUNNER_TRACKING_ID="" nohup bash -c '
+            docker run -d --rm --name ci-postgres \
+              -p 5432:5432 \
+              --tmpfs /var/lib/postgresql/data:rw \
+              -e POSTGRES_PASSWORD=postgres \
+              -e POSTGRES_DB=Forem_test \
+              pgvector/pgvector:pg13 \
+              postgres -c fsync=off -c synchronous_commit=off -c full_page_writes=off >/tmp/postgres-start.log 2>&1 &
+            docker run -d --rm --name ci-redis \
+              -p 6379:6379 \
+              redis:7-alpine \
+              redis-server --save "" --appendonly no >/tmp/redis-start.log 2>&1 &
+            wait
+          ' >/dev/null 2>&1 </dev/null &
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: ci-workspace-${{ github.run_id }}
+          path: /tmp
+      - name: Extract workspace and install ImageMagick
+        run: |
+          tar --use-compress-program=unzstd -xf /tmp/workspace.tar.zst -C "$GITHUB_WORKSPACE"
+          rm -f /tmp/workspace.tar.zst
+          if compgen -G ".ci-debs/imagemagick-6.q16_*.deb" >/dev/null; then
+            sudo dpkg-deb -x .ci-debs/imagemagick-6.q16_*.deb /
+            for bin in /usr/bin/*-im6.q16; do
+              [ -e "$bin" ] || continue
+              base="${bin%-im6.q16}"
+              sudo ln -sf "$bin" "$base"
+              sudo ln -sf "$bin" "${base}-im6"
+            done
+          fi
+          rm -rf .ci-debs
+          cp .env_sample .env
       - name: Restore compiled assets
         uses: actions/cache/restore@v5
         with:
@@ -117,22 +176,27 @@ jobs:
         with:
           bundler-cache: true
 
-      - name: Install ImageMagick and wait for services
+      - name: Wait for services
         run: |
-          (command -v identify >/dev/null 2>&1 || sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)) &
-          im_pid=$!
+          if ! identify -version >/dev/null 2>&1; then
+            sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)
+          fi
 
           echo "Waiting for Postgres..."
-          timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres; do sleep 1; done'
+          if ! timeout 60 bash -c 'until pg_isready -h localhost -p 5432 -U postgres -d Forem_test >/dev/null 2>&1; do sleep 0.2; done'; then
+            cat /tmp/postgres-start.log || true
+            docker logs ci-postgres || true
+            exit 1
+          fi
           echo "Postgres is ready."
 
           echo "Waiting for Redis..."
-          timeout 60 bash -c 'until timeout 1 bash -c "</dev/tcp/localhost/6379" 2>/dev/null; do sleep 1; done'
+          if ! timeout 60 bash -c 'until timeout 1 bash -c "</dev/tcp/localhost/6379" 2>/dev/null; do sleep 0.2; done'; then
+            cat /tmp/redis-start.log || true
+            docker logs ci-redis || true
+            exit 1
+          fi
           echo "Redis is ready."
-
-          wait "$im_pid"
-
-      - run: cp .env_sample .env
 
       - name: RSpec
         id: rspec
