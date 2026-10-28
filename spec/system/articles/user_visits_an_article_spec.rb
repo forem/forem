@@ -20,7 +20,9 @@ RSpec.describe "Views an article" do
   end
 
   it "shows non-negative comments" do
-    comments = create_list(:comment, 4, commentable: article)
+    comments = Array.new(4) do |i|
+      create(:comment, commentable: article, user: user, body_markdown: "Comment body #{i}")
+    end
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
     sidekiq_perform_enqueued_jobs
