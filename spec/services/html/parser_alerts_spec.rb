@@ -48,6 +48,28 @@ RSpec.describe Html::Parser, type: :service do
       expect(result).to include("[!SOMETHING]")
     end
 
+    it "leaves a token joined directly to following text as a plain blockquote" do
+      html = "<blockquote><p>[!NOTE]worthy of attention</p></blockquote>"
+      result = transform(html)
+
+      expect(result).not_to include("data-alert")
+      expect(result).to include("[!NOTE]worthy of attention")
+    end
+
+    it "still tags a token followed by a space and body text" do
+      result = transform("<blockquote><p>[!TIP] Body</p></blockquote>")
+
+      expect(result).to include(%(data-alert="tip"))
+      expect(result).to include("Body")
+    end
+
+    it "still tags a token followed by a line break element" do
+      result = transform("<blockquote><p>[!TIP]<br>Body</p></blockquote>")
+
+      expect(result).to include(%(data-alert="tip"))
+      expect(result).not_to include("[!TIP]")
+    end
+
     it "only matches the token at the start" do
       html = "<blockquote><p>Body mentioning [!TIP] midway</p></blockquote>"
 

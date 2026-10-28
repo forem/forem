@@ -14,7 +14,9 @@ module Html
     include ApplicationHelper
 
     ALERT_TYPES = %w[note tip important warning caution].freeze
-    ALERT_TOKEN = /\A\[!(#{ALERT_TYPES.join('|')})\]\s*/i
+    # The marker must be followed by whitespace or the end of the text node, so
+    # `[!NOTE]worthy` stays an ordinary blockquote.
+    ALERT_TOKEN = /\A\[!(#{ALERT_TYPES.join('|')})\](?=\s|\z)\s*/i
 
     RAW_TAG_DELIMITERS = ["{", "}", "raw", "endraw", "----"].freeze
     RAW_TAG = "{----% raw %----}".freeze
