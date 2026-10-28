@@ -82,6 +82,35 @@ RSpec.describe Comments::Tree do
         comments = described_class.for_commentable(article)
         expect(comments).to eq(comment => { child_comment => {} })
       end
+
+      it "populates commentable.comments with all comments so negative checks avoid extra SQL", :aggregate_failures do
+        fresh_article = Article.find(article.id)
+        tree = described_class.for_commentable(fresh_article, include_negative: false)
+
+        expect(tree).to eq(comment => { child_comment => {} })
+        expect(fresh_article.comments).to be_loaded
+        expect(fresh_article.comments).to contain_exactly(comment, child_comment, other_comment)
+      end
+    end
+
+    it "checks by_staff_account? via staff_user_id without querying users", :aggregate_failures do
+      staff_user = create(:user)
+      allow(Settings::Community).to receive(:staff_user_id).and_return(staff_user.id)
+      staff_comment = create(:comment, commentable: article, user: staff_user)
+      tree = described_class.for_commentable(article)
+      nodes = Comment.flatten_arranged_nodes(tree)
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+      results = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        nodes.to_h { |node| [node.id, node.by_staff_account?] }
+      end
+
+      expect(user_queries).to be_empty
+      expect(results[staff_comment.id]).to be(true)
+      expect(results[comment.id]).to be(false)
     end
 
     context "with sort order" do

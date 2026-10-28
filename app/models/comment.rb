@@ -236,7 +236,11 @@ class Comment < ApplicationRecord
   end
 
   def by_staff_account?
-    user == User.staff_account
+    staff_id = Settings::Community.staff_user_id
+    return (user_id || user&.id) == staff_id.to_i if staff_id.present?
+
+    staff = User.staff_account
+    !staff.nil? && user == staff
   end
 
   def privileged_reaction_counts

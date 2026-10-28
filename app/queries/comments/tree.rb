@@ -5,10 +5,12 @@ module Comments
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
       includes = [{ user: %i[setting profile organization_memberships roles] }]
 
-      collection = commentable.comments
-        .arrange(order: build_sort_query(order))
-        .to_a[0..limit - 1]
-        .to_h
+      arranged = commentable.comments.arrange(order: build_sort_query(order))
+      if commentable.is_a?(ActiveRecord::Base) && !commentable.comments.loaded?
+        commentable.association(:comments).target = Comment.flatten_arranged_nodes(arranged)
+      end
+
+      collection = arranged.to_a[0..limit - 1].to_h
       collection.reject! { |comment| comment.score.negative? } unless include_negative
       records = Comment.flatten_arranged_nodes(collection)
       return collection if records.empty?
