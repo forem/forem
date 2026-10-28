@@ -11,4 +11,10 @@ RSpec.describe CiKnapsackProSkipShallowFetch do
 
     expect(adapter_class.new.shallow_repository?).to be(false)
   end
+
+  if ENV["CI"]
+    it "prepends the override to KnapsackPro's GitAdapter" do
+      expect(KnapsackPro::RepositoryAdapters::GitAdapter.ancestors).to include(described_class)
+    end
+  end
 end
