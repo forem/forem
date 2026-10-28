@@ -1,0 +1,26 @@
+app/models/settings/base.rb
+  h_f968154a99632d 210
+app/models/settings/general.rb
+  h_f968154a99632d 263-268,270-278,281-286,293-296
+app/views/admin/settings/forms/_post_permissions.html.erb
+  h_f968154a99632d 16-19
+config/locales/lib/en.yml
+  h_f968154a99632d 197-200
+config/locales/lib/fr.yml
+  h_f968154a99632d 197-200
+config/locales/lib/pt.yml
+  h_f968154a99632d 195-198
+spec/models/settings/general_spec.rb
+  h_f968154a99632d 134-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "57aa0c24c52cd4cd87a4e39a37a0c5f91c2a3aaa",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
