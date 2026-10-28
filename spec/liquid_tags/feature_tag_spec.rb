@@ -121,6 +121,18 @@ RSpec.describe FeatureTag, type: :liquid_tag do
       expect(result).to include("ltag-feature__icon")
       expect(result).to match(/<svg/)
     end
+
+    it "accepts the legacy sparkles name used by published pages" do
+      expect { render_feature('title="Magic" icon="sparkles"') }.not_to raise_error
+    end
+
+    it "renders the sparkles alias as the sparkle-heart icon" do
+      aliased = render_feature('title="Magic" icon="sparkles"')
+      direct = render_feature('title="Magic" icon="sparkle-heart"')
+
+      expect(aliased).to match(/<svg/)
+      expect(aliased).to eq(direct)
+    end
   end
 
   describe "article integration" do
