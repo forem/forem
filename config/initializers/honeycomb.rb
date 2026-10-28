@@ -55,17 +55,17 @@ if honeycomb_api_key
 else
   module Honeycomb
     @client = nil
+  end
+end
 
-    def self.add_field(key, value)
-      @client&.add_field(key, value)
-    end
+module Honeycomb
+  def self.add_field(key, value)
+    @client&.add_field(key, value)
+  end
 
-    def self.start_span(**fields, &block)
-      if @client
-        @client.start_span(**fields, &block)
-      elsif block
-        yield(self)
-      end
-    end
+  def self.start_span(**fields, &block)
+    return @client.start_span(**fields, &block) if @client
+
+    block ? yield(self) : self
   end
 end

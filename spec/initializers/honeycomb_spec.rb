@@ -9,6 +9,7 @@ RSpec.describe "Honeycomb initializer" do # rubocop:disable RSpec/DescribeClass
   end
 
   after do
+    allow(ApplicationConfig).to receive(:[]).with("HONEYCOMB_API_KEY").and_return(nil)
     load initializer_path
   end
 
