@@ -22,4 +22,4 @@ en:
         appeal_link: submit an appeal
       spam_notice:
         heading: Account Flagged
-        description: Your account has been flagged and is read-only for now. You can view your dashboard and existing posts, but you can't publish, edit, or comment until the flag is reviewed.
+        description: Your account has been flagged and is read-only for now. You can view your dashboard and post stats, but you can't publish, edit, or comment until the flag is reviewed.

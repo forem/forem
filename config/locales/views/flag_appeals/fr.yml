@@ -22,4 +22,4 @@ fr:
         appeal_link: soumettre un recours
       spam_notice:
         heading: Compte signalé
-        description: Votre compte a été signalé et est temporairement en lecture seule. Vous pouvez consulter votre tableau de bord et vos publications existantes, mais vous ne pouvez ni publier, ni modifier, ni commenter tant que le signalement n'a pas été examiné.
+        description: Votre compte a été signalé et est temporairement en lecture seule. Vous pouvez consulter votre tableau de bord et les statistiques de vos publications, mais vous ne pouvez ni publier, ni modifier, ni commenter tant que le signalement n'a pas été examiné.

@@ -1,11 +1,13 @@
 <% read_only = current_user&.actively_spam_or_suspended? %>
+<%# Spam authors' posts and previews 404 for non-admins (StoriesController#check_admin_access), so link to stats instead. %>
+<% title_href = read_only && current_user.spam? ? "#{article.path}/stats" : article.current_state_path %>
 <div class="dashboard-story js-dashboard-story spec__dashboard-story single-article <%= "story-unpublished" unless article.published %> <%= "story-archived" if article.archived %> <%= "hidden" if article.archived && !@show_archived %>">
   <div class="dashboard-story__title">
     <h3 class="flex items-center">
       <% if article.archived %>
         <span class="c-indicator c-indicator--danger mr-2 fw-normal whitespace-nowrap"><%= t("views.dashboard.article.archived") %></span>
       <% end %>
-      <a href="<%= article.current_state_path %>" class="inline-flex items-center">
+      <a href="<%= title_href %>" class="inline-flex items-center">
         <% if article.organization_id %>
           <span class="crayons-logo crayons-logo--s mr-2 shrink-0">
             <img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24" loading="lazy" />

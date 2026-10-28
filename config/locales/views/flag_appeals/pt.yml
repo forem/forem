@@ -22,4 +22,4 @@ pt:
         appeal_link: enviar um recurso
       spam_notice:
         heading: Conta sinalizada
-        description: Sua conta foi sinalizada e está temporariamente somente leitura. Você pode ver seu painel e suas publicações existentes, mas não pode publicar, editar ou comentar até que a sinalização seja analisada.
+        description: Sua conta foi sinalizada e está temporariamente somente leitura. Você pode ver seu painel e as estatísticas das suas publicações, mas não pode publicar, editar ou comentar até que a sinalização seja analisada.

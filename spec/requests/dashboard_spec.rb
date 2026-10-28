@@ -298,6 +298,37 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when linking post titles on the read-only dashboard" do
+      let(:title_hrefs) do
+        Nokogiri::HTML(response.body).css(".dashboard-story__title h3 a").pluck("href")
+      end
+
+      before do
+        article
+        unpublished_article
+        sign_in user
+      end
+
+      it "links a spam author's titles to stats, since their posts 404 for non-admins", :aggregate_failures do
+        user.add_role(:spam)
+
+        get dashboard_path
+
+        expect(title_hrefs).to contain_exactly("#{article.path}/stats", "#{unpublished_article.path}/stats")
+
+        get title_hrefs.first
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "keeps linking a suspended author's titles to their posts", :aggregate_failures do
+        user.add_role(:suspended)
+
+        get dashboard_path
+
+        expect(title_hrefs).to contain_exactly(article.current_state_path, unpublished_article.current_state_path)
+      end
+    end
+
     context "when a spam-flagged user has no posts" do
       it "redirects to following tags (not a 404) where the appeal banner is shown", :aggregate_failures do
         user.add_role(:spam)
