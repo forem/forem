@@ -108,7 +108,7 @@ Rails.application.routes.draw do
           post :preview, on: :collection
         end
 
-        resources :tags, only: :update
+        resources :tags, only: %i[create update]
 
         resources :agent_sessions, only: %i[index show create] do
           collection do
