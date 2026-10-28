@@ -1748,6 +1748,146 @@ fn scrub_agent_session_messages(ruby: &Ruby, messages: RArray) -> Option<RArray>
     Some(result_ary)
 }
 
+fn add_control_class_to_codeblock(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::add_control_class_to_codeblock(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn add_control_panel_to_codeblock(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::add_control_panel_to_codeblock(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn wrap_all_tables(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let wrapped = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::wrap_all_tables(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(wrapped) => Some(wrapped),
+        }
+    };
+    Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn remove_empty_paragraphs(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let cleaned = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::remove_empty_paragraphs(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(cleaned) => Some(cleaned),
+        }
+    };
+    Some(cleaned.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn wrap_all_images_in_links(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let wrapped = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::wrap_all_images_in_links(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(wrapped) => Some(wrapped),
+        }
+    };
+    Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn unescape_raw_tag_in_codeblocks(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let unescaped = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::html::unescape_raw_tag_in_codeblocks(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(unescaped) => Some(unescaped),
+        }
+    };
+    Some(unescaped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn extract_mention_usernames(ruby: &Ruby, html: RString) -> Option<RArray> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and all
+    // Strings are owned before allocating the Ruby Array.
+    let usernames = {
+        let text = unsafe { html.test_as_str() }?;
+        forem_core::html::extract_mention_usernames(text)?
+    };
+    let ary = ruby.ary_new_capa(usernames.len());
+    for username in usernames {
+        ary.push(ruby.str_new(&username)).ok()?;
+    }
+    Some(ary)
+}
+
+fn wrap_mentions_with_links(
+    ruby: &Ruby,
+    html: RString,
+    existing_usernames: RArray,
+    base_url: RString,
+) -> Option<RString> {
+    if !base_url.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Borrow `existing_usernames`, `html`, and `base_url` in-place without calling into
+    // the Ruby VM, and drop all borrows before allocating Ruby objects.
+    let usernames_vec: Vec<String> = {
+        let slice = unsafe { existing_usernames.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_ascii_lowercase());
+        }
+        out
+    };
+    let wrapped = {
+        let text = unsafe { html.test_as_str() }?;
+        let url_str = unsafe { base_url.test_as_str() }?;
+        match forem_core::html::wrap_mentions_with_links(text, &usernames_vec, url_str)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(wrapped) => Some(wrapped),
+        }
+    };
+    Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+fn extract_mentioned_usernames(ruby: &Ruby, html: RString) -> Option<RArray> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and all
+    // Strings are owned before allocating the Ruby Array.
+    let usernames = {
+        let text = unsafe { html.test_as_str() }?;
+        forem_core::html::extract_mentioned_usernames(text)?
+    };
+    let ary = ruby.ary_new_capa(usernames.len());
+    for username in usernames {
+        ary.push(ruby.str_new(&username)).ok()?;
+    }
+    Some(ary)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -1923,6 +2063,39 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "scrub_agent_session_messages",
         function!(scrub_agent_session_messages, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_control_class_to_codeblock",
+        function!(add_control_class_to_codeblock, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "add_control_panel_to_codeblock",
+        function!(add_control_panel_to_codeblock, 1),
+    )?;
+    native_mod.define_singleton_method("wrap_all_tables", function!(wrap_all_tables, 1))?;
+    native_mod.define_singleton_method(
+        "remove_empty_paragraphs",
+        function!(remove_empty_paragraphs, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "wrap_all_images_in_links",
+        function!(wrap_all_images_in_links, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "unescape_raw_tag_in_codeblocks",
+        function!(unescape_raw_tag_in_codeblocks, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_mention_usernames",
+        function!(extract_mention_usernames, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "wrap_mentions_with_links",
+        function!(wrap_mentions_with_links, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_mentioned_usernames",
+        function!(extract_mentioned_usernames, 1),
     )?;
     Ok(())
 }

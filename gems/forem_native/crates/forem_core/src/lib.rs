@@ -11,6 +11,7 @@ pub mod emoji;
 pub(crate) mod emoji_data;
 pub mod feed;
 pub mod fixer;
+pub mod html;
 pub mod image;
 pub mod markdown;
 pub(crate) mod psl_data;

@@ -3797,5 +3797,149 @@ RSpec.describe ForemNative do
         end
       end
     end
+
+    describe "Html::Parser & Mentions::CreateAll Kernels" do
+      it "matches legacy Html::Parser and Mentions::CreateAll across edge cases and 1,000 randomized documents",
+         :aggregate_failures do
+        # Out-of-domain inputs return nil from ForemNative and fall back cleanly to legacy_*
+        out_of_domain_samples = [
+          "<TABLE><tr><td>cell</td></tr></TABLE>",
+          '<div class="high&#108;ight"><pre><code>x</code></pre></div>',
+          "<div class='highlight'><pre><code>x</code></pre></div>",
+          '<p><img src="https://dev.to/a&quot;b.png"></p>',
+        ]
+
+        out_of_domain_samples.each do |sample|
+          expect(described_class.add_control_class_to_codeblock(sample)).to be_nil
+          expect(described_class.add_control_panel_to_codeblock(sample)).to be_nil
+          expect(described_class.wrap_all_tables(sample)).to be_nil
+          expect(described_class.remove_empty_paragraphs(sample)).to be_nil
+          expect(described_class.wrap_all_images_in_links(sample)).to be_nil
+        end
+
+        expect(described_class.remove_empty_paragraphs("<div><p> </p></div>")).to be_nil
+
+        table_sample = "<TABLE><tr><td>cell</td></tr></TABLE>"
+        entity_highlight = '<div class="high&#108;ight"><pre><code>x</code></pre></div>'
+        single_quote_highlight = "<div class='highlight'><pre><code>x</code></pre></div>"
+        nested_empty_p = "<div><p> </p></div>"
+        quoted_img = '<p><img src="https://dev.to/a&quot;b.png"></p>'
+
+        expect(Html::Parser.new(table_sample).wrap_all_tables.html)
+          .to eq(Html::Parser.new(table_sample).__send__(:legacy_wrap_all_tables))
+        expect(Html::Parser.new(entity_highlight).add_control_class_to_codeblock.html)
+          .to eq(Html::Parser.new(entity_highlight).__send__(:legacy_add_control_class_to_codeblock))
+        expect(Html::Parser.new(single_quote_highlight).add_control_panel_to_codeblock.html)
+          .to eq(Html::Parser.new(single_quote_highlight).__send__(:legacy_add_control_panel_to_codeblock))
+        expect(Html::Parser.new(nested_empty_p).remove_empty_paragraphs.html)
+          .to eq(Html::Parser.new(nested_empty_p).__send__(:legacy_remove_empty_paragraphs))
+        expect(Html::Parser.new(quoted_img).wrap_all_images_in_links.html)
+          .to eq(Html::Parser.new(quoted_img).__send__(:legacy_wrap_all_images_in_links))
+
+        expect(described_class.add_control_class_to_codeblock(nil)).to be_nil
+        expect(described_class.add_control_panel_to_codeblock(123)).to be_nil
+        expect(described_class.wrap_all_tables("<TABLE></TABLE>")).to be_nil
+        expect(described_class.remove_empty_paragraphs("<div><p></p></div>")).to be_nil
+        expect(described_class.wrap_all_images_in_links(nil)).to be_nil
+        expect(described_class.unescape_raw_tag_in_codeblocks(nil)).to be_nil
+        expect(described_class.extract_mention_usernames(nil)).to be_nil
+        expect(described_class.wrap_mentions_with_links("<p>@alice</p>", nil, "https://dev.to")).to be_nil
+        expect(described_class.extract_mentioned_usernames(nil)).to eq([])
+        expect(described_class.extract_mentioned_usernames(123)).to be_nil
+
+        blocks_pool = [
+          "<p>Hello @alice and @bob_2, check emails test@example.com!</p>",
+          "<p>   </p>",
+          "<p></p>",
+          "<p><span>keep</span></p>",
+          '<p><img src="https://dev.to/img1.png" alt="one" width="100"></p>',
+          '<p><a href="https://example.com"><img src="https://dev.to/linked.png" alt="linked"></a></p>',
+          '<p><img src="https://dev.to/first.png"> and <img src="https://dev.to/second.png" loading="lazy"></p>',
+          "<table>\n<thead><tr><th>A</th></tr></thead>\n<tbody><tr><td>@charlie</td></tr></tbody>\n</table>",
+          '<div class="highlight"><pre class="highlight ruby"><code>puts "@not_a_mention"</code></pre></div>',
+          '<div class="highlight"><pre class="highlight liquid"><code>' \
+          '<span class="p">{</span><span class="o">----%</span>' \
+          '<span class="w"> </span><span class="nt">raw</span><span class="w"> </span>' \
+          '<span class="o">%----</span><span class="p">}</span>' \
+          '</code></pre></div>',
+          '<div class="highlight"><pre class="highlight plaintext"><code>{----% endraw %----}</code></pre></div>',
+          "<blockquote><p>Quoted @dave and <code>@inline_code</code> in text</p></blockquote>",
+          "<ul>\n<li>Item @eve</li>\n<li>Item <a href=\"/frank\">@frank</a>\n</li>\n</ul>",
+        ]
+
+        user_pool = %w[alice bob_2 charlie dave eve frank grace]
+        notifiable_stub = Struct.new(:processed_html).new("")
+        mentions_service = Mentions::CreateAll.new(notifiable_stub)
+        base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{Settings::General.app_domain}"
+
+        rng = Random.new(424_242)
+        1_000.times do |iteration|
+          fragment = Array.new(rng.rand(1..6)) { blocks_pool.sample(random: rng) }.join("\n")
+          existing_users = user_pool.sample(rng.rand(0..5), random: rng)
+          allow(User).to receive(:find_by) { |args| existing_users.include?(args[:username]) ? :user : nil }
+
+          # Individual primitives parity
+          expect(described_class.add_control_class_to_codeblock(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_add_control_class_to_codeblock)),
+                "add_control_class_to_codeblock iter #{iteration}"
+
+          expect(described_class.add_control_panel_to_codeblock(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_add_control_panel_to_codeblock)),
+                "add_control_panel_to_codeblock iter #{iteration}"
+
+          expect(described_class.wrap_all_tables(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_wrap_all_tables)),
+                "wrap_all_tables iter #{iteration}"
+
+          expect(described_class.remove_empty_paragraphs(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_remove_empty_paragraphs)),
+                "remove_empty_paragraphs iter #{iteration}"
+
+          expect(described_class.wrap_all_images_in_links(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_wrap_all_images_in_links)),
+                "wrap_all_images_in_links iter #{iteration}"
+
+          expect(described_class.unescape_raw_tag_in_codeblocks(fragment))
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_unescape_raw_tag_in_codeblocks)),
+                "unescape_raw_tag_in_codeblocks iter #{iteration}"
+
+          wrapped_mentions = described_class.wrap_mentions_with_links(fragment, existing_users, base_url)
+          expect(wrapped_mentions)
+            .to eq(Html::Parser.new(fragment.dup).__send__(:legacy_wrap_mentions_with_links)),
+                "wrap_mentions_with_links iter #{iteration}"
+
+          notifiable_stub.processed_html = wrapped_mentions
+          expect(described_class.extract_mentioned_usernames(wrapped_mentions))
+            .to eq(mentions_service.__send__(:legacy_extract_usernames_from_mentions_in_text)),
+                "extract_mentioned_usernames iter #{iteration}"
+
+          # End-to-end Html::Parser pipeline chain parity
+          native_chain = Html::Parser.new(fragment.dup)
+            .wrap_all_images_in_links
+            .add_control_class_to_codeblock
+            .add_control_panel_to_codeblock
+            .wrap_all_tables
+            .remove_empty_paragraphs
+            .unescape_raw_tag_in_codeblocks
+            .wrap_mentions_with_links
+            .html
+
+          legacy_parser = Html::Parser.new(fragment.dup)
+          legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_wrap_all_images_in_links))
+          legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_add_control_class_to_codeblock))
+          legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_add_control_panel_to_codeblock))
+          legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_wrap_all_tables))
+          legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_remove_empty_paragraphs))
+          if legacy_parser.html.present?
+            legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_unescape_raw_tag_in_codeblocks))
+          end
+          if legacy_parser.html.present?
+            legacy_parser.__send__(:html=, legacy_parser.__send__(:legacy_wrap_mentions_with_links))
+          end
+
+          expect(native_chain).to eq(legacy_parser.html), "pipeline chain iter #{iteration}"
+        end
+      end
+    end
   end
 end

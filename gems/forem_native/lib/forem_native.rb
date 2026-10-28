@@ -748,6 +748,90 @@ module ForemNative
       Native.scrub_agent_session_messages(messages)&.sort_by { |_, count| -count }
     end
 
+    # Adds `"js-code-highlight"` to every `div.highlight` element on canonical HTML fragments,
+    # matching `Html::Parser#add_control_class_to_codeblock`.
+    def add_control_class_to_codeblock(html)
+      return unless Native.respond_to?(:add_control_class_to_codeblock)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.add_control_class_to_codeblock(html)
+    end
+
+    # Appends `<div class="highlight__panel js-actions-panel"></div>` to every `div.highlight`
+    # element on canonical HTML fragments, matching `Html::Parser#add_control_panel_to_codeblock`.
+    def add_control_panel_to_codeblock(html)
+      return unless Native.respond_to?(:add_control_panel_to_codeblock)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.add_control_panel_to_codeblock(html)
+    end
+
+    # Wraps every `<table>` in `<div class="table-wrapper-paragraph">...</div>` on canonical
+    # HTML fragments, matching `Html::Parser#wrap_all_tables`.
+    def wrap_all_tables(html)
+      return unless Native.respond_to?(:wrap_all_tables)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_all_tables(html)
+    end
+
+    # Removes `<p>...</p>` elements whose children are all blank on canonical HTML fragments,
+    # matching `Html::Parser#remove_empty_paragraphs`.
+    def remove_empty_paragraphs(html)
+      return unless Native.respond_to?(:remove_empty_paragraphs)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.remove_empty_paragraphs(html)
+    end
+
+    # Wraps `p img` elements in `<a href="..." class="article-body-image-wrapper">...</a>` on
+    # canonical HTML fragments, matching `Html::Parser#wrap_all_images_in_links`.
+    def wrap_all_images_in_links(html)
+      return unless Native.respond_to?(:wrap_all_images_in_links)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_all_images_in_links(html)
+    end
+
+    # Unescapes `{----% raw %----}` and `{----% endraw %----}` markers (including markers split
+    # across syntax-highlighted `<span>` elements inside `//body/div/pre/code`), matching
+    # `Html::Parser#unescape_raw_tag_in_codeblocks`.
+    def unescape_raw_tag_in_codeblocks(html)
+      return unless Native.respond_to?(:unescape_raw_tag_in_codeblocks)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.unescape_raw_tag_in_codeblocks(html)
+    end
+
+    # Extracts unique lowercased candidate `@username` strings outside `<code>` and `<a>`
+    # elements for `Html::Parser#wrap_mentions_with_links`.
+    def extract_mention_usernames(html)
+      return unless Native.respond_to?(:extract_mention_usernames)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.extract_mention_usernames(html)
+    end
+
+    # Replaces `@username` mentions matching `existing_usernames` with `.mentioned-user` links
+    # outside `<code>` and `<a>` elements, matching `Html::Parser#wrap_mentions_with_links`.
+    def wrap_mentions_with_links(html, existing_usernames, base_url)
+      return unless Native.respond_to?(:wrap_mentions_with_links)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+      return unless existing_usernames.is_a?(Array) && base_url.is_a?(String)
+
+      Native.wrap_mentions_with_links(html, existing_usernames, base_url.to_s)
+    end
+
+    # Extracts lowercased `@`-stripped usernames from `.mentioned-user` links outside Liquid tags,
+    # matching `Mentions::CreateAll#extract_usernames_from_mentions_in_text`.
+    def extract_mentioned_usernames(html)
+      return [] if html.nil?
+      return unless Native.respond_to?(:extract_mentioned_usernames)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.extract_mentioned_usernames(html)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

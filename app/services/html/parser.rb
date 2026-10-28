@@ -66,19 +66,8 @@ module Html
     def wrap_all_images_in_links
       return self if @html.blank? || !@html.match?(/<img/i)
 
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.search("p img").each do |image|
-        next if image.parent.name == "a"
-
-        link = doc.document.create_element("a")
-        link["href"] = image.attr("src").to_s
-        link["class"] = "article-body-image-wrapper"
-        image.replace(link)
-        link.add_child(image)
-      end
-
-      @html = doc.to_html
+      @html = ForemNative.wrap_all_images_in_links(@html) ||
+        legacy_wrap_all_images_in_links
 
       self
     end
@@ -86,13 +75,8 @@ module Html
     def add_control_class_to_codeblock
       return self if @html.blank? || !may_contain?("highlight")
 
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.search("div.highlight").each do |codeblock|
-        codeblock.add_class("js-code-highlight")
-      end
-
-      @html = doc.to_html
+      @html = ForemNative.add_control_class_to_codeblock(@html) ||
+        legacy_add_control_class_to_codeblock
 
       self
     end
@@ -100,13 +84,8 @@ module Html
     def add_control_panel_to_codeblock
       return self if @html.blank? || !may_contain?("highlight")
 
-      doc = Nokogiri::HTML.fragment(@html)
-
-      doc.search("div.highlight").each do |codeblock|
-        codeblock.add_child('<div class="highlight__panel js-actions-panel"></div>')
-      end
-
-      @html = doc.to_html
+      @html = ForemNative.add_control_panel_to_codeblock(@html) ||
+        legacy_add_control_panel_to_codeblock
 
       self
     end
@@ -144,9 +123,8 @@ module Html
     def wrap_all_tables
       return self if @html.blank? || !@html.match?(/<table/i)
 
-      doc = Nokogiri::HTML.fragment(@html)
-      doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
-      @html = doc.to_html
+      @html = ForemNative.wrap_all_tables(@html) ||
+        legacy_wrap_all_tables
 
       self
     end
@@ -154,9 +132,8 @@ module Html
     def remove_empty_paragraphs
       return self if @html.blank? || !@html.match?(/<p/i)
 
-      doc = Nokogiri::HTML.fragment(@html)
-      doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
-      @html = doc.to_html
+      @html = ForemNative.remove_empty_paragraphs(@html) ||
+        legacy_remove_empty_paragraphs
 
       self
     end
@@ -171,23 +148,8 @@ module Html
     def unescape_raw_tag_in_codeblocks
       return self if @html.blank?
 
-      @html.gsub!(RAW_TAG, "{% raw %}")
-      @html.gsub!(END_RAW_TAG, "{% endraw %}")
-      html_doc = Nokogiri::HTML(@html)
-      html_doc.xpath("//body/div/pre/code").each do |codeblock|
-        next unless codeblock.content.include?(RAW_TAG) || codeblock.content.include?(END_RAW_TAG)
-
-        children_content = codeblock.children.map(&:content)
-        indices = children_content.size.times.select do |i|
-          possibly_raw_tag_syntax?(children_content[i..i + 2])
-        end
-        indices.each do |i|
-          codeblock.children[i].content = codeblock.children[i].content.delete("----")
-        end
-      end
-
-      body = html_doc.at_css("body")
-      @html = body ? body.inner_html : html_doc.to_html
+      @html = ForemNative.unescape_raw_tag_in_codeblocks(@html) ||
+        legacy_unescape_raw_tag_in_codeblocks
 
       self
     end
@@ -215,27 +177,8 @@ module Html
     def wrap_mentions_with_links
       return self if @html.blank? || !may_contain?("@")
 
-      html_doc = Nokogiri::HTML(@html)
-
-      # looks for nodes that isn't <code>, <a>, and contains "@"
-      targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
-
-      # A Queue system to look for and replace possible usernames
-      until targets.empty?
-        node = targets.shift
-
-        # only focus on portion of text with "@"
-        node.xpath("text()[contains(.,'@')]").each do |el|
-          el.replace(el.to_s.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
-        end
-
-        # enqueue children that has @ in it's text
-        children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
-        targets.concat(children)
-      end
-
-      body = html_doc.at_css("body")
-      @html = body ? body.inner_html : html_doc.to_html
+      @html = native_wrap_mentions_with_links ||
+        legacy_wrap_mentions_with_links
 
       self
     end
@@ -310,6 +253,106 @@ module Html
 
     def possibly_raw_tag_syntax?(array)
       (RAW_TAG_DELIMITERS & array).any?
+    end
+
+    def legacy_wrap_all_images_in_links
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.search("p img").each do |image|
+        next if image.parent.name == "a"
+
+        link = doc.document.create_element("a")
+        link["href"] = image.attr("src").to_s
+        link["class"] = "article-body-image-wrapper"
+        image.replace(link)
+        link.add_child(image)
+      end
+
+      doc.to_html
+    end
+
+    def legacy_add_control_class_to_codeblock
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.search("div.highlight").each do |codeblock|
+        codeblock.add_class("js-code-highlight")
+      end
+
+      doc.to_html
+    end
+
+    def legacy_add_control_panel_to_codeblock
+      doc = Nokogiri::HTML.fragment(@html)
+
+      doc.search("div.highlight").each do |codeblock|
+        codeblock.add_child('<div class="highlight__panel js-actions-panel"></div>')
+      end
+
+      doc.to_html
+    end
+
+    def legacy_wrap_all_tables
+      doc = Nokogiri::HTML.fragment(@html)
+      doc.search("table").each { |table| table.swap("<div class='table-wrapper-paragraph'>#{table}</div>") }
+      doc.to_html
+    end
+
+    def legacy_remove_empty_paragraphs
+      doc = Nokogiri::HTML.fragment(@html)
+      doc.css("p").select { |paragraph| all_children_are_blank?(paragraph) }.each(&:remove)
+      doc.to_html
+    end
+
+    def legacy_unescape_raw_tag_in_codeblocks
+      html = @html.gsub(RAW_TAG, "{% raw %}").gsub(END_RAW_TAG, "{% endraw %}")
+      html_doc = Nokogiri::HTML(html)
+      html_doc.xpath("//body/div/pre/code").each do |codeblock|
+        next unless codeblock.content.include?(RAW_TAG) || codeblock.content.include?(END_RAW_TAG)
+
+        children_content = codeblock.children.map(&:content)
+        indices = children_content.size.times.select do |i|
+          possibly_raw_tag_syntax?(children_content[i..i + 2])
+        end
+        indices.each do |i|
+          codeblock.children[i].content = codeblock.children[i].content.delete("----")
+        end
+      end
+
+      body = html_doc.at_css("body")
+      body ? body.inner_html : html_doc.to_html
+    end
+
+    def native_wrap_mentions_with_links
+      usernames = ForemNative.extract_mention_usernames(@html)
+      return unless usernames
+
+      existing = usernames.select { |u| User.find_by(username: u) }
+      base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{Settings::General.app_domain}"
+      ForemNative.wrap_mentions_with_links(@html, existing, base_url)
+    end
+
+    def legacy_wrap_mentions_with_links
+      html_doc = Nokogiri::HTML(@html)
+
+      # looks for nodes that isn't <code>, <a>, and contains "@"
+      targets = html_doc.xpath('//html/body/*[not (self::code) and not(self::a) and contains(., "@")]').to_a
+
+      # A Queue system to look for and replace possible usernames
+      until targets.empty?
+        node = targets.shift
+
+        # only focus on portion of text with "@"
+        node.xpath("text()[contains(.,'@')]").each do |el|
+          el.replace(el.to_s.gsub(/\B@[a-z0-9_-]+/i) { |text| user_link_if_exists(text) })
+        end
+
+        # enqueue children that has @ in it's text
+        children = node.xpath('*[not(self::code) and not(self::a) and contains(., "@")]').to_a
+        targets.concat(children)
+      end
+
+      body = html_doc.at_css("body")
+      body ? body.inner_html : html_doc.to_html
     end
 
     def legacy_escape_colon_emojis_in_codeblock
