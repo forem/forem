@@ -345,6 +345,8 @@ Rails.application.routes.draw do
     patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
+    # Individual badge pages were folded into /badges; keep old links working.
+    get "/badge/:slug", to: redirect("/badges#%{slug}")
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
