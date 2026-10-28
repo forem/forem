@@ -2009,7 +2009,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Create a new billboard.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
+        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
         "parameters": [
 
         ],
@@ -2087,7 +2087,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Update an existing billboard's configurations.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
+        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
         "parameters": [
           {
             "name": "id",
@@ -2144,7 +2144,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Remove a billboard from active rotation by unpublishing it.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
+        "description": "Remove a billboard from active rotation by unpublishing it.  Successful writes log `api_billboard_unpublish` with the actor and target ids in the admin API audit log.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
         "parameters": [
           {
             "name": "id",
