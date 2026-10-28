@@ -1,0 +1,36 @@
+app/controllers/concerns/api/admin/users_controller.rb
+  h_f968154a99632d 223-224
+app/services/authentication/authenticator.rb
+  h_f968154a99632d 224-225,239-252,291
+app/services/authentication/providers/apple.rb
+  h_f968154a99632d 31,34-35
+app/services/authentication/providers/mlh.rb
+  h_f968154a99632d 37-38
+app/services/community_bots/create_bot.rb
+  h_f968154a99632d 41
+app/services/images/profile_image_generator.rb
+  h_f968154a99632d 3-654
+app/workers/users/generate_ai_profile_image_worker.rb
+  h_f968154a99632d 11-12,14,17
+db/seeds.rb
+  h_f968154a99632d 70,201,246,260,274,1330,1347
+spec/services/authentication/authenticator_spec.rb
+  h_f968154a99632d 975-1000
+spec/services/authentication/providers/mlh_spec.rb
+  h_f968154a99632d 45,47-52
+spec/services/images/profile_image_generator_spec.rb
+  h_f968154a99632d 4-58
+spec/workers/users/generate_ai_profile_image_worker_spec.rb
+  h_f968154a99632d 12,15-16,22,26-27,31-32,35,38-40,44,49-51,56-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "45f96e351164daa255e601e0931e498ce021f3e6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
