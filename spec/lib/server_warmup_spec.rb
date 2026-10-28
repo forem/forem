@@ -60,6 +60,8 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(Article.attribute_methods_generated?).to be(true)
       expect(Subforem.__send__(:schema_loaded?)).to be(true)
       expect(Billboard.__send__(:schema_loaded?)).to be(true)
+      expect(BillboardPlacementAreaConfig.__send__(:schema_loaded?)).to be(true)
+      expect(PageView.__send__(:schema_loaded?)).to be(true)
     end
 
     it "preloads schema cache entries for auxiliary join tables" do
@@ -147,6 +149,21 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(ApplicationController.view_context_class.empty.respond_to?(compiled_template.method_name)).to be(true)
     end
 
+    it "precompiles partial templates with default, collection, and PARTIAL_LOCALS_MAP local signatures" do
+      resolver = ActionController::Base.view_paths.paths.first
+      template_path = ActionView::TemplatePath.parse("articles/_single_story")
+      allow(resolver).to receive(:all_template_paths).and_return([template_path])
+      allow(ActionController::Base.view_paths).to receive(:paths).and_return([resolver])
+
+      compiled_count = described_class.preload_view_templates!
+
+      expect(compiled_count).to be >= 5
+      unbound = resolver.instance_variable_get(:@unbound_templates)[template_path.virtual].first
+      expect(unbound.bind_locals([]).instance_variable_get(:@compiled)).to be(true)
+      expect(unbound.bind_locals(%i[single_story]).instance_variable_get(:@compiled)).to be(true)
+      expect(unbound.bind_locals(%i[featured story]).instance_variable_get(:@compiled)).to be(true)
+    end
+
     it "logs an error and continues when an individual template fails to compile" do
       bad_unbound = Class.new do
         def bind_locals(_locals)
@@ -179,6 +196,32 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(described_class.preload_view_templates!).to eq(0)
       expect(Rails.logger).to have_received(:error).with(
         a_string_including("[ServerWarmup] Template compile failed for broken/view", "broken template syntax"),
+      )
+    end
+  end
+
+  describe ".preload_controller_view_contexts!" do
+    it "builds view_context_class for ApplicationController and its descendants and warms PublicSuffix" do
+      described_class.preload_controller_view_contexts!
+
+      expect(ApplicationController.instance_variable_get(:@view_context_class)).to be_present
+      expect(StoriesController.instance_variable_get(:@view_context_class)).to be_present
+      expect(PublicSuffix::List.instance_variable_get(:@default)).to be_present
+    end
+
+    it "logs an error and continues when a controller's view_context_class raises" do
+      failing_controller = Class.new do
+        def self.view_context_class
+          raise StandardError, "broken helper inclusion"
+        end
+      end
+      allow(ApplicationController).to receive(:descendants).and_return([failing_controller, StoriesController])
+      allow(Rails.logger).to receive(:error)
+
+      expect { described_class.preload_controller_view_contexts! }.not_to raise_error
+      expect(StoriesController.instance_variable_get(:@view_context_class)).to be_present
+      expect(Rails.logger).to have_received(:error).with(
+        a_string_including("[ServerWarmup] View context preload failed", "broken helper inclusion"),
       )
     end
   end
@@ -394,12 +437,14 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(RequestStore.store).to be_empty
     end
 
-    it "warms Settings caches for global and subforem scopes" do
+    it "warms Settings and BillboardPlacementAreaConfig caches for global and subforem scopes" do
       allow(Settings::General).to receive(:all_settings).and_call_original
+      allow(BillboardPlacementAreaConfig).to receive(:all_configs).and_call_original
 
       described_class.warm_in_memory_caches!
 
       expect(Settings::General).to have_received(:all_settings).with(nil).at_least(:once)
+      expect(BillboardPlacementAreaConfig).to have_received(:all_configs).once
     end
   end
 
@@ -498,10 +543,11 @@ RSpec.describe ServerWarmup, type: :lib do
   end
 
   describe ".before_fork" do
-    it "runs routes/i18n, view templates, schema preload, caches, and disconnects parent connections in ensure" do
+    it "runs routes/i18n, templates, controller contexts, schema, caches, and disconnects in ensure" do
       allow(described_class).to receive(:warmup_enabled?).and_return(true)
       allow(described_class).to receive(:preload_routes_and_i18n!)
       allow(described_class).to receive(:preload_view_templates!)
+      allow(described_class).to receive(:preload_controller_view_contexts!)
       allow(described_class).to receive(:preload_model_schemas!)
       allow(described_class).to receive(:warm_in_memory_caches!).and_raise(StandardError, "simulated error")
       allow(described_class).to receive(:disconnect_parent_connections!)
@@ -510,6 +556,7 @@ RSpec.describe ServerWarmup, type: :lib do
       expect { described_class.before_fork }.not_to raise_error
       expect(described_class).to have_received(:preload_routes_and_i18n!).once
       expect(described_class).to have_received(:preload_view_templates!).once
+      expect(described_class).to have_received(:preload_controller_view_contexts!).once
       expect(described_class).to have_received(:preload_model_schemas!).once
       expect(described_class).to have_received(:disconnect_parent_connections!).once
       expect(Rails.logger).to have_received(:error).with(
@@ -581,6 +628,38 @@ RSpec.describe ServerWarmup, type: :lib do
       expect(described_class.traffic_received?).to be(true)
       expect(keepalive_thread.join(1)).to eq(keepalive_thread)
       expect(keepalive_thread).not_to be_alive
+    end
+
+    it "wakes a sleeping keepalive thread immediately on mark_traffic_received! without waiting for interval" do
+      allow(described_class).to receive(:warm_database_connections!)
+      allow(described_class).to receive(:warm_redis_cache_connection!)
+      allow(described_class).to receive(:warm_flipper_cache!)
+
+      described_class.start_preboot_keepalive!(duration_seconds: 30, interval_seconds: 25)
+      keepalive_thread = described_class.instance_variable_get(:@keepalive_thread)
+      expect(keepalive_thread).to be_alive
+
+      described_class.mark_traffic_received!
+
+      expect(keepalive_thread.join(0.5)).to eq(keepalive_thread)
+      expect(keepalive_thread).not_to be_alive
+      expect(described_class).not_to have_received(:warm_database_connections!)
+    end
+
+    it "aborts remaining keepalive tick steps if traffic arrives during warm_database_connections!" do
+      allow(described_class).to receive(:warm_database_connections!) do
+        described_class.mark_traffic_received!
+      end
+      allow(described_class).to receive(:warm_redis_cache_connection!)
+      allow(described_class).to receive(:warm_flipper_cache!)
+
+      described_class.start_preboot_keepalive!(duration_seconds: 2, interval_seconds: 0.01)
+      keepalive_thread = described_class.instance_variable_get(:@keepalive_thread)
+      expect(keepalive_thread.join(1)).to eq(keepalive_thread)
+
+      expect(described_class).to have_received(:warm_database_connections!).once
+      expect(described_class).not_to have_received(:warm_redis_cache_connection!)
+      expect(described_class).not_to have_received(:warm_flipper_cache!)
     end
   end
 
