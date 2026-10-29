@@ -5526,6 +5526,182 @@
         }
       }
     },
+    "/api/tags/{id}/moderators": {
+      "post": {
+        "summary": "Add a tag moderator",
+        "tags": [
+          "tags"
+        ],
+        "description": "Make a user a moderator of a tag, with the same effects as adding them on the admin tag page: the tag moderator role, the trusted role, tag moderator newsletter emails, a confirmation email, and the tag marked as supported.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful change writes an admin API audit entry.\nReturns 422 if the user is already a moderator of the tag.",
+        "operationId": "addTagModerator",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The moderator was added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "tag_id",
+                    "tag_name",
+                    "user_id",
+                    "username"
+                  ],
+                  "properties": {
+                    "tag_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "tag_name": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag or user not found"
+          },
+          "422": {
+            "description": "The user is already a moderator of the tag"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "ben"
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "The user, by `user_id` or `username`.  `user_id` is used if both are sent."
+        }
+      },
+      "delete": {
+        "summary": "Remove a tag moderator",
+        "tags": [
+          "tags"
+        ],
+        "description": "Remove a user's moderator role on a tag, with the same effects as removing them on the admin tag page.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful change writes an admin API audit entry.\nReturns 422 if the user is not a moderator of the tag.",
+        "operationId": "removeTagModerator",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The moderator was removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "tag_id",
+                    "tag_name",
+                    "user_id",
+                    "username"
+                  ],
+                  "properties": {
+                    "tag_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "tag_name": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag or user not found"
+          },
+          "422": {
+            "description": "The user is not a moderator of the tag"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "ben"
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "The user, by `user_id` or `username`.  `user_id` is used if both are sent."
+        }
+      }
+    },
     "/api/trends": {
       "get": {
         "summary": "Trends",
