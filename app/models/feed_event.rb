@@ -195,6 +195,13 @@ class FeedEvent < ApplicationRecord
   end
   private_class_method :calculate_feed_config_counters
 
+  # Run only for newly ingested engagement, after its storage transaction commits.
+  def process_ingested_engagement
+    update_article_counters_and_scores
+    create_feed_config_offshoot
+    record_field_test_event
+  end
+
   private
 
   def event_id_is_uuid

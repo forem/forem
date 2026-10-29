@@ -10,6 +10,8 @@ describe('feed impression delivery', () => {
   let originalCrypto;
 
   beforeEach(() => {
+    jest.useFakeTimers();
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
     originalCrypto = window.crypto;
     Object.defineProperty(window, 'crypto', {
       configurable: true,
@@ -45,6 +47,8 @@ describe('feed impression delivery', () => {
     window.fetch = originalFetch;
     window.IntersectionObserver = originalObserver;
     navigator.sendBeacon = originalBeacon;
+    jest.restoreAllMocks();
+    jest.useRealTimers();
   });
 
   function see(ratio = 0.25) {
@@ -107,6 +111,7 @@ describe('feed impression delivery', () => {
     const id = tracker.queue[0].event_id;
     await tracker.submitEventsBatch();
     expect(tracker.queue[0].event_id).toBe(id);
+    jest.advanceTimersByTime(5000);
     await tracker.submitEventsBatch();
     expect(tracker.queue).toHaveLength(0);
     const payloads = window.fetch.mock.calls.map(([, request]) =>
@@ -160,6 +165,7 @@ describe('feed impression delivery', () => {
     acknowledge({ ok: true });
     await pending;
     expect(tracker.queue).toHaveLength(0);
+    expect(tracker.nextAttemptAt).toBe(0);
   });
 
   it('retries a request that times out without losing its event ID', async () => {
@@ -179,6 +185,7 @@ describe('feed impression delivery', () => {
       jest.advanceTimersByTime(10000);
       await request;
       expect(tracker.queue[0].event_id).toBe(id);
+      jest.advanceTimersByTime(5000);
       await tracker.submitEventsBatch();
       expect(tracker.queue).toHaveLength(0);
     } finally {
@@ -206,5 +213,141 @@ describe('feed impression delivery', () => {
       '/feed_events',
       expect.objectContaining({ keepalive: true }),
     );
+  });
+  it('backs off every send path after a failure', async () => {
+    window.fetch.mockResolvedValue({ ok: false, status: 500 });
+    see();
+    await tracker.submitEventsBatch();
+    expect(tracker.nextAttemptAt - Date.now()).toBe(2500);
+    await tracker.submitEventsBatch();
+    tracker.flushBeforeExit();
+    for (let index = 0; index < 20; index += 1)
+      tracker.queueEvent(post, 'impression');
+    tracker.trackFeedClickListener({ currentTarget: post });
+    expect(window.fetch).toHaveBeenCalledTimes(1);
+    expect(navigator.sendBeacon).not.toHaveBeenCalled();
+    jest.advanceTimersByTime(2500);
+    await tracker.submitEventsBatch();
+    expect(window.fetch).toHaveBeenCalledTimes(2);
+    expect(tracker.nextAttemptAt - Date.now()).toBe(5000);
+  });
+
+  it.each([400, 401, 403, 413, 422])(
+    'drops permanent HTTP %s failures',
+    async (status) => {
+      window.fetch.mockResolvedValue({ ok: false, status });
+      see();
+      await tracker.submitEventsBatch();
+      jest.advanceTimersByTime(500000);
+      await tracker.submitEventsBatch();
+      expect(tracker.queue).toHaveLength(0);
+      expect(window.fetch).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it.each([408, 429, 503])(
+    'honors numeric Retry-After on transient HTTP %s failures',
+    async (status) => {
+      window.fetch.mockResolvedValue({
+        ok: false,
+        status,
+        headers: { get: () => '120' },
+      });
+      see();
+      await tracker.submitEventsBatch();
+      jest.advanceTimersByTime(119000);
+      await tracker.submitEventsBatch();
+      expect(window.fetch).toHaveBeenCalledTimes(1);
+      jest.advanceTimersByTime(1000);
+      await tracker.submitEventsBatch();
+      expect(window.fetch).toHaveBeenCalledTimes(2);
+    },
+  );
+
+  it('honors an HTTP-date Retry-After', async () => {
+    const until = new Date(Date.now() + 120000).toUTCString();
+    window.fetch.mockResolvedValue({
+      ok: false,
+      status: 503,
+      headers: { get: () => until },
+    });
+    see();
+    await tracker.submitEventsBatch();
+    expect(tracker.nextAttemptAt).toBe(Date.parse(until));
+  });
+
+  it('drops only the failed batch after six attempts and preserves later arrivals', async () => {
+    window.fetch.mockResolvedValue({ ok: false, status: 500 });
+    see();
+    await tracker.submitEventsBatch();
+    tracker.queueEvent(post, 'click');
+    for (let attempt = 1; attempt < 6; attempt += 1) {
+      jest.advanceTimersByTime(300000);
+      await tracker.submitEventsBatch();
+    }
+    expect(window.fetch).toHaveBeenCalledTimes(6);
+    expect(tracker.queue.map((event) => event.category)).toEqual(['click']);
+    window.fetch.mockResolvedValue({ ok: true });
+    jest.advanceTimersByTime(300000);
+    await tracker.submitEventsBatch();
+    expect(tracker.queue).toHaveLength(0);
+  });
+
+  it('bounds the queue while retaining clicks ahead of impressions', async () => {
+    Object.defineProperty(navigator, 'onLine', {
+      configurable: true,
+      value: false,
+    });
+    try {
+      tracker.queueEvent(post, 'click');
+      const clickId = tracker.queue[0].event_id;
+      for (let index = 0; index < 250; index += 1)
+        tracker.queueEvent(post, 'impression');
+      expect(tracker.queue).toHaveLength(200);
+      expect(tracker.queue[0].event_id).toBe(clickId);
+      await tracker.submitEventsBatch();
+      tracker.flushBeforeExit();
+      expect(window.fetch).not.toHaveBeenCalled();
+      expect(navigator.sendBeacon).not.toHaveBeenCalled();
+    } finally {
+      delete navigator.onLine;
+    }
+  });
+
+  it('does not retry a hidden tab or repeat its exit beacon immediately', async () => {
+    see();
+    Object.defineProperty(document, 'visibilityState', {
+      configurable: true,
+      value: 'hidden',
+    });
+    try {
+      await tracker.submitEventsBatch();
+      expect(window.fetch).not.toHaveBeenCalled();
+      tracker.flushBeforeExit();
+      tracker.flushBeforeExit();
+      expect(navigator.sendBeacon).toHaveBeenCalledTimes(1);
+    } finally {
+      delete document.visibilityState;
+    }
+  });
+  it('counts exit beacons against the same six-attempt budget', () => {
+    see();
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      tracker.flushBeforeExit();
+      jest.advanceTimersByTime(300000);
+    }
+    tracker.flushBeforeExit();
+    expect(navigator.sendBeacon).toHaveBeenCalledTimes(6);
+    expect(tracker.queue).toHaveLength(0);
+  });
+  it('does not reset outage backoff when queue pressure evicts a failed batch', async () => {
+    window.fetch.mockResolvedValue({ ok: false, status: 500 });
+    see();
+    await tracker.submitEventsBatch();
+    for (let index = 0; index < 250; index += 1)
+      tracker.queueEvent(post, 'impression');
+    jest.advanceTimersByTime(2500);
+    await tracker.submitEventsBatch();
+    expect(tracker.nextAttemptAt - Date.now()).toBe(5000);
   });
 });

@@ -12,6 +12,14 @@ RSpec.describe "FeedEvents" do
     }
   end
 
+  around do |example|
+    previous_store = Rack::Attack.cache.store
+    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
+    example.run
+  ensure
+    Rack::Attack.cache.store = previous_store
+  end
+
   describe "POST /feed_events" do
     context "when user is signed in" do
       before do
@@ -60,6 +68,38 @@ RSpec.describe "FeedEvents" do
           post "/feed_events", params: { feed_events: [event_params.merge(event_id: "invalid")] }
         end.not_to change(FeedEvent, :count)
         expect(response).to be_successful
+      end
+
+      it "rejects oversized payloads before reserving receipts" do
+        events = Array.new(21) { event_params.merge(event_id: SecureRandom.uuid) }
+        expect { post "/feed_events", params: { feed_events: events } }.not_to change(FeedEventReceipt, :count)
+        expect(response).to have_http_status(:payload_too_large)
+      end
+
+      it "rejects malformed batch shapes" do
+        post "/feed_events", params: { feed_events: ["invalid"] }
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it "acknowledges without ingesting while the kill switch is enabled" do
+        allow(FeatureFlag).to receive(:enabled?).with(:disable_browser_feed_events).and_return(true)
+        expect { post "/feed_events", params: { feed_events: [event_params] } }.not_to change(FeedEvent, :count)
+        expect(response).to be_successful
+      end
+
+      it "bounds per-user admission and supplies Retry-After" do
+        Timecop.freeze do
+          allow(FeedEvents::BulkUpsert).to receive(:call)
+          120.times { post "/feed_events", params: { feed_events: [event_params] } }
+          post "/feed_events", params: { feed_events: [event_params] }
+          expect(response).to have_http_status(:too_many_requests)
+          expect(response.headers["Retry-After"]).to eq("60")
+          expect(FeedEvents::BulkUpsert).to have_received(:call).exactly(120).times
+          Timecop.travel(61.seconds.from_now) do
+            post "/feed_events", params: { feed_events: [event_params] }
+            expect(response).to be_successful
+          end
+        end
       end
 
       it "creates multiple events in a batch" do

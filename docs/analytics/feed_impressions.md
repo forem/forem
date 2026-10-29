@@ -30,13 +30,20 @@ the lookup and insert across web processes. Different users can ingest in parall
 - Concurrent check-then-insert operations could both insert. User locks now cover
   both operations; multiple users' locks are acquired in stable order.
 - The browser cleared its queue before delivery and ignored HTTP failures. Normal
-  delivery now awaits a successful fetch response, retains failed batches, avoids
-  overlapping fetches, and removes only the acknowledged batch. The five-second
-  timer retries failures; a ten-second abort prevents a hung fetch from blocking
-  every subsequent event.
-- An unload beacon was treated as a completed send. Visibility/pagehide beacons
-  now retain their queue because browser acceptance is not database confirmation.
-  Unavailable or refused beacons fall back to a keepalive fetch.
+  delivery now awaits acknowledgement and preserves the IDs of transient failures.
+  Retries use full jitter, a five-second base and a five-minute cap, with at most
+  six transmissions per batch. Outage backoff survives batch eviction/exhaustion
+  and resets after acknowledgement. A ten-second timeout bounds a stalled fetch.
+- Permanent HTTP errors (including stale-CSRF 422) discard only that batch.
+  Network/abort errors, 408, 429 and 5xx can retry; Retry-After seconds and HTTP
+  dates are honored. Click, queue-size and exit sends all respect the deadline.
+- Queues are capped at 200 events, dropping oldest impressions first and then
+  oldest remaining events if necessary. Normal retries pause offline or hidden;
+  the online event and foreground interval resume them without bypassing backoff.
+- An exit beacon is not a storage acknowledgement. At most one batch is attempted
+  on exit, within the same retry budget and deadline. Refused/unavailable beacons
+  fall back to keepalive fetch. A queued beacon retains IDs until acknowledgement
+  or retry exhaustion. Repeated visibility/pagehide events cannot bypass backoff.
 - Observer queueing is now synchronous, removing an unnecessary microtask
   between the visibility callback and the event queue.
 - Background documents could generate geometry-based impressions. Hidden documents
@@ -50,11 +57,32 @@ the lookup and insert across web processes. Different users can ingest in parall
 - Batch counter refreshes sampled five articles, leaving other touched article
   counters stale. Every inserted article now gets a throttled refresh.
 
-- Batched engagements bypassed the callbacks that update scores, spawn config
-  offshoots and record experiment conversions. Impressions remain bulk inserts;
-  engagements now use the same model callbacks as individual events. Impressions
-  are recorded and counters refreshed before engagement checks config maturity.
-  Existing event-category, targeting-bucket and spawn-throttling rules still apply.
+- Batched engagement previously bypassed scoring, config evolution and experiment
+  callbacks. BulkUpsert now uses bulk inserts without model callbacks. After
+  all enclosing transactions commit, one FeedEvents::FeedbackWorker job receives
+  the newly inserted IDs. It refreshes counters before applying the same engagement
+  methods used by model callbacks, retaining category/bucket/spawn throttles.
+- Expensive scoring and config updates no longer execute under ingestion's user
+  locks or article/config row locks. A worker timeout cannot roll back accepted
+  events or receipts. Sidekiq allows up to ten retries for feedback failures. Identical
+  queued jobs coalesce (until_executing/replace); different accepted batches retain
+  their engagement IDs and rely on existing counter/spawn throttles. Receipt-only
+  replays enqueue no additional work.
+
+## Admission and incident controls
+
+The browser endpoint accepts at most 20 events per request and 120 requests per
+minute per authenticated user. The fixed-window budget uses Rack::Attack's cache
+and applies equally to session and JWT authentication, avoiding a shared-IP/NAT
+limit. Oversized batches return 413; malformed shapes return 400; budget exhaustion
+returns 429 with Retry-After: 60 before any receipt is reserved. Per-event validation
+still filters invalid events and acknowledges the rest. Trusted digest ingestion
+calls BulkUpsert directly and does not use browser admission limits.
+
+Operators can enable the Flipper flag `disable_browser_feed_events` to
+acknowledge and discard browser batches without ingestion, then disable it to
+resume. Normal feature-flag cache propagation applies. This is intentional shedding
+of analytics during an incident, not a pause with eventual replay.
 
 ## Deployment
 
@@ -62,8 +90,10 @@ Apply both migrations before deploying code that accepts `event_id`. The first
 adds the nullable UUID and a separate receipt table; the second builds the unique
 accepted-event index concurrently. Existing records need no backfill. The first
 migration is deliberately irreversible because dropping receipts would destroy
-replay protection. Deploy the new browser bundle after all server instances support receipts. During a rolling
-upgrade old server instances still have the old capture behavior.
+replay protection. Deploy the worker and ensure the low_priority queue is running
+before serving the new browser bundle. Serve that bundle after all server instances
+support receipts. During a rolling upgrade old server instances still have the
+old capture behavior.
 
 Receipts intentionally have no article foreign key and are not purged. They contain
 only event UUIDs and ingestion timestamps. Removing them weakens replay protection;
@@ -78,10 +108,20 @@ as part of the same change. No such feed-event rollup currently exists.
 
 100% observation is impossible to establish from browser-only analytics. JavaScript
 may never execute, an observer may never run, the browser/process can die, and
-connectivity can disappear. The retry queue is in memory; a full page replacement
+connectivity can disappear. Delivery is best effort through brief failures: retry exhaustion and queue
+overflow intentionally lose events to protect application load. The retry queue
+is in memory; a full page replacement
 or closed browser can destroy unacknowledged events. Beacons improve exit delivery
 but cannot prove it. No historical missing events can be reconstructed from this
 table alone. Existing counts may already include both missed events and duplicates.
+
+Feedback is asynchronous, so config maturity and scores can lag event storage.
+There is no transactional DB-to-Redis outbox. If enqueue fails after commit, the
+request still acknowledges durable storage and Rails.error reports the inserted
+IDs for replay with FeedEvents::FeedbackWorker.perform_async(ids). Monitor these
+reports and the worker retry/dead queues. Sidekiq is at-least-once delivery; partial
+feedback failures can repeat effects, governed by the existing spawn throttles.
+An event receipt guarantees storage idempotency, not exactly-once external effects.
 
 The stored timestamp is ingestion time, not the browser's observation time. Delayed
 requests can cross a day boundary. Date buckets in the SQL must use the same timezone

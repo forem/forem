@@ -4,6 +4,12 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
 
+  before do
+    allow(FeedEvents::FeedbackWorker).to receive(:perform_async) do |ids|
+      FeedEvents::FeedbackWorker.new.perform(ids)
+    end
+  end
+
   def feed_event(**attributes)
     build(:feed_event, **attributes).attributes
   end
@@ -45,7 +51,7 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
       described_class.call(events_with_config)
 
       expect(FeedEvent).to have_received(:bulk_update_counters_by_feed_config_id).with(
-        Array.new(articles.size, feed_config.id),
+        [feed_config.id],
       )
     end
   end
@@ -226,20 +232,20 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
 
     it "rolls back the delivery receipt when storing the event fails" do
       data.first["event_id"] = SecureRandom.uuid
-      allow(FeedEvent).to receive(:create!).and_raise(ActiveRecord::StatementInvalid)
+      allow(FeedEvent).to receive(:insert_all).and_raise(ActiveRecord::StatementInvalid)
       expect { described_class.call(data) }.to raise_error(ActiveRecord::StatementInvalid)
       expect(FeedEventReceipt.exists?(id: data.first["event_id"])).to be(false)
-      allow(FeedEvent).to receive(:create!).and_call_original
+      allow(FeedEvent).to receive(:insert_all).and_call_original
       expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
     end
 
     it "retries a foreign-key race instead of acknowledging a lost event" do
       attempts = 0
-      allow(FeedEvent).to receive(:create!).and_wrap_original do |original, *args|
+      allow(FeedEvent).to receive(:insert_all).and_wrap_original do |original, *args, **kwargs|
         attempts += 1
         raise ActiveRecord::InvalidForeignKey if attempts == 1
 
-        original.call(*args)
+        original.call(*args, **kwargs)
       end
       expect { described_class.call(data) }.to change(FeedEvent, :count).by(1)
     end
@@ -348,6 +354,41 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
     end
   end
 
+  context "with deferred feedback" do
+    it "reports enqueue failures without losing accepted data or requesting storage replay" do
+      article = create(:article)
+      id = SecureRandom.uuid
+      error = RuntimeError.new("queue unavailable")
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async).and_raise(error)
+      allow(Rails.error).to receive(:report)
+      expect do
+        described_class.call([feed_event(article: article, user: user, event_id: id)])
+      end.to change(FeedEvent, :count).by(1)
+      expect(FeedEventReceipt.exists?(id: id)).to be(true)
+      expect(Rails.error).to have_received(:report).with(error,
+                                                         context: hash_including(worker: "FeedEvents::FeedbackWorker",
+                                                                                 feed_event_ids: kind_of(Array)))
+    end
+
+    it "does not let slow scoring roll back accepted events or receipts" do
+      article = create(:article)
+      id = SecureRandom.uuid
+      events = [feed_event(article: article, user: user, event_id: id)]
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async).and_call_original
+      Sidekiq::Testing.fake! do
+        FeedEvents::FeedbackWorker.clear
+        described_class.call(events)
+        ids = FeedEvents::FeedbackWorker.jobs.last.fetch("args").first
+        allow(FeedEvent).to receive(:bulk_update_counters_by_article_id).and_raise(ActiveRecord::QueryCanceled)
+        expect { FeedEvents::FeedbackWorker.new.perform(ids) }.to raise_error(ActiveRecord::QueryCanceled)
+        expect(FeedEvent.exists?(event_id: id)).to be(true)
+        expect(FeedEventReceipt.exists?(id: id)).to be(true)
+        expect { described_class.call(events) }.not_to change(FeedEvents::FeedbackWorker.jobs, :size)
+        FeedEvents::FeedbackWorker.clear
+      end
+    end
+  end
+
   context "with concurrent ingestion" do
     self.use_transactional_tests = false
 
@@ -357,6 +398,28 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
     after do
       concurrent_articles.each(&:destroy!)
       concurrent_user.destroy!
+    end
+
+    it "enqueues feedback only after a caller's transaction commits" do
+      observed_ids = nil
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async) do |ids|
+        expect(FeedEvent.connection.transaction_open?).to be(false)
+        observed_ids = ids
+      end
+      FeedEvent.transaction do
+        described_class.call([feed_event(article: concurrent_articles.first, user: concurrent_user)])
+        expect(observed_ids).to be_nil
+      end
+      expect(observed_ids.size).to eq(1)
+    end
+
+    it "does not enqueue feedback for a rolled-back outer transaction" do
+      allow(FeedEvents::FeedbackWorker).to receive(:perform_async)
+      FeedEvent.transaction do
+        described_class.call([feed_event(article: concurrent_articles.first, user: concurrent_user)])
+        raise ActiveRecord::Rollback
+      end
+      expect(FeedEvents::FeedbackWorker).not_to have_received(:perform_async)
     end
 
     it "suppresses duplicates across database connections" do

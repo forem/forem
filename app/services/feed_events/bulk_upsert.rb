@@ -26,7 +26,7 @@ module FeedEvents
     def call
       return if valid_events.blank?
 
-      FeedEvent.transaction(requires_new: true) do
+      inserted_ids = FeedEvent.transaction(requires_new: true) do
         # Serialize ingestion for each user, including across web processes. Acquire
         # locks in a stable order so overlapping batches cannot deadlock.
         valid_events.map(&:user_id).uniq.sort_by(&:to_i).each do |user_id|
@@ -34,6 +34,17 @@ module FeedEvents
           FeedEvent.connection.execute("SELECT pg_advisory_xact_lock(#{key})")
         end
         insert_events!
+      end
+      return if inserted_ids.blank?
+
+      # Also wait for callers' outer transactions (e.g. digest delivery). Never
+      # refresh counters or run model callbacks under ingestion's locks.
+      ActiveRecord.after_all_transactions_commit do
+        FeedbackWorker.perform_async(inserted_ids)
+      rescue StandardError => e
+        # Storage already committed. Report the IDs for operational replay rather
+        # than return a misleading failure that makes the browser replay storage.
+        Rails.error.report(e, context: { worker: FeedbackWorker.name, feed_event_ids: inserted_ids })
       end
     rescue ActiveRecord::InvalidForeignKey
       # Recheck references if an article/user disappeared between lookup and insert.
@@ -98,30 +109,8 @@ module FeedEvents
     def persist_records(records_to_insert)
       return if records_to_insert.blank?
 
-      if valid_events.one? && records_to_insert.one?
-        single_record = records_to_insert.first
-        return if single_record[:event_id].present? && FeedEvent.exists?(event_id: single_record[:event_id])
-
-        # Preserve the single-event callbacks used by engagement scoring.
-        FeedEvent.create!(single_record)
-      else
-        impressions, engagements = records_to_insert.partition do |record|
-          record[:category] == "impression"
-        end
-        persist_impressions(impressions)
-        # Engagement must run the same scoring/evolution callbacks at every
-        # batch size. Insert impressions first so maturity checks see exposure.
-        engagements.each { |record| FeedEvent.create!(record) }
-      end
-    end
-
-    def persist_impressions(records)
-      return if records.empty?
-
-      inserted = FeedEvent.insert_all(records, unique_by: :index_feed_events_on_event_id,
-                                               returning: %w[article_id feed_config_id]).to_a
-      FeedEvent.bulk_update_counters_by_article_id(inserted.pluck("article_id").uniq)
-      FeedEvent.bulk_update_counters_by_feed_config_id(inserted.pluck("feed_config_id").compact)
+      FeedEvent.insert_all(records_to_insert, unique_by: :index_feed_events_on_event_id,
+                                              returning: %w[id]).pluck("id")
     end
 
     attr_reader :feed_events_data, :timebox
