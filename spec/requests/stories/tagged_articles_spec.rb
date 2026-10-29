@@ -126,6 +126,20 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           )
         end
 
+        it "skips the existence query for unsupported tags when the page has stories", :aggregate_failures do
+          tagged_article = create(:article, user: user, published: true, approved: true, tags: unsupported_tag,
+                                            score: 5)
+          queries = []
+          callback = ->(*, payload) { queries << payload[:sql] }
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get "/t/#{unsupported_tag.name}"
+          end
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(tagged_article.title))
+          expect(queries.grep(/SELECT 1 AS one FROM "articles"/)).to be_empty
+        end
+
         it "renders normal page if no articles but tag is supported" do
           expect { get "/t/#{tag.name}" }.not_to raise_error
         end
