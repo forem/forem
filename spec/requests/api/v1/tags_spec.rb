@@ -64,6 +64,52 @@ RSpec.describe "Api::V1::Tags" do
       expected_key = ["tags", tag.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    context "when looking up a tag by name" do
+      let!(:tag) { create(:tag, name: "javascript", taggings_count: 1) }
+
+      before { create(:tag, name: "ruby", taggings_count: 10) }
+
+      it "returns only the tag with that name" do
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+        expect_valid_json_body(response.parsed_body.first, tag)
+      end
+
+      it "matches the name in any case" do
+        get api_tags_path, params: { name: "JavaScript" }, headers: headers
+
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+      end
+
+      it "returns an empty list when no tag has that name" do
+        get api_tags_path, params: { name: "java" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+
+      it "sets the surrogate key for the matching tag" do
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+
+        expect(response.headers["surrogate-key"].split.to_set).to eq(["tags", tag.record_key].to_set)
+      end
+
+      it "finds an unsupported tag on the root subforem, where the list only has supported tags" do
+        root_subforem = create(:subforem, domain: "root.com", root: true)
+        allow(Subforem).to receive_messages(cached_id_by_domain: root_subforem.id, cached_root_id: root_subforem.id,
+                                            cached_default_id: root_subforem.id)
+        tag.update_column(:supported, false)
+
+        get api_tags_path, headers: headers
+        expect(response.parsed_body.pluck("id")).not_to include(tag.id)
+
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+      end
+    end
   end
 
   describe "GET /api/tags/supported" do

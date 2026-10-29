@@ -18,12 +18,19 @@ describe "GET /tags" do
 - Ordered by overall popularity/usage metrics on the platform.
 - Useful for autocomplete inputs in article editors and tag selection screens in settings.
 - Supports global navigation and explore lists.
+- Pass `name` to look up one tag by its exact name, for example to find its ID.
+  The lookup also finds tags that are not supported.
 
 It supports pagination, each page will contain 10 tags by default."
       operationId "getTags"
       produces "application/json"
       parameter "$ref": "#/components/parameters/pageParam"
       parameter "$ref": "#/components/parameters/perPageParam10to1000"
+      parameter name: :name, in: :query, required: false,
+                description: "Return only the tag with this exact name (case-insensitive).  " \
+                             "The result is an empty list if there is no such tag.",
+                schema: { type: :string },
+                example: "javascript"
 
       response "200", "A List of all tags" do
         schema  type: :array,

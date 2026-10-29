@@ -5281,7 +5281,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
           {
@@ -5289,6 +5289,16 @@
           },
           {
             "$ref": "#/components/parameters/perPageParam10to1000"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Return only the tag with this exact name (case-insensitive).  The result is an empty list if there is no such tag.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "javascript"
           }
         ],
         "responses": {
