@@ -114,7 +114,7 @@ class Billboard < ApplicationRecord
            :validate_geolocations,
            :validate_expiration_approval
 
-  before_save :process_markdown
+  before_validation :process_markdown
   before_save :update_exclude_article_ids
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
@@ -626,34 +626,35 @@ class Billboard < ApplicationRecord
   end
 
   def process_markdown
-    reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
-    reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
-
-    if reprocess_body
-      if body_markdown.present?
-        if render_mode == "forem_markdown"
-          self.processed_html = extracted_process_markdown(body_markdown)
-        else # raw
-          self.processed_html = Html::Parser.new(body_markdown)
-            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
-        end
-      else
-        self.processed_html = nil
-      end
+    if reprocess_body_markdown?
+      self.processed_html = render_markdown_field(body_markdown)
+      @rendered_body_markdown = body_markdown
     end
 
-    if reprocess_minimized
-      if minimized_body_markdown.present?
-        if render_mode == "forem_markdown"
-          self.minimized_processed_html = extracted_process_markdown(minimized_body_markdown)
-        else # raw
-          self.minimized_processed_html = Html::Parser.new(minimized_body_markdown)
-            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
-        end
-      else
-        self.minimized_processed_html = nil
-      end
+    if reprocess_minimized_body_markdown?
+      self.minimized_processed_html = render_markdown_field(minimized_body_markdown)
+      @rendered_minimized_body_markdown = minimized_body_markdown
     end
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def reprocess_body_markdown?
+    body_markdown_changed? || render_mode_changed? || placement_area_changed? ||
+      (defined?(@rendered_body_markdown) && @rendered_body_markdown != body_markdown)
+  end
+
+  def reprocess_minimized_body_markdown?
+    minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed? ||
+      (defined?(@rendered_minimized_body_markdown) && @rendered_minimized_body_markdown != minimized_body_markdown)
+  end
+
+  def render_markdown_field(markdown)
+    return if markdown.blank?
+    return extracted_process_markdown(markdown) if render_mode == "forem_markdown"
+
+    Html::Parser.new(markdown)
+      .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
   end
 
   def extracted_process_markdown(markdown)
