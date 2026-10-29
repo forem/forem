@@ -89,12 +89,9 @@ class AnalyticsService
   def top_contributors(limit: 20)
     return [] if article_ids.empty?
 
-    # Use already-loaded article_ids and author_ids instead of re-querying articles
-    article_ids_subquery = @article_id ? article_ids : article_data.select(:id)
-
     # Reactions (excl readinglist/self) → weight 1
     reactions_sql = Reaction.for_analytics
-      .where(reactable_id: article_ids_subquery, reactable_type: "Article")
+      .where(reactable_id: article_ids, reactable_type: "Article")
       .where.not(category: "readinglist")
       .where.not(user_id: author_ids)
     reactions_sql = reactions_sql.where(created_at: start_date..end_date) if start_date && end_date
@@ -106,7 +103,7 @@ class AnalyticsService
     # Comments carry more weight than reactions because they require
     # significantly more effort and drive meaningful discussion.
     comments_sql = Comment
-      .where(commentable_id: article_ids_subquery, commentable_type: "Article")
+      .where(commentable_id: article_ids, commentable_type: "Article")
       .where("score > 0")
       .where.not(user_id: author_ids)
     comments_sql = comments_sql.where(created_at: start_date..end_date) if start_date && end_date
@@ -154,18 +151,16 @@ class AnalyticsService
     return { total_followers: 0, engaged_followers: 0, ratio: 0.0 } if total_followers.zero?
     return { total_followers: total_followers, engaged_followers: 0, ratio: 0.0 } if article_ids.empty?
 
-    article_ids_subquery = @article_id ? article_ids : article_data.select(:id)
-
     # First collect the distinct user_ids who reacted or commented in the period,
     # then check which of those engaged users are non-blocked followers via the
     # unique (followable_id, followable_type, follower_id, follower_type) index.
     reacting_scope = Reaction.for_analytics
-      .where(reactable_id: article_ids_subquery, reactable_type: "Article")
+      .where(reactable_id: article_ids, reactable_type: "Article")
       .where.not(category: "readinglist")
     reacting_scope = reacting_scope.where(created_at: start_date..end_date) if start_date && end_date
 
     commenting_scope = Comment
-      .where(commentable_id: article_ids_subquery, commentable_type: "Article")
+      .where(commentable_id: article_ids, commentable_type: "Article")
       .where("score > 0")
     commenting_scope = commenting_scope.where(created_at: start_date..end_date) if start_date && end_date
 

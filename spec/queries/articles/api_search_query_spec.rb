@@ -41,12 +41,14 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       sql = relation.to_sql
 
       expect(relation.map(&:id)).to eq([high_hotness.id, low_hotness.id])
+      expect(sql).to include("(articles.score + 0) >=")
       expect(sql).to include("(articles.hotness_score + 0) DESC")
       expect(sql).not_to include("ts_rank")
       expect(sql).not_to include("INNER JOIN")
     end
 
-    it "orders by score expression when both q and top parameters are present", :aggregate_failures do
+    it "orders by score expression and wraps published_at when both q and top parameters are present",
+       :aggregate_failures do
       low_score = Article.find_by(title: "Top ten Interview tips")
       high_score = Article.find_by(title: "Top ten Ruby tips")
       low_score.update_columns(score: 5, hotness_score: 500)
@@ -56,6 +58,8 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       sql = relation.to_sql
 
       expect(relation.map(&:id)).to eq([high_score.id, low_score.id])
+      expect(sql).to include("(articles.published_at + INTERVAL '0 seconds') >")
+      expect(sql).to include("(articles.score + 0) >=")
       expect(sql).to include("(articles.score + 0) DESC")
       expect(sql).not_to include("ts_rank")
     end

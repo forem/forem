@@ -3,6 +3,7 @@ module Stories
     before_action :set_cache_control_headers, only: :index
 
     SIGNED_OUT_RECORD_COUNT = 15
+    MAX_PAGE = 100
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -15,6 +16,7 @@ module Stories
       end
 
       @page = (params[:page] || 1).to_i
+      not_found if @page < 1 || @page > MAX_PAGE
 
       if user_signed_in?
         @moderators = User.with_role(:tag_moderator, @tag)
