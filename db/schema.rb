@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_29_140000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_29_161500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1165,6 +1165,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_29_140000) do
     t.string "mentionable_type"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["mentionable_id", "mentionable_type"], name: "index_mentions_on_mentionable_id_and_mentionable_type"
     t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
