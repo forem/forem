@@ -142,6 +142,12 @@ class Event < ApplicationRecord
     end
   end
 
+  # The zone that the event's dates are shown in, from data["time_zone"]
+  # (for example "America/Los_Angeles").  Falls back to the app time zone.
+  def time_zone
+    ActiveSupport::TimeZone[data&.dig("time_zone").to_s] || Time.zone
+  end
+
   def location_display
     data&.dig("location") || data&.dig(:location) || "Everywhere, Worldwide"
   end

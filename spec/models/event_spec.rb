@@ -353,6 +353,19 @@ RSpec.describe Event do
     end
   end
 
+  describe "#time_zone" do
+    it "uses the zone named in data" do
+      event = build(:event, data: { "time_zone" => "America/Los_Angeles" })
+
+      expect(event.time_zone.tzinfo.identifier).to eq("America/Los_Angeles")
+    end
+
+    it "falls back to the app time zone when data has no zone or an unknown one" do
+      expect(build(:event, data: {}).time_zone).to eq(Time.zone)
+      expect(build(:event, data: { "time_zone" => "Not/AZone" }).time_zone).to eq(Time.zone)
+    end
+  end
+
   describe "#format_pill_label" do
     it "returns custom format when present in data" do
       event = build(:event, data: { "format" => "in-person" })
