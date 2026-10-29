@@ -35,6 +35,11 @@ class FeedEvent < ApplicationRecord
 
   REACTION_SCORE_MULTIPLIER = 6
   COMMENT_SCORE_MULTIPLIER = 12
+  FRESHNESS_MAX_MULTIPLIER = 1.5
+  FRESHNESS_MIN_MULTIPLIER = 1.0
+  FRESHNESS_MAX_BONUS_HOURS = 12.0
+  DEFAULT_FRESHNESS_LOOKBACK_DAYS = 10
+  FRESHNESS_DECAY_STEEPNESS = 4.0
 
   validates :article_position, numericality: { only_integer: true, greater_than: 0 }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
@@ -118,33 +123,9 @@ class FeedEvent < ApplicationRecord
 
     ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
       executed = true
-      # Total events, distinct users, and position-weighted click sum per category
-      # in a single pass over the feed config's events. The NULL flag keeps parity
-      # with distinct.pluck(:user_id).size, which counts a NULL user_id as one distinct value.
-      totals = {}
-      distinct_users = Hash.new(0)
-      clicks_score = 0.0
-      FeedEvent.where(feed_config_id: feed_config_id).group(:category).pluck(
-        :category,
-        Arel.sql("COUNT(*)"),
-        Arel.sql("COUNT(DISTINCT user_id) + MAX(CASE WHEN user_id IS NULL THEN 1 ELSE 0 END)"),
-        Arel.sql("SUM(POWER(2.0/3, article_position - 1))"),
-      ).each do |category, total, users, position_weighted_sum|
-        totals[category] = total
-        distinct_users[category] = users
-        clicks_score = position_weighted_sum.to_f if category == "click"
-      end
-      impressions_total = totals["impression"].to_i
+      impressions_total, score = calculate_feed_config_counters(feed_config_id)
       next if impressions_total.zero?
 
-      # Calculate score based on distinct users
-      reactions_score = distinct_users["reaction"] * REACTION_SCORE_MULTIPLIER * 2
-      comments_score = distinct_users["comment"] * COMMENT_SCORE_MULTIPLIER * 2
-      pageviews_score = distinct_users["extended_pageview"] # 1x multiplier for extended pageviews
-
-      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_users["impression"]
-
-      # Update the feed config counters
       FeedConfig.where(id: feed_config_id).update_all(
         feed_success_score: score,
         feed_impressions_count: impressions_total,
@@ -155,6 +136,62 @@ class FeedEvent < ApplicationRecord
 
     Rails.cache.delete(format(ThrottledCall::KEY_TEMPLATE, key: throttle_key))
   end
+
+  def self.article_freshness_multiplier(published_at, event_time = Time.current)
+    return FRESHNESS_MIN_MULTIPLIER if published_at.blank? || event_time.blank?
+
+    age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
+    return FRESHNESS_MAX_MULTIPLIER if age_in_hours <= FRESHNESS_MAX_BONUS_HOURS
+
+    lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+    lookback_days = lookback_setting.positive? ? lookback_setting : DEFAULT_FRESHNESS_LOOKBACK_DAYS
+    lookback_hours = lookback_days * 24.0
+    return FRESHNESS_MIN_MULTIPLIER if age_in_hours >= lookback_hours || lookback_hours <= FRESHNESS_MAX_BONUS_HOURS
+
+    decay_window = lookback_hours - FRESHNESS_MAX_BONUS_HOURS
+    progress = (age_in_hours - FRESHNESS_MAX_BONUS_HOURS) / decay_window
+    raw_decay = 1.0 / (1.0 + (FRESHNESS_DECAY_STEEPNESS * progress))
+    min_decay = 1.0 / (1.0 + FRESHNESS_DECAY_STEEPNESS)
+    normalized_decay = (raw_decay - min_decay) / (1.0 - min_decay)
+
+    FRESHNESS_MIN_MULTIPLIER + ((FRESHNESS_MAX_MULTIPLIER - FRESHNESS_MIN_MULTIPLIER) * normalized_decay)
+  end
+
+  def self.calculate_feed_config_counters(feed_config_id)
+    rows = FeedEvent
+      .where(feed_config_id: feed_config_id)
+      .left_joins(:article)
+      .pluck(:category, :user_id, :article_position, :created_at, "articles.published_at")
+
+    impressions_total = 0
+    impressions_users = Set.new
+    clicks_score = 0.0
+    best_freshness = { "reaction" => {}, "comment" => {}, "extended_pageview" => {} }
+
+    rows.each do |category, user_id, position, event_time, published_at|
+      case category
+      when "impression"
+        impressions_total += 1
+        impressions_users.add(user_id)
+      when "click"
+        clicks_score += ((2.0 / 3)**(position.to_i - 1)) * article_freshness_multiplier(published_at, event_time)
+      when "reaction", "comment", "extended_pageview"
+        freshness = article_freshness_multiplier(published_at, event_time)
+        user_scores = best_freshness[category]
+        user_scores[user_id] = freshness if user_scores[user_id].nil? || freshness > user_scores[user_id]
+      end
+    end
+
+    return [0, 0.0] if impressions_total.zero?
+
+    reactions_score = best_freshness["reaction"].values.sum * REACTION_SCORE_MULTIPLIER * 2
+    comments_score = best_freshness["comment"].values.sum * COMMENT_SCORE_MULTIPLIER * 2
+    pageviews_score = best_freshness["extended_pageview"].values.sum
+    score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / impressions_users.size
+
+    [impressions_total, score]
+  end
+  private_class_method :calculate_feed_config_counters
 
   private
 
