@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Comments::Tree do
-  let(:user) { create(:user) }
-  let(:article) { create(:article) }
+  let(:user) { create(:user, profile_image: nil) }
+  let(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
   let!(:comment) { create(:comment, user: user, commentable: article) }
   let!(:other_comment) { create(:comment, commentable: article, user: user, created_at: 1.hour.from_now) }
   let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
@@ -10,19 +10,17 @@ RSpec.describe Comments::Tree do
   before { comment.update_column(:score, 1) }
 
   describe "#for_commentable" do
-    it "returns a full tree" do
+    it "returns the full or limited tree and preloads user associations on returned comments", :aggregate_failures do
       comments = described_class.for_commentable(article)
       expect(comments).to eq(comment => { child_comment => {} }, other_comment => {})
-    end
 
-    it "preloads user roles, profile, and setting on returned comments" do
-      comments = described_class.for_commentable(article)
       root_comment = comments.keys.first
-
       expect(root_comment.user.association(:roles)).to be_loaded
       expect(root_comment.user.association(:profile)).to be_loaded
       expect(root_comment.user.association(:setting)).to be_loaded
       expect(root_comment.user.association(:organization_memberships)).to be_loaded
+
+      expect(described_class.for_commentable(article, limit: 1)).to eq(comment => { child_comment => {} })
     end
 
     it "reuses the passed article and its loaded user instead of re-fetching them" do
@@ -61,11 +59,6 @@ RSpec.describe Comments::Tree do
 
       expect(tree).to be_empty
       expect(user_queries).to be_empty
-    end
-
-    it "returns part of the tree" do
-      comments = described_class.for_commentable(article, limit: 1)
-      expect(comments).to eq(comment => { child_comment => {} })
     end
 
     it "supports deferring association preloads via preload: false and preload_for_tree", :aggregate_failures do
@@ -127,37 +120,25 @@ RSpec.describe Comments::Tree do
 
       before { comment }
 
-      it "returns comments in the right order when order is oldest" do
-        comments = described_class.for_commentable(article, limit: 0, order: "oldest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to contain_exactly(old_comment.id, comment.id, other_comment.id, new_comment.id)
-      end
+      it "orders comments by oldest, latest, and top score", :aggregate_failures do
+        oldest_ids = described_class.for_commentable(article, limit: 0, order: "oldest").map { |key, _| key.id }
+        expect(oldest_ids).to contain_exactly(old_comment.id, comment.id, other_comment.id, new_comment.id)
 
-      it "returns comments in the right order when order is latest" do
-        comments = described_class.for_commentable(article, limit: 0, order: "latest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to contain_exactly(new_comment.id, other_comment.id, comment.id, old_comment.id)
-      end
+        latest_ids = described_class.for_commentable(article, limit: 0, order: "latest").map { |key, _| key.id }
+        expect(latest_ids).to contain_exactly(new_comment.id, other_comment.id, comment.id, old_comment.id)
 
-      it "returns comments in the right order when order is top" do
         comment.update_column(:score, 5)
-        highest_rated_comment = comment
         new_comment.update_column(:score, 1)
-        lowest_rated_comment = new_comment
         old_comment.update_column(:score, 3)
-        mid_high_rated_comment = old_comment
         other_comment.update_column(:score, 2)
-        mid_low_rated_comment = other_comment
-        comments = described_class.for_commentable(article, limit: 0)
-
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
+        top_ids = described_class.for_commentable(article, limit: 0).map { |key, _| key.id }
+        expect(top_ids).to eq([comment.id, old_comment.id, other_comment.id, new_comment.id])
       end
     end
   end
 
   describe "#for_root_comment" do
-    let!(:low_comment) { create(:comment, commentable: article, parent: comment, score: -100) }
+    let!(:low_comment) { create(:comment, commentable: article, parent: comment, user: user, score: -100) }
 
     it "returns tree for a particular comment" do
       comments = described_class.for_root_comment(comment)
