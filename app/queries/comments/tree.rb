@@ -2,17 +2,22 @@ module Comments
   module Tree
     module_function
 
-    def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
-      includes = [{ user: %i[setting profile organization_memberships roles] }]
-
+    def for_commentable(commentable, limit: 0, order: nil, include_negative: false, preload: true)
       collection = commentable.comments
         .arrange(order: build_sort_query(order))
         .to_a[0..limit - 1]
         .to_h
       collection.reject! { |comment| comment.score.negative? } unless include_negative
+      preload_for_tree(collection, commentable: commentable) if preload
+
+      collection
+    end
+
+    def preload_for_tree(collection, commentable:)
       records = Comment.flatten_arranged_nodes(collection)
       return collection if records.empty?
 
+      includes = [{ user: %i[setting profile organization_memberships roles] }]
       commentable_user = commentable.user if commentable.respond_to?(:user) && commentable.association(:user).loaded?
       records.each do |node|
         node.association(:commentable).target = commentable

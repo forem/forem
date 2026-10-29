@@ -50,7 +50,7 @@
           </button>
 
           <% cache "comment-box-comment-reply-#{@last_user_comment}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
-            <% reply = Comment.select(:id, :user_id, :ancestry).find_by(id: notification.comment_id)&.children&.find_by(user_id: current_user.id) %>
+            <% reply = notification.comment_reply_for(current_user) %>
             <% if reply %>
               <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left mr-1 inline-flex reaction-comment reacted" href="<%= reply.path %>" aria-label="<%= t("views.comments.footer.reply.done") %>">
                 <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>

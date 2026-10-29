@@ -36,6 +36,9 @@ class FeedConfig < ApplicationRecord
   MIN_SEMANTIC_CANDIDATE_LIMIT = 100
   MAX_SEMANTIC_CANDIDATE_LIMIT = 1000
 
+  DEFAULT_FEED_LOOKBACK_DAYS = 10
+  MIN_FEED_LOOKBACK_HOURS = 1
+
   has_many :feed_events, dependent: :nullify
 
   validates :targeting_bucket, inclusion: { in: TARGETING_BUCKETS }, presence: true
@@ -44,6 +47,11 @@ class FeedConfig < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: MIN_SEMANTIC_CANDIDATE_LIMIT,
               less_than_or_equal_to: MAX_SEMANTIC_CANDIDATE_LIMIT
+            }
+  validates :feed_lookback_hours,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0
             }
 
   ARCHIVE_TOP_LIMIT = 1000
@@ -151,6 +159,12 @@ class FeedConfig < ApplicationRecord
     end
   end
 
+  def self.max_feed_lookback_hours
+    lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    days = lookback_days.positive? ? lookback_days : DEFAULT_FEED_LOOKBACK_DAYS
+    days * 24
+  end
+
   def self.resolve_selection_bucket(user: nil, context_type: nil, targeting_bucket: nil)
     if targeting_bucket.present? && TARGETING_BUCKETS.include?(targeting_bucket.to_s)
       targeting_bucket.to_s
@@ -236,6 +250,13 @@ class FeedConfig < ApplicationRecord
       .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
   end
 
+  def effective_feed_lookback_hours(max_hours: self.class.max_feed_lookback_hours)
+    hours = feed_lookback_hours.to_i
+    return max_hours unless hours.positive?
+
+    hours.clamp(MIN_FEED_LOOKBACK_HOURS, [max_hours, MIN_FEED_LOOKBACK_HOURS].max)
+  end
+
   def semantic_similarity_sql(user)
     return "0" unless semantic_similarity_active?(user)
 
@@ -267,6 +288,12 @@ class FeedConfig < ApplicationRecord
       clone.semantic_candidate_limit = (effective_semantic_candidate_limit * rand(0.9..1.1))
         .round
         .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
+    end
+    if feed_lookback_hours.to_i.positive?
+      max_hours = [self.class.max_feed_lookback_hours, MIN_FEED_LOOKBACK_HOURS].max
+      clone.feed_lookback_hours = (effective_feed_lookback_hours(max_hours: max_hours) * rand(0.9..1.1))
+        .round
+        .clamp(MIN_FEED_LOOKBACK_HOURS, max_hours)
     end
     clone.lookback_window_weight = lookback_window_weight * rand(0.9..1.1)
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)

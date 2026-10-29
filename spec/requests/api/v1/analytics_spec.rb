@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Analytics" do
-  let(:api_secret) { create(:api_secret) }
+  let(:api_secret) { create(:api_secret, user: create(:user, :without_profile, profile_image: nil)) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
 
   describe "GET /api/analytics/totals" do
@@ -19,11 +19,8 @@ RSpec.describe "Api::V1::Analytics" do
     context "when the start parameter is not included" do
       before { get "/api/analytics/historical", headers: headers }
 
-      it "fails with an unprocessable entity HTTP error" do
+      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it "renders the proper error message in JSON" do
         error_message = "Required 'start' parameter is missing"
         expect(response.parsed_body["error"]).to eq(error_message)
       end
@@ -32,11 +29,8 @@ RSpec.describe "Api::V1::Analytics" do
     context "when the start parameter has the incorrect format" do
       before { get "/api/analytics/historical?start=2019/2/2", headers: headers }
 
-      it "fails with an unprocessable entity HTTP error" do
+      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it "renders the proper error message in JSON" do
         error_message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
         expect(response.parsed_body["error"]).to eq(error_message)
       end
@@ -88,7 +82,7 @@ RSpec.describe "Api::V1::Analytics" do
     end
 
     context "when authenticated" do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, :without_profile, profile_image: nil) }
       let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
       before { sign_in user }
@@ -198,7 +192,7 @@ RSpec.describe "Api::V1::Analytics" do
   end
 
   describe "GET /api/analytics/heatmap" do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
     let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
     it "returns 401 when unauthenticated" do

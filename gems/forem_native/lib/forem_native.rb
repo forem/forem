@@ -832,6 +832,40 @@ module ForemNative
       Native.extract_mentioned_usernames(html)
     end
 
+    # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching
+    # `CalendarHelper#legacy_calendar_grid_days_html`. Days are `Date#jd` Integers. Returns `nil`
+    # for grids, paths, or `type_of` values outside the plain-ASCII, 1583-9999 fast path.
+    def calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected,
+                                range_start_jd, range_end_jd, today_jd, base_path, type_of)
+      return unless Native.respond_to?(:calendar_grid_days_html)
+      return unless [grid_start_jd, grid_end_jd, display_month, range_start_jd, range_end_jd, today_jd].all?(Integer)
+      return unless event_day_jds.instance_of?(Array) && base_path.instance_of?(String)
+      return unless type_of.nil? || type_of.instance_of?(String)
+
+      Native.calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected ? true : false,
+                                     range_start_jd, range_end_jd, today_jd, base_path, type_of)
+    end
+
+    # Quotes a String as JSON exactly like ActiveSupport's `string.to_json`, including its
+    # HTML-safe escapes. Returns `nil` for String subclasses and non-UTF-8 or invalid strings.
+    def json_quote(string, escape_html_entities: true)
+      return unless Native.respond_to?(:json_quote)
+      return unless string.instance_of?(String)
+
+      Native.json_quote(string, escape_html_entities ? true : false)
+    end
+
+    # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
+    # default `JSONGemEncoder`. The fast path covers Hash, Array, String, Symbol, Integer (64-bit),
+    # true, false, and nil, with String or Symbol keys. Returns `nil` for anything else (Floats,
+    # Times, subclasses such as SafeBuffer, other key types, non-UTF-8 strings, or nesting deeper
+    # than 100) so callers can fall back to `value.to_json`.
+    def encode_json(value, escape_html_entities: true)
+      return unless Native.respond_to?(:encode_json)
+
+      Native.encode_json(value, escape_html_entities ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

@@ -109,6 +109,19 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
         expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
       end
+
+      it "returns 422 when body_markdown contains an invalid liquid tag URL" do
+        expect do
+          post api_billboards_path,
+               params: billboard_params.merge(body_markdown: "{% cta invalid-url %}Click here{% endcta %}").to_json,
+               headers: auth_header
+        end.not_to change(Billboard, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("Invalid URL for 'link': only http and https URLs are allowed")
+      end
     end
 
     describe "GET /api/billboards/:id" do
@@ -177,6 +190,17 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
         expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
+      end
+
+      it "returns 422 when updated body_markdown contains an invalid liquid tag URL" do
+        put api_billboard_path(billboard1.id),
+            params: { body_markdown: "{% cta invalid-url %}Click here{% endcta %}" }.to_json,
+            headers: auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("Invalid URL for 'link': only http and https URLs are allowed")
       end
     end
 

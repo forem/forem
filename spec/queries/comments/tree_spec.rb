@@ -68,6 +68,43 @@ RSpec.describe Comments::Tree do
       expect(comments).to eq(comment => { child_comment => {} })
     end
 
+    it "supports deferring association preloads via preload: false and preload_for_tree", :aggregate_failures do
+      create(:comment, commentable: article, parent: other_comment, user: user)
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        user_queries << sql if sql.include?('FROM "users"') || sql.include?('FROM "profiles"')
+      end
+
+      full_tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(article, preload: false)
+      end
+
+      included_root, excluded_root = full_tree.keys
+      retained_child = full_tree[included_root].keys.first
+      excluded_child = full_tree[excluded_root].keys.first
+
+      expect(user_queries).to be_empty
+      expect(included_root.association(:user)).not_to be_loaded
+
+      trimmed_tree = { included_root => { retained_child => {} } }
+      described_class.preload_for_tree(trimmed_tree, commentable: article)
+
+      expect(included_root.association(:user)).to be_loaded
+      expect(included_root.user.association(:profile)).to be_loaded
+      expect(included_root.user.association(:setting)).to be_loaded
+      expect(included_root.user.association(:roles)).to be_loaded
+      expect(included_root.user.association(:organization_memberships)).to be_loaded
+      expect(retained_child.association(:user)).to be_loaded
+      expect(retained_child.user.association(:profile)).to be_loaded
+      expect(retained_child.user.association(:setting)).to be_loaded
+      expect(retained_child.user.association(:roles)).to be_loaded
+      expect(retained_child.user.association(:organization_memberships)).to be_loaded
+      expect(excluded_root.association(:user)).not_to be_loaded
+      expect(excluded_child.association(:user)).not_to be_loaded
+    end
+
     context "with include_negative" do
       before do
         other_comment.update_column(:score, -10)
