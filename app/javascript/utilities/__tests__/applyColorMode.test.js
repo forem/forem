@@ -26,6 +26,7 @@ function renderThemeStyleTags() {
 describe('applyColorMode', () => {
   beforeEach(() => {
     delete window.colorModeWatcherStarted;
+    delete window.ReactNativeWebView;
     document.body.className = '';
     renderThemeStyleTags();
     mockPrefersDark(false);
@@ -113,10 +114,29 @@ describe('applyColorMode', () => {
         '--base: light;',
       );
     });
+
+    it('notifies ReactNativeWebView with the resolved color mode for system-theme', () => {
+      const postMessage = jest.fn();
+      window.ReactNativeWebView = { postMessage };
+
+      mockPrefersDark(true);
+      applyColorMode('system-theme');
+      expect(postMessage).toHaveBeenLastCalledWith(
+        JSON.stringify({ action: 'update_color_mode', value: 'dark' }),
+      );
+
+      mockPrefersDark(false);
+      applyColorMode('system-theme');
+      expect(postMessage).toHaveBeenLastCalledWith(
+        JSON.stringify({ action: 'update_color_mode', value: 'light' }),
+      );
+    });
   });
 
   describe('watchColorModeChanges', () => {
-    it('reapplies the color mode when the OS preference flips', () => {
+    it('reapplies the color mode and notifies ReactNativeWebView when the OS preference flips', () => {
+      const postMessage = jest.fn();
+      window.ReactNativeWebView = { postMessage };
       const listeners = mockPrefersDark(false);
       document.body.className = 'system-theme default-header';
 
@@ -124,6 +144,9 @@ describe('applyColorMode', () => {
       applyColorMode(document.body.className);
 
       expect(document.body.classList.contains('dark-theme')).toBe(false);
+      expect(postMessage).toHaveBeenLastCalledWith(
+        JSON.stringify({ action: 'update_color_mode', value: 'light' }),
+      );
 
       mockPrefersDark(true);
       listeners.forEach((handler) => handler());
@@ -131,6 +154,9 @@ describe('applyColorMode', () => {
       expect(document.body.classList.contains('dark-theme')).toBe(true);
       expect(document.getElementById('body-styles').innerHTML).toContain(
         '--base: dark;',
+      );
+      expect(postMessage).toHaveBeenLastCalledWith(
+        JSON.stringify({ action: 'update_color_mode', value: 'dark' }),
       );
     });
 
