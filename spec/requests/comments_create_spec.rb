@@ -32,6 +32,18 @@ RSpec.describe "CommentsCreate" do
     expect(Comment.last.ai_disclosure_level).to eq("some_ai")
   end
 
+  it "rejects a reply to a deleted comment" do
+    parent_comment = create(:comment, commentable: article)
+    parent_comment.update!(deleted: true)
+
+    expect do
+      post comments_path, params: comment_params(parent_id: parent_comment.id)
+    end.not_to change(Comment, :count)
+
+    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response.parsed_body["error"]).to include(I18n.t("models.comment.parent_deleted"))
+  end
+
   it "creates NotificationSubscription for comment" do
     post comments_path, params: comment_params
 
