@@ -1,37 +1,81 @@
 <% title t("views.dashboard.analytics.meta.title") %>
 
-<main class="dashboard-container analytics-container crayons-layout" id="main-content">
-  <nav aria-label="Dashboards" class="mx-5">
-    <ul class="analytics-nav">
-      <li>
-        <a href="<%= dashboard_path %>" class="analytics-nav__back"><%= t("views.dashboard.analytics.back") %></a>
-      </li>
-      <li>
-        <a href="<%= dashboard_analytics_path %>"
-           <%= params[:org_id] ? "" : 'aria-current="page"'.html_safe %>>
-           <%= t("views.dashboard.analytics.your") %>
-        </a>
-      </li>
-      <% @organizations.each do |org| %>
+<main class="dashboard-container analytics-container crayons-layout pb-6" id="main-content">
+  <header class="analytics-header mx-5 mt-4 mb-4">
+    <nav aria-label="Dashboards" class="analytics-topbar">
+      <a href="<%= dashboard_path %>" class="analytics-nav__back"><%= t("views.dashboard.analytics.back") %></a>
+
+      <ul class="analytics-nav">
         <li>
-          <a href="<%= dashboard_analytics_org_path(org.id) %>"
-             data-organization-id="<%= org.id %>"
-             <%= params[:org_id].to_i == org.id ? 'aria-current="page"'.html_safe : "" %>>
-             <%= t("views.dashboard.analytics.org", org: org.name) %>
+          <a href="<%= dashboard_analytics_path %>"
+             class="analytics-nav__item"
+             <%= params[:org_id] ? "" : 'aria-current="page"'.html_safe %>>
+            <%= t("views.dashboard.analytics.your") %>
           </a>
         </li>
-      <% end %>
-    </ul>
-  </nav>
-      
 
-  <h1 class="fs-4xl fw-bold mx-5"><%= t("views.dashboard.analytics.heading", name: @user_or_org.name) %></h1>
+        <% if @organizations.any? || params[:org_id].present? %>
+          <li class="analytics-org-switcher">
+            <details class="analytics-org-menu" data-analytics-org-menu>
+              <summary class="analytics-org-menu__trigger <%= "is-active" if params[:org_id].present? %>">
+                <% if params[:org_id].present? %>
+                  <% if @user_or_org.respond_to?(:profile_image_90) && @user_or_org.profile_image_90.present? %>
+                    <img src="<%= @user_or_org.profile_image_90 %>" alt="" class="analytics-org-menu__trigger-avatar" width="20" height="20" />
+                  <% end %>
+                  <span class="analytics-org-menu__trigger-label"><%= @user_or_org.name %></span>
+                <% else %>
+                  <span class="analytics-org-menu__trigger-label"><%= t("views.dashboard.analytics.organizations_menu") %></span>
+                  <span class="c-indicator"><%= @organizations.size %></span>
+                <% end %>
+                <svg class="analytics-org-menu__chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                  <path fill="currentColor" d="M12 15.5l-6-6 1.4-1.4L12 12.7l4.6-4.6L18 9.5z" />
+                </svg>
+              </summary>
+
+              <ul class="analytics-org-menu__list">
+                <% org_list = params[:org_id].present? && @organizations.exclude?(@user_or_org) ? [@user_or_org, *@organizations] : @organizations %>
+                <% org_list.each do |org| %>
+                  <% is_active_org = params[:org_id].to_i == org.id %>
+                  <li>
+                    <a href="<%= dashboard_analytics_org_path(org.id) %>"
+                       class="analytics-org-menu__option"
+                       data-organization-id="<%= org.id %>"
+                       title="<%= t("views.dashboard.analytics.org", org: org.name) %>"
+                       <%= is_active_org ? 'aria-current="page"'.html_safe : "" %>>
+                      <% if org.respond_to?(:profile_image_90) && org.profile_image_90.present? %>
+                        <img src="<%= org.profile_image_90 %>" alt="" class="analytics-org-menu__avatar" width="22" height="22" loading="lazy" />
+                      <% end %>
+                      <span class="analytics-org-menu__name"><%= org.name %></span>
+                      <% if is_active_org %>
+                        <svg class="analytics-org-menu__check" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                          <path fill="currentColor" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                      <% end %>
+                    </a>
+                  </li>
+                <% end %>
+              </ul>
+            </details>
+          </li>
+        <% end %>
+      </ul>
+    </nav>
+
+    <div class="analytics-title-row">
+      <% if @user_or_org.respond_to?(:profile_image_90) && @user_or_org.profile_image_90.present? %>
+        <img src="<%= @user_or_org.profile_image_90 %>"
+             alt=""
+             class="analytics-title-row__avatar <%= params[:org_id].present? ? "analytics-title-row__avatar--org" : "analytics-title-row__avatar--user" %>"
+             width="40"
+             height="40" />
+      <% end %>
+      <h1 class="analytics-title-row__heading"><%= t("views.dashboard.analytics.heading", name: @user_or_org.name) %></h1>
+    </div>
+  </header>
 
   <%= render "heatmap" %>
 
-  <h2 class="fs-2xl fw-bold mx-5 mt-6"><%= t("views.dashboard.analytics.audience_heading") %></h2>
-
-  <%= render "shared/stats" %>
+  <%= render "shared/stats", section_heading: t("views.dashboard.analytics.audience_heading") %>
 </main>
 
 <%= javascript_include_tag "analyticsDashboard", defer: true %>

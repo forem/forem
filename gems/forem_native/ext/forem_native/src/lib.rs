@@ -3,8 +3,11 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use magnus::{
-    function, prelude::*, r_hash::ForEach, Error, Float, Integer, RArray, RHash, RString, Ruby,
-    Value,
+    function,
+    prelude::*,
+    r_hash::ForEach,
+    value::{Qfalse, Qtrue},
+    Error, Float, Integer, RArray, RHash, RString, Ruby, Symbol, Value,
 };
 
 static RNG_COUNTER: AtomicU64 = AtomicU64::new(1);
@@ -1874,6 +1877,48 @@ fn wrap_mentions_with_links(
     Some(wrapped.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+#[allow(clippy::too_many_arguments)]
+fn calendar_grid_days_html(
+    grid_start_jd: Integer,
+    grid_end_jd: Integer,
+    display_month: Integer,
+    event_day_jds: RArray,
+    selected: bool,
+    range_start_jd: Integer,
+    range_end_jd: Integer,
+    today_jd: Integer,
+    base_path: RString,
+    type_of: Option<RString>,
+) -> Option<String> {
+    let event_day_jds = extract_strict_i64_vec(event_day_jds)?;
+    let selected_range = if selected {
+        Some((range_start_jd.to_i64().ok()?, range_end_jd.to_i64().ok()?))
+    } else {
+        None
+    };
+    let (grid_start_jd, grid_end_jd) = (grid_start_jd.to_i64().ok()?, grid_end_jd.to_i64().ok()?);
+    let display_month = u32::try_from(display_month.to_i64().ok()?).ok()?;
+    let today_jd = today_jd.to_i64().ok()?;
+    if !base_path.is_utf8_compatible_encoding()
+        || type_of.is_some_and(|value| !value.is_utf8_compatible_encoding())
+    {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before the owned `String` is returned.
+    let grid = forem_core::calendar::CalendarGrid {
+        grid_start_jd,
+        grid_end_jd,
+        display_month,
+        event_day_jds: &event_day_jds,
+        selected_range,
+        today_jd,
+        base_path: unsafe { base_path.as_slice() },
+        type_of: type_of.as_ref().map(|value| unsafe { value.as_slice() }),
+    };
+    forem_core::calendar::build_calendar_grid_days_html(&grid)
+}
+
 fn extract_mentioned_usernames(ruby: &Ruby, html: RString) -> Option<RArray> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and all
     // Strings are owned before allocating the Ruby Array.
@@ -1886,6 +1931,104 @@ fn extract_mentioned_usernames(ruby: &Ruby, html: RString) -> Option<RArray> {
         ary.push(ruby.str_new(&username)).ok()?;
     }
     Some(ary)
+}
+
+// Containers nested deeper than this are left to ActiveSupport (which recurses without limit).
+const JSON_MAX_DEPTH: usize = 100;
+
+fn json_quote(ruby: &Ruby, value: RString, escape_html: bool) -> Option<RString> {
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before the result String is allocated.
+    let quoted = {
+        let text = json_str(&value)?;
+        forem_core::json::json_quote(text, escape_html)
+    };
+    Some(ruby.str_new(&quoted))
+}
+
+// Valid UTF-8 (or US-ASCII) contents of a `String`; anything else is left to Ruby.
+fn json_str(value: &RString) -> Option<&str> {
+    if !value.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Callers only use the borrow while walking the value, without calling back into
+    // Ruby code or allocating Ruby objects, so the String cannot be mutated or moved.
+    std::str::from_utf8(unsafe { value.as_slice() }).ok()
+}
+
+// `rb_equal` short-circuits on identity, and `Class#==` is the C-level identity check.
+fn is_instance_of(value: Value, class: magnus::RClass) -> bool {
+    value.class().equal(class).unwrap_or(false)
+}
+
+fn write_json_key(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, key: Value) -> Option<()> {
+    if let Some(symbol) = Symbol::from_value(key) {
+        w.key(&symbol.name().ok()?);
+    } else if is_instance_of(key, ruby.class_string()) {
+        w.key(json_str(&RString::from_value(key)?)?);
+    } else {
+        // Integer, nil, and object keys are stringified by ActiveSupport via `to_s`.
+        return None;
+    }
+    Some(())
+}
+
+fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Value) -> Option<()> {
+    if value.is_nil() {
+        w.null();
+    } else if Qtrue::from_value(value).is_some() {
+        w.bool(true);
+    } else if Qfalse::from_value(value).is_some() {
+        w.bool(false);
+    } else if let Some(integer) = Integer::from_value(value) {
+        w.int(integer.to_i64().ok()?);
+    } else if let Some(symbol) = Symbol::from_value(value) {
+        w.string(&symbol.name().ok()?);
+    } else {
+        if w.depth() >= JSON_MAX_DEPTH {
+            return None;
+        }
+        if is_instance_of(value, ruby.class_string()) {
+            w.string(json_str(&RString::from_value(value)?)?);
+        } else if is_instance_of(value, ruby.class_hash()) {
+            let hash = RHash::from_value(value)?;
+            let mut pairs: Vec<(Value, Value)> = Vec::with_capacity(hash.len());
+            hash.foreach(|k: Value, v: Value| {
+                pairs.push((k, v));
+                Ok(ForEach::Continue)
+            })
+            .ok()?;
+            w.begin_object();
+            for (k, v) in pairs {
+                write_json_key(ruby, w, k)?;
+                write_json_value(ruby, w, v)?;
+            }
+            w.end_object();
+        } else if is_instance_of(value, ruby.class_array()) {
+            // SAFETY: Copy the element handles out so no slice borrow is held while recursing.
+            let items: Vec<Value> = unsafe { RArray::from_value(value)?.as_slice() }.to_vec();
+            w.begin_array();
+            for item in items {
+                write_json_value(ruby, w, item)?;
+            }
+            w.end_array();
+        } else {
+            // Floats, Times, String/Hash subclasses, and other objects use Ruby's `as_json`.
+            return None;
+        }
+    }
+    Some(())
+}
+
+fn encode_json(ruby: &Ruby, value: Value, escape_html: bool) -> Option<RString> {
+    // The walk only reads Strings, Symbols, and Integers in place (no Ruby allocations), so
+    // nothing can run GC or mutate the tree until the finished buffer is copied out.
+    let json = {
+        let mut w = forem_core::json::JsonWriter::new(escape_html, 8192);
+        write_json_value(ruby, &mut w, value)?;
+        w.finish()
+    };
+    Some(ruby.str_new(&json))
 }
 
 #[magnus::init]
@@ -2097,5 +2240,11 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "extract_mentioned_usernames",
         function!(extract_mentioned_usernames, 1),
     )?;
+    native_mod.define_singleton_method(
+        "calendar_grid_days_html",
+        function!(calendar_grid_days_html, 10),
+    )?;
+    native_mod.define_singleton_method("json_quote", function!(json_quote, 2))?;
+    native_mod.define_singleton_method("encode_json", function!(encode_json, 2))?;
     Ok(())
 }

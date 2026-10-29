@@ -3,52 +3,48 @@ require "rails_helper"
 RSpec.describe "Views an article" do
   let(:user) { create(:user) }
   let(:co_author) { create(:user) }
-  let(:article) { create(:article, user: user, co_author_ids: [co_author.id]) }
-  let(:ama_article) { create(:article, user: user, tags: "ama") }
-
-  let!(:comment) { create(:comment, commentable: article) }
-  let!(:child_comment) { create(:comment, parent: comment, commentable: article) }
-
-  it "shows all comments" do
-    create(:comment, commentable: article)
-    visit "#{article.path}/comments"
-
-    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
-    expect(page).not_to have_selector(".spec-op-author")
+  let(:commenter) { create(:user) }
+  let(:article) do
+    create(:article, user: user, co_author_ids: [co_author.id], with_tags: false, with_main_image: false)
   end
+  let(:ama_article) { create(:article, user: user, tags: "ama", with_main_image: false) }
 
-  it "shows op marker on author and co-author comments" do
+  let(:comment) { create(:comment, user: commenter, commentable: article) }
+  let(:child_comment) { create(:comment, user: commenter, parent: comment, commentable: article) }
+
+  it "shows all comments, op markers on author and co-author comments, and a single thread", :aggregate_failures do
+    child_comment
     author_comment = create(:comment, user: user, commentable: article)
     co_author_comment = create(:comment, user: co_author, commentable: article)
     visit "#{article.path}/comments"
 
-    [author_comment, co_author_comment].each do |comment|
-      expect(page).to have_selector("#comment-node-#{comment.id} .spec-op-author[data-tooltip='Author']", count: 2)
+    expect(page).to have_css(".single-comment-node", visible: :visible, count: 4)
+    expect(page).to have_no_css("#comment-node-#{comment.id} .spec-op-author")
+    [author_comment, co_author_comment].each do |op_comment|
+      expect(page).to have_css("#comment-node-#{op_comment.id} .spec-op-author[data-tooltip='Author']", count: 2)
     end
+
+    visit "#{article.path}/comments/#{comment.id_code_generated}"
+
+    expect(page).to have_css(".single-comment-node", visible: :visible, count: 2)
+    expect(page).to have_css(".comment--deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
+    expect(page).to have_css(".comment--deep-1#comment-node-#{child_comment.id}", visible: :visible, count: 1)
   end
 
   it "shows special op marker on ama articles" do
     ama_comment = create(:comment, user: user, commentable: ama_article)
     visit "#{ama_article.path}/comments"
 
-    expect(page).to have_selector(
+    expect(page).to have_css(
       "#comment-node-#{ama_comment.id} .spec-op-author[data-tooltip='Ask Me Anything']",
       count: 2,
     )
   end
 
-  it "shows a thread" do
-    visit "#{article.path}/comments/#{comment.id_code_generated}"
-
-    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 2)
-    expect(page).to have_selector(".comment--deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
-    expect(page).to have_selector(".comment--deep-1#comment-node-#{child_comment.id}", visible: :visible, count: 1)
-  end
-
-  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :js, :aggregate_failures do
-    depth2_comment = create(:comment, parent: child_comment, commentable: article)
-    depth3_comment = create(:comment, parent: depth2_comment, commentable: article)
-    depth4_comment = create(:comment, parent: depth3_comment, commentable: article)
+  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :aggregate_failures, :js do
+    depth2_comment = create(:comment, user: commenter, parent: child_comment, commentable: article)
+    depth3_comment = create(:comment, user: commenter, parent: depth2_comment, commentable: article)
+    depth4_comment = create(:comment, user: commenter, parent: depth3_comment, commentable: article)
 
     visit "#{article.path}/comments"
 

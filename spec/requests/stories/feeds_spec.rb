@@ -278,6 +278,19 @@ RSpec.describe "Stories::Feeds" do
         )
       end
 
+      it "excludes articles by blocked authors when feed_strategy is basic", :aggregate_failures do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+        hot_story = create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago)
+
+        get stories_feed_path
+        expect(response.parsed_body.pluck("id")).to include(hot_story.id, article.id)
+
+        create(:user_block, blocker: user, blocked: hot_story.user)
+        get stories_feed_path
+        expect(response.parsed_body.pluck("id")).to include(article.id)
+        expect(response.parsed_body.pluck("id")).not_to include(hot_story.id)
+      end
+
       it "does not set cache control headers for edge caching" do
         get stories_feed_path
 
@@ -1010,6 +1023,19 @@ RSpec.describe "Stories::Feeds" do
 
         get stories_feed_path
         expect(response_article).to include("favorited_by_user_id" => nil)
+      end
+
+      it "reuses story fragments from read_multi without per-story cache.read round-trips" do
+        get stories_feed_path
+        first_payload = response_article
+
+        allow(Rails.cache).to receive(:read_multi).and_call_original
+        allow(Rails.cache).to receive(:read).and_call_original
+
+        get stories_feed_path
+        expect(response_article).to eq(first_payload)
+        expect(Rails.cache).to have_received(:read_multi).once
+        expect(Rails.cache).not_to have_received(:read).with(a_string_starting_with("jbuilder/"), anything)
       end
     end
   end

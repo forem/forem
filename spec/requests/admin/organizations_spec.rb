@@ -1,24 +1,24 @@
 require "rails_helper"
 
 RSpec.describe "/admin/content_manager/organizations" do
-  let(:admin) { create(:user, :super_admin) }
-  let(:organization) { Organization.first }
+  let(:admin) { create(:user, :without_profile, :super_admin, profile_image: nil) }
+  let(:organization) { create(:organization, name: "Original Name") }
 
   before do
-    create_list(:organization, 5)
     sign_in(admin)
   end
 
   describe "GETS /admin/content_manager/organizations" do
-    let(:organizations) { Organization.pluck(:name).map { |n| CGI.escapeHTML(n) } }
-    let(:another_organization) { create(:organization, name: "T-800") }
+    let!(:another_organization) { create(:organization, name: "T-800") }
+
+    before { organization }
 
     it "lists all organizations" do
       get admin_organizations_path
-      expect(response.body).to include(*organizations)
+      expect(response.body).to include(CGI.escapeHTML(organization.name), CGI.escapeHTML(another_organization.name))
     end
 
-    it "allows searching" do
+    it "allows searching", :aggregate_failures do
       get "#{admin_organizations_path}?search=#{organization.name}"
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
@@ -33,8 +33,6 @@ RSpec.describe "/admin/content_manager/organizations" do
   end
 
   describe "PATCH /admin" do
-    let(:organization) { create(:organization) }
-
     it "adds credits to an organization" do
       params = { credits: 1, credit_action: :add }
 
@@ -99,8 +97,6 @@ RSpec.describe "/admin/content_manager/organizations" do
   end
 
   describe "PATCH /admin/organizations/:id/update_name" do
-    let(:organization) { create(:organization, name: "Original Name") }
-
     it "updates organization name" do
       patch update_name_admin_organization_path(organization), params: { name: "Updated Name" }
 

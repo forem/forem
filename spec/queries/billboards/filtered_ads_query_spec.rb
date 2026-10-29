@@ -10,6 +10,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       placement_area: placement_area,
       display_to: :all
     }
+    defaults[:organization] = nil unless options.key?(:organization) || options.key?(:organization_id)
     create(:billboard, **options.reverse_merge(defaults))
   end
 
@@ -124,11 +125,11 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   end
 
   context "when considering audience segmentation" do
-    let!(:in_segment) { create(:user) }
+    let!(:in_segment) { create(:user, :without_profile, profile_image: nil) }
     let!(:audience_segment) { create(:audience_segment, type_of: :no_posts_yet) }
     let!(:targets_segment) { create_billboard audience_segment: audience_segment }
     let!(:no_targets) { create_billboard display_to: :all }
-    let!(:not_in_segment) { create(:user) } # won't be in any segment
+    let!(:not_in_segment) { create(:user, :without_profile, profile_image: nil) } # won't be in any segment
 
     before do
       _targets_other = create_billboard audience_segment: create(:audience_segment)
@@ -234,7 +235,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(queries.grep(/FROM "organizations"/)).to be_empty
-      expect(filtered.find { |bb| bb.id == external_ad.id }.organization).to eq(organization)
+      expect(filtered.detect { |bb| bb.id == external_ad.id }.organization).to eq(organization)
     end
   end
 
@@ -401,31 +402,24 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:mobile_web_ad) { create_billboard browser_context: :mobile_web }
     let!(:desktop_ad) { create_billboard browser_context: :desktop }
 
-    it "filters ads based on user_agent string for mobile in-app context" do
-      filtered = filter_billboards(user_agent: "DEV-Native-ios")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
-      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+    it "filters ads based on user_agent string across mobile in-app, mobile web, desktop, and unknown contexts",
+       :aggregate_failures do
+      %w[DEV-Native-ios DEV-Native-android].each do |ua|
+        filtered = filter_billboards(user_agent: ua)
+        expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+        expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+      end
 
-      filtered = filter_billboards(user_agent: "DEV-Native-android")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
-      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
-    end
+      mobile_web_filtered = filter_billboards(user_agent: "Mobile Safari")
+      expect(mobile_web_filtered).to include(all_browsers_ad, mobile_web_ad)
+      expect(mobile_web_filtered).not_to include(mobile_in_app_ad, desktop_ad)
 
-    it "filters ads based on user_agent string for mobile web context" do
-      filtered = filter_billboards(user_agent: "Mobile Safari")
-      expect(filtered).to include(all_browsers_ad, mobile_web_ad)
-      expect(filtered).not_to include(mobile_in_app_ad, desktop_ad)
-    end
+      desktop_filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
+      expect(desktop_filtered).to include(all_browsers_ad, desktop_ad)
+      expect(desktop_filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
 
-    it "filters ads based on user_agent string for desktop context" do
-      filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
-      expect(filtered).to include(all_browsers_ad, desktop_ad)
-      expect(filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
-    end
-
-    it "includes all ads for unknown user_agent contexts" do
-      filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
+      unknown_filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
+      expect(unknown_filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
     end
   end
 
@@ -498,7 +492,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -514,7 +508,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [paused_organization.id],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -522,16 +516,6 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         filtered = filter_billboards
         expect(filtered).not_to include(paused_org_billboard)
         expect(filtered).to include(no_org_billboard, active_org_billboard)
-      end
-
-      it "includes billboards from non-paused organizations" do
-        filtered = filter_billboards
-        expect(filtered).to include(active_org_billboard)
-      end
-
-      it "includes billboards with no organization" do
-        filtered = filter_billboards
-        expect(filtered).to include(no_org_billboard)
       end
     end
 
@@ -544,7 +528,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [paused_organization.id, another_paused_organization.id],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -569,46 +553,79 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
   context "when considering active event broadcasts" do
     let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+    let!(:standard_bb) { create_billboard(placement_area: "feed_first", event_id: nil) }
 
     before do
       allow(Rails).to receive(:cache).and_return(memory_store)
       memory_store.clear
     end
 
-    let!(:standard_bb) { create_billboard(placement_area: "feed_first", event_id: nil) }
-    
     context "with an active global broadcast" do
-      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "global_broadcast", published: true) }
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now,
+                       broadcast_config: "global_broadcast", published: true)
+      end
       let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
 
-      it "overrides all feed_first placements bypassing standard billboards" do
+      it "overrides feed_first placements while leaving sidebar placements untouched", :aggregate_failures do
         filtered = filter_billboards(area: "feed_first")
         expect(filtered).to include(event_bb)
         expect(filtered).not_to include(standard_bb)
-      end
 
-      it "does not override sidebar placements" do
-        filtered = filter_billboards(area: "sidebar_left")
-        expect(filtered).not_to include(event_bb)
+        expect(filter_billboards(area: "sidebar_left")).not_to include(event_bb)
       end
     end
 
     context "with an active tagged broadcast" do
-      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "tagged_broadcast", published: true, tags_array: ["javascript"]) }
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now,
+                       broadcast_config: "tagged_broadcast", published: true, tags_array: ["javascript"])
+      end
       let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
 
-      it "overrides feed if user tags overlap the event tags" do
-        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "javascript"])
+      it "overrides feed only when user tags overlap the event tags", :aggregate_failures do
+        filtered = filter_billboards(area: "feed_first", user_tags: %w[ruby javascript])
         expect(filtered).to include(event_bb)
         expect(filtered).not_to include(standard_bb)
+
+        non_overlapping = filter_billboards(area: "feed_first", user_tags: %w[ruby python])
+        expect(non_overlapping).not_to include(event_bb)
+        expect(non_overlapping).to include(standard_bb)
+      end
+    end
+  end
+
+  context "when considering survey completion exclusion" do
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
+    let(:survey) { create(:survey) }
+    let!(:survey_bb) do
+      create_billboard(exclude_survey_completions: true, exclude_survey_ids: [survey.id])
+    end
+
+    it "excludes the billboard when the signed-in user completed a matching survey" do
+      create(:survey_completion, user: user, survey: survey)
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).not_to include(survey_bb)
+    end
+
+    it "includes the billboard when the signed-in user has not completed a matching survey" do
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).to include(survey_bb)
+    end
+
+    it "executes a single SQL query for signed-in users without extra pre-queries" do
+      uid = user.id
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        if !payload[:cached] && sql.match?(/FROM "(display_ads|segmented_users|survey_completions)"/)
+          queries << sql
+        end
       end
 
-      it "does not override feed if user tags do not overlap" do
-        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "python"])
-        expect(filtered).not_to include(event_bb)
-        # Should render standard untagged boards if no mapping aligns securely:
-        expect(filtered).to include(standard_bb)
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(filter_billboards(user_signed_in: true, user_id: uid).to_a).to include(survey_bb)
       end
+
+      expect(queries.size).to eq(1)
     end
   end
 end

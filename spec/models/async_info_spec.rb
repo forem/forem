@@ -23,6 +23,18 @@ RSpec.describe AsyncInfo do
         .to eq(%w[js-policy-article-create js-policy-article-moderate])
     end
 
+    it "toggles js-policy-article-create visibility based on limit_post_creation_to_admins and admin role",
+       :aggregate_failures do
+      allow(FeatureFlag).to receive(:enabled?).with(:limit_post_creation_to_admins).and_return(true)
+
+      non_admin_policies = described_class.to_hash(user: user, context: context).fetch(:policies)
+      expect(non_admin_policies).to include(dom_class: "js-policy-article-create", visible: false)
+
+      user.add_role(:admin)
+      admin_policies = described_class.to_hash(user: user, context: context).fetch(:policies)
+      expect(admin_policies).to include(dom_class: "js-policy-article-create", visible: true)
+    end
+
     it "reflects the user's community leader status" do
       expect(async_info[:community_leader]).to be(false)
 

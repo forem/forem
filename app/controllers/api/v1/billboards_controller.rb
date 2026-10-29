@@ -21,12 +21,16 @@ module Api
       def create
         @billboard = Billboard.new(permitted_params)
         @billboard.save!
+        payload = { "action" => "api_billboard_create", "billboard_id" => @billboard.id }
+        Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard, status: :created
       end
 
       def update
         @billboard = Billboard.find(params[:id])
         @billboard.update!(permitted_params)
+        payload = { "action" => "api_billboard_update", "billboard_id" => @billboard.id }
+        Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard
       end
 
@@ -34,6 +38,8 @@ module Api
         @billboard = Billboard.find(params[:id])
         result = @billboard.update(published: false)
         if result
+          payload = { "action" => "api_billboard_unpublish", "billboard_id" => @billboard.id }
+          Audit::Logger.log(:admin_api, @user, payload)
           head :no_content
         else
           render json: @billboard, status: :unprocessable_entity
@@ -68,7 +74,8 @@ module Api
       end
 
       def permitted_params
-        params.permit :approved, :body_markdown, :minimized_body_markdown, :creator_id, :display_to, :page_id, :browser_context,
+        params.permit :approved, :body_markdown, :minimized_body_markdown, :creator_id, :display_to, :page_id,
+                      :browser_context,
                       :name, :organization_id, :placement_area, :published, :dismissal_sku,
                       :tag_list, :type_of, :exclude_article_ids, :weight, :requires_cookies, :color,
                       :audience_segment_type, :audience_segment_id, :priority, :special_behavior,

@@ -180,5 +180,25 @@ RSpec.describe Comments::Tree do
       expect(root.user.association(:profile)).to be_loaded
       expect(root.user.association(:setting)).to be_loaded
     end
+
+    it "scopes descendant lookup by commentable and avoids re-fetching root_comment by id", :aggregate_failures do
+      root = Comment.find(comment.id)
+
+      comment_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"')
+      end
+      tree = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_root_comment(root)
+      end
+
+      expect(tree).to eq(comment => { child_comment => {} })
+      expect(comment_queries.size).to eq(1)
+      expect(comment_queries.first).to include('"comments"."commentable_id"')
+      expect(comment_queries.first).to include('"comments"."commentable_type"')
+      expect(comment_queries.first).not_to include('"comments"."id" =')
+    end
   end
 end
