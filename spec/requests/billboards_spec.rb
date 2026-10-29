@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Billboards" do
-  let(:user)    { create(:user) }
-  let(:article) { create(:article, user: user, tags: "") }
+  let(:user)    { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, user: user, tags: "", with_main_image: false) }
 
   let(:max_age) { 3.minutes.to_i }
   let(:stale_if_error) { 26_400 }
@@ -12,7 +12,8 @@ RSpec.describe "Billboards" do
       approved: true,
       published: true,
       display_to: :all,
-      color: "#FF5733"
+      color: "#FF5733",
+      organization: nil
     }
     create(:billboard, **options.reverse_merge(defaults))
   end
@@ -325,8 +326,8 @@ RSpec.describe "Billboards" do
         expect(response.body.scan('data-placement-hidden="true"').size).to eq(2)
       end
 
-      %w[feed_first post_fixed_bottom post_body_bottom post_sidebar].each do |area|
-        it "hides the #{area} template" do
+      it "hides feed_first, post_fixed_bottom, post_body_bottom, and post_sidebar templates", :aggregate_failures do
+        %w[feed_first post_fixed_bottom post_body_bottom post_sidebar].each do |area|
           create_billboard(placement_area: area)
           BillboardPlacementAreaConfig.create!(placement_area: area, hidden_by_default: true)
 
@@ -598,7 +599,10 @@ RSpec.describe "Billboards" do
 
   describe "GET /:username/:slug/billboards/:placement_area viewer country and anonymous tracking" do
     let!(:billboard) { create_billboard(placement_area: "post_comments") }
-    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    def billboard_element
+      Nokogiri::HTML(response.body).at_css("[data-display-unit]")
+    end
 
     def get_billboard(headers)
       get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments"),
@@ -648,36 +652,24 @@ RSpec.describe "Billboards" do
         allow(Settings::General).to receive(:geos_with_allowed_anonymous_tracking).and_return(%w[us GB-SCT])
       end
 
-      it "varies on location, sends country, and disallows tracking outside allowed regions", :aggregate_failures do
+      it "varies on location and enforces country, region, and cacheable-geo anonymous tracking rules",
+         :aggregate_failures do
         get_billboard("X-Client-Geo" => "FR", "X-Cacheable-Client-Geo" => "FR")
-
         expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
         expect(billboard_element["data-viewer-country"]).to eq("FR")
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
-      end
 
-      it "allows anonymous tracking in an allowed country, including its regions" do
         get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "US-NY")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
-      end
 
-      it "allows anonymous tracking in an allowed region" do
         get_billboard("X-Client-Geo" => "GB-SCT", "X-Cacheable-Client-Geo" => "GB-SCT")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
-      end
 
-      it "does not allow a whole country when only one of its regions is allowed" do
         get_billboard("X-Client-Geo" => "GB-ENG", "X-Cacheable-Client-Geo" => "GB")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
-      end
 
-      it "does not allow anonymous tracking when the edge has no cacheable location" do
         # Fastly leaves this blank for countries outside its active_geofencing_regions dictionary
         get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "")
-
         expect(billboard_element["data-viewer-country"]).to be_nil
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
       end
