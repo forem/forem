@@ -117,10 +117,7 @@ class StoriesController < ApplicationController
 
   def redirect_to_changed_username_profile
     potential_username = params[:username].tr("@", "").downcase
-    user_or_org = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-                      .where.not(username: potential_username)
-                      .order(profile_updated_at: :desc)
-                      .first ||
+    user_or_org = find_user_by_old_username(potential_username) ||
       Organization.where("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
                   .where.not(slug: potential_username)
                   .order(updated_at: :desc)
@@ -134,6 +131,17 @@ class StoriesController < ApplicationController
     end
   end
 
+  # a user who has reclaimed the name holds it now, so they must not redirect to themselves
+  def find_user_by_old_username(username)
+    recorded_user = UsersOldUsername.find_by(username: username)&.user
+    return recorded_user if recorded_user && recorded_user.username != username
+
+    User.where("old_username = ? OR old_old_username = ?", username, username)
+      .where.not(username: username)
+      .order(profile_updated_at: :desc)
+      .first
+  end
+
   def handle_possible_redirect
     if @article.organization
       set_surrogate_key_header(@article.record_key, @article.organization.record_key)
@@ -142,10 +150,7 @@ class StoriesController < ApplicationController
     end
 
     potential_username = params[:username].tr("@", "").downcase
-    @user = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
-                .where.not(username: potential_username)
-                .order(profile_updated_at: :desc)
-                .first
+    @user = find_user_by_old_username(potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
       set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
