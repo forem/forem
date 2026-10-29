@@ -143,6 +143,14 @@ module Feeds
         bounded_xml = ForemNative.truncate_feed_xml_items(xml_for_scan, MAX_XML_ENTRIES) || feed_xml
         parsed_feed = Feedjira.parse(bounded_xml)
 
+        # The native XML truncator keeps the prefix to preserve the common
+        # newest-first ordering. If the bounded result proves this feed is
+        # oldest-first, parse the byte-bounded original so recent entries beyond
+        # the prefix remain eligible for import.
+        if bounded_xml.bytesize < xml_for_scan.bytesize && oldest_first_feed?(parsed_feed.entries)
+          parsed_feed = Feedjira.parse(xml_for_scan)
+        end
+
         [source_id, parsed_feed]
       rescue StandardError => e
         report_error(
@@ -448,9 +456,7 @@ module Feeds
       entries = raw_entries || []
       return entries if entries.size <= MAX_ENTRIES_PER_FEED
 
-      if entries.first.respond_to?(:published) && entries.last.respond_to?(:published) &&
-          entries.first.published && entries.last.published &&
-          entries.first.published < entries.last.published
+      if oldest_first_feed?(entries)
         entries = entries.each_with_index.sort_by do |entry, idx|
           pub = entry.respond_to?(:published) ? entry.published : nil
           [pub ? 0 : 1, pub ? -pub.to_f : 0.0, idx]
@@ -458,6 +464,15 @@ module Feeds
       end
 
       entries.first(MAX_ENTRIES_PER_FEED)
+    end
+
+    def oldest_first_feed?(entries)
+      first = entries&.first
+      last = entries&.last
+      return false unless first && last
+
+      first.respond_to?(:published) && last.respond_to?(:published) &&
+        first.published && last.published && first.published < last.published
     end
   end
 end
