@@ -1,0 +1,19 @@
+Containerfile
+  s_c93a97359c028b::t_fd8ecf4a973f1e 211
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fd86c100c5da19f324443b0bc8917786917a0546",
+  "prompts": {},
+  "sessions": {
+    "s_c93a97359c028b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "47f4910a-8948-412b-a7c1-d704a2716c86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

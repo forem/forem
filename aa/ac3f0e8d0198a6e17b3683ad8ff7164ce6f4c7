@@ -1,0 +1,28 @@
+.cursorrules
+  h_f968154a99632d 80-81
+.github/copilot-instructions.md
+  h_f968154a99632d 80-81
+.github/workflows/forem-native.yml
+  h_f968154a99632d 10,13,50
+.windsurfrules
+  h_f968154a99632d 80-81
+AGENTS.md
+  h_f968154a99632d 80-81
+docs/rust_native_extensions.md
+  h_f968154a99632d 55,69-72
+gems/forem_native/README.md
+  h_f968154a99632d 15
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 63-64,66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aaac3f0e8d0198a6e17b3683ad8ff7164ce6f4c7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

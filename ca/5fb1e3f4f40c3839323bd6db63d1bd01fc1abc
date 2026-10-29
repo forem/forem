@@ -1,0 +1,14 @@
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 15,24,79,97,101-102,133,140,177,188,231,245,280,286-287,295-296,345-347,350
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ca5fb1e3f4f40c3839323bd6db63d1bd01fc1abc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

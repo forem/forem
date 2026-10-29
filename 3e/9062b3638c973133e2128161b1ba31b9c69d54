@@ -1,0 +1,22 @@
+bin/e2e
+  h_f968154a99632d 25-28
+config/initializers/assets.rb
+  h_f968154a99632d 13-14,16
+lib/tasks/assets.rake
+  h_f968154a99632d 22-24
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 18-19
+spec/tasks/assets_spec.rb
+  h_f968154a99632d 9-10,18-20,25,28,32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3e9062b3638c973133e2128161b1ba31b9c69d54",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

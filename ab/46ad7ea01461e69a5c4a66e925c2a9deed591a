@@ -1,0 +1,30 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 78
+app/models/feed_config.rb
+  h_f968154a99632d 74-89,231
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 41-46,135-164
+app/views/admin/feed_configs/_form.html.erb
+  h_f968154a99632d 107-111
+db/migrate/20261029170500_add_published_at_diversity_weight_to_feed_configs.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,851
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 388,432,464,567-589,591
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 11,90
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 668-714,716
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ab46ad7ea01461e69a5c4a66e925c2a9deed591a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

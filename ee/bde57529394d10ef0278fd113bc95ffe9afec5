@@ -1,0 +1,26 @@
+app/services/html/parser.rb
+  h_f968154a99632d 151-152,240,299-327
+gems/forem_native/crates/forem_core/src/emoji.rs
+  h_f968154a99632d 1-761
+gems/forem_native/crates/forem_core/src/emoji_data.rs
+  h_f968154a99632d 1-2189
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 10-11
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 435-462,541-545
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 354-377
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 2220-2451
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eebde57529394d10ef0278fd113bc95ffe9afec5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
