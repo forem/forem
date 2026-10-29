@@ -247,18 +247,26 @@ class StoriesController < ApplicationController
       @org_page = main_page
     end
     is_readme = @org_page.present?
+    @pinned_stories = if is_readme
+                        Article.none
+                      else
+                        @organization.articles.published.from_subforem.full_posts
+                          .where(id: @organization.profile_pins.select(:pinnable_id))
+                          .limited_column_select.order(published_at: :desc).decorate
+                      end
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .limited_column_select
+      .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(8))
     unless is_readme
-      preload_context_notes(@stories)
-      preload_reaction_counts(@stories)
+      preload_context_notes(@pinned_stories + @stories)
+      preload_reaction_counts(@pinned_stories + @stories)
     end
     @organization_article_index = !is_readme
 
     # Anti-spam/visibility guard: apply for both README and non-README views
     user_score = @organization.active_users.sum(:score)
-    if !user_signed_in? && user_score.negative? && @stories.sum(&:score) <= 0
+    if !user_signed_in? && user_score.negative? && (@pinned_stories + @stories).sum(&:score) <= 0
       not_found
     end
 
@@ -373,7 +381,7 @@ class StoriesController < ApplicationController
   def redirect_if_inactive_in_subforem_for_organization
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
-    return unless @stories.none? &&
+    return unless @pinned_stories.none? && @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])

@@ -510,6 +510,8 @@ Rails.application.routes.draw do
                                                    as: :organization_lead_form_toggle
     get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions",
                                                       as: :organization_lead_form_submissions
+    post "/:slug/profile_pins", to: "organization_profile_pins#create", as: :organization_profile_pins
+    delete "/:slug/profile_pins/:id", to: "organization_profile_pins#destroy", as: :organization_profile_pin
     post "/lead_submissions", to: "lead_submissions#create"
     get "/lead_submissions/check", to: "lead_submissions#check"
     post "articles/preview", to: "articles#preview"
