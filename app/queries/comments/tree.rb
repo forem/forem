@@ -2,8 +2,13 @@ module Comments
   module Tree
     module_function
 
+    # The tree loads every comment on the commentable, so skip the ~3KB TOASTed
+    # vector that rendering never reads.
+    UNRENDERED_COLUMNS = %w[semantic_embedding].freeze
+
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false, preload: true)
       collection = commentable.comments
+        .select(Comment.column_names - UNRENDERED_COLUMNS)
         .arrange(order: build_sort_query(order))
         .to_a[0..limit - 1]
         .to_h
