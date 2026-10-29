@@ -63,6 +63,11 @@
       if (user.admin) {
         document.body.classList.add("user-super-admin");
       }
+      if (user.favorite_allowance === null || user.favorite_allowance > 0) {
+        document.body.classList.add("gem-allowance-available");
+      } else {
+        document.body.classList.remove("gem-allowance-available");
+      }
     }
   } catch (e) {
     setTimeout(function () {

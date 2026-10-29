@@ -65,6 +65,7 @@ en:
             longest_streak: Longest streak
             best_day: Best day
       article:
+        gem: Gem
         heading:
           text_html: "%{archived}%{title}"
           archived: "[Archived] "
@@ -288,6 +289,24 @@ en:
         reactions: Total post reactions
         views: Total post views
         comments: Total post comments
+        gems: Gemmed posts
         listings: Listings created
         credits: Credits available
         lt_500: "< 500"
+      gems_to_give:
+        earned_heading:
+          one: "You have %{count} Gem to give!"
+          other: "You have %{count} Gems to give!"
+        earned_body:
+          one: "Someone awarded your work a Gem — you can pass it forward to highlight a post or comment you love."
+          other: "Your work earned Gems — you can pass them forward to highlight posts or comments you love."
+        leader_heading:
+          one: "You have %{count} Gem pick remaining"
+          other: "You have %{count} Gem picks remaining"
+        leader_body:
+          one: "Use your remaining Gem pick to highlight standout community posts or comments."
+          other: "Use your remaining Gem picks to highlight standout community posts or comments."
+        unlimited_heading: "You have unlimited Gem picks"
+        unlimited_body: "Highlight standout posts and comments across the community."
+        explore_cta: "Explore feed"
+        curation_cta: "Curation dashboard"

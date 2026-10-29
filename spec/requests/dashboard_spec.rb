@@ -92,6 +92,71 @@ RSpec.describe "Dashboards" do
       end
     end
 
+    context "when community_favorites feature flag is enabled" do
+      before do
+        FeatureFlag.add(:community_favorites)
+        FeatureFlag.enable(:community_favorites)
+        sign_in user
+      end
+
+      after { FeatureFlag.remove(:community_favorites) }
+
+      it "renders the gemmed posts summary card and per-article gem indicator on gemmed posts",
+         :aggregate_failures do
+        favoriter = create(:user, :community_leader_level_1)
+        gemmed_article = create(:article, user: user, favorited_by_user: favoriter, favorited_at: Time.current)
+        ungemmed_article = create(:article, user: user)
+
+        get dashboard_path
+
+        html = Nokogiri::HTML(response.body)
+        gemmed_card = html.at_css('[data-testid="dashboard-gemmed-posts-card"]')
+        expect(gemmed_card).to be_present
+        expect(gemmed_card.text).to include("1")
+        expect(gemmed_card.text).to include(I18n.t("views.dashboard.summary.gems"))
+
+        expect(html.at_css(%([data-testid="dashboard-article-gem-#{gemmed_article.id}"]))).to be_present
+        expect(html.at_css(%([data-testid="dashboard-article-gem-#{ungemmed_article.id}"]))).to be_nil
+      end
+
+      it "renders the gems to give banner when a regular user has earned gems", :aggregate_failures do
+        article
+        user.update!(earned_favorites_count: 2)
+
+        get dashboard_path
+
+        html = Nokogiri::HTML(response.body)
+        banner = html.at_css('[data-testid="dashboard-gems-to-give-banner"]')
+        expect(banner).to be_present
+        expect(banner.text).to include(I18n.t("views.dashboard.gems_to_give.earned_heading", count: 2))
+        expect(banner.text).to include(I18n.t("views.dashboard.gems_to_give.explore_cta"))
+      end
+
+      it "does not render the gems to give banner when a regular user has 0 earned gems" do
+        article
+        user.update!(earned_favorites_count: 0)
+
+        get dashboard_path
+
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css('[data-testid="dashboard-gems-to-give-banner"]')).to be_nil
+      end
+
+      it "renders the leader gems to give banner with curation link for a community leader", :aggregate_failures do
+        article
+        user.add_role(:community_leader_level_1)
+        allow(Settings::UserExperience).to receive(:community_leader_l1_favorite_allowance).and_return(3)
+
+        get dashboard_path
+
+        html = Nokogiri::HTML(response.body)
+        banner = html.at_css('[data-testid="dashboard-gems-to-give-banner"]')
+        expect(banner).to be_present
+        expect(banner.text).to include(I18n.t("views.dashboard.gems_to_give.leader_heading", count: 3))
+        expect(banner.at_css("a[href='#{curation_path}']")).to be_present
+      end
+    end
+
     context "when logged in with many archived posts" do
       before do
         stub_const("DashboardsController::ARTICLES_PER_PAGE", 2)

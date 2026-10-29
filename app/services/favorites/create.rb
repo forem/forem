@@ -78,9 +78,13 @@ module Favorites
       return spend_earned_favorite == 1 unless user.community_leader?
 
       # For community leaders, lock to serialize the allowance check for the
-      # rest of the claim transaction.
+      # rest of the claim transaction, and touch the row so the cached AsyncInfo
+      # payload reflects the updated balance.
       user.lock!
-      !user.favorite_allowance.negative?
+      return false if user.favorite_allowance.negative?
+
+      user.touch
+      true
     end
 
     # Checks and decrements earned favorites safely in one query. Touches the

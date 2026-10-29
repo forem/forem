@@ -160,6 +160,14 @@ RSpec.describe Favorites::Create, type: :service do
       expect(article.reload.favorited_by_user_id).to eq(leader.id)
     end
 
+    it "touches the community leader to rotate their AsyncInfo cache key when spending a gem" do
+      User.where(id: leader.id).update_all(updated_at: 1.day.ago)
+
+      described_class.call(favoritable: article, user: leader.reload)
+
+      expect(leader.reload.updated_at).to be > 1.minute.ago
+    end
+
     it "prevents favoriting by a leader past their budget" do
       2.times { described_class.call(favoritable: create(:article, user: author), user: leader) }
 

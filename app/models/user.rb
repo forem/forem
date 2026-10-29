@@ -727,7 +727,7 @@ class User < ApplicationRecord
   # @return [Integer, nil]
   def favorite_allowance_for_client
     allowance = favorite_allowance
-    allowance.finite? ? allowance : nil
+    allowance.finite? ? [allowance, 0].max : nil
   end
 
   # The name of the tags moderated by the user.

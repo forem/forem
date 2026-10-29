@@ -113,7 +113,8 @@ body.subforem-moderator-status-true .subforem-moderator-visible-block {
   display: none !important;
 }
 
-body.community-leader-status-true .community-leader-visible-block {
+body.community-leader-status-true .community-leader-visible-block,
+body.gem-allowance-available .community-leader-visible-block {
   display: block !important;
 }
 

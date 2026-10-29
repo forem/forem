@@ -1,6 +1,7 @@
 <% num_views = @page_views_count %>
+<% show_gems = FeatureFlag.enabled?(:community_favorites) %>
 
-<div class="grid grid-cols-2 m:grid-cols-3 gap-2 m:gap-4 pt-3">
+<div class="grid grid-cols-2 <%= show_gems ? "m:grid-cols-4" : "m:grid-cols-3" %> gap-2 m:gap-4 pt-3">
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimiter: ",") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.reactions") %></span>
@@ -15,4 +16,14 @@
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= num_views > 500 ? number_with_delimiter(num_views, delimiter: ",") : t("views.dashboard.summary.lt_500") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.views") %></span>
   </div>
+
+  <% if show_gems %>
+    <div class="crayons-card crayons-card--secondary p-3 m:p-6" data-testid="dashboard-gemmed-posts-card">
+      <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 flex items-center gap-1">
+        <%= number_with_delimiter(@gemmed_posts_count.to_i, delimiter: ",") %>
+        <%= crayons_icon_tag("small-favorite-filled", native: true, class: "shrink-0", style: "color: var(--reaction-favorite-color, #d97706);") %>
+      </strong>
+      <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.gems") %></span>
+    </div>
+  <% end %>
 </div>

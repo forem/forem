@@ -2031,6 +2031,16 @@ RSpec.describe User do
 
       expect(admin_curator.favorite_allowance_for_client).to be_nil
     end
+
+    it "clamps negative allowances to 0" do
+      allow(Settings::UserExperience).to receive_messages(
+        community_leader_l1_favorite_allowance: 1, community_leader_favorite_refresh_hours: 24,
+      )
+      leader = create(:user, :community_leader_level_1)
+      create_list(:article, 2, favorited_by_user: leader, favorited_at: 1.hour.ago)
+
+      expect(leader.favorite_allowance_for_client).to eq(0)
+    end
   end
 
   describe "#confirmation_required?" do
