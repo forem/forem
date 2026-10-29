@@ -1,0 +1,63 @@
+config/locales/services/en.yml
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+config/locales/services/pt.yml
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+app/controllers/admin/flag_appeals_controller.rb
+  s_bbabb8657d0a1b::t_0205e9274d33b7 6-9
+db/schema.rb
+  s_bbabb8657d0a1b::t_0ac4702eab95a9 2294-2295
+  s_bbabb8657d0a1b::t_4410f43f3b9859 979
+app/views/pages/forbidden.pt.html.erb
+  s_bbabb8657d0a1b::t_165fdd26e3d234 3,6-7,10
+app/workers/appeals/ai_review_worker.rb
+  s_bbabb8657d0a1b::t_ce2bf0cbac9d3e 32
+db/migrate/20260730170000_create_flag_appeals.rb
+  s_bbabb8657d0a1b::t_b9173b6a402639 6,13
+app/services/appeals/resolver.rb
+  s_bbabb8657d0a1b::t_0ba2f8b5f01314 171
+  s_bbabb8657d0a1b::t_02cf65f0abbb8a 123,178,183-194
+  s_bbabb8657d0a1b::t_d7814bb0066bdf 67,79
+  s_bbabb8657d0a1b::t_47121f182fa23e 179-180
+  s_bbabb8657d0a1b::t_70423735f611a4 181-182
+  s_bbabb8657d0a1b::t_e48b57e68d946b 107,112-122
+  s_bbabb8657d0a1b::t_34a10b9e797445 124
+config/locales/services/fr.yml
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+spec/models/flag_appeal_spec.rb
+  s_bbabb8657d0a1b::t_1adbcdb9b31955 3
+  s_bbabb8657d0a1b::t_aeb039b4e46762 48-56
+spec/requests/admin/flag_appeals_spec.rb
+  s_bbabb8657d0a1b::t_1adbcdb9b31955 3
+  s_bbabb8657d0a1b::t_dc3523de63634b 34-44
+app/services/ai/appeal_assessor.rb
+  s_bbabb8657d0a1b::t_924df0d38a9e15 167-174
+  s_bbabb8657d0a1b::t_353c00819aa1df 24-25,27
+  s_bbabb8657d0a1b::t_fc7af83668d850 7
+spec/services/ai/appeal_assessor_spec.rb
+  s_bbabb8657d0a1b::t_f8bbe4df8ddc68 14,18-36
+  s_bbabb8657d0a1b::t_2a6582fb8ee11f 13
+  s_bbabb8657d0a1b::t_34e90ed31825a2 37
+app/services/ai/function_registry.rb
+  s_bbabb8657d0a1b::t_a8363d4d27db9f 62-65
+spec/services/appeals/resolver_spec.rb
+  s_bbabb8657d0a1b::t_60e7e63b954fd0 143-178
+  s_bbabb8657d0a1b::t_941e176345f591 346-351
+app/views/pages/forbidden.fr.html.erb
+  s_bbabb8657d0a1b::t_165fdd26e3d234 3,6-7,10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2fa16b14cf25f4585cdb0d9ae7eba877a5d6b10c",
+  "prompts": {},
+  "sessions": {
+    "s_bbabb8657d0a1b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "220942b7-9b47-4192-bed4-bfafa8d6d23b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

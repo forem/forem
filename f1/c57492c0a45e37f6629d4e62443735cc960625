@@ -1,0 +1,20 @@
+app/lib/server_warmup.rb
+  h_f968154a99632d 207,419-420,422,430-438
+lib/tasks/release_migrate.rake
+  h_f968154a99632d 4-16,18
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 230-245,312-366
+spec/tasks/release_migrate_spec.rb
+  h_f968154a99632d 29-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f1c57492c0a45e37f6629d4e62443735cc960625",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

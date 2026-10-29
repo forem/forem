@@ -1,0 +1,70 @@
+app/controllers/feed_events_controller.rb
+  s_dc9014473ae01a::t_a075ad4cd786e7 12
+  s_dc9014473ae01a::t_91da3c72753342 21,23,37
+  s_dc9014473ae01a::t_a3440063e8d483 15-17,19-20,22,24-27,30,36,38
+  s_dc9014473ae01a::t_76c10bcb830ba0 39
+app/javascript/__tests__/feedEvents.test.js
+  s_dc9014473ae01a::t_e3cf90347ae0f5 1-12,15-49,52-113,115-167,169-187,189-216,353
+  s_dc9014473ae01a::t_91da3c72753342 188
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 218-220,222,225,229-230,232-233,274-275,277,280-282,342-352
+  s_dc9014473ae01a::t_a06f4ded61ea7c 168,223,285,287,290-341
+  s_dc9014473ae01a::t_d005b7eb6ab570 13-14,50-51,114,217,221,224,226-228,231,234-273,276,278-279,283-284,286,288-289
+app/javascript/packs/feedEvents.js
+  s_dc9014473ae01a::t_da779ef86686bf 4,8-20,49,52,74-77,96-97,99,101-105,121-124,126,128,130,139,141-149,178,254-258,260,262-263,269-270,285-286,288-293,295,308-309,331-337,348,357,362
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 54,238,241,272,283
+  s_dc9014473ae01a::t_a06f4ded61ea7c 273
+  s_dc9014473ae01a::t_b4e8b062b19555 5-7,53,55,125,129,186-192,198-237,239-240,242-246,248-253,266,271,274-282,284,287,294,296-307,310-313,317
+  s_dc9014473ae01a::t_4e4146a911b621 314-316
+app/models/feed_event.rb
+  s_dc9014473ae01a::t_28786ab125348e 32,45-46,57,207-215
+  s_dc9014473ae01a::t_a3440063e8d483 198-204
+app/models/feed_event_receipt.rb
+  s_dc9014473ae01a::t_479c7c4c2c3ba6 1-4
+app/services/feed_events/bulk_upsert.rb
+  s_dc9014473ae01a::t_0add37cb19e5cd 5,13,30-36,49-60,62-78,85,94-97,99,101,103,107,109,114,136,140,160
+  s_dc9014473ae01a::t_a3440063e8d483 29,38-48,112-113
+db/migrate/20261029180000_add_event_id_to_feed_events.rb
+  s_dc9014473ae01a::t_c7e3700eecadd6 1-12
+db/migrate/20261029180100_index_feed_event_ids.rb
+  s_dc9014473ae01a::t_386c8e083758f7 1-7
+db/schema.rb
+  s_dc9014473ae01a::t_7b2eab1c7a07ae 13,881-884,892,899
+docs/analytics/feed_impressions.md
+  s_dc9014473ae01a::t_00e9f3ca79bd83 1-32,47-59,86-92,97-110,114-117,126-142
+  s_dc9014473ae01a::t_be4129ec47e89b 33-34,37-46,60-85,93-96,111-113,118-123
+  s_dc9014473ae01a::t_b9fb3ce4dfbf3a 35-36
+  s_dc9014473ae01a::t_69d62350d50a2c 124-125
+spec/requests/feed_events_spec.rb
+  s_dc9014473ae01a::t_94ab4393138d8d 49-72,146,150-152,165-167
+  s_dc9014473ae01a::t_64ac4861cccf75 15-22,73-103
+  s_dc9014473ae01a::t_c4bb250b96b161 104
+spec/services/feed_events/bulk_upsert_spec.rb
+  s_dc9014473ae01a::t_ed6c866eb9eb21 79,166,178,183,185-234,236-237,239-243,245-247,249-250,252,254-268,327-356,392-402,425-448
+  s_dc9014473ae01a::t_64ac4861cccf75 7-12,54,235,238,357-391,403-423
+  s_dc9014473ae01a::t_eb95756c62b141 244,248
+  s_dc9014473ae01a::t_480d92d8830da6 424
+app/workers/feed_events/feedback_worker.rb
+  s_dc9014473ae01a::t_a3440063e8d483 1-16
+spec/workers/feed_events/feedback_worker_spec.rb
+  s_dc9014473ae01a::t_64ac4861cccf75 1-11,13,25-30
+  s_dc9014473ae01a::t_3eadc84fc79986 12,14-24
+spec/workers/emails/send_user_digest_worker_spec.rb
+  s_dc9014473ae01a::t_a06f4ded61ea7c 344
+  s_dc9014473ae01a::t_f111cc85a6ceec 360-362
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "62df7d2572d72157bfdb3824b329cef5f6c9b3d5",
+  "prompts": {},
+  "sessions": {
+    "s_dc9014473ae01a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188d2-ba82-7bf1-8e44-f416e70d3e4f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

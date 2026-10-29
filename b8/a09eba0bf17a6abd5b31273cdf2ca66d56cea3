@@ -1,0 +1,22 @@
+app/queries/homepage/articles_query.rb
+  h_f968154a99632d 47
+app/serializers/homepage/article_serializer.rb
+  h_f968154a99632d 7-8,11,13
+app/services/homepage/fetch_tag_flares.rb
+  h_f968154a99632d 7,22,35-43
+spec/serializers/homepage/article_serializer_spec.rb
+  h_f968154a99632d 34-51
+spec/services/homepage/fetch_tag_flares_spec.rb
+  h_f968154a99632d 44-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b8a09eba0bf17a6abd5b31273cdf2ca66d56cea3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

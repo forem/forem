@@ -1,0 +1,20 @@
+.cursorrules
+  h_f968154a99632d 65-79
+.github/copilot-instructions.md
+  h_f968154a99632d 65-79
+.windsurfrules
+  h_f968154a99632d 65-79
+AGENTS.md
+  h_f968154a99632d 65-79
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "ba575024e0aecb16911df46abdb79cefef2f3517",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

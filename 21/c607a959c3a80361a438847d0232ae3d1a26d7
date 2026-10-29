@@ -1,0 +1,16 @@
+db/migrate/20261019120000_add_unread_user_index_to_notifications.rb
+  h_f968154a99632d 4,19
+db/schema.rb
+  h_f968154a99632d 1200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "21c607a959c3a80361a438847d0232ae3d1a26d7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,38 @@
+app/models/article.rb
+  h_f968154a99632d 1553,1672-1675,1677-1679,1697
+app/models/comment.rb
+  h_f968154a99632d 410-411
+app/models/cross_model_slug.rb
+  h_f968154a99632d 30-35,37-38
+app/models/organization.rb
+  h_f968154a99632d 323-324
+app/models/tag.rb
+  h_f968154a99632d 130-137
+app/models/user.rb
+  h_f968154a99632d 214,521-523,526,529-535,543-544,554,563,948,950-951,1123-1124,1275
+config/initializers/carrierwave.rb
+  h_f968154a99632d 14
+spec/factories/organizations.rb
+  h_f968154a99632d 4-5,9
+spec/factories/users.rb
+  h_f968154a99632d 17
+spec/initializers/carrierwave_spec.rb
+  h_f968154a99632d 14,32
+spec/models/tag_spec.rb
+  h_f968154a99632d 174-185
+spec/models/user_spec.rb
+  h_f968154a99632d 1499-1513
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "47868b62bc18583d9f1cf059d3291aa89dde2bdf",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
