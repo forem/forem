@@ -287,69 +287,37 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
       end
 
-      it "shows only billboards with no targeting if no location is provided" do
-        filtered = filter_billboards
-        expect(filtered).to include(no_targets)
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
-
-      it "shows only billboards whose target location includes the specified location" do
-        filtered = filter_billboards(location: "CA-NL") # User is in Newfoundland, Canada
-
-        expect(filtered).to include(
-          no_targets,
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_quebec_and_newfoundland,
-        )
-        expect(filtered).not_to include(
-          targets_california_and_texas,
-          targets_maine_alberta_and_ontario,
+      it "filters billboards by no location, region match, country match, and unsupported country",
+         :aggregate_failures do
+        expect(filter_billboards).to include(no_targets).and exclude(
+          targets_canada, targets_new_york_and_canada, targets_california_and_texas,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
 
-        filtered = filter_billboards(location: "US-CA") # User is in California, USA
-        expect(filtered).to include(
-          no_targets,
-          targets_california_and_texas,
-        )
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
+        # User is in Newfoundland, Canada
+        expect(filter_billboards(location: "CA-NL")).to include(
+          no_targets, targets_canada, targets_new_york_and_canada, targets_quebec_and_newfoundland
+        ).and exclude(targets_california_and_texas, targets_maine_alberta_and_ontario)
 
-      it "shows only billboards targeting the country specifically if no region is provided" do
-        filtered = filter_billboards(location: "CA") # User is in "Canada"
-
-        expect(filtered).to include(
-          no_targets,
-          targets_canada,
-          targets_new_york_and_canada,
+        # User is in California, USA
+        expect(filter_billboards(location: "US-CA")).to include(
+          no_targets, targets_california_and_texas
+        ).and exclude(
+          targets_canada, targets_new_york_and_canada,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
-        expect(filtered).not_to include(
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
 
-      it "shows only billboards with no targeting if the user's location is an unsupported country" do
-        filtered = filter_billboards(location: "FR-BRE")
-        expect(filtered).to include(no_targets)
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
+        # User is in "Canada" (country only, no region)
+        expect(filter_billboards(location: "CA")).to include(
+          no_targets, targets_canada, targets_new_york_and_canada
+        ).and exclude(
+          targets_california_and_texas, targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
+        )
+
+        # User is in an unsupported country
+        expect(filter_billboards(location: "FR-BRE")).to include(no_targets).and exclude(
+          targets_canada, targets_new_york_and_canada, targets_california_and_texas,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
       end
 
@@ -379,20 +347,10 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:requires_cookies_ad) { create_billboard(requires_cookies: true) }
     let!(:no_cookies_required_ad) { create_billboard(requires_cookies: false) }
 
-    context "when cookies are allowed" do
-      it "includes ads that require cookies" do
-        filtered = filter_billboards(cookies_allowed: true)
-        expect(filtered).to include(requires_cookies_ad)
-        expect(filtered).to include(no_cookies_required_ad)
-      end
-    end
-
-    context "when cookies are not allowed" do
-      it "excludes ads that require cookies" do
-        filtered = filter_billboards(cookies_allowed: false)
-        expect(filtered).not_to include(requires_cookies_ad)
-        expect(filtered).to include(no_cookies_required_ad)
-      end
+    it "includes cookie-requiring ads only when cookies are allowed", :aggregate_failures do
+      expect(filter_billboards(cookies_allowed: true)).to include(requires_cookies_ad, no_cookies_required_ad)
+      expect(filter_billboards(cookies_allowed: false)).to include(no_cookies_required_ad)
+        .and exclude(requires_cookies_ad)
     end
   end
 
@@ -435,36 +393,23 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       RequestStore.store[:subforem_id] = nil
     end
 
-    it "includes only ads that either have no subforem or explicitly list the requested subforem_id" do
-      filtered = filter_billboards(subforem_id: subforem.id)
-      expect(filtered).to include(no_subforem, subforem_first)
-      expect(filtered).not_to include(subforem_2_and_3)
-    end
+    it "filters billboards by explicit subforem_id, missing subforem_id, or RequestStore fallback",
+       :aggregate_failures do
+      expect(filter_billboards(subforem_id: subforem.id)).to include(no_subforem, subforem_first)
+        .and exclude(subforem_2_and_3)
 
-    it "falls back to no-subforem ads if the requested subforem_id is not in include_subforem_ids" do
-      filtered = filter_billboards(subforem_id: 9_999)
-      expect(filtered).to include(no_subforem)
-      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
-    end
+      expect(filter_billboards(subforem_id: 9_999)).to include(no_subforem)
+        .and exclude(subforem_first, subforem_2_and_3)
 
-    it "includes subforem_2_and_3 if subforem_id = 3" do
-      filtered = filter_billboards(subforem_id: subforem_3.id)
-      expect(filtered).to include(no_subforem, subforem_2_and_3)
-      expect(filtered).not_to include(subforem_first)
-    end
+      expect(filter_billboards(subforem_id: subforem_3.id)).to include(no_subforem, subforem_2_and_3)
+        .and exclude(subforem_first)
 
-    # Also test the scenario when subforem_id is not passed at all.
-    it "includes only no_subforem billboard if no subforem_id was provided" do
-      filtered = filter_billboards
-      expect(filtered).to include(no_subforem)
-      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
-    end
+      expect(filter_billboards).to include(no_subforem)
+        .and exclude(subforem_first, subforem_2_and_3)
 
-    it "Falls back to request store if subforem_id is not passed" do
       RequestStore.store[:subforem_id] = subforem_2.id
-      filtered = filter_billboards
-      expect(filtered).to include(no_subforem, subforem_2_and_3)
-      expect(filtered).not_to include(subforem_first)
+      expect(filter_billboards).to include(no_subforem, subforem_2_and_3)
+        .and exclude(subforem_first)
     end
   end
 
