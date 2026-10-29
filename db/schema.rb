@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_28_212000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_29_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -846,6 +846,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_28_212000) do
     t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
+    t.integer "feed_lookback_hours", default: 0, null: false
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
     t.float "follow_status_weight", default: 0.0, null: false

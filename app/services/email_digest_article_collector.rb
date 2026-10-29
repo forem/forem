@@ -166,7 +166,7 @@ class EmailDigestArticleCollector
       .published
       .full_posts
       .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
-      .where("published_at > ?", cutoff_date)
+      .where("published_at > ?", personalized_cutoff_date(feed_config))
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)
 
@@ -274,6 +274,14 @@ class EmailDigestArticleCollector
     return a_few_days_ago unless last_email_sent
 
     [a_few_days_ago, (last_email_sent - 18.hours)].max
+  end
+
+  def personalized_cutoff_date(feed_config)
+    hard_cutoff = cutoff_date
+    config_hours = feed_config.respond_to?(:feed_lookback_hours) ? feed_config.feed_lookback_hours.to_i : 0
+    return hard_cutoff unless config_hours.positive?
+
+    [config_hours.hours.ago.utc, hard_cutoff].max
   end
 
   def user_has_followings?
