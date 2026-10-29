@@ -8,7 +8,10 @@ module Organizations
     sidekiq_options queue: :low_priority, retry: 3
 
     CACHE_KEY = "paused_promotional_billboard_organization_ids".freeze
-    CACHE_EXPIRY = 15.minutes
+    # The cron job in config/schedule.yml runs every 30 minutes ("*/30 * * * *"),
+    # so keep the cache warm across runs with a 2x TTL buffer instead of expiring
+    # 15 minutes into every 30-minute window.
+    CACHE_EXPIRY = 1.hour
     STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 30_000).to_i
 
     def perform
@@ -73,15 +76,18 @@ module Organizations
     def fetch_impressions_by_organization(conn)
       cutoff_time = 24.hours.ago
 
-      # Single aggregate query to get all impressions grouped by organization
-      # This avoids N+1 queries and is much more efficient
+      # Single aggregate query scoped to organizations with promotional billboard
+      # tracking enabled (indexed via idx_orgs_on_ideal_daily_promoted_bb_impressions)
+      # so PostgreSQL only scans display_ad_events for tracked organizations' billboards
+      # rather than all 24h impression events across the entire display_ad_events table.
       sql = <<~SQL.squish
         SELECT billboards.organization_id, SUM(display_ad_events.counts_for) as total_impressions
         FROM display_ad_events
         INNER JOIN display_ads AS billboards ON billboards.id = display_ad_events.display_ad_id
-        WHERE display_ad_events.category = 'impression'
+        INNER JOIN organizations ON organizations.id = billboards.organization_id
+        WHERE organizations.ideal_daily_promoted_billboard_impressions > 0
+          AND display_ad_events.category = 'impression'
           AND display_ad_events.created_at > #{conn.quote(cutoff_time)}
-          AND billboards.organization_id IS NOT NULL
         GROUP BY billboards.organization_id
       SQL
 
