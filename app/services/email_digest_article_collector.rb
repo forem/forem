@@ -53,7 +53,7 @@ class EmailDigestArticleCollector
   private
 
   # rubocop:disable Metrics/PerceivedComplexity
-  def legacy_articles
+  def legacy_articles(cutoff = @configured_cutoff_date || cutoff_date)
     order = Arel.sql("(((score + comment_score) * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
     articles = if @user.cached_followed_tag_names.any?
                  # Set subforem context for followed subforems or default
@@ -63,7 +63,7 @@ class EmailDigestArticleCollector
                    .select(*DIGEST_ARTICLE_COLUMNS)
                    .published
                    .full_posts
-                   .where("published_at > ?", cutoff_date)
+                   .where("published_at > ?", cutoff)
                    .where(email_digest_eligible: true)
                    .not_authored_by(@user.id)
                    .where("score > ?", 8)
@@ -82,7 +82,7 @@ class EmailDigestArticleCollector
                                     Article.select(*DIGEST_ARTICLE_COLUMNS)
                                       .published
                                       .full_posts
-                                      .where("published_at > ?", cutoff_date)
+                                      .where("published_at > ?", cutoff)
                                       .where(email_digest_eligible: true)
                                       .not_authored_by(@user.id)
                                       .where("score > ?", 11)
@@ -94,7 +94,7 @@ class EmailDigestArticleCollector
                                     Article.select(*DIGEST_ARTICLE_COLUMNS)
                                       .published
                                       .full_posts
-                                      .where("published_at > ?", cutoff_date)
+                                      .where("published_at > ?", cutoff)
                                       .where(email_digest_eligible: true)
                                       .not_authored_by(@user.id)
                                       .where("score > ?", 11)
@@ -112,7 +112,7 @@ class EmailDigestArticleCollector
         articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
           .published
           .full_posts
-          .where("published_at > ?", cutoff_date)
+          .where("published_at > ?", cutoff)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)
       else
@@ -126,7 +126,7 @@ class EmailDigestArticleCollector
         articles_query = Article.select(*DIGEST_ARTICLE_COLUMNS)
           .published
           .full_posts
-          .where("published_at > ?", cutoff_date)
+          .where("published_at > ?", cutoff)
           .where(email_digest_eligible: true)
           .where("score > ?", 11)
           .where(subforem_id: fallback_subforem_ids)
@@ -160,13 +160,14 @@ class EmailDigestArticleCollector
     )
     return unless feed_config
 
+    @configured_cutoff_date = personalized_cutoff_date(feed_config)
     set_subforem_context
 
     filtered_scope = Article
       .published
       .full_posts
       .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
-      .where("published_at > ?", personalized_cutoff_date(feed_config))
+      .where("published_at > ?", @configured_cutoff_date)
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)
 
@@ -278,10 +279,12 @@ class EmailDigestArticleCollector
 
   def personalized_cutoff_date(feed_config)
     hard_cutoff = cutoff_date
+    global_lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    global_cutoff = global_lookback_days.positive? ? global_lookback_days.days.ago.utc : hard_cutoff
     config_hours = feed_config.respond_to?(:feed_lookback_hours) ? feed_config.feed_lookback_hours.to_i : 0
     return hard_cutoff unless config_hours.positive?
 
-    [config_hours.hours.ago.utc, hard_cutoff].max
+    [config_hours.hours.ago.utc, global_cutoff, hard_cutoff].max
   end
 
   def user_has_followings?

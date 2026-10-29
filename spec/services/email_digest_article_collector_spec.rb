@@ -594,6 +594,31 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(result_paths).to match_array(recent_articles.map(&:path))
         expect(result_paths).not_to include(older_article.path)
       end
+
+      it "caps personalized_cutoff_date at global feed_lookback_days and preserves cutoff on legacy fallback" do
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(1)
+        other_user = create(:user)
+        # Only 2 articles within 1 day (24 hours), plus 2 articles at 36 hours (inside 48h config, outside 1-day global cap)
+        create_list(:article, 2, :past, score: 60, featured: true, email_digest_eligible: true,
+                                        subforem: default_subforem, user: other_user, past_published_at: 12.hours.ago)
+        outside_global_cap = create_list(:article, 2, :past, score: 80, featured: true, email_digest_eligible: true,
+                                                             subforem: default_subforem, user: other_user,
+                                                             past_published_at: 36.hours.ago)
+
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          score_weight: 1.0,
+          feed_lookback_hours: 48,
+          randomness_weight: 0.0,
+        )
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_call_original
+
+        # Fewer than 3 articles meet the 24h capped cutoff, and legacy fallback preserves the 24h cutoff
+        result = described_class.new(user).articles_to_send
+        expect(result).to be_empty
+        expect(result.map(&:path) & outside_global_cap.map(&:path)).to be_empty
+      end
     end
   end
 
