@@ -9,10 +9,7 @@ RSpec.describe "Admin visits badge achievements page" do
   end
 
   it "nests the content under Badges and highlights the Badges menu item in the sidebar", :aggregate_failures do
-    expect(find("h1.crayons-title").text).to eq("Badges")
-
-    within('nav[aria-label="Admin"]') do
-      expect(find("[aria-current='page']").text).to eq("Badges")
-    end
+    expect(page).to have_css("h1.crayons-title", exact_text: "Badges")
+    expect(page).to have_css('nav[aria-label="Admin"] [aria-current="page"]', exact_text: "Badges")
   end
 end
