@@ -846,6 +846,26 @@ module ForemNative
                                      range_start_jd, range_end_jd, today_jd, base_path, type_of)
     end
 
+    # Quotes a String as JSON exactly like ActiveSupport's `string.to_json`, including its
+    # HTML-safe escapes. Returns `nil` for String subclasses and non-UTF-8 or invalid strings.
+    def json_quote(string, escape_html_entities: true)
+      return unless Native.respond_to?(:json_quote)
+      return unless string.instance_of?(String)
+
+      Native.json_quote(string, escape_html_entities ? true : false)
+    end
+
+    # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
+    # default `JSONGemEncoder`. The fast path covers Hash, Array, String, Symbol, Integer (64-bit),
+    # true, false, and nil, with String or Symbol keys. Returns `nil` for anything else (Floats,
+    # Times, subclasses such as SafeBuffer, other key types, non-UTF-8 strings, or nesting deeper
+    # than 100) so callers can fall back to `value.to_json`.
+    def encode_json(value, escape_html_entities: true)
+      return unless Native.respond_to?(:encode_json)
+
+      Native.encode_json(value, escape_html_entities ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

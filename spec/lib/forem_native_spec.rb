@@ -4070,4 +4070,135 @@ RSpec.describe ForemNative do
       expect(native_hits).to be > 400
     end
   end
+
+  describe ".encode_json and .json_quote (ApplicationHelper#structured_data_json)" do
+    let(:helper) { ApplicationController.helpers }
+    let(:line_separator) { 0x2028.chr(Encoding::UTF_8) }
+    let(:paragraph_separator) { 0x2029.chr(Encoding::UTF_8) }
+    let(:tricky_strings) do
+      [
+        "", "plain", "<p>Tom & Jerry</p>", %("quoted" \\ back\\slash /path), "a\r\nb\tc\fd\be",
+        (0..0x1f).map(&:chr).join, 0x7f.chr, "#{line_separator}js#{paragraph_separator}",
+        "#{0x2027.chr(Encoding::UTF_8)}#{0x202a.chr(Encoding::UTF_8)}", "café — “quotes” 😀 漢字",
+        "&amp;&lt;script&gt;", "</script><script>alert(1)</script>"
+      ]
+    end
+
+    let(:assert_json_parity) do
+      lambda do |value, message = nil|
+        expected = value.to_json
+        native = described_class.encode_json(value)
+        expect(native).to eq(expected), message if native
+        expect(helper.structured_data_json(value)).to eq(expected), message
+        native
+      end
+    end
+
+    it "matches ActiveSupport's to_json for article JSON-LD documents" do
+      comment = lambda do |id|
+        { "@type": "Comment", "@id": "#comment-#{id}", text: "<p>Reply #{id} &amp; more</p>\n",
+          author: { "@type": "Person", name: "User #{id}", url: "https://dev.to/user#{id}" },
+          datePublished: "2026-10-29T10:00:00Z", url: "https://dev.to/user/comment/#{id}",
+          interactionStatistic: [{ "@type": "InteractionCounter", userInteractionCount: id }] }
+      end
+      json_ld = {
+        "@context": "http://schema.org", "@type": "Article", headline: "Rust <3 Ruby & Rails",
+        image: ["https://dev.to/a.png", "https://dev.to/b.png"],
+        mainEntity: { "@type": "DiscussionForumPosting", text: tricky_strings.join("<br>\n") * 20,
+                      comment: [comment.call(1).merge(comment: [comment.call(2)]), comment.call(3)] }
+      }
+
+      expect(assert_json_parity.call(json_ld)).to be_present
+      expect(helper.structured_data_json(json_ld)).not_to include("<", ">", "&", line_separator)
+    end
+
+    it "matches to_json for scalars, empty containers, and duplicate stringified keys" do
+      [nil, true, false, 0, -1, 2**62, -(2**63), (2**63) - 1, :sym, :"<sym>", [], {}, [[]], { a: {} },
+       { a: 1 }.merge("a" => 2), { "" => "" }, [nil, false, [true, { x: [:y] }]], *tricky_strings,
+       tricky_strings.to_h { |s| [s, s] }, tricky_strings.to_h { |s| [s.to_sym, s.to_sym] }].each do |value|
+        expect(assert_json_parity.call(value)).not_to be_nil, value.inspect
+      end
+
+      tricky_strings.each do |string|
+        expect(described_class.json_quote(string)).to eq(string.to_json)
+        expect(described_class.json_quote(string, escape_html_entities: false))
+          .to eq(ActiveSupport::JSON.encode(string, escape_html_entities: false))
+      end
+    end
+
+    it "matches to_json when HTML entity escaping is turned off" do
+      value = { "html" => tricky_strings }.merge(html: tricky_strings.join)
+      original = ActiveSupport::JSON::Encoding.escape_html_entities_in_json
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json = false
+      expect(helper.structured_data_json(value)).to eq(value.to_json)
+      expect(described_class.encode_json(value, escape_html_entities: false)).to eq(value.to_json)
+      expect(value.to_json).to include("<p>Tom & Jerry</p>")
+    ensure
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json = original
+    end
+
+    it "returns nil outside the fast path so the helper falls back to to_json" do
+      deep_array = 100.times.reduce([]) { |acc, _elem| [acc] } # 101 levels
+      [1.5, Float::NAN, 2**64, -(2**63) - 1, Time.zone.at(0), Date.new(2026, 1, 1), Object.new,
+       "safe <b>".html_safe, ActiveSupport::HashWithIndifferentAccess.new(a: 1), Class.new(Array).new([1]),
+       (+"caf\xC3").force_encoding("UTF-8"), (+"caf\xE9").force_encoding("ISO-8859-1"), "abc".b,
+       { 1 => "integer key" }, { nil => "nil key" }, { "x" => [1, 2.5] }, deep_array].each do |value|
+        expect(described_class.encode_json(value)).to be_nil, value.inspect
+        begin
+          expected = value.to_json
+        rescue JSON::GeneratorError => e
+          expect { helper.structured_data_json(value) }.to raise_error(e.class)
+          next
+        end
+        expect(helper.structured_data_json(value)).to eq(expected), value.inspect
+      end
+
+      expect(assert_json_parity.call(99.times.reduce([]) { |acc, _elem| [acc] })).not_to be_nil
+      expect(described_class.json_quote("safe".html_safe)).to be_nil
+      expect(described_class.json_quote(:sym)).to be_nil
+      expect(described_class.json_quote((+"caf\xE9").force_encoding("ISO-8859-1"))).to be_nil
+    end
+
+    it "falls back to to_json when a different JSON encoder is configured" do
+      encoder = Class.new(ActiveSupport::JSON::Encoding::JSONGemEncoder)
+      allow(ActiveSupport::JSON::Encoding).to receive(:json_encoder).and_return(encoder)
+      allow(described_class).to receive(:encode_json).and_call_original
+
+      expect(helper.structured_data_json({ a: "<b>" })).to eq({ a: "<b>" }.to_json)
+      expect(described_class).not_to have_received(:encode_json)
+    end
+
+    it "matches to_json across 1,000 randomized documents" do
+      rng = Random.new(424_242)
+      alphabet = ["a", "Z", "0", " ", "<", ">", "&", '"', "\\", "/", "\n", "\r", "\t", 0.chr,
+                  0x1f.chr, 0x7f.chr, "é", "😀", "漢", line_separator, paragraph_separator,
+                  0x2027.chr(Encoding::UTF_8), "—", "'", "{", "}", ":", ","]
+      random_string = -> { Array.new(rng.rand(0..24)) { alphabet.sample(random: rng) }.join }
+      out_of_domain = [1.25, Time.zone.at(0), "x".html_safe, 2**70, (+"caf\xE9").force_encoding("ISO-8859-1")]
+      random_value = lambda do |depth|
+        case rng.rand(depth > 3 ? 6 : 9)
+        when 0 then random_string.call
+        when 1 then random_string.call.to_sym
+        when 2 then rng.rand(-(2**63)..((2**63) - 1)) / (10**rng.rand(0..18))
+        when 3 then [nil, true, false].sample(random: rng)
+        when 4 then rng.rand < 0.01 ? out_of_domain.sample(random: rng) : random_string.call
+        when 5 then random_string.call
+        when 6, 7
+          Array.new(rng.rand(0..4)).to_h do
+            key = rng.rand < 0.5 ? random_string.call : random_string.call.to_sym
+            [key, random_value.call(depth + 1)]
+          end
+        else Array.new(rng.rand(0..4)) { random_value.call(depth + 1) }
+        end
+      end
+      native_hits = 0
+
+      1_000.times do |iteration|
+        value = random_value.call(0)
+        native_hits += 1 if assert_json_parity.call(value, "iter #{iteration}: #{value.inspect}")
+      end
+
+      expect(native_hits).to be > 900
+    end
+  end
 end
