@@ -175,6 +175,7 @@ module Admin
         :compellingness_score_weight,
         :favorited_weight,
         :featured_weight,
+        :feed_lookback_hours,
         :feed_success_weight,
         :follow_status_weight,
         :general_past_day_bonus_weight,

@@ -13,7 +13,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   end
 
   context "when user is not trusted" do
-    before { sign_in create(:user) }
+    before { sign_in create(:user, :without_profile, profile_image: nil) }
 
     it "does not grant access", :proper_status do
       get path
@@ -27,9 +27,10 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
 end
 
 RSpec.describe "Moderations" do
-  let(:trusted_user) { create(:user, :trusted) }
-  let(:article) { create(:article) }
-  let(:comment) { create(:comment, commentable: article) }
+  let(:trusted_user) { create(:user, :trusted, :without_profile, profile_image: nil) }
+  let(:author) { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, user: author) }
+  let(:comment) { create(:comment, commentable: article, user: author) }
   let(:staff_account) { build_stubbed(:user) }
 
   it_behaves_like "an elevated privilege required request", "/username/random-article/mod"
@@ -54,7 +55,7 @@ RSpec.describe "Moderations" do
 
     it "grants access to /mod index and excludes [Boost] articles", :aggregate_failures do
       article
-      boost_article = create(:article, title: "[Boost]")
+      boost_article = create(:article, user: author, title: "[Boost]", with_tags: false)
       get "/mod"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(article.title))
@@ -67,11 +68,8 @@ RSpec.describe "Moderations" do
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
-    it "returns not found for inappropriate tags" do
+    it "returns not found for inappropriate tags or missing articles", :aggregate_failures do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "renders not_found when an article can't be found" do
       expect do
         get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
       end.to raise_exception(ActiveRecord::RecordNotFound)
@@ -80,10 +78,10 @@ RSpec.describe "Moderations" do
 
   describe "actions_panel" do
     context "when the user is a tag moderator" do
-      let(:tag_mod) { create(:user, :tag_moderator) }
+      let(:tag_mod) { create(:user, :tag_moderator, :without_profile, profile_image: nil) }
       let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
-      let(:article1) { create(:article, tags: tag) }
-      let(:article2) { create(:article, tags: "javascript, cool, beans") }
+      let(:article1) { create(:article, user: author, tags: tag) }
+      let(:article2) { create(:article, user: author, tags: "javascript, cool, beans") }
 
       it "shows remove option when article has tag and add option when it does not", :aggregate_failures do
         tag_mod.add_role(:trusted)
@@ -109,8 +107,8 @@ RSpec.describe "Moderations" do
   end
 
   context "when the user is an admin" do
-    let(:admin) { create(:user, :admin) }
-    let(:article) { create(:article, tags: "javascript, cool, beans") }
+    let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+    let(:article) { create(:article, user: author, tags: "javascript, cool, beans") }
 
     before do
       sign_in admin
@@ -124,8 +122,8 @@ RSpec.describe "Moderations" do
   end
 
   describe "article approval on /mod" do
-    let(:admin) { create(:user, :admin) }
-    let!(:article) { create(:article, tags: "javascript, cool, beans") }
+    let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+    let!(:article) { create(:article, user: author, tags: "javascript, cool, beans") }
 
     before { sign_in admin }
 
@@ -149,7 +147,7 @@ RSpec.describe "Moderations" do
     # rubocop:enable Layout/LineLength
     let(:become_mod_copy) { "If you'd like to assist us as a trusted user or tag mod" }
     let(:logged_out_copy) { "P.S. You are not currently signed in." }
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
 
     before do
       allow(Settings::Community).to receive(:community_name).and_return("DEV")
@@ -176,19 +174,28 @@ RSpec.describe "Moderations" do
     end
 
     context "when user is trusted" do
-      let!(:first_article) { create(:article) }
-      let!(:second_article) { create(:article, score: 0) } # Above minimum score threshold
-      let(:spamer) { create(:user, :spam) }
-      let(:suspended_user) { create(:user, :suspended) }
+      let!(:first_article) { create(:article, user: author, with_tags: false) }
+      let!(:second_article) { create(:article, user: author, score: 0, with_tags: false) }
+      let(:spamer) { create(:user, :spam, :without_profile, profile_image: nil) }
+      let(:suspended_user) { create(:user, :suspended, :without_profile, profile_image: nil) }
 
       before do
         sign_in trusted_user
       end
 
-      it "excludes reacted, spam, and suspended articles from inbox", :aggregate_failures do
+      it "includes non-spam articles on latest and excludes reacted, spam, and suspended articles from inbox",
+         :aggregate_failures do
+        spam_article = create(:article, user: spamer, score: -10, with_tags: false) # Below minimum score threshold
+        suspended_article = create(:article, user: suspended_user, score: -8, with_tags: false)
+
+        get "/mod?state=latest"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
+
         create(:reaction, user: trusted_user, reactable: second_article, category: "like")
-        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
-        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
 
         get "/mod"
 
@@ -199,24 +206,12 @@ RSpec.describe "Moderations" do
           CGI.escapeHTML(suspended_article.title),
         )
       end
-
-      it "includes non-spam articles and doesn't include spam/suspended articles on latest" do
-        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
-        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
-
-        get "/mod?state=latest"
-
-        expect(response.body).to include(CGI.escapeHTML(first_article.title))
-        expect(response.body).to include(CGI.escapeHTML(second_article.title))
-        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
-        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
-      end
     end
   end
 
   describe "Super moderator Note & AuditLog" do
-    let(:super_mod) { create(:user, :super_moderator) }
-    let(:target_user) { create(:user) }
+    let(:super_mod) { create(:user, :super_moderator, :without_profile, profile_image: nil) }
+    let(:target_user) { create(:user, profile_image: nil) }
 
     before do
       sign_in super_mod

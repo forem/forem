@@ -345,6 +345,29 @@ RSpec.describe Organizations::TrackPromotionalBillboardImpressionsWorker, type: 
           expect(paused_ids).to contain_exactly(organization.id)
         end
       end
+
+      it "keeps the cached paused organization IDs alive across the 30-minute cron window" do
+        travel_to(now) { worker.perform }
+
+        travel_to(now + 20.minutes) do
+          expect(described_class.paused_organization_ids).to contain_exactly(organization.id)
+        end
+      end
+
+      it "scopes the impression aggregation query to organizations with tracking enabled" do
+        queries = []
+        callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] }
+
+        travel_to(now) do
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            worker.perform
+          end
+        end
+
+        impression_query = queries.detect { |sql| sql.include?("FROM display_ad_events") }
+        expect(impression_query).to include("INNER JOIN organizations ON organizations.id = billboards.organization_id")
+        expect(impression_query).to include("organizations.ideal_daily_promoted_billboard_impressions > 0")
+      end
     end
   end
 

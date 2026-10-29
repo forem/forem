@@ -88,6 +88,25 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result).to contain_exactly(high_score_article, medium_score_article)
       end
 
+      it "applies feed_config.feed_lookback_hours when set within the hard feed_lookback_days limit" do
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+        # 72 hours (3 days) should include 1-day and 2-day articles, but exclude 5-day low_score_article
+        feed_config.feed_lookback_hours = 72
+
+        result = feed.default_home_feed.to_a
+        expect(result).to contain_exactly(high_score_article, medium_score_article)
+      end
+
+      it "caps feed_config.feed_lookback_hours so it cannot look back further than hard feed_lookback_days" do
+        # Hard setting is 3 days (72 hours); config tries to look back 240 hours (10 days)
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(3)
+        feed_config.feed_lookback_hours = 240
+
+        result = feed.default_home_feed.to_a
+        # 5-day-old low_score_article must still be excluded by the 3-day hard cap
+        expect(result).to contain_exactly(high_score_article, medium_score_article)
+      end
+
       it "applies pagination via limit and offset" do
         # Create an extra article so page 2 (size 2) has 2 recent articles.
         create_feed_article(score: 20)

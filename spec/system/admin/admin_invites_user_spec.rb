@@ -13,7 +13,7 @@ RSpec.describe "Admin invites user" do
       visit new_admin_invitation_path
     end
 
-    it "shows the SMTP setup prompt and links without the invitation form", :aggregate_failures do
+    it "shows the SMTP setup notice and links without rendering the invite form", :aggregate_failures do
       header = "Setup SMTP to invite users"
       message = "SMTP settings are required so that your Forem can send emails. If you wish to send invites, " \
                 "email digests and activity notifications you will need to specify which email host will relay those " \
@@ -23,8 +23,8 @@ RSpec.describe "Admin invites user" do
       expect(page).to have_content(message)
       expect(page).to have_link("read more about SMTP Settings in our admin guide")
       expect(page).to have_link("Configure your SMTP Settings", href: admin_config_path(anchor: "smtp-section"))
-      expect(page).to have_no_field "Email"
-      expect(page).to have_no_button "Invite User"
+      expect(page).to have_no_field("Email")
+      expect(page).to have_no_button("Invite User")
     end
   end
 
@@ -35,8 +35,8 @@ RSpec.describe "Admin invites user" do
     end
 
     it "shows the input field and submit button", :aggregate_failures do
-      expect(page).to have_field "Email"
-      expect(page).to have_button "Invite User"
+      expect(page).to have_field("Email")
+      expect(page).to have_button("Invite User")
     end
   end
 end

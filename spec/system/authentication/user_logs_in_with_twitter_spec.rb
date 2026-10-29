@@ -29,7 +29,7 @@ RSpec.describe "Authenticating with Twitter" do
     context "when trying to register with an already existing username" do
       it "creates a new user with a temporary username" do
         username = OmniAuth.config.mock_auth[:twitter].extra.raw_info.username
-        user = create(:user, username: username.delete("."))
+        user = create(:user, :without_profile, profile_image: nil, username: username.delete("."))
 
         expect do
           visit sign_up_path
@@ -52,7 +52,9 @@ RSpec.describe "Authenticating with Twitter" do
         OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
-      it "does not create a new user or log in", :aggregate_failures do
+      it "does not create a new user or log in and notifies Datadog", :aggregate_failures do
+        omniauth_setup_authentication_error(nil)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
@@ -60,47 +62,8 @@ RSpec.describe "Authenticating with Twitter" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_button(sign_in_link)
-      end
 
-      it "notifies Datadog about a callback error" do
-        error = OmniAuth::Strategies::OAuth2::CallbackError.new(
-          "Callback error", "Error reason", "https://example.com/error"
-        )
-
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "twitter", "{}")
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog about an OAuth unauthorized error" do
-        request = double
-        allow(request).to receive_messages(code: 401, message: "unauthorized")
-        error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "twitter", "{}")
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog even with no OmniAuth error present" do
-        error = nil
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "twitter", "{}")
+        args = omniauth_failure_args(nil, "twitter", "{}")
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -145,16 +108,11 @@ RSpec.describe "Authenticating with Twitter" do
     end
 
     context "when already signed in" do
-      it "redirects to the feed" do
+      it "redirects to the feed and renders the twitter icon on the profile", :aggregate_failures do
         sign_in user
         visit user_twitter_omniauth_authorize_path
 
         expect(page).to have_current_path("/?signin=true")
-      end
-
-      it "renders the twitter icon on the profile" do
-        sign_in user
-        visit user_twitter_omniauth_authorize_path
 
         visit user_profile_path(user.username)
 

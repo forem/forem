@@ -19,7 +19,7 @@ RSpec.describe "Admin manages pages" do
       visit admin_pages_path
     end
 
-    it "loads the view and shows default page override links without listing them in the pages table",
+    it "loads the view and shows the override defaults section without listing default pages in the table",
        :aggregate_failures do
       expect(page).to have_content("Pages")
       expect(page).to have_content("New page")
@@ -91,7 +91,6 @@ RSpec.describe "Admin manages pages" do
 
     it "shows the overridden notice and lists the overridden pages in the pages table", :aggregate_failures do
       expect(page).to have_content("You will no longer receive updates on these pages from the Forem team")
-
       within(".pages__table") do
         expect(page).to have_content("Terms of Use")
         expect(page).to have_content("Code of Conduct")

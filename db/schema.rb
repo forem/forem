@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_28_180000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_29_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -253,6 +253,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_28_180000) do
     t.index ["id"], name: "index_articles_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["language"], name: "index_articles_on_language"
     t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
+    t.index ["organization_id", "published_at"], name: "index_articles_on_org_id_and_published_at_for_published", order: { published_at: :desc }, where: "((published = true) AND (organization_id IS NOT NULL))"
     t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
@@ -845,6 +846,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_28_180000) do
     t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
+    t.integer "feed_lookback_hours", default: 0, null: false
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
     t.float "follow_status_weight", default: 0.0, null: false
