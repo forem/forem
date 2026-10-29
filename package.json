@@ -113,7 +113,7 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@honeybadger-io/js": "^6.9.1",
+    "@honeybadger-io/js": "^6.17.0",
     "@hotwired/stimulus": "3.2.2",
     "@picmo/popup-picker": "^5.8.5",
     "@rails/ujs": "7.1.3",
