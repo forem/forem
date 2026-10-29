@@ -20,6 +20,10 @@
         aspect-ratio: 1 / 1;
         background-color: var(--body-bg);
 
+        body.dark-theme & {
+          background-color: var(--base-80);
+        }
+
         .badge-image {
           object-fit: contain;
           width: 70%;
@@ -31,10 +35,5 @@
         color: var(--cta-color);
       }
     }
-  }
-}
-@media (prefers-color-scheme: dark) {
-  .badges-page .badge-image {
-    filter: brightness(1.2) contrast(1.2);
   }
 }
