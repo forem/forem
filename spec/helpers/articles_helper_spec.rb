@@ -149,7 +149,14 @@ describe ArticlesHelper do
   end
 
   describe "#should_show_updated_on?" do
-    let(:article) { build(:article, published: true, published_from_feed: false) }
+    let(:article) do
+      build(
+        :article,
+        published_from_feed: false,
+        published_at: 1.hour.ago,
+        edited_at: Time.current,
+      ).tap { |a| a.published = true }
+    end
 
     it "returns false when not published" do
       article.published = false
@@ -171,7 +178,13 @@ describe ArticlesHelper do
       expect(helper.should_show_updated_on?(article)).to be false
     end
 
-    it "returns true when edited_at is after published_at" do
+    it "returns true when edited_at is after published_at on the same day" do
+      article.published_at = Time.current.beginning_of_day + 1.hour
+      article.edited_at = article.published_at + 10.minutes
+      expect(helper.should_show_updated_on?(article)).to be true
+    end
+
+    it "returns true when edited_at is after published_at on a later day" do
       article.published_at = 1.day.ago
       article.edited_at = Time.current
       expect(helper.should_show_updated_on?(article)).to be true
