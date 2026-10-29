@@ -46,6 +46,16 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
+    it "records a partner impression with the user agent and geolocation, even for a crawler" do
+      crawler_ua = "Mozilla/5.0 (compatible; GoogleOther)"
+      post billboard_events_path,
+           params: { billboard_event: base_params.merge(category: "partner_impression", user_agent: crawler_ua) }
+
+      expect(response).to have_http_status(:ok)
+      expect(BillboardEvent.last).to have_attributes(category: "partner_impression", user_agent: crawler_ua,
+                                                     geolocation: "test-geo", billboard_id: billboard.id)
+    end
+
     it "checks the billboard exists without loading its full row" do
       billboard
       queries = []

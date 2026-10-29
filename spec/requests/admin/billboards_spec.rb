@@ -62,6 +62,19 @@ RSpec.describe "/admin/customization/billboards" do
         get admin_billboard_path(billboard.id)
         expect(response).to have_http_status(:ok)
       end
+
+      it "lists clicks but not impressions or partner impressions" do
+        reader = create(:user)
+        %w[click impression partner_impression].each do |category|
+          create(:billboard_event, billboard: billboard, user: reader, category: category)
+        end
+
+        get admin_billboard_path(billboard.id)
+
+        expect(response.body).to include("<strong>click</strong> by @#{reader.username}")
+        expect(response.body).not_to include("<strong>impression</strong>")
+        expect(response.body).not_to include("<strong>partner_impression</strong>")
+      end
     end
 
     describe "POST /admin/customization/billboards" do

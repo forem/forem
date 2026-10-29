@@ -18,7 +18,12 @@ class BillboardEvent < ApplicationRecord
   CATEGORY_CLICK = "click".freeze
   CATEGORY_SIGNUP = "signup".freeze
   CATEGORY_CONVERSION = "conversion".freeze
-  VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION, CATEGORY_SIGNUP, CATEGORY_CONVERSION].freeze
+  # An impression on a billboard served with a partner. Recorded for every user agent, crawlers
+  # included, so the partner's figures can be compared with ours. Never counted as one of our
+  # impressions.
+  CATEGORY_PARTNER_IMPRESSION = "partner_impression".freeze
+  VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION, CATEGORY_SIGNUP, CATEGORY_CONVERSION,
+                      CATEGORY_PARTNER_IMPRESSION].freeze
 
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_ARTICLE = "article".freeze
@@ -33,6 +38,7 @@ class BillboardEvent < ApplicationRecord
   scope :clicks, -> { where(category: CATEGORY_CLICK) }
   scope :signups, -> { where(category: CATEGORY_SIGNUP) }
   scope :conversions, -> { where(category: CATEGORY_CONVERSION) }
+  scope :partner_impressions, -> { where(category: CATEGORY_PARTNER_IMPRESSION) }
   scope :all_conversion_types, -> { where(category: [CATEGORY_SIGNUP, CATEGORY_CONVERSION]) }
 
   # Adds visible time to an impression the viewer may write to, unless it was updated within
