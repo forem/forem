@@ -77,6 +77,7 @@ const getPreviousMatchingSibling = (element, selector) => {
  */
 export const MarkdownToolbar = ({
   textAreaId,
+  editorVersion = 'v2',
   additionalPrimaryToolbarElements = [],
   additionalSecondaryToolbarElements = [],
 }) => {
@@ -409,7 +410,7 @@ export const MarkdownToolbar = ({
       })}
 
       <ImageUploader
-        editorVersion="v2"
+        editorVersion={editorVersion}
         onImageUploadStart={handleImageUploadStarted}
         onImageUploadSuccess={handleImageUploadEnd}
         onImageUploadError={handleImageUploadEnd}
