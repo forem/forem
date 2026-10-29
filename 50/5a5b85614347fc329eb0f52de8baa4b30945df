@@ -1,0 +1,36 @@
+app/controllers/application_controller.rb
+  h_f968154a99632d 341-342
+app/controllers/flag_appeals_controller.rb
+  h_f968154a99632d 2,4,12,16-19,47-48,51-52
+app/helpers/comments_helper.rb
+  h_f968154a99632d 133-134,139-142,145
+app/models/user.rb
+  h_f968154a99632d 536-554
+app/views/articles/_full_comment_area.html.erb
+  h_f968154a99632d 60
+app/views/dashboards/_header_and_action.html.erb
+  h_f968154a99632d 2
+app/views/flag_appeals/_suspended_notice.html.erb
+  h_f968154a99632d 1-11
+app/views/users/edit.html.erb
+  h_f968154a99632d 53-54
+config/locales/views/flag_appeals/en.yml
+  h_f968154a99632d 18-22
+config/locales/views/flag_appeals/fr.yml
+  h_f968154a99632d 18-22
+config/locales/views/flag_appeals/pt.yml
+  h_f968154a99632d 18-22
+spec/requests/flag_appeals_spec.rb
+  h_f968154a99632d 14,17,19,21,23-26,29-30,32-33,35-36,38-42,44-45,47-51,53,57,61,67,72-73,76-78,83,90,101,103,112-116,119,132,135,141,146,149,166,171-172,177-233
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "505a5b85614347fc329eb0f52de8baa4b30945df",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

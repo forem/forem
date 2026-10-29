@@ -1,0 +1,20 @@
+app/controllers/admin/audience_segments_controller.rb
+  h_f968154a99632d 48-54,67-72
+app/models/audience_segment.rb
+  h_f968154a99632d 22-24,27,108,113-120
+spec/models/audience_segment_spec.rb
+  h_f968154a99632d 47-73,75-97
+spec/requests/admin/audience_segments_spec.rb
+  h_f968154a99632d 143-150
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f0fcfcece3605068fc4557bb9a02267ffb7e18a5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+Gemfile
+  h_f968154a99632d 41
+Gemfile.lock
+  h_f968154a99632d 153,338-339,341,1189
+spec/models/ab_experiment_spec.rb
+  h_f968154a99632d 104-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0b7f2290f38a6a040e55b733637becfd34df7cc6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

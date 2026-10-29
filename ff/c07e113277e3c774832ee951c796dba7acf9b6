@@ -1,0 +1,109 @@
+spec/requests/api/v1/comments_spec.rb
+  s_4ae1f904707c1c::t_ceb72770611f71 259-267
+config/initializers/sentry.rb
+  s_4ae1f904707c1c::t_b3a27fb77fef37 46-56
+app/controllers/concerns/api/comments_controller.rb
+  s_4ae1f904707c1c::t_bbd11bd3a46675 13-17,23,26,37,40,51-56
+app/controllers/incoming_webhooks/stripe_events_controller.rb
+  s_4ae1f904707c1c::t_2e75a0ff5cff7b 136
+app/controllers/omniauth_callbacks_controller.rb
+  s_4ae1f904707c1c::t_4fd942430b2798 51,86,233,249
+app/controllers/poll_skips_controller.rb
+  s_4ae1f904707c1c::t_7ec811fe2e9bcb 46
+app/controllers/poll_text_responses_controller.rb
+  s_4ae1f904707c1c::t_edaebcc2355d1f 25,35
+app/controllers/poll_votes_controller.rb
+  s_4ae1f904707c1c::t_8a8511d48a46f0 59
+app/controllers/video_states_controller.rb
+  s_4ae1f904707c1c::t_56058535a02263 14
+app/helpers/notifications_helper.rb
+  s_4ae1f904707c1c::t_58a8b1b6ce0728 23
+app/lib/release_phase_notifier.rb
+  s_4ae1f904707c1c::t_e4f62498c5e837 13
+app/mailers/notify_mailer.rb
+  s_4ae1f904707c1c::t_9132b9031b9618 45
+app/services/algolia_insights_service.rb
+  s_4ae1f904707c1c::t_31e43742532a59 42
+app/services/broadcasts/welcome_notification/generator.rb
+  s_4ae1f904707c1c::t_4f80e6a47f6a2f 19
+app/services/edge_cache/bust.rb
+  s_4ae1f904707c1c::t_421058a888c03d 18,51
+app/services/edge_cache/purge_by_key.rb
+  s_4ae1f904707c1c::t_65c67bcd0be2ee 12,22
+app/services/email_digest.rb
+  s_4ae1f904707c1c::t_91c24e9fbda98c 25
+app/services/favorites/create.rb
+  s_4ae1f904707c1c::t_05f59e5cb715f4 123
+app/services/images/generate_social_image_magickally.rb
+  s_4ae1f904707c1c::t_7e65cee216ed83 60,64,167
+app/services/images/generate_subforem_images.rb
+  s_4ae1f904707c1c::t_0ec06adb9fa371 23
+app/services/payments/customer.rb
+  s_4ae1f904707c1c::t_1c5df63206c396 74
+app/services/users/cancel_stripe_subscriptions.rb
+  s_4ae1f904707c1c::t_f9a1e787980c49 19
+app/workers/data_update_worker.rb
+  s_4ae1f904707c1c::t_57e807ef519a87 33
+app/workers/emails/send_user_digest_worker.rb
+  s_4ae1f904707c1c::t_818aaee2f64d7b 48,110
+app/workers/moderator/banish_user_worker.rb
+  s_4ae1f904707c1c::t_9f07ce2ea49aef 13
+app/workers/moderator/sink_articles_worker.rb
+  s_4ae1f904707c1c::t_08c211f3f6e25f 14
+app/workers/organizations/delete_worker.rb
+  s_4ae1f904707c1c::t_25316994cb2052 31
+app/workers/subforems/create_from_scratch_worker.rb
+  s_4ae1f904707c1c::t_ee82e1b6cb722e 33
+app/workers/trackable/dispatch_worker.rb
+  s_4ae1f904707c1c::t_f0ea58b35fdcbb 12
+app/workers/trends/generate_cover_image_worker.rb
+  s_4ae1f904707c1c::t_d87b0518dfa750 31
+app/workers/users/generate_ai_profile_image_worker.rb
+  s_4ae1f904707c1c::t_93b8a930ed2f40 25
+config/initializers/rpush.rb
+  s_4ae1f904707c1c::t_0468437fd0dd1b 76-78
+lib/data_update_scripts/20220105112823_migrate_logo_svg_data.rb
+  s_4ae1f904707c1c::t_9d60bc5d6b7842 31
+spec/requests/account_switch_interstitial_spec.rb
+  s_4ae1f904707c1c::t_89d5a458b34936 12
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_4ae1f904707c1c::t_31b67df23d4841 12
+spec/requests/omniauth_callbacks_failure_spec.rb
+  s_4ae1f904707c1c::t_2d51d0ea79c1a8 8,24,36,48,61,75,87,99,111
+spec/services/algolia_insights_service_spec.rb
+  s_4ae1f904707c1c::t_ca4947fff56329 25
+spec/services/images/generate_social_image_magickally_spec.rb
+  s_4ae1f904707c1c::t_b4faa18cbcd7c2 77,82,90,95,103,108,114,118,452,455
+spec/system/authentication/user_logs_in_with_apple_spec.rb
+  s_4ae1f904707c1c::t_56328195383631 144,149
+spec/system/authentication/user_logs_in_with_facebook_spec.rb
+  s_4ae1f904707c1c::t_c45b24851639c3 184,189
+spec/system/authentication/user_logs_in_with_forem_spec.rb
+  s_4ae1f904707c1c::t_d3975416fab052 183,188
+spec/system/authentication/user_logs_in_with_github_spec.rb
+  s_4ae1f904707c1c::t_35cadaf1566807 151,156
+spec/system/authentication/user_logs_in_with_twitter_spec.rb
+  s_4ae1f904707c1c::t_9c98555cd27a4b 147,152
+spec/workers/emails/send_user_digest_worker_spec.rb
+  s_4ae1f904707c1c::t_8676f4233253d7 136,142,150,155,315
+spec/workers/subforems/create_from_scratch_worker_spec.rb
+  s_4ae1f904707c1c::t_fd9f9aab479232 46,55
+spec/workers/trackable/dispatch_worker_spec.rb
+  s_4ae1f904707c1c::t_d3049fa00a820d 75,80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ffc07e113277e3c774832ee951c796dba7acf9b6",
+  "prompts": {},
+  "sessions": {
+    "s_4ae1f904707c1c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e19f663f-0bee-40c7-8b2c-ac25cdb22e28",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

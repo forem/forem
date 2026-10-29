@@ -1,0 +1,30 @@
+app/services/feeds/assemble_article_markdown.rb
+  h_a5e25bc086eb00 3-4,7,15,82-84,95-96,124-125,136-147,156-163
+app/services/feeds/import_from_xml.rb
+  h_a5e25bc086eb00 26-28,77-83
+app/views/dashboards/feed_imports.html.erb
+  h_a5e25bc086eb00 285
+config/locales/views/dashboard/en.yml
+  h_a5e25bc086eb00 284
+config/locales/views/dashboard/fr.yml
+  h_a5e25bc086eb00 281
+config/locales/views/dashboard/pt.yml
+  h_a5e25bc086eb00 233
+spec/requests/feeds/xml_imports_spec.rb
+  h_a5e25bc086eb00 25-38
+spec/services/feeds/assemble_article_markdown_spec.rb
+  h_a5e25bc086eb00 180-236
+spec/services/feeds/import_from_xml_spec.rb
+  h_a5e25bc086eb00 202-252
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "147de22c64d724ca85d897869ad139aa55580494",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+app/assets/stylesheets/dashboard.scss
+  h_f968154a99632d 207-245,251-252,258-261,263-264,266-267,269,272-274,278-322,326-370,372-384,386-394,397-417,420-449,453-476,480-488,491-509,513-526,534,537,543-546,551,606-609
+app/assets/stylesheets/views/dashboard.scss
+  h_f968154a99632d 65-122,132-134
+app/controllers/dashboards_controller.rb
+  h_f968154a99632d 67
+app/javascript/__tests__/analyticsDashboard.test.js
+  h_f968154a99632d 11-14,29-37,54,72-100
+app/javascript/packs/analyticsDashboard.js
+  h_f968154a99632d 19-45,50
+app/views/dashboards/_actions.html.erb
+  h_f968154a99632d 71-101,126
+app/views/dashboards/_actions_mobile.html.erb
+  h_f968154a99632d 17-22
+app/views/dashboards/_header_and_action.html.erb
+  h_f968154a99632d 16,22,28,34,40,46,59,65
+app/views/dashboards/analytics.erb
+  h_f968154a99632d 3-8,10-13,17-33,35-62,64-76,78
+app/views/shared/_stats.html.erb
+  h_f968154a99632d 1-18,20-22,24-25,27-28,30-31,34-35,40-45,52-57,65-69,76-80,85-88,97-101,113-118,139-143,156-159
+config/locales/views/dashboard/en.yml
+  h_f968154a99632d 30,41
+config/locales/views/dashboard/fr.yml
+  h_f968154a99632d 28,39
+config/locales/views/dashboard/pt.yml
+  h_f968154a99632d 28,45
+spec/requests/dashboard_spec.rb
+  h_f968154a99632d 195-221,482-484,486,491-497
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f61edf7b3170a9f5680650afb4c4ba0d86c0b5fa",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

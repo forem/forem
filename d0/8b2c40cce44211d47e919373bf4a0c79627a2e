@@ -1,0 +1,35 @@
+config/routes/admin.rb
+  s_9f387926f05926::t_832a844116e2c3 221-223
+app/services/spam/handler.rb
+  s_9f387926f05926::t_3422c4a4764208 405,413-419
+  s_9f387926f05926::t_8ed2ab7fe9d73c 420-421
+app/models/settings/rate_limit.rb
+  s_9f387926f05926::t_3422c4a4764208 25-28
+app/controllers/admin/linked_domains_controller.rb
+  s_9f387926f05926::t_f2032d3b576323 11
+  s_9f387926f05926::t_832a844116e2c3 5-8,12-30
+spec/requests/admin/linked_domains_spec.rb
+  s_9f387926f05926::t_b0d51080806446 86-90,93-121
+  s_9f387926f05926::t_39f64d9a0ee5d8 91-92
+spec/services/spam/handler_spec.rb
+  s_9f387926f05926::t_39f64d9a0ee5d8 228
+  s_9f387926f05926::t_b0d51080806446 226-227,229-242
+app/views/admin/linked_domains/index.html.erb
+  s_9f387926f05926::t_832a844116e2c3 3-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d08b2c40cce44211d47e919373bf4a0c79627a2e",
+  "prompts": {},
+  "sessions": {
+    "s_9f387926f05926": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "af59b4f3-165b-443d-8924-330025f3124c",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

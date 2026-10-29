@@ -1,0 +1,52 @@
+app/helpers/social_image_helper.rb
+  h_f968154a99632d 5-10
+app/models/organization.rb
+  h_f968154a99632d 225-227,326-327
+app/models/profile.rb
+  h_f968154a99632d 9,76-85
+app/models/user.rb
+  h_f968154a99632d 16-17,1112-1122
+app/models/users/setting.rb
+  h_f968154a99632d 43,89-92
+app/serializers/search/user_serializer.rb
+  h_f968154a99632d 21
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 52-71,98-99,104-107,109,115-116,140-150,152,154,157,166-199,201-214,275-334,370-396,462-555,588-589,592-595,600-646,694-702,747-749
+app/services/users/update.rb
+  h_f968154a99632d 115-116
+app/views/users/_meta.html.erb
+  h_f968154a99632d 8,16
+app/workers/images/social_image_worker.rb
+  h_f968154a99632d 5
+db/migrate/20261027120000_add_social_image_to_organizations.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,1289
+spec/models/organization_spec.rb
+  h_f968154a99632d 464,468-471,474-476,480,482
+spec/models/profile_spec.rb
+  h_f968154a99632d 133-160
+spec/models/user_spec.rb
+  h_f968154a99632d 1668-1671,1675-1682,1684
+spec/models/users/setting_spec.rb
+  h_f968154a99632d 236-251
+spec/rails_helper.rb
+  h_f968154a99632d 301-306
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 589-622
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 112,114,121-122,124,126-144,156,158,162-163,165,167,253-267,369-439
+spec/services/users/update_spec.rb
+  h_f968154a99632d 33-35,39-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9cc0e10b5a98c41f01a160e348c22dfc52855642",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
