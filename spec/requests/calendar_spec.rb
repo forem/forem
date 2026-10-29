@@ -403,5 +403,21 @@ RSpec.describe "Calendar" do
         expect(agenda_query).not_to include("processed_html")
       end
     end
+
+    context "with out-of-range year parameters" do
+      it "falls back to the current month when start, end, or month years are outside VALID_YEAR_RANGE",
+         :aggregate_failures do
+        current_month_label = Time.zone.today.strftime("%B %Y")
+
+        get calendar_path(start: "0973-11-11", end: "0973-11-11", month: "0973-11")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
+        expect(response.body).not_to include("0973-11-11")
+
+        get calendar_path(start: "1405-02-19", end: "1405-02-19")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
+      end
+    end
   end
 end

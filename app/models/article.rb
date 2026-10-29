@@ -443,6 +443,17 @@ class Article < ApplicationRecord
   DISALLOWED_TSQUERY_CHARACTERS = /['?\\:‘’ʻʼ"\u0000]/
   MAX_SEARCH_TSQUERY_TERMS = 10
   MIN_PREFIX_SEARCH_TERM_LENGTH = 3
+  # Common English stopwords that appear in nearly every article's `'simple'` tsvector.
+  # In multi-word queries, stripping these (unless the query is all stopwords) avoids
+  # intersecting huge low-selectivity GIN posting trees on `reading_list_document`.
+  SEARCH_STOPWORDS = Set.new(
+    %w[
+      a about an and are as at be but by can do for from had has have how i if
+      in into is it its my no not of on or our out so than that the their them
+      then there these they this to up was we were what when where which who
+      why will with would you your
+    ],
+  ).freeze
 
   # TODO: [@rhymes] Rename the article column and the trigger name.
   # What was initially meant just for the reading list (filtered using the `reactions` table),
@@ -453,9 +464,15 @@ class Article < ApplicationRecord
   # 1. `pg_search` wraps each term in SQL `unaccent(...)` (which is `STABLE`), preventing
   #    PostgreSQL from constant-folding the `tsquery` and inspecting `pg_statistic` lexeme
   #    frequencies. Pre-unaccenting in Ruby produces a single `IMMUTABLE` `to_tsquery` call.
-  # 2. 1-2 character prefix wildcards (e.g. `'i':*`, `'de':*`) force GIN index scans to
-  #    expand and merge hundreds of thousands of dictionary entries upfront.
-  # 3. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
+  # 2. Prefix wildcards (`:*`) force PostgreSQL GIN (`startScanEntry` -> `collectMatchBitmap`)
+  #    to scan every matching dictionary entry and materialize a combined TIDBitmap upfront
+  #    before intersecting terms, which overflows `work_mem` into lossy heap rechecks (`pg_toast`
+  #    decompression) on multi-word queries. We only use `:*` on single-token searches with
+  #    at least 3 alphanumeric characters.
+  # 3. Splitting on non-alphanumeric characters prevents `to_tsquery` from turning hyphenated,
+  #    underscored, or plus-separated tokens (e.g. `OPENAI_API_KEY`, `bevy-where-was-i`) into
+  #    `<->` phrase operators, which GIN cannot verify without lossy heap rechecks.
+  # 4. Avoiding `pg_search`'s `INNER JOIN (SELECT id, ts_rank(...) FROM articles)` self-join
   #    lets callers that `.reorder(...)`, `.count`, or `.exists?` skip de-TOASTing
   #    `reading_list_document` for `ts_rank`.
   scope :search_articles, lambda { |term|
@@ -471,17 +488,22 @@ class Article < ApplicationRecord
       .downcase
       .gsub(DISALLOWED_TSQUERY_CHARACTERS, " ")
 
-    tokens = normalized
-      .split
-      .grep(/[[:alnum:]]/)
+    raw_tokens = normalized
+      .scan(/[[:alnum:]]+/)
       .uniq
-      .first(MAX_SEARCH_TSQUERY_TERMS)
 
-    return if tokens.empty?
+    return if raw_tokens.empty?
 
+    tokens = if raw_tokens.many?
+               non_stopwords = raw_tokens.reject { |token| SEARCH_STOPWORDS.include?(token) }
+               (non_stopwords.presence || raw_tokens).first(MAX_SEARCH_TSQUERY_TERMS)
+             else
+               raw_tokens
+             end
+
+    use_prefix = raw_tokens.one? && tokens.first.length >= MIN_PREFIX_SEARCH_TERM_LENGTH
     query_expression = tokens.map do |token|
-      alnum_length = token.gsub(/[^[:alnum:]]/, "").length
-      prefix_suffix = alnum_length >= MIN_PREFIX_SEARCH_TERM_LENGTH ? ":*" : ""
+      prefix_suffix = use_prefix ? ":*" : ""
       "' #{token} '#{prefix_suffix}"
     end.join(" & ")
 

@@ -1,5 +1,6 @@
 class CalendarController < ApplicationController
   EVENTS_PER_PAGE = 12
+  VALID_YEAR_RANGE = (2000..2100)
   AGENDA_COLUMNS = %i[
     id title type_of start_time end_time event_name_slug event_variation_slug
     delegate_to_page page_id organization_id user_id
@@ -63,6 +64,7 @@ class CalendarController < ApplicationController
   def calendar_range
     start_date = parse_date(params[:start])
     end_date = parse_date(params[:end])
+    @explicit_range = start_date.present? || end_date.present?
 
     if start_date.nil? && end_date.nil?
       today = Time.zone.today
@@ -76,7 +78,10 @@ class CalendarController < ApplicationController
   end
 
   def parse_date(value)
-    Date.iso8601(value) if value.present?
+    return if value.blank?
+
+    date = Date.iso8601(value)
+    date if VALID_YEAR_RANGE.cover?(date.year)
   rescue ArgumentError, TypeError
     nil
   end
@@ -88,7 +93,10 @@ class CalendarController < ApplicationController
   end
 
   def parse_month(value)
-    Date.strptime(value, "%Y-%m").beginning_of_month if value.present?
+    return if value.blank?
+
+    date = Date.strptime(value, "%Y-%m").beginning_of_month
+    date if VALID_YEAR_RANGE.cover?(date.year)
   rescue ArgumentError, TypeError
     nil
   end
