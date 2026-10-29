@@ -25,8 +25,7 @@ module Articles
         # Optimize lookback calculation - cache the result
         # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
         # If you change this, consider updating the partial indexes in the migration
-        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
-        lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        lookback = resolve_lookback
         
         # Pre-calculate user-specific data to avoid repeated database calls
         user_data = preload_user_data
@@ -49,7 +48,14 @@ module Articles
         articles
       end
 
+      def resolve_lookback
+        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+        hard_lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        config_hours = @feed_config.respond_to?(:feed_lookback_hours) ? @feed_config.feed_lookback_hours.to_i : 0
+        return hard_lookback unless config_hours.positive?
 
+        [config_hours.hours.ago, hard_lookback].max
+      end
 
       def preload_user_data
         {

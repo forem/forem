@@ -560,6 +560,30 @@ RSpec.describe FeedConfig, type: :model do
       min_clamped_clone = feed_config.create_slightly_modified_clone!
       expect(min_clamped_clone.semantic_candidate_limit).to eq(described_class::MIN_SEMANTIC_CANDIDATE_LIMIT)
     end
+
+    it "keeps feed_lookback_hours unchanged at 0 when feed_lookback_hours is not set" do
+      feed_config.update!(feed_lookback_hours: 0)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(0)
+    end
+
+    it "mutates feed_lookback_hours by +/- 10% clamped to 1..max_feed_lookback_hours when set" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      feed_config.update!(feed_lookback_hours: 100)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(110)
+
+      # Clamps at the hard setting ceiling (10 days = 240 hours)
+      feed_config.update!(feed_lookback_hours: 230)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.feed_lookback_hours).to eq(240)
+
+      # Clamps at minimum 1 hour
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(feed_lookback_hours: 1)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.feed_lookback_hours).to eq(described_class::MIN_FEED_LOOKBACK_HOURS)
+    end
   end
 
   describe "validations and targeting_bucket" do
@@ -592,6 +616,26 @@ RSpec.describe FeedConfig, type: :model do
       expect(config).not_to be_valid
 
       config.semantic_candidate_limit = 1001
+      expect(config).not_to be_valid
+    end
+
+    it "defaults feed_lookback_hours to 0 and caps effective_feed_lookback_hours at the hard setting" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      config = described_class.new
+      expect(config.feed_lookback_hours).to eq(0)
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = 72
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(72)
+
+      # Cannot look back further than the hard setting (10 days = 240 hours)
+      config.feed_lookback_hours = 500
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = -1
       expect(config).not_to be_valid
     end
   end
