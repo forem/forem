@@ -14,6 +14,7 @@ pub mod feed;
 pub mod fixer;
 pub mod html;
 pub mod image;
+pub mod json;
 pub mod markdown;
 pub(crate) mod psl_data;
 pub mod sanitize;

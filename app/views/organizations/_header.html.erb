@@ -1,6 +1,6 @@
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
-    <%= @organization_json_ld.to_json.html_safe %>
+    <%= structured_data_json(@organization_json_ld).html_safe %>
   </script>
 <% end %>
 <style>
