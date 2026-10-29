@@ -2090,14 +2090,17 @@ pub fn resolve_feed_markdown_images<'a>(
                 while k < bytes.len() && bytes[k] != b'>' {
                     if bytes[k..].starts_with(b"src=\"") || bytes[k..].starts_with(b"src='") {
                         let path_start = k + 5;
-                        let mut p = path_start;
-                        while p < bytes.len() && bytes[p] != b'"' && bytes[p] != b'\'' {
-                            p += 1;
+                        let rem = &content[path_start..];
+                        if !rem.starts_with("http://") && !rem.starts_with("https://") {
+                            let mut p = path_start;
+                            while p < bytes.len() && bytes[p] != b'"' && bytes[p] != b'\'' {
+                                p += 1;
+                            }
+                            if p > path_start && p < bytes.len() {
+                                matched = Some((path_start, p));
+                                break;
+                            }
                         }
-                        if p > path_start && p < bytes.len() {
-                            matched = Some((path_start, p));
-                        }
-                        break;
                     }
                     k += 1;
                 }
@@ -2149,25 +2152,29 @@ pub fn resolve_feed_markdown_images<'a>(
             }
             if close_br + 2 < bytes.len() && bytes[close_br + 1] == b'(' {
                 let path_start = close_br + 2;
-                let mut close_paren = path_start;
-                while close_paren < bytes.len() && bytes[close_paren] != b')' {
-                    close_paren += 1;
-                }
-                if close_paren > path_start && close_paren < bytes.len() {
-                    let path = &s[path_start..close_paren];
-                    if let Some(resolved) =
-                        resolve_simple_feed_path(base_url, feed_source_url, path)?
-                    {
-                        let buf = out.get_or_insert_with(|| String::with_capacity(s.len() + 64));
-                        buf.push_str(&s[last..path_start]);
-                        buf.push_str(&resolved);
-                        buf.push(')');
+                let rem = &s[path_start..];
+                if !rem.starts_with("http://") && !rem.starts_with("https://") {
+                    let mut close_paren = path_start;
+                    while close_paren < bytes.len() && bytes[close_paren] != b')' {
+                        close_paren += 1;
+                    }
+                    if close_paren > path_start && close_paren < bytes.len() {
+                        let path = &s[path_start..close_paren];
+                        if let Some(resolved) =
+                            resolve_simple_feed_path(base_url, feed_source_url, path)?
+                        {
+                            let buf =
+                                out.get_or_insert_with(|| String::with_capacity(s.len() + 64));
+                            buf.push_str(&s[last..path_start]);
+                            buf.push_str(&resolved);
+                            buf.push(')');
+                            i = close_paren + 1;
+                            last = i;
+                            continue;
+                        }
                         i = close_paren + 1;
-                        last = i;
                         continue;
                     }
-                    i = close_paren + 1;
-                    continue;
                 }
             }
         }
@@ -2698,6 +2705,14 @@ mod tests {
         );
         // Dot-segments decline to Ruby's URI.join
         assert!(resolve_feed_markdown_images("![up](../img.png)", base, source).is_none());
+
+        // Lazy `[^>]*?src=` skips empty `src=""` or `src="https://..."` to match subsequent `data-src="/..."`
+        assert_eq!(
+            resolve_feed_markdown_images("<img src=\"\" data-src=\"/img/real.png\">", base, source)
+                .unwrap()
+                .as_ref(),
+            "<img src=\"\" data-src=\"https://example.com/img/real.png\">"
+        );
     }
 
     #[test]

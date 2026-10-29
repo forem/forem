@@ -57,7 +57,7 @@ module Feeds
       return unless email
 
       if (owner = preloaded_owner)
-        return owner if owner.email&.casecmp?(email)
+        return owner if owner.email == email
 
         return
       end

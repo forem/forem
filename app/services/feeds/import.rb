@@ -4,6 +4,7 @@ module Feeds
   # @see Feeds::Import.call
   class Import
     MAX_XML_SIZE = 2.megabytes
+    MAX_XML_ENTRIES = 100
     MAX_ENTRIES_PER_FEED = 25
     FEED_USER_AGENT = "Forem/1.0 (+https://forem.com; RSS Feed Fetcher)".freeze
     MAX_FETCH_RETRIES = 2
@@ -138,7 +139,8 @@ module Feeds
       mutex = Mutex.new
 
       result = map_in_threads(feeds_per_source_id, num_parsers) do |source_id, feed_xml|
-        bounded_xml = ForemNative.truncate_feed_xml_items(feed_xml, MAX_ENTRIES_PER_FEED) || feed_xml
+        xml_for_scan = normalize_xml_encoding(feed_xml)
+        bounded_xml = ForemNative.truncate_feed_xml_items(xml_for_scan, MAX_XML_ENTRIES) || feed_xml
         parsed_feed = Feedjira.parse(bounded_xml)
 
         [source_id, parsed_feed]
@@ -165,7 +167,7 @@ module Feeds
       start_time = Time.current
       articles = []
       user = feed_source.user
-      entries = (feed.entries || []).first(MAX_ENTRIES_PER_FEED)
+      entries = select_recent_entries(feed.entries)
       import_log = Feeds::ImportLog.create!(
         user: user,
         feed_source: feed_source,
@@ -423,12 +425,39 @@ module Feeds
         end
       end
 
-      body
+      normalize_xml_encoding(body)
     rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
       raise e if retries >= MAX_FETCH_RETRIES
 
       sleep(2**retries)
       fetch_with_retry(url, retries: retries + 1)
+    end
+
+    def normalize_xml_encoding(body)
+      return body unless body.is_a?(String) && body.encoding == Encoding::BINARY
+
+      prolog = body.byteslice(0, 256)
+      declared = prolog[/\A\s*<\?xml[^>]*encoding\s*=\s*["']([^"']+)["']/i, 1]
+      return body if declared && !declared.casecmp?("utf-8") && !declared.casecmp?("us-ascii")
+
+      utf8_body = body.dup.force_encoding(Encoding::UTF_8)
+      utf8_body.valid_encoding? ? utf8_body : body
+    end
+
+    def select_recent_entries(raw_entries)
+      entries = raw_entries || []
+      return entries if entries.size <= MAX_ENTRIES_PER_FEED
+
+      if entries.first.respond_to?(:published) && entries.last.respond_to?(:published) &&
+          entries.first.published && entries.last.published &&
+          entries.first.published < entries.last.published
+        entries = entries.each_with_index.sort_by do |entry, idx|
+          pub = entry.respond_to?(:published) ? entry.published : nil
+          [pub ? 0 : 1, pub ? -pub.to_f : 0.0, idx]
+        end.map(&:first)
+      end
+
+      entries.first(MAX_ENTRIES_PER_FEED)
     end
   end
 end

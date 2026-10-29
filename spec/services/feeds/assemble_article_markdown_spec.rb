@@ -273,14 +273,16 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
         title: title,
         categories: %w[tag1 tag2],
         published: "2020-12-20",
-        content: "<p>Use {{ variable_name }} in your template</p><pre><code>{{ untouched }}</code></pre>",
+        content: "<p>Use {{ variable_name }} and &#123;&#123; encoded_var }} in your template</p>" \
+                 "<pre><code>{{ untouched }}</code></pre>",
         url: "https://medium.com/@author/my-post",
       )
     end
 
-    it "wraps {{ ... }} outside pre/code tags in backticks" do
+    it "wraps {{ ... }} outside pre/code tags in backticks, including numeric character entities" do
       body = feeds_assemble_article_markdown.call
       expect(body).to include("`{{ variable_name }}`")
+      expect(body).to include("`{{ encoded_var }}`")
     end
   end
 end

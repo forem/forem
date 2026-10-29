@@ -326,30 +326,62 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       expect(log.error_message).to include("Feed XML exceeds maximum size")
     end
 
-    it "truncates feeds with more than MAX_ENTRIES_PER_FEED items before parsing" do
+    it "truncates feeds with more than MAX_XML_ENTRIES items before parsing, including binary UTF-8 streams" do
+      stub_const("#{described_class}::MAX_XML_ENTRIES", 25)
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
       source = create(:feed_source, user: user, feed_url: "https://example.com/many-items.xml")
       items_xml = (1..30).map do |idx|
-        "<item><title>Post #{idx}</title><link>https://example.com/posts/#{idx}</link>" \
+        "<item><title>Post #{idx} Café</title><link>https://example.com/posts/#{idx}</link>" \
           "<description>Body #{idx}</description><pubDate>Mon, 01 Jan 2026 00:00:00 GMT</pubDate></item>"
       end.join("\n")
-      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Blog</title>#{items_xml}</channel></rss>"
-      response_double = Class.new do
-        attr_reader :body
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Blog</title>#{items_xml}</channel></rss>".b
+      fragment_class = Class.new(String) do
+        def code = 200
+      end
+      binary_chunk = fragment_class.new(xml)
 
-        def initialize(body)
-          @body = body
-        end
-      end.new(xml)
+      allow(HTTParty).to receive(:get) do |_url, **_opts, &block|
+        block.call(binary_chunk)
+      end
 
-      allow(HTTParty).to receive(:get).and_return(response_double)
+      parsed_xml_arg = nil
+      allow(Feedjira).to receive(:parse).and_wrap_original do |original, xml_str|
+        parsed_xml_arg = xml_str
+        original.call(xml_str)
+      end
 
       imported_count = described_class.call(users_scope: User.where(id: user.id))
       expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+      expect(parsed_xml_arg.encoding).to eq(Encoding::UTF_8)
+      expect(parsed_xml_arg).to include("Post 25 Café")
+      expect(parsed_xml_arg).not_to include("Post 26 Café")
 
       log = Feeds::ImportLog.where(feed_source: source).last
       expect(log.items_in_feed).to eq(described_class::MAX_ENTRIES_PER_FEED)
       expect(log.items_imported).to eq(described_class::MAX_ENTRIES_PER_FEED)
+    end
+
+    it "selects the newest MAX_ENTRIES_PER_FEED items when a feed is ordered oldest-first (ascending)" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: user, feed_url: "https://example.com/ascending.xml")
+      base_time = Time.utc(2026, 1, 1, 12, 0, 0)
+      items_xml = (1..30).map do |idx|
+        pub_date = (base_time + idx.hours).rfc2822
+        "<item><title>Ascending Post #{idx}</title><link>https://example.com/asc/#{idx}</link>" \
+          "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
+      end.join("\n")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Asc</title>#{items_xml}</channel></rss>"
+      fragment_class = Class.new(String) do
+        def code = 200
+      end
+      allow(HTTParty).to receive(:get).and_yield(fragment_class.new(xml.b))
+
+      imported_count = described_class.call(users_scope: User.where(id: user.id))
+      expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+
+      imported_titles = user.articles.pluck(:title)
+      expect(imported_titles).to include("Ascending Post 30", "Ascending Post 6")
+      expect(imported_titles).not_to include("Ascending Post 1", "Ascending Post 5")
     end
 
     it "does not spawn Parallel worker threads when importing a single feed source" do

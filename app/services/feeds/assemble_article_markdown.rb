@@ -220,7 +220,7 @@ module Feeds
     end
 
     def parse_liquid_variable!(html_doc, raw_html: nil)
-      return if raw_html&.exclude?("{{")
+      return if raw_html&.exclude?("{{") && raw_html&.exclude?("&#")
 
       # Medium articles does not wrap {{ }} content in liquid tag.
       # This will wrap do so for content that isn't in pre and code tag
