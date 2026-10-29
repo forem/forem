@@ -411,10 +411,15 @@ Cypress.Commands.add('disableFeatureFlag', (flag) => {
 /**
  * Retrieves the modal in a Forem instance.
  *
+ * Modals are named after their title (falling back to "modal"), so by default this matches the open dialog
+ * regardless of its name. Pass a name to target a specific dialog.
+ *
+ * @param {string|RegExp} [name] Optional accessible name of the dialog to find.
+ *
  * @returns {Cypress.Chainable<HTMLElement>} A reference to a modal dialog.
  */
-Cypress.Commands.add('getModal', () => {
-  return cy.findByRole('dialog', { name: 'modal' });
+Cypress.Commands.add('getModal', (name) => {
+  return cy.findByRole('dialog', name ? { name } : undefined);
 });
 
 /**

@@ -20,11 +20,15 @@ class Billboard < ApplicationRecord
                                page_fixed_bottom
                                post_fixed_bottom
                                post_body_bottom
+                               post_body_bottom_secondary
                                post_sidebar
+                               post_sidebar_secondary
                                post_comments
+                               post_comments_secondary
                                post_comments_mid
                                digest_first
-                               digest_second].freeze
+                               digest_second
+                               external_feed].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home first position)",
@@ -38,13 +42,32 @@ class Billboard < ApplicationRecord
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
                                             "Below the post body",
+                                            "Below the post body (Secondary)",
                                             "Sidebar Right (Individual Post)",
+                                            "Sidebar Right (Individual Post, Secondary)",
                                             "Below the comment section",
+                                            "Below the comment section (Secondary)",
                                             "Midway through the comment section",
                                             "Digest Email First",
-                                            "Digest Email Second"].freeze
+                                            "Digest Email Second",
+                                            "External Feed"].freeze
+
+  # Placement areas shown on other sites, which load /bb/:placement_area from one of
+  # Billboard.embed_origins and render the billboard in their own markup and styles.
+  EMBEDDED_PLACEMENTS = %w[external_feed].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+  # Placement areas that pages load in the context of the article or page they're on
+  # (see BillboardHelper#billboard_async_path)
+  CONTEXTUAL_PLACEMENTS = %w[page_fixed_bottom
+                             post_fixed_bottom
+                             post_body_bottom
+                             post_body_bottom_secondary
+                             post_sidebar
+                             post_sidebar_secondary
+                             post_comments
+                             post_comments_secondary
+                             post_comments_mid].freeze
   HOME_PAGE_PLACEMENTS = %w[feed_first
                             feed_second
                             feed_third
@@ -91,7 +114,7 @@ class Billboard < ApplicationRecord
            :validate_geolocations,
            :validate_expiration_approval
 
-  before_save :process_markdown
+  before_validation :process_markdown
   before_save :update_exclude_article_ids
   before_save :update_content_updated_at_if_needed
   after_save :generate_billboard_name
@@ -119,7 +142,7 @@ class Billboard < ApplicationRecord
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
                        location: nil, cookies_allowed: false, page_id: nil, user_agent: nil,
-                       role_names: nil, prefer_paired_with_billboard_id: nil)
+                       role_names: nil, prefer_paired_with_billboard_id: nil, fully_cached: false)
     # Check delivery rate configuration first - return nil early if rate check fails
     return unless BillboardPlacementAreaConfig.should_fetch_billboard?(
       placement_area: area,
@@ -143,6 +166,7 @@ class Billboard < ApplicationRecord
       cookies_allowed: cookies_allowed,
       user_agent: user_agent,
       role_names: role_names,
+      fully_cached: fully_cached,
     )
 
     # if prefer_paired_with_billboard_id then return
@@ -158,14 +182,14 @@ class Billboard < ApplicationRecord
   end
 
   def self.select_billboard_by_weighted_strategy(billboards_for_display, area, article_id = nil)
-    # Return nil if no billboards available
-    return nil if billboards_for_display.blank? || billboards_for_display.empty?
-    
+    # Return nil if no billboards available without triggering an upfront query on an unloaded Relation
+    return if no_billboards_available?(billboards_for_display)
+
     # Get weights from placement area config
     weights = BillboardPlacementAreaConfig.selection_weights_for(area)
-    
+
     # Calculate total weight, filtering out any nil or negative values
-    total_weight = weights.values.compact.map { |v| [v.to_i, 0].max }.sum
+    total_weight = weights.values.compact.sum { |v| [v.to_i, 0].max }
     return billboards_for_display.sample if total_weight.zero?
 
     # Generate random number and select strategy based on weight
@@ -177,7 +201,7 @@ class Billboard < ApplicationRecord
       # Skip strategies with zero or negative weight
       weight_value = [weight.to_i, 0].max
       next if weight_value.zero?
-      
+
       cumulative_weight += weight_value
       if random_value < cumulative_weight
         selected_strategy = strategy
@@ -187,19 +211,19 @@ class Billboard < ApplicationRecord
 
     # Execute the selected strategy
     case selected_strategy
-    when "random_selection"
+    when "random_selection", "evenly_distributed"
       # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
       # rise to the top. This gives "not yet evaluated" stuff a chance to get some engagement and start showing up more.
       # If it doesn't get engagement, it stays in this area.
       billboards_for_display.sample
     when "new_and_priority"
-      # Here we sample from only billboards with fewer impressions or priority billboards (with a fallback
-      # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation, article_id) || billboards_for_display.sample
+      # Sample from billboards with fewer impressions or priority billboards, falling back
+      # to any candidate billboard in the same query if none qualify.
+      weighted_random_selection(billboards_for_display, article_id, area: area)
     when "new_only"
-      # Here we sample from only billboards with fewer impressions (with a fallback)
-      billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
+      # Sample from billboards with fewer impressions, falling back to top-performing
+      # candidate billboards in the same query if none qualify.
+      new_only_random_selection(billboards_for_display, area)
     when "weighted_performance"
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
       # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
@@ -208,59 +232,79 @@ class Billboard < ApplicationRecord
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
-    when "evenly_distributed"
-      # Randomly distribute billboards effectively evenly over time.
-      billboards_for_display.sample
     else
       # Fallback to random if strategy is unknown
       billboards_for_display.sample
     end
   end
 
-  def self.weighted_random_selection(relation, target_article_id = nil)
+  def self.no_billboards_available?(billboards_for_display)
+    return true if billboards_for_display.nil? || billboards_for_display.try(:null_relation?)
+    return billboards_for_display.empty? if billboards_for_display.is_a?(Array)
+
+    billboards_for_display.respond_to?(:loaded?) && billboards_for_display.loaded? && billboards_for_display.empty?
+  end
+  private_class_method :no_billboards_available?
+
+  def self.weighted_random_selection(relation, target_article_id = nil, area: nil)
     base_query = relation.to_sql
+    return if base_query.blank?
+
     random_val = rand.to_f
-    if FeatureFlag.enabled?(:article_id_adjusted_weight)
-      condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
-      query = <<-SQL
-        WITH base AS (#{base_query}),
-        weighted AS (
-          SELECT *,
-            CASE
-              WHEN #{condition} THEN weight * 10
-              ELSE weight
-            END AS adjusted_weight,
-          SUM(CASE
-                WHEN #{condition} THEN weight * 10
-                ELSE weight
-              END) OVER () AS total_weight,
-          SUM(CASE
-                WHEN #{condition} THEN weight * 10
-                ELSE weight
-              END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-          FROM base
-        )
-        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-        WHERE running_weight >= ? * total_weight
-        ORDER BY running_weight ASC
-        LIMIT 1
-      SQL
-    else
-      query = <<-SQL
-        WITH base AS (#{base_query}),
-        weighted AS (
-          SELECT *, weight,
-          SUM(weight) OVER () AS total_weight,
-          SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-          FROM base
-        )
-        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-        WHERE running_weight >= ? * total_weight
-        ORDER BY running_weight ASC
-        LIMIT 1
-      SQL
+    weight_expr = if FeatureFlag.enabled?(:article_id_adjusted_weight) && target_article_id.present?
+                    "CASE WHEN #{target_article_id.to_i} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+                  else
+                    "weight"
+                  end
+    if area.present?
+      seldom_seen_filter = "WHERE impressions_count < #{low_impression_count(area).to_i} OR priority = TRUE"
+      fallback_union = "UNION ALL (SELECT * FROM base WHERE NOT EXISTS (SELECT 1 FROM preferred) " \
+                       "ORDER BY RANDOM() LIMIT 1)"
     end
-    relation.find_by_sql([query, random_val, random_val]).first
+
+    query = <<~SQL
+      WITH base AS (#{base_query}),
+      weighted AS (
+        SELECT id,
+          SUM(#{weight_expr}) OVER () AS total_weight,
+          SUM(#{weight_expr}) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+        FROM base
+        #{seldom_seen_filter}
+      ),
+      preferred AS (
+        SELECT id FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      )
+      SELECT * FROM base
+      WHERE id = (SELECT id FROM preferred)
+      #{fallback_union}
+      LIMIT 1
+    SQL
+    relation.find_by_sql([query, random_val]).first
+  end
+
+  def self.new_only_random_selection(relation, area)
+    base_query = relation.to_sql
+    return if base_query.blank?
+
+    query = <<~SQL
+      WITH base AS (#{base_query}),
+      preferred AS (SELECT * FROM base WHERE impressions_count < ? ORDER BY RANDOM() LIMIT 1)
+      SELECT * FROM preferred
+      UNION ALL
+      (SELECT * FROM (SELECT * FROM base LIMIT ?) fallback
+       WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)
+      LIMIT 1
+    SQL
+    relation.find_by_sql([query, low_impression_count(area).to_i, rand(1..15)]).first
+  end
+  private_class_method :new_only_random_selection
+
+  # Origins (e.g. "https://embed.example.com") allowed to record billboard events cross-origin.
+  def self.embed_origins
+    ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s.split(",").map(&:strip).reject(&:empty?)
   end
 
   # Temporary ENV configs, to eventually be replaced by permanent configurations
@@ -464,6 +508,20 @@ class Billboard < ApplicationRecord
     SurveyCompletion.user_completed_any?(user: user, survey_ids: exclude_survey_ids)
   end
 
+  def render_preview_html(markdown)
+    return if markdown.blank?
+
+    if render_mode == "forem_markdown"
+      renderer = ContentRenderer.new(markdown, source: self, user: creator)
+      renderer.process(prefix_images_options: { width: prefix_width,
+                                                quality: 100,
+                                                synchronous_detail_detection: false }).processed_html.delete("\n")
+    else
+      Html::Parser.new(markdown)
+        .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: false).html
+    end
+  end
+
   private
 
   def update_content_updated_at_if_needed
@@ -568,34 +626,35 @@ class Billboard < ApplicationRecord
   end
 
   def process_markdown
-    reprocess_body = body_markdown_changed? || render_mode_changed? || placement_area_changed?
-    reprocess_minimized = minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed?
-
-    if reprocess_body
-      if body_markdown.present?
-        if render_mode == "forem_markdown"
-          self.processed_html = extracted_process_markdown(body_markdown)
-        else # raw
-          self.processed_html = Html::Parser.new(body_markdown)
-            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
-        end
-      else
-        self.processed_html = nil
-      end
+    if reprocess_body_markdown?
+      self.processed_html = render_markdown_field(body_markdown)
+      @rendered_body_markdown = body_markdown
     end
 
-    if reprocess_minimized
-      if minimized_body_markdown.present?
-        if render_mode == "forem_markdown"
-          self.minimized_processed_html = extracted_process_markdown(minimized_body_markdown)
-        else # raw
-          self.minimized_processed_html = Html::Parser.new(minimized_body_markdown)
-            .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
-        end
-      else
-        self.minimized_processed_html = nil
-      end
+    if reprocess_minimized_body_markdown?
+      self.minimized_processed_html = render_markdown_field(minimized_body_markdown)
+      @rendered_minimized_body_markdown = minimized_body_markdown
     end
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def reprocess_body_markdown?
+    body_markdown_changed? || render_mode_changed? || placement_area_changed? ||
+      (defined?(@rendered_body_markdown) && @rendered_body_markdown != body_markdown)
+  end
+
+  def reprocess_minimized_body_markdown?
+    minimized_body_markdown_changed? || render_mode_changed? || placement_area_changed? ||
+      (defined?(@rendered_minimized_body_markdown) && @rendered_minimized_body_markdown != minimized_body_markdown)
+  end
+
+  def render_markdown_field(markdown)
+    return if markdown.blank?
+    return extracted_process_markdown(markdown) if render_mode == "forem_markdown"
+
+    Html::Parser.new(markdown)
+      .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
   end
 
   def extracted_process_markdown(markdown)
@@ -607,7 +666,7 @@ class Billboard < ApplicationRecord
   end
 
   def prefix_width
-    placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+    placement_area&.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
   end
 
   def refresh_audience_segment

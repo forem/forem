@@ -29,6 +29,7 @@ module Constants
       "Resource Admin: Billboard" => { name: "single_resource_admin", resource_type: "Billboard" },
       "Resource Admin: DataUpdateScript" => { name: "single_resource_admin", resource_type: "DataUpdateScript" },
       "Resource Admin: FeedbackMessage" => { name: "single_resource_admin", resource_type: "FeedbackMessage" },
+      "Resource Admin: FlagAppeal" => { name: "single_resource_admin", resource_type: "FlagAppeal" },
       "Resource Admin: HtmlVariant" => { name: "single_resource_admin", resource_type: "HtmlVariant" },
       "Resource Admin: ListingCategory" => { name: "single_resource_admin", resource_type: "ListingCategory" },
       "Resource Admin: Page" => { name: "single_resource_admin", resource_type: "Page" },
@@ -41,7 +42,6 @@ module Constants
       "Resource Admin: RequestRedirect" => { name: "single_resource_admin", resource_type: "RequestRedirect" },
       "Resource Admin: ResponseTemplate" => { name: "single_resource_admin", resource_type: "ResponseTemplate" },
       "Resource Admin: Subforem" => { name: "single_resource_admin", resource_type: "Subforem" },
-      "Resource Admin: Space" => { name: "single_resource_admin", resource_type: "Space" },
       "Resource Admin: ProfileField" => { name: "single_resource_admin", resource_type: "ProfileField" },
       "Resource Admin: ProfileFieldGroup" => { name: "single_resource_admin", resource_type: "ProfileFieldGroup" }
     }.freeze

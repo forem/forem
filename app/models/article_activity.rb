@@ -13,6 +13,8 @@
 #   daily_comments[date]   = N            (count of scored comments)
 #   daily_referrers[date]  = { domain => N }
 class ArticleActivity < ApplicationRecord
+  include ArticleActivityBulkBackfillable
+
   belongs_to :article
 
   REACTION_CATEGORIES = %w[like readinglist unicorn exploding_head raised_hands fire].freeze
@@ -136,12 +138,11 @@ class ArticleActivity < ApplicationRecord
   # Rebuilds every JSONB column from raw rows. Used the first time we see an
   # article (lazy upsert) and as a manual repair tool.
   def recompute_all!
-    pv = build_page_views_from_raw
+    pv, rf = build_page_views_and_referrers_from_raw
     rx = build_reactions_from_raw
     cm = build_comments_from_raw
-    rf = build_referrers_from_raw
 
-    update!(
+    assign_attributes(
       daily_page_views: pv,
       daily_reactions: rx,
       daily_comments: cm,
@@ -151,6 +152,11 @@ class ArticleActivity < ApplicationRecord
       total_comments: cm.values.sum(&:to_i),
       last_aggregated_at: Time.current,
     )
+    # Skip validation: the only validator is the belongs_to :article presence
+    # check, which would load the full articles row (body, processed_html, ...)
+    # on every recompute. article_id is NOT NULL with a foreign key, so an
+    # existing activity row always points at a real article.
+    save!(validate: false)
   end
 
   def derive_page_view_day(raw)
@@ -290,21 +296,29 @@ class ArticleActivity < ApplicationRecord
 
   # --- backfill builders ---
 
-  def build_page_views_from_raw
+  # Daily page views and daily referrers come from the same page_views rows,
+  # so aggregate them in one (date, domain) grouped scan and roll the domain
+  # buckets up per day in Ruby instead of reading the article's rows twice.
+  def build_page_views_and_referrers_from_raw
+    page_views = {}
+    referrers = {}
     PageView.where(article_id: article_id)
-      .group("DATE(created_at)")
+      .group("DATE(created_at)", :domain)
       .pluck(
         Arel.sql("DATE(created_at)"),
+        :domain,
         Arel.sql("COALESCE(SUM(counts_for_number_of_views), 0)"),
         Arel.sql("COALESCE(SUM(time_tracked_in_seconds) FILTER (WHERE user_id IS NOT NULL), 0)"),
         Arel.sql("COUNT(*) FILTER (WHERE user_id IS NOT NULL)"),
-      ).each_with_object({}) do |(date, total, sum_read, logged), hash|
-        hash[date.iso8601] = {
-          "total" => total.to_i,
-          "sum_read_seconds" => sum_read.to_i,
-          "logged_in_count" => logged.to_i
-        }
+      ).each do |date, domain, total, sum_read, logged|
+        iso = date.iso8601
+        day = page_views[iso] ||= { "total" => 0, "sum_read_seconds" => 0, "logged_in_count" => 0 }
+        day["total"] += total.to_i
+        day["sum_read_seconds"] += sum_read.to_i
+        day["logged_in_count"] += logged.to_i
+        (referrers[iso] ||= {})[domain] = total.to_i
       end
+    [page_views, referrers]
   end
 
   def build_reactions_from_raw
@@ -340,16 +354,5 @@ class ArticleActivity < ApplicationRecord
     Comment.where(commentable_id: article_id, commentable_type: "Article")
       .where("score > 0")
       .group("DATE(created_at)").count.transform_keys(&:iso8601)
-  end
-
-  def build_referrers_from_raw
-    PageView.where(article_id: article_id)
-      .group("DATE(created_at)", :domain)
-      .sum(:counts_for_number_of_views)
-      .each_with_object({}) do |((date, domain), n), hash|
-        iso = date.iso8601
-        hash[iso] ||= {}
-        hash[iso][domain] = n.to_i
-      end
   end
 end

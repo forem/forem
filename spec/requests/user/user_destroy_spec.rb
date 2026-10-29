@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserDestroy" do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
 
   describe "GET /settings/account" do
     it "offers to delete account when user has an email" do
@@ -11,7 +11,7 @@ RSpec.describe "UserDestroy" do
     end
 
     it "offers to set an email when user doesn't have an email" do
-      shallow_user = create(:user, email: nil)
+      shallow_user = create(:user, :without_profile, email: nil, profile_image: nil)
       sign_in shallow_user
       get "/settings/account"
       expect(response.body).not_to include("Deleting your account will")
@@ -25,26 +25,18 @@ RSpec.describe "UserDestroy" do
         sign_in user
       end
 
-      it "schedules a user delete job" do
+      it "schedules a user delete job, signs out, and redirects to sign up", :aggregate_failures do
         sidekiq_assert_enqueued_with(job: Users::DeleteWorker) do
           delete "/users/full_delete"
         end
-      end
-
-      it "signs out" do
-        delete "/users/full_delete"
         expect(controller.current_user).to be_nil
-      end
-
-      it "redirects to sign up" do
-        delete "/users/full_delete"
         expect(response).to redirect_to new_user_registration_path
         expect(flash[:global_notice]).to include("Your account deletion is scheduled")
       end
     end
 
     context "when user doesn't have an email" do
-      let!(:shallow_user) { create(:user, email: nil) }
+      let!(:shallow_user) { create(:user, :without_profile, email: nil, profile_image: nil) }
 
       before do
         sign_in shallow_user
@@ -68,7 +60,8 @@ RSpec.describe "UserDestroy" do
         sign_in user
       end
 
-      it "sends an email" do
+      it "sends an email, updates the destroy_token in cache, and sets flash notice", :aggregate_failures do
+        allow(Rails.cache).to receive(:write).and_call_original
         allow(mailer_class).to receive(:with).and_return(mailer)
         allow(mailer).to receive(:account_deletion_requested_email).and_return(message_delivery)
         allow(message_delivery).to receive(:deliver_now)
@@ -78,26 +71,13 @@ RSpec.describe "UserDestroy" do
         expect(mailer_class).to have_received(:with).with(user: user, token: instance_of(String))
         expect(mailer).to have_received(:account_deletion_requested_email)
         expect(message_delivery).to have_received(:deliver_now)
-      end
-
-      it "updates the destroy_token in cache" do
-        allow(Rails.cache).to receive(:write).and_call_original
-
-        post user_request_destroy_path
-
-        user.reload
         expect(Rails.cache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
-      end
-
-      it "sets flash notice" do
-        post user_request_destroy_path
-
         expect(flash[:settings_notice]).to include("You have requested account deletion")
       end
     end
 
     context "when user doesn't have an email" do
-      let!(:shallow_user) { create(:user, email: nil) }
+      let!(:shallow_user) { create(:user, :without_profile, email: nil, profile_image: nil) }
 
       before do
         sign_in shallow_user
@@ -138,19 +118,26 @@ RSpec.describe "UserDestroy" do
         expect(flash[:settings_notice]).to include("Your token has expired,")
       end
 
-      it "renders not_found if destroy_token != token" do
+      it "renders not_found and records Honeycomb fields if destroy_token != token" do
+        mismatch_token = SecureRandom.hex(8)
+        allow(Honeycomb).to receive(:add_field)
         allow(Rails.cache).to receive(:read).and_call_original
-        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(SecureRandom.hex(8))
+        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(mismatch_token)
         expect do
           get user_confirm_destroy_path(token: token)
         end.to raise_error(ActionController::RoutingError)
+        expect(Honeycomb).to have_received(:add_field).with("destroy_token", mismatch_token)
+        expect(Honeycomb).to have_received(:add_field).with("token", token)
       end
 
-      it "renders template if destroy_token is correct" do
+      it "renders template with verification fields if destroy_token is correct", :aggregate_failures do
         allow(Rails.cache).to receive(:read).and_call_original
         allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(token)
         get user_confirm_destroy_path(token: token)
         expect(response).to have_http_status(:ok)
+        expect(response.body).to include('id="delete__account__username__field"')
+        expect(response.body).to include('id="delete__account__verification__field"')
+        expect(response.body).to include('id="delete__account__btn"')
       end
     end
 

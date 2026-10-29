@@ -31,6 +31,46 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority"
 
   describe "perform" do
+    # force_send exists to bypass the digest consent check for manual and retry
+    # sends. It must not become a way to email a moderated account.
+    context "with a moderated user" do
+      before do
+        user.follow(author)
+        user.follow(tag)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
+      end
+
+      it "does not send to a suspended user" do
+        user.add_role(:suspended)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "does not send to a spam user" do
+        user.add_role(:spam)
+
+        worker.perform(user.id)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "does not send to a suspended user even when forced" do
+        user.add_role(:suspended)
+
+        worker.perform(user.id, true)
+
+        expect(message_delivery).not_to have_received(:deliver_now)
+      end
+
+      it "still sends to a user in good standing" do
+        worker.perform(user.id)
+
+        expect(message_delivery).to have_received(:deliver_now)
+      end
+    end
+
     context "when there's articles to be sent" do
       before do
         user.follow(author)
@@ -92,14 +132,16 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         create(:billboard, placement_area: "digest_first", published: true, approved: true)
 
         allow(BillboardEvent).to receive(:create).and_raise(StandardError.new("DB error"))
-        allow(Honeybadger).to receive(:context)
-        allow(Honeybadger).to receive(:notify)
+        allow(Rails.error).to receive(:report)
 
         worker.perform(user.id)
 
         # Email was already delivered before billboard tracking was attempted
         expect(message_delivery).to have_received(:deliver_now)
-        expect(Honeybadger).to have_received(:notify).with(instance_of(StandardError))
+        expect(Rails.error).to have_received(:report).with(
+          instance_of(StandardError),
+          context: { user_id: user.id, article_ids: array_including(kind_of(Integer)) },
+        )
       end
 
       it "rescues Net::SMTPSyntaxError and logs a warning without notifying Honeybadger" do
@@ -107,12 +149,12 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         allow(message_delivery).to receive(:deliver_now).and_raise(Net::SMTPSyntaxError.new("501 Recipient syntax error"))
         allow(Rails.logger).to receive(:warn)
-        allow(Honeybadger).to receive(:notify)
+        allow(Rails.error).to receive(:report)
 
         worker.perform(user.id)
 
         expect(Rails.logger).to have_received(:warn).with(/SMTP syntax\/fatal error/)
-        expect(Honeybadger).not_to have_received(:notify)
+        expect(Rails.error).not_to have_received(:report)
       end
 
       it "opens a transaction for analytics tracking even when no billboards are present" do
@@ -272,7 +314,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         it "rescues errors during generation and still delivers digest" do
           allow(ai_generator).to receive(:call).and_raise(StandardError.new("AI error"))
           allow(Rails.logger).to receive(:warn)
-          allow(Honeybadger).to receive(:notify)
+          allow(Rails.error).to receive(:report)
           
           worker.perform(user.id)
           

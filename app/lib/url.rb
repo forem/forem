@@ -8,7 +8,14 @@ module URL
   # to preserve historical behavior, but can be overridden by setting the
   # PORT environment variable to match the actual server port (useful when
   # Forem runs alongside other Rails apps that also default to 3000).
+  #
+  # URL_PORT, when set, wins over PORT: it names the port the public URL
+  # should carry rather than the one Puma listens on. Set it to an empty value
+  # when a TLS proxy such as Caddy fronts the app on the standard port, so
+  # OAuth callbacks and other absolute URLs carry no port at all.
   def self.dev_port
+    return ENV["URL_PORT"] if ENV.key?("URL_PORT")
+
     ENV.fetch("PORT", "3000")
   end
 
@@ -37,34 +44,59 @@ module URL
 
   def self.url(uri = nil, domain_or_subforem = nil)
     base_url = "#{protocol}#{domain(domain_or_subforem)}"
-    base_url += ":#{dev_port}" if Rails.env.development? && !base_url.include?(":#{dev_port}")
+    port = dev_port
+    base_url += ":#{port}" if Rails.env.development? && port.present? && !port_present?(base_url)
     return base_url unless uri
+
+    ForemNative.join_url(base_url, uri) || legacy_join_url(base_url, uri)
+  end
+
+  # Handles the joins ForemNative declines (absolute or dot-segment references, non-ASCII, ...).
+  def self.legacy_join_url(base_url, uri)
     Addressable::URI.parse(base_url).join(uri).normalize.to_s
   end
+
+  private_class_method :legacy_join_url
+
+  def self.port_present?(url)
+    Addressable::URI.heuristic_parse(url).port.present?
+  rescue Addressable::URI::InvalidURIError
+    false
+  end
+
+  private_class_method :port_present?
 
   # Creates an article URL
   #
   # @param article [Article] the article to create the URL for
-  def self.article(article)
-    has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
-    if has_org_attr && (org = article.try(:organization))
-      if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-        return url("/#{article.slug}", org.custom_domain)
-      end
-    elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
-      org_id = article.organization_id
-      custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
-        Organization.where(id: org_id).pick(:custom_domain).to_s
-      end
-      if custom_domain.present?
-        org = Organization.find_by(id: org_id)
-        if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+  # @param user_signed_in [Boolean, nil] whether the viewer is signed in (defaults to checking RequestStore)
+  def self.article(article, user_signed_in: nil)
+    is_signed_in = user_signed_in.nil? ? RequestStore.store[:user_signed_in] : user_signed_in
+    is_on_custom_domain = RequestStore.store[:custom_domain_org].present?
+
+    record = article.is_a?(ApplicationDecorator) ? article.object : article
+    ar_record = record.is_a?(ActiveRecord::Base)
+
+    unless is_signed_in && !is_on_custom_domain
+      has_org_attr = ar_record ? record.has_attribute?(:organization_id) : record.respond_to?(:organization)
+      org_loaded = !ar_record || record.association(:organization).loaded?
+      if has_org_attr && org_loaded && (org = record.try(:organization))
+        if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
+          return url("/#{article.slug}", org.custom_domain)
+        end
+      elsif (ar_record ? record.has_attribute?(:organization_id) : record.respond_to?(:organization_id)) &&
+          record.organization_id.present?
+        org_id = record.organization_id
+        custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
+          Organization.where(id: org_id).pick(:custom_domain).to_s
+        end
+        if custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor[org_id])
           return url("/#{article.slug}", custom_domain)
         end
       end
     end
 
-    has_subforem_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
+    has_subforem_attr = ar_record ? record.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
     return url(article.path) unless has_subforem_attr
     
     # Use cached lookup to avoid N+1 queries

@@ -27,6 +27,7 @@ en:
         hidden_tags: Hidden tags
         listings: Listings
         analytics: Analytics
+        org_analytics: Organization Analytics
         feed_imports: RSS Import Feeds
         for_org: Analytics for %{org}
         upload: Upload a video
@@ -37,6 +38,7 @@ en:
         audience_heading: Your Audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
+        organizations_menu: Organizations
         org: "%{org} Analytics Dashboard"
         readers: Readers
         comments: Comments
@@ -274,6 +276,16 @@ en:
             inactive: Inactive
           last_fetched: "Last fetched: %{time}"
           never_fetched: Never fetched
+        xml_import:
+          heading: Import from XML (one-time)
+          description: If your feed URL is blocked by bot protection (e.g. Cloudflare), you can paste the raw RSS/Atom XML below. Articles will be created as drafts.
+          url_blocked_hint_html: "Feed URL not working? %{link} instead."
+          url_blocked_link: Paste your XML directly
+          note_label: "One-time only:"
+          note: Articles published after this paste will not appear automatically — re-paste updated XML to import new posts.
+          textarea_label: "RSS/Atom XML Content"
+          placeholder: Paste RSS/Atom XML here...
+          submit: Import from XML
       summary:
         reactions: Total post reactions
         views: Total post views

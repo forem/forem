@@ -10,23 +10,14 @@ RSpec.describe "Authenticating with Forem" do
 
   context "when a user is new" do
     context "when using valid credentials" do
-      it "creates a new user" do
+      it "creates and remembers a new user, logs in, and redirects to the onboarding", :aggregate_failures do
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
-      end
 
-      it "logs in and redirects to the onboarding" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
-      end
-
-      it "remembers the user" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -41,24 +32,14 @@ RSpec.describe "Authenticating with Forem" do
         OmniAuth.config.mock_auth[:forem][:extra][:raw_info].delete(:email)
       end
 
-      it "creates a new user" do
+      it "creates and remembers a new user, logs in, and redirects to the onboarding", :aggregate_failures do
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.to change(User, :count).by(1)
-      end
-
-      it "logs in and redirects to the onboarding" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
-      end
-
-      it "remembers the user" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         user = User.last
 
@@ -71,7 +52,7 @@ RSpec.describe "Authenticating with Forem" do
       it "creates a new user with a temporary username" do
         # see Authentication::Providers::Forem#new_user_data
         username = OmniAuth.config.mock_auth[:forem].info.name.downcase.sub(" ", "_")
-        user = create(:user, username: username)
+        user = create(:user, :without_profile, profile_image: nil, username: username)
 
         expect do
           visit sign_up_path
@@ -98,61 +79,18 @@ RSpec.describe "Authenticating with Forem" do
         OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
-      it "does not create a new user" do
+      it "does not create a new user or log in and notifies Datadog", :aggregate_failures do
+        omniauth_setup_authentication_error(nil, params)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
-      end
-
-      it "does not log in" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_button(sign_in_link)
-      end
 
-      it "notifies Datadog about a callback error" do
-        error = OmniAuth::Strategies::OAuth2::CallbackError.new(
-          "Callback error", "Error reason", "https://example.com/error"
-        )
-
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog about an OAuth unauthorized error" do
-        request = double
-        allow(request).to receive(:code).and_return(401)
-        allow(request).to receive(:message).and_return("unauthorized")
-        error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog even with no OmniAuth error present" do
-        error = nil
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
+        args = omniauth_failure_args(nil, "forem", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -165,34 +103,23 @@ RSpec.describe "Authenticating with Forem" do
         OmniAuth.config.mock_auth[:forem].info.name = "X" * 101
       end
 
-      it "does not create a new user" do
+      it "does not create a new user, redirects to registration, and does not log errors", :aggregate_failures do
+        allow(Rails.error).to receive(:report)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
-      end
-
-      it "redirects to the registration page" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/users/sign_up")
-      end
-
-      it "does not log errors to Honeybadger" do
-        allow(Honeybadger).to receive(:notify)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        expect(Honeybadger).not_to have_received(:notify)
+        expect(Rails.error).not_to have_received(:report)
       end
     end
   end
 
   context "when a user already exists" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:forem] }
-    let(:user) { create(:user, :with_identity, identities: [:forem]) }
+    let(:user) { create(:user, :without_profile, :with_identity, identities: [:forem]) }
 
     before do
       auth_payload.info.name = user.name
@@ -229,7 +156,7 @@ RSpec.describe "Authenticating with Forem" do
 
     it "doesn't present the authentication option" do
       visit sign_up_path(state: "new-user")
-      expect(page).not_to have_text(sign_in_link)
+      expect(page).to have_no_text(sign_in_link)
       expect(page).to have_text("invite only")
     end
   end

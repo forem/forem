@@ -1,6 +1,18 @@
-<div class="crayons-layout event-show-layout container">
+<% content_for :title, @event.title %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta name="description" content="<%= @event.description %>">
+  <meta property="og:title" content="<%= @event.title %>" />
+  <meta property="og:description" content="<%= @event.description %>" />
+  <meta property="og:url" content="<%= app_url(event_path(@event.event_name_slug, @event.event_variation_slug)) %>" />
+  <meta property="og:type" content="event" />
+  <meta property="og:image" content="<%= @event.social_image_url %>" />
+  <meta name="twitter:image:src" content="<%= @event.social_image_url %>">
+  <meta name="twitter:card" content="summary_large_image">
+<% end %>
+<div class="crayons-layout event-show-layout container grid-cols-1">
   <!-- Banner Image -->
-  <% banner_image = @event.data&.dig('banner_image_url') %>
+  <% banner_image = @event.cover_image.presence&.url || @event.data&.dig('banner_image_url') %>
   <% if banner_image.present? %>
     <div class="crayons-card mb-6 overflow-hidden">
       <img src="<%= banner_image %>" alt="<%= @event.title %>" class="w-100" style="max-height: 400px; object-fit: cover; display: block;">
@@ -32,9 +44,13 @@
             <% end %>
           </div>
 
-          <div class="mt-4 flex items-center gap-2">
+          <div class="mt-4 flex flex-wrap items-center gap-2">
             <span class="fs-s color-base-60 font-bold">Challenge Status:</span>
-            <% if @event.start_time <= Time.current && @event.end_time >= Time.current %>
+            <% now = Time.current %>
+            <% if @event.start_time > now %>
+              <span class="inline-block shrink-0 px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;"><%= t("views.events.challenge.upcoming") %></span>
+              <span class="fs-s color-base-60"><%= t("views.events.challenge.starts_on", date: l(@event.start_time.to_date, format: :long)) %></span>
+            <% elsif @event.end_time >= now %>
               <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
             <% else %>
               <span class="inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;">ENDED</span>
@@ -42,11 +58,11 @@
           </div>
         </header>
 
-        <div class="crayons-article__body text-lg">
-          <% if @event.data&.dig('body_markdown').present? %>
+        <div class="crayons-article__body text-styles text-lg">
+          <% if @event.body_markdown.blank? && @event.data&.dig('body_markdown').present? %>
             <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
           <% else %>
-            <%= simple_format(@event.description) %>
+            <%= @event.body_html %>
           <% end %>
         </div>
       </article>
@@ -62,7 +78,7 @@
           <h2 class="crayons-title mb-4"><%= prompt_title %></h2>
           
           <% if prompt_markdown.present? %>
-            <div class="crayons-article__body mb-4">
+            <div class="crayons-article__body text-styles mb-4">
               <%= MarkdownProcessor::Parser.new(prompt_markdown).finalize.html_safe %>
             </div>
           <% end %>
@@ -97,7 +113,7 @@
       <% if how_to_participate.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">How To Participate</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(how_to_participate).finalize.html_safe %>
           </div>
         </div>
@@ -108,7 +124,7 @@
       <% if faq_markdown.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">Frequently Asked Questions</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(faq_markdown).finalize.html_safe %>
           </div>
         </div>
@@ -119,7 +135,7 @@
       <% if rules_markdown.present? %>
         <div class="crayons-card p-6 mb-6">
           <h2 class="crayons-title mb-4">Rules</h2>
-          <div class="crayons-article__body">
+          <div class="crayons-article__body text-styles">
             <%= MarkdownProcessor::Parser.new(rules_markdown).finalize.html_safe %>
           </div>
         </div>
@@ -127,7 +143,7 @@
     </main>
 
     <!-- Sidebar Right Column -->
-    <aside class="w-100 m:w-80 flex-shrink-0">
+    <aside class="w-100 m:w-25 shrink-0">
       <% if @event.end_time > Time.current %>
         <div class="crayons-card p-4 mb-6 text-center">
           <h3 class="font-bold mb-2">Join the Challenge</h3>

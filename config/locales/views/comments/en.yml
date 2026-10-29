@@ -108,6 +108,11 @@ en:
         preview: Preview
         continue_editing: Continue editing
         cancel: Dismiss
+        ai_disclosure_title: Disclose AI tooling usage
+      ai_disclosure:
+        no_ai_description: Written without AI assistance.
+        some_ai_description: The commenter has disclosed using AI tooling to assist this comment.
+        fully_autonomous_description: The commenter has disclosed that this comment was generated autonomously by AI.
       menu:
         aria_label: Toggle dropdown menu
         icon: Dropdown menu
@@ -124,6 +129,9 @@ en:
           unhide_text: Unhide
         moderate:
           aria_label: Moderate %{user}'s comment
+        admin_profile:
+          aria_label: View %{user}'s admin profile
+          text: View Admin Profile
         report:
           aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:

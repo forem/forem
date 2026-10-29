@@ -138,8 +138,7 @@ module Articles
         scope = Article.joins(join_fragment)
           .from_subforem
           .minimal_feed_column_select
-          .includes(:distinct_reaction_categories, :context_notes)
-          .includes(:subforem)
+          .includes(:context_notes)
           .order(config.order_by.to_sql)
 
         scope = case comments_variant
@@ -253,6 +252,10 @@ module Articles
           # As implemented, this is not looking for collisions of named parameters.
           @query_parameters.merge!(lever.query_parameters)
         end
+
+        if @user&.setting&.minimize_ai_feed_ai?
+          @relevance_score_components << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        end
       end
 
       # Concatenate the required group by clauses.
@@ -287,12 +290,15 @@ module Articles
         where_clauses += " AND articles.published_at < :now"
         where_clauses += " AND articles.score >= 0"
         if @type_of == "discover"
-          where_clauses += " AND ((articles.published_at > :oldest_published_at)
-            OR (articles.published_at > :conditional_lookback
-            AND articles.last_comment_at > :conditional_comment_timeframe))"
+          where_clauses += " AND articles.published_at > :conditional_lookback
+            AND ((articles.published_at > :oldest_published_at)
+            OR (articles.last_comment_at > :conditional_comment_timeframe))"
         elsif @user
           user_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids + [0] # Adding one that will never be reached so we can have a valid SQL statement
           where_clauses += " AND articles.user_id IN (#{user_ids.join(',')})"
+        end
+        if @user&.setting&.hide_fully_autonomous_feed_ai?
+          where_clauses += " AND articles.ai_disclosure_level != #{Article.ai_disclosure_levels[:fully_autonomous]}"
         end
         where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.compact.empty?
         where_clauses += " AND articles.featured = true" if only_featured

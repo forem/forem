@@ -25,6 +25,7 @@ fr:
         hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
+        org_analytics: Analytique d'organisation
         feed_imports: Importations de flux RSS
         for_org: Analytics for %{org}
         upload: Charger une vidéo
@@ -35,6 +36,7 @@ fr:
         audience_heading: Votre audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
+        organizations_menu: Organisations
         org: "%{org} Analytics Dashboard"
         readers: Lecteurs
         comments: Commentaires
@@ -271,6 +273,16 @@ fr:
             inactive: Inactif
           last_fetched: "Dernière récupération : %{time}"
           never_fetched: Jamais récupéré
+        xml_import:
+          heading: Importer depuis le XML (unique)
+          description: Si l'URL de votre flux est bloquée par une protection bot (ex. Cloudflare), collez le XML RSS/Atom brut ci-dessous. Les articles seront créés comme brouillons.
+          url_blocked_hint_html: "L'URL du flux ne fonctionne pas ? %{link} à la place."
+          url_blocked_link: Collez votre XML directement
+          note_label: "Importation unique :"
+          note: "Les articles publiés après ce collage n'apparaîtront pas automatiquement — recollez le XML mis à jour pour importer de nouveaux articles."
+          textarea_label: "Contenu XML RSS/Atom"
+          placeholder: Collez le XML RSS/Atom ici...
+          submit: Importer depuis le XML
       summary:
         reactions: Total post reactions
         views: Total post views

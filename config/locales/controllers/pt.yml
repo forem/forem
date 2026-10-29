@@ -10,6 +10,8 @@ pt:
     please_sign_in: Por favor, faça login
   articles_controller:
     deleted: Artigo foi excluído com sucesso.
+  co_author_invitations_controller:
+    not_updated: Não foi possível atualizar este convite de coautoria. Ele pode já ter sido respondido ou retirado.
   comments_controller:
     create:
       success: criado
@@ -43,18 +45,35 @@ pt:
     newsletter: newsletter
   favorites_controller:
     create:
-      already_favorited: Isto já foi adicionado aos favoritos.
-      no_allowance: Você esgotou sua cota de favoritos.
-      cannot_favorite: Não foi possível adicionar isto aos favoritos.
+      already_favorited: Isto já foi escolhido como joia.
+      no_allowance: Você esgotou sua cota de joias.
+      cannot_favorite: Não foi possível escolher isto como joia.
   feeds:
     sources:
       created: Sua fonte de feed foi adicionada e uma importação foi iniciada.
       updated: Sua fonte de feed foi atualizada.
       deleted: Sua fonte de feed foi removida.
+    validate_url:
+      bot_protection: "Não foi possível recuperar a URL do feed — ela pode estar protegida por detecção de bots ou temporariamente indisponível"
+      not_found: "Não foi possível recuperar a URL do feed — o servidor retornou um 404 (Não Encontrado)"
+      server_error: "Não foi possível recuperar a URL do feed — o servidor retornou um 500 (Erro Interno do Servidor)"
+      status_error: "Não foi possível recuperar a URL do feed — o servidor retornou o código de status %{code}"
+      network_error: "Não foi possível alcançar a URL do feed — verifique a URL ou sua conexão de rede"
+    xml_imports:
+      success: "%{count} artigo(s) importado(s) do XML colado."
+      blank: "O conteúdo XML não pode estar em branco."
+      too_large: "O conteúdo XML é muito grande (máx. 500 KB)."
+      too_many_entries: "O feed contém muitas entradas (máx. %{max}). Importe em lotes menores ou adicione como fonte de feed."
+      no_entries: "O feed não contém entradas para importar."
+      none_imported: "Nenhum artigo novo foi importado (os itens já podem existir ou não são válidos)."
+      invalid_xml: "Não foi possível analisar o XML — certifique-se de que é um feed RSS ou Atom válido."
   feedback_messages_controller:
     error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros erros possíveis: %{errors}"
     n_a: N/A
     submitted: Seu relatório foi enviado
+  flag_appeals:
+    submitted_success: Seu recurso foi enviado para análise. Obrigado!
+    already_pending: Você já tem um recurso aberto pendente de análise para este item.
   follows_controller:
     already_followed: já seguido
     daily_limit: Limite diário de seguidores de conta atingido!
@@ -74,6 +93,11 @@ pt:
     deleted: Anúncio foi excluído com sucesso.
     no_credit: Créditos disponíveis insuficientes
   omniauth_callbacks_controller:
+    account_switch_title: "Confirmar troca de conta"
+    account_switch_body_html: "Você está conectado com outra conta. Continuar como %{username}? Isso encerrará sua sessão atual e conectará você a essa conta."
+    account_switch_confirm: "Confirmar troca"
+    account_switch_cancel: "Cancelar"
+    account_switch_expired: "Esta tentativa de login expirou. Tente entrar novamente."
     log_in_error: 'Erro de login: %{e}'
     username_taken: nome de usuário já foi usado
   organizations_controller:

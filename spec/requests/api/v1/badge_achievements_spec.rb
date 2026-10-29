@@ -51,16 +51,52 @@ RSpec.describe "/api/badge_achievements", type: :request do
       expect(new_achievement.include_default_description).to be(false)
     end
 
-    it "does not create a duplicate achievement for a single-award badge" do
-      duplicate_params = {
-        badge_achievement: { user_id: user.id, badge_id: single_award_badge.id }
-      }
+    it "creates an achievement with metadata" do
+      params_with_metadata = valid_params.deep_merge(
+        badge_achievement: { metadata: { "entitlement_id" => "abc-123", "source" => "core" } },
+      )
 
-      expect do
+      post api_badge_achievements_path, params: params_with_metadata, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(BadgeAchievement.last.metadata).to eq("entitlement_id" => "abc-123", "source" => "core")
+      expect(response.parsed_body["metadata"]).to eq("entitlement_id" => "abc-123", "source" => "core")
+    end
+
+    it "defaults metadata to an empty hash when omitted" do
+      post api_badge_achievements_path, params: valid_params, headers: headers
+
+      expect(response).to have_http_status(:created)
+      expect(BadgeAchievement.last.metadata).to eq({})
+    end
+
+    context "when the user already holds a single-award badge" do
+      let(:duplicate_params) do
+        { badge_achievement: { user_id: user.id, badge_id: single_award_badge.id } }
+      end
+
+      it "does not create a duplicate achievement" do
+        expect do
+          post api_badge_achievements_path, params: duplicate_params, headers: headers
+        end.not_to change(BadgeAchievement, :count)
+      end
+
+      it "returns 409 with the id of the achievement that blocked it" do
         post api_badge_achievements_path, params: duplicate_params, headers: headers
-      end.not_to change(BadgeAchievement, :count)
+
+        expect(response).to have_http_status(:conflict)
+        expect(response.parsed_body["errors"]).to be_present
+        expect(response.parsed_body["achievement_id"]).to eq(badge_achievement.id)
+      end
+    end
+
+    it "returns 422 for a payload that is invalid for other reasons" do
+      invalid_params = { badge_achievement: { user_id: user.id, badge_id: nil } }
+
+      post api_badge_achievements_path, params: invalid_params, headers: headers
 
       expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body).not_to have_key("achievement_id")
     end
   end
 
@@ -73,6 +109,44 @@ RSpec.describe "/api/badge_achievements", type: :request do
       end.to change(BadgeAchievement, :count).by(-1)
 
       expect(response).to have_http_status(:no_content)
+    end
+  end
+
+  describe "access control" do
+    def headers_for(api_user)
+      v1_headers.merge({ "api-key" => create(:api_secret, user: api_user).secret })
+    end
+
+    it "allows super admins" do
+      get api_badge_achievements_path, headers: headers_for(create(:user, :super_admin))
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "allows single resource admins for BadgeAchievement" do
+      scoped_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, BadgeAchievement) }
+      get api_badge_achievements_path, headers: headers_for(scoped_admin)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "lets single resource admins for BadgeAchievement award badges" do
+      scoped_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, BadgeAchievement) }
+      params = { badge_achievement: { user_id: create(:user).id, badge_id: create(:badge).id } }
+
+      expect do
+        post api_badge_achievements_path, params: params, headers: headers_for(scoped_admin)
+      end.to change(BadgeAchievement, :count).by(1)
+      expect(response).to have_http_status(:created)
+    end
+
+    it "rejects single resource admins for an unrelated resource" do
+      other_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, Badge) }
+      get api_badge_achievements_path, headers: headers_for(other_admin)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects regular users" do
+      get api_badge_achievements_path, headers: headers_for(create(:user))
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

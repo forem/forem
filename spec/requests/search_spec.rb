@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Search", :proper_status do
-  let(:authorized_user) { create(:user) }
+  let(:authorized_user) { create(:user, :without_profile, profile_image: nil) }
 
   describe "GET /search/tags" do
     before do
@@ -31,13 +31,13 @@ RSpec.describe "Search", :proper_status do
     end
 
     it "finds a username by a partial username" do
-      user = create(:user, username: "Sloan")
+      user = create(:user, :without_profile, profile_image: nil, username: "Sloan")
       get search_usernames_path(username: "slo")
       expect(response.parsed_body["result"].first).to include("username" => user.username)
     end
 
     it "finds a username by a partial name" do
-      user = create(:user, name: "Sloan")
+      user = create(:user, :without_profile, profile_image: nil, name: "Sloan")
       get search_usernames_path(username: "slo")
       expect(response.parsed_body["result"].first).to include("username" => user.username)
     end
@@ -55,13 +55,24 @@ RSpec.describe "Search", :proper_status do
     end
 
     it "returns the correct keys", :aggregate_failures do
-      create(:article)
+      create(:article, user: authorized_user, with_tags: false)
       get search_feed_content_path(homepage_params)
       expect(response.parsed_body["result"]).to be_present
     end
 
+    it "returns empty result without querying articles when page exceeds MAX_PAGE" do
+      allow(Homepage::FetchArticles).to receive(:call)
+      allow(Search::Article).to receive(:search_documents)
+
+      get search_feed_content_path(homepage_params.merge(page: 100))
+
+      expect(response.parsed_body["result"]).to eq([])
+      expect(Homepage::FetchArticles).not_to have_received(:call)
+      expect(Search::Article).not_to have_received(:search_documents)
+    end
+
     it "parses published_at correctly", :aggregate_failures do
-      article = create(:article)
+      article = create(:article, user: authorized_user, with_tags: false)
       get search_feed_content_path(homepage_params.merge(published_at: { gte: article.published_at.iso8601 }))
       expect(response.parsed_body["result"].first["id"]).to eq(article.id)
       datetime = article.published_at + 1.minute
@@ -100,20 +111,16 @@ RSpec.describe "Search", :proper_status do
         expect(Search::Article).to have_received(:search_documents)
       end
 
-      it "supports the search params", :aggregate_failures do
+      it "supports the search params and nullifies invalid sort directions", :aggregate_failures do
         allow(Search::Article).to receive(:search_documents).and_call_original
-        article = create(:article)
+        article = create(:article, user: authorized_user, with_tags: false)
         get search_feed_content_path(
           class_name: "Article", page: 0, per_page: 1, search_fields: article.title,
           sort_by: :published_at, sort_direction: :desc
         )
         expect(response.parsed_body["result"].first["id"]).to eq(article.id)
         expect(Search::Article).to have_received(:search_documents)
-      end
 
-      it "nullifies invalid sort directions" do
-        allow(Search::Article).to receive(:search_documents).and_call_original
-        article = create(:article)
         get search_feed_content_path(
           class_name: "Article", page: 0, per_page: 1, search_fields: article.title,
           sort_by: :published_at, sort_direction: :invalid
@@ -126,14 +133,9 @@ RSpec.describe "Search", :proper_status do
     end
 
     context "when searching for comments" do
-      it "returns the correct keys for comments" do
-        create(:comment, body_markdown: "Ruby on Rails rocks!")
-        get search_feed_content_path(search_fields: "rails", class_name: "Comment")
-        expect(response.parsed_body["result"]).to be_present
-      end
-
-      it "supports the search params for comments" do
-        comment = create(:comment, body_markdown: "Ruby on Rails rocks!")
+      it "returns the correct keys and supports the search params for comments", :aggregate_failures do
+        article = create(:article, user: authorized_user, with_tags: false)
+        comment = create(:comment, user: authorized_user, commentable: article, body_markdown: "Ruby on Rails rocks!")
         get search_feed_content_path(
           search_fields: "rails",
           class_name: "Comment",
@@ -145,30 +147,18 @@ RSpec.describe "Search", :proper_status do
     end
 
     context "when using searching for users" do
-      it "returns the correct keys", :aggregate_failures do
-        create(:user)
-        get search_feed_content_path(class_name: "User")
-        expect(response.parsed_body["result"]).to be_present
-      end
-
-      it "supports the search params" do
-        user = create(:user)
+      it "returns the correct keys and supports the search params", :aggregate_failures do
+        authorized_user
         get search_feed_content_path(
-          class_name: "User", page: 0, per_page: 1, search_fields: user.name,
+          class_name: "User", page: 0, per_page: 1, search_fields: authorized_user.name,
           sort_by: :created_at, sort_direction: :desc
         )
-        expect(response.parsed_body["result"].first["id"]).to eq(user.id)
+        expect(response.parsed_body["result"].first["id"]).to eq(authorized_user.id)
       end
     end
 
     context "when using searching for podcasts" do
-      it "returns the correct keys for podcasts" do
-        create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
-        get search_feed_content_path(search_fields: "rails", class_name: "PodcastEpisode")
-        expect(response.parsed_body["result"]).to be_present
-      end
-
-      it "supports the search params for podcasts" do
+      it "returns the correct keys and supports the search params for podcasts", :aggregate_failures do
         podcast_episode = create(:podcast_episode, body: "DHH talks about how Ruby on Rails rocks!")
         get search_feed_content_path(
           search_fields: "rails",
@@ -183,12 +173,7 @@ RSpec.describe "Search", :proper_status do
     context "when using searching for tags" do
       let!(:tag) { create(:tag, name: "webdev") }
 
-      it "returns the correct keys for tags" do
-        get search_feed_content_path(search_fields: "web", class_name: "Tag")
-        expect(response.parsed_body["result"]).to be_present
-      end
-
-      it "supports the search params for tags" do
+      it "returns the correct keys and supports the search params for tags", :aggregate_failures do
         get search_feed_content_path(
           search_fields: "web",
           class_name: "Tag",
@@ -201,19 +186,18 @@ RSpec.describe "Search", :proper_status do
   end
 
   describe "GET /search/reactions" do
-    let(:article) { create(:article) }
     before do
       sign_in authorized_user
-      create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
     end
 
-    it "returns the correct keys", :aggregate_failures do
+    it "returns the correct keys and supports the search params", :aggregate_failures do
+      article = create(:article, user: authorized_user, with_tags: false)
+      create(:reaction, category: :readinglist, reactable: article, user: authorized_user)
+
       get search_reactions_path
       expect(response.parsed_body["result"]).to be_present
       expect(response.parsed_body["total"]).to eq(1)
-    end
 
-    it "supports the search params" do
       article.update_columns(title: "Title", cached_tag_list: "ruby, python")
       get search_reactions_path(page: 0, per_page: 1, status: %w[valid], tags: %w[ruby], term: "title")
       expect(response.parsed_body["result"].first["reactable"]).to include("title" => "Title")
@@ -223,13 +207,14 @@ RSpec.describe "Search", :proper_status do
       let(:subforem_a) { create(:subforem, domain: "community-a.example.com", discoverable: true) }
       let(:subforem_b) { create(:subforem, domain: "community-b.example.com", discoverable: true) }
       let(:root_subforem) { create(:subforem, domain: "root.example.com", root: true) }
-      let(:article_in_subforem_a) { create(:article, subforem_id: subforem_a.id) }
-      let(:article_in_subforem_b) { create(:article, subforem_id: subforem_b.id) }
+      let(:article_in_subforem_a) do
+        create(:article, user: authorized_user, with_tags: false, subforem_id: subforem_a.id)
+      end
+      let(:article_in_subforem_b) do
+        create(:article, user: authorized_user, with_tags: false, subforem_id: subforem_b.id)
+      end
 
       before do
-        # Remove the article from the outer context's reading list to avoid interference
-        authorized_user.reactions.readinglist.delete_all
-
         create(:reaction, category: :readinglist, reactable: article_in_subforem_a, user: authorized_user)
         create(:reaction, category: :readinglist, reactable: article_in_subforem_b, user: authorized_user)
 
@@ -240,38 +225,21 @@ RSpec.describe "Search", :proper_status do
         allow(Subforem).to receive(:cached_root_id).and_return(root_subforem.id)
       end
 
-      it "filters articles by current subforem" do
+      it "filters articles and total count by current subforem, root subforem, or no context", :aggregate_failures do
         get search_reactions_path, params: { passed_domain: subforem_a.domain }
-        result = response.parsed_body["result"]
-        article_paths = result.map { |item| item.dig("reactable", "path") }
-
+        article_paths = response.parsed_body["result"].map { |item| item.dig("reactable", "path") }
         expect(article_paths).to include(article_in_subforem_a.path)
         expect(article_paths).not_to include(article_in_subforem_b.path)
-      end
-
-      it "returns articles from all subforems when in root subforem context" do
-        get search_reactions_path, params: { passed_domain: root_subforem.domain }
-        result = response.parsed_body["result"]
-        article_paths = result.map { |item| item.dig("reactable", "path") }
-
-        expect(article_paths).to include(article_in_subforem_a.path)
-        expect(article_paths).to include(article_in_subforem_b.path)
-      end
-
-      it "returns all articles when no subforem context is set" do
-        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
-
-        get search_reactions_path
-        result = response.parsed_body["result"]
-        article_paths = result.map { |item| item.dig("reactable", "path") }
-
-        expect(article_paths).to include(article_in_subforem_a.path)
-        expect(article_paths).to include(article_in_subforem_b.path)
-      end
-
-      it "correctly counts total articles when filtering by subforem" do
-        get search_reactions_path, params: { passed_domain: subforem_a.domain }
         expect(response.parsed_body["total"]).to eq(1)
+
+        get search_reactions_path, params: { passed_domain: root_subforem.domain }
+        article_paths = response.parsed_body["result"].map { |item| item.dig("reactable", "path") }
+        expect(article_paths).to include(article_in_subforem_a.path, article_in_subforem_b.path)
+
+        allow(Subforem).to receive(:cached_id_by_domain).and_return(nil)
+        get search_reactions_path
+        article_paths = response.parsed_body["result"].map { |item| item.dig("reactable", "path") }
+        expect(article_paths).to include(article_in_subforem_a.path, article_in_subforem_b.path)
       end
     end
   end

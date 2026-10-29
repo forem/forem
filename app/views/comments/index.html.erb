@@ -1,8 +1,10 @@
 <%= javascript_include_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? && !@root_comment.decorate.super_low_quality %>
   <% title(@root_comment.title.to_s) %>
-<% else %>
+<% elsif @commentable %>
   <% title(t("views.comments.meta.title_root", title: @commentable.title)) %>
+<% else %>
+  <% title(t("views.comments.orphan.deleted")) %>
 <% end %>
 
 <% if @commentable %>
@@ -143,10 +145,20 @@
         <% end %>
       <% else %>
         <%
-          full_tree = Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?)
+          full_tree = Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?, preload: false)
           total_top_level = full_tree.size
           is_limited = !user_signed_in? && total_top_level > CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED
-          tree_to_render = is_limited ? full_tree.first(CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED).to_h : full_tree
+          tree_to_render = if is_limited
+                             full_tree.first(CommentsHelper::MAX_TOP_LEVEL_COMMENTS_UNAUTHENTICATED).to_h
+                           else
+                             full_tree
+                           end
+          unless user_signed_in?
+            tree_to_render = tree_to_render.transform_values do |sub_comments|
+              limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED)
+            end
+          end
+          Comments::Tree.preload_for_tree(tree_to_render, commentable: @commentable)
         %>
         
         <% if is_limited %>
@@ -157,11 +169,10 @@
           </div>
         <% end %>
 
+        <%# Not fragment-cached per thread: this action is edge-cached, so origin renders are mostly edge misses
+            and the per-thread fragments hit too rarely to pay for their Redis read + write. %>
         <% tree_to_render.each do |comment, sub_comments| %>
-          <% cache ["comment_root_v2_#{user_signed_in?}", comment] do %>
-            <% limited_sub_comments = user_signed_in? ? sub_comments : limit_descendants(sub_comments, CommentsHelper::MAX_DESCENDANT_COMMENTS_UNAUTHENTICATED) %>
-            <%= nested_comments(tree: { comment => limited_sub_comments }, commentable: @commentable, is_view_root: true) %>
-          <% end %>
+          <%= nested_comments(tree: { comment => sub_comments }, commentable: @commentable, is_view_root: true) %>
         <% end %>
       <% end %>
     </div>

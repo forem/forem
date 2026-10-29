@@ -352,6 +352,34 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#estimated_user_count" do
+    it "runs the estimated count query once per view when also checking the display threshold" do
+      allow(User).to receive(:estimated_count).and_return(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+
+      expect(display_estimated_user_count?).to be(true)
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      expect(User).to have_received(:estimated_count).once
+    end
+
+    it "reuses the in-process cached estimate across separate renders" do
+      allow(User).to receive(:estimated_count).and_return(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      remove_instance_variable(:@estimated_user_count)
+
+      expect(estimated_user_count).to eq(ApplicationHelper::LARGE_USERBASE_THRESHOLD + 1)
+      expect(User).to have_received(:estimated_count).once
+    end
+
+    it "does not display the count for a small userbase" do
+      allow(User).to receive(:estimated_count).and_return(0)
+
+      expect(display_estimated_user_count?).to be(false)
+      expect(estimated_user_count).to eq(0)
+      expect(User).to have_received(:estimated_count).once
+    end
+  end
+
   describe "#cloudinary", cloudinary: true do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
@@ -365,6 +393,15 @@ RSpec.describe ApplicationHelper do
 
     it "keeps an ASCII domain as ASCII" do
       expect(helper.optimized_image_url("https://www.xn--vnx.dev/image.png")).to include("https://www.xn--vnx.dev")
+    end
+
+    it "normalizes the URL like Addressable before optimizing it" do
+      allow(Images::Optimizer).to receive(:call).and_call_original
+
+      helper.optimized_image_url("HTTPS://Example.COM:443/a%7eb.png?x=%3d#")
+
+      expect(Images::Optimizer).to have_received(:call)
+        .with("https://example.com/a~b.png?x==", width: 500, quality: 80, fetch_format: "auto")
     end
 
     it "returns random fallback images as expected" do
@@ -414,6 +451,16 @@ RSpec.describe ApplicationHelper do
         expect(Tag).not_to receive(:find_by)
         helper.tag_colors(tag)
       end
+
+      it "memoizes the tag's colors by name so subsequent string lookups skip cache and DB", :aggregate_failures do
+        helper.tag_colors(tag)
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        allow(Tag).to receive(:find_by).and_call_original
+
+        expect(helper.tag_colors(tag.name)).to eq(background: "#ff0000", color: "#ffffff")
+        expect(Rails.cache).not_to have_received(:fetch)
+        expect(Tag).not_to have_received(:find_by)
+      end
     end
 
     context "when given an ActsAsTaggableOn::Tag object (as returned by follow.followable)" do
@@ -439,11 +486,13 @@ RSpec.describe ApplicationHelper do
         expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
       end
 
-      it "caches the result to avoid repeated DB queries" do
+      it "caches the result to avoid repeated DB queries and cache reads" do
         Rails.cache.delete("view-helper-ruby/tag_colors")
-        helper.tag_colors("ruby")
+        allow(Rails.cache).to receive(:fetch).and_call_original
+        expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
         expect(Tag).not_to receive(:find_by)
-        helper.tag_colors("ruby")
+        expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+        expect(Rails.cache).to have_received(:fetch).with("view-helper-ruby/tag_colors", expires_in: 5.hours).once
       end
 
       it "returns default colors when the tag does not exist in DB" do
@@ -469,6 +518,63 @@ RSpec.describe ApplicationHelper do
         expect(Tag).not_to receive(:find_by)
         expect(helper.tag_colors(tag)).to eq(background: nil, color: nil)
       end
+    end
+  end
+
+  describe "#preload_tag_colors" do
+    before { create(:tag, name: "ruby", bg_color_hex: "#cc0000", text_color_hex: "#ffffff") }
+
+    let(:story) { build(:article, cached_tag_list: "ruby, unknowntag").decorate }
+    let(:other_story) { build(:article, cached_tag_list: "ruby").decorate }
+    let(:status_story) { build(:article, type_of: "status", cached_tag_list: "python").decorate }
+
+    it "reads every distinct tag's colors in one batch for the story list" do
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      helper.preload_tag_colors([story, other_story, status_story])
+      expect(Rails.cache).to have_received(:fetch_multi)
+        .with("view-helper-ruby/tag_colors", "view-helper-unknowntag/tag_colors", expires_in: 5.hours).once
+    end
+
+    it "batches database lookups into a single query when multiple tags miss the cache", :aggregate_failures do
+      create(:tag, name: "javascript", bg_color_hex: "#f7df1e", text_color_hex: "#000000")
+      Rails.cache.delete("view-helper-ruby/tag_colors")
+      Rails.cache.delete("view-helper-javascript/tag_colors")
+      Rails.cache.delete("view-helper-unknowntag/tag_colors")
+      multi_tag_story = build(:article, cached_tag_list: "ruby, javascript, unknowntag").decorate
+
+      allow(Tag).to receive(:where).and_call_original
+      allow(Tag).to receive(:find_by).and_call_original
+
+      helper.preload_tag_colors([multi_tag_story])
+
+      expect(Tag).to have_received(:where).with(name: %w[ruby javascript unknowntag]).once
+      expect(Tag).not_to have_received(:find_by)
+      expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+      expect(helper.tag_colors("javascript")).to eq(background: "#f7df1e", color: "#000000")
+      expect(helper.tag_colors("unknowntag")).to eq(background: "#d6d9e0", color: "#606570")
+    end
+
+    it "makes tag_colors return the same colors without another cache read or DB lookup" do
+      helper.preload_tag_colors([story])
+      allow(Rails.cache).to receive(:fetch).and_call_original
+      allow(Tag).to receive(:select).and_call_original
+      expect(helper.tag_colors("ruby")).to eq(background: "#cc0000", color: "#ffffff")
+      expect(helper.tag_colors("unknowntag")).to eq(background: "#d6d9e0", color: "#606570")
+      expect(Rails.cache).not_to have_received(:fetch)
+      expect(Tag).not_to have_received(:select)
+    end
+
+    it "still looks up tags that were not preloaded" do
+      helper.preload_tag_colors([story])
+      create(:tag, name: "python", bg_color_hex: "#3572a5", text_color_hex: "#ffffff")
+      expect(helper.tag_colors("python")).to eq(background: "#3572a5", color: "#ffffff")
+    end
+
+    it "skips the cache when there are no tags to preload" do
+      allow(Rails.cache).to receive(:fetch_multi).and_call_original
+      helper.preload_tag_colors([status_story])
+      helper.preload_tag_colors(nil)
+      expect(Rails.cache).not_to have_received(:fetch_multi)
     end
   end
 
@@ -654,6 +760,121 @@ RSpec.describe ApplicationHelper do
       trimmed = Article.select(:id, :title).find(favorited.id)
 
       expect(helper.should_render_favorited_marker?(trimmed)).to be false
+    end
+  end
+
+  describe "#custom_domain_main_app_url" do
+    let(:organization) { build_stubbed(:organization, slug: "myorg", custom_domain: "blog.myorg.com") }
+
+    before do
+      allow(Settings::General).to receive(:app_domain).and_return("forem.com")
+    end
+
+    it "returns nil when custom_org is nil" do
+      expect(helper.custom_domain_main_app_url(nil)).to be_nil
+    end
+
+    it "maps root path to organization profile on main domain" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg")
+    end
+
+    it "preserves query string when mapping root path" do
+      request_double = instance_double(ActionDispatch::Request, path: "/", query_string: "sort=top&page=2")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg?sort=top&page=2")
+    end
+
+    it "maps custom page /p/:page_suffix" do
+      request_double = instance_double(ActionDispatch::Request, path: "/p/about", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/p/about")
+    end
+
+    it "maps article path /:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+
+    it "handles article path already containing org slug /:org_slug/:slug" do
+      request_double = instance_double(ActionDispatch::Request, path: "/myorg/my-article", query_string: "")
+      allow(helper).to receive(:request).and_return(request_double)
+
+      expect(helper.custom_domain_main_app_url(organization)).to eq("http://forem.com/myorg/my-article")
+    end
+  end
+
+  describe "#subforem_aware_sign_up_url" do
+    let!(:default_subforem) { create(:subforem, domain: "default-forem.test") }
+    let!(:root_subforem) { create(:subforem, domain: "root-forem.test", root: true) }
+    let!(:other_subforem) { create(:subforem, domain: "other-forem.test") }
+    let(:path) { "/enter?state=new-user" }
+
+    before do
+      RequestStore.store[:default_subforem_id] = Subforem.cached_default_id
+    end
+
+    after { RequestStore.clear! }
+
+    it "returns the path unchanged when no subforem is in the request" do
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(path)
+    end
+
+    it "links to the default subforem's domain when on the default subforem" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://default-forem.test/enter?state=new-user")
+    end
+
+    it "matches the URL previously built from the default subforem record" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq(URL.url(path, default_subforem))
+    end
+
+    it "does not query subforems on repeated default-subforem renders" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems")
+      end
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        3.times { helper.subforem_aware_sign_up_url(path) }
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
+    it "reflects a changed default subforem domain after save" do
+      RequestStore.store[:subforem_id] = default_subforem.id
+      helper.subforem_aware_sign_up_url(path)
+
+      default_subforem.update!(domain: "renamed-forem.test")
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://renamed-forem.test/enter?state=new-user")
+    end
+
+    it "links to the root subforem's domain when on a non-default subforem" do
+      RequestStore.store[:subforem_id] = other_subforem.id
+
+      expect(helper.subforem_aware_sign_up_url(path)).to eq("http://#{root_subforem.domain}/enter?state=new-user")
+    end
+  end
+
+  describe "#main_stylesheets_fingerprint" do
+    it "returns a deterministic hash based on minimal, views, and crayons stylesheet paths" do
+      fingerprint = helper.main_stylesheets_fingerprint
+      expect(fingerprint).to be_a(String)
+      expect(fingerprint.length).to eq(10)
+      expect(fingerprint).to eq(helper.main_stylesheets_fingerprint)
     end
   end
 end

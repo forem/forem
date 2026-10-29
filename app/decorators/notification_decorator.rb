@@ -10,6 +10,21 @@ class NotificationDecorator < ApplicationDecorator
     alias_method :class_name, :name
   end.freeze
 
+  attr_writer :collection_notifications, :preloaded_subscriptions, :preloaded_reactions, :preloaded_comment_replies
+
+  def self.decorate_collection(objects)
+    decorated = super
+    preloaded = {}.compare_by_identity
+    preloaded_reactions = {}.compare_by_identity
+    preloaded_comment_replies = {}.compare_by_identity
+    decorated.each do |notification|
+      notification.collection_notifications = decorated
+      notification.preloaded_subscriptions = preloaded
+      notification.preloaded_reactions = preloaded_reactions
+      notification.preloaded_comment_replies = preloaded_comment_replies
+    end
+  end
+
   # returns a stub notifiable object with name and id
   def mocked_object(type)
     return NOTIFIABLE_STUB.new("", nil) if json_data.blank?
@@ -85,6 +100,13 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def subscription_to_notifiable_for(user, **notifiable)
+    if user&.notification_subscriptions.is_a?(ActiveRecord::Relation)
+      map = preloaded_subscriptions_for(user)
+      return Array(notifiable[:notifiable_id]).filter_map do |id|
+        map[[notifiable[:notifiable_type], Integer(id, exception: false)]]
+      end.min_by(&:id)
+    end
+
     user.notification_subscriptions.for_notifiable(**notifiable).first
   end
 
@@ -123,7 +145,15 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def any_cached_reactions_for_object?(user, object_type = "article", category: "like")
-    Reaction.cached_any_reactions_for?(mocked_object(object_type), user, category)
+    target = mocked_object(object_type)
+    if user&.reactions.is_a?(ActiveRecord::Relation) && %w[article comment].include?(object_type.to_s)
+      target_id = Integer(target.id, exception: false)
+      return false if target_id.nil? || %w[Article Comment].exclude?(target.class_name)
+
+      return preloaded_reactions_for(user).include?([target.class_name, target_id, category.to_s])
+    end
+
+    Reaction.cached_any_reactions_for?(target, user, category)
   end
 
   def article_id
@@ -131,7 +161,14 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def article_url
-    @article_url ||= json_data.dig("article", "url") || json_data.dig("article", "path")
+    @article_url ||= begin
+      url = json_data.dig("article", "url")
+      if url.present? && url.match?(%r{:\d+:\d+})
+        json_data.dig("article", "path").presence || url.sub(%r{(:\d+):\d+}, '\1')
+      else
+        url.presence || json_data.dig("article", "path")
+      end
+    end
   end
 
   def article_title
@@ -152,6 +189,21 @@ class NotificationDecorator < ApplicationDecorator
 
   def comment_id
     @comment_id ||= json_data.dig "comment", "id"
+  end
+
+  def comment_reply_for(user)
+    return unless user && comment_id
+
+    if user.comments.is_a?(ActiveRecord::Relation)
+      target_id = Integer(comment_id, exception: false)
+      return target_id && preloaded_comment_replies_for(user)[target_id]
+    end
+
+    Comment.select(:id, :user_id, :ancestry)
+      .find_by(id: comment_id)
+      &.children
+      &.select(:id, :user_id, :ancestry)
+      &.find_by(user_id: user.id)
   end
 
   def comment_last_ancestor
@@ -241,6 +293,74 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   private
+
+  def preloaded_subscriptions_for(user)
+    @preloaded_subscriptions ||= {}.compare_by_identity
+    @preloaded_subscriptions[user] ||= begin
+      notifications = @collection_notifications || [self]
+      comment_ids = notifications.flat_map { |n| n.comment_ancestry ? [n.comment_id, *n.comment_ancestry.split("/")] : [] } # rubocop:disable Layout/LineLength
+        .filter_map { |id| Integer(id, exception: false) }.uniq
+      article_ids = notifications.flat_map { |n| [n.commentable_article_id, n.article_id] }
+        .filter_map { |id| Integer(id, exception: false) }.uniq
+
+      scope = user.notification_subscriptions
+      clauses = []
+      clauses << scope.where(notifiable_type: "Comment", notifiable_id: comment_ids) if comment_ids.any?
+      clauses << scope.where(notifiable_type: "Article", notifiable_id: article_ids) if article_ids.any?
+
+      clauses.any? ? clauses.reduce(:or).index_by { |sub| [sub.notifiable_type, sub.notifiable_id] } : {}
+    end
+  end
+
+  def preloaded_reactions_for(user)
+    @preloaded_reactions ||= {}.compare_by_identity
+    @preloaded_reactions[user] ||= begin
+      notifications = @collection_notifications || [self]
+      target_ids_by_type = Hash.new { |h, k| h[k] = [] }
+      notifications.each do |n|
+        article_id = Integer(n.article_id, exception: false)
+        target_ids_by_type["Article"] << article_id if article_id
+        comment_id = Integer(n.comment_id, exception: false)
+        target_ids_by_type["Comment"] << comment_id if comment_id
+      end
+
+      reactable_ids = target_ids_by_type.values.flatten.uniq
+      if reactable_ids.any?
+        user.reactions
+          .where(reactable_id: reactable_ids, reactable_type: target_ids_by_type.keys)
+          .pluck(:reactable_type, :reactable_id, :category)
+          .to_set
+      else
+        Set.new
+      end
+    end
+  end
+
+  def preloaded_comment_replies_for(user)
+    @preloaded_comment_replies ||= {}.compare_by_identity
+    @preloaded_comment_replies[user] ||= begin
+      notifications = @collection_notifications || [self]
+      comment_ids = notifications.filter_map { |n| Integer(n.comment_id, exception: false) }.uniq
+      child_ancestries = if comment_ids.any?
+                           Comment.where(id: comment_ids).pluck(:id, :ancestry).to_h do |id, anc|
+                             [anc.present? ? "#{anc}/#{id}" : id.to_s, id]
+                           end
+                         else
+                           {}
+                         end
+
+      if child_ancestries.any?
+        replies = {}
+        user.comments.where(ancestry: child_ancestries.keys).select(:id, :user_id, :ancestry).each do |reply|
+          reply.association(:user).target = user
+          replies[child_ancestries[reply.ancestry]] ||= reply
+        end
+        replies
+      else
+        {}
+      end
+    end
+  end
 
   def action_inquirer
     @action_inquirer ||= ActiveSupport::StringInquirer.new(action&.downcase || "")

@@ -22,6 +22,7 @@ RSpec.describe Users::Setting do
     it { is_expected.to define_enum_for(:config_theme).with_values(light_theme: 0, system_theme: 1, dark_theme: 2) }
     it { is_expected.to define_enum_for(:config_homepage_feed).with_values(default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5).with_suffix(:feed) }
     it { is_expected.to define_enum_for(:feed_status).with_values(healthy: 0, degraded: 1, failing: 2, inactive: 3).with_prefix(:feed) }
+    it { is_expected.to define_enum_for(:feed_ai_preference).with_values(show_all: 0, minimize_ai: 1, hide_fully_autonomous: 2).with_suffix(:feed_ai) }
 
     describe "validating color fields" do
       it "is valid if the field is a correct hex color with leading #" do
@@ -237,6 +238,22 @@ RSpec.describe Users::Setting do
       sidekiq_assert_enqueued_with(job: Users::BustProfileDetailsCacheWorker, args: [user.id]) do
         setting.update!(display_email_on_profile: !setting.display_email_on_profile)
       end
+    end
+  end
+
+  describe "#generate_social_images" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    it "enqueues SocialImageWorker for User when brand_color1 changes" do
+      setting.update!(brand_color1: "#0f766e")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(user.id, "User")
+    end
+
+    it "does not enqueue SocialImageWorker when non-displayed settings change" do
+      setting.update!(config_theme: :dark_theme, experience_level: 5)
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
     end
   end
 end

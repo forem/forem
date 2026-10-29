@@ -3,6 +3,8 @@ module Articles
     TIME_AGO_MAX = Rails.env.production? ? 10.days.ago : 90.days.ago
 
     class Custom
+      SEMANTIC_CANDIDATE_MIN_LIMIT = FeedConfig::DEFAULT_SEMANTIC_CANDIDATE_LIMIT
+
       def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil, feed_config: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -11,26 +13,25 @@ module Articles
         @feed_config = feed_config
       end
 
-      def default_home_feed(**_kwargs)
+      def default_home_feed(comments_variant: "more_inclusive_recent_good_comments", **_kwargs)
         return [] if @feed_config.nil? || @user.nil?
         
-        execute_feed_query
+        execute_feed_query(comments_variant: comments_variant)
       end
 
       private
 
-      def execute_feed_query
+      def execute_feed_query(comments_variant: "more_inclusive_recent_good_comments")
         # Optimize lookback calculation - cache the result
         # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
         # If you change this, consider updating the partial indexes in the migration
-        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
-        lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        lookback = resolve_lookback
         
         # Pre-calculate user-specific data to avoid repeated database calls
         user_data = preload_user_data
         
-        # Build optimized base query with better index usage
-        articles = build_optimized_base_query(lookback, user_data)
+        # Build optimized base query with better index usage and preloaded associations
+        articles = build_optimized_base_query(lookback, user_data, comments_variant: comments_variant)
         
         # Apply user-specific filters early in the query
         articles = apply_user_filters(articles, user_data)
@@ -47,33 +48,161 @@ module Articles
         articles
       end
 
+      def resolve_lookback
+        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+        hard_lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        config_hours = @feed_config.respond_to?(:feed_lookback_hours) ? @feed_config.feed_lookback_hours.to_i : 0
+        return hard_lookback unless config_hours.positive?
 
+        [config_hours.hours.ago, hard_lookback].max
+      end
 
       def preload_user_data
         {
           blocked_user_ids: UserBlock.cached_blocked_ids_for_blocker(@user.id),
           hidden_tags: @user.cached_antifollowed_tag_names,
-          user_activity: @user.user_activity
+          user_activity: @user.user_activity,
+          hide_fully_autonomous: @user.setting&.hide_fully_autonomous_feed_ai?
         }
       end
 
-      def build_optimized_base_query(lookback, user_data)
-        # Use a more efficient query structure with better index hints
+      def build_optimized_base_query(lookback, user_data, comments_variant: "more_inclusive_recent_good_comments")
+        # Use limited_column_select with computed_score to avoid transferring heavy columns
+        # (e.g., body_markdown, body_html, 768-dimension semantic_embedding, tsvector).
         base_query = Article.published
           .with_at_least_home_feed_minimum_score
           .where("articles.published_at > ?", lookback)
-          .select("articles.*, (#{score_sql_method}) as computed_score")
-          .order(Arel.sql("computed_score DESC"))
-          .limit(@number_of_articles)
-          .offset((@page - 1) * @number_of_articles)
-          .limited_column_select
-          .includes(:subforem) # Only include essential associations
           .from_subforem
 
-        # Include necessary associations for performance
-        base_query = base_query.includes(:distinct_reaction_categories, :context_notes, top_comments: :user)
-        
-        base_query
+        global_offset = (@page - 1) * @number_of_articles
+        outer_offset = global_offset
+        order_clause = "computed_score DESC, articles.id DESC"
+
+        computed_score_sql = if two_stage_semantic_scoring?
+                               base_score_sql = @feed_config.base_score_sql(@user)
+                               if base_score_sql == "(0)"
+                                 score_sql_method
+                               else
+                                 base_query, outer_offset, order_clause = apply_semantic_candidate_window(
+                                   base_query,
+                                   lookback,
+                                   user_data,
+                                   base_score_sql,
+                                   global_offset,
+                                 )
+                                 "(#{base_score_sql} + #{@feed_config.semantic_similarity_sql(@user)})"
+                               end
+                             else
+                               score_sql_method
+                             end
+
+        base_query = base_query
+          .limited_column_select
+          .select("(#{computed_score_sql}) as computed_score")
+          .order(Arel.sql(order_clause))
+          .limit(@number_of_articles)
+          .offset(outer_offset)
+          .includes(:context_notes)
+
+        comments_assoc = case comments_variant.to_s
+                         when "more_inclusive_recent_good_comments"
+                           { more_inclusive_recent_good_comments: :user }
+                         when "recent_good_comments"
+                           { recent_good_comments: :user }
+                         when "more_inclusive_top_comments"
+                           { more_inclusive_top_comments: :user }
+                         when "most_inclusive_recent_good_comments"
+                           { most_inclusive_recent_good_comments: :user }
+                         else
+                           { top_comments: :user }
+                         end
+
+        base_query.includes(comments_assoc)
+      end
+
+      def two_stage_semantic_scoring?
+        @feed_config.respond_to?(:semantic_similarity_active?) &&
+          @feed_config.semantic_similarity_active?(@user)
+      end
+
+      def apply_semantic_candidate_window(base_query, lookback, user_data, base_score_sql, global_offset)
+        window_size = semantic_candidate_limit
+        start_window = global_offset / window_size
+        end_window = (global_offset + @number_of_articles - 1) / window_size
+        window_offset = start_window * window_size
+        outer_offset = global_offset - window_offset
+        window_count = end_window - start_window + 1
+
+        candidate_ids = build_semantic_candidate_ids_query(
+          lookback,
+          user_data,
+          base_score_sql,
+          limit: window_count * window_size,
+          offset: window_offset,
+        )
+        scoped_query = base_query.where(id: candidate_ids)
+
+        order_clause = if window_count > 1
+                         window_order_sql = build_semantic_window_order_sql(
+                           lookback,
+                           user_data,
+                           base_score_sql,
+                           start_window: start_window,
+                           end_window: end_window,
+                           window_size: window_size,
+                         )
+                         "#{window_order_sql}, computed_score DESC, articles.id DESC"
+                       else
+                         "computed_score DESC, articles.id DESC"
+                       end
+
+        [scoped_query, outer_offset, order_clause]
+      end
+
+      def build_semantic_window_order_sql(lookback, user_data, base_score_sql, start_window:, end_window:, window_size:)
+        when_clauses = (start_window...end_window).map do |window_index|
+          window_ids_sql = build_semantic_candidate_ids_query(
+            lookback,
+            user_data,
+            base_score_sql,
+            limit: window_size,
+            offset: window_index * window_size,
+          ).to_sql
+          "WHEN articles.id IN (#{window_ids_sql}) THEN #{window_index - start_window}"
+        end
+
+        "CASE #{when_clauses.join(' ')} ELSE #{end_window - start_window} END ASC"
+      end
+
+      def build_semantic_candidate_ids_query(lookback, user_data, base_score_sql,
+                                             limit: semantic_candidate_limit, offset: 0)
+        candidate_scope = Article.published
+          .with_at_least_home_feed_minimum_score
+          .where("articles.published_at > ?", lookback)
+          .from_subforem
+        candidate_scope = apply_user_filters(candidate_scope, user_data)
+        candidate_scope = apply_subforem_filters(candidate_scope)
+
+        query = candidate_scope
+          .select(:id)
+          .order(Arel.sql("#{base_score_sql} DESC, articles.id DESC"))
+          .limit(limit)
+        query = query.offset(offset) if offset.positive?
+        query
+      end
+
+      def semantic_candidate_limit
+        if @feed_config.respond_to?(:effective_semantic_candidate_limit)
+          @feed_config.effective_semantic_candidate_limit
+        elsif @feed_config.respond_to?(:semantic_candidate_limit) &&
+            @feed_config.semantic_candidate_limit.present?
+          @feed_config.semantic_candidate_limit.to_i.clamp(
+            FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT,
+            FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT,
+          )
+        else
+          SEMANTIC_CANDIDATE_MIN_LIMIT
+        end
       end
 
       def score_sql_method
@@ -86,10 +215,17 @@ module Articles
         if user_data[:blocked_user_ids].any?
           articles = articles.where.not(user_id: user_data[:blocked_user_ids])
         end
+
+        if user_data[:hide_fully_autonomous]
+          articles = articles.where.not(ai_disclosure_level: :fully_autonomous)
+        end
         
         if user_data[:hidden_tags].any?
-          articles = if ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
-                       articles.where.not("articles.tags_array && ARRAY[?]::text[]", user_data[:hidden_tags].map(&:to_s))
+          articles = if Article.column_names.include?("tags_array") && ENV["OPTIMIZED_FEED_TAGS_QUERY"] == "true"
+                       articles.where.not(
+                         "articles.tags_array && ARRAY[?]::text[]",
+                         user_data[:hidden_tags].map(&:to_s),
+                       )
                      else
                        articles.not_cached_tagged_with_any(user_data[:hidden_tags])
                      end
@@ -108,11 +244,17 @@ module Articles
       end
 
       def weighted_shuffle(arr, shuffle_weight)
+        list = arr.is_a?(Array) ? arr : arr.to_a
+        ForemNative.weighted_shuffle(list, shuffle_weight) ||
+          legacy_weighted_shuffle(list, shuffle_weight)
+      end
+
+      def legacy_weighted_shuffle(arr, shuffle_weight)
         # Each element gets a new sort key: its original index plus a random offset.
         # We choose the random offset uniformly from -2*shuffle_weight to 2*shuffle_weight.
         # The average absolute offset then is (2*shuffle_weight)/2 = shuffle_weight.
-        arr.each_with_index.sort_by do |item, index|
-          index + (rand * (4 * shuffle_weight) - 2 * shuffle_weight)
+        arr.each_with_index.sort_by do |_item, index|
+          index + ((rand * (4 * shuffle_weight)) - (2 * shuffle_weight))
         end.map(&:first)
       end
 
@@ -144,29 +286,34 @@ module Articles
       end
 
       def calculate_dynamic_shuffle_count
-        return 5 unless @user&.user_activity&.recently_viewed_articles&.any?
-        
+        recent_views = @user&.user_activity&.recently_viewed_articles
+        return 5 unless recent_views&.any?
+
         # Get the most recent page view timestamp
-        most_recent_page_view = @user.user_activity.recently_viewed_articles.first
-        return 5 unless most_recent_page_view&.size >= 2
-        
-        begin
-          most_recent_timestamp = most_recent_page_view[1].to_datetime
-          hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
-          
-          # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
-          # Minimum of 5 (original behavior)
-          base_shuffle_count = [21 - hours_since_last_view, 5].max
-          
-          # Apply the weight multiplier
-          weighted_shuffle_count = (base_shuffle_count * @feed_config.recent_page_views_shuffle_weight).round
-          
-          # Ensure minimum of 5 and maximum of 20
-          [[weighted_shuffle_count, 5].max, 20].min
-        rescue StandardError
-          # If there's any error parsing the timestamp, fall back to default
-          5
-        end
+        most_recent_page_view = recent_views.first
+        return 5 unless most_recent_page_view.is_a?(Array) && most_recent_page_view.size >= 2
+
+        weight = @feed_config.recent_page_views_shuffle_weight
+        ForemNative.dynamic_shuffle_count(most_recent_page_view[1], Time.current, weight) ||
+          legacy_calculate_dynamic_shuffle_count(most_recent_page_view[1], weight)
+      end
+
+      def legacy_calculate_dynamic_shuffle_count(raw_timestamp, weight = @feed_config.recent_page_views_shuffle_weight)
+        most_recent_timestamp = raw_timestamp.to_datetime
+        hours_since_last_view = ((Time.current - most_recent_timestamp) / 1.hour).ceil
+
+        # Calculate base shuffle count: 20 for within 1 hour, decreasing by 1 for each additional hour
+        # Minimum of 5 (original behavior)
+        base_shuffle_count = [21 - hours_since_last_view, 5].max
+
+        # Apply the weight multiplier
+        weighted_shuffle_count = (base_shuffle_count * weight).round
+
+        # Ensure minimum of 5 and maximum of 20
+        weighted_shuffle_count.clamp(5, 20)
+      rescue StandardError
+        # If there's any error parsing the timestamp, fall back to default
+        5
       end
 
       # Preserve the public interface

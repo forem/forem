@@ -45,7 +45,8 @@ class StoriesController < ApplicationController
     not_found unless @organization
     not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
-    @article = Article.includes(:user).find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
+    @article = Article.includes(user: %i[profile setting roles])
+      .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
       RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
@@ -68,9 +69,10 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    if (@article = Article.includes(:user).find_by(path: path)&.decorate)
+    if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
       handle_article_show
-    elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
+    # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
+    elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
@@ -114,10 +116,18 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "")
-    user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
-      Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+    potential_username = params[:username].tr("@", "").downcase
+    user_or_org = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+                      .where.not(username: potential_username)
+                      .order(profile_updated_at: :desc)
+                      .first ||
+      Organization.where("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
+                  .where.not(slug: potential_username)
+                  .order(updated_at: :desc)
+                  .first
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
+      surrogate_keys = user_or_org.is_a?(User) ? user_or_org.profile_cache_keys : [user_or_org.record_key]
+      set_surrogate_key_header(*surrogate_keys)
       redirect_permanently_to(user_or_org.path)
     else
       not_found
@@ -126,13 +136,18 @@ class StoriesController < ApplicationController
 
   def handle_possible_redirect
     if @article.organization
+      set_surrogate_key_header(@article.record_key, @article.organization.record_key)
       redirect_permanently_to(@article.path)
       return
     end
 
     potential_username = params[:username].tr("@", "").downcase
-    @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+    @user = User.where("old_username = ? OR old_old_username = ?", potential_username, potential_username)
+                .where.not(username: potential_username)
+                .order(profile_updated_at: :desc)
+                .first
     if @user&.articles&.find_by(slug: params[:slug])
+      set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
     end
@@ -141,21 +156,20 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username])
-    @organization = Organization.find_by(slug: params[:username])
-    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
-    if @podcast
-      handle_podcast_index
-    elsif @organization
+    if (@user = User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", "")))
+      handle_user_index
+    elsif (@organization = Organization.find_by(slug: params[:username]))
       handle_organization_index
-    elsif @page
+    elsif (@page = Page.find_by(slug: params[:username], is_top_level_path: true))
       if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
         handle_page_display
       else
         not_found
       end
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
+      handle_podcast_index
     else
-      handle_user_index
+      redirect_to_changed_username_profile
     end
   end
 
@@ -171,7 +185,7 @@ class StoriesController < ApplicationController
     end
 
     @story_show = true
-    set_surrogate_key_header "show-page-#{params[:username]}"
+    set_surrogate_key_header "show-page-#{@page.slug}"
 
     if @page.template == "json"
       render json: @page.body_json
@@ -234,9 +248,12 @@ class StoriesController < ApplicationController
     end
     is_readme = @org_page.present?
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
-      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
+    unless is_readme
+      preload_context_notes(@stories)
+      preload_reaction_counts(@stories)
+    end
     @organization_article_index = !is_readme
 
     # Anti-spam/visibility guard: apply for both README and non-README views
@@ -293,7 +310,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", ""))
+    @user ||= User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return
@@ -317,12 +334,10 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
-    @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
-    @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header(*@user.profile_cache_keys)
-    set_user_json_ld
+    set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
@@ -374,8 +389,18 @@ class StoriesController < ApplicationController
 
   def handle_article_show
     assign_article_show_variables
-    user_keys = @article.user&.profile_identity_cache_keys
-    set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    return if performed?
+
+    if !@article.published || @article.scheduled?
+      unset_cache_control_headers
+      response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+      response.headers["Pragma"] = "no-cache"
+      response.headers["Expires"] = "0"
+    else
+      user_keys = @article.user&.profile_identity_cache_keys
+      set_surrogate_key_header(*[@article.record_key, *user_keys].compact)
+    end
+
     redirect_if_appropriate
     return if performed?
 
@@ -388,6 +413,8 @@ class StoriesController < ApplicationController
   def assign_feed_stories
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
+    elsif params[:feed_type] == "curated"
+      @stories = Articles::Feeds::Curated.call(page: @page)
     elsif params[:timeframe] == "latest_less_filtered"
       @stories = Articles::Feeds::Latest.call(page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -407,10 +434,25 @@ class StoriesController < ApplicationController
     @featured_story = (featured_story || Article.new)&.decorate
 
     @stories = ArticleDecorator.decorate_collection(@stories)
+    # Featured and pinned last: the feed renders those instances, not their @stories duplicates.
+    feed_stories = [*@stories, @featured_story, @pinned_article].compact
+    preload_context_notes(feed_stories)
+    preload_reaction_counts(feed_stories)
+    preload_organizations(feed_stories) unless user_signed_in?
   end
 
   def assign_article_show_variables
-    not_found if permission_denied?
+    if permission_denied?
+      if user_signed_in?
+        unset_cache_control_headers
+        if can_edit_article?
+          redirect_to_preview
+          return
+        end
+      end
+      not_found
+    end
+
     not_found unless @article.user
 
     check_admin_access if @article.user.spam?
@@ -440,10 +482,29 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
-    set_article_json_ld
+    set_article_json_ld unless internal_navigation? || user_signed_in?
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
+  end
+
+  def redirect_to_preview
+    unset_cache_control_headers
+    response.headers["Cache-Control"] = "private, no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+
+    params_hash = request.query_parameters.merge("preview" => @article.password)
+    redirect_to "#{request.path}?#{params_hash.to_query}", status: :found
+  end
+
+  def can_edit_article?
+    return false unless user_signed_in?
+
+    record = @article.respond_to?(:to_model) ? @article.to_model : @article
+    policy(record).edit?
+  rescue Pundit::NotAuthorizedError, Pundit::NotDefinedError
+    false
   end
 
   def permission_denied?
@@ -459,25 +520,65 @@ class StoriesController < ApplicationController
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
-    return unless user_signed_in? && @user.comments_count.positive?
+    @user_profile_comments_count = 0
+    return unless @user.comments_count.positive?
 
-    @comments = @user.comments.good_quality.where(deleted: false)
-      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
-      .merge(Article.from_subforem)
+    @user_profile_comments = user_profile_comments
+    @user_profile_comments_count = @user_profile_comments.count
+    return unless user_signed_in?
+
+    @comments = @user_profile_comments
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
   end
 
+  def user_profile_comments
+    @user.comments.good_quality.where(deleted: false)
+      .joins("INNER JOIN articles ON articles.id = comments.commentable_id AND comments.commentable_type = 'Article'")
+      .merge(Article.from_subforem)
+      .merge(Article.published)
+  end
+
   def assign_user_stories
+    @pinned_stories = []
+    @stories = []
+    return unless @user.articles_count.positive?
+
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
       .limited_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
-      .includes(:distinct_reaction_categories, :subforem)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+    preload_context_notes(@pinned_stories + @stories)
+    preload_reaction_counts(@pinned_stories + @stories)
+    preload_organizations(@pinned_stories + @stories) unless user_signed_in?
+  end
+
+  # Signed-out renders go through URL.article, which reads each org story's
+  # organization (custom domain check); batch those into one query.
+  def preload_organizations(stories)
+    ActiveRecord::Associations::Preloader.new(
+      records: stories.map(&:object).select(&:organization_id), associations: :organization,
+    ).call
+  end
+
+  # articles/_single_story calls `story.context_notes.first` per story. Preload them in one
+  # query, ordered by id so `.first` picks the same note as the unloaded association would.
+  def preload_context_notes(stories)
+    ActiveRecord::Associations::Preloader.new(
+      records: stories.map(&:object), associations: :context_notes, scope: ContextNote.order(:id),
+    ).call
+  end
+
+  # articles/_single_story reads public_reaction_categories for every story with reactions;
+  # fetch those cached counts in one round-trip instead of one cache.get per story.
+  def preload_reaction_counts(stories)
+    Article.preload_reaction_counts_for_reactable(
+      stories.map(&:object).select { |story| story.public_reactions_count.positive? },
+    )
   end
 
   def assign_user_github_repositories
@@ -523,8 +624,6 @@ class StoriesController < ApplicationController
     @article_json_ld = build_article_json_ld
   end
 
-  private
-
   def build_article_json_ld
     json_ld = {
       "@context": "http://schema.org",
@@ -543,7 +642,7 @@ class StoriesController < ApplicationController
           "@context": "http://schema.org",
           "@type": "ImageObject",
           url: ApplicationController.helpers.optimized_image_url(Settings::General.logo_png, width: 192,
-                                                                                             fetch_format: "png"),
+                                                                                              fetch_format: "png"),
           width: "192",
           height: "192"
         }
@@ -598,11 +697,9 @@ class StoriesController < ApplicationController
     json_ld
   end
 
-  private
-
   def fetch_comments_for_json_ld
     # Fetch top-level comments with their nested replies
-    comments_tree = Comments::Tree.for_commentable(@article, limit: 10, order: "top", include_negative: false)
+    comments_tree = @article.comment_tree(limit: 10, order: "top", include_negative: false)
 
     comments_data = []
     comments_tree.each do |root_comment, sub_comments|
@@ -645,7 +742,7 @@ class StoriesController < ApplicationController
     if comment.ancestry.present?
       comment_data[:parentItem] = {
         "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
+        "@id": "#comment-#{comment.parent_id}"
       }
     end
 
@@ -692,39 +789,6 @@ class StoriesController < ApplicationController
     return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
 
     "top"
-  end
-
-  def build_comment_json_ld(comment)
-    comment_data = {
-      "@type": "Comment",
-      "@id": "#comment-#{comment.id}",
-      text: comment.processed_html_final,
-      author: {
-        "@type": "Person",
-        name: comment.user.name,
-        url: URL.user(comment.user)
-      },
-      datePublished: comment.created_at.iso8601,
-      dateModified: comment.edited_at&.iso8601 || comment.created_at.iso8601,
-      url: URL.comment(comment),
-      interactionStatistic: [
-        {
-          "@type": "InteractionCounter",
-          interactionType: "https://schema.org/LikeAction",
-          userInteractionCount: comment.public_reactions_count
-        },
-      ]
-    }
-
-    # Add parent comment reference if this is a reply
-    if comment.ancestry.present?
-      comment_data[:parentItem] = {
-        "@type": "Comment",
-        "@id": "#comment-#{comment&.parent&.id}"
-      }
-    end
-
-    comment_data
   end
 
   def redirect_organization_to_custom_domain_if_needed

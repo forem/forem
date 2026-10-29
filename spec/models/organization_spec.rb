@@ -374,6 +374,24 @@ RSpec.describe Organization do
     end
   end
 
+  describe ".find_by_slug_or_legacy" do
+    it "finds an organization by its current, old, or old-old slug" do
+      original_slug = organization.slug
+      organization.update(slug: "second_slug")
+      organization.update(slug: "third_slug")
+
+      expect(described_class.find_by_slug_or_legacy("third_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("second_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy(original_slug)).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("missing_slug")).to be_nil
+    end
+
+    it "uses indexes on the legacy slug columns" do
+      indexed_columns = described_class.connection.indexes(:organizations).map(&:columns)
+      expect(indexed_columns).to include(["old_slug"], ["old_old_slug"])
+    end
+  end
+
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(organization.enough_credits?(1)).to be(false)
@@ -443,30 +461,25 @@ RSpec.describe Organization do
 
   describe "#generate_social_images" do
     before do
+      organization
       allow(Images::SocialImageWorker).to receive(:perform_async)
-      create(:article, organization: organization)
     end
 
-    context "when the name or profile_image has changed and the organization has articles" do
-      it "calls SocialImageWorker.perform_async" do
-        organization.name = "New name for this org!"
-        organization.save
-        expect(Images::SocialImageWorker).to have_received(:perform_async)
+    context "when a displayed primary detail changes" do
+      it "calls SocialImageWorker.perform_async when name changes even without articles" do
+        organization.update!(name: "New name for this org!")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
+      end
+
+      it "calls SocialImageWorker.perform_async when summary, location, url, slug, or bg_color_hex changes" do
+        organization.update!(summary: "Updated org summary")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
       end
     end
 
-    context "when the name or profile_image has not changed or the organization has no articles" do
+    context "when non-displayed attributes change" do
       it "does not call SocialImageWorker.perform_async" do
-        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
-        organization.save
-      end
-    end
-
-    context "when the name or profile_image has changed and the organization has no articles" do
-      it "does not call SocialImageWorker.perform_async" do
-        organization.articles.destroy_all
-        organization.name = "New name for this org!!"
-        organization.save
+        organization.update!(story: "Our long story", company_size: "50", twitter_username: "orgtwitter")
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end

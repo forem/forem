@@ -1,4 +1,5 @@
 <header class="crayons-page-header block">
+    <%= render "flag_appeals/suspended_notice" %>
     <h1 class="crayons-title"><%= page_title %></h1>
     <div id="dashboard-mobile-sidebar-wrapper">
       <div class="block m:hidden pt-3">
@@ -13,37 +14,37 @@
       <nav class="hidden m:block" aria-label="Dashboards">
         <ul class="list-none p-0">
           <li>
-            <a class="crayons-link crayons-link--block" href="/dashboard">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
               <%= t("views.dashboard.actions.posts") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block " href="/admin_mcadmin/series">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "series" %>" href="<%= user_series_path(current_user.username) %>">
               <%= t("views.dashboard.actions.series") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block " href="/dashboard/user_followers">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>" href="/dashboard/user_followers">
               <%= t("views.dashboard.actions.followers") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block js-following-tags-link " href="/dashboard/following_tags">
+            <a class="crayons-link crayons-link--block js-following-tags-link <%= "crayons-link--current" if params[:action] == "following_tags" %>" href="/dashboard/following_tags">
               <%= t("views.dashboard.actions.following_tags") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block " href="/dashboard/following_users">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_users" %>" href="/dashboard/following_users">
               <%= t("views.dashboard.actions.following_users") %>
             </a>
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block " href="/dashboard/following_organizations">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_organizations" %>" href="/dashboard/following_organizations">
               <%= t("views.dashboard.actions.following_orgs") %>
             </a>
           </li>
@@ -56,13 +57,13 @@
           </li>
       
           <li>
-            <a class="crayons-link crayons-link--block " href="/dashboard/feed_imports">
+            <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "feed_imports" %>" href="/dashboard/feed_imports">
               <%= t("views.dashboard.actions.feed_imports") %>
             </a>
           </li>
 
           <li>
-            <a class="crayons-link crayons-link--block js-hidden-tags-link " href="/dashboard/hidden_tags">
+            <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if params[:action] == "hidden_tags" %>" href="/dashboard/hidden_tags">
               <%= t("views.dashboard.actions.hidden_tags") %>
             </a>
           </li>

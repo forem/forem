@@ -1,8 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../common-prop-types';
+import { Icon } from '@crayons';
 import { MinimalProfilePreviewCard } from '../../profilePreviewCards/MinimalProfilePreviewCard';
 import { PublishDate } from './PublishDate';
+import RobotIcon from '@images/robot.svg';
 
 /* global timeAgo */
 
@@ -90,13 +92,39 @@ export const Meta = ({ article, organization }) => {
             })}</div>)}
           {article.type_of === 'status' && article.edited_at > article.published_timestamp && (<div class='color-base-60 pl-1 inline-block fs-xs'>(Edited)</div>)}
         </div>
-        {article.type_of !== 'status' && (<a href={article.url} className="crayons-story__tertiary fs-xs">
-          <PublishDate
-            readablePublishDate={article.readable_publish_date}
-            publishedTimestamp={article.published_timestamp}
-            publishedAtInt={article.published_at_int}
-          />
-        </a>)}
+        {article.type_of !== 'status' && (
+          <div className="flex items-center">
+            <a href={article.url} className="crayons-story__tertiary fs-xs">
+              <PublishDate
+                readablePublishDate={article.readable_publish_date}
+                publishedTimestamp={article.published_timestamp}
+                publishedAtInt={article.published_at_int}
+              />
+            </a>
+            {(article.ai_disclosure_level === 'some_ai' || article.ai_disclosure_level === 3 || article.ai_disclosure_level === 'fully_autonomous' || article.ai_disclosure_level === 5) && (
+              <span
+                className="crayons-hover-tooltip inline-flex items-center ml-2 color-base-60 cursor-help"
+                data-tooltip={
+                  article.ai_disclosure_level === 'fully_autonomous' || article.ai_disclosure_level === 5
+                    ? 'Disclosed as fully AI-generated'
+                    : 'Disclosed as AI-assisted'
+                }
+                aria-label={
+                  article.ai_disclosure_level === 'fully_autonomous' || article.ai_disclosure_level === 5
+                    ? 'Disclosed as fully AI-generated'
+                    : 'Disclosed as AI-assisted'
+                }
+              >
+                <Icon
+                  src={RobotIcon}
+                  className="crayons-icon"
+                  style={{ width: 14, height: 14 }}
+                  aria-hidden="true"
+                />
+              </span>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

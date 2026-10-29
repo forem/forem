@@ -13,7 +13,6 @@ class AdminMenu
     ]
 
     scope :content_manager, "dashboard-line", [
-      item(name: "spaces", controller: "spaces"),
       item(name: "posts", controller: "articles"),
       item(name: "comments", controller: "comments"),
       item(name: "badges", children: [
@@ -25,6 +24,8 @@ class AdminMenu
       item(name: "tags"),
       item(name: "concepts", controller: "concepts"),
       item(name: "emails"),
+      item(name: "user queries", controller: "user_queries"),
+      item(name: "audience segments", controller: "audience_segments"),
       item(name: "surveys"),
       item(name: "events"),
     ]
@@ -46,6 +47,7 @@ class AdminMenu
 
     scope :moderation, "mod", [
       item(name: "reports"),
+      item(name: "flag appeals", controller: "flag_appeals"),
       item(name: "mods"),
       item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
@@ -56,6 +58,7 @@ class AdminMenu
     scope :advanced, "flashlight-line", [
       item(name: "broadcasts"),
       item(name: "response templates"),
+      item(name: "feed configs", controller: "feed_configs"),
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),
              item(name: "data update scripts", visible: -> { FeatureFlag.enabled?(:data_update_scripts) }),

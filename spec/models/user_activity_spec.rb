@@ -155,6 +155,16 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
+      it "does not load heavy article columns when computing recent_* aggregations" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        article_queries = queries.grep(/FROM "articles"/)
+        expect(article_queries).not_to be_empty
+        expect(article_queries).to all(satisfy { |sql| !sql.include?("body_markdown") && !sql.include?(%("articles".*)) })
+      end
+
       it "populates alltime_tags from the user's cached_followed_tag_names" do
         expect(activity.alltime_tags).to eq(
           user.cached_followed_tag_names
@@ -170,6 +180,19 @@ RSpec.describe UserActivity, type: :model do
       end
 
       it "populates alltime_subforems from the user's follow relationships" do
+        expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
+      end
+
+      it "loads followed users, organizations and subforems in a single follows query" do
+        create(:follow, follower: user, followable: create(:tag))
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        follows_queries = queries.grep(/\ASELECT .* FROM "follows"/)
+        expect(follows_queries.size).to eq(1)
+        expect(activity.alltime_users).to contain_exactly(other_user.id)
+        expect(activity.alltime_organizations).to contain_exactly(other_org.id)
         expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
       end
 

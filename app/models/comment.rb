@@ -7,6 +7,8 @@ class Comment < ApplicationRecord
   include PgSearch::Model
   include Reactable
   include AlgoliaSearchable
+  include ActivityTrackable
+  include AiDisclosable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -16,6 +18,19 @@ class Comment < ApplicationRecord
   HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
+  def ai_disclosure_label
+    case ai_disclosure_level
+    when "some_ai"
+      I18n.t("models.comment.ai_disclosure.some_ai")
+    when "fully_autonomous"
+      I18n.t("models.comment.ai_disclosure.fully_autonomous")
+    when "no_ai"
+      I18n.t("models.comment.ai_disclosure.no_ai")
+    else
+      I18n.t("models.comment.ai_disclosure.not_disclosed")
+    end
+  end
 
   URI_REGEXP = %r{
     \A
@@ -110,6 +125,11 @@ class Comment < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
   scope :favorited, -> { where.not(favorited_by_user_id: nil) }
+
+  def favorited?
+    favorited_by_user_id.present?
+  end
+
   scope :good_quality, -> { where("comments.score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
@@ -201,6 +221,20 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
+  def descendants(depth_options = {})
+    scope = super
+    return scope unless commentable_id && commentable_type
+
+    scope.where(commentable_id: commentable_id, commentable_type: commentable_type)
+  end
+
+  def subtree(depth_options = {})
+    scope = super
+    return scope unless commentable_id && commentable_type
+
+    scope.where(commentable_id: commentable_id, commentable_type: commentable_type)
+  end
+
   def by_staff_account?
     user == User.staff_account
   end
@@ -212,6 +246,7 @@ class Comment < ApplicationRecord
   def calculate_score
     Comments::CalculateScoreWorker.perform_async(id)
   end
+  alias async_score_calc calculate_score
 
   def processed_html_final
     processed_html = replace_legacy_code_html(self.processed_html)
@@ -248,6 +283,39 @@ class Comment < ApplicationRecord
   def subforem_id
     commentable&.subforem_id
   end
+
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # comment_created / _updated / _deleted. No draft state, so create publishes.
+
+  # The body is deliberately absent; the CDP consumer keys off the ids.
+  def trackable_activity_payload
+    {
+      "commentable_type" => commentable_type,
+      "commentable_id" => commentable_id,
+      "commentable_user_id" => commentable.try(:user_id),
+      "parent_id" => parent_id,
+      "path" => path
+    }
+  end
+
+  # CommentsController#destroy soft deletes a comment with replies and hard
+  # destroys one without, so removal is caught on both paths.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then "comment_created"
+    when :updated then trackable_update_event
+    when :destroyed then "comment_deleted"
+    end
+  end
+
+  # Only a body edit counts; rows churn on scores, counters and embeddings.
+  def trackable_update_event
+    changed_keys = trackable_changed_keys
+    return (deleted? ? "comment_deleted" : nil) if changed_keys.include?("deleted")
+
+    "comment_updated" if changed_keys.include?("body_markdown")
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_update_event
 
   private
 
@@ -305,7 +373,10 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
+    return unless parent_exists? && (parent.depth > 1 && parent.has_children?)
+
+    last_descendant_id = parent.descendant_ids.last
+    self.parent_id = last_descendant_id if last_descendant_id
   end
 
   def wrap_timestamps_if_video_present!
@@ -333,23 +404,18 @@ class Comment < ApplicationRecord
 
   def after_create_checks
     create_id_code
-    touch_user
   end
 
   def create_id_code
     update_column(:id_code, id.to_s(26))
   end
 
-  def touch_user
-    user&.touch(:updated_at, :last_comment_at) if user&.persisted?
-  end
-
   def expire_root_fragment
     if root_exists?
       root_record = root
       root_record.touch if root_record&.persisted? && !root_record.destroyed?
-    else
-      touch if persisted? && !destroyed?
+    elsif persisted? && !destroyed? && !saved_changes?
+      touch
     end
   end
 

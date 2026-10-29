@@ -12,27 +12,66 @@ jobs:
       E2E: true
       RAILS_ENV: test
       NODE_ENV: test
+      YARN_ENABLE_HARDENED_MODE: 0
 
     steps:
       - uses: actions/checkout@v6
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
         with:
-          bundler-cache: true
+          filter: blob:none
+          sparse-checkout: |
+            /*
+            !vendor/cache/*.gem
+          sparse-checkout-cone-mode: false
+      - name: Read Ruby version and lockfile hash
+        id: ruby-ver
+        run: |
+          echo "ruby_version=$(tr -d '[:space:]' < .ruby-version)" >> "$GITHUB_OUTPUT"
+          echo "lockfile_hash=$(sha256sum Gemfile.lock | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+          echo "os_version=$(. /etc/os-release && echo "$VERSION_ID")" >> "$GITHUB_OUTPUT"
+      - name: Check pre-compiled assets cache
+        uses: actions/cache/restore@v5
+        id: assetscache-lookup
+        with:
+          lookup-only: true
+          path: |
+            public/assets
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+      - name: Check Bundler cache
+        uses: actions/cache/restore@v5
+        id: bundlercache-lookup
+        with:
+          lookup-only: true
+          path: vendor/bundle
+          key: setup-ruby-bundler-cache-v6-ubuntu-${{ steps.ruby-ver.outputs.os_version }}-x64-ruby-${{ steps.ruby-ver.outputs.ruby_version }}-wd-${{ github.workspace }}-with--without--only--Gemfile.lock-${{ steps.ruby-ver.outputs.lockfile_hash }}
       - name: Cache pre-compiled assets
         uses: actions/cache@v5
         id: assetscache
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
         with:
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+            app/assets/builds
+            tmp/cache/assets
+          key: ${{ runner.os }}-compiled-assets-v4-${{ hashFiles('app/assets/**', '!app/assets/builds/**', 'app/javascript/**', 'esbuild.config.mjs', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v4-
+      - name: Populate vendor/cache on Bundler cache miss
+        if: steps.bundlercache-lookup.outputs.cache-hit != 'true'
+        run: git sparse-checkout disable
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true' || steps.bundlercache-lookup.outputs.cache-hit != 'true'
+        with:
+          bundler-cache: true
       - uses: actions/setup-node@v6
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
       - run: yarn install --immutable
-        if: steps.assetscache.outputs.cache-hit != 'true'
-      - run: bundle exec rails assets:precompile
-        if: steps.assetscache.outputs.cache-hit != 'true'
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'
+      - run: |
+          rm -rf public/assets
+          SKIP_YARN_INSTALL=true bundle exec rails assets:precompile
+        if: steps.assetscache-lookup.outputs.cache-hit != 'true'

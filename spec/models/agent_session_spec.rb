@@ -25,6 +25,7 @@ RSpec.describe AgentSession do
       curated_data: curated_data,
     )
   end
+  let(:valid_s3_key) { "agent_sessions/#{user.id}/#{SecureRandom.uuid}.jsonl" }
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:title) }
@@ -44,6 +45,13 @@ RSpec.describe AgentSession do
       end
     end
 
+    it "assigns positional indices to messages submitted without them" do
+      unindexed = { "messages" => curated_data["messages"].map { |m| m.except("index") } }
+      session = described_class.create!(user: user, title: "Agy", tool_name: "antigravity_cli",
+                                        curated_data: unindexed)
+      expect(session.reload.messages.pluck("index")).to eq([0, 1, 2, 3])
+    end
+
     it "validates curated_data has messages when present" do
       session = described_class.new(user: user, title: "Test", tool_name: "claude_code",
                                     curated_data: { "not_messages" => [] })
@@ -53,8 +61,64 @@ RSpec.describe AgentSession do
 
     it "allows saving with just s3_key and no data (draft state)" do
       session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
-                                    s3_key: "agent_sessions/1/test.jsonl")
+                                    s3_key: valid_s3_key)
       expect(session).to be_valid
+    end
+
+    it "validates s3_key format and ownership" do
+      other_user = create(:user)
+      uuid = SecureRandom.uuid
+
+      # Foreign user
+      session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
+                                    s3_key: "agent_sessions/#{other_user.id}/#{uuid}.jsonl")
+      expect(session).not_to be_valid
+      expect(session.errors[:s3_key]).to be_present
+
+      # Invalid extension
+      session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
+                                    s3_key: "agent_sessions/#{user.id}/#{uuid}.png")
+      expect(session).not_to be_valid
+      expect(session.errors[:s3_key]).to be_present
+
+      # Path traversal
+      session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
+                                    s3_key: "agent_sessions/#{user.id}/../../uploads/malicious.jsonl")
+      expect(session).not_to be_valid
+      expect(session.errors[:s3_key]).to be_present
+
+      # Valid key
+      session = described_class.new(user: user, title: "Draft", tool_name: "claude_code",
+                                    s3_key: "agent_sessions/#{user.id}/#{uuid}.jsonl")
+      expect(session).to be_valid
+    end
+  end
+
+  describe "null byte handling" do
+    it "strips \\u0000 from jsonb and string columns so Postgres accepts them" do
+      session = described_class.create!(
+        user: user,
+        title: "Null\u0000 Title",
+        tool_name: "claude_code",
+        curated_data: {
+          "messages" => [
+            { "role" => "assistant", "content" => [
+              { "type" => "tool_call", "name" => "Bash", "input" => "find . -print0",
+                "output" => "./web/package.json\n\u0000./studio/package.json" },
+            ] },
+          ],
+          "metadata" => { "key\u0000" => "value\u0000" }
+        },
+        session_metadata: { "redactions" => [{ "type" => "x\u0000", "count" => 1 }] },
+        slices: [{ "name" => "slice\u0000", "indices" => [0] }],
+      )
+
+      session.reload
+      expect(session.title).to eq("Null Title")
+      expect(session.messages.first.dig("content", 0, "output")).to eq("./web/package.json\n./studio/package.json")
+      expect(session.metadata).to eq("key" => "value")
+      expect(session.redactions).to eq([{ "type" => "x", "count" => 1 }])
+      expect(session.slices).to eq([{ "name" => "slice", "indices" => [0] }])
     end
   end
 
@@ -104,7 +168,7 @@ RSpec.describe AgentSession do
     end
 
     it "returns true when s3_key is present" do
-      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      agent_session.update!(s3_key: valid_s3_key)
       expect(agent_session.s3_session?).to be true
     end
   end
@@ -115,36 +179,40 @@ RSpec.describe AgentSession do
     end
 
     it "returns true when s3_key is present and within retention window" do
-      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      agent_session.update!(s3_key: valid_s3_key)
       expect(agent_session.raw_file_available?).to be true
     end
 
     it "returns false when s3_key is present but beyond retention window" do
-      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl", created_at: 91.days.ago)
+      agent_session.update!(s3_key: valid_s3_key, created_at: 91.days.ago)
       expect(agent_session.raw_file_available?).to be false
     end
   end
 
   describe "S3 cleanup on destroy" do
+    before do
+      allow(AgentSessions::S3Storage).to receive(:delete)
+    end
+
     it "deletes S3 object when session is destroyed" do
-      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      agent_session.update!(s3_key: valid_s3_key)
       allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(true)
-      expect(AgentSessions::S3Storage).to receive(:delete).with("agent_sessions/1/test.jsonl")
 
       agent_session.destroy
+      expect(AgentSessions::S3Storage).to have_received(:delete).with(valid_s3_key)
     end
 
     it "does not attempt S3 delete when no s3_key" do
-      expect(AgentSessions::S3Storage).not_to receive(:delete)
       agent_session.destroy
+      expect(AgentSessions::S3Storage).not_to have_received(:delete)
     end
 
     it "does not attempt S3 delete when S3 is not enabled" do
-      agent_session.update!(s3_key: "agent_sessions/1/test.jsonl")
+      agent_session.update!(s3_key: valid_s3_key)
       allow(AgentSessions::S3Storage).to receive(:enabled?).and_return(false)
-      expect(AgentSessions::S3Storage).not_to receive(:delete)
 
       agent_session.destroy
+      expect(AgentSessions::S3Storage).not_to have_received(:delete)
     end
   end
 
@@ -160,7 +228,7 @@ RSpec.describe AgentSession do
         curated_data: {
           "messages" => [{ "index" => 3, "role" => "assistant", "content" => [{ "type" => "text", "text" => "x" }] }],
           "metadata" => {}
-        },
+        }
       )
       result = small_session.curated_messages_in_range(0..1)
       expect(result).to be_empty

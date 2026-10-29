@@ -110,6 +110,40 @@ RSpec.describe "NotificationSubscriptions" do
              params: { config: "not_subscribed" }
         expect(comment.reload.receive_notifications).to be false
       end
+
+      it "updates the existing subscription when a concurrent upsert inserted it first" do
+        existing = create(:notification_subscription, user: user, notifiable: other_article,
+                                                      config: "top_level_comments")
+        stale = NotificationSubscription.new(user_id: user.id, notifiable_id: other_article.id,
+                                             notifiable_type: "Article")
+        # Simulate both requests passing the uniqueness validation before either INSERT lands
+        allow(stale).to receive(:valid?).and_return(true)
+        allow(NotificationSubscription).to receive(:find_or_initialize_by).and_return(stale)
+
+        post "/notification_subscriptions/Article/#{other_article.id}",
+             headers: headers,
+             params: { config: "all_comments" }
+
+        expect(response.parsed_body).to be true
+        expect(existing.reload.config).to eq "all_comments"
+        expect(NotificationSubscription.where(user: user, notifiable: other_article).count).to eq 1
+      end
+
+      it "updates the existing subscription when a concurrent upsert inserted it before validation" do
+        existing = create(:notification_subscription, user: user, notifiable: other_article,
+                                                      config: "top_level_comments")
+        stale = NotificationSubscription.new(user_id: user.id, notifiable_id: other_article.id,
+                                             notifiable_type: "Article")
+        allow(NotificationSubscription).to receive(:find_or_initialize_by).and_return(stale)
+
+        post "/notification_subscriptions/Article/#{other_article.id}",
+             headers: headers,
+             params: { config: "all_comments" }
+
+        expect(response.parsed_body).to be true
+        expect(existing.reload.config).to eq "all_comments"
+        expect(NotificationSubscription.where(user: user, notifiable: other_article).count).to eq 1
+      end
     end
 
     context "when an article has two parent comments by two different people" do

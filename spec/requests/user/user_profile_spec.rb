@@ -3,28 +3,26 @@ require "rails_helper"
 RSpec.describe "UserProfiles" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
-  let(:current_user) { create(:user) }
-
-  let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
-  let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+  let(:current_user) { create(:user, :without_profile, profile_image: nil) }
 
   describe "GET /:username" do
-    it "renders to appropriate page" do
+    it "renders the user profile page without noindex or feed link when there are no stories", :aggregate_failures do
       get "/#{user.username}"
-      expect(response.body).to include CGI.escapeHTML(user.name)
+      expect(response.body).to include(CGI.escapeHTML(user.name), "More info about @#{user.username}")
+      expect(response.body).not_to include('<meta name="robots" content="noindex">', "/feed/#{user.username}")
     end
 
     it "renders pins if any" do
-      create(:article, user_id: user.id)
-      create(:article, user_id: user.id)
-      last_article = create(:article, user_id: user.id)
+      last_article = create(:article, user_id: user.id, with_tags: false)
       create(:profile_pin, pinnable: last_article, profile: user)
       get "/#{user.username}"
       expect(response.body).to include "Pinned"
     end
 
     it "does not render unpublished pinned stories" do
-      unpublished_article = create(:article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story")
+      unpublished_article = create(
+        :article, user: user, published: false, published_at: nil, title: "Unpublished Pinned Story", with_tags: false
+      )
       create(:profile_pin, pinnable: unpublished_article, profile: user)
 
       get "/#{user.username}"
@@ -32,10 +30,12 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("Unpublished Pinned Story")
     end
 
-    context "when has articles" do
+    context "when user has full_post and status articles" do
       before do
         create(:article, user: user, title: "Super Article", published: true, type_of: "full_post")
-        Article.create(user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "")
+        Article.create(
+          user: user, title: "Status Update", published: true, type_of: "status", body_markdown: "", main_image: "",
+        )
       end
 
       it "displays only 'full_post' articles and excludes 'status' articles", :aggregate_failures do
@@ -46,9 +46,71 @@ RSpec.describe "UserProfiles" do
       end
     end
 
-    it "calls user by their username in the 'more info' area" do
-      get "/#{user.username}"
-      expect(response.body).to include "More info about @#{user.username}"
+    it "counts the user's published articles once for the sidebar stats", :aggregate_failures do
+      create(:article, user: user)
+      published_count_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        next unless sql.start_with?('SELECT COUNT(*) FROM "articles" WHERE "articles"."user_id"')
+        next unless sql.include?("published_at <=")
+        next if sql.match?(/type_of|created_at >|score/)
+
+        published_count_queries << sql
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include("1 post published")
+      expect(published_count_queries.size).to eq(1)
+    end
+
+    it "skips badge_achievements queries when user has no badges", :aggregate_failures do
+      badge_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        badge_queries << sql if sql.include?('"badge_achievements"') || sql.include?('"badges"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(badge_queries).to be_empty
+    end
+
+    it "queries badge_achievements on fragment cache miss and skips on cache hit", :aggregate_failures do
+      badge = create(:badge)
+      create(:badge_achievement, user: user, badge: badge)
+      user.reload
+
+      original_cache_store = ActionController::Base.cache_store
+      original_perform_caching = ActionController::Base.perform_caching
+      ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+      ActionController::Base.perform_caching = true
+
+      miss_queries = []
+      miss_cb = ->(*, payload) { miss_queries << payload[:sql] if payload[:sql].include?('"badge_achievements"') }
+      ActiveSupport::Notifications.subscribed(miss_cb, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include(CGI.escapeHTML(badge.title))
+      expect(miss_queries.size).to eq(1)
+
+      hit_queries = []
+      hit_cb = ->(*, payload) { hit_queries << payload[:sql] if payload[:sql].include?('"badge_achievements"') }
+      ActiveSupport::Notifications.subscribed(hit_cb, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include(CGI.escapeHTML(badge.title))
+      expect(hit_queries).to be_empty
+    ensure
+      ActionController::Base.perform_caching = original_perform_caching
+      ActionController::Base.cache_store = original_cache_store
     end
 
     it "does not render pins if they don't exist" do
@@ -56,12 +118,13 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include "Pinned"
     end
 
-    it "renders profile page of user after changed username" do
+    it "renders profile page of user after changed username and tags redirect with Surrogate-Key" do
       old_username = user.username
       user.update_columns(username: "new_username_yo_#{rand(10_000)}", old_username: old_username,
                           old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
+      expect(response.headers["Surrogate-Key"]).to eq(user.profile_cache_keys.join(" "))
     end
 
     it "renders profile page of user after two changed usernames" do
@@ -74,21 +137,24 @@ RSpec.describe "UserProfiles" do
       expect(response).to redirect_to("/#{user.username}")
     end
 
-    it "does not render noindex meta if not suspended" do
-      get "/#{user.username}"
-      expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
+    it "serves the original profile URL and redirects the temporary username after reverting A -> B -> A" do
+      original_username = user.username
+      temp_username = "#{original_username}_dev"
+      Users::Update.call(user, user: { username: temp_username })
+      Users::Update.call(user.reload, user: { username: original_username })
+
+      get "/#{temp_username}"
+      expect(response).to redirect_to("/#{original_username}")
+
+      get "/#{original_username}"
+      expect(response).to have_http_status(:ok)
     end
 
     it "renders rss feed link if any stories" do
-      create(:article, user_id: user.id)
+      create(:article, user_id: user.id, with_tags: false)
 
       get "/#{user.username}"
       expect(response.body).to include("/feed/#{user.username}")
-    end
-
-    it "does not render feed link if no stories" do
-      get "/#{user.username}"
-      expect(response.body).not_to include("/feed/#{user.username}")
     end
 
     it "renders sidebar profile field elements in sidebar" do
@@ -130,9 +196,10 @@ RSpec.describe "UserProfiles" do
 
     context "when has comments" do
       before do
-        create(:comment, user: user, body_markdown: "nice_comment")
-        create(:comment, user: user, score: -100, body_markdown: "low_comment")
-        create(:comment, user: user, score: -401, body_markdown: "bad_comment")
+        article = create(:article, user: user, with_tags: false)
+        create(:comment, user: user, commentable: article, body_markdown: "nice_comment")
+        create(:comment, user: user, commentable: article, score: -100, body_markdown: "low_comment")
+        create(:comment, user: user, commentable: article, score: -401, body_markdown: "bad_comment")
       end
 
       it "displays good standing comments", :aggregate_failures do
@@ -165,9 +232,10 @@ RSpec.describe "UserProfiles" do
     end
 
     context "when organization" do
-      it "renders organization page if org" do
+      it "renders organization page with noindex and without feed link when org has no articles", :aggregate_failures do
         get organization.path
-        expect(response.body).to include CGI.escapeHTML(organization.name)
+        expect(response.body).to include(CGI.escapeHTML(organization.name), '<meta name="robots" content="noindex">')
+        expect(response.body).not_to include("/feed/#{organization.slug}")
       end
 
       it "renders organization users on sidebar" do
@@ -176,75 +244,55 @@ RSpec.describe "UserProfiles" do
         expect(response.body).to include user.profile_image_url
       end
 
-      it "renders organization name properly encoded" do
-        organization.update(name: "Org & < ' \" 1")
+      it "renders organization name, email, summary, and location properly encoded", :aggregate_failures do
+        organization.update(
+          name: "Org & < ' \" 1",
+          email: "t&st&mail@example.com",
+          summary: "Org & < ' \" &quot; 1",
+          location: "123, ave dev & < ' \" &quot; to",
+        )
         get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.name))
-      end
-
-      it "renders organization email properly encoded" do
-        organization.update(email: "t&st&mail@dev.to")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.email))
-      end
-
-      it "renders organization summary properly encoded" do
-        organization.update(summary: "Org & < ' \" &quot; 1")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.summary))
-      end
-
-      it "renders organization location properly encoded" do
-        organization.update(location: "123, ave dev & < ' \" &quot; to")
-        get organization.path
         expect(response.body).to include(ActionController::Base.helpers.sanitize(organization.location))
       end
 
       it "renders rss feed link if any stories" do
-        create(:article, organization_id: organization.id)
+        create(:article, user: user, organization_id: organization.id, with_tags: false)
         get organization.path
         expect(response.body).to include("/feed/#{organization.slug}")
       end
 
-      it "does not render feed link if no stories" do
-        get organization.path
-        expect(response.body).not_to include("/feed/#{organization.slug}")
-      end
-
-      it "shows noindex when org has no articles" do
-        get organization.path
-        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
-      end
-
       it "shows noindex when org has articles with negative total score" do
-        create(:article, organization_id: organization.id, score: 2)
-        create(:article, organization_id: organization.id, score: -4)
+        create(:article, user: user, organization_id: organization.id, score: 2, with_tags: false)
+        create(:article, user: user, organization_id: organization.id, score: -4, with_tags: false)
         get organization.path
         expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
       end
 
       it "shows noindex when org has only articles with no score" do
-        create(:article, organization_id: organization.id, score: 0)
+        create(:article, user: user, organization_id: organization.id, score: 0, with_tags: false)
         get organization.path
         expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
       end
 
       it "does not show noindex when org has articles with positive score" do
-        create(:article, organization_id: organization.id, score: 4)
+        create(:article, user: user, organization_id: organization.id, score: 4, with_tags: false)
         get organization.path
         expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
       end
 
       it "raises not found if articles have 0 total score and org users have negative total score" do
         user.update_column(:score, -1)
-        create(:article, organization_id: organization.id, score: 0)
+        create(:article, user: user, organization_id: organization.id, score: 0, with_tags: false)
         create(:organization_membership, user_id: user.id, organization_id: organization.id)
         expect { get organization.path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it "does not raise not found if articles have positive total score even if users have negative total score" do
         user.update_column(:score, -1)
-        create(:article, organization_id: organization.id, score: 1)
+        create(:article, user: user, organization_id: organization.id, score: 1, with_tags: false)
         create(:organization_membership, user_id: user.id, organization_id: organization.id)
         get organization.path
         expect(response).to be_successful
@@ -253,13 +301,17 @@ RSpec.describe "UserProfiles" do
       it "does not raise not found if user signed in" do
         sign_in current_user
         user.update_column(:score, -1)
-        create(:article, organization_id: organization.id, score: 0)
+        create(:article, user: user, organization_id: organization.id, score: 0, with_tags: false)
         create(:organization_membership, user_id: user.id, organization_id: organization.id)
         get organization.path
         expect(response).to be_successful
       end
 
-      context "redirect_if_inactive_in_subforem_for_organization" do
+      # rubocop:disable RSpec/NestedGroups
+      context "when redirecting inactive organization in subforem" do
+        let!(:default_subforem) { create(:subforem, domain: "www.example.com") }
+        let!(:other_subforem)   { create(:subforem, domain: "other.com") }
+
         context "when the organization is 'inactive' in the current subforem" do
           before do
             organization.articles.delete_all
@@ -274,7 +326,7 @@ RSpec.describe "UserProfiles" do
             get organization.path, headers: { "Host" => other_subforem.domain }
             expect(response).to have_http_status(:moved_permanently)
             expect(response).to redirect_to(
-              URL.url(organization.slug, default_subforem)
+              URL.url(organization.slug, default_subforem),
             )
           end
         end
@@ -318,20 +370,21 @@ RSpec.describe "UserProfiles" do
             get organization.path, headers: { "Host" => other_subforem.domain }
             expect(response).to have_http_status(:moved_permanently)
             expect(response).to redirect_to(
-              URL.url(organization.slug, default_subforem)
+              URL.url(organization.slug, default_subforem),
             )
           end
         end
       end
+      # rubocop:enable RSpec/NestedGroups
     end
 
     context "when displaying a GitHub repository on the profile" do
-      let(:github_user) { create(:user, :with_identity, identities: %i[github]) }
+      let(:github_user) { create(:user, :with_identity, identities: %i[github], profile_image: nil) }
       let(:params) do
         {
           description: "A book bot :robot:",
           featured: true,
-          github_id_code: build(:github_repo).github_id_code,
+          github_id_code: generate(:github_id_code),
           name: Faker::Book.title,
           stargazers_count: 1,
           url: Faker::Internet.url
@@ -364,24 +417,21 @@ RSpec.describe "UserProfiles" do
 
     # rubocop:disable RSpec/NestedGroups
     describe "not found and no index behaviour" do
-      let(:spam_user) { create(:user, :spam) }
-      let(:admin_user) { create(:user, :admin) }
+      let(:spam_user) { create(:user, :spam, profile_image: nil) }
+      let(:admin_user) { create(:user, :admin, :without_profile, profile_image: nil) }
 
       it "raises not found for banished users" do
-        banishable_user = create(:user)
+        banishable_user = create(:user, profile_image: nil)
         Moderator::BanishUser.call(admin: user, user: banishable_user)
         expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
         expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "raises not found for spammers with articles for signed in" do
-        sign_in current_user
-        create(:article, user: spam_user)
+      it "raises not found for spammers with articles for signed out and signed in users", :aggregate_failures do
+        create(:article, user: spam_user, with_tags: false)
         expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
 
-      it "raises not found for spammers with articles for signed out" do
-        create(:article, user: spam_user)
+        sign_in current_user
         expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
@@ -432,26 +482,18 @@ RSpec.describe "UserProfiles" do
   end
 
   describe "redirect to moderation" do
-    it "redirects to admin" do
-      user = create(:user)
+    it "redirects user /admin and /moderate to admin user page", :aggregate_failures do
       get "/#{user.username}/admin"
       expect(response).to redirect_to admin_user_path(user.id)
-    end
 
-    it "redirects to moderate" do
-      user = create(:user)
       get "/#{user.username}/moderate"
       expect(response).to redirect_to admin_user_path(user.id)
     end
 
-    it "redirects organization moderate to admin organization page" do
-      organization = create(:organization)
+    it "redirects organization /moderate and /admin to admin organization page", :aggregate_failures do
       get "/#{organization.slug}/moderate"
       expect(response).to redirect_to admin_organization_path(organization.id)
-    end
 
-    it "redirects organization admin to admin organization page" do
-      organization = create(:organization)
       get "/#{organization.slug}/admin"
       expect(response).to redirect_to admin_organization_path(organization.id)
     end

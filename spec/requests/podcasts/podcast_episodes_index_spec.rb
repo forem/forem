@@ -7,12 +7,30 @@ RSpec.describe "Podcast Episodes Index Spec" do
       expect(response.body).to include(I18n.t("views.podcasts.suggest_a_podcast"))
     end
 
-    it "shows reachable podcasts" do
-      create(:podcast_episode, title: "SuperMario")
-      create(:podcast_episode, reachable: false, title: "I'm unreachable")
+    it "shows reachable published episodes with links and published_at", :aggregate_failures do
+      episode1 = create(:podcast_episode, title: "SuperMario", published_at: 7.hours.ago)
+      episode2 = create(:podcast_episode, published_at: 7.days.ago)
+      unpublished_podcast = create(:podcast, reachable: true, published: false)
+      unreachable_episode = create(
+        :podcast_episode,
+        podcast: unpublished_podcast,
+        reachable: false,
+        title: "I'm unreachable",
+      )
+      unpublished_episode = create(:podcast_episode, podcast: unpublished_podcast)
+
       get "/pod"
+      doc = Nokogiri::HTML(response.body)
+      main_content = doc.at_css("#main-content")
+
       expect(response.body).to include("SuperMario")
       expect(response.body).not_to include("unreachable")
+      expect(main_content.at_css("a[href='#{episode1.path}']")).to be_present
+      expect(main_content.at_css("a[href='#{episode2.path}']")).to be_present
+      expect(main_content.at_css("a[href='#{unreachable_episode.path}']")).to be_nil
+      expect(main_content.at_css("a[href='#{unpublished_episode.path}']")).to be_nil
+      expect(main_content.at_css("time.published-at")).to be_present
+      expect(main_content.at_css("span.time-ago-indicator-initial-placeholder")).to be_present
     end
 
     it "shows featured podcasts area if there are any" do

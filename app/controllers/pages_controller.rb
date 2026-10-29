@@ -1,6 +1,6 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots]
+  before_action :set_cache_control_headers, only: %i[show badge bounty faq robots llms openapi]
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
@@ -102,10 +102,12 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    billboard_url = admin_billboard_path(params[:billboard]) if params[:billboard].present?
-    reported_url = params[:reported_url] || params[:url] || request.referer.presence
+    reported_url =
+      valid_utf8_string(params[:reported_url]) ||
+      valid_utf8_string(params[:url]) ||
+      valid_utf8_string(request.referer)
     @feedback_message = FeedbackMessage.new(
-      reported_url: billboard_url || reported_url&.chomp("?i=i"),
+      reported_url: billboard_abuse_url || reported_url&.chomp("?i=i"),
     )
     render "pages/report_abuse"
   end
@@ -115,6 +117,24 @@ class PagesController < ApplicationController
     custom_domain_org
     respond_to :text
     set_surrogate_key_header "robots_page"
+  end
+
+  def llms
+    # Machine-readable guidance for AI agents and other automated clients.
+    # Served at /llms.txt, mirroring the robots.txt convention.
+    custom_domain_org
+    respond_to :text
+    set_surrogate_key_header "llms_page"
+  end
+
+  def openapi
+    # The generated OpenAPI description of the public API. Served over HTTP so that
+    # automated clients can discover the contract instead of guessing at it.
+    spec = Rails.root.join("swagger/v1/api_v1.json")
+    return not_found unless spec.exist?
+
+    set_surrogate_key_header "openapi_spec"
+    render plain: spec.read, content_type: "application/json"
   end
 
   def welcome
@@ -143,7 +163,12 @@ class PagesController < ApplicationController
   private
 
   def proper_page_by_slug
-    Page.from_subforem.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
+    subforem_pages = Page.from_subforem
+    # When subforem filtering is off, the scoped lookup is the same query as the fallback,
+    # so a missing slug would otherwise hit the database twice before raising.
+    return Page.find_by!(slug: params[:slug]) if subforem_pages.where_clause.empty?
+
+    subforem_pages.find_by(slug: params[:slug]) || Page.find_by!(slug: params[:slug])
   end
 
   def redirect_daily_thread_request(daily_thread)
@@ -161,5 +186,21 @@ class PagesController < ApplicationController
 
   def combined_fragmented_slug
     (0..5).filter_map { |i| params["slug_#{i}"] }.join("/")
+  end
+
+  def billboard_abuse_url
+    billboard_id = valid_utf8_string(params[:billboard])
+    admin_billboard_path(billboard_id) if billboard_id
+  rescue ActionController::UrlGenerationError
+    nil
+  end
+
+  def valid_utf8_string(value)
+    return unless value.is_a?(String)
+
+    utf8 = value.encoding == Encoding::UTF_8 ? value : value.dup.force_encoding(Encoding::UTF_8)
+    return unless utf8.valid_encoding?
+
+    utf8.presence
   end
 end

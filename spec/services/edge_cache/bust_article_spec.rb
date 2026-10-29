@@ -64,5 +64,50 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
       described_class.call(article)
       expect(organization).to have_received(:purge).once
     end
+
+    it "busts the custom domain article URL when org custom domain is enabled" do
+      organization = create(:organization, custom_domain: "blog.example.com")
+      article.organization = organization
+      allow(organization).to receive(:purge)
+      FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(organization))
+
+      described_class.call(article)
+      expect(cache_bust).to have_received(:call).with(URL.url("/#{article.slug}", organization.custom_domain))
+    end
+  end
+
+  describe "timeframe pruning in bust_home_pages and bust_tag_pages" do
+    before do
+      allow(described_class).to receive(:bust_home_pages).and_call_original
+      allow(described_class).to receive(:bust_tag_pages).and_call_original
+    end
+
+    it "stops checking wider timeframes once a recent article is not in the top 3 for week" do
+      create_list(:article, 3, :past, tags: "javascript", score: 100, published: true, past_published_at: 2.days.ago)
+      low = create(:article, :past, tags: "javascript", score: 1, published: true, past_published_at: 1.day.ago)
+      described_class.call(low)
+      expect(cache_bust).not_to have_received(:call).with(match(%r{\A/top/(week|month|year|infinity)\z}))
+    end
+
+    it "skips narrower timeframes when article was published before the timeframe cutoff" do
+      old = create(:article, :past, tags: "ruby", score: 500, published: true, past_published_at: 6.months.ago)
+      described_class.call(old)
+      expect(cache_bust).not_to have_received(:call).with(match(%r{\A/top/(week|month)\z}))
+      expect(cache_bust).to have_received(:call).with("/top/year").at_least(:once)
+      expect(cache_bust).to have_received(:call).with("/top/infinity").at_least(:once)
+    end
+
+    it "purges each tag API path once even when the article is top in every timeframe" do
+      top = create(:article, :past, tags: "ruby, rails", score: 500, published: true, past_published_at: 1.day.ago)
+      described_class.call(top)
+
+      %w[ruby rails].each do |tag|
+        12.times do |i|
+          expect(cache_bust).to have_received(:call).with("/api/articles?tag=#{tag}&top=#{i}").once
+        end
+      end
+      # Once from bust_home_pages and once (not once per tag) from bust_tag_pages
+      expect(cache_bust).to have_received(:call).with("/top/week").twice
+    end
   end
 end

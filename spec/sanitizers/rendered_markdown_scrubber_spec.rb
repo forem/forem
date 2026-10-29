@@ -64,4 +64,51 @@ RSpec.describe RenderedMarkdownScrubber, type: :permit_scrubber do
       expect(output).not_to include("javascript")
     end
   end
+
+  describe "mermaid diagram blocks" do
+    it "keeps data-lang on a pre" do
+      html = %(<pre data-lang="mermaid"><code>graph TD;</code></pre>)
+      expect(clean(html)).to include('data-lang="mermaid"')
+    end
+
+    it "strips class from a pre, which is why data-lang is the hook" do
+      html = %(<pre class="mermaid"><code>graph TD;</code></pre>)
+      output = clean(html)
+
+      expect(output).not_to include("class")
+      expect(output).to include("<pre>")
+    end
+  end
+
+  describe "codeblock attribute scrubbing" do
+    it "strips event handlers from non-codeblock elements with class='highlight'" do
+      html = %(<img class="highlight" src="https://example.com/x.png" onerror="alert(1)">)
+      output = clean(html)
+
+      expect(output).not_to include("onerror")
+      expect(output).not_to include("alert(1)")
+      expect(output).not_to include("class")
+    end
+
+    it "strips event handlers from codeblock elements while keeping highlight classes" do
+      html = '<div class="highlight"><pre class="highlight ruby" onclick="alert(1)">' \
+             '<code class="highlight" onmouseover="alert(2)">' \
+             '<span class="k" onclick="alert(3)">def</span></code></pre></div>'
+      output = clean(html)
+
+      expect(output).to include('class="highlight ruby"')
+      expect(output).to include('class="k"')
+      expect(output).not_to include("onclick")
+      expect(output).not_to include("onmouseover")
+      expect(output).not_to include("alert")
+    end
+
+    it "strips liquid tag syntax from attributes inside codeblocks" do
+      html = %(<pre class="highlight {% cta %}"><code class="highlight"><span class="k {% raw %}">x</span></code></pre>)
+      output = clean(html)
+
+      expect(output).not_to include("{%")
+      expect(output).not_to include("%}")
+    end
+  end
 end

@@ -32,8 +32,8 @@ fr:
         placeholder: "..."
         list: Liste de lecture
         moderator_center: Centre de modération
-        leadership: Leadership communautaire
-        other: Other
+        leadership: Curation communautaire
+        other: Autre
         settings: Paramètres
         account: Compte
       nav_name:
@@ -52,6 +52,26 @@ fr:
         Videos: Videos
       side:
         upcoming_events: "Événements à venir"
+        events:
+          headings:
+            upcoming_events: "Événements à venir"
+            live_events: "Événements en direct"
+            live_and_upcoming_events: "Événements en direct et à venir"
+            upcoming_challenges: "Défis à venir"
+            live_challenges: "Défis en direct"
+            live_and_upcoming_challenges: "Défis en direct et à venir"
+            upcoming_livestreams: "Livestreams à venir"
+            live_livestreams: "Livestreams en direct"
+            live_and_upcoming_livestreams: "Livestreams en direct et à venir"
+            upcoming_takeovers: "Takeovers à venir"
+            live_takeovers: "Takeovers en direct"
+            live_and_upcoming_takeovers: "Takeovers en direct et à venir"
+          types:
+            challenge: "Défi"
+            live_stream: "Livestream"
+            takeover: "Takeover"
+            other: "Événement"
+          live_badge: "EN DIRECT"
         listings:
           heading: Listings
           all: Tout voir

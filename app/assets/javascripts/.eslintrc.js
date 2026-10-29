@@ -29,6 +29,7 @@ module.exports = {
     initializeBaseUserData: false,
     initializeBillboardVisibility: false,
     initializeFavoritedMarkers: false,
+    initializeOnboardingTaskCard: false,
     initializeReadingListIcons: false,
     ActiveXObject: false,
     AndroidBridge: false,

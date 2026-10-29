@@ -72,6 +72,26 @@ RSpec.describe UserDecorator, type: :decorator do
     end
   end
 
+  describe "#assigned_color" do
+    it "maps each user id onto the same ten-color palette as before" do
+      legacy_palette = [
+        { bg: "#19063A", text: "#dce9f3" }, { bg: "#0D4D4B", text: "#fdf9f3" },
+        { bg: "#010C1F", text: "#aebcd5" }, { bg: "#d7dee2", text: "#022235" },
+        { bg: "#161616", text: "#66e2d5" }, { bg: "#1c0bba", text: "#c9d2dd" },
+        { bg: "#093656", text: "#ffffff" }, { bg: "#61122f", text: "#ffffff" },
+        { bg: "#2e0338", text: "#ffffff" }, { bg: "#080E3B", text: "#ffffff" }
+      ]
+
+      (0..25).each do |id|
+        expect(build(:user, id: id).decorate.assigned_color).to eq(legacy_palette[id % 10])
+      end
+    end
+
+    it "falls back to a palette color for users without an id" do
+      expect(described_class::ASSIGNED_COLORS).to include(build(:user, id: nil).decorate.assigned_color)
+    end
+  end
+
   describe "#config_body_class" do
     it "creates proper body class with defaults" do
       expected_result = %W[

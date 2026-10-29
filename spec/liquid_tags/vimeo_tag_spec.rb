@@ -34,4 +34,14 @@ RSpec.describe VimeoTag, type: :liquid_tag do
   it "accepts urls that were turned into links by markdown" do
     assert_parses id, "<a href=\"https://vimeo.com/#{id}\">https://vimeo.com/#{id}</a> "
   end
+
+  it "rejects non-numeric Vimeo IDs" do
+    expect do
+      Liquid::Template.parse('{% vimeo 205930710" onload="alert(1) %}')
+    end.to raise_error(StandardError)
+
+    expect do
+      Liquid::Template.parse("{% vimeo https://vimeo.com/notanumber %}")
+    end.to raise_error(StandardError)
+  end
 end

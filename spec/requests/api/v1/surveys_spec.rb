@@ -247,6 +247,11 @@ RSpec.describe "Api::V1::Surveys" do
         expect(response.parsed_body.size).to eq(2)
       end
 
+      it "does not error on a negative per_page" do
+        get poll_votes_api_survey_path(survey.id), params: { per_page: -1 }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
       it "returns empty array for survey with no votes" do
         empty_survey = create(:survey)
         create(:poll, survey: empty_survey, article: nil)

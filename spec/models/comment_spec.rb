@@ -7,6 +7,56 @@ RSpec.describe Comment do
 
   include_examples "#sync_reactions_count", :article_comment
 
+  describe "ai_disclosure_level" do
+    it "defines expected enum values" do
+      expect(Comment.ai_disclosure_levels).to eq({
+        "not_disclosed" => 0,
+        "no_ai" => 1,
+        "some_ai" => 3,
+        "fully_autonomous" => 5
+      })
+    end
+
+    it "defaults to not_disclosed" do
+      new_comment = build(:comment, user: user, commentable: article)
+      expect(new_comment.ai_disclosure_level).to eq("not_disclosed")
+      expect(new_comment.ai_disclosed?).to be false
+    end
+
+    it "correctly identifies when AI usage is disclosed" do
+      some_ai_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :some_ai)
+      autonomous_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :fully_autonomous)
+
+      expect(some_ai_comment.ai_disclosed?).to be true
+      expect(autonomous_comment.ai_disclosed?).to be true
+    end
+
+    it "returns the proper human-readable label" do
+      not_disclosed_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :not_disclosed)
+      no_ai_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :no_ai)
+      some_ai_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :some_ai)
+      autonomous_comment = build(:comment, user: user, commentable: article, ai_disclosure_level: :fully_autonomous)
+
+      expect(not_disclosed_comment.ai_disclosure_label).to eq("Not Disclosed")
+      expect(no_ai_comment.ai_disclosure_label).to eq("No AI")
+      expect(some_ai_comment.ai_disclosure_label).to eq("AI-assisted")
+      expect(autonomous_comment.ai_disclosure_label).to eq("Fully Autonomous")
+    end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      new_comment = build(:comment, user: user, commentable: article)
+
+      new_comment.ai_disclosure_level = "ai_generated"
+      expect(new_comment.ai_disclosure_level).to eq("fully_autonomous")
+
+      new_comment.ai_disclosure_level = "ai_assisted"
+      expect(new_comment.ai_disclosure_level).to eq("some_ai")
+
+      new_comment.ai_disclosure_level = "human"
+      expect(new_comment.ai_disclosure_level).to eq("no_ai")
+    end
+  end
+
   describe "validations" do
     subject { comment }
 
@@ -322,6 +372,29 @@ RSpec.describe Comment do
 
       expect(described_class.favorited).to include(favorited)
       expect(described_class.favorited.count).to eq(1)
+    end
+  end
+
+  describe "#favorited?" do
+    let(:leader) { create(:user, :community_leader_level_1) }
+
+    it "returns true when favorited_by_user_id is present" do
+      comment = build(:comment, favorited_by_user: leader)
+      expect(comment.favorited?).to be true
+    end
+
+    it "returns false when favorited_by_user_id is nil" do
+      comment = build(:comment, favorited_by_user_id: nil)
+      expect(comment.favorited?).to be false
+    end
+  end
+
+  describe "#async_score_calc" do
+    it "calls calculate_score" do
+      target_comment = build_stubbed(:comment, id: 123)
+      allow(Comments::CalculateScoreWorker).to receive(:perform_async)
+      target_comment.async_score_calc
+      expect(Comments::CalculateScoreWorker).to have_received(:perform_async).with(123)
     end
   end
 

@@ -18,9 +18,36 @@ class ProfileField < ApplicationRecord
   validates :show_in_onboarding, inclusion: { in: [true, false] }
   validate :maximum_header_field_count
 
+  DISPLAY_AREA_CACHE_KEY = "profile_fields_by_display_area".freeze
+
   before_create :generate_attribute_name
+  after_destroy :clear_request_store_cache
+  after_save :clear_request_store_cache
+
+  # Loads every display area in one query and caches it in L1/L2 MemoryFirstCache
+  # (and RequestStore) so pages rendering profile cards or sidebars do not hit
+  # the database on every request.
+  def self.cached_display_area_fields(area)
+    fields_by_area = RequestStore.fetch(:profile_fields_by_display_area) do
+      MemoryFirstCache.fetch(DISPLAY_AREA_CACHE_KEY, redis_expires_in: 24.hours) do
+        pluck(:display_area, :label, :attribute_name)
+          .group_by(&:first)
+          .transform_values { |rows| rows.to_h { |_display_area, label, attribute_name| [label, attribute_name] } }
+      end
+    end
+    fields_by_area.fetch(area.to_s, {})
+  end
+
+  def self.clear_request_store_cache
+    RequestStore.store.delete_if { |key, _| key.to_s.start_with?("profile_fields_") }
+    MemoryFirstCache.delete(DISPLAY_AREA_CACHE_KEY)
+  end
 
   private
+
+  def clear_request_store_cache
+    self.class.clear_request_store_cache
+  end
 
   def generate_attribute_name
     self.attribute_name = "attribute_#{SecureRandom.hex}"

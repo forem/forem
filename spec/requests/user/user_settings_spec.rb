@@ -37,6 +37,26 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("User")
       end
 
+      it "offers profile image removal when the user has one" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[remove_profile_image]")
+        html = Nokogiri::HTML(response.body)
+        checkbox = html.at_css('input[type="checkbox"][id="user[remove_profile_image]"]')
+        expect(checkbox["aria-describedby"]).to eq("remove-profile-image-description")
+        expect(html.css('label[for="user[remove_profile_image]"] p')).to be_empty
+        expect(html.css("p#remove-profile-image-description.crayons-field__description")).to be_present
+      end
+
+      it "renders the Profile tab without the removal checkbox when there is no profile image" do
+        sign_in create(:user, profile_image: nil)
+
+        get user_settings_path(:profile)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("user[remove_profile_image]")
+      end
+
       it "displays profile groups content on Profile tab" do
         profile_field = create(:profile_field)
 
@@ -89,6 +109,22 @@ RSpec.describe "UserSettings" do
         titles = ["Comment templates", "API Keys"]
         expect(response.body).to include(*titles)
         expect(response.body).to include("Manage my RSS feeds")
+      end
+
+      it "renders the API key generation form with description and accessible markup" do
+        get user_settings_path(:extensions)
+
+        html = Nokogiri::HTML(response.body)
+        desc = html.at_css("p#api-key-description.crayons-field__description")
+        expect(desc).to be_present
+        expect(desc.text.strip).to eq(I18n.t("views.settings.extensions.api.gen.text"))
+
+        input = html.at_css('input#api_secret_description[name="api_secret[description]"]')
+        expect(input["aria-describedby"]).to eq("api-key-description")
+
+        button = html.at_css('form[action="/users/api_secrets"] button[type="submit"]')
+        expect(button[:class].split).to include("crayons-btn", "crayons-btn--secondary")
+        expect(button[:class].split).not_to include("crayon-btn--secondary")
       end
 
       it "renders heads up dupe account message with proper param" do

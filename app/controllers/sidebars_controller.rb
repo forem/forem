@@ -1,9 +1,9 @@
 class SidebarsController < ApplicationController
   ACTIVE_DISCUSSION_LIMIT = 8
+  RECENTLY_VIEWED_ARTICLE_LIMIT = 30
   layout false
 
   def show
-    get_latest_campaign_articles
     if user_signed_in?
       get_active_discussions
       set_onboarding_checklist
@@ -19,33 +19,32 @@ class SidebarsController < ApplicationController
     end
   end
 
-  def get_latest_campaign_articles
-    @campaign_articles_count = Campaign.current.count
-    @latest_campaign_articles = Campaign.current.plucked_article_attributes
-  end
-
   def get_active_discussions
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
-    order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC") # Determined via field test
-    @active_discussions = Article.published.from_subforem
+    viewed_ids = recently_viewed_article_ids
+    # Determined via field test
+    order = Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC")
+
+    base_scope = Article.published.from_subforem
       .where("published_at > ?", 1.week.ago)
-      .where("comments_count > ?", 0)
       .with_at_least_home_feed_minimum_score
-      .cached_tagged_with_any(tag_names)
-      .where(language: languages)
-      .or(Article.featured.published.from_subforem.where("published_at > ?", 1.week.ago)
-        .with_at_least_home_feed_minimum_score)
-      .or(Article.where(id: cached_recent_pageview_article_ids).published.from_subforem
-        .where("published_at > ?", 1.week.ago)
-        .where("comments_count > ?", 1)
-          .with_at_least_home_feed_minimum_score)
-      .or(Article.published.from_subforem
-        .where("published_at > ?", 1.week.ago)
-        .where("comments_count >= ?", 15)
-        .where("comment_score >= ?", 25)
-        .with_at_least_home_feed_minimum_score)
+
+    relation = base_scope.featured
+      .or(base_scope.where("comments_count >= ?", 15).where("comment_score >= ?", 25))
+    if tag_names.present? || ENV["OPTIMIZED_TAGGABLE_QUERY"] != "true"
+      relation = base_scope
+        .where("comments_count > ?", 0)
+        .cached_tagged_with_any(tag_names)
+        .where(language: languages)
+        .or(relation)
+    end
+    if viewed_ids.present?
+      relation = relation.or(base_scope.where(id: viewed_ids).where("comments_count > ?", 1))
+    end
+
+    @active_discussions = relation
       .order(order)
       .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at, :subforem_id)
@@ -61,10 +60,12 @@ class SidebarsController < ApplicationController
     @onboarding_checklist = checklist
   end
 
-  def cached_recent_pageview_article_ids
-    Rails.cache.fetch("recent_pageviews_#{current_user.id}", expires_in: 1.hour) do
-      PageView.where(user_id: current_user.id)
-        .order("created_at DESC").limit(30).pluck(:article_id)
-    end
+  # UserActivity keeps the user's latest page views (newest first) as [article_id, created_at, seconds],
+  # refreshed in the background after each page view. Reading it avoids querying page_views directly,
+  # which has no (user_id, created_at) index and is slow for users with a long viewing history.
+  def recently_viewed_article_ids
+    UserActivity.where(user_id: current_user.id).pick(:recently_viewed_articles).to_a
+      .first(RECENTLY_VIEWED_ARTICLE_LIMIT)
+      .filter_map(&:first)
   end
 end

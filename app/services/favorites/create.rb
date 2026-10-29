@@ -19,9 +19,12 @@ module Favorites
       return failure(error) if error
 
       favoritable.reload
+      bust_cache
       log_audit
       grant_earned_favorite
       award_badge
+      send_gem_received_email
+      favoritable.async_score_calc if favoritable.respond_to?(:async_score_calc)
       Result.new(success?: true, favoritable: favoritable)
     end
 
@@ -70,6 +73,8 @@ module Favorites
     # made, and updates it for regular users.
     # Returns true on valid and successful spend, or false otherwise.
     def can_afford_claim?
+      # Unmetered curators never spend from an allowance, so skip the row lock.
+      return true if user.unlimited_favorites?
       return spend_earned_favorite == 1 unless user.community_leader?
 
       # For community leaders, lock to serialize the allowance check for the
@@ -87,6 +92,20 @@ module Favorites
         .update_all("earned_favorites_count = earned_favorites_count - 1, updated_at = NOW()")
     end
 
+    # The claim uses update_all, which skips the model's cache busting
+    # callbacks, so pages rendering the favorite control must be busted here.
+    def bust_cache
+      case favoritable
+      when Article
+        favoritable.purge
+      when Comment
+        # Comment trees are fragment cached by their root comment, so touch the
+        # comment and its ancestors without re-running save callbacks.
+        Comment.where(id: favoritable.path_ids).update_all(updated_at: Time.current)
+        Comments::BustCacheWorker.perform_async(favoritable.id)
+      end
+    end
+
     def grant_earned_favorite
       User.update_counters(favoritable.user_id, earned_favorites_count: 1, touch: true)
     end
@@ -102,7 +121,11 @@ module Favorites
     def award_badge
       Badges::AwardCommunityFavorite.call(favoritable: favoritable, favoriter: user)
     rescue StandardError => e
-      Honeybadger.notify(e)
+      Rails.error.report(e)
+    end
+
+    def send_gem_received_email
+      SendGemReceivedEmailWorker.perform_async(favoritable.class.name, favoritable.id)
     end
 
     def log_audit

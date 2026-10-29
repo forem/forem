@@ -35,6 +35,26 @@ describe('<MultiSelectAutocomplete />', () => {
     expect(container.innerHTML).toMatchSnapshot();
   });
 
+  it('namespaces its internal ids by inputId so instances can share a page', () => {
+    const { container, getByLabelText } = render(
+      <div>
+        <MultiSelectAutocomplete labelText="Tags" fetchSuggestions={() => {}} />
+        <MultiSelectAutocomplete
+          labelText="Co-authors"
+          inputId="co-authors"
+          fetchSuggestions={() => {}}
+        />
+      </div>,
+    );
+
+    const ids = [...container.querySelectorAll('[id]')].map(({ id }) => id);
+    expect(new Set(ids).size).toEqual(ids.length);
+    expect(getByLabelText('Co-authors', { selector: 'input' })).toHaveAttribute(
+      'id',
+      'co-authors',
+    );
+  });
+
   it('renders with default values', () => {
     const { container } = render(
       <MultiSelectAutocomplete
@@ -213,6 +233,34 @@ describe('<MultiSelectAutocomplete />', () => {
       expect(getByRole('button', { name: 'Edit option1' })).toBeInTheDocument(),
     );
     expect(getByRole('button', { name: 'Remove option1' })).toBeInTheDocument();
+  });
+
+  it('sets aria-activedescendant to the active option id when navigating suggestions', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    userEvent.type(input, 'a');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    userEvent.type(input, '{arrowdown}');
+
+    await waitFor(() =>
+      expect(input).toHaveAttribute('aria-activedescendant', 'option1'),
+    );
   });
 
   it('should select current text on spacebar press, when it matches a suggestion', async () => {
@@ -502,6 +550,37 @@ describe('<MultiSelectAutocomplete />', () => {
 
     // Input should be cleared
     expect(input).toHaveValue('');
+  });
+
+  it('closes the open suggestions list on blur when the input matches no suggestion', async () => {
+    const mockFetchSuggestions = jest.fn(async () => [
+      { name: 'option1' },
+      { name: 'option2' },
+    ]);
+
+    const { getByLabelText, getByRole, queryByRole } = render(
+      <MultiSelectAutocomplete
+        labelText="Example label"
+        fetchSuggestions={mockFetchSuggestions}
+      />,
+    );
+
+    const input = getByLabelText('Example label');
+    input.focus();
+    await userEvent.type(input, 'opt');
+
+    await waitFor(() =>
+      expect(getByRole('option', { name: 'option1' })).toBeInTheDocument(),
+    );
+
+    input.blur();
+
+    await waitFor(() => {
+      expect(input).toHaveValue('');
+      expect(
+        queryByRole('option', { name: 'option1' }),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('clears input and selects current text on blur if no matching suggestion and user-defined selections are permitted', async () => {

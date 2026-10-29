@@ -136,6 +136,16 @@ RSpec.describe Tag do
     end
   end
 
+  it "purges edge-cached tag lists when a tag is created, but not on update" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    tag.save!
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+
+    tag.update!(short_summary: "Updated")
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+  end
+
   it "delete tag-colors server cache on save" do
     allow(Rails.cache).to receive(:delete)
     tag.save
@@ -168,6 +178,18 @@ RSpec.describe Tag do
 
     it "returns self if there's no preferred tag" do
       expect(described_class.find_preferred_alias_for("something")).to eq("something")
+    end
+  end
+
+  describe ".find_preferred_aliases_for" do
+    it "resolves preferred aliases in batch while preserving tag order" do
+      create(:tag, name: "rails")
+      create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.find_preferred_aliases_for(%w[RoR something])).to eq(%w[rails something])
+    end
+
+    it "returns an empty array for blank input" do
+      expect(described_class.find_preferred_aliases_for([])).to eq([])
     end
   end
 
@@ -206,9 +228,57 @@ RSpec.describe Tag do
     end
   end
 
+  describe ".moderated_by" do
+    let(:user) { create(:user) }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+
+    before { create(:tag) }
+
+    it "returns no tags when the user moderates none" do
+      expect(described_class.moderated_by(user)).to be_empty
+    end
+
+    it "returns the same tags as rolify's with_role" do
+      user.add_role(:tag_moderator, tag1)
+      user.add_role(:tag_moderator, tag2)
+      create(:user).add_role(:tag_moderator, described_class.last)
+
+      expect(described_class.moderated_by(user)).to contain_exactly(tag1, tag2)
+      expect(described_class.moderated_by(user).to_a)
+        .to match_array(described_class.with_role(:tag_moderator, user).to_a)
+    end
+
+    it "ignores other roles scoped to tags" do
+      user.add_role(:trusted, tag1)
+
+      expect(described_class.moderated_by(user)).to be_empty
+    end
+
+    it "returns every tag when the user holds a class-wide tag_moderator role" do
+      tag1
+      tag2
+      user.add_role(:tag_moderator, described_class)
+
+      expect(described_class.moderated_by(user)).to match_array(described_class.all)
+    end
+  end
+
   describe "#points" do
     it "defaults to 0" do
       expect(described_class.new.points).to eq(0)
+    end
+  end
+
+  describe "#hotness_score" do
+    it "is capped at the integer column limit for very busy tags" do
+      tag = create(:tag, name: "busytag")
+      create_list(:article, 3, tags: tag.name)
+      # 3 recent articles * (taggings_count + 6) / 2 exceeds 2**31 - 1
+      tag.update_column(:taggings_count, 2_000_000_000)
+
+      expect { tag.reload.save! }.not_to raise_error
+      expect(tag.reload.hotness_score).to eq(described_class::HOTNESS_SCORE_RANGE.max)
     end
   end
 

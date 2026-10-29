@@ -11,7 +11,7 @@
 
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
-    <%= @user_json_ld.to_json.html_safe %>
+    <%= structured_data_json(@user_json_ld).html_safe %>
   </script>
 <% end %>
 
@@ -44,9 +44,8 @@
                     id="user-profile-dropdownmenu-flag-button"
                     data-profile-user-id="<%= @user.id %>"
                     data-profile-user-name="@<%= @user.username %>"
-                    data-is-user-flagged="<%= @is_user_flagged %>"
                     class="border-none crayons-link crayons-link--block">
-                    <%= t("views.users.#{@flag_status ? 'unflag' : 'flag'}", user: @user.username) %>
+                    <%= t("views.users.flag", user: @user.username) %>
                   </a>
                   <a
                     href="javascript:void(0);"
@@ -57,6 +56,10 @@
                     class="border-none crayons-link crayons-link--block">
                     <%= t("views.users.#{@user.spam? ? 'unspam' : 'spam'}", user: @user.username) %>
                   </a>
+                  <span
+                    class="admin-actions hidden"
+                    data-path="<%= admin_user_path(@user) %>"
+                    data-text="<%= t("views.users.view_admin_profile") %>"></span>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
               </div>
@@ -68,10 +71,10 @@
           <div class="items-center js-username-container mb-2">
             <h1 class="crayons-title lh-tight">
               <%= @user.name %>
-              <span class="ml-2">
-                <%= subscription_icon(@user) %>
-                <%= community_leader_icon(@user) %>
-              </span>
+              <% name_icons = safe_join([subscription_icon(@user), community_leader_icon(@user)].compact_blank, " ") %>
+              <% if name_icons.present? %>
+                <span class="ml-2"><%= name_icons %></span>
+              <% end %>
               <% if @user.spam? %>
                 &nbsp;<span class="c-indicator c-indicator--danger">Spam</span>
               <% end %>
@@ -164,7 +167,7 @@
         <% else %>
           <%= render "users/comments_locked_cta" %>
         <% end %>
-      <% elsif @stories.any? || @user.comments_count.positive? || @pinned_stories.any? %>
+      <% elsif @stories.any? || @comments.present? || @pinned_stories.any? || (!user_signed_in? && @user.comments_count.positive?) %>
         <%= render "users/main_feed" %>
       <% end %>
     </div>

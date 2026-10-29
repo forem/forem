@@ -29,6 +29,15 @@ RSpec.describe Events::Billboards::LiveStream do
       expect(html).to include("const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();")
       expect(html).to include("const IFRAME_SRC = #{event.primary_stream_url.to_json};")
     end
+
+    it "queries DOM elements dynamically inside update() to avoid stale references across soft navigation" do
+      html = service.feed_html
+
+      expect(html).to match(
+        /function update\(\)\s*\{\s*const overlay = document\.getElementById\("overlay-feed-#{event.id}"\);/m,
+      )
+      expect(html).to include("const playerContainer = document.getElementById(\"player-container-feed-#{event.id}\");")
+    end
   end
 
   describe "#post_html" do
@@ -43,6 +52,15 @@ RSpec.describe Events::Billboards::LiveStream do
       
       expect(html).to include("const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();")
       expect(html).to include("const IFRAME_SRC = #{event.primary_stream_url.to_json};")
+    end
+
+    it "queries DOM elements dynamically inside update() to avoid stale references across soft navigation" do
+      html = service.post_html
+
+      expect(html).to match(
+        /function update\(\)\s*\{\s*const overlay = document\.getElementById\("overlay-post-#{event.id}"\);/m,
+      )
+      expect(html).to include("const playerContainer = document.getElementById(\"player-container-post-#{event.id}\");")
     end
   end
 end
