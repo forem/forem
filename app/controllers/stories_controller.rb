@@ -553,11 +553,13 @@ class StoriesController < ApplicationController
     @stories = []
     return unless @user.articles_count.positive?
 
+    # Profile stories are full posts only, and the story card reads processed_html just for
+    # status posts (Article#body_preview), so skip loading that large column for up to 60 rows.
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
-      .limited_column_select
+      .minimal_feed_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
-      .limited_column_select
+      .minimal_feed_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
     preload_context_notes(@pinned_stories + @stories)
