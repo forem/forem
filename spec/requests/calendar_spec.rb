@@ -130,6 +130,26 @@ RSpec.describe "Calendar" do
 
         expect(response.body).not_to include("calendar__day--has-event")
       end
+
+      it "renders every grid day as a link that keeps the type filter" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "takeover")
+
+        cells = Nokogiri::HTML(response.body).css("[data-calendar-grid] a[data-calendar-day]")
+        expect(cells.size).to eq(35)
+        march_12 = cells.detect { |cell| cell["data-calendar-day"] == "2026-03-12" }
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=takeover")
+        expect(march_12["class"]).to eq("calendar__day text-center p-1 calendar__day--selected")
+        # March 2026 starts on a Sunday, so the grid ends on Saturday, April 4.
+        expect(cells.last["data-calendar-day"]).to eq("2026-04-04")
+        expect(cells.last["class"]).to eq("calendar__day text-center p-1 color-base-30")
+      end
+
+      it "escapes a type filter that needs URL encoding in the grid links" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "a b&c")
+
+        march_12 = Nokogiri::HTML(response.body).at_css('[data-calendar-day="2026-03-12"]')
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=a+b%26c")
+      end
     end
 
     context "with event row details" do

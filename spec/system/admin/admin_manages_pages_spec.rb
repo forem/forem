@@ -1,79 +1,66 @@
 require "rails_helper"
 
 RSpec.describe "Admin manages pages" do
-  let(:admin) { create(:user, :super_admin) }
+  let(:admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
   before do
-    create(:page,
-           slug: "test-page",
-           body_html: "<div>hello there</div>",
-           title: "Test Page",
-           description: "A test page",
-           is_top_level_path: true,
-           landing_page: false)
     sign_in admin
-    visit admin_pages_path
-  end
-
-  it "loads the view" do
-    expect(page).to have_content("Pages")
-    expect(page).to have_content("New page")
   end
 
   describe "when there are default pages" do
-    it "shows an override defaults section with a warning" do
-      expect(page).to have_content("Override defaults")
-      expect(page).to have_content("Note: Proceed with caution.")
+    before do
+      create(:page,
+             slug: "test-page",
+             body_html: "<div>hello there</div>",
+             title: "Test Page",
+             description: "A test page",
+             is_top_level_path: true,
+             landing_page: false)
+      visit admin_pages_path
     end
 
-    it "shows the code of conduct link in the overrides section" do
+    it "loads the view and shows default page override links without listing them in the pages table",
+       :aggregate_failures do
+      expect(page).to have_content("Pages")
+      expect(page).to have_content("New page")
+      expect(page).to have_content("Override defaults")
+      expect(page).to have_content("Note: Proceed with caution.")
+
       within(".pages__override_defaults") do
         expect(page).to have_link("Code of Conduct", href: code_of_conduct_path)
         expect(page).to have_link("Override", href: new_admin_page_path(slug: "code-of-conduct"))
-      end
-    end
-
-    it "shows the privacy policy link in the overrides section" do
-      within(".pages__override_defaults") do
         expect(page).to have_link("Privacy Policy", href: privacy_path)
         expect(page).to have_link("Override", href: new_admin_page_path(slug: "privacy"))
-      end
-    end
-
-    it "shows the terms of use link in the overrides section" do
-      within(".pages__override_defaults") do
         expect(page).to have_link("Terms of Use", href: terms_path)
         expect(page).to have_link("Override", href: new_admin_page_path(slug: "terms"))
       end
-    end
 
-    it "does not show any of the links in the pages table" do
       within(".pages__table") do
-        expect(page).not_to have_content("Terms of Use")
-        expect(page).not_to have_content("Code of Conduct")
-        expect(page).not_to have_content("Privacy Policy")
+        expect(page).to have_no_content("Terms of Use")
+        expect(page).to have_no_content("Code of Conduct")
+        expect(page).to have_no_content("Privacy Policy")
       end
     end
 
-    it "has client-side validation" do
+    it "has client-side validation", :aggregate_failures do
       expect(page).to have_content("Test Page")
       click_on("Edit")
       fill_in "page_description", with: ""
       click_on("Update Page")
-      expect(page).not_to have_current_path(admin_pages_path)
+      expect(page).to have_no_current_path(admin_pages_path)
       fill_in "page_description", with: "Walk without rhythm"
       fill_in "page_slug", with: "/d/d/d/d/d/d/d/d/d/d/d/d"
       click_on("Update Page")
-      expect(page).not_to have_current_path(admin_pages_path)
+      expect(page).to have_no_current_path(admin_pages_path)
     end
 
-    it "allows a page to be deleted" do
+    it "allows a page to be deleted", :aggregate_failures do
       expect(page).to have_content("Test Page")
       click_on("Edit")
-      expect(page).to have_selector("input[type=submit][value='Delete Page']")
+      expect(page).to have_css("input[type=submit][value='Delete Page']")
       click_on("Delete Page")
       expect(page).to have_current_path(admin_pages_path)
-      expect(page).not_to have_content("Test Page")
+      expect(page).to have_no_content("Test Page")
     end
   end
 
@@ -99,15 +86,12 @@ RSpec.describe "Admin manages pages" do
              title: "Terms of Use",
              description: "A page that describes the terms of use for the application",
              is_top_level_path: true)
-      sign_in admin
       visit admin_pages_path
     end
 
-    it "shows the notice that the defaults have been overridden" do
+    it "shows the overridden notice and lists the overridden pages in the pages table", :aggregate_failures do
       expect(page).to have_content("You will no longer receive updates on these pages from the Forem team")
-    end
 
-    it "shows the overridden pages in the pages table" do
       within(".pages__table") do
         expect(page).to have_content("Terms of Use")
         expect(page).to have_content("Code of Conduct")
@@ -158,7 +142,7 @@ RSpec.describe "Admin manages pages" do
       it "does not give admins the option to set a lock screen" do
         allow(ForemInstance).to receive(:private).and_return(false)
         visit edit_admin_page_path(new_landing_page.id)
-        expect(page).not_to have_content("Use as 'Locked Screen'")
+        expect(page).to have_no_content("Use as 'Locked Screen'")
       end
     end
   end
