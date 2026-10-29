@@ -1,0 +1,24 @@
+app/services/feeds/assemble_article_markdown.rb
+  h_f968154a99632d 281-283
+app/services/feeds/import.rb
+  h_f968154a99632d 111,402-426
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_f968154a99632d 1625-1631,1633-1635,1637,1640-1644,1704-1724,1763-1769,1771-1772,1882,2052-2053,2260-2273,2653-2659,2726-2739
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4312-4315
+spec/services/feeds/assemble_article_markdown_spec.rb
+  h_f968154a99632d 253-258,263
+spec/services/feeds/import_spec.rb
+  h_f968154a99632d 306,309-310,312-315,317,321
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ff4c9a553a9f7c504bed6402f5c48d84ba3ad3c0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

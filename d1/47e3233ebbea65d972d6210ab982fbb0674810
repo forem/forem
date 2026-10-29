@@ -1,0 +1,56 @@
+app/services/co_author_invitations/decline.rb
+  s_26a269fa3c3c7f::t_12bd61304bb49f 31
+app/services/co_author_invitations/sync.rb
+  s_26a269fa3c3c7f::t_a812ec287b7b40 39-43
+  s_26a269fa3c3c7f::t_08e10ed61c4076 65-75
+app/javascript/crayons/MultiSelectAutocomplete/MultiSelectAutocomplete.jsx
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 579
+  s_26a269fa3c3c7f::t_809a6c7cd7e9b3 111-117,582,605,616-619,642-643,668,671
+app/javascript/article-form/components/CoAuthorInvitationSelector.jsx
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 55,59-61,76-78
+config/locales/pt.yml
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 60-61
+app/models/article.rb
+  s_26a269fa3c3c7f::t_397c689bae6799 2076-2081
+  s_26a269fa3c3c7f::t_af481e57304253 355-357
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/MultiSelectAutocomplete.test.jsx
+  s_26a269fa3c3c7f::t_f5642888c80823 38-57
+config/locales/en.yml
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 60-61
+app/javascript/article-form/components/__tests__/CoAuthorInvitationSelector.test.jsx
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 23-24,176-178
+  s_26a269fa3c3c7f::t_3935d2e28f92db 79-86,88-94
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 71-76,159-161
+  s_26a269fa3c3c7f::t_bdf92cc6cc4d6a 77-78
+spec/services/co_author_invitations/accept_spec.rb
+  s_26a269fa3c3c7f::t_9867d9113fd7d0 43-57
+spec/services/co_author_invitations/sync_spec.rb
+  s_26a269fa3c3c7f::t_4e4bb3164f19fc 74-76,78-79,81-98
+  s_26a269fa3c3c7f::t_2233be8d4c85b0 77,80
+spec/models/article_spec.rb
+  s_26a269fa3c3c7f::t_845a1365a4d23c 4427-4439
+app/services/co_author_invitations/accept.rb
+  s_26a269fa3c3c7f::t_331eed5a462f98 20-22,31
+config/locales/fr.yml
+  s_26a269fa3c3c7f::t_3c2ed796bbfbca 60-61
+app/javascript/__tests__/__snapshots__/convertCoauthorIdsToUsernameInputs.test.js.snap
+  s_26a269fa3c3c7f::t_87bcc8463c24f5 22,50
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/__snapshots__/MultiSelectAutocomplete.test.jsx.snap
+  s_26a269fa3c3c7f::t_2088e0f4de96f9 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d147e3233ebbea65d972d6210ab982fbb0674810",
+  "prompts": {},
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

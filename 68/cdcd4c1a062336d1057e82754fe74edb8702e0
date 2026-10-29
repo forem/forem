@@ -1,0 +1,46 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 7,25,58
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 70,92-103
+app/models/feed_config.rb
+  h_f968154a99632d 4-19,252
+app/models/feed_event.rb
+  h_f968154a99632d 143
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 156-157
+app/views/admin/feed_configs/new.html.erb
+  h_f968154a99632d 7
+app/workers/feeds/archive_stale_configs_worker.rb
+  h_f968154a99632d 1-11
+config/schedule.yml
+  h_f968154a99632d 205-208
+db/migrate/20261026150000_add_archived_to_feed_configs.rb
+  h_f968154a99632d 1-5
+db/migrate/20261026150001_add_active_success_score_index_to_feed_configs.rb
+  h_f968154a99632d 1-60
+db/schema.rb
+  h_f968154a99632d 13,833,869
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 495-548
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 319-328
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 57-64
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 828-838
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 324-336
+spec/workers/feeds/archive_stale_configs_worker_spec.rb
+  h_f968154a99632d 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "68cdcd4c1a062336d1057e82754fe74edb8702e0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

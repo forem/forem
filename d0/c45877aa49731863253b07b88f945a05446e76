@@ -1,0 +1,21 @@
+app/controllers/application_controller.rb
+  s_f5272548969ef4::t_00d95b6b69ce1d 243
+spec/controllers/application_controller_spec.rb
+  s_f5272548969ef4::t_00d95b6b69ce1d 11-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d0c45877aa49731863253b07b88f945a05446e76",
+  "prompts": {},
+  "sessions": {
+    "s_f5272548969ef4": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188fd-a703-7361-acb2-85fc69770224",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

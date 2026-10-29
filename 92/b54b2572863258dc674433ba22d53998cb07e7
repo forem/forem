@@ -1,0 +1,16 @@
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 56,66,85,97,115,129,163,170,282-283,287
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 597-621
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "92b54b2572863258dc674433ba22d53998cb07e7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+lib/tasks/post_precompile_assets.rake
+  h_f968154a99632d 1-11
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 49-81
+config/environments/production.rb
+  h_f968154a99632d 48-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5c005446b774712e8c33de2cfcabff3057ba0bef",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
