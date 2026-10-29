@@ -1,51 +1,60 @@
-<nav class="crayons-tabs crayons-tabs--analytics" aria-label="<%= t("views.stats.period.aria_label") %>">
-  <ul class="crayons-tabs__list">
-    <li>
-      <button data-text="<%= t("views.stats.period.week") %>" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page"><%= t("views.stats.period.week") %></button>
-    </li>
-    <li>
-      <button data-text="<%= t("views.stats.period.month") %>" class="crayons-tabs__item" id="month-button"><%= t("views.stats.period.month") %></button>
-    </li>
-    <li>
-      <button data-text="<%= t("views.stats.period.infinity") %>" class="crayons-tabs__item" id="infinity-button"><%= t("views.stats.period.infinity") %></button>
-    </li>
-  </ul>
-</nav>
+<div class="analytics-audience-header mx-5 mt-6 mb-3">
+  <% if local_assigns[:section_heading].present? %>
+    <h2 class="analytics-audience-header__title"><%= section_heading %></h2>
+  <% end %>
+  <nav class="crayons-tabs crayons-tabs--analytics" aria-label="<%= t("views.stats.period.aria_label") %>">
+    <ul class="crayons-tabs__list">
+      <li>
+        <button data-text="<%= t("views.stats.period.week") %>" class="crayons-tabs__item crayons-tabs__item--current" id="week-button" aria-current="page"><%= t("views.stats.period.week") %></button>
+      </li>
+      <li>
+        <button data-text="<%= t("views.stats.period.month") %>" class="crayons-tabs__item" id="month-button"><%= t("views.stats.period.month") %></button>
+      </li>
+      <li>
+        <button data-text="<%= t("views.stats.period.infinity") %>" class="crayons-tabs__item" id="infinity-button"><%= t("views.stats.period.infinity") %></button>
+      </li>
+    </ul>
+  </nav>
+</div>
 
-<div class="summary-stats">
-  <div class="summary-stats__col crayons-card mx-5">
-    <div id="readers-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
+<div class="summary-stats mx-5 mb-4">
+  <div class="summary-stats__col crayons-card">
+    <div id="readers-card" class="summary-stats__body"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
   </div>
-  <div class="summary-stats__col crayons-card mx-5">
-    <div id="reactions-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
+  <div class="summary-stats__col crayons-card">
+    <div id="reactions-card" class="summary-stats__body"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
   </div>
-  <div class="summary-stats__col crayons-card mx-5">
-    <div id="comments-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
+  <div class="summary-stats__col crayons-card">
+    <div id="comments-card" class="summary-stats__body"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
   </div>
-  <div class="summary-stats__col crayons-card mx-5">
-    <div id="bookmarks-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
+  <div class="summary-stats__col crayons-card">
+    <div id="bookmarks-card" class="summary-stats__body"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
   </div>
   <% unless @article %>
-    <div class="summary-stats__col crayons-card mx-5">
-      <div id="followers-card" class="py-3"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
+    <div class="summary-stats__col crayons-card">
+      <div id="followers-card" class="summary-stats__body"><div class="analytics-loading crayons-scaffold-loading w-75 h-0 py-4 mx-auto my-3"></div></div>
     </div>
   <% end %>
 </div>
 
-<div class="graphs my-2">
-  <div class="graphs__col crayons-card mx-5">
-    <h2 class="mt-5 mx-5"><%= t("views.stats.readers") %></h2>
-    <p class="mx-5 color-base-60 fs-xs"><em><%= t("views.stats.readers_description") %></em></p>
+<div class="graphs mb-4 mx-5">
+  <div class="graphs__col crayons-card p-4 m:p-5">
+    <header class="analytics-card-header">
+      <h2 class="analytics-card-header__title"><%= t("views.stats.readers") %></h2>
+      <p class="analytics-card-header__subtitle"><%= t("views.stats.readers_description") %></p>
+    </header>
     <div class="charts-container">
       <div id="readers-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div></div>
     </div>
   </div>
 </div>
 
-<div class="graphs my-2">
-  <div class="graphs__col crayons-card mx-5">
-    <h2 class="mt-5 mx-5"><%= t("views.stats.reactions") %></h2>
-    <p class="mx-5 color-base-60 fs-xs"><em>Bookmarks not included in Total</em></p>
+<div class="graphs mb-4 mx-5">
+  <div class="graphs__col crayons-card p-4 m:p-5">
+    <header class="analytics-card-header">
+      <h2 class="analytics-card-header__title"><%= t("views.stats.reactions") %></h2>
+      <p class="analytics-card-header__subtitle">Bookmarks not included in Total</p>
+    </header>
     <div class="charts-container">
       <div id="reactions-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div></div>
     </div>
@@ -53,24 +62,30 @@
 </div>
 
 <% if @article %>
-  <div class="graphs my-2">
-    <div class="graphs__col crayons-card mx-5">
-      <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
+  <div class="graphs mb-4 mx-5">
+    <div class="graphs__col crayons-card p-4 m:p-5">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title"><%= t("views.stats.comments") %></h2>
+      </header>
       <div class="charts-container">
         <div id="comments-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div></div>
       </div>
     </div>
   </div>
 <% else %>
-  <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-2">
-    <div class="graphs__col crayons-card">
-      <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
+  <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-4">
+    <div class="graphs__col crayons-card p-4 m:p-5">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title"><%= t("views.stats.comments") %></h2>
+      </header>
       <div class="charts-container">
         <div id="comments-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div></div>
       </div>
     </div>
-    <div class="graphs__col crayons-card">
-      <h2 class="mt-5 mx-5"><%= t("views.stats.followers") %></h2>
+    <div class="graphs__col crayons-card p-4 m:p-5">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title"><%= t("views.stats.followers") %></h2>
+      </header>
       <div class="charts-container">
         <div id="followers-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:200px"></div></div>
       </div>
@@ -79,9 +94,11 @@
 <% end %>
 
 <% if @reactions && @reactions.any? %>
-  <div class="grid xl:grid-cols-2 gap-4 mx-5">
-    <div class="crayons-card p-2 overflow-auto" style="max-height:600px">
-      <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
+  <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-6">
+    <div class="crayons-card p-4 m:p-5 overflow-auto" style="max-height:600px">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title"><%= t("views.stats.traffic.text") %></h2>
+      </header>
       <div id="referrers-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:150px"></div></div>
       <table class="w-100 m-auto crayons-table">
         <thead>
@@ -93,10 +110,12 @@
         <tbody id="referrers-container"></tbody>
       </table>
     </div>
-    <div class="crayons-card p-4 overflow-auto" style="max-height:600px">
-      <h2 class="crayons-subtitle mb-2">
-        <%= t("views.stats.reactions_history") %>
-      </h2>
+    <div class="crayons-card p-4 m:p-5 overflow-auto" style="max-height:600px">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title">
+          <%= t("views.stats.reactions_history") %>
+        </h2>
+      </header>
       <% @reactions.each do |reaction| %>
         <div class="fs-sm py-2 flex items-center">
           <div class="mr-3 relative">
@@ -117,9 +136,11 @@
     </div>
   </div>
 <% else %>
-  <div class="grid xl:grid-cols-2 gap-4 mx-5">
-    <div class="crayons-card p-2 overflow-auto" style="max-height:600px">
-      <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
+  <div class="grid xl:grid-cols-2 gap-4 mx-5 mb-6">
+    <div class="crayons-card p-4 m:p-5 overflow-auto" style="max-height:600px">
+      <header class="analytics-card-header">
+        <h2 class="analytics-card-header__title"><%= t("views.stats.traffic.text") %></h2>
+      </header>
       <div id="referrers-chart"><div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:150px"></div></div>
       <table class="w-100 m-auto crayons-table">
         <thead>
@@ -132,8 +153,10 @@
       </table>
     </div>
     <% unless @article %>
-      <div class="crayons-card p-4 overflow-auto" style="max-height:600px">
-        <h2 class="crayons-subtitle mb-2"><%= t("views.stats.top_contributors.heading") %></h2>
+      <div class="crayons-card p-4 m:p-5 overflow-auto" style="max-height:600px">
+        <header class="analytics-card-header">
+          <h2 class="analytics-card-header__title"><%= t("views.stats.top_contributors.heading") %></h2>
+        </header>
         <div id="top-contributors-container">
           <div class="analytics-loading crayons-scaffold-loading w-100 mx-auto" style="height:150px"></div>
         </div>

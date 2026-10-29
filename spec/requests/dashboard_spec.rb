@@ -200,6 +200,33 @@ RSpec.describe "Dashboards" do
           expect(response.body).to include("Upload a video")
         end
       end
+
+      it "consolidates organization analytics links into a collapsible menu when user has admin orgs" do
+        org_one = create(:organization, name: "The DEV Team")
+        org_two = create(:organization, name: "CodeNewbie")
+        create(:organization_membership, user: user, organization: org_one, type_of_user: "admin")
+        create(:organization_membership, user: user, organization: org_two, type_of_user: "admin")
+
+        sign_in user
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        html = Nokogiri::HTML(response.body)
+        org_menu = html.at_css("details.dashboard-sidebar-orgs[data-sidebar-org-menu]")
+        expect(org_menu).to be_present
+        expect(org_menu.at_css("summary").text).to include("Organization Analytics")
+        expect(org_menu.css("a").map { |a| a.attr("href") }).to contain_exactly(
+          "/dashboard/analytics/org/#{org_one.id}",
+          "/dashboard/analytics/org/#{org_two.id}",
+        )
+      end
+
+      it "does not render the organization analytics menu when user has no admin orgs" do
+        sign_in user
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("details.dashboard-sidebar-orgs")).to be_nil
+      end
     end
 
     context "when logged in as a super admin" do
@@ -379,8 +406,11 @@ RSpec.describe "Dashboards" do
     end
 
     context "when user is an org admin or member" do
-      it "shows page properly for both admin and member memberships", :aggregate_failures do
+      it "shows page properly for admin and member roles and consolidates orgs into the switcher menu",
+         :aggregate_failures do
+        other_org = create(:organization, name: "AI Pulse")
         membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        create(:organization_membership, user: user, organization: other_org)
 
         sign_in user
         get "/dashboard/analytics/org/#{organization.id}"
@@ -389,6 +419,13 @@ RSpec.describe "Dashboards" do
         membership.update!(type_of_user: "member")
         get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
+
+        html = Nokogiri::HTML(response.body)
+        org_menu = html.at_css("details.analytics-org-menu[data-analytics-org-menu]")
+        expect(org_menu).to be_present
+        expect(org_menu.at_css("summary.is-active").text).to include(organization.name)
+        active_link = org_menu.at_css('a[aria-current="page"]')
+        expect(active_link["data-organization-id"]).to eq(organization.id.to_s)
       end
     end
   end

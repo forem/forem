@@ -64,6 +64,7 @@ class DashboardsController < ApplicationController
   def sidebar
     @user = current_user
     @organizations = @user.admin_organizations
+    @collections_count = collections_count(@user)
     @action = params[:state]
     @posts_count = posts_count_for(@user)
   end

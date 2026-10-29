@@ -8,7 +8,10 @@
  * personal stats.
  */
 
-import { getActiveOrganizationId } from '../packs/analyticsDashboard';
+import {
+  getActiveOrganizationId,
+  registerOrgMenuDismissHandlers,
+} from '../packs/analyticsDashboard';
 
 function renderNav({ activeOrgId = null, personalActive = false, orgs = [] } = {}) {
   const personalAttrs = personalActive ? 'aria-current="page"' : '';
@@ -23,8 +26,15 @@ function renderNav({ activeOrgId = null, personalActive = false, orgs = [] } = {
   document.body.innerHTML = `
     <nav>
       <ul class="analytics-nav">
-        <li><a href="/dashboard/analytics" ${personalAttrs}>Your analytics</a></li>
-        ${orgItems}
+        <li><a href="/dashboard/analytics" ${personalAttrs}>Your Dashboard</a></li>
+        <li class="analytics-org-switcher">
+          <details class="analytics-org-menu" data-analytics-org-menu>
+            <summary class="analytics-org-menu__trigger">Organizations</summary>
+            <ul class="analytics-org-menu__list">
+              ${orgItems}
+            </ul>
+          </details>
+        </li>
       </ul>
     </nav>
   `;
@@ -41,7 +51,7 @@ describe('analyticsDashboard.getActiveOrganizationId', () => {
     expect(getActiveOrganizationId()).toBeNull();
   });
 
-  it('returns the data-organization-id of the active org tab', () => {
+  it('returns the data-organization-id of the active org tab inside the consolidated menu', () => {
     renderNav({ activeOrgId: 42, orgs: [42, 99] });
 
     expect(getActiveOrganizationId()).toBe('42');
@@ -57,5 +67,34 @@ describe('analyticsDashboard.getActiveOrganizationId', () => {
     document.body.innerHTML = '';
 
     expect(getActiveOrganizationId()).toBeNull();
+  });
+});
+
+describe('analyticsDashboard.registerOrgMenuDismissHandlers', () => {
+  beforeEach(() => {
+    renderNav({ activeOrgId: 42, orgs: [42, 99] });
+    registerOrgMenuDismissHandlers();
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
+  it('closes an open org menu when clicking outside', () => {
+    const menu = document.querySelector('details[data-analytics-org-menu]');
+    menu.setAttribute('open', '');
+
+    document.body.click();
+
+    expect(menu.hasAttribute('open')).toBe(false);
+  });
+
+  it('closes an open org menu when pressing Escape', () => {
+    const menu = document.querySelector('details[data-analytics-org-menu]');
+    menu.setAttribute('open', '');
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+
+    expect(menu.hasAttribute('open')).toBe(false);
   });
 });
