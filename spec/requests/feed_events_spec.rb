@@ -38,6 +38,30 @@ RSpec.describe "FeedEvents" do
         expect(article.feed_events.first.category).to eq("impression")
       end
 
+      it "preserves the client event ID and acknowledges retries without inserting twice" do
+        event = event_params.merge(event_id: SecureRandom.uuid)
+        post "/feed_events", params: { feed_events: [event] }
+        expect(response).to be_successful
+        expect(article.feed_events.first.event_id).to eq(event[:event_id])
+        Timecop.travel(6.minutes.from_now) do
+          expect { post "/feed_events", params: { feed_events: [event] } }.not_to change(FeedEvent, :count)
+        end
+        expect(response).to be_successful
+      end
+
+      it "filters malformed event IDs and missing categories without rejecting valid events" do
+        events = [event_params.merge(event_id: "invalid"), event_params.except(:category), event_params]
+        expect { post "/feed_events", params: { feed_events: events } }.to change(FeedEvent, :count).by(1)
+        expect(response).to be_successful
+      end
+
+      it "rejects a malformed UUID rather than casting it to a legacy event with no ID" do
+        expect do
+          post "/feed_events", params: { feed_events: [event_params.merge(event_id: "invalid")] }
+        end.not_to change(FeedEvent, :count)
+        expect(response).to be_successful
+      end
+
       it "creates multiple events in a batch" do
         second_article = create(:article)
         events = [
@@ -79,19 +103,13 @@ RSpec.describe "FeedEvents" do
     end
 
     context "when a token is provided" do
-      let(:token)          { "valid_token" }
+      let(:token)          { JWT.encode({ "user_id" => user.id }, Rails.application.secret_key_base, "HS256") }
       let(:headers)        { { "Authorization" => "Bearer #{token}" } }
 
-      before do
-        # Stub the token decoder so that a valid token returns a payload with the user's id.
-        allow_any_instance_of(ApplicationMetalController)
-          .to receive(:decode_auth_token)
-          .with(token)
-          .and_return({ "user_id" => user.id })
-      end
-
       it "creates a feed click event when passed as header" do
-        expect { post "/feed_events", params: { feed_events: [event_params] }, headers: headers }.to change(FeedEvent, :count).by(1)
+        expect do
+          post "/feed_events", params: { feed_events: [event_params] }, headers: headers
+        end.to change(FeedEvent, :count).by(1)
 
         expect(response).to be_successful
         expect(article.feed_events.first).to have_attributes(
@@ -104,7 +122,9 @@ RSpec.describe "FeedEvents" do
       end
 
       it "creates a feed impression event when passed as param" do
-        expect { post "/feed_events", params: { feed_events: [event_params], jwt: token } }.to change(FeedEvent, :count).by(1)
+        expect do
+          post "/feed_events", params: { feed_events: [event_params], jwt: token }
+        end.to change(FeedEvent, :count).by(1)
 
         expect(response).to be_successful
         expect(article.feed_events.first).to have_attributes(

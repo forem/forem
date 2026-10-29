@@ -9,6 +9,7 @@ class FeedEventsController < ApplicationMetalController
     category
     context_type
     feed_config_id
+    event_id
   ].freeze
 
   def create

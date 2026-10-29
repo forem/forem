@@ -29,7 +29,7 @@ class FeedEvent < ApplicationRecord
     CONTEXT_TYPE_SEARCH,
     CONTEXT_TYPE_TAG,
     CONTEXT_TYPE_EMAIL,
-    CONTEXT_TYPE_SIDEBAR
+    CONTEXT_TYPE_SIDEBAR,
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 
@@ -42,6 +42,8 @@ class FeedEvent < ApplicationRecord
   FRESHNESS_DECAY_STEEPNESS = 4.0
 
   validates :article_position, numericality: { only_integer: true, greater_than: 0 }
+  validates :category, presence: true
+  validate :event_id_is_uuid
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
   # Since we have disabled association validation, this is handy to filter basic bad data
   validates :article_id, presence: true, numericality: { only_integer: true }
@@ -52,7 +54,7 @@ class FeedEvent < ApplicationRecord
     # The latest click can only be on this article if a click on it exists at all.
     # This probe uses the (article_id, user_id, category) index and skips the
     # latest-click lookup, which walks the primary key backwards for users with few clicks.
-    return unless where(article: article, user: user, category: :click).exists?
+    return unless exists?(article: article, user: user, category: :click)
 
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
@@ -194,6 +196,15 @@ class FeedEvent < ApplicationRecord
   private_class_method :calculate_feed_config_counters
 
   private
+
+  def event_id_is_uuid
+    # PostgreSQL's UUID type casts malformed input to nil. Validate the original
+    # value so a bad client ID cannot silently become an event without replay protection.
+    value = event_id_before_type_cast
+    return if value.nil? || /\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i.match?(value.to_s)
+
+    errors.add(:event_id, :invalid)
+  end
 
   def update_article_counters_and_scores
     self.class.update_single_article_counters(article_id) if article_id
