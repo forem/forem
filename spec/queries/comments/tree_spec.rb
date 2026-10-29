@@ -23,6 +23,20 @@ RSpec.describe Comments::Tree do
       expect(described_class.for_commentable(article, limit: 1)).to eq(comment => { child_comment => {} })
     end
 
+    it "does not hydrate the semantic embedding on tree comments", :aggregate_failures do
+      sql = []
+      callback = ->(*, payload) { sql << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+      comments = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.for_commentable(article, preload: false)
+      end
+
+      expect(sql).to all(exclude('"comments".*').and(exclude("semantic_embedding")))
+      nodes = Comment.flatten_arranged_nodes(comments)
+      expect(nodes).to contain_exactly(comment, child_comment, other_comment)
+      expect(nodes).to all(satisfy { |node| !node.has_attribute?(:semantic_embedding) })
+      expect(nodes.map(&:processed_html)).to all(be_present)
+    end
+
     it "reuses the passed article and its loaded user instead of re-fetching them" do
       article.update_column(:user_id, user.id)
       loaded_article = Article.find(article.id)
