@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
-import { handleURLPasted } from './pasteURLHelpers';
+import { handleURLPasted, URL_REGEX } from './pasteURLHelpers';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
@@ -53,16 +53,45 @@ export const EditorBody = ({
       setElement(textAreaRef.current);
       setPasteElement(textAreaRef.current);
     }
-  });
+  }, [setElement, setPasteElement]);
 
-  // Attach URL paste handler for embed prompt
+  // If it's a URL, embed as a URL. Otherwise paste as plain text
   useEffect(() => {
+    // Make sure we are in the editor
     const textarea = textAreaRef.current;
     if (!textarea) return;
 
-    const handler = handleURLPasted(textAreaRef);
-    textarea.addEventListener('paste', handler);
-    return () => textarea.removeEventListener('paste', handler);
+    const urlHandler = handleURLPasted(textAreaRef);
+
+    // Handle text that was pasted into the editor
+    const onPaste = (e) => {
+      // If files are present in the clipboard, let the image paste handler deal with it
+      const types = e.clipboardData?.types;
+      if (types && (types.includes?.('Files') || types.contains?.('Files'))) {
+        return;
+      }
+
+      // Get the clipboard data
+      const dt = e.clipboardData || window.clipboardData;
+      const pastedText = dt?.getData?.('text/plain') ?? '';
+
+      if (!pastedText) return; // If no text, do not proceed
+
+      const trimmed = pastedText.trim();
+
+      // If it's a URL, treat it as a URL
+      const isProbablyURL = URL_REGEX.test(trimmed);
+      if (isProbablyURL) {
+        urlHandler(e);
+        return;
+      }
+
+      // For plain text, let the browser handle the paste normally to preserve 
+      // the undo stack and avoid modifying stored content (e.g., inserting zero-width spaces).
+    };
+
+    textarea.addEventListener('paste', onPaste);
+    return () => textarea.removeEventListener('paste', onPaste);
   }, []);
 
   return (
