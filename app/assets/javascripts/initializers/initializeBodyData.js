@@ -1,4 +1,4 @@
-/* global checkUserLoggedIn applyColorMode watchColorModeChanges */
+/* global checkUserLoggedIn */
 
 function removeExistingCSRF() {
   var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
