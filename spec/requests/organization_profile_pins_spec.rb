@@ -22,11 +22,13 @@ RSpec.describe "OrganizationProfilePins" do
       before { sign_in admin }
 
       it "creates an organization pin for an article belonging to the organization" do
+        allow(EdgeCache::PurgeByKey).to receive(:call)
         post "/#{organization.slug}/profile_pins", params: { profile_pin: { pinnable_id: article.id } }
         pin = ProfilePin.last
         expect(pin.pinnable_id).to eq(article.id)
         expect(pin.profile_type).to eq("Organization")
         expect(pin.profile_id).to eq(organization.id)
+        expect(EdgeCache::PurgeByKey).to have_received(:call).with(organization.record_key)
       end
 
       it "allows only five pins per organization" do
