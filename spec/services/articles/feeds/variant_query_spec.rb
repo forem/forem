@@ -23,6 +23,33 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call.to_a).to match_array(article)
         end
 
+        it "factors the shared published_at lower bound outside the discover OR predicate" do
+          sql = query_call.to_sql.squish
+          expected_pattern = /
+            AND\ articles\.published_at\ >\ '[^']+'\s+
+            AND\ \(\(articles\.published_at\ >\ '[^']+'\)\ OR\ \(articles\.last_comment_at\ >\ '[^']+'\)\)
+          /x
+          expect(sql).to match(expected_pattern)
+        end
+
+        it "includes an article in the conditional lookback window only when it has a recent comment",
+           :aggregate_failures do
+          lookback_offset = variant_query.config.max_days_since_published.days
+          recent_comment_article = create(:article)
+          recent_comment_article.update_columns(published_at: (lookback_offset + 6.hours).ago,
+                                                last_comment_at: 4.hours.ago)
+          stale_comment_article = create(:article)
+          stale_comment_article.update_columns(published_at: (lookback_offset + 6.hours).ago,
+                                               last_comment_at: 8.hours.ago)
+          too_old_article = create(:article)
+          too_old_article.update_columns(published_at: (lookback_offset + 18.hours).ago,
+                                         last_comment_at: 4.hours.ago)
+
+          results = query_call.to_a
+          expect(results).to include(recent_comment_article)
+          expect(results).not_to include(stale_comment_article, too_old_article)
+        end
+
         it "loads articles from the current subforem without querying subforems", :aggregate_failures do
           subforem = create(:subforem)
           article = create(:article)
