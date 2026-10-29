@@ -32,6 +32,37 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
       expect(Terser::Compressor).not_to have_received(:call)
     end
 
+    it "skips Terser compression for pre-minified .min.js vendor assets" do
+      allow(Terser::Compressor).to receive(:call)
+
+      input = {
+        load_path: Rails.root.join("vendor/assets/javascripts").to_s,
+        filename: Rails.root.join("vendor/assets/javascripts/markdown-it.min.js").to_s,
+        name: "markdown-it.min",
+        data: "/*! markdown-it */function a(){}"
+      }
+
+      expect(described_class.call(input)).to be_nil
+      expect(Terser::Compressor).not_to have_received(:call)
+    end
+
+    it "skips Terser compression for blazer and pghero engine bundles" do
+      allow(Terser::Compressor).to receive(:call)
+
+      %w[blazer/application pghero/application].each do |engine_bundle|
+        input = {
+          load_path: "/gems/#{engine_bundle.split('/').first}/app/assets/javascripts",
+          filename: "/gems/#{engine_bundle}.js",
+          name: engine_bundle,
+          data: "function chart(){}"
+        }
+
+        expect(described_class.call(input)).to be_nil
+      end
+
+      expect(Terser::Compressor).not_to have_received(:call)
+    end
+
     it "delegates non-build Sprockets JS assets to Terser::Compressor" do
       compressed_output = { data: "function foo(){return 1}", map: {} }
       allow(Terser::Compressor).to receive(:call).and_return(compressed_output)
@@ -48,14 +79,54 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
   end
 
   describe "Build configuration hygiene" do
-    it "does not declare a conflicting engines.yarn in package.json alongside packageManager" do
+    it "does not declare a conflicting packageManager or engines.yarn in package.json alongside .yarnrc.yml yarnPath" do
       package_json = JSON.parse(Rails.root.join("package.json").read)
-      expect(package_json["packageManager"]).to start_with("yarn@")
+      yarnrc = Rails.root.join(".yarnrc.yml").read
+
+      expect(yarnrc).to include("yarnPath: .yarn/releases/yarn-4.1.0.cjs")
+      expect(package_json["packageManager"]).to be_nil
       expect(package_json.dig("engines", "yarn")).to be_nil
+    end
+
+    it "disables unnecessary postinstall build scripts for cypress, core-js, and core-js-pure" do
+      package_json = JSON.parse(Rails.root.join("package.json").read)
+      deps_meta = package_json.fetch("dependenciesMeta", {})
+
+      expect(deps_meta.dig("cypress", "built")).to be(false)
+      expect(deps_meta.dig("core-js", "built")).to be(false)
+      expect(deps_meta.dig("core-js-pure", "built")).to be(false)
+    end
+
+    it "does not compile unused application.scss or leaf stylesheets in manifest.js" do
+      expect(Rails.root.join("app/assets/stylesheets/application.scss").exist?).to be(false)
+
+      manifest = Rails.root.join("app/assets/config/manifest.js").read
+      expect(manifest).not_to include("link_directory ../stylesheets .css")
+      %w[
+        minimal.css
+        views.css
+        crayons.css
+        admin.css
+        ai_chat.css
+        tags.css
+        s3_direct_upload.css
+        setup-mode.css
+        feedback_messages.css
+        themes/dark.css
+        preact/onboarding-modal.css
+        katex.css
+      ].each do |stylesheet|
+        expect(manifest).to include("//= link #{stylesheet}")
+      end
     end
 
     it "does not include a committed bin/bundle binstub" do
       expect(Rails.root.join("bin/bundle").exist?).to be(false)
+    end
+
+    it "excludes test files from esbuild entryPoints" do
+      esbuild_config = Rails.root.join("esbuild.config.mjs").read
+      expect(esbuild_config).to include('ignore: ["**/*.test.*", "**/__tests__/**"]')
     end
 
     it "removes javascript:build from assets:precompile in production when app/assets/builds has compiled bundles" do

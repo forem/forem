@@ -22,6 +22,8 @@ if [ $? -eq 1 ]; then
    exit;
 fi
 
+yarn cypress install # ensure Cypress binary is installed locally when running e2e
+
 printf "\n"
 
 # Wait 10 seconds and if the user does not respond, assume they do not want to rebuild the test E2E database

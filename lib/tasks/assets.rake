@@ -19,6 +19,7 @@ namespace :assets do
     Dir.glob("tmp/cache/*").each do |path|
       FileUtils.rm_rf(path) unless File.basename(path) == "bootsnap"
     end
+    FileUtils.rm_rf("vendor/cache")
   end
 end
 

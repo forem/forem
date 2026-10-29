@@ -1,9 +1,14 @@
 # Be sure to restart your server when you modify this file.
 
-# Skip redundant Terser re-minification for assets in app/assets/builds,
-# which are already bundled and minified by esbuild (see esbuild.config.mjs).
+# Skip redundant Terser re-minification for assets in app/assets/builds
+# (already bundled and minified by esbuild), pre-minified *.min.js vendor assets,
+# and internal tech-admin engine bundles (blazer, pghero).
 module EsbuildSkippingTerserCompressor
   BUILDS_PATH = Rails.root.join("app/assets/builds").to_s.freeze
+  SKIPPED_ENGINE_ASSET_PATTERNS = %w[
+    /blazer/application
+    /pghero/application
+  ].freeze
 
   def self.cache_key
     "EsbuildSkippingTerserCompressor:#{Terser::Compressor.cache_key}"
@@ -18,11 +23,16 @@ module EsbuildSkippingTerserCompressor
   def self.prebuilt_asset?(input)
     load_path = input[:load_path].to_s
     filename = input[:filename].to_s
+    name = input[:name].to_s
 
     load_path == BUILDS_PATH ||
       load_path.end_with?("/app/assets/builds") ||
       filename.start_with?("#{BUILDS_PATH}/") ||
-      filename.include?("/app/assets/builds/")
+      filename.include?("/app/assets/builds/") ||
+      filename.end_with?(".min.js") ||
+      name == "blazer/application" ||
+      name == "pghero/application" ||
+      SKIPPED_ENGINE_ASSET_PATTERNS.any? { |pattern| filename.include?(pattern) }
   end
 end
 
