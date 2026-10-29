@@ -402,6 +402,27 @@ RSpec.describe "Calendar" do
         expect(agenda_query).not_to include("body_markdown")
         expect(agenda_query).not_to include("processed_html")
       end
+
+      it "links delegated events to their page without hydrating page bodies" do
+        page = create(:page, slug: "calendar-delegated-page", is_top_level_path: true)
+        create(:event, title: "Delegated Event", published: true, delegate_to_page: true, page: page,
+                       start_time: Time.zone.today.beginning_of_month + 9.hours,
+                       end_time: Time.zone.today.beginning_of_month + 11.hours)
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        expect(response.body).to include('href="/calendar-delegated-page"')
+        page_queries = queries.grep(/FROM "pages"/)
+        expect(page_queries.size).to eq(1)
+        expect(page_queries.first).not_to include('"pages".*')
+        expect(page_queries.first).not_to include("body_markdown")
+      end
     end
 
     context "with out-of-range year parameters" do

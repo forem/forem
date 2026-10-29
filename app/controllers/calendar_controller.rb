@@ -5,7 +5,9 @@ class CalendarController < ApplicationController
     id title type_of start_time end_time event_name_slug event_variation_slug
     delegate_to_page page_id organization_id user_id
   ].freeze
-  private_constant :AGENDA_COLUMNS
+  # event_link_target only reads Page#path, so skip the page body/template columns.
+  PAGE_LINK_COLUMNS = %i[id slug is_top_level_path].freeze
+  private_constant :AGENDA_COLUMNS, :PAGE_LINK_COLUMNS
 
   def index
     @range_start, @range_end = calendar_range
@@ -22,6 +24,7 @@ class CalendarController < ApplicationController
                                       @range_start.beginning_of_day, @range_end.end_of_day)
       @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = @events.group_by { |event| event.start_time.to_date }
+      preload_delegated_pages
     else
       @events = Event.none.page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = {}
@@ -32,9 +35,15 @@ class CalendarController < ApplicationController
   private
 
   def published_events
-    events = Event.published.select(AGENDA_COLUMNS).includes(:page, :organization, :user)
+    events = Event.published.select(AGENDA_COLUMNS).includes(:organization, :user)
     events = events.where(type_of: params[:type_of]) if valid_type?
     events
+  end
+
+  def preload_delegated_pages
+    ActiveRecord::Associations::Preloader.new(
+      records: @events.to_a.select(&:delegate_to_page?), associations: :page, scope: Page.select(PAGE_LINK_COLUMNS),
+    ).call
   end
 
   def range_has_events?
