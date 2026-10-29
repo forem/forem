@@ -4201,4 +4201,123 @@ RSpec.describe ForemNative do
       expect(native_hits).to be > 900
     end
   end
+
+  describe "feed import pipeline native helpers" do
+    describe ".truncate_feed_xml_items" do
+      it "truncates RSS <item> and Atom <entry> feeds to max_items while preserving XML structure" do
+        rss = <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <rss version="2.0">
+            <channel>
+              <title>Test Blog</title>
+              <item><title>Post 1</title><link>https://example.com/1</link></item>
+              <item><title>Post 2</title><link>https://example.com/2</link></item>
+              <item><title>Post 3</title><link>https://example.com/3</link></item>
+            </channel>
+          </rss>
+        XML
+
+        truncated = described_class.truncate_feed_xml_items(rss, 2)
+        parsed = Feedjira.parse(truncated)
+        expect(parsed.entries.map(&:title)).to eq(["Post 1", "Post 2"])
+
+        # Returns identical String object when item count <= max_items
+        expect(described_class.truncate_feed_xml_items(rss, 5)).to equal(rss)
+      end
+
+      it "ignores </entry> inside CDATA sections and comments" do
+        atom = <<~XML
+          <feed xmlns="http://www.w3.org/2005/Atom">
+            <!-- <entry><title>Commented out</title></entry> -->
+            <entry>
+              <title>First</title>
+              <content type="html"><![CDATA[<p>Literal </entry> inside CDATA</p>]]></content>
+            </entry>
+            <entry>
+              <title>Second</title>
+            </entry>
+          </feed>
+        XML
+
+        truncated = described_class.truncate_feed_xml_items(atom, 1)
+        expect(truncated).to include("First")
+        expect(truncated).to include("Literal </entry> inside CDATA")
+        expect(truncated).not_to include("Second")
+      end
+    end
+
+    describe ".feed_html_content" do
+      let(:legacy_html_content) do
+        lambda do |content|
+          return false if content.blank?
+
+          block_tag_count = content.scan(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i).size
+          return false if block_tag_count.zero?
+
+          paragraph_breaks = content.scan(/\n\s*\n/).size
+          block_tag_count > paragraph_breaks
+        end
+      end
+
+      it "matches the legacy HTML vs Markdown heuristic across samples" do
+        samples = [
+          "",
+          "Plain text content",
+          "<p>Paragraph 1</p><p>Paragraph 2</p>",
+          "### Heading\n\nParagraph 1\n\nParagraph 2",
+          "### Heading\n\nText\n\n<p style=\"text-align: center\">link</p>\n\nMore text",
+          "<div><h1>Title</h1>\n\n<p>Body</p></div>",
+        ]
+
+        samples.each do |sample|
+          expect(described_class.feed_html_content(sample)).to eq(legacy_html_content.call(sample)), sample.inspect
+        end
+      end
+    end
+
+    describe ".postprocess_feed_markdown" do
+      it "strips empty code fences, normalizes nbsp entities/chars, and unescapes youtube liquid tags" do
+        raw = "Intro\n```\n\n```\nHello&nbsp;world\u00A0there\n{% youtube dQw4w9WgXcQ\\_123 %}\nOutro"
+        expect(described_class.postprocess_feed_markdown(raw))
+          .to eq("Intro\n\nHello world there\n{% youtube dQw4w9WgXcQ_123 %}\nOutro")
+      end
+    end
+
+    describe ".resolve_feed_markdown_images" do
+      it "resolves root-relative and path-relative URLs in both <img> tags and markdown syntax" do
+        base = "https://blog.example.com"
+        source = "https://blog.example.com/2026/10/post-slug"
+        content = "![a](/img/one.png) ![b](two.jpg) <img src=\"/img/three.gif\"> ![c](https://cdn.example.com/four.png)"
+
+        resolved = described_class.resolve_feed_markdown_images(content, base, source)
+        expect(resolved).to eq(
+          "![a](https://blog.example.com/img/one.png) " \
+          "![b](https://blog.example.com/2026/10/two.jpg) " \
+          "<img src=\"https://blog.example.com/img/three.gif\"> " \
+          "![c](https://cdn.example.com/four.png)",
+        )
+      end
+    end
+
+    describe ".format_feed_tags, .extract_feed_author, and .sanitize_feed_error" do
+      it "formats up to 4 ASCII tags and declines non-ASCII tags to Ruby" do
+        expect(described_class.format_feed_tags(["Ruby on Rails!", "web-dev", "a" * 25, "t4", "t5"]))
+          .to eq("RubyonRails,webdev,#{'a' * 20},t4")
+        expect(described_class.format_feed_tags(["café"])).to be_nil
+      end
+
+      it "extracts email and stripped name from author strings" do
+        expect(described_class.extract_feed_author("Alice Smith <alice+rss@example.com>"))
+          .to eq(["alice+rss@example.com", "Alice Smith"])
+        expect(described_class.extract_feed_author("Bob Jones"))
+          .to eq([nil, "Bob Jones"])
+      end
+
+      it "sanitizes Ruby file paths and truncates long error messages to 500 chars" do
+        msg = "Failed at /Users/dev/app/services/feeds/import.rb:123:in `call'"
+        expect(described_class.sanitize_feed_error(msg)).to eq("Failed at [path]:in `call'")
+        expect(described_class.sanitize_feed_error("a" * 600).length).to eq(500)
+      end
+    end
+  end
 end

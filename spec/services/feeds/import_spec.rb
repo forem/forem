@@ -26,7 +26,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
 
       scoped_users = User.where(id: [recent_article_user.id, recent_present_user.id, stale_user.id, no_source_user.id])
       importer = described_class.new(users_scope: scoped_users)
-      filtered = importer.send(:filter_feed_sources, users_scope: scoped_users, earlier_than: nil)
+      filtered = importer.__send__(:filter_feed_sources, users_scope: scoped_users, earlier_than: nil)
 
       expect(filtered.pluck(:user_id)).to contain_exactly(recent_article_user.id, recent_present_user.id)
     end
@@ -110,17 +110,24 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
 
       it "retries on transient network errors then succeeds" do
         call_count = 0
-        allow(HTTParty).to receive(:get).and_wrap_original do |_method, *args, **kwargs|
+        response_class = Class.new do
+          attr_reader :body
+
+          def initialize(body)
+            @body = body
+          end
+        end
+        allow(HTTParty).to receive(:get).and_wrap_original do |_method, *_args, **_kwargs|
           call_count += 1
           raise Net::OpenTimeout if call_count == 1
 
           # Return a minimal valid RSS response on retry
-          double("Response", body: <<~XML)
+          response_class.new(<<~XML)
             <?xml version="1.0"?>
             <rss version="2.0"><channel><title>Test</title></channel></rss>
           XML
         end
-        allow_any_instance_of(described_class).to receive(:sleep) # don't actually wait
+        allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
         source = Feeds::Source.first
         described_class.call(users_scope: User.where(id: source.user_id))
@@ -131,7 +138,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       it "gives up after max retries on persistent timeouts" do
         allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
         allow(Rails.logger).to receive(:error)
-        allow_any_instance_of(described_class).to receive(:sleep)
+        allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
         described_class.call
 
@@ -292,6 +299,76 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       end
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)
+    end
+  end
+
+  describe "memory and performance safeguards" do
+    it "rejects oversized XML feeds exceeding MAX_XML_SIZE and records a fetch failure" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      source = create(:feed_source, user: user, feed_url: "https://example.com/huge-feed.xml")
+      oversized_body = "x" * (described_class::MAX_XML_SIZE + 10)
+      response_double = Class.new do
+        attr_reader :body
+
+        def initialize(body)
+          @body = body
+        end
+      end.new(oversized_body)
+
+      allow(HTTParty).to receive(:get).and_return(response_double)
+      allow(Rails.logger).to receive(:error)
+
+      expect(described_class.call(users_scope: User.where(id: user.id))).to eq(0)
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log).to be_present
+      expect(log.status).to eq("failed")
+      expect(log.error_message).to include("Feed XML exceeds maximum size")
+    end
+
+    it "truncates feeds with more than MAX_ENTRIES_PER_FEED items before parsing" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      source = create(:feed_source, user: user, feed_url: "https://example.com/many-items.xml")
+      items_xml = (1..30).map do |idx|
+        "<item><title>Post #{idx}</title><link>https://example.com/posts/#{idx}</link>" \
+          "<description>Body #{idx}</description><pubDate>Mon, 01 Jan 2026 00:00:00 GMT</pubDate></item>"
+      end.join("\n")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Blog</title>#{items_xml}</channel></rss>"
+      response_double = Class.new do
+        attr_reader :body
+
+        def initialize(body)
+          @body = body
+        end
+      end.new(xml)
+
+      allow(HTTParty).to receive(:get).and_return(response_double)
+
+      imported_count = described_class.call(users_scope: User.where(id: user.id))
+      expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log.items_in_feed).to eq(described_class::MAX_ENTRIES_PER_FEED)
+      expect(log.items_imported).to eq(described_class::MAX_ENTRIES_PER_FEED)
+    end
+
+    it "does not spawn Parallel worker threads when importing a single feed source" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: user, feed_url: "https://example.com/single.xml")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Single</title></channel></rss>"
+      response_double = Class.new do
+        attr_reader :body
+
+        def initialize(body)
+          @body = body
+        end
+      end.new(xml)
+
+      allow(HTTParty).to receive(:get).and_return(response_double)
+      allow(Parallel).to receive(:map).and_call_original
+
+      described_class.call(users_scope: User.where(id: user.id))
+      expect(Parallel).not_to have_received(:map)
     end
   end
 end

@@ -234,4 +234,46 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
       end
     end
   end
+
+  context "when referential_link is enabled and HTML contains multiple links" do
+    let(:feed_source) { build(:feed_source, user: user, referential_link: true, mark_canonical: true) }
+    let(:feeds_assemble_article_markdown) do
+      described_class.new(item, user, feed, feed_source_url, feed_source: feed_source)
+    end
+    let!(:existing_article) do
+      create(:article, user: user, feed_source_url: "https://external.example.com/post-1")
+    end
+    let(:content) do
+      <<~HTML
+        <p>Read <a href="https://external.example.com/post-1">Post 1</a> and <a href="https://external.example.com/post-2">Post 2</a>.</p>
+      HTML
+    end
+
+    it "replaces matching feed_source_url links with internal article URLs in a single batched query" do
+      allow(Article).to receive(:find_by)
+
+      body = feeds_assemble_article_markdown.call
+      expect(body).to include(URL.article(existing_article))
+      expect(body).to include("https://external.example.com/post-2")
+      expect(Article).not_to have_received(:find_by)
+    end
+  end
+
+  context "when parsing Medium posts with {{ liquid }} variables" do
+    let(:item) do
+      instance_double(
+        Feedjira::Parser::RSSEntry,
+        title: title,
+        categories: %w[tag1 tag2],
+        published: "2020-12-20",
+        content: "<p>Use {{ variable_name }} in your template</p><pre><code>{{ untouched }}</code></pre>",
+        url: "https://medium.com/@author/my-post",
+      )
+    end
+
+    it "wraps {{ ... }} outside pre/code tags in backticks" do
+      body = feeds_assemble_article_markdown.call
+      expect(body).to include("`{{ variable_name }}`")
+    end
+  end
 end
