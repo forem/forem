@@ -2,7 +2,10 @@ require "rails_helper"
 
 RSpec.describe "Editing A Comment", :js do
   let(:user) { create(:user) }
-  let!(:article) { create(:article, show_comments: true) }
+  let(:article_author) { create(:user) }
+  let(:article) do
+    create(:article, user: article_author, show_comments: true, with_tags: false, with_main_image: false)
+  end
   let(:new_comment_text) { "This is an editted text" }
   let!(:comment) do
     create(:comment,
@@ -31,29 +34,25 @@ RSpec.describe "Editing A Comment", :js do
     expect(timestamp).to match(iso8601_datetime_regexp)
   end
 
-  context "when user edits comment on the bottom of the article" do
-    it "updates" do
-      visit article.path.to_s
-      wait_for_javascript
+  it "opens edit from article and permalink, shows the dismiss link, and updates the comment", :aggregate_failures do
+    visit article.path.to_s
+    wait_for_javascript
 
+    within("#comment-node-#{comment.id}") do
       click_on(class: "comment__dropdown-trigger")
       click_link_or_button("Edit")
-      assert_updated
     end
-  end
+    expect(page).to have_text("Editing comment")
+    expect(page).to have_link("Dismiss", href: comment.path)
 
-  context "when user edits via permalinks" do
-    it "updates" do
-      user.reload
+    visit comment.path.to_s
+    wait_for_javascript
 
-      visit user.comments.last.path.to_s
-
-      wait_for_javascript
-
+    within("#comment-node-#{comment.id}") do
       click_on(class: "comment__dropdown-trigger")
       click_link_or_button("Edit")
-      expect(page).to have_link("Dismiss")
-      assert_updated
     end
+    expect(page).to have_link("Dismiss", href: comment.path)
+    assert_updated
   end
 end
