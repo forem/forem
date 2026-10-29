@@ -15,7 +15,8 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
       expect(production_config).to include("config.assets.js_compressor = :terser_skip_builds")
     end
 
-    it "includes Terser::Compressor.cache_key in its cache_key" do
+    it "includes CACHE_KEY_VERSION and Terser::Compressor.cache_key in its cache_key" do
+      expect(described_class.cache_key).to include(described_class::CACHE_KEY_VERSION)
       expect(described_class.cache_key).to include(Terser::Compressor.cache_key)
     end
 

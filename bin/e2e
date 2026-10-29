@@ -22,7 +22,10 @@ if [ $? -eq 1 ]; then
    exit;
 fi
 
-yarn cypress install # ensure Cypress binary is installed locally when running e2e
+if ! yarn cypress install; then # ensure Cypress binary is installed locally when running e2e
+   echo "Unable to launch end to end tests. Cypress installation failed."
+   exit 1
+fi
 
 printf "\n"
 

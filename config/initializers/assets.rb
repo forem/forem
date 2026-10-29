@@ -10,8 +10,10 @@ module EsbuildSkippingTerserCompressor
     /pghero/application
   ].freeze
 
+  CACHE_KEY_VERSION = "v2".freeze
+
   def self.cache_key
-    "EsbuildSkippingTerserCompressor:#{Terser::Compressor.cache_key}"
+    "EsbuildSkippingTerserCompressor:#{CACHE_KEY_VERSION}:#{Terser::Compressor.cache_key}"
   end
 
   def self.call(input)
