@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_29_161500) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_29_180100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -878,6 +878,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_29_161500) do
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
   end
 
+  create_table "feed_event_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+  end
+
   create_table "feed_events", force: :cascade do |t|
     t.bigint "article_id", null: false
     t.integer "article_position"
@@ -885,12 +889,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_29_161500) do
     t.string "context_type", null: false
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", null: false
+    t.uuid "event_id"
     t.bigint "feed_config_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
     t.index ["article_id"], name: "index_feed_events_on_article_id"
     t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["event_id"], name: "index_feed_events_on_event_id", unique: true, where: "(event_id IS NOT NULL)"
     t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
