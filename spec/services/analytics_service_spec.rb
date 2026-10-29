@@ -287,6 +287,28 @@ RSpec.describe AnalyticsService, type: :service do
     end
   end
 
+  describe "activity cache lookup" do
+    it "uses an existing activity for a string article ID without enqueueing a backfill" do
+      ArticleActivity.create!(article: article, total_page_views: 42,
+                              daily_page_views: { "2019-04-01" => { "total" => 42 } })
+      allow(Articles::BackfillActivitiesWorker).to receive(:perform_async)
+
+      service = described_class.new(user, article_id: article.id.to_s)
+
+      expect(service.totals[:page_views][:total]).to eq(42)
+      expect(Articles::BackfillActivitiesWorker).not_to have_received(:perform_async)
+    end
+
+    it "enqueues missing article IDs in canonical order" do
+      articles = create_list(:article, 2, user: user, published: true)
+      allow(Articles::BackfillActivitiesWorker).to receive(:perform_async)
+
+      described_class.new(user).totals
+
+      expect(Articles::BackfillActivitiesWorker).to have_received(:perform_async).with(articles.map(&:id).sort)
+    end
+  end
+
   describe "#grouped_by_day" do
     it "returns stats grouped by day" do
       stats = described_class.new(
@@ -429,6 +451,27 @@ RSpec.describe AnalyticsService, type: :service do
         analytics_service = described_class.new(user, start_date: date)
         expected_stats = { total: 0 }
         expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
+      end
+
+      it "only counts follows inside the requested range" do
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-02T23:59:00Z"))
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-03T00:01:00Z"))
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-10T12:00:00Z"))
+
+        stats = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-02").grouped_by_day
+
+        expect(stats.keys).to eq(%w[2019-04-01 2019-04-02])
+        expect(stats.values.sum { |day| day[:follows][:total] }).to eq(1)
+      end
+
+      it "keeps counting follows from earlier in the first weekly bucket" do
+        # 2019-04-01 is a Monday; a > DAILY_HISTORY_DAYS range starting mid-week
+        # snaps the first bucket back to that Monday.
+        create(:follow, followable: user, created_at: Time.zone.parse("2019-04-01T13:00:00Z"))
+
+        stats = described_class.new(user, start_date: "2019-04-03", end_date: "2019-12-31").grouped_by_day
+
+        expect(stats["2019-04-01"][:follows]).to eq({ total: 1 })
       end
     end
 

@@ -9,7 +9,7 @@ module Feeds
     has_many :import_logs, class_name: "Feeds::ImportLog", foreign_key: :feed_source_id,
                            inverse_of: :feed_source, dependent: :nullify
 
-    enum status: { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, _prefix: :feed
+    enum :status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
 
     validates :feed_url, presence: true, length: { maximum: 500 }
     validates :feed_url, uniqueness: { scope: :user_id }
@@ -42,15 +42,15 @@ module Feeds
       return if feed_url.blank?
 
       valid = Feeds::ValidateUrl.call(feed_url)
-      errors.add(:feed_url, "is not a valid RSS feed URL") unless valid
+      errors.add(:feed_url, I18n.t("models.users.setting.invalid_rss")) unless valid
     rescue StandardError => e
       errors.add(:feed_url, e.message)
     end
 
     def validate_organization_membership
-      unless user.organization_memberships.exists?(organization_id: organization_id)
-        errors.add(:organization, "you must be a member of this organization")
-      end
+      return if user.organization_memberships.exists?(organization_id: organization_id)
+
+      errors.add(:organization, "you must be a member of this organization")
     end
 
     def validate_author_permission
@@ -66,9 +66,9 @@ module Feeds
         return
       end
 
-      unless OrganizationMembership.exists?(user_id: author_user_id, organization_id: organization_id)
-        errors.add(:author_user_id, "must be a member of the selected organization")
-      end
+      return if OrganizationMembership.exists?(user_id: author_user_id, organization_id: organization_id)
+
+      errors.add(:author_user_id, "must be a member of the selected organization")
     end
   end
 end

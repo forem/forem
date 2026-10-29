@@ -14,11 +14,22 @@ module Settings
         end
 
         cleaned_params = clean_params(params_to_clean)
+        anonymous_tracking_geos = ::Settings::General.geos_with_allowed_anonymous_tracking
         result = ::Settings::Upsert.call(cleaned_params, ::Settings::General)
         return result unless result.success?
 
         create_tags_if_necessary(settings)
+        if ::Settings::General.geos_with_allowed_anonymous_tracking != anonymous_tracking_geos
+          purge_billboard_responses
+        end
         result
+      end
+
+      # Billboard responses tell browsers whether their region allows anonymous tracking, so
+      # cached ones must go when the allowed regions change, or a removed region would keep
+      # getting the go-ahead until they expire.
+      def self.purge_billboard_responses
+        EdgeCache::PurgeByKey.call(BillboardPlacementAreaConfig::RESPONSES_SURROGATE_KEY)
       end
 
       def self.clean_params(settings)

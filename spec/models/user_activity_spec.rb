@@ -155,6 +155,16 @@ RSpec.describe UserActivity, type: :model do
         )
       end
 
+      it "does not load heavy article columns when computing recent_* aggregations" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        article_queries = queries.grep(/FROM "articles"/)
+        expect(article_queries).not_to be_empty
+        expect(article_queries).to all(satisfy { |sql| !sql.include?("body_markdown") && !sql.include?(%("articles".*)) })
+      end
+
       it "populates alltime_tags from the user's cached_followed_tag_names" do
         expect(activity.alltime_tags).to eq(
           user.cached_followed_tag_names
@@ -171,6 +181,25 @@ RSpec.describe UserActivity, type: :model do
 
       it "populates alltime_subforems from the user's follow relationships" do
         expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
+      end
+
+      it "loads followed users, organizations and subforems in a single follows query" do
+        create(:follow, follower: user, followable: create(:tag))
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { activity.set_activity }
+
+        follows_queries = queries.grep(/\ASELECT .* FROM "follows"/)
+        expect(follows_queries.size).to eq(1)
+        expect(activity.alltime_users).to contain_exactly(other_user.id)
+        expect(activity.alltime_organizations).to contain_exactly(other_org.id)
+        expect(activity.alltime_subforems).to contain_exactly(followed_subforem.id)
+      end
+
+      it "populates alltime_reading_list_articles from user's reading list reactions" do
+        create(:reaction, category: "readinglist", user: user, reactable: article1)
+        activity.set_activity!
+        expect(activity.alltime_reading_list_articles).to contain_exactly(article1.id)
       end
 
       it "combines recent_tags and alltime_tags in #relevant_tags" do
@@ -212,6 +241,53 @@ RSpec.describe UserActivity, type: :model do
         expect(existing_activity.last_activity_at).to be_within(1.second)
           .of(Time.current)
       end
+    end
+  end
+
+  describe ".update_reading_list_articles_for" do
+    let(:user) { create(:user) }
+    let(:article1) { create(:article) }
+    let(:article2) { create(:article) }
+
+    it "creates user_activity if missing and updates alltime_reading_list_articles" do
+      create(:reaction, category: "readinglist", user: user, reactable: article1)
+      create(:reaction, category: "readinglist", user: user, reactable: article2)
+
+      expect {
+        described_class.update_reading_list_articles_for(user.id)
+      }.to change(described_class, :count).by(1)
+
+      user_activity = described_class.find_by(user_id: user.id)
+      expect(user_activity.alltime_reading_list_articles).to contain_exactly(article1.id, article2.id)
+    end
+
+    it "updates existing user_activity record's alltime_reading_list_articles" do
+      user_activity = create(:user_activity, user: user, alltime_reading_list_articles: [])
+      create(:reaction, category: "readinglist", user: user, reactable: article1)
+
+      described_class.update_reading_list_articles_for(user.id)
+
+      expect(user_activity.reload.alltime_reading_list_articles).to contain_exactly(article1.id)
+    end
+
+    it "stores all reading list article IDs without limit" do
+      user_activity = create(:user_activity, user: user, alltime_reading_list_articles: [])
+      reactions_data = (1..1005).map do |n|
+        {
+          user_id: user.id,
+          category: "readinglist",
+          reactable_type: "Article",
+          reactable_id: n,
+          status: "valid",
+          created_at: Time.current,
+          updated_at: Time.current
+        }
+      end
+      Reaction.insert_all(reactions_data)
+
+      described_class.update_reading_list_articles_for(user.id)
+
+      expect(user_activity.reload.alltime_reading_list_articles.length).to eq(1005)
     end
   end
 

@@ -95,4 +95,5 @@ en:
       social: "%{service} website"
       unflag: Unflag @%{user}
       unspam: Set @%{user} in Good standing
+      view_admin_profile: View Admin Profile
       website: Personal website

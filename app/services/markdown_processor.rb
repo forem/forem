@@ -62,6 +62,8 @@ module MarkdownProcessor
     BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[a b code em i strong u].freeze
 
     EMAIL_COMMENT = %w[strong em a p span].freeze
+
+    EMAIL_SURVEY = %w[a b blockquote br code del em i li ol p span strike strong u ul].freeze
   end
 
   # A container module for the allowed attributes in various rendering
@@ -75,7 +77,8 @@ module MarkdownProcessor
 
     BILLBOARD = %w[alt class height href src width].freeze
 
-    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls cx cy d data-conversation
+    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls cx cy d data-alert
+                                    data-alert-label data-conversation
                                     data-lang data-gif-video data-no-instant data-url fill
                                     height href id loop muted name playsinline points preload
                                     poster r ref rel rowspan rx ry span src start stroke
@@ -87,5 +90,7 @@ module MarkdownProcessor
     BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[href name].freeze
 
     EMAIL_COMMENT = %w[href].freeze
+
+    EMAIL_SURVEY = %w[href rel target].freeze
   end
 end

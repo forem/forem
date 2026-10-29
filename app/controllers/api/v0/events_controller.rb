@@ -14,13 +14,19 @@ module Api
         unless @user&.administrative_access_to?(resource: Event)
           @events = @events.published
         end
-        render json: @events.order(created_at: :desc)
+        if params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
+          @events = @events.where(type_of: params[:type_of])
+        end
+        # Serializing tag_list reads each event's taggings (acts-as-taggable-on's
+        # custom context check), so preload them in one query instead of one per event.
+        render json: @events.includes(:taggings).order(created_at: :desc)
       end
 
       def show
         unless @event.published? || @user&.administrative_access_to?(resource: Event)
           return render json: { error: "Event not found" }, status: :not_found
         end
+
         render json: @event
       end
 
@@ -30,6 +36,7 @@ module Api
         @event.user_id = @user.id if @event.user_id.blank?
 
         if @event.save
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_create", "event_id" => @event.id })
           render json: @event, status: :created
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -40,6 +47,7 @@ module Api
         authorize @event
         # Prevents arbitrary user hijacking via parameters:
         if @event.update(event_params.except(:user_id))
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_update", "event_id" => @event.id })
           render json: @event
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -49,6 +57,9 @@ module Api
       def destroy
         authorize @event
         @event.destroy
+        if @event.destroyed?
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_destroy", "event_id" => @event.id })
+        end
         head :no_content
       end
 
@@ -57,9 +68,9 @@ module Api
       def evaluate_authentication
         # Forem's ApiController usually requires valid token if provided, but optional if omitted.
         # This safely tries to log them in if token is sent.
-        if request.headers["api-key"]
-          authenticate!
-        end
+        return unless request.headers["api-key"]
+
+        authenticate!
       end
 
       def set_event
@@ -70,19 +81,20 @@ module Api
 
       def event_params
         params.require(:event).permit(
-          :title, 
+          :title,
           :event_name_slug,
           :event_variation_slug,
-          :description, 
-          :primary_stream_url, 
-          :published, 
-          :start_time, 
-          :end_time, 
-          :type_of, 
-          :user_id, 
-          :organization_id, 
+          :description,
+          :full_details,
+          :primary_stream_url,
+          :published,
+          :start_time,
+          :end_time,
+          :type_of,
+          :user_id,
+          :organization_id,
           :tag_list,
-          data: {}
+          data: {},
         )
       end
     end

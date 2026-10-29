@@ -34,6 +34,7 @@ function trackAdImpression(adBox) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -47,9 +48,52 @@ function trackAdImpression(adBox) {
       body: JSON.stringify(dataBody),
       credentials: 'same-origin',
     })
+    .then((response) => {
+      if (response && response.ok && typeof response.json === 'function') {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (data && data.id) {
+        adBox.dataset.eventId = data.id;
+      }
+    })
     .catch((error) => console.error(error));
 
   adBox.dataset.impressionRecorded = true;
+}
+
+function updateBillboardImpressionTime(adBox) {
+  var eventId = adBox.dataset.eventId;
+  if (!eventId) {
+    return;
+  }
+
+  var tokenMeta = document.querySelector("meta[name='csrf-token']");
+  var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+
+  window.fetch('/bb_tabulations/' + eventId, {
+    method: 'PATCH',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).catch((error) => console.error(error));
+}
+
+function startPollingBillboard(adBox) {
+  if (adBox.dataset.pollingIntervalId) {
+    return; // Already polling
+  }
+
+  var intervalId = setInterval(function () {
+    if (document.visibilityState === 'visible' && adBox.dataset.isBillboardVisible === 'true') {
+      updateBillboardImpressionTime(adBox);
+    }
+  }, 10000);
+
+  adBox.dataset.pollingIntervalId = intervalId;
 }
 
 function trackAdClick(adBox, event, currentPath) {
@@ -63,6 +107,7 @@ function trackAdClick(adBox, event, currentPath) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -118,12 +163,22 @@ function observeBillboards() {
   let observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          let elem = entry.target;
-          if (entry.intersectionRatio >= 0.25) {
-            setTimeout(function () {
+        let elem = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          elem.dataset.isBillboardVisible = 'true';
+          setTimeout(function () {
+            // Billboards hidden by their placement area record no impressions until revealed
+            if (elem.dataset.isBillboardVisible === 'true' && elem.dataset.placementHidden !== 'true') {
               trackAdImpression(elem);
-            }, 200);
+              startPollingBillboard(elem);
+            }
+          }, 200);
+        } else {
+          elem.dataset.isBillboardVisible = 'false';
+          var intervalId = elem.dataset.pollingIntervalId;
+          if (intervalId) {
+            clearInterval(Number(intervalId));
+            elem.removeAttribute('data-polling-interval-id');
           }
         }
       });

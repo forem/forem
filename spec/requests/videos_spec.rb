@@ -7,21 +7,17 @@ RSpec.describe "Videos" do
   before { allow(Settings::General).to receive(:enable_video_upload).and_return(true) }
 
   describe "GET /videos" do
-    it "shows video page" do
-      get "/videos"
-      expect(response.body).to include "#{community_name} on Video"
-    end
-
-    it "shows articles with video" do
-      not_video_article = create(:article)
-      video_article     = create(:article)
+    it "shows the video page and only includes articles with video", :aggregate_failures do
+      not_video_article = create(:article, user: authorized_user)
+      video_article     = create(:article, user: authorized_user)
       video_article.update_columns(
-        video:               "video",
+        video: "video",
         video_thumbnail_url: "https://dummyimage.com/240x180.jpg",
-        title:               "this video",
+        title: "this video",
       )
 
       get "/videos"
+      expect(response.body).to include "#{community_name} on Video"
       expect(response.body).to include video_article.title
       expect(response.body).not_to include not_video_article.title
     end
@@ -30,19 +26,19 @@ RSpec.describe "Videos" do
   describe "GET /t/:tag/videos" do
     it "shows only videos tagged with the specified tag" do
       # Article tagged with javascript should appear
-      js_article = create(:article, tag_list: ["javascript"])
+      js_article = create(:article, user: authorized_user, tag_list: ["javascript"])
       js_article.update_columns(
-        video:               "video",
+        video: "video",
         video_thumbnail_url: "https://dummyimage.com/240x180.jpg",
-        title:               "JS video",
+        title: "JS video",
       )
 
       # Article tagged with ruby should not appear
-      ruby_article = create(:article, tag_list: ["ruby"])
+      ruby_article = create(:article, user: authorized_user, tag_list: ["ruby"])
       ruby_article.update_columns(
-        video:               "video",
+        video: "video",
         video_thumbnail_url: "https://dummyimage.com/240x180.jpg",
-        title:               "Ruby video",
+        title: "Ruby video",
       )
 
       get "/t/javascript/videos"
@@ -64,10 +60,19 @@ RSpec.describe "Videos" do
     end
 
     context "when authorized" do
-      it "allows authorized users" do
+      it "allows authorized users and exposes client-side max file size validation attributes", :aggregate_failures do
         sign_in authorized_user
         get "/videos/new"
         expect(response.body).to include "Upload Video File"
+        expect(response.body).to include 'data-max-file-size-mb="6000"'
+        expect(response.body).to include 'data-permitted-file-types="[&quot;video&quot;]"'
+      end
+
+      it "exposes a larger max file size for super admins" do
+        super_admin = create(:user, :super_admin, created_at: 1.month.ago)
+        sign_in super_admin
+        get "/videos/new"
+        expect(response.body).to include 'data-max-file-size-mb="20000"'
       end
     end
   end

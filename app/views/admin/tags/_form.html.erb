@@ -6,18 +6,26 @@
     </div>
   <% end %>
   <div class="crayons-field crayons-field--checkbox mt-3">
-    <%= f.check_box :supported, class: "crayons-checkbox" %>
-    <label class="crayons-field__label" for="tag_supported">
-      Supported
-      <p class="crayons-field__description">Allows the tag to be a searchable result when writing a post or a listing</p>
-    </label>
+    <%= f.check_box :supported,
+                    class: "crayons-checkbox",
+                    aria: { describedby: "tag-supported-description" } %>
+    <div class="mt-0">
+      <%= f.label :supported, "Supported", class: "crayons-field__label" %>
+      <p id="tag-supported-description" class="crayons-field__description">
+        Allows the tag to be a searchable result when writing a post or a listing
+      </p>
+    </div>
   </div>
   <div class="crayons-field crayons-field--checkbox mt-3">
-    <%= f.check_box :suggested, class: "crayons-checkbox" %>
-    <label class="crayons-field__label" for="tag_suggested">
-      Suggested
-      <p class="crayons-field__description">Prioritizes the tag during user onboarding</p>
-    </label>
+    <%= f.check_box :suggested,
+                    class: "crayons-checkbox",
+                    aria: { describedby: "tag-suggested-description" } %>
+    <div class="mt-0">
+      <%= f.label :suggested, "Suggested", class: "crayons-field__label" %>
+      <p id="tag-suggested-description" class="crayons-field__description">
+        Prioritizes the tag during user onboarding
+      </p>
+    </div>
   </div>
   <% if @subforems.present? && @subforems.any? %>
     <div class="crayons-field mt-3">
@@ -73,6 +81,11 @@
   <div class="crayons-field mt-3">
     <%= f.label :context_note_instructions, class: "crayons-field__label" %>
     <%= f.text_area :context_note_instructions, value: tag.context_note_instructions, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field mt-3">
+    <%= f.label :moderation_instructions, I18n.t("admin.tags_controller.form.moderation_instructions"), class: "crayons-field__label" %>
+    <%= f.text_area :moderation_instructions, value: tag.moderation_instructions, class: "crayons-textfield" %>
+    <p class="crayons-field__description"><%= I18n.t("admin.tags_controller.form.moderation_instructions_description") %></p>
   </div>
   <div class="crayons-field mt-3">
     <%= f.label :bg_color_hex, "Tag color", class: "crayons-field__label" %>

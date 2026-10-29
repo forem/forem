@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { SeriesSelector } from './SeriesSelector';
 import { CoAuthorSelector } from './CoAuthorSelector';
+import { CoAuthorInvitationSelector } from './CoAuthorInvitationSelector';
 import { Modal, ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 
@@ -30,6 +31,10 @@ export const Options = ({
     organizations = [],
     authorId = null,
     coAuthorIdsList = '',
+    coAuthorInvitationsEnabled = false,
+    coAuthorInvitations = [],
+    coAuthorInvitees = [],
+    coAuthorInvitationsMax = 4,
   },
   schedulingEnabled: _schedulingEnabled, // Deprecated - scheduling is always enabled now
   onSaveDraft,
@@ -211,16 +216,16 @@ export const Options = ({
 
   return (
     <Fragment>
-      <span className="mx-2 color-base-30" aria-hidden="true">|</span>
       <Button
         id="post-options-btn"
+        variant="ghost"
         icon={CogIcon}
         title="Advanced Post options"
         aria-label="Advanced Post options"
         disabled={previewLoading}
         onClick={() => setIsOptionsModalOpen(true)}
       >
-        <span className="hidden l:inline-block ml-1">Advanced Options</span>
+        <span className="hidden xl:inline-block ml-1">Advanced Options</span>
       </Button>
       {isOptionsModalOpen && (
         <Modal
@@ -284,6 +289,16 @@ export const Options = ({
                 onConfigChange={handleConfigChangeWithModalOpen}
               />
 
+              {/* Follower invitations are for personal posts; org posts use the org co-author picker above. */}
+              {coAuthorInvitationsEnabled && !organizationId && (
+                <CoAuthorInvitationSelector
+                  invitees={coAuthorInvitees}
+                  invitations={coAuthorInvitations}
+                  maxSelections={coAuthorInvitationsMax}
+                  onConfigChange={handleConfigChangeWithModalOpen}
+                />
+              )}
+
               {publishedField}
             </div>
             <div className="post-options-modal__footer">
@@ -318,6 +333,10 @@ Options.propTypes = {
     organizations: PropTypes.array.isRequired,
     authorId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     coAuthorIdsList: PropTypes.string,
+    coAuthorInvitationsEnabled: PropTypes.bool,
+    coAuthorInvitations: PropTypes.array,
+    coAuthorInvitees: PropTypes.array,
+    coAuthorInvitationsMax: PropTypes.number,
     organizationId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   }).isRequired,
   schedulingEnabled: PropTypes.bool, // Kept for backward compatibility but no longer used

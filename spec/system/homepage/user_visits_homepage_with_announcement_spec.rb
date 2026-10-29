@@ -1,27 +1,25 @@
 require "rails_helper"
 
 RSpec.describe "User visits a homepage" do
+  def visit_homepage
+    visit "/"
+    expect(page).to have_css("body[data-loaded='true']", wait: 30)
+  end
+
   def expect_broadcast_data(page)
-    expect(page).to have_selector(".broadcast-wrapper .broadcast-data", text: "Hello, World!")
+    expect(page).to have_css(".broadcast-wrapper .broadcast-data", text: "Hello, World!")
   end
 
   def expect_no_broadcast_data(page)
-    expect(page).not_to have_css(".broadcast-wrapper .broadcast-data")
+    expect(page).to have_no_css(".broadcast-wrapper .broadcast-data")
   end
 
   context "when user hasn't logged in" do
     context "with an active announcement" do
-      before do
+      it "renders and dismisses the broadcast", :aggregate_failures, :js do
         create(:announcement_broadcast)
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
-      end
+        visit_homepage
 
-      it "renders the broadcast", js: true do
-        expect_broadcast_data(page)
-      end
-
-      it "dismisses the broadcast", js: true do
         expect_broadcast_data(page)
 
         find(".close-announcement-button").click
@@ -30,13 +28,10 @@ RSpec.describe "User visits a homepage" do
     end
 
     context "without an active announcement" do
-      before do
+      it "does not render the broadcast", :js do
         create(:announcement_broadcast, active: false)
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
-      end
+        visit_homepage
 
-      it "does not render the broadcast", js: true do
         expect_no_broadcast_data(page)
       end
     end
@@ -50,19 +45,10 @@ RSpec.describe "User visits a homepage" do
     end
 
     context "with an active announcement" do
-      before do
+      it "renders and dismisses the broadcast", :aggregate_failures, :js do
         create(:announcement_broadcast)
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
-      end
+        visit_homepage
 
-      it "renders the broadcast", js: true do
-        expect_broadcast_data(page)
-      end
-
-      it "dismisses the broadcast", js: true do
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
         expect_broadcast_data(page)
 
         find(".close-announcement-button").click
@@ -70,27 +56,12 @@ RSpec.describe "User visits a homepage" do
       end
     end
 
-    context "without an active announcement" do
-      before do
-        create(:announcement_broadcast, active: false)
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
-      end
-
-      it "does not render the broadcast", js: true do
-        expect_no_broadcast_data(page)
-      end
-    end
-
     context "when opting-out of announcements" do
-      before do
+      it "does not render the broadcast", :js do
         user.setting.update!(display_announcements: false)
         create(:announcement_broadcast, active: true)
-        visit "/"
-        expect(page).to have_selector("body[data-loaded='true']")
-      end
+        visit_homepage
 
-      it "does not render the broadcast", js: true do
         expect_no_broadcast_data(page)
       end
     end

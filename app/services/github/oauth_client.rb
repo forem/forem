@@ -80,13 +80,19 @@ module Github
     end
 
     def handle_error(exception)
+      status = exception.respond_to?(:response_status) ? exception.response_status : nil
       class_name = exception.class.name.demodulize
 
       # raise specific error if known, generic one if unknown
       error_class = "::Github::Errors::#{class_name}".safe_constantize
-      raise error_class, exception.message if error_class
+      raise_github_error(error_class, exception.message, status) if error_class
 
-      error_class = if exception.class < Octokit::ClientError
+      error_class = if status == 429
+                      # Classify rate limiting by HTTP status so a 429 stays
+                      # retryable even when Octokit represents it as a generic
+                      # ClientError rather than a dedicated class.
+                      Github::Errors::TooManyRequests
+                    elsif exception.class < Octokit::ClientError
                       Github::Errors::ClientError
                     elsif exception.class < Octokit::ServerError
                       Github::Errors::ServerError
@@ -94,7 +100,16 @@ module Github
                       Github::Errors::Error
                     end
 
-      raise error_class, exception.message
+      raise_github_error(error_class, exception.message, status)
+    end
+
+    # Preserve the HTTP status on Github::Errors::Error subclasses; other mapped
+    # classes (e.g. the ArgumentError-based InvalidRepository) keep their own
+    # initializer signature.
+    def raise_github_error(error_class, message, status)
+      raise error_class.new(message, response_status: status) if error_class <= Github::Errors::Error
+
+      raise error_class, message
     end
 
     def target

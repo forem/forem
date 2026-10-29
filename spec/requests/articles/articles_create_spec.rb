@@ -1,7 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "ArticlesCreate" do
-  let(:user) { create(:user, :org_member) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user_org) do
+    org = create(:organization)
+    create(:organization_membership, user: user, organization: org, type_of_user: "member")
+    org
+  end
   let(:template) { file_fixture("article_published.txt").read }
   let(:new_title) { "NEW TITLE #{rand(100)}" }
 
@@ -34,7 +39,7 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "creates article with front matter params and org" do
-    user_org_id = user.organizations.first.id
+    user_org_id = user_org.id
     post "/articles", params: {
       article: {
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
@@ -46,8 +51,8 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "does not allow a non-org-admin to set co-authors from the editor" do
-    organization = user.organizations.first
-    co_author = create(:user)
+    organization = user_org
+    co_author = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: co_author, organization: organization)
 
     post "/articles", params: {
@@ -63,9 +68,9 @@ RSpec.describe "ArticlesCreate" do
   end
 
   it "allows an org admin to set co-authors from the editor" do
-    organization = user.organizations.first
+    organization = user_org
     user.organization_memberships.find_by(organization: organization).update!(type_of_user: "admin")
-    co_author = create(:user)
+    co_author = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: co_author, organization: organization)
 
     post "/articles", params: {
@@ -78,6 +83,53 @@ RSpec.describe "ArticlesCreate" do
     }
 
     expect(Article.last.co_author_ids).to eq([co_author.id])
+  end
+
+  describe "co-author invitations" do
+    let(:follower) { create(:user, :without_profile, profile_image: nil) }
+
+    before { follower.follow(user) }
+
+    def post_article(invitee_ids)
+      post "/articles", params: {
+        article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", co_author_invitee_ids: invitee_ids }
+      }
+    end
+
+    it "ignores the invitee list while the feature is disabled" do
+      post_article([follower.id])
+
+      expect(CoAuthorInvitation.count).to eq(0)
+    end
+
+    context "when the feature is enabled" do
+      before { FeatureFlag.enable(:co_author_invitations) }
+
+      it "invites the listed followers", :aggregate_failures do
+        post_article([follower.id])
+
+        invitation = Article.last.co_author_invitations.sole
+        expect(invitation.user).to eq(follower)
+        expect(invitation).to be_pending
+      end
+
+      it "accepts the editor's camelCased JSON payload" do
+        payload = { article: { title: new_title, bodyMarkdown: "Yo ho ho", coAuthorInviteeIds: [follower.id] } }
+
+        post "/articles", params: payload.to_json,
+                          headers: { "Content-Type" => "application/json", "Accept" => "application/json" }
+
+        expect(Article.last.co_author_invitations.pluck(:user_id)).to eq([follower.id])
+      end
+
+      it "rejects the post when an invitee doesn't follow the author", :aggregate_failures do
+        stranger = create(:user)
+
+        expect { post_article([stranger.id]) }.not_to change(Article, :count)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["base"]).to include(a_string_including("@#{stranger.username} needs to follow you"))
+      end
+    end
   end
 
   it "creates series when series is created with frontmatter" do

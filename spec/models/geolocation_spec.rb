@@ -147,4 +147,33 @@ RSpec.describe Geolocation do
       expect(texas).not_to eq(ontario)
     end
   end
+
+  describe ".code_covered_by?" do
+    it "matches a country and all of its regions" do
+      expect(described_class.code_covered_by?("US", ["US"])).to be(true)
+      expect(described_class.code_covered_by?("US-CA", ["US"])).to be(true)
+    end
+
+    it "does not match a whole country when only one of its regions is listed" do
+      expect(described_class.code_covered_by?("US", ["US-CA"])).to be(false)
+      expect(described_class.code_covered_by?("US-NY", ["US-CA"])).to be(false)
+      expect(described_class.code_covered_by?("US-CA", ["US-CA"])).to be(true)
+    end
+
+    it "does not match codes that merely share a prefix" do
+      expect(described_class.code_covered_by?("USA", ["US"])).to be(false)
+      expect(described_class.code_covered_by?("US", ["U"])).to be(false)
+    end
+
+    it "ignores case and surrounding whitespace" do
+      expect(described_class.code_covered_by?("us-ca", [" us "])).to be(true)
+    end
+
+    it "matches nothing for a blank code or an empty list" do
+      expect(described_class.code_covered_by?("", ["US"])).to be(false)
+      expect(described_class.code_covered_by?(nil, ["US"])).to be(false)
+      expect(described_class.code_covered_by?("US", [])).to be(false)
+      expect(described_class.code_covered_by?("US", ["", nil])).to be(false)
+    end
+  end
 end

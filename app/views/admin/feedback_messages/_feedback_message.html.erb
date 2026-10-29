@@ -60,7 +60,11 @@
               Reported URL:
             </h3>
             <p>
-              <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+              <% if feedback_message.reported_url.to_s.match?(%r{\A(https?://|/[^/])}i) %>
+                <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+              <% else %>
+                <%= feedback_message.reported_url %>
+              <% end %>
             </p>
           <% end %>
         </div>
@@ -101,7 +105,7 @@
               Message from Offender:
             </h3>
             <div class="reported__message">
-              <%= raw(feedback_message.message) %>
+              <%= feedback_message.message %>
             </div>
             <% else %>
             <h3 class="crayons-subtitle-3">

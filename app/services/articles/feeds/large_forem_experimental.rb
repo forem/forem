@@ -53,13 +53,10 @@ module Articles
 
       # @api private
       def score_single_article(article, base_article_points: 0)
-        article_points = base_article_points
-        article_points += score_followed_user(article)
-        article_points += score_followed_organization(article)
-        article_points += score_followed_tags(article)
-        article_points += score_experience_level(article)
-        article_points += score_comments(article)
-        article_points
+        @article_score_applicator.score_for_experimental(
+          article,
+          base_article_points: base_article_points,
+        ) || legacy_score_single_article(article, base_article_points: base_article_points)
       end
 
       delegate(:score_followed_user,
@@ -67,6 +64,7 @@ module Articles
                :score_followed_organization,
                :score_experience_level,
                :score_comments,
+               :score_ai_disclosure,
                to: :@article_score_applicator)
 
       # @api private
@@ -76,17 +74,23 @@ module Articles
         if user_signed_in
           hot_stories = experimental_hot_story_grab
           hot_stories = hot_stories.not_authored_by(UserBlock.cached_blocked_ids_for_blocker(@user.id))
+          if @user&.setting&.hide_fully_autonomous_feed_ai?
+            hot_stories = hot_stories.where.not(ai_disclosure_level: :fully_autonomous)
+          end
           featured_story = featured_story_from(stories: hot_stories, must_have_main_image: must_have_main_image)
           new_stories = Article.published.from_subforem
             .where("score > ?", article_score_threshold)
             .limited_column_select.includes(top_comments: :user)
             .order(published_at: :desc)
-            .includes(:distinct_reaction_categories, :subforem, :context_notes)
+            .includes(:context_notes)
             .limit(rand(min_rand_limit..max_rand_limit))
+          if @user&.setting&.hide_fully_autonomous_feed_ai?
+            new_stories = new_stories.where.not(ai_disclosure_level: :fully_autonomous)
+          end
           hot_stories = hot_stories.to_a + new_stories.to_a
         else
           hot_stories = Article.published.from_subforem.limited_column_select
-            .includes(:distinct_reaction_categories, :subforem, top_comments: :user)
+            .includes(top_comments: :user)
             .page(@page).per(@number_of_articles)
             .with_at_least_home_feed_minimum_score
             .order(hotness_score: :desc)
@@ -97,6 +101,17 @@ module Articles
 
       private
 
+      def legacy_score_single_article(article, base_article_points: 0)
+        article_points = base_article_points
+        article_points += score_followed_user(article)
+        article_points += score_followed_organization(article)
+        article_points += score_followed_tags(article)
+        article_points += score_experience_level(article)
+        article_points += score_comments(article)
+        article_points += score_ai_disclosure(article)
+        article_points
+      end
+
       def featured_story_from(stories:, must_have_main_image:)
         return stories.first unless must_have_main_image
 
@@ -106,7 +121,7 @@ module Articles
       def experimental_hot_story_grab
         start_time = Articles::Feeds.oldest_published_at_to_consider_for(user: @user)
         Article.published.limited_column_select.includes(top_comments: :user)
-          .includes(:distinct_reaction_categories, :subforem, :context_notes)
+          .includes(:context_notes)
           .where("published_at > ?", start_time)
           .page(@page).per(@number_of_articles)
           .order(score: :desc)

@@ -237,6 +237,21 @@ RSpec.describe "Articles" do
 
         expect(response.body).not_to include("<image>")
       end
+
+      it "preloads article authors instead of loading each one separately" do
+        authors = create_list(:user, 2)
+        authors.each { |author| create(:article, user: author, tags: tag.name) }
+
+        user_lookups = []
+        callback = lambda do |*, payload|
+          user_lookups << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" = /)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get tag_feed_path(tag.name) }
+
+        rss_feed = Feedjira.parse(response.body)
+        expect(rss_feed.entries.map(&:author)).to include(*authors.map(&:name))
+        expect(user_lookups).to be_empty
+      end
     end
 
     context "when :tag param is given and tag exists and is an alias" do
@@ -277,6 +292,25 @@ RSpec.describe "Articles" do
       end
     end
 
+    context "with the template param" do
+      it "prefills the editor from the matching tag" do
+        tag = create(:tag, name: "templatetag")
+        get "/new", params: { template: tag.name }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("templatetag")
+      end
+
+      it "does not query tags when the template param is absent" do
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/new" }
+        expect(response).to have_http_status(:ok)
+        expect(tag_queries).to be_empty
+      end
+    end
+
     it "sets canonical url with base" do
       get "/new"
       expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
@@ -306,6 +340,21 @@ RSpec.describe "Articles" do
       get "#{article.path}/manage"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Manage Your Post")
+    end
+
+    it "masks page views at or below 25, matching the dashboard" do
+      article = create(:article, user: user)
+      article.update_column(:page_views_count, 25)
+      get "#{article.path}/manage"
+      expect(response.body).to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
+    end
+
+    it "shows the exact page views count above 25" do
+      article = create(:article, user: user)
+      article.update_column(:page_views_count, 1234)
+      get "#{article.path}/manage"
+      expect(response.body).to include("1,234")
+      expect(response.body).not_to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
     end
 
     it "returns unauthorized for a draft" do

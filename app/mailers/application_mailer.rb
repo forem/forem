@@ -29,9 +29,19 @@ class ApplicationMailer < ActionMailer::Base
   def generate_unsubscribe_token(id, email_type)
     Rails.application.message_verifier(:unsubscribe).generate({
                                                                 user_id: id,
-                                                                email_type: email_type.to_sym,
-                                                                expires_at: 31.days.from_now
+                                                                email_type: email_type.to_s,
+                                                                expires_at: 31.days.from_now.iso8601
                                                               })
+  end
+
+  # RFC 8058 one-click unsubscribe. Gmail and Yahoo require bulk senders to
+  # expose these two headers so the mailbox provider can render its own
+  # unsubscribe control, which POSTs to the URL without a confirmation step.
+  # Only bulk/marketing style mail should call this -- transactional mail
+  # (password resets, verification, etc.) must stay subscribed.
+  def add_unsubscribe_headers(token)
+    headers["List-Unsubscribe"] = "<#{email_subscriptions_unsubscribe_url(ut: token)}>"
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click"
   end
 
   def setup_subforem_context

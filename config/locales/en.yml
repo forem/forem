@@ -7,6 +7,22 @@ en:
     if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
     if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
     if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
+  favorites:
+    favorite: Pick as gem
+    favorited: Picked as gem
+    favorited_by_you: Picked as gem by you
+    modal:
+      title: Gem Picked!
+      body: You've picked this as a community gem!
+      remaining_zero: You have no more gems left to give out today.
+      remaining_one: You have 1 more gem left to give out today.
+      remaining_other: You have %{count} more gems left to give out today.
+      remaining_unlimited: You have unlimited gems to give out.
+      close: Got it
+    modal_exhausted:
+      title: Out of Gems
+      body: You have no more gems left to give out today. Your allowance will refresh soon!
+      close: Got it
   core:
     add_comment: Add comment
     beta: beta
@@ -16,6 +32,7 @@ en:
     follow: Follow
     follow_back: Follow back
     following: Following
+    image_upload_server_error: A server error has occurred!
     like: Like
     loading: loading...
     reaction: Reaction
@@ -35,6 +52,14 @@ en:
     article_form_co_authors: Co-authors
     article_form_co_authors_description: Add up to 4 co-authors from %{org_name}.
     article_form_co_authors_placeholder: Add up to 4...
+    article_form_co_author_invitations_description: Invite people who follow you. They'll be credited once they accept from their notifications.
+    article_form_co_author_invitations_placeholder: Search your followers...
+    article_form_co_author_invitations_declined: 'Declined: %{names}'
+    article_form_co_author_invitation_new: Invite on save
+    article_form_co_author_invitation_pending: Pending
+    article_form_co_author_invitation_accepted: Accepted
+    article_form_co_author_invitation_edit: Edit %{name}
+    article_form_co_author_invitation_remove: Remove %{name}
     comments_preview: Preview
     comments_continue_editing: Continue editing
     survey_enter_response: Enter your response here...
@@ -201,6 +226,8 @@ en:
       identity_not_found: "Identity not found for user"
       user_already_has_identity_for_provider: "User already has an identity for provider '%{provider}'"
       identity_uid_taken: "Identity uid %{uid} (%{provider}) is already linked to another user"
+      invalid_notification_settings: "notification_setting must include at least one supported key (email_newsletter)"
+      invalid_identities: "identities must be an array of 1 to %{limit} entries"
       cannot_merge_user_into_itself: "Cannot merge a user into itself"
       merge_identity_conflict: "Merge could not complete: %{reason}"
       unknown_provider: "Provider '%{provider}' is not configured"
@@ -224,6 +251,7 @@ en:
       greater_than: must be greater than %{count}
       greater_than_or_equal_to: must be greater than or equal to %{count}
       inclusion: is not included in the list
+      integer_only: Integer only. No sign allowed.
       invalid: is invalid
       less_than: must be less than %{count}
       less_than_or_equal_to: must be less than or equal to %{count}

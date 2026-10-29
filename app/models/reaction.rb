@@ -1,4 +1,6 @@
 class Reaction < ApplicationRecord
+  include ActivityTrackable
+
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -67,6 +69,8 @@ class Reaction < ApplicationRecord
   after_commit :check_for_reaction_ring, on: :create
   after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
+  after_commit :enqueue_user_reading_list_activity_update,
+               on: %i[create destroy update], if: :reading_list_article_reaction?
 
   class << self
     def count_for_article(id)
@@ -119,7 +123,8 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_article_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      article_vomits.where(status: "confirmed").where(reactable_id: user.articles.where("published_at > ?", 1.month.ago).ids).size > threshold
+      recent_article_ids = user.articles.where("published_at > ?", 1.month.ago).ids
+      article_vomits.where(status: "confirmed", reactable_id: recent_article_ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -131,7 +136,8 @@ class Reaction < ApplicationRecord
     # @return [FalseClass] they're not (yet) spamming the system
     def user_has_been_given_too_many_spammy_comment_reactions?(user:, threshold: 2, include_user_profile: false)
       threshold -= 1 if include_user_profile && user_has_spammy_profile_reaction?(user: user)
-      comment_vomits.where(status: "confirmed").where(reactable_id: user.comments.where("created_at > ?", 1.month.ago).ids).size > threshold
+      recent_comment_ids = user.comments.where("created_at > ?", 1.month.ago).ids
+      comment_vomits.where(status: "confirmed", reactable_id: recent_comment_ids).size > threshold
     end
 
     # @param user [User] the user who might be spamming the system
@@ -156,6 +162,14 @@ class Reaction < ApplicationRecord
                      user: user,
                      category: contradictory_category)
     end
+  end
+
+  def self.ransackable_attributes(_auth_object = nil)
+    %w[category created_at id id_value points reactable_id reactable_type status updated_at user_id]
+  end
+
+  def self.ransackable_associations(_auth_object = nil)
+    %w[user reactable]
   end
 
   # no need to send notification if:
@@ -196,6 +210,48 @@ class Reaction < ApplicationRecord
     end
   end
 
+  # === ActivityTrackable (Customer.io CDP activity events) ===
+  # article_reacted / _saved / comment_reacted, plus their un- counterparts.
+
+  def trackable_activity_payload
+    {
+      "category" => category,
+      "reactable_type" => reactable_type,
+      "reactable_id" => reactable_id,
+      "reactable_user_id" => reactable.try(:user_id)
+    }
+  end
+
+  # No :updated branch — reactions are created or destroyed, never edited;
+  # status flips are moderation bookkeeping.
+  def trackable_activity_event(phase)
+    case phase
+    when :created then trackable_event_name
+    when :destroyed then trackable_event_name(removed: true)
+    end
+  end
+
+  # Public reactions plus readinglist, the same set as .for_analytics. Excludes
+  # privileged moderation categories (vomit alone outnumbers every public
+  # reaction combined) and retired ones (thinking, hands), which are all
+  # published: false in reactions.yml — as is readinglist, hence the explicit
+  # allowance for saves.
+  def trackable_event_name(removed: false)
+    return unless reaction_category&.visible_to_public? || category == "readinglist"
+
+    case reactable_type
+    when "Article"
+      if category == "readinglist"
+        removed ? "article_unsaved" : "article_saved"
+      else
+        removed ? "article_unreacted" : "article_reacted"
+      end
+    when "Comment"
+      removed ? "comment_unreacted" : "comment_reacted"
+    end
+  end
+  private :trackable_activity_payload, :trackable_activity_event, :trackable_event_name
+
   private
 
   def reactable_is_article?
@@ -204,6 +260,18 @@ class Reaction < ApplicationRecord
 
   def reactable_is_article_and_public?
     reactable_is_article? && visible_to_public?
+  end
+
+  def reading_list_article_reaction?
+    return false unless reactable_is_article?
+    return true if destroyed?
+    return true if saved_change_to_category?(to: "readinglist") || saved_change_to_category?(from: "readinglist")
+
+    category == "readinglist" && saved_change_to_status?
+  end
+
+  def enqueue_user_reading_list_activity_update
+    Users::UpdateUserReadingListActivityWorker.perform_async(user_id)
   end
 
   def enqueue_update_user_interest_embedding
@@ -282,10 +350,11 @@ class Reaction < ApplicationRecord
   def check_for_reaction_ring
     # Only check for public reactions on articles
     return unless visible_to_public? && reactable_type == "Article"
-    
+
     # Only check if user has enough reactions to potentially be in a ring
-    return unless user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count >= 50
-    
+    recent_reactions_count = user.reactions.public_category.only_articles.where(created_at: 3.months.ago..).count
+    return unless recent_reactions_count >= Spam::ReactionRingDetector::MIN_REACTIONS_THRESHOLD
+
     # Schedule ring detection asynchronously
     Spam::ReactionRingDetectionWorker.perform_async(user_id)
   end

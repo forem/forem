@@ -83,4 +83,47 @@ RSpec.describe "Admin::LinkedDomains", type: :request do
       end
     end
   end
+
+  describe "PATCH /admin/moderation/linked_domains/spam_threshold" do
+    context "when signed in as an admin" do
+      before { sign_in admin }
+
+      after { Settings::RateLimit.clear_cache }
+
+      it "updates the domain abuse score threshold" do
+        patch spam_threshold_admin_linked_domains_path, params: { linked_domain_spam_score_threshold: 3500 }
+        expect(response).to redirect_to(admin_linked_domains_path)
+        expect(Settings::RateLimit.linked_domain_spam_score_threshold).to eq(3500)
+      end
+
+      it "rejects non-positive values" do
+        patch spam_threshold_admin_linked_domains_path, params: { linked_domain_spam_score_threshold: 0 }
+        expect(response).to redirect_to(admin_linked_domains_path)
+        expect(Settings::RateLimit.linked_domain_spam_score_threshold).to eq(2000)
+      end
+
+      it "rejects non-integer values instead of coercing them" do
+        patch spam_threshold_admin_linked_domains_path, params: { linked_domain_spam_score_threshold: "1e3" }
+        expect(response).to redirect_to(admin_linked_domains_path)
+        expect(flash[:alert]).to eq("Threshold must be a whole number.")
+        expect(Settings::RateLimit.linked_domain_spam_score_threshold).to eq(2000)
+      end
+
+      it "shows the threshold explanation on the index" do
+        get admin_linked_domains_path
+        expect(response.body).to include("Domain abuse score threshold")
+        expect(response.body).to include("4 spam posts")
+      end
+    end
+
+    context "when signed in as a regular user" do
+      before { sign_in user }
+
+      it "raises NotAuthorizedError" do
+        expect do
+          patch spam_threshold_admin_linked_domains_path, params: { linked_domain_spam_score_threshold: 10 }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
 end

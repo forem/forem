@@ -37,8 +37,14 @@ class NotificationsController < ApplicationController
 
     @notifications = NotificationDecorator.decorate_collection(@notifications)
 
-    @last_user_reaction = @user.reactions.last&.id
-    @last_user_comment = @user.comments.last&.id
+    # Only the ids are needed (as cache-key parts), so avoid hydrating full rows
+    # (comments carry body_markdown, processed_html and semantic_embedding).
+    # Order by `(id + 0) DESC` so high-volume accounts in `pg_stats.most_common_vals` use the
+    # `user_id` B-tree indexes + `Sort` (trading a bounded scan/sort of the user's own rows
+    # against an unbounded multi-second backward walk across the full `reactions_pkey` /
+    # `comments_pkey` table on `LIMIT 1` when they haven't reacted or commented recently).
+    @last_user_reaction = @user.reactions.order(Arel.sql("reactions.id + 0 DESC")).pick(:id)
+    @last_user_comment = @user.comments.order(Arel.sql("comments.id + 0 DESC")).pick(:id)
 
     @organizations = @user.member_organizations if @user.organizations
     @selected_organization = Organization.find(params[:org_id]) if params[:org_id].present?

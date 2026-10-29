@@ -3,10 +3,15 @@ fr:
   services:
     analytics_service:
       no_stats: Vous ne pouvez pas voir les statistiques de cet article.
+    appeals:
+      resolver:
+        approved_note: "Recours n° %{id} approuvé par %{resolver}."
+        automatic: "l'examen automatique par l'IA"
     article_with_video_creation_service:
       unpublished_video: Vidéo non publiée ~ %{rand}
     authentication:
       authenticator:
+        account_not_eligible: "Désolé, ce compte ne peut pas se connecter. Veuillez contacter l’équipe de la communauté si vous pensez qu’il s’agit d’une erreur."
         not_allowed: Désolé, mais le domaine de votre adresse e-mail n'est pas autorisé. Ce Forem a peut-être limité l'inscription à certains domaines de messagerie ou bloqué l'accès à ce domaine spécifique.
       providers:
         apple:
@@ -14,6 +19,17 @@ fr:
         not_available: Le fournisseur %{name} n'est pas disponible !
         not_enabled: Le fournisseur %{name} n'est pas activé !
     badges:
+      award_community_favorite:
+        article_first_gem_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
+        comment_first_gem_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Si vous obtenez deux gems, vous recevrez un nouveau badge sur votre profil."
+        article_progress_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
+        comment_progress_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois — le prochain badge est accessible à %{next_count} gems."
+        article_max_progress_notification: "Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem ! Vous avez été sélectionné %{count} fois."
+        comment_max_progress_notification: "Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem ! Vous avez été sélectionné %{count} fois."
+        article_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
+        comment_milestone_message: "Bravo ! Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems ! Le prochain badge sera disponible à %{next_count} gems."
+        article_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné votre publication, [%{title}](%{url}), comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
+        comment_max_milestone_message: "Incroyable ! Les modérateurs de la communauté ont sélectionné votre commentaire sur [%{title}](%{url}) comme un gem. Vous avez remporté le badge %{count} Gems — le palier le plus élevé !"
       award_beloved_comment:
         message: "Vous êtes célèbre ! [C'est le commentaire](%{comment}) pour lequel vous êtes reconnu. 😄"
       award_streak:
@@ -41,6 +57,12 @@ fr:
         parse_error: Il y a eu un problème pour analyser la matière première YAML. Vous devez peut-être échapper une citation, un deux-points ou autre chose. Envoyez un e-mail à %{email} si vous avez des problèmes.
     html:
       parser:
+        alerts:
+          caution: Attention
+          important: Important
+          note: Note
+          tip: Astuce
+          warning: Avertissement
         enter_fullscreen_mode: Passer en mode plein écran
         exit_fullscreen_mode: Sortir du mode en plein écran
     markdown_processor:
@@ -102,6 +124,10 @@ fr:
     spam:
       article_handler:
         suspended_too_many: Utilisateur suspendu pour trop d'articles spam, déclenché par autovomit.
+        marked_spam_repeat_auto_flags: Utilisateur marqué comme spam après que %{count} de ses articles du dernier mois ont été signalés automatiquement comme spam ou comme des violations évidentes, déclenché par autovomit.
+      comment_handler:
+        marked_spam_repeat_auto_flags: Utilisateur marqué comme spam après que %{count} de ses commentaires du dernier mois ont été signalés automatiquement comme spam, déclenché par autovomit.
+        marked_spam_comment_flood: Nouveau compte marqué comme spam après avoir commenté %{count} articles en une journée, déclenché par autovomit.
     user_subscriptions:
       create_from_controller_params:
         source_not_found: Source non trouvée.

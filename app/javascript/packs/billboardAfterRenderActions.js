@@ -55,16 +55,94 @@ export function implementSpecialBehavior(element) {
   }
 }
 
-export function observeBillboards() {
-  const observer = new IntersectionObserver(
+// Billboards in a placement area configured as "hidden by default" render with
+// data-placement-hidden="true" and record no impressions until revealed.
+function isBillboardPlacementHidden(billboard) {
+  return billboard.dataset.placementHidden === 'true';
+}
+
+// Revealed areas are remembered on #page-content so the state is shared by
+// every separately bundled pack, and is forgotten when InstantClick swaps in
+// the next page's content.
+function revealedPlacementAreasHolder() {
+  return document.getElementById('page-content') || document.body;
+}
+
+function revealedPlacementAreas() {
+  const areas =
+    revealedPlacementAreasHolder().dataset.revealedBillboardPlacements;
+  return areas ? areas.split(' ') : [];
+}
+
+function revealPendingBillboardPlacements() {
+  const areas = revealedPlacementAreas();
+  const revealed = [];
+  if (areas.length === 0) {
+    return revealed;
+  }
+
+  document
+    .querySelectorAll('[data-display-unit][data-placement-hidden="true"]')
+    .forEach((billboard) => {
+      if (areas.includes(billboard.dataset.placementArea)) {
+        billboard.dataset.placementHidden = 'false';
+        revealed.push(billboard);
+      }
+    });
+  return revealed;
+}
+
+/**
+ * Reveals billboards in a placement area configured as "hidden by default",
+ * including ones that finish loading after this call. A revealed billboard
+ * records its impression once it is actually in view, like any other billboard.
+ * Exposed as window.Forem.revealBillboardPlacement.
+ *
+ * @param {string} placementArea The placement area to reveal, e.g. "post_sidebar"
+ */
+export function revealBillboardPlacement(placementArea) {
+  if (!placementArea) {
+    return;
+  }
+
+  const areas = revealedPlacementAreas();
+  if (!areas.includes(placementArea)) {
+    revealedPlacementAreasHolder().dataset.revealedBillboardPlacements = [
+      ...areas,
+      placementArea,
+    ].join(' ');
+  }
+
+  // A fresh observer always reports the current intersection, so a revealed
+  // billboard that is already on screen counts without needing to scroll.
+  const observer = createImpressionObserver();
+  revealPendingBillboardPlacements().forEach((billboard) =>
+    observer.observe(billboard),
+  );
+}
+
+function createImpressionObserver() {
+  return new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const elem = entry.target;
-          if (entry.intersectionRatio >= 0.25) {
-            setTimeout(() => {
+        const elem = entry.target;
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          elem.dataset.isBillboardVisible = 'true';
+          setTimeout(() => {
+            if (
+              elem.dataset.isBillboardVisible === 'true' &&
+              !isBillboardPlacementHidden(elem)
+            ) {
               trackAdImpression(elem);
-            }, 200);
+              startPollingBillboard(elem);
+            }
+          }, 200);
+        } else {
+          elem.dataset.isBillboardVisible = 'false';
+          const intervalId = elem.dataset.pollingIntervalId;
+          if (intervalId) {
+            clearInterval(Number(intervalId));
+            elem.removeAttribute('data-polling-interval-id');
           }
         }
       });
@@ -75,7 +153,14 @@ export function observeBillboards() {
       threshold: 0.25,
     },
   );
+}
 
+export function observeBillboards() {
+  // Billboards render asynchronously, so one may arrive after its placement
+  // area was already revealed on this page.
+  revealPendingBillboardPlacements();
+
+  const observer = createImpressionObserver();
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
     const currentPath = window.location.pathname;
     observer.observe(ad);
@@ -106,6 +191,7 @@ function trackAdImpression(adBox) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 
@@ -119,9 +205,52 @@ function trackAdImpression(adBox) {
       body: JSON.stringify(dataBody),
       credentials: 'same-origin',
     })
+    .then((response) => {
+      if (response && response.ok && typeof response.json === 'function') {
+        return response.json();
+      }
+    })
+    .then((data) => {
+      if (data && data.id) {
+        adBox.dataset.eventId = data.id;
+      }
+    })
     .catch((error) => console.error(error));
 
   adBox.dataset.impressionRecorded = true;
+}
+
+function updateBillboardImpressionTime(adBox) {
+  const eventId = adBox.dataset.eventId;
+  if (!eventId) {
+    return;
+  }
+
+  const tokenMeta = document.querySelector("meta[name='csrf-token']");
+  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+
+  window.fetch(`/bb_tabulations/${eventId}`, {
+    method: 'PATCH',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).catch((error) => console.error(error));
+}
+
+function startPollingBillboard(adBox) {
+  if (adBox.dataset.pollingIntervalId) {
+    return; // Already polling
+  }
+
+  const intervalId = setInterval(() => {
+    if (document.visibilityState === 'visible' && adBox.dataset.isBillboardVisible === 'true') {
+      updateBillboardImpressionTime(adBox);
+    }
+  }, 10000);
+
+  adBox.dataset.pollingIntervalId = intervalId;
 }
 
 function trackAdClick(adBox, event, currentPath) {
@@ -135,6 +264,7 @@ function trackAdClick(adBox, event, currentPath) {
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
       article_id: adBox.dataset.articleId,
+      user_agent: navigator.userAgent,
     },
   };
 

@@ -47,7 +47,7 @@ class NotificationSubscriptionsController < ApplicationController
       @notification_subscription.config = params[:config] || "all_comments"
       receive_notifications = (params[:config] == "all_comments" && current_user_author?)
       @notification_subscription.notifiable.update(receive_notifications: true) if receive_notifications
-      @notification_subscription.save
+      save_subscription
     end
 
     respond_to do |format|
@@ -57,6 +57,30 @@ class NotificationSubscriptionsController < ApplicationController
   end
 
   private
+
+  # A concurrent upsert (e.g. a double click) can insert the same subscription between our
+  # lookup and INSERT; update the row it created instead of failing the uniqueness validation
+  # or raising on the unique index.
+  def save_subscription
+    return true if @notification_subscription.save
+
+    errors = @notification_subscription.errors
+    return false unless errors.count == 1 && errors.of_kind?(:user_id, :taken)
+
+    update_concurrent_subscription
+  rescue ActiveRecord::RecordNotUnique
+    update_concurrent_subscription
+  end
+
+  def update_concurrent_subscription
+    config = @notification_subscription.config
+    @notification_subscription = NotificationSubscription.uncached do
+      NotificationSubscription.find_by!(
+        @notification_subscription.slice(:user_id, :notifiable_id, :notifiable_type),
+      )
+    end
+    @notification_subscription.update(config: config)
+  end
 
   def current_user_author?
     # TODO: think of a better solution for handling mute notifications in dashboard / manage

@@ -14,7 +14,7 @@ FactoryBot.define do
     end
     email                        { generate(:email) }
     username                     { generate(:username) }
-    profile_image                { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
+    profile_image                { CarrierWave::SanitizedFile.new(image_path) }
     twitter_username             { generate(:twitter_username) }
     github_username              { generate(:github_username) }
     confirmed_at                 { Time.current }
@@ -58,6 +58,10 @@ FactoryBot.define do
 
     trait :super_admin do
       after(:build) { |user| user.add_role(:super_admin) }
+    end
+
+    trait :support_admin do
+      after(:build) { |user| user.add_role(:support_admin) }
     end
 
     trait :creator do
@@ -108,6 +112,14 @@ FactoryBot.define do
 
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
+    end
+
+    trait :community_leader_level_1 do
+      after(:build) { |user| user.add_role(:community_leader_level_1) }
+    end
+
+    trait :community_leader_level_2 do
+      after(:build) { |user| user.add_role(:community_leader_level_2) }
     end
 
     trait :suspended do
@@ -199,6 +211,8 @@ FactoryBot.define do
       after(:create) do |user|
         Users::NotificationSetting.find_by(user_id: user.id)
           .update_columns(email_newsletter: true, email_digest_periodic: true)
+        user.notification_setting&.reload
+        user.sync_base_email_eligible!
       end
     end
 

@@ -6,11 +6,12 @@ class EmailDigestArticleCollector
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
   CLICK_LOOKBACK = 30
   DIGEST_ARTICLE_COLUMNS = %i[id title description path cached_user cached_tag_list
-                              subforem_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
+                              subforem_id organization_id comment_score comments_count ai_summary ai_summary_generated_at].freeze
 
   # Personalized email digests require a higher minimum score than the home feed
   # to ensure that the content sent in emails is of higher quality.
   MINIMUM_SCORE_OFFSET = 15
+  SEMANTIC_CANDIDATE_LIMIT = 200
 
   attr_reader :feed_config_id
 
@@ -153,43 +154,70 @@ class EmailDigestArticleCollector
   # rubocop:enable Metrics/PerceivedComplexity
 
   def personalized_articles
-    feed_config = FeedConfig.order(feed_success_score: :desc).limit(15).to_a.sample || FeedConfig.first_or_create
+    feed_config = FeedConfig.select_for_feed(
+      user: @user,
+      context_type: FeedEvent::CONTEXT_TYPE_EMAIL,
+    )
     return unless feed_config
 
     set_subforem_context
 
-    score_sql = feed_config.score_sql(@user)
-
-    articles_query = Article
-      .select(*DIGEST_ARTICLE_COLUMNS)
+    filtered_scope = Article
       .published
       .full_posts
       .where("score >= ?", Settings::UserExperience.home_feed_minimum_score + MINIMUM_SCORE_OFFSET)
       .where("published_at > ?", cutoff_date)
       .where(email_digest_eligible: true)
       .not_authored_by(@user.id)
+
+    filtered_scope = filtered_scope.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
+
+    blocked_ids = UserBlock.cached_blocked_ids_for_blocker(@user.id)
+    filtered_scope = filtered_scope.where.not(user_id: blocked_ids) if blocked_ids.any?
+
+    hidden_tags = @user.cached_antifollowed_tag_names
+    filtered_scope = filtered_scope.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
+
+    filtered_scope, score_sql = apply_personalized_scoring(filtered_scope, feed_config)
+
+    articles_query = filtered_scope
+      .select(*DIGEST_ARTICLE_COLUMNS)
       .order(Arel.sql("#{score_sql} DESC"))
       .limit(RESULTS_COUNT)
 
-    articles_query = articles_query.where(subforem_id: @subforem_ids) unless @skip_subforem_filtering
-
-    blocked_ids = UserBlock.cached_blocked_ids_for_blocker(@user.id)
-    articles_query = articles_query.where.not(user_id: blocked_ids) if blocked_ids.any?
-
-    hidden_tags = @user.cached_antifollowed_tag_names
-    articles_query = articles_query.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
-
     articles = articles_query.to_a
     articles = articles.rotate(1) if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
-    
+
     if articles.length >= 3
       @feed_config_id = feed_config.id
       articles
-    else
-      nil
     end
   rescue StandardError
     nil
+  end
+
+  def apply_personalized_scoring(filtered_scope, feed_config)
+    if feed_config.respond_to?(:semantic_similarity_active?) &&
+        feed_config.semantic_similarity_active?(@user)
+      base_score_sql = feed_config.base_score_sql(@user)
+      if base_score_sql != "(0)"
+        candidate_limit = if feed_config.respond_to?(:effective_semantic_candidate_limit)
+                            feed_config.effective_semantic_candidate_limit
+                          else
+                            SEMANTIC_CANDIDATE_LIMIT
+                          end
+        candidate_ids = filtered_scope
+          .select(:id)
+          .order(Arel.sql("#{base_score_sql} DESC"))
+          .limit(candidate_limit)
+        return [
+          filtered_scope.where(id: candidate_ids),
+          "(#{base_score_sql} + #{feed_config.semantic_similarity_sql(@user)})",
+        ]
+      end
+    end
+
+    [filtered_scope, feed_config.score_sql(@user)]
   end
 
   def set_subforem_context

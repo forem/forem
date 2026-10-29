@@ -10,11 +10,13 @@ describe "GET /videos" do
     get "Articles with a video" do
       tags "videos", "articles"
       security []
-      description "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.
+      description "Retrieve a list of articles that contain uploaded videos.
 
-It will only return published video articles ordered by descending popularity.
-
-It supports pagination, each page will contain 24 articles by default."
+### Videos Overview:
+- Bypasses authentication (can be accessed publicly).
+- Returns articles that are published and include a video asset.
+- Articles are ordered by descending popularity (views, watch time, and reactions).
+- By default, returns 24 video articles per page."
       operationId "videos"
       produces "application/json"
       parameter "$ref": "#/components/parameters/pageParam"

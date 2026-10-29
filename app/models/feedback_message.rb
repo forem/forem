@@ -13,7 +13,7 @@ class FeedbackMessage < ApplicationRecord
   CATEGORIES = ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"].freeze
   STATUSES = %w[Open Invalid Resolved].freeze
 
-  before_save :determine_reported_from_url
+  before_save :determine_reported_from_url, :assign_offender_from_reported
 
   def self.reporter_uniqueness_msg
     I18n.t("models.feedback_message.reported")
@@ -24,6 +24,27 @@ class FeedbackMessage < ApplicationRecord
     user.reporter_feedback_messages
       .or(user.affected_feedback_messages)
       .or(user.offender_feedback_messages)
+  }
+  scope :with_valid_reported_score, lambda { |score_min|
+    joins(<<~SQL)
+      LEFT OUTER JOIN users AS reported_users 
+        ON feedback_messages.reported_type = 'User' 
+        AND reported_users.id = feedback_messages.reported_id
+      LEFT OUTER JOIN articles AS reported_articles 
+        ON feedback_messages.reported_type = 'Article' 
+        AND reported_articles.id = feedback_messages.reported_id
+      LEFT OUTER JOIN comments AS reported_comments 
+        ON feedback_messages.reported_type = 'Comment' 
+        AND reported_comments.id = feedback_messages.reported_id
+    SQL
+    .where(<<~SQL, score_min: score_min)
+      feedback_messages.reported_id IS NULL OR
+      feedback_messages.reported_type IS NULL OR
+      (feedback_messages.reported_type = 'User' AND (reported_users.score IS NULL OR reported_users.score > :score_min)) OR
+      (feedback_messages.reported_type = 'Article' AND (reported_articles.score IS NULL OR reported_articles.score > :score_min)) OR
+      (feedback_messages.reported_type = 'Comment' AND (reported_comments.score IS NULL OR reported_comments.score > :score_min)) OR
+      (feedback_messages.reported_type NOT IN ('User', 'Article', 'Comment'))
+    SQL
   }
 
   validates :feedback_type, :message, presence: true
@@ -38,10 +59,19 @@ class FeedbackMessage < ApplicationRecord
               in: STATUSES
             }
   validates :reporter_id, uniqueness: { scope: REPORTER_UNIQUENESS_SCOPE, message: reporter_uniqueness_msg },
-                          if: :abuse_report? && :reporter_id
+                          if: -> { abuse_report? && reporter_id.present? }
+  validate :validate_reported_url_scheme, if: -> { reported_url.present? }
 
   def abuse_report?
     feedback_type == "abuse-reports"
+  end
+
+  def reported_url=(value)
+    if value.is_a?(String)
+      value = value.dup.force_encoding(Encoding::UTF_8) unless value.encoding == Encoding::UTF_8
+      value = value.scrub("") unless value.valid_encoding?
+    end
+    super(value)
   end
 
   def user_types(user_id)
@@ -63,6 +93,13 @@ class FeedbackMessage < ApplicationRecord
     self.reported = reported_entity if reported_entity
   rescue StandardError
     nil
+  end
+
+  def assign_offender_from_reported
+    return unless abuse_report?
+    return if offender.present?
+
+    self.offender = offender_from_reported
   end
 
   def matched_to_entity(url)
@@ -91,4 +128,30 @@ class FeedbackMessage < ApplicationRecord
     end
   end
 
+  def offender_from_reported
+    case reported
+    when User
+      reported
+    when Article, Comment
+      reported.user
+    end
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    ["affected_id", "category", "created_at", "feedback_type", "id", "message", "offender_id", "reported_id", "reported_type", "reported_url", "reporter_id", "status", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["offender", "reporter", "affected", "reported"]
+  end
+
+  private
+
+  def validate_reported_url_scheme
+    cleaned = reported_url.gsub(/[\x00-\x20]+/, "")
+    return unless cleaned.match?(/\A[a-z][a-z0-9+.-]*:/i)
+    return if cleaned.match?(%r{\Ahttps?://}i)
+
+    errors.add(:reported_url, :invalid)
+  end
 end

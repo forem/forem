@@ -85,6 +85,16 @@ RSpec.describe Billboard do
       it { is_expected.to have_many(:tags) }
     end
 
+    it "requires minimized_body_markdown if special_behavior is persistent" do
+      billboard.special_behavior = "persistent"
+      billboard.minimized_body_markdown = nil
+      expect(billboard).not_to be_valid
+      expect(billboard.errors[:minimized_body_markdown]).to include("can't be blank")
+      
+      billboard.minimized_body_markdown = "minimized content"
+      expect(billboard).to be_valid
+    end
+
     it "allows sidebar_right" do
       billboard.placement_area = "sidebar_right"
       expect(billboard).to be_valid
@@ -117,6 +127,18 @@ RSpec.describe Billboard do
     it "returns human readable name" do
       billboard.placement_area = "sidebar_left_2"
       expect(billboard.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
+    end
+
+    it "allows secondary post placement areas" do
+      %w[post_body_bottom_secondary post_sidebar_secondary post_comments_secondary].each do |area|
+        billboard.placement_area = area
+        expect(billboard).to be_valid
+      end
+    end
+
+    it "returns human readable names for secondary post placement areas" do
+      billboard.placement_area = "post_comments_secondary"
+      expect(billboard.human_readable_placement_area).to eq("Below the comment section (Secondary)")
     end
 
     it "allows creator_id to be set" do
@@ -340,6 +362,24 @@ RSpec.describe Billboard do
       billboard.update(name: "Sample billboard")
       billboard.reload
       expect(billboard.processed_html).to eq(html)
+    end
+
+    it "processes minimized_body_markdown using the same render_mode" do
+      billboard = create(:billboard, render_mode: "forem_markdown", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+      
+      billboard.update(render_mode: "raw", minimized_body_markdown: "<div>Raw minimized</div>")
+      expect(billboard.minimized_processed_html).to eq("<div>Raw minimized</div>")
+    end
+
+    it "re-processes body_markdown and minimized_body_markdown when render_mode or placement_area changes" do
+      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**", minimized_body_markdown: "Minimized **bold**")
+      expect(billboard.processed_html).to include("<strong>bold</strong>")
+      expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
+
+      billboard.update!(render_mode: "raw")
+      expect(billboard.processed_html).to eq("**bold**")
+      expect(billboard.minimized_processed_html).to eq("Minimized **bold**")
     end
   end
 
@@ -598,9 +638,38 @@ RSpec.describe Billboard do
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
 
+    it "automatically extracts article IDs from true relative links (host is nil) when render_mode is raw" do
+      billboard = build(:billboard, render_mode: "raw", body_markdown: "<a href=\"#{article.path}\">link</a>")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
     it "automatically extracts article IDs from absolute links matching the app domain" do
       app_url = URI.parse(URL.url)
       billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching the app domain with www prefix" do
+      app_url = URI.parse(URL.url)
+      www_url = "#{app_url.scheme}://www.#{app_url.host}"
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{www_url}#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching Settings::General.app_domain" do
+      allow(Settings::General).to receive(:app_domain).and_return("customdomain.com")
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://customdomain.com#{article.path})")
+      
+      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
+    end
+
+    it "automatically extracts article IDs from absolute links matching subforem domains" do
+      subforem_domain = "subforem.customdomain.com"
+      allow(Subforem).to receive(:cached_domains).and_return([subforem_domain])
+      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://#{subforem_domain}#{article.path})")
       
       expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
     end
@@ -1158,6 +1227,15 @@ RSpec.describe Billboard do
       end
     end
 
+    it "does not update when seconds_visible changes" do
+      original_time = billboard.content_updated_at
+      Timecop.travel(1.hour.from_now) do
+        billboard.update!(seconds_visible: 1000)
+        billboard.reload
+        expect(billboard.content_updated_at).to eq(original_time)
+      end
+    end
+
     it "does not update when clicks_count changes" do
       original_time = billboard.content_updated_at
       Timecop.travel(1.hour.from_now) do
@@ -1309,6 +1387,130 @@ RSpec.describe Billboard do
       result = described_class.select_billboard_by_weighted_strategy(relation, area)
       expect(result).to be_a(described_class)
     end
+
+    it "returns nil when billboards_for_display is an unloaded relation matching no records" do
+      unloaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area")
+      result = described_class.select_billboard_by_weighted_strategy(unloaded_empty_relation, area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil without querying when billboards_for_display is an already-loaded empty relation" do
+      loaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area").load
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(described_class.select_billboard_by_weighted_strategy(loaded_empty_relation, area)).to be_nil
+      end
+
+      expect(display_ad_queries).to be_empty
+    end
+
+    it "executes only one display_ads query for weighted_performance instead of loading the relation upfront" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 100
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("LIMIT")
+    end
+
+    it "executes only one display_ads query for new_and_priority when a seldom_seen billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 100,
+          "new_only" => 0,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("WITH base AS")
+    end
+
+    it "executes only one display_ads query for new_only when a low-impression billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 100,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("impressions_count <")
+    end
+
+    it "executes only one display_ads query for new_and_priority and new_only when falling back" do
+      described_class.where(id: billboards.map(&:id))
+        .update_all(impressions_count: described_class::LOW_IMPRESSION_COUNT + 100, priority: false)
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+
+      %w[new_and_priority new_only].each do |strategy|
+        config.update!(selection_weights: { "random_selection" => 0, "new_and_priority" => 0,
+                                            "new_only" => 0, "weighted_performance" => 0, strategy => 100 })
+        display_ad_queries = []
+        callback = lambda do |*, payload|
+          display_ad_queries << payload[:sql] if payload[:sql].to_s.include?('"display_ads"') && !payload[:cached]
+        end
+        result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.select_billboard_by_weighted_strategy(relation, area)
+        end
+
+        expect(billboards).to include(result)
+        expect(display_ad_queries.size).to eq(1)
+      end
+    end
   end
 
   describe "#bust_billboard_cache (when being taken down)" do
@@ -1443,6 +1645,18 @@ RSpec.describe Billboard do
     it "handles empty tags gracefully natively" do
       billboard = create(:billboard, tag_list: "")
       expect(billboard.tags_array).to eq([])
+    end
+  end
+
+  describe "database indexes" do
+    it "defines a partial composite index on placement_area and success_rate for active billboards" do
+      indexes = ActiveRecord::Base.connection.indexes(:display_ads)
+      idx = indexes.find { |i| i.name == "index_display_ads_on_placement_area_and_success_rate" }
+      expect(idx).to have_attributes(
+        columns: %w[placement_area success_rate],
+        orders: { "success_rate" => :desc },
+        where: "((approved = true) AND (published = true))",
+      )
     end
   end
 end

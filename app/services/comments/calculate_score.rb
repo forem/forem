@@ -12,8 +12,13 @@ module Comments
       score = BlackBox.comment_quality_score(comment)
       score -= 500 if comment.user&.spam?
       score += Settings::UserExperience.index_minimum_score if comment.user&.base_subscriber?
+      score = (score * 1.2).to_i + 20 if comment.favorited?
       previous_score = comment.score.to_i
       comment.update_columns(score: score, updated_at: Time.current)
+
+      if score >= 3 && comment.respond_to?(:semantic_embedding) && comment.semantic_embedding.nil?
+        Comments::GenerateEmbeddingWorker.perform_async(comment.id)
+      end
 
       enqueue_article_activity_update(previous_score, score) if comment.commentable_type == "Article"
 

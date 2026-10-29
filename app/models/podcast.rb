@@ -17,6 +17,8 @@ class Podcast < ApplicationRecord
   validates :main_color_hex, :title, :feed_url, :image, presence: true
   validates :main_color_hex, format: /\A([a-fA-F]|[0-9]){6}\Z/
   validates :feed_url, uniqueness: true, url: { schemes: %w[https http] }
+  validates :website_url, :itunes_url, :overcast_url, :android_url, :soundcloud_url,
+            url: { allow_blank: true, schemes: %w[https http] }
 
   extend UniqueAcrossModels
   unique_across_models :slug
@@ -30,7 +32,7 @@ class Podcast < ApplicationRecord
   scope :eager_load_serialized_data, -> { includes(:user, :podcast, :tags) }
 
   alias_attribute :path, :slug
-  alias_attribute :profile_image_url, :image_url
+  alias_method :profile_image_url, :image_url
   alias_attribute :name, :title
 
   def existing_episode(item)

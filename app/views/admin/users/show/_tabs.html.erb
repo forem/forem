@@ -1,18 +1,52 @@
-<nav class="mb-2" aria-label="Member details">
-  <ul class="crayons-navigation crayons-navigation--horizontal">
-    <li><%= link_to t("views.admin.users.tabs.overview"), admin_user_path(@user.id), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'overview'}", aria: @current_tab == "overview" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.notes"), admin_user_path(@user.id, tab: :notes), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'notes'}", aria: @current_tab == "notes" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.emails"), admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'emails'}", aria: @current_tab == "emails" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.reports"), admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'reports'}", aria: @current_tab == "reports" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.flags"), admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'flags'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.articles"), admin_user_path(@user.id, tab: :articles), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'articles'}", aria: @current_tab == "articles" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.comments"), admin_user_path(@user.id, tab: :comments), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'comments'}", aria: @current_tab == "comments" ? { current: "page" } : {} %></li>
-    <li><%= link_to t("views.admin.users.tabs.audit_log"), admin_user_path(@user.id, tab: :audit_log), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'audit_log'}", aria: @current_tab == "audit_log" ? { current: "page" } : {} %></li>
+<% is_more_tab_current = %w[identities badges reactions agent_sessions collections follows blocks].include?(@current_tab) %>
+<nav class="mb-2 flex justify-between items-center flex-wrap gap-2" aria-label="Member details">
+  <ul class="crayons-navigation crayons-navigation--horizontal flex-wrap">
+    <li><%= link_to t("views.admin.users.tabs.overview"), admin_user_path(@user.id), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'overview'}", aria: @current_tab == "overview" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.notes"), admin_user_path(@user.id, tab: :notes), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'notes'}", aria: @current_tab == "notes" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.emails"), admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'emails'}", aria: @current_tab == "emails" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.security"), admin_user_path(@user.id, tab: :security), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'security'}", aria: @current_tab == "security" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.reports"), admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'reports'}", aria: @current_tab == "reports" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.flags"), admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'flags'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.articles"), admin_user_path(@user.id, tab: :articles), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'articles'}", aria: @current_tab == "articles" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.comments"), admin_user_path(@user.id, tab: :comments), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'comments'}", aria: @current_tab == "comments" ? { current: "page" } : {} %></li>
+    <li><%= link_to t("views.admin.users.tabs.audit_log"), admin_user_path(@user.id, tab: :audit_log), class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'audit_log'}", aria: @current_tab == "audit_log" ? { current: "page" } : {} %></li>
     <% if @unpublish_all_data.exists? %>
       <li><%= link_to t("views.admin.users.tabs.unpublish_logs"),
                       admin_user_path(@user.id, tab: :unpublish_logs),
-                      class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'unpublish_logs'}",
-                      aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
+                      class: "crayons-navigation__item #{'crayons-navigation__item--current' if @current_tab == 'unpublish_logs'}",
+                      aria: @current_tab == "unpublish_logs" ? { current: "page" } : {} %></li>
     <% end %>
   </ul>
+
+  <div class="dropdown-trigger-container relative ml-auto">
+    <button type="button" class="c-btn c-btn--secondary c-btn--s flex items-center gap-1 dropdown-trigger <%= 'crayons-navigation__item--current font-bold' if is_more_tab_current %>" id="more-details-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="more-details-dropdown">
+      <span><%= is_more_tab_current ? t("views.admin.users.tabs.#{@current_tab}") : t("views.admin.users.tabs.more_details") %></span>
+      <%= crayons_icon_tag("chevron-down", class: "shrink-0", width: 16, height: 16) %>
+    </button>
+    <div class="crayons-dropdown right-0 top-100 mt-1" id="more-details-dropdown" style="min-width: 180px;">
+      <ul class="p-0">
+        <li>
+          <%= link_to t("views.admin.users.tabs.identities"), admin_user_path(@user.id, tab: :identities), class: "c-link c-link--block #{'font-bold' if @current_tab == 'identities'}", aria: @current_tab == "identities" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.badges"), admin_user_path(@user.id, tab: :badges), class: "c-link c-link--block #{'font-bold' if @current_tab == 'badges'}", aria: @current_tab == "badges" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.reactions"), admin_user_path(@user.id, tab: :reactions), class: "c-link c-link--block #{'font-bold' if @current_tab == 'reactions'}", aria: @current_tab == "reactions" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.agent_sessions"), admin_user_path(@user.id, tab: :agent_sessions), class: "c-link c-link--block #{'font-bold' if @current_tab == 'agent_sessions'}", aria: @current_tab == "agent_sessions" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.collections"), admin_user_path(@user.id, tab: :collections), class: "c-link c-link--block #{'font-bold' if @current_tab == 'collections'}", aria: @current_tab == "collections" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.follows"), admin_user_path(@user.id, tab: :follows), class: "c-link c-link--block #{'font-bold' if @current_tab == 'follows'}", aria: @current_tab == "follows" ? { current: "page" } : {} %>
+        </li>
+        <li>
+          <%= link_to t("views.admin.users.tabs.blocks"), admin_user_path(@user.id, tab: :blocks), class: "c-link c-link--block #{'font-bold' if @current_tab == 'blocks'}", aria: @current_tab == "blocks" ? { current: "page" } : {} %>
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>

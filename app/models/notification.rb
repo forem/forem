@@ -13,7 +13,7 @@ class Notification < ApplicationRecord
   before_create :mark_notified_at_time
   after_commit :cleanup_old_notifications, on: :create
 
-  scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :for_published_articles, -> { where(notifiable_type: "Article", action: %w[Published CoAuthor]) }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
   scope :for_mentions, -> { where(notifiable_type: "Mention") }
 
@@ -28,6 +28,8 @@ class Notification < ApplicationRecord
   scope :unread, -> { where(read: false) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
+    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+
     subforem_id ||= RequestStore.store[:subforem_id]
     if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # No additional conditions; just return the current scope
@@ -71,6 +73,20 @@ class Notification < ApplicationRecord
 
       # Kicks off a worker to send any notifications about the post being published, if necessary.
       Notification.send_to_followers(notifiable, "Published")
+
+      # Credited co-authors are notified separately from followers.
+      Notification.send_to_co_authors(notifiable)
+    end
+
+    def send_to_co_authors(notifiable, removed_user_ids = [])
+      return unless notifiable.is_a?(Article)
+      return if notifiable.co_author_ids.blank? && removed_user_ids.blank?
+
+      Notifications::CoAuthorWorker.perform_async(notifiable.id, removed_user_ids)
+    end
+
+    def send_co_author_invitation_notification(invitation)
+      Notifications::CoAuthorInvitationWorker.perform_async(invitation.id)
     end
 
     def send_to_followers(notifiable, action = nil)

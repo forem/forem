@@ -27,9 +27,11 @@ function initializePage() {
       if (document.body.getAttribute('data-user-status') === 'logged-in') {
         initializeBaseUserData();
         initializeAllTagEditButtons();
+        initializeOnboardingTaskCard();
       }
       initializeBroadcast();
       initializeReadingListIcons();
+      initializeFavoritedMarkers();
       initializeBillboardVisibility();
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');

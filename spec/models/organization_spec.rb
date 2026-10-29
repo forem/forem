@@ -374,6 +374,24 @@ RSpec.describe Organization do
     end
   end
 
+  describe ".find_by_slug_or_legacy" do
+    it "finds an organization by its current, old, or old-old slug" do
+      original_slug = organization.slug
+      organization.update(slug: "second_slug")
+      organization.update(slug: "third_slug")
+
+      expect(described_class.find_by_slug_or_legacy("third_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("second_slug")).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy(original_slug)).to eq(organization)
+      expect(described_class.find_by_slug_or_legacy("missing_slug")).to be_nil
+    end
+
+    it "uses indexes on the legacy slug columns" do
+      indexed_columns = described_class.connection.indexes(:organizations).map(&:columns)
+      expect(indexed_columns).to include(["old_slug"], ["old_old_slug"])
+    end
+  end
+
   describe "#enough_credits?" do
     it "returns false if the user has less unspent credits than neeed" do
       expect(organization.enough_credits?(1)).to be(false)
@@ -443,30 +461,25 @@ RSpec.describe Organization do
 
   describe "#generate_social_images" do
     before do
+      organization
       allow(Images::SocialImageWorker).to receive(:perform_async)
-      create(:article, organization: organization)
     end
 
-    context "when the name or profile_image has changed and the organization has articles" do
-      it "calls SocialImageWorker.perform_async" do
-        organization.name = "New name for this org!"
-        organization.save
-        expect(Images::SocialImageWorker).to have_received(:perform_async)
+    context "when a displayed primary detail changes" do
+      it "calls SocialImageWorker.perform_async when name changes even without articles" do
+        organization.update!(name: "New name for this org!")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
+      end
+
+      it "calls SocialImageWorker.perform_async when summary, location, url, slug, or bg_color_hex changes" do
+        organization.update!(summary: "Updated org summary")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
       end
     end
 
-    context "when the name or profile_image has not changed or the organization has no articles" do
+    context "when non-displayed attributes change" do
       it "does not call SocialImageWorker.perform_async" do
-        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
-        organization.save
-      end
-    end
-
-    context "when the name or profile_image has changed and the organization has no articles" do
-      it "does not call SocialImageWorker.perform_async" do
-        organization.articles.destroy_all
-        organization.name = "New name for this org!!"
-        organization.save
+        organization.update!(story: "Our long story", company_size: "50", twitter_username: "orgtwitter")
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
@@ -507,6 +520,16 @@ RSpec.describe Organization do
     end
   end
 
+  describe "#ordered_pages" do
+    it "orders pages by position and uses creation order as a stable fallback when positions are equal" do
+      first_page = create(:page, organization: organization, position: 0, created_at: 2.hours.ago)
+      second_page = create(:page, organization: organization, position: 0, created_at: 1.hour.ago)
+      promoted_page = create(:page, organization: organization, position: -1, created_at: Time.current)
+
+      expect(organization.ordered_pages).to eq([promoted_page, first_page, second_page])
+    end
+  end
+
   describe "#flipper_id" do
     it "returns a string with Organization prefix and id" do
       expect(organization.flipper_id).to eq("Organization;#{organization.id}")
@@ -544,6 +567,68 @@ RSpec.describe Organization do
 
     it "excludes pending members" do
       expect(organization.active_users.pluck(:id)).not_to include(user3.id)
+    end
+  end
+
+  describe "recompiling organization pages on update" do
+    let(:organization) { create(:organization) }
+
+    before do
+      allow(Organizations::RecompilePagesWorker).to receive(:perform_async)
+      allow(FeatureFlag).to receive(:enabled?).and_call_original
+      allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
+    end
+
+    it "enqueues recompilation when name changes" do
+      organization.update!(name: "New Name")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when slug changes" do
+      organization.update!(slug: "new-slug")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "enqueues recompilation when summary changes" do
+      organization.update!(summary: "New Summary")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id)
+    end
+
+    it "does not enqueue recompilation when other attributes change" do
+      organization.update!(company_size: "50")
+      expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "#set_baseline_score_on_verification_change" do
+    let(:organization) { create(:organization, verified: false, baseline_score: 0) }
+
+    before do
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(15)
+    end
+
+    it "sets baseline_score to index_minimum_score when becoming verified" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+    end
+
+    it "reverts baseline_score to 0 when losing verification" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(verified: false)
+      expect(organization.baseline_score).to eq(0)
+    end
+
+    it "preserves manual baseline_score updates when verification status does not change" do
+      organization.update!(verified: true)
+      expect(organization.baseline_score).to eq(15)
+
+      organization.update!(baseline_score: 45)
+      expect(organization.baseline_score).to eq(45)
+
+      organization.update!(name: "Updated Org Name")
+      expect(organization.baseline_score).to eq(45)
     end
   end
 end

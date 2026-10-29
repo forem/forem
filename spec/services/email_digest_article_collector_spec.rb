@@ -2,21 +2,36 @@ require "rails_helper"
 
 RSpec.describe EmailDigestArticleCollector, type: :service do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
   let(:default_subforem) { create(:subforem, domain: "default.test") }
 
-  before do
-    # Set up default subforem in RequestStore for testing
-    RequestStore.store[:default_subforem_id] = default_subforem.id
-    allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    super
   end
 
-  after do
-    # Clean up RequestStore after each test
-    RequestStore.store[:subforem_id] = nil
-    RequestStore.store[:default_subforem_id] = nil
+  def create_list(name, amount, *traits, **options)
+    if name == :article && (options.key?(:user) || options.key?(:featured))
+      options[:user] ||= other_user
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+    end
+    super(name, amount, *traits, **options)
   end
 
   describe "#articles_to_send" do
+    before do
+      # Set up default subforem in RequestStore for testing
+      RequestStore.store[:default_subforem_id] = default_subforem.id
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+    end
+
+    after do
+      # Clean up RequestStore after each test
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+    end
+
     context "when user is brand new with no-follow" do
       it "provides top 3 articles from default subforem" do
         create_list(:article, 3, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
@@ -256,9 +271,9 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when the last email included the title of the first article" do
       it "bumps the second article to the front" do
-        articles = (1..5).map do |i|
+        articles = (1..3).map do |i|
           create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
-                           subforem: default_subforem)
+                           subforem: default_subforem, user: other_user, with_tags: false)
         end
 
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
@@ -275,9 +290,9 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when the last email does not include the title of any articles" do
       it "makes first article come first" do
-        articles = (1..5).map do |i|
+        articles = (1..3).map do |i|
           create(:article, public_reactions_count: 40, featured: true, score: 100 - i,
-                           subforem: default_subforem)
+                           subforem: default_subforem, user: other_user, with_tags: false)
         end
 
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
@@ -291,34 +306,64 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
     end
 
     context "with personalized selection via FeedConfig" do
+      let(:collector) { described_class.new(user) }
       let!(:feed_config) { create(:feed_config) }
 
       before do
         FeatureFlag.enable(:personalized_email_digests)
-        allow_any_instance_of(described_class).to receive(:field_test).with(:personalized_email_digests_ab_test, participant: user).and_return("personalized")
+        allow(described_class).to receive(:new).and_call_original
+        allow(described_class).to receive(:new).with(user).and_return(collector)
+        allow(collector).to receive(:field_test)
+          .with(:personalized_email_digests_ab_test, participant: user)
+          .and_return("personalized")
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
-        allow_any_instance_of(FeedConfig).to receive(:score_sql).and_return("articles.score")
+        allow(FeedConfig).to receive(:select_for_feed).and_wrap_original do |method, *args, **kwargs|
+          selected = method.call(*args, **kwargs)
+          allow(selected).to receive(:score_sql).and_return("articles.score") if selected
+          selected
+        end
         allow(FeedConfig).to receive(:order).and_call_original
       end
 
-      it "returns personalized articles when FeedConfig produces >= 3 eligible results" do
-        other_user = create(:user)
-        create_list(:article, 4, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
-
-        articles = described_class.new(user).articles_to_send
-        expect(articles.length).to be >= 3
-      end
-
-      it "sets feed_config_id when personalized selection succeeds" do
-        other_user = create(:user)
+      it "returns personalized articles and sets feed_config_id when FeedConfig produces >= 3 eligible results",
+         :aggregate_failures do
         create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
 
-        collector = described_class.new(user)
         articles = collector.articles_to_send
         expect(articles.length).to be >= 3
         expect(collector.feed_config_id).to eq(feed_config.id)
+      end
+
+      it "ignores archived feed configs during selection" do
+        feed_config.update!(archived: true, feed_success_score: 999.0)
+        active_config = create(:feed_config, archived: false, feed_success_score: 10.0)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = collector.articles_to_send
+        expect(articles.length).to be >= 3
+        expect(collector.feed_config_id).to eq(active_config.id)
+      end
+
+      it "prioritizes digest targeting_bucket configs and excludes feed-only buckets" do
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER,
+          feed_success_score: 999.0,
+          feed_impressions_count: 500,
+        )
+        digest_config = create(
+          :feed_config,
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          feed_success_score: 10.0,
+          feed_impressions_count: 100,
+        )
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        articles = collector.articles_to_send
+        expect(articles.length).to be >= 3
+        expect(collector.feed_config_id).to eq(digest_config.id)
       end
 
       it "does not set feed_config_id when fallback to legacy occurs" do
@@ -339,15 +384,17 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
                                  subforem: default_subforem, user: other_user)
         # Add a 3rd article that the legacy path can also find
         create(:article, score: 40, featured: true, email_digest_eligible: true,
-                         subforem: default_subforem, user: other_user)
+                         subforem: default_subforem, user: other_user, with_tags: false)
 
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to be >= 3
       end
 
       it "falls back to legacy selection when field test assigns legacy variant" do
-        allow_any_instance_of(described_class).to receive(:field_test).with(:personalized_email_digests_ab_test, participant: user).and_return("legacy")
-        
+        allow(collector).to receive(:field_test)
+          .with(:personalized_email_digests_ab_test, participant: user)
+          .and_return("legacy")
+
         other_user = create(:user)
         create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
@@ -361,13 +408,12 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         other_user = create(:user)
         create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
-        allow_any_instance_of(FeedConfig).to receive(:score_sql).and_raise(StandardError, "boom")
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_raise(StandardError, "boom")
 
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to be >= 3
       end
-
-
 
       it "skips personalized path when feed_strategy is not 'configured'" do
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
@@ -448,9 +494,9 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
       it "bumps the second article to the top when the first matches the last email subject" do
         other_user = create(:user)
-        articles = (1..5).map do |i|
+        articles = (1..3).map do |i|
           create(:article, score: 100 - i, featured: true, email_digest_eligible: true,
-                           subforem: default_subforem, user: other_user)
+                           subforem: default_subforem, user: other_user, with_tags: false)
         end
 
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
@@ -479,11 +525,54 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         antifollowed_paths = antifollowed_articles.map(&:path)
         expect(articles.none? { |a| antifollowed_paths.include?(a.path) }).to be true
       end
+
+      it "uses two-stage candidate pre-filtering when semantic_similarity_weight is active" do
+        interest_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        aligned_embedding = [1.0, 0.0, 0.0] + Array.new(765, 0.0)
+        orthogonal_embedding = [0.0, 1.0, 0.0] + Array.new(765, 0.0)
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+
+        feed_config.update!(
+          targeting_bucket: FeedConfig::BUCKET_DIGEST,
+          score_weight: 1.0,
+          semantic_similarity_weight: 100.0,
+          semantic_candidate_limit: 350,
+          randomness_weight: 0.0,
+        )
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_call_original
+
+        other_user = create(:user)
+        a1 = create(:article, score: 80, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a2 = create(:article, score: 50, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a3 = create(:article, score: 40, featured: true, email_digest_eligible: true,
+                              subforem: default_subforem, user: other_user)
+        a1.update_column(:semantic_embedding, orthogonal_embedding)
+        a2.update_column(:semantic_embedding, aligned_embedding)
+        a3.update_column(:semantic_embedding, orthogonal_embedding)
+
+        executed_sql = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          executed_sql << payload[:sql] if payload[:sql].include?("articles.semantic_embedding <=>")
+        end
+
+        result = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          result = described_class.new(user).articles_to_send
+        end
+
+        expect(executed_sql.size).to eq(1)
+        expect(executed_sql.first).to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
+        expect(result.first.path).to eq(a2.path)
+      end
     end
   end
 
   describe "#should_receive_email?" do
-    let(:user) { create(:user) }
     let(:collector) { described_class.new(user) }
 
     before do

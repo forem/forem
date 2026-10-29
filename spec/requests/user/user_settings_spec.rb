@@ -37,6 +37,26 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("User")
       end
 
+      it "offers profile image removal when the user has one" do
+        get user_settings_path(:profile)
+
+        expect(response.body).to include("user[remove_profile_image]")
+        html = Nokogiri::HTML(response.body)
+        checkbox = html.at_css('input[type="checkbox"][id="user[remove_profile_image]"]')
+        expect(checkbox["aria-describedby"]).to eq("remove-profile-image-description")
+        expect(html.css('label[for="user[remove_profile_image]"] p')).to be_empty
+        expect(html.css("p#remove-profile-image-description.crayons-field__description")).to be_present
+      end
+
+      it "renders the Profile tab without the removal checkbox when there is no profile image" do
+        sign_in create(:user, profile_image: nil)
+
+        get user_settings_path(:profile)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include("user[remove_profile_image]")
+      end
+
       it "displays profile groups content on Profile tab" do
         profile_field = create(:profile_field)
 
@@ -89,6 +109,22 @@ RSpec.describe "UserSettings" do
         titles = ["Comment templates", "API Keys"]
         expect(response.body).to include(*titles)
         expect(response.body).to include("Manage my RSS feeds")
+      end
+
+      it "renders the API key generation form with description and accessible markup" do
+        get user_settings_path(:extensions)
+
+        html = Nokogiri::HTML(response.body)
+        desc = html.at_css("p#api-key-description.crayons-field__description")
+        expect(desc).to be_present
+        expect(desc.text.strip).to eq(I18n.t("views.settings.extensions.api.gen.text"))
+
+        input = html.at_css('input#api_secret_description[name="api_secret[description]"]')
+        expect(input["aria-describedby"]).to eq("api-key-description")
+
+        button = html.at_css('form[action="/users/api_secrets"] button[type="submit"]')
+        expect(button[:class].split).to include("crayons-btn", "crayons-btn--secondary")
+        expect(button[:class].split).not_to include("crayon-btn--secondary")
       end
 
       it "renders heads up dupe account message with proper param" do
@@ -205,6 +241,55 @@ RSpec.describe "UserSettings" do
 
         expect(response.body).to include("Connect GitHub Account")
         expect(response.body).not_to include("Connect Apple Account")
+      end
+
+      # Identities created through the admin API carry nothing but a uid, so
+      # they have no auth payload to read an email from.
+      it "points a uid-only mlh identity at MLH instead of the dead-end relink error", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("https://my.mlh.com/")
+        expect(response.body).to include("Sign in to MLH")
+        expect(response.body).not_to include("Please relink your")
+      end
+
+      it "labels a uid-only mlh row MLH email rather than MyMLH email", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("MLH email")
+        expect(response.body).not_to include("MyMLH email")
+      end
+
+      it "offers the provider button so a uid-only mlh identity can be relinked" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user)
+        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include("Reconnect MLH Account")
+      end
+
+      it "does not offer a relink for an mlh identity that has a payload", :aggregate_failures do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:mlh])
+
+        sign_in user
+        get user_settings_path(tab: "account")
+
+        expect(response.body).not_to include("Reconnect MLH Account")
+        expect(response.body).not_to include("Connect MLH Account")
       end
     end
 

@@ -1,0 +1,41 @@
+<%
+  deployed_at_raw = ForemInstance.deployed_at
+  deployed_at_time = if deployed_at_raw.is_a?(Time) || deployed_at_raw.is_a?(ActiveSupport::TimeWithZone)
+                       deployed_at_raw
+                     elsif deployed_at_raw.to_i.positive?
+                       begin
+                         Time.zone.parse(deployed_at_raw.to_s)
+                       rescue ArgumentError
+                         nil
+                       end
+                     end
+%>
+<% if deployed_at_time && deployed_at_time < 10.days.ago %>
+  <%
+    notice_modifier = if deployed_at_time < 6.weeks.ago
+                        " crayons-notice--danger"
+                      elsif deployed_at_time < 3.weeks.ago
+                        " crayons-notice--warning"
+                      else
+                        ""
+                      end
+    major_drift = deployed_at_time < 12.weeks.ago
+  %>
+  <div class="crayons-notice<%= notice_modifier %> mb-6" data-testid="deployment-drift-notice">
+    <% if major_drift %>
+      <p class="p-1">
+        <strong>Caution: Major deployment drift detected.</strong> It has been <strong><%= time_ago_in_words(deployed_at_time) %></strong> since this Forem was updated, and this deployment has drifted significantly. Please <a href="https://github.com/forem/forem" class="fw-bold">re-deploy from the main branch</a> as soon as possible.
+      </p>
+      <p class="p-1 py-2 fs-s">
+        Staying out of date for this long carries a high risk of migration and compatibility issues when you update. Updating should happen as soon as possible.
+      </p>
+    <% else %>
+      <p class="p-1">
+        It has been <strong><%= time_ago_in_words(deployed_at_time) %></strong> since this Forem was deployed, and this deployment is starting to drift. We recommend you <a href="https://github.com/forem/forem" class="fw-bold">re-deploy from the main branch</a> to stay up-to-date.
+      </p>
+      <p class="p-1 py-2 fs-s">
+        If you stay out of date for too long, it greatly increases the risk that something could go wrong when you try to re-deploy.
+      </p>
+    <% end %>
+  </div>
+<% end %>

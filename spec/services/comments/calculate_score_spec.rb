@@ -15,6 +15,42 @@ RSpec.describe Comments::CalculateScore, type: :service do
     expect(comment.score).to be(7)
   end
 
+  context "when comment is favorited" do
+    let(:favoriter) { create(:user) }
+
+    before do
+      comment.update_columns(favorited_by_user_id: favoriter.id, favorited_at: Time.current)
+    end
+
+    it "applies +20 points and a 1.2x multiplier to base score" do
+      # base score 7: (7 * 1.2).to_i + 20 = 8 + 20 = 28
+      described_class.call(comment)
+      expect(comment.reload.score).to eq(28)
+    end
+
+    it "applies boost correctly with different base scores" do
+      # base score 10: (10 * 1.2).to_i + 20 = 12 + 20 = 32
+      allow(BlackBox).to receive(:comment_quality_score).and_return(10)
+      described_class.call(comment)
+      expect(comment.reload.score).to eq(32)
+    end
+
+    it "applies boost when base score is zero" do
+      # base score 0: (0 * 1.2).to_i + 20 = 20
+      allow(BlackBox).to receive(:comment_quality_score).and_return(0)
+      described_class.call(comment)
+      expect(comment.reload.score).to eq(20)
+    end
+
+    it "applies boost on top of subscriber bonus" do
+      allow(comment.user).to receive(:base_subscriber?).and_return(true)
+      allow(Settings::UserExperience).to receive(:index_minimum_score).and_return(5)
+      # base 7 + 5 subscriber = 12; (12 * 1.2).to_i + 20 = 14 + 20 = 34
+      described_class.call(comment)
+      expect(comment.reload.score).to eq(34)
+    end
+  end
+
   context "when adding spam role" do
     before do
       comment.user.add_role(:spam)
@@ -63,6 +99,33 @@ RSpec.describe Comments::CalculateScore, type: :service do
       allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
       described_class.call(comment)
       expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "embedding worker triggering" do
+    before do
+      allow(Comments::GenerateEmbeddingWorker).to receive(:perform_async)
+    end
+
+    it "enqueues embedding worker if score is >= 3 and semantic_embedding is nil" do
+      comment.update_columns(score: 0, semantic_embedding: nil)
+      allow(BlackBox).to receive(:comment_quality_score).and_return(3)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).to have_received(:perform_async).with(comment.id)
+    end
+
+    it "does not enqueue embedding worker if score is < 3" do
+      comment.update_columns(score: 0, semantic_embedding: nil)
+      allow(BlackBox).to receive(:comment_quality_score).and_return(2)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue embedding worker if embedding is already present" do
+      comment.update_columns(score: 0, semantic_embedding: Array.new(768, 0.1))
+      allow(BlackBox).to receive(:comment_quality_score).and_return(5)
+      described_class.call(comment)
+      expect(Comments::GenerateEmbeddingWorker).not_to have_received(:perform_async)
     end
   end
 end

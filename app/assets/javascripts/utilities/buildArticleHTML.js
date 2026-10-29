@@ -3,6 +3,15 @@
 /* eslint-disable no-multi-str */
 
 function buildArticleHTML(article, currentUserId = null) {
+  function escapeHTML(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   var tagIcon = `<svg width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg"><path d="M7.784 14l.42-4H4V8h4.415l.525-5h2.011l-.525 5h3.989l.525-5h2.011l-.525 5H20v2h-3.784l-.42 4H20v2h-4.415l-.525 5h-2.011l.525-5H9.585l-.525 5H7.049l.525-5H4v-2h3.784zm2.011 0h3.99l.42-4h-3.99l-.42 4z"/></svg>`;
   if (article && article.class_name === 'Tag') {
     return `<article class="crayons-story">
@@ -14,13 +23,13 @@ function buildArticleHTML(article, currentUserId = null) {
           </span>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-2">
-              <a href="/t/${article.name}" class="c-link">
-                ${article.name}
+              <a href="/t/${escapeHTML(article.name)}" class="c-link">
+                ${escapeHTML(article.name)}
               </a>
             </h3>
             ${
               article.short_summary
-                ? `<div class="truncate-at-3">${article.short_summary}</div>`
+                ? `<div class="truncate-at-3">${filterXSS(article.short_summary)}</div>`
                 : ''
             }
           </div>
@@ -31,16 +40,16 @@ function buildArticleHTML(article, currentUserId = null) {
   if (article && article.class_name === 'PodcastEpisode') {
     return `<article class="crayons-story crayons-podcast-episode mb-2">
         <div class="crayons-story__body flex flex-start">
-          <a href="${article.podcast.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.podcast.image_url}" alt="${article.podcast.title}" loading="lazy" />
+          <a href="${escapeHTML(article.podcast.slug)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.podcast.image_url)}" alt="${escapeHTML(article.podcast.title)}" loading="lazy" />
           </a>
           <div class="pt-2 flex-1">
             <p class="crayons-podcast-episode__author">
-              ${article.podcast.title}
+              ${escapeHTML(article.podcast.title)}
             </p>
             <h2 class="crayons-podcast-episode__title crayons-story__title mb-0">
-              <a href="${article.path}" id="article-link-${article.id}">
-                ${article.podcast.title}
+              <a href="${escapeHTML(article.path)}" id="article-link-${article.id}">
+                ${escapeHTML(article.podcast.title)}
               </a>
             </h2>
           </div>
@@ -52,17 +61,17 @@ function buildArticleHTML(article, currentUserId = null) {
     const html = `
       <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
-          <a href="${article.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.profile_image.url}" alt="" loading="lazy" />
+          <a href="${escapeHTML(article.slug)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.profile_image.url)}" alt="" loading="lazy" />
           </a>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-1">
-              <a href="${article.slug}" class="c-link"> ${article.name} </a>
+              <a href="${escapeHTML(article.slug)}" class="c-link"> ${escapeHTML(article.name)} </a>
             </h3>
-            <p class="crayons-story__slug-segment">@${article.slug}</p>
+            <p class="crayons-story__slug-segment">@${escapeHTML(article.slug)}</p>
             ${
               article.summary
-                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                ? `<div class="truncate-at-3 top-margin-4">${escapeHTML(article.summary)}</div>`
                 : ''
             }
           </div>
@@ -90,17 +99,17 @@ function buildArticleHTML(article, currentUserId = null) {
     const html = `
       <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
-          <a href="${article.username}" class="crayons-podcast-episode__cover">
-            <img src="${article.profile_image.url}" alt="" loading="lazy" />
+          <a href="${escapeHTML(article.username)}" class="crayons-podcast-episode__cover">
+            <img src="${escapeHTML(article.profile_image.url)}" alt="" loading="lazy" />
           </a>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-1">
-              <a href="${article.username}" class="c-link"> ${article.name} </a>
+              <a href="${escapeHTML(article.username)}" class="c-link"> ${escapeHTML(article.name)} </a>
             </h3>
-            <p class="crayons-story__slug-segment">@${article.username}</p>
+            <p class="crayons-story__slug-segment">@${escapeHTML(article.username)}</p>
             ${
               article.summary
-                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                ? `<div class="truncate-at-3 top-margin-4">${escapeHTML(article.summary)}</div>`
                 : ''
             }
           </div>
@@ -165,7 +174,7 @@ function buildArticleHTML(article, currentUserId = null) {
       commentsCount = article.comments_count || '0';
     }
 
-    var commentsAriaLabelText = `aria-label="Add a comment to post - ${article.title}"`;
+    var commentsAriaLabelText = `aria-label="Add a comment to post - ${escapeHTML(article.title)}"`;
 
     if (article.class_name !== 'User') {
       commentsDisplay =
@@ -173,7 +182,7 @@ function buildArticleHTML(article, currentUserId = null) {
         article.path +
         '#comments"' +
         commentsAriaLabelText +
-        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left "><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
+        'class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>';
       if (commentsCount > 0) {
         commentsDisplay +=
           commentsCount +
@@ -182,6 +191,23 @@ function buildArticleHTML(article, currentUserId = null) {
         commentsDisplay +=
           '<span class="hidden s:inline">Add&nbsp;Comment</span></a>';
       }
+    }
+
+    var favoritedMarkerDisplay = '';
+    if (article.favorited_by_user_id && globalFeatureFlagEnabled('community_favorites')) {
+      favoritedMarkerDisplay = `<span
+              class="crayons-story__favorited"
+              data-favorited-marker
+              data-favorited-by-user-id="${article.favorited_by_user_id}">
+              <span class="favorited-marker">
+                <span data-favorited-icon="other" role="img" aria-label="Favorited">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"><path d="M7.4 6 16.6 6 20.75 10.2 12 19 3.25 10.2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span data-favorited-icon="self" class="hidden" role="img" aria-label="Favorited by you">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon"><path d="M7.4 6 16.6 6 20.75 10.2 12 19 3.25 10.2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 11l1.3 1.3 2.6-2.9" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </span>
+            </span>`;
     }
 
     var reactionsCount = article.public_reactions_count;
@@ -225,13 +251,16 @@ function buildArticleHTML(article, currentUserId = null) {
     if (article.class_name === 'PodcastEpisode') {
       picUrl = article.main_image;
       profileUsername = article.slug;
-      userName = article.title;
+      userName = escapeHTML(article.title);
     } else {
       picUrl = article.user.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/');
       profileUsername = article.user.username;
       userName = filterXSS(article.user.name);
       if (article.user.cached_base_subscriber) {
         userName = userName + ' <img class="subscription-icon" src="' + document.body.dataset.subscriptionIcon + '" alt="Subscriber" />';
+      }
+      if (article.user.cached_community_leader && globalFeatureFlagEnabled('community_favorites')) {
+        userName = userName + ' <img class="community-leader-icon" src="' + document.body.dataset.communityLeaderIcon + '" alt="Community Leader" />';
       }
     }
     var orgHeadline = '';
@@ -245,17 +274,17 @@ function buildArticleHTML(article, currentUserId = null) {
     ) {
       organizationLogo =
         '<a href="/' +
-        article.organization.slug +
+        escapeHTML(article.organization.slug) +
         '" class="crayons-logo crayons-logo--l"><img alt="' +
-        article.organization.name +
+        escapeHTML(article.organization.name) +
         ' logo" src="' +
         article.organization.profile_image_90.replace('media.dev.to/', 'media2.dev.to/').replace('/cdn-cgi/', '/dynamic/') +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
         '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
-        article.organization.slug +
+        escapeHTML(article.organization.slug) +
         '" class="crayons-story__secondary fw-medium">' +
-        article.organization.name +
+        escapeHTML(article.organization.name) +
         '</a></span>';
       organizationClasses =
         'crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted';
@@ -351,8 +380,13 @@ function buildArticleHTML(article, currentUserId = null) {
       if (firstSnippetChar.toLowerCase() !== firstSnippetChar.toUpperCase()) {
         startingEllipsis = '…';
       }
+      var sanitizedSnippets = article.highlight.body_text.map(function (snippet) {
+        return escapeHTML(snippet)
+          .replace(/&lt;mark&gt;/g, '<mark>')
+          .replace(/&lt;\/mark&gt;/g, '</mark>');
+      });
       bodyTextSnippet =
-        startingEllipsis + article.highlight.body_text.join('...') + '…';
+        startingEllipsis + sanitizedSnippets.join('...') + '…';
       if (bodyTextSnippet.length > 0) {
         searchSnippetHTML =
           '<div class="crayons-story__snippet mb-1">' +
@@ -377,9 +411,24 @@ function buildArticleHTML(article, currentUserId = null) {
       '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" role="presentation"><path d="M6.75 4.5h10.5a.75.75 0 01.75.75v14.357a.375.375 0 01-.575.318L12 16.523l-5.426 3.401A.375.375 0 016 19.607V5.25a.75.75 0 01.75-.75zM16.5 6h-9v11.574l4.5-2.82 4.5 2.82V6z" /></svg>';
     var saveFilledSVG =
       '<svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" role="presentation"><path d="M6.75 4.5h10.5a.75.75 0 01.75.75v14.357a.375.375 0 01-.575.318L12 16.523l-5.426 3.401A.375.375 0 016 19.607V5.25a.75.75 0 01.75-.75z"/></svg>';
+    const homeFeedPaths = [
+      '/',
+      '/discover',
+      '/top/week',
+      '/top/month',
+      '/top/year',
+      '/top/infinity',
+      '/latest',
+      '/latest_less_filtered',
+      '/following',
+      '/following/latest',
+      '/following/latest_less_filtered',
+    ];
+    const isHomeFeed = homeFeedPaths.includes(window.location.pathname);
+
     // "!=" instead of "!==" used to compare user_id and currentUserId because
     // currentUserId is a String while user_id is an Integer
-    if (article.class_name === 'Article' && article.user_id != currentUserId) {
+    if (isHomeFeed && currentUserId && article.class_name === 'Article' && article.user_id != currentUserId) {
       saveButton = `
         <button
           type="button"
@@ -387,7 +436,7 @@ function buildArticleHTML(article, currentUserId = null) {
           class="c-btn c-btn--icon-alone bookmark-button"
           data-reactable-id="${article.id}"
           data-article-author-id="${article.user_id}"
-          aria-label="Save post ${article.title} to reading list">
+          aria-label="Save post ${escapeHTML(article.title)} to reading list">
           <span class="bm-initial crayons-icon c-btn__icon">${saveSVG}</span>
           <span class="bm-success crayons-icon c-btn__icon">${saveFilledSVG}</span>
         </button>
@@ -452,7 +501,7 @@ function buildArticleHTML(article, currentUserId = null) {
               ${searchSnippetHTML}\
               <div class="crayons-story__bottom">\
                 <div class="crayons-story__details">
-                  ${reactionsDisplay} ${commentsDisplay}
+                  ${reactionsDisplay} ${favoritedMarkerDisplay} ${commentsDisplay}
                 </div>\
                 <div class="crayons-story__save">\
                   ${readingTimeHTML}\

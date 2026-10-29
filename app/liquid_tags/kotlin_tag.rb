@@ -1,7 +1,7 @@
 class KotlinTag < LiquidTagBase
   PARTIAL = "liquids/kotlin".freeze
-  REGISTRY_REGEXP = %r{https://pl\.kotl\.in/(?<id>[\w-]+)(?:\?)?(?<params>[\w=&]+)?}
-  PARAM_REGEXP = /\A(theme=darcula)|(readOnly=true)|(from=\d)|(to=\d)\Z/
+  REGISTRY_REGEXP = %r{\Ahttps://pl\.kotl\.in/(?<id>[\w-]+)(?:\?(?<params>[\w=&]+))?\z}
+  PARAM_REGEXP = /\A(?:theme=darcula|readOnly=true|from=\d+|to=\d+)\Z/
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -23,7 +23,7 @@ class KotlinTag < LiquidTagBase
     match = pattern_match_for(link, [REGISTRY_REGEXP])
     raise StandardError, I18n.t("liquid_tags.kotlin_tag.invalid_kotlin_playground") unless match
 
-    return link unless match[:params]
+    return "https://pl.kotl.in/#{match[:id]}" unless match[:params]
 
     build_link_with_params(match[:id], match[:params])
   end

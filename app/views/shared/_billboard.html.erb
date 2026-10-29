@@ -12,10 +12,22 @@
   }
 </style>
 
-<% if billboard.template == "plain" %>
+<% hidden_by_default = local_assigns.fetch(:hidden_by_default) { BillboardPlacementAreaConfig.hidden_by_default_for(billboard.placement_area) } %>
+<%# viewer_country and anonymous_tracking_allowed are only passed when served by BillboardsController#show, %>
+<%# which varies its edge cache on geo whenever it sends them. Elsewhere they are omitted. %>
+<% billboard_attributes = tag.attributes(
+     data: {
+       placement_area: billboard.placement_area,
+       placement_hidden: (true if hidden_by_default),
+       viewer_country: local_assigns[:viewer_country],
+       anonymous_tracking_allowed: (true if local_assigns[:anonymous_tracking_allowed])
+     },
+   ) %>
+<% if billboard.template == "plain" || Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>
   <div
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -28,6 +40,7 @@
   <div class="crayons-story crayons-story__billboard bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -56,6 +69,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb crayons-story__billboard hero-billboard js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -78,6 +92,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -93,19 +108,44 @@
     <div class="popover-billboard__header flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
       <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+        aria-label="<%= billboard.special_behavior == 'persistent' ? 'Minimize billboard' : 'Dismiss billboard' %>"
         class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon popover-billboard__close">
-          <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
+          <% if billboard.special_behavior == "persistent" %>
+            <%= crayons_icon_tag("chevron-down", class: "pointer-events-none", title: "Minimize") %>
+          <% else %>
+            <%= crayons_icon_tag("x", class: "pointer-events-none", title: "x") %>
+          <% end %>
       </button>
     </div>
     <div class="popover-billboard__content text-styles text-styles--billboard">
       <%= billboard.processed_html_final.html_safe %>
     </div>
+    <% if billboard.special_behavior == "persistent" && billboard.minimized_processed_html.present? %>
+      <template class="js-minimized-template">
+        <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
+          style="<%= billboard.style_string.gsub('border-bottom: none;', '') %>"
+          data-display-unit data-id="<%= billboard.id %>"
+          <%= billboard_attributes %>
+          data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+          data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+          data-context-type="<%= data_context_type %>"
+          data-special="<%= billboard.special_behavior %>"
+          data-article-id="<%= @article&.id %>"
+          data-type-of="<%= billboard.type_of_display %>">
+          <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+          <div class="p-1 pt-3 text-styles text-styles--billboard">
+            <%= billboard.minimized_processed_html.html_safe %>
+          </div>
+        </div>
+      </template>
+    <% end %>
   </div>
-<% elsif billboard.placement_area == "post_body_bottom" %>
+<% elsif billboard.placement_area.in?(%w[post_body_bottom post_body_bottom_secondary]) %>
   <% long_bb = billboard.processed_html_final.size > 750 && billboard.processed_html_final.exclude?("ltag-survey") %>
   <div class="crayons-card crayons-card--secondary crayons-bb js-billboard body-billboard mb-2 mt-6"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
@@ -138,6 +178,7 @@
   <div class="crayons-card crayons-card--secondary crayons-bb bb-placement js-billboard"
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
+    <%= billboard_attributes %>
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"

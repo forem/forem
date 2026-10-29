@@ -29,8 +29,9 @@ require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+# Rake tasks are only needed by `type: :task` specs (see the before(:all) hook below),
+# so avoid loading every task file on each RSpec boot.
 Rake.application = Rake::Application.new
-Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -38,6 +39,7 @@ require "fakeredis/rspec"
 require "pundit/matchers"
 require "pundit/rspec"
 require "sidekiq/testing"
+require_relative "support/rspec_retry_policy"
 require "test_prof/factory_prof/nate_heckler"
 require "validate_url/rspec_matcher"
 require "webmock/rspec"
@@ -99,22 +101,39 @@ module PGConnectionBadMatcher
   end
 end
 
+# Parsed once per process rather than once per example.
+FIELD_TEST_EXPERIMENTS = begin
+  Psych.load_file("config/field_test.yml").fetch("experiments", {}).freeze
+rescue StandardError
+  {}.freeze
+end
+
+GEMINI_STUB_RESPONSE_BODY = {
+  "embedding" => { "values" => Array.new(768, 0.0) },
+  "candidates" => [{ "content" => { "parts" => [{ "text" => "mocked text" }] } }]
+}.to_json.freeze
+
 RSpec.configure do |config|
+  config.before(:all, type: :task) do
+    Rails.application.load_tasks unless Rake::Task.task_defined?("fastly:update_configs")
+  end
+
   # Retries spec up to 3 times if there is a PG::ConnectionBad error.
   config.default_retry_count = 3
   config.exceptions_to_retry = [PGConnectionBadMatcher]
 
-  # To solve cascading failures across the whole file after a DB connection drop, 
+  # To solve cascading failures across the whole file after a DB connection drop,
   # we force a reconnection on exception.
-  config.retry_callback = proc do |ex|
-    if ex.exception && PGConnectionBadMatcher === ex.exception
-      puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
-      ActiveRecord::Base.connection_pool.disconnect!
-    end
+  reconnect_database = proc do |ex|
+    next unless ex.exception && (PGConnectionBadMatcher === ex.exception) # rubocop:disable Style/CaseEquality
+
+    puts "Retrying due to PG::ConnectionBad. Reconnecting to the database."
+    ActiveRecord::Base.connection_pool.disconnect!
   end
+  config.retry_callback = RSpecRetryPolicy.compose_callbacks(config.retry_callback, reconnect_database)
 
   config.use_transactional_fixtures = true
-  config.fixture_path = Rails.root.join("spec/fixtures")
+  config.fixture_paths = [Rails.root.join("spec/fixtures")]
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper
@@ -124,6 +143,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include EmbedsHelpers, type: :liquid_tag
   config.include FactoryBot::Syntax::Methods
+  config.include JevHelpers
   config.include OmniauthHelpers
   config.include RpushHelpers
   config.include SidekiqTestHelpers
@@ -171,9 +191,14 @@ RSpec.configure do |config|
     # Ensure ESBuild assets are present for system specs locally
     system("bin/rails javascript:build") unless ENV["CI"] || ENV["SKIP_JS_BUILD"]
 
+    # Persist the initial random timezone across Knapsack Pro subset batches
+    # so Ruby's Time.zone and headless Chrome's TZ stay synchronized.
+    ENV["ZONEBIE_TZ"] ||= Time.zone.name
+
     # Set the TZ ENV variable with the current random timezone from zonebie
     # which we can then use to properly set the browser time for Capybara specs
     ENV["TZ"] = Time.zone.tzinfo.name
+    Dotenv.save if defined?(Dotenv)
   end
 
   config.before do
@@ -192,7 +217,7 @@ RSpec.configure do |config|
   end
 
   config.around(:each, :flaky) do |ex|
-    ex.run_with_retry retry: 5
+    ex.run_with_retry(**RSpecRetryPolicy::FLAKY_OPTIONS)
   end
 
   config.around(:each, :throttle) do |example|
@@ -203,6 +228,7 @@ RSpec.configure do |config|
 
   config.after do
     Settings::General.clear_cache
+    Settings::AiFunctions.clear_cache
   end
 
   # Only turn on VCR if :vcr is included metadata keys
@@ -254,7 +280,7 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:post, /generativelanguage.googleapis.com/)
-      .to_return(status: 200, body: { "embedding" => { "values" => Array.new(768, 0.0) }, "candidates" => [ { "content" => { "parts" => [ { "text" => "mocked text" } ] } } ] }.to_json, headers: { "Content-Type" => "application/json" })
+      .to_return(status: 200, body: GEMINI_STUB_RESPONSE_BODY, headers: { "Content-Type" => "application/json" })
 
     stub_request(:any, /robohash.org/)
       .with(headers:
@@ -272,6 +298,12 @@ RSpec.configure do |config|
             }).to_return(status: 200, body: "", headers: {})
     stub_request(:get, %r{assets/\d+(-\w+)?\.png})
       .to_return(status: 200, body: "", headers: {})
+    stub_request(:get, Images::Profile::BACKUP_LINK)
+      .to_return(
+        status: 200,
+        body: Rails.root.join("app/assets/images/1.png").binread,
+        headers: { "Content-Type" => "image/png" },
+      )
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)
@@ -294,13 +326,8 @@ RSpec.configure do |config|
                  "cache" => true,
                  "cookies" => false }
 
-      begin
-        # Add the field tests that are currently configured (if any).
-        field_tests = Psych.load_file("config/field_test.yml")
-        config["experiments"].merge!(field_tests.fetch("experiments", {}))
-      rescue StandardError
-        # Accept that we may not have experiments.
-      end
+      # Add the field tests that are currently configured (if any).
+      config["experiments"].merge!(FIELD_TEST_EXPERIMENTS.deep_dup)
       allow(FieldTest).to receive(:config).and_return(config)
     end
   end
@@ -326,4 +353,3 @@ RSpec.configure do |config|
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 end
-

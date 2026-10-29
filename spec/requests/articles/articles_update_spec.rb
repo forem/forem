@@ -3,14 +3,18 @@ require "rails_helper"
 RSpec.describe "ArticlesUpdate" do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
-  let(:user) { create(:user, :org_admin) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user_org) do
+    create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+    organization
+  end
   let(:user2) do
-    user = create(:user)
+    user = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: user, organization: organization2)
     user
   end
-  let(:article) { create(:article, user_id: user.id) }
-  let(:other_article) { create(:article, user: user2) }
+  let(:article) { create(:article, user_id: user.id, with_tags: false, with_main_image: false) }
+  let(:other_article) { create(:article, user: user2, with_tags: false, with_main_image: false) }
   let(:collection) { create(:collection, user: user) }
 
   before do
@@ -48,7 +52,7 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "adds organization ID when user updates" do
-    user_org_id = user.organizations.first.id
+    user_org_id = user_org.id
     put "/articles/#{article.id}", params: {
       article: { organization_id: user_org_id }
     }
@@ -56,7 +60,7 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "removes organization ID when user updates" do
-    article.update_column(:organization_id, user.organizations.first.id)
+    article.update_column(:organization_id, user_org.id)
     put "/articles/#{article.id}", params: {
       # use empty string instead of nil to mock article form submission
       article: { organization_id: "" }
@@ -82,10 +86,10 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "allows an org admin to assign an org article to another user" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    other_user = create(:user)
-    create(:organization_membership, user: other_user, organization: user.organizations.first)
+    other_user = create(:user, :without_profile, profile_image: nil)
+    create(:organization_membership, user: other_user, organization: user_org)
 
     put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
     expect(article.reload.user).to eq(other_user)
@@ -93,10 +97,10 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "allows an org admin to update co-authors from the editor" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    co_author = create(:user)
-    create(:organization_membership, user: co_author, organization: user.organizations.first)
+    co_author = create(:user, :without_profile, profile_image: nil)
+    create(:organization_membership, user: co_author, organization: user_org)
 
     put "/articles/#{article.id}", params: { article: { co_author_ids_list: co_author.id.to_s } }
 
@@ -104,14 +108,74 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "rejects co-authors who are not active members of the selected organization" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    outsider = create(:user)
+    outsider = create(:user, :without_profile, profile_image: nil)
 
     put "/articles/#{article.id}", params: { article: { co_author_ids_list: outsider.id.to_s }, format: :json }
 
     expect(response).to have_http_status(:unprocessable_entity)
     expect(article.reload.co_author_ids).to eq([])
+  end
+
+  describe "co-author invitations" do
+    let(:follower) { create(:user, :without_profile, profile_image: nil) }
+
+    def put_invitees(invitee_ids, on: article)
+      put "/articles/#{on.id}", params: { article: { co_author_invitee_ids: invitee_ids } }, as: :json
+    end
+
+    before { follower.follow(user) }
+
+    it "ignores the invitee list while the feature is disabled" do
+      put_invitees([follower.id])
+
+      expect(article.co_author_invitations).to be_empty
+    end
+
+    context "when the feature is enabled" do
+      before { FeatureFlag.enable(:co_author_invitations) }
+
+      it "invites newly listed followers" do
+        put_invitees([follower.id])
+
+        expect(article.co_author_invitations.pluck(:user_id)).to eq([follower.id])
+      end
+
+      it "withdraws invitations dropped from the list, uncrediting accepted co-authors", :aggregate_failures do
+        create(:co_author_invitation, :accepted, article: article, user: follower)
+
+        put_invitees([])
+
+        expect(article.co_author_invitations.reload).to be_empty
+        expect(article.reload.co_author_ids).to eq([])
+      end
+
+      it "leaves invitations untouched when no list is sent" do
+        create(:co_author_invitation, article: article, user: follower)
+
+        put "/articles/#{article.id}", params: { article: { title: "A new title" } }, as: :json
+
+        expect(article.co_author_invitations.count).to eq(1)
+      end
+
+      it "rejects the edit when the list is invalid", :aggregate_failures do
+        put "/articles/#{article.id}", params: { article: { title: "A new title", co_author_invitee_ids: [user2.id] } },
+                                       as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(article.reload.title).not_to eq("A new title")
+      end
+
+      it "ignores the list when someone other than the author edits the post" do
+        follower.follow(user2) # so the invitation itself would be valid
+        user.add_role(:super_admin)
+
+        put_invitees([follower.id], on: other_article)
+
+        expect(other_article.co_author_invitations).to be_empty
+      end
+    end
   end
 
   it "allows super_admin to edit an article" do
@@ -192,6 +256,57 @@ RSpec.describe "ArticlesUpdate" do
     }
     expect(response).to redirect_to "#{article.path}/edit"
     expect(article.reload.video_thumbnail_url).to include "https://i.imgur.com/HPiu7N4.jpg"
+  end
+
+  it "removes video_source_url and video embed when passed empty string" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.reload.video).to be_present
+
+    put "/articles/#{article.id}", params: {
+      article: { video_source_url: "" }
+    }
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to be_nil
+    expect(article.video).to be_nil
+  end
+
+  it "removes video_source_url and video embed when passed null via JSON" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.reload.video).to be_present
+
+    put "/articles/#{article.id}",
+        params: { article: { video_source_url: nil } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to be_nil
+    expect(article.video).to be_nil
+  end
+
+  it "keeps video_source_url when the key is absent from the payload" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+    put "/articles/#{article.id}",
+        params: { article: { title: "New title" } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    article.reload
+    expect(article.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+    expect(article.video).to be_present
+  end
+
+  it "ignores an unsupported video_source_url" do
+    article.update!(video_source_url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+    put "/articles/#{article.id}",
+        params: { article: { video_source_url: "https://vimeo.com/123456" } }.to_json,
+        headers: { "Content-Type" => "application/json" }
+
+    expect(response).to have_http_status(:ok)
+    expect(article.reload.video_source_url).to eq("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
   end
 
   context "when setting published_at in editor v2" do

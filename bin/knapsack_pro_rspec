@@ -1,10 +1,26 @@
 #!/bin/bash
+set -e
+
+RSPEC_ARGS="--force-color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml"
+
 if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
   KNAPSACK_PRO_ENDPOINT=https://api-disabled-for-fork.knapsackpro.com \
   KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=disabled-for-fork \
   KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
   KNAPSACK_PRO_CI_NODE_RETRY_COUNT=0 \
-  bundle exec rake "knapsack_pro:rspec[--force-color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml]"
+  SPEC_OPTS="${SPEC_OPTS} --require ./spec/support/ci/schema_railtie" \
+  bundle exec ruby -r knapsack_pro -r ./spec/support/ci/schema_railtie -e "KnapsackPro::Runners::RSpecRunner.run('${RSPEC_ARGS}')"
 else
-  bundle exec rake "knapsack_pro:queue:rspec[--force-color --format documentation --format RspecJunitFormatter --out tmp/rspec.xml]"
+  SLOW_SPECS="spec/models/article_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/feeds/import_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/spam/reaction_ring_detector_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/requests/api/v1/articles_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/services/spam/handler_spec.rb"
+  SLOW_SPECS="${SLOW_SPECS},spec/requests/api/v0/articles_spec.rb"
+
+  RACK_ENV=test \
+  RAILS_ENV=test \
+  KNAPSACK_PRO_RSPEC_SPLIT_BY_TEST_EXAMPLES=true \
+  KNAPSACK_PRO_SLOW_TEST_FILE_PATTERN="{${SLOW_SPECS}}" \
+  bundle exec ruby -r knapsack_pro -r ./spec/support/ci/schema_railtie -e "KnapsackPro::Runners::Queue::RSpecRunner.run('${RSPEC_ARGS}')"
 fi

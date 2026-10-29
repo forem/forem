@@ -5,6 +5,33 @@ RSpec.describe Moderator::BanishUser, type: :service do
   let(:moderator) { create(:user, :trusted) }
   let(:admin) { create(:user, :super_admin) }
 
+  describe "DEV → Core moderation sync" do
+    before do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync)
+    end
+
+    after { FeatureFlag.remove(:dev_core_user_sync) }
+
+    it "emits user_banished carrying the pre-banish username without emitting user_suspended", :aggregate_failures do
+      original_username = user.username
+
+      with_trackable_events do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user: user, admin: admin)
+        end
+      end
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_banished", [user.id],
+              hash_including("old_username" => original_username), anything)
+      expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
+        .with(anything, "user_suspended", anything, anything, anything)
+    end
+  end
+
   it "updates username, clears profile, and add BanishedUser record", :aggregate_failures do
     original_username = user.username
     sidekiq_perform_enqueued_jobs do
@@ -26,7 +53,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
     # should remove:
     #   articles, comments, podcasts, organizations, abuse_reports, and vomit reactions
 
-    article = create(:article, user: user, published: true)
+    article = create(:article, user: user, published: true, with_tags: false)
     podcast = create(:podcast, creator: user)
     create(:podcast_ownership, owner: user, podcast: podcast)
     create(:comment, user: user, commentable: article)

@@ -1,24 +1,24 @@
 require "rails_helper"
 
 RSpec.describe "/admin/content_manager/organizations" do
-  let(:admin) { create(:user, :super_admin) }
-  let(:organization) { Organization.first }
+  let(:admin) { create(:user, :without_profile, :super_admin, profile_image: nil) }
+  let(:organization) { create(:organization, name: "Original Name") }
 
   before do
-    create_list(:organization, 5)
     sign_in(admin)
   end
 
   describe "GETS /admin/content_manager/organizations" do
-    let(:organizations) { Organization.pluck(:name).map { |n| CGI.escapeHTML(n) } }
-    let(:another_organization) { create(:organization, name: "T-800") }
+    let!(:another_organization) { create(:organization, name: "T-800") }
+
+    before { organization }
 
     it "lists all organizations" do
       get admin_organizations_path
-      expect(response.body).to include(*organizations)
+      expect(response.body).to include(CGI.escapeHTML(organization.name), CGI.escapeHTML(another_organization.name))
     end
 
-    it "allows searching" do
+    it "allows searching", :aggregate_failures do
       get "#{admin_organizations_path}?search=#{organization.name}"
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
@@ -33,8 +33,6 @@ RSpec.describe "/admin/content_manager/organizations" do
   end
 
   describe "PATCH /admin" do
-    let(:organization) { create(:organization) }
-
     it "adds credits to an organization" do
       params = { credits: 1, credit_action: :add }
 
@@ -95,6 +93,46 @@ RSpec.describe "/admin/content_manager/organizations" do
 
       expect(response).to redirect_to(admin_organization_path(organization))
       expect(flash[:notice]).to include("disabled")
+    end
+  end
+
+  describe "PATCH /admin/organizations/:id/update_name" do
+    it "updates organization name" do
+      patch update_name_admin_organization_path(organization), params: { name: "Updated Name" }
+
+      expect(organization.reload.name).to eq("Updated Name")
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:notice]).to eq(I18n.t("admin.organizations_controller.name_updated"))
+    end
+
+    context "with audit logging" do
+      before { Audit::Subscribe.listen :moderator }
+
+      after { Audit::Subscribe.forget :moderator }
+
+      it "strips whitespace and records a note and audit log" do
+        expect do
+          patch update_name_admin_organization_path(organization), params: { name: "  Updated Name  " }
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
+
+        expect(organization.reload.name).to eq("Updated Name")
+        expect(Note.last.content).to include("Original Name", "Updated Name")
+        expect(AuditLog.last.data).to include("old_name" => "Original Name", "new_name" => "Updated Name")
+      end
+
+      it "does not record a note or audit log when the name is unchanged" do
+        expect do
+          patch update_name_admin_organization_path(organization), params: { name: "Original Name" }
+        end.to not_change(Note, :count).and not_change(AuditLog, :count)
+      end
+    end
+
+    it "shows errors for invalid name" do
+      patch update_name_admin_organization_path(organization), params: { name: "" }
+
+      expect(organization.reload.name).to eq("Original Name")
+      expect(response).to redirect_to(admin_organization_path(organization))
+      expect(flash[:error]).to include("Name")
     end
   end
 end

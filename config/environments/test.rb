@@ -9,13 +9,20 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   config.app_domain = ENV.fetch("APP_DOMAIN", "test.host")
 
+  # Use the same test secret key base as was in secrets.yml
+  config.secret_key_base = ENV.fetch("SECRET_KEY_BASE", "42dd7834039ebbea271af22635a6782ee15e519b14629c5276bfcdd4cff841e9926994784bb43a335a8f8c9739bb254ea3afe831839d4dc65654ec7516ec25f0")
+
   # Settings specified here will take precedence over those in config/application.rb.
 
   # https://guides.rubyonrails.org/configuring.html#config-cache-classes
-  config.cache_classes = false
+  config.enable_reloading = true
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
-  config.action_view.cache_template_loading = false
+  config.action_view.cache_template_loading = true
+
+  # Skip walking the whole Sprockets manifest to verify precompilation when specs
+  # (e.g. factories) call asset_path.
+  config.assets.check_precompiled_asset = false
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
@@ -34,7 +41,7 @@ Rails.application.configure do
   config.cache_store = :null_store
 
   # Raise exceptions instead of rendering exception templates.
-  config.action_dispatch.show_exceptions = false
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
@@ -52,8 +59,8 @@ Rails.application.configure do
   # Randomize the order test cases are executed.
   config.active_support.test_order = :random
 
-  # Print deprecation notices to the stderr.
-  config.active_support.deprecation = :stderr
+  # Raise exceptions for deprecation warnings.
+  config.active_support.deprecation = :raise
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise
@@ -72,7 +79,7 @@ Rails.application.configure do
 
   # enable Bullet in testing mode only if requested
   config.after_initialize do
-    Bullet.enable = true
+    Bullet.enable = ENV["BULLET"].present?
     Bullet.raise = false
 
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)

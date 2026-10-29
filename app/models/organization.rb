@@ -26,7 +26,7 @@ class Organization < ApplicationRecord
   VERIFICATION_STATUS_FAILED = "failed".freeze
   VERIFICATION_STATUS_ADMIN = "admin_verified".freeze
 
-  enum tls_status: { not_started: 0, pending: 1, issued: 2, failed: 3 }
+  enum :tls_status, { not_started: 0, pending: 1, issued: 2, failed: 3 }
 
   acts_as_followable
 
@@ -38,11 +38,14 @@ class Organization < ApplicationRecord
   before_save :remove_at_from_usernames
   before_save :generate_secret
   before_save :reset_verification_on_domain_change
+  before_save :set_baseline_score_on_verification_change
+
 
   after_save :bust_cache
   after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
+  after_update_commit :recompile_pages, if: -> { saved_change_to_name? || saved_change_to_slug? || saved_change_to_summary? }
   after_save_commit :manage_fastly_tls_subscription
   after_destroy_commit :bust_cache
 
@@ -119,10 +122,15 @@ class Organization < ApplicationRecord
     I18n.t("models.organization.reserved_word")
   end
 
+  def self.find_by_slug_or_legacy(slug)
+    find_by(slug: slug) || find_by(old_slug: slug) || find_by(old_old_slug: slug)
+  end
+
   def check_for_slug_change
     return unless slug_changed?
 
-    self.old_old_slug = old_slug
+    previous_old = old_slug == slug ? old_old_slug : old_slug
+    self.old_old_slug = previous_old == slug ? nil : previous_old
     self.old_slug = slug_was
     Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end
@@ -169,6 +177,10 @@ class Organization < ApplicationRecord
     false
   end
 
+  def cached_community_leader?
+    false
+  end
+
   def fully_trusted?
     fully_trusted == true
   end
@@ -181,8 +193,12 @@ class Organization < ApplicationRecord
     main_page.present?
   end
 
+  def ordered_pages
+    pages.order(:position, :created_at, :id)
+  end
+
   def main_page
-    pages.order(:created_at).first
+    ordered_pages.first
   end
 
   def social_link(platform)
@@ -206,6 +222,9 @@ class Organization < ApplicationRecord
   HEADER_CTA_MAX_TEXT = 40
   HEADER_CTA_MAX_URL = 200
   HEADER_CTA_MAX_LINKS = 12
+  SOCIAL_IMAGE_TRIGGER_ATTRIBUTES = %i[
+    name slug profile_image bg_color_hex summary tag_line location url
+  ].freeze
 
   def validate_header_cta
     return if header_cta.blank?
@@ -304,10 +323,10 @@ class Organization < ApplicationRecord
   end
 
   def generate_social_images
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
+    return if previously_new_record?
+    return unless SOCIAL_IMAGE_TRIGGER_ATTRIBUTES.any? { |attr| saved_change_to_attribute?(attr) }
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
   end
 
   def evaluate_markdown
@@ -331,6 +350,16 @@ class Organization < ApplicationRecord
     self.verification_status = nil
     self.verification_error = nil
     self.verification_url = nil
+  end
+
+  def set_baseline_score_on_verification_change
+    return unless will_save_change_to_verified?
+
+    if verified?
+      self.baseline_score = Settings::UserExperience.index_minimum_score.to_i
+    else
+      self.baseline_score = 0
+    end
   end
 
   def remove_at_from_usernames
@@ -384,5 +413,12 @@ class Organization < ApplicationRecord
 
   def bust_cache
     Organizations::BustCacheWorker.perform_async(id, slug)
+    MemoryFirstCache.delete("org_custom_domain:#{id}")
+  end
+
+  def recompile_pages
+    return unless FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[self])
+
+    Organizations::RecompilePagesWorker.perform_async(id)
   end
 end

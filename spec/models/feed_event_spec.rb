@@ -50,6 +50,19 @@ RSpec.describe FeedEvent do
       end
     end
 
+    context "when the user has never clicked the specified article" do
+      let!(:other_click) { create(:feed_event, user: user, category: :click) }
+      it "does not create a new feed event or look up the latest click" do
+        article
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { record_journey }
+
+        expect(queries.grep(/FROM "feed_events".*ORDER BY/m)).to be_empty
+        expect(user.feed_events).to contain_exactly(other_click)
+      end
+    end
+
     context "when the interaction type is not one of reaction, comment, or extended_pageview" do
       let(:category) { :impression }
       let!(:click)   { create(:feed_event, user: user, article: article, category: :click) }
@@ -101,6 +114,36 @@ RSpec.describe FeedEvent do
         expect(article.feed_success_score).to eq(expected_score)
         expect(article.feed_impressions_count).to eq(2)
         expect(article.feed_clicks_count).to eq(1)
+      end
+    end
+
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user, as before" do
+        create_list(:feed_event, 2, category: "impression", article: article, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create_list(:feed_event, 2, category: "click", article: article, user: nil, article_position: 1)
+
+        article.reload
+        # Distinct impression users: nil and user1; distinct click users: nil.
+        expect(article.feed_success_score).to eq(1 / 2.0)
+        expect(article.feed_impressions_count).to eq(3)
+        expect(article.feed_clicks_count).to eq(2)
+      end
+    end
+
+    context "when computing the counters" do
+      it "reads the article's feed events in a single query" do
+        create(:feed_event, category: "impression", article: article, user: user1, article_position: 1)
+        create(:feed_event, category: "click", article: article, user: user2, article_position: 1)
+
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_article_counters(article.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+        expect(article.reload.feed_success_score).to eq(1.0)
       end
     end
 
@@ -263,6 +306,30 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_success_score).to eq(expected_score)
         expect(feed_config.feed_impressions_count).to eq(2)
       end
+
+      it "reads the feed config's feed events in a single aggregate query" do
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.update_single_feed_config_counters(feed_config.id)
+        end
+
+        expect(queries.grep(/FROM "feed_events"/).size).to eq(1)
+      end
+    end
+
+    context "when some events have no user" do
+      it "counts anonymous events as one distinct user" do
+        create_list(:feed_event, 2, category: "impression", feed_config: feed_config, user: nil, article_position: 1)
+        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
+        create(:feed_event, category: "click", feed_config: feed_config, user: nil, article_position: 1)
+
+        described_class.update_single_feed_config_counters(feed_config.id)
+        feed_config.reload
+
+        expect(feed_config.feed_success_score).to eq(1.0 / 2.0)
+        expect(feed_config.feed_impressions_count).to eq(3)
+      end
     end
 
     context "when no impression events exist for the feed config" do
@@ -282,24 +349,232 @@ RSpec.describe FeedEvent do
         expect(feed_config.feed_impressions_count).to eq(original_impressions)
       end
     end
+
+    context "when an engagement event follows an impression within the throttle window", :throttled_call do
+      it "updates the feed config score without being blocked by the impression throttle key" do
+        article = create(:article)
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(1)
+        expect(feed_config.feed_success_score).to eq(0.0)
+
+        create(
+          :feed_event,
+          category: "click",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_success_score).to eq(1.0)
+      end
+
+      it "continues updating impression counters on every batch until reaching LOW_IMPRESSION_COUNT, then throttles" do
+        article = create(:article)
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user1,
+          article_position: 1,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(1)
+
+        create(
+          :feed_event,
+          category: "impression",
+          article: article,
+          feed_config: feed_config,
+          user: user2,
+          article_position: 2,
+        )
+        expect(feed_config.reload.feed_impressions_count).to eq(2)
+
+        described_class.insert_all(
+          Array.new(FeedConfig::LOW_IMPRESSION_COUNT - 2) do |i|
+            {
+              article_id: article.id,
+              user_id: user1.id,
+              feed_config_id: feed_config.id,
+              category: :impression,
+              article_position: i + 3,
+              context_type: "home"
+            }
+          end,
+        )
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_impressions_count).to eq(FeedConfig::LOW_IMPRESSION_COUNT)
+
+        # Once at or above LOW_IMPRESSION_COUNT, subsequent impression updates within 5 minutes are throttled
+        described_class.insert_all(
+          [
+            {
+              article_id: article.id,
+              user_id: user2.id,
+              feed_config_id: feed_config.id,
+              category: :impression,
+              article_position: 1,
+              context_type: "home"
+            },
+          ],
+        )
+        described_class.update_single_feed_config_counters(feed_config.id)
+        expect(feed_config.reload.feed_impressions_count).to eq(FeedConfig::LOW_IMPRESSION_COUNT)
+      end
+    end
+  end
+
+  describe ".bulk_update_counters_by_feed_config_id" do
+    let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
+    let(:user1)       { create(:user) }
+
+    before do
+      allow(ThrottledCall).to receive(:perform).and_yield
+    end
+
+    it "updates counters for unique feed_config_ids" do
+      article = create(:article)
+      described_class.insert_all(
+        [
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :impression,
+            article_position: 1,
+            context_type: "home"
+          },
+          {
+            article_id: article.id,
+            user_id: user1.id,
+            feed_config_id: feed_config.id,
+            category: :click,
+            article_position: 1,
+            context_type: "home"
+          },
+        ],
+      )
+
+      described_class.bulk_update_counters_by_feed_config_id([feed_config.id, feed_config.id, nil])
+      feed_config.reload
+
+      expect(feed_config.feed_impressions_count).to eq(1)
+      expect(feed_config.feed_success_score).to eq(1.0)
+    end
   end
 
   describe "after_save .create_feed_config_offshoot" do
     let(:article)     { create(:article) }
     let(:user)        { create(:user) }
-    let(:feed_config) { create(:feed_config) }
+    let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT) }
 
-    context "when feed_config is present and category is reaction" do
+    before do
+      allow(ThrottledCall).to receive(:perform).and_yield
+    end
+
+    context "when feed_config is proven and category is reaction" do
       it "calls create_slightly_modified_clone! on the feed_config" do
         expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
       end
     end
 
-    context "when feed_config is present and category is comment" do
+    context "when feed_config is proven and category is comment" do
       it "calls create_slightly_modified_clone! on the feed_config" do
         expect_any_instance_of(FeedConfig).to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: feed_config, article: article, user: user, category: "comment")
+      end
+    end
+
+    context "when cloning into specific targeting buckets" do
+      before { feed_config }
+
+      it "clones into feed_new_user for a recently registered user on reaction, comment, or extended_pageview" do
+        new_user = create(:user, registered_at: 2.days.ago)
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "extended_pageview", context_type: "home")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_FEED_NEW_USER)
+      end
+
+      it "clones into digest for email context on click or extended_pageview" do
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: user,
+                              category: "click", context_type: "email")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_DIGEST)
+      end
+
+      it "clones into feed_active_user when an active user reacts or comments, but not on click" do
+        active_user = create(:user, registered_at: 30.days.ago)
+        views = [1.day.ago, 2.days.ago, 3.days.ago].map { |ts| [article.id, ts, 30] }
+        create(:user_activity, user: active_user, recently_viewed_articles: views)
+
+        allow(FeedConfig).to receive(:targeting_bucket_for).and_call_original
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: active_user,
+                              category: "click", context_type: "home")
+        end.not_to change(FeedConfig, :count)
+        expect(FeedConfig).not_to have_received(:targeting_bucket_for)
+
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: active_user,
+                              category: "reaction", context_type: "home")
+        end.to change(FeedConfig, :count).by(1)
+
+        expect(FeedConfig.last.targeting_bucket).to eq(FeedConfig::BUCKET_FEED_ACTIVE_USER)
+      end
+
+      it "throttles independently per targeting bucket", :throttled_call do
+        feed_config
+        new_user = create(:user, registered_at: 1.day.ago)
+        casual_user = create(:user, registered_at: 30.days.ago)
+
+        expect do
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "reaction", context_type: "home")
+          create(:feed_event, feed_config: feed_config, article: article, user: casual_user,
+                              category: "reaction", context_type: "home")
+          create(:feed_event, feed_config: feed_config, article: article, user: new_user,
+                              category: "click", context_type: "email")
+        end.to change(FeedConfig, :count).by(3)
+
+        buckets = FeedConfig.order(:id).last(3).map(&:targeting_bucket)
+        expect(buckets).to contain_exactly(
+          FeedConfig::BUCKET_FEED_NEW_USER,
+          FeedConfig::BUCKET_FEED_CASUAL_USER,
+          FeedConfig::BUCKET_DIGEST,
+        )
+      end
+    end
+
+    context "when feed_config has fewer than LOW_IMPRESSION_COUNT impressions" do
+      let(:feed_config) { create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT - 1) }
+
+      it "does not call create_slightly_modified_clone!" do
+        expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
+        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+      end
+    end
+
+    context "when multiple reactions occur within the throttle window", :throttled_call do
+      it "throttles offshoot creation to at most one clone per window" do
+        feed_config
+
+        expect {
+          create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+          create(:feed_event, feed_config: feed_config, article: article, user: create(:user), category: "comment")
+        }.to change(FeedConfig, :count).by(1)
       end
     end
 
@@ -314,6 +589,18 @@ RSpec.describe FeedEvent do
       it "does not call create_slightly_modified_clone!" do
         expect_any_instance_of(FeedConfig).not_to receive(:create_slightly_modified_clone!)
         create(:feed_event, feed_config: nil, article: article, user: user, category: "reaction")
+      end
+    end
+
+    context "when feed_config is archived" do
+      let(:feed_config) do
+        create(:feed_config, feed_impressions_count: FeedConfig::LOW_IMPRESSION_COUNT, archived: true)
+      end
+
+      it "does not call create_slightly_modified_clone!" do
+        allow(feed_config).to receive(:create_slightly_modified_clone!)
+        create(:feed_event, feed_config: feed_config, article: article, user: user, category: "reaction")
+        expect(feed_config).not_to have_received(:create_slightly_modified_clone!)
       end
     end
   end

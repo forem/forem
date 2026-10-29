@@ -7,8 +7,9 @@
   <div class="sticker-book crayons-card mt-4 l:mt-7 p-3 s:p-3 m:p-6 l:p-6 xl:p-8 grid gap-3 m:gap-4 l:gap-4 l:gap-6 grid-cols-2 s:grid-cols-2 m:grid-cols-3 l:grid-cols-4 xl:grid-cols-5 mb-6">
     <% @badges.each do |badge| %>
     <div
+      id="<%= badge.slug %>"
       role="button"
-      onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= badge.id %>', overlay: true})"
+      onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= badge.id %>', overlay: true, backdropDismissible: true})"
       class="badge-container crayons-card media-card">
       <div class="badge-image-container p-3">
         <img

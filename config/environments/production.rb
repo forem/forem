@@ -11,10 +11,13 @@ Rails.application.configure do
     # it shouldn't need to be the proper value
     ENV["SECRET_KEY_BASE"] = "NOT_SET"
   end
+
+  # Configure secret_key_base directly from environment variable to support Rails 7.2 and 8.0
+  config.secret_key_base = ENV["SECRET_KEY_BASE"]
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.cache_classes = true
+  config.enable_reloading = false
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
@@ -30,11 +33,6 @@ Rails.application.configure do
   # or in config/master.key. This key is used to decrypt credentials (and other encrypted files).
   # config.require_master_key = true
 
-  # Attempt to read encrypted secrets from `config/secrets.yml.enc`.
-  # Requires an encryption key in `ENV["RAILS_MASTER_KEY"]` or
-  # `config/secrets.yml.key`.
-  config.read_encrypted_secrets = true
-
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
@@ -42,11 +40,15 @@ Rails.application.configure do
     "Cache-Control" => "public, s-maxage=#{30.days.to_i}, max-age=#{3000.days.to_i}"
   }
 
-  # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :terser
+  # Compress JavaScripts and CSS (skipping app/assets/builds, which esbuild already minifies).
+  config.assets.js_compressor = :terser_skip_builds
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
+  # NOTE: Forem intentionally keeps `config.assets.compile = true` so that
+  # `Rails.application.assets[...]` remains initialized in production for views/models
+  # that inline compiled CSS (e.g., `app/views/layouts/_user_config.html.erb`,
+  # `app/models/comment.rb#custom_css`, and `app/views/onboardings/show.html.erb`).
   config.assets.compile = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
@@ -105,7 +107,7 @@ Rails.application.configure do
   ]
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
+  config.log_formatter = Logger::Formatter.new
 
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     # Use a different logger for distributed setups.

@@ -1,0 +1,20 @@
+<%= render "nav_menu" %>
+
+<div class="substories" id="substories">
+  <% if @favorited.any? %>
+    <%= render partial: "favorited_row", collection: @favorited, as: :favoritable %>
+
+    <div class="p-4 m:p-6 pt-4 m:pt-4 pb-0 m:pb-0">
+      <%= paginate @favorited %>
+    </div>
+  <% else %>
+    <div class="crayons-card p-6 m:p-8 text-center">
+      <div class="mb-3" style="color: var(--reaction-favorite-color);">
+        <%= crayons_icon_tag("favorite-checked", native: true, width: 36, height: 36) %>
+      </div>
+      <p class="color-base-70 fs-base m-0 max-w-md mx-auto">
+        <%= t("views.leadership.sections.#{@section}_empty") %>
+      </p>
+    </div>
+  <% end %>
+</div>

@@ -3,7 +3,7 @@ article_attributes_to_include = %i[
   title path id user_id comments_count public_reactions_count organization_id
   reading_time video_thumbnail_url video edited_at
   experience_level_rating experience_level_rating_distribution main_image_height
-  type_of subforem_id
+  type_of subforem_id favorited_by_user_id ai_disclosure_level
 ]
 
 # Core methods that are always needed
@@ -11,9 +11,11 @@ article_methods_to_include = %i[
   flare_tag class_name cloudinary_video_url published_at_int
   published_timestamp main_image_background_hex_color
   public_reaction_categories readable_publish_date video_duration_in_minutes
+  ai_disclosure_label
 ]
 
 json.array!(@stories) do |article|
+  cached_story = @cached_story_fragments&.[](@story_cache_keys&.[](article.id))
   # Build explicit cache key with all factors that affect the rendered article
   # Using explicit fields instead of updated_at because update_column bypasses timestamp updates
   cache_key = [
@@ -23,19 +25,21 @@ json.array!(@stories) do |article|
     article.edited_at,
     article.last_comment_at,
     article.public_reactions_count, # Changes when reactions are added/removed
+    article.favorited_by_user_id, # Favorites::Create claims with update_all, leaving updated_at untouched
     article.cached_user, # Text field containing serialized user data
     article.cached_organization, # Text field containing serialized organization data
     I18n.locale,
-  ].join("-")
+  ].join("-") unless cached_story
   
   # Only cache for pages 1-2 since those get the most traffic
   # Cache expires after 6 hours to ensure freshness
-  json.cache_if! @page <= 2, cache_key, expires_in: 6.hours do
+  cached_story ? json.merge!(cached_story) : json.cache_if!(@page <= 2, cache_key, expires_in: 6.hours) do
     json.extract! article, *article_attributes_to_include
 
     # Optimize user data - only call as_json once
     cached_user = article.cached_user.as_json
     cached_user[:cached_base_subscriber] = cached_user["cached_base_subscriber?"]
+    cached_user[:cached_community_leader] = cached_user["cached_community_leader?"]
     json.user cached_user
 
     # Only include organization if it exists
@@ -48,7 +52,6 @@ json.array!(@stories) do |article|
     # Optimize main_image - avoid cloud_cover_url call when not needed
     json.main_image article.main_image? ? cloud_cover_url(article.main_image, article.subforem_id) : nil
 
-    json.url URL.article(article)
     json.tag_list article.cached_tag_list_array
 
     # Only include body_preview for status articles
@@ -93,7 +96,8 @@ json.array!(@stories) do |article|
     json.context_note article.context_notes.first&.processed_html
   end
   
-  # These fields are added outside the cache so they don't fragment the cache
+  # These fields are added outside the cache so they don't fragment the cache and respect signed-in context
+  json.url URL.article(article)
   json.current_user_signed_in user_signed_in?
   json.feed_config @feed_config&.id
 end

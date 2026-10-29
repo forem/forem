@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "/admin/member_manager/users" do
-  let!(:user) do
+  let(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
@@ -13,8 +13,23 @@ RSpec.describe "/admin/member_manager/users" do
 
   describe "GET /admin/member_manager/users" do
     it "renders to appropriate page" do
+      username = user.username
       get admin_users_path
-      expect(response.body).to include(user.username)
+      expect(response.body).to include(username)
+    end
+
+    it "does not query roles separately for each user displayed" do
+      create_list(:user, 2)
+      scoped_role_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        sql = payload[:sql]
+        scoped_role_queries << sql if sql.match?(/FROM "roles".*"users_roles".*"users_roles"\."user_id" =/)
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { get admin_users_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(scoped_role_queries).to be_empty
     end
 
     context "when searching" do
@@ -32,80 +47,54 @@ RSpec.describe "/admin/member_manager/users" do
     end
 
     context "when filters are applied" do
-      it "displays a filter count badge when a single role filter is applied" do
-        get "#{admin_users_path}?roles[]=Super%20Admin"
-        expect(response.body).to include("c-indicator c-indicator--info fs-xs")
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("1")
+      def filter_indicator
+        Nokogiri::HTML(response.body).at_css(".js-open-filter-modal-btn .c-indicator")
       end
 
-      it "displays a filter count badge when multiple role filters are applied" do
-        get "#{admin_users_path}?roles[]=Super%20Admin&roles[]=Admin"
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("2")
-      end
-
-      it "displays a filter count when status filters are applied" do
-        get "#{admin_users_path}?statuses[]=Suspended&statuses[]=Spam"
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("2")
-      end
-
-      it "displays a combined filter count when multiple filter types are applied" do
+      it "displays a filter count badge matching the number of applied filters", :aggregate_failures do
         org = create(:organization)
-        get "#{admin_users_path}?roles[]=Super%20Admin&statuses[]=Suspended&organizations[]=#{org.id}"
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("3")
-      end
+        expected_counts = {
+          "roles[]=Super%20Admin" => "1",
+          "roles[]=Super%20Admin&roles[]=Admin" => "2",
+          "statuses[]=Suspended&statuses[]=Spam" => "2",
+          "roles[]=Super%20Admin&statuses[]=Suspended&organizations[]=#{org.id}" => "3",
+          "joining_start=01/01/2024&joining_end=31/12/2024&date_format=DD/MM/YYYY" => "1",
+          "role=super_admin" => "1"
+        }
 
-      it "displays a filter count badge when joining date filters are applied" do
-        get "#{admin_users_path}?joining_start=01/01/2024&joining_end=31/12/2024&date_format=DD/MM/YYYY"
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("1")
-      end
+        expected_counts.each do |query, count|
+          get "#{admin_users_path}?#{query}"
+          expect(response.body).to include("c-indicator c-indicator--info fs-xs")
+          expect(filter_indicator).to be_present, "expected a filter badge for ?#{query}"
+          expect(filter_indicator&.text&.strip).to eq(count), "expected badge #{count} for ?#{query}"
+        end
 
-      it "does not display a filter count badge when no filters are applied" do
         get admin_users_path
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_nil
-      end
-
-      it "displays a filter count badge when the legacy role param is applied" do
-        get "#{admin_users_path}?role=super_admin"
-        doc = Nokogiri::HTML(response.body)
-        indicator = doc.at_css(".js-open-filter-modal-btn .c-indicator")
-        expect(indicator).to be_present
-        expect(indicator.text.strip).to eq("1")
+        expect(filter_indicator).to be_nil
       end
     end
   end
 
   describe "GET /admin/member_manager/users/:id" do
-    it "renders to appropriate page" do
-      get admin_user_path(user)
+    it "renders the overview tab with contact links, roles, banish button, flags, and reports", :aggregate_failures do
+      vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
+      report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
+
+      get admin_user_path(user.id)
 
       expect(response.body).to include(user.username)
-    end
-
-    it "displays profile contact links without leading whitespace" do
-      get admin_user_path(user)
+      expect(response.body).to include("Banish user")
+      expect(response.body).to include("Roles")
+      expect(response.body).to include(vomit.reactable_type)
+      expect(response.body).to include(report.feedback_type)
 
       doc = Nokogiri::HTML(response.body)
 
-      email_link = doc.at_css("a.c-link[href='mailto:#{user.email}']")
-      expect(email_link).to be_present
-      expect(email_link.text.strip).to eq(user.email)
+      # The primary email is rendered once, without leading whitespace, and is
+      # not duplicated in the OAuth emails list.
+      email_links = doc.css("a.c-link[href='mailto:#{user.email}']")
+      expect(email_links.size).to eq(1)
+      expect(email_links.first&.text&.strip).to eq(user.email)
 
       if user.github_username.present?
         github_link = doc.at_css("a.c-link--icon-left.inline-block[href='https://github.com/#{user.github_username}']")
@@ -134,22 +123,9 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("GitHub email")
     end
 
-    it "does not duplicate the primary email in the OAuth emails list" do
-      get admin_user_path(user)
-
-      doc = Nokogiri::HTML(response.body)
-      email_links = doc.css("a.c-link[href='mailto:#{user.email}']")
-      expect(email_links.size).to eq(1)
-    end
-
     it "redirects from /username/moderate" do
       get "/#{user.username}/moderate"
       expect(response).to redirect_to(admin_user_path(user.id))
-    end
-
-    it "shows banish button for new users" do
-      get admin_user_path(user.id)
-      expect(response.body).to include("Banish user")
     end
 
     it "does not show banish button for non-admins" do
@@ -157,9 +133,35 @@ RSpec.describe "/admin/member_manager/users" do
       expect { get admin_user_path(user.id) }.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "displays a user's current roles in the 'Overview' tab" do
+    it "shows the subforem domain for a subforem moderator role" do
+      subforem = create(:subforem)
+      user.add_role(:subforem_moderator, subforem)
+
       get admin_user_path(user.id)
-      expect(response.body).to include("Roles")
+
+      expect(response).to be_successful
+      expect(response.body).to include(subforem.domain)
+    end
+
+    it "does not show an unrelated tag's name for a subforem moderator role" do
+      tag = create(:tag)
+      subforem = create(:subforem, id: tag.id)
+      user.add_role(:subforem_moderator, subforem)
+
+      get admin_user_path(user.id)
+
+      expect(response.body).to include(subforem.domain)
+      expect(response.body).not_to include(tag.name)
+    end
+
+    it "renders the page for a user with a podcast admin role" do
+      podcast = create(:podcast)
+      user.add_role(:podcast_admin, podcast)
+
+      get admin_user_path(user.id)
+
+      expect(response).to be_successful
+      expect(response.body).to include("Podcast Admin")
     end
 
     it "displays a user's current roles in the 'Emails' tab" do
@@ -167,36 +169,52 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Previous emails")
     end
 
-    it "displays a user's current flags in the 'Flags' tab" do
+    it "displays password management in the 'Security' tab" do
+      get "#{admin_user_path(user.id)}?tab=security"
+      expect(response.body).to include("Password access")
+      expect(response.body).to include("Send password reset email")
+    end
+
+    it "displays empty-state messages in the 'Flags' tab when the user has no flags", :aggregate_failures do
       get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("Flags received")
-    end
-
-    it "displays a message when there are no related vomit reactions for a user" do
-      get "#{admin_user_path(user.id)}?tab=flags"
       expect(response.body).to include("No flags received against")
+      expect(response.body).to include("No flags received against this user&#39;s posts or comments yet.")
     end
 
-    it "displays a list of recent related vomit reactions for a user if any exist" do
-      vomit = build(:reaction, category: "vomit", user_id: user.id, reactable_type: "Article", status: "valid")
-      get admin_user_path(user.id)
-      expect(response.body).to include(vomit.reactable_type)
+    it "lists a flag on the user's comment once, with its mark-as-invalid action, in the 'Flags' tab",
+       :aggregate_failures do
+      article = create(:article)
+      comment = create(:comment, user: user, commentable: article)
+      reaction = create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include("Flags on posts and comments")
+      expect(response.body).to include(CGI.escapeHTML("Comment on \"#{article.title}\""))
+      expect(response.body).to include(comment.path)
+      expect(response.body).to include(admin_reaction_path(reaction.id))
+      expect(response.body).to include("Mark as Invalid")
+      # The flag dropdown script is included only once when both flag lists render
+      expect(response.body.scan("flagReactionItemDropdownButton").size).to eq(1)
+      # Content flags are not listed in the account flags section
+      expect(response.body).to include("No flags received against this user yet.")
     end
 
-    it "displays a user's current reports in the 'Reports' tab" do
+    it "lists a flag left on the user's article in the 'Flags' tab" do
+      article = create(:article, user: user)
+      create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
+
+      get "#{admin_user_path(user.id)}?tab=flags"
+
+      expect(response.body).to include(CGI.escapeHTML("Post \"#{article.title}\""))
+      expect(response.body).to include(article.path)
+    end
+
+    it "displays a user's current reports and the empty-state message in the 'Reports' tab", :aggregate_failures do
       get "#{admin_user_path(user.id)}?tab=reports"
       expect(response.body).to include("Reports submitted by")
-    end
-
-    it "displays a message when there are no current reports for a user" do
-      get "#{admin_user_path(user.id)}?tab=reports"
       expect(response.body).to include("No comment or post has been reported yet.")
-    end
-
-    it "displays a list of current reports for a user if any exist" do
-      report = build(:feedback_message, category: "spam", affected_id: user.id, feedback_type: "spam", status: "Open")
-      get admin_user_path(user.id)
-      expect(response.body).to include(report.feedback_type)
     end
 
     it "displays unpublish all data from logs when it exists on unpublish_alls tab" do
@@ -559,22 +577,19 @@ RSpec.describe "/admin/member_manager/users" do
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "updates the user's email" do
-      old_email = user.email
-
-      patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
-
-      expect(user.reload.email).to eq("updated@example.com")
-      expect(response).to redirect_to(admin_user_path(user))
-      expect(flash[:success]).to be_present
-    end
-
-    it "creates an audit note recording the email change" do
+    it "updates the user's email bypassing Devise reconfirmation and records an audit note", :aggregate_failures do
       old_email = user.email
 
       expect do
         patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
       end.to change(Note, :count).by(1)
+
+      expect(response).to redirect_to(admin_user_path(user))
+      expect(flash[:success]).to be_present
+
+      user.reload
+      expect(user.email).to eq("updated@example.com")
+      expect(user.unconfirmed_email).to be_nil
 
       note = user.notes.last
       expect(note.reason).to eq("Update Email")
@@ -583,12 +598,22 @@ RSpec.describe "/admin/member_manager/users" do
       expect(note.author_id).to eq(admin.id)
     end
 
-    it "bypasses Devise reconfirmation" do
-      patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+    # update_columns bypasses the Trackable after_commit, so the controller
+    # must emit explicitly or Core never learns the new address.
+    it "emits user_updated to the DEV -> Core sync" do
+      allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+      allow(Trackable::DispatchWorker).to receive(:perform_async)
+      Settings::General.customerio_cdp_enabled = true
+      FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user])
 
-      user.reload
-      expect(user.email).to eq("updated@example.com")
-      expect(user.unconfirmed_email).to be_nil
+      with_trackable_events do
+        patch update_email_admin_user_path(user), params: { user: { email: "updated@example.com" } }
+      end
+
+      expect(Trackable::DispatchWorker).to have_received(:perform_async)
+        .with(anything, "user_updated", [user.id], hash_including("email" => "updated@example.com"), anything)
+    ensure
+      FeatureFlag.remove(:dev_core_user_sync)
     end
   end
 
@@ -604,20 +629,13 @@ RSpec.describe "/admin/member_manager/users" do
       allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     end
 
-    it "removes the given identity" do
+    it "removes the given identity and updates their social account's username to nil", :aggregate_failures do
       identity = user.identities.first
 
       delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
 
       expect { identity.reload }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "updates their social account's username to nil" do
-      identity = user.identities.first
-
-      delete remove_identity_admin_user_path(user.id), params: { user: { identity_id: identity.id } }
-
-      expect(user.public_send("#{identity.provider}_username")).to be_nil
+      expect(user.public_send(:"#{identity.provider}_username")).to be_nil
     end
 
     it "does not remove GitHub repositories if the removed identity is not GitHub" do
@@ -727,8 +745,6 @@ RSpec.describe "/admin/member_manager/users" do
       end
 
       it "confirms the pending email change successfully" do
-        old_email = user_with_pending_email.email
-
         post confirm_pending_email_admin_user_path(user_with_pending_email)
 
         user_with_pending_email.reload
@@ -737,6 +753,25 @@ RSpec.describe "/admin/member_manager/users" do
         expect(user_with_pending_email.confirmed_at).to be_present
         expect(response).to redirect_to(admin_user_path(user_with_pending_email))
         expect(flash[:success]).to be_present
+      end
+
+      # update_columns bypasses the Trackable after_commit, so the controller
+      # must emit explicitly or Core never learns the swapped address.
+      it "emits user_updated to the DEV -> Core sync" do
+        allow(Trackable::Registry).to receive(:active_names).and_return([:any])
+        allow(Trackable::DispatchWorker).to receive(:perform_async)
+        Settings::General.customerio_cdp_enabled = true
+        FeatureFlag.enable(:dev_core_user_sync, FeatureFlag::Actor[user_with_pending_email])
+
+        with_trackable_events do
+          post confirm_pending_email_admin_user_path(user_with_pending_email)
+        end
+
+        expect(Trackable::DispatchWorker).to have_received(:perform_async)
+          .with(anything, "user_updated", [user_with_pending_email.id],
+                hash_including("email" => "newemail@example.com"), anything)
+      ensure
+        FeatureFlag.remove(:dev_core_user_sync)
       end
 
       it "creates an audit note recording the email change" do
@@ -908,6 +943,37 @@ RSpec.describe "/admin/member_manager/users" do
         expect(log.data["provider"]).to eq(identity.provider)
       end
     end
+
+    describe "PATCH /admin/member_manager/users/:id/update_password" do
+      it "creates an audit log record without logging sensitive password parameters" do
+        expect do
+          patch update_password_admin_user_path(user.id), params: {
+            user: { password: "new-password-123", password_confirmation: "new-password-123" }
+          }
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("update_password")
+        expect(log.data["target_user_id"]).to eq(user.id)
+        expect(log.data.to_s).not_to include("new-password-123")
+      end
+    end
+
+    describe "POST /admin/member_manager/users/:id/send_password_reset" do
+      it "creates an audit log record" do
+        expect do
+          post send_password_reset_admin_user_path(user.id)
+        end.to change(AuditLog, :count).by(1)
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(admin.id)
+        expect(log.data["action"]).to eq("send_password_reset")
+        expect(log.data["target_user_id"]).to eq(user.id)
+      end
+    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=audit_log" do
@@ -970,6 +1036,141 @@ RSpec.describe "/admin/member_manager/users" do
       # rubocop:enable FactoryBot/ExcessiveCreateList
       get "#{admin_user_path(user.id)}?tab=audit_log"
       expect(response.body).to include("Next")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=identities" do
+    it "displays the identities tab with user's identities" do
+      identity = user.identities.first
+      get "#{admin_user_path(user.id)}?tab=identities"
+      expect(response).to be_successful
+      expect(response.body).to include("Connected Auth Identities")
+      expect(response.body).to include(identity.uid)
+      expect(response.body).to include("GitHub")
+    end
+
+    it "displays an empty message when user has no identities" do
+      user_without_identities = create(:user)
+      get "#{admin_user_path(user_without_identities.id)}?tab=identities"
+      expect(response).to be_successful
+      expect(response.body).to include("No auth identities associated with this user.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=badges" do
+    it "displays the badges tab with user's badge achievements" do
+      badge = create(:badge, title: "Super Contributor", description: "Awarded for amazing work")
+      create(:badge_achievement, user: user, badge: badge, rewarder: admin)
+      get "#{admin_user_path(user.id)}?tab=badges"
+      expect(response).to be_successful
+      expect(response.body).to include("Badges &amp; Achievements")
+      expect(response.body).to include("Super Contributor")
+      expect(response.body).to include("Awarded for amazing work")
+      expect(response.body).to include(CGI.escapeHTML(admin.name))
+    end
+
+    it "displays an empty message when user has no badges" do
+      get "#{admin_user_path(user.id)}?tab=badges"
+      expect(response).to be_successful
+      expect(response.body).to include("No badges earned or awarded yet.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=reactions" do
+    it "displays the reactions tab with user's reactions" do
+      article = create(:article, title: "Fascinating Post")
+      create(:reaction, user: user, reactable: article, category: "like", status: "valid")
+      get "#{admin_user_path(user.id)}?tab=reactions"
+      expect(response).to be_successful
+      expect(response.body).to include("User Reactions")
+      expect(response.body).to include("Like")
+      expect(response.body).to include("Fascinating Post")
+    end
+
+    it "displays an empty message when user has no reactions" do
+      get "#{admin_user_path(user.id)}?tab=reactions"
+      expect(response).to be_successful
+      expect(response.body).to include("No reactions found for this user.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=agent_sessions" do
+    it "displays the agent sessions tab with user's agent sessions" do
+      create(:agent_session, user: user, title: "Refactoring Auth Module", tool_name: "claude_code", published: true)
+      get "#{admin_user_path(user.id)}?tab=agent_sessions"
+      expect(response).to be_successful
+      expect(response.body).to include("Agent Sessions")
+      expect(response.body).to include("Refactoring Auth Module")
+      expect(response.body).to include("Claude Code")
+      expect(response.body).to include("Published")
+    end
+
+    it "displays an empty message when user has no agent sessions" do
+      get "#{admin_user_path(user.id)}?tab=agent_sessions"
+      expect(response).to be_successful
+      expect(response.body).to include("No agent sessions found for this user.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=collections" do
+    it "displays the collections tab with user's series and collections" do
+      create(:collection, user: user, title: "Complete Rails Guide", description: "All parts of the guide")
+      get "#{admin_user_path(user.id)}?tab=collections"
+      expect(response).to be_successful
+      expect(response.body).to include("Series &amp; Collections")
+      expect(response.body).to include("Complete Rails Guide")
+      expect(response.body).to include("All parts of the guide")
+    end
+
+    it "displays an empty message when user has no collections" do
+      get "#{admin_user_path(user.id)}?tab=collections"
+      expect(response).to be_successful
+      expect(response.body).to include("No series or collections found for this user.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=follows" do
+    let(:other_user) { create(:user, name: "Followed Friend") }
+
+    it "displays the follows tab with followers and following" do
+      create(:follow, follower: other_user, followable: user)
+      get "#{admin_user_path(user.id)}?tab=follows"
+      expect(response).to be_successful
+      expect(response.body).to include("Follows &amp; Followers")
+      expect(response.body).to include("Followed Friend")
+
+      create(:follow, follower: user, followable: other_user)
+      get "#{admin_user_path(user.id)}?tab=follows&filter=following"
+      expect(response).to be_successful
+      expect(response.body).to include("Followed Friend")
+    end
+
+    it "displays an empty message when user has no follows" do
+      get "#{admin_user_path(user.id)}?tab=follows"
+      expect(response).to be_successful
+      expect(response.body).to include("No follows found.")
+    end
+  end
+
+  describe "GET /admin/member_manager/users/:id?tab=blocks" do
+    let(:blocked_user) { create(:user, name: "Blocked Spammer") }
+
+    it "displays the blocks tab with user blocks" do
+      UserBlock.create!(blocker: user, blocked: blocked_user, config: "default")
+      get "#{admin_user_path(user.id)}?tab=blocks"
+      expect(response).to be_successful
+      expect(response.body).to include("User Blocks")
+      expect(response.body).to include("Blocked Spammer")
+
+      get "#{admin_user_path(blocked_user.id)}?tab=blocks&filter=blocked_by"
+      expect(response).to be_successful
+      expect(response.body).to include(CGI.escapeHTML(user.name))
+    end
+
+    it "displays an empty message when user has no blocks" do
+      get "#{admin_user_path(user.id)}?tab=blocks"
+      expect(response).to be_successful
+      expect(response.body).to include("No user blocks found.")
     end
   end
 end

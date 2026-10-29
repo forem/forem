@@ -71,6 +71,26 @@ RSpec.describe "Api::V0::Tags" do
     end
   end
 
+  describe "GET /api/tags/supported" do
+    before do
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      RequestStore.store[:root_subforem_id] = nil
+    end
+
+    it "returns only supported tags with the edge cache surrogate key" do
+      supported = create(:tag, supported: true)
+      create(:tag, supported: false)
+
+      get supported_api_tags_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.pluck("id")).to eq([supported.id])
+      expect(response.headers["surrogate-key"].split.to_set)
+        .to eq([Tag::SUPPORTED_TAGS_SURROGATE_KEY, supported.record_key].to_set)
+    end
+  end
+
   private
 
   def expect_valid_json_body(body, tag)

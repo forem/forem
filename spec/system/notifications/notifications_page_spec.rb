@@ -1,17 +1,25 @@
 require "rails_helper"
 
-RSpec.describe "Notifications page", js: true do
-  let(:alex) { create(:user) }
-  let(:leslie) { create(:user) }
+RSpec.describe "Notifications page", :js do
+  # Ahoy persists the click event asynchronously to the navigation Capybara
+  # waits on, so poll for it before asserting; on timeout the count
+  # expectation below reports the miss.
+  def wait_for_ahoy_event
+    deadline = Capybara::Helpers.monotonic_time + Capybara.default_max_wait_time
+    sleep 0.05 until Ahoy::Event.exists? || Capybara::Helpers.monotonic_time >= deadline
+  end
+
+  let(:alex) { create(:user, :without_profile) }
+  let(:leslie) { create(:user, :without_profile) }
 
   before { sign_in alex }
 
   def validate_reply(id)
     fill_in "comment-textarea-for-#{id}", with: "thanks i guess"
-    click_button("Submit")
+    click_on("Submit")
     expect(page).to have_css("div.reply-sent-notice")
 
-    click_link("Check it out")
+    click_on("Check it out")
     expect(page).to have_text("thanks i guess")
   end
 
@@ -21,11 +29,11 @@ RSpec.describe "Notifications page", js: true do
 
     visit "/"
     expect(page).to have_css("span#notifications-number", text: "1")
-    click_link("notifications-link")
-    expect(page).not_to have_css("span#notifications-number", text: "1")
+    click_on("notifications-link")
+    expect(page).to have_no_css("span#notifications-number", text: "1")
   end
 
-  xcontext "when user is trusted" do
+  context "when user is trusted", skip: "disabled pending moderation UI rework" do
     before do
       dev_user = create(:user)
       allow(User).to receive(:staff_account).and_return(dev_user)
@@ -34,10 +42,10 @@ RSpec.describe "Notifications page", js: true do
 
     def interact_with_each_emojis
       %w[heart thumbsdown vomit].each do |emoji|
-        click_button(emoji)
+        click_on(emoji)
         expect(page).to have_css(".reacted")
-        click_button(emoji)
-        expect(page).not_to have_css(".reacted")
+        click_on(emoji)
+        expect(page).to have_no_css(".reacted")
       end
     end
 
@@ -51,14 +59,14 @@ RSpec.describe "Notifications page", js: true do
       expect(page).to have_css("div.spec-notification")
 
       interact_with_each_emojis
-      click_link("Reply")
+      click_on("Reply")
 
       validate_reply(comment.id)
     end
   end
 
   context "with welcome notifications" do
-    let(:mascot_account) { create(:user) }
+    let(:mascot_account) { create(:user, :without_profile) }
 
     before do
       allow(Notification).to receive(:send_welcome_notification).and_call_original
@@ -70,20 +78,18 @@ RSpec.describe "Notifications page", js: true do
     context "without tracking enabled" do
       before do
         create(:welcome_broadcast)
-        Broadcasts::WelcomeNotification::Generator.call(alex.id)
-        sidekiq_perform_enqueued_jobs
+        sidekiq_perform_enqueued_jobs do
+          Broadcasts::WelcomeNotification::Generator.call(alex.id)
+        end
       end
 
-      it "renders the notification" do
+      it "renders the notification and does not track events", :aggregate_failures do
         visit "/notifications"
 
         expect(page).to have_css(".broadcast-content")
         expect(page).to have_css("#welcome_notification_welcome_thread")
-      end
 
-      it "does not track events" do
-        visit "/notifications"
-        click_link("the welcome thread")
+        click_on("the welcome thread")
 
         expect(page).to have_current_path("/welcome")
         expect(Ahoy::Event.count).to eq(0)
@@ -93,15 +99,17 @@ RSpec.describe "Notifications page", js: true do
     context "with tracking enabled" do
       before do
         create(:welcome_broadcast, :with_tracking)
-        Broadcasts::WelcomeNotification::Generator.call(alex.id)
-        sidekiq_perform_enqueued_jobs
+        sidekiq_perform_enqueued_jobs do
+          Broadcasts::WelcomeNotification::Generator.call(alex.id)
+        end
       end
 
       it "tracks events" do
         visit "/notifications"
-        click_link("the welcome thread")
+        click_on("the welcome thread")
 
         expect(page).to have_current_path("/welcome")
+        wait_for_ahoy_event
         expect(Ahoy::Event.count).to eq(1)
       end
     end

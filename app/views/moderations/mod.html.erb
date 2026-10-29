@@ -18,7 +18,7 @@
   <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
   <% if @moderatable.class.name == "Article" &&
-       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
+       Tag.where(requires_approval: true, name: @moderatable.decorate.cached_tag_list_array).exists? &&
        (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
     <%= form_tag "/article_approvals", method: "post" do %>
       <%= hidden_field_tag(:id, @moderatable.id) %>
@@ -70,9 +70,11 @@
     <h3> <a href="<%= @moderatable.path %>/edit"><%= t("views.moderations.actions.edit.post") %></a> |
       <a href="/resource_admin/articles/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.resource_admin") %></a> |
       <a href="<%= admin_article_path(@moderatable.id) %>" data-no-instant><%= t("views.moderations.actions.edit.article_admin") %></a></h3>
-  <% elsif current_user.super_admin? && @moderatable.class.name == "Comment" %>
-    <h3> <a href="/admin/content_manager/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a> |
-      <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a></h3>
+  <% elsif (current_user.super_admin? || current_user.support_admin?) && @moderatable.class.name == "Comment" %>
+    <h3> <a href="/admin/content_manager/comments/<%= @moderatable.id %>" data-no-instant><%= t("views.moderations.actions.edit.comment_admin") %></a>
+      <% if current_user.super_admin? %>
+        | <a href="<%= admin_user_path(@moderatable.user_id) %>" data-no-instant><%= t("views.moderations.actions.edit.user_admin") %></a>
+      <% end %></h3>
   <% end %>
   <p>
     <b style="font-size:1em"><%= t("views.moderations.actions.hint.subtitle") %></b>

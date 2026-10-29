@@ -339,7 +339,10 @@
       setProgress(25);
       return fetch(data.presigned_url, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/x-jsonlines' },
+        headers: {
+          'Content-Type': 'application/x-jsonlines',
+          'x-amz-acl': 'private'
+        },
         body: content,
       });
     }).then(function(response) {

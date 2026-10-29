@@ -1,21 +1,22 @@
 require "rails_helper"
 
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
-  let(:user) { create(:user) }
-  let(:second_user) { create(:user) }
-  let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
-  let!(:article) { create(:article) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:second_user) { create(:user, :without_profile, profile_image: nil) }
+  let(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
+  let!(:article) { create(:article, user: user, with_tags: false) }
   let!(:hot_story) do
-    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user_id: second_user.id)
+    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user: second_user,
+                            with_tags: false)
   end
-  let!(:old_story) { create(:article, :past, past_published_at: 3.days.ago) }
-  let!(:low_scoring_article) { create(:article, score: -1000) }
+  let!(:old_story) { create(:article, :past, past_published_at: 3.days.ago, user: user, with_tags: false) }
+  let!(:low_scoring_article) { create(:article, score: -1000, user: user, with_tags: false) }
 
   describe "#featured_story_and_default_home_feed" do
     let(:default_feed) { feed.featured_story_and_default_home_feed }
     let(:featured_story) { default_feed.first }
     let(:stories) { default_feed.second }
-    let!(:min_score_article) { create(:article, score: 0) }
+    let!(:min_score_article) { create(:article, score: 0, user: user, with_tags: false) }
 
     before do
       article.update(published_at: 1.week.ago)
@@ -27,6 +28,17 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       expect(featured_story).to eq hot_story
       expect(stories).not_to include(low_scoring_article)
       expect(stories).to include(min_score_article)
+    end
+
+    it "includes favorited articles even if their score is below the home feed minimum score" do
+      favorited_low_score_article = create(:article, score: -100, favorited_by_user: create(:user),
+                                                     favorited_at: Time.current)
+      expect(stories).to include(favorited_low_score_article)
+    end
+
+    it "includes featured articles even if their score is below the home feed minimum score" do
+      featured_low_score_article = create(:article, score: -100, featured: true)
+      expect(stories).to include(featured_low_score_article)
     end
 
     context "when user logged in" do
@@ -43,6 +55,27 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
       it "does not load blocked articles" do
         create(:user_block, blocker: user, blocked: second_user, config: "default")
         expect(result).not_to include(hot_story)
+      end
+    end
+
+    [true, false].each do |signed_in|
+      it "loads the feed without querying subforems when user_signed_in is #{signed_in}", :aggregate_failures do
+        subforem = create(:subforem)
+        hot_story.update_column(:subforem_id, subforem.id)
+        RequestStore.store[:subforem_id] = subforem.id
+
+        subforem_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+        end
+        result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.featured_story_and_default_home_feed(user_signed_in: signed_in)
+        end
+
+        expect(result.second).to include(hot_story)
+        expect(subforem_queries).to be_empty
+      ensure
+        RequestStore.store.delete(:subforem_id)
       end
     end
 
@@ -123,9 +156,9 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   end
 
   describe "#rank_and_sort_articles" do
-    let(:article1) { create(:article) }
-    let(:article2) { create(:article) }
-    let(:article3) { create(:article) }
+    let(:article1) { build_stubbed(:article) }
+    let(:article2) { build_stubbed(:article) }
+    let(:article3) { build_stubbed(:article) }
     let(:articles) { [article1, article2, article3] }
 
     context "when number of articles specified" do
@@ -184,6 +217,60 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
 
       it "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
+      end
+    end
+
+    [true, false].each do |signed_in|
+      it "loads the feed without querying reactions when user_signed_in is #{signed_in}" do
+        create(:reaction, reactable: hot_story, category: "like")
+        reaction_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.globally_hot_articles(signed_in).second.to_a
+        end
+
+        expect(reaction_queries).to be_empty
+      end
+    end
+
+    it "still returns the reaction categories of each article" do
+      create(:reaction, reactable: hot_story, category: "like")
+
+      story = feed.globally_hot_articles(false).second.detect { |result| result.id == hot_story.id }
+
+      expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
+    end
+  end
+
+  describe "AI disclosure preferences" do
+    let!(:no_ai_article) do
+      create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :no_ai,
+                              user: user, with_tags: false)
+    end
+    let!(:autonomous_article) do
+      create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :fully_autonomous,
+                              user: user, with_tags: false)
+    end
+
+    context "when user has hide_fully_autonomous preference" do
+      before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+      it "filters out fully autonomous articles from globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article)
+        expect(stories).not_to include(autonomous_article)
+      end
+    end
+
+    context "when user has show_all preference" do
+      before { user.setting.update(feed_ai_preference: :show_all) }
+
+      it "includes all AI disclosure levels in globally_hot_articles" do
+        _featured, stories = feed.globally_hot_articles(true)
+        expect(stories).to include(no_ai_article, autonomous_article)
       end
     end
   end

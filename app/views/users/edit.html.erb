@@ -50,6 +50,8 @@
         </div>
       <% end %>
 
+      <%= render "flag_appeals/suspended_notice" %>
+
       <% if current_user.email.blank? %>
         <div class="crayons-notice crayons-notice--warning mb-6" aria-live="polite">
           <h3 class="mb-2"><%= t("views.settings.complete.heading") %></h3>

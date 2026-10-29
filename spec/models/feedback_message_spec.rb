@@ -51,12 +51,24 @@ RSpec.describe FeedbackMessage do
 
         expect(new_abuse_report).to be_valid
       end
+
+      it "rejects unsafe URI schemes in reported_url" do
+        unsafe_report = build(:feedback_message, :abuse_report, reported_url: "javascript:alert(1)")
+        expect(unsafe_report).not_to be_valid
+        expect(unsafe_report.errors[:reported_url]).to be_present
+      end
     end
 
     describe "validations for a bug report" do
       subject(:feedback_message) { create(:feedback_message, :bug_report, reporter: reporter) }
 
       it { is_expected.not_to validate_presence_of(:reported_url) }
+
+      it "does not enforce reporter uniqueness on non-abuse feedback messages" do
+        create(:feedback_message, :bug_report, reported_url: "/some/path", reporter: reporter)
+        duplicate = build(:feedback_message, :bug_report, reported_url: "/some/path", reporter: reporter)
+        expect(duplicate).to be_valid
+      end
     end
   end
 
@@ -131,6 +143,72 @@ RSpec.describe FeedbackMessage do
         feedback_message.determine_reported_from_url
         expect(feedback_message.reported).to be_nil
       end
+    end
+  end
+
+  describe "#assign_offender_from_reported" do
+    let(:reported_user) { create(:user) }
+    let(:article) { create(:article) }
+    let(:comment) { create(:comment) }
+    let(:billboard) { create(:billboard) }
+
+    it "assigns the offender when the reported entity is a user" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: reported_user, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(reported_user)
+    end
+
+    it "assigns the offender to the article author" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: article, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(article.user)
+    end
+
+    it "assigns the offender to the comment author" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: comment, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(comment.user)
+    end
+
+    it "does not assign an offender for unsupported reported entities" do
+      feedback_message = build(:feedback_message, :abuse_report, reported: billboard, offender: nil)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to be_nil
+    end
+
+    it "does not overwrite an existing offender" do
+      original_offender = create(:user)
+      feedback_message = build(:feedback_message, :abuse_report, reported: reported_user, offender: original_offender)
+
+      feedback_message.assign_offender_from_reported
+
+      expect(feedback_message.offender).to eq(original_offender)
+    end
+  end
+
+  describe "#reported_url=" do
+    it "normalizes an ASCII-8BIT string with valid UTF-8 bytes to UTF-8" do
+      feedback_message = described_class.new(reported_url: "https://dev.to/caf\xC3\xA9".b)
+
+      expect(feedback_message.reported_url).to eq("https://dev.to/café")
+      expect(feedback_message.reported_url.encoding).to eq(Encoding::UTF_8)
+      expect(feedback_message.reported_url).to be_valid_encoding
+    end
+
+    it "scrubs invalid byte sequences from an ASCII-8BIT string and normalizes to UTF-8" do
+      feedback_message = described_class.new(reported_url: "1 \xC0\xA7\xC0\xA2%2527%2522".b)
+
+      expect(feedback_message.reported_url).to eq("1 %2527%2522")
+      expect(feedback_message.reported_url.encoding).to eq(Encoding::UTF_8)
+      expect(feedback_message.reported_url).to be_valid_encoding
     end
   end
 end

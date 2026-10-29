@@ -7,6 +7,14 @@ module Billboards
 
     CONVERSION_SUCCESS_MODIFIER = 25
 
+    TALLY_COLUMNS = [
+      "COALESCE(SUM(counts_for) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_IMPRESSION}'), 0)",
+      "COALESCE(SUM(counts_for) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_CLICK}'), 0)",
+      "COALESCE(SUM(counts_for) FILTER (WHERE category IN " \
+      "('#{BillboardEvent::CATEGORY_SIGNUP}', '#{BillboardEvent::CATEGORY_CONVERSION}')), 0)",
+      "COALESCE(SUM(seconds_visible) FILTER (WHERE category = '#{BillboardEvent::CATEGORY_IMPRESSION}'), 0)",
+    ].map { |sql| Arel.sql(sql) }.freeze
+
     def perform(billboard_id)
       perform_update(billboard_id)
     end
@@ -26,35 +34,25 @@ module Billboards
       if billboard.counts_tabulated_at.present?
         cutoff = billboard.counts_tabulated_at
 
-        num_impressions = billboard.billboard_events
-                                 .impressions
-                                 .where("created_at > ?", cutoff)
-                                 .sum(:counts_for)
-
-        num_clicks      = billboard.billboard_events
-                                 .clicks
-                                 .where("created_at > ?", cutoff)
-                                 .sum(:counts_for)
-
-        conversion_success = billboard.billboard_events
-                                     .all_conversion_types
-                                     .where("created_at > ?", cutoff)
-                                     .sum(:counts_for) * CONVERSION_SUCCESS_MODIFIER
+        num_impressions, num_clicks, num_conversions, num_seconds_visible =
+          tally_events(billboard.billboard_events.where("created_at > ?", cutoff))
+        conversion_success = num_conversions * CONVERSION_SUCCESS_MODIFIER
 
         new_clicks      = billboard.clicks_count + num_clicks
         new_impressions = billboard.impressions_count + num_impressions
+        new_seconds_visible = billboard.seconds_visible + num_seconds_visible
         rate = (new_clicks + conversion_success).to_f / new_impressions
 
         billboard.update_columns(
           success_rate:        rate,
           clicks_count:        new_clicks,
           impressions_count:   new_impressions,
+          seconds_visible:     new_seconds_visible,
           counts_tabulated_at: timestamp
         )
       else
-        num_impressions    = billboard.billboard_events.impressions.sum(:counts_for)
-        num_clicks         = billboard.billboard_events.clicks.sum(:counts_for)
-        conversion_success = billboard.billboard_events.all_conversion_types.sum(:counts_for) * CONVERSION_SUCCESS_MODIFIER
+        num_impressions, num_clicks, num_conversions, num_seconds_visible = tally_events(billboard.billboard_events)
+        conversion_success = num_conversions * CONVERSION_SUCCESS_MODIFIER
 
         rate = (num_clicks + conversion_success).to_f / num_impressions
 
@@ -62,9 +60,18 @@ module Billboards
           success_rate:        rate,
           clicks_count:        num_clicks,
           impressions_count:   num_impressions,
+          seconds_visible:     num_seconds_visible,
           counts_tabulated_at: timestamp
         )
       end
+    end
+
+    # Sums every category in one pass over the billboard's events instead of
+    # one SUM query (and one index walk) per category.
+    #
+    # @return [Array<Integer>] impressions, clicks, conversions, seconds visible
+    def tally_events(events)
+      events.pick(*TALLY_COLUMNS)
     end
   end
 end

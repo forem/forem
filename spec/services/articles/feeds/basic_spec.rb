@@ -23,6 +23,20 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
       expect(result.third).to eq article
       expect(result).not_to include(low_scoring_article)
     end
+
+    it "loads the feed without querying reactions" do
+      create(:reaction, reactable: hot_story, category: "like")
+      reaction_queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        feed.feed.to_a
+      end
+
+      expect(reaction_queries).to be_empty
+    end
   end
 
   context "with a user" do
@@ -61,6 +75,41 @@ RSpec.describe Articles::Feeds::Basic, type: :service do
         result = feed.feed
         expect(result).not_to include(hidden)
         expect(result).to include(visible)
+      end
+    end
+
+    context "with AI disclosure preferences" do
+      let!(:no_ai_post) { create(:article, hotness_score: 50, ai_disclosure_level: :no_ai) }
+      let!(:some_ai_post) { create(:article, hotness_score: 50, ai_disclosure_level: :some_ai) }
+      let!(:autonomous_post) { create(:article, hotness_score: 50, ai_disclosure_level: :fully_autonomous) }
+
+      context "when feed_ai_preference is show_all" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "includes all articles" do
+          result = feed.feed
+          expect(result).to include(no_ai_post, some_ai_post, autonomous_post)
+        end
+      end
+
+      context "when feed_ai_preference is minimize_ai" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "ranks human/no_ai content higher than AI disclosed content with same baseline" do
+          result = feed.feed
+          expect(result.index(no_ai_post)).to be < result.index(some_ai_post)
+          expect(result.index(some_ai_post)).to be < result.index(autonomous_post)
+        end
+      end
+
+      context "when feed_ai_preference is hide_fully_autonomous" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "completely excludes fully autonomous articles" do
+          result = feed.feed
+          expect(result).to include(no_ai_post, some_ai_post)
+          expect(result).not_to include(autonomous_post)
+        end
       end
     end
   end

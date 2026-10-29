@@ -11,12 +11,18 @@ module Settings
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
     setting :article_published_slack_channel, type: :string, default: "activity"
+    # AI confidence needed to auto-approve an appeal. Scores are capped at 1.0, so the 1.01 default
+    # disables auto-approval and routes every appeal to human review; lower it to opt in.
+    setting :appeal_auto_unflag_threshold,
+            type: :float,
+            default: 1.01,
+            validates: { numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1.01 } }
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current
 
     # Core setup
-    setting :waiting_on_first_user, type: :boolean, default: !User.exists?
+    setting :waiting_on_first_user, type: :boolean, default: proc { !User.exists? }
     setting :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
     # API Tokens
@@ -42,6 +48,11 @@ module Settings
     # Ahoy Tracking
     setting :ahoy_tracking, type: :boolean, default: false
 
+    # Master switch for emitting user lifecycle events to the Customer.io CDP
+    # (DEV -> MLH Core sync). Per-account rollout is gated separately by the
+    # :dev_core_user_sync feature flag.
+    setting :customerio_cdp_enabled, type: :boolean, default: false
+
     # Images
     setting :main_social_image,
             type: :string,
@@ -60,6 +71,10 @@ module Settings
 
     setting :enable_video_upload, type: :boolean, default: false
     setting :enable_agent_sessions, type: :boolean, default: true
+    setting :enable_ai_disclosure, type: :boolean, default: false
+    setting :limit_post_creation_to_admins,
+            type: :boolean,
+            default: proc { FeatureFlag.enabled?(:limit_post_creation_to_admins) }
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil
@@ -88,6 +103,30 @@ module Settings
     setting :billboard_enabled_countries, type: :hash, default: Geolocation::DEFAULT_ENABLED_COUNTRIES, validates: {
       enabled_countries_hash: true
     }
+
+    # Regions (ISO 3166 codes such as "US", "CA" or "US-CA") where signed-out visitors may be
+    # given an anonymous identifier in their browser's localStorage, along with a tally of the
+    # tags on the articles they read. Delivered to the browser through billboard responses
+    # (see BillboardsController#anonymous_tracking_allowed? and
+    # app/javascript/utilities/anonymousVisitor.js).
+    #
+    # This exists so we can serve better content to anonymous readers. It is empty (off
+    # everywhere) by default, and admins are responsible for only listing regions where it is
+    # lawful to store an identifier on a visitor's device without asking first:
+    #
+    # - Many jurisdictions (e.g. the EU/EEA and UK under GDPR + ePrivacy) treat a persistent
+    #   localStorage identifier like a cookie: it needs prior consent unless strictly necessary.
+    #   Do NOT list such regions unless the flow is first gated on the cookie banner
+    #   (localStorage "cookie_status" === "allowed"), which this setting alone does not do.
+    # - If this data is ever used for ads (e.g. billboard targeting), it must be allowed for
+    #   advertising in each listed region and/or compatible with the cookie banner, and the
+    #   privacy policy should say so.
+    # - Removing a region stops new identifiers from being created there, but does not clear
+    #   identifiers browsers already have; that needs a client-side change.
+    # - Signed-out visitors are only geolocated to countries in Fastly's
+    #   `active_geofencing_regions` edge dictionary (config/fastly/snippets/client_geolocation.vcl).
+    #   A region missing from that dictionary never matches here.
+    setting :geos_with_allowed_anonymous_tracking, type: :array, default: %w[]
 
     # Newsletter
     # <https://mailchimp.com/developer/>
@@ -200,6 +239,63 @@ module Settings
     
         # c) return the raw value
         value
+      end
+
+      # Appeal assessments run in Sidekiq (Appeals::AiReviewWorker), where RequestStore has no
+      # subforem_id, so store the threshold globally (subforem_id: nil) even when saved from a
+      # subforem-scoped admin request.
+      def set_appeal_auto_unflag_threshold(value, subforem_id: nil) # rubocop:disable Lint/UnusedMethodArgument
+        record = find_by(var: "appeal_auto_unflag_threshold", subforem_id: nil) ||
+          new(var: "appeal_auto_unflag_threshold", subforem_id: nil)
+        record.value = convert_string_to_value_type(:float, value)
+        record.save!
+        where(var: "appeal_auto_unflag_threshold").where.not(subforem_id: nil).delete_all
+        clear_cache
+        value
+      end
+
+      def appeal_auto_unflag_threshold=(value)
+        set_appeal_auto_unflag_threshold(value)
+      end
+
+      alias __orig_set_limit_post_creation_to_admins set_limit_post_creation_to_admins
+
+      # Updates the limit_post_creation_to_admins setting, preserving subforem independence
+      # while keeping the legacy global FeatureFlag synchronized for unscoped updates.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @param subforem_id [Integer, nil] optional subforem scope
+      # @return [Object] the raw value passed in
+      def set_limit_post_creation_to_admins(value, subforem_id: nil)
+        effective_subforem_id =
+          subforem_id || RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id]
+        if effective_subforem_id.present? && !exists?(var: "limit_post_creation_to_admins", subforem_id: nil)
+          __orig_set_limit_post_creation_to_admins(
+            FeatureFlag.enabled?(:limit_post_creation_to_admins),
+            subforem_id: nil,
+          )
+        end
+
+        __orig_set_limit_post_creation_to_admins(value, subforem_id: subforem_id)
+
+        if effective_subforem_id.nil?
+          if convert_string_to_value_type(:boolean, value)
+            FeatureFlag.enable(:limit_post_creation_to_admins)
+          else
+            FeatureFlag.disable(:limit_post_creation_to_admins)
+          end
+        end
+
+        Spaces::BustCachesForSpaceChangeWorker.perform_async
+        value
+      end
+
+      # Assigns the limit_post_creation_to_admins setting using the current request scope.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @return [Object] the raw value passed in
+      def limit_post_creation_to_admins=(value)
+        set_limit_post_creation_to_admins(value)
       end
     end
   end

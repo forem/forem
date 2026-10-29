@@ -1,37 +1,37 @@
 require "rails_helper"
 
-RSpec.describe "Editing with an editor", js: true do
+RSpec.describe "Editing with an editor", :js do
   let(:template) { file_fixture("article_published.txt").read }
-  let(:user) { create(:user) }
-  let(:article) { create(:article, user: user, body_markdown: template) }
-  let(:svg_image) { file_fixture("300x100.svg").read }
+  let(:user) { create(:user, profile_image: nil) }
+  let(:article) { create(:article, user: user, body_markdown: template, with_tags: false, with_main_image: false) }
 
   before do
-    allow(Settings::General).to receive(:main_social_image).and_return("https://dummyimage.com/800x600.jpg")
-    allow(Settings::General).to receive(:logo_png).and_return("https://dummyimage.com/800x600.png")
-    allow(Settings::General).to receive(:mascot_image_url).and_return("https://dummyimage.com/800x600.jpg")
-    allow(Settings::General).to receive(:suggested_tags).and_return("coding, beginners")
+    allow(Settings::General).to receive_messages(
+      main_social_image: "https://dummyimage.com/800x600.jpg",
+      logo_png: "https://dummyimage.com/800x600.png",
+      mascot_image_url: "https://dummyimage.com/800x600.jpg",
+      suggested_tags: "coding, beginners",
+    )
     sign_in user
   end
 
-  it "user previews their changes" do
+  it "user previews their changes and updates their post", :aggregate_failures do
     visit "/#{user.username}/#{article.slug}/edit"
+    expect(page).to have_css("body[data-loaded='true']")
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("Preview")
-    expect(page).to have_text("Yooo")
-  end
 
-  it "user updates their post" do
-    visit "/#{user.username}/#{article.slug}/edit"
-    fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("Save changes")
-    expect(page).to have_text("Yooo")
+    click_on("Preview")
+    expect(page).to have_css(".crayons-article__body", text: "Yooo")
+
+    click_on("Save changes")
+    expect(page).to have_css("#article-body", text: "Yooo")
   end
 
   it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
-    fill_in("article_body_markdown", with: template.gsub("true", "false"), fill_options: { clear: :backspace })
-    click_button("Save changes")
+    expect(page).to have_css("body[data-loaded='true']")
+    fill_in "article_body_markdown", with: template.gsub("true", "false")
+    click_on("Save changes")
     expect(page).to have_text("Unpublished Post.")
   end
 
@@ -47,10 +47,10 @@ RSpec.describe "Editing with an editor", js: true do
         .and_return(true)
     end
 
-    it "displays a rate limit warning", :flaky, js: true do
+    it "displays a rate limit warning", :flaky, :js do
       visit "/#{user.username}/#{article.slug}/edit"
-      fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-      click_button "Save changes"
+      expect(page).to have_css("body[data-loaded='true']")
+      click_on "Save changes"
       expect(page).to have_text("Rate limit reached")
     end
   end

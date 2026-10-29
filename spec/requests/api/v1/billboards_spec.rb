@@ -18,7 +18,7 @@ RSpec.describe "Api::V1::Billboards" do
       target_geolocations: "US-WA, CA-BC"
     }
   end
-  let!(:billboard1) { create(:billboard, published: true, approved: true, type_of: "in_house") }
+  let(:billboard1) { create(:billboard, published: true, approved: true, type_of: "in_house") }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
@@ -32,6 +32,7 @@ RSpec.describe "Api::V1::Billboards" do
 
     describe "GET /api/billboards" do
       it "returns json response" do
+        billboard1
         get api_billboards_path, headers: auth_header
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
@@ -53,10 +54,13 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at", "color",
                           "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id", "counts_tabulated_at",
-                          "exclude_role_names", "target_role_names", "include_subforem_ids", "prefer_paired_with_billboard_id",
-                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id")
+                          "exclude_role_names", "target_role_names", "include_subforem_ids",
+                          "prefer_paired_with_billboard_id", "custom_display_label", "template", "render_mode",
+                          "preferred_article_ids", "priority", "weight", "target_geolocations",
+                          "requires_cookies", "special_behavior", "expires_at",
+                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
+                          "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
+                          "seconds_visible")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -77,8 +81,10 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id", "page_id", "prefer_paired_with_billboard_id",
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
-                          "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id")
+                          "priority", "weight", "target_geolocations", "requires_cookies",
+                          "special_behavior", "expires_at", "exclude_survey_completions", "exclude_survey_ids",
+                          "content_updated_at", "tags_array", "event_id",
+                          "minimized_body_markdown", "minimized_processed_html", "seconds_visible")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -146,7 +152,9 @@ RSpec.describe "Api::V1::Billboards" do
                           "exclude_role_names", "target_role_names", "include_subforem_ids",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "prefer_paired_with_billboard_id", "expires_at",
-                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at", "tags_array", "event_id")
+                          "exclude_survey_completions", "exclude_survey_ids", "content_updated_at",
+                          "tags_array", "event_id", "minimized_body_markdown", "minimized_processed_html",
+                          "seconds_visible")
       end
 
       it "also accepts target geolocations as an array" do
@@ -178,6 +186,33 @@ RSpec.describe "Api::V1::Billboards" do
 
         expect(response).to have_http_status(:success)
         expect(billboard1.reload).not_to be_published
+      end
+    end
+
+    describe "POST /api/billboards/preview" do
+      it "renders processed_html and minimized_processed_html without saving a billboard" do
+        expect do
+          post preview_api_billboards_path,
+               params: {
+                 body_markdown: "## Billboard Headline\n\nCheck this out!",
+                 minimized_body_markdown: "**Minimized copy**",
+                 placement_area: "post_sidebar"
+               }.to_json,
+               headers: auth_header
+        end.not_to change(Billboard, :count)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["processed_html"]).to include("Billboard Headline")
+        expect(response.parsed_body["minimized_processed_html"]).to include("<strong>Minimized copy</strong>")
+      end
+
+      it "returns 422 when markdown contains an invalid liquid tag" do
+        post preview_api_billboards_path,
+             params: { body_markdown: "{% link invalid_link_that_does_not_exist %}" }.to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

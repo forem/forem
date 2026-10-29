@@ -29,13 +29,13 @@ class LogoUploader < BaseUploader
 
   def filename
     # random_string in the filename to avoid caching issues
-    "original_logo_#{random_string}.#{file.extension}"
+    "original_logo_#{random_string}.#{file.extension}" if file.present?
   end
 
   version :resized_logo do
     process resize_to_limit: [nil, 80]
     def full_filename(_for_file = file)
-      "resized_logo_#{random_string}.#{file.extension}"
+      "resized_logo_#{random_string}.#{file.extension}" if file.present?
     end
   end
 

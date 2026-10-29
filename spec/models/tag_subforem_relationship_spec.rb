@@ -19,6 +19,33 @@ RSpec.describe TagSubforemRelationship, type: :model do
   # validates :tag_id, presence: true, uniqueness: { scope: :subforem_id }
   # validates :subforem_id, presence: true, uniqueness: { scope: :tag_id }
 
+  describe "supported tags cache purging" do
+    before { allow(Tag).to receive(:purge_supported_tags) }
+
+    it "purges the supported tags list on create" do
+      create(:tag_subforem_relationship)
+      expect(Tag).to have_received(:purge_supported_tags)
+    end
+
+    it "purges the supported tags list on update" do
+      relationship = create(:tag_subforem_relationship)
+      RSpec::Mocks.space.proxy_for(Tag).reset
+      allow(Tag).to receive(:purge_supported_tags)
+
+      relationship.update!(supported: false)
+      expect(Tag).to have_received(:purge_supported_tags)
+    end
+
+    it "purges the supported tags list on destroy" do
+      relationship = create(:tag_subforem_relationship)
+      RSpec::Mocks.space.proxy_for(Tag).reset
+      allow(Tag).to receive(:purge_supported_tags)
+
+      relationship.destroy!
+      expect(Tag).to have_received(:purge_supported_tags)
+    end
+  end
+
   describe "uniqueness validation" do
     let!(:tag_subforem_relationship) { create(:tag_subforem_relationship) }
 

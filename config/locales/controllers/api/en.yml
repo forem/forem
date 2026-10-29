@@ -7,6 +7,7 @@ en:
         start_missing: Required 'start' parameter is missing
       articles_controller:
         must_be_json: article param must be a JSON object. You provided article as a %{type}
+        page_limit_exceeded: Page depth limited to 1000 without an API key
       follows_controller:
         followed:
           one: followed %{count} user
@@ -19,3 +20,10 @@ en:
         redis_not_connected: Redis NOT connected!
       listings_controller:
         no_credit: Not enough available credits
+    v1:
+      images_controller:
+        image_required: An 'image' file is required (multipart/form-data)
+        prompt_required: A 'prompt' is required
+        prompt_too_long: The 'prompt' must be %{max} characters or fewer
+        invalid_aspect_ratio: "'aspect_ratio' must be one of: %{valid}"
+        generation_unavailable: AI image generation is not available on this Forem

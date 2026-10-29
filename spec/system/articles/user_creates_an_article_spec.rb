@@ -8,11 +8,11 @@ RSpec.describe "Creating an article with the editor" do
     u.setting.update(editor_version: "v1")
     u
   end
-  let!(:template) { file_fixture("article_published.txt").read }
-  let!(:template_with_legacy_code_tag) do
+  let(:template) { file_fixture("article_published.txt").read }
+  let(:template_with_legacy_code_tag) do
     file_fixture("article_with_legacy_code_tag.txt").read
   end
-  let!(:template_with_legacy_code_tag_with_preamble) do
+  let(:template_with_legacy_code_tag_with_preamble) do
     file_fixture("article_with_legacy_code_tag_with_preamble.txt").read
   end
 
@@ -20,58 +20,51 @@ RSpec.describe "Creating an article with the editor" do
     sign_in user
   end
 
-  it "creates a new article", :flaky, js: true do
+  it "creates a new article and hides active announcement broadcasts on /new", :aggregate_failures, :flaky, :js do
+    create(:announcement_broadcast)
     visit new_path
+    expect(page).to have_css("body[data-loaded='true']")
+    expect(page).to have_no_css(".broadcast-wrapper .broadcast-data")
+
     fill_in "article_body_markdown", with: template
-    click_button "Save changes"
-    expect(page).to have_selector("header h1", text: "Sample Article")
+    click_on "Save changes"
+    expect(page).to have_css("header h1", text: "Sample Article")
   end
 
-  context "with an active announcement" do
-    before do
-      create(:announcement_broadcast)
-      visit new_path
-      expect(page).to have_selector("body[data-loaded='true']")
-    end
-
-    it "does not render the announcement broadcast", js: true do
-      expect(page).not_to have_css(".broadcast-wrapper .broadcast-data")
-    end
-  end
-
-  context "with legacy code tag", js: true do
+  context "with legacy code tag", :js do
     # These are skipped because the legacy code tag consistency is not a priority
-    xit "creates a new article with a legacy code tag" do
+    it "creates a new article with a legacy code tag", skip: "legacy code tag consistency is not a priority" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_legacy_code_tag
-      click_button "Save changes"
+      click_on "Save changes"
 
-      expect(page).not_to have_current_path(new_path)
+      expect(page).to have_no_current_path(new_path)
       expect_legacy_code_tag_to_be_visible
     end
 
-    xit "creates a new article with a legacy code tag with complex preamble" do
+    it "creates a new article with a legacy code tag with complex preamble",
+       skip: "legacy code tag consistency is not a priority" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_legacy_code_tag_with_preamble
-      click_button "Save changes"
+      click_on "Save changes"
 
-      expect(page).not_to have_current_path(new_path)
+      expect(page).to have_no_current_path(new_path)
       expect_legacy_code_tag_to_be_visible(count: 2)
     end
 
     # TODO: [@forem/sre] figure out why this fails intermittently :-|
-    xit "previews article with a legacy code tag and creates it" do
+    it "previews article with a legacy code tag and creates it", skip: "fails intermittently" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_legacy_code_tag
-      click_button "Preview"
+      click_on "Preview"
 
       expect_legacy_code_tag_to_be_visible
 
-      click_button "Edit"
+      click_on "Edit"
 
       expect_no_legacy_code_tag_to_be_visible
 
-      click_button "Save changes"
+      click_on "Save changes"
 
       expect_legacy_code_tag_to_be_visible
     end
@@ -89,10 +82,11 @@ RSpec.describe "Creating an article with the editor" do
         .and_return(true)
     end
 
-    it "displays a rate limit warning", :flaky, js: true do
+    it "displays a rate limit warning", :flaky, :js do
       visit new_path
+      expect(page).to have_css("body[data-loaded='true']")
       fill_in "article_body_markdown", with: template
-      click_button "Save changes"
+      click_on "Save changes"
       expect(page).to have_text("Rate limit reached")
     end
   end

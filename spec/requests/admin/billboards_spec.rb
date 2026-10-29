@@ -65,14 +65,10 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "POST /admin/customization/billboards" do
-      it "creates a new billboard" do
+      it "creates a new billboard and sets creator to current_user", :aggregate_failures do
         expect do
           post_resource
         end.to change(Billboard, :count).by(1)
-      end
-
-      it "sets creator to current_user" do
-        post_resource
         expect(Billboard.last.creator_id).to eq(super_admin.id)
       end
 
@@ -87,30 +83,37 @@ RSpec.describe "/admin/customization/billboards" do
           post admin_billboards_path, params: params.merge(target_geolocations: nil)
         end.to change(Billboard, :count).by(1)
       end
+
+      it "creates a new billboard with special_behavior and minimized_body_markdown", :aggregate_failures do
+        expect do
+          post admin_billboards_path,
+               params: params.merge(special_behavior: "persistent", minimized_body_markdown: "Minimized content")
+        end.to change(Billboard, :count).by(1)
+        expect(Billboard.last.special_behavior).to eq("persistent")
+        expect(Billboard.last.minimized_body_markdown).to eq("Minimized content")
+        expect(Billboard.last.minimized_processed_html).to include("Minimized content")
+      end
     end
 
     describe "PUT /admin/customization/billboards" do
       let!(:billboard) { create(:billboard, approved: false) }
 
-      it "updates Billboard's approved value" do
+      it "updates Billboard's approved and priority values and redirects back to edit path", :aggregate_failures do
         Timecop.freeze(Time.current) do
-          expect do
-            put admin_billboard_path(billboard.id), params: params
-          end.to change { billboard.reload.approved }.from(false).to(true)
+          put admin_billboard_path(billboard.id), params: params
+          billboard.reload
+          expect(billboard.approved).to be(true)
+          expect(billboard.priority).to be(true)
+          expect(response.body).to redirect_to edit_admin_billboard_path(billboard.id)
         end
       end
 
-      it "updates Billboard's priority value" do
-        Timecop.freeze(Time.current) do
-          expect do
-            put admin_billboard_path(billboard.id), params: params
-          end.to change { billboard.reload.priority }.from(false).to(true)
-        end
-      end
-
-      it "redirects back to edit path" do
-        put admin_billboard_path(billboard.id), params: params
-        expect(response.body).to redirect_to edit_admin_billboard_path(billboard.id)
+      it "updates special_behavior and minimized_body_markdown", :aggregate_failures do
+        put admin_billboard_path(billboard.id),
+            params: params.merge(special_behavior: "persistent", minimized_body_markdown: "Updated minimized content")
+        expect(billboard.reload.special_behavior).to eq("persistent")
+        expect(billboard.minimized_body_markdown).to eq("Updated minimized content")
+        expect(billboard.minimized_processed_html).to include("Updated minimized content")
       end
     end
 
@@ -138,14 +141,10 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "POST /admin/customization/billboards" do
-      it "creates a new billboard" do
+      it "creates a new billboard and sets creator to current_user", :aggregate_failures do
         expect do
           post_resource
         end.to change(Billboard, :count).by(1)
-      end
-
-      it "sets creator to current_user" do
-        post_resource
         expect(Billboard.last.creator_id).to eq(single_resource_admin.id)
       end
     end

@@ -25,6 +25,20 @@ pt:
       broadcast:
         visit_html: Visite %{settings} para gerenciar suas notificações.
         settings: Configurações
+      event:
+        reminder_html: "Lembrete: %{event_link} começa em %{time}!"
+      co_author:
+        if_org_html: " em %{org}"
+        verb_html: "%{user} publicou um post em que você é coautor%{if_org}"
+      co_author_invitation:
+        accept: Aceitar
+        accepted_html: "%{user} aceitou seu convite para ser coautor de %{title}"
+        credited: Você está creditado como coautor desta publicação.
+        decline: Recusar
+        declined: Você recusou este convite.
+        invited_html: "%{user} convidou você para ser coautor de %{title}"
+        pending: Se você aceitar, será creditado como coautor desta publicação.
+        remove: Remover-me como coautor
       comment:
         commented_html: "%{user} comentou em %{title}"
         first_html: "%{user} escreveu seu primeiro comentário em %{title}"

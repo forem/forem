@@ -243,12 +243,12 @@ RSpec.describe Reaction do
     end
 
     it "updates updated_at if the reactable is a comment" do
+      updated_at = 1.day.ago
+      comment = create(:comment, commentable: article, updated_at: updated_at)
       sidekiq_perform_enqueued_jobs do
-        updated_at = 1.day.ago
-        comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
-        expect(comment.reload.updated_at).to be > updated_at
       end
+      expect(comment.reload.updated_at).to be > updated_at
     end
   end
 
@@ -529,6 +529,48 @@ RSpec.describe Reaction do
       allow(UpdateUserInterestEmbeddingWorker).to receive(:perform_async)
       create(:reaction, reactable: comment, user: user, category: "like")
       expect(UpdateUserInterestEmbeddingWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "update user reading list activity" do
+    it "enqueues the worker when a readinglist reaction is created on an article" do
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      create(:reaction, reactable: article, user: user, category: "readinglist")
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
+    it "enqueues the worker when a readinglist reaction is destroyed" do
+      reading_reaction = create(:reaction, reactable: article, user: user, category: "readinglist")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      reading_reaction.destroy
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
+    it "enqueues the worker when a readinglist reaction is archived" do
+      reading_reaction = create(:reaction, reactable: article, user: user, category: "readinglist")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      reading_reaction.update!(status: "archived")
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
+    it "enqueues the worker when a readinglist reaction changes category away from readinglist" do
+      reading_reaction = create(:reaction, reactable: article, user: user, category: "readinglist")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      reading_reaction.update!(category: "like")
+      expect(Users::UpdateUserReadingListActivityWorker).to have_received(:perform_async).with(user.id)
+    end
+
+    it "does not enqueue the worker for non-readinglist reactions" do
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      create(:reaction, reactable: article, user: user, category: "like")
+      expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "does not enqueue the worker for non-article reactables" do
+      comment = create(:comment, commentable: article, user: user)
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      create(:reaction, reactable: comment, user: user, category: "readinglist")
+      expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
     end
   end
 end

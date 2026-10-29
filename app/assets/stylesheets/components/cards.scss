@@ -4,7 +4,7 @@
   border-radius: var(--radius-auto);
   background: var(--card-bg);
   color: var(--card-color);
-  box-shadow: 0 0 0 1px var(--card-secondary-border);
+  box-shadow: var(--card-shadow);
   // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
   overflow-wrap: break-word;
   overflow-wrap: anywhere;
@@ -12,7 +12,7 @@
   &--secondary {
     background: var(--card-bg);
     color: var(--card-secondary-color);
-    box-shadow: 0 0 0 1px var(--card-secondary-border);
+    box-shadow: var(--card-shadow);
   }
 
   &--elevated {
