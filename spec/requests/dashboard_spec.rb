@@ -290,13 +290,26 @@ RSpec.describe "Dashboards" do
     end
 
     describe "followed users section" do
-      it "lists followed users" do
+      it "lists followed users without issuing a redundant EXISTS query or raw created_at index scan",
+         :aggregate_failures do
         sign_in user
         user.follow second_user
         user.reload
-        get "/dashboard/following_users"
+
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/following_users"
+        end
 
         expect(response.body).to include CGI.escapeHTML(second_user.name)
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include("(follows.created_at + INTERVAL '0 seconds') DESC")
       end
     end
 
@@ -319,17 +332,34 @@ RSpec.describe "Dashboards" do
       end
 
       it "lists followed tags on following_tags and hidden tags on hidden_tags", :aggregate_failures do
-        get "/dashboard/following_tags"
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/following_tags"
+        end
 
         expect(response.body).to include first_followed_tag.name
         expect(response.body).to include second_followed_tag.name
         expect(response.body).not_to include antifollowed_tag.name
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include('"follows"."points" DESC')
 
-        get "/dashboard/hidden_tags"
+        follows_queries.clear
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/hidden_tags"
+        end
 
         expect(response.body).not_to include first_followed_tag.name
         expect(response.body).not_to include second_followed_tag.name
         expect(response.body).to include antifollowed_tag.name
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include('"follows"."explicit_points" DESC')
       end
     end
 
@@ -369,19 +399,34 @@ RSpec.describe "Dashboards" do
     context "when logged in" do
       let(:spam_user) { create(:user, :spam) }
       let(:suspended_user) { create(:user, :suspended) }
+      let(:blocked_user) { create(:user) }
 
       before do
         second_user.follow user
         spam_user.follow user
         suspended_user.follow user
+        create(:follow, follower: blocked_user, followable: user, blocked: true)
         sign_in user
       end
 
-      it "only includes good standing users as followers (not spam or suspended)", :aggregated_failures do
-        get "/dashboard/user_followers"
+      it "only includes good standing users as followers without a redundant EXISTS query", :aggregate_failures do
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/user_followers"
+        end
+
         expect(response.body).to include CGI.escapeHTML(second_user.name)
         expect(response.body).not_to include CGI.escapeHTML(spam_user.name)
         expect(response.body).not_to include CGI.escapeHTML(suspended_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(blocked_user.name)
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to match(/"follows"\."blocked" = (FALSE|\$\d+)/)
       end
     end
   end
