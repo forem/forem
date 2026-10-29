@@ -10,16 +10,18 @@ class NotificationDecorator < ApplicationDecorator
     alias_method :class_name, :name
   end.freeze
 
-  attr_writer :collection_notifications, :preloaded_subscriptions, :preloaded_reactions
+  attr_writer :collection_notifications, :preloaded_subscriptions, :preloaded_reactions, :preloaded_comment_replies
 
   def self.decorate_collection(objects)
     decorated = super
     preloaded = {}.compare_by_identity
     preloaded_reactions = {}.compare_by_identity
+    preloaded_comment_replies = {}.compare_by_identity
     decorated.each do |notification|
       notification.collection_notifications = decorated
       notification.preloaded_subscriptions = preloaded
       notification.preloaded_reactions = preloaded_reactions
+      notification.preloaded_comment_replies = preloaded_comment_replies
     end
   end
 
@@ -189,6 +191,21 @@ class NotificationDecorator < ApplicationDecorator
     @comment_id ||= json_data.dig "comment", "id"
   end
 
+  def comment_reply_for(user)
+    return unless user && comment_id
+
+    if user.comments.is_a?(ActiveRecord::Relation)
+      target_id = Integer(comment_id, exception: false)
+      return target_id && preloaded_comment_replies_for(user)[target_id]
+    end
+
+    Comment.select(:id, :user_id, :ancestry)
+      .find_by(id: comment_id)
+      &.children
+      &.select(:id, :user_id, :ancestry)
+      &.find_by(user_id: user.id)
+  end
+
   def comment_last_ancestor
     @comment_last_ancestor ||= (json_data.dig("comment", "ancestors") || []).last || {}
   end
@@ -315,6 +332,32 @@ class NotificationDecorator < ApplicationDecorator
           .to_set
       else
         Set.new
+      end
+    end
+  end
+
+  def preloaded_comment_replies_for(user)
+    @preloaded_comment_replies ||= {}.compare_by_identity
+    @preloaded_comment_replies[user] ||= begin
+      notifications = @collection_notifications || [self]
+      comment_ids = notifications.filter_map { |n| Integer(n.comment_id, exception: false) }.uniq
+      child_ancestries = if comment_ids.any?
+                           Comment.where(id: comment_ids).pluck(:id, :ancestry).to_h do |id, anc|
+                             [anc.present? ? "#{anc}/#{id}" : id.to_s, id]
+                           end
+                         else
+                           {}
+                         end
+
+      if child_ancestries.any?
+        replies = {}
+        user.comments.where(ancestry: child_ancestries.keys).select(:id, :user_id, :ancestry).each do |reply|
+          reply.association(:user).target = user
+          replies[child_ancestries[reply.ancestry]] ||= reply
+        end
+        replies
+      else
+        {}
       end
     end
   end

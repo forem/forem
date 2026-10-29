@@ -602,6 +602,35 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(Reaction).not_to have_received(:cached_any_reactions_for?)
       expect(reaction_selects).to eq(1)
     end
+
+    it "batches comment reply lookups across the collection and preloads the replying user" do
+      user = create(:user)
+      article = create(:article)
+      root_comment = create(:comment, commentable: article)
+      nested_parent = create(:comment, commentable: article, parent: root_comment)
+      root_reply = create(:comment, user: user, commentable: article, parent: root_comment)
+      nested_reply = create(:comment, user: user, commentable: article, parent: nested_parent)
+      unreplied_comment = create(:comment, commentable: article)
+
+      notifs = [root_comment, nested_parent, unreplied_comment].map do |comment|
+        build(:notification, notifiable_type: "Comment", json_data: { "comment" => { "id" => comment.id } })
+      end
+
+      decorated_list = described_class.decorate_collection(notifs)
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "comments"') || payload[:sql].include?('FROM "users"')
+      end
+
+      replies = decorated_list.map { |n| n.comment_reply_for(user) }
+      reply_paths = replies.compact.map(&:path)
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+
+      expect(replies).to eq([root_reply, nested_reply, nil])
+      expect(reply_paths).to eq([root_reply.path, nested_reply.path])
+      expect(queries.size).to eq(2)
+      expect(queries.none? { |sql| sql.include?("body_markdown") || sql.include?('FROM "users"') }).to be(true)
+    end
   end
 end
 # rubocop:enable RSpec/MultipleExpectations
