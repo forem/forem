@@ -28,7 +28,12 @@ class Follow < ApplicationRecord
   scope :follower_tag, ->(id) { where(follower_id: id, followable_type: "ActsAsTaggableOn::Tag") }
   scope :follower_subforem, ->(id) { where(follower_id: id, followable_type: "Subforem") }
 
-  # Follows from users who don't have suspended or spam role
+  # Follows from users who don't have suspended or spam role.
+  # Join `roles` via `users_roles.role_id + 0` so PostgreSQL does not drive the
+  # anti-join through `index_users_roles_on_role_id` (which underestimates the
+  # joined `users_roles` cardinality by ~80x and scans the entire suspended/spam
+  # `users_roles` population), and instead probes the covering
+  # `index_users_roles_on_user_id_and_role_id` index per follower.
   scope :non_suspended, lambda { |followable_type, followable_id|
     joins("INNER JOIN users ON users.id = follows.follower_id")
       .where(followable_type: followable_type, followable_id: followable_id, follower_type: "User")
@@ -36,7 +41,7 @@ class Follow < ApplicationRecord
         NOT EXISTS (
           SELECT 1
           FROM users_roles
-          INNER JOIN roles ON roles.id = users_roles.role_id
+          INNER JOIN roles ON roles.id = users_roles.role_id + 0
           WHERE users_roles.user_id = follows.follower_id
             AND roles.name IN (?)
             AND roles.resource_type IS NULL
