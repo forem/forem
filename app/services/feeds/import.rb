@@ -108,11 +108,7 @@ module Feeds
         cleaned_url = url.to_s.strip
         next if cleaned_url.blank?
 
-        response = fetch_with_retry(cleaned_url)
-        body = response.body.to_s
-        if body.bytesize > MAX_XML_SIZE
-          raise StandardError, "Feed XML exceeds maximum size of #{MAX_XML_SIZE} bytes (#{body.bytesize} bytes)"
-        end
+        body = fetch_with_retry(cleaned_url)
 
         [source_id, body]
       rescue StandardError => e
@@ -403,9 +399,31 @@ module Feeds
     end
 
     def fetch_with_retry(url, retries: 0)
-      HTTParty.get(url,
-                   timeout: 20,
-                   headers: { "User-Agent" => FEED_USER_AGENT })
+      body = +""
+      streamed = false
+      response = HTTParty.get(
+        url,
+        timeout: 20,
+        stream_body: true,
+        headers: { "User-Agent" => FEED_USER_AGENT },
+      ) do |fragment|
+        streamed = true
+        next if fragment.respond_to?(:code) && (300..399).cover?(fragment.code)
+
+        body << fragment.to_s
+        if body.bytesize > MAX_XML_SIZE
+          raise StandardError, "Feed XML exceeds maximum size of #{MAX_XML_SIZE} bytes (#{body.bytesize} bytes)"
+        end
+      end
+
+      unless streamed
+        body = response.respond_to?(:body) ? response.body.to_s : response.to_s
+        if body.bytesize > MAX_XML_SIZE
+          raise StandardError, "Feed XML exceeds maximum size of #{MAX_XML_SIZE} bytes (#{body.bytesize} bytes)"
+        end
+      end
+
+      body
     rescue Net::OpenTimeout, Net::ReadTimeout, Errno::ECONNRESET => e
       raise e if retries >= MAX_FETCH_RETRIES
 

@@ -250,10 +250,17 @@ RSpec.describe Feeds::AssembleArticleMarkdown, type: :service do
     end
 
     it "replaces matching feed_source_url links with internal article URLs in a single batched query" do
+      second_article = create(
+        :article,
+        user: user,
+        published: false,
+        feed_source_url: "https://external.example.com/post-1",
+      )
       allow(Article).to receive(:find_by)
 
       body = feeds_assemble_article_markdown.call
       expect(body).to include(URL.article(existing_article))
+      expect(body).not_to include(URL.article(second_article))
       expect(body).to include("https://external.example.com/post-2")
       expect(Article).not_to have_received(:find_by)
     end

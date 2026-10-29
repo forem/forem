@@ -4309,6 +4309,10 @@ RSpec.describe ForemNative do
       it "extracts email and stripped name from author strings" do
         expect(described_class.extract_feed_author("Alice Smith <alice+rss@example.com>"))
           .to eq(["alice+rss@example.com", "Alice Smith"])
+        expect(described_class.extract_feed_author("Alice (alice@example.com.)"))
+          .to eq(["alice@example.com", "Alice (alice@example.com.)"])
+        expect(described_class.extract_feed_author("Alice (alice@example.com-x)"))
+          .to eq(["alice@example.com", "Alice (alice@example.com-x)"])
         expect(described_class.extract_feed_author("Bob Jones"))
           .to eq([nil, "Bob Jones"])
       end

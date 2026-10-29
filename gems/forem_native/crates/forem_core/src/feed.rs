@@ -1622,16 +1622,27 @@ fn skip_xml_tag_close(bytes: &[u8], mut i: usize) -> Option<usize> {
     None
 }
 
-fn match_xml_open_tag(bytes: &[u8], pos: usize, tag: &[u8]) -> Option<usize> {
+enum XmlOpenTagMatch {
+    NotMatched,
+    Malformed,
+    Matched(usize),
+}
+
+fn match_xml_open_tag(bytes: &[u8], pos: usize, tag: &[u8]) -> XmlOpenTagMatch {
     let start = pos + 1;
-    let end = start.checked_add(tag.len())?;
+    let Some(end) = start.checked_add(tag.len()) else {
+        return XmlOpenTagMatch::NotMatched;
+    };
     if end >= bytes.len() || !bytes[start..end].eq_ignore_ascii_case(tag) {
-        return None;
+        return XmlOpenTagMatch::NotMatched;
     }
     if !is_xml_space_or_delim(bytes[end]) {
-        return None;
+        return XmlOpenTagMatch::NotMatched;
     }
-    skip_xml_tag_close(bytes, end)
+    match skip_xml_tag_close(bytes, end) {
+        Some(gt) => XmlOpenTagMatch::Matched(gt),
+        None => XmlOpenTagMatch::Malformed,
+    }
 }
 
 fn match_xml_close_tag(bytes: &[u8], pos: usize, tag: &[u8]) -> Option<usize> {
@@ -1690,15 +1701,27 @@ pub fn truncate_feed_xml_items(xml: &str, max_items: usize) -> Cow<'_, str> {
             continue;
         }
 
-        let matched = match tag_kind {
-            Some(tk) => match_xml_open_tag(bytes, i, tk).map(|gt| (tk, gt)),
-            None => match_xml_open_tag(bytes, i, b"item")
-                .map(|gt| (&b"item"[..], gt))
-                .or_else(|| match_xml_open_tag(bytes, i, b"entry").map(|gt| (&b"entry"[..], gt))),
-        };
-        let Some((tk, open_gt)) = matched else {
-            i += 1;
-            continue;
+        let (tk, open_gt) = match tag_kind {
+            Some(tk) => match match_xml_open_tag(bytes, i, tk) {
+                XmlOpenTagMatch::Matched(gt) => (tk, gt),
+                XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                XmlOpenTagMatch::NotMatched => {
+                    i += 1;
+                    continue;
+                }
+            },
+            None => match match_xml_open_tag(bytes, i, b"item") {
+                XmlOpenTagMatch::Matched(gt) => (&b"item"[..], gt),
+                XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                XmlOpenTagMatch::NotMatched => match match_xml_open_tag(bytes, i, b"entry") {
+                    XmlOpenTagMatch::Matched(gt) => (&b"entry"[..], gt),
+                    XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                    XmlOpenTagMatch::NotMatched => {
+                        i += 1;
+                        continue;
+                    }
+                },
+            },
         };
         tag_kind = Some(tk);
         let item_start = i;
@@ -1737,12 +1760,16 @@ pub fn truncate_feed_xml_items(xml: &str, max_items: usize) -> Cow<'_, str> {
                     j = cgt + 1;
                     continue;
                 }
-                if let Some(ogt) = match_xml_open_tag(bytes, j, tk) {
-                    if bytes[ogt - 1] != b'/' {
-                        depth += 1;
+                match match_xml_open_tag(bytes, j, tk) {
+                    XmlOpenTagMatch::Matched(ogt) => {
+                        if bytes[ogt - 1] != b'/' {
+                            depth += 1;
+                        }
+                        j = ogt + 1;
+                        continue;
                     }
-                    j = ogt + 1;
-                    continue;
+                    XmlOpenTagMatch::Malformed => return Cow::Borrowed(xml),
+                    XmlOpenTagMatch::NotMatched => {}
                 }
                 j += 1;
             }
@@ -1852,7 +1879,7 @@ pub fn feed_html_content(content: &str) -> bool {
 
 fn match_youtube_liquid_tag(text: &str) -> Option<usize> {
     let bytes = text.as_bytes();
-    if bytes.len() < 26 || !bytes.starts_with(b"{%") || !is_ascii_regex_space(bytes[2]) {
+    if bytes.len() < 25 || !bytes.starts_with(b"{%") || !is_ascii_regex_space(bytes[2]) {
         return None;
     }
     if !bytes[3..].starts_with(b"youtube") || !is_ascii_regex_space(bytes[10]) {
@@ -2022,10 +2049,8 @@ fn resolve_simple_feed_path(
         return None;
     }
     let scheme_host_offset = feed_source_url.len() - rest.len();
-    let dir_prefix = match rest.rfind('/') {
-        Some(slash_idx) => &feed_source_url[..scheme_host_offset + slash_idx + 1],
-        None => return None,
-    };
+    let slash_idx = rest.rfind('/')?;
+    let dir_prefix = &feed_source_url[..scheme_host_offset + slash_idx + 1];
     if dir_prefix[scheme_host_offset..]
         .split('/')
         .any(|seg| seg == "." || seg == "..")
@@ -2232,17 +2257,20 @@ pub fn extract_feed_author(author_string: &str) -> Option<(Option<String>, Strin
                     k += 1;
                 }
                 let segment = &bytes[dom_start..k];
-                if let Some(dot_rel) = segment.iter().rposition(|&b| b == b'.') {
-                    if dot_rel > 0
-                        && dot_rel + 1 < segment.len()
-                        && segment[dot_rel + 1..]
-                            .iter()
-                            .all(|&b| is_email_word_char(b))
-                    {
-                        email =
-                            Some(author_string[local_start..dom_start + k - dom_start].to_string());
-                        break;
-                    }
+                let last_dot = segment.iter().enumerate().rev().find_map(|(d, &b)| {
+                    (b == b'.'
+                        && d > 0
+                        && segment.get(d + 1).is_some_and(|&n| is_email_word_char(n)))
+                    .then_some(d)
+                });
+                if let Some(d) = last_dot {
+                    let tld_len = segment[d + 1..]
+                        .iter()
+                        .take_while(|&&b| is_email_word_char(b))
+                        .count();
+                    email =
+                        Some(author_string[local_start..dom_start + d + 1 + tld_len].to_string());
+                    break;
                 }
             }
         } else {
@@ -2622,6 +2650,13 @@ mod tests {
             truncate_feed_xml_items(atom, 1).as_ref(),
             "<feed><entry id=\"1\"><content><![CDATA[</entry><entry>]]></content></entry></feed>"
         );
+
+        // Malformed repeated unclosed `<item ` tags must return Borrowed immediately without quadratic scans
+        let malformed = "<item ".repeat(50_000);
+        assert!(matches!(
+            truncate_feed_xml_items(&malformed, 25),
+            Cow::Borrowed(_)
+        ));
     }
 
     #[test]
@@ -2686,6 +2721,20 @@ mod tests {
             Some((
                 Some("jane.doe+rss@example.org".to_string()),
                 "Jane Doe".to_string()
+            ))
+        );
+        assert_eq!(
+            extract_feed_author("Jane Doe (jane@example.com.)"),
+            Some((
+                Some("jane@example.com".to_string()),
+                "Jane Doe (jane@example.com.)".to_string()
+            ))
+        );
+        assert_eq!(
+            extract_feed_author("Jane Doe (jane@example.com-x)"),
+            Some((
+                Some("jane@example.com".to_string()),
+                "Jane Doe (jane@example.com-x)".to_string()
             ))
         );
         assert_eq!(

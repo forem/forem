@@ -278,7 +278,9 @@ module Feeds
       articles_by_source_url = Article
         .select(:id, :slug, :path, :organization_id, :subforem_id, :feed_source_url)
         .where(feed_source_url: links)
-        .index_by(&:feed_source_url)
+        .each_with_object({}) do |article, by_source_url|
+          by_source_url[article.feed_source_url] ||= article
+        end
       return if articles_by_source_url.empty?
 
       a_tags.each do |a_tag|

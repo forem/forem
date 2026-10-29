@@ -303,22 +303,22 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   describe "memory and performance safeguards" do
-    it "rejects oversized XML feeds exceeding MAX_XML_SIZE and records a fetch failure" do
+    it "rejects oversized XML feeds exceeding MAX_XML_SIZE while streaming and records a fetch failure" do
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
       source = create(:feed_source, user: user, feed_url: "https://example.com/huge-feed.xml")
-      oversized_body = "x" * (described_class::MAX_XML_SIZE + 10)
-      response_double = Class.new do
-        attr_reader :body
+      chunk = "x" * ((described_class::MAX_XML_SIZE / 2) + 10)
+      chunks_read = 0
 
-        def initialize(body)
-          @body = body
+      allow(HTTParty).to receive(:get) do |_url, **_opts, &block|
+        3.times do
+          chunks_read += 1
+          block.call(chunk)
         end
-      end.new(oversized_body)
-
-      allow(HTTParty).to receive(:get).and_return(response_double)
+      end
       allow(Rails.logger).to receive(:error)
 
       expect(described_class.call(users_scope: User.where(id: user.id))).to eq(0)
+      expect(chunks_read).to eq(2)
 
       log = Feeds::ImportLog.where(feed_source: source).last
       expect(log).to be_present
