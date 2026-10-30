@@ -53,6 +53,7 @@ class FeedConfig < ApplicationRecord
               only_integer: true,
               greater_than_or_equal_to: 0
             }
+  validates :published_at_diversity_weight, numericality: { greater_than_or_equal_to: 0 }
 
   ARCHIVE_TOP_LIMIT = 1000
   ARCHIVE_AGE_THRESHOLD = 2.days
@@ -237,6 +238,12 @@ class FeedConfig < ApplicationRecord
       legacy_score_sql(user, include_semantic: false)
   end
 
+  # A blank admin form field would cast to nil; treat it as "disabled" rather than
+  # failing validation or hitting the NOT NULL constraint on save.
+  def published_at_diversity_weight=(value)
+    super(value.presence || 0.0)
+  end
+
   def semantic_similarity_active?(user)
     return false unless semantic_similarity_weight.positive? && user.respond_to?(:user_activity)
 
@@ -255,6 +262,14 @@ class FeedConfig < ApplicationRecord
     return max_hours unless hours.positive?
 
     hours.clamp(MIN_FEED_LOOKBACK_HOURS, [max_hours, MIN_FEED_LOOKBACK_HOURS].max)
+  end
+
+  # Midpoint (in hours) of the effective candidate window. The
+  # `published_at_diversity_weight` SQL term is a U-shaped curve centred here, so
+  # it honours the per-config `feed_lookback_hours` (and the
+  # DEFAULT_FEED_LOOKBACK_DAYS fallback) exactly like the candidate query does.
+  def published_at_diversity_half_lookback_hours
+    effective_feed_lookback_hours / 2.0
   end
 
   def semantic_similarity_sql(user)
@@ -299,6 +314,7 @@ class FeedConfig < ApplicationRecord
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)
     clone.precomputed_selections_weight = precomputed_selections_weight * rand(0.9..1.1)
     clone.recency_weight = recency_weight * rand(0.9..1.1)
+    clone.published_at_diversity_weight = published_at_diversity_weight * rand(0.9..1.1)
     clone.score_weight = score_weight * rand(0.9..1.1)
     clone.tag_follow_weight = tag_follow_weight * rand(0.9..1.1)
     clone.user_follow_weight = user_follow_weight * rand(0.9..1.1)
@@ -461,6 +477,7 @@ class FeedConfig < ApplicationRecord
       compellingness_score_weight,
       language_match_weight,
       randomness_weight,
+      published_at_diversity_weight,
     ]
 
     context = [
@@ -488,6 +505,7 @@ class FeedConfig < ApplicationRecord
       now_nanos,
       default_second_sec,
       cutoff_30d_sec,
+      published_at_diversity_weight.positive? ? published_at_diversity_half_lookback_hours : 0.0,
     ]
 
     [weights, context]
@@ -577,6 +595,11 @@ class FeedConfig < ApplicationRecord
     if comment_recency_weight.positive?
       terms << "((1.0 / (1.0 + (EXTRACT(epoch FROM (NOW() - articles.last_comment_at)) / 3600.0))) * " \
                "#{comment_recency_weight})"
+    end
+    if published_at_diversity_weight.positive?
+      half = published_at_diversity_half_lookback_hours
+      terms << "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - #{half}) / " \
+               "#{half}, 1.0), 2) * #{published_at_diversity_weight})"
     end
 
     if lookback_window_weight.positive?

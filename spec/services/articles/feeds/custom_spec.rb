@@ -804,5 +804,65 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
     end
   end
+
+  describe "published_at diversity interleaving" do
+    before do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+    end
+
+    context "with a full lookback window" do
+      let!(:mid_age_cluster) { Array.new(4) { |i| create_feed_article(score: 95 - i, days_ago: 5) } }
+      let!(:older_lookback_article) { create_feed_article(score: 85, days_ago: 8) }
+      let!(:brand_new_article) { create_feed_article(score: 84, days_ago: 2.0 / 24) }
+
+      it "surfaces fresh and older lookback articles ahead of a saturated mid-age cluster" do
+        feed_config.published_at_diversity_weight = 10.0
+
+        result = feed.default_home_feed.to_a
+        last_mid_idx = result.index(mid_age_cluster.last)
+
+        expect(result.index(older_lookback_article)).to be < last_mid_idx
+        expect(result.index(brand_new_article)).to be < last_mid_idx
+      end
+
+      it "does not alter score ordering when published_at_diversity_weight is zero" do
+        feed_config.published_at_diversity_weight = 0.0
+
+        result = feed.default_home_feed.to_a
+        # older_lookback_article is > 7 days old, so shuffle_top_five_if_recent is skipped.
+        expect(result).to eq(mid_age_cluster + [older_lookback_article, brand_new_article])
+      end
+    end
+
+    context "when every candidate is under a week old (top-five shuffle active)" do
+      # 144h per-config window: 72h is the midpoint, 130h is the older edge.
+      let!(:mid_age_cluster) { Array.new(4) { |i| create_feed_article(score: 95 - i, days_ago: 3) } }
+      let!(:older_lookback_article) { create_feed_article(score: 85, days_ago: 130.0 / 24) }
+      let!(:brand_new_article) { create_feed_article(score: 84, days_ago: 1.0 / 24) }
+
+      before do
+        feed_config.feed_lookback_hours = 144
+        feed_config.shuffle_weight = 0.0
+        # Make the "random" top-five shuffle deterministic and adversarial.
+        allow_any_instance_of(Array).to receive(:shuffle, &:reverse)
+      end
+
+      it "applies the age-bucket interleaving after the shuffle so it cannot be undone" do
+        feed_config.published_at_diversity_weight = 10.0
+
+        top_three = feed.default_home_feed.to_a.first(3)
+
+        expect(top_three).to include(older_lookback_article, brand_new_article)
+      end
+
+      it "keeps the existing shuffle behaviour when diversity is disabled" do
+        feed_config.published_at_diversity_weight = 0.0
+
+        result = feed.default_home_feed.to_a
+
+        expect(result.first(5)).to eq((mid_age_cluster + [older_lookback_article]).reverse)
+      end
+    end
+  end
 end
 # rubocop:enable Layout/TrailingWhitespace, Style/Send, Style/TrailingCommaInArguments, RSpec/NestedGroups, Rails/DurationArithmetic, RSpec/LeadingSubject, RSpec/MessageSpies, RSpec/SubjectStub, Layout/ArgumentAlignment, RSpec/AnyInstance, Style/CollectionMethods, Style/SlicingWithRange, Style/TrailingCommaInArrayLiteral

@@ -273,10 +273,10 @@ RSpec.describe Users::Delete, type: :service do
         a.options.key?(:join_table) || a.options.key?(:through)
       end
     end
-    let!(:user_associations) do
+    let(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
     end
-    let!(:kept_associations) do
+    let(:kept_associations) do
       create_associations(direct_associations.select { |a| kept_association_names.include?(a.name) })
     end
 
@@ -320,26 +320,21 @@ RSpec.describe Users::Delete, type: :service do
       associations
     end
 
-    it "keeps the kept associations" do
-      # NB: each association must have a factory defined!
-      expect(kept_associations).not_to be_empty
-      user.reload
-      described_class.call(user)
-      aggregate_failures "associations should exist" do
-        kept_associations.each do |kept_association|
-          expect { kept_association.reload }.not_to raise_error
-        end
-      end
-    end
-
-    it "deletes all the associations" do
+    it "deletes all the associations and keeps the kept associations" do
       # making sure that the association records were actually created
+      # NB: each association must have a factory defined!
       expect(user_associations).not_to be_empty
+      expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)
       aggregate_failures "associations should not exist" do
         user_associations.each do |user_association|
           expect { user_association.reload }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+      aggregate_failures "kept associations should exist" do
+        kept_associations.each do |kept_association|
+          expect { kept_association.reload }.not_to raise_error
         end
       end
     end
