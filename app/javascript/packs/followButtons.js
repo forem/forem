@@ -135,11 +135,12 @@ function optimisticallyUpdateButtonUI(button) {
           matchingButton.dataset.wasFollowBack = 'true';
         }
         break;
-      case 'unfollow':
+      case 'unfollow': {
         // end up in a FOLLOW or FOLLOW BACK state
         const prev = matchingButton.dataset.wasFollowBack === 'true' ? 'follow-back' : 'follow';
         updateFollowButton(matchingButton, prev, buttonInfo);
         break;
+      }
       case 'login':
         addButtonFollowText(matchingButton, style);
         break;
@@ -316,6 +317,9 @@ function updateInitialButtonUI(followStatus, button) {
     case 'true':
     case 'mutual': // Already following
       updateFollowingButton(button, style);
+      if (followStatus === 'mutual') {
+        button.dataset.wasFollowBack = 'true';
+      }
       break;
     case 'follow-back': // They follow you, you don't follow them yet
       addButtonFollowText(button, followStatus);

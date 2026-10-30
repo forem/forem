@@ -25,6 +25,7 @@ fr:
         hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
+        org_analytics: Analytique d'organisation
         feed_imports: Importations de flux RSS
         for_org: Analytics for %{org}
         upload: Charger une vidéo
@@ -35,6 +36,7 @@ fr:
         audience_heading: Votre audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
+        organizations_menu: Organisations
         org: "%{org} Analytics Dashboard"
         readers: Lecteurs
         comments: Commentaires

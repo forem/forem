@@ -1,21 +1,22 @@
 RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |endpoint, params|
-  let(:user)              { create(:user) }
+  let(:user)              { create(:user, :without_profile, profile_image: nil) }
   let(:api_token)         { create(:api_secret, user: user) }
-  let(:org_member)        { create(:user, :org_member) }
+  let(:org)               { create(:organization) }
+  let(:org_member) do
+    create(:user, :without_profile, profile_image: nil).tap do |member|
+      create(:organization_membership, user: member, organization: org, type_of_user: "member")
+    end
+  end
   let(:org_member_token)  { create(:api_secret, user: org_member) }
-  let(:org)               { org_member.organizations.first }
-  let(:article)           { create(:article, user: user) }
-  let(:user_article)  { create(:article, user: user) }
-  let(:org_article)   { create(:article, user: user, organization: org) }
+  let(:article)           { create(:article, user: user, with_tags: false) }
+  let(:user_article)      { article }
+  let(:org_article)       { create(:article, user: user, organization: org, with_tags: false) }
 
   context "when an invalid token is given" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
 
-    it "renders an error message: 'unauthorized' in JSON" do
+    it "returns 401 with an unauthorized error message in JSON", :aggregate_failures do
       expect(response.parsed_body).to include("error" => "unauthorized")
-    end
-
-    it "has a status 401" do
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -34,11 +35,8 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: headers
     end
 
-    it "renders an error message: 'unauthorized' in JSON" do
+    it "returns 401 with an unauthorized error message in JSON", :aggregate_failures do
       expect(response.parsed_body).to include("error" => "unauthorized")
-    end
-
-    it "has a status 401" do
       expect(response).to have_http_status(:unauthorized)
     end
   end

@@ -45,6 +45,7 @@ RSpec.describe Mention do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:mentionable) }
+    it { is_expected.to have_db_index(%i[mentionable_id mentionable_type]) }
   end
 
   describe "callbacks" do

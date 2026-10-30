@@ -3,12 +3,12 @@ require "rails_helper"
 RSpec.describe "Api::V1::AudienceSegments" do
   let(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
-  let(:api_secret) { create(:api_secret) }
-  let(:admin) { api_secret.user }
+  let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+  let(:api_secret) { create(:api_secret, user: admin) }
   let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
 
-  before do
-    admin.add_role(:admin)
+  def create_users(count)
+    create_list(:user, count, :without_profile, profile_image: nil)
   end
 
   shared_examples "an admin-only protected resource" do
@@ -22,7 +22,8 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     context "when the authenticated user is not an admin" do
-      let(:regular_api_secret) { create(:api_secret) }
+      let(:regular_user) { create(:user, :without_profile, profile_image: nil) }
+      let(:regular_api_secret) { create(:api_secret, user: regular_user) }
       let(:headers) { v1_headers.merge({ "api-key" => regular_api_secret.secret }) }
 
       it "returns unauthorized" do
@@ -52,7 +53,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     let(:first_manual_segment) { AudienceSegment.create!(type_of: "manual") }
     let(:second_manual_segment) { AudienceSegment.create!(type_of: "manual") }
     let(:automatic_segment) { AudienceSegment.create!(type_of: "trusted") }
-    let(:users) { create_list(:user, 3) }
+    let(:users) { create_users(3) }
 
     it_behaves_like "an admin-only protected resource"
 
@@ -106,7 +107,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     subject(:make_request) { get api_segment_path(segment.id), headers: headers }
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 3) }
+    let(:users) { create_users(3) }
 
     it_behaves_like "an admin-only protected resource"
 
@@ -151,7 +152,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     subject(:make_request) { get users_api_segment_path(segment.id), headers: headers }
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 5) }
+    let(:users) { create_list(:user, 5, profile_image: nil) }
 
     it_behaves_like "an admin-only protected resource"
 
@@ -207,7 +208,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 3) }
+    let(:users) { create_users(3) }
     let(:user_ids) { users.map(&:id) }
 
     it_behaves_like "an admin-only protected resource"
@@ -261,21 +262,17 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 3) }
+    let(:users) { create_users(3) }
     let(:user_ids) { users.map(&:id) }
-    let(:retained_users) { create_list(:user, 3) }
-    let(:users_not_in_segment) { create_list(:user, 3) }
-
-    before do
-      segment.users << users
-      segment.users << retained_users
-    end
+    let(:retained_users) { create_users(3) }
+    let(:users_not_in_segment) { create_users(3) }
 
     it_behaves_like "an admin-only protected resource"
 
     it_behaves_like "an endpoint for only manual audience segments"
 
     it "removes only the provided users if they are part of the segment" do
+      segment.users << users << retained_users
       make_request
 
       expect(response).to have_http_status(:success)
@@ -289,6 +286,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     it "returns user ids that failed to be removed" do
+      segment.users << users << retained_users
       ids_to_fail = [*users_not_in_segment.map(&:id), 123_456]
       params = { user_ids: user_ids + ids_to_fail }
       put remove_users_api_segment_path(segment.id), params: params, headers: headers, as: :json
@@ -320,7 +318,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
     subject(:make_request) { delete api_segment_path(segment.id), headers: headers }
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 3) }
+    let(:users) { create_users(3) }
     let(:billboard) { create(:billboard, published: true, approved: true, type_of: "community") }
 
     it_behaves_like "an admin-only protected resource"

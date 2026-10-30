@@ -3,6 +3,7 @@ module Stories
     before_action :set_cache_control_headers, only: :index
 
     SIGNED_OUT_RECORD_COUNT = 15
+    MAX_PAGE = 100
 
     rescue_from ArgumentError, with: :bad_request
 
@@ -15,6 +16,7 @@ module Stories
       end
 
       @page = (params[:page] || 1).to_i
+      not_found if @page < 1 || @page > MAX_PAGE
 
       if user_signed_in?
         @moderators = User.with_role(:tag_moderator, @tag)
@@ -55,9 +57,7 @@ module Stories
       stories = Articles::Feeds::Tag.call(tag.name, number_of_articles: number_of_articles, page: page)
 
       stories = stories.approved if tag.requires_approval?
-
-      # NOTE: We want to check if there are any stories regardless of timeframe.
-      not_found unless established?(stories: stories, tag: tag)
+      unfiltered_stories = stories
 
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
@@ -69,6 +69,12 @@ module Stories
       # organization (custom domain check); batch those into one query.
       stories = stories.preload(:organization) unless user_signed_in?
       @stories = stories.decorate
+
+      # NOTE: We want to check if there are any stories regardless of timeframe. Any story on
+      # this page is one of those (same tag, approval, subforem and page offset, narrower
+      # filters), so the separate existence query only runs when the page came back empty.
+      not_found if @stories.empty? && !established?(stories: unfiltered_stories, tag: tag)
+
       # articles/_single_story reads public_reaction_categories for every story with
       # reactions; fetch those cached counts in one round-trip instead of one per story.
       Article.preload_reaction_counts_for_reactable(

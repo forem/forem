@@ -38,6 +38,14 @@ RSpec.describe Badge do
     end
   end
 
+  describe "#path" do
+    it "points at the badge on the badges page, which has a route" do
+      badge = create(:badge, slug: "beloved-comment")
+
+      expect(badge.path).to eq("/badges#beloved-comment")
+    end
+  end
+
   describe "#slug" do
     it "generates the correct slug for C when slug is blank" do
       badge = build(:badge, title: "C", slug: nil)
