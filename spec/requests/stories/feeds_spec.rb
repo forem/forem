@@ -381,96 +381,20 @@ RSpec.describe "Stories::Feeds" do
         quickie_article
       end
 
-      it "includes title_finalized_for_feed in the response" do
+      it "serializes quickie formatting and story card fields in a single response", :aggregate_failures do
         get stories_feed_path
 
         quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("title_finalized_for_feed")
         expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
         expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
-      end
-
-      it "includes title_for_metadata in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("title_for_metadata")
         expect(quickie_response["title_for_metadata"]).not_to include("\n")
         expect(quickie_response["title_for_metadata"]).to include("Line one Line two")
-      end
-
-      it "includes readable_publish_date in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("readable_publish_date")
         expect(quickie_response["readable_publish_date"]).to be_present
-      end
-
-      it "includes video_duration_in_minutes in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("video_duration_in_minutes")
-      end
-
-      it "includes flare_tag in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("flare_tag")
-      end
-
-      it "includes class_name in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("class_name")
         expect(quickie_response["class_name"]).to eq("Article")
-      end
-
-      it "includes cloudinary_video_url in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("cloudinary_video_url")
-      end
-
-      it "includes published_timestamp in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("published_timestamp")
-      end
-
-      it "includes main_image_background_hex_color in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("main_image_background_hex_color")
-      end
-
-      it "includes public_reaction_categories in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("public_reaction_categories")
-      end
-
-      it "includes body_preview in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("body_preview")
-      end
-
-      it "includes title_finalized in the response" do
-        get stories_feed_path
-
-        quickie_response = response.parsed_body.find { |item| item["id"] == quickie_article.id }
-        expect(quickie_response).to include("title_finalized_for_feed")
-        expect(quickie_response["title_finalized_for_feed"]).to include("<br>")
-        expect(quickie_response["title_finalized_for_feed"]).to include("quickie-paragraph")
+        expect(quickie_response).to include(
+          "video_duration_in_minutes", "flare_tag", "cloudinary_video_url", "published_timestamp",
+          "main_image_background_hex_color", "public_reaction_categories", "body_preview"
+        )
       end
     end
 
@@ -487,20 +411,12 @@ RSpec.describe "Stories::Feeds" do
         long_quickie_article
       end
 
-      it "truncates title_finalized_for_feed with read more indicator" do
+      it "truncates title_finalized_for_feed but not title_for_metadata", :aggregate_failures do
         get stories_feed_path
 
         long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
-        expect(long_quickie_response).to include("title_finalized_for_feed")
         expect(long_quickie_response["title_finalized_for_feed"]).to include("quickie-read-more")
         expect(long_quickie_response["title_finalized_for_feed"]).to include("read more")
-      end
-
-      it "includes title_for_metadata without truncation" do
-        get stories_feed_path
-
-        long_quickie_response = response.parsed_body.find { |item| item["id"] == long_quickie_article.id }
-        expect(long_quickie_response).to include("title_for_metadata")
         expect(long_quickie_response["title_for_metadata"]).not_to include("read more")
         expect(long_quickie_response["title_for_metadata"]).to include("Line 1 Line 2")
       end
@@ -691,17 +607,19 @@ RSpec.describe "Stories::Feeds" do
     end
 
     it "does not cache articles on page 3" do
-      # Create enough articles to reach page 3
-      create_list(:article, 50, user: user)
-      
-      # Call the endpoint - on page 3, no article-level caching should occur
-      # But we can't prevent all Rails.cache.fetch calls (e.g., Settings), so we just 
-      # verify the response is successful
+      # Shrink the page size so a handful of articles reaches page 3
+      stub_const("Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE", 1)
+      create_list(:article, 2, user: user)
+
+      allow(Rails.cache).to receive(:write).and_call_original
+
       get stories_feed_path(page: 3)
-      
+
       expect(response).to have_http_status(:ok)
-      # Response should still include articles even without caching
       expect(response.parsed_body).not_to be_empty
+      expect(Rails.cache).not_to have_received(:write).with(
+        a_string_starting_with("jbuilder/"), any_args
+      )
     end
 
     it "invalidates cache when article is edited" do
