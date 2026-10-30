@@ -1631,7 +1631,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Award a badge to a user. Requires administrator privileges.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
+        "description": "Award a badge to a user. Requires administrator privileges.  Successful writes log `api_badge_achievement_create` with the actor and target ids in the admin API audit log.\n\n### Integration Tips:\n- **user_id**: The numeric ID of the user receiving the badge.\n- **badge_id**: The numeric ID of the badge being awarded.\n- **rewarding_context_message_markdown**: Optional personalized message shown in the notification or profile feed to explain why the user was awarded the badge.\n- **metadata**: Optional key/value data stored with the achievement for context.\n- If the badge cannot be awarded more than once and the user already holds it, the request is rejected with `409 Conflict`, and the conflicting `achievement_id` is included in the response. A `422` is returned for other request errors.",
         "parameters": [
 
         ],
@@ -1751,7 +1751,7 @@
         "tags": [
           "badge_achievements"
         ],
-        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.",
+        "description": "Revoke a badge award by deleting the badge achievement. Requires administrator privileges.  Successful writes log `api_badge_achievement_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1809,7 +1809,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Create a new badge. Requires administrator privileges.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
+        "description": "Create a new badge. Requires administrator privileges.  Successful writes log `api_badge_create` with the actor and target ids in the admin API audit log.\n\n### Body Parameter Guidelines:\n- **title**: Unique name for the badge.\n- **description**: Text explanation of the achievement.\n- **remote_badge_image_url**: Public URL to an image asset (PNG, GIF, or SVG) representing the badge icon.\n- **allow_multiple_awards**: Set to `true` if a user can earn the same badge multiple times (e.g. weekly challenges).",
         "parameters": [
 
         ],
@@ -1900,7 +1900,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.",
+        "description": "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.  Successful writes log `api_badge_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -1959,7 +1959,7 @@
         "tags": [
           "badges"
         ],
-        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.",
+        "description": "Delete a badge configuration from the system by ID. Requires administrator privileges.  Successful writes log `api_badge_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -2009,7 +2009,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Create a new billboard.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
+        "description": "Create a new billboard.  Successful writes log `api_billboard_create` with the actor and target ids in the admin API audit log.\n\n        ### Parameter Options & Tips:\n        - **body_markdown**: The HTML/Markdown advertisement copy.\n        - **placement_area**: Target region in layouts (e.g. `post_comments` below comments, `sidebar` in sidebars, `home_feed` between posts).\n        - **display_to**: Cohort target rules (e.g. `all` for everyone, `logged_in`, `guests`, or customized segments).\n        - **target_geolocations**: Comma-separated ISO codes for country/region targeting.\n        - **approved** & **published**: Set to `true` to activate billboard rotation instantly.",
         "parameters": [
 
         ],
@@ -2087,7 +2087,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Update an existing billboard's configurations.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
+        "description": "Update an existing billboard's configurations.  Successful writes log `api_billboard_update` with the actor and target ids in the admin API audit log.\n\n        ### Integration Guidance:\n        - Allows changing placement area, geolocations, target segments, or text copy.\n        - Updating an active billboard takes effect instantly in the layout delivery cache.",
         "parameters": [
           {
             "name": "id",
@@ -2144,7 +2144,7 @@
         "tags": [
           "billboards"
         ],
-        "description": "Remove a billboard from active rotation by unpublishing it.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
+        "description": "Remove a billboard from active rotation by unpublishing it.  Successful writes log `api_billboard_unpublish` with the actor and target ids in the admin API audit log.\n\n        ### Usage:\n        - Instantly disables display across all pages while keeping the configuration stored in the database for later reactivations or historical reporting.",
         "parameters": [
           {
             "name": "id",
@@ -3047,7 +3047,7 @@
         "tags": [
           "events"
         ],
-        "description": "Create a new event. Requires administrator privileges.",
+        "description": "Create a new event. Requires administrator privileges.\n\nSuccessful writes log `api_event_create` with the actor and target ids in the admin API audit log.",
         "operationId": "createEvent",
         "parameters": [
 
@@ -3116,7 +3116,7 @@
         "tags": [
           "events"
         ],
-        "description": "Update an existing event. Requires administrator privileges.",
+        "description": "Update an existing event. Requires administrator privileges.\n\nSuccessful writes log `api_event_update` with the actor and target ids in the admin API audit log.",
         "operationId": "updateEvent",
         "parameters": [
           {
@@ -3157,7 +3157,7 @@
         "tags": [
           "events"
         ],
-        "description": "Delete an event. Requires administrator privileges.",
+        "description": "Delete an event. Requires administrator privileges.\n\nSuccessful writes log `api_event_destroy` with the actor and target ids in the admin API audit log.",
         "operationId": "deleteEvent",
         "parameters": [
           {
@@ -4016,7 +4016,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
+        "description": "Create a new custom page. Requires site administrative privileges, or organization admin privileges for the specified `organization_id` (when the organization pages feature is enabled).  Successful writes log `api_page_create` with the actor and target ids in the admin API audit log.\n\n        ### Body Parameter Guidelines:\n        - **title**: Heading displayed at the top of the page.\n        - **slug**: URL path identifier. Must be unique and URL-safe. For organization pages, scoped under `{org_slug}/{suffix}` (with the first page defaulting to `{org_slug}/readme`).\n        - **body_markdown**: Content written in Markdown format.\n        - **body_json**: Optional JSON payload for API-consumed/structured data pages.\n        - **is_top_level_path**: Set to `true` to serve the page directly at the root (e.g. `/{slug}`) instead of under the default namespace `/page/{slug}`. Use with caution to avoid namespace collisions with core Forem paths.\n        - **template**: Layout styling options (`contained` or custom layouts). Organization pages always use `full_within_layout`.\n        - **organization_id**: Optional ID of the organization this page belongs to.\n        - **position**: Optional display order position for organization pages.",
         "parameters": [
 
         ],
@@ -4134,7 +4134,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.",
+        "description": "Update an existing page's details by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_update` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -4183,7 +4183,7 @@
         "tags": [
           "pages"
         ],
-        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.",
+        "description": "Delete a custom page from the system by ID. Requires site administrative privileges, or organization admin privileges for pages belonging to an organization.  Successful writes log `api_page_destroy` with the actor and target ids in the admin API audit log.",
         "parameters": [
           {
             "name": "id",
@@ -5281,7 +5281,7 @@
         "security": [
 
         ],
-        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "description": "Retrieve a list of tags used on the platform, ordered by popularity.\n\n### Integration Tips:\n- Bypasses authentication (can be accessed publicly).\n- Ordered by overall popularity/usage metrics on the platform.\n- Useful for autocomplete inputs in article editors, tag selection screens in settings, or rendering global navigation/explore lists.\n- Pass `name` to look up one tag by its exact name, for example to find its ID.\n  The lookup also finds tags that are not supported.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
           {
@@ -5289,6 +5289,16 @@
           },
           {
             "$ref": "#/components/parameters/perPageParam10to1000"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "description": "Return only the tag with this exact name (case-insensitive).  The result is an empty list if there is no such tag.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "javascript"
           }
         ],
         "responses": {
@@ -5523,6 +5533,182 @@
           },
           "required": true,
           "description": "Tag fields to update"
+        }
+      }
+    },
+    "/api/tags/{id}/moderators": {
+      "post": {
+        "summary": "Add a tag moderator",
+        "tags": [
+          "tags"
+        ],
+        "description": "Make a user a moderator of a tag, with the same effects as adding them on the admin tag page: the tag moderator role, the trusted role, tag moderator newsletter emails, a confirmation email, and the tag marked as supported.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful change writes an admin API audit entry.\nReturns 422 if the user is already a moderator of the tag.",
+        "operationId": "addTagModerator",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The moderator was added",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "tag_id",
+                    "tag_name",
+                    "user_id",
+                    "username"
+                  ],
+                  "properties": {
+                    "tag_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "tag_name": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag or user not found"
+          },
+          "422": {
+            "description": "The user is already a moderator of the tag"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "ben"
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "The user, by `user_id` or `username`.  `user_id` is used if both are sent."
+        }
+      },
+      "delete": {
+        "summary": "Remove a tag moderator",
+        "tags": [
+          "tags"
+        ],
+        "description": "Remove a user's moderator role on a tag, with the same effects as removing them on the admin tag page.\n\nRequires an API key for an admin, super admin, or single resource admin on Tag.  Each successful change writes an admin API audit entry.\nReturns 422 if the user is not a moderator of the tag.",
+        "operationId": "removeTagModerator",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the tag.",
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The moderator was removed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "tag_id",
+                    "tag_name",
+                    "user_id",
+                    "username"
+                  ],
+                  "properties": {
+                    "tag_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "tag_name": {
+                      "type": "string"
+                    },
+                    "user_id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "username": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Tag or user not found"
+          },
+          "422": {
+            "description": "The user is not a moderator of the tag"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                  },
+                  "username": {
+                    "type": "string",
+                    "example": "ben"
+                  }
+                }
+              }
+            }
+          },
+          "required": true,
+          "description": "The user, by `user_id` or `username`.  `user_id` is used if both are sent."
         }
       }
     },

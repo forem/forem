@@ -10,6 +10,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       placement_area: placement_area,
       display_to: :all
     }
+    defaults[:organization] = nil unless options.key?(:organization) || options.key?(:organization_id)
     create(:billboard, **options.reverse_merge(defaults))
   end
 
@@ -124,11 +125,11 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   end
 
   context "when considering audience segmentation" do
-    let!(:in_segment) { create(:user) }
+    let!(:in_segment) { create(:user, :without_profile, profile_image: nil) }
     let!(:audience_segment) { create(:audience_segment, type_of: :no_posts_yet) }
     let!(:targets_segment) { create_billboard audience_segment: audience_segment }
     let!(:no_targets) { create_billboard display_to: :all }
-    let!(:not_in_segment) { create(:user) } # won't be in any segment
+    let!(:not_in_segment) { create(:user, :without_profile, profile_image: nil) } # won't be in any segment
 
     before do
       _targets_other = create_billboard audience_segment: create(:audience_segment)
@@ -234,7 +235,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(queries.grep(/FROM "organizations"/)).to be_empty
-      expect(filtered.find { |bb| bb.id == external_ad.id }.organization).to eq(organization)
+      expect(filtered.detect { |bb| bb.id == external_ad.id }.organization).to eq(organization)
     end
   end
 
@@ -286,69 +287,37 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
       end
 
-      it "shows only billboards with no targeting if no location is provided" do
-        filtered = filter_billboards
-        expect(filtered).to include(no_targets)
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
-
-      it "shows only billboards whose target location includes the specified location" do
-        filtered = filter_billboards(location: "CA-NL") # User is in Newfoundland, Canada
-
-        expect(filtered).to include(
-          no_targets,
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_quebec_and_newfoundland,
-        )
-        expect(filtered).not_to include(
-          targets_california_and_texas,
-          targets_maine_alberta_and_ontario,
+      it "filters billboards by no location, region match, country match, and unsupported country",
+         :aggregate_failures do
+        expect(filter_billboards).to include(no_targets).and exclude(
+          targets_canada, targets_new_york_and_canada, targets_california_and_texas,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
 
-        filtered = filter_billboards(location: "US-CA") # User is in California, USA
-        expect(filtered).to include(
-          no_targets,
-          targets_california_and_texas,
-        )
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
+        # User is in Newfoundland, Canada
+        expect(filter_billboards(location: "CA-NL")).to include(
+          no_targets, targets_canada, targets_new_york_and_canada, targets_quebec_and_newfoundland
+        ).and exclude(targets_california_and_texas, targets_maine_alberta_and_ontario)
 
-      it "shows only billboards targeting the country specifically if no region is provided" do
-        filtered = filter_billboards(location: "CA") # User is in "Canada"
-
-        expect(filtered).to include(
-          no_targets,
-          targets_canada,
-          targets_new_york_and_canada,
+        # User is in California, USA
+        expect(filter_billboards(location: "US-CA")).to include(
+          no_targets, targets_california_and_texas
+        ).and exclude(
+          targets_canada, targets_new_york_and_canada,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
-        expect(filtered).not_to include(
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
-        )
-      end
 
-      it "shows only billboards with no targeting if the user's location is an unsupported country" do
-        filtered = filter_billboards(location: "FR-BRE")
-        expect(filtered).to include(no_targets)
-        expect(filtered).not_to include(
-          targets_canada,
-          targets_new_york_and_canada,
-          targets_california_and_texas,
-          targets_quebec_and_newfoundland,
-          targets_maine_alberta_and_ontario,
+        # User is in "Canada" (country only, no region)
+        expect(filter_billboards(location: "CA")).to include(
+          no_targets, targets_canada, targets_new_york_and_canada
+        ).and exclude(
+          targets_california_and_texas, targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
+        )
+
+        # User is in an unsupported country
+        expect(filter_billboards(location: "FR-BRE")).to include(no_targets).and exclude(
+          targets_canada, targets_new_york_and_canada, targets_california_and_texas,
+          targets_quebec_and_newfoundland, targets_maine_alberta_and_ontario
         )
       end
 
@@ -378,20 +347,10 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:requires_cookies_ad) { create_billboard(requires_cookies: true) }
     let!(:no_cookies_required_ad) { create_billboard(requires_cookies: false) }
 
-    context "when cookies are allowed" do
-      it "includes ads that require cookies" do
-        filtered = filter_billboards(cookies_allowed: true)
-        expect(filtered).to include(requires_cookies_ad)
-        expect(filtered).to include(no_cookies_required_ad)
-      end
-    end
-
-    context "when cookies are not allowed" do
-      it "excludes ads that require cookies" do
-        filtered = filter_billboards(cookies_allowed: false)
-        expect(filtered).not_to include(requires_cookies_ad)
-        expect(filtered).to include(no_cookies_required_ad)
-      end
+    it "includes cookie-requiring ads only when cookies are allowed", :aggregate_failures do
+      expect(filter_billboards(cookies_allowed: true)).to include(requires_cookies_ad, no_cookies_required_ad)
+      expect(filter_billboards(cookies_allowed: false)).to include(no_cookies_required_ad)
+        .and exclude(requires_cookies_ad)
     end
   end
 
@@ -401,31 +360,24 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:mobile_web_ad) { create_billboard browser_context: :mobile_web }
     let!(:desktop_ad) { create_billboard browser_context: :desktop }
 
-    it "filters ads based on user_agent string for mobile in-app context" do
-      filtered = filter_billboards(user_agent: "DEV-Native-ios")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
-      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+    it "filters ads based on user_agent string across mobile in-app, mobile web, desktop, and unknown contexts",
+       :aggregate_failures do
+      %w[DEV-Native-ios DEV-Native-android].each do |ua|
+        filtered = filter_billboards(user_agent: ua)
+        expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+        expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+      end
 
-      filtered = filter_billboards(user_agent: "DEV-Native-android")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
-      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
-    end
+      mobile_web_filtered = filter_billboards(user_agent: "Mobile Safari")
+      expect(mobile_web_filtered).to include(all_browsers_ad, mobile_web_ad)
+      expect(mobile_web_filtered).not_to include(mobile_in_app_ad, desktop_ad)
 
-    it "filters ads based on user_agent string for mobile web context" do
-      filtered = filter_billboards(user_agent: "Mobile Safari")
-      expect(filtered).to include(all_browsers_ad, mobile_web_ad)
-      expect(filtered).not_to include(mobile_in_app_ad, desktop_ad)
-    end
+      desktop_filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
+      expect(desktop_filtered).to include(all_browsers_ad, desktop_ad)
+      expect(desktop_filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
 
-    it "filters ads based on user_agent string for desktop context" do
-      filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
-      expect(filtered).to include(all_browsers_ad, desktop_ad)
-      expect(filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
-    end
-
-    it "includes all ads for unknown user_agent contexts" do
-      filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
-      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
+      unknown_filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
+      expect(unknown_filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
     end
   end
 
@@ -441,36 +393,23 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       RequestStore.store[:subforem_id] = nil
     end
 
-    it "includes only ads that either have no subforem or explicitly list the requested subforem_id" do
-      filtered = filter_billboards(subforem_id: subforem.id)
-      expect(filtered).to include(no_subforem, subforem_first)
-      expect(filtered).not_to include(subforem_2_and_3)
-    end
+    it "filters billboards by explicit subforem_id, missing subforem_id, or RequestStore fallback",
+       :aggregate_failures do
+      expect(filter_billboards(subforem_id: subforem.id)).to include(no_subforem, subforem_first)
+        .and exclude(subforem_2_and_3)
 
-    it "falls back to no-subforem ads if the requested subforem_id is not in include_subforem_ids" do
-      filtered = filter_billboards(subforem_id: 9_999)
-      expect(filtered).to include(no_subforem)
-      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
-    end
+      expect(filter_billboards(subforem_id: 9_999)).to include(no_subforem)
+        .and exclude(subforem_first, subforem_2_and_3)
 
-    it "includes subforem_2_and_3 if subforem_id = 3" do
-      filtered = filter_billboards(subforem_id: subforem_3.id)
-      expect(filtered).to include(no_subforem, subforem_2_and_3)
-      expect(filtered).not_to include(subforem_first)
-    end
+      expect(filter_billboards(subforem_id: subforem_3.id)).to include(no_subforem, subforem_2_and_3)
+        .and exclude(subforem_first)
 
-    # Also test the scenario when subforem_id is not passed at all.
-    it "includes only no_subforem billboard if no subforem_id was provided" do
-      filtered = filter_billboards
-      expect(filtered).to include(no_subforem)
-      expect(filtered).not_to include(subforem_first, subforem_2_and_3)
-    end
+      expect(filter_billboards).to include(no_subforem)
+        .and exclude(subforem_first, subforem_2_and_3)
 
-    it "Falls back to request store if subforem_id is not passed" do
       RequestStore.store[:subforem_id] = subforem_2.id
-      filtered = filter_billboards
-      expect(filtered).to include(no_subforem, subforem_2_and_3)
-      expect(filtered).not_to include(subforem_first)
+      expect(filter_billboards).to include(no_subforem, subforem_2_and_3)
+        .and exclude(subforem_first)
     end
   end
 
@@ -498,7 +437,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -514,7 +453,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [paused_organization.id],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -522,16 +461,6 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         filtered = filter_billboards
         expect(filtered).not_to include(paused_org_billboard)
         expect(filtered).to include(no_org_billboard, active_org_billboard)
-      end
-
-      it "includes billboards from non-paused organizations" do
-        filtered = filter_billboards
-        expect(filtered).to include(active_org_billboard)
-      end
-
-      it "includes billboards with no organization" do
-        filtered = filter_billboards
-        expect(filtered).to include(no_org_billboard)
       end
     end
 
@@ -544,7 +473,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
         Rails.cache.write(
           Organizations::TrackPromotionalBillboardImpressionsWorker::CACHE_KEY,
           [paused_organization.id, another_paused_organization.id],
-          expires_in: 15.minutes
+          expires_in: 15.minutes,
         )
       end
 
@@ -569,46 +498,79 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
   context "when considering active event broadcasts" do
     let(:memory_store) { ActiveSupport::Cache::MemoryStore.new }
+    let!(:standard_bb) { create_billboard(placement_area: "feed_first", event_id: nil) }
 
     before do
       allow(Rails).to receive(:cache).and_return(memory_store)
       memory_store.clear
     end
 
-    let!(:standard_bb) { create_billboard(placement_area: "feed_first", event_id: nil) }
-    
     context "with an active global broadcast" do
-      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "global_broadcast", published: true) }
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now,
+                       broadcast_config: "global_broadcast", published: true)
+      end
       let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
 
-      it "overrides all feed_first placements bypassing standard billboards" do
+      it "overrides feed_first placements while leaving sidebar placements untouched", :aggregate_failures do
         filtered = filter_billboards(area: "feed_first")
         expect(filtered).to include(event_bb)
         expect(filtered).not_to include(standard_bb)
-      end
 
-      it "does not override sidebar placements" do
-        filtered = filter_billboards(area: "sidebar_left")
-        expect(filtered).not_to include(event_bb)
+        expect(filter_billboards(area: "sidebar_left")).not_to include(event_bb)
       end
     end
 
     context "with an active tagged broadcast" do
-      let(:event) { create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now, broadcast_config: "tagged_broadcast", published: true, tags_array: ["javascript"]) }
+      let(:event) do
+        create(:event, start_time: 5.minutes.ago, end_time: 1.hour.from_now,
+                       broadcast_config: "tagged_broadcast", published: true, tags_array: ["javascript"])
+      end
       let!(:event_bb) { create_billboard(placement_area: "feed_first", event: event) }
 
-      it "overrides feed if user tags overlap the event tags" do
-        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "javascript"])
+      it "overrides feed only when user tags overlap the event tags", :aggregate_failures do
+        filtered = filter_billboards(area: "feed_first", user_tags: %w[ruby javascript])
         expect(filtered).to include(event_bb)
         expect(filtered).not_to include(standard_bb)
+
+        non_overlapping = filter_billboards(area: "feed_first", user_tags: %w[ruby python])
+        expect(non_overlapping).not_to include(event_bb)
+        expect(non_overlapping).to include(standard_bb)
+      end
+    end
+  end
+
+  context "when considering survey completion exclusion" do
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
+    let(:survey) { create(:survey) }
+    let!(:survey_bb) do
+      create_billboard(exclude_survey_completions: true, exclude_survey_ids: [survey.id])
+    end
+
+    it "excludes the billboard when the signed-in user completed a matching survey" do
+      create(:survey_completion, user: user, survey: survey)
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).not_to include(survey_bb)
+    end
+
+    it "includes the billboard when the signed-in user has not completed a matching survey" do
+      expect(filter_billboards(user_signed_in: true, user_id: user.id)).to include(survey_bb)
+    end
+
+    it "executes a single SQL query for signed-in users without extra pre-queries" do
+      uid = user.id
+      queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        if !payload[:cached] && sql.match?(/FROM "(display_ads|segmented_users|survey_completions)"/)
+          queries << sql
+        end
       end
 
-      it "does not override feed if user tags do not overlap" do
-        filtered = filter_billboards(area: "feed_first", user_tags: ["ruby", "python"])
-        expect(filtered).not_to include(event_bb)
-        # Should render standard untagged boards if no mapping aligns securely:
-        expect(filtered).to include(standard_bb)
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(filter_billboards(user_signed_in: true, user_id: uid).to_a).to include(survey_bb)
       end
+
+      expect(queries.size).to eq(1)
     end
   end
 end

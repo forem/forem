@@ -124,12 +124,12 @@ module Images
           article.update_column(:social_image, generate_image(article, @user.bg_color_hex))
         end
       end
-    rescue OpenURI::HTTPError, Timeout::Error, Net::OpenTimeout, Net::ReadTimeout => e
+    rescue OpenURI::HTTPError, Timeout::Error => e
       # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
       Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
     rescue MiniMagick::Error => e
       # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
-      if e.message.include?("status: 15")
+      if sigterm_error?(e)
         Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
       else
         Rails.error.report(e)
@@ -485,7 +485,9 @@ module Images
         c.strokewidth "3"
         c.draw "circle #{x + radius},#{y + radius} #{x + radius},#{y - 1}"
       end
-    rescue Timeout::Error, StandardError => e
+    rescue StandardError => e
+      raise if sigterm_error?(e)
+
       Rails.error.report(e)
       # If processing the profile picture triggers a mogrify lockup,
       # gracefully fall back to returning the social image without their avatar.
@@ -530,6 +532,8 @@ module Images
         c.draw "circle #{cx},#{cy} #{cx},#{cy - radius}"
       end
     rescue StandardError => e
+      raise if sigterm_error?(e)
+
       Rails.error.report(e)
       result
     ensure
@@ -611,6 +615,10 @@ module Images
       return if image.respond_to?(:tempfile) && image.tempfile && image.tempfile.path.nil?
 
       image.destroy!
+    end
+
+    def sigterm_error?(error)
+      error.is_a?(MiniMagick::Error) && error.message.include?("status: 15")
     end
 
     def escape_text(text)

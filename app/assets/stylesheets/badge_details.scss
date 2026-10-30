@@ -14,6 +14,10 @@
     border-radius: 8px;
     border: 1px solid var(--body-bg);
 
+    body.dark-theme & {
+      background-color: var(--base-80);
+    }
+
     .badge-image {
       margin: 0 auto;
       object-fit: contain;

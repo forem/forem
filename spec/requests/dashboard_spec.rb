@@ -200,6 +200,33 @@ RSpec.describe "Dashboards" do
           expect(response.body).to include("Upload a video")
         end
       end
+
+      it "consolidates organization analytics links into a collapsible menu when user has admin orgs" do
+        org_one = create(:organization, name: "The DEV Team")
+        org_two = create(:organization, name: "CodeNewbie")
+        create(:organization_membership, user: user, organization: org_one, type_of_user: "admin")
+        create(:organization_membership, user: user, organization: org_two, type_of_user: "admin")
+
+        sign_in user
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        html = Nokogiri::HTML(response.body)
+        org_menu = html.at_css("details.dashboard-sidebar-orgs[data-sidebar-org-menu]")
+        expect(org_menu).to be_present
+        expect(org_menu.at_css("summary").text).to include("Organization Analytics")
+        expect(org_menu.css("a").map { |a| a.attr("href") }).to contain_exactly(
+          "/dashboard/analytics/org/#{org_one.id}",
+          "/dashboard/analytics/org/#{org_two.id}",
+        )
+      end
+
+      it "does not render the organization analytics menu when user has no admin orgs" do
+        sign_in user
+        get "/dashboard/sidebar", params: { state: "show" }, xhr: true
+
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("details.dashboard-sidebar-orgs")).to be_nil
+      end
     end
 
     context "when logged in as a super admin" do
@@ -263,13 +290,26 @@ RSpec.describe "Dashboards" do
     end
 
     describe "followed users section" do
-      it "lists followed users" do
+      it "lists followed users without issuing a redundant EXISTS query or raw created_at index scan",
+         :aggregate_failures do
         sign_in user
         user.follow second_user
         user.reload
-        get "/dashboard/following_users"
+
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/following_users"
+        end
 
         expect(response.body).to include CGI.escapeHTML(second_user.name)
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include("(follows.created_at + INTERVAL '0 seconds') DESC")
       end
     end
 
@@ -292,17 +332,34 @@ RSpec.describe "Dashboards" do
       end
 
       it "lists followed tags on following_tags and hidden tags on hidden_tags", :aggregate_failures do
-        get "/dashboard/following_tags"
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/following_tags"
+        end
 
         expect(response.body).to include first_followed_tag.name
         expect(response.body).to include second_followed_tag.name
         expect(response.body).not_to include antifollowed_tag.name
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include('"follows"."points" DESC')
 
-        get "/dashboard/hidden_tags"
+        follows_queries.clear
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/hidden_tags"
+        end
 
         expect(response.body).not_to include first_followed_tag.name
         expect(response.body).not_to include second_followed_tag.name
         expect(response.body).to include antifollowed_tag.name
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to include('"follows"."explicit_points" DESC')
       end
     end
 
@@ -342,19 +399,34 @@ RSpec.describe "Dashboards" do
     context "when logged in" do
       let(:spam_user) { create(:user, :spam) }
       let(:suspended_user) { create(:user, :suspended) }
+      let(:blocked_user) { create(:user) }
 
       before do
         second_user.follow user
         spam_user.follow user
         suspended_user.follow user
+        create(:follow, follower: blocked_user, followable: user, blocked: true)
         sign_in user
       end
 
-      it "only includes good standing users as followers (not spam or suspended)", :aggregated_failures do
-        get "/dashboard/user_followers"
+      it "only includes good standing users as followers without a redundant EXISTS query", :aggregate_failures do
+        follows_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          follows_queries << sql if sql.include?('FROM "follows"') && payload[:name] != "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/dashboard/user_followers"
+        end
+
         expect(response.body).to include CGI.escapeHTML(second_user.name)
         expect(response.body).not_to include CGI.escapeHTML(spam_user.name)
         expect(response.body).not_to include CGI.escapeHTML(suspended_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(blocked_user.name)
+        expect(follows_queries.grep(/SELECT 1 AS one FROM "follows"/)).to be_empty
+        expect(follows_queries.size).to eq(1)
+        expect(follows_queries.first).to match(/"follows"\."blocked" = (FALSE|\$\d+)/)
       end
     end
   end
@@ -379,8 +451,11 @@ RSpec.describe "Dashboards" do
     end
 
     context "when user is an org admin or member" do
-      it "shows page properly for both admin and member memberships", :aggregate_failures do
+      it "shows page properly for admin and member roles and consolidates orgs into the switcher menu",
+         :aggregate_failures do
+        other_org = create(:organization, name: "AI Pulse")
         membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        create(:organization_membership, user: user, organization: other_org)
 
         sign_in user
         get "/dashboard/analytics/org/#{organization.id}"
@@ -389,6 +464,13 @@ RSpec.describe "Dashboards" do
         membership.update!(type_of_user: "member")
         get "/dashboard/analytics/org/#{organization.id}"
         expect(response.body).to include("Analytics")
+
+        html = Nokogiri::HTML(response.body)
+        org_menu = html.at_css("details.analytics-org-menu[data-analytics-org-menu]")
+        expect(org_menu).to be_present
+        expect(org_menu.at_css("summary.is-active").text).to include(organization.name)
+        active_link = org_menu.at_css('a[aria-current="page"]')
+        expect(active_link["data-organization-id"]).to eq(organization.id.to_s)
       end
     end
   end

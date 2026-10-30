@@ -28,19 +28,12 @@ module Authentication
         name = I18n.t("services.authentication.providers.apple.name", first: info.first_name, last: info.last_name).strip
         name = name.presence || user_nickname
 
-        user_data = {
+        {
           email: info.email,
           apple_username: user_nickname,
-          name: name
+          name: name,
+          profile_image: Images::ProfileImageGenerator.call
         }
-
-        user_data[:profile_image] = if Rails.env.test?
-                                      Settings::General.mascot_image_url
-                                    else
-                                      Images::ProfileImageGenerator.call
-                                    end
-
-        user_data
       end
 
       def existing_user_data

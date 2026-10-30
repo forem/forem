@@ -70,6 +70,18 @@ RSpec.describe "AsyncInfo" do
       expect(response.body).to include("<div")
     end
 
+    it "includes the hamburger create account tracking element only when signed out", :aggregate_failures do
+      get "/async_info/navigation_links"
+      expect(response.body).to include('data-tracking-id="ca_hamburger_home_page"')
+      expect(response.body).to include('data-tracking-source="mobile_hamburger_nav"')
+
+      sign_in create(:user)
+      get "/async_info/navigation_links"
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("<div")
+      expect(response.body).not_to include('data-tracking-id="ca_hamburger_home_page"')
+    end
+
     it "returns the correct 'default' navigation links" do
       default_navigation_link = create(:navigation_link)
       get "/async_info/navigation_links"

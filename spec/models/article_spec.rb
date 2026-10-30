@@ -4801,11 +4801,40 @@ RSpec.describe Article do
       expect(sql).not_to include("INNER JOIN")
     end
 
-    it "uses prefix matching only on tokens with at least 3 alphanumeric characters", :aggregate_failures do
+    it "uses prefix matching only on single-token queries with at least 3 alphanumeric characters",
+       :aggregate_failures do
+      expect(described_class.sanitize_search_articles_tsquery("ruby")).to eq(
+        "to_tsquery('simple'::regconfig, ''' ruby '':*')",
+      )
+      expect(described_class.sanitize_search_articles_tsquery("go")).to eq(
+        "to_tsquery('simple'::regconfig, ''' go ''')",
+      )
+    end
+
+    it "uses exact lexemes and strips common stopwords on multi-token queries", :aggregate_failures do
       tsquery_sql = described_class.sanitize_search_articles_tsquery("why I switched to ruby")
 
       expect(tsquery_sql).to eq(
-        "to_tsquery('simple'::regconfig, ''' why '':* & '' i '' & '' switched '':* & '' to '' & '' ruby '':*')",
+        "to_tsquery('simple'::regconfig, ''' switched '' & '' ruby ''')",
+      )
+    end
+
+    it "splits non-alphanumeric separators so to_tsquery never emits phrase (<->) operators",
+       :aggregate_failures do
+      expect(described_class.sanitize_search_articles_tsquery("OPENAI_API_KEY")).to eq(
+        "to_tsquery('simple'::regconfig, ''' openai '' & '' api '' & '' key ''')",
+      )
+      expect(described_class.sanitize_search_articles_tsquery("bevy-where-was-i")).to eq(
+        "to_tsquery('simple'::regconfig, ''' bevy ''')",
+      )
+      expect(described_class.sanitize_search_articles_tsquery("idea+cash")).to eq(
+        "to_tsquery('simple'::regconfig, ''' idea '' & '' cash ''')",
+      )
+    end
+
+    it "retains stopword tokens when the entire query consists of stopwords" do
+      expect(described_class.sanitize_search_articles_tsquery("to be or not")).to eq(
+        "to_tsquery('simple'::regconfig, ''' to '' & '' be '' & '' or '' & '' not ''')",
       )
     end
 

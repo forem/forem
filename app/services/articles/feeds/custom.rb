@@ -3,6 +3,8 @@ module Articles
     TIME_AGO_MAX = Rails.env.production? ? 10.days.ago : 90.days.ago
 
     class Custom
+      SEMANTIC_CANDIDATE_MIN_LIMIT = FeedConfig::DEFAULT_SEMANTIC_CANDIDATE_LIMIT
+
       def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil, feed_config: nil)
         @user = user
         @number_of_articles = number_of_articles
@@ -23,8 +25,7 @@ module Articles
         # Optimize lookback calculation - cache the result
         # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
         # If you change this, consider updating the partial indexes in the migration
-        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
-        lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        lookback = resolve_lookback
         
         # Pre-calculate user-specific data to avoid repeated database calls
         user_data = preload_user_data
@@ -43,11 +44,23 @@ module Articles
         
         # Randomly shuffle top 5 articles if all articles are recent (within a week)
         articles = shuffle_top_five_if_recent(articles)
+
+        # Interleave published_at age buckets last so the shuffles above can't undo it.
+        if @feed_config.published_at_diversity_weight.positive?
+          articles = apply_published_at_diversity(articles, @feed_config.published_at_diversity_weight)
+        end
         
         articles
       end
 
+      def resolve_lookback
+        lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+        hard_lookback = lookback_setting.positive? ? lookback_setting.days.ago : TIME_AGO_MAX
+        config_hours = @feed_config.respond_to?(:feed_lookback_hours) ? @feed_config.feed_lookback_hours.to_i : 0
+        return hard_lookback unless config_hours.positive?
 
+        [config_hours.hours.ago, hard_lookback].max
+      end
 
       def preload_user_data
         {
@@ -64,13 +77,37 @@ module Articles
         base_query = Article.published
           .with_at_least_home_feed_minimum_score
           .where("articles.published_at > ?", lookback)
-          .limited_column_select
-          .select("(#{score_sql_method}) as computed_score")
-          .order(Arel.sql("computed_score DESC"))
-          .limit(@number_of_articles)
-          .offset((@page - 1) * @number_of_articles)
-          .includes(:context_notes)
           .from_subforem
+
+        global_offset = (@page - 1) * @number_of_articles
+        outer_offset = global_offset
+        order_clause = "computed_score DESC, articles.id DESC"
+
+        computed_score_sql = if two_stage_semantic_scoring?
+                               base_score_sql = @feed_config.base_score_sql(@user)
+                               if base_score_sql == "(0)"
+                                 score_sql_method
+                               else
+                                 base_query, outer_offset, order_clause = apply_semantic_candidate_window(
+                                   base_query,
+                                   lookback,
+                                   user_data,
+                                   base_score_sql,
+                                   global_offset,
+                                 )
+                                 "(#{base_score_sql} + #{@feed_config.semantic_similarity_sql(@user)})"
+                               end
+                             else
+                               score_sql_method
+                             end
+
+        base_query = base_query
+          .limited_column_select
+          .select("(#{computed_score_sql}) as computed_score")
+          .order(Arel.sql(order_clause))
+          .limit(@number_of_articles)
+          .offset(outer_offset)
+          .includes(:context_notes)
 
         comments_assoc = case comments_variant.to_s
                          when "more_inclusive_recent_good_comments"
@@ -86,6 +123,91 @@ module Articles
                          end
 
         base_query.includes(comments_assoc)
+      end
+
+      def two_stage_semantic_scoring?
+        @feed_config.respond_to?(:semantic_similarity_active?) &&
+          @feed_config.semantic_similarity_active?(@user)
+      end
+
+      def apply_semantic_candidate_window(base_query, lookback, user_data, base_score_sql, global_offset)
+        window_size = semantic_candidate_limit
+        start_window = global_offset / window_size
+        end_window = (global_offset + @number_of_articles - 1) / window_size
+        window_offset = start_window * window_size
+        outer_offset = global_offset - window_offset
+        window_count = end_window - start_window + 1
+
+        candidate_ids = build_semantic_candidate_ids_query(
+          lookback,
+          user_data,
+          base_score_sql,
+          limit: window_count * window_size,
+          offset: window_offset,
+        )
+        scoped_query = base_query.where(id: candidate_ids)
+
+        order_clause = if window_count > 1
+                         window_order_sql = build_semantic_window_order_sql(
+                           lookback,
+                           user_data,
+                           base_score_sql,
+                           start_window: start_window,
+                           end_window: end_window,
+                           window_size: window_size,
+                         )
+                         "#{window_order_sql}, computed_score DESC, articles.id DESC"
+                       else
+                         "computed_score DESC, articles.id DESC"
+                       end
+
+        [scoped_query, outer_offset, order_clause]
+      end
+
+      def build_semantic_window_order_sql(lookback, user_data, base_score_sql, start_window:, end_window:, window_size:)
+        when_clauses = (start_window...end_window).map do |window_index|
+          window_ids_sql = build_semantic_candidate_ids_query(
+            lookback,
+            user_data,
+            base_score_sql,
+            limit: window_size,
+            offset: window_index * window_size,
+          ).to_sql
+          "WHEN articles.id IN (#{window_ids_sql}) THEN #{window_index - start_window}"
+        end
+
+        "CASE #{when_clauses.join(' ')} ELSE #{end_window - start_window} END ASC"
+      end
+
+      def build_semantic_candidate_ids_query(lookback, user_data, base_score_sql,
+                                             limit: semantic_candidate_limit, offset: 0)
+        candidate_scope = Article.published
+          .with_at_least_home_feed_minimum_score
+          .where("articles.published_at > ?", lookback)
+          .from_subforem
+        candidate_scope = apply_user_filters(candidate_scope, user_data)
+        candidate_scope = apply_subforem_filters(candidate_scope)
+
+        query = candidate_scope
+          .select(:id)
+          .order(Arel.sql("#{base_score_sql} DESC, articles.id DESC"))
+          .limit(limit)
+        query = query.offset(offset) if offset.positive?
+        query
+      end
+
+      def semantic_candidate_limit
+        if @feed_config.respond_to?(:effective_semantic_candidate_limit)
+          @feed_config.effective_semantic_candidate_limit
+        elsif @feed_config.respond_to?(:semantic_candidate_limit) &&
+            @feed_config.semantic_candidate_limit.present?
+          @feed_config.semantic_candidate_limit.to_i.clamp(
+            FeedConfig::MIN_SEMANTIC_CANDIDATE_LIMIT,
+            FeedConfig::MAX_SEMANTIC_CANDIDATE_LIMIT,
+          )
+        else
+          SEMANTIC_CANDIDATE_MIN_LIMIT
+        end
       end
 
       def score_sql_method
@@ -124,6 +246,46 @@ module Articles
         end
         
         articles
+      end
+
+      # Page-local, query-free reordering that complements the U-shaped
+      # `published_at_diversity_weight` SQL term in FeedConfig#score_sql.
+      #
+      # Both layers deliberately share one knob and one window
+      # (FeedConfig#effective_feed_lookback_hours): the SQL term pulls fresh and
+      # older-edge articles into the candidate page, and this step stops any single
+      # age bucket from saturating the top of that page. The positional strength is
+      # clamped (max 20) so large SQL-scale weights can't push articles more than a
+      # few slots per repeated bucket. Buckets are symmetric thirds around the SQL
+      # curve's midpoint.
+      def apply_published_at_diversity(articles, diversity_weight)
+        list = articles.to_a
+        return list if list.size <= 2
+
+        now = Time.current
+        lookback_span = [@feed_config.effective_feed_lookback_hours.hours.to_f, 1.hour.to_f].max
+        strength = diversity_weight.clamp(0.0, 20.0)
+        bucket_counts = Hash.new(0)
+
+        list.each_with_index.sort_by do |(article, index)|
+          age = [now - article.published_at, 0.0].max
+          ratio = (age / lookback_span).clamp(0.0, 1.0)
+          bucket = if ratio < (1.0 / 3)
+                     :fresh
+                   elsif ratio > (2.0 / 3)
+                     :older
+                   else
+                     :mid
+                   end
+
+          occurrence = bucket_counts[bucket]
+          bucket_counts[bucket] += 1
+
+          extremity_bonus = ((ratio - 0.5).abs * 2.0) * (strength * 0.15)
+          saturation_penalty = occurrence * (strength * 0.25)
+
+          index + saturation_penalty - extremity_bonus
+        end.map(&:first)
       end
 
       def weighted_shuffle(arr, shuffle_weight)

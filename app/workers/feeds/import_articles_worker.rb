@@ -19,15 +19,18 @@ module Feeds
         # the last time a feed was fetched at
         earlier_than = nil
       else
-        users_scope = users_scope.where(id: Feeds::Source.active.select(:user_id))
+        earlier_than ||= 4.hours.ago
+        sources_scope = Feeds::Source.active
+        sources_scope = sources_scope.where(last_fetched_at: nil).or(
+          sources_scope.where(last_fetched_at: ..earlier_than),
+        )
+        users_scope = users_scope.where(id: sources_scope.select(:user_id))
 
         # Only batch users who have been active recently — avoids dispatching
         # Sidekiq jobs for users that will just be filtered out downstream.
         recent_activity_since = 3.months.ago
         users_scope = users_scope.where("last_article_at >= ? OR last_presence_at >= ?",
                                         recent_activity_since, recent_activity_since)
-
-        earlier_than ||= 4.hours.ago
       end
 
       # For some reason `ActiveSupport::TimeWithZone#is_a?(Time)` evaluates to
@@ -36,8 +39,8 @@ module Feeds
         earlier_than = earlier_than.iso8601
       end
 
-      users_scope.select(:id).find_in_batches do |batch|
-        arg_lists = batch.map { |user| [user.id, earlier_than] }
+      users_scope.in_batches do |batch|
+        arg_lists = batch.ids.map { |id| [id, earlier_than] }
 
         ForUser.perform_bulk(arg_lists)
       end

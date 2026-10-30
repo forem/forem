@@ -247,18 +247,26 @@ class StoriesController < ApplicationController
       @org_page = main_page
     end
     is_readme = @org_page.present?
+    @pinned_stories = if is_readme
+                        Article.none
+                      else
+                        @organization.articles.published.from_subforem.full_posts
+                          .where(id: @organization.profile_pins.select(:pinnable_id))
+                          .limited_column_select.order(published_at: :desc).decorate
+                      end
     @stories = ArticleDecorator.decorate_collection(@organization.articles.published.from_subforem
       .limited_column_select
+      .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(8))
     unless is_readme
-      preload_context_notes(@stories)
-      preload_reaction_counts(@stories)
+      preload_context_notes(@pinned_stories + @stories)
+      preload_reaction_counts(@pinned_stories + @stories)
     end
     @organization_article_index = !is_readme
 
     # Anti-spam/visibility guard: apply for both README and non-README views
     user_score = @organization.active_users.sum(:score)
-    if !user_signed_in? && user_score.negative? && @stories.sum(&:score) <= 0
+    if !user_signed_in? && user_score.negative? && (@pinned_stories + @stories).sum(&:score) <= 0
       not_found
     end
 
@@ -337,7 +345,7 @@ class StoriesController < ApplicationController
     @profile = @user&.profile&.decorate || Profile.create(user: @user)&.decorate
 
     set_surrogate_key_header(*@user.profile_cache_keys)
-    set_user_json_ld
+    set_user_json_ld unless internal_navigation? || user_signed_in?
 
     render template: "users/show"
   end
@@ -373,7 +381,7 @@ class StoriesController < ApplicationController
   def redirect_if_inactive_in_subforem_for_organization
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
-    return unless @stories.none? &&
+    return unless @pinned_stories.none? && @stories.none? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])
@@ -541,11 +549,17 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_stories
+    @pinned_stories = []
+    @stories = []
+    return unless @user.articles_count.positive?
+
+    # Profile stories are full posts only, and the story card reads processed_html just for
+    # status posts (Article#body_preview), so skip loading that large column for up to 60 rows.
     @pinned_stories = Article.published.from_subforem.full_posts.where(id: @user.profile_pins.select(:pinnable_id))
-      .limited_column_select
+      .minimal_feed_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.from_subforem.full_posts
-      .limited_column_select
+      .minimal_feed_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
     preload_context_notes(@pinned_stories + @stories)

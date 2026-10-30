@@ -2,12 +2,20 @@ require "rails_helper"
 
 RSpec.describe "Views an article" do
   let(:user) { create(:user) }
-  let(:article) do
-    create(:article, :with_notification_subscription, user: user)
-  end
+  let(:article) { create(:article, user: user) }
 
   before do
     sign_in user
+  end
+
+  def expect_edit_link_hidden_from_non_authors(path)
+    sign_out user
+    visit path
+    expect(page.body).not_to include("Click to edit")
+
+    sign_in create(:user)
+    visit path
+    expect(page.body).to include('display: none;">Click to edit</a>')
   end
 
   it "stops a user from moderating an article" do
@@ -21,8 +29,10 @@ RSpec.describe "Views an article" do
     expect(page).to have_content(article.title)
   end
 
-  it "shows non-negative comments", :js do
-    comments = create_list(:comment, 4, commentable: article)
+  it "shows non-negative comments" do
+    comments = Array.new(4) do |i|
+      create(:comment, commentable: article, user: user, body_markdown: "Comment body #{i}")
+    end
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
     sidekiq_perform_enqueued_jobs
@@ -54,16 +64,12 @@ RSpec.describe "Views an article" do
     # js helpers to ensure the datetime is locale. However, testing locale
     # datetimes has proven to be very flaky which is why the js is not included
     # here
-    it "shows the readable publish date" do
+    it "shows the readable publish date and embeds the published timestamp", :aggregate_failures do
       visit article.path
+
       expect(page).to have_css("article time", text: article.readable_publish_date.gsub("  ", " "))
-    end
-
-    it "embeds the published timestamp" do
-      visit article.path
-
       selector = "article time[datetime='#{article.decorate.published_timestamp}']"
-      expect(page).to have_selector(selector)
+      expect(page).to have_css(selector)
     end
 
     context "when articles have long markdowns and different published dates" do
@@ -96,12 +102,12 @@ RSpec.describe "Views an article" do
   end
 
   describe "when articles belong to a collection" do
-    let(:collection) { create(:collection) }
+    let(:collection) { create(:collection, user: user) }
     let(:articles_selector) { "//div[@class='series-switcher__list']//a" }
 
     context "with regular articles" do
       it "lists the articles in ascending published_at order" do
-        articles = create_list(:article, 2)
+        articles = create_list(:article, 2, user: user)
         articles.first.update(published_at: 1.week.ago)
         articles.each { |a| a.update_columns(collection_id: collection.id) }
 
@@ -114,9 +120,9 @@ RSpec.describe "Views an article" do
     end
 
     context "when a crossposted article is between two regular articles" do
-      let(:article1) { create(:article) }
-      let(:crossposted_article) { create(:article) }
-      let(:article2) { create(:article) }
+      let(:article1) { create(:article, user: user) }
+      let(:crossposted_article) { create(:article, user: user) }
+      let(:article2) { create(:article, user: user) }
 
       it "lists the articles in ascending order considering crossposted_at" do
         article1.update_columns(
@@ -152,28 +158,15 @@ RSpec.describe "Views an article" do
     let(:scheduled_article_path) { scheduled_article.path + query_params }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
 
-    it "shows the article edit link for the author", :js do
+    it "shows the article edit link and hides the manage link for the author", :aggregate_failures, :js do
       visit scheduled_article_path
       edit_link = find("a#author-click-to-edit")
       expect(edit_link.matches_style?(display: "inline-block")).to be true
-    end
-
-    it "doesn't show the article manage link, even for the author", :js do
-      visit scheduled_article_path
       expect(page).to have_no_link("article-action-space-manage")
     end
 
-    it "doesn't show an article edit link for the non-authorized user" do
-      sign_out user
-      sign_in create(:user)
-      visit scheduled_article_path
-      expect(page.body).to include('display: none;">Click to edit</a>')
-    end
-
-    it "doesn't show an article edit link when the user is not logged in" do
-      sign_out user
-      visit scheduled_article_path
-      expect(page.body).not_to include("Click to edit")
+    it "hides the edit link from non-authorized and logged-out users", :aggregate_failures do
+      expect_edit_link_hidden_from_non_authors(scheduled_article_path)
     end
   end
 
@@ -192,46 +185,16 @@ RSpec.describe "Views an article" do
       end
     end
 
-    context "with the article password, and the logged-in user is not authorized to update the article" do
-      let(:query_params) { "?preview=#{article.password}" }
-      let(:article_user) { create(:user) }
-
-      it "renders the article edit link" do
-        visit article_path
-        expect(page.body).to include('display: none;">Click to edit</a>')
-      end
-    end
-
-    context "with the article password, and the user is not logged-in" do
+    context "with the article password, and the user is not the author" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "does not render the article edit link" do
-        sign_out user
-        visit article_path
-        expect(page.body).not_to include("Click to edit")
+      it "hides the edit link from non-authorized and logged-out users", :aggregate_failures do
+        expect_edit_link_hidden_from_non_authors(article_path)
       end
     end
 
-    context "without the article password" do
-      let(:query_params) { "" }
-      let(:article_user) { user }
-
-      it "redirects the authorized author to the preview URL" do
-        visit article_path
-        expect(page).to have_current_path(article.path + "?preview=#{article.password}")
-      end
-
-      it "raises ActiveRecord::RecordNotFound when the user is not logged in" do
-        sign_out user
-        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises ActiveRecord::RecordNotFound when the user is not authorized to edit" do
-        sign_out user
-        sign_in create(:user)
-        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
+    # Requests without the preview password (author redirect, 404 for logged-out
+    # and non-authorized users) are covered in spec/requests/stories_show_spec.rb.
   end
 end

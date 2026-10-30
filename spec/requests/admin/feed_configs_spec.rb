@@ -10,7 +10,11 @@ RSpec.describe "/admin/advanced/feed_configs" do
         favorited_weight: 8.5,
         user_follow_weight: 2.0,
         tag_follow_weight: 3.0,
-        score_weight: 1.5
+        score_weight: 1.5,
+        semantic_similarity_weight: 12.0,
+        semantic_candidate_limit: 350,
+        feed_lookback_hours: 96,
+        published_at_diversity_weight: 4.5
       }
     }
   end
@@ -153,14 +157,35 @@ RSpec.describe "/admin/advanced/feed_configs" do
     end
 
     describe "POST /admin/advanced/feed_configs" do
-      it "creates a new feed config" do
+      it "creates a new feed config", :aggregate_failures do
         expect { post_resource }.to change(FeedConfig, :count).by(1)
         new_config = FeedConfig.last
-        expect(new_config.ai_disclosure_matching_weight).to eq(15.0)
-        expect(new_config.autonomous_ai_penalty_weight).to eq(25.0)
-        expect(new_config.favorited_weight).to eq(8.5)
-        expect(new_config.user_follow_weight).to eq(2.0)
+        expect(new_config).to have_attributes(
+          ai_disclosure_matching_weight: 15.0,
+          autonomous_ai_penalty_weight: 25.0,
+          favorited_weight: 8.5,
+          user_follow_weight: 2.0,
+          semantic_similarity_weight: 12.0,
+          semantic_candidate_limit: 350,
+          feed_lookback_hours: 96,
+          published_at_diversity_weight: 4.5,
+        )
         expect(response).to redirect_to(admin_feed_config_path(new_config))
+      end
+
+      it "treats a blank published_at_diversity_weight as disabled (0.0)" do
+        params[:feed_config][:published_at_diversity_weight] = ""
+
+        expect { post_resource }.to change(FeedConfig, :count).by(1)
+        expect(FeedConfig.last.published_at_diversity_weight).to eq(0.0)
+      end
+
+      it "re-renders the form for a negative published_at_diversity_weight" do
+        params[:feed_config][:published_at_diversity_weight] = -1
+
+        expect { post_resource }.not_to change(FeedConfig, :count)
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Published at diversity weight must be greater than or equal to 0")
       end
     end
 
