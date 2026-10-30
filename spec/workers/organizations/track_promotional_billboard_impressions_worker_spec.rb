@@ -386,6 +386,23 @@ RSpec.describe Organizations::TrackPromotionalBillboardImpressionsWorker, type: 
       it "returns the cached organization IDs" do
         expect(described_class.paused_organization_ids).to eq([1, 2, 3])
       end
+
+      it "serves repeat reads from process memory instead of Redis" do
+        described_class.paused_organization_ids
+        allow(Rails.cache).to receive(:read).and_call_original
+
+        expect(described_class.paused_organization_ids).to eq([1, 2, 3])
+        expect(Rails.cache).not_to have_received(:read)
+      end
+
+      it "picks up a refreshed list once the memory window expires" do
+        described_class.paused_organization_ids
+        Rails.cache.write(described_class::CACHE_KEY, [4])
+
+        travel(described_class::MEMORY_CACHE_EXPIRY + 1.second) do
+          expect(described_class.paused_organization_ids).to eq([4])
+        end
+      end
     end
   end
 end
