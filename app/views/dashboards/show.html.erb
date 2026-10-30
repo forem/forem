@@ -62,7 +62,7 @@
             <p class="mb-6"><%= t("views.dashboard.posts.empty.status_desc") %></p>
           <% else %>
             <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
-            <% if policy(Article).create? %>
+            <% if !current_user.actively_spam_or_suspended? && policy(Article).create? %>
               <p><a href="/new" class="crayons-btn crayons-btn--l"><%= t("views.dashboard.posts.empty.new") %></a></p>
             <% end %>
           <% end %>
