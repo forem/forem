@@ -929,7 +929,7 @@ fn sql_squish(sql: RString) -> Option<String> {
 fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String> {
     let w = {
         let ws = unsafe { weights_arr.as_slice() };
-        if ws.len() < 28 {
+        if ws.len() < 29 {
             return None;
         }
         forem_core::feed::FeedScoreWeights {
@@ -961,11 +961,12 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
             compellingness_score_weight: extract_f64_value(ws[25])?,
             language_match_weight: extract_f64_value(ws[26])?,
             randomness_weight: extract_f64_value(ws[27])?,
+            published_at_diversity_weight: extract_f64_value(ws[28])?,
         }
     };
 
     let cs: Vec<Value> = unsafe { ctx_arr.as_slice() }.to_vec();
-    if cs.len() < 24 {
+    if cs.len() < 25 {
         return None;
     }
 
@@ -979,6 +980,7 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
     let cutoff_24h_nanos = Integer::from_value(cs[21])?.to_u32().ok()?;
     let default_second_pageview_sec = Integer::from_value(cs[22])?.to_i64().ok()?;
     let cutoff_30d_sec = Integer::from_value(cs[23])?.to_i64().ok()?;
+    let published_at_diversity_half_lookback_hours = extract_f64_value(cs[24])?;
 
     // Analyze `recently_viewed_articles` in a single pass across all three consumers:
     // 1. `recent_pageviews_count` (for `recently_active_past_day_bonus_weight`)
@@ -1144,6 +1146,7 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
         ai_preference,
         languages: &languages,
         random_seed,
+        published_at_diversity_half_lookback_hours,
     };
 
     forem_core::feed::build_feed_config_score_sql(&w, &ctx)

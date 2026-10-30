@@ -44,6 +44,11 @@ module Articles
         
         # Randomly shuffle top 5 articles if all articles are recent (within a week)
         articles = shuffle_top_five_if_recent(articles)
+
+        # Interleave published_at age buckets last so the shuffles above can't undo it.
+        if @feed_config.published_at_diversity_weight.positive?
+          articles = apply_published_at_diversity(articles, @feed_config.published_at_diversity_weight)
+        end
         
         articles
       end
@@ -241,6 +246,46 @@ module Articles
         end
         
         articles
+      end
+
+      # Page-local, query-free reordering that complements the U-shaped
+      # `published_at_diversity_weight` SQL term in FeedConfig#score_sql.
+      #
+      # Both layers deliberately share one knob and one window
+      # (FeedConfig#effective_feed_lookback_hours): the SQL term pulls fresh and
+      # older-edge articles into the candidate page, and this step stops any single
+      # age bucket from saturating the top of that page. The positional strength is
+      # clamped (max 20) so large SQL-scale weights can't push articles more than a
+      # few slots per repeated bucket. Buckets are symmetric thirds around the SQL
+      # curve's midpoint.
+      def apply_published_at_diversity(articles, diversity_weight)
+        list = articles.to_a
+        return list if list.size <= 2
+
+        now = Time.current
+        lookback_span = [@feed_config.effective_feed_lookback_hours.hours.to_f, 1.hour.to_f].max
+        strength = diversity_weight.clamp(0.0, 20.0)
+        bucket_counts = Hash.new(0)
+
+        list.each_with_index.sort_by do |(article, index)|
+          age = [now - article.published_at, 0.0].max
+          ratio = (age / lookback_span).clamp(0.0, 1.0)
+          bucket = if ratio < (1.0 / 3)
+                     :fresh
+                   elsif ratio > (2.0 / 3)
+                     :older
+                   else
+                     :mid
+                   end
+
+          occurrence = bucket_counts[bucket]
+          bucket_counts[bucket] += 1
+
+          extremity_bonus = ((ratio - 0.5).abs * 2.0) * (strength * 0.15)
+          saturation_penalty = occurrence * (strength * 0.25)
+
+          index + saturation_penalty - extremity_bonus
+        end.map(&:first)
       end
 
       def weighted_shuffle(arr, shuffle_weight)

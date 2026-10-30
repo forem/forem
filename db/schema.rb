@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_30_110000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -857,6 +857,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_110000) do
     t.float "lookback_window_weight", default: 1.0
     t.float "organization_follow_weight", default: 1.0
     t.float "precomputed_selections_weight", default: 1.0
+    t.float "published_at_diversity_weight", default: 0.0, null: false
     t.float "published_today_weight", default: 0.0, null: false
     t.float "randomness_weight", default: 0.0, null: false
     t.float "recency_weight", default: 1.0

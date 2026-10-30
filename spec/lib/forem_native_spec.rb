@@ -3016,6 +3016,7 @@ RSpec.describe ForemNative do
           rec_relation = instance_double(ActiveRecord::Relation, last: rec_list)
           allow(rec_relation).to receive(:where).and_return(rec_relation)
           allow(RecommendedArticlesList).to receive(:where).and_return(rec_relation)
+          native_diversity_hits = 0
 
           1_000.times do |iteration|
             config = FeedConfig.new(
@@ -3047,6 +3048,8 @@ RSpec.describe ForemNative do
               compellingness_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               language_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               randomness_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              published_at_diversity_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              feed_lookback_hours: rng.rand < 0.5 ? rng.rand(1..300) : 0,
               recent_tag_count_min: 2,
               recent_tag_count_max: 5,
               all_time_tag_count_min: 2,
@@ -3114,7 +3117,22 @@ RSpec.describe ForemNative do
             expected_sql = config.__send__(:legacy_score_sql, user_double)
 
             expect(actual_sql).to eq(expected_sql), "iteration #{iteration}"
+
+            next unless config.published_at_diversity_weight.positive?
+
+            srand(seed)
+            direct_native_sql = described_class.feed_config_score_sql(
+              *config.__send__(:native_score_sql_payload, user_double),
+            )
+            next unless direct_native_sql
+
+            expect(direct_native_sql).to eq(expected_sql), "iteration #{iteration} (direct native)"
+            expect(direct_native_sql).to include("POWER(LEAST(ABS(")
+            native_diversity_hits += 1
           end
+
+          # The Rust kernel (not only the legacy fallback) must emit published_at_diversity_weight.
+          expect(native_diversity_hits).to be > 100
 
           # Verify out-of-domain float transparently falls back to legacy_score_sql
           extreme_config = FeedConfig.new(feed_success_weight: 1e-7)
