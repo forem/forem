@@ -1,0 +1,26 @@
+spec/requests/admin/feed_configs_spec.rb
+  s_ceeff9c246fb36::t_cbbae03eaac197 190-197
+spec/models/feed_config_spec.rb
+  s_ceeff9c246fb36::t_50afb9fab02a00 1002-1023
+  s_ceeff9c246fb36::t_8b83e4751f74ee 1024
+  s_ceeff9c246fb36::t_cbbae03eaac197 645-653
+  s_ceeff9c246fb36::t_7444905d9d58eb 1153,1204,1208,1214-1216,1220
+app/models/feed_config.rb
+  s_ceeff9c246fb36::t_cbbae03eaac197 56-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6e2afb2274bf309f1d5e6faf3101302feaab545b",
+  "prompts": {},
+  "sessions": {
+    "s_ceeff9c246fb36": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18d2e-9eca-7620-a2da-e2a4709df2f8",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
