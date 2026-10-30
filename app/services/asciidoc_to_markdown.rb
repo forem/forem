@@ -427,23 +427,18 @@ class AsciidocToMarkdown
     non_empty = lines.reject { |l| l.strip.empty? }
     return [] if non_empty.empty?
 
-    if table_has_header?(lines, non_empty, header_option)
-      header_cells = parse_table_cells(non_empty.shift, attrs)
-      return [] if header_cells.empty?
+    first_cells = parse_table_cells(non_empty.first, attrs)
+    ncols = first_cells.size
+    return [] if ncols.zero?
 
-      rows = [render_table_row(header_cells), render_table_row(Array.new(header_cells.size, "---"))]
-    else
-      first_cells = parse_table_cells(non_empty.first, attrs)
-      return [] if first_cells.empty?
+    has_header = table_has_header?(lines, non_empty, header_option)
+    body_lines = has_header ? non_empty.drop(1) : non_empty
+    body_rows = body_lines.flat_map { |l| parse_table_cells(l, attrs) }.each_slice(ncols).to_a
+    body_rows.last.fill("", body_rows.last.size...ncols) if body_rows.any?
 
-      rows = [render_table_row(Array.new(first_cells.size, "")), render_table_row(Array.new(first_cells.size, "---"))]
-    end
-
-    non_empty.each do |row_line|
-      cells = parse_table_cells(row_line, attrs)
-      rows << render_table_row(cells) unless cells.empty?
-    end
-    rows
+    header = has_header ? first_cells : Array.new(ncols, "")
+    [render_table_row(header), render_table_row(Array.new(ncols, "---"))] +
+      body_rows.map { |r| render_table_row(r) }
   end
 
   # Determines whether the first row of a table should be promoted to a GFM header.
@@ -488,7 +483,9 @@ class AsciidocToMarkdown
   def convert_conums(line)
     return line unless line.include?("<")
 
-    CONUMS.reduce(line) { |l, (k, v)| l.gsub(k, v) }
+    line.sub(/(?:\s*<(?:10|[1-9])>)+\s*\z/) do |tail|
+      tail.gsub(/<(?:10|[1-9])>/) { |m| CONUMS[m] }
+    end
   end
 
   # Substitutes {attribute} references using defined document attributes.
@@ -546,11 +543,12 @@ class AsciidocToMarkdown
 
     return unless res.include?("://") || res.include?("link:")
 
-    res.gsub!(%r{(?:link:([^\s\[]+)|(?<!\()(https?://[^\s\[\])]+))\[(.*?)\]}) do
+    res.gsub!(%r{(?:link:([^\s\[]+)|(https?://[^\s\[\]]+))\[(.*?)\]}) do
       url = Regexp.last_match(1) || Regexp.last_match(2)
       raw_label = Regexp.last_match(3)
       label = raw_label.empty? ? protect_url.call(url) : raw_label
-      "[#{label}](#{protect_url.call(url)})"
+      target = url.match?(/[()\s]/) ? "<#{url}>" : url
+      "[#{label}](#{protect_url.call(target)})"
     end
   end
 

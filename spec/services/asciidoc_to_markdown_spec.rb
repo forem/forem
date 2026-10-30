@@ -210,6 +210,18 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         expect(result).to include("app.listen(3000); ②")
       end
 
+      it "does not replace inline angle brackets in code listings" do
+        input = <<~ADOC
+          [source,cpp]
+          ----
+          auto x = std::get<1>(t);
+          ----
+        ADOC
+
+        result = described_class.call(input)
+        expect(result).to include("auto x = std::get<1>(t);")
+      end
+
       it "requires listing closing delimiter to match opening delimiter character and length" do
         input = <<~ADOC
           ----
@@ -292,6 +304,25 @@ RSpec.describe AsciidocToMarkdown, type: :service do
           | --- | --- | --- |
           | John |  | Doe |
           | Escaped \\| Pipe | Mid | End |
+        MD
+
+        expect(described_class.call(input).strip).to eq(expected.strip)
+      end
+
+      it "groups table cells into rows when formatted with one cell per line" do
+        input = <<~ADOC
+          |===
+          | Name | Age
+
+          | Alice
+          | 30
+          |===
+        ADOC
+
+        expected = <<~MD
+          | Name | Age |
+          | --- | --- |
+          | Alice | 30 |
         MD
 
         expect(described_class.call(input).strip).to eq(expected.strip)
@@ -398,6 +429,13 @@ RSpec.describe AsciidocToMarkdown, type: :service do
       it "converts internal cross references and external links" do
         input = "See <<_prerequisites>> or visit https://forem.com[] or https://forem.com[Forem]."
         expected = "See [prerequisites](#prerequisites) or visit [https://forem.com](https://forem.com) or [Forem](https://forem.com)."
+
+        expect(described_class.call(input).strip).to eq(expected)
+      end
+
+      it "converts links with parentheses and angle-bracket wraps destination" do
+        input = "Read about https://en.wikipedia.org/wiki/Ruby_(programming_language)[Ruby] today."
+        expected = "Read about [Ruby](<https://en.wikipedia.org/wiki/Ruby_(programming_language)>) today."
 
         expect(described_class.call(input).strip).to eq(expected)
       end
