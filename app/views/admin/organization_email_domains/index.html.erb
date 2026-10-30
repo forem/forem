@@ -1,0 +1,20 @@
+<h1 class="crayons-title mb-4"><%= t("org_domain_membership.review_title") %></h1>
+<p class="mb-4"><%= t("org_domain_membership.review_description") %></p>
+<% @domains.each do |domain| %>
+  <article class="crayons-card p-4 mb-4 grid gap-3">
+    <h2><%= domain.domain %></h2>
+    <p><%= link_to domain.organization.name, admin_organization_path(domain.organization) %></p>
+    <p><%= link_to domain.organization.url, domain.organization.url, rel: "noopener", target: "_blank" if domain.organization.url.present? %></p>
+    <p><%= t("org_domain_membership.requester", username: domain.requested_by&.username) %></p>
+    <p><%= t("org_domain_membership.statuses.#{domain.status}") %></p>
+    <% if domain.reviewed_by %>
+      <p><%= t("org_domain_membership.reviewer", username: domain.reviewed_by.username, date: l(domain.reviewed_at, format: :short)) %></p>
+    <% end %>
+    <div class="flex flex-wrap gap-3">
+      <% %w[approved rejected revoked].each do |decision| %>
+        <%= button_to t("org_domain_membership.decisions.#{decision}"), admin_organization_email_domain_path(domain), method: :patch, params: { decision: decision }, class: "crayons-btn crayons-btn--secondary" %>
+      <% end %>
+    </div>
+  </article>
+<% end %>
+<%= paginate @domains %>
