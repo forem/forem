@@ -2,7 +2,7 @@
 en:
   org_domain_membership:
     settings_title: "Join with a work email"
-    settings_description: "Request approval for each email domain. A site superadmin must approve it before you can enable automatic membership."
+    settings_description: "Request approval to let people join with a work email at this domain. Membership opens automatically when a site superadmin approves the request. You can disable it at any time."
     permissions: "People who join receive ordinary membership, including permission to publish their own posts under this organization. They do not receive admin access."
     domain: "Email domain"
     request_approval: "Request approval"
@@ -19,7 +19,7 @@ en:
     disable: "Disable membership"
     remove: "Revoke domain"
     review_title: "Organization email domain requests"
-    review_description: "Confirm that each domain belongs to the organization. Reject public email providers and unrelated domains. Approval does not enable membership until an organization admin enables it."
+    review_description: "Confirm that each domain belongs to the organization. Reject public email providers and unrelated domains. Approving a pending request immediately opens self-service membership for that domain."
     requester: "Requested by @%{username}"
     reviewer: "Reviewed by @%{username} on %{date}"
     decisions:
@@ -59,7 +59,7 @@ en:
     verification_steps: "Verification steps"
     check_inbox: "Check your inbox"
     resend_help: "Need another code or a different email?"
-    pending_help: "Waiting for a site superadmin to review this domain. Membership stays closed until approval and enablement."
+    pending_help: "Waiting for a site superadmin to review this domain. Membership will open automatically after approval."
     domain_help: "Use an exact domain, such as foobar.com. No @ sign or website address."
     domain_review: "Superadmin review"
     no_requests: "No email domain requests yet."

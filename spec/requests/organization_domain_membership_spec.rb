@@ -34,14 +34,16 @@ RSpec.describe "Organization domain membership" do
     expect(domain.reload).not_to be_available
   end
 
-  it "lets a superadmin approve and an org admin enable the domain" do
+  it "opens membership on approval without a second org admin action" do
     sign_in create(:user, :super_admin)
     patch admin_organization_email_domain_path(domain), params: { decision: "approved" }
     expect(domain.reload.status).to eq("approved")
-    expect(domain).not_to be_enabled
-    sign_in org_admin
-    patch organization_email_domain_path(organization.slug, domain), params: { enabled: "true" }
-    expect(domain.reload).to be_available
+    expect(domain).to be_available
+    sign_in create(:user)
+    expect do
+      post organization_join_path(organization.slug), params: { work_email: "employee@foobar.com" }
+    end.to change(OrganizationMembershipChallenge, :count).by(1)
+    expect(response).to redirect_to(organization_join_path(organization.slug))
   end
 
   it "does not let an ordinary site admin review domains" do

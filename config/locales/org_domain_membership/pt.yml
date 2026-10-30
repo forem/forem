@@ -2,7 +2,7 @@
 pt:
   org_domain_membership:
     settings_title: "Entrar com um e-mail profissional"
-    settings_description: "Solicite a aprovação de cada domínio de e-mail. Um superadministrador do site deve aprová-lo antes de ativar a adesão automática."
+    settings_description: "Solicite aprovação para permitir que as pessoas entrem com um e-mail profissional deste domínio. A adesão será aberta automaticamente quando um superadministrador do site aprovar a solicitação. Você pode desativá-la a qualquer momento."
     permissions: "Quem entrar receberá a função de membro, com permissão para publicar seus próprios artigos pela organização. Não receberá acesso de administrador."
     domain: "Domínio de e-mail"
     request_approval: "Solicitar aprovação"
@@ -19,7 +19,7 @@ pt:
     disable: "Desativar adesão"
     remove: "Revogar domínio"
     review_title: "Solicitações de domínios de organizações"
-    review_description: "Confirme que cada domínio pertence à organização. Rejeite provedores de e-mail públicos e domínios sem relação. Após a aprovação, um administrador da organização deve ativar a adesão."
+    review_description: "Confirme que cada domínio pertence à organização. Rejeite provedores de e-mail públicos e domínios sem relação. A aprovação de uma solicitação pendente abre imediatamente a adesão automática para esse domínio."
     requester: "Solicitado por @%{username}"
     reviewer: "Analisado por @%{username} em %{date}"
     decisions:
@@ -59,7 +59,7 @@ pt:
     verification_steps: "Etapas de verificação"
     check_inbox: "Confira sua caixa de entrada"
     resend_help: "Precisa de outro código ou de outro e-mail?"
-    pending_help: "Aguardando a análise deste domínio por um superadministrador do site. A participação permanece fechada até a aprovação e a ativação."
+    pending_help: "Aguardando a análise deste domínio por um superadministrador do site. A adesão será aberta automaticamente após a aprovação."
     domain_help: "Use um domínio exato, como foobar.com, sem @ nem endereço de site."
     domain_review: "Análise do superadministrador"
     no_requests: "Ainda não há solicitações de domínio."

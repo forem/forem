@@ -31,7 +31,9 @@ class OrganizationEmailDomain < ApplicationRecord
     raise ArgumentError unless %w[approved rejected revoked].include?(decision)
 
     with_lock do
-      update!(status: decision, enabled: false, reviewed_by: reviewer, reviewed_at: Time.current)
+      # The request opts into membership. A repeated review must preserve an org admin's later pause.
+      enable_membership = decision == "approved" && (status != "approved" || enabled?)
+      update!(status: decision, enabled: enable_membership, reviewed_by: reviewer, reviewed_at: Time.current)
       organization_membership_challenges.where(consumed_at: nil).update_all(expires_at: Time.current)
       Note.create!(author: reviewer, noteable: organization, reason: "misc_note",
                    content: "Email domain #{domain}: #{decision}")

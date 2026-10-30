@@ -57,7 +57,13 @@ RSpec.describe "Organization membership through a work email", :js do
     page.driver.resize(1280, 900)
     click_on "Approve"
     expect(page).to have_content("Domain review saved")
-    expect(domain.reload.status).to eq("approved")
-    expect(domain).not_to be_enabled
+    expect(domain.reload).to have_attributes(status: "approved", enabled: true)
+    visit organization.path
+    expect(page).to have_link("Work at Foobar? Join the organization")
+    org_admin = create(:user)
+    create(:organization_membership, user: org_admin, organization: organization, type_of_user: "admin")
+    sign_in org_admin
+    visit organization_settings_path(organization.slug)
+    within("#section-email-domains") { expect(page).to have_button("Disable membership") }
   end
 end

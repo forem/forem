@@ -2,7 +2,7 @@
 fr:
   org_domain_membership:
     settings_title: "Rejoindre avec une adresse professionnelle"
-    settings_description: "Demandez l’approbation de chaque domaine de messagerie. Un superadministrateur du site doit l’approuver avant l’activation de l’adhésion automatique."
+    settings_description: "Demandez une approbation pour permettre aux personnes de rejoindre l’organisation avec une adresse professionnelle de ce domaine. L’adhésion s’ouvre automatiquement dès qu’un superadministrateur du site approuve la demande. Vous pouvez la désactiver à tout moment."
     permissions: "Les personnes qui rejoignent l’organisation deviennent membres et peuvent publier leurs propres articles au nom de l’organisation. Elles ne deviennent pas administrateurs."
     domain: "Domaine de messagerie"
     request_approval: "Demander une approbation"
@@ -19,7 +19,7 @@ fr:
     disable: "Désactiver l’adhésion"
     remove: "Révoquer le domaine"
     review_title: "Demandes de domaines des organisations"
-    review_description: "Confirmez que chaque domaine appartient à l’organisation. Refusez les fournisseurs de messagerie publics et les domaines sans rapport. Après approbation, un administrateur de l’organisation doit activer l’adhésion."
+    review_description: "Confirmez que chaque domaine appartient à l’organisation. Refusez les fournisseurs de messagerie publics et les domaines sans rapport. L’approbation d’une demande en attente ouvre immédiatement l’adhésion autonome pour ce domaine."
     requester: "Demande de @%{username}"
     reviewer: "Examen par @%{username} le %{date}"
     decisions:
@@ -59,7 +59,7 @@ fr:
     verification_steps: "Étapes de vérification"
     check_inbox: "Consultez votre boîte de réception"
     resend_help: "Besoin d’un autre code ou d’une autre adresse ?"
-    pending_help: "En attente de l’examen du domaine par un superadministrateur du site. L’adhésion reste fermée jusqu’à l’approbation et l’activation."
+    pending_help: "En attente de l’examen du domaine par un superadministrateur du site. L’adhésion s’ouvrira automatiquement après l’approbation."
     domain_help: "Utilisez un domaine exact, par exemple foobar.com, sans @ ni adresse de site web."
     domain_review: "Examen par un superadministrateur"
     no_requests: "Aucune demande de domaine pour le moment."

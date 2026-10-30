@@ -17,15 +17,32 @@ RSpec.describe OrganizationEmailDomain do
     expect(domain.update(domain: "other.com")).to be(false)
   end
 
-  it "requires approval and explicit enablement" do
+  it "opens membership immediately on superadmin approval" do
     domain = create(:organization_email_domain)
     expect(domain).not_to be_available
     domain.review!(create(:user, :super_admin), "approved")
-    expect(domain).not_to be_available
+    expect(domain).to be_available
     expect(domain.reviewed_at).to be_present
     expect(Note.where(noteable: domain.organization).last.content).to include("foobar.com: approved")
-    domain.update!(enabled: true)
-    expect(domain).to be_available
+  end
+
+  it "preserves an org admin's pause when approval is repeated" do
+    domain = create(:organization_email_domain, status: "approved", enabled: false)
+    domain.review!(create(:user, :super_admin), "approved")
+    expect(domain.reload).not_to be_available
+  end
+
+  it "closes membership and expires outstanding codes on rejection or revocation" do
+    reviewer = create(:user, :super_admin)
+    %w[rejected revoked].each do |decision|
+      domain = create(:organization_email_domain, :available)
+      challenge = domain.organization_membership_challenges.create!(
+        user: create(:user), email: "employee@foobar.com", otp_digest: "digest", expires_at: 10.minutes.from_now,
+      )
+      domain.review!(reviewer, decision)
+      expect(domain.reload).not_to be_enabled
+      expect(challenge.reload.expires_at).to be <= Time.current
+    end
   end
 
   it "retains the request when the requester deletes their account" do
