@@ -1,6 +1,9 @@
 require "rails_helper"
 require "sentry-rails"
 require "sentry-sidekiq"
+# Load Honeycomb's Faraday patch first, as the initializers do. Its alias_method
+# recurses forever if it runs after Sentry prepends onto Faraday::Connection.
+require "honeycomb-beeline"
 
 RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop:disable RSpec/DescribeClass
   let(:initializer_path) { Rails.root.join("config/initializers/sentry.rb") }
@@ -44,6 +47,13 @@ RSpec.describe "Sentry (Better Stack errors & tracing) initializer" do # rubocop
     load initializer_path
 
     expect(Sentry.configuration.enabled_patches).to include(:faraday, :excon, :redis, :puma, :http)
+  end
+
+  it "keeps Faraday usable alongside Honeycomb's Faraday patch" do
+    activate_tracing!
+    require "honeycomb-beeline"
+
+    expect { Faraday.new("https://example.com") }.not_to raise_error
   end
 
   it "traces partial (>= 1ms) and collection rendering in addition to templates" do
