@@ -27,6 +27,7 @@ en:
         hidden_tags: Hidden tags
         listings: Listings
         analytics: Analytics
+        org_analytics: Organization Analytics
         feed_imports: RSS Import Feeds
         for_org: Analytics for %{org}
         upload: Upload a video
@@ -37,6 +38,7 @@ en:
         audience_heading: Your Audience
         back: "Back to Main Dashboard"
         your: Your Dashboard
+        organizations_menu: Organizations
         org: "%{org} Analytics Dashboard"
         readers: Readers
         comments: Comments

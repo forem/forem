@@ -1024,6 +1024,19 @@ RSpec.describe "Stories::Feeds" do
         get stories_feed_path
         expect(response_article).to include("favorited_by_user_id" => nil)
       end
+
+      it "reuses story fragments from read_multi without per-story cache.read round-trips" do
+        get stories_feed_path
+        first_payload = response_article
+
+        allow(Rails.cache).to receive(:read_multi).and_call_original
+        allow(Rails.cache).to receive(:read).and_call_original
+
+        get stories_feed_path
+        expect(response_article).to eq(first_payload)
+        expect(Rails.cache).to have_received(:read_multi).once
+        expect(Rails.cache).not_to have_received(:read).with(a_string_starting_with("jbuilder/"), anything)
+      end
     end
   end
 

@@ -1,10 +1,15 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength, RSpec/ContextWording, RSpec/VerifiedDoubles, Style/Send
 RSpec.describe Ai::AboutPageGenerator do
   let(:subforem) { create(:subforem) }
   let(:brain_dump) { "A community focused on web development and programming" }
   let(:name) { "WebDev Community" }
   let(:service) { described_class.new(subforem.id, brain_dump, name) }
+
+  before do
+    allow(service).to receive(:sleep)
+  end
 
   describe "#generate!" do
     context "when AI call succeeds on first attempt" do
@@ -41,7 +46,7 @@ RSpec.describe Ai::AboutPageGenerator do
         allow(Rails.logger).to receive(:info)
       end
 
-      it "creates an about page successfully" do
+      it "creates an about page successfully and logs a creation message", :aggregate_failures do
         expect { service.generate! }.to change(Page, :count).by(1)
 
         page = Page.last
@@ -53,10 +58,6 @@ RSpec.describe Ai::AboutPageGenerator do
         expect(page.template).to eq("contained")
         expect(page.body_markdown).to include("Welcome to WebDev Community")
         expect(page.body_markdown).to include("web development and programming")
-      end
-
-      it "logs success message" do
-        service.generate!
         expect(Rails.logger).to have_received(:info).with("Creating new about page for subforem #{subforem.id}")
       end
     end
@@ -77,18 +78,16 @@ RSpec.describe Ai::AboutPageGenerator do
         allow(Rails.logger).to receive(:info)
       end
 
-      it "updates the existing about page" do
+      it "updates the existing about page and logs an update message", :aggregate_failures do
         expect { service.generate! }.not_to change(Page, :count)
 
         existing_page.reload
         expect(existing_page.title).to eq("About #{name}")
         expect(existing_page.description).to eq("Overview page for #{name}")
         expect(existing_page.body_markdown).to include("New About Content")
-      end
-
-      it "logs update message" do
-        service.generate!
-        expect(Rails.logger).to have_received(:info).with("About page already exists for subforem #{subforem.id}, updating content")
+        expect(Rails.logger).to have_received(:info).with(
+          "About page already exists for subforem #{subforem.id}, updating content",
+        )
       end
     end
 
@@ -112,12 +111,9 @@ RSpec.describe Ai::AboutPageGenerator do
         allow(Rails.logger).to receive(:info)
       end
 
-      it "retries and eventually succeeds" do
+      it "retries, logs warning messages for failed attempts, and eventually succeeds", :aggregate_failures do
         expect { service.generate! }.to change(Page, :count).by(1)
-      end
-
-      it "logs warning messages for failed attempts" do
-        service.generate!
+        expect(service).to have_received(:sleep).with(1).twice
         expect(Rails.logger).to have_received(:warn).with("Attempt 1 failed to generate about content: API Error")
         expect(Rails.logger).to have_received(:warn).with("Attempt 2 failed to generate about content: API Error")
       end
@@ -129,8 +125,9 @@ RSpec.describe Ai::AboutPageGenerator do
         allow(Rails.logger).to receive(:error)
       end
 
-      it "logs error and returns without creating page" do
+      it "logs error and returns without creating page", :aggregate_failures do
         expect { service.generate! }.not_to change(Page, :count)
+        expect(service).to have_received(:sleep).with(1).twice
         expect(Rails.logger).to have_received(:error).with("Failed to generate about content after 3 attempts")
       end
     end
@@ -246,3 +243,4 @@ RSpec.describe Ai::AboutPageGenerator do
     end
   end
 end
+# rubocop:enable Layout/LineLength, RSpec/ContextWording, RSpec/VerifiedDoubles, Style/Send

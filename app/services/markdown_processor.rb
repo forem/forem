@@ -77,7 +77,8 @@ module MarkdownProcessor
 
     BILLBOARD = %w[alt class height href src width].freeze
 
-    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls cx cy d data-conversation
+    RENDERED_MARKDOWN_SCRUBBER = %w[alt autoplay colspan controls cx cy d data-alert
+                                    data-alert-label data-conversation
                                     data-lang data-gif-video data-no-instant data-url fill
                                     height href id loop muted name playsinline points preload
                                     poster r ref rel rowspan rx ry span src start stroke

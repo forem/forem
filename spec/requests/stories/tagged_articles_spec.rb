@@ -126,6 +126,20 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           )
         end
 
+        it "skips the existence query for unsupported tags when the page has stories", :aggregate_failures do
+          tagged_article = create(:article, user: user, published: true, approved: true, tags: unsupported_tag,
+                                            score: 5)
+          queries = []
+          callback = ->(*, payload) { queries << payload[:sql] }
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            get "/t/#{unsupported_tag.name}"
+          end
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(CGI.escapeHTML(tagged_article.title))
+          expect(queries.grep(/SELECT 1 AS one FROM "articles"/)).to be_empty
+        end
+
         it "renders normal page if no articles but tag is supported" do
           expect { get "/t/#{tag.name}" }.not_to raise_error
         end
@@ -379,6 +393,29 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           def renders_page_2_canonical_url(tag)
             expected_tag = "<link rel=\"canonical\" href=\"http://forem.test/t/#{tag.name}/page/2\" />"
             expect(response.body).to include(expected_tag)
+          end
+
+          it "returns not found when page is below 1 or exceeds MAX_PAGE", :aggregate_failures do
+            article
+            expect { get "/t/#{tag.name}/page/0" }.to raise_error(ActiveRecord::RecordNotFound)
+            expect do
+              get "/t/#{tag.name}/page/#{Stories::TaggedArticlesController::MAX_PAGE + 1}"
+            end.to raise_error(ActiveRecord::RecordNotFound)
+          end
+
+          it "clamps sidebar pagination links to MAX_PAGE", :aggregate_failures do
+            article
+            allow(Rails.cache).to receive(:fetch).and_call_original
+            allow(Rails.cache).to receive(:fetch)
+              .with("#{tag.cache_key}/article-cached-tagged-count", { expires_in: 72.hours })
+              .and_return(50_000)
+
+            get "/t/#{tag.name}"
+
+            expect(response).to have_http_status(:ok)
+            expected_link = %(<a href="http://forem.test/t/#{tag.name}/page/100" class="olderposts-pagenumber">100</a>)
+            expect(response.body).to include(expected_link)
+            expect(response.body).not_to include("/page/5000")
           end
         end
       end

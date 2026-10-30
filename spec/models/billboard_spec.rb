@@ -381,6 +381,48 @@ RSpec.describe Billboard do
       expect(billboard.processed_html).to eq("**bold**")
       expect(billboard.minimized_processed_html).to eq("Minimized **bold**")
     end
+
+    it "adds a validation error when body_markdown raises ContentParsingError" do
+      invalid_billboard = build(:billboard, body_markdown: "{% cta invalid-url %}Click here{% endcta %}")
+
+      expect(invalid_billboard).not_to be_valid
+      expect(invalid_billboard.errors[:base]).to include(I18n.t("liquid_tags.invalid_url_scheme", option: "link"))
+    end
+
+    it "adds a validation error when minimized_body_markdown raises ContentParsingError" do
+      invalid_billboard = build(
+        :billboard,
+        special_behavior: "persistent",
+        minimized_body_markdown: "{% cta invalid-url %}Click here{% endcta %}",
+      )
+
+      expect(invalid_billboard).not_to be_valid
+      expect(invalid_billboard.errors[:base]).to include(I18n.t("liquid_tags.invalid_url_scheme", option: "link"))
+    end
+
+    it "keeps rendered HTML synchronized when markdown is modified, validated, and restored before save" do
+      billboard = create(
+        :billboard,
+        render_mode: "forem_markdown",
+        body_markdown: "Original **body**",
+        minimized_body_markdown: "Original **minimized**",
+      )
+      original_html = billboard.processed_html
+      original_minimized_html = billboard.minimized_processed_html
+
+      billboard.body_markdown = "Temporary **body**"
+      billboard.minimized_body_markdown = "Temporary **minimized**"
+      expect(billboard).to be_valid
+      expect(billboard.processed_html).to include("Temporary")
+      expect(billboard.minimized_processed_html).to include("Temporary")
+
+      billboard.body_markdown = "Original **body**"
+      billboard.minimized_body_markdown = "Original **minimized**"
+      billboard.save!
+
+      expect(billboard.processed_html).to eq(original_html)
+      expect(billboard.minimized_processed_html).to eq(original_minimized_html)
+    end
   end
 
   describe "after_save callbacks" do
