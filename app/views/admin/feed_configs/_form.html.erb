@@ -116,6 +116,11 @@
         <%= f.number_field :published_today_weight, step: "any", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
+        <%= f.label :published_at_diversity_weight, "Published At Diversity Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Adds a U-shaped score bonus (0 to this weight) favoring very fresh articles and those near the older edge of this config's lookback window, then interleaves fresh/mid/older age buckets on each page (positional strength capped at 20). 0 disables both.</p>
+        <%= f.number_field :published_at_diversity_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
         <%= f.label :general_past_day_bonus_weight, "General Past Day Bonus", class: "crayons-field__label" %>
         <%= f.number_field :general_past_day_bonus_weight, step: "any", class: "crayons-textfield" %>
       </div>

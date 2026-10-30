@@ -53,13 +53,22 @@ module Articles
     end
 
     def top_articles
-      @articles.where("published_at > ?", top.to_i.days.ago)
+      if q.present?
+        # Wrap `published_at` in an expression when combined with full-text search so
+        # PostgreSQL does not abandon `index_articles_on_reading_list_document` to scan
+        # `index_articles_on_published_at_and_score` and de-TOAST `reading_list_document`
+        # on every article in the timeframe window.
+        @articles.where("(articles.published_at + INTERVAL '0 seconds') > ?", top.to_i.days.ago)
+      else
+        @articles.where("published_at > ?", top.to_i.days.ago)
+      end
     end
 
     def published_articles_with_users_and_organizations
+      score_clause = q.present? ? "(articles.score + 0) >= ?" : "score >= ?"
       Article.published.from_subforem
         .includes([{ user: :profile }, :organization])
-        .where("score >= ?", Settings::UserExperience.index_minimum_score)
+        .where(score_clause, Settings::UserExperience.index_minimum_score)
     end
   end
 end

@@ -184,6 +184,7 @@ module Admin
         :lookback_window_weight,
         :organization_follow_weight,
         :precomputed_selections_weight,
+        :published_at_diversity_weight,
         :published_today_weight,
         :randomness_weight,
         :recency_weight,

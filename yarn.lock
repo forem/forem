@@ -7801,6 +7801,13 @@ __metadata:
     style-loader: "npm:^3.3.4"
     svgo: "npm:2.8.0"
     web-share-wrapper: "npm:^0.2.2"
+  dependenciesMeta:
+    core-js:
+      built: false
+    core-js-pure:
+      built: false
+    cypress:
+      built: false
   languageName: unknown
   linkType: soft
 

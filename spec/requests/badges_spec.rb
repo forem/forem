@@ -16,6 +16,12 @@ RSpec.describe "Badges" do
           expect(response.body).to include CGI.escapeHTML(badge.badge_image_url)
           expect(response.body).to match(%r{<template id="badge-#{badge.id}">.*?</template>}m)
         end
+        card_images = response.parsed_body.css(
+          ".badges-page .sticker-book .badge-container > .badge-image-container > .badge-image",
+        )
+        modal_images = response.parsed_body.css(".badge_details > .badge-image-container > .badge-image")
+        expect(card_images.size).to eq(badges.size)
+        expect(modal_images.size).to eq(badges.size)
       end
     end
 

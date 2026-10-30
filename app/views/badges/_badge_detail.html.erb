@@ -13,6 +13,7 @@
     <p class="description"><%= badge.description %></p>
   </div>
   <div class="close" onclick="window.Forem.closeModal()">
-    <%= inline_svg_tag("x.svg", aria_hidden: true, title: t("views.badges.icon_close"), class: "close_icon") %>
+    <%# Badge lists render this partial once per badge; the icon is identical, so parse its SVG once per view %>
+    <%= @badge_detail_close_icon ||= inline_svg_tag("x.svg", aria_hidden: true, title: t("views.badges.icon_close"), class: "close_icon") %>
   </div>
 </div>

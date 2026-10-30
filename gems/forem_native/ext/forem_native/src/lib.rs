@@ -929,7 +929,7 @@ fn sql_squish(sql: RString) -> Option<String> {
 fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String> {
     let w = {
         let ws = unsafe { weights_arr.as_slice() };
-        if ws.len() < 28 {
+        if ws.len() < 29 {
             return None;
         }
         forem_core::feed::FeedScoreWeights {
@@ -961,11 +961,12 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
             compellingness_score_weight: extract_f64_value(ws[25])?,
             language_match_weight: extract_f64_value(ws[26])?,
             randomness_weight: extract_f64_value(ws[27])?,
+            published_at_diversity_weight: extract_f64_value(ws[28])?,
         }
     };
 
     let cs: Vec<Value> = unsafe { ctx_arr.as_slice() }.to_vec();
-    if cs.len() < 24 {
+    if cs.len() < 25 {
         return None;
     }
 
@@ -979,6 +980,7 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
     let cutoff_24h_nanos = Integer::from_value(cs[21])?.to_u32().ok()?;
     let default_second_pageview_sec = Integer::from_value(cs[22])?.to_i64().ok()?;
     let cutoff_30d_sec = Integer::from_value(cs[23])?.to_i64().ok()?;
+    let published_at_diversity_half_lookback_hours = extract_f64_value(cs[24])?;
 
     // Analyze `recently_viewed_articles` in a single pass across all three consumers:
     // 1. `recent_pageviews_count` (for `recently_active_past_day_bonus_weight`)
@@ -1144,6 +1146,7 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
         ai_preference,
         languages: &languages,
         random_seed,
+        published_at_diversity_half_lookback_hours,
     };
 
     forem_core::feed::build_feed_config_score_sql(&w, &ctx)
@@ -2031,6 +2034,119 @@ fn encode_json(ruby: &Ruby, value: Value, escape_html: bool) -> Option<RString> 
     Some(ruby.str_new(&json))
 }
 
+fn truncate_feed_xml_items(ruby: &Ruby, xml: RString, max_items: usize) -> Option<RString> {
+    if !xml.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let truncated = {
+        let text = unsafe { xml.test_as_str() }?;
+        match forem_core::feed::truncate_feed_xml_items(text, max_items) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(truncated) => Some(truncated),
+        }
+    };
+    Some(truncated.map_or(xml, |s| ruby.str_new(&s)))
+}
+
+fn feed_html_content(content: RString) -> Option<bool> {
+    if !content.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let text = unsafe { content.test_as_str() }?;
+    Some(forem_core::feed::feed_html_content(text))
+}
+
+fn postprocess_feed_markdown(ruby: &Ruby, content: RString) -> Option<RString> {
+    if !content.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before we allocate any Ruby objects.
+    let processed = {
+        let text = unsafe { content.test_as_str() }?;
+        match forem_core::feed::postprocess_feed_markdown(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(processed) => Some(processed),
+        }
+    };
+    Some(processed.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
+}
+
+fn resolve_feed_markdown_images(
+    ruby: &Ruby,
+    content: RString,
+    base_url: RString,
+    feed_source_url: RString,
+) -> Option<RString> {
+    if !content.is_utf8_compatible_encoding()
+        || !base_url.is_utf8_compatible_encoding()
+        || !feed_source_url.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrows; `forem_core` never calls into Ruby, and all
+    // borrows end before we allocate any Ruby objects.
+    let resolved = {
+        let text = unsafe { content.test_as_str() }?;
+        let base = unsafe { base_url.test_as_str() }?;
+        let source = unsafe { feed_source_url.test_as_str() }?;
+        match forem_core::feed::resolve_feed_markdown_images(text, base, source)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(resolved) => Some(resolved),
+        }
+    };
+    Some(resolved.map_or_else(|| RString::new_shared(content), |s| ruby.str_new(&s)))
+}
+
+fn format_feed_tags(categories: RArray) -> Option<String> {
+    // SAFETY: Borrow `categories` slice in-place without calling into Ruby.
+    let cats: Vec<String> = {
+        let slice = unsafe { categories.as_slice() };
+        let take = slice.len().min(4);
+        let mut out = Vec::with_capacity(take);
+        for &val in &slice[..take] {
+            let rstr = RString::from_value(val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            out.push(unsafe { rstr.test_as_str() }?.to_owned());
+        }
+        out
+    };
+    forem_core::feed::format_feed_tags(&cats)
+}
+
+fn extract_feed_author(ruby: &Ruby, author_string: RString) -> Option<RArray> {
+    if !author_string.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before allocating the Ruby Array.
+    let (email, name) = {
+        let text = unsafe { author_string.test_as_str() }?;
+        forem_core::feed::extract_feed_author(text)?
+    };
+    let ary = ruby.ary_new_capa(2);
+    match email {
+        Some(e) => ary.push(ruby.str_new(&e)).ok()?,
+        None => ary.push(ruby.qnil()).ok()?,
+    }
+    ary.push(ruby.str_new(&name)).ok()?;
+    Some(ary)
+}
+
+fn sanitize_feed_error(message: RString) -> Option<String> {
+    if !message.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby.
+    let text = unsafe { message.test_as_str() }?;
+    Some(forem_core::feed::sanitize_feed_error(text))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -2246,5 +2362,21 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod.define_singleton_method("json_quote", function!(json_quote, 2))?;
     native_mod.define_singleton_method("encode_json", function!(encode_json, 2))?;
+    native_mod.define_singleton_method(
+        "truncate_feed_xml_items",
+        function!(truncate_feed_xml_items, 2),
+    )?;
+    native_mod.define_singleton_method("feed_html_content", function!(feed_html_content, 1))?;
+    native_mod.define_singleton_method(
+        "postprocess_feed_markdown",
+        function!(postprocess_feed_markdown, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "resolve_feed_markdown_images",
+        function!(resolve_feed_markdown_images, 3),
+    )?;
+    native_mod.define_singleton_method("format_feed_tags", function!(format_feed_tags, 1))?;
+    native_mod.define_singleton_method("extract_feed_author", function!(extract_feed_author, 1))?;
+    native_mod.define_singleton_method("sanitize_feed_error", function!(sanitize_feed_error, 1))?;
     Ok(())
 }
