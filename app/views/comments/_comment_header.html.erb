@@ -1,14 +1,16 @@
+<% org_name = commenter_organization_membership(comment, commentable) %>
+<% is_article_author = commentable_author_is_op?(commentable, comment) %>
 <div class="comment__header">
   <a href="<%= URL.user(comment.user) %>" class="crayons-link crayons-link--secondary flex items-center fw-medium m:hidden">
     <span class="js-comment-username">
       <%= comment.user.name %>
-      <% if (org_name = commenter_organization_membership(comment, commentable)) %>
+      <% if org_name %>
         <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2" title="Member of <%= org_name %>">
           <%= org_name %>
         </span>
       <% end %>
     </span>
-    <% if commentable_author_is_op?(commentable, comment) %>
+    <% if is_article_author %>
       <span class="crayons-hover-tooltip inline-block spec-op-author -mr-2" data-tooltip="<%= get_ama_or_op_banner(commentable) %>">
         <%= crayons_icon_tag("small-medal") %>
       </span>
@@ -17,7 +19,7 @@
   <div class="profile-preview-card relative mb-4 s:mb-0 fw-medium hidden m:block">
     <button id="comment-profile-preview-trigger-<%= comment.id %>" aria-controls="comment-profile-preview-content-<%= comment.id %>" class="profile-preview-card__trigger p-1 -my-1 -ml-1 crayons-btn crayons-btn--ghost" aria-label="<%= t("views.users.details", user: comment.user.name) %>">
       <%= comment.user.name %>
-      <% if (org_name = commenter_organization_membership(comment, commentable)) %>
+      <% if org_name %>
         <span class="c-indicator c-indicator--subtle c-indicator--round c-indicator--relaxed p-1 px-2" title="Member of <%= org_name %>">
           <%= org_name %>
         </span>
@@ -26,7 +28,7 @@
       <%= community_leader_icon(comment.user) %>
     </button>
     <%= render "/shared/profile_preview_card", actor: comment.user, id: "comment-profile-preview-content-#{comment.id}" %>
-    <% if commentable_author_is_op?(commentable, comment) %>
+    <% if is_article_author %>
       <span class="crayons-hover-tooltip inline-block spec-op-author -ml-2" data-tooltip="<%= get_ama_or_op_banner(commentable) %>">
         <%= crayons_icon_tag("small-medal") %>
       </span>
