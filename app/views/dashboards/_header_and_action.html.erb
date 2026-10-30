@@ -80,21 +80,25 @@
 
   <script>
     fetch('/dashboard/sidebar?state=<%= params[:action] %>&which=<%= params[:which] %>')
-      .then(response => response.text())
+      .then(response => (response.ok ? response.text() : ''))
       .then(html => {
-        document.getElementById('dashboard-main-sidebar-wrapper').innerHTML = html;
+        if (html) {
+          document.getElementById('dashboard-main-sidebar-wrapper').innerHTML = html;
+        }
       });
     window.fetch('/dashboard/sidebar?type_of=mobile&state=<%= params[:action] %>&which=<%= params[:which] %>')
-      .then(response => response.text())
+      .then(response => (response.ok ? response.text() : ''))
       .then(html => {
-        document.getElementById('dashboard-mobile-sidebar-wrapper').innerHTML = html;
-        let navtrigger = document.getElementById('mobile_nav_dashboard');
-        if (navtrigger) {
-          navtrigger.addEventListener('change', (event) => {
-            let url = event.target.value;
-            InstantClick.preload(url);
-            InstantClick.display(url);
-          });
+        if (html) {
+          document.getElementById('dashboard-mobile-sidebar-wrapper').innerHTML = html;
+          let navtrigger = document.getElementById('mobile_nav_dashboard');
+          if (navtrigger) {
+            navtrigger.addEventListener('change', (event) => {
+              let url = event.target.value;
+              InstantClick.preload(url);
+              InstantClick.display(url);
+            });
+          }
         }
       });
   </script>
