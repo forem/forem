@@ -77,6 +77,42 @@ RSpec.describe AsciidocToMarkdown, type: :service do
       end
     end
 
+    context "with Comments" do
+      it "skips line comments and block comments in the document body" do
+        input = <<~ADOC
+          First paragraph.
+
+          // This is a private single-line comment
+
+          ////
+          This is a private
+          multi-line comment block
+          ////
+
+          Second paragraph.
+        ADOC
+
+        result = described_class.call(input)
+
+        expect(result).to include("First paragraph.")
+        expect(result).to include("Second paragraph.")
+        expect(result).not_to include("private")
+      end
+
+      it "preserves comment slashes inside code blocks as literal code" do
+        input = <<~ADOC
+          [source,javascript]
+          ----
+          // Line comment in JS code
+          console.log("hello");
+          ----
+        ADOC
+
+        result = described_class.call(input)
+        expect(result).to include("// Line comment in JS code")
+      end
+    end
+
     context "with Code Listings" do
       it "converts source blocks with syntax highlighting language" do
         input = <<~ADOC
@@ -97,6 +133,34 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         MD
 
         expect(described_class.call(input).strip).to eq(expected.strip)
+      end
+
+      it "accepts extra attributes and special characters like # in source blocks" do
+        input = <<~ADOC
+          [source,c#,linenums]
+          ----
+          Console.WriteLine("Hello");
+          ----
+        ADOC
+
+        result = described_class.call(input)
+        expect(result).to start_with("```c#\nConsole.WriteLine(\"Hello\");\n```")
+      end
+
+      it "uses longer fence when code listing contains embedded markdown backticks" do
+        input = <<~ADOC
+          [source,markdown]
+          ----
+          Here is some markdown:
+          ```ruby
+          puts "nested"
+          ```
+          ----
+        ADOC
+
+        result = described_class.call(input).strip
+        expect(result).to start_with("````markdown")
+        expect(result).to end_with("````")
       end
 
       it "replaces callout numbers (<1>, <2>) in code blocks with unicode circled numbers" do
@@ -131,6 +195,25 @@ RSpec.describe AsciidocToMarkdown, type: :service do
           | --- | --- | --- |
           | /api/v1/users | GET | List all users |
           | /api/v1/posts | POST | Create post |
+        MD
+
+        expect(described_class.call(input).strip).to eq(expected.strip)
+      end
+
+      it "preserves empty cells and escaped pipes without column shifting" do
+        input = <<~ADOC
+          |===
+          | First | Middle | Last
+          | John | | Doe
+          | Escaped \\| Pipe | Mid | End
+          |===
+        ADOC
+
+        expected = <<~MD
+          | First | Middle | Last |
+          | --- | --- | --- |
+          | John |  | Doe |
+          | Escaped \\| Pipe | Mid | End |
         MD
 
         expect(described_class.call(input).strip).to eq(expected.strip)

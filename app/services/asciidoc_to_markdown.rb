@@ -2,23 +2,43 @@
 
 require "yaml"
 
+# Translates AsciiDoc text to GitHub Flavored Markdown for downstream Forem processing.
+# Preserves Liquid tags, extracts document header attributes to YAML Front Matter,
+# and converts block/inline AsciiDoc constructs into standard Markdown.
 class AsciidocToMarkdown
   BREAKS = { "'''" => "---", "***" => "---", "---" => "---" }.freeze
   ADMONITIONS = %w[NOTE TIP IMPORTANT WARNING CAUTION].freeze
 
+  # Converts AsciiDoc input to Markdown.
+  #
+  # @param asciidoc [String, nil] raw AsciiDoc text
+  # @param options [Hash] options forwarded to service instance
+  # @return [String] generated Markdown with optional YAML Front Matter
   def self.call(asciidoc, **)
     new(asciidoc, **).call
   end
 
+  # Alias for .call to adhere to Forem ApplicationService convention.
+  #
+  # @param asciidoc [String, nil] raw AsciiDoc text
+  # @param options [Hash] options forwarded to service instance
+  # @return [String] generated Markdown
   def self.perform(asciidoc, **)
     call(asciidoc, **)
   end
 
+  # Initializes the AsciiDoc to Markdown converter.
+  #
+  # @param asciidoc [String, nil] raw AsciiDoc content
+  # @param front_matter [Boolean] whether to extract document metadata as YAML Front Matter
   def initialize(asciidoc, front_matter: true)
     @raw = asciidoc.to_s
     @front_matter = front_matter
   end
 
+  # Executes the conversion from AsciiDoc to Markdown.
+  #
+  # @return [String] converted Markdown string
   def call
     return "" if @raw.strip.empty?
 
@@ -43,7 +63,10 @@ class AsciidocToMarkdown
 
   private
 
-  # Mask {% embed ... %} and {{ var }} so markdown regexes leave them intact
+  # Masks {% embed ... %} and {{ var }} so markdown regexes leave them intact.
+  #
+  # @param text [String] input text
+  # @return [Array(String, Array<String>)] masked text and array of captured tags
   def mask_liquid_tags(text)
     tags = []
     masked = text.gsub(/(?:\{%.*?%\}|\{\{.*?\}\})/m) do |m|
@@ -53,10 +76,19 @@ class AsciidocToMarkdown
     [masked, tags]
   end
 
+  # Restores previously masked Liquid tags.
+  #
+  # @param text [String] masked markdown text
+  # @param tags [Array<String>] array of original Liquid tags
+  # @return [String] text with restored Liquid tags
   def unmask_liquid_tags(text, tags)
     tags.each_with_index.reduce(text) { |str, (tag, i)| str.gsub("<!--LIQUID_#{i}-->", tag) }
   end
 
+  # Parses document lines line-by-line and returns Markdown body and metadata.
+  #
+  # @param text [String] raw AsciiDoc body text
+  # @return [Array(String, Hash)] markdown string and metadata hash
   def parse_document(text)
     output = []
     metadata = {}
@@ -65,6 +97,8 @@ class AsciidocToMarkdown
     in_header = true
     in_code = false
     code_lang = ""
+    code_lines = []
+    in_comment = false
     in_quote = false
     quote_author = nil
     in_admonition = false
@@ -72,21 +106,34 @@ class AsciidocToMarkdown
     table_header_done = false
 
     text.each_line(chomp: true) do |line|
+      # 0. Comments (// line and //// block), ignored inside code listings
+      if !in_code && line =~ %r{^/{4,}$}
+        in_comment = !in_comment
+        next
+      end
+      next if in_comment
+      next if !in_code && line =~ %r{^//(?!/)}
+
       # 1. Code Blocks (---- or ....)
       if line =~ /^(-{4,}|\.{4,})$/
         if in_code
-          output << "```"
+          max_backticks = code_lines.flat_map { |l| l.scan(/`+/).map(&:length) }.max || 0
+          fence = "`" * [3, max_backticks + 1].max
+          output << "#{fence}#{code_lang}".strip
+          output.concat(code_lines)
+          output << fence
           in_code = false
           code_lang = ""
+          code_lines = []
         else
-          output << "```#{code_lang}".strip
+          code_lines = []
           in_code = true
         end
         next
       end
 
       if in_code
-        output << convert_conums(line)
+        code_lines << convert_conums(line)
         next
       end
 
@@ -160,7 +207,7 @@ class AsciidocToMarkdown
       # 5. Block Metadata Options: [source,ruby], [quote, Author]
       if line =~ /^\[(.*)\]$/
         opts = Regexp.last_match(1).strip
-        if opts =~ /^source(?:,\s*([a-zA-Z0-9_+-]+))?$/
+        if opts =~ /^source(?:\s*,\s*([a-zA-Z0-9_+#.-]+))?(?:\s*,.*)?$/
           code_lang = Regexp.last_match(1) || ""
         elsif opts =~ /^quote(?:,\s*([^,]+))?(?:,\s*(.+))?$/
           quote_author = [Regexp.last_match(1), Regexp.last_match(2)].compact.map(&:strip).reject(&:empty?).join(", ")
@@ -216,10 +263,17 @@ class AsciidocToMarkdown
     [output.join("\n"), metadata]
   end
 
+  # Formats a single table row, generating GFM header divider if necessary.
+  #
+  # @param line [String] raw table row line
+  # @param header_done [Boolean] whether table header has already been emitted
+  # @param attrs [Hash] document attributes for inline substitution
+  # @return [String, nil] formatted GFM table row or nil if row is empty
   def render_table_row(line, header_done, attrs)
     return nil if line.strip.empty?
 
-    cells = line.split("|").map(&:strip).reject(&:empty?)
+    cells = line.split(/(?<!\\)\|/, -1).map(&:strip)
+    cells.shift if cells.first.to_s.empty?
     return nil if cells.empty?
 
     formatted = cells.map { |c| render_inline(c, attrs) }
@@ -233,7 +287,10 @@ class AsciidocToMarkdown
     end
   end
 
-  # Replace callout numbers <1>, <2> with circled unicode numbers ①, ②
+  # Replaces callout numbers <1>, <2> with circled unicode numbers ①, ②.
+  #
+  # @param line [String] line of code
+  # @return [String] line with unicode callout numbers
   def convert_conums(line)
     return line unless line.include?("<")
 
@@ -244,7 +301,11 @@ class AsciidocToMarkdown
     conums.reduce(line) { |l, (k, v)| l.gsub(k, v) }
   end
 
-  # Clean inline transformations: links, images, xrefs, formatting, and attributes
+  # Performs inline transformations: links, images, xrefs, formatting, and attributes.
+  #
+  # @param text [String] inline text
+  # @param attrs [Hash] document attributes
+  # @return [String] formatted inline text
   def render_inline(text, attrs = {})
     res = text.dup
 
