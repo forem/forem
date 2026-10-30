@@ -295,6 +295,22 @@ RSpec.describe "Dashboards" do
           expect(Nokogiri::HTML(response.body).at_css("main#main-content a[href='/new']")).to be_nil
         end
 
+        it "renders the desktop and mobile dashboard sidebars without raising when video uploads are enabled",
+           :aggregate_failures do
+          user.update_columns(created_at: 3.weeks.ago)
+          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+
+          get "/dashboard/sidebar", params: { state: "show" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include(dashboard_following_tags_path)
+          expect(response.body).not_to include(new_video_path)
+
+          get "/dashboard/sidebar", params: { type_of: "mobile", state: "show" }
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("/dashboard/following_tags")
+          expect(response.body).not_to include(new_video_path)
+        end
+
         it "still forbids creating, editing and deleting posts", :aggregate_failures do
           get "/new"
           expect(response).to have_http_status(:forbidden)

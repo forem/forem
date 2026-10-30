@@ -80,13 +80,15 @@
 
   <script>
     fetch('/dashboard/sidebar?state=<%= params[:action] %>&which=<%= params[:which] %>')
-      .then(response => response.text())
+      .then(response => (response.ok ? response.text() : null))
       .then(html => {
+        if (!html) return;
         document.getElementById('dashboard-main-sidebar-wrapper').innerHTML = html;
       });
     window.fetch('/dashboard/sidebar?type_of=mobile&state=<%= params[:action] %>&which=<%= params[:which] %>')
-      .then(response => response.text())
+      .then(response => (response.ok ? response.text() : null))
       .then(html => {
+        if (!html) return;
         document.getElementById('dashboard-mobile-sidebar-wrapper').innerHTML = html;
         let navtrigger = document.getElementById('mobile_nav_dashboard');
         if (navtrigger) {
