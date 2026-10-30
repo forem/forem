@@ -402,6 +402,63 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         expect(described_class.call(input).strip).to eq(expected)
       end
 
+      it "leaves inline code spans untouched by formatting rules" do
+        input = "Run `x = *a* + _b_` now."
+        expect(described_class.call(input).strip).to eq(input)
+      end
+
+      it "does not apply emphasis inside link targets" do
+        input = "See https://example.com/_docs_/*v1*[Docs]."
+        expect(described_class.call(input).strip).to eq("See [Docs](https://example.com/_docs_/*v1*).")
+      end
+
+      it "keeps already-doubled asterisks as bold" do
+        expect(described_class.call("Use **strong** text.").strip).to eq("Use **strong** text.")
+      end
+
+      it "does not highlight issue numbers, hashtags, or language names like C#" do
+        input = "Fixes #123 in C# code, tagged #ruby and #rails."
+        expect(described_class.call(input).strip).to eq(input)
+      end
+
+      it "keeps image alt text plain" do
+        input = "image::a_b.png[My _alt_ text]\n\nInline image:c_d.png[*Logo*]"
+        result = described_class.call(input)
+
+        expect(result).to include("![My _alt_ text](a_b.png)")
+        expect(result).to include("![*Logo*](c_d.png)")
+      end
+
+      it "drops standalone block anchor lines" do
+        expect(described_class.call("[[intro]]\nIntro text.").strip).to eq("Intro text.")
+      end
+
+      it "keeps the custom label of a cross reference" do
+        expect(described_class.call("See <<sec-1,Section One>>.").strip).to eq("See [Section One](#sec-1).")
+      end
+
+      it "substitutes attributes declared in the document body and honors unsetting" do
+        input = <<~ADOC
+          Intro.
+
+          :product: Forem
+          Built with {product}.
+          :product!:
+          Now {product}.
+        ADOC
+
+        result = described_class.call(input)
+
+        expect(result).to include("Built with Forem.")
+        expect(result).to include("Now {product}.")
+        expect(result).not_to include(":product:")
+      end
+
+      it "does not confuse user text with internal placeholders" do
+        input = "Literal <!--LIQUID_0--> and {{ var }} and `code`."
+        expect(described_class.call(input).strip).to eq(input)
+      end
+
       it "converts thematic breaks" do
         input = <<~ADOC
           Section 1
