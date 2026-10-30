@@ -218,17 +218,25 @@ module ApplicationHelper
   end
 
   def org_brand_style(user)
-    hex = Color::CompareHex.new([user_colors(user)[:bg]])
-    "--accent-brand: #{hex.brightness(1)}; " \
-    "--accent-brand-darker: #{hex.brightness(0.8)}; " \
-    "--accent-brand-lighter: #{hex.brightness(1.35)}; " \
-    "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}; " \
-    "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}; " \
-    "--accent-brand-lighter-rgb: #{hex.brightness(1.35, only_values: true)}; " \
-    "--button-primary-bg: #{hex.brightness(1)}; " \
-    "--button-primary-bg-hover: #{hex.brightness(0.8)}; " \
-    "--link-branded-color: #{hex.brightness(1)}; " \
-    "--link-branded-color-hover: #{hex.brightness(0.8)};"
+    brand = user_colors(user)[:bg]
+    hex = Color::CompareHex.new([brand])
+    palette = Color::BrandPalette.new(brand)
+    [
+      "--accent-brand: #{hex.brightness(1)}",
+      "--accent-brand-darker: #{hex.brightness(0.8)}",
+      "--accent-brand-lighter: #{palette.lighter(1.35)}",
+      "--accent-brand-text-light: #{palette.accent_text_light}",
+      "--accent-brand-text-dark: #{palette.accent_text_dark}",
+      "--accent-brand-rgb: #{hex.brightness(1, only_values: true)}",
+      "--accent-brand-darker-rgb: #{hex.brightness(0.8, only_values: true)}",
+      "--accent-brand-lighter-rgb: #{palette.lighter(1.35, only_values: true)}",
+      "--button-primary-bg: #{hex.brightness(1)}",
+      "--button-primary-bg-hover: #{hex.brightness(0.8)}",
+      "--button-primary-color: #{palette.text_on_brand}",
+      "--button-primary-color-hover: #{palette.text_on_brand(hex.brightness(0.8))}",
+      "--link-branded-color: var(--accent-brand-text)",
+      "--link-branded-color-hover: var(--accent-brand-text)",
+    ].join("; ")
   end
 
   def sanitize_rendered_markdown(processed_html)

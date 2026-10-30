@@ -21,6 +21,10 @@ RSpec.describe Color::Accessibility, type: :service do
     expect(described_class.new("#041d4a").low_contrast?("#e6eaf0")).to be false
   end
 
+  it "returns the contrast ratio" do
+    expect(described_class.new("#000000").contrast_ratio).to eq(21.0)
+  end
+
   it "determines sufficient contrast with compared color and rate" do
     expect(described_class.new("#225CC9").low_contrast?("#ffffff", 1.0)).to be false
   end

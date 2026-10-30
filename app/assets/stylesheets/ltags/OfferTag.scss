@@ -29,7 +29,7 @@
   padding: var(--su-3) var(--su-4);
   border-radius: var(--radius);
   font-weight: var(--fw-medium);
-  color: white !important;
+  color: var(--button-primary-color) !important;
 
-  &:hover { color: white !important; }
+  &:hover { color: var(--button-primary-color-hover) !important; }
 }

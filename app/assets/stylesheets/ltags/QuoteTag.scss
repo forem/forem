@@ -78,7 +78,7 @@
   }
 
   .ltag-quote__star--filled {
-    color: var(--accent-brand);
+    color: var(--accent-brand-text, var(--accent-brand));
   }
 
   .ltag-quote__body {
@@ -124,7 +124,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--su-1);
-    color: var(--accent-brand);
+    color: var(--accent-brand-text, var(--accent-brand));
     font-size: var(--fs-s);
     font-weight: var(--fw-medium);
     text-decoration: none;
