@@ -21,12 +21,13 @@ RSpec.describe FeatureTag, type: :liquid_tag do
       expect(described_class::ICONS).to all(match(described_class::ICON_NAME_REGEXP))
     end
 
-    it "maps every supported name to an existing root-level SVG asset" do
+    it "maps every supported name to a non-empty root-level SVG asset" do
       missing = described_class::ICONS.reject do |icon|
-        Rails.root.join("app/assets/images/#{icon}.svg").exist?
+        path = Rails.root.join("app/assets/images/#{icon}.svg")
+        path.exist? && !path.empty?
       end
 
-      expect(missing).to be_empty, "Missing SVG assets for: #{missing.join(', ')}"
+      expect(missing).to be_empty, "Missing or empty SVG assets for: #{missing.join(', ')}"
     end
 
     it "resolves every legacy alias to a supported icon" do
@@ -44,9 +45,10 @@ RSpec.describe FeatureTag, type: :liquid_tag do
     end
 
     it "renders every curated icon without error" do
-      expect do
-        described_class::ICONS.each { |icon| render_feature(%(title="T" icon="#{icon}")) }
-      end.not_to raise_error
+      described_class::ICONS.each do |icon|
+        result = render_feature(%(title="T" icon="#{icon}"))
+        expect(result).to match(/<svg/)
+      end
     end
   end
 
@@ -122,16 +124,12 @@ RSpec.describe FeatureTag, type: :liquid_tag do
       expect(result).to match(/<svg/)
     end
 
-    it "accepts the legacy sparkles name used by published pages" do
-      expect { render_feature('title="Magic" icon="sparkles"') }.not_to raise_error
-    end
+    it "renders the sparkles name used by published pages from its root SVG" do
+      sparkles = render_feature('title="Magic" icon="sparkles"')
+      sparkle_heart = render_feature('title="Magic" icon="sparkle-heart"')
 
-    it "renders the sparkles alias as the sparkle-heart icon" do
-      aliased = render_feature('title="Magic" icon="sparkles"')
-      direct = render_feature('title="Magic" icon="sparkle-heart"')
-
-      expect(aliased).to match(/<svg/)
-      expect(aliased).to eq(direct)
+      expect(sparkles).to match(/<svg/)
+      expect(sparkles).not_to eq(sparkle_heart)
     end
 
     it "renders the legacy zap name used by a published article as the lightning icon" do

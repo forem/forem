@@ -21,7 +21,6 @@ class FeatureTag < Liquid::Block
     fire
     heart
     image
-    lightbulb
     lightning
     location
     lock
@@ -31,17 +30,17 @@ class FeatureTag < Liquid::Block
     raised-hands
     search
     sparkle-heart
+    sparkles
     team
     verified
     video-camera
     wallet
   ].freeze
 
-  # "rocket" was documented in the editor help, and "sparkles" and "zap" are
-  # used in published content; none of the three shipped a matching SVG
+  # "rocket" was documented in the editor help, and "zap" is used in
+  # published content; neither shipped a matching SVG
   LEGACY_ICON_ALIASES = {
     "rocket" => "lightning",
-    "sparkles" => "sparkle-heart",
     "zap" => "lightning"
   }.freeze
 
@@ -49,7 +48,9 @@ class FeatureTag < Liquid::Block
 
   # off-list names with a root SVG rendered before ICONS existed, so they stay valid
   def self.legacy_asset_icons
-    @legacy_asset_icons ||= Rails.root.glob(ICON_ASSET_GLOB).to_set { |path| path.basename(".svg").to_s }
+    @legacy_asset_icons ||= Rails.root.glob(ICON_ASSET_GLOB).reject(&:empty?).to_set do |path|
+      path.basename(".svg").to_s
+    end
   end
 
   def self.renderable_icon?(name)
