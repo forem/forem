@@ -1,8 +1,3 @@
-<% if @organization.organization_email_domains.available.exists? %>
-  <div class="crayons-card p-4 mb-3">
-    <%= link_to t("org_domain_membership.public_join", organization: @organization.name), organization_join_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
-  </div>
-<% end %>
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
     <%= structured_data_json(@organization_json_ld).html_safe %>
@@ -253,6 +248,12 @@
           <span class="mr-4"><%= t("views.organizations.size") %>: <%= @organization.company_size %></span>
         <% end %>
       </div>
+    </div>
+  <% end %>
+
+  <% if @organization.organization_email_domains.available.exists? %>
+    <div class="px-4 m:px-0 pb-4">
+      <%= link_to t("org_domain_membership.public_join", organization: @organization.name), organization_join_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
     </div>
   <% end %>
 
