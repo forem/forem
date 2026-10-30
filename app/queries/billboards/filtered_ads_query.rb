@@ -244,13 +244,6 @@ module Billboards
     end
 
     def type_of_ads
-      # If this is an organization article and community-type ads exist, show them
-      if @organization_id.present?
-        community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
-                                               organization_id: @organization_id)
-        return community if community.any?
-      end
-
       types_matching = []
 
       # Always match in-house-type ads
@@ -261,7 +254,15 @@ module Billboards
         types_matching << :external
       end
 
-      @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
+      standard = @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
+      return standard if @organization_id.blank?
+
+      # If this is an organization article and community-type ads exist, show only them. The
+      # existence check is an uncorrelated NOT EXISTS (evaluated once by Postgres) inside the
+      # same query, rather than a separate SELECT 1 round-trip on every organization article.
+      community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
+                                             organization_id: @organization_id)
+      community.or(standard.where(community.arel.exists.not))
     end
 
     def survey_completion_filtered_ads
