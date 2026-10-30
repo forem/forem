@@ -8,6 +8,16 @@ RSpec.describe "Views an article" do
     sign_in user
   end
 
+  def expect_edit_link_hidden_from_non_authors(path)
+    sign_out user
+    visit path
+    expect(page.body).not_to include("Click to edit")
+
+    sign_in create(:user)
+    visit path
+    expect(page.body).to include('display: none;">Click to edit</a>')
+  end
+
   it "stops a user from moderating an article" do
     # TODO: @maetromac this spec must run first to pass. Due to the usage of RequestStore, there's a false positive
     # with EdgeSafetyCheck. Reason is yet to be determined.
@@ -155,17 +165,8 @@ RSpec.describe "Views an article" do
       expect(page).to have_no_link("article-action-space-manage")
     end
 
-    it "doesn't show an article edit link for the non-authorized user" do
-      sign_out user
-      sign_in create(:user)
-      visit scheduled_article_path
-      expect(page.body).to include('display: none;">Click to edit</a>')
-    end
-
-    it "doesn't show an article edit link when the user is not logged in" do
-      sign_out user
-      visit scheduled_article_path
-      expect(page.body).not_to include("Click to edit")
+    it "hides the edit link from non-authorized and logged-out users", :aggregate_failures do
+      expect_edit_link_hidden_from_non_authors(scheduled_article_path)
     end
   end
 
@@ -184,46 +185,16 @@ RSpec.describe "Views an article" do
       end
     end
 
-    context "with the article password, and the logged-in user is not authorized to update the article" do
-      let(:query_params) { "?preview=#{article.password}" }
-      let(:article_user) { create(:user) }
-
-      it "renders the article edit link" do
-        visit article_path
-        expect(page.body).to include('display: none;">Click to edit</a>')
-      end
-    end
-
-    context "with the article password, and the user is not logged-in" do
+    context "with the article password, and the user is not the author" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "does not render the article edit link" do
-        sign_out user
-        visit article_path
-        expect(page.body).not_to include("Click to edit")
+      it "hides the edit link from non-authorized and logged-out users", :aggregate_failures do
+        expect_edit_link_hidden_from_non_authors(article_path)
       end
     end
 
-    context "without the article password" do
-      let(:query_params) { "" }
-      let(:article_user) { user }
-
-      it "redirects the authorized author to the preview URL" do
-        visit article_path
-        expect(page).to have_current_path(article.path + "?preview=#{article.password}")
-      end
-
-      it "raises ActiveRecord::RecordNotFound when the user is not logged in" do
-        sign_out user
-        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it "raises ActiveRecord::RecordNotFound when the user is not authorized to edit" do
-        sign_out user
-        sign_in create(:user)
-        expect { visit article_path }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
+    # Requests without the preview password (author redirect, 404 for logged-out
+    # and non-authorized users) are covered in spec/requests/stories_show_spec.rb.
   end
 end
