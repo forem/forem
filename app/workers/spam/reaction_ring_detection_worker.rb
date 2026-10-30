@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Spam
   # Background worker to detect reaction rings and adjust reputation modifiers
   class ReactionRingDetectionWorker
@@ -19,13 +17,12 @@ module Spam
       # Run the ring detection
       detector = Spam::ReactionRingDetector.new(user_id)
       ring_detected = detector.call
+      return unless ring_detected
 
-      if ring_detected
-        Rails.logger.info "Reaction ring detected for user #{user_id}"
-        
-        # Send notification to moderators if needed
-        notify_moderators(user_id) if should_notify_moderators?
-      end
+      Rails.logger.info "Reaction ring detected for user #{user_id}"
+
+      # Send notification to moderators if needed
+      notify_moderators(user_id) if should_notify_moderators?
     end
 
     private
@@ -36,10 +33,10 @@ module Spam
 
       # Check if user has enough reactions in the past 3 months
       user.reactions
-          .public_category
-          .only_articles
-          .where(created_at: 3.months.ago..)
-          .count >= 50
+        .public_category
+        .only_articles
+        .where(created_at: 3.months.ago..)
+        .count >= Spam::ReactionRingDetector::MIN_REACTIONS_THRESHOLD
     end
 
     def should_notify_moderators?
@@ -52,7 +49,7 @@ module Spam
       # Send a notification to moderators about the detected ring
       # This could be implemented as a Slack notification or internal notification
       Rails.logger.info "Reaction ring detected for user #{user_id} - moderators should be notified"
-      
+
       # TODO: Implement actual moderator notification
       # Slack::Messengers::ReactionRingDetected.call(user_id: user_id)
     end

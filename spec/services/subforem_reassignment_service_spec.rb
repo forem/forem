@@ -1,18 +1,22 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength, RSpec/AnyInstance, RSpec/MessageExpectation, RSpec/MessageSpies, RSpec/NestedGroups, RSpec/ReceiveMessages, Style/Send
 RSpec.describe SubforemReassignmentService do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
   let(:current_subforem) { create(:subforem, domain: "tech.example.com", discoverable: true) }
   let(:target_subforem) { create(:subforem, domain: "dev.example.com", discoverable: true) }
   let(:misc_subforem) { create(:subforem, domain: "misc.example.com", misc: true, discoverable: true) }
   let(:non_discoverable_subforem) { create(:subforem, domain: "private.example.com", discoverable: false) }
-  let(:article) { create(:article, user: user, subforem_id: current_subforem.id) }
+  let(:article) do
+    create(:article, user: user, subforem_id: current_subforem.id, with_tags: false, with_main_image: false)
+  end
 
   describe "#check_and_reassign" do
-
     context "when article has an offtopic automod label" do
-      before do
-        article.update!(automod_label: "ok_but_offtopic_for_subforem")
+      let(:article) do
+        create(:article, user: user, subforem_id: current_subforem.id,
+                         automod_label: "ok_but_offtopic_for_subforem",
+                         with_tags: false, with_main_image: false)
       end
 
       context "when AI finds an appropriate subforem" do
@@ -20,33 +24,17 @@ RSpec.describe SubforemReassignmentService do
           allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
         end
 
-        it "reassigns the article to the new subforem" do
-          expect { described_class.new(article).check_and_reassign }.to change { article.reload.subforem_id }
-            .from(current_subforem.id).to(target_subforem.id)
-        end
+        it "reassigns the article, updates the automod label, notifies, and logs", :aggregate_failures do
+          allow(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
+          allow(Rails.logger).to receive(:info)
 
-        it "sends a notification about the change" do
-          expect(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
-            .with(article.id, current_subforem.id, target_subforem.id)
-
-          described_class.new(article).check_and_reassign
-        end
-
-        it "logs the reassignment" do
-          expect(Rails.logger).to receive(:info)
-            .with("Article #{article.id} reassigned from subforem #{current_subforem.id} to #{target_subforem.id}")
-
-          described_class.new(article).check_and_reassign
-        end
-
-        it "returns true" do
           expect(described_class.new(article).check_and_reassign).to be true
-        end
-
-        it "updates the automod label to on-topic equivalent" do
-          expect { described_class.new(article).check_and_reassign }
-            .to change { article.reload.automod_label }
-            .from("ok_but_offtopic_for_subforem").to("okay_and_on_topic")
+          expect(article.reload.subforem_id).to eq(target_subforem.id)
+          expect(article.automod_label).to eq("okay_and_on_topic")
+          expect(Notifications::SubforemChangeNotificationWorker).to have_received(:perform_async)
+            .with(article.id, current_subforem.id, target_subforem.id)
+          expect(Rails.logger).to have_received(:info)
+            .with("Article #{article.id} reassigned from subforem #{current_subforem.id} to #{target_subforem.id}")
         end
       end
 
@@ -55,18 +43,12 @@ RSpec.describe SubforemReassignmentService do
           allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(nil)
         end
 
-        it "does not reassign the article" do
-          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
-        end
+        it "does not reassign the article or send a notification, and returns false", :aggregate_failures do
+          allow(Notifications::SubforemChangeNotificationWorker).to receive(:perform_async)
 
-        it "does not send a notification" do
-          expect(Notifications::SubforemChangeNotificationWorker).not_to receive(:perform_async)
-
-          described_class.new(article).check_and_reassign
-        end
-
-        it "returns false" do
-          expect(described_class.new(article).check_and_reassign).to be false
+          expect { expect(described_class.new(article).check_and_reassign).to be false }
+            .not_to change { article.reload.subforem_id }
+          expect(Notifications::SubforemChangeNotificationWorker).not_to have_received(:perform_async)
         end
       end
 
@@ -146,30 +128,15 @@ RSpec.describe SubforemReassignmentService do
       context "when user has disabled subforem reassignment" do
         before do
           user.setting.update!(disallow_subforem_reassignment: true)
-          allow_any_instance_of(Ai::SubforemFinder).to receive(:find_appropriate_subforem).and_return(target_subforem.id)
         end
 
-        it "does not reassign the article" do
-          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
-        end
-
-        it "does not send a notification" do
+        it "does not reassign, update label, call AI, or notify, and returns false", :aggregate_failures do
+          expect(Ai::SubforemFinder).not_to receive(:new)
           expect(Notifications::SubforemChangeNotificationWorker).not_to receive(:perform_async)
 
-          described_class.new(article).check_and_reassign
-        end
-
-        it "does not call the AI service" do
-          expect(Ai::SubforemFinder).not_to receive(:new)
-          described_class.new(article).check_and_reassign
-        end
-
-        it "returns false" do
           expect(described_class.new(article).check_and_reassign).to be false
-        end
-
-        it "does not update the automod label" do
-          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.automod_label }
+          expect(article.reload.subforem_id).to eq(current_subforem.id)
+          expect(article.automod_label).to eq("ok_but_offtopic_for_subforem")
         end
       end
 
@@ -213,74 +180,39 @@ RSpec.describe SubforemReassignmentService do
 
     context "when article does not have an offtopic automod label" do
       context "with on-topic labels" do
-        %w[
-          okay_and_on_topic
-          very_good_and_on_topic
-          great_and_on_topic
-        ].each do |label|
-          context "with #{label}" do
-            before { article.update!(automod_label: label) }
+        it "does not reassign the article, call the AI service, or return true", :aggregate_failures do
+          expect(Ai::SubforemFinder).not_to receive(:new)
 
-            it "does not reassign the article" do
-              expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
-            end
-
-            it "does not call the AI service" do
-              expect(Ai::SubforemFinder).not_to receive(:new)
-              described_class.new(article).check_and_reassign
-            end
-
-            it "returns false" do
-              expect(described_class.new(article).check_and_reassign).to be false
-            end
+          %w[okay_and_on_topic very_good_and_on_topic great_and_on_topic].each do |label|
+            article.update_column(:automod_label, label)
+            expect { expect(described_class.new(article).check_and_reassign).to be false }
+              .not_to change { article.reload.subforem_id }
           end
         end
       end
 
       context "with spam labels" do
-        %w[
-          clear_and_obvious_spam
-          likely_spam
-          clear_and_obvious_harmful
-          likely_harmful
-          clear_and_obvious_inciting
-          likely_inciting
-          clear_and_obvious_low_quality
-          likely_low_quality
-        ].each do |label|
-          context "with #{label}" do
-            before { article.update!(automod_label: label) }
+        it "does not reassign the article, call the AI service, or return true", :aggregate_failures do
+          expect(Ai::SubforemFinder).not_to receive(:new)
 
-            it "does not reassign the article" do
-              expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
-            end
-
-            it "does not call the AI service" do
-              expect(Ai::SubforemFinder).not_to receive(:new)
-              described_class.new(article).check_and_reassign
-            end
-
-            it "returns false" do
-              expect(described_class.new(article).check_and_reassign).to be false
-            end
+          %w[
+            clear_and_obvious_spam likely_spam clear_and_obvious_harmful likely_harmful
+            clear_and_obvious_inciting likely_inciting clear_and_obvious_low_quality likely_low_quality
+          ].each do |label|
+            article.update_column(:automod_label, label)
+            expect { expect(described_class.new(article).check_and_reassign).to be false }
+              .not_to change { article.reload.subforem_id }
           end
         end
       end
 
       context "with no moderation label" do
-        before { article.update!(automod_label: "no_moderation_label") }
-
-        it "does not reassign the article" do
-          expect { described_class.new(article).check_and_reassign }.not_to change { article.reload.subforem_id }
-        end
-
-        it "does not call the AI service" do
+        it "does not reassign the article, call the AI service, or return true", :aggregate_failures do
+          article.update_column(:automod_label, "no_moderation_label")
           expect(Ai::SubforemFinder).not_to receive(:new)
-          described_class.new(article).check_and_reassign
-        end
 
-        it "returns false" do
-          expect(described_class.new(article).check_and_reassign).to be false
+          expect { expect(described_class.new(article).check_and_reassign).to be false }
+            .not_to change { article.reload.subforem_id }
         end
       end
     end
@@ -321,7 +253,7 @@ RSpec.describe SubforemReassignmentService do
         very_good_but_offtopic_for_subforem
         great_but_off_topic_for_subforem
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:should_reassign?)).to be true
       end
     end
@@ -333,7 +265,7 @@ RSpec.describe SubforemReassignmentService do
         very_good_but_offtopic_for_subforem
         great_but_off_topic_for_subforem
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:should_reassign?)).to be false
       end
     end
@@ -345,7 +277,7 @@ RSpec.describe SubforemReassignmentService do
         very_good_and_on_topic
         great_and_on_topic
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:should_reassign?)).to be false
       end
     end
@@ -361,7 +293,7 @@ RSpec.describe SubforemReassignmentService do
         clear_and_obvious_low_quality
         likely_low_quality
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:should_reassign?)).to be false
       end
     end
@@ -379,7 +311,7 @@ RSpec.describe SubforemReassignmentService do
         clear_and_obvious_low_quality
         likely_low_quality
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:spam_label?)).to be true
       end
     end
@@ -394,7 +326,7 @@ RSpec.describe SubforemReassignmentService do
         great_but_off_topic_for_subforem
         great_and_on_topic
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:spam_label?)).to be false
       end
     end
@@ -402,13 +334,13 @@ RSpec.describe SubforemReassignmentService do
 
   describe "#on_topic_equivalent_label" do
     it "returns the correct on-topic equivalent for offtopic labels" do
-      article.update!(automod_label: "ok_but_offtopic_for_subforem")
+      article.automod_label = "ok_but_offtopic_for_subforem"
       expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("okay_and_on_topic")
 
-      article.update!(automod_label: "very_good_but_offtopic_for_subforem")
+      article.automod_label = "very_good_but_offtopic_for_subforem"
       expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("very_good_and_on_topic")
 
-      article.update!(automod_label: "great_but_off_topic_for_subforem")
+      article.automod_label = "great_but_off_topic_for_subforem"
       expect(described_class.new(article).send(:on_topic_equivalent_label)).to eq("great_and_on_topic")
     end
 
@@ -420,7 +352,7 @@ RSpec.describe SubforemReassignmentService do
         very_good_and_on_topic
         great_and_on_topic
       ].each do |label|
-        article.update!(automod_label: label)
+        article.automod_label = label
         expect(described_class.new(article).send(:on_topic_equivalent_label)).to be_nil
       end
     end
@@ -463,3 +395,4 @@ RSpec.describe SubforemReassignmentService do
     end
   end
 end
+# rubocop:enable Layout/LineLength, RSpec/AnyInstance, RSpec/MessageExpectation, RSpec/MessageSpies, RSpec/NestedGroups, RSpec/ReceiveMessages, Style/Send

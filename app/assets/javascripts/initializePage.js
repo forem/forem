@@ -27,6 +27,7 @@ function initializePage() {
       if (document.body.getAttribute('data-user-status') === 'logged-in') {
         initializeBaseUserData();
         initializeAllTagEditButtons();
+        initializeOnboardingTaskCard();
       }
       initializeBroadcast();
       initializeReadingListIcons();

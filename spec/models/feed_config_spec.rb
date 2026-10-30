@@ -533,11 +533,56 @@ RSpec.describe FeedConfig, type: :model do
       )
       expect(new_user_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_NEW_USER)
 
-      casual_clone = feed_config.create_slightly_modified_clone!(
+       casual_clone = feed_config.create_slightly_modified_clone!(
         user: casual_user,
         context_type: FeedEvent::CONTEXT_TYPE_HOME,
       )
       expect(casual_clone.targeting_bucket).to eq(described_class::BUCKET_FEED_CASUAL_USER)
+    end
+
+    it "keeps semantic_candidate_limit unchanged when semantic_similarity_weight is 0.0" do
+      feed_config.update!(semantic_similarity_weight: 0.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(200)
+    end
+
+    it "mutates semantic_candidate_limit by +/- 10% clamped to 100..1000 when semantic_similarity_weight > 0" do
+      feed_config.update!(semantic_similarity_weight: 10.0, semantic_candidate_limit: 200)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.semantic_candidate_limit).to eq(220)
+
+      feed_config.update!(semantic_candidate_limit: 960)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.semantic_candidate_limit).to eq(described_class::MAX_SEMANTIC_CANDIDATE_LIMIT)
+
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(semantic_candidate_limit: 105)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.semantic_candidate_limit).to eq(described_class::MIN_SEMANTIC_CANDIDATE_LIMIT)
+    end
+
+    it "keeps feed_lookback_hours unchanged at 0 when feed_lookback_hours is not set" do
+      feed_config.update!(feed_lookback_hours: 0)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(0)
+    end
+
+    it "mutates feed_lookback_hours by +/- 10% clamped to 1..max_feed_lookback_hours when set" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      feed_config.update!(feed_lookback_hours: 100)
+      clone = feed_config.create_slightly_modified_clone!
+      expect(clone.feed_lookback_hours).to eq(110)
+
+      # Clamps at the hard setting ceiling (10 days = 240 hours)
+      feed_config.update!(feed_lookback_hours: 230)
+      max_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(max_clamped_clone.feed_lookback_hours).to eq(240)
+
+      # Clamps at minimum 1 hour
+      allow(feed_config).to receive(:rand).with(0.9..1.1).and_return(0.9)
+      feed_config.update!(feed_lookback_hours: 1)
+      min_clamped_clone = feed_config.create_slightly_modified_clone!
+      expect(min_clamped_clone.feed_lookback_hours).to eq(described_class::MIN_FEED_LOOKBACK_HOURS)
     end
   end
 
@@ -553,6 +598,44 @@ RSpec.describe FeedConfig, type: :model do
       end
 
       config.targeting_bucket = "invalid_bucket"
+      expect(config).not_to be_valid
+    end
+
+    it "defaults semantic_candidate_limit to 200 and validates integer range 100..1000" do
+      config = described_class.new
+      expect(config.semantic_candidate_limit).to eq(described_class::DEFAULT_SEMANTIC_CANDIDATE_LIMIT)
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MIN_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = described_class::MAX_SEMANTIC_CANDIDATE_LIMIT
+      expect(config).to be_valid
+
+      config.semantic_candidate_limit = 99
+      expect(config).not_to be_valid
+
+      config.semantic_candidate_limit = 1001
+      expect(config).not_to be_valid
+    end
+
+    it "defaults feed_lookback_hours to 0 and caps effective_feed_lookback_hours at the hard setting" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+      config = described_class.new
+      expect(config.feed_lookback_hours).to eq(0)
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = 72
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(72)
+
+      # Cannot look back further than the hard setting (10 days = 240 hours)
+      config.feed_lookback_hours = 500
+      expect(config).to be_valid
+      expect(config.effective_feed_lookback_hours).to eq(240)
+
+      config.feed_lookback_hours = -1
       expect(config).not_to be_valid
     end
   end
@@ -828,6 +911,44 @@ RSpec.describe FeedConfig, type: :model do
         created = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
         expect(created.targeting_bucket).to eq(described_class::BUCKET_DIGEST)
       end
+
+      it "prioritizes low-impression bucket configs in a single query when roll < 20" do
+        low_imp_digest = create(
+          :feed_config,
+          targeting_bucket: described_class::BUCKET_DIGEST,
+          feed_impressions_count: 5,
+          created_at: 1.minute.ago,
+        )
+        allow(described_class).to receive(:rand).with(100).and_return(10)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(low_imp_digest)
+        expect(queries.size).to eq(1)
+      end
+
+      it "prioritizes bucket configs over 'all' configs in a single query when roll is 20..24" do
+        allow(described_class).to receive(:rand).with(100).and_return(22)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] if payload[:sql].include?('"feed_configs"')
+        end
+        selected = nil
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          selected = described_class.select_for_feed(context_type: FeedEvent::CONTEXT_TYPE_EMAIL)
+        end
+
+        expect(selected).to eq(digest_config)
+        expect(queries.size).to eq(1)
+      end
     end
   end
 
@@ -961,6 +1082,33 @@ RSpec.describe FeedConfig, type: :model do
         legacy_sql = full_config.__send__(:legacy_score_sql, user)
 
         expect(native_sql).to eq(legacy_sql)
+
+        native_base_sql = full_config.base_score_sql(user)
+        legacy_base_sql = full_config.__send__(:legacy_score_sql, user, include_semantic: false)
+
+        expect(native_base_sql).to eq(legacy_base_sql)
+        expect(native_base_sql).not_to include("semantic_embedding")
+        expect(full_config.semantic_similarity_active?(user)).to be(true)
+        expect(full_config.semantic_similarity_sql(user)).to include(
+          "(1 - (articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]')) * 10.0",
+        )
+      end
+    end
+
+    describe "#base_score_sql, #semantic_similarity_active?, and #semantic_similarity_sql" do
+      it "returns false and '0' when user has no interest_embedding or weight is zero" do
+        expect(feed_config.semantic_similarity_active?(user)).to be(false)
+        expect(feed_config.semantic_similarity_sql(user)).to eq("0")
+
+        user_activity = create(:user_activity, user: user)
+        user_activity.update_column(:interest_embedding, interest_embedding)
+        expect(feed_config.semantic_similarity_active?(user)).to be(true)
+
+        zero_weight_config = described_class.new(semantic_similarity_weight: 0.0, score_weight: 2.0)
+        expect(zero_weight_config.semantic_similarity_active?(user)).to be(false)
+        expect(zero_weight_config.semantic_similarity_sql(user)).to eq("0")
+        expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
+        expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
       end
     end
   end

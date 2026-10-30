@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_30_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -248,11 +248,13 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["hotness_score"], name: "index_articles_on_hotness_score_for_approved_published", order: :desc, where: "((published = true) AND (approved = true))"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score_for_featured_published", order: :desc, where: "((published = true) AND (featured = true))"
     t.index ["id"], name: "index_articles_negative_prev_public_reactions_count", where: "(previous_public_reactions_count < 0)"
     t.index ["id"], name: "index_articles_negative_public_reactions_count", where: "(public_reactions_count < 0)"
     t.index ["language"], name: "index_articles_on_language"
     t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
+    t.index ["organization_id", "published_at"], name: "index_articles_on_org_id_and_published_at_for_published", order: { published_at: :desc }, where: "((published = true) AND (organization_id IS NOT NULL))"
     t.index ["organization_id"], name: "index_articles_on_organization_id"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
@@ -845,6 +847,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
     t.bigint "feed_impressions_count", default: 0
+    t.integer "feed_lookback_hours", default: 0, null: false
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
     t.float "follow_status_weight", default: 0.0, null: false
@@ -864,6 +867,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.integer "recent_tag_count_min", default: 0
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
+    t.integer "semantic_candidate_limit", default: 200, null: false
     t.float "semantic_similarity_weight", default: 0.0, null: false
     t.float "shuffle_weight", default: 0.0, null: false
     t.float "status_weight", default: 0.0, null: false
@@ -875,6 +879,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
   end
 
+  create_table "feed_event_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+  end
+
   create_table "feed_events", force: :cascade do |t|
     t.bigint "article_id", null: false
     t.integer "article_position"
@@ -882,12 +890,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.string "context_type", null: false
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", null: false
+    t.uuid "event_id"
     t.bigint "feed_config_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
     t.index ["article_id"], name: "index_feed_events_on_article_id"
     t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["event_id"], name: "index_feed_events_on_event_id", unique: true, where: "(event_id IS NOT NULL)"
     t.index ["feed_config_id"], name: "index_feed_events_on_feed_config_id"
     t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
@@ -1033,6 +1043,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.index ["created_at"], name: "index_follows_on_created_at"
     t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
     t.index ["followable_id", "followable_type"], name: "fk_followables"
+    t.index ["followable_type", "followable_id", "blocked", "created_at"], name: "index_follows_on_followable_blocked_and_created_at"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end
 
@@ -1161,6 +1172,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_27_193000) do
     t.string "mentionable_type"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["mentionable_id", "mentionable_type"], name: "index_mentions_on_mentionable_id_and_mentionable_type"
     t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 

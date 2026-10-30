@@ -165,6 +165,57 @@ RSpec.describe "Sidebars" do
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
       end
+
+      it "factors shared published_at window out of the OR disjunction in the active discussions query" do
+        sign_in user
+        queries = []
+        callback = lambda do |_name, _started, _finished, _unique_id, payload|
+          sql = payload[:sql].to_s
+          queries << sql if sql.include?("FROM \"articles\"") && sql.include?("last_comment_at")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/sidebars/home"
+        end
+
+        expect(queries.size).to eq(1)
+        expect(queries.first.scan("published_at >").size).to eq(1)
+        expect(queries.first.scan("published_at <=").size).to eq(1)
+      end
+
+      it "omits the empty tag overlap predicate when the user follows no tags" do
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("OPTIMIZED_TAGGABLE_QUERY").and_return("true")
+        user_without_tags = create(:user)
+        featured_article = create(:article, featured: true)
+        unviewed_article = create(:article, comments_count: 2, score: 10)
+        unviewed_article.update_columns(language: "en")
+        sign_in user_without_tags
+
+        queries = []
+        callback = lambda do |_name, _started, _finished, _unique_id, payload|
+          sql = payload[:sql].to_s
+          queries << sql if sql.include?("FROM \"articles\"") && sql.include?("last_comment_at")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/sidebars/home"
+        end
+
+        expect(response.body).to include(CGI.escapeHTML(featured_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(unviewed_article.title))
+        expect(queries.size).to eq(1)
+        expect(queries.first).not_to include("tags_array &&")
+      end
+
+      it "includes language-filtered active discussions for no-tag users when OPTIMIZED_TAGGABLE_QUERY is unset" do
+        user_without_tags = create(:user)
+        sign_in user_without_tags
+
+        get "/sidebars/home"
+
+        expect(response.body).to include(CGI.escapeHTML(article.title))
+      end
     end
 
     context "when upcoming elevated events exist" do

@@ -20,5 +20,28 @@ RSpec.describe "Stories::ArticlesSearchController" do
         expect(response.body).to include("Search results")
       end
     end
+
+    context "when Algolia branding is enabled" do
+      before do
+        allow(Settings::General).to receive(:display_algolia_branding).and_return(true)
+      end
+
+      it "renders the Algolia attribution item with responsive layout class" do
+        get "/search?q=hello"
+        expect(response.body).to include("search-powered-by")
+        expect(response.body).to include(I18n.t("views.search.powered_by"))
+      end
+    end
+
+    context "when Algolia branding is disabled" do
+      before do
+        allow(Settings::General).to receive(:display_algolia_branding).and_return(false)
+      end
+
+      it "omits the Algolia attribution item" do
+        get "/search?q=hello"
+        expect(response.body).not_to include("search-powered-by")
+      end
+    end
   end
 end

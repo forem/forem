@@ -36,6 +36,7 @@ module Api
         @event.user_id = @user.id if @event.user_id.blank?
 
         if @event.save
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_create", "event_id" => @event.id })
           render json: @event, status: :created
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -46,6 +47,7 @@ module Api
         authorize @event
         # Prevents arbitrary user hijacking via parameters:
         if @event.update(event_params.except(:user_id))
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_update", "event_id" => @event.id })
           render json: @event
         else
           render json: { error: @event.errors.full_messages }, status: :unprocessable_entity
@@ -55,6 +57,9 @@ module Api
       def destroy
         authorize @event
         @event.destroy
+        if @event.destroyed?
+          Audit::Logger.log(:admin_api, @user, { "action" => "api_event_destroy", "event_id" => @event.id })
+        end
         head :no_content
       end
 

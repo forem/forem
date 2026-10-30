@@ -108,7 +108,12 @@ Rails.application.routes.draw do
           post :preview, on: :collection
         end
 
-        resources :tags, only: :update
+        resources :tags, only: %i[create update] do
+          member do
+            post :moderators, action: :add_moderator
+            delete :moderators, action: :remove_moderator
+          end
+        end
 
         resources :agent_sessions, only: %i[index show create] do
           collection do
@@ -345,6 +350,8 @@ Rails.application.routes.draw do
     patch "/bb_tabulations/:id", to: "billboard_events#update"
 
     resources :badges, only: [:index]
+    # Individual badge pages were folded into /badges; keep old links working.
+    get "/badge/:slug", to: redirect("/badges#%{slug}")
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
     resources :article_approvals, only: %i[create]
@@ -503,6 +510,8 @@ Rails.application.routes.draw do
                                                    as: :organization_lead_form_toggle
     get "/:slug/settings/lead_forms/:id/submissions", to: "organization_lead_forms#submissions",
                                                       as: :organization_lead_form_submissions
+    post "/:slug/profile_pins", to: "organization_profile_pins#create", as: :organization_profile_pins
+    delete "/:slug/profile_pins/:id", to: "organization_profile_pins#destroy", as: :organization_profile_pin
     post "/lead_submissions", to: "lead_submissions#create"
     get "/lead_submissions/check", to: "lead_submissions#check"
     post "articles/preview", to: "articles#preview"

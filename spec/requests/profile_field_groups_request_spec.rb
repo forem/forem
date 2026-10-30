@@ -44,5 +44,55 @@ RSpec.describe "ProfileFieldGroups" do
       field1 = ProfileField.find_by(label: "Field 1")
       expect(group[:profile_fields].first[:id]).to eq field1.id
     end
+
+    context "when onboarding has not been completed" do
+      let(:user) do
+        create(:user, saw_onboarding: false, checked_code_of_conduct: false, checked_terms_and_conditions: false)
+      end
+
+      it "marks onboarding and both agreements as completed", :aggregate_failures do
+        get profile_field_groups_path, params: { onboarding: true }
+
+        expect(response).to have_http_status(:ok)
+        expect(user.reload).to have_attributes(
+          saw_onboarding: true,
+          checked_code_of_conduct: true,
+          checked_terms_and_conditions: true,
+        )
+      end
+
+      it "does not mark onboarding or agreements as completed for a regular request" do
+        get profile_field_groups_path
+
+        expect(user.reload).to have_attributes(
+          saw_onboarding: false,
+          checked_code_of_conduct: false,
+          checked_terms_and_conditions: false,
+        )
+      end
+    end
+
+    context "when signed out" do
+      before { sign_out user }
+
+      it "returns all profile field groups", :aggregate_failures do
+        get profile_field_groups_path
+
+        expect(response).to have_http_status(:ok)
+        groups = JSON.parse(response.body, symbolize_names: true)[:profile_field_groups]
+        expect(groups).to match_array(ProfileFieldGroup.ids.map { |id| include(id: id) })
+      end
+
+      it "returns onboarding fields without attempting to update a user", :aggregate_failures do
+        get profile_field_groups_path, params: { onboarding: true }
+
+        expect(response).to have_http_status(:ok)
+        groups = JSON.parse(response.body, symbolize_names: true)[:profile_field_groups]
+        expect(groups).to contain_exactly(include(id: group1.id))
+        expect(groups.first[:profile_fields]).to contain_exactly(
+          include(id: ProfileField.find_by!(label: "Field 1").id),
+        )
+      end
+    end
   end
 end
