@@ -21,29 +21,21 @@ RSpec.describe "Authenticating with Email" do
     context "when using valid credentials" do
       def sign_up_user
         visit sign_up_path(state: "new-user")
-        click_link(sign_up_link, match: :first)
+        click_on(sign_up_link, match: :first)
 
         fill_in_user(user)
-        click_button("Sign up", match: :first)
+        click_on("Sign up", match: :first)
       end
 
-      it "creates a new user" do
+      it "creates a new user, redirects to email confirmation, and displays the decoded email", :aggregate_failures do
+        decoded_email = user.email.sub("@", "+something@")
+        user.email = decoded_email
+
         expect do
           sign_up_user
         end.to change(User, :count).by(1)
-      end
-
-      it "logs in and redirects to email confirmation" do
-        sign_up_user
 
         expect(page).to have_current_path("/confirm-email", ignore_query: true)
-      end
-
-      it "displays the properly decoded email" do
-        decoded_email = user.email.sub("@", "+something@")
-        user.email = decoded_email
-        sign_up_user
-
         expect(page).to have_text(decoded_email)
       end
     end
@@ -51,14 +43,14 @@ RSpec.describe "Authenticating with Email" do
     context "when trying to register with an already existing email" do
       it "shows an error" do
         email = "user@test.com"
-        user = create(:user, email: email)
+        user = create(:user, :without_profile, profile_image: nil, email: email)
 
         expect do
           visit sign_up_path(state: "new-user")
-          click_link(sign_up_link, match: :first)
+          click_on(sign_up_link, match: :first)
 
           fill_in_user(user)
-          click_button("Sign up", match: :first)
+          click_on("Sign up", match: :first)
         end.not_to change(User, :count)
 
         expect(page).to have_current_path("/users", ignore_query: true)
@@ -69,9 +61,9 @@ RSpec.describe "Authenticating with Email" do
     context "when using invalid credentials" do
       it "does not log in" do
         visit sign_up_path
-        fill_in("user_email", with: "foo@bar.com")
+        fill_in("user_email", with: "foo@example.com")
         fill_in("user_password", with: "password")
-        click_button("Log in", match: :first)
+        within("#sign-in-password-form") { click_on("Log in") }
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_text("Unable to login.")
@@ -81,17 +73,22 @@ RSpec.describe "Authenticating with Email" do
 
   context "when a user already exists" do
     let(:password) { Faker::Internet.password(min_length: 8) }
-    let(:user) { create(:user, password: password, password_confirmation: password) }
+    let(:user) do
+      create(:user, :without_profile, profile_image: nil, password: password, password_confirmation: password)
+    end
 
     after do
       sign_out user
     end
 
     context "when using valid credentials" do
-      it "logs in" do
+      it "logs in and redirects to the feed when already signed in", :aggregate_failures do
         visit sign_up_path
         log_in_user(user)
 
+        expect(page).to have_current_path("/?signin=true")
+
+        visit sign_up_path
         expect(page).to have_current_path("/?signin=true")
       end
 
@@ -105,15 +102,6 @@ RSpec.describe "Authenticating with Email" do
         expect(page.html).to include("onboarding-container")
       end
     end
-
-    context "when already signed in" do
-      it "redirects to the feed" do
-        sign_in user
-        visit sign_up_path
-
-        expect(page).to have_current_path("/?signin=true")
-      end
-    end
   end
 
   context "when community is in invite-only mode" do
@@ -123,7 +111,7 @@ RSpec.describe "Authenticating with Email" do
 
     it "doesn't present the authentication option" do
       visit sign_up_path(state: "new-user")
-      expect(page).not_to have_text(sign_in_link)
+      expect(page).to have_no_text(sign_in_link)
       expect(page).to have_text("invite only")
     end
   end
@@ -131,11 +119,11 @@ RSpec.describe "Authenticating with Email" do
   context "when requesting a password reset mail" do
     it "does not let malicious users enumerate email addresses" do
       visit new_user_session_path
-      click_link "Forgot password?"
+      click_on "Forgot password?"
       fill_in "Email", with: "doesnotexist@example.com"
-      click_button "Send password reset link"
+      click_on "Send password reset link"
 
-      expect(page).not_to have_text("Email not found")
+      expect(page).to have_no_text("Email not found")
     end
   end
 
@@ -149,8 +137,10 @@ RSpec.describe "Authenticating with Email" do
   end
 
   def log_in_user(user)
-    fill_in("user_email", with: user.email)
-    fill_in("user_password", with: user.password)
-    click_button("Log in", match: :first)
+    within("#sign-in-password-form") do
+      fill_in("user_email", with: user.email)
+      fill_in("user_password", with: user.password)
+      click_on("Log in")
+    end
   end
 end

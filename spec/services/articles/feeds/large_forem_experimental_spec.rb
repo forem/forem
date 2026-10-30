@@ -1,21 +1,22 @@
 require "rails_helper"
 
 RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
-  let(:user) { create(:user) }
-  let(:second_user) { create(:user) }
-  let!(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
-  let!(:article) { create(:article) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:second_user) { create(:user, :without_profile, profile_image: nil) }
+  let(:feed) { described_class.new(user: user, number_of_articles: 100, page: 1) }
+  let!(:article) { create(:article, user: user, with_tags: false) }
   let!(:hot_story) do
-    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user_id: second_user.id)
+    create(:article, :past, hotness_score: 1000, score: 1000, past_published_at: 3.hours.ago, user: second_user,
+                            with_tags: false)
   end
-  let!(:old_story) { create(:article, :past, past_published_at: 3.days.ago) }
-  let!(:low_scoring_article) { create(:article, score: -1000) }
+  let!(:old_story) { create(:article, :past, past_published_at: 3.days.ago, user: user, with_tags: false) }
+  let!(:low_scoring_article) { create(:article, score: -1000, user: user, with_tags: false) }
 
   describe "#featured_story_and_default_home_feed" do
     let(:default_feed) { feed.featured_story_and_default_home_feed }
     let(:featured_story) { default_feed.first }
     let(:stories) { default_feed.second }
-    let!(:min_score_article) { create(:article, score: 0) }
+    let!(:min_score_article) { create(:article, score: 0, user: user, with_tags: false) }
 
     before do
       article.update(published_at: 1.week.ago)
@@ -155,9 +156,9 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
   end
 
   describe "#rank_and_sort_articles" do
-    let(:article1) { create(:article) }
-    let(:article2) { create(:article) }
-    let(:article3) { create(:article) }
+    let(:article1) { build_stubbed(:article) }
+    let(:article2) { build_stubbed(:article) }
+    let(:article3) { build_stubbed(:article) }
     let(:articles) { [article1, article2, article3] }
 
     context "when number of articles specified" do
@@ -238,15 +239,21 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     it "still returns the reaction categories of each article" do
       create(:reaction, reactable: hot_story, category: "like")
 
-      story = feed.globally_hot_articles(false).second.find { |result| result.id == hot_story.id }
+      story = feed.globally_hot_articles(false).second.detect { |result| result.id == hot_story.id }
 
       expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
     end
   end
 
   describe "AI disclosure preferences" do
-    let!(:no_ai_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :no_ai) }
-    let!(:autonomous_article) { create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :fully_autonomous) }
+    let!(:no_ai_article) do
+      create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :no_ai,
+                              user: user, with_tags: false)
+    end
+    let!(:autonomous_article) do
+      create(:article, :past, past_published_at: 1.hour.ago, ai_disclosure_level: :fully_autonomous,
+                              user: user, with_tags: false)
+    end
 
     context "when user has hide_fully_autonomous preference" do
       before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }

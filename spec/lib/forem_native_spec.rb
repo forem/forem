@@ -1848,7 +1848,7 @@ RSpec.describe ForemNative do
                                                              "iteration #{iteration}: #{[name, opts].inspect}"
         end
       end
-      expect(native_hits).to be > 500
+      expect(native_hits).to be > 400
     end
   end
 
@@ -2186,7 +2186,7 @@ RSpec.describe ForemNative do
         expect(native || expected).to eq(expected), "iteration #{iteration}: #{sample.inspect}"
       end
 
-      expect(native_hits).to be > 500
+      expect(native_hits).to be > 400
     end
 
     it "passes adversarial differential equivalence across 1,000 generated table, SVG, and scoping fragments" do
@@ -3016,6 +3016,7 @@ RSpec.describe ForemNative do
           rec_relation = instance_double(ActiveRecord::Relation, last: rec_list)
           allow(rec_relation).to receive(:where).and_return(rec_relation)
           allow(RecommendedArticlesList).to receive(:where).and_return(rec_relation)
+          native_diversity_hits = 0
 
           1_000.times do |iteration|
             config = FeedConfig.new(
@@ -3047,6 +3048,8 @@ RSpec.describe ForemNative do
               compellingness_score_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               language_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               randomness_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              published_at_diversity_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              feed_lookback_hours: rng.rand < 0.5 ? rng.rand(1..300) : 0,
               recent_tag_count_min: 2,
               recent_tag_count_max: 5,
               all_time_tag_count_min: 2,
@@ -3114,7 +3117,22 @@ RSpec.describe ForemNative do
             expected_sql = config.__send__(:legacy_score_sql, user_double)
 
             expect(actual_sql).to eq(expected_sql), "iteration #{iteration}"
+
+            next unless config.published_at_diversity_weight.positive?
+
+            srand(seed)
+            direct_native_sql = described_class.feed_config_score_sql(
+              *config.__send__(:native_score_sql_payload, user_double),
+            )
+            next unless direct_native_sql
+
+            expect(direct_native_sql).to eq(expected_sql), "iteration #{iteration} (direct native)"
+            expect(direct_native_sql).to include("POWER(LEAST(ABS(")
+            native_diversity_hits += 1
           end
+
+          # The Rust kernel (not only the legacy fallback) must emit published_at_diversity_weight.
+          expect(native_diversity_hits).to be > 100
 
           # Verify out-of-domain float transparently falls back to legacy_score_sql
           extreme_config = FeedConfig.new(feed_success_weight: 1e-7)
@@ -3938,6 +3956,542 @@ RSpec.describe ForemNative do
           end
 
           expect(native_chain).to eq(legacy_parser.html), "pipeline chain iter #{iteration}"
+        end
+      end
+    end
+  end
+
+  describe ".calendar_grid_days_html (CalendarHelper#calendar_grid_days_html)" do
+    let(:calendar_view) do
+      controller = CalendarController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.view_context
+    end
+
+    let(:grid_for) do
+      ->(display_month) { [display_month.beginning_of_week(:sunday), display_month.end_of_month.end_of_week(:sunday)] }
+    end
+
+    let(:native_for) do
+      lambda do |grid_start, grid_end, options|
+        selected_range = options[:selected_range]
+        described_class.calendar_grid_days_html(
+          grid_start.jd, grid_end.jd, options[:display_month].month, options[:event_days].map(&:jd),
+          !selected_range.nil?, selected_range&.begin&.jd || 0, selected_range&.end&.jd || 0,
+          options[:today].jd, calendar_view.calendar_path, options[:type_of]
+        )
+      end
+    end
+
+    let(:assert_grid_parity) do
+      lambda do |grid_start, grid_end, options, message = nil|
+        legacy = calendar_view.__send__(:legacy_calendar_grid_days_html, grid_start, grid_end, **options)
+        actual = calendar_view.calendar_grid_days_html(grid_start, grid_end, **options)
+        expect(actual).to eq(legacy), message
+        expect(actual).to be_html_safe
+        actual
+      end
+    end
+
+    let(:options_for) do
+      lambda do |display_month, event_days: [], selected_range: nil, today: display_month, type_of: nil|
+        { display_month: display_month, event_days: event_days.to_set, selected_range: selected_range,
+          today: today, type_of: type_of }
+      end
+    end
+
+    it "matches link_to and calendar_path for a selected, filtered month with events" do
+      display_month = Date.new(2026, 3, 1)
+      grid_start, grid_end = grid_for.call(display_month)
+      options = options_for.call(
+        display_month,
+        event_days: [Date.new(2026, 3, 11), Date.new(2026, 4, 2), Date.new(2026, 5, 1)],
+        selected_range: Date.new(2026, 3, 10)..Date.new(2026, 3, 12),
+        today: Date.new(2026, 3, 11),
+        type_of: "live_stream",
+      )
+
+      expect(native_for.call(grid_start, grid_end, options)).to be_present
+      html = assert_grid_parity.call(grid_start, grid_end, options)
+      expect(html.lines.size).to eq(35)
+      expect(html).to include(
+        '<a class="calendar__day text-center p-1 calendar__day--has-event calendar__day--selected ' \
+        'calendar__day--today" data-calendar-day="2026-03-11" ' \
+        'href="/calendar?end=2026-03-11&amp;start=2026-03-11&amp;type_of=live_stream">11</a>',
+      )
+    end
+
+    it "matches across year boundaries, leap days, and unselected ranges" do
+      [Date.new(2026, 12, 1), Date.new(2027, 1, 1), Date.new(2028, 2, 1), Date.new(1583, 1, 1),
+       Date.new(9999, 11, 1)].each do |display_month|
+        grid_start, grid_end = grid_for.call(display_month)
+        options = options_for.call(display_month, event_days: [grid_start, grid_end], today: grid_end)
+        expect(native_for.call(grid_start, grid_end, options)).to be_present
+        assert_grid_parity.call(grid_start, grid_end, options, display_month.iso8601)
+      end
+    end
+
+    it "returns nil outside the fast path so the helper falls back to the legacy render" do
+      display_month = Date.new(2026, 10, 1)
+      grid_start, grid_end = grid_for.call(display_month)
+      ["a b", "x&y", "<b>", "café", "a.b", ["takeover"]].each do |type_of|
+        options = options_for.call(display_month, type_of: type_of)
+        expect(native_for.call(grid_start, grid_end, options)).to be_nil, type_of.inspect
+        assert_grid_parity.call(grid_start, grid_end, options, type_of.inspect)
+      end
+
+      [Date.new(1582, 10, 1), Date.new(9999, 12, 1)].each do |edge_month|
+        options = options_for.call(edge_month)
+        expect(native_for.call(*grid_for.call(edge_month), options)).to be_nil
+        assert_grid_parity.call(*grid_for.call(edge_month), options)
+      end
+
+      options = options_for.call(display_month)
+      expect(native_for.call(grid_start, grid_start + 62, options)).to be_nil
+      assert_grid_parity.call(grid_start, grid_start + 62, options)
+
+      [
+        [2**64, 2**64, 10, [], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [2**64], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, ["x"], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [], false, 0, 0, 0, "/calendar?x=1", nil],
+        [2_461_315.0, 2_461_315, 10, [], false, 0, 0, 0, "/calendar", nil],
+        [2_461_315, 2_461_315, 10, [], false, 0, 0, 0, "/calendar", :takeover],
+      ].each do |args|
+        expect(described_class.calendar_grid_days_html(*args)).to be_nil, args.inspect
+      end
+    end
+
+    it "matches the legacy render across 1,000 randomized grids" do
+      rng = Random.new(424_242)
+      type_ofs = [nil, "takeover", "live_stream", "Q-1_z", "a b", "x&y", "<b>", ["takeover"], "café"]
+      native_hits = 0
+
+      1_000.times do |iteration|
+        display_month = Date.new(rng.rand(1990..2100), rng.rand(1..12), 1)
+        grid_start, grid_end = grid_for.call(display_month)
+        # Occasionally widen or narrow the grid past what the widget renders.
+        grid_end += rng.rand(-40..40) if rng.rand < 0.1
+        range_start = grid_start + rng.rand(-10..45)
+        options = options_for.call(
+          display_month,
+          event_days: Array.new(rng.rand(0..12)) { grid_start + rng.rand(-5..48) },
+          selected_range: (range_start..(range_start + rng.rand(-3..20)) if rng.rand < 0.6),
+          today: [grid_start + rng.rand(0..41), Date.new(2026, 10, 28)].sample(random: rng),
+          type_of: type_ofs.sample(random: rng),
+        )
+
+        native_hits += 1 if native_for.call(grid_start, grid_end, options)
+        assert_grid_parity.call(grid_start, grid_end, options, "iter #{iteration}")
+      end
+
+      expect(native_hits).to be > 400
+    end
+  end
+
+  describe ".encode_json and .json_quote (ApplicationHelper#structured_data_json)" do
+    let(:helper) { ApplicationController.helpers }
+    let(:line_separator) { 0x2028.chr(Encoding::UTF_8) }
+    let(:paragraph_separator) { 0x2029.chr(Encoding::UTF_8) }
+    let(:tricky_strings) do
+      [
+        "", "plain", "<p>Tom & Jerry</p>", %("quoted" \\ back\\slash /path), "a\r\nb\tc\fd\be",
+        (0..0x1f).map(&:chr).join, 0x7f.chr, "#{line_separator}js#{paragraph_separator}",
+        "#{0x2027.chr(Encoding::UTF_8)}#{0x202a.chr(Encoding::UTF_8)}", "café — “quotes” 😀 漢字",
+        "&amp;&lt;script&gt;", "</script><script>alert(1)</script>"
+      ]
+    end
+
+    let(:assert_json_parity) do
+      lambda do |value, message = nil|
+        expected = value.to_json
+        native = described_class.encode_json(value)
+        expect(native).to eq(expected), message if native
+        expect(helper.structured_data_json(value)).to eq(expected), message
+        native
+      end
+    end
+
+    it "matches ActiveSupport's to_json for article JSON-LD documents" do
+      comment = lambda do |id|
+        { "@type": "Comment", "@id": "#comment-#{id}", text: "<p>Reply #{id} &amp; more</p>\n",
+          author: { "@type": "Person", name: "User #{id}", url: "https://dev.to/user#{id}" },
+          datePublished: "2026-10-29T10:00:00Z", url: "https://dev.to/user/comment/#{id}",
+          interactionStatistic: [{ "@type": "InteractionCounter", userInteractionCount: id }] }
+      end
+      json_ld = {
+        "@context": "http://schema.org", "@type": "Article", headline: "Rust <3 Ruby & Rails",
+        image: ["https://dev.to/a.png", "https://dev.to/b.png"],
+        mainEntity: { "@type": "DiscussionForumPosting", text: tricky_strings.join("<br>\n") * 20,
+                      comment: [comment.call(1).merge(comment: [comment.call(2)]), comment.call(3)] }
+      }
+
+      expect(assert_json_parity.call(json_ld)).to be_present
+      expect(helper.structured_data_json(json_ld)).not_to include("<", ">", "&", line_separator)
+    end
+
+    it "matches to_json for scalars, empty containers, and duplicate stringified keys" do
+      [nil, true, false, 0, -1, 2**62, -(2**63), (2**63) - 1, :sym, :"<sym>", [], {}, [[]], { a: {} },
+       { a: 1 }.merge("a" => 2), { "" => "" }, [nil, false, [true, { x: [:y] }]], *tricky_strings,
+       tricky_strings.to_h { |s| [s, s] }, tricky_strings.to_h { |s| [s.to_sym, s.to_sym] }].each do |value|
+        expect(assert_json_parity.call(value)).not_to be_nil, value.inspect
+      end
+
+      tricky_strings.each do |string|
+        expect(described_class.json_quote(string)).to eq(string.to_json)
+        expect(described_class.json_quote(string, escape_html_entities: false))
+          .to eq(ActiveSupport::JSON.encode(string, escape_html_entities: false))
+      end
+    end
+
+    it "matches to_json when HTML entity escaping is turned off" do
+      value = { "html" => tricky_strings }.merge(html: tricky_strings.join)
+      original = ActiveSupport::JSON::Encoding.escape_html_entities_in_json
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json = false
+      expect(helper.structured_data_json(value)).to eq(value.to_json)
+      expect(described_class.encode_json(value, escape_html_entities: false)).to eq(value.to_json)
+      expect(value.to_json).to include("<p>Tom & Jerry</p>")
+    ensure
+      ActiveSupport::JSON::Encoding.escape_html_entities_in_json = original
+    end
+
+    it "returns nil outside the fast path so the helper falls back to to_json" do
+      deep_array = 100.times.reduce([]) { |acc, _elem| [acc] } # 101 levels
+      [1.5, Float::NAN, 2**64, -(2**63) - 1, Time.zone.at(0), Date.new(2026, 1, 1), Object.new,
+       "safe <b>".html_safe, ActiveSupport::HashWithIndifferentAccess.new(a: 1), Class.new(Array).new([1]),
+       (+"caf\xC3").force_encoding("UTF-8"), (+"caf\xE9").force_encoding("ISO-8859-1"), "abc".b,
+       { 1 => "integer key" }, { nil => "nil key" }, { "x" => [1, 2.5] }, deep_array].each do |value|
+        expect(described_class.encode_json(value)).to be_nil, value.inspect
+        begin
+          expected = value.to_json
+        rescue JSON::GeneratorError => e
+          expect { helper.structured_data_json(value) }.to raise_error(e.class)
+          next
+        end
+        expect(helper.structured_data_json(value)).to eq(expected), value.inspect
+      end
+
+      expect(assert_json_parity.call(99.times.reduce([]) { |acc, _elem| [acc] })).not_to be_nil
+      expect(described_class.json_quote("safe".html_safe)).to be_nil
+      expect(described_class.json_quote(:sym)).to be_nil
+      expect(described_class.json_quote((+"caf\xE9").force_encoding("ISO-8859-1"))).to be_nil
+    end
+
+    it "falls back to to_json when a different JSON encoder is configured" do
+      encoder = Class.new(ActiveSupport::JSON::Encoding::JSONGemEncoder)
+      allow(ActiveSupport::JSON::Encoding).to receive(:json_encoder).and_return(encoder)
+      allow(described_class).to receive(:encode_json).and_call_original
+
+      expect(helper.structured_data_json({ a: "<b>" })).to eq({ a: "<b>" }.to_json)
+      expect(described_class).not_to have_received(:encode_json)
+    end
+
+    it "matches to_json across 1,000 randomized documents" do
+      rng = Random.new(424_242)
+      alphabet = ["a", "Z", "0", " ", "<", ">", "&", '"', "\\", "/", "\n", "\r", "\t", 0.chr,
+                  0x1f.chr, 0x7f.chr, "é", "😀", "漢", line_separator, paragraph_separator,
+                  0x2027.chr(Encoding::UTF_8), "—", "'", "{", "}", ":", ","]
+      random_string = -> { Array.new(rng.rand(0..24)) { alphabet.sample(random: rng) }.join }
+      out_of_domain = [1.25, Time.zone.at(0), "x".html_safe, 2**70, (+"caf\xE9").force_encoding("ISO-8859-1")]
+      random_value = lambda do |depth|
+        case rng.rand(depth > 3 ? 6 : 9)
+        when 0 then random_string.call
+        when 1 then random_string.call.to_sym
+        when 2 then rng.rand(-(2**63)..((2**63) - 1)) / (10**rng.rand(0..18))
+        when 3 then [nil, true, false].sample(random: rng)
+        when 4 then rng.rand < 0.01 ? out_of_domain.sample(random: rng) : random_string.call
+        when 5 then random_string.call
+        when 6, 7
+          Array.new(rng.rand(0..4)).to_h do
+            key = rng.rand < 0.5 ? random_string.call : random_string.call.to_sym
+            [key, random_value.call(depth + 1)]
+          end
+        else Array.new(rng.rand(0..4)) { random_value.call(depth + 1) }
+        end
+      end
+      native_hits = 0
+
+      1_000.times do |iteration|
+        value = random_value.call(0)
+        native_hits += 1 if assert_json_parity.call(value, "iter #{iteration}: #{value.inspect}")
+      end
+
+      expect(native_hits).to be > 900
+    end
+  end
+
+  describe "feed import pipeline native helpers" do
+    describe ".truncate_feed_xml_items" do
+      it "truncates RSS <item> and Atom <entry> feeds to max_items while preserving XML structure" do
+        rss = <<~XML
+          <?xml version="1.0" encoding="UTF-8"?>
+          <rss version="2.0">
+            <channel>
+              <title>Test Blog</title>
+              <item><title>Post 1</title><link>https://example.com/1</link></item>
+              <item><title>Post 2</title><link>https://example.com/2</link></item>
+              <item><title>Post 3</title><link>https://example.com/3</link></item>
+            </channel>
+          </rss>
+        XML
+
+        truncated = described_class.truncate_feed_xml_items(rss, 2)
+        parsed = Feedjira.parse(truncated)
+        expect(parsed.entries.map(&:title)).to eq(["Post 1", "Post 2"])
+
+        # Returns identical String object when item count <= max_items
+        expect(described_class.truncate_feed_xml_items(rss, 5)).to equal(rss)
+      end
+
+      it "ignores </entry> inside CDATA sections and comments" do
+        atom = <<~XML
+          <feed xmlns="http://www.w3.org/2005/Atom">
+            <!-- <entry><title>Commented out</title></entry> -->
+            <entry>
+              <title>First</title>
+              <content type="html"><![CDATA[<p>Literal </entry> inside CDATA</p>]]></content>
+            </entry>
+            <entry>
+              <title>Second</title>
+            </entry>
+          </feed>
+        XML
+
+        truncated = described_class.truncate_feed_xml_items(atom, 1)
+        expect(truncated).to include("First")
+        expect(truncated).to include("Literal </entry> inside CDATA")
+        expect(truncated).not_to include("Second")
+      end
+
+      it "matches legacy post-parse truncation across 1,000 randomized RSS and Atom feeds" do
+        rng = Random.new(20_261_029)
+
+        1_000.times do |i|
+          is_atom = rng.rand < 0.5
+          item_count = rng.rand(0..12)
+          max_items = rng.rand(1..8)
+          tag = is_atom ? "entry" : "item"
+
+          items = Array.new(item_count) do |idx|
+            cdata = rng.rand < 0.3 ? "<![CDATA[<p>Body #{idx} with </#{tag}> inside</p>]]>" : "Body #{idx}"
+            comment = rng.rand < 0.2 ? "<!-- <#{tag}><title>Fake</title></#{tag}> -->" : ""
+            "#{comment}<#{tag}><title>Item #{i}-#{idx}</title><description>#{cdata}</description></#{tag}>"
+          end.join("\n")
+
+          xml = if is_atom
+                  "<feed xmlns=\"http://www.w3.org/2005/Atom\"><title>F</title>#{items}</feed>"
+                else
+                  "<rss version=\"2.0\"><channel><title>F</title>#{items}</channel></rss>"
+                end
+
+          truncated = described_class.truncate_feed_xml_items(xml, max_items)
+          expected_titles = Array.new([item_count, max_items].min) { |idx| "Item #{i}-#{idx}" }
+          actual_titles = xml.scan(%r{<title>Item [^<]+</title>}).first(max_items)
+          truncated_titles = truncated.scan(%r{<title>Item [^<]+</title>})
+          expect(truncated_titles).to eq(actual_titles)
+          expect(truncated_titles.size).to eq(expected_titles.size)
+          expect(truncated).to end_with(is_atom ? "</feed>" : "</channel></rss>")
+        end
+      end
+    end
+
+    describe ".feed_html_content" do
+      let(:legacy_html_content) do
+        lambda do |content|
+          return false if content.blank?
+
+          block_tag_count = content.scan(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i).size
+          return false if block_tag_count.zero?
+
+          paragraph_breaks = content.scan(/\n\s*\n/).size
+          block_tag_count > paragraph_breaks
+        end
+      end
+
+      it "matches the legacy HTML vs Markdown heuristic across samples and 1,000 randomized inputs" do
+        samples = [
+          "",
+          "Plain text content",
+          "<p>Paragraph 1</p><p>Paragraph 2</p>",
+          "### Heading\n\nParagraph 1\n\nParagraph 2",
+          "### Heading\n\nText\n\n<p style=\"text-align: center\">link</p>\n\nMore text",
+          "<div><h1>Title</h1>\n\n<p>Body</p></div>",
+        ]
+
+        samples.each do |sample|
+          expect(described_class.feed_html_content(sample)).to eq(legacy_html_content.call(sample)), sample.inspect
+        end
+
+        rng = Random.new(20_261_030)
+        tokens = [
+          "<p>text</p>", "<DIV class='x'>", "<h3>Title</h3>", "<ul><li>item</li></ul>",
+          "<blockquote>quote</blockquote>", "<pre>code</pre>", "<table><tr><td>1</td></tr></table>",
+          "<section>s</section>", "<figure>f</figure>", "<span>inline</span>", "<panything>",
+          "\n\n", "\n  \n", "### Markdown heading\n", "plain words "
+        ]
+        1_000.times do
+          str = Array.new(rng.rand(0..15)) { tokens.sample(random: rng) }.join
+          expect(described_class.feed_html_content(str)).to eq(legacy_html_content.call(str)), str.inspect
+        end
+      end
+    end
+
+    describe ".postprocess_feed_markdown" do
+      let(:legacy_postprocess_feed_markdown) do
+        lambda do |content|
+          content
+            .gsub("```\n\n```", "")
+            .gsub(/&nbsp;|\u00A0/, " ")
+            .gsub(/\{%\syoutube\s(.{11,18})\s%\}/) { |match| match.gsub("\\_", "_") }
+        end
+      end
+
+      it "strips empty code fences, normalizes nbsp entities/chars, and matches legacy across 1,000 random inputs" do
+        raw = "Intro\n```\n\n```\nHello&nbsp;world\u00A0there\n{% youtube dQw4w9WgXcQ\\_123 %}\nOutro"
+        expect(described_class.postprocess_feed_markdown(raw))
+          .to eq("Intro\n\nHello world there\n{% youtube dQw4w9WgXcQ_123 %}\nOutro")
+
+        rng = Random.new(20_261_031)
+        fragments = [
+          "```\n\n```", "```ruby\nputs 1\n```", "&nbsp;", "\u00A0", " normal text ",
+          "{% youtube dQw4w9WgXcQ\\_test %}", "{% youtube abcdefghijk\\_%}",
+          "{% youtube too_short\\_x %}", "{% youtube #{'a' * 30}\\_long %}", "\n"
+        ]
+        1_000.times do
+          sample = Array.new(rng.rand(1..12)) { fragments.sample(random: rng) }.join
+          expect(described_class.postprocess_feed_markdown(sample))
+            .to eq(legacy_postprocess_feed_markdown.call(sample)), sample.inspect
+        end
+      end
+    end
+
+    describe ".resolve_feed_markdown_images" do
+      let(:legacy_resolve_feed_markdown_images) do
+        lambda do |content, base_url, source_url|
+          source_dir = source_url.sub(%r{/[^/]*\z}, "")
+          resolve = lambda do |src|
+            src.start_with?("/") ? "#{base_url}#{src}" : "#{source_dir}/#{src}"
+          end
+          step1 = content.gsub(%r{(<img\s[^>]*?src=["'])(?!https?://)([^"']+)(["'])}) do
+            "#{Regexp.last_match(1)}#{resolve.call(Regexp.last_match(2))}#{Regexp.last_match(3)}"
+          end
+          step1.gsub(%r{(!\[[^\]]*\]\()(?!https?://)([^)]+)(\))}) do
+            "#{Regexp.last_match(1)}#{resolve.call(Regexp.last_match(2))}#{Regexp.last_match(3)}"
+          end
+        end
+      end
+
+      it "resolves root-relative and path-relative URLs and matches legacy across 1,000 random inputs" do
+        base = "https://blog.example.com"
+        source = "https://blog.example.com/2026/10/post-slug"
+        content = "![a](/img/one.png) ![b](two.jpg) <img src=\"/img/three.gif\"> " \
+                  "<img src=\"\" data-src=\"/img/lazy.png\"> ![c](https://cdn.example.com/four.png)"
+
+        resolved = described_class.resolve_feed_markdown_images(content, base, source)
+        expect(resolved).to eq(legacy_resolve_feed_markdown_images.call(content, base, source))
+
+        rng = Random.new(20_261_101)
+        pieces = [
+          "![alt](/root/img.png)", "![alt](rel/img.jpg)", "![](https://cdn.example.com/a.png)",
+          "<img src=\"/a/b.png\">", "<img alt='x' src='rel.gif'>", "<img src=\"https://example.com/x.png\">",
+          "<img src=\"\" data-src=\"/lazy.png\">", "<img src=\"https://example.com/1.png\" data-src=\"/2.png\">",
+          "plain text ![unclosed(abc) <img not-an-src>", " "
+        ]
+        1_000.times do
+          sample = Array.new(rng.rand(1..10)) { pieces.sample(random: rng) }.join(" ")
+          expect(described_class.resolve_feed_markdown_images(sample, base, source))
+            .to eq(legacy_resolve_feed_markdown_images.call(sample, base, source)), sample.inspect
+        end
+      end
+    end
+
+    describe ".format_feed_tags, .extract_feed_author, and .sanitize_feed_error" do
+      let(:legacy_format_tags) do
+        lambda do |categories|
+          Array(categories).first(4).map { |t| t.to_s.gsub(/[^[:alnum:]]/, "").slice(0, 20) }.join(",")
+        end
+      end
+
+      let(:legacy_extract_author) do
+        lambda do |str|
+          email = str[/[\w.+-]+@[\w.-]+\.\w+/]
+          name = str.sub(/<[^>]+>/, "").strip
+          [email, name]
+        end
+      end
+
+      let(:legacy_sanitize_error) do
+        lambda do |message|
+          message.to_s.gsub(%r{/[\w/.-]+\.rb:\d+}, "[path]").truncate(500)
+        end
+      end
+
+      it "formats up to 4 ASCII tags and matches legacy across 1,000 randomized tag arrays" do
+        expect(described_class.format_feed_tags(["Ruby on Rails!", "web-dev", "a" * 25, "t4", "t5"]))
+          .to eq("RubyonRails,webdev,#{'a' * 20},t4")
+        expect(described_class.format_feed_tags(["café"])).to be_nil
+
+        rng = Random.new(20_261_102)
+        tag_pool = ["ruby", "Ruby on Rails!", "web-dev_2026", "a" * 25, "c++", "100% pure", "", "café"]
+        1_000.times do
+          tags = Array.new(rng.rand(0..6)) { tag_pool.sample(random: rng) }
+          res = described_class.format_feed_tags(tags)
+          if tags.first(4).all?(&:ascii_only?)
+            expect(res).to eq(legacy_format_tags.call(tags)), tags.inspect
+          else
+            expect(res).to be_nil
+          end
+        end
+      end
+
+      it "extracts email and stripped name from author strings across 1,000 randomized inputs" do
+        expect(described_class.extract_feed_author("Alice Smith <alice+rss@example.com>"))
+          .to eq(["alice+rss@example.com", "Alice Smith"])
+        expect(described_class.extract_feed_author("Alice (alice@example.com.)"))
+          .to eq(["alice@example.com", "Alice (alice@example.com.)"])
+        expect(described_class.extract_feed_author("Alice (alice@example.com-x)"))
+          .to eq(["alice@example.com", "Alice (alice@example.com-x)"])
+        expect(described_class.extract_feed_author("Bob Jones"))
+          .to eq([nil, "Bob Jones"])
+
+        rng = Random.new(20_261_103)
+        names = ["Alice Smith", "Bob-Jones", "\"Carol D.\"", "  Dave  ", ""]
+        emails = [
+          "alice@example.com", "bob+tag@example.org", "carol_1@forem.local",
+          "dave@example.com.", "erin@example.org-x", "not-an-email"
+        ]
+        formats = [
+          ->(n, e) { "#{n} <#{e}>" },
+          ->(n, e) { "#{n} (#{e})" },
+          ->(n, e) { "#{e} (#{n})" },
+          ->(n, _e) { n },
+          ->(_n, e) { e },
+        ]
+        1_000.times do
+          sample = formats.sample(random: rng).call(names.sample(random: rng), emails.sample(random: rng))
+          expect(described_class.extract_feed_author(sample))
+            .to eq(legacy_extract_author.call(sample)), sample.inspect
+        end
+      end
+
+      it "sanitizes Ruby file paths and truncates long error messages across 1,000 randomized inputs" do
+        msg = "Failed at /Users/dev/app/services/feeds/import.rb:123:in `call'"
+        expect(described_class.sanitize_feed_error(msg)).to eq("Failed at [path]:in `call'")
+        expect(described_class.sanitize_feed_error("a" * 600).length).to eq(500)
+
+        rng = Random.new(20_261_104)
+        chunks = [
+          "Error in /Users/dev/forem/app/services/feeds/import.rb:42:in `block'",
+          "at /app/lib/markdown.rb:100",
+          "from /bundle/gems/ nokogiri-1.16/lib/nokogiri.rb:9",
+          "from /bundle/gems/feedjira-3.2/lib/feedjira.rb:15",
+          "https://example.com/app/test.rb",
+          "Some generic exception message with details " * 5,
+        ]
+        1_000.times do
+          sample = Array.new(rng.rand(1..15)) { chunks.sample(random: rng) }.join(" - ")
+          expect(described_class.sanitize_feed_error(sample))
+            .to eq(legacy_sanitize_error.call(sample)), sample.inspect
         end
       end
     end

@@ -20,7 +20,7 @@ class Badge < ApplicationRecord
   end
 
   def path
-    "/badge/#{slug}"
+    "/badges##{slug}"
   end
 
   private

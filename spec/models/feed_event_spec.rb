@@ -266,6 +266,48 @@ RSpec.describe FeedEvent do
     end
   end
 
+  describe ".article_freshness_multiplier" do
+    before do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+    end
+
+    it "returns 1.5 for articles published within 12 hours of the event" do
+      event_time = Time.current
+      expect(described_class.article_freshness_multiplier(event_time - 1.hour, event_time)).to eq(1.5)
+      expect(described_class.article_freshness_multiplier(event_time - 12.hours, event_time)).to eq(1.5)
+    end
+
+    it "decays hyperbolically between 12 hours and feed_lookback_days" do
+      event_time = Time.current
+      mid_age_multiplier = described_class.article_freshness_multiplier(event_time - 3.days, event_time)
+      older_age_multiplier = described_class.article_freshness_multiplier(event_time - 7.days, event_time)
+
+      expect(mid_age_multiplier).to be < 1.5
+      expect(mid_age_multiplier).to be > older_age_multiplier
+      expect(older_age_multiplier).to be > 1.0
+    end
+
+    it "returns 1.0 for articles at or beyond feed_lookback_days" do
+      event_time = Time.current
+      expect(described_class.article_freshness_multiplier(event_time - 10.days, event_time)).to eq(1.0)
+      expect(described_class.article_freshness_multiplier(event_time - 20.days, event_time)).to eq(1.0)
+    end
+
+    it "respects custom Settings::UserExperience.feed_lookback_days" do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(5)
+      event_time = Time.current
+
+      expect(described_class.article_freshness_multiplier(event_time - 5.days, event_time)).to eq(1.0)
+      expect(
+        described_class.article_freshness_multiplier(event_time - 2.days, event_time),
+      ).to be_between(1.0, 1.5).exclusive
+    end
+
+    it "returns 1.0 when published_at is nil" do
+      expect(described_class.article_freshness_multiplier(nil, Time.current)).to eq(1.0)
+    end
+  end
+
   describe ".update_single_feed_config_counters" do
     let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
     let(:user1)       { create(:user) }
@@ -273,37 +315,33 @@ RSpec.describe FeedEvent do
 
     before do
       allow(ThrottledCall).to receive(:perform).and_yield
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
     end
 
-    context "when impression events exist for the feed config" do
+    context "when impression events exist for the feed config on newly published articles" do
       before do
         # Two distinct impression events
         create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
         create(:feed_event, category: "impression", feed_config: feed_config, user: user2, article_position: 1)
-        # One click event: POWER(2.0/3, article_position - 1) with article_position 1 gives 1.
+        # One click event: POWER(2.0/3, article_position - 1) with article_position 1 gives 1 * 1.5 freshness.
         create(:feed_event, category: "click", feed_config: feed_config, user: user1, article_position: 1)
-        # One reaction event from user1: multiplier = reaction_multiplier * 2.
+        # One reaction event from user1: multiplier = reaction_multiplier * 2 * 1.5 freshness.
         create(:feed_event, category: "reaction", feed_config: feed_config, user: user1, article_position: 1)
-        # One comment event from user2: multiplier = comment_multiplier * 2.
+        # One comment event from user2: multiplier = comment_multiplier * 2 * 1.5 freshness.
         create(:feed_event, category: "comment", feed_config: feed_config, user: user2, article_position: 1)
-        # One extended pageview event from user2: multiplier = 1.
+        # One extended pageview event from user2: multiplier = 1 * 1.5 freshness.
         create(:feed_event, category: "extended_pageview", feed_config: feed_config, user: user2, article_position: 1)
       end
 
-      it "calculates and updates the feed config counters correctly" do
+      it "calculates and updates the feed config counters with the 1.5x freshness boost" do
         # Distinct impression users: 2.
-        # Calculation:
-        # clicks_score = 1,
-        # reactions_score = 1 * reaction_multiplier * 2,
-        # comments_score = 1 * comment_multiplier * 2,
-        # pageviews_score = 1.
-        # Expected score = (1 + 1 + reaction_multiplier*2 + comment_multiplier*2) / 2.
-        expected_score = (1 + 1 + reaction_multiplier * 2 + comment_multiplier * 2).to_f / 2.0
+        # All articles were just published (< 12h old), so each receives 1.5x freshness multiplier.
+        expected_score = ((1 + 1 + (reaction_multiplier * 2) + (comment_multiplier * 2)) * 1.5) / 2.0
 
         described_class.update_single_feed_config_counters(feed_config.id)
         feed_config.reload
 
-        expect(feed_config.feed_success_score).to eq(expected_score)
+        expect(feed_config.feed_success_score).to be_within(0.0001).of(expected_score)
         expect(feed_config.feed_impressions_count).to eq(2)
       end
 
@@ -327,8 +365,53 @@ RSpec.describe FeedEvent do
         described_class.update_single_feed_config_counters(feed_config.id)
         feed_config.reload
 
-        expect(feed_config.feed_success_score).to eq(1.0 / 2.0)
+        expect(feed_config.feed_success_score).to be_within(0.0001).of(1.5 / 2.0)
         expect(feed_config.feed_impressions_count).to eq(3)
+      end
+    end
+
+    context "when engagement events occur on articles of varying ages" do
+      let(:old_article) { create(:article, :past, past_published_at: 15.days.ago) }
+      let(:mid_article) { create(:article, :past, past_published_at: 2.days.ago) }
+      let(:new_article) { create(:article, :past, past_published_at: 2.hours.ago) }
+
+      it "rewards newer articles up to 1.5x and decays older articles down to the 1.0x baseline" do
+        create(:feed_event, category: "impression", feed_config: feed_config, article: old_article, user: user1,
+                            article_position: 1)
+        click_old = create(:feed_event, category: "click", feed_config: feed_config, article: old_article,
+                                        user: user1, article_position: 1)
+        reaction_mid = create(:feed_event, category: "reaction", feed_config: feed_config, article: mid_article,
+                                           user: user1, article_position: 1)
+        pageview_new = create(:feed_event, category: "extended_pageview", feed_config: feed_config,
+                                           article: new_article, user: user1, article_position: 1)
+
+        described_class.update_single_feed_config_counters(feed_config.id)
+        feed_config.reload
+
+        old_mult = described_class.article_freshness_multiplier(old_article.published_at, click_old.created_at)
+        mid_mult = described_class.article_freshness_multiplier(mid_article.published_at, reaction_mid.created_at)
+        new_mult = described_class.article_freshness_multiplier(new_article.published_at, pageview_new.created_at)
+
+        expect(old_mult).to eq(1.0)
+        expect(mid_mult).to be_between(1.0, 1.5).exclusive
+        expect(new_mult).to eq(1.5)
+
+        expected_score = (1.0 * old_mult) + (reaction_multiplier * 2 * mid_mult) + (1.0 * new_mult)
+        expect(feed_config.feed_success_score).to be_within(0.0001).of(expected_score)
+      end
+
+      it "uses the highest freshness multiplier per distinct user for non-click engagement categories" do
+        create(:feed_event, category: "impression", feed_config: feed_config, article: old_article, user: user1,
+                            article_position: 1)
+        create(:feed_event, category: "reaction", feed_config: feed_config, article: old_article, user: user1,
+                            article_position: 1)
+        create(:feed_event, category: "reaction", feed_config: feed_config, article: new_article, user: user1,
+                            article_position: 1)
+
+        described_class.update_single_feed_config_counters(feed_config.id)
+        feed_config.reload
+
+        expect(feed_config.feed_success_score).to be_within(0.0001).of(reaction_multiplier * 2 * 1.5)
       end
     end
 
@@ -372,7 +455,7 @@ RSpec.describe FeedEvent do
           user: user1,
           article_position: 1,
         )
-        expect(feed_config.reload.feed_success_score).to eq(1.0)
+        expect(feed_config.reload.feed_success_score).to eq(1.5)
       end
 
       it "continues updating impression counters on every batch until reaching LOW_IMPRESSION_COUNT, then throttles" do
@@ -466,7 +549,7 @@ RSpec.describe FeedEvent do
       feed_config.reload
 
       expect(feed_config.feed_impressions_count).to eq(1)
-      expect(feed_config.feed_success_score).to eq(1.0)
+      expect(feed_config.feed_success_score).to eq(1.5)
     end
   end
 

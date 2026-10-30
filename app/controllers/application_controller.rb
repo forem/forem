@@ -240,7 +240,7 @@ class ApplicationController < ActionController::Base
   #
   # @see {#authenticate_user}
   # @see {ApplicationPolicy} for discussion around authentication and authorization.
-  def authenticate_user!
+  def authenticate_user!(_opts = {})
     return true if authenticate_user
 
     respond_with_request_for_authentication
