@@ -15,6 +15,10 @@ RSpec.describe OrganizationMembershipMailer do
     expect(mail.subject).to include(domain.organization.name)
     expect(mail.body.encoded).to include("12345678")
     expect(mail.body.encoded).not_to include(user.email)
+    html = Nokogiri::HTML(mail.html_part.body.decoded)
+    expect(html.at_css("h1").text).to eq("Join #{domain.organization.name}")
+    expect(html.css("table[role=presentation]").text).to include("12345678")
+    expect(mail.text_part.body.decoded).to include("12345678")
   end
 
   it "redacts the code and work address from delivery instrumentation" do

@@ -1,0 +1,55 @@
+// Scoped to the private organization join and domain-management screens.
+.org-domain {
+  --domain-border: var(--form-border, #d6d6d7);
+  color: var(--body-color);
+  line-height: 1.5;
+
+  &__muted { color: var(--base-70); }
+  &__eyebrow { font-size: var(--fs-xs); font-weight: var(--fw-bold); letter-spacing: .08em; text-transform: uppercase; color: var(--base-60); }
+  &__heading { margin: 0; font-size: var(--fs-2xl); line-height: 1.2; font-weight: var(--fw-bold); }
+  &__panel { padding: var(--su-5); border: 1px solid var(--domain-border); border-radius: var(--radius); background: var(--base-0); }
+  &__note { padding: var(--su-4); border-radius: var(--radius); background: var(--base-0); color: var(--base-70); font-size: var(--fs-s); }
+  &__stack { display: grid; gap: var(--su-4); }
+  &__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--su-3); }
+  &__domain { font-family: var(--ff-monospace); font-size: var(--fs-l); font-weight: var(--fw-bold); overflow-wrap: anywhere; }
+  &__badge { display: inline-flex; padding: var(--su-1) var(--su-2); border-radius: var(--radius); background: var(--base-10); color: var(--base-80); font-size: var(--fs-xs); font-weight: var(--fw-medium); }
+  &__badge--pending { background: var(--accent-warning-a10); }
+  &__badge--approved { background: var(--accent-success-a10); }
+  &__badge--rejected, &__badge--revoked { background: var(--accent-danger-a10); }
+  &__actions { display: flex; flex-wrap: wrap; gap: var(--su-2); padding-top: var(--su-4); border-top: 1px solid var(--domain-border); }
+  &__actions form { margin: 0; }
+  &__actions .crayons-btn--danger { color: var(--accent-danger); }
+  &__request { display: grid; gap: var(--su-3); padding-top: var(--su-5); border-top: 1px solid var(--domain-border); }
+  &__request .crayons-btn { justify-self: start; }
+  &__request .crayons-textfield { max-width: 28rem; }
+  &__review { max-width: 60rem; }
+  &__review h2 { margin: 0; }
+  &__review p { margin: 0; }
+  &__meta { display: grid; gap: var(--su-1); font-size: var(--fs-s); color: var(--base-70); }
+  &__meta a { overflow-wrap: anywhere; }
+}
+
+.org-join {
+  width: 100%; max-width: 38rem; margin: var(--su-7) auto; padding: 0 var(--su-3);
+  &__card { padding: var(--su-7); display: grid; gap: var(--su-5); }
+  &__identity { display: flex; align-items: center; gap: var(--su-3); min-width: 0; }
+  &__monogram { display: grid; place-items: center; width: 3rem; height: 3rem; flex-shrink: 0; border-radius: var(--radius); background: rgba(var(--accent-brand-rgb), 0.1); color: var(--accent-brand); font-weight: var(--fw-bold); font-size: var(--fs-l); }
+  &__steps { display: flex; align-items: center; gap: var(--su-3); font-size: var(--fs-s); color: var(--base-60); padding-bottom: var(--su-4); border-bottom: 1px solid var(--domain-border); }
+  &__step { display: flex; align-items: center; gap: var(--su-2); }
+  &__step[aria-current="step"] { font-weight: var(--fw-bold); color: var(--body-color); }
+  &__number { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--base-10); font-size: var(--fs-xs); }
+  [aria-current="step"] &__number { color: var(--accent-brand); background: rgba(var(--accent-brand-rgb), 0.1); }
+  .org-join__otp { font-family: var(--ff-monospace); font-size: var(--fs-2xl); letter-spacing: .35em; text-align: center; padding: var(--su-3); }
+  &__resend { border-top: 1px solid var(--domain-border); padding-top: var(--su-4); }
+  &__resend summary { cursor: pointer; color: var(--link-color); font-size: var(--fs-s); font-weight: var(--fw-medium); }
+  &__resend form { margin-top: var(--su-4); }
+  &__success { text-align: center; padding: var(--su-4) 0; display: grid; gap: var(--su-4); }
+  &__check { display: grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: var(--accent-success-a10); color: var(--accent-success); font-size: var(--fs-2xl); margin: 0 auto; }
+  p { margin: 0; }
+  .crayons-notice { font-size: var(--fs-s); }
+  @media (max-width: 480px) {
+    margin: var(--su-4) auto;
+    &__card { padding: var(--su-5); }
+    &__steps { gap: var(--su-2); font-size: var(--fs-xs); }
+  }
+}

@@ -14,7 +14,8 @@ module Admin
       raise ActionController::BadRequest unless %w[approved rejected revoked].include?(decision)
 
       domain.review!(current_user, decision)
-      redirect_to admin_organization_email_domains_path, notice: I18n.t("org_domain_membership.review_saved")
+      redirect_to admin_organization_email_domains_path,
+                  flash: { success: I18n.t("org_domain_membership.review_saved") }
     end
 
     protected

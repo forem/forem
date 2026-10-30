@@ -1,36 +1,67 @@
 <% title t("org_domain_membership.join_title", organization: @organization.name) %>
-<main class="crayons-layout crayons-layout--limited-s p-4">
-  <div class="crayons-card p-6 grid gap-4">
-    <h1 class="crayons-title"><%= t("org_domain_membership.join_title", organization: @organization.name) %></h1>
-    <% if flash[:notice] %><p class="crayons-notice" role="status"><%= flash[:notice] %></p><% end %>
+<main class="org-domain org-join">
+  <div class="crayons-card org-join__card">
+    <div class="org-join__identity">
+      <span class="org-join__monogram" aria-hidden="true"><%= @organization.name.first(2).upcase %></span>
+      <div>
+        <p class="org-domain__eyebrow"><%= t("org_domain_membership.membership") %></p>
+        <h1 class="org-domain__heading"><%= t("org_domain_membership.join_title", organization: @organization.name) %></h1>
+      </div>
+    </div>
     <% if flash[:alert] %><p class="crayons-notice crayons-notice--danger" role="alert"><%= flash[:alert] %></p><% end %>
     <% if @membership && !@membership.pending? %>
-      <p><%= t("org_domain_membership.errors.already_member") %></p>
-      <%= link_to @organization.name, @organization.path, class: "crayons-btn" %>
+      <div class="org-join__success">
+        <span class="org-join__check" aria-hidden="true">✓</span>
+        <h2 class="org-domain__heading"><%= t("org_domain_membership.member_title") %></h2>
+        <p class="org-domain__muted"><%= t("org_domain_membership.errors.already_member") %></p>
+        <%= link_to t("org_domain_membership.view_organization", organization: @organization.name), @organization.path, class: "crayons-btn" %>
+      </div>
     <% elsif @organization.organization_email_domains.available.exists? %>
-      <p><%= t("org_domain_membership.join_description", username: current_user.username) %></p>
-      <p><%= t("org_domain_membership.permissions") %></p>
-      <p><%= t("org_domain_membership.eligible_domains", domains: @organization.organization_email_domains.available.pluck(:domain).join(", ")) %></p>
+      <div class="org-join__steps" aria-label="<%= t("org_domain_membership.verification_steps") %>">
+        <span class="org-join__step" aria-current="<%= @challenge ? "false" : "step" %>"><span class="org-join__number">1</span><%= t("org_domain_membership.work_email") %></span>
+        <span aria-hidden="true">→</span>
+        <span class="org-join__step" aria-current="<%= @challenge ? "step" : "false" %>"><span class="org-join__number">2</span><%= t("org_domain_membership.verify_join") %></span>
+      </div>
       <% if @challenge %>
-        <%= form_with url: organization_join_path(@organization.slug), method: :patch, local: true, class: "grid gap-4" do %>
+        <div class="org-domain__stack">
+          <h2 class="org-domain__heading"><%= t("org_domain_membership.check_inbox") %></h2>
+          <p class="org-domain__muted" role="status"><%= flash[:notice] || t("org_domain_membership.code_sent") %></p>
+        </div>
+        <%= form_with url: organization_join_path(@organization.slug), method: :patch, local: true, class: "org-domain__stack" do %>
           <%= hidden_field_tag :challenge_id, @challenge.id %>
           <div class="crayons-field">
             <%= label_tag :otp, t("org_domain_membership.code"), class: "crayons-field__label" %>
-            <%= text_field_tag :otp, nil, required: true, inputmode: "numeric", pattern: "[0-9]{8}", maxlength: 8, autocomplete: "one-time-code", class: "crayons-textfield" %>
+            <%= text_field_tag :otp, nil, required: true, inputmode: "numeric", pattern: "[0-9]{8}", maxlength: 8, autocomplete: "one-time-code", class: "crayons-textfield org-join__otp", "aria-describedby": "code-help" %>
+            <p id="code-help" class="crayons-field__description"><%= t("org_domain_membership.mail_expiry") %></p>
           </div>
           <%= submit_tag t("org_domain_membership.verify_join"), class: "crayons-btn" %>
         <% end %>
+      <% else %>
+        <p class="org-domain__muted"><%= t("org_domain_membership.join_description", username: current_user.username) %></p>
       <% end %>
-      <%= form_with url: organization_join_path(@organization.slug), method: :post, local: true, class: "grid gap-4" do %>
-        <div class="crayons-field">
-          <%= label_tag :work_email, t("org_domain_membership.work_email"), class: "crayons-field__label" %>
-          <%= email_field_tag :work_email, nil, required: true, maxlength: 254, autocomplete: "email", class: "crayons-textfield" %>
-          <p class="crayons-field__description"><%= t("org_domain_membership.email_private") %></p>
-        </div>
-        <%= submit_tag t(@challenge ? "org_domain_membership.resend" : "org_domain_membership.send_code"), class: "crayons-btn crayons-btn--secondary" %>
+      <% email_form = capture do %>
+        <%= form_with url: organization_join_path(@organization.slug), method: :post, local: true, class: "org-domain__stack" do %>
+          <div class="crayons-field">
+            <%= label_tag :work_email, t("org_domain_membership.work_email"), class: "crayons-field__label" %>
+            <%= email_field_tag :work_email, @challenge&.email, required: true, maxlength: 254, autocomplete: "email", class: "crayons-textfield", "aria-describedby": "email-help eligible-domains" %>
+            <p id="eligible-domains" class="crayons-field__description"><%= t("org_domain_membership.eligible_domains", domains: @organization.organization_email_domains.available.pluck(:domain).join(", ")) %></p>
+            <p id="email-help" class="crayons-field__description"><%= t("org_domain_membership.email_private") %></p>
+          </div>
+          <%= submit_tag t(@challenge ? "org_domain_membership.resend" : "org_domain_membership.send_code"), class: "crayons-btn #{@challenge ? 'crayons-btn--secondary' : ''}" %>
+        <% end %>
       <% end %>
+      <% if @challenge %>
+        <details class="org-join__resend">
+          <summary><%= t("org_domain_membership.resend_help") %></summary>
+          <%= email_form %>
+        </details>
+      <% else %>
+        <%= email_form %>
+      <% end %>
+      <p class="org-domain__note"><%= t("org_domain_membership.permissions") %></p>
     <% else %>
-      <p><%= t("org_domain_membership.errors.unavailable") %></p>
+      <p class="org-domain__note"><%= t("org_domain_membership.errors.unavailable") %></p>
+      <%= link_to @organization.name, @organization.path, class: "crayons-btn crayons-btn--secondary" %>
     <% end %>
   </div>
 </main>

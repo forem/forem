@@ -1,20 +1,35 @@
-<h1 class="crayons-title mb-4"><%= t("org_domain_membership.review_title") %></h1>
-<p class="mb-4"><%= t("org_domain_membership.review_description") %></p>
-<% @domains.each do |domain| %>
-  <article class="crayons-card p-4 mb-4 grid gap-3">
-    <h2><%= domain.domain %></h2>
-    <p><%= link_to domain.organization.name, admin_organization_path(domain.organization) %></p>
-    <p><%= link_to domain.organization.url, domain.organization.url, rel: "noopener", target: "_blank" if domain.organization.url.present? %></p>
-    <p><%= t("org_domain_membership.requester", username: domain.requested_by&.username) %></p>
-    <p><%= t("org_domain_membership.statuses.#{domain.status}") %></p>
-    <% if domain.reviewed_by %>
-      <p><%= t("org_domain_membership.reviewer", username: domain.reviewed_by.username, date: l(domain.reviewed_at, format: :short)) %></p>
-    <% end %>
-    <div class="flex flex-wrap gap-3">
-      <% %w[approved rejected revoked].each do |decision| %>
-        <%= button_to t("org_domain_membership.decisions.#{decision}"), admin_organization_email_domain_path(domain), method: :patch, params: { decision: decision }, class: "crayons-btn crayons-btn--secondary" %>
-      <% end %>
-    </div>
-  </article>
-<% end %>
-<%= paginate @domains %>
+<div class="org-domain org-domain__review">
+  <header class="mb-6">
+    <p class="org-domain__eyebrow mb-2"><%= t("org_domain_membership.domain_review") %></p>
+    <h1 class="crayons-title mb-3"><%= t("org_domain_membership.review_title") %></h1>
+    <p class="org-domain__muted"><%= t("org_domain_membership.review_description") %></p>
+  </header>
+  <% if @domains.empty? %>
+    <p class="crayons-card p-6 org-domain__muted"><%= t("org_domain_membership.no_requests") %></p>
+  <% end %>
+  <% @domains.each do |domain| %>
+    <article class="crayons-card p-5 mb-4 org-domain__stack">
+      <div class="org-domain__row">
+        <h2 class="org-domain__domain"><%= domain.domain %></h2>
+        <span class="org-domain__badge org-domain__badge--<%= domain.status %>"><%= t("org_domain_membership.statuses.#{domain.status}") %></span>
+      </div>
+      <div class="org-domain__meta">
+        <p><%= link_to domain.organization.name, admin_organization_path(domain.organization), class: "fw-bold" %></p>
+        <% if domain.organization.url.present? %>
+          <p><%= link_to domain.organization.url, domain.organization.url, rel: "noopener", target: "_blank" %></p>
+        <% end %>
+        <p><%= t("org_domain_membership.requester", username: domain.requested_by&.username) %></p>
+        <% if domain.reviewed_by %>
+          <p><%= t("org_domain_membership.reviewer", username: domain.reviewed_by.username, date: l(domain.reviewed_at, format: :short)) %></p>
+        <% end %>
+      </div>
+      <div class="org-domain__actions">
+        <% %w[approved rejected revoked].each do |decision| %>
+          <% next if domain.status == decision %>
+          <%= button_to t("org_domain_membership.decisions.#{decision}"), admin_organization_email_domain_path(domain), method: :patch, params: { decision: decision }, class: "crayons-btn #{decision == 'approved' ? '' : 'crayons-btn--secondary'}" %>
+        <% end %>
+      </div>
+    </article>
+  <% end %>
+  <%= paginate @domains %>
+</div>

@@ -16,7 +16,6 @@ RSpec.describe "Organization membership through a work email", :js do
     visit organization.path
     expect(page).to have_link("Work at Foobar? Join the organization", href: organization_join_path(organization.slug))
     click_on "Work at Foobar? Join the organization"
-    expect(page).to have_content("Join Foobar")
     expect(page).to have_content("permission to publish")
     page.driver.resize(1280, 900)
     fill_in "Work email", with: "employee@foobar.com"
@@ -24,6 +23,9 @@ RSpec.describe "Organization membership through a work email", :js do
     expect(page).to have_content("Check your work email")
     page.driver.resize(390, 844)
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
+    expect(page).to have_css("details.org-join__resend:not([open])")
+    find("summary", text: "Need another code or a different email?").click
+    expect(page).to have_field("Work email", with: "employee@foobar.com")
     fill_in "Eight-digit verification code", with: "12345678"
     click_on "Verify and join"
     expect(page).to have_content("You are already a member")

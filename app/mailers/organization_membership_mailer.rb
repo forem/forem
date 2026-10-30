@@ -1,4 +1,6 @@
 class OrganizationMembershipMailer < ApplicationMailer
+  layout "organization_membership_mailer"
+
   class << self
     private
 
