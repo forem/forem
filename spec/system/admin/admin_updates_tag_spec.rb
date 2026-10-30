@@ -15,7 +15,7 @@ RSpec.describe "Admin updates a tag" do
       visit edit_admin_tag_path(tag.id)
     end
 
-    it "allows an Admin to successfully update a tag and defaults to black and white", :aggregate_failures do
+    it "allows an Admin to update a tag and defaults to black and white", :aggregate_failures do
       expect(page).to have_content("Edit details")
       check("Supported")
       click_on("Update Tag")

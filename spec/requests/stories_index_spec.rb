@@ -735,6 +735,38 @@ RSpec.describe "StoriesIndex" do
       end
     end
 
+    context "when the organization has a pinned post" do
+      let(:pinned_article) { create(:article, organization: organization, user: user, published: true) }
+
+      before do
+        create(:profile_pin, :for_organization, pinnable: pinned_article, profile: organization)
+      end
+
+      it "renders a dedicated pinned section above the regular feed" do
+        get "/#{organization.slug}"
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(CGI.escapeHTML(pinned_article.title))
+        expect(response.body).to include(I18n.t("views.users.pinned"))
+      end
+
+      it "does not repeat the pinned post in the regular feed" do
+        # A rendered story card references its own "article-link-<id>" DOM id twice
+        # (once as the id= attribute itself, once as an aria-labelledby reference to
+        # it), so scanning for that bare string gives 2 per card. Match the id=
+        # attribute specifically to count actual card instances.
+        get "/#{organization.slug}"
+        expect(response.body.scan(/id="article-link-#{pinned_article.id}"/).size).to eq(1)
+      end
+
+      it "stops showing the pin once the article moves to a different organization" do
+        other_org = create(:organization)
+        pinned_article.update_column(:organization_id, other_org.id)
+
+        get "/#{organization.slug}"
+        expect(response.body).not_to include(%(id="article-link-#{pinned_article.id}"))
+      end
+    end
+
     context "when organization has a readme page and org_readme flag is enabled" do
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",

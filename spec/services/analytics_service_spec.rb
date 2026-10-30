@@ -619,6 +619,20 @@ RSpec.describe AnalyticsService, type: :service do
       result = analytics_service.top_contributors.first
       expect(result).to include(:user_id, :username, :name, :profile_image, :reactions_count, :comments_count, :score)
     end
+
+    it "uses preloaded article_ids instead of embedding an articles subquery" do
+      create(:reaction, reactable: article, category: :like, user: contributor)
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?("UNION ALL")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        analytics_service.top_contributors
+      end
+
+      expect(queries.first).not_to include('SELECT "articles"."id" FROM "articles"')
+    end
   end
 
   describe "#follower_engagement" do

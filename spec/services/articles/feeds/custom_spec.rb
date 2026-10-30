@@ -88,6 +88,25 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
         expect(result).to contain_exactly(high_score_article, medium_score_article)
       end
 
+      it "applies feed_config.feed_lookback_hours when set within the hard feed_lookback_days limit" do
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+        # 72 hours (3 days) should include 1-day and 2-day articles, but exclude 5-day low_score_article
+        feed_config.feed_lookback_hours = 72
+
+        result = feed.default_home_feed.to_a
+        expect(result).to contain_exactly(high_score_article, medium_score_article)
+      end
+
+      it "caps feed_config.feed_lookback_hours so it cannot look back further than hard feed_lookback_days" do
+        # Hard setting is 3 days (72 hours); config tries to look back 240 hours (10 days)
+        allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(3)
+        feed_config.feed_lookback_hours = 240
+
+        result = feed.default_home_feed.to_a
+        # 5-day-old low_score_article must still be excluded by the 3-day hard cap
+        expect(result).to contain_exactly(high_score_article, medium_score_article)
+      end
+
       it "applies pagination via limit and offset" do
         # Create an extra article so page 2 (size 2) has 2 recent articles.
         create_feed_article(score: 20)
@@ -782,6 +801,66 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
 
         expect(executed_sql.first).not_to include('AND "articles"."id" IN (SELECT "articles"."id" FROM "articles"')
         expect(executed_sql.first).to include("articles.semantic_embedding <=>")
+      end
+    end
+  end
+
+  describe "published_at diversity interleaving" do
+    before do
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
+    end
+
+    context "with a full lookback window" do
+      let!(:mid_age_cluster) { Array.new(4) { |i| create_feed_article(score: 95 - i, days_ago: 5) } }
+      let!(:older_lookback_article) { create_feed_article(score: 85, days_ago: 8) }
+      let!(:brand_new_article) { create_feed_article(score: 84, days_ago: 2.0 / 24) }
+
+      it "surfaces fresh and older lookback articles ahead of a saturated mid-age cluster" do
+        feed_config.published_at_diversity_weight = 10.0
+
+        result = feed.default_home_feed.to_a
+        last_mid_idx = result.index(mid_age_cluster.last)
+
+        expect(result.index(older_lookback_article)).to be < last_mid_idx
+        expect(result.index(brand_new_article)).to be < last_mid_idx
+      end
+
+      it "does not alter score ordering when published_at_diversity_weight is zero" do
+        feed_config.published_at_diversity_weight = 0.0
+
+        result = feed.default_home_feed.to_a
+        # older_lookback_article is > 7 days old, so shuffle_top_five_if_recent is skipped.
+        expect(result).to eq(mid_age_cluster + [older_lookback_article, brand_new_article])
+      end
+    end
+
+    context "when every candidate is under a week old (top-five shuffle active)" do
+      # 144h per-config window: 72h is the midpoint, 130h is the older edge.
+      let!(:mid_age_cluster) { Array.new(4) { |i| create_feed_article(score: 95 - i, days_ago: 3) } }
+      let!(:older_lookback_article) { create_feed_article(score: 85, days_ago: 130.0 / 24) }
+      let!(:brand_new_article) { create_feed_article(score: 84, days_ago: 1.0 / 24) }
+
+      before do
+        feed_config.feed_lookback_hours = 144
+        feed_config.shuffle_weight = 0.0
+        # Make the "random" top-five shuffle deterministic and adversarial.
+        allow_any_instance_of(Array).to receive(:shuffle, &:reverse)
+      end
+
+      it "applies the age-bucket interleaving after the shuffle so it cannot be undone" do
+        feed_config.published_at_diversity_weight = 10.0
+
+        top_three = feed.default_home_feed.to_a.first(3)
+
+        expect(top_three).to include(older_lookback_article, brand_new_article)
+      end
+
+      it "keeps the existing shuffle behaviour when diversity is disabled" do
+        feed_config.published_at_diversity_weight = 0.0
+
+        result = feed.default_home_feed.to_a
+
+        expect(result.first(5)).to eq((mid_age_cluster + [older_lookback_article]).reverse)
       end
     end
   end

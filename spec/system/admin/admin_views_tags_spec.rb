@@ -14,7 +14,7 @@ RSpec.describe "Admin updates a tag" do
       visit admin_tags_path
     end
 
-    it "defaults to viewing all tags sorted by taggings count descending and can sort by tag name",
+    it "defaults to viewing all tags sorted by taggings count descending and allows sorting by name",
        :aggregate_failures do
       tag_links = find(".crayons-card").all("tr>td>a")
       expect(tag_links.count).to eq 2
@@ -28,16 +28,12 @@ RSpec.describe "Admin updates a tag" do
     end
   end
 
-  context "when viewing supported tags" do
-    it "shows only supported tags", :aggregate_failures do
+  context "when filtering by supported status" do
+    it "shows only supported or unsupported tags matching the filter", :aggregate_failures do
       visit "#{admin_tags_path}?q[supported_eq]=true"
       expect(page.body).to include tag1.name
       expect(page.body).not_to include tag2.name
-    end
-  end
 
-  context "when viewing unsupported tags" do
-    it "shows only unsupported tags", :aggregate_failures do
       visit "#{admin_tags_path}?q[supported_eq]=false"
       expect(page.body).to include tag2.name
       expect(page.body).not_to include tag1.name

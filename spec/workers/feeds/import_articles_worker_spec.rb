@@ -4,11 +4,11 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
   let(:worker) { subject }
   let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
 
-  include_examples "#enqueues_on_correct_queue", "medium_priority"
-
   before do
     allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
   end
+
+  include_examples "#enqueues_on_correct_queue", "medium_priority"
 
   describe "#perform" do
     it "processes jobs for users with feeds" do
@@ -53,6 +53,26 @@ RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
       worker.perform([user.id])
 
       expect(Feeds::Import).to have_received(:call).with(users_scope: User.where(id: [user.id]), earlier_than: nil)
+    end
+
+    it "skips users whose active feed sources were fetched more recently than earlier_than" do
+      allow(Feeds::Import).to receive(:call)
+      recent_user = create(:user, last_article_at: 1.week.ago)
+      create(:feed_source, user: recent_user, feed_url: feed_url, last_fetched_at: 1.hour.ago)
+
+      due_user = create(:user, last_article_at: 1.week.ago)
+      create(:feed_source, user: due_user, feed_url: feed_url, last_fetched_at: 5.hours.ago)
+
+      Timecop.freeze(Time.current) do
+        worker.perform
+
+        expect(Feeds::Import)
+          .to have_received(:call)
+          .with(users_scope: User.where(id: [due_user.id]), earlier_than: 4.hours.ago.iso8601)
+        expect(Feeds::Import)
+          .not_to have_received(:call)
+          .with(users_scope: User.where(id: [recent_user.id]), earlier_than: 4.hours.ago.iso8601)
+      end
     end
   end
 end

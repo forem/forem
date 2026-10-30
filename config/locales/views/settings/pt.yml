@@ -130,6 +130,11 @@ pt:
         update: Atualizar
         delete: Excluir
         confirm: Confirmar
+      custom:
+        themes:
+          dark_theme: Tema Escuro
+          light_theme: Tema Claro
+          system_theme: Tema do Sistema
       profile_image:
         remove: Remover imagem do perfil
         remove_description: Seu perfil voltará a usar o avatar padrão.
