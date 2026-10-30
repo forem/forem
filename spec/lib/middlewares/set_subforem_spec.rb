@@ -185,6 +185,19 @@ RSpec.describe Middlewares::SetSubforem do
         expect(headers["Content-Security-Policy"]).to eq("frame-ancestors https://example.com https://community.example.com")
       end
 
+      it "includes 'self' in frame-ancestors when running in development" do
+        allow(Rails.env).to receive(:development?).and_return(true)
+        allow(Rails.logger).to receive(:error)
+
+        _status, headers, _body = middleware.call(
+          Rack::MockRequest.env_for("http://localhost:3000/articles"),
+        )
+
+        expect(headers["Content-Security-Policy"]).to eq(
+          "frame-ancestors 'self' https://example.com https://community.example.com",
+        )
+      end
+
       it "falls back to PublicSuffix.parse for hosts outside [A-Za-z0-9.-]" do
         allow(Subforem).to receive(:cached_id_by_domain).with("foo_bar.example.com").and_return(2)
         middleware.call(Rack::MockRequest.env_for("https://foo_bar.example.com/articles"))
