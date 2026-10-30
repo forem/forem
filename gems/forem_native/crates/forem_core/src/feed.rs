@@ -632,7 +632,7 @@ pub enum AiPreference {
     HideFullyAutonomous,
 }
 
-/// All 23 weight/rate attributes of a `FeedConfig` model used in `FeedConfig#score_sql`.
+/// All weight/rate attributes of a `FeedConfig` model used in `FeedConfig#score_sql`.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct FeedScoreWeights {
     pub feed_success_weight: f64,
@@ -663,6 +663,7 @@ pub struct FeedScoreWeights {
     pub compellingness_score_weight: f64,
     pub language_match_weight: f64,
     pub randomness_weight: f64,
+    pub published_at_diversity_weight: f64,
 }
 
 /// Pre-extracted user, activity, and request context for `build_feed_config_score_sql`.
@@ -689,6 +690,9 @@ pub struct FeedScoreContext<'a> {
     pub ai_preference: AiPreference,
     pub languages: &'a [String],
     pub random_seed: u32,
+    /// Midpoint (hours) of the effective feed lookback window, used by
+    /// `published_at_diversity_weight` (`FeedConfig#published_at_diversity_half_lookback_hours`).
+    pub published_at_diversity_half_lookback_hours: f64,
 }
 
 #[inline]
@@ -852,6 +856,27 @@ pub fn build_feed_config_score_sql(
             "((1.0 / (1.0 + (EXTRACT(epoch FROM (NOW() - articles.last_comment_at)) / 3600.0))) * ",
         );
         if !write_ruby_float(&mut out, w.comment_recency_weight) {
+            return None;
+        }
+        out.push(')');
+    }
+
+    // 11b. published_at_diversity_weight: U-shaped curve centred on the lookback midpoint
+    if w.published_at_diversity_weight > 0.0 {
+        let half = ctx.published_at_diversity_half_lookback_hours;
+        begin_term(&mut out, &mut has_terms);
+        out.push_str(
+            "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - ",
+        );
+        if !write_ruby_float(&mut out, half) {
+            return None;
+        }
+        out.push_str(") / ");
+        if !write_ruby_float(&mut out, half) {
+            return None;
+        }
+        out.push_str(", 1.0), 2) * ");
+        if !write_ruby_float(&mut out, w.published_at_diversity_weight) {
             return None;
         }
         out.push(')');
@@ -2530,11 +2555,57 @@ mod tests {
             ai_preference: AiPreference::ShowAll,
             languages: &[],
             random_seed: 42,
+            published_at_diversity_half_lookback_hours: 120.0,
         };
         assert_eq!(
             build_feed_config_score_sql(&weights, &ctx).as_deref(),
             Some("(0)")
         );
+    }
+
+    #[test]
+    fn build_score_sql_published_at_diversity_term() {
+        let weights = FeedScoreWeights {
+            published_at_diversity_weight: 6.5,
+            ..FeedScoreWeights::default()
+        };
+        let ctx = FeedScoreContext {
+            recent_pageviews_count: 0,
+            organization_follow_ids: &[],
+            user_follow_ids: &[],
+            tag_names: &[],
+            optimized_tags_query: false,
+            optimized_tags_limit: 20,
+            is_root_subforem: false,
+            subforem_follow_ids: &[],
+            label_names: &[],
+            lookback_window_utc_sec: 0,
+            second_latest_pageview_utc_sec: 0,
+            precomputed_selection_ids: &[],
+            has_activity_store: false,
+            recent_article_ids: &[],
+            published_since_24h_utc_sec: 0,
+            recent_subforem_ids: &[],
+            interest_embedding: &[],
+            published_since_30d_utc_sec: 0,
+            ai_preference: AiPreference::ShowAll,
+            languages: &[],
+            random_seed: 42,
+            published_at_diversity_half_lookback_hours: 24.0,
+        };
+        assert_eq!(
+            build_feed_config_score_sql(&weights, &ctx).as_deref(),
+            Some(
+                "((POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - 24.0) / 24.0, 1.0), 2) * 6.5))"
+            )
+        );
+
+        // Out-of-range floats defer to the Ruby legacy builder.
+        let tiny = FeedScoreWeights {
+            published_at_diversity_weight: 1e-6,
+            ..FeedScoreWeights::default()
+        };
+        assert!(build_feed_config_score_sql(&tiny, &ctx).is_none());
     }
 
     #[test]
