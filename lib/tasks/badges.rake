@@ -21,8 +21,11 @@ end
 # rake award_contributor_badges_backfill
 task award_contributor_badges_backfill: :environment do
   puts "Backfilling GitHub contributor badges across full PR history (this can take a while)..."
-  Badges::AwardContributorFromGithub.backfill
-  puts "Done! Scanned through #{Settings::General.github_contributor_prs_scanned_through}"
+  if Badges::AwardContributorFromGithub.backfill
+    puts "Done! Scanned through #{Settings::General.github_contributor_prs_scanned_through}"
+  else
+    abort "Backfill incomplete due to GitHub API errors or rate limiting. Re-run to continue."
+  end
 end
 
 # rake award_fab_five_badges["ben jess peter mac liana andy"]
