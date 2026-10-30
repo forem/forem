@@ -75,6 +75,21 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         expect(result).not_to include("---")
         expect(result).to start_with("# Pure Markdown Title")
       end
+
+      it "restores Liquid tags in document metadata and front matter" do
+        input = <<~ADOC
+          = Guide to {% tag_name %} and {{ var }}
+          :description: Info about {{ site.title }}
+          :published: true
+
+          Body text.
+        ADOC
+
+        result = described_class.call(input, front_matter: true)
+
+        expect(result).to include("title: Guide to {% tag_name %} and {{ var }}")
+        expect(result).to include("description: Info about {{ site.title }}")
+      end
     end
 
     context "with Comments" do
@@ -110,6 +125,23 @@ RSpec.describe AsciidocToMarkdown, type: :service do
 
         result = described_class.call(input)
         expect(result).to include("// Line comment in JS code")
+      end
+
+      it "closes comment block only with its exact matching delimiter" do
+        input = <<~ADOC
+          ////
+          hidden comment
+          //////
+          still hidden comment
+          ////
+          Visible paragraph.
+        ADOC
+
+        result = described_class.call(input)
+
+        expect(result).not_to include("hidden comment")
+        expect(result).not_to include("still hidden comment")
+        expect(result).to include("Visible paragraph.")
       end
     end
 
@@ -177,6 +209,31 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         expect(result).to include("const app = express(); ①")
         expect(result).to include("app.listen(3000); ②")
       end
+
+      it "requires listing closing delimiter to match opening delimiter character and length" do
+        input = <<~ADOC
+          ----
+          first code line
+          ....
+          second code line
+          ----
+        ADOC
+
+        result = described_class.call(input)
+        expect(result).to include("first code line\n....\nsecond code line")
+      end
+
+      it "emits buffered listing lines when input ends with an open listing block" do
+        input = <<~ADOC
+          [source,ruby]
+          ----
+          unclosed = true
+          more_code = 1
+        ADOC
+
+        result = described_class.call(input)
+        expect(result).to include("```ruby\nunclosed = true\nmore_code = 1\n```")
+      end
     end
 
     context "with Tables" do
@@ -200,8 +257,29 @@ RSpec.describe AsciidocToMarkdown, type: :service do
         expect(described_class.call(input).strip).to eq(expected.strip)
       end
 
-      it "preserves empty cells and escaped pipes without column shifting" do
+      it "emits an empty GFM header row for tables without a header" do
         input = <<~ADOC
+          |===
+          | First | Middle | Last
+          | John | | Doe
+          | Escaped \\| Pipe | Mid | End
+          |===
+        ADOC
+
+        expected = <<~MD
+          |  |  |  |
+          | --- | --- | --- |
+          | First | Middle | Last |
+          | John |  | Doe |
+          | Escaped \\| Pipe | Mid | End |
+        MD
+
+        expect(described_class.call(input).strip).to eq(expected.strip)
+      end
+
+      it "promotes first row to header when options='header' is present" do
+        input = <<~ADOC
+          [options="header"]
           |===
           | First | Middle | Last
           | John | | Doe

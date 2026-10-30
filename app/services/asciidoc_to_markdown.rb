@@ -50,6 +50,7 @@ class AsciidocToMarkdown
 
     # 3. Restore Liquid tags
     result = unmask_liquid_tags(body, liquid_tags)
+    metadata = metadata.transform_values { |v| unmask_liquid_tags(v, liquid_tags) }
 
     # 4. Wrap with YAML Front Matter if metadata was present
     if @front_matter && metadata.any?
@@ -78,10 +79,12 @@ class AsciidocToMarkdown
 
   # Restores previously masked Liquid tags.
   #
-  # @param text [String] masked markdown text
+  # @param text [String, Object] masked markdown text or metadata value
   # @param tags [Array<String>] array of original Liquid tags
-  # @return [String] text with restored Liquid tags
+  # @return [String, Object] text with restored Liquid tags
   def unmask_liquid_tags(text, tags)
+    return text unless text.is_a?(String)
+
     tags.each_with_index.reduce(text) { |str, (tag, i)| str.gsub("<!--LIQUID_#{i}-->", tag) }
   end
 
@@ -96,60 +99,69 @@ class AsciidocToMarkdown
 
     in_header = true
     in_code = false
+    code_delimiter = nil
     code_lang = ""
     code_lines = []
-    in_comment = false
+    comment_delimiter = nil
     in_quote = false
     quote_author = nil
     in_admonition = false
     in_table = false
-    table_header_done = false
+    table_lines = []
+    table_header_option = false
 
     text.each_line(chomp: true) do |line|
       # 0. Comments (// line and //// block), ignored inside code listings
-      if !in_code && line =~ %r{^/{4,}$}
-        in_comment = !in_comment
+      if comment_delimiter
+        comment_delimiter = nil if line == comment_delimiter
         next
       end
-      next if in_comment
+
+      if !in_code && line =~ %r{^/{4,}$}
+        comment_delimiter = line
+        next
+      end
       next if !in_code && line =~ %r{^//(?!/)}
 
       # 1. Code Blocks (---- or ....)
-      if line =~ /^(-{4,}|\.{4,})$/
-        if in_code
+      if in_code
+        if line == code_delimiter
           max_backticks = code_lines.flat_map { |l| l.scan(/`+/).map(&:length) }.max || 0
           fence = "`" * [3, max_backticks + 1].max
           output << "#{fence}#{code_lang}".strip
           output.concat(code_lines)
           output << fence
           in_code = false
+          code_delimiter = nil
           code_lang = ""
           code_lines = []
         else
-          code_lines = []
-          in_code = true
+          code_lines << convert_conums(line)
         end
         next
-      end
-
-      if in_code
-        code_lines << convert_conums(line)
+      elsif line =~ /^(-{4,}|\.{4,})$/
+        code_lines = []
+        code_delimiter = line
+        in_code = true
         next
       end
 
       # 2. Tables (|===)
       if line =~ /^\|={3,}$/
-        in_table = !in_table
-        table_header_done = false
+        if in_table
+          output.concat(render_table(table_lines, table_header_option, doc_attrs))
+          in_table = false
+          table_lines = []
+          table_header_option = false
+        else
+          in_table = true
+          table_lines = []
+        end
         next
       end
 
       if in_table
-        table_row = render_table_row(line, table_header_done, doc_attrs)
-        if table_row
-          table_header_done = true
-          output << table_row
-        end
+        table_lines << line
         next
       end
 
@@ -211,6 +223,8 @@ class AsciidocToMarkdown
           code_lang = Regexp.last_match(1) || ""
         elsif opts =~ /^quote(?:,\s*([^,]+))?(?:,\s*(.+))?$/
           quote_author = [Regexp.last_match(1), Regexp.last_match(2)].compact.map(&:strip).reject(&:empty?).join(", ")
+        elsif opts =~ /(?:options|opts)=["']?[^"']*header[^"']*["']?|%header/
+          table_header_option = true
         elsif ADMONITIONS.include?(opts)
           output << "> **#{opts.capitalize}:**"
         end
@@ -260,31 +274,75 @@ class AsciidocToMarkdown
       output << render_inline(line, doc_attrs)
     end
 
+    if in_code
+      max_backticks = code_lines.flat_map { |l| l.scan(/`+/).map(&:length) }.max || 0
+      fence = "`" * [3, max_backticks + 1].max
+      output << "#{fence}#{code_lang}".strip
+      output.concat(code_lines)
+      output << fence
+    end
+
+    if in_table
+      output.concat(render_table(table_lines, table_header_option, doc_attrs))
+    end
+
     [output.join("\n"), metadata]
   end
 
-  # Formats a single table row, generating GFM header divider if necessary.
+  # Formats table lines into GFM pipe table rows.
+  #
+  # @param lines [Array<String>] raw lines between table delimiters
+  # @param has_header [Boolean] whether options="header" was specified
+  # @param attrs [Hash] document attributes for inline substitution
+  # @return [Array<String>] formatted GFM table lines
+  def render_table(lines, has_header, attrs)
+    non_empty = lines.reject { |l| l.strip.empty? }
+    return [] if non_empty.empty?
+
+    first_idx = lines.index { |l| !l.strip.empty? }
+    followed_by_blank = first_idx && lines[first_idx + 1]&.strip&.empty?
+
+    rows = []
+    if has_header || followed_by_blank
+      first_line = non_empty.shift
+      header_cells = parse_table_cells(first_line, attrs)
+      return [] if header_cells.empty?
+
+      rows << render_table_row(header_cells)
+      rows << render_table_row(Array.new(header_cells.size, '---'))
+    else
+      first_cells = parse_table_cells(non_empty.first, attrs)
+      return [] if first_cells.empty?
+
+      rows << render_table_row(Array.new(first_cells.size, ''))
+      rows << render_table_row(Array.new(first_cells.size, '---'))
+    end
+
+    non_empty.each do |row_line|
+      cells = parse_table_cells(row_line, attrs)
+      rows << render_table_row(cells) unless cells.empty?
+    end
+
+    rows
+  end
+
+  # Formats a single table row with pipe delimiters.
+  #
+  # @param cells [Array<String>] row cell contents
+  # @return [String] formatted GFM table row
+  def render_table_row(cells)
+    "| #{cells.join(' | ')} |"
+  end
+
+  # Splits a table row into formatted cells.
   #
   # @param line [String] raw table row line
-  # @param header_done [Boolean] whether table header has already been emitted
   # @param attrs [Hash] document attributes for inline substitution
-  # @return [String, nil] formatted GFM table row or nil if row is empty
-  def render_table_row(line, header_done, attrs)
-    return nil if line.strip.empty?
-
+  # @return [Array<String>] array of formatted cell strings
+  def parse_table_cells(line, attrs)
     cells = line.split(/(?<!\\)\|/, -1).map(&:strip)
     cells.shift if cells.first.to_s.empty?
-    return nil if cells.empty?
-
-    formatted = cells.map { |c| render_inline(c, attrs) }
-    row = "| #{formatted.join(' | ')} |"
-
-    if header_done
-      row
-    else
-      separator = "| #{Array.new(cells.size, '---').join(' | ')} |"
-      "#{row}\n#{separator}"
-    end
+    cells.map { |c| render_inline(c, attrs) }
   end
 
   # Replaces callout numbers <1>, <2> with circled unicode numbers ①, ②.
