@@ -12,7 +12,9 @@ class CreateOrganizationEmailDomains < ActiveRecord::Migration[7.0]
     end
 
     create_table :organization_membership_challenges do |t|
-      t.references :organization_email_domain, null: false, foreign_key: true, index: { name: "index_org_challenges_on_domain" }
+      t.references(
+        :organization_email_domain, null: false, foreign_key: true, index: { name: "index_org_challenges_on_domain" }
+      )
       t.references :user, null: false, foreign_key: true
       t.string :email, null: false
       t.string :otp_digest, null: false
