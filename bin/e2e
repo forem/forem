@@ -22,6 +22,11 @@ if [ $? -eq 1 ]; then
    exit;
 fi
 
+if ! yarn cypress install; then # ensure Cypress binary is installed locally when running e2e
+   echo "Unable to launch end to end tests. Cypress installation failed."
+   exit 1
+fi
+
 printf "\n"
 
 # Wait 10 seconds and if the user does not respond, assume they do not want to rebuild the test E2E database

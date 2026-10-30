@@ -8,11 +8,8 @@ RSpec.describe "Admin visits extentions page" do
     visit admin_extensions_path
   end
 
-  it "nests the content under Developer Tools and highlights the menu item in the sidebar", :aggregate_failures do
-    expect(find("h1.crayons-title").text).to eq("Developer Tools")
-
-    within('nav[aria-label="Admin"]') do
-      expect(find("[aria-current='page']").text).to eq("Developer Tools")
-    end
+  it "nests the content under Developer Tools and highlights the sidebar menu item", :aggregate_failures do
+    expect(page).to have_css("h1.crayons-title", exact_text: "Developer Tools")
+    expect(page).to have_css('nav[aria-label="Admin"] [aria-current="page"]', exact_text: "Developer Tools")
   end
 end

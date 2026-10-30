@@ -54,14 +54,32 @@ RSpec.describe "StoriesPerformanceFix", type: :request do
     end
 
     it "renders user profile page without MissingAttributeError" do
-      # limited_column_select provides: path, title, id, published, comments_count,
+      # minimal_feed_column_select provides: path, title, id, published, comments_count,
       # public_reactions_count, cached_tag_list, main_image, main_image_background_hex_color,
       # updated_at, slug, video, user_id, organization_id, video_source_url, video_code,
       # video_thumbnail_url, video_closed_caption_track_url, cached_user, cached_organization,
       # published_at, crossposted_at, description, reading_time, video_duration_in_seconds,
-      # score, last_comment_at, main_image_height, type_of, edited_at, processed_html, subforem_id
+      # score, last_comment_at, main_image_height, type_of, edited_at, subforem_id
       get "/#{user.username}"
       expect(response).to have_http_status(:ok)
+    end
+
+    it "does not load processed_html for profile stories", :aggregate_failures do
+      create(:profile_pin, profile: user, pinnable: articles.first)
+      story_queries = []
+      counter = lambda do |_name, _start, _finish, _id, payload|
+        sql = payload[:sql]
+        story_queries << sql if sql.start_with?("SELECT \"articles\".\"path\", \"articles\".\"title\"")
+      end
+
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(story_queries.size).to eq(2)
+      expect(story_queries).to all(exclude("processed_html"))
+      articles.each { |article| expect(response.body).to include(article.title) }
     end
 
     it "renders all article titles on the profile page" do

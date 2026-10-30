@@ -2,7 +2,7 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
-  <% unless @stories.sum(&:score).positive? %>
+  <% unless (@pinned_stories.to_a + @stories.to_a).sum(&:score).positive? %>
       <meta name="robots" content="noindex">
       <meta name="robots" content="nofollow">
   <% end %>
@@ -24,7 +24,7 @@
     <div class="substories" id="substories">
       <%# organizations/main_feed will iterate on stories with .each_with_index,
           thus by using .present? here we preload the items %>
-      <% if @stories.present? %>
+      <% if @stories.present? || @pinned_stories.present? %>
         <%= render "organizations/main_feed" %>
       <% end %>
     </div>
