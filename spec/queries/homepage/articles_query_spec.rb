@@ -50,6 +50,23 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(result).not_to include(approved_article.id)
         expect(result).to include(unapproved_article.id)
       end
+
+      it "orders approved articles by hotness_score" do
+        cooler = create(:article, approved: true, hotness_score: 10)
+        hotter = create(:article, approved: true, hotness_score: 20)
+        create(:article, approved: false, hotness_score: 30)
+
+        result = described_class.call(approved: true, sort_by: "hotness_score").ids
+        expect(result).to eq([hotter.id, cooler.id])
+      end
+
+      it "has a partial hotness_score index backing the approved feed", :aggregate_failures do
+        index = ActiveRecord::Base.connection.indexes(:articles)
+          .detect { |i| i.name == "index_articles_on_hotness_score_for_approved_published" }
+
+        expect(index&.where).to include("approved = true")
+        expect(index&.where).to include("published = true")
+      end
     end
 
     describe "published_at" do
