@@ -134,6 +134,12 @@ module Rack
       end
     end
 
+    throttle("organization_membership_verification", limit: 20, period: 1.minute) do |request|
+      if request.path.match?(%r{\A(?:/locale/[^/]+)?/[^/]+/join\z}) && (request.post? || request.patch?)
+        request.track_and_return_ip
+      end
+    end
+
     throttle("lead_submissions_throttle", limit: 5, period: 1.minute) do |request|
       if request.path == "/lead_submissions" && request.post?
         request.track_and_return_ip
