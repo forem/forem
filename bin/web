@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# No Rails boot here: Puma retains responsibility for preloading and forking.
+command = ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+exec(*command) if ENV.fetch("LOCAL_REDIS_URL", "").empty?
+
+require_relative "../lib/local_redis/web"
+exit LocalRedis::Web.new(command: command).run

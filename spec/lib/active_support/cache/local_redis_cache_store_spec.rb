@@ -1,0 +1,264 @@
+require "spec_helper"
+require "active_support/cache"
+require "json"
+require_relative "../../../../lib/active_support/cache/local_redis_cache_store"
+require_relative "../../../support/local_redis_servers"
+
+RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
+  include_context "with real Redis"
+
+  let(:servers) { LocalRedisServers.new }
+  let(:remote_url) { servers.start("remote") }
+  let(:local_url) { servers.start("local") }
+  let(:remote) { Redis.new(url: remote_url) }
+  let(:local) { Redis.new(url: local_url) }
+  let(:l1) { LocalRedis::Cache.new(url: local_url, source_url: remote_url) }
+  let(:store) { described_class.new(url: remote_url, local_url: local_url, serializer: :marshal_7_1) }
+  let(:vanilla) { ActiveSupport::Cache::RedisCacheStore.new(url: remote_url, serializer: :marshal_7_1) }
+
+  before { l1.heartbeat(LocalRedis::Cache.monotonic_time) }
+
+  after do
+    l1.close
+    remote.close
+    local.close
+    servers.close
+  end
+
+  def local_value(key)
+    local.get("#{l1.data_prefix}#{key}")
+  end
+
+  it "fills lazily, then serves a serialized local hit without accessing hosted Redis" do
+    vanilla.write("article", { "title" => "hello" })
+    expect(store.read("article")).to eq("title" => "hello")
+    expect(local_value("article")).to eq(remote.get("article"))
+    allow(store.redis).to receive(:then).and_raise("unexpected remote access")
+    expect(store.read("article")).to eq("title" => "hello")
+  end
+
+  it "batches only misses while preserving multi-read order and absent keys" do
+    vanilla.write_multi("a" => 1, "b" => false, "c" => nil)
+    store.read("a")
+    remote.del("a") # Deliberately keep this local hit; no daemon in this example.
+    expect(store.read_multi("a", "b", "c", "absent")).to eq("a" => 1, "b" => false, "c" => nil)
+    expect(store.fetch_multi("a", "d") { 4 }).to eq("a" => 1, "d" => 4)
+    expect(vanilla.read("d")).to eq(4)
+  end
+
+  it "preserves versioned keys, compression, nil and fetch semantics" do
+    key = Struct.new(:cache_key, :cache_version).new("article", "1")
+    vanilla.write(key, "large" * 1000)
+    expect(store.read(key)).to eq("large" * 1000)
+    key.cache_version = "2"
+    expect(store.read(key)).to be_nil
+    expect(store.fetch(key) { "new" }).to eq("new")
+    expect(vanilla.read(key)).to eq("new")
+    expect(store.fetch("nil", skip_nil: true) { nil }).to be_nil
+    expect(vanilla.exist?("nil")).to be(false)
+  end
+
+  it "never extends the hosted TTL and bounds entries with no hosted expiry" do
+    vanilla.write("short", "value", expires_in: 0.2)
+    store.read("short")
+    expect(local.pttl("#{l1.data_prefix}short")).to be <= remote.pttl("short") + 5
+    vanilla.write("forever", "value")
+    store.read("forever")
+    expect(local.pttl("#{l1.data_prefix}forever")).to be_between(1, 30_000)
+    sleep 0.22
+    expect(store.read("short")).to be_nil
+  end
+
+  it "rejects a slow fill if an invalidation was processed during the hosted read" do
+    vanilla.write("article", "old")
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      result = original.call(&block)
+      l1.invalidate(["article"])
+      result
+    end
+    expect(store.read("article")).to eq("old")
+    expect(local_value("article")).to be_nil
+  end
+
+  it "synchronously evicts successful, failed-NX, and bulk writes on this host" do
+    vanilla.write("a", "old")
+    store.read("a")
+    expect(store.write("a", "ignored", unless_exist: true)).to be(false)
+    expect(local_value("a")).to be_nil
+    store.read("a")
+    store.write_multi("a" => "new", "b" => "bulk")
+    expect(local_value("a")).to be_nil
+    expect(store.read_multi("a", "b")).to eq("a" => "new", "b" => "bulk")
+    expect(store.delete_multi(%w[a b])).to eq(2)
+    expect(store.read_multi("a", "b")).to eq({})
+  end
+
+  it "leaves raw reads, raw multi-reads, NX and counters authoritative" do
+    store.write("counter", 0, raw: true)
+    local.set("#{l1.data_prefix}counter", "99")
+    expect(store.increment("counter", 2, expires_in: 60)).to eq(2)
+    expect(store.decrement("counter", 1)).to eq(1)
+    local.set("#{l1.data_prefix}counter", "99")
+    expect(store.read("counter", raw: true)).to eq("1")
+    expect(store.read_multi("counter", raw: true)).to eq("counter" => "1")
+    expect(store.write("counter", "other", raw: true, unless_exist: true)).to be(false)
+    expect(remote.ttl("counter")).to be_between(1, 60)
+  end
+
+  it "falls back on local failure, absent lease, and local eviction" do
+    vanilla.write("a", "authoritative")
+    store.read("a")
+    local.del("#{l1.data_prefix}a")
+    expect(store.read("a")).to eq("authoritative")
+    l1.disable
+    vanilla.write("a", "new")
+    expect(store.read_multi("a")).to eq("a" => "new")
+    broken = described_class.new(url: remote_url, local_url: "unix://#{servers.directory}/missing.sock")
+    expect(broken.read("a")).to eq("new")
+    expect(broken.write("a", "still writes")).to be(true)
+    expect(vanilla.read("a")).to eq("still writes")
+  end
+
+  it "bypasses stale entries when the lease expires and flushes them before re-enabling L1" do
+    vanilla.write("a", "old")
+    store.read("a")
+    local.pexpire(l1.lease_key, 1)
+    sleep 0.01
+    vanilla.write("a", "new")
+    expect(store.read("a")).to eq("new")
+    l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    expect(local_value("a")).to be_nil
+    expect(store.read("a")).to eq("new")
+  end
+
+  it "does not refresh a lease from a delayed heartbeat" do
+    l1.disable
+    l1.heartbeat(LocalRedis::Cache.monotonic_time - 4)
+    expect(local.get(l1.lease_key)).to be_nil
+  end
+
+  it "clears local state for pattern deletion and clear while preserving namespace isolation remotely" do
+    store = described_class.new(url: remote_url, local_url: local_url, namespace: "one")
+    vanilla.write("unrelated", "keep")
+    store.write("a", "value")
+    store.read("a")
+    store.delete_matched("a*")
+    expect(store.read("a")).to be_nil
+    store.write("b", "value")
+    store.clear
+    expect(store.read("b")).to be_nil
+    expect(vanilla.read("unrelated")).to eq("keep")
+  end
+
+  it "preserves hosted failure semantics even when local entries are present" do
+    vanilla.write("a", "cached")
+    store.read("a")
+    allow(store.redis).to receive(:then).and_raise(Redis::CannotConnectError)
+    expect(store.read("a")).to eq("cached")
+    expect(store.read("missing")).to be_nil
+    expect(store.read_multi("a", "missing")).to eq("a" => "cached")
+    l1.disable
+    expect(store.read_multi("a")).to eq({})
+  end
+
+  it "retains readable remote values when the provider rejects read-through scripts" do
+    vanilla.write("a", "value")
+    store.redis.then do |client|
+      allow(client).to receive(:pipelined).and_raise(Redis::CommandError, "NOPERM EVAL")
+    end
+    expect(store.read("a")).to eq("value")
+    expect(store.read_multi("a")).to eq("a" => "value")
+    expect(local_value("a")).to be_nil
+  end
+
+  it "retains fetch race-condition TTL behavior and does not extend local TTL with it" do
+    store.write("race", "old", expires_in: 0.05, race_condition_ttl: 1)
+    expect(store.read("race")).to eq("old")
+    sleep 0.07
+    expect(store.fetch("race", expires_in: 1, race_condition_ttl: 1) { "new" }).to eq("new")
+    expect(vanilla.read("race")).to eq("new")
+    expect(remote.pttl("race")).to be > 1000
+  end
+
+  it "reconnects inherited local and remote pools after a Puma-style worker fork" do
+    vanilla.write("a", "value")
+    store.read("a")
+    reader, writer = IO.pipe
+    pid = fork do
+      reader.close
+      writer.write(store.read("a"))
+      writer.close
+      exit! 0
+    end
+    writer.close
+    expect(reader.read).to eq("value")
+    expect(Process.waitpid2(pid).last.exitstatus).to eq(0)
+  ensure
+    reader&.close
+    writer&.close
+  end
+
+  it "keeps security and coordination reads authoritative with local_cache: false" do
+    vanilla.write("permission", "old")
+    store.read("permission")
+    vanilla.write("permission", "new")
+    expect(store.read("permission", local_cache: false)).to eq("new")
+    expect(store.read_multi("permission", local_cache: false)).to eq("permission" => "new")
+    expect(store.fetch("permission", local_cache: false) { "unexpected" }).to eq("new")
+    expect(store.fetch_multi("permission", local_cache: false) { "unexpected" }).to eq("permission" => "new")
+    vanilla.delete("permission")
+    expect(store.exist?("permission", local_cache: false)).to be(false)
+    expect(store.read("permission")).to eq("old")
+  end
+
+  it "bypasses Rails request memory as well as L1 for authoritative and raw reads" do
+    store.with_local_cache do
+      store.write("security", "old", local_cache: false)
+      vanilla.write("security", "new")
+      expect(store.read("security", local_cache: false)).to eq("new")
+      expect(store.read_multi("security", local_cache: false)).to eq("security" => "new")
+      expect(store.fetch_multi("security", local_cache: false) { "wrong" }).to eq("security" => "new")
+      vanilla.delete("security")
+      expect(store.exist?("security", local_cache: false)).to be(false)
+      store.write("counter", 1, raw: true)
+      remote.incr("counter")
+      expect(store.read("counter", raw: true)).to eq("2")
+      expect(store.fetch_multi("counter", raw: true) { "wrong" }).to eq("counter" => "2")
+    end
+  end
+
+  it "never mixes entries from different authoritative endpoints on a reused sidecar" do
+    vanilla.write("a", "first origin")
+    store.read("a")
+    other_url = servers.start("other")
+    other = described_class.new(url: other_url, local_url: local_url)
+    other.write("a", "second origin")
+    other_l1 = LocalRedis::Cache.new(url: local_url, source_url: other_url)
+    other_l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    expect(other.read("a")).to eq("second origin")
+    expect(store.read("a")).to eq("first origin")
+  ensure
+    other_l1&.close
+  end
+
+  it "rejects unsupported routing and ambiguous custom clients before accessing L1" do
+    expect { described_class.new(url: [remote_url], local_url: local_url) }.to raise_error(ArgumentError, /one URL/)
+    expect { described_class.new(url: remote_url, redis: remote, local_url: local_url) }
+      .to raise_error(ArgumentError, /one URL/)
+    expect { described_class.new(url: remote_url, sentinels: [], local_url: local_url) }
+      .to raise_error(ArgumentError, /one URL/)
+    expect { described_class.new(url: remote_url, db: 1, local_url: local_url) }
+      .to raise_error(ArgumentError, /one URL/)
+    expect { described_class.new(url: local_url.sub("/local.sock", "/sub/../local.sock"), local_url: local_url) }
+      .to raise_error(ArgumentError, /separate/)
+  end
+
+  it "preserves duplicate and long keys, dynamic namespaces, and custom serialization" do
+    namespaced = described_class.new(url: remote_url, local_url: local_url, namespace: -> { "tenant" },
+                                     serializer: JSON)
+    key = "long" * 400
+    namespaced.write(key, { "a" => false })
+    expect(namespaced.read_multi(key, key)).to eq(key => { "a" => false })
+    expect(namespaced.fetch_multi(key, key) { "wrong" }).to eq(key => { "a" => false })
+  end
+end

@@ -1,0 +1,2 @@
+# Heroku classic builds need the heroku-community/apt buildpack before heroku/ruby.
+redis-server

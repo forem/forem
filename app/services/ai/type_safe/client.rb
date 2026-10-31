@@ -55,7 +55,7 @@ module Ai
 
       class << self
         def circuit_open?
-          Rails.cache.exist?(CIRCUIT_OPEN_KEY)
+          Rails.cache.exist?(CIRCUIT_OPEN_KEY, local_cache: false)
         end
 
         # Counts an outage-type failure (timeout, connection error, 429 or 5xx) and opens the

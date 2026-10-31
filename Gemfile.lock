@@ -830,6 +830,8 @@ GEM
       actionpack (>= 5)
       redis-rack (>= 2.1.0, < 4)
       redis-store (>= 1.1.0, < 2)
+    redis-client (0.31.0)
+      connection_pool
     redis-prescription (2.6.0)
     redis-rack (3.0.0)
       rack-session (>= 0.2.0)
@@ -1262,6 +1264,7 @@ DEPENDENCIES
   redcarpet (~> 3.5)
   redis (~> 4.7.1)
   redis-actionpack (~> 5.5.0)
+  redis-client (~> 0.31.0)
   request_store (~> 1.7)
   reverse_markdown (~> 2.1)
   rolify (~> 6.0)

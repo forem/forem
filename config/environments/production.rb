@@ -77,6 +77,15 @@ Rails.application.configure do
   redis_url ||= ENV.fetch("REDIS_URL", nil)
   default_expiration = 24.hours.to_i
   config.cache_store = :redis_cache_store, { url: redis_url, expires_in: default_expiration }
+  if ENV["LOCAL_REDIS_URL"].present?
+    require Rails.root.join("lib/active_support/cache/local_redis_cache_store")
+    # Constructed before Rails applies cache_format_version; explicitly retain
+    # this application's 7.1 serialization format and legacy payload fallback.
+    config.cache_store = ActiveSupport::Cache::LocalRedisCacheStore.new(
+      url: redis_url, local_url: ENV.fetch("LOCAL_REDIS_URL"), expires_in: default_expiration,
+      serializer: :marshal_7_1
+    )
+  end
 
   config.action_mailer.perform_caching = false
 

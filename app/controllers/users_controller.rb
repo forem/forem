@@ -107,7 +107,7 @@ class UsersController < ApplicationController
       redirect_to sign_up_path and return
     end
 
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}", local_cache: false)
 
     if destroy_token.blank?
       flash[:settings_notice] = I18n.t("users_controller.token_expired")
@@ -346,7 +346,7 @@ class UsersController < ApplicationController
   end
 
   def destroy_request_in_progress?
-    Rails.cache.exist?("user-destroy-token-#{@user.id}")
+    Rails.cache.exist?("user-destroy-token-#{@user.id}", local_cache: false)
   end
 
   def import_articles_from_feed(user)
