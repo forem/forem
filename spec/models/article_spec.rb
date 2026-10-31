@@ -1104,6 +1104,7 @@ RSpec.describe Article do
 
       it "still embeds URLs used in a link" do
         stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:head, %r{https?://example\.com}).to_return(status: 200, body: "", headers: {})
         article = build(:published_article, user: user, type_of: "status", body_markdown: "",
                                             title: "[docs](https://example.com)")
 

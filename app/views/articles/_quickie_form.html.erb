@@ -69,7 +69,7 @@
     var before, after, cursor;
 
     if (format === 'link') {
-      var url = (window.prompt(<%= json_escape(t("views.stories.status_format_link_prompt").to_json) %>, 'https://') || '').trim();
+      var url = (window.prompt(<%= raw json_escape(t("views.stories.status_format_link_prompt").to_json) %>, 'https://') || '').trim();
       if (!/^https?:\/\/[^\s<>"{}|\\^`\[\]()]+$/.test(url)) { return; }
       before = '[';
       after = '](' + url + ')';
@@ -156,7 +156,11 @@
   });
 
   document.querySelectorAll('[data-quickie-format]').forEach(function (button) {
-    button.addEventListener('click', function () { applyQuickieFormat(button.dataset.quickieFormat); });
+    button.addEventListener('click', function () {
+      // The textarea is hidden while previewing, so there is nothing to format
+      if (!document.getElementById('main-status-form-preview').classList.contains('hidden')) { return; }
+      applyQuickieFormat(button.dataset.quickieFormat);
+    });
   });
 
   document.getElementById('main-status-form-preview-toggle').addEventListener('click', function (e) {
