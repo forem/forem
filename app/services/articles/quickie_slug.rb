@@ -19,15 +19,20 @@ module Articles
                            that the this to was we with you
                          ]).freeze
 
+    # @param title [String] the Quickie text
+    # @param user_id [Integer] the author, since slugs are unique per user
+    # @return [String] a slug such as `just-shipped-new-dashboard-redesign-1a2b`
     def self.call(title, user_id:)
       new(title, user_id: user_id).call
     end
 
+    # @see .call
     def initialize(title, user_id:)
       @title = title.to_s
       @user_id = user_id
     end
 
+    # Appends a random suffix to the readable part, re-rolling it if the author already has it.
     def call
       base = base_slug
       MAX_ATTEMPTS.times do
@@ -41,6 +46,7 @@ module Articles
 
     attr_reader :title, :user_id
 
+    # The readable part: at most MAX_WORDS keywords, trimmed to fit MAX_LENGTH.
     def base_slug
       words = keywords.first(MAX_WORDS)
       # Drop trailing words until the slug fits; a single oversized word is cut instead.
@@ -48,6 +54,7 @@ module Articles
       words.join("-")[0, MAX_LENGTH].presence || FALLBACK
     end
 
+    # Lowercased words of the title without URLs, formatting characters or (when possible) stop words.
     def keywords
       text = title.gsub(URL_REGEX, " ").gsub(FORMATTING_CHARACTERS, " ")
       words = Sterile.sluggerize(text).split("-").compact_blank
@@ -55,6 +62,7 @@ module Articles
       meaningful.presence || words
     end
 
+    # Whether this author already has a post with the slug.
     def taken?(slug)
       return false if user_id.blank?
 

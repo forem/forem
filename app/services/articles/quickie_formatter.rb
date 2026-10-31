@@ -40,6 +40,7 @@ module Articles
       formatter.restore(html)
     end
 
+    # @param links [Boolean] see {.render}
     def initialize(links: false)
       @links = links
       @tokens = []
@@ -66,6 +67,7 @@ module Articles
 
     private
 
+    # Swaps `[label](url)` for placeholders; the label may itself contain inline formatting.
     def replace_links(text)
       text.gsub(LINK) do
         label = Regexp.last_match(1)
@@ -74,6 +76,8 @@ module Articles
       end
     end
 
+    # Swaps bold, underline and italic spans for placeholders, applying each rule in order and
+    # recursing into the span so formatting can nest (`**bold *and italic***`).
     def replace_inline(text)
       INLINE_RULES.reduce(text) do |current, (pattern, tag)|
         current.gsub(pattern) do
@@ -83,12 +87,14 @@ module Articles
       end
     end
 
+    # Builds the HTML for a link: an anchor when `links` is on, otherwise an underlined span.
     def link_html(label, url)
       return %(<span style="#{LINK_FALLBACK_STYLE}">#{label}</span>) unless @links
 
       %(<a href="#{url.gsub('&', '&amp;')}" target="_blank" rel="#{LINK_REL}">#{label}</a>)
     end
 
+    # Stores finished HTML and returns the placeholder that stands in for it.
     def stash(html)
       @tokens << html
       "#{PLACEHOLDER_OPEN}#{@tokens.size - 1}#{PLACEHOLDER_CLOSE}"
