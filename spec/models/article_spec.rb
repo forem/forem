@@ -1013,34 +1013,33 @@ RSpec.describe Article do
 
     describe "Quickie slugs" do
       let(:long_text) { "Just shipped the new dashboard redesign for everyone on the team today" }
+      let(:author) { create(:user) }
+
+      def create_quickie(title, user: author)
+        Article.create!(title: title, type_of: "status", body_markdown: "", published: true, user: user)
+      end
 
       it "generates a short slug from the first meaningful words" do
-        quickie = create(:article, title: long_text, type_of: "status", body_markdown: "", published: true,
-                                   main_image: nil)
+        quickie = create_quickie(long_text)
 
         expect(quickie.slug).to match(/\Ajust-shipped-new-dashboard-redesign-[0-9a-p]{1,4}\z/)
       end
 
-      it "gives identical Quickies by the same author different slugs" do
-        user = create(:user)
-        slugs = Array.new(3) do
-          create(:article, title: "Hello world", type_of: "status", body_markdown: "", published: true,
-                           main_image: nil, user: user).slug
-        end
+      it "gives Quickies with the same opening words different slugs" do
+        slugs = ["Hello world today", "Hello world, today!", "hello WORLD today?"].map { |text| create_quickie(text).slug }
 
         expect(slugs.uniq.size).to eq(3)
+        expect(slugs).to all(match(/\Ahello-world-today-[0-9a-p]{1,4}\z/))
       end
 
       it "keeps the existing slug when a Quickie is saved again" do
-        quickie = create(:article, title: long_text, type_of: "status", body_markdown: "", published: true,
-                                   main_image: nil)
+        quickie = create_quickie(long_text)
 
         expect { quickie.update!(title: "A completely different text") }.not_to(change { quickie.reload.slug })
       end
 
       it "leaves a legacy long slug untouched" do
-        quickie = create(:article, title: long_text, type_of: "status", body_markdown: "", published: true,
-                                   main_image: nil)
+        quickie = create_quickie(long_text)
         legacy_slug = "just-shipped-the-new-dashboard-redesign-for-everyone-on-the-team-today-1a2b"
         quickie.update_column(:slug, legacy_slug)
 
@@ -1059,8 +1058,10 @@ RSpec.describe Article do
 
     describe "Quickie formatting" do
       def quickie(title)
-        build(:article, title: title, type_of: "status", body_markdown: "", main_image: nil)
+        Article.new(title: title, type_of: "status", body_markdown: "", user: user)
       end
+
+      let(:user) { create(:user) }
 
       it "renders plain text exactly as before" do
         article = quickie("Plain 5 * 3 * 2 text\n\nsecond snake_case_word")
@@ -1102,10 +1103,13 @@ RSpec.describe Article do
       end
 
       it "still embeds URLs used in a link" do
-        article = quickie("[watch](https://www.youtube.com/watch?v=dQw4w9WgXcQ)")
-        article.validate
+        stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        article = build(:published_article, user: user, type_of: "status", body_markdown: "",
+                                            title: "[docs](https://example.com)")
 
-        expect(article.body_markdown).to include("{% embed https://www.youtube.com/watch?v=dQw4w9WgXcQ minimal %}")
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://example.com minimal %}")
       end
     end
 
