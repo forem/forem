@@ -16,6 +16,7 @@ class OrganizationMembership < ApplicationRecord
   after_create  :update_user_organization_info_updated_at
   after_update  :update_user_organization_info_updated_at, if: :saved_change_to_type_of_user?
   after_destroy :update_user_organization_info_updated_at
+  before_destroy :require_invitation_to_return
 
   after_commit :bust_cache
   after_commit :recompile_organization_pages
@@ -34,6 +35,12 @@ class OrganizationMembership < ApplicationRecord
   end
 
   private
+
+  def require_invitation_to_return
+    return if pending?
+
+    OrganizationMembershipExclusion.find_or_create_by!(organization_id: organization_id, user_id: user_id)
+  end
 
   def generate_invitation_token
     self.invitation_token = SecureRandom.urlsafe_base64(32)

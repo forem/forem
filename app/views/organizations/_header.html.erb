@@ -251,6 +251,12 @@
     </div>
   <% end %>
 
+  <% if @organization.organization_email_domains.available.exists? %>
+    <div class="px-4 m:px-0 pb-4">
+      <%= link_to t("org_domain_membership.public_join", organization: @organization.name), organization_join_path(@organization.slug), class: "crayons-btn crayons-btn--secondary" %>
+    </div>
+  <% end %>
+
   <%# Render Showcase, custom pages and All Posts tabs if organization has custom readme page feature enabled %>
   <% if @organization.main_page.present? && FeatureFlag.enabled?(:org_readme, FeatureFlag::Actor[@organization]) %>
     <%
