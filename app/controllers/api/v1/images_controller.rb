@@ -52,11 +52,12 @@ module Api
         # timed-out attempts count against the limit too.
         @user.rate_limiter.consume!(:api_ai_image_generation)
 
-        url = Ai::ArticleImageGenerator.call(prompt: prompt, user: @user, aspect_ratio: aspect_ratio)
-        if url
-          render json: { url: URL.url(url) }, status: :created
+        result = Ai::ArticleImageGenerator.call(prompt: prompt, user: @user, aspect_ratio: aspect_ratio)
+        if result.success?
+          render json: { url: URL.url(result.url) }, status: :created
         else
-          error_unprocessable_entity(I18n.t("ai_image_generations_controller.generation_failed"))
+          error_key = result.refused? ? "generation_refused" : "generation_failed"
+          error_unprocessable_entity(I18n.t("ai_image_generations_controller.#{error_key}"))
         end
       rescue Timeout::Error
         render json: { error: I18n.t("ai_image_generations_controller.timeout"), status: 408 },

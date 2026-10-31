@@ -97,10 +97,12 @@ RSpec.describe "Api::V1::Images" do
 
   describe "POST /api/images/generate" do
     let(:generated_url) { "https://example.com/generated.png" }
+    let(:success) { Ai::ArticleImageGenerator::Result.new(url: generated_url) }
+    let(:failure) { Ai::ArticleImageGenerator::Result.new(failure_reason: :transient) }
 
     before do
       stub_const("AI_AVAILABLE", true)
-      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(generated_url)
+      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(success)
     end
 
     def generate(params = { prompt: "A robot reading a book" })
@@ -159,11 +161,20 @@ RSpec.describe "Api::V1::Images" do
     end
 
     it "returns 422 when generation fails" do
-      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(nil)
+      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(failure)
       generate
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to eq(I18n.t("ai_image_generations_controller.generation_failed"))
+    end
+
+    it "returns 422 asking to rephrase when the model refuses the prompt" do
+      allow(Ai::ArticleImageGenerator).to receive(:call)
+        .and_return(Ai::ArticleImageGenerator::Result.new(failure_reason: :refused))
+      generate
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq(I18n.t("ai_image_generations_controller.generation_refused"))
     end
 
     it "returns 408 when generation times out" do
@@ -176,7 +187,7 @@ RSpec.describe "Api::V1::Images" do
     it "counts failed attempts and returns 429 once the configured limit is reached" do
       allow(Settings::RateLimit).to receive_messages(api_ai_image_generation: 2,
                                                      api_ai_image_generation_window_seconds: 3600)
-      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(nil, generated_url, generated_url)
+      allow(Ai::ArticleImageGenerator).to receive(:call).and_return(failure, success, success)
 
       generate
       expect(response).to have_http_status(:unprocessable_entity)
