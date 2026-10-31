@@ -1,0 +1,44 @@
+.cursorrules
+  h_f968154a99632d 71,75-78,81
+.github/copilot-instructions.md
+  h_f968154a99632d 71,75-78,81
+.github/workflows/forem-native.yml
+  h_f968154a99632d 48-55
+.gitignore
+  h_f968154a99632d 135,140-141
+.windsurfrules
+  h_f968154a99632d 71,75-78,81
+AGENTS.md
+  h_f968154a99632d 71,75-78,81
+Containerfile
+  h_f968154a99632d 16-21,82,100
+app/services/markdown_processor/reading_time.rb
+  h_f968154a99632d 2-4,9
+docs/rust_native_extensions.md
+  h_f968154a99632d 3,9,25,27,29-36,51,53-54,62,71
+gems/forem_native/README.md
+  h_f968154a99632d 19,22,25-26,32,34,36-38,51
+gems/forem_native/forem_native.gemspec
+  h_f968154a99632d 9,12
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 5-11,17,19-20,25-29,31-35,38-40,47-48,52,58-73,75-76
+lib/tasks/forem_native.rake
+  h_f968154a99632d 54-59,70,73
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 4-5,8-10,12-13,15,47,49-50,71-72,76-77
+spec/services/markdown_processor/parser_spec.rb
+  h_f968154a99632d 974
+spec/services/markdown_processor/reading_time_spec.rb
+  h_f968154a99632d 13-14,16-17,19-21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "956ce526e891ac60b90400273099e9fbea0225e9",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

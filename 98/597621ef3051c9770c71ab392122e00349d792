@@ -1,0 +1,1052 @@
+app/assets/images/agent-antigravity-cli.svg
+  s_265a50a81dda0e::t_22f04a0e8a4e62 1-11
+app/models/agent_session.rb
+  s_265a50a81dda0e::t_22f04a0e8a4e62 2,18,112-119
+  s_265a50a81dda0e::t_441b289a74c4e1 120-121
+  s_f99438673e744c::t_442893d9c8b74b 16,96-101
+  s_f99438673e744c::t_d2579e758b36f9 23-33
+  s_f99438673e744c::t_4b5c2fb89809d5 102
+spec/lib/data_update_scripts/backfill_agent_session_message_indices_spec.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 1-21
+app/helpers/agent_sessions_helper.rb
+  s_265a50a81dda0e::t_22f04a0e8a4e62 3
+swagger/v1/api_v1.json
+  s_265a50a81dda0e::t_22f04a0e8a4e62 86
+  h_f968154a99632d 569,1149,3244-3369,5023-5050,6305-6317,6665-6668,7142-7143
+spec/models/agent_session_spec.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 48-54
+  s_f99438673e744c::t_442893d9c8b74b 97-124
+app/assets/stylesheets/ltags/AgentSessionTag.scss
+  s_265a50a81dda0e::t_22f04a0e8a4e62 43
+lib/data_update_scripts/20260930120000_backfill_agent_session_message_indices.rb
+  s_265a50a81dda0e::t_ca1507719c8d34 1-16
+spec/views/agent_sessions/new.html.erb_spec.rb
+  s_7e652f0621a938::t_6d92a637fce480 4-7,14-15
+app/assets/stylesheets/views/organizations_showcase.scss
+  s_836ff945145894::t_b4d115c7f7a60b 207-214
+app/controllers/application_controller.rb
+  s_790a4d6601ee2b::t_c4c59a5a92659b 167
+  s_790a4d6601ee2b::t_d94aef20a7aafa 44
+  s_790a4d6601ee2b::t_8e7b6c9eb8e214 156-166,168-172
+  h_f968154a99632d 302-303
+spec/requests/stories_index_spec.rb
+  s_790a4d6601ee2b::t_80ec23889174c2 576-588
+  h_f968154a99632d 245-262,589-647
+spec/requests/org_custom_domain_spec.rb
+  s_790a4d6601ee2b::t_31badb7b211ff8 79-99
+spec/services/edge_cache/bust_spec.rb
+  s_790a4d6601ee2b::t_e4ae9939bbad0b 92-93
+  s_790a4d6601ee2b::t_b0a87b94b10f72 91,94-122
+app/services/edge_cache/bust/fastly.rb
+  s_790a4d6601ee2b::t_e4ae9939bbad0b 51
+  s_790a4d6601ee2b::t_56fc908f41f894 15-17,37-50,52-54
+  s_790a4d6601ee2b::t_ed2bca03c51880 55
+app/services/edge_cache/bust_organization.rb
+  s_790a4d6601ee2b::t_56fc908f41f894 6-10
+spec/services/edge_cache/bust_organization_spec.rb
+  s_790a4d6601ee2b::t_b0a87b94b10f72 12,21-24
+  s_790a4d6601ee2b::t_eea9f60196ee88 25-26
+app/assets/stylesheets/billboards.scss
+  s_d126305079cdce::t_bf1a8be79b981d 259-268
+  h_f968154a99632d 5-11,14-16
+config/locales/services/fr.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 121
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+  h_f968154a99632d 122-124
+spec/services/ai/spam_escalation_check_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 36-41
+  s_4da727bc2810b3::t_acb5e164e6c26d 48-70,81
+  h_f968154a99632d 42-47,82
+config/locales/services/en.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 123
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+  h_f968154a99632d 124-126
+app/services/spam/handler.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 28-29,49,60,66,86,270,283-286,290,294,299,302,494,497,500-501,504-506,562-563
+  s_46fe994672464f::t_0714abdb720dcc 291
+  s_46fe994672464f::t_ab25d67761bdc5 292
+  s_46fe994672464f::t_614238e9bb3d43 297,300
+  s_46fe994672464f::t_e5a2285326514f 495-496,498-499,502-503
+  s_c93a97359c028b::t_48ccb5c547d715 169-171,174,176,184-189,192-194,202-206,213-214,220
+  s_c93a97359c028b::t_daafebb9189aac 190-191,195-197
+  h_f968154a99632d 102-107,111,124,243-248,254-269,277-279,306-357,359-360,364-365,371,488-491,556,558,565-567
+spec/services/spam/handler_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 99-123,128-146,154-156,541,544-546,553-555,557
+  s_46fe994672464f::t_081751212e3468 547-552
+  s_46fe994672464f::t_e5a2285326514f 124-127,147-153
+  s_c93a97359c028b::t_d2698e2ef34776 49-50,176-177,443-449,1218,1220-1221
+  s_c93a97359c028b::t_badac73a8f7f59 1212-1217,1219,1222-1223
+  s_c93a97359c028b::t_b8628d518ab1a3 1236-1245
+  h_f968154a99632d 931-991,1004-1106,1322-1336
+config/locales/services/pt.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 131
+  s_bbabb8657d0a1b::t_c2d8da1ab72614 6-9
+  h_f968154a99632d 132-134
+app/services/ai/spam_escalation_check.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 28-29
+  s_4da727bc2810b3::t_acb5e164e6c26d 30-34,58,67-79
+  s_4da727bc2810b3::t_2b023c6e0183af 80
+  h_f968154a99632d 11,35-40
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_46fe994672464f::t_e5a2285326514f 53
+  h_f968154a99632d 54-56
+app/workers/spam/block_domain_and_suspend_users_worker.rb
+  s_c93a97359c028b::t_48ccb5c547d715 28
+spec/workers/spam/block_domain_and_suspend_users_worker_spec.rb
+  s_c93a97359c028b::t_1fa93a37988733 1-3,5-13
+  s_c93a97359c028b::t_d19dd36fed2032 4
+spec/models/audit_log_spec.rb
+  s_c93a97359c028b::t_9f5dea67950e8b 59-70
+app/models/audit_log.rb
+  s_c93a97359c028b::t_9f5dea67950e8b 13,16,20
+lib/betterstack/stats_client.rb
+  s_4ae1f904707c1c::t_6645dd54a08ee6 12-13
+Containerfile
+  s_c93a97359c028b::t_fd8ecf4a973f1e 211
+app/services/events/billboards/live_stream.rb
+  s_b7a9a2bced08c1::t_8d0499df011acf 420-421,424-425
+  h_f968154a99632d 110-112,303-305,455-458
+app/controllers/admin/flag_appeals_controller.rb
+  s_bbabb8657d0a1b::t_0205e9274d33b7 6-9
+  h_f968154a99632d 12,51-55
+db/schema.rb
+  s_bbabb8657d0a1b::t_0ac4702eab95a9 2317-2318
+  s_bbabb8657d0a1b::t_4410f43f3b9859 996
+  h_f968154a99632d 309,339-340,463-473,737,901,1222,1308-1309,2196,2275-2276
+app/views/pages/forbidden.pt.html.erb
+  s_bbabb8657d0a1b::t_165fdd26e3d234 3,6-7,10
+app/workers/appeals/ai_review_worker.rb
+  s_bbabb8657d0a1b::t_ce2bf0cbac9d3e 36
+  h_f968154a99632d 14-16,18-26
+db/migrate/20260730170000_create_flag_appeals.rb
+  s_bbabb8657d0a1b::t_b9173b6a402639 6,13
+app/services/appeals/resolver.rb
+  s_bbabb8657d0a1b::t_0ba2f8b5f01314 226
+  s_bbabb8657d0a1b::t_02cf65f0abbb8a 168,233,239-240,241-245,253-254
+  s_bbabb8657d0a1b::t_d7814bb0066bdf 112,125
+  s_bbabb8657d0a1b::t_47121f182fa23e 234
+  s_bbabb8657d0a1b::t_e48b57e68d946b 157-167
+  s_bbabb8657d0a1b::t_34a10b9e797445 169
+  h_f968154a99632d 21-23,27-28,30,32-41,43-71,84-90,115,120,124,170-173,179,191,195-201,204,208-210,216-221,235-238,246-252
+spec/models/flag_appeal_spec.rb
+  s_bbabb8657d0a1b::t_1adbcdb9b31955 3
+  s_bbabb8657d0a1b::t_aeb039b4e46762 48-56
+spec/requests/admin/flag_appeals_spec.rb
+  s_bbabb8657d0a1b::t_1adbcdb9b31955 3
+  s_bbabb8657d0a1b::t_dc3523de63634b 34-44
+  h_f968154a99632d 71,98-109
+app/services/ai/appeal_assessor.rb
+  s_bbabb8657d0a1b::t_924df0d38a9e15 167-174
+  s_bbabb8657d0a1b::t_353c00819aa1df 24-25,27
+  s_bbabb8657d0a1b::t_fc7af83668d850 7
+spec/services/ai/appeal_assessor_spec.rb
+  s_bbabb8657d0a1b::t_f8bbe4df8ddc68 14,18-36
+  s_bbabb8657d0a1b::t_2a6582fb8ee11f 13
+  s_bbabb8657d0a1b::t_34e90ed31825a2 37
+app/services/ai/function_registry.rb
+  s_bbabb8657d0a1b::t_a8363d4d27db9f 62-65
+  h_f968154a99632d 99-102
+spec/services/appeals/resolver_spec.rb
+  s_bbabb8657d0a1b::t_60e7e63b954fd0 147-155,158-160,162-163,166,170-176,180-189
+  s_bbabb8657d0a1b::t_941e176345f591 381-386
+  h_f968154a99632d 79-82,86,131,136,156-157,161,164-165,167-169,177-179,260,265-278,292-296,298,300,311-318,321
+app/views/pages/forbidden.fr.html.erb
+  s_bbabb8657d0a1b::t_165fdd26e3d234 3,6-7,10
+.env_sample
+  h_f968154a99632d 138-141
+.github/workflows/ci.yml
+  h_f968154a99632d 15,33-35,37-42,46,50-58,63,65-69,86,90,92,99-100,110-113,119,121-123,125,129,132,134
+.github/workflows/create-cache.yml
+  h_f968154a99632d 15,19-21,23-28,32,36-44,49,51-55
+README.md
+  h_f968154a99632d 51
+app/assets/config/manifest.js
+  h_f968154a99632d 2,6-8
+app/assets/javascripts/initializers/initializeBaseUserData.js
+  h_f968154a99632d 107-131,153
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  h_f968154a99632d 168-169
+app/assets/javascripts/initializers/initializeCommentsPage.js.erb
+  h_f968154a99632d 455-481,490-521
+app/assets/stylesheets/views/comments.scss
+  h_f968154a99632d 98-99,107-109,114,151-152,156-159,187-190,196-199,205-209,221-228,232-234,236,239-297,315-318,326-327
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 375-510
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  h_f968154a99632d 49-50
+app/controllers/ai_image_generations_controller.rb
+  h_f968154a99632d 24,26,29
+app/controllers/api/v0/tags_controller.rb
+  h_f968154a99632d 6
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 13-34,45-140,142-146,149,153,155-166,168-174,176-181,183,185-201,204-271,273-280,283,285,289-302,304-312,315,321,328-329,332,336-337,340,342-343,345-352,354-358,360-363,365-367,369-371,375,385-388
+app/controllers/api/v1/images_controller.rb
+  h_f968154a99632d 1-81
+app/controllers/api/v1/tags_controller.rb
+  h_f968154a99632d 6
+app/controllers/articles_controller.rb
+  h_f968154a99632d 62-63,183,200,307-308,383-394
+app/controllers/billboard_events_controller.rb
+  h_f968154a99632d 6-9,12-13,15,23-24,39-44,48,52,64,67-70
+app/controllers/billboards_controller.rb
+  h_f968154a99632d 3,7-9,20,23,26-28,36,38,50-134,155-192
+app/controllers/co_author_invitations_controller.rb
+  h_f968154a99632d 1-55
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 142,146-156
+app/controllers/concerns/api/comments_controller.rb
+  h_f968154a99632d 13-17,23,26,37,40,51-56
+app/controllers/concerns/api/tags_controller.rb
+  h_f968154a99632d 21-43
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 29,47,56-57,72-80
+app/controllers/follows_controller.rb
+  h_f968154a99632d 19-21,36-41,47
+app/controllers/incoming_webhooks/stripe_events_controller.rb
+  h_f968154a99632d 136
+app/controllers/moderations_controller.rb
+  h_f968154a99632d 70
+app/controllers/notifications/reads_controller.rb
+  h_f968154a99632d 15-18
+app/controllers/notifications_controller.rb
+  h_f968154a99632d 40-43
+app/controllers/omniauth_callbacks_controller.rb
+  h_f968154a99632d 51,86,226-235,251
+app/controllers/passwords_controller.rb
+  h_f968154a99632d 7-17,24-63
+app/controllers/poll_skips_controller.rb
+  h_f968154a99632d 46
+app/controllers/poll_text_responses_controller.rb
+  h_f968154a99632d 25,35
+app/controllers/poll_votes_controller.rb
+  h_f968154a99632d 59
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 44-45,79-80,91-92,109-111,115-116
+app/controllers/registrations_controller.rb
+  h_f968154a99632d 7,90-104
+app/controllers/sidebars_controller.rb
+  h_f968154a99632d 3,35,59-65
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 3-4,97-102,118-121
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 30,62-64,80,87-89
+app/controllers/stories_controller.rb
+  h_f968154a99632d 48-49,72,118-126,128-129,138,144-147,149,188,251,254,311,480,543,547-555,619,676,719
+app/controllers/users_controller.rb
+  h_f968154a99632d 252-254
+app/controllers/video_states_controller.rb
+  h_f968154a99632d 14
+app/decorators/article_decorator.rb
+  h_f968154a99632d 117-118,121-122
+app/decorators/profile_decorator.rb
+  h_f968154a99632d 5-7
+app/helpers/application_helper.rb
+  h_f968154a99632d 263,330-332,457
+app/helpers/articles_helper.rb
+  h_f968154a99632d 20,25,87-104
+app/helpers/billboard_helper.rb
+  h_f968154a99632d 32-50
+app/helpers/co_author_invitations_helper.rb
+  h_f968154a99632d 1-22
+app/helpers/comments_helper.rb
+  h_f968154a99632d 20
+app/helpers/events_helper.rb
+  h_f968154a99632d 9-36,75-110
+app/helpers/notifications_helper.rb
+  h_f968154a99632d 23
+app/helpers/rate_limit_checker_helper.rb
+  h_f968154a99632d 39-66
+app/javascript/__tests__/__snapshots__/convertCoauthorIdsToUsernameInputs.test.js.snap
+  h_f968154a99632d 22,50
+app/javascript/__tests__/billboard.test.js
+  h_f968154a99632d 1,208-276
+app/javascript/__tests__/billboardPlacementVisibility.test.js
+  h_f968154a99632d 1-167
+app/javascript/article-form/__tests__/actions.test.js
+  h_f968154a99632d 1,25,73-137,154-170
+app/javascript/article-form/actions.js
+  h_f968154a99632d 4-8,52-53,55-56,59-67,71-79,190-193
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 8-12,62,67-77,81,90,95-120,134-136,142-144,147-153,165-167,171,232-237,247-248,281-282,385-402,420-435,531-533,638-640
+app/javascript/article-form/components/CoAuthorInvitationSelector.jsx
+  h_f968154a99632d 1-207
+app/javascript/article-form/components/Options.jsx
+  h_f968154a99632d 7,34-37,292-301,336-339
+app/javascript/article-form/components/__tests__/CoAuthorInvitationSelector.test.jsx
+  h_f968154a99632d 1-206
+app/javascript/article-form/components/__tests__/Options.test.jsx
+  h_f968154a99632d 3,134-185
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 11,153,156,159
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_f968154a99632d 300-413
+app/javascript/crayons/MultiSelectAutocomplete/MultiSelectAutocomplete.jsx
+  h_f968154a99632d 111-117,579,582,605,616-619,642-643,668,671
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/MultiSelectAutocomplete.test.jsx
+  h_f968154a99632d 38-57
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/__snapshots__/MultiSelectAutocomplete.test.jsx.snap
+  h_f968154a99632d 5
+app/javascript/githubRepos/__tests__/githubRepos.test.jsx
+  h_f968154a99632d 250-281
+app/javascript/githubRepos/githubRepos.jsx
+  h_f968154a99632d 22-30,35
+app/javascript/packs/__tests__/billboard.test.js
+  h_f968154a99632d 1,147-167
+app/javascript/packs/application.jsx
+  h_f968154a99632d 14,24-28,71,75-76
+app/javascript/packs/articleForm.jsx
+  h_f968154a99632d 48-50,63-65
+app/javascript/packs/billboard.js
+  h_f968154a99632d 7,31-34,61-63,141-142,145,147,244-261,265
+app/javascript/packs/billboardAfterRenderActions.js
+  h_f968154a99632d 58-125,132-135,156-161,163
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 105-106,108,113-125,129,133,137-140,146-178,187-192,194-198
+app/javascript/packs/homePageFeed.jsx
+  h_f968154a99632d 68,73,212
+app/javascript/utilities/__tests__/anonymousVisitor.test.js
+  h_f968154a99632d 1-179
+app/javascript/utilities/anonymousVisitor.js
+  h_f968154a99632d 1-196
+app/lib/constants/settings/general.rb
+  h_f968154a99632d 119-122
+app/lib/release_phase_notifier.rb
+  h_f968154a99632d 13
+app/liquid_tags/agent_session_tag.rb
+  h_f968154a99632d 39-58
+app/mailers/notify_mailer.rb
+  h_f968154a99632d 45
+app/models/article.rb
+  h_f968154a99632d 210,354-360,940-946,956-972,1698-1699,1701-1707,2100-2119
+app/models/async_info.rb
+  h_f968154a99632d 69
+app/models/billboard.rb
+  h_f968154a99632d 30-31,52-57,60-70,145,169,185-187,190,192,204,214,241-248,251-252,297-301
+app/models/billboard_event.rb
+  h_f968154a99632d 26-27,38-58
+app/models/billboard_placement_area_config.rb
+  h_f968154a99632d 36-39,42,73-77,80-83,88,105-132,207-212
+app/models/co_author_invitation.rb
+  h_f968154a99632d 1-65
+app/models/event.rb
+  h_f968154a99632d 125-128
+app/models/feed_event.rb
+  h_f968154a99632d 72-85,88-91,93,98-99
+app/models/geolocation.rb
+  h_f968154a99632d 48-59
+app/models/notification.rb
+  h_f968154a99632d 88-91
+app/models/organization.rb
+  h_f968154a99632d 132-133
+app/models/pinned_article.rb
+  h_f968154a99632d 7-8,10,23
+app/models/profile.rb
+  h_f968154a99632d 84
+app/models/profile_field.rb
+  h_f968154a99632d 22-33,37-40
+app/models/settings/base.rb
+  h_f968154a99632d 22-23,25,27-29
+app/models/settings/general.rb
+  h_f968154a99632d 101-124
+app/models/settings/rate_limit.rb
+  h_f968154a99632d 7-19
+app/models/tag.rb
+  h_f968154a99632d 35,108-112,191-205
+app/models/tag_subforem_relationship.rb
+  h_f968154a99632d 7-14
+app/models/user.rb
+  h_f968154a99632d 98,346-351,369-372,520-521,828-831,833,1270-1273
+app/models/user_activity.rb
+  h_f968154a99632d 18,20
+app/models/user_subscription.rb
+  h_f968154a99632d 69
+app/policies/co_author_invitation_policy.rb
+  h_f968154a99632d 1-25
+app/queries/audit_log/unpublish_alls_query.rb
+  h_f968154a99632d 17
+app/queries/billboards/filtered_ads_query.rb
+  h_f968154a99632d 12-13,17,33,43,198-209
+app/queries/comments/tree.rb
+  h_f968154a99632d 7,25
+app/serializers/homepage/article_serializer.rb
+  h_f968154a99632d 7-8,11,13
+app/services/agent_session_renderers/heading_anchors.rb
+  h_f968154a99632d 1-46
+app/services/agent_session_renderers/markdown_renderer.rb
+  h_f968154a99632d 4-6,8-21,24,28,38-40
+app/services/ai/article_image_generator.rb
+  h_f968154a99632d 1-90
+app/services/ai/base.rb
+  h_f968154a99632d 15-16,29
+app/services/ai/embedding.rb
+  h_f968154a99632d 6-7
+app/services/ai/profile_moderation_labeler.rb
+  h_f968154a99632d 32,34,73-81,84,93-107,111-119,122-124,127-135,146,153,155-160,189-202,235-239,256-261,270-287
+app/services/ai/search_reranker.rb
+  h_f968154a99632d 1-113
+app/services/algolia_insights_service.rb
+  h_f968154a99632d 42
+app/services/analytics_service.rb
+  h_f968154a99632d 268-272,274
+app/services/article_api_index_service.rb
+  h_f968154a99632d 70
+app/services/articles/creator.rb
+  h_f968154a99632d 21-23,26,41,92,98,103-115
+app/services/articles/feeds/curated.rb
+  h_f968154a99632d 11
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 72
+app/services/articles/feeds/large_forem_experimental.rb
+  h_f968154a99632d 89,97,117
+app/services/articles/feeds/tag.rb
+  h_f968154a99632d 15
+app/services/articles/feeds/variant_query.rb
+  h_f968154a99632d 141
+app/services/articles/get_user_stickies.rb
+  h_f968154a99632d 5,7,14,17
+app/services/articles/page_view_updater.rb
+  h_f968154a99632d 19-22
+app/services/articles/suggest_stickies.rb
+  h_f968154a99632d 45,70,75
+app/services/articles/updater.rb
+  h_f968154a99632d 9-11,15,20,23,41-59
+app/services/broadcasts/welcome_notification/generator.rb
+  h_f968154a99632d 19
+app/services/co_author_invitations/accept.rb
+  h_f968154a99632d 1-43
+app/services/co_author_invitations/decline.rb
+  h_f968154a99632d 1-43
+app/services/co_author_invitations/sync.rb
+  h_f968154a99632d 1-97
+app/services/concepts/classifier.rb
+  h_f968154a99632d 31-32,34
+app/services/edge_cache/bust.rb
+  h_f968154a99632d 18,51
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 26-28,47-49,73-75
+app/services/edge_cache/bust_page.rb
+  h_f968154a99632d 9-15
+app/services/edge_cache/bust_tag.rb
+  h_f968154a99632d 7
+app/services/edge_cache/purge_by_key.rb
+  h_f968154a99632d 12,22
+app/services/email_digest.rb
+  h_f968154a99632d 25
+app/services/favorites/create.rb
+  h_f968154a99632d 123
+app/services/follows/check_cached.rb
+  h_f968154a99632d 19-20
+app/services/homepage/fetch_tag_flares.rb
+  h_f968154a99632d 7,22,35-43
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 60,64,167
+app/services/images/generate_subforem_images.rb
+  h_f968154a99632d 23
+app/services/instrumentation.rb
+  h_f968154a99632d 2-4,7-20
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 3-4,34-38,40-43,45-48,50-54,56-58,60-69
+app/services/notifications/co_author/send.rb
+  h_f968154a99632d 22,66-73
+app/services/notifications/co_author_invitations.rb
+  h_f968154a99632d 1-21
+app/services/notifications/co_author_invitations/send.rb
+  h_f968154a99632d 1-28
+app/services/notifications/co_author_invitations/update.rb
+  h_f968154a99632d 1-49
+app/services/notifications/new_mention/send.rb
+  h_f968154a99632d 19,61-65
+app/services/notifications/remove_by_spammer.rb
+  h_f968154a99632d 18-23
+app/services/payments/customer.rb
+  h_f968154a99632d 74
+app/services/rate_limit_checker.rb
+  h_f968154a99632d 4-6,10-11,13-14,25,48-63,80,98-105
+app/services/settings/general/upsert.rb
+  h_f968154a99632d 17,22-24,28-34
+app/services/users/cancel_stripe_subscriptions.rb
+  h_f968154a99632d 19
+app/services/users/update.rb
+  h_f968154a99632d 65-66,68-69
+app/views/admin/billboard_placement_area_configs/edit.html.erb
+  h_f968154a99632d 40-59
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  h_f968154a99632d 19-20,30-43
+app/views/admin/settings/forms/_monetization.html.erb
+  h_f968154a99632d 43-53
+app/views/articles/_feed_nav.html.erb
+  h_f968154a99632d 174-193,195-197,204-205,230-232,277
+app/views/articles/_sticky_nav.html.erb
+  h_f968154a99632d 11,59-60
+app/views/articles/_v2_form.html.erb
+  h_f968154a99632d 70-75
+app/views/articles/show.html.erb
+  h_f968154a99632d 98,109,275-276,285-286,351
+app/views/billboards/show.html.erb
+  h_f968154a99632d 2-11
+app/views/comments/_comment.html.erb
+  h_f968154a99632d 3
+app/views/comments/_comment_header.html.erb
+  h_f968154a99632d 75
+app/views/devise/passwords/new.html.erb
+  h_f968154a99632d 30-34,39-46
+app/views/events/show.html.erb
+  h_f968154a99632d 194-196
+app/views/layouts/application.html.erb
+  h_f968154a99632d 105-110
+app/views/liquids/_agent_session.html.erb
+  h_f968154a99632d 53,67,73
+app/views/moderations/mod.html.erb
+  h_f968154a99632d 21
+app/views/notifications/_coauthorinvitation.html.erb
+  h_f968154a99632d 1-39
+app/views/pages/show.en.html.erb
+  h_f968154a99632d 44
+app/views/pages/show.fr.html.erb
+  h_f968154a99632d 44
+app/views/pages/show.pt.html.erb
+  h_f968154a99632d 44
+app/views/shared/_billboard.html.erb
+  h_f968154a99632d 15-26,30,43,72,95,128,148,181
+app/views/shared/_profile_card_content.html.erb
+  h_f968154a99632d 26
+app/views/sidebars/_homepage_content.html.erb
+  h_f968154a99632d 29-35,38,40-56,59-76
+app/views/stories/tagged_articles/_sidebar_additional.html.erb
+  h_f968154a99632d 6-16
+app/views/users/show.html.erb
+  h_f968154a99632d 60-63,75-78
+app/workers/articles/update_page_views_worker.rb
+  h_f968154a99632d 25,27,30-31,35-36,38-39,41,43-48,51-91
+app/workers/billboards/data_update_worker.rb
+  h_f968154a99632d 10-17,37-39,54-55,68-75
+app/workers/data_update_worker.rb
+  h_f968154a99632d 33
+app/workers/emails/send_user_digest_worker.rb
+  h_f968154a99632d 48,109
+app/workers/moderator/banish_user_worker.rb
+  h_f968154a99632d 13
+app/workers/moderator/sink_articles_worker.rb
+  h_f968154a99632d 14
+app/workers/notifications/co_author_invitation_worker.rb
+  h_f968154a99632d 1-15
+app/workers/organizations/delete_worker.rb
+  h_f968154a99632d 30
+app/workers/subforems/create_from_scratch_worker.rb
+  h_f968154a99632d 33
+app/workers/trackable/dispatch_worker.rb
+  h_f968154a99632d 12
+app/workers/trends/generate_cover_image_worker.rb
+  h_f968154a99632d 31
+app/workers/users/bust_profile_identity_cache_worker.rb
+  h_f968154a99632d 8
+app/workers/users/generate_ai_profile_image_worker.rb
+  h_f968154a99632d 25
+bin/knapsack_pro_rspec
+  h_f968154a99632d 2-5,11-12,14-25
+config/environments/test.rb
+  h_f968154a99632d 21,78
+config/initializers/cors.rb
+  h_f968154a99632d 34-46
+config/initializers/inline_svg.rb
+  h_f968154a99632d 1-8
+config/initializers/middlewares.rb
+  h_f968154a99632d 7
+config/initializers/rack_attack.rb
+  h_f968154a99632d 120-125
+config/initializers/rpush.rb
+  h_f968154a99632d 76-78
+config/initializers/sentry.rb
+  h_f968154a99632d 21-89,98-102,120-130
+config/locales/controllers/api/en.yml
+  h_f968154a99632d 23-29
+config/locales/controllers/api/fr.yml
+  h_f968154a99632d 23-29
+config/locales/controllers/api/pt.yml
+  h_f968154a99632d 23-29
+config/locales/controllers/en.yml
+  h_f968154a99632d 13-14
+config/locales/controllers/fr.yml
+  h_f968154a99632d 13-14
+config/locales/controllers/pt.yml
+  h_f968154a99632d 13-14
+config/locales/en.yml
+  h_f968154a99632d 55-62
+config/locales/fr.yml
+  h_f968154a99632d 55-62
+config/locales/helpers/en.yml
+  h_f968154a99632d 556-572
+config/locales/helpers/fr.yml
+  h_f968154a99632d 598-615
+config/locales/helpers/pt.yml
+  h_f968154a99632d 562-579
+config/locales/lib/en.yml
+  h_f968154a99632d 170-172
+config/locales/lib/fr.yml
+  h_f968154a99632d 170-172
+config/locales/lib/pt.yml
+  h_f968154a99632d 167-169
+config/locales/models/en.yml
+  h_f968154a99632d 75-81
+config/locales/models/fr.yml
+  h_f968154a99632d 74-80
+config/locales/models/pt.yml
+  h_f968154a99632d 74-80
+config/locales/pt.yml
+  h_f968154a99632d 55-62
+config/locales/views/admin/en.yml
+  h_f968154a99632d 327,761-773
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 319,752-764
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 28,43,657-669
+config/locales/views/comments/en.yml
+  h_f968154a99632d 132-134
+config/locales/views/comments/fr.yml
+  h_f968154a99632d 132-134
+config/locales/views/comments/pt.yml
+  h_f968154a99632d 148-151
+config/locales/views/main/en.yml
+  h_f968154a99632d 56-76
+config/locales/views/main/fr.yml
+  h_f968154a99632d 55-74
+config/locales/views/main/pt.yml
+  h_f968154a99632d 56-75
+config/locales/views/notifications/en.yml
+  h_f968154a99632d 33-41
+config/locales/views/notifications/fr.yml
+  h_f968154a99632d 33-41
+config/locales/views/notifications/pt.yml
+  h_f968154a99632d 33-41
+config/locales/views/users/en.yml
+  h_f968154a99632d 98
+config/locales/views/users/fr.yml
+  h_f968154a99632d 98
+config/locales/views/users/pt.yml
+  h_f968154a99632d 5
+config/routes.rb
+  h_f968154a99632d 17,118-121,260-266,533
+config/routes/api.rb
+  h_f968154a99632d 29-33
+db/migrate/20261007120000_create_co_author_invitations.rb
+  h_f968154a99632d 1-15
+db/migrate/20261009120000_add_hidden_by_default_to_billboard_placement_area_configs.rb
+  h_f968154a99632d 1-5
+db/migrate/20261012120000_add_fully_cached_to_billboard_placement_area_configs.rb
+  h_f968154a99632d 1-5
+db/migrate/20261016120000_add_active_placement_area_index_to_display_ads.rb
+  h_f968154a99632d 1-60
+db/migrate/20261019120000_add_unread_user_index_to_notifications.rb
+  h_f968154a99632d 1-60
+db/migrate/20261020120000_add_feed_import_log_id_and_status_index_to_feed_import_items.rb
+  h_f968154a99632d 1-59
+db/migrate/20261020170000_add_legacy_slug_indexes_to_organizations.rb
+  h_f968154a99632d 1-8
+db/migrate/20261020174500_add_role_id_index_to_users_roles.rb
+  h_f968154a99632d 1-7
+db/migrate/20261020180000_add_rewarder_id_index_to_badge_achievements.rb
+  h_f968154a99632d 1-60
+docs/README.md
+  h_f968154a99632d 3-7,11-44,46-47,49,51,53-56,58
+lib/data_update_scripts/20220105112823_migrate_logo_svg_data.rb
+  h_f968154a99632d 31-38
+lib/data_update_scripts/20261007120001_add_co_author_invitations_feature_flag.rb
+  h_f968154a99632d 1-9
+lib/memory_first_cache.rb
+  h_f968154a99632d 63
+spec/controllers/admin/billboard_placement_area_configs_controller_spec.rb
+  h_f968154a99632d 84-107,141-156
+spec/controllers/concerns/omniauth_redirect_spec.rb
+  h_f968154a99632d 11-15,45-52
+spec/decorators/article_decorator_spec.rb
+  h_f968154a99632d 290-314
+spec/decorators/profile_decorator_spec.rb
+  h_f968154a99632d 1-26
+spec/factories/co_author_invitations.rb
+  h_f968154a99632d 1-27
+spec/helpers/application_helper_spec.rb
+  h_f968154a99632d 355-372,725-783
+spec/helpers/articles_helper_spec.rb
+  h_f968154a99632d 103-149
+spec/helpers/billboard_helper_spec.rb
+  h_f968154a99632d 54-97
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 68-96
+spec/helpers/crayons_helper_spec.rb
+  h_f968154a99632d 46-54
+spec/helpers/events_helper_spec.rb
+  h_f968154a99632d 54-138
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 370-405
+spec/initializers/sentry_spec.rb
+  h_f968154a99632d 1-127
+spec/lib/data_update_scripts/add_co_author_invitations_feature_flag_spec.rb
+  h_f968154a99632d 1-13
+spec/lib/memory_first_cache_spec.rb
+  h_f968154a99632d 179-198
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 140-176
+spec/liquid_tags/agent_session_tag_spec.rb
+  h_f968154a99632d 215-269
+spec/models/article_spec.rb
+  h_f968154a99632d 1111-1151,4440-4561
+spec/models/async_info_spec.rb
+  h_f968154a99632d 72-81
+spec/models/billboard_event_spec.rb
+  h_f968154a99632d 47-119
+spec/models/billboard_placement_area_config_spec.rb
+  h_f968154a99632d 199-215,257-328
+spec/models/billboard_spec.rb
+  h_f968154a99632d 1390-1491,1628-1639
+spec/models/co_author_invitation_spec.rb
+  h_f968154a99632d 1-109
+spec/models/event_spec.rb
+  h_f968154a99632d 310-326
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 107-136
+spec/models/geolocation_spec.rb
+  h_f968154a99632d 150-178
+spec/models/organization_spec.rb
+  h_f968154a99632d 377-394
+spec/models/pinned_article_spec.rb
+  h_f968154a99632d 96-114
+spec/models/profile_field_spec.rb
+  h_f968154a99632d 70-89
+spec/models/profile_spec.rb
+  h_f968154a99632d 146,152-165
+spec/models/settings/base_spec.rb
+  h_f968154a99632d 306-328
+spec/models/survey_spec.rb
+  h_f968154a99632d 255,257-265,270-275
+spec/models/tag_spec.rb
+  h_f968154a99632d 209-244
+spec/models/tag_subforem_relationship_spec.rb
+  h_f968154a99632d 22-48
+spec/models/user_activity_spec.rb
+  h_f968154a99632d 158-167
+spec/models/user_role_spec.rb
+  h_f968154a99632d 6-19
+spec/models/user_spec.rb
+  h_f968154a99632d 1093-1108,1289-1311,1447-1453,1455,1458,1460,1463-1475
+spec/models/user_subscription_spec.rb
+  h_f968154a99632d 32-40
+spec/policies/co_author_invitation_policy_spec.rb
+  h_f968154a99632d 1-33
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_f968154a99632d 149-178
+spec/queries/comments/tree_spec.rb
+  h_f968154a99632d 18-26
+spec/rails_helper.rb
+  h_f968154a99632d 177-180,184
+spec/requests/account_switch_interstitial_spec.rb
+  h_f968154a99632d 12
+spec/requests/admin/configs_spec.rb
+  h_f968154a99632d 388-403
+spec/requests/api/v0/tags_spec.rb
+  h_f968154a99632d 74-93
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 167-174,1627-1658,1679-1693,1878,1930,1932-1947,1950,1952-1966,1987-2099
+spec/requests/api/v1/comments_spec.rb
+  h_f968154a99632d 259-267
+spec/requests/api/v1/docs/articles_spec.rb
+  h_f968154a99632d 38,593-594
+spec/requests/api/v1/docs/images_spec.rb
+  h_f968154a99632d 1-172
+spec/requests/api/v1/docs/tags_spec.rb
+  h_f968154a99632d 35-57
+spec/requests/api/v1/images_spec.rb
+  h_f968154a99632d 1-199
+spec/requests/api/v1/tags_spec.rb
+  h_f968154a99632d 69-117
+spec/requests/articles/articles_create_spec.rb
+  h_f968154a99632d 83-129
+spec/requests/articles/articles_feed_spec.rb
+  h_f968154a99632d 12-43
+spec/requests/articles/articles_show_spec.rb
+  h_f968154a99632d 25-29,139,143,147,428-443,487-488,492-497
+spec/requests/articles/articles_spec.rb
+  h_f968154a99632d 295-313
+spec/requests/articles/articles_update_spec.rb
+  h_f968154a99632d 117-176
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 48-90,97,99,101-118,157-161
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 235-238,312-394,587-876
+spec/requests/co_author_invitations_spec.rb
+  h_f968154a99632d 1-130
+spec/requests/discussion_locks_spec.rb
+  h_f968154a99632d 81-147
+spec/requests/editor_spec.rb
+  h_f968154a99632d 42-90
+spec/requests/follows_bulk_show_spec.rb
+  h_f968154a99632d 43-64
+spec/requests/follows_show_spec.rb
+  h_f968154a99632d 51-71
+spec/requests/mlh_oauth_callbacks_spec.rb
+  h_f968154a99632d 12
+spec/requests/moderations_spec.rb
+  h_f968154a99632d 148-166
+spec/requests/notifications/reads_spec.rb
+  h_f968154a99632d 50-65
+spec/requests/notifications_spec.rb
+  h_f968154a99632d 61-82,840-888
+spec/requests/omniauth_callbacks_failure_spec.rb
+  h_f968154a99632d 8,24,36,48,61,75,87,99,111
+spec/requests/pages_spec.rb
+  h_f968154a99632d 26-37,164-169
+spec/requests/passwords_spec.rb
+  h_f968154a99632d 1-206
+spec/requests/podcasts/podcast_episodes_index_spec.rb
+  h_f968154a99632d 10-21,23-25,28-33
+spec/requests/podcasts/podcast_episodes_show_spec.rb
+  h_f968154a99632d 9,12-63
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 39-49,100-113
+spec/requests/sidebars_spec.rb
+  h_f968154a99632d 12-20,93-95,103-105,111-140,203-240
+spec/requests/stories/articles_by_timeframe_spec.rb
+  h_f968154a99632d 3,26-28,30-32,34-36,38,40-69,72,75-86
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 62-77,252-264,271-279
+spec/requests/stories_performance_fix_spec.rb
+  h_f968154a99632d 81-106
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 236-253
+spec/requests/user/user_changes_password_spec.rb
+  h_f968154a99632d 46,57-61
+spec/requests/user/user_destroy_spec.rb
+  h_f968154a99632d 141-143,145,149-150,153,158-160
+spec/requests/user/user_profile_spec.rb
+  h_f968154a99632d 59,65,78-90
+spec/requests/user/user_show_spec.rb
+  h_f968154a99632d 66-95
+spec/requests/user_subscriptions_spec.rb
+  h_f968154a99632d 149,152-155,157-166
+spec/serializers/homepage/article_serializer_spec.rb
+  h_f968154a99632d 34-51
+spec/services/agent_session_renderers/heading_anchors_spec.rb
+  h_f968154a99632d 3-13,15-18,20-21,24-25,29-31,34-38,40-41,45-48,51-57,59-65,67-69
+spec/services/agent_session_renderers/markdown_renderer_spec.rb
+  h_f968154a99632d 1-55
+spec/services/ai/article_image_generator_spec.rb
+  h_f968154a99632d 3,5-8,11-28,31-38,41-44,47-52,55-60,63-66
+spec/services/ai/embedding_spec.rb
+  h_f968154a99632d 34-38
+spec/services/ai/profile_moderation_labeler_spec.rb
+  h_f968154a99632d 17-51,62,66-82,89-94
+spec/services/ai/search_reranker_spec.rb
+  h_f968154a99632d 1-133
+spec/services/algolia_insights_service_spec.rb
+  h_f968154a99632d 25
+spec/services/analytics_service_spec.rb
+  h_f968154a99632d 455-475
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 667-686
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_f968154a99632d 200-223
+spec/services/articles/feeds/latest_spec.rb
+  h_f968154a99632d 19-38
+spec/services/articles/feeds/tag_spec.rb
+  h_f968154a99632d 20-39
+spec/services/articles/feeds/variant_query_spec.rb
+  h_f968154a99632d 75,80-101
+spec/services/articles/get_user_stickies_spec.rb
+  h_f968154a99632d 32-37,56,58-59,61-72,74-75
+spec/services/articles/page_view_updater_spec.rb
+  h_f968154a99632d 10,12-14,16
+spec/services/articles/suggest_stickies_spec.rb
+  h_f968154a99632d 90,92-101
+spec/services/co_author_invitations/accept_spec.rb
+  h_f968154a99632d 1-66
+spec/services/co_author_invitations/decline_spec.rb
+  h_f968154a99632d 1-35
+spec/services/co_author_invitations/sync_spec.rb
+  h_f968154a99632d 1-169
+spec/services/concepts/classifier_spec.rb
+  h_f968154a99632d 40-52
+spec/services/edge_cache/bust_article_spec.rb
+  h_f968154a99632d 78-99
+spec/services/edge_cache/bust_page_spec.rb
+  h_f968154a99632d 10,16,31-36,52,55
+spec/services/edge_cache/bust_tag_spec.rb
+  h_f968154a99632d 22,33
+spec/services/events/billboards/live_stream_spec.rb
+  h_f968154a99632d 32-40,56-64
+spec/services/follows/check_cached_spec.rb
+  h_f968154a99632d 16-36
+spec/services/homepage/fetch_tag_flares_spec.rb
+  h_f968154a99632d 44-62
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 77,82,90,95,103,108,114,118,452,455
+spec/services/instrumentation_spec.rb
+  h_f968154a99632d 2,4-7,11-12,15-21,24-28,30-47
+spec/services/notifications/co_author/send_spec.rb
+  h_f968154a99632d 94-114
+spec/services/notifications/co_author_invitations/send_spec.rb
+  h_f968154a99632d 1-31
+spec/services/notifications/new_mention/send_spec.rb
+  h_f968154a99632d 74-94
+spec/services/notifications/remove_by_spammer_spec.rb
+  h_f968154a99632d 1-33
+spec/services/rate_limit_checker_spec.rb
+  h_f968154a99632d 34,162-167,173-178,193-238
+spec/services/users/update_spec.rb
+  h_f968154a99632d 92-111
+spec/support/ci/schema_railtie.rb
+  h_f968154a99632d 1-46
+spec/support/memory_first_cache_reset.rb
+  h_f968154a99632d 2,5,10,13
+spec/swagger_helper.rb
+  h_f968154a99632d 170-177,305-306
+spec/system/authentication/user_logs_in_with_apple_spec.rb
+  h_f968154a99632d 144,149
+spec/system/authentication/user_logs_in_with_facebook_spec.rb
+  h_f968154a99632d 184,189
+spec/system/authentication/user_logs_in_with_forem_spec.rb
+  h_f968154a99632d 183,188
+spec/system/authentication/user_logs_in_with_github_spec.rb
+  h_f968154a99632d 151,156
+spec/system/authentication/user_logs_in_with_twitter_spec.rb
+  h_f968154a99632d 147,152
+spec/system/organization/user_views_an_organization_spec.rb
+  h_f968154a99632d 14,76,103
+spec/system/user/admin_views_admin_profile_link_spec.rb
+  h_f968154a99632d 3,5-6,8-10,12-13,15,18-19,21-22,24-25,28-30,32,36-38,40-41,44,46,49-50,53,55-56,59-61,63-64
+spec/system/user/view_user_index_spec.rb
+  h_f968154a99632d 17,54-65,74,95
+spec/system/user_visits_a_comments_page_spec.rb
+  h_f968154a99632d 42-110
+spec/workers/articles/update_page_views_worker_spec.rb
+  h_f968154a99632d 91-96
+spec/workers/billboards/data_update_worker_spec.rb
+  h_f968154a99632d 153-183
+spec/workers/emails/send_user_digest_worker_spec.rb
+  h_f968154a99632d 135,141-144,152,157,317
+spec/workers/emails/survey_daily_email_worker_spec.rb
+  h_f968154a99632d 151,157,161-163,173,175
+spec/workers/notifications/co_author_invitation_worker_spec.rb
+  h_f968154a99632d 1-29
+spec/workers/subforems/create_from_scratch_worker_spec.rb
+  h_f968154a99632d 46,55
+spec/workers/trackable/dispatch_worker_spec.rb
+  h_f968154a99632d 75,80
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_f968154a99632d 8,17-35
+app/controllers/api/v0/api_controller.rb
+  h_f968154a99632d 35
+app/models/flag_appeal.rb
+  h_f968154a99632d 2-3
+app/views/admin/flag_appeals/_flag_appeal.html.erb
+  h_f968154a99632d 66-67,69
+spec/requests/api/v0/api_controller_spec.rb
+  h_f968154a99632d 15-20,24,26-29,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "98597621ef3051c9770c71ab392122e00349d792",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_265a50a81dda0e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "17b18ed3-f413-40ae-aca3-f6e330097a5b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_46fe994672464f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b3d78f86-8f58-45b4-8663-57ece48e5ab4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_4ae1f904707c1c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e19f663f-0bee-40c7-8b2c-ac25cdb22e28",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_4da727bc2810b3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6e665fd5-120a-4d91-ab94-082199c64e39",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_790a4d6601ee2b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "daf2ddf1-6aa2-4807-b62c-4dd508850dd9",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_7e652f0621a938": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "11cb4f1e-df77-4b19-a0f1-418e52e73e40",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_836ff945145894": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d2062a72-a5ab-4ca2-b465-45d9687c8610",
+        "model": "unknown"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_b7a9a2bced08c1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9afbc1a5-4412-4a3a-8bae-ffc536591bd0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_bbabb8657d0a1b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "220942b7-9b47-4192-bed4-bfafa8d6d23b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_c93a97359c028b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "47f4910a-8948-412b-a7c1-d704a2716c86",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_d126305079cdce": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6d3a2b4d-1ed2-439a-b526-2dc3de0cdace",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_f99438673e744c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f96c1eb7-3f5b-4b05-b2c4-b22ae19da89d",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

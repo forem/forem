@@ -1,0 +1,41 @@
+app/controllers/feed_events_controller.rb
+  s_dc9014473ae01a::t_a075ad4cd786e7 12
+app/javascript/__tests__/feedEvents.test.js
+  s_dc9014473ae01a::t_e3cf90347ae0f5 1-210
+app/javascript/packs/feedEvents.js
+  s_dc9014473ae01a::t_da779ef86686bf 4-17,46,49,68-71,90-91,93,95-99,115-119,121-122,131,133-141,170,186-187,189-194,196,198-199,205-245,259-265,276,285,290
+app/models/feed_event.rb
+  s_dc9014473ae01a::t_28786ab125348e 32,45-46,57,200-208
+app/models/feed_event_receipt.rb
+  s_dc9014473ae01a::t_479c7c4c2c3ba6 1-4
+app/services/feed_events/bulk_upsert.rb
+  s_dc9014473ae01a::t_0add37cb19e5cd 5,13,29-36,38-49,51-67,74,83-86,88,90,92,96,98,101-114,118-125,147,151,171
+db/migrate/20261029180000_add_event_id_to_feed_events.rb
+  s_dc9014473ae01a::t_c7e3700eecadd6 1-12
+db/migrate/20261029180100_index_feed_event_ids.rb
+  s_dc9014473ae01a::t_386c8e083758f7 1-7
+db/schema.rb
+  s_dc9014473ae01a::t_7b2eab1c7a07ae 13,881-884,892,899
+docs/analytics/feed_impressions.md
+  s_dc9014473ae01a::t_00e9f3ca79bd83 1-102
+spec/requests/feed_events_spec.rb
+  s_dc9014473ae01a::t_94ab4393138d8d 41-64,106,110-112,125-127
+spec/services/feed_events/bulk_upsert_spec.rb
+  s_dc9014473ae01a::t_ed6c866eb9eb21 73,160,172,177,179-244,246,248-262,321-385
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "423066ccd367b8b20d061e3520fd9db364bf2ad9",
+  "prompts": {},
+  "sessions": {
+    "s_dc9014473ae01a": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188d2-ba82-7bf1-8e44-f416e70d3e4f",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

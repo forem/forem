@@ -1,0 +1,40 @@
+app/lib/redcarpet/render/html_rouge.rb
+  h_f968154a99632d 107-109
+app/services/color/accessibility.rb
+  h_f968154a99632d 3-4,10-13
+app/services/html/parser.rb
+  h_f968154a99632d 321-322,325
+app/validators/color_contrast_validator.rb
+  h_f968154a99632d 7
+app/validators/emoji_only_validator.rb
+  h_f968154a99632d 2-4,7
+docs/rust_native_extensions.md
+  h_f968154a99632d 93-114
+gems/forem_native/crates/forem_core/src/color.rs
+  h_f968154a99632d 118-167,338-368
+gems/forem_native/crates/forem_core/src/emoji.rs
+  h_f968154a99632d 1-7,11-13,17-91,857-883
+gems/forem_native/crates/forem_core/src/emoji_data.rs
+  h_f968154a99632d 1,3-24,2208-4992
+gems/forem_native/crates/forem_core/src/psl_data.rs
+  h_f968154a99632d 1,7-11
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 503-529,619-621
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 414-450
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 2375,2381-2416,2468-2472,2509,2735-2793
+spec/services/html/parser_spec.rb
+  h_f968154a99632d 452,458-476
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6c85be8f6526354c28f0d5637a763dd862a81192",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

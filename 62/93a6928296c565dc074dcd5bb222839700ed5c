@@ -1,0 +1,33 @@
+config/locales/services/fr.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 117
+spec/services/ai/spam_escalation_check_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 36-41,53
+config/locales/services/en.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 119
+app/services/spam/handler.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 30-31,51,62,68,88,218,229-232,236,240,244,246,392-400,456-457
+  s_46fe994672464f::t_0714abdb720dcc 237
+  s_46fe994672464f::t_ab25d67761bdc5 238
+spec/services/spam/handler_spec.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 97-146,522,525-530,532
+config/locales/services/pt.yml
+  s_46fe994672464f::t_cb6f5ca7ebd239 127
+app/services/ai/spam_escalation_check.rb
+  s_46fe994672464f::t_cb6f5ca7ebd239 11,28-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6293a6928296c565dc074dcd5bb222839700ed5c",
+  "prompts": {},
+  "sessions": {
+    "s_46fe994672464f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b3d78f86-8f58-45b4-8663-57ece48e5ab4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+app/lib/server_warmup.rb
+  h_f968154a99632d 13,15-19,79-146,172,208-209,211-213,261-277,325,338,346,353,404-411,469-470,472-473,487,490-496,504-515,568-575,595-604
+lib/tasks/app_initializer.rake
+  h_f968154a99632d 6-7
+lib/tasks/release_migrate.rake
+  h_f968154a99632d 1-16,20
+spec/lib/server_warmup_spec.rb
+  h_f968154a99632d 63-64,152-166,203-228,440,442,447,546,550,559,632-663
+spec/tasks/release_migrate_spec.rb
+  h_f968154a99632d 42-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0f9e71eca9f981a14afe0c6266052307465cceb3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

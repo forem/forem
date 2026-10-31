@@ -1,0 +1,16 @@
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 71-74,80-86,96,98,122-172,180,182-185,189-199
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 783-836
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "caf47c0102ea07a0ea98af8bdfd870402927854f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

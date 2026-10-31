@@ -1,0 +1,36 @@
+app/controllers/admin/feed_configs_controller.rb
+  h_f968154a99632d 187
+app/models/feed_config.rb
+  h_f968154a99632d 56,241-246,267-274,317,480,508,599-603
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 47-51,251-290
+app/views/admin/feed_configs/_form.html.erb
+  h_f968154a99632d 118-122
+db/migrate/20261030120000_add_published_at_diversity_weight_to_feed_configs.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,860
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_f968154a99632d 635,666,693-695,864-884,2558,2566-2610
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 932,964,969,983,1149
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 3019,3051-3052,3120-3131,3134-3136
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 401,445,477,644-673,1055-1109,1161-1162,1170,1176-1179
+spec/requests/admin/feed_configs_spec.rb
+  h_f968154a99632d 16-17,171,175-189
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 807-866
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f44ee5fd824a959708898a720078cf1a10959ec3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

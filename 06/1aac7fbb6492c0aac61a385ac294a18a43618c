@@ -1,0 +1,31 @@
+app/mailers/concerns/deliverable.rb
+  s_4d1c87620deff9::t_bbf5aa804a5cb7 6-19
+app/mailers/custom_mailer.rb
+  s_4d1c87620deff9::t_28d34cbc32d1cb 29-31,62
+app/models/forem_instance.rb
+  s_4d1c87620deff9::t_7d2855702c1f89 70-78
+app/workers/emails/batch_custom_send_worker.rb
+  s_4d1c87620deff9::t_70e29af96aadc5 76-79,82
+spec/mailers/custom_mailer_spec.rb
+  s_4d1c87620deff9::t_d4be40991c934b 207-253
+spec/models/forem_instance_spec.rb
+  s_4d1c87620deff9::t_ce6cf6b5dd61d4 165-191
+spec/workers/emails/batch_custom_send_worker_spec.rb
+  s_4d1c87620deff9::t_a20234a0456f97 57-80
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "061aac7fbb6492c0aac61a385ac294a18a43618c",
+  "prompts": {},
+  "sessions": {
+    "s_4d1c87620deff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d1ddd523-4d80-4132-b311-c3e9bd014571",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

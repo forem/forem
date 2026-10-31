@@ -1,0 +1,29 @@
+spec/requests/api/v0/tags_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 74-93
+app/models/tag.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 110
+swagger/v1/api_v1.json
+  s_f7a64a93327cf1::t_0a03fe577b3594 6643-6646
+spec/models/tag_subforem_relationship_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 22-48
+spec/services/edge_cache/bust_tag_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 22,33
+spec/swagger_helper.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 305-306
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4fb0f4dc0f6d317e7c7a60eec0a1dc21a52756e6",
+  "prompts": {},
+  "sessions": {
+    "s_f7a64a93327cf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee32541d-f4af-4731-a5a3-4bd1c8d8b532",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

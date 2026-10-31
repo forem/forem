@@ -1,0 +1,16 @@
+app/services/fastly_config/snippets.rb
+  h_f968154a99632d 15,25,31,54-77
+spec/services/fastly_config/snippets_spec.rb
+  h_f968154a99632d 7,10-13,39-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5cf02d5e54e164b9b4ed1284f64dc87f87053044",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

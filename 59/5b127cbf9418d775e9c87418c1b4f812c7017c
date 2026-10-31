@@ -1,0 +1,47 @@
+bin/redis-local-server
+  s_f831849363d5ae::t_42ab22d132697b 5-8
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_f831849363d5ae::t_c6365e99c39fcc 265-279
+  s_6bdb1cf245afbe::t_cad57def605156 280-284
+app/controllers/feedback_messages_controller.rb
+  s_f831849363d5ae::t_42ab22d132697b 24
+  s_6bdb1cf245afbe::t_226aa3d4daef8b 25
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_42ab22d132697b 11-12,31-34,195-199
+  s_6bdb1cf245afbe::t_e93df014e09296 200
+spec/lib/local_redis/web_launcher_spec.rb
+  s_f831849363d5ae::t_c6365e99c39fcc 67-80
+app/services/googlebot_verifier.rb
+  s_f831849363d5ae::t_42ab22d132697b 19
+spec/lib/active_support/cache/local_redis_cache_store_authorization_spec.rb
+  s_f831849363d5ae::t_c6365e99c39fcc 89-99
+spec/requests/feedback_messages_spec.rb
+  s_f831849363d5ae::t_280306ffdfd7a1 178
+lib/local_redis/cache.rb
+  s_f831849363d5ae::t_42ab22d132697b 67-76
+  s_6bdb1cf245afbe::t_7cdc2958cf2aab 77-81,83
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "595b127cbf9418d775e9c87418c1b4f812c7017c",
+  "prompts": {},
+  "sessions": {
+    "s_6bdb1cf245afbe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73cacafc-e50a-40eb-9030-295370cd818b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
