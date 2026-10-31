@@ -53,7 +53,9 @@ LOCAL_REDIS_MAXMEMORY=128mb
 
 The Procfile's `bundle exec ruby bin/web` starts Redis, a lightweight Ruby sync
 daemon (without booting Rails), and Puma. Without `LOCAL_REDIS_URL`, it directly
-executes the original Puma command. Release tasks and worker commands are unchanged.
+executes the original Puma command. The production `Containerfile` passes its
+original `rails server -b 0.0.0.0 -p 3000` command to `bin/web` the same way.
+Release tasks and worker commands are unchanged.
 Workers may inherit `LOCAL_REDIS_URL` from app-wide configuration; without a local
 socket they fall back to authoritative Redis. Their writes still invalidate web
 caches through server-side tracking, including during mixed-version rolling deploys.

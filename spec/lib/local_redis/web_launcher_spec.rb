@@ -63,6 +63,12 @@ RSpec.describe LocalRedis::Web do
     stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web")
     expect(JSON.parse(stdout)).to eq(["exec", "puma", "-C", "config/puma.rb"])
     expect(status.exitstatus).to eq(23)
+
+    container_command = File.read("Containerfile")[/^CMD (\[.*\])$/, 1]
+    args = JSON.parse(container_command).drop_while { |arg| arg != "bin/web" }.drop(1)
+    stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web", *args)
+    expect(JSON.parse(stdout)).to eq(%w[exec rails server -b 0.0.0.0 -p 3000])
+    expect(status.exitstatus).to eq(23)
   end
 
   it "rejects a source socket alias before executing redis-server" do

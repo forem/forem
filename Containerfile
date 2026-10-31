@@ -161,7 +161,7 @@ VOLUME "${APP_HOME}"/public/
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
-CMD ["bundle", "exec", "ruby", "bin/web"]
+CMD ["bundle", "exec", "ruby", "bin/web", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Testing
 FROM builder AS testing
