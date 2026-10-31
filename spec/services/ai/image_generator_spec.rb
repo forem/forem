@@ -72,7 +72,7 @@ RSpec.describe Ai::ImageGenerator do
 
     context "when generation succeeds" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
         uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -124,7 +124,7 @@ RSpec.describe Ai::ImageGenerator do
       end
 
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
         uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -143,7 +143,7 @@ RSpec.describe Ai::ImageGenerator do
 
     context "when API call fails" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 500, body: { error: { message: "Internal Server Error" } }.to_json)
       end
 
@@ -154,13 +154,13 @@ RSpec.describe Ai::ImageGenerator do
 
       it "logs the error" do
         generator.generate
-        expect(Rails.logger).to have_received(:error).with(/Image generation failed/)
+        expect(Rails.logger).to have_received(:error).with(/Image generation failed/).at_least(:once)
       end
     end
 
     context "when API returns malformed response" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: { "invalid" => "response" }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
@@ -171,13 +171,14 @@ RSpec.describe Ai::ImageGenerator do
 
       it "logs the error" do
         generator.generate
-        expect(Rails.logger).to have_received(:error).with("Malformed response: 'candidates' key not found")
+        expect(Rails.logger).to have_received(:error)
+          .with("Malformed response: 'candidates' key not found").at_least(:once)
       end
     end
 
     context "when image upload fails" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
         uploader = instance_double(ArticleImageUploader)
@@ -212,7 +213,7 @@ RSpec.describe Ai::ImageGenerator do
       end
 
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
       end
 
@@ -256,7 +257,7 @@ RSpec.describe Ai::ImageGenerator do
       FileUtils.mkdir_p(File.dirname(input_image_path))
       File.write(input_image_path, "fake_image_content") unless File.exist?(input_image_path)
 
-      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
         .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
       uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -268,7 +269,7 @@ RSpec.describe Ai::ImageGenerator do
       generator.generate
 
       # Verify the request was made
-      expect(WebMock).to have_requested(:post, /gemini-2\.5-flash-image:generateContent/)
+      expect(WebMock).to have_requested(:post, /[\w.-]+:generateContent/)
     end
 
     it "logs the number of input images" do
@@ -298,7 +299,7 @@ RSpec.describe Ai::ImageGenerator do
     before do
       allow(Rails.logger).to receive(:info)
 
-      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
         .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
       uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -310,7 +311,7 @@ RSpec.describe Ai::ImageGenerator do
       generator.generate
 
       # Verify the request was made with aspect ratio config
-      expect(WebMock).to have_requested(:post, /gemini-2\.5-flash-image:generateContent/)
+      expect(WebMock).to have_requested(:post, /[\w.-]+:generateContent/)
     end
 
     it "logs the aspect ratio" do
@@ -340,7 +341,7 @@ RSpec.describe Ai::ImageGenerator do
     before do
       allow(Rails.logger).to receive(:info)
 
-      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+      stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
         .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
       uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -354,6 +355,164 @@ RSpec.describe Ai::ImageGenerator do
       expect(result).to be_a(Ai::ImageGenerator::GenerationResult)
       expect(result.url).to eq(uploaded_url)
       expect(result.text_response).to be_nil
+    end
+  end
+
+  describe "model, thinking and retry behavior" do
+    let(:generator) { described_class.new(prompt, aspect_ratio: "16:9", api_key: api_key) }
+    let(:primary_url) { %r{/models/gemini-nano-banana-2\.1:generateContent} }
+    let(:fallback_url) { %r{/models/gemini-3\.1-flash-lite-image:generateContent} }
+    let(:uploaded_url) { "https://example.com/uploads/generated_image.png" }
+    let(:image_part) { { "inlineData" => { "data" => Base64.strict_encode64("final"), "mimeType" => "image/png" } } }
+    let(:json_headers) { { "Content-Type" => "application/json" } }
+
+    def candidate_response(parts, finish_reason: "STOP")
+      { "candidates" => [{ "content" => { "parts" => parts }, "finishReason" => finish_reason }] }.to_json
+    end
+
+    def text_only_response
+      candidate_response([{ "text" => "Got it! What would you like to create first?" }])
+    end
+
+    before do
+      allow(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.logger).to receive(:error)
+
+      uploader = instance_double(ArticleImageUploader, url: uploaded_url)
+      allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+      allow(uploader).to receive(:store!)
+    end
+
+    it "requests an image only from Nano Banana 2.1 with minimal thinking" do
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      generator.generate
+
+      expect(WebMock).to(have_requested(:post, primary_url).with do |request|
+        JSON.parse(request.body)["generationConfig"] == {
+          "responseModalities" => ["Image"],
+          "imageConfig" => { "aspectRatio" => "16:9" },
+          "thinkingConfig" => { "thinkingLevel" => "minimal" }
+        }
+      end)
+    end
+
+    it "omits thinkingLevel for a Gemini 2.x model, which rejects it" do
+      stub_const("#{described_class}::GEMINI_IMAGE_MODEL", "gemini-2.5-flash-image")
+      legacy_url = %r{/models/gemini-2\.5-flash-image:generateContent}
+      stub_request(:post, legacy_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      generator.generate
+
+      expect(WebMock).to(have_requested(:post, legacy_url).with do |request|
+        !JSON.parse(request.body)["generationConfig"].key?("thinkingConfig")
+      end)
+    end
+
+    it "retries on the fallback model when the primary model replies with text only" do
+      stub_request(:post, primary_url).to_return(status: 200, body: text_only_response, headers: json_headers)
+      stub_request(:post, fallback_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      result = generator.generate
+
+      expect(result.url).to eq(uploaded_url)
+      expect(generator.failure_reason).to be_nil
+      expect(WebMock).to have_requested(:post, fallback_url).once
+    end
+
+    it "retries on the fallback model after a 429" do
+      stub_request(:post, primary_url)
+        .to_return(status: 429, body: { error: { message: "Resource exhausted" } }.to_json, headers: json_headers)
+      stub_request(:post, fallback_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      expect(generator.generate.url).to eq(uploaded_url)
+    end
+
+    it "records each attempt's model and retry count in the audit log" do
+      stub_request(:post, primary_url).to_return(status: 200, body: text_only_response, headers: json_headers)
+      stub_request(:post, fallback_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      expect { generator.generate }.to change(AiAudit, :count).by(2)
+      expect(AiAudit.order(:id).last(2).map { |audit| [audit.ai_model, audit.retry_count] })
+        .to eq([["gemini-nano-banana-2.1", 0], ["gemini-3.1-flash-lite-image", 1]])
+    end
+
+    it "reports a transient failure when the fallback model also returns no image" do
+      stub_request(:post, primary_url).to_return(status: 200, body: text_only_response, headers: json_headers)
+      stub_request(:post, fallback_url).to_return(status: 200, body: text_only_response, headers: json_headers)
+
+      expect(generator.generate).to be_nil
+      expect(generator.failure_reason).to eq(:transient)
+    end
+
+    it "does not retry when the model refuses to draw the prompt" do
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: candidate_response([], finish_reason: "IMAGE_SAFETY"), headers: json_headers)
+      stub_request(:post, fallback_url)
+
+      expect(generator.generate).to be_nil
+      expect(generator.failure_reason).to eq(:refused)
+      expect(WebMock).not_to have_requested(:post, fallback_url)
+    end
+
+    it "treats a blocked prompt as a refusal" do
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: { "promptFeedback" => { "blockReason" => "PROHIBITED_CONTENT" } }.to_json,
+                   headers: json_headers)
+      stub_request(:post, fallback_url)
+
+      expect(generator.generate).to be_nil
+      expect(generator.failure_reason).to eq(:refused)
+      expect(WebMock).not_to have_requested(:post, fallback_url)
+    end
+
+    it "does not retry a non-retryable API error" do
+      stub_request(:post, primary_url)
+        .to_return(status: 400, body: { error: { message: "Invalid argument" } }.to_json, headers: json_headers)
+      stub_request(:post, fallback_url)
+
+      expect(generator.generate).to be_nil
+      expect(generator.failure_reason).to eq(:error)
+      expect(WebMock).not_to have_requested(:post, fallback_url)
+    end
+
+    it "does not retry when no fallback model is configured" do
+      stub_const("#{described_class}::GEMINI_IMAGE_FALLBACK_MODEL", "")
+      stub_request(:post, primary_url).to_return(status: 200, body: text_only_response, headers: json_headers)
+      stub_request(:post, fallback_url)
+
+      expect(generator.generate).to be_nil
+      expect(generator.failure_reason).to eq(:transient)
+      expect(WebMock).not_to have_requested(:post, fallback_url)
+    end
+
+    it "names the uploaded file after the returned image type" do
+      jpeg_part = { "inlineData" => { "data" => Base64.strict_encode64("jpeg"), "mimeType" => "image/jpeg" } }
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: candidate_response([jpeg_part]), headers: json_headers)
+      allow(Tempfile).to receive(:new).and_call_original
+
+      generator.generate
+
+      expect(Tempfile).to have_received(:new).with(["gemini_generated", ".jpg"])
+    end
+
+    it "uploads the final image rather than an interim thought image" do
+      thought_image = { "thought" => true,
+                        "inlineData" => { "data" => Base64.strict_encode64("draft"), "mimeType" => "image/png" } }
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: candidate_response([image_part, thought_image]), headers: json_headers)
+      allow(Base64).to receive(:decode64).and_call_original
+
+      generator.generate
+
+      expect(Base64).to have_received(:decode64).once.with(Base64.strict_encode64("final"))
     end
   end
 
@@ -408,7 +567,7 @@ RSpec.describe Ai::ImageGenerator do
 
     context "on successful generation" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
         uploader = instance_double(ArticleImageUploader, url: uploaded_url)
@@ -445,7 +604,7 @@ RSpec.describe Ai::ImageGenerator do
 
     context "on failed upload" do
       before do
-        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/gemini-2\.5-flash-image:generateContent})
+        stub_request(:post, %r{https://generativelanguage\.googleapis\.com/v1beta/models/[\w.-]+:generateContent})
           .to_return(status: 200, body: mock_api_response.to_json, headers: { "Content-Type" => "application/json" })
 
         uploader = instance_double(ArticleImageUploader)

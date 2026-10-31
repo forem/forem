@@ -136,7 +136,8 @@ module Ai
                      "changing it requires re-embedding stored vectors." },
       { key: :image_generation, group: :fixed, jev: false, configurable: false,
         name: "Image generation",
-        description: "Generates cover and profile images (Ai::ImageGenerator) with a dedicated image model." },
+        description: "Generates cover and profile images (Ai::ImageGenerator) with a dedicated image model. " \
+                     "Set with GEMINI_IMAGE_MODEL and GEMINI_IMAGE_FALLBACK_MODEL." },
     ].map { |attrs| Function.new(configurable: true, jev_only: false, **attrs).freeze }.index_by(&:key).freeze
 
     class UnknownFunctionError < ArgumentError; end
