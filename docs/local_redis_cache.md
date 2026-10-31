@@ -113,10 +113,19 @@ subclass adapter so its raw counter encoding and pattern-reset API are preserved
 
 ## Observe and roll back
 
-`read.local_redis_cache` ActiveSupport notifications report `hits` and `misses`
-without exposing keys/values. `bypass.local_redis_cache` marks a missing health
-lease or local connection/pool failure. These are separate from Rails' existing
-logical `cache_read` notifications (which report hits from either tier).
+Each Puma worker reports `local_redis_cache.hits`, `local_redis_cache.misses`
+and `local_redis_cache.bypasses` counts through `ForemStatsClient` (Datadog and/or
+Better Stack) at most once a minute. A bypass is a read served by hosted Redis
+because the health lease was missing or local Redis was unreachable. The store
+counts in memory under one mutex (about 0.2µs and no allocations per read) rather
+than subscribing to notifications (about 4µs per read). Up to a minute of counts
+is dropped when a worker exits. Sum across dynos; the bypass share should stay
+near zero once dynos have started.
+
+`read.local_redis_cache` ActiveSupport notifications also report `hits` and
+`misses` without exposing keys/values, and `bypass.local_redis_cache` marks a
+bypass. Nothing in the app subscribes to them. These are separate from Rails'
+existing logical `cache_read` notifications (which report hits from either tier).
 A tracking failure logs `LocalRedis sync disconnected` and its error class.
 
 Inspect local Redis with `redis-cli -s /tmp/forem-cache.sock INFO memory` and

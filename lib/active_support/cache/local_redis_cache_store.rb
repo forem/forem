@@ -13,6 +13,9 @@ module ActiveSupport
       UNSUPPORTED_CONNECTION_OPTIONS = %i[redis sentinels cluster host port path db username password ssl ssl_params
                                           replica role].freeze
 
+      # Optional LocalRedis::Metrics; counted directly to avoid per-read notification overhead.
+      attr_accessor :metrics
+
       def initialize(local_url:, **options)
         unless options[:url].is_a?(String) && !options[:url].empty? &&
             (options.keys & UNSUPPORTED_CONNECTION_OPTIONS).empty?
@@ -79,14 +82,14 @@ module ActiveSupport
       def read_through(keys)
         snapshot = local_operation { @l1.read(keys) }
         if snapshot.blank?
-          ActiveSupport::Notifications.instrument("bypass.local_redis_cache")
+          instrument_bypass
           return failsafe(:read_entry, returning: []) { Array(yield) }
         end
 
         generation, *values = snapshot
         missing = keys.zip(values).filter_map { |key, value| key if value.nil? }.uniq
         misses = values.count(nil)
-        ActiveSupport::Notifications.instrument("read.local_redis_cache", hits: keys.size - misses, misses: misses)
+        instrument_read(keys.size - misses, misses)
         return values if missing.empty?
 
         started_at = LocalRedis::Cache.monotonic_time
@@ -111,6 +114,16 @@ module ActiveSupport
         elapsed = ((LocalRedis::Cache.monotonic_time - started_at) * 1000).ceil
         local_operation { @l1.fill(generation, cacheable_entries(fetched, elapsed)) }
         keys.zip(values).map { |key, value| value || fetched[key]&.first }
+      end
+
+      def instrument_bypass
+        ActiveSupport::Notifications.instrument("bypass.local_redis_cache")
+        @metrics&.record_bypass
+      end
+
+      def instrument_read(hits, misses)
+        ActiveSupport::Notifications.instrument("read.local_redis_cache", hits: hits, misses: misses)
+        @metrics&.record_read(hits, misses)
       end
 
       def cacheable_entries(fetched, elapsed)
