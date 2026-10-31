@@ -165,6 +165,18 @@ RSpec.describe "/admin/organization_memberships" do
         expect(response).to redirect_to(admin_user_path(user.id))
         expect(flash[:success]).to include("successfully updated")
       end
+
+      it "does not allow demoting the sole admin", :aggregate_failures do
+        admin_membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+
+        put admin_organization_membership_path(admin_membership.id), params: {
+          organization_membership: { type_of_user: :member }
+        }
+
+        expect(admin_membership.reload.type_of_user).to eq("admin")
+        expect(response).to redirect_to(admin_user_path(user.id))
+        expect(flash[:danger]).to include("at least one admin")
+      end
     end
 
     context "when interacting via ajax" do
@@ -237,6 +249,17 @@ RSpec.describe "/admin/organization_memberships" do
         expect(response).to redirect_to(admin_user_path(user.id))
         expect(flash[:success]).to include("successfully removed")
       end
+
+      it "does not remove the sole admin membership", :aggregate_failures do
+        membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+
+        expect do
+          delete admin_organization_membership_path(membership.id)
+        end.not_to change(OrganizationMembership, :count)
+
+        expect(response).to redirect_to(admin_user_path(user.id))
+        expect(flash[:danger]).to include("at least one admin")
+      end
     end
 
     context "when interacting via ajax" do
@@ -249,6 +272,17 @@ RSpec.describe "/admin/organization_memberships" do
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body["result"]).to include("successfully removed")
+      end
+
+      it "does not remove the sole admin membership", :aggregate_failures do
+        membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+
+        expect do
+          delete admin_organization_membership_path(membership.id), xhr: true
+        end.not_to change(OrganizationMembership, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to include("at least one admin")
       end
     end
   end
