@@ -34,11 +34,12 @@ module Ai
     VERSION = "2.0"
     GenerationResult = Struct.new(:url, :text_response, keyword_init: true)
 
-    GEMINI_IMAGE_MODEL = ENV.fetch("GEMINI_IMAGE_MODEL", "gemini-nano-banana-2.1").freeze
-    # Used for the retry after a transient failure. Blank disables the retry.
-    GEMINI_IMAGE_FALLBACK_MODEL = ENV.fetch("GEMINI_IMAGE_FALLBACK_MODEL", "gemini-3.1-flash-lite-image").freeze
+    # Blank values fall back to the defaults, so an uncommented `KEY=` from .env_sample is harmless.
+    GEMINI_IMAGE_MODEL = (ENV["GEMINI_IMAGE_MODEL"].presence&.strip || "gemini-nano-banana-2.1").freeze
+    # Used for the retry after a transient failure. Unlike the others, blank disables the retry.
+    GEMINI_IMAGE_FALLBACK_MODEL = ENV.fetch("GEMINI_IMAGE_FALLBACK_MODEL", "gemini-3.1-flash-lite-image").strip.freeze
     # Nano Banana 2.1 defaults to "medium"; "minimal" keeps generation fast.
-    THINKING_LEVEL = ENV.fetch("GEMINI_IMAGE_THINKING_LEVEL", "minimal").freeze
+    THINKING_LEVEL = (ENV["GEMINI_IMAGE_THINKING_LEVEL"].presence&.strip || "minimal").freeze
     DEFAULT_API_KEY = ENV["GEMINI_API_KEY"].freeze
 
     # Candidate finish reasons that mean the model declined to draw the request.
