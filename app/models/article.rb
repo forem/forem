@@ -805,11 +805,15 @@ class Article < ApplicationRecord
     end
   end
 
-  def title_finalized
+  # `links: true` renders Quickie `[text](url)` as real anchors; leave it off wherever the title
+  # is already inside a link (feed cards), where anchors can't be nested.
+  def title_finalized(links: false)
     return title unless title.present?
 
     safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
-    ForemNative.quickie_title_html(safe_title)&.html_safe || legacy_title_finalized(safe_title)
+    Articles::QuickieFormatter.render(safe_title, links: links) do |prepared|
+      ForemNative.quickie_title_html(prepared) || legacy_title_finalized(prepared).to_str
+    end.html_safe
   end
 
   # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
@@ -890,8 +894,10 @@ class Article < ApplicationRecord
     return title_finalized unless title.present?
 
     safe_title = title.gsub("<", "&lt;").gsub(">", "&gt;")
-    ForemNative.quickie_title_html(safe_title, truncate_for_feed: true)&.html_safe ||
-      legacy_truncate_title_for_feed(safe_title)
+    Articles::QuickieFormatter.render(safe_title) do |prepared|
+      ForemNative.quickie_title_html(prepared, truncate_for_feed: true) ||
+        legacy_truncate_title_for_feed(prepared).to_str
+    end.html_safe
   end
 
   # Handles the titles ForemNative declines (non-UTF-8 or invalid strings).
@@ -1888,6 +1894,8 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
+    return Articles::QuickieSlug.call(title, user_id: user_id) if status?
+
     truncated_title = title.size > 100 ? title[0..100].split[0...-1].join(" ") : title
     "#{Sterile.sluggerize(truncated_title)}-#{rand(100_000).to_s(26)}"
   end

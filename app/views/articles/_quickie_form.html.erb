@@ -4,6 +4,13 @@
 <div class="<%= "crayons-card p-2" unless expanded %>">
   <textarea class="crayons-textfield element-focused"
     placeholder="<%= expanded ? t("views.stories.status_expanded_placeholder") : t("views.stories.status_placeholder") %>" aria-label="<%= t("views.stories.status_placeholder") %>" maxlength="256" rows="<%= expanded ? "4" : "1" %>" name="article[title]" id="article_title" style="height: <%= expanded ? "120px" : "40px" %>;"></textarea>
+  <div id="main-status-form-preview" class="crayons-textfield hidden" aria-live="polite"></div>
+  <div id="main-status-form-toolbar" class="items-center <%= "is-expanded" if expanded %>" role="toolbar" aria-label="<%= t("views.stories.status_format_toolbar") %>">
+    <% { bold: tag.strong("B"), italic: tag.em("I"), underline: tag.u("U"), link: t("views.stories.status_format_link") }.each do |format, content| %>
+      <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s px-2 py-1" data-quickie-format="<%= format %>" aria-label="<%= t("views.stories.status_format_#{format}") %>" title="<%= t("views.stories.status_format_#{format}") %>"><%= content %></button>
+    <% end %>
+    <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--s px-2 py-1 ml-auto" id="main-status-form-preview-toggle" data-preview-label="<%= t("views.stories.status_format_preview") %>" data-edit-label="<%= t("views.stories.status_format_edit") %>"><%= t("views.stories.status_format_preview") %></button>
+  </div>
   <input value="status" autocomplete="off" type="hidden" name="article[type_of]" id="article_type_of">
   <input value="1" autocomplete="off" type="hidden" name="article[published]" id="article_published">
   <% if @article && @article.published == true && @user && !Rails.env.test? %>
@@ -49,6 +56,130 @@
 
   var enterKey = 13;
   
+  // --- Formatting toolbar -------------------------------------------------------------
+  // Syntax (rendered server-side by Articles::QuickieFormatter): **bold**, *italic*,
+  // __underline__ and [text](https://url). Plain text without these markers is unaffected.
+  var quickieMarkers = { bold: ['**', '**'], italic: ['*', '*'], underline: ['__', '__'] };
+
+  function applyQuickieFormat(format) {
+    var textarea = document.getElementById('article_title');
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var selected = textarea.value.slice(start, end);
+    var before, after, cursor;
+
+    if (format === 'link') {
+      var url = (window.prompt(<%= json_escape(t("views.stories.status_format_link_prompt").to_json) %>, 'https://') || '').trim();
+      if (!/^https?:\/\/[^\s<>"{}|\\^`\[\]()]+$/.test(url)) { return; }
+      before = '[';
+      after = '](' + url + ')';
+    } else {
+      before = quickieMarkers[format][0];
+      after = quickieMarkers[format][1];
+    }
+
+    var replacement = before + selected + after;
+    if (textarea.value.length - selected.length + replacement.length > textarea.maxLength) { return; }
+
+    textarea.setRangeText(replacement, start, end, 'end');
+    if (!selected) {
+      cursor = start + before.length;
+      textarea.setSelectionRange(cursor, cursor);
+    }
+    textarea.focus();
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  // Preview: mirrors the server rules closely, but builds DOM nodes with textContent only,
+  // so nothing the author types is ever interpreted as HTML.
+  var quickieLinkPattern = /\[([^\[\]\n]{1,100})\]\((https?:\/\/[^\s<>"{}|\\^`\[\]()]+)\)/;
+  var quickieInlineRules = [
+    { pattern: /\*\*(?=[^\s*])(.*?[^\s*])\*\*/, tag: 'strong' },
+    { pattern: /__(?=[^\s_])(.*?[^\s_])__/, tag: 'u', marker: '_' },
+    { pattern: /\*(?=[^\s*])([^*\n]*[^\s*])\*/, tag: 'em', marker: '*' },
+    { pattern: /_(?=[^\s_])([^_\n]*[^\s_])_/, tag: 'em', marker: '_' }
+  ];
+
+  function quickieBoundaryOk(text, match, marker) {
+    var wordOrMarker = new RegExp('[\\p{L}\\p{N}_' + (marker === '*' ? '*' : '') + ']', 'u');
+    var previous = text.charAt(match.index - 1);
+    var next = text.charAt(match.index + match[0].length);
+    return !(previous && wordOrMarker.test(previous)) && !(next && wordOrMarker.test(next));
+  }
+
+  function appendQuickieText(parent, text) {
+    var best = null;
+    var link = quickieLinkPattern.exec(text);
+    if (link) { best = { match: link, link: true }; }
+
+    quickieInlineRules.forEach(function (rule) {
+      var pattern = new RegExp(rule.pattern.source, 'g');
+      var match;
+      while ((match = pattern.exec(text))) {
+        if (!rule.marker || quickieBoundaryOk(text, match, rule.marker)) {
+          if (!best || match.index < best.match.index) { best = { match: match, rule: rule }; }
+          break;
+        }
+        pattern.lastIndex = match.index + 1;
+      }
+    });
+
+    if (!best) {
+      parent.appendChild(document.createTextNode(text));
+      return;
+    }
+    var match = best.match;
+    parent.appendChild(document.createTextNode(text.slice(0, match.index)));
+    var element = document.createElement(best.link ? 'u' : best.rule.tag);
+    appendQuickieText(element, match[1]);
+    parent.appendChild(element);
+    appendQuickieText(parent, text.slice(match.index + match[0].length));
+  }
+
+  function renderQuickiePreview(text, container) {
+    container.textContent = '';
+    text.split(/\n\s*\n/).forEach(function (paragraph) {
+      if (!paragraph.trim()) { return; }
+      var block = document.createElement('p');
+      block.className = 'quickie-paragraph';
+      paragraph.trim().split('\n').forEach(function (line, index) {
+        if (index > 0) { block.appendChild(document.createElement('br')); }
+        appendQuickieText(block, line);
+      });
+      container.appendChild(block);
+    });
+  }
+
+  document.getElementById('main-status-form-toolbar').addEventListener('mousedown', function (e) {
+    // Keep keyboard focus in the textarea so the compact feed form doesn't collapse
+    e.preventDefault();
+  });
+
+  document.querySelectorAll('[data-quickie-format]').forEach(function (button) {
+    button.addEventListener('click', function () { applyQuickieFormat(button.dataset.quickieFormat); });
+  });
+
+  document.getElementById('main-status-form-preview-toggle').addEventListener('click', function (e) {
+    var toggle = e.currentTarget;
+    var textarea = document.getElementById('article_title');
+    var preview = document.getElementById('main-status-form-preview');
+    var toolbar = document.getElementById('main-status-form-toolbar');
+    var showing = !preview.classList.contains('hidden');
+    // The textarea loses focus while hidden, so keep the toolbar (and its Edit button) visible
+    toolbar.classList.toggle('is-previewing', !showing);
+    if (showing) {
+      preview.classList.add('hidden');
+      textarea.classList.remove('hidden');
+      toggle.textContent = toggle.dataset.previewLabel;
+      textarea.focus();
+    } else {
+      renderQuickiePreview(textarea.value, preview);
+      preview.classList.remove('hidden');
+      textarea.classList.add('hidden');
+      toggle.textContent = toggle.dataset.editLabel;
+    }
+  });
+
   // Function to handle textarea auto-resize and character count
   function updateTextareaHeight(textarea) {
     textarea.style.height = 'auto'; // Reset the height
@@ -63,7 +194,16 @@
       document.getElementById('main-status-form').submit();
       return;
     }
-    
+
+    // Cmd/Ctrl+B, I and U apply the same formatting as the toolbar buttons
+    var shortcutFormats = { b: 'bold', i: 'italic', u: 'underline' };
+    var shortcutFormat = shortcutFormats[(e.key || '').toLowerCase()];
+    if (shortcutFormat && window.Forem.Runtime.hasOSSpecificModifier(e)) {
+      e.preventDefault();
+      applyQuickieFormat(shortcutFormat);
+      return;
+    }
+
     // Allow regular Enter for line breaks - no preventDefault needed
     // Handle textarea auto-resize after input
     setTimeout(() => {
