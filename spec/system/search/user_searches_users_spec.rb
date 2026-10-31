@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe "User searches users" do
   let(:current_user) { create(:user) }
   let(:followed_user) { create(:user) }
-  let(:not_followed_user) { create(:user) }
+  # Exercise overlapping data-info strings without depending on database IDs.
+  let(:not_followed_user) { create(:user, name: "Member #{follow_back_user.id}") }
   let(:follow_back_user) { create(:user) }
 
   before do
@@ -33,7 +34,7 @@ RSpec.describe "User searches users" do
     expect(JSON.parse(follow_back_button_info)["id"]).to eq(follow_back_user.id)
 
     # Regression from #14357: Follow-back button should toggle between "Following" and "Follow back"
-    follow_back_button = find("button[data-info*=\"#{follow_back_user.id}\"]")
+    follow_back_button = find_button(I18n.t("core.follow_back"), exact: true)
     follow_back_button.click
     expect(follow_back_button).to have_content(I18n.t("core.following"))
 
