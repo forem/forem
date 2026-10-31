@@ -52,5 +52,22 @@ RSpec.describe CrayonsHelper do
 
       expect(File).not_to have_received(:read)
     end
+
+    %w[favorite-checked small-favorite-checked].each do |icon|
+      it "draws the #{icon} checkmark in a dark stroke so it contrasts with the yellow gem" do
+        icon_tag = helper.crayons_icon_tag(icon, native: true)
+        expect(icon_tag).to include('stroke="#171717"')
+        expect(icon_tag).not_to include('stroke="#fff"')
+      end
+    end
+
+    it "keeps the hand-inlined small-favorite-checked copy in buildArticleHTML.js in sync" do
+      svg = Rails.root.join("app/assets/images/small-favorite-checked.svg").read
+      checkmark = svg[%r{<path d="M10 11[^>]*/>}]
+      builder = Rails.root.join("app/assets/javascripts/utilities/buildArticleHTML.js").read
+
+      expect(checkmark).to include('stroke="#171717"')
+      expect(builder).to include(checkmark)
+    end
   end
 end
