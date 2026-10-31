@@ -33,7 +33,7 @@ RSpec.describe "User searches users" do
     expect(JSON.parse(follow_back_button_info)["id"]).to eq(follow_back_user.id)
 
     # Regression from #14357: Follow-back button should toggle between "Following" and "Follow back"
-    follow_back_button = find("button[data-info*=\"#{follow_back_user.id}\"]")
+    follow_back_button = find("#article-#{follow_back_user.id} button.follow-action-button")
     follow_back_button.click
     expect(follow_back_button).to have_content(I18n.t("core.following"))
 
