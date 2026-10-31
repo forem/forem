@@ -38,8 +38,11 @@ module Ai
     GEMINI_IMAGE_MODEL = (ENV["GEMINI_IMAGE_MODEL"].presence&.strip || "gemini-nano-banana-2.1").freeze
     # Used for the retry after a transient failure. Unlike the others, blank disables the retry.
     GEMINI_IMAGE_FALLBACK_MODEL = ENV.fetch("GEMINI_IMAGE_FALLBACK_MODEL", "gemini-3.1-flash-lite-image").strip.freeze
-    # Nano Banana 2.1 defaults to "medium"; "minimal" keeps generation fast.
-    THINKING_LEVEL = (ENV["GEMINI_IMAGE_THINKING_LEVEL"].presence&.strip || "minimal").freeze
+    # An explicit value applies to every model; otherwise each model gets its
+    # default below. Nano Banana 2.1 defaults to "medium", and "minimal" keeps
+    # generation fast. Gemini 3 Pro Image only accepts "high".
+    THINKING_LEVEL = ENV["GEMINI_IMAGE_THINKING_LEVEL"].presence&.strip.freeze
+    DEFAULT_THINKING_LEVELS = { "gemini-3-pro-image" => "high" }.freeze
     DEFAULT_API_KEY = ENV["GEMINI_API_KEY"].freeze
 
     # Candidate finish reasons that mean the model declined to draw the request.
@@ -259,8 +262,8 @@ module Ai
 
       # Gemini 2.x image models reject thinkingLevel, so an env override back to
       # one of them still works.
-      if THINKING_LEVEL.present? && !model.start_with?("gemini-2")
-        config[:thinkingConfig] = { thinkingLevel: THINKING_LEVEL }
+      unless model.start_with?("gemini-2")
+        config[:thinkingConfig] = { thinkingLevel: THINKING_LEVEL || DEFAULT_THINKING_LEVELS.fetch(model, "minimal") }
       end
 
       config

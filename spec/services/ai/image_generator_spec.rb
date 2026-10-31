@@ -412,6 +412,31 @@ RSpec.describe Ai::ImageGenerator do
       end)
     end
 
+    it "defaults Gemini 3 Pro Image to high thinking, the only level it accepts" do
+      stub_const("#{described_class}::GEMINI_IMAGE_MODEL", "gemini-3-pro-image")
+      pro_url = %r{/models/gemini-3-pro-image:generateContent}
+      stub_request(:post, pro_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      generator.generate
+
+      expect(WebMock).to(have_requested(:post, pro_url).with do |request|
+        JSON.parse(request.body).dig("generationConfig", "thinkingConfig") == { "thinkingLevel" => "high" }
+      end)
+    end
+
+    it "uses an explicit thinking level override for every model" do
+      stub_const("#{described_class}::THINKING_LEVEL", "medium")
+      stub_request(:post, primary_url)
+        .to_return(status: 200, body: candidate_response([image_part]), headers: json_headers)
+
+      generator.generate
+
+      expect(WebMock).to(have_requested(:post, primary_url).with do |request|
+        JSON.parse(request.body).dig("generationConfig", "thinkingConfig") == { "thinkingLevel" => "medium" }
+      end)
+    end
+
     it "retries on the fallback model when the primary model replies with text only" do
       stub_request(:post, primary_url).to_return(status: 200, body: text_only_response, headers: json_headers)
       stub_request(:post, fallback_url)
