@@ -84,20 +84,30 @@ Do not allocate all currently free memory.
   timely PING reply from that stream. An unavailable, stalled or killed daemon
   causes reads to bypass L1 after that lease. Delayed replies cannot renew it for
   a full new interval. Expired/evicted leases flush L1 before enabling it again.
-- Local Lua scripts check the lease and generation atomically with reads/fills.
-  Each processed invalidation advances the generation, preventing a slow remote
-  read from refilling a key after its invalidation was processed.
+- Local Lua scripts check the lease generation and per-key guards atomically
+  with reads/fills. Keys hash (CRC32) into 4,096 guard buckets. Each processed
+  invalidation writes a fresh random token into its keys' buckets, and a fill
+  stores a key only if its bucket token is unchanged since the read. A slow remote
+  read therefore cannot refill a key invalidated meanwhile, while invalidations of
+  unrelated keys (BCAST reports every hosted write, including Rack::Attack counters
+  and evictions) do not discard it. A bucket collision only costs a miss. The guard
+  hash carries the lease generation as `epoch`; if it is evicted, reads bypass L1
+  until the next heartbeat flushes and rebuilds it. The generation itself changes
+  only when the lease is recreated.
 - A source Lua script reads each missing value and its PTTL atomically, pipelined
   in a single round trip for a batch. Fills subtract elapsed time and use at most
   the source's remaining TTL, capped at **30 seconds**, even for non-expiring keys.
   Nil misses are not cached. Rails still checks entry expiry, version, compression
   and serialization exactly as for hosted cache entries.
-- Writes and deletes evict synchronously on the writing host. Remote write errors
+- Writes and deletes evict synchronously on the writing host. Increments and
+  decrements do not: counters are raw values read only with `raw: true`, which
+  bypasses L1, so this avoids a local round trip per throttle counter. Tracking
+  still evicts any copy. Remote write errors
   retain Rails RedisCacheStore's existing error handling. A local connection or
   pool failure falls back to hosted Redis. No subscriber threads live in Puma,
   so preloading and worker forks do not create duplicate subscriptions.
 - The supervisor restarts failed cache auxiliaries with backoff while Puma stays
-  running. Web exit shuts down auxiliaries; TERM/INT are forwarded to all children,
+  running, including when an auxiliary cannot be spawned at all. Web exit shuts down auxiliaries; TERM/INT are forwarded to all children,
   with a 28-second shutdown deadline to fit Heroku's 30-second window.
 
 This is **eventually consistent cache acceleration**, not synchronous replication.
@@ -150,13 +160,14 @@ socket directory into the application container with appropriate ownership. Neve
 run two sync daemons against the same local Redis database.
 
 A Rust reader can use the same Redis protocol without a Ruby-specific coherence
-mechanism: `forem:l1:lease:<origin>` holds the generation; data keys are
+mechanism: `forem:l1:lease:<origin>` holds the generation, `forem:l1:guards:<origin>`
+holds the guard buckets (CRC32 of the source key, modulo 4,096) and `epoch`; data keys are
 `forem:l1:data:<origin>:<normalized source key>`. `<origin>` is the SHA-256 hex
 digest of the exact authoritative URL, including its database and credentials.
 This prevents old workers reading another backend's payloads when a sidecar is
 reused during endpoint migration. Credential rotation may cause a cold cache. The READ/FILL/INVALIDATE/HEARTBEAT scripts
 in `lib/local_redis/cache.rb` define the atomic protocol. It must use those lease
-and generation checks rather than directly GETting data keys. Payloads remain
+generation and guard checks rather than directly GETting data keys. Payloads remain
 serialized Rails cache entries; sharing those payloads with Rust requires an
 explicit compatible codec or a separate namespace. This change does not pretend
 that Rails serialization becomes language-independent.

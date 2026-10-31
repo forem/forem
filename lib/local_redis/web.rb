@@ -19,11 +19,10 @@ module LocalRedis
       @commands.each_key { |role| start(role) }
       until @stopping
         reap
-        @restart_at.each do |role, deadline|
-          next if Process.clock_gettime(Process::CLOCK_MONOTONIC) < deadline
-
-          start(role)
+        now = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+        @restart_at.select { |_role, deadline| now >= deadline }.each_key do |role|
           @restart_at.delete(role)
+          start(role)
         end
         sleep 0.1
       end
@@ -36,6 +35,12 @@ module LocalRedis
 
     def start(role)
       @children[Process.spawn(*@commands.fetch(role))] = role
+    rescue SystemCallError => e
+      # A cache auxiliary that cannot be spawned (EAGAIN, ENOENT) must not stop Puma.
+      raise if role == :web
+
+      warn "LocalRedis #{role} could not start (#{e.class}); retrying in 2s"
+      @restart_at[role] = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 2
     end
 
     def reap

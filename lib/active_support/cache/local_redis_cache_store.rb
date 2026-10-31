@@ -81,12 +81,12 @@ module ActiveSupport
 
       def read_through(keys)
         snapshot = local_operation { @l1.read(keys) }
-        if snapshot.blank?
+        if snapshot.nil?
           instrument_bypass
           return failsafe(:read_entry, returning: []) { Array(yield) }
         end
 
-        generation, *values = snapshot
+        generation, values, guards = snapshot
         missing = keys.zip(values).filter_map { |key, value| key if value.nil? }.uniq
         misses = values.count(nil)
         instrument_read(keys.size - misses, misses)
@@ -112,7 +112,7 @@ module ActiveSupport
 
         fetched = missing.zip(entries).to_h
         elapsed = ((LocalRedis::Cache.monotonic_time - started_at) * 1000).ceil
-        local_operation { @l1.fill(generation, cacheable_entries(fetched, elapsed)) }
+        local_operation { @l1.fill(generation, cacheable_entries(fetched, elapsed), keys.zip(guards).to_h) }
         keys.zip(values).map { |key, value| value || fetched[key]&.first }
       end
 
@@ -138,6 +138,8 @@ module ActiveSupport
 
       # Evict synchronously on this host, including when a remote write fails.
       # Tracking handles other hosts and writers from older app releases.
+      # Counters (increment/decrement) skip this: they are raw values read only
+      # with raw: true, which bypasses L1, and run on every throttled request.
       def write_serialized_entry(key, payload, **options)
         super
       ensure
@@ -160,12 +162,6 @@ module ActiveSupport
         super
       ensure
         local_operation { @l1.invalidate(entries) }
-      end
-
-      def change_counter(key, amount, options)
-        super
-      ensure
-        local_operation { @l1.invalidate([key]) }
       end
 
       def local_operation

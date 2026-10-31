@@ -1,5 +1,6 @@
 require "spec_helper"
 require "active_support/cache"
+require "zlib"
 require_relative "../../../lib/active_support/cache/local_redis_cache_store"
 require_relative "../../../lib/local_redis/sync"
 require_relative "../../support/local_redis_servers"
@@ -42,6 +43,38 @@ RSpec.describe LocalRedis::Sync do
 
   def local_value(key)
     local.get("#{l1.data_prefix}#{key}")
+  end
+
+  it "keeps filling and serving a stable key while other keys are written continuously" do
+    bucket = ->(key) { Zlib.crc32(key) % LocalRedis::Cache::GUARD_BUCKETS }
+    old_store.write("stable", "value")
+    noise = (1..).lazy.map { |i| "noise-#{i}" }.reject { |key| bucket.call(key) == bucket.call("stable") }.first(500)
+    writes = 0
+    writer = Thread.new do
+      writer_client = Redis.new(url: remote_url)
+      loop do
+        writer_client.incr(noise[writes % noise.size])
+        writes += 1
+      end
+    ensure
+      writer_client&.close
+    end
+    wait_until { local.hlen(l1.guards_key) > 100 } # Invalidations are flowing.
+    writes_before_reads = writes
+
+    remote_reads = 0
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      remote_reads += 1
+      sleep 0.002 # A realistic hosted round trip, spanning many unrelated writes.
+      original.call(&block)
+    end
+    100.times { expect(store.read("stable")).to eq("value") }
+
+    expect(writes - writes_before_reads).to be > 10
+    expect(remote_reads).to be <= 2
+  ensure
+    writer&.kill
+    writer&.join
   end
 
   it "invalidates writes and deletes from an unmodified Rails store on another host" do

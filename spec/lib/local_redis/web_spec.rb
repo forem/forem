@@ -53,6 +53,20 @@ RSpec.describe LocalRedis::Web do
     expect { Process.kill(0, web_pid) }.to raise_error(Errno::ESRCH)
   end
 
+  it "keeps the web process running when a cache auxiliary cannot be spawned" do
+    web_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", web_pid_path]
+    launch(web_command, [File.join(directory, "missing-redis-server")])
+    wait_until { File.exist?(web_pid_path) }
+    sleep 2.3 # Past the first respawn attempt, which also fails.
+    expect(Process.waitpid2(process_state[:pid], Process::WNOHANG)).to be_nil
+    expect(Process.kill(0, File.read(web_pid_path).to_i)).to eq(1)
+    Process.kill("TERM", process_state[:pid])
+    result = nil
+    wait_until { result = Process.waitpid2(process_state[:pid], Process::WNOHANG) }
+    process_state[:pid] = nil
+    expect(result.last.exitstatus).to eq(0)
+  end
+
   it "returns the web exit status and terminates the auxiliary process" do
     cache_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", cache_pid_path]
     launch([RbConfig.ruby, "-e", "sleep 0.3; exit 7"], cache_command)

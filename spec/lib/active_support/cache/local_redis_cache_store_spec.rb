@@ -1,6 +1,7 @@
 require "spec_helper"
 require "active_support/cache"
 require "json"
+require "zlib"
 require_relative "../../../../lib/active_support/cache/local_redis_cache_store"
 require_relative "../../../support/local_redis_servers"
 
@@ -78,6 +79,46 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     end
     expect(store.read("article")).to eq("old")
     expect(local_value("article")).to be_nil
+  end
+
+  def guard_bucket(key)
+    Zlib.crc32(key) % LocalRedis::Cache::GUARD_BUCKETS
+  end
+
+  it "keeps a fill when only unrelated keys were invalidated during the hosted read" do
+    vanilla.write("article", "value")
+    unrelated = (1..).lazy.map { |i| "unrelated-#{i}" }.detect { |key| guard_bucket(key) != guard_bucket("article") }
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      result = original.call(&block)
+      l1.invalidate([unrelated, "other-#{unrelated}"])
+      result
+    end
+    expect(store.read("article")).to eq("value")
+    expect(local_value("article")).to eq(remote.get("article"))
+  end
+
+  it "conservatively drops a fill when a colliding key shares its guard bucket" do
+    vanilla.write("article", "value")
+    colliding = (1..).lazy.map { |i| "colliding-#{i}" }.detect { |key| guard_bucket(key) == guard_bucket("article") }
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      result = original.call(&block)
+      l1.invalidate([colliding])
+      result
+    end
+    expect(store.read("article")).to eq("value")
+    expect(local_value("article")).to be_nil
+  end
+
+  it "bypasses L1 if the guard hash is evicted, then flushes before re-enabling" do
+    vanilla.write("a", "old")
+    store.read("a")
+    local.del(l1.guards_key)
+    vanilla.write("a", "new")
+    expect(store.read("a")).to eq("new")
+    l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    expect(local_value("a")).to be_nil
+    expect(store.read("a")).to eq("new")
+    expect(local_value("a")).to eq(remote.get("a"))
   end
 
   it "synchronously evicts successful, failed-NX, and bulk writes on this host" do
