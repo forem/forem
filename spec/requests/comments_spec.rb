@@ -55,6 +55,35 @@ RSpec.describe "Comments" do
       expect(user_id_queries).to be_empty
     end
 
+    it "loads the root comment's article once and without the semantic_embedding vector", :aggregate_failures do
+      comment_path = comment.path
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].match?(/FROM "articles" WHERE "articles"."id" =/)
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get comment_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(article_queries.size).to eq(1)
+      expect(article_queries.first).to include(%("articles"."processed_html")).and(exclude("semantic_embedding"))
+    end
+
+    it "loads the article by slug without the semantic_embedding vector", :aggregate_failures do
+      article_path = article.path
+      slug_queries = []
+      callback = lambda do |*, payload|
+        slug_queries << payload[:sql] if payload[:sql].include?(%("articles"."slug" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "#{article_path}/comments" }
+
+      expect(response).to have_http_status(:ok)
+      expect(slug_queries).not_to be_empty
+      expect(slug_queries).to all(include(%("articles"."processed_html")).and(exclude("semantic_embedding")))
+    end
+
     context "when there are comments with different score" do
       let!(:spam_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")

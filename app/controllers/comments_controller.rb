@@ -1,4 +1,6 @@
 class CommentsController < ApplicationController
+  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding].freeze
+
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
@@ -16,6 +18,7 @@ class CommentsController < ApplicationController
     @comment = Comment.new
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
+    preload_root_article if @root_comment
     redirect_if_different_subforem if @root_comment
 
     if @root_comment
@@ -312,9 +315,18 @@ class CommentsController < ApplicationController
     end
   end
 
+  # The comments page never reads the article's ~3KB TOASTed semantic_embedding vector,
+  # so load the root comment's article without detoasting it.
+  def preload_root_article
+    return unless @root_comment.commentable_type == "Article" && @root_comment.commentable_id
+
+    @root_comment.association(:commentable).target =
+      Article.select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(id: @root_comment.commentable_id)
+  end
+
   def set_commentable
     @commentable = @root_comment&.commentable ||
-      @user.articles.find_by(slug: params[:slug]) || nil
+      @user.articles.select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(slug: params[:slug]) || nil
     return unless @commentable.is_a?(Article)
 
     @article = @commentable
