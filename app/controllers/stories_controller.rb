@@ -16,6 +16,7 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -69,7 +70,9 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
+    # The show page never reads the ~3KB TOASTed semantic_embedding vector, so skip detoasting it.
+    if (@article = Article.includes(:organization, user: %i[profile setting roles])
+        .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(path: path)&.decorate)
       handle_article_show
     # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
     elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
