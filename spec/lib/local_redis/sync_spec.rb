@@ -100,7 +100,13 @@ RSpec.describe LocalRedis::Sync do
     thread.join
     unsupported_url = servers.start("unsupported", "--rename-command", "CLIENT", "")
     daemon = described_class.new(local_url: local_url, remote_url: unsupported_url)
+    unsupported_l1 = LocalRedis::Cache.new(url: local_url, source_url: unsupported_url)
+    # Start eligible so this assertion detects failure to revoke an existing lease.
+    unsupported_l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    expect(local.get(unsupported_l1.lease_key)).not_to be_nil
     expect { daemon.run_once }.to raise_error(RedisClient::ConnectionError, /not acknowledged/)
-    expect(local.get(l1.lease_key)).to be_nil
+    expect(local.get(unsupported_l1.lease_key)).to be_nil
+  ensure
+    unsupported_l1&.close
   end
 end

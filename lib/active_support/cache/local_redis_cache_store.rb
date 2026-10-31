@@ -90,15 +90,18 @@ module ActiveSupport
         return values if missing.empty?
 
         started_at = LocalRedis::Cache.monotonic_time
-        entries = failsafe(:read_entry) do
+        entries = failsafe(:read_entry, returning: []) do
           redis.then do |client|
             client.pipelined do |pipeline|
               missing.each { |key| pipeline.eval(VALUE_AND_TTL, keys: [key]) }
             end
           end
+        rescue ::Redis::CommandError
+          nil
         end
         # A provider may allow tracking/GET but deny EVAL. Keep its ordinary
-        # cache readable instead of turning a read-through failure into a miss.
+        # cache readable on command rejection. Transport/pool failures return []
+        # above, preserving local hits without a second timeout or error report.
         if entries.nil?
           fallback = failsafe(:read_entry, returning: []) { Array(yield) }
           return values.zip(fallback).map { |local_value, remote_value| local_value || remote_value }

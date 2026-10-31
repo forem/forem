@@ -261,4 +261,70 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(namespaced.read_multi(key, key)).to eq(key => { "a" => false })
     expect(namespaced.fetch_multi(key, key) { "wrong" }).to eq(key => { "a" => false })
   end
+
+  read_operations = %i[single mixed_multi]
+  [Redis::TimeoutError, Redis::CannotConnectError, ConnectionPool::Error].each do |failure_class|
+    read_operations.each do |operation|
+      it "attempts hosted access and reports #{failure_class} only once for #{operation} reads" do
+        reports = []
+        tested = described_class.new(url: remote_url, local_url: local_url,
+                                     error_handler: ->(**payload) { reports << payload })
+        vanilla.write("a", "cached")
+        tested.read("a")
+        allow(tested.redis).to receive(:then).and_raise(failure_class)
+
+        result = operation == :single ? tested.read("missing") : tested.read_multi("a", "missing")
+
+        expect(result).to eq(operation == :single ? nil : { "a" => "cached" })
+        expect(tested.redis).to have_received(:then).once
+        expect(reports.size).to eq(1)
+        expect(reports.first.fetch(:exception)).to be_a(failure_class)
+      end
+    end
+  end
+
+  read_operations.each do |operation|
+    it "does not retry an actually exhausted hosted connection pool for #{operation} reads" do
+      reports = []
+      tested = described_class.new(url: remote_url, local_url: local_url, pool: { size: 1, timeout: 0.01 },
+                                   error_handler: ->(**payload) { reports << payload })
+      vanilla.write("a", "cached")
+      tested.read("a")
+      checked_out = Queue.new
+      release = Queue.new
+      holder = Thread.new do
+        tested.redis.with do
+          checked_out << true
+          release.pop
+        end
+      end
+      checked_out.pop
+      allow(tested.redis).to receive(:then).and_call_original
+
+      result = operation == :single ? tested.read("missing") : tested.read_multi("a", "missing")
+
+      expect(result).to eq(operation == :single ? nil : { "a" => "cached" })
+      expect(tested.redis).to have_received(:then).once
+      expect(reports.size).to eq(1)
+      expect(reports.first.fetch(:exception)).to be_a(ConnectionPool::TimeoutError)
+    ensure
+      release << true if release
+      holder&.join
+    end
+  end
+
+  it "falls back to ordinary reads when an actual provider disables EVAL" do
+    unsupported_url = servers.start("eval-disabled", "--rename-command", "EVAL", "")
+    unsupported_l1 = LocalRedis::Cache.new(url: local_url, source_url: unsupported_url)
+    unsupported_l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    reports = []
+    tested = described_class.new(url: unsupported_url, local_url: local_url,
+                                 error_handler: ->(**payload) { reports << payload })
+    tested.write("a", "value")
+    expect(tested.read("a")).to eq("value")
+    expect(tested.read_multi("a", "missing")).to eq("a" => "value")
+    expect(reports).to be_empty
+  ensure
+    unsupported_l1&.close
+  end
 end
