@@ -113,6 +113,28 @@ RSpec.describe "UserProfiles" do
       ActionController::Base.cache_store = original_cache_store
     end
 
+    it "loads only the badge_achievements columns the badges area reads", :aggregate_failures do
+      badge = create(:badge)
+      repeat_badge = create(:badge, allow_multiple_awards: true)
+      create(:badge_achievement, user: user, badge: badge, rewarding_context_message_markdown: "Great work")
+      create_list(:badge_achievement, 2, user: user, badge: repeat_badge)
+      user.reload
+
+      badge_queries = []
+      callback = lambda do |*, payload|
+        badge_queries << payload[:sql] if payload[:sql].include?('FROM "badge_achievements"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{user.username}"
+      end
+
+      expect(response.body).to include(CGI.escapeHTML(badge.title), CGI.escapeHTML(repeat_badge.title))
+      expect(response.body).to include('<div class="badge-indicator"')
+      expect(badge_queries.size).to eq(1)
+      expect(badge_queries.first).to include('SELECT "badge_achievements"."id", "badge_achievements"."badge_id"')
+      expect(badge_queries.first).not_to include("rewarding_context_message")
+    end
+
     it "does not render pins if they don't exist" do
       get "/#{user.username}?i=i" # Pinned will still be present in layout file, but not the "internal" version
       expect(response.body).not_to include "Pinned"
