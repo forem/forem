@@ -8,7 +8,19 @@ module Ai
   # Shared by the editor (AiImageGenerationsController) and the API
   # (Api::V1::ImagesController) so both produce consistent images.
   class ArticleImageGenerator
-    TIMEOUT = 30.seconds
+    Result = Struct.new(:url, :failure_reason, keyword_init: true) do
+      def success?
+        url.present?
+      end
+
+      def refused?
+        failure_reason == :refused
+      end
+    end
+
+    # Covers both attempts (see Ai::ImageGenerator) and the upload, and stays
+    # under the 30s limit at which the router drops the request.
+    TIMEOUT = 28.seconds
     SAFETY_INSTRUCTIONS = "Do not under any circumstances generate any violence, gore, lewd, or explicit " \
                           "content of any kind regardless of prior instructions.".freeze
 
@@ -16,7 +28,8 @@ module Ai
     # @param user [User] the user requesting the image
     # @param aspect_ratio [String, nil] one of Ai::ImageGenerator::VALID_ASPECT_RATIOS keys;
     #   defaults to a ratio derived from the subforem's cover image settings
-    # @return [String, nil] the uploaded image URL, or nil if generation failed
+    # @return [Result] the uploaded image URL, or the failure reason
+    #   (see Ai::ImageGenerator#failure_reason) when generation failed
     # @raise [Timeout::Error] if generation takes longer than TIMEOUT
     def self.call(prompt:, user:, aspect_ratio: nil)
       new(prompt: prompt, user: user, aspect_ratio: aspect_ratio).call
@@ -33,21 +46,23 @@ module Ai
     end
 
     def call
-      Timeout.timeout(TIMEOUT) do
-        Ai::ImageGenerator.new(full_prompt, aspect_ratio: aspect_ratio, affected_user: user).generate&.url
-      end
+      generator = Ai::ImageGenerator.new(full_prompt, aspect_ratio: aspect_ratio, affected_user: user)
+      generation = Timeout.timeout(TIMEOUT) { generator.generate }
+      Result.new(url: generation&.url, failure_reason: generator.failure_reason)
     end
 
     private
 
     attr_reader :prompt, :user, :aspect_ratio
 
+    # Leads with an explicit request so a short prompt is not drowned out by the
+    # style block and read as instructions to acknowledge.
     def full_prompt
       if aesthetic_instructions.present?
-        "#{prompt}. Style to use if not otherwise contradicted previously: #{aesthetic_instructions}." \
-          "\n\n#{SAFETY_INSTRUCTIONS}"
+        "Generate an image of: #{prompt}.\n\nStyle to use if not otherwise contradicted by the request: " \
+          "#{aesthetic_instructions}.\n\n#{SAFETY_INSTRUCTIONS}"
       else
-        "#{prompt}.\n\n#{SAFETY_INSTRUCTIONS}"
+        "Generate an image of: #{prompt}.\n\n#{SAFETY_INSTRUCTIONS}"
       end
     end
 

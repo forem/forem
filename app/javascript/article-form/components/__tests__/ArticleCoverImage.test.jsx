@@ -327,6 +327,53 @@ describe('<ArticleCoverImage />', () => {
       expect(errorMessage).toBeInTheDocument();
     });
 
+    it('shows the server error from a failed response in the modal and keeps the prompt', async () => {
+      const refusal =
+        "This prompt can't be turned into an image. Try describing it differently.";
+      fetch.mockResponseOnce(JSON.stringify({ error: refusal }), { status: 422 });
+
+      const { getByTestId, findByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      fireEvent.click(getByTestId('generate-ai-image-btn'));
+      const promptInput = await findByTestId('ai-prompt-input');
+      fireEvent.input(promptInput, { target: { value: 'A cat' } });
+      fireEvent.click(getByTestId('generate-submit-btn'));
+
+      const error = await findByTestId('ai-prompt-error');
+      expect(error).toHaveTextContent(refusal);
+      expect(getByTestId('ai-prompt-input')).toHaveValue('A cat');
+    });
+
+    it('falls back to a generic message when a failed response is not JSON', async () => {
+      fetch.mockResponseOnce('<html>Application Error</html>', { status: 503 });
+
+      const { getByTestId, findByTestId } = render(
+        <ArticleCoverImage
+          mainImage=""
+          onMainImageUrlChange={jest.fn()}
+          coverImageHeight="420"
+          coverImageCrop="no_crop"
+          aiAvailable={true}
+        />,
+      );
+
+      fireEvent.click(getByTestId('generate-ai-image-btn'));
+      const promptInput = await findByTestId('ai-prompt-input');
+      fireEvent.input(promptInput, { target: { value: 'A cat' } });
+      fireEvent.click(getByTestId('generate-submit-btn'));
+
+      const error = await findByTestId('ai-prompt-error');
+      expect(error).toHaveTextContent('An error occurred, please try again later');
+    });
+
     it('can close the AI prompt modal', async () => {
       const { getByTestId, findByTestId, queryByTestId } = render(
         <ArticleCoverImage

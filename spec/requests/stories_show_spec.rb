@@ -45,6 +45,20 @@ RSpec.describe "StoriesShow" do
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
     end
 
+    it "loads the article by path without the semantic_embedding vector" do
+      path_queries = []
+      callback = lambda do |*, payload|
+        path_queries << payload[:sql] if payload[:sql].include?(%("articles"."path" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get article.path }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(path_queries).not_to be_empty
+      expect(path_queries).to all(include(%("articles"."processed_html")).and(exclude("semantic_embedding")))
+    end
+
     it "preserves internal nav param (i=i) upon redirect" do
       old_path = article.path
       article.update(organization: org)
@@ -223,10 +237,12 @@ RSpec.describe "StoriesShow" do
     end
 
     it "handles invalid slug characters" do
-      # rubocop:disable RSpec/MessageChain
-      allow(Article).to receive_message_chain(:includes, :find_by).and_raise(ArgumentError)
-      # rubocop:enable RSpec/MessageChain
-      get article.path
+      path = article.path
+      relation = instance_double(ActiveRecord::Relation)
+      allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
+      allow(relation).to receive(:select).with(Article.column_names - %w[semantic_embedding]).and_return(relation)
+      allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
+      get path
 
       expect(response).to have_http_status(:bad_request)
     end
