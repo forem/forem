@@ -49,6 +49,7 @@ Set:
 ```text
 LOCAL_REDIS_URL=unix:///tmp/forem-cache.sock
 LOCAL_REDIS_MAXMEMORY=128mb
+LOCAL_REDIS_MAX_TTL=30
 ```
 
 The Procfile's `bundle exec ruby bin/web` starts Redis, a lightweight Ruby sync
@@ -71,6 +72,22 @@ socket to its owner, and disables both RDB and AOF persistence. Redis maxmemory 
 an eviction budget, **not an RSS ceiling**: allow for fragmentation, buffers,
 large batch operations, the sync Ruby process, and Puma's peak allocations.
 Do not allocate all currently free memory.
+
+`LOCAL_REDIS_MAX_TTL` caps each L1 fill in **whole seconds**, default **30**,
+accepted range **1–600** (ten minutes). Invalid or out-of-range values reject
+cache-store initialization rather than silently removing the bound. The source's
+remaining TTL always takes precedence when shorter. This setting does not change
+the three-second health lease, tracking, authoritative bypasses or hosted TTLs.
+
+Start at `30`, record `hits / (hits + misses)` alongside bypasses, remote commands,
+latency and RSS, then compare `120` and `300` over representative traffic. Keep the
+lowest value where improvement levels off; return to `30` if stale data is suspected.
+Raising it permits entries to stay local longer; it does not guarantee more hits
+when invalidations or memory pressure dominate. Change it through configuration,
+with no code deploy. [Heroku config changes restart dynos](https://devcenter.heroku.com/articles/config-vars#managing-config-vars)
+and their disposable cache.
+Other hosts must restart the application and sync daemon to apply a new value and
+clear existing L1 entries, particularly when lowering the cap on a persistent sidecar.
 
 ## Coherence and failure behavior
 
@@ -96,7 +113,8 @@ Do not allocate all currently free memory.
   only when the lease is recreated.
 - A source Lua script reads each missing value and its PTTL atomically, pipelined
   in a single round trip for a batch. Fills subtract elapsed time and use at most
-  the source's remaining TTL, capped at **30 seconds**, even for non-expiring keys.
+  the source's remaining TTL, capped by `LOCAL_REDIS_MAX_TTL` (**30 seconds** by
+  default, at most **600 seconds**), even for non-expiring keys.
   Nil misses are not cached. Rails still checks entry expiry, version, compression
   and serialization exactly as for hosted cache entries.
 - Writes and deletes evict synchronously on the writing host. Increments and

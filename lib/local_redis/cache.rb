@@ -13,7 +13,8 @@ module LocalRedis
     GUARDS_KEY = "forem:l1:guards".freeze
     DATA_PREFIX = "forem:l1:data:".freeze
     LEASE_MS = 3000
-    MAX_TTL_MS = 30_000
+    DEFAULT_MAX_TTL_SECONDS = 30
+    HARD_MAX_TTL_SECONDS = 600
     # Fills are guarded per key bucket, so invalidations of unrelated keys during a
     # hosted round trip do not discard the fill. Collisions only cost a miss.
     GUARD_BUCKETS = 4096
@@ -82,6 +83,15 @@ module LocalRedis
 
     def self.monotonic_time
       Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    end
+
+    def self.max_ttl_ms
+      value = ENV.fetch("LOCAL_REDIS_MAX_TTL", DEFAULT_MAX_TTL_SECONDS.to_s)
+      unless value.match?(/\A[1-9]\d*\z/) && value.to_i <= HARD_MAX_TTL_SECONDS
+        raise ArgumentError, "LOCAL_REDIS_MAX_TTL must be whole seconds between 1 and #{HARD_MAX_TTL_SECONDS}"
+      end
+
+      value.to_i * 1000
     end
 
     def self.same_endpoint?(source_url, local_url)

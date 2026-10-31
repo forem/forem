@@ -26,6 +26,7 @@ module ActiveSupport
           raise ArgumentError, "Local cache requires a separate authoritative Redis URL"
         end
 
+        @local_max_ttl_ms = LocalRedis::Cache.max_ttl_ms
         @l1 = LocalRedis::Cache.new(url: local_url, source_url: options.fetch(:url))
         super(**options)
       end
@@ -131,7 +132,7 @@ module ActiveSupport
           next unless result&.first
 
           value, ttl = result
-          ttl = ttl == -1 ? LocalRedis::Cache::MAX_TTL_MS : [ttl - elapsed, LocalRedis::Cache::MAX_TTL_MS].min
+          ttl = ttl == -1 ? @local_max_ttl_ms : [ttl - elapsed, @local_max_ttl_ms].min
           memo[key] = [value, ttl] if ttl.positive?
         end
       end

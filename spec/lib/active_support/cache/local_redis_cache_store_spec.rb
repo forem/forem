@@ -70,6 +70,29 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(store.read("short")).to be_nil
   end
 
+  it "applies a configured cap to single and batched fills without extending source TTLs" do
+    stub_const("ENV", ENV.to_h.merge("LOCAL_REDIS_MAX_TTL" => "120"))
+    vanilla.write_multi({ "forever" => "value", "long" => "value" }, expires_in: nil)
+    vanilla.write("short", "value", expires_in: 60)
+    store.read("forever")
+    expect(store.read_multi("long", "short")).to eq("long" => "value", "short" => "value")
+    expect(local.pttl("#{l1.data_prefix}forever")).to be_between(110_000, 120_000)
+    expect(local.pttl("#{l1.data_prefix}long")).to be_between(110_000, 120_000)
+    expect(local.pttl("#{l1.data_prefix}short")).to be_between(50_000, 60_000)
+  end
+
+  it "still revokes long-lived entries on lease loss when the cap is ten minutes" do
+    stub_const("ENV", ENV.to_h.merge("LOCAL_REDIS_MAX_TTL" => "600"))
+    vanilla.write("a", "old")
+    store.read("a")
+    expect(local.pttl("#{l1.data_prefix}a")).to be_between(590_000, 600_000)
+    l1.disable
+    vanilla.write("a", "new")
+    expect(store.read("a")).to eq("new")
+    l1.heartbeat(LocalRedis::Cache.monotonic_time)
+    expect(local_value("a")).to be_nil
+  end
+
   it "rejects a slow fill if an invalidation was processed during the hosted read" do
     vanilla.write("article", "old")
     allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
@@ -119,6 +142,30 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(local_value("a")).to be_nil
     expect(store.read("a")).to eq("new")
     expect(local_value("a")).to eq(remote.get("a"))
+  end
+
+  it "rejects an in-flight fill when eviction removes its guard epoch" do
+    vanilla.write("a", "old")
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      result = original.call(&block)
+      local.del(l1.guards_key)
+      l1.invalidate(["a"]) # Recreates a bucket, but cannot recreate the epoch.
+      result
+    end
+    expect(store.read("a")).to eq("old")
+    expect(local_value("a")).to be_nil
+  end
+
+  it "rejects a delayed fill after a whole-cache flush and heartbeat recovery" do
+    vanilla.write("a", "old")
+    allow(store.redis).to receive(:then).and_wrap_original do |original, &block|
+      result = original.call(&block)
+      l1.invalidate(nil)
+      l1.heartbeat(LocalRedis::Cache.monotonic_time)
+      result
+    end
+    expect(store.read("a")).to eq("old")
+    expect(local_value("a")).to be_nil
   end
 
   it "synchronously evicts successful, failed-NX, and bulk writes on this host" do
