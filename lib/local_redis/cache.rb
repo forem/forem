@@ -64,8 +64,23 @@ module LocalRedis
 
     def self.same_endpoint?(source_url, local_url)
       source = URI.parse(source_url)
-      source.scheme == "unix" && File.expand_path(source.path) == File.expand_path(socket_path(local_url))
+      return false if source.scheme != "unix" || source.path.to_s.empty?
+
+      local = socket_path(local_url)
+      # identical? also catches hard links and bind mounts of an existing socket.
+      canonical_socket_path(source.path) == canonical_socket_path(local) || File.identical?(source.path, local)
     end
+
+    def self.canonical_socket_path(path)
+      # Resolve socket and directory symlinks, even before Redis creates the socket.
+      File.realdirpath(path)
+    rescue SystemCallError
+      # Resolve the nearest existing ancestor so aliases such as /tmp still match.
+      expanded = File.expand_path(path)
+      parent = File.dirname(expanded)
+      parent == expanded ? expanded : File.join(canonical_socket_path(parent), File.basename(expanded))
+    end
+    private_class_method :canonical_socket_path
 
     attr_reader :lease_key, :data_prefix
 

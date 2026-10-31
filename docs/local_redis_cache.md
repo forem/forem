@@ -8,7 +8,8 @@ shared by Puma workers, rather than Redis embedded in the Ruby heap.
 Sessions, Sidekiq, distributed locks and the independent Redis clients retain
 their existing configuration. Cached role names, tag/subforem moderator scopes,
 user-block lists and subscription checks use L1. Trusted-role checks, admin API
-keys, deletion tokens and coordination reads explicitly pass `local_cache: false`
+keys, Googlebot rate-limit exemptions, deletion tokens, feedback-email suppression
+and coordination reads explicitly pass `local_cache: false`
 to retain authoritative reads. This bypasses both Redis L1 and Rails request
 memory, including `fetch_multi`. Rails.cache raw reads (including rate-limit
 counters), writes, increments, decrements and NX operations go to hosted Redis.
@@ -27,7 +28,10 @@ The default deployment is unchanged unless `LOCAL_REDIS_URL` is set.
   existing cache operations, plus EVAL/GET/PTTL for atomic read-through fills.
 - `redis-server` on each web host. The dedicated local database must **never**
   contain sessions, jobs, locks, or other durable/shared data: it is flushed on
-  startup, reconnect, and loss of the health lease.
+  startup, reconnect, and loss of the health lease. The launcher and clients reject
+  a source Unix socket matching the local socket, including symlink and hard-link aliases, before
+  starting or connecting to the disposable cache. This does not replace the
+  requirement to provision a dedicated local database.
 
 References: [Redis tracking protocol](https://redis.io/docs/latest/develop/reference/client-side-caching/)
 and [Redis Cloud compatibility](https://redis.io/docs/latest/operate/rs/references/compatibility/client-side-caching/).
@@ -187,6 +191,12 @@ source identity, tracking reconnect/lease loss, Puma forks, process supervision,
 and Rack::Attack's adapter selection. Sessions, Sidekiq, and separate Redis clients
 keep their existing wiring. Their independent regression suites are not replaced
 by the cache integration tests.
+
+Googlebot prefixes govern a Rack::Attack exemption and feedback-response markers
+suppress duplicate emails, so both bypass L1 and request memory. Delegated-access
+JWT keys use their own MemoryStore and are unaffected. Feedback suppression and
+ThrottledCall retain their existing fetch-based behavior; this does not turn them
+into atomic distributed locks.
 
 Existing `MemoryFirstCache`, Flipper memory stores, and Settings/RequestStore
 memoization remain separate layers with their existing invalidation semantics.

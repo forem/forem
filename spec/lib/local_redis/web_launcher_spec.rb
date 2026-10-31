@@ -64,4 +64,18 @@ RSpec.describe LocalRedis::Web do
     expect(JSON.parse(stdout)).to eq(["exec", "puma", "-C", "config/puma.rb"])
     expect(status.exitstatus).to eq(23)
   end
+
+  it "rejects a source socket alias before executing redis-server" do
+    directory_alias = File.join(servers.directory, "alias")
+    File.symlink(servers.directory, directory_alias)
+    shim = File.join(servers.directory, "redis-server")
+    File.write(shim, "#!#{RbConfig.ruby}\nputs 'server started'\n")
+    File.chmod(0o700, shim)
+    env = { "LOCAL_REDIS_URL" => local_url, "REDISCLOUD_URL" => "unix://#{directory_alias}/launcher.sock",
+            "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}" }
+    stdout, stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/redis-local-server")
+    expect(status).not_to be_success
+    expect(stderr).to include("separate")
+    expect(stdout).not_to include("server started")
+  end
 end

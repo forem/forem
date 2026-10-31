@@ -86,4 +86,15 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     cache.reset!
     expect(cache.read("probe")).to be_nil
   end
+
+  it "does not retain a Googlebot rate-limit exemption after the authoritative prefixes change" do
+    key = GooglebotVerifier::CACHE_KEY
+    source = ActiveSupport::Cache::RedisCacheStore.new(url: remote_url)
+    store.with_local_cache do
+      store.write(key, ["192.0.2.0/27"])
+      store.read(key)
+      source.write(key, []) # Simulate another host before its invalidation arrives.
+      expect(GooglebotVerifier.googlebot?("192.0.2.1")).to be(false)
+    end
+  end
 end

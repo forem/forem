@@ -262,6 +262,26 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(namespaced.fetch_multi(key, key) { "wrong" }).to eq(key => { "a" => false })
   end
 
+  it "rejects aliases of the authoritative socket, including before the socket exists" do
+    socket = LocalRedis::Cache.socket_path(local_url)
+    alias_path = File.join(servers.directory, "alias.sock")
+    File.symlink(socket, alias_path)
+    expect { described_class.new(url: "unix://#{alias_path}", local_url: local_url) }
+      .to raise_error(ArgumentError, /separate/)
+
+    hard_link = File.join(servers.directory, "hard-link.sock")
+    File.link(socket, hard_link)
+    expect { described_class.new(url: "unix://#{hard_link}", local_url: local_url) }
+      .to raise_error(ArgumentError, /separate/)
+
+    directory_alias = File.join(servers.directory, "alias-directory")
+    File.symlink(servers.directory, directory_alias)
+    expect do
+      described_class.new(url: "unix://#{directory_alias}/future.sock",
+                          local_url: "unix://#{servers.directory}/future.sock")
+    end.to raise_error(ArgumentError, /separate/)
+  end
+
   read_operations = %i[single mixed_multi]
   [Redis::TimeoutError, Redis::CannotConnectError, ConnectionPool::Error].each do |failure_class|
     read_operations.each do |operation|
