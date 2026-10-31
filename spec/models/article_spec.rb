@@ -1066,8 +1066,7 @@ RSpec.describe Article do
         article = quickie("Plain 5 * 3 * 2 text\n\nsecond snake_case_word")
 
         expect(article.title_finalized).to eq(
-          %(<p class="quickie-paragraph">Plain 5 * 3 * 2 text</p>) +
-          %(<p class="quickie-paragraph">second snake_case_word</p>),
+          %(<p class="quickie-paragraph">Plain 5 * 3 * 2 text</p><p class="quickie-paragraph">second snake_case_word</p>),
         )
       end
 

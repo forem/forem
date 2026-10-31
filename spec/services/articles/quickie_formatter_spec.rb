@@ -26,8 +26,7 @@ RSpec.describe Articles::QuickieFormatter, type: :service do
       html = render("[docs](https://docs.forem.com/a?b=1&c=2)", links: true)
 
       expect(html).to eq(
-        %(<a href="https://docs.forem.com/a?b=1&amp;c=2" target="_blank" ) +
-        %(rel="nofollow noopener noreferrer ugc">docs</a>),
+        %(<a href="https://docs.forem.com/a?b=1&amp;c=2" target="_blank" rel="nofollow noopener noreferrer ugc">docs</a>),
       )
     end
 
