@@ -1,0 +1,25 @@
+spec/lib/local_redis/sync_spec.rb
+  s_f831849363d5ae::t_4e822cbf9fef68 103-106,108-110
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_f831849363d5ae::t_4e822cbf9fef68 266,268-285,287-294,297-315,329
+  s_f831849363d5ae::t_ac803d43d14c71 265,267,286
+  s_f831849363d5ae::t_fed09dba3dbb0c 264,295-296,316-328
+lib/active_support/cache/local_redis_cache_store.rb
+  s_f831849363d5ae::t_b799b19f9843b7 93,99-100,103-104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2f5abcf69df4f38130320cfc3798a561898829a4",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
