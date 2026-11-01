@@ -45,7 +45,7 @@ RSpec.describe "StoriesShow" do
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
     end
 
-    it "loads the article by path without the semantic_embedding vector" do
+    it "loads the article by path without the semantic_embedding vector or search tsvector" do
       path_queries = []
       callback = lambda do |*, payload|
         path_queries << payload[:sql] if payload[:sql].include?(%("articles"."path" =))
@@ -56,7 +56,11 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(article.title))
       expect(path_queries).not_to be_empty
-      expect(path_queries).to all(include(%("articles"."processed_html")).and(exclude("semantic_embedding")))
+      expect(path_queries).to all(
+        include(%("articles"."processed_html"))
+          .and(exclude("semantic_embedding"))
+          .and(exclude("reading_list_document")),
+      )
     end
 
     it "preserves internal nav param (i=i) upon redirect" do
@@ -240,7 +244,8 @@ RSpec.describe "StoriesShow" do
       path = article.path
       relation = instance_double(ActiveRecord::Relation)
       allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
-      allow(relation).to receive(:select).with(Article.column_names - %w[semantic_embedding]).and_return(relation)
+      selected_columns = Article.column_names - %w[semantic_embedding reading_list_document]
+      allow(relation).to receive(:select).with(selected_columns).and_return(relation)
       allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
       get path
 
