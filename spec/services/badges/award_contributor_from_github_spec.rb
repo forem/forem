@@ -186,6 +186,42 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
       end
     end
 
+    context "when a commit contributor already holds a badge and has no recent merged PRs" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+
+      before do
+        create(:badge, title: "4x-commit-club")
+        create(:badge_achievement, user: user, badge: dev_contributor_badge)
+        allow(github_client).to receive(:contributors).and_return([contributor_struct.new("123456", 1)])
+      end
+
+      it "skips the per-user merged PR search on an hourly run" do
+        described_class.call
+
+        expect(github_client).not_to have_received(:search_issues).with(/author:/, any_args)
+      end
+    end
+
+    context "when a recent merged PR author is rate limited during per-user PR counting" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+
+      before do
+        create(:badge, title: "4x-commit-club")
+        allow(github_client).to receive_messages(commits: [], contributors: [])
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, any_args)
+          .and_return(search_results_struct.new(1, [issue_struct.new(author_struct.new("123456"))]))
+        allow(github_client).to receive(:search_issues)
+          .with(/author:.* is:merged is:pr/, any_args)
+          .and_raise(Github::Errors::TooManyRequests.new("rate limit", response_status: 429))
+      end
+
+      it "still awards the baseline dev-contributor badge before stopping", :aggregate_failures do
+        expect(described_class.call).to be(false)
+        expect(user.badge_achievements.pluck(:badge_id)).to include(dev_contributor_badge.id)
+      end
+    end
+
     context "when badges exist in the database, and github provider is a symbol" do
       let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
       let!(:four_x_commit_badge) { create(:badge, title: "4x-commit-club", allow_multiple_awards: true) }
