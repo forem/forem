@@ -144,11 +144,11 @@ module Badges
       today = Time.current.utc.to_date
       scan_start = scan_start_date(today)
 
-      candidate_uids = contributions_map.keys.to_set
-      candidate_uids.merge(merged_pr_author_uids(repo, scan_start, today))
+      pr_author_uids = merged_pr_author_uids(repo, scan_start, today)
+      candidate_uids = contributions_map.keys.to_set | pr_author_uids
 
       Identity.github.where(uid: candidate_uids.to_a).find_each do |identity|
-        process_candidate_identity(repo, identity, contributions_map)
+        process_candidate_identity(repo, identity, contributions_map, pr_author_uids)
       end
 
       # Only advance the marker once the scan for this window completed without
@@ -189,35 +189,44 @@ module Badges
       today - MERGED_PR_FALLBACK_WINDOW.in_days.to_i
     end
 
-    def process_candidate_identity(repo, identity, contributions_map)
+    def process_candidate_identity(repo, identity, contributions_map, pr_author_uids)
       commits_count = contributions_map[identity.uid] || 0
+      recent_pr_author = pr_author_uids.include?(identity.uid)
+      baseline_count = recent_pr_author ? [commits_count, 1].max : commits_count
 
       # Short-circuit the paced Search API call when it cannot change the outcome:
-      # the commit count already clears the top badge threshold, or the user
-      # already holds every badge we could award. This keeps the expensive,
-      # rate-limited search to the handful of users for whom it actually matters.
-      pr_count =
-        if search_pr_count_needed?(identity.user_id, commits_count)
-          github_user = github_nickname(identity)
-          github_user ? merged_pr_count(repo, github_user) : 0
-        else
-          0
-        end
+      # the commit count already clears the top badge threshold, the user already
+      # holds every badge we could award, or (on an hourly run) the user already
+      # holds a contributor badge and did not merge a PR in the scan window.
+      needs_pr_search = search_pr_count_needed?(
+        identity.user_id,
+        commits_count,
+        recent_pr_author: recent_pr_author,
+      )
 
-      create_badges_for_user(identity.user_id, [commits_count, pr_count].max)
+      create_badges_for_user(identity.user_id, baseline_count)
+      return unless needs_pr_search
+
+      github_user = github_nickname(identity)
+      pr_count = github_user ? merged_pr_count(repo, github_user) : 0
+      create_badges_for_user(identity.user_id, pr_count) if pr_count > baseline_count
     end
 
     # True only when a merged-PR lookup could still award a badge the user does
-    # not already have: the commit count falls short of the highest threshold and
-    # at least one badge slug remains unawarded for this user.
-    def search_pr_count_needed?(user_id, commits_count)
+    # not already have: the commit count falls short of the highest threshold,
+    # at least one badge slug remains unawarded for this user, and either this is
+    # a full-history backfill, the user authored a merged PR in the current scan
+    # window, or the user has no contributor badges yet.
+    def search_pr_count_needed?(user_id, commits_count, recent_pr_author: false)
       return false if commits_count >= MAX_BADGE_THRESHOLD
 
       awarded_badge_ids = BadgeAchievement.where(
         user_id: user_id,
         badge_id: badge_slugs_with_id.values,
       ).pluck(:badge_id)
-      awarded_badge_ids.size < badge_slugs_with_id.size
+      return false if awarded_badge_ids.size >= badge_slugs_with_id.size
+
+      @full_history || recent_pr_author || awarded_badge_ids.empty?
     end
 
     # Collects the uids of users who had a PR merged in the repo between
