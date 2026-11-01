@@ -1,0 +1,46 @@
+spec/lib/local_redis/sync_spec.rb
+  s_f831849363d5ae::t_8bb7872fdbced4 48,50-52,54-56,58-60
+  s_f831849363d5ae::t_515e4c9d67dfa9 49,53,57
+config/environments/production.rb
+  s_f831849363d5ae::t_308fa13704679c 80-81
+spec/lib/local_redis/web_spec.rb
+  s_f831849363d5ae::t_515e4c9d67dfa9 82
+  s_f831849363d5ae::t_fc2ba600e1d40a 83,89-90
+  s_f831849363d5ae::t_308fa13704679c 80-81,84-88,91
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_8bb7872fdbced4 172-181
+  s_f831849363d5ae::t_2753ca2552f904 60-63,200-202
+lib/local_redis/runtime.rb
+  s_f831849363d5ae::t_308fa13704679c 1-7
+config/initializers/local_redis_cache.rb
+  s_f831849363d5ae::t_308fa13704679c 3
+lib/local_redis/connection.rb
+  s_f831849363d5ae::t_fc2ba600e1d40a 1,3-48
+  s_f831849363d5ae::t_8b396fa1930a96 2
+spec/lib/local_redis/connection_spec.rb
+  s_f831849363d5ae::t_b2b8fc0f20c57c 3
+  s_f831849363d5ae::t_515e4c9d67dfa9 6,8
+  s_f831849363d5ae::t_8b396fa1930a96 1-2,4-5,7,9-45
+lib/local_redis/web.rb
+  s_f831849363d5ae::t_308fa13704679c 37-38
+spec/lib/local_redis/runtime_spec.rb
+  s_f831849363d5ae::t_308fa13704679c 1-16
+lib/local_redis/cache.rb
+  s_f831849363d5ae::t_fc2ba600e1d40a 7,127
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7acf44958df74a900d983ea9079c40c8f4943c5",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
