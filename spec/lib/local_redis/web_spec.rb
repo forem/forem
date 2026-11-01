@@ -77,4 +77,16 @@ RSpec.describe LocalRedis::Web do
     expect(result.last.exitstatus).to eq(7)
     expect { Process.kill(0, cache_pid) }.to raise_error(Errno::ESRCH)
   end
+
+  it "marks only the web child active, clearing an inherited marker for auxiliaries" do
+    original_marker = ENV.fetch("LOCAL_REDIS_ACTIVE", nil)
+    ENV["LOCAL_REDIS_ACTIVE"] = "1"
+    code = "File.write(ARGV[0], ENV.fetch('LOCAL_REDIS_ACTIVE', 'absent')); sleep 30"
+    launch([RbConfig.ruby, "-e", code, web_pid_path], [RbConfig.ruby, "-e", code, cache_pid_path])
+    wait_until { File.exist?(web_pid_path) && File.exist?(cache_pid_path) }
+    expect(File.read(web_pid_path)).to eq("1")
+    expect(File.read(cache_pid_path)).to eq("absent")
+  ensure
+    ENV["LOCAL_REDIS_ACTIVE"] = original_marker
+  end
 end

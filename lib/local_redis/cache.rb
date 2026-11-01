@@ -4,6 +4,7 @@ require "securerandom"
 require "uri"
 require "digest"
 require "zlib"
+require_relative "connection"
 
 module LocalRedis
   # This Redis database is disposable and must be dedicated to this cache.
@@ -123,8 +124,7 @@ module LocalRedis
       @guards_key = "#{GUARDS_KEY}:#{origin}"
       @data_prefix = "#{DATA_PREFIX}#{origin}:"
       @pool = ConnectionPool.new(size: 5, timeout: 0.05) do
-        Redis.new(url: url, connect_timeout: 0.05, read_timeout: 0.05, write_timeout: 0.05,
-                  reconnect_attempts: 0)
+        Connection.new(url)
       end
     end
 

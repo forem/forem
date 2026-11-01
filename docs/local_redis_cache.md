@@ -57,8 +57,10 @@ daemon (without booting Rails), and Puma. Without `LOCAL_REDIS_URL`, it directly
 executes the original Puma command. The production `Containerfile` passes its
 original `rails server -b 0.0.0.0 -p 3000` command to `bin/web` the same way.
 Release tasks and worker commands are unchanged.
-Workers may inherit `LOCAL_REDIS_URL` from app-wide configuration; without a local
-socket they fall back to authoritative Redis. Their writes still invalidate web
+The launcher sets `LOCAL_REDIS_ACTIVE=1` only for its web child. Do not set that
+internal marker in app-wide Heroku configuration. Workers, release tasks and
+consoles retain standard RedisCacheStore even when they inherit `LOCAL_REDIS_URL`;
+they make no local socket attempts and report no L1 bypass metrics. Their writes still invalidate web
 caches through server-side tracking, including during mixed-version rolling deploys.
 
 No initial download or hot-key registry is required. Fresh dynos warm on demand,
@@ -167,6 +169,16 @@ The daemon applies one local invalidation script per RESP3 invalidation frame
 (a frame can contain several keys). High fleet-wide write rates can exhaust its
 processing capacity, delay PING replies and disable L1 safely. Track bypasses and
 disconnect warnings during rollout; increasing entry TTL does not fix that limit.
+Real-Redis regression coverage exercises continuous unrelated writes and a
+2,000-key burst without a tracking reset. This is a safety/load regression, not
+a capacity guarantee for a production provider or fleet. Redis coalesces keys in
+invalidation frames; blindly polling `next_event(0)` to drain them is unsafe
+because that client API treats zero as an infinite wait.
+
+Local commands use a dedicated redis-client middleware that skips global command
+instrumentation. Hosted Redis tracing is retained. A regression with the actual
+Datadog integration verifies zero local spans and a normal hosted span, avoiding
+per-L1-operation APM volume. Keep application/request tracing enabled normally.
 
 Inspect local Redis with `redis-cli -s /tmp/forem-cache.sock INFO memory` and
 `INFO stats` for actual RSS, evictions and hit behavior. Check the health lease
@@ -185,7 +197,9 @@ writes remain in the original hosted cache; no data migration is necessary.
 
 The same launcher, socket, scripts, and hosted endpoint work on a regional VM or
 container. For a persistent sidecar, run `bundle exec ruby bin/redis-local-server` and
-`bundle exec ruby bin/redis-local-sync` under the host supervisor and start Puma directly; mount the
+`bundle exec ruby bin/redis-local-sync` under the host supervisor and start Puma with
+`LOCAL_REDIS_ACTIVE=1 bundle exec puma -C config/puma.rb`; set this marker only
+in the web service environment. Mount the
 socket directory into the application container with appropriate ownership. Never
 run two sync daemons against the same local Redis database.
 

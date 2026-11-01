@@ -45,6 +45,19 @@ RSpec.describe LocalRedis::Sync do
     local.get("#{l1.data_prefix}#{key}")
   end
 
+  it "handles a large coalesced write burst without losing invalidations or restarting tracking" do
+    keys = Array.new(2000) { |index| "burst-#{index}" }
+    local.pipelined do |pipeline|
+      keys.each { |key| pipeline.set("#{l1.data_prefix}#{key}", "cached", px: 30_000) }
+    end
+    tracker = remote.client(:list).detect { |client| client.fetch("flags").include?("t") }.fetch("id")
+    remote.pipelined { |pipeline| keys.each { |key| pipeline.incr(key) } }
+    wait_until { local.mget(*keys.map { |key| "#{l1.data_prefix}#{key}" }).all?(&:nil?) }
+    expect(local.get(l1.lease_key)).not_to be_nil
+    current = remote.client(:list).detect { |client| client.fetch("flags").include?("t") }
+    expect(current.fetch("id")).to eq(tracker)
+  end
+
   it "keeps filling and serving a stable key while other keys are written continuously" do
     bucket = ->(key) { Zlib.crc32(key) % LocalRedis::Cache::GUARD_BUCKETS }
     old_store.write("stable", "value")

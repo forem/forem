@@ -34,7 +34,8 @@ module LocalRedis
     private
 
     def start(role)
-      @children[Process.spawn(*@commands.fetch(role))] = role
+      environment = { "LOCAL_REDIS_ACTIVE" => role == :web ? "1" : nil }
+      @children[Process.spawn(environment, *@commands.fetch(role))] = role
     rescue SystemCallError => e
       # A cache auxiliary that cannot be spawned (EAGAIN, ENOENT) must not stop Puma.
       raise if role == :web
