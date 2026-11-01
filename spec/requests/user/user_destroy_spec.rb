@@ -92,7 +92,7 @@ RSpec.describe "UserDestroy" do
     end
 
     it "does not send an email if already requested" do
-      allow(Rails.cache).to receive(:exist?).with("user-destroy-token-#{user.id}").and_return(true)
+      allow(Rails.cache).to receive(:exist?).with("user-destroy-token-#{user.id}", local_cache: false).and_return(true)
       allow(mailer_class).to receive(:with).and_return(mailer)
       allow(mailer).to receive(:account_deletion_requested_email).and_return(message_delivery)
       allow(message_delivery).to receive(:deliver_now)
@@ -122,7 +122,8 @@ RSpec.describe "UserDestroy" do
         mismatch_token = SecureRandom.hex(8)
         allow(Honeycomb).to receive(:add_field)
         allow(Rails.cache).to receive(:read).and_call_original
-        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(mismatch_token)
+        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}",
+                                                  local_cache: false).and_return(mismatch_token)
         expect do
           get user_confirm_destroy_path(token: token)
         end.to raise_error(ActionController::RoutingError)
@@ -132,7 +133,7 @@ RSpec.describe "UserDestroy" do
 
       it "renders template with verification fields if destroy_token is correct", :aggregate_failures do
         allow(Rails.cache).to receive(:read).and_call_original
-        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}").and_return(token)
+        allow(Rails.cache).to receive(:read).with("user-destroy-token-#{user.id}", local_cache: false).and_return(token)
         get user_confirm_destroy_path(token: token)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include('id="delete__account__username__field"')

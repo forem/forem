@@ -139,6 +139,10 @@ FROM base as production
 
 USER root
 
+# Optional disposable per-host cache; the web launcher starts it only when
+# LOCAL_REDIS_URL is set. No persistence or public TCP listener is enabled.
+RUN apt-get update -qq && apt-get install -y --no-install-recommends redis-server && apt-get clean
+
 ENV BUNDLER_VERSION=2.4.17 BUNDLE_SILENCE_ROOT_WARNING=1
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
@@ -157,7 +161,7 @@ VOLUME "${APP_HOME}"/public/
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+CMD ["bundle", "exec", "ruby", "bin/web", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Testing
 FROM builder AS testing

@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require_relative "../lib/local_redis/cache"
+
+socket = LocalRedis::Cache.socket_path(ENV.fetch("LOCAL_REDIS_URL"))
+source_url = ENV.fetch("REDISCLOUD_URL", nil) || ENV.fetch("REDIS_URL", nil)
+if source_url && LocalRedis::Cache.same_endpoint?(source_url, ENV.fetch("LOCAL_REDIS_URL"))
+  abort "Local and authoritative Redis must be separate"
+end
+maxmemory = ENV.fetch("LOCAL_REDIS_MAXMEMORY", "128mb")
+unless maxmemory.match?(/\A[1-9]\d*(?:kb|mb|gb)?\z/i)
+  abort "LOCAL_REDIS_MAXMEMORY must be a positive byte count or a size such as 128mb"
+end
+exec "redis-server", "--port", "0", "--unixsocket", socket, "--unixsocketperm", "700",
+     "--maxmemory", maxmemory, "--maxmemory-policy", "allkeys-lfu",
+     "--save", "", "--appendonly", "no", "--daemonize", "no", "--loglevel", "warning"

@@ -74,7 +74,7 @@ RSpec.describe Authorizer, type: :policy do
     it "memoizes the result from rolify" do
       allow(Rails.cache)
         .to receive(:fetch)
-        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours)
+        .with("user-#{user.id}/has_trusted_role", expires_in: 200.hours, local_cache: false)
         .and_return(false)
         .once
 

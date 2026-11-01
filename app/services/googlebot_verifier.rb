@@ -16,7 +16,7 @@ class GooglebotVerifier
       return false
     end
 
-    prefixes = Rails.cache.read(CACHE_KEY)
+    prefixes = Rails.cache.read(CACHE_KEY, local_cache: false)
 
     unless prefixes.is_a?(Array)
       prefixes = fetch_googlebot_prefixes
