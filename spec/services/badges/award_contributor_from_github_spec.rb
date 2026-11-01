@@ -128,6 +128,22 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
       end
     end
 
+    context "when dev-contributor is awarded earlier in the same run and older merged PRs exist" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:sixteen_x_commit_badge) { create(:badge, title: "16x-commit-club") }
+
+      it "still runs the per-user merged PR search and awards the higher badge", :aggregate_failures do
+        allow(github_client).to receive(:contributors).and_return([contributor_struct.new("123456", 1)])
+        allow(github_client).to receive(:search_issues).with(/author:.* is:merged is:pr/, any_args)
+          .and_return(search_results_struct.new(20, []))
+
+        described_class.call
+
+        expect(user.badge_achievements.pluck(:badge_id))
+          .to include(dev_contributor_badge.id, sixteen_x_commit_badge.id)
+      end
+    end
+
     context "when a contributor has merged PRs but no attributed commits" do
       let!(:sixteen_x_commit_badge) { create(:badge, title: "16x-commit-club") }
 
