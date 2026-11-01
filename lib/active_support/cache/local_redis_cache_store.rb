@@ -27,6 +27,7 @@ module ActiveSupport
         end
 
         @local_max_ttl_ms = LocalRedis::Cache.max_ttl_ms
+        @script_warning_lock = Mutex.new
         @l1 = LocalRedis::Cache.new(url: local_url, source_url: options.fetch(:url))
         super(**options)
       end
@@ -57,7 +58,16 @@ module ActiveSupport
       def read_serialized_entry(key, raw: false, **options)
         return bypass_local_cache { super } if raw || options[:local_cache] == false
 
-        read_through([key]) { super }.first
+        cache = local_cache
+        return read_through([key]) { super }.first unless cache
+
+        hit = true
+        payload = cache.fetch_entry(key) do
+          hit = false
+          read_through([key]) { super }.first
+        end
+        options[:event][:store] = cache.class.name if hit && options[:event]
+        payload
       end
 
       # Matches RedisCacheStore's decoding/version/expiry checks, with batched L1
@@ -67,7 +77,7 @@ module ActiveSupport
         return super if names.empty?
 
         keys = names.map { |name| normalize_key(name, options) }
-        values = read_through(keys) { redis.then { |client| client.mget(*keys) } }
+        values = read_serialized_entries(keys)
         names.zip(values).each_with_object({}) do |(name, value), results|
           entry = deserialize_entry(value)
           next if entry.nil? || entry.expired? || entry.mismatched?(normalize_version(name, options))
@@ -78,6 +88,24 @@ module ActiveSupport
             # Treat incompatible serialized values as misses, like RedisCacheStore.
           end
         end
+      end
+
+      # Keep serialized values and nil misses in Rails' request memory, above L1.
+      # Presence in this hash matters: a recorded nil must not hit either Redis.
+      def read_serialized_entries(keys)
+        cache = local_cache
+        return read_through(keys) { redis.then { |client| client.mget(*keys) } } unless cache
+
+        entries = cache.read_multi_entries(keys)
+        missing = keys.reject { |key| entries.key?(key) }.uniq
+        unless missing.empty?
+          values = read_through(missing) { redis.then { |client| client.mget(*missing) } }
+          missing.zip(values).each do |key, payload|
+            entries[key] = payload
+            cache.write_entry(key, payload)
+          end
+        end
+        keys.map { |key| entries[key] }
       end
 
       def read_through(keys)
@@ -100,7 +128,8 @@ module ActiveSupport
               missing.each { |key| pipeline.eval(VALUE_AND_TTL, keys: [key]) }
             end
           end
-        rescue ::Redis::CommandError
+        rescue ::Redis::CommandError => e
+          warn_script_rejected(e)
           nil
         end
         # A provider may allow tracking/GET but deny EVAL. Keep its ordinary
@@ -120,6 +149,21 @@ module ActiveSupport
       def instrument_bypass
         ActiveSupport::Notifications.instrument("bypass.local_redis_cache")
         @metrics&.record_bypass
+      end
+
+      def warn_script_rejected(error)
+        return if @script_warning_pid == Process.pid
+
+        @script_warning_lock.synchronize do
+          return if @script_warning_pid == Process.pid
+
+          @script_warning_pid = Process.pid
+          logger&.warn("LocalRedisCacheStore: hosted Redis rejected the read-through script (#{error.class}); " \
+                       "using GET/MGET without filling L1. Check EVAL/GET/PTTL permissions.")
+        end
+      rescue StandardError
+        # Logging must never prevent the ordinary hosted-read fallback.
+        nil
       end
 
       def instrument_read(hits, misses)
@@ -160,6 +204,7 @@ module ActiveSupport
       end
 
       def delete_multi_entries(entries, **options)
+        entries.each { |key| local_cache&.delete_entry(key) }
         super
       ensure
         local_operation { @l1.invalidate(entries) }

@@ -117,6 +117,11 @@ clear existing L1 entries, particularly when lowering the cap on a persistent si
   default, at most **600 seconds**), even for non-expiring keys.
   Nil misses are not cached. Rails still checks entry expiry, version, compression
   and serialization exactly as for hosted cache entries.
+- Rails request memory remains above L1: repeated single and batched reads reuse
+  serialized entries and recorded misses without either Redis round trip.
+  Writes and deletes update or evict request entries, including bulk deletion.
+  Request memory is discarded between requests. Raw and `local_cache: false`
+  reads bypass both layers.
 - Writes and deletes evict synchronously on the writing host. Increments and
   decrements do not: counters are raw values read only with `raw: true`, which
   bypasses L1, so this avoids a local round trip per throttle counter. Tracking
@@ -155,6 +160,13 @@ near zero once dynos have started.
 bypass. Nothing in the app subscribes to them. These are separate from Rails'
 existing logical `cache_read` notifications (which report hits from either tier).
 A tracking failure logs `LocalRedis sync disconnected` and its error class.
+Rejected read-through scripts log a bounded warning once per process/store,
+without including keys, payloads or the server's error text. GET/MGET fallback
+continues; check EVAL/GET/PTTL permissions when fills remain unavailable.
+The daemon applies one local invalidation script per RESP3 invalidation frame
+(a frame can contain several keys). High fleet-wide write rates can exhaust its
+processing capacity, delay PING replies and disable L1 safely. Track bypasses and
+disconnect warnings during rollout; increasing entry TTL does not fix that limit.
 
 Inspect local Redis with `redis-cli -s /tmp/forem-cache.sock INFO memory` and
 `INFO stats` for actual RSS, evictions and hit behavior. Check the health lease

@@ -47,6 +47,71 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     expect(vanilla.read("d")).to eq(4)
   end
 
+  it "memoizes present values and misses within a request without either Redis round trip" do
+    vanilla.write("present", false)
+    allow(LocalRedis::Cache).to receive(:new).with(url: local_url, source_url: remote_url).and_return(l1)
+    allow(l1).to receive(:read).and_call_original
+    allow(store.redis).to receive(:then).and_call_original
+    store.with_local_cache do
+      5.times do
+        expect(store.read("present")).to be(false)
+        expect(store.read("absent")).to be_nil
+      end
+    end
+    expect(l1).to have_received(:read).with(["present"]).once
+    expect(l1).to have_received(:read).with(["absent"]).once
+    expect(store.redis).to have_received(:then).twice
+  end
+
+  it "shares serialized request entries and misses across single and batched reads" do
+    vanilla.write_multi("a" => false, "b" => nil)
+    allow(LocalRedis::Cache).to receive(:new).with(url: local_url, source_url: remote_url).and_return(l1)
+    allow(l1).to receive(:read).and_call_original
+    allow(store.redis).to receive(:then).and_call_original
+    store.with_local_cache do
+      expect(store.read("a")).to be(false)
+      5.times do
+        expect(store.read_multi("a", "b", "absent")).to eq("a" => false, "b" => nil)
+        expect(store.read("b")).to be_nil
+        expect(store.read("absent")).to be_nil
+      end
+    end
+    expect(l1).to have_received(:read).with(["a"]).once
+    expect(l1).to have_received(:read).with(%w[b absent]).once
+    expect(store.redis).to have_received(:then).twice
+  end
+
+  it "keeps request memory coherent after single and bulk writes and deletes" do
+    store.with_local_cache do
+      expect(store.read_multi("a", "b")).to eq({})
+      store.write("a", "single")
+      expect(store.read("a")).to eq("single")
+      store.write_multi("a" => "bulk", "b" => false)
+      expect(store.read_multi("a", "b")).to eq("a" => "bulk", "b" => false)
+      store.delete_multi(%w[a b])
+      expect(store.read("a")).to be_nil
+      expect(store.read_multi("a", "b")).to eq({})
+      expect(store.fetch_multi("a", "b") { "regenerated" }).to eq("a" => "regenerated", "b" => "regenerated")
+      store.delete("a")
+      expect(store.read("a")).to be_nil
+    end
+  end
+
+  it "drops request memoization between requests while retaining L1 hits" do
+    vanilla.write("a", "value")
+    store.with_local_cache do
+      store.read("a")
+      expect(store.read("absent")).to be_nil
+    end
+    l1.invalidate(["a"])
+    vanilla.write("a", "new")
+    vanilla.write("absent", "now present")
+    store.with_local_cache do
+      expect(store.read("a")).to eq("new")
+      expect(store.read("absent")).to eq("now present")
+    end
+  end
+
   it "preserves versioned keys, compression, nil and fetch semantics" do
     key = Struct.new(:cache_key, :cache_version).new("article", "1")
     vanilla.write(key, "large" * 1000)
@@ -251,12 +316,16 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
 
   it "retains readable remote values when the provider rejects read-through scripts" do
     vanilla.write("a", "value")
+    warning_logger = instance_double(Logger, debug?: false)
+    allow(warning_logger).to receive(:warn).and_raise(IOError, "logger unavailable")
+    allow(store).to receive(:logger).and_return(warning_logger)
     store.redis.then do |client|
       allow(client).to receive(:pipelined).and_raise(Redis::CommandError, "NOPERM EVAL")
     end
     expect(store.read("a")).to eq("value")
     expect(store.read_multi("a")).to eq("a" => "value")
     expect(local_value("a")).to be_nil
+    expect(warning_logger).to have_received(:warn).once
   end
 
   it "retains fetch race-condition TTL behavior and does not extend local TTL with it" do
@@ -428,9 +497,14 @@ RSpec.describe ActiveSupport::Cache::LocalRedisCacheStore do
     reports = []
     tested = described_class.new(url: unsupported_url, local_url: local_url,
                                  error_handler: ->(**payload) { reports << payload })
+    warning_logger = instance_double(Logger, warn: nil, debug?: false)
+    allow(tested).to receive(:logger).and_return(warning_logger)
     tested.write("a", "value")
-    expect(tested.read("a")).to eq("value")
-    expect(tested.read_multi("a", "missing")).to eq("a" => "value")
+    3.times do
+      expect(tested.read("a")).to eq("value")
+      expect(tested.read_multi("a", "missing")).to eq("a" => "value")
+    end
+    expect(warning_logger).to have_received(:warn).with(%r{rejected.*read-through.*GET/MGET}).once
     expect(reports).to be_empty
   ensure
     unsupported_l1&.close
