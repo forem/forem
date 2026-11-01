@@ -174,11 +174,17 @@ Real-Redis regression coverage exercises continuous unrelated writes and a
 a capacity guarantee for a production provider or fleet. Redis coalesces keys in
 invalidation frames; blindly polling `next_event(0)` to drain them is unsafe
 because that client API treats zero as an infinite wait.
+`BCAST PREFIX` is an inclusion filter, not an exclusion filter for throttle keys.
+The existing cache keyspace has no common data-only prefix; a partial allowlist
+could miss invalidations from existing writers. Keep broad tracking unless a
+complete, compatible key namespace migration is designed and tested first.
 
 Local commands use a dedicated redis-client middleware that skips global command
 instrumentation. Hosted Redis tracing is retained. A regression with the actual
 Datadog integration verifies zero local spans and a normal hosted span, avoiding
 per-L1-operation APM volume. Keep application/request tracing enabled normally.
+An isolated regression also verifies that Honeycomb's redis-rb hook is bypassed
+by local commands while remaining active for hosted clients.
 
 Inspect local Redis with `redis-cli -s /tmp/forem-cache.sock INFO memory` and
 `INFO stats` for actual RSS, evictions and hit behavior. Check the health lease

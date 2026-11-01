@@ -8,6 +8,35 @@ require_relative "../../../lib/local_redis/connection"
 RSpec.describe LocalRedis::Connection do
   include_context "with real Redis"
 
+  it "bypasses Honeycomb's redis-rb hook locally while preserving it for hosted clients" do
+    servers = LocalRedisServers.new
+    url = servers.start("honeycomb")
+    source = <<~RUBY
+      require 'honeycomb-beeline'
+      require_relative 'lib/local_redis/connection'
+      Redis.honeycomb_client = Class.new do
+        def start_span(**)
+          raise 'hosted Honeycomb hook reached'
+        end
+      end.new
+      local = LocalRedis::Connection.new(ARGV.fetch(0))
+      raise 'bad result' unless local.eval('return 1', keys: []) == 1
+      begin
+        Redis.new(url: ARGV.fetch(0)).ping
+        raise 'hosted instrumentation was lost'
+      rescue RuntimeError => error
+        raise unless error.message == 'hosted Honeycomb hook reached'
+        puts error.message
+      end
+      local.close
+    RUBY
+    stdout, stderr, status = Open3.capture3(RbConfig.ruby, "-rbundler/setup", "-e", source, url)
+    expect(status).to be_success, stderr
+    expect(stdout.strip).to eq("hosted Honeycomb hook reached")
+  ensure
+    servers&.close
+  end
+
   it "skips local spans while preserving hosted Redis tracing with the actual Datadog integration" do
     servers = LocalRedisServers.new
     url = servers.start("tracing")
