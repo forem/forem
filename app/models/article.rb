@@ -1906,7 +1906,8 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return if main_image.present? || !published
+    # Posts with a cover or a video share that image instead (see Articles::SocialImage).
+    return if main_image.present? || video_thumbnail_url.present? || !published
 
     change = social_image.blank? ||
       saved_change_to_attribute?(:title) ||
