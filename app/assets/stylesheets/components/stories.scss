@@ -15,6 +15,33 @@
   #main-status-form-controls {
     line-height: 24px;
   }
+  // Formatting toolbar: always visible in the expanded form, and only while the compact
+  // feed form has focus so it doesn't add clutter to the feed.
+  #main-status-form-toolbar {
+    display: none;
+    line-height: 24px;
+    padding-top: var(--su-2);
+    gap: var(--su-1);
+    &.is-expanded,
+    &.is-previewing {
+      display: flex;
+    }
+  }
+  &:focus-within #main-status-form-toolbar {
+    display: flex;
+  }
+  #main-status-form-preview {
+    line-height: 1.5;
+    min-height: 40px;
+    padding: var(--su-2) var(--su-3);
+    overflow-wrap: anywhere;
+    .quickie-paragraph {
+      margin-bottom: var(--su-2);
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
   .ltag__link__content {
     line-height: 1.2em;
     h2 {

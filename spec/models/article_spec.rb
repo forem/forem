@@ -1011,6 +1011,109 @@ RSpec.describe Article do
       end
     end
 
+    describe "Quickie slugs" do
+      let(:long_text) { "Just shipped the new dashboard redesign for everyone on the team today" }
+      let(:author) { create(:user) }
+
+      def create_quickie(title, user: author)
+        Article.create!(title: title, type_of: "status", body_markdown: "", published: true, user: user)
+      end
+
+      it "generates a short slug from the first meaningful words" do
+        quickie = create_quickie(long_text)
+
+        expect(quickie.slug).to match(/\Ajust-shipped-new-dashboard-redesign-[0-9a-p]{1,4}\z/)
+      end
+
+      it "gives Quickies with the same opening words different slugs" do
+        slugs = ["Hello world today", "Hello world, today!", "hello WORLD today?"].map { |text| create_quickie(text).slug }
+
+        expect(slugs.uniq.size).to eq(3)
+        expect(slugs).to all(match(/\Ahello-world-today-[0-9a-p]{1,4}\z/))
+      end
+
+      it "keeps the existing slug when a Quickie is saved again" do
+        quickie = create_quickie(long_text)
+
+        expect { quickie.update!(title: "A completely different text") }.not_to(change { quickie.reload.slug })
+      end
+
+      it "leaves a legacy long slug untouched" do
+        quickie = create_quickie(long_text)
+        legacy_slug = "just-shipped-the-new-dashboard-redesign-for-everyone-on-the-team-today-1a2b"
+        quickie.update_column(:slug, legacy_slug)
+
+        quickie.update!(score: 1)
+
+        expect(quickie.reload.slug).to eq(legacy_slug)
+        expect(quickie.path).to end_with("/#{legacy_slug}")
+      end
+
+      it "does not change how full posts are slugged" do
+        post = create(:article, title: long_text)
+
+        expect(post.slug).to start_with("just-shipped-the-new-dashboard-redesign-for-everyone")
+      end
+    end
+
+    describe "Quickie formatting" do
+      def quickie(title)
+        Article.new(title: title, type_of: "status", body_markdown: "", user: user)
+      end
+
+      let(:user) { create(:user) }
+
+      it "renders plain text exactly as before" do
+        article = quickie("Plain 5 * 3 * 2 text\n\nsecond snake_case_word")
+
+        expect(article.title_finalized).to eq(
+          %(<p class="quickie-paragraph">Plain 5 * 3 * 2 text</p><p class="quickie-paragraph">second snake_case_word</p>),
+        )
+      end
+
+      it "renders bold, italic and underline" do
+        expect(quickie("**b** *i* __u__").title_finalized).to eq("<strong>b</strong> <em>i</em> <u>u</u>")
+      end
+
+      it "still shortens URLs and keeps paragraphs next to formatting" do
+        html = quickie("**hi**\nsee https://www.example.com/").title_finalized
+
+        expect(html).to include("<strong>hi</strong><br>see")
+        expect(html).to include(%(<span style="text-decoration: underline;">example.com</span>))
+      end
+
+      it "renders links as spans in feed contexts and as anchors only when asked" do
+        article = quickie("[docs](https://docs.forem.com)")
+
+        expect(article.title_finalized).not_to include("<a ")
+        expect(article.title_finalized_for_feed).not_to include("<a ")
+        expect(article.title_finalized(links: true)).to include(%(<a href="https://docs.forem.com"))
+      end
+
+      it "formats truncated feed titles" do
+        html = quickie("**top**\n1\n2\n3\n4\n5\n6\n7\n8\n9").title_finalized_for_feed
+
+        expect(html).to include("<strong>top</strong>", "quickie-read-more")
+      end
+
+      it "escapes markup typed inside formatting" do
+        html = quickie("**<script>alert(1)</script>**").title_finalized
+
+        expect(html).to eq("<strong>&lt;script&gt;alert(1)&lt;/script&gt;</strong>")
+      end
+
+      it "still embeds URLs used in a link" do
+        stub_request(:get, %r{https?://example\.com}).to_return(status: 200, body: "<html></html>")
+        stub_request(:head, %r{https?://example\.com}).to_return(status: 200, body: "", headers: {})
+        article = build(:published_article, user: user, type_of: "status", body_markdown: "",
+                                            title: "[docs](https://example.com)")
+
+        article.valid?
+
+        expect(article.body_markdown).to include("{% embed https://example.com minimal %}")
+      end
+    end
+
     describe "#tag" do
       it "parses tags" do
         expect(test_article.tag_list.length.positive?).to be(true)
