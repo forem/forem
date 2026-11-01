@@ -3,13 +3,16 @@ module MarkdownProcessor
     include Instrumentation
 
     BAD_XSS_REGEX = [
-      /src=["'](data|&)/i,
+/src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
     ].freeze
 
     CODE_BLOCKS_REGEX = /(~{3}|`{3}|`{2}|`)[\s\S]*?\1/
 
     WORDS_READ_PER_MINUTE = 275.0
+
+    # Redcarpet drops list item text beyond this indentation depth
+    MAX_LIST_INDENT_SPACES = 16
 
     # @param content [String] The user input, mix of markdown and liquid.  This might be an
     #        article's markdown body.
@@ -63,6 +66,39 @@ module MarkdownProcessor
       end
     end
 
+    # Prevent Redcarpet from dropping text in deeply nested lists
+    def normalize_overly_nested_lists(content)
+      current_fence_marker = nil
+
+      content.each_line.map do |line|
+        if current_fence_marker
+          current_fence_marker = nil if fenced_code_block_closing_marker?(line, current_fence_marker)
+          next line
+        end
+
+        opening_marker = fenced_code_block_opening_marker(line)
+        if opening_marker
+          current_fence_marker = opening_marker
+          next line
+        end
+
+        line.gsub(/^([ \t]+)([-*+]|\d+\.)[ \t]+(.*)$/) do
+          indent = Regexp.last_match(1)
+          marker = Regexp.last_match(2)
+          text   = Regexp.last_match(3)
+
+          normalized_indent =
+            if indent.include?("\t")
+              indent[0, 4]
+            else
+              indent[0, MAX_LIST_INDENT_SPACES]
+            end
+
+          "#{normalized_indent}#{marker} #{text}"
+        end
+      end.join
+    end
+
     def convert_deeply_nested_links_to_html(content)
       ForemNative.convert_deeply_nested_links_to_html(content) ||
         legacy_convert_deeply_nested_links_to_html(content)
@@ -106,13 +142,12 @@ module MarkdownProcessor
         link[:target] = "_blank"
         existing_rel = link[:rel]
         new_rel = %w[noopener noreferrer]
-        if existing_rel
-          existing_rel_values = existing_rel.split
-          new_rel = (existing_rel_values + new_rel).uniq.join(" ")
-        else
-          new_rel = new_rel.join(" ")
-        end
-        link[:rel] = new_rel
+        link[:rel] =
+          if existing_rel
+            (existing_rel.split + new_rel).uniq.join(" ")
+          else
+            new_rel.join(" ")
+          end
       end
       doc.to_html
     end
