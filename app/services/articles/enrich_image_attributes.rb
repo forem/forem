@@ -15,7 +15,7 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
-    def self.call(article)
+    def self.call(article) # rubocop:disable Metrics/PerceivedComplexity
       fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
       store_image_if_appropriate(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
@@ -42,7 +42,7 @@ module Articles
         img["data-animated"] = true if img_properties.type == :gif
       end
 
-      if article.main_image && article.main_image.include?("ytimg.com")
+      if article.main_image&.include?("ytimg.com")
         main_image_height = 500 # Hardcoded for 1000/500
       elsif article.main_image && Settings::UserExperience.cover_image_fit(subforem_id: article.subforem_id) == "limit"
         main_image_size = FastImage.size(article.main_image, timeout: 15, http_header: fast_image_headers)
@@ -59,7 +59,9 @@ module Articles
 
       return unless uploader.file.exists?
 
-      uploader.file&.file
+      # Local storage yields a SanitizedFile whose path FastImage can read directly, but
+      # remote (fog) storage has no local file, so hand FastImage the stored image's URL.
+      uploader.file.is_a?(CarrierWave::SanitizedFile) ? uploader.file.file : uploader.url
     end
     private_class_method :retrieve_image_from_uploader_store
 

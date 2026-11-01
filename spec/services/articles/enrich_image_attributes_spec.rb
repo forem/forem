@@ -207,6 +207,48 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
   end
 
+  context "when uploaded images are stored remotely with fog" do
+    let(:image_key) { "uploads/articles/fog_image.gif" }
+    let(:image_url) { "https://test-bucket.s3.amazonaws.com/#{image_key}" }
+    let(:image_bytes) { Rails.root.join("spec/support/fixtures/images/image.gif").binread }
+
+    around do |example|
+      original_storage = ArticleImageUploader.storage
+      original_fog_credentials = ArticleImageUploader.fog_credentials
+      original_fog_directory = ArticleImageUploader.fog_directory
+
+      Fog.mock!
+      Fog::Mock.reset
+      credentials = {
+        provider: "AWS",
+        aws_access_key_id: "test-key",
+        aws_secret_access_key: "test-secret",
+        region: "us-east-1"
+      }
+      Fog::Storage.new(credentials).directories.create(key: "test-bucket")
+      Fog::Storage.new(credentials).put_object("test-bucket", image_key, image_bytes)
+
+      ArticleImageUploader.storage = :fog
+      ArticleImageUploader.fog_credentials = credentials
+      ArticleImageUploader.fog_directory = "test-bucket"
+
+      example.run
+    ensure
+      ArticleImageUploader.storage = original_storage
+      ArticleImageUploader.fog_credentials = original_fog_credentials
+      ArticleImageUploader.fog_directory = original_fog_directory
+      Fog.unmock!
+    end
+
+    it "reads the image attributes from the stored file's url" do
+      stub_request(:get, image_url).to_return(status: 200, body: image_bytes)
+      article.update_column(:processed_html, "<p><img src=\"/#{image_key}\"></p>")
+
+      assert_has_data_animated_attribute(article)
+      assert_has_data_width_height_attributes(article)
+    end
+  end
+
   context "when the body contains remote images" do
     let(:static_image_url) { "https://dummyimage.com/600.jpg" }
     let(:animated_image_url) { "https://i.giphy.com/media/kHTMgZ3PeK6wJsqy2s/source.gif" }
