@@ -100,6 +100,7 @@ module Badges
 
       @badge_slugs_with_id = get_badge_slugs_with_id
       @scan_incomplete = false
+      @newly_awarded_user_ids = Set.new
 
       REPOSITORIES.each do |repo|
         award_single_commit_contributors(repo)
@@ -123,7 +124,9 @@ module Badges
       Identity.github.where(uid: authors_uids).find_each do |i|
         BadgeAchievement
           .where(user_id: i.user_id, badge_id: dev_contributor_badge_id)
-          .first_or_create(rewarding_context_message_markdown: msg)
+          .first_or_create(rewarding_context_message_markdown: msg) do
+            @newly_awarded_user_ids.add(i.user_id)
+          end
       end
     end
 
@@ -225,8 +228,9 @@ module Badges
         badge_id: badge_slugs_with_id.values,
       ).pluck(:badge_id)
       return false if awarded_badge_ids.size >= badge_slugs_with_id.size
+      return true if @full_history || recent_pr_author || @newly_awarded_user_ids&.include?(user_id)
 
-      @full_history || recent_pr_author || awarded_badge_ids.empty?
+      awarded_badge_ids.empty?
     end
 
     # Collects the uids of users who had a PR merged in the repo between
