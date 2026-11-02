@@ -59,6 +59,19 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
     end
 
     [true, false].each do |signed_in|
+      it "defers comment loading when user_signed_in is #{signed_in}" do
+        create(:comment, commentable: hot_story, score: 20)
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+        result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          feed.featured_story_and_default_home_feed(user_signed_in: signed_in)
+        end
+
+        expect(result.second).to include(hot_story)
+        expect(queries).to be_empty
+      end
+
       it "loads the feed without querying subforems when user_signed_in is #{signed_in}", :aggregate_failures do
         subforem = create(:subforem)
         hot_story.update_column(:subforem_id, subforem.id)

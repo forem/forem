@@ -2,6 +2,10 @@ module Stories
   class FeedsController < ApplicationController
     include Instrumentation
 
+    # Feed previews render processed_html; source Markdown, legacy HTML, and vectors
+    # are only needed by other comment paths, which keep their normal projections.
+    UNRENDERED_COMMENT_COLUMNS = %w[body_markdown body_html semantic_embedding].freeze
+
     respond_to :json
 
     before_action :current_user_by_token, only: [:show]
@@ -221,13 +225,15 @@ module Stories
       comments_assoc = @comments_variant.to_sym
       comments_missing = records.select { |r| r.comments_count.positive? && !r.association(comments_assoc).loaded? }
       if comments_missing.any?
+        columns = Comment.column_names - UNRENDERED_COMMENT_COLUMNS
         ranked = Comment.where(
           commentable_type: "Article", commentable_id: comments_missing.map(&:id),
           score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false
-        ).select("comments.id, ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS rn")
+        ).select(*columns)
+          .select("ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS feed_comment_rank")
         ActiveRecord::Associations::Preloader.new(
           records: comments_missing, associations: comments_assoc,
-          scope: Comment.where(id: Comment.from(ranked, :ranked_comments).where("rn <= 3").select(:id)).includes(:user)
+          scope: Comment.from(ranked, :comments).where("feed_comment_rank <= 3").select(*columns).includes(:user)
         ).call
       end
 
