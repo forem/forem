@@ -24,6 +24,7 @@ namespace :admin do
     mount PgHero::Engine, at: "pghero"
   end
 
+  resources :organization_email_domains, only: %i[index update]
   resources :organization_memberships, only: %i[update destroy create]
   resources :permissions, only: %i[index] do
     collection do

@@ -126,6 +126,8 @@ class User < ApplicationRecord
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
+  has_many :organization_membership_challenges, dependent: :delete_all
+  has_many :organization_membership_exclusions, dependent: :delete_all
   has_many :organizations, through: :organization_memberships
   # we keep page views as they belong to the article, not to the user who viewed it
   has_many :page_views, dependent: :nullify

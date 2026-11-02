@@ -60,6 +60,8 @@ class Organization < ApplicationRecord
   has_many :lead_forms, class_name: "OrganizationLeadForm", dependent: :destroy
   has_many :pages, dependent: :nullify
   has_many :organization_memberships, dependent: :delete_all
+  has_many :organization_email_domains, dependent: :destroy
+  has_many :organization_membership_exclusions, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :destroy
   has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
   has_many :users, through: :organization_memberships

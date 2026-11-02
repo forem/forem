@@ -1,0 +1,15 @@
+<div style="padding: 20px 12px; color: #242424; font-family: Arial, Helvetica, sans-serif; line-height: 1.6;">
+  <p style="margin: 0 0 12px; color: #71717a; font-size: 12px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase;"><%= t("org_domain_membership.membership") %></p>
+  <h1 style="margin: 0 0 20px; font-size: 28px; line-height: 1.25; letter-spacing: -0.5px;"><%= t("org_domain_membership.join_title", organization: @organization.name) %></h1>
+  <p style="margin: 0 0 24px; font-size: 16px;"><%= t("org_domain_membership.mail_intro", organization: @organization.name, username: @challenge.user.username) %></p>
+  <table role="presentation" style="width: 100%; border-collapse: separate; border-spacing: 0; margin: 0 0 20px;">
+    <tr>
+      <td style="padding: 24px 8px; text-align: center; background: #f5f5ff; border: 1px solid #e0e2f8; border-radius: 8px;">
+        <p style="margin: 0 0 10px; font-size: 12px; font-weight: bold; color: #52525b;"><%= t("org_domain_membership.code") %></p>
+        <p style="margin: 0; color: #3039b7; font-family: Consolas, monospace; font-size: 32px; font-weight: bold; letter-spacing: 4px;"><%= @otp %></p>
+      </td>
+    </tr>
+  </table>
+  <p style="margin: 0 0 24px; text-align: center; font-size: 14px; color: #52525b;"><%= t("org_domain_membership.mail_expiry") %></p>
+  <p style="margin: 0; padding-top: 20px; border-top: 1px solid #e4e4e7; font-size: 14px; color: #71717a;"><%= t("org_domain_membership.mail_warning") %></p>
+</div>

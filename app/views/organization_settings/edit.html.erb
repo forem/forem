@@ -128,6 +128,7 @@
         <% end %>
         <a href="#section-header-cta"><%= t("views.organization_settings.header_cta.heading") %></a>
         <a href="#section-sidebar-cta"><%= t("views.settings.org.admin.cta") %></a>
+        <a href="#section-email-domains"><%= t("org_domain_membership.settings_title") %></a>
         <a href="#section-members"><%= t("views.settings.org.admin.members") %></a>
         <% if FeatureFlag.enabled?(:org_verification, FeatureFlag::Actor[@organization]) %>
           <a href="#section-verification"><%= t("views.organization_settings.verification.heading") %></a>
@@ -499,6 +500,8 @@
           </div>
       </div>
       <% end %>
+
+      <%= render "organization_email_domains/settings" %>
 
       <%# ── Members ── %>
       <div id="section-members" class="crayons-card crayons-card--content-rows">

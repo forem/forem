@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_10_30_170200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1249,6 +1249,23 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.index ["user_id"], name: "index_onboarding_checklists_on_user_id", unique: true
   end
 
+  create_table "organization_email_domains", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "domain", limit: 253, null: false
+    t.boolean "enabled", default: false, null: false
+    t.bigint "organization_id", null: false
+    t.bigint "requested_by_id"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organization_id", "domain"], name: "index_org_email_domains_on_org_and_domain", unique: true
+    t.index ["organization_id"], name: "index_organization_email_domains_on_organization_id"
+    t.index ["requested_by_id"], name: "index_organization_email_domains_on_requested_by_id"
+    t.index ["reviewed_by_id"], name: "index_organization_email_domains_on_reviewed_by_id"
+    t.index ["status"], name: "index_organization_email_domains_on_status"
+  end
+
   create_table "organization_lead_forms", force: :cascade do |t|
     t.boolean "active", default: true, null: false
     t.string "button_text", default: "Sign Up", null: false
@@ -1258,6 +1275,30 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.index ["organization_id"], name: "index_organization_lead_forms_on_organization_id"
+  end
+
+  create_table "organization_membership_challenges", force: :cascade do |t|
+    t.integer "attempts", default: 0, null: false
+    t.datetime "consumed_at"
+    t.datetime "created_at", null: false
+    t.string "email", null: false
+    t.datetime "expires_at", null: false
+    t.bigint "organization_email_domain_id", null: false
+    t.string "otp_digest", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["organization_email_domain_id"], name: "index_org_challenges_on_domain"
+    t.index ["user_id"], name: "index_organization_membership_challenges_on_user_id"
+  end
+
+  create_table "organization_membership_exclusions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "organization_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["organization_id", "user_id"], name: "index_org_membership_exclusions_on_org_and_user", unique: true
+    t.index ["organization_id"], name: "index_organization_membership_exclusions_on_organization_id"
+    t.index ["user_id"], name: "index_organization_membership_exclusions_on_user_id"
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -2346,7 +2387,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
   add_foreign_key "notifications", "organizations", on_delete: :cascade
   add_foreign_key "notifications", "users", on_delete: :cascade
   add_foreign_key "onboarding_checklists", "users", on_delete: :cascade
+  add_foreign_key "organization_email_domains", "organizations"
+  add_foreign_key "organization_email_domains", "users", column: "requested_by_id", on_delete: :nullify
+  add_foreign_key "organization_email_domains", "users", column: "reviewed_by_id", on_delete: :nullify
   add_foreign_key "organization_lead_forms", "organizations", on_delete: :cascade
+  add_foreign_key "organization_membership_challenges", "organization_email_domains"
+  add_foreign_key "organization_membership_challenges", "users"
+  add_foreign_key "organization_membership_exclusions", "organizations"
+  add_foreign_key "organization_membership_exclusions", "users"
   add_foreign_key "organization_memberships", "organizations", on_delete: :cascade
   add_foreign_key "organization_memberships", "users", on_delete: :cascade
   add_foreign_key "page_views", "articles", on_delete: :cascade

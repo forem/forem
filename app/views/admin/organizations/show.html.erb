@@ -1,3 +1,6 @@
+<% if current_user.super_admin? %>
+  <p class="mb-4"><%= link_to t("org_domain_membership.review_title"), admin_organization_email_domains_path, class: "crayons-btn crayons-btn--secondary" %></p>
+<% end %>
 <%= javascript_include_tag "admin/organizations", defer: true %>
 <header>
   <section class="crayons-card flex flex-col l:flex-row gap-2 m:gap-4 l:gap-6 mb-2 m:mb-3 p-3 s:p-4 m:p-7">

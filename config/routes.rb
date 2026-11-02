@@ -487,6 +487,12 @@ Rails.application.routes.draw do
     get "/search", to: "stories/articles_search#index"
     get "/community", to: "community#index", as: :community
     get "/:slug/members", to: "organizations#members", as: :organization_members
+    get "/:slug/join", to: "organization_membership_verifications#show", as: :organization_join
+    post "/:slug/join", to: "organization_membership_verifications#create"
+    patch "/:slug/join", to: "organization_membership_verifications#update"
+    post "/:slug/settings/email_domains", to: "organization_email_domains#create", as: :organization_email_domains
+    patch "/:slug/settings/email_domains/:id", to: "organization_email_domains#update", as: :organization_email_domain
+    delete "/:slug/settings/email_domains/:id", to: "organization_email_domains#destroy"
     get "/:slug/settings", to: "organization_settings#edit", as: :organization_settings
     patch "/:slug/settings", to: "organization_settings#update"
     post "/:slug/settings/verify", to: "organization_settings#request_verification",

@@ -1,0 +1,42 @@
+<section id="section-email-domains" class="crayons-card crayons-card--content-rows org-domain">
+  <div>
+    <p class="org-domain__eyebrow mb-2"><%= t("org_domain_membership.membership") %></p>
+    <h2 class="org-domain__heading"><%= t("org_domain_membership.settings_title") %></h2>
+    <p class="org-domain__muted mt-3"><%= t("org_domain_membership.settings_description") %></p>
+  </div>
+  <p class="org-domain__note"><%= t("org_domain_membership.permissions") %></p>
+  <div class="org-domain__stack">
+    <% @organization.organization_email_domains.order(:domain).each do |domain| %>
+      <div class="org-domain__panel org-domain__stack">
+        <div class="org-domain__row">
+          <strong class="org-domain__domain"><%= domain.domain %></strong>
+          <span class="org-domain__badge org-domain__badge--<%= domain.status %>"><%= t("org_domain_membership.statuses.#{domain.status}") %></span>
+        </div>
+        <% if domain.status == "approved" %>
+          <p class="org-domain__muted"><%= t(domain.enabled? ? "org_domain_membership.enabled" : "org_domain_membership.disabled") %></p>
+        <% elsif domain.status == "pending" %>
+          <p class="org-domain__muted"><%= t("org_domain_membership.pending_help") %></p>
+        <% end %>
+        <% unless domain.status == "revoked" %>
+          <div class="org-domain__actions">
+            <% if domain.status == "approved" %>
+              <%= form_with url: organization_email_domain_path(@organization.slug, domain), method: :patch, local: true do %>
+                <%= hidden_field_tag :enabled, !domain.enabled? %>
+                <%= submit_tag t(domain.enabled? ? "org_domain_membership.disable" : "org_domain_membership.enable"), class: "crayons-btn #{domain.enabled? ? 'crayons-btn--secondary' : ''}" %>
+              <% end %>
+            <% end %>
+            <%= button_to t("org_domain_membership.remove"), organization_email_domain_path(@organization.slug, domain), method: :delete, class: "crayons-btn crayons-btn--ghost crayons-btn--danger" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <%= form_with url: organization_email_domains_path(@organization.slug), method: :post, local: true, class: "org-domain__request" do %>
+    <div class="crayons-field">
+      <%= label_tag :domain, t("org_domain_membership.domain"), class: "crayons-field__label" %>
+      <%= text_field_tag :domain, nil, required: true, maxlength: 253, placeholder: "foobar.com", autocomplete: "off", autocapitalize: "none", spellcheck: false, class: "crayons-textfield", "aria-describedby": "domain-help" %>
+      <p id="domain-help" class="crayons-field__description"><%= t("org_domain_membership.domain_help") %></p>
+    </div>
+    <%= submit_tag t("org_domain_membership.request_approval"), class: "crayons-btn" %>
+  <% end %>
+</section>
