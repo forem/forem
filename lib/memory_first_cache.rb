@@ -60,6 +60,7 @@ class MemoryFirstCache
     # Reset the memory store instance (primarily for testing)
     # This forces a new memory store to be created on next access
     def reset_memory_store!
+      @memory_store&.clear
       @memory_store = nil
     end
 

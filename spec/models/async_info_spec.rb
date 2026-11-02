@@ -69,5 +69,15 @@ RSpec.describe AsyncInfo do
       expect(payload[:admin]).to be(true)
       expect(role_queries.size).to eq(3)
     end
+
+    it "sets apple_auth to true for both @privaterelay.appleid.com and @private.icloud.com addresses" do
+      expect(async_info[:apple_auth]).to be(false)
+
+      allow(user).to receive(:email).and_return("relay@privaterelay.appleid.com")
+      expect(described_class.to_hash(user: user, context: context)[:apple_auth]).to be(true)
+
+      allow(user).to receive(:email).and_return("relay@private.icloud.com")
+      expect(described_class.to_hash(user: user, context: context)[:apple_auth]).to be(true)
+    end
   end
 end

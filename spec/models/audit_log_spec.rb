@@ -56,6 +56,18 @@ RSpec.describe AuditLog do
       expect(described_class.on_user(user)).not_to include(log)
     end
 
+    it "finds admin/users moderator actions on the user, such as banish" do
+      log = create(:audit_log, user: admin, category: described_class::MODERATOR_AUDIT_LOG_CATEGORY,
+                               data: { "action" => "banish", "controller" => "admin/users", "id" => user.id.to_s })
+      expect(described_class.on_user(user)).to include(log)
+    end
+
+    it "does not match an id from another controller" do
+      log = create(:audit_log, user: admin,
+                               data: { "action" => "update", "controller" => "admin/articles", "id" => user.id.to_s })
+      expect(described_class.on_user(user)).not_to include(log)
+    end
+
     it "does not include unrelated logs" do
       other_user = create(:user)
       log = create(:audit_log, user: other_user,

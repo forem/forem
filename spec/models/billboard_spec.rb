@@ -129,6 +129,18 @@ RSpec.describe Billboard do
       expect(billboard.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
     end
 
+    it "allows secondary post placement areas" do
+      %w[post_body_bottom_secondary post_sidebar_secondary post_comments_secondary].each do |area|
+        billboard.placement_area = area
+        expect(billboard).to be_valid
+      end
+    end
+
+    it "returns human readable names for secondary post placement areas" do
+      billboard.placement_area = "post_comments_secondary"
+      expect(billboard.human_readable_placement_area).to eq("Below the comment section (Secondary)")
+    end
+
     it "allows creator_id to be set" do
       billboard.creator = build(:user)
       expect(billboard).to be_valid
@@ -1374,6 +1386,255 @@ RSpec.describe Billboard do
       relation = described_class.where(id: billboards.map(&:id))
       result = described_class.select_billboard_by_weighted_strategy(relation, area)
       expect(result).to be_a(described_class)
+    end
+
+    it "returns nil when billboards_for_display is an unloaded relation matching no records" do
+      unloaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area")
+      result = described_class.select_billboard_by_weighted_strategy(unloaded_empty_relation, area)
+      expect(result).to be_nil
+    end
+
+    it "returns nil without querying when billboards_for_display is an already-loaded empty relation" do
+      loaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area").load
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(described_class.select_billboard_by_weighted_strategy(loaded_empty_relation, area)).to be_nil
+      end
+
+      expect(display_ad_queries).to be_empty
+    end
+
+    it "executes only one display_ads query for weighted_performance instead of loading the relation upfront" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 0,
+          "weighted_performance" => 100
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("LIMIT")
+    end
+
+    it "executes only one display_ads query for new_and_priority when a seldom_seen billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 100,
+          "new_only" => 0,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("WITH base AS")
+    end
+
+    it "executes only one display_ads query for new_only when a low-impression billboard exists" do
+      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
+        selection_weights: {
+          "random_selection" => 0,
+          "new_and_priority" => 0,
+          "new_only" => 100,
+          "weighted_performance" => 0
+        },
+      )
+
+      relation = described_class.where(id: billboards.map(&:id)).order(success_rate: :desc)
+      display_ad_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      end
+
+      expect(result).to be_a(described_class)
+      expect(display_ad_queries.size).to eq(1)
+      expect(display_ad_queries.first).to include("impressions_count <")
+    end
+  end
+
+  describe "#bust_billboard_cache (when being taken down)" do
+    let(:billboard) { create(:billboard, approved: true, published: true) }
+
+    it "purges the billboard surrogate key when approved is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "purges the billboard surrogate key when published is set to false" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+    end
+
+    it "does not purge the billboard surrogate key when billboard is not being taken down" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with(billboard.record_key)
+    end
+  end
+
+  describe "#should_bust_home_page_cache?" do
+    let(:billboard) { create(:billboard, placement_area: "feed_first", approved: false, published: false) }
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state" do
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is published from unpublished state while already approved" do
+      billboard.update!(approved: true, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts home page cache when feed_first billboard is approved from unapproved state while already published" do
+      billboard.update!(approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: true)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when billboard is being taken down (approved set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(approved: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when billboard is being taken down (published set to false)" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(published: false)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when active billboard content is updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when active billboard unrelated attributes are updated" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(weight: 100)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts cache when placement_area is changed away from home page for an active billboard" do
+      billboard.update!(approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.update!(placement_area: "post_sidebar")
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not a home page placement and is activated" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: false, published: false)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(approved: true, published: true)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache when billboard is not a home page placement and content is updated" do
+      sidebar_billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      sidebar_billboard.update!(name: "Updated name")
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+  end
+
+  describe "after_destroy cache busting" do
+    it "busts billboard and home page cache for active home page billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "busts billboard cache but not home page for active non-home page billboard" do
+      billboard = create(:billboard, placement_area: "sidebar_left", approved: true, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with(billboard.record_key)
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call).with("main_app_home_page", fallback_paths: "/")
+    end
+
+    it "does not bust cache for inactive billboard" do
+      billboard = create(:billboard, placement_area: "feed_first", approved: false, published: true)
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+      billboard.destroy
+      expect(EdgeCache::PurgeByKey).not_to have_received(:call)
+    end
+  end
+
+  describe "#sync_tags_array" do
+    it "syncs tags_array perfectly when tags are updated using tag_list" do
+      billboard = create(:billboard, tag_list: "javascript")
+      expect(billboard.tags_array).to match_array(["javascript"])
+      
+      billboard.update!(tag_list: "javascript, typescript, webdev")
+      expect(billboard.tags_array).to match_array(["javascript", "typescript", "webdev"])
+    end
+    
+    it "handles empty tags gracefully natively" do
+      billboard = create(:billboard, tag_list: "")
+      expect(billboard.tags_array).to eq([])
+    end
+  end
+
+  describe "database indexes" do
+    it "defines a partial composite index on placement_area and success_rate for active billboards" do
+      indexes = ActiveRecord::Base.connection.indexes(:display_ads)
+      idx = indexes.find { |i| i.name == "index_display_ads_on_placement_area_and_success_rate" }
+      expect(idx).to have_attributes(
+        columns: %w[placement_area success_rate],
+        orders: { "success_rate" => :desc },
+        where: "((approved = true) AND (published = true))",
+      )
     end
   end
 

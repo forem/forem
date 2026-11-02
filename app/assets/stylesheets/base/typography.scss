@@ -44,6 +44,18 @@
   font-style: italic;
 }
 
+::selection {
+  background: var(--selection-bg);
+}
+
+// Avoid single-word orphans on the last line of headings.
+h1,
+h2,
+h3,
+h4 {
+  text-wrap: pretty;
+}
+
 // Content fonts
 body {
   -webkit-font-smoothing: antialiased;

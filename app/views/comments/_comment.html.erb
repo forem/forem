@@ -1,6 +1,6 @@
 <% if comment && comment.user %>
   <% if @current_comment_index.to_i > 6 && !@shown_billboard && comment.depth.zero? %>
-    <div class="js-billboard-container mid-comments-billboard-container pb-6" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments_mid) %>"></div>
+    <div class="js-billboard-container mid-comments-billboard-container pb-6" data-async-url="<%= billboard_async_path(:post_comments_mid, article: @article) %>"></div>
     <% @shown_billboard = true %>
   <% end %>
   <% if comment.depth < 3 %>

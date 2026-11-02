@@ -483,7 +483,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(feed_config.reload.attributes.slice(*original_attrs.keys)).to eq(original_attrs)
     end
 
-    it "adjusts tag count ranges with +/- offsets and resets impressions" do
+    it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
+      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -492,6 +493,146 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
       expect(clone.feed_impressions_count).to eq(0)
+      expect(clone.feed_success_score).to eq(0.0)
+    end
+  end
+
+  describe ".select_for_feed" do
+    let!(:proven_top_config) do
+      create(:feed_config, feed_success_score: 1.5, feed_impressions_count: 500, created_at: 5.days.ago)
+    end
+    let!(:new_config) do
+      create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 10, created_at: 1.hour.ago)
+    end
+
+    it "returns the preferred feed config when preferred_id matches" do
+      expect(described_class.select_for_feed(preferred_id: new_config.id)).to eq(new_config)
+    end
+
+    it "selects uniformly from the newest low-impression pool when roll is < 20" do
+      allow(described_class).to receive(:rand).with(100).and_return(10)
+
+      expect(described_class.select_for_feed).to eq(new_config)
+    end
+
+    it "selects a random feed config when roll is between 20 and 24" do
+      allow(described_class).to receive(:rand).with(100).and_return(22)
+
+      expect([proven_top_config, new_config]).to include(described_class.select_for_feed)
+    end
+
+    it "selects from proven top performers (>= LOW_IMPRESSION_COUNT) when roll is >= 25" do
+      unproven_clone = create(
+        :feed_config,
+        feed_success_score: 9.9,
+        feed_impressions_count: 0,
+        created_at: 1.minute.ago,
+      )
+      noisy_low_impression_config = create(
+        :feed_config,
+        feed_success_score: 12.0,
+        feed_impressions_count: 15,
+        created_at: 2.minutes.ago,
+      )
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(proven_top_config)
+      expect(selected).not_to eq(unproven_clone)
+      expect(selected).not_to eq(noisy_low_impression_config)
+    end
+
+    it "falls back to configs with > 0 impressions when no config has reached LOW_IMPRESSION_COUNT" do
+      proven_top_config.destroy!
+      unproven_clone = create(:feed_config, feed_success_score: 9.9, feed_impressions_count: 0)
+      low_impression_winner = create(:feed_config, feed_success_score: 2.5, feed_impressions_count: 15)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      selected = described_class.select_for_feed
+      expect(selected).to eq(low_impression_winner)
+      expect(selected).not_to eq(unproven_clone)
+    end
+
+    it "falls back to score order when all configs have 0 impressions, and creates one when none exist" do
+      described_class.delete_all
+      zero_imp_config = create(:feed_config, feed_success_score: 0.5, feed_impressions_count: 0)
+      allow(described_class).to receive(:rand).with(100).and_return(50)
+      allow(described_class).to receive(:rand).with(1..described_class::TOP_POOL_LIMIT).and_return(1)
+
+      expect(described_class.select_for_feed).to eq(zero_imp_config)
+
+      described_class.delete_all
+      expect { described_class.select_for_feed }.to change(described_class, :count).from(0).to(1)
+    end
+  end
+
+  describe "#score_sql" do
+    let(:user) { create(:user) }
+    let(:feed_config) { described_class.new(semantic_similarity_weight: 10.0) }
+    let(:interest_embedding) { [0.1, 0.2, 0.3] + Array.new(765, 0.0) }
+
+    it "includes semantic embedding calculation when activity store has a vector" do
+      user_activity = create(:user_activity, user: user)
+      # Simulating a pgvector array using standard ruby array to test the sql string generation
+      user_activity.update_column(:interest_embedding, interest_embedding)
+
+      sql = feed_config.score_sql(user)
+      expect(sql).to include("articles.semantic_embedding <=> '[#{interest_embedding.join(',')}]'")
+      expect(sql).to include("* 10.0")
+    end
+
+    context "when ai_disclosure_matching_weight is positive" do
+      before { feed_config.ai_disclosure_matching_weight = 12.0 }
+
+      context "when user has minimize_ai feed preference" do
+        before { user.setting.update(feed_ai_preference: :minimize_ai) }
+
+        it "scales AI disclosure penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 WHEN articles.ai_disclosure_level = 5 THEN -24.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has hide_fully_autonomous feed preference" do
+        before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
+
+        it "scales some_ai penalties by ai_disclosure_matching_weight" do
+          sql = feed_config.score_sql(user)
+          expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 3 THEN -12.0 ELSE 0 END")
+        end
+      end
+
+      context "when user has show_all feed preference" do
+        before { user.setting.update(feed_ai_preference: :show_all) }
+
+        it "does not include user AI disclosure penalty terms" do
+          sql = feed_config.score_sql(user)
+          expect(sql).not_to include("articles.ai_disclosure_level = 3")
+        end
+      end
+    end
+
+    context "when ai_disclosure_matching_weight is 0" do
+      before do
+        feed_config.ai_disclosure_matching_weight = 0.0
+        user.setting.update(feed_ai_preference: :minimize_ai)
+      end
+
+      it "does not include AI disclosure matching penalty terms" do
+        sql = feed_config.score_sql(user)
+        expect(sql).not_to include("articles.ai_disclosure_level = 3")
+      end
+    end
+
+    context "when autonomous_ai_penalty_weight is positive" do
+      before { feed_config.autonomous_ai_penalty_weight = 25.0 }
+
+      it "includes the autonomous AI penalty weight term" do
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("CASE WHEN articles.ai_disclosure_level = 5 THEN -25.0 ELSE 0 END")
+      end
     end
   end
 

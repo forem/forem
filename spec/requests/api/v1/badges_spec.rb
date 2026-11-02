@@ -141,4 +141,49 @@ RSpec.describe "/api/badges", type: :request do
       end
     end
   end
+
+  describe "access control" do
+    def headers_for(api_user)
+      v1_headers.merge({ "api-key" => create(:api_secret, user: api_user).secret })
+    end
+
+    it "allows super admins" do
+      get api_badges_path, headers: headers_for(create(:user, :super_admin))
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "allows single resource admins for Badge" do
+      scoped_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, Badge) }
+      get api_badges_path, headers: headers_for(scoped_admin)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "lets single resource admins for Badge create badges" do
+      scoped_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, Badge) }
+      stub_request(:get, "https://example.com/image.png").to_return(status: 200, body: tiny_gif_data)
+      params = {
+        badge: {
+          title: "Scoped Admin Badge",
+          description: "Created by a scoped admin",
+          remote_badge_image_url: "https://example.com/image.png"
+        }
+      }
+
+      expect do
+        post api_badges_path, params: params, headers: headers_for(scoped_admin)
+      end.to change(Badge, :count).by(1)
+      expect(response).to have_http_status(:created)
+    end
+
+    it "rejects single resource admins for an unrelated resource" do
+      other_admin = create(:user).tap { |u| u.add_role(:single_resource_admin, BadgeAchievement) }
+      get api_badges_path, headers: headers_for(other_admin)
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "rejects regular users" do
+      get api_badges_path, headers: headers_for(create(:user))
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 end

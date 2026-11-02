@@ -49,7 +49,7 @@ class JsFiddleTag < LiquidTagBase
 
   def valid_link?(link)
     link_no_space = link.delete(" ")
-    (link_no_space =~ REGISTRY_REGEXP).zero?
+    (link_no_space =~ REGISTRY_REGEXP)&.zero?
   end
 end
 

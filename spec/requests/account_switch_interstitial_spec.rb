@@ -9,7 +9,7 @@ RSpec.describe "Account switch interstitial" do
 
   before do
     allow(ForemStatsClient).to receive(:increment)
-    allow(Honeybadger).to receive(:notify)
+    allow(Rails.error).to receive(:report)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     sign_in session_user
   end

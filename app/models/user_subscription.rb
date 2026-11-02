@@ -66,7 +66,7 @@ class UserSubscription < ApplicationRecord
   end
 
   def non_apple_auth_subscriber
-    return unless subscriber_email&.end_with?("@privaterelay.appleid.com")
+    return unless subscriber_email&.end_with?("@privaterelay.appleid.com", "@private.icloud.com")
 
     errors.add(:subscriber_email, I18n.t("models.user_subscription.non_apple"))
   end

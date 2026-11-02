@@ -65,4 +65,14 @@ describe('UserStore', () => {
       { name: 'Almost Alice', username: 'almostalice', id: 4 },
     ]);
   });
+
+  test('treats the term as a literal substring, not a regexp', async () => {
+    const subject = await UserStore.fetch('/path/to/the/users');
+    // "." is a regexp wildcard, so a regexp search for "b.b" would match "bob".
+    // As a literal substring it matches nobody.
+    expect(subject.search('b.b')).toStrictEqual([]);
+    // An invalid regexp such as "++" must not throw.
+    expect(() => subject.search('++')).not.toThrow();
+    expect(subject.search('++')).toStrictEqual([]);
+  });
 });

@@ -28,7 +28,7 @@ module Trends
       trend.update!(cover_image: result.url)
     rescue StandardError => e
       Rails.logger.error("AI cover image generation failed for trend #{trend_id}: #{e.message}")
-      Honeybadger.notify(e, context: { trend_id: trend_id }) if defined?(Honeybadger)
+      Rails.error.report(e, context: { trend_id: trend_id })
     end
 
     private

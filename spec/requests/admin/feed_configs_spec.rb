@@ -54,6 +54,23 @@ RSpec.describe "/admin/advanced/feed_configs" do
         expect(response.body).to include("Feed Configurations")
         expect(response.body).to include("Feed Config ##{top_config.id}")
       end
+
+      it "supports sorting by newest and impressions" do
+        get admin_feed_configs_path(sort: "newest")
+        expect(response).to have_http_status(:ok)
+
+        get admin_feed_configs_path(sort: "impressions")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "prefers a config with impressions >= LOW_IMPRESSION_COUNT as the best performing config" do
+        untested_config = create(:feed_config, feed_success_score: 999.0, feed_impressions_count: 0)
+        low_impression_config = create(:feed_config, feed_success_score: 500.0, feed_impressions_count: 15)
+        get_resource
+        expect(response.body).to include("Feed Config ##{top_config.id}</h2>")
+        expect(response.body).not_to include("Feed Config ##{untested_config.id}</h2>")
+        expect(response.body).not_to include("Feed Config ##{low_impression_config.id}</h2>")
+      end
     end
 
     describe "GET /admin/advanced/feed_configs/:id" do

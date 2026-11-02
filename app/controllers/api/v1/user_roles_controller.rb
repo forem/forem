@@ -5,7 +5,7 @@ module Api
 
       # 'suspended' is also known as 'suspend' for historical reasons
       SUSPEND_MODE = %w[suspend suspended].freeze
-      ROLES = (SUSPEND_MODE + %w[limited spam trusted]).freeze
+      ROLES = (SUSPEND_MODE + %w[limited spam trusted base_subscriber]).freeze
 
       before_action :check_role
       before_action :set_target_user
@@ -16,6 +16,9 @@ module Api
       def update
         if suspend_mode? # suspend user requires more data, such as note
           suspend_target_user
+        elsif base_subscriber? && @target_user.base_subscriber?
+          # Idempotent: granting again would re-send the base subscriber email
+          nil
         else
           add_role_to_target_user
         end
@@ -26,8 +29,13 @@ module Api
       def destroy
         # This mechanism for removing roles is specific to limited, suspended, spam and trusted.
         # We revert them to "Good standing". We would need a different approach,
-        # (possibly a whole different service object) to remove *any* roles
-        remove_role_from_target_user
+        # (possibly a whole different service object) to remove *any* roles.
+        # base_subscriber is not a standing role, so "Good standing" would not remove it.
+        if base_subscriber?
+          remove_base_subscriber_from_target_user
+        else
+          remove_role_from_target_user
+        end
 
         render json: { success: "okay" }, status: :no_content # rubocop:disable Rails/UnusedRenderContent - adding this as it's been part of the API for a while
       end
@@ -50,10 +58,26 @@ module Api
         error_unauthorized
       end
 
+      def base_subscriber?
+        params[:role] == "base_subscriber"
+      end
+
       def check_role
         return if ROLES.include?(params[:role])
 
         raise StandardError, "Unable to process #{params[:role]}"
+      end
+
+      def remove_base_subscriber_from_target_user
+        # Same removal path as the admin UI (Admin::UsersController#destroy)
+        result = Users::RemoveRole.call(user: @target_user, role: :base_subscriber, resource_type: nil)
+        raise StandardError, result.error_message unless result.success
+
+        # Matches the grant path, which touches the user and profile to bust caches
+        @target_user.touch
+
+        payload = { action: "api_user_remove_base_subscriber", target_user_id: @target_user.id }
+        Audit::Logger.log(:admin_api, @user, payload)
       end
 
       def remove_role_from_target_user

@@ -21,6 +21,10 @@ module Users
         resource.touch if resource.respond_to?(:touch)
       elsif user.remove_role(role)
         response.success = true
+        if community_leader_role?
+          user.touch
+          Users::ResaveArticlesWorker.perform_async(user.id)
+        end
       end
       user.profile.touch
       response
@@ -32,5 +36,10 @@ module Users
     private
 
     attr_reader :user, :role, :resource_type, :resource_id, :response
+
+    def community_leader_role?
+      role_name = role.respond_to?(:name) ? role.name : role.to_s
+      CommunityLeaders::ROLES.map(&:to_s).include?(role_name)
+    end
   end
 end

@@ -3,7 +3,7 @@ module Api
     class TagsController < ApiController
       include Api::TagsController
 
-      before_action :set_cache_control_headers, only: %i[index]
+      before_action :set_cache_control_headers, only: %i[index supported]
     end
   end
 end

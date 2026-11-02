@@ -27,6 +27,12 @@ RSpec.describe BillboardEventsController, type: :controller do
         post :create, params: valid_params
         expect(response).to have_http_status(:ok)
       end
+
+      it "records user_agent from the request" do
+        request.env["HTTP_USER_AGENT"] = "CustomTestAgent/1.0"
+        post :create, params: valid_params
+        expect(BillboardEvent.last.user_agent).to eq("CustomTestAgent/1.0")
+      end
     end
 
     context "when creating a non-impression event" do

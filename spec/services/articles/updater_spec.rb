@@ -300,6 +300,13 @@ description:\ntags: heytag\n---\n\nHey this is the article"
         # expect(ContextNotification).to have_received(:delete_all)
       end
 
+      it "destroys preexisting co-author notifications" do
+        allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
+        described_class.call(user, article, attributes)
+        attrs = { notifiable_ids: article.id, notifiable_type: "Article", action: "CoAuthor" }
+        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(attrs)
+      end
+
       it "destroys the preexisting context notifications" do
         create(:context_notification, context: article, action: "Published")
         expect do

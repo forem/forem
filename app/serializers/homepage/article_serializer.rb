@@ -4,15 +4,16 @@ module Homepage
     #
     # @return [Hash]
     def self.serialized_collection_from(relation:)
+      articles = relation.preload(:user, :organization).load
+
       # Unfortunately the FlareTag class sends one SQL query per each article,
       # as we want to optimize by loading them in one query, we're using a different class
-      tag_flares = Homepage::FetchTagFlares.call(relation)
+      tag_flares = Homepage::FetchTagFlares.call(articles)
 
-      # including user and organization as the last step as they are not needed
-      # by the query that fetches tag flares, they are only needed by the serializer
-      relation = relation.includes(:user, :organization)
+      # One cache round-trip for every article's :public_reaction_categories
+      Article.preload_reaction_counts_for_reactable(articles.to_a)
 
-      new(relation, params: { tag_flares: tag_flares }, is_collection: true)
+      new(articles, params: { tag_flares: tag_flares }, is_collection: true)
         .serializable_hash[:data]
         .pluck(:attributes)
     end

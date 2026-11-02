@@ -22,7 +22,7 @@ module Users
       user.save!
     rescue StandardError => e
       Rails.logger.error("AI profile image generation failed for user #{user_id}: #{e.message}")
-      Honeybadger.notify(e, context: { user_id: user_id }) if defined?(Honeybadger)
+      Rails.error.report(e, context: { user_id: user_id })
     end
 
     private

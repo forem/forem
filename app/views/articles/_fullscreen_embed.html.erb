@@ -293,11 +293,27 @@
     <div class="crayons-modal__backdrop modal-close-el"></div></div>
   </div>
   <script>
-    document.querySelectorAll(".modal-close-el").forEach((el) => {
-      el.addEventListener("click", () => {
-        document.getElementById("quickie-wrapper").classList.add("hidden");
+    (function () {
+      var wrapper = document.getElementById("quickie-wrapper");
+
+      function closeQuickieModal() {
+        wrapper.classList.add("hidden");
+        var trigger = document.getElementById("reaction-butt-boost");
+        if (trigger) {
+          trigger.focus();
+        }
+      }
+
+      document.querySelectorAll(".modal-close-el").forEach((el) => {
+        el.addEventListener("click", closeQuickieModal);
       });
-    });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !wrapper.classList.contains("hidden")) {
+          closeQuickieModal();
+        }
+      });
+    })();
   </script>
 <% end %>
 

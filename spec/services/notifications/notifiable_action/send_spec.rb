@@ -9,6 +9,27 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
 
+  context "when a follower is also a co-author" do
+    before do
+      user2.follow(user)
+      article.update_columns(co_author_ids: [user2.id])
+    end
+
+    it "does not send a follower notification, since the co-author gets their own" do
+      expect do
+        described_class.call(article.reload, "Published")
+      end.not_to change {
+        Notification.where(user_id: user2.id, notifiable_id: article.id, action: "Published").count
+      }
+    end
+
+    it "handles nil co_author_ids safely" do
+      article.update_columns(co_author_ids: nil)
+
+      expect { described_class.call(article.reload, "Published") }.not_to raise_error
+    end
+  end
+
   context "when following a user or organization" do
     before do
       user2.follow(user)
@@ -86,6 +107,29 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect do
         described_class.call(article, "Published")
       end.not_to raise_error
+    end
+
+    it "loads only follower ids instead of full user rows" do
+      article
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("JOIN follows") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.call(article, "Published")
+      end
+
+      expect(queries).to be_present
+      expect(queries).to all(include('SELECT DISTINCT "users"."id" FROM "users"'))
+    end
+
+    it "deduplicates author+org followers and still caps at FOLLOWER_SEND_LIMIT" do
+      stub_const("Notifications::NotifiableAction::FOLLOWER_SEND_LIMIT", 2)
+      user2.follow(organization)
+      create(:user).follow(user)
+
+      described_class.call(article, "Published")
+
+      notified_user_ids = Notification.where(notifiable: article, action: "Published").pluck(:user_id)
+      expect(notified_user_ids).to contain_exactly(user2.id, user3.id)
     end
   end
 

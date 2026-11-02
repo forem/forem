@@ -43,7 +43,7 @@ RSpec.describe "User changes password" do
       expect(response.body).to include(expected_message)
     end
 
-    it "updates the password if all params are valid" do
+    it "updates the password, keeps the user signed in, and displays a notice on /settings/account" do
       sign_in user
       post user_update_password_path,
            params: {
@@ -54,6 +54,11 @@ RSpec.describe "User changes password" do
 
       expect(response.body).not_to include("error")
       expect(response).to redirect_to("/settings/account")
+
+      follow_redirect!
+      expect(response).to have_http_status(:ok)
+      expect(request.fullpath).to eq("/settings/account")
+      expect(response.body).to include(I18n.t("devise.passwords.updated_not_active"))
     end
   end
 end

@@ -20,7 +20,7 @@ module NotificationsHelper
   rescue StandardError => e
     raise if Rails.env.development?
 
-    Honeybadger.notify(e, context: { notification_id: notification.id })
+    Rails.error.report(e, context: { notification_id: notification.id })
     capture { render error }
   end
 

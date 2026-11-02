@@ -17,7 +17,9 @@ module Api
         if params[:type_of].present? && Event.type_ofs.key?(params[:type_of])
           @events = @events.where(type_of: params[:type_of])
         end
-        render json: @events.order(created_at: :desc)
+        # Serializing tag_list reads each event's taggings (acts-as-taggable-on's
+        # custom context check), so preload them in one query instead of one per event.
+        render json: @events.includes(:taggings).order(created_at: :desc)
       end
 
       def show

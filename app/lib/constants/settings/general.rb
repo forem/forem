@@ -116,6 +116,10 @@ module Constants
             description: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.description"),
             placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.placeholder")
           },
+          geos_with_allowed_anonymous_tracking: {
+            description: I18n.t("lib.constants.settings.general.geos_with_allowed_anonymous_tracking.description"),
+            placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_anonymous_tracking.placeholder")
+          },
           periodic_email_digest: {
             description: I18n.t("lib.constants.settings.general.periodic.description"),
             placeholder: 2

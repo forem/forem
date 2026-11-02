@@ -51,4 +51,89 @@ RSpec.describe EventsHelper do
       expect(helper.event_type_accent_class(event)).to eq("calendar__accent--other")
     end
   end
+
+  describe "#sidebar_events_heading" do
+    let(:now) { Time.zone.local(2026, 10, 14, 12, 0) }
+    let(:live_challenge) do
+      build_stubbed(:event, type_of: "challenge", start_time: now - 1.hour, end_time: now + 1.day)
+    end
+    let(:upcoming_challenge) do
+      build_stubbed(:event, type_of: "challenge", start_time: now + 1.day, end_time: now + 3.days)
+    end
+    let(:live_stream) do
+      build_stubbed(:event, type_of: "live_stream", start_time: now - 30.minutes, end_time: now + 1.hour)
+    end
+    let(:upcoming_stream) do
+      build_stubbed(:event, type_of: "live_stream", start_time: now + 2.hours, end_time: now + 3.hours)
+    end
+    let(:upcoming_takeover) do
+      build_stubbed(:event, type_of: "takeover", start_time: now + 1.day, end_time: now + 2.days)
+    end
+    let(:live_takeover) do
+      build_stubbed(:event, type_of: "takeover", start_time: now - 1.hour, end_time: now + 2.hours)
+    end
+    let(:upcoming_other) { build_stubbed(:event, type_of: "other", start_time: now + 1.day, end_time: now + 2.days) }
+
+    it "returns 'Upcoming Challenges' when all events are upcoming challenges" do
+      expect(helper.sidebar_events_heading([upcoming_challenge], now: now)).to eq("Upcoming Challenges")
+    end
+
+    it "returns 'Live Challenges' when all events are live challenges" do
+      expect(helper.sidebar_events_heading([live_challenge], now: now)).to eq("Live Challenges")
+    end
+
+    it "returns 'Live and Upcoming Challenges' when challenges include both live and upcoming" do
+      heading = helper.sidebar_events_heading([live_challenge, upcoming_challenge], now: now)
+      expect(heading).to eq("Live and Upcoming Challenges")
+    end
+
+    it "returns 'Upcoming Livestreams' when all events are upcoming live streams" do
+      expect(helper.sidebar_events_heading([upcoming_stream], now: now)).to eq("Upcoming Livestreams")
+    end
+
+    it "returns 'Live Livestreams' when all events are live streams currently live" do
+      expect(helper.sidebar_events_heading([live_stream], now: now)).to eq("Live Livestreams")
+    end
+
+    it "returns 'Live and Upcoming Livestreams' when live streams include both live and upcoming" do
+      heading = helper.sidebar_events_heading([live_stream, upcoming_stream], now: now)
+      expect(heading).to eq("Live and Upcoming Livestreams")
+    end
+
+    it "returns 'Upcoming Takeovers' when all events are upcoming takeovers" do
+      expect(helper.sidebar_events_heading([upcoming_takeover], now: now)).to eq("Upcoming Takeovers")
+    end
+
+    it "returns 'Live Takeovers' when all events are live takeovers" do
+      expect(helper.sidebar_events_heading([live_takeover], now: now)).to eq("Live Takeovers")
+    end
+
+    it "returns 'Live and Upcoming Takeovers' when takeovers include both live and upcoming" do
+      heading = helper.sidebar_events_heading([live_takeover, upcoming_takeover], now: now)
+      expect(heading).to eq("Live and Upcoming Takeovers")
+    end
+
+    it "returns 'Live and Upcoming Events' when mixed types include both live and upcoming" do
+      heading = helper.sidebar_events_heading([live_challenge, upcoming_stream], now: now)
+      expect(heading).to eq("Live and Upcoming Events")
+    end
+
+    it "returns 'Live Events' when mixed types are all live" do
+      expect(helper.sidebar_events_heading([live_challenge, live_stream], now: now)).to eq("Live Events")
+    end
+
+    it "returns 'Upcoming Events' when mixed types are all upcoming or type is other" do
+      expect(helper.sidebar_events_heading([upcoming_challenge, upcoming_stream], now: now)).to eq("Upcoming Events")
+      expect(helper.sidebar_events_heading([upcoming_other], now: now)).to eq("Upcoming Events")
+    end
+  end
+
+  describe "#sidebar_event_type_label" do
+    it "returns human-readable labels for each event type" do
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "challenge"))).to eq("Challenge")
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "live_stream"))).to eq("Live Stream")
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "takeover"))).to eq("Takeover")
+      expect(helper.sidebar_event_type_label(build_stubbed(:event, type_of: "other"))).to eq("Event")
+    end
+  end
 end

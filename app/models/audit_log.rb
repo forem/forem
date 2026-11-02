@@ -10,12 +10,14 @@ class AuditLog < ApplicationRecord
   # Tries to match the user using either:
   #   - `target_user_id` (string or int)
   #   - `reactable_id` (string or int) if `reactable_type` = "User"
+  #   - `id` from the params of an admin/users action (banish, user_status, full_delete, etc.)
   scope :on_user, lambda { |user|
     uid = user.id
-    where("data @> :target_int OR data @> :target_str " \
+    where("data @> :target_int OR data @> :target_str OR data @> :admin_users_target " \
           "OR (data @> :user_reactable_type AND (data @> :user_reactable_id_str OR data @> :user_reactable_id_int))",
           target_int: { target_user_id: uid }.to_json,
           target_str: { target_user_id: uid.to_s }.to_json,
+          admin_users_target: { controller: "admin/users", id: uid.to_s }.to_json,
           user_reactable_type: { reactable_type: "User" }.to_json,
           user_reactable_id_str: { reactable_id: uid.to_s }.to_json,
           user_reactable_id_int: { reactable_id: uid }.to_json)

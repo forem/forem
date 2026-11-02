@@ -1057,6 +1057,28 @@ RSpec.describe User do
     end
   end
 
+  describe "#moderator_for_tags_not_cached" do
+    let(:tags) { create_list(:tag, 3) }
+
+    it "matches rolify's with_role tag names without joining every tag" do
+      user.add_role(:tag_moderator, tags.first)
+      user.add_role(:tag_moderator, tags.second)
+      user.add_role(:trusted, tags.last)
+      create(:user).add_role(:tag_moderator, tags.last)
+
+      expect(user.moderator_for_tags_not_cached).to contain_exactly(tags.first.name, tags.second.name)
+      expect(user.moderator_for_tags_not_cached)
+        .to match_array(Tag.with_role(:tag_moderator, user).pluck(:name))
+    end
+
+    it "returns every tag name when the user holds a class-wide tag_moderator role" do
+      tags
+      user.add_role(:tag_moderator, Tag)
+
+      expect(user.moderator_for_tags_not_cached).to match_array(Tag.pluck(:name))
+    end
+  end
+
   describe "#followed_articles" do
     let!(:another_user) { create(:user) }
     let!(:articles) { create_list(:article, 2, user: another_user) }
@@ -1089,6 +1111,22 @@ RSpec.describe User do
       expect(Rails.cache).to receive(:fetch).with("#{user.cache_key_with_version}/good_standing_followers_count",
                                                   expires_in: 24.hours).and_call_original
       expect(user.good_standing_followers_count).to eq(1)
+    end
+
+    it "counts a follower with multiple roles once" do
+      create(:user, :trusted, :tag_moderator).follow(user)
+
+      expect(user.good_standing_followers_count).to eq(2)
+    end
+
+    it "counts distinct follower ids so the follows index can serve the query" do
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("COUNT(") }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        user.good_standing_followers_count
+      end
+
+      expect(queries).to include(a_string_including('COUNT(DISTINCT "follows"."follower_id")'))
     end
   end
 
@@ -1270,6 +1308,29 @@ RSpec.describe User do
     end
   end
 
+  describe "spam role article rescoring" do
+    it "enqueues a score recalculation for each published article when the spam role is added" do
+      published = create(:article, user: user, published: true)
+      draft = create(:article, user: user, published: false)
+      Articles::ScoreCalcWorker.jobs.clear
+
+      user.add_role(:spam)
+
+      enqueued_ids = Articles::ScoreCalcWorker.jobs.map { |job| job["args"].first }
+      expect(enqueued_ids).to include(published.id)
+      expect(enqueued_ids).not_to include(draft.id)
+    end
+
+    it "drops published article scores below the index minimum once the spam role is added" do
+      article = create(:article, user: user, published: true)
+      article.update_columns(score: 50)
+
+      sidekiq_perform_enqueued_jobs(only: Articles::ScoreCalcWorker) { user.add_role(:spam) }
+
+      expect(article.reload.score).to be < Settings::UserExperience.index_minimum_score
+    end
+  end
+
   describe "cache counts" do
     it "has an accurate tag follow count" do
       tag = create(:tag)
@@ -1405,14 +1466,35 @@ RSpec.describe User do
   end
 
   describe ".staff_account" do
-    it "returns nil if the account does not exist" do
+    before { RequestStore.clear! }
+    after { RequestStore.clear! }
+
+    it "returns nil without querying User if staff_user_id is not configured" do
+      allow(Settings::Community).to receive(:staff_user_id).and_return(nil)
+      allow(described_class).to receive(:find_by)
+
       expect(described_class.staff_account).to be_nil
+      expect(described_class).not_to have_received(:find_by)
     end
 
-    it "returns the user if the account exists" do
+    it "returns the user and memoizes the lookup in RequestStore if the account exists" do
       allow(Settings::Community).to receive(:staff_user_id).and_return(user.id)
+      allow(described_class).to receive(:find_by).with(id: user.id).and_call_original
 
       expect(described_class.staff_account).to eq(user)
+      expect(described_class.staff_account).to eq(user)
+      expect(described_class).to have_received(:find_by).with(id: user.id).once
+    end
+  end
+
+  describe "#cached_role_names" do
+    it "uses preloaded roles in memory without reading Rails.cache when roles are loaded" do
+      user.add_role(:base_subscriber)
+      loaded_user = described_class.includes(:roles).find(user.id)
+      allow(Rails.cache).to receive(:fetch)
+
+      expect(loaded_user.cached_role_names).to include("base_subscriber")
+      expect(Rails.cache).not_to have_received(:fetch)
     end
   end
 

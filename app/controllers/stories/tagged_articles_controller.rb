@@ -27,7 +27,7 @@ module Stories
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
 
       set_surrogate_key_header @stories.map(&:record_key), @tag.record_key
-      set_cache_control_headers(86400,
+      set_cache_control_headers(86_400,
                                 stale_while_revalidate: 1000,
                                 stale_if_error: 86_400)
     end
@@ -59,7 +59,18 @@ module Stories
       # Now, apply the filter.
       stories = stories_by_timeframe(stories: stories)
       stories = stories.full_posts.from_subforem
+      # Full-post feed cards never read processed_html (only status previews do),
+      # so skip hydrating that heavy column for every story on the page.
+      stories = stories.reselect(*(stories.select_values - [:processed_html]))
+      # Signed-out renders go through URL.article, which reads each org story's
+      # organization (custom domain check); batch those into one query.
+      stories = stories.preload(:organization) unless user_signed_in?
       @stories = stories.decorate
+      # articles/_single_story reads public_reaction_categories for every story with
+      # reactions; fetch those cached counts in one round-trip instead of one per story.
+      Article.preload_reaction_counts_for_reactable(
+        @stories.map(&:object).select { |story| story.public_reactions_count.positive? },
+      )
     end
 
     def tagged_count(tag:)
@@ -74,14 +85,16 @@ module Stories
     # @return [FalseClass] if we do not
     def established?(stories:, tag:)
       return true if tag.supported?
-      return true if stories.published.from_subforem.exists?
+      return true if stories.from_subforem.exists?
 
       false
     end
 
     def stories_by_timeframe(stories:)
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
-        stories = stories.where("published_at > ?", Timeframe.datetime(params[:timeframe])) if params[:timeframe] != "infinity"
+        if params[:timeframe] != "infinity"
+          stories = stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
+        end
         stories.where(score: -20..).order(score: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)

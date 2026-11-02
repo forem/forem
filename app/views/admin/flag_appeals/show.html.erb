@@ -1,0 +1,7 @@
+<div class="grid gap-4">
+  <div>
+    <%= link_to t("views.admin.flag_appeals.back_to_queue"), admin_flag_appeals_path(status: @appeal.pending_review? ? "pending" : @appeal.status), class: "crayons-btn crayons-btn--outlined crayons-btn--s" %>
+  </div>
+
+  <%= render "flag_appeal", appeal: @appeal, is_open: true %>
+</div>

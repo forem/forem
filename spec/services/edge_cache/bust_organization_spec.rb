@@ -9,12 +9,19 @@ RSpec.describe EdgeCache::BustOrganization, type: :service do
   before do
     allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
     allow(cache_bust).to receive(:call)
+    allow(EdgeCache::PurgeByKey).to receive(:call)
   end
 
   it "busts the cache" do
     described_class.call(organization, slug)
 
     expect(cache_bust).to have_received(:call).with("/#{slug}").once
+  end
+
+  it "purges the organization's surrogate key so its custom domain pages are refreshed" do
+    described_class.call(organization, slug)
+
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("organizations/#{organization.id}")
   end
 
   it "logs an error" do

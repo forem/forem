@@ -162,6 +162,16 @@ RSpec.describe ArticlePolicy do
         it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
       end
 
+      context "when user has only unpublished articles" do
+        before do
+          create(:article, published: false, user: user)
+        end
+
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
+        it_behaves_like "permitted roles", to: %i[anyone], is_root_subforem?: true
+      end
+
       context "when user has no published articles" do
         before { user.articles.delete_all }
 

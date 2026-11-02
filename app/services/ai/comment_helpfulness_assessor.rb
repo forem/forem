@@ -8,15 +8,29 @@ module Ai
   # - Offers helpful advice (for top-level comments)
   # - Is contextual and not spam (for replies)
   # - Contributes meaningfully to the welcome thread
+  #
+  # When the :comment_helpfulness function is set to Jev (see Ai::FunctionConfig), the badge
+  # decision is composed in #helpful_from_jev from narrow TypeSafe Noul questions.
   class CommentHelpfulnessAssessor
-    VERSION = "1.0"
+    include Ai::TypeSafe::Questions
+
+    VERSION = "1.1".freeze
+    FUNCTION_KEY = :comment_helpfulness
+
+    # Jev policy thresholds. A badge is a reward, so require a confident yes and no red flags.
+    QUALIFIES = 0.7
+    DISQUALIFIES = 0.5
 
     # @param comment [Comment] The comment object to be assessed.
     # @param welcome_thread [Article] The welcome thread article for context.
     def initialize(comment, welcome_thread)
       @comment = comment
       @welcome_thread = welcome_thread
-      @ai_client = Ai::Base.new(wrapper: self, affected_content: comment, affected_user: comment.user)
+      @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
+      return if @selection.jev?
+
+      @ai_client = Ai::Base.new(model: @selection.gemini_model, wrapper: self, affected_content: comment,
+                                affected_user: comment.user)
     end
 
     ##
@@ -24,6 +38,8 @@ module Ai
     #
     # @return [Boolean] true if the comment is helpful/contextual, false otherwise.
     def helpful?
+      return helpful_via_jev? if @selection.jev?
+
       prompt = build_prompt
       response = @ai_client.call(prompt)
       parse_response(response)
@@ -34,6 +50,73 @@ module Ai
     end
 
     private
+
+    # --- Jev (TypeSafe System One) ---
+
+    def helpful_via_jev?
+      client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @comment,
+                                        affected_user: @comment.user)
+      helpful_from_jev?(client.evaluate(state: jev_state, questions: jev_questions))
+    end
+
+    def top_level?
+      @comment.parent_id.nil?
+    end
+
+    def jev_state
+      state = {
+        welcome_thread: {
+          title: @welcome_thread.title,
+          body: @welcome_thread.body_markdown.to_s.first(1000),
+          purpose: "New community members introduce themselves here."
+        },
+        comment: @comment.body_markdown.to_s.truncate(4_000)
+      }
+      state[:replying_to] = @comment.parent.body_markdown.to_s.first(500) unless top_level?
+      state
+    end
+
+    def jev_questions
+      questions = {
+        low_effort: noul(
+          "Is `comment` too short or generic to add anything, such as just \"welcome\", \"hi\", \"thanks\", " \
+          "or a copy-pasted greeting?",
+        ),
+        spam_or_promotion: noul(
+          "Is `comment` spam, self-promotion, or off-topic for `welcome_thread`?",
+        )
+      }
+
+      if top_level?
+        questions[:helps_newcomers] = noul(
+          "Does `comment` offer new members helpful advice, useful community information, or a warm welcome " \
+          "with real substance?",
+          no: { includes: "A one-line greeting with nothing else." },
+        )
+      else
+        questions[:engages_with_parent] = noul(
+          "Does `comment` respond directly and meaningfully to `replying_to`?",
+        )
+        questions[:adds_value] = noul(
+          "Does `comment` add something to the conversation, such as an answer, advice, encouragement with " \
+          "substance, or a genuine follow-up?",
+        )
+      end
+      questions
+    end
+
+    def helpful_from_jev?(result)
+      return false if result.noul(:low_effort) >= DISQUALIFIES
+      return false if result.noul(:spam_or_promotion) >= DISQUALIFIES
+
+      if top_level?
+        result.noul(:helps_newcomers) >= QUALIFIES
+      else
+        result.noul(:engages_with_parent) >= QUALIFIES && result.noul(:adds_value) >= QUALIFIES
+      end
+    end
+
+    # --- Gemini ---
 
     ##
     # Gathers all necessary context and constructs a detailed prompt for the AI.

@@ -1,0 +1,39 @@
+module Appeals
+  # Sidekiq worker that runs AI re-assessment on a FlagAppeal
+  class AiReviewWorker
+    include Sidekiq::Job
+
+    sidekiq_options queue: :default, lock: :until_executing, on_conflict: :replace
+
+    def perform(appeal_id)
+      appeal = FlagAppeal.find_by(id: appeal_id)
+      return unless appeal&.open?
+
+      results = Ai::AppealAssessor.new(appeal).evaluate
+
+      # Lock the row so a concurrent admin resolution cannot be overwritten back to ai_reviewed.
+      updated = appeal.with_lock do
+        next false unless appeal.open?
+
+        appeal.update!(
+          ai_summary: results[:summary],
+          ai_confidence_score: results[:confidence_score],
+          ai_recommendation: results[:recommendation],
+          status: :ai_reviewed,
+        )
+        true
+      end
+      return unless updated
+
+      # Optional auto-resolution for high-confidence false positives. Without an admin, the resolver
+      # also refuses to lift a ban a human moderator applied, leaving the appeal for human review.
+      threshold = Settings::General.appeal_auto_unflag_threshold
+      if threshold && results[:recommendation] == "auto_unflag" && results[:confidence_score] >= threshold
+        Appeals::Resolver.approve(appeal: appeal)
+      end
+    rescue StandardError => e
+      Rails.logger.error("Appeals::AiReviewWorker failed for appeal ##{appeal_id}: #{e}")
+      raise
+    end
+  end
+end

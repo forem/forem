@@ -15,7 +15,9 @@ class UserActivity < ApplicationRecord
   def set_activity
     recently_viewed_store = user.page_views.order(created_at: :desc).limit(100).pluck(:article_id, :created_at, :time_tracked_in_seconds)
     # Now let's get all the articles where time_tracked_in_seconds for the page view from recent store is greater than 29
+    # Only select the columns used below to avoid loading body_markdown, processed_html, embeddings, etc.
     recent_articles = Article.where(id: recently_viewed_store.select { |article_id, created_at, time_tracked_in_seconds| time_tracked_in_seconds > 29 }.map(&:first))
+      .select(:id, :cached_tag_list, :cached_label_list, :organization_id, :user_id, :subforem_id)
 
     self.last_activity_at = Time.current
     self.recently_viewed_articles = recently_viewed_store

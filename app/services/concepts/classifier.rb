@@ -28,9 +28,10 @@ module Concepts
         # 1. Remove memberships that no longer qualify
         @record.concept_memberships.where.not(concept_id: active_concept_ids).destroy_all
 
-        # 2. Add or update current matching memberships
+        # 2. Add or update current matching memberships (loaded in one query, not one per concept)
+        existing_memberships = @record.concept_memberships.where(concept_id: active_concept_ids).index_by(&:concept_id)
         matching_concepts.each do |concept|
-          membership = @record.concept_memberships.find_or_initialize_by(concept_id: concept.id)
+          membership = existing_memberships[concept.id] ||= @record.concept_memberships.build(concept_id: concept.id)
           membership.distance = concept.computed_distance.to_f
           membership.save!
         end

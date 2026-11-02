@@ -17,25 +17,19 @@ RSpec.describe "User spam detection", type: :model do
 
     context "when user gets spam role" do
       it "triggers spam detection" do
-        expect_any_instance_of(Spam::DomainDetector).to receive(:check_and_block_domain!)
-        
-        user.add_role(:spam)
+        expect { user.add_role(:spam) }.to change(Spam::DomainDetectorWorker.jobs, :size).by(1)
       end
     end
 
     context "when user gets suspended role" do
       it "triggers spam detection" do
-        expect_any_instance_of(Spam::DomainDetector).to receive(:check_and_block_domain!)
-        
-        user.add_role(:suspended)
+        expect { user.add_role(:suspended) }.to change(Spam::DomainDetectorWorker.jobs, :size).by(1)
       end
     end
 
     context "when user gets other roles" do
       it "does not trigger spam detection" do
-        expect_any_instance_of(Spam::DomainDetector).not_to receive(:check_and_block_domain!)
-        
-        user.add_role(:trusted)
+        expect { user.add_role(:trusted) }.not_to change(Spam::DomainDetectorWorker.jobs, :size)
       end
     end
 

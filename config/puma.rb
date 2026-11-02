@@ -24,7 +24,18 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 # Workers do not work on JRuby or Windows (both of which do not support
 # processes).
 #
-workers ENV.fetch("WEB_CONCURRENCY", 2)
+workers_count = ENV.fetch("WEB_CONCURRENCY", 2).to_i
+workers workers_count
+
+# Route incoming requests to idle workers before busy workers to prevent
+# head-of-line queueing behind cold or GC-paused workers.
+if workers_count > 1
+  wait_for_less_busy_worker ENV.fetch("PUMA_WAIT_FOR_LESS_BUSY_WORKER", 0.005).to_f
+end
+
+# Give workers 25s to drain on shutdown so Puma exits cleanly before
+# Heroku's 30s R12 SIGKILL deadline.
+worker_shutdown_timeout ENV.fetch("PUMA_WORKER_SHUTDOWN_TIMEOUT", 25).to_i
 
 # calls GC a handful of times and compacts the heap on Ruby 2.7+ before forking.
 # This may reduce memory usage of Puma on MRI.
@@ -40,8 +51,20 @@ preload_app!
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
 
+before_fork do
+  ServerWarmup.before_fork if defined?(ServerWarmup)
+end
+
 on_worker_boot do
   # Worker specific setup for Rails 4.1+
   # See: https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server#on-worker-boot
-  ActiveRecord::Base.establish_connection
+  if defined?(ServerWarmup)
+    ServerWarmup.on_worker_boot
+  else
+    ActiveRecord::Base.establish_connection
+  end
+end
+
+on_worker_shutdown do
+  ServerWarmup.on_worker_shutdown if defined?(ServerWarmup)
 end

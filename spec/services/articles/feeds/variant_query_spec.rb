@@ -23,6 +23,24 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
+
+        it "loads articles from the current subforem without querying subforems", :aggregate_failures do
+          subforem = create(:subforem)
+          article = create(:article)
+          article.update_column(:subforem_id, subforem.id)
+          RequestStore.store[:subforem_id] = subforem.id
+
+          subforem_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            subforem_queries << payload[:sql] if payload[:sql].include?('"subforems"')
+          end
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
+
+          expect(result).to match_array(article)
+          expect(subforem_queries).to be_empty
+        ensure
+          RequestStore.store.delete(:subforem_id)
+        end
       end
 
       describe "#call with a non-nil user" do
@@ -72,9 +90,31 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
              more_inclusive_recent_good_comments
              most_inclusive_recent_good_comments].each do |test_value|
             expect(variant_query.call(comments_variant: test_value).includes_values)
-              .to include(:distinct_reaction_categories, { test_value.to_sym => :user })
+              .to include({ test_value.to_sym => :user })
           end
           # rubocop:enable Performance/CollectionLiteralInLoop
+        end
+
+        it "loads the feed without querying reactions" do
+          article = create(:article)
+          create(:reaction, reactable: article, category: "like")
+          reaction_queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            reaction_queries << payload[:sql] if payload[:sql].include?('"reactions"')
+          end
+
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
+
+          expect(reaction_queries).to be_empty
+        end
+
+        it "still returns the reaction categories of each article" do
+          article = create(:article)
+          create(:reaction, reactable: article, category: "like")
+
+          story = query_call.to_a.find { |result| result.id == article.id }
+
+          expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
         end
 
         context "with AI disclosure preferences" do

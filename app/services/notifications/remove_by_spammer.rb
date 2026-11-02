@@ -15,6 +15,12 @@ module Notifications
 
       Notification.where(notifiable_type: "Follow", notifiable_id: user.follow_ids).delete_all
       Notification.where(notifiable_type: "Comment", notifiable_id: user.comment_ids).delete_all
+      Notification.where(
+        notifiable_type: "Mention",
+        notifiable_id: Mention.where(mentionable_type: "Comment", mentionable_id: user.comment_ids)
+                              .or(Mention.where(mentionable_type: "Article", mentionable_id: user.article_ids))
+                              .select(:id),
+      ).delete_all
       Notification.where(notifiable_type: "Article", action: "Published", notifiable_id: user.article_ids).delete_all
     end
 

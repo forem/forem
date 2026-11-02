@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { userEvent } from '@testing-library/user-event';
 import { axe } from 'jest-axe';
 import { Options } from '../Options';
 import '@testing-library/jest-dom';
@@ -128,6 +129,58 @@ describe('<Options />', () => {
     expect(getByText(/danger zone/i)).toBeInTheDocument();
     expect(getByText(/unpublish post/i)).toBeInTheDocument();
     expect(getByText(/done/i)).toBeInTheDocument();
+  });
+
+  describe('co-author invitations', () => {
+    const openOptions = async (passedData) => {
+      const utils = render(
+        <Options
+          passedData={passedData}
+          onConfigChange={jest.fn()}
+          onSaveDraft={jest.fn()}
+          previewLoading={false}
+        />,
+      );
+      await userEvent.click(
+        utils.getByRole('button', { name: 'Advanced Post options' }),
+      );
+      await utils.findByText('Done');
+      return utils;
+    };
+
+    const invitationPicker = (container) =>
+      container.querySelector('#article-co-author-invitations');
+
+    const withInvitations = (overrides = {}) => ({
+      ...getPassedData(),
+      coAuthorInvitationsEnabled: true,
+      coAuthorInvitations: [],
+      coAuthorInvitees: [],
+      coAuthorInvitationsMax: 4,
+      ...overrides,
+    });
+
+    it('shows the invitation picker on a personal post when enabled', async () => {
+      const { container } = await openOptions(withInvitations());
+
+      expect(invitationPicker(container)).toBeInTheDocument();
+    });
+
+    it('hides the invitation picker when disabled', async () => {
+      const { container } = await openOptions(
+        withInvitations({ coAuthorInvitationsEnabled: false }),
+      );
+
+      expect(invitationPicker(container)).not.toBeInTheDocument();
+    });
+
+    it('hides the invitation picker on an organization post', async () => {
+      const { container } = await openOptions(
+        withInvitations({ organizationId: 4 }),
+      );
+
+      expect(invitationPicker(container)).not.toBeInTheDocument();
+    });
   });
 
   it('unpublishes an article when the unpublish post button is clicked', () => {

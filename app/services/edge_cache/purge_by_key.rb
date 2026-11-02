@@ -9,7 +9,7 @@ module EdgeCache
         Array.wrap(keys).flatten.compact.each do |key|
           service.purge_by_key(key, soft)
         rescue StandardError => e
-          Honeybadger.notify(e)
+          Rails.error.report(e)
           ForemStatsClient.increment(
             "edgecache_purge_by_key.service_error",
             tags: ["error_class:#{e.class}"],
@@ -19,7 +19,7 @@ module EdgeCache
         begin
           EdgeCache::Bust.call(fallback_paths)
         rescue StandardError => e
-          Honeybadger.notify(e)
+          Rails.error.report(e)
           ForemStatsClient.increment(
             "edgecache_purge_by_key.service_error",
             tags: ["error_class:#{e.class}"],

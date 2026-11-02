@@ -167,6 +167,9 @@ en:
           onboarding_newsletter_opt_in_subhead:
             description: "Newsletter checkbox subheading"
             placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+          geos_with_allowed_anonymous_tracking:
+            description: 'Countries or regions (e.g. US, CA, US-CA) where signed-out visitors are given an anonymous ID in their browser along with a record of the tags they read, so we can serve them better content. Only list places where storing this without prior consent is allowed (e.g. not the EU or UK). If this data is used for ads, it must also be allowed for advertising there and/or work with your cookie banner. Leave empty to turn it off everywhere.'
+            placeholder: 'Comma separated country or region codes e.g. US,CA'
           geos_with_allowed_default_email_opt_in:
             description: 'List of countries where the default email opt-in is allowed by admin'
             placeholder: 'List of valid countries: comma separated, letters only e.g. US,CA'

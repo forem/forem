@@ -40,6 +40,17 @@
           </div>
           <%= javascript_include_tag "admin/billboardEnabledCountries", defer: true %>
         <% end %>
+
+        <%# Not gated on the location targeting flag: Fastly geolocates visitors either way. %>
+        <%# See the comments on this setting in Settings::General before enabling any region. %>
+        <div class="crayons-field">
+          <%= admin_config_label :geos_with_allowed_anonymous_tracking %>
+          <%= admin_config_description Constants::Settings::General.details[:geos_with_allowed_anonymous_tracking][:description] %>
+          <%= f.text_field :geos_with_allowed_anonymous_tracking,
+                           class: "crayons-textfield",
+                           value: Settings::General.geos_with_allowed_anonymous_tracking.join(","),
+                           placeholder: Constants::Settings::General.details[:geos_with_allowed_anonymous_tracking][:placeholder] %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

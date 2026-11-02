@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import faker from '@faker-js/faker';
+import { faker } from '@faker-js/faker';
 import { Snackbar, addSnackbarItem } from '..';
 
 export default {

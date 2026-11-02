@@ -6,6 +6,34 @@ module EventsHelper
     "challenge" => "calendar__accent--challenge"
   }.freeze
 
+  SIDEBAR_CATEGORY_BY_TYPE = {
+    "challenge" => :challenges,
+    "live_stream" => :livestreams,
+    "takeover" => :takeovers
+  }.freeze
+
+  SIDEBAR_HEADING_I18N_KEYS = {
+    %i[upcoming challenges] => "views.main.side.events.headings.upcoming_challenges",
+    %i[live challenges] => "views.main.side.events.headings.live_challenges",
+    %i[live_and_upcoming challenges] => "views.main.side.events.headings.live_and_upcoming_challenges",
+    %i[upcoming livestreams] => "views.main.side.events.headings.upcoming_livestreams",
+    %i[live livestreams] => "views.main.side.events.headings.live_livestreams",
+    %i[live_and_upcoming livestreams] => "views.main.side.events.headings.live_and_upcoming_livestreams",
+    %i[upcoming takeovers] => "views.main.side.events.headings.upcoming_takeovers",
+    %i[live takeovers] => "views.main.side.events.headings.live_takeovers",
+    %i[live_and_upcoming takeovers] => "views.main.side.events.headings.live_and_upcoming_takeovers",
+    %i[upcoming events] => "views.main.side.events.headings.upcoming_events",
+    %i[live events] => "views.main.side.events.headings.live_events",
+    %i[live_and_upcoming events] => "views.main.side.events.headings.live_and_upcoming_events"
+  }.freeze
+
+  SIDEBAR_EVENT_TYPE_I18N_KEYS = {
+    "challenge" => "views.main.side.events.types.challenge",
+    "live_stream" => "views.main.side.events.types.live_stream",
+    "takeover" => "views.main.side.events.types.takeover",
+    "other" => "views.main.side.events.types.other"
+  }.freeze
+
   def event_link_target(event)
     if event.delegate_to_page? && event.page.present?
       event.page.path
@@ -43,5 +71,41 @@ module EventsHelper
     else
       "#{start_at.to_fs(:short)} – #{end_at.to_fs(:short)}"
     end
+  end
+
+  def sidebar_events_heading(events, now: Time.current)
+    return t("views.main.side.events.headings.upcoming_events") if events.blank?
+
+    status = sidebar_events_status(events, now)
+    category = sidebar_events_category(events)
+    key = SIDEBAR_HEADING_I18N_KEYS.fetch([status, category], "views.main.side.events.headings.upcoming_events")
+    t(key)
+  end
+
+  def sidebar_event_type_label(event)
+    key = SIDEBAR_EVENT_TYPE_I18N_KEYS.fetch(event.type_of.to_s, "views.main.side.events.types.other")
+    t(key)
+  end
+
+  private
+
+  def sidebar_events_status(events, now)
+    has_live = events.any? { |event| event.live?(now) }
+    has_upcoming = events.any? { |event| !event.live?(now) }
+
+    if has_live && has_upcoming
+      :live_and_upcoming
+    elsif has_live
+      :live
+    else
+      :upcoming
+    end
+  end
+
+  def sidebar_events_category(events)
+    types = events.map { |event| event.type_of.to_s }.uniq
+    return :events unless types.one?
+
+    SIDEBAR_CATEGORY_BY_TYPE.fetch(types.first, :events)
   end
 end

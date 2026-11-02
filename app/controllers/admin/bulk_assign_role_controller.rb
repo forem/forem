@@ -56,11 +56,17 @@ module Admin
 
     def user_action_status(user, role)
       if user
-        return "user_already_has_the_role" if user_status(user) == role
+        return "user_already_has_the_role" if user_already_has_role?(user, role)
 
         return "role_applied_successfully"
       end
       "user_not_found"
+    end
+
+    def user_already_has_role?(user, role)
+      return user.community_leader_level_1? if role == "Community Leader Level 1"
+
+      user_status(user) == role
     end
 
     def permitted_params

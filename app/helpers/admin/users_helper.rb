@@ -1,9 +1,9 @@
 module Admin
   module UsersHelper
     def role_options(logged_in_user)
-      options = { "Statuses" => Constants::Role::BASE_ROLES }
+      options = { "Statuses" => Constants::Role::BASE_ROLES + ["Community Leader Level 1"] }
       if logged_in_user.super_admin?
-        special_roles = Constants::Role::SPECIAL_ROLES
+        special_roles = Constants::Role::SPECIAL_ROLES - ["Community Leader Level 1"]
         if FeatureFlag.enabled?(:moderator_role)
           special_roles = special_roles.dup << "Super Moderator"
         end

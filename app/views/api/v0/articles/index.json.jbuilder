@@ -1,3 +1,5 @@
+flare_tags = FlareTag.tags_by_article_id(@articles)
+
 json.array! @articles do |article|
   json.partial! "api/v0/articles/article", article: article
 
@@ -14,7 +16,7 @@ json.array! @articles do |article|
     json.partial! "api/v0/shared/organization", organization: article.organization
   end
 
-  flare_tag = FlareTag.new(article).tag
+  flare_tag = flare_tags[article.id]
   if flare_tag
     json.partial! "api/v0/articles/flare_tag", flare_tag: flare_tag
   end

@@ -2,6 +2,7 @@
 pt:
   views:
     users:
+      view_admin_profile: Ver perfil de administrador
       profile:
         title: Perfil do Usuário
         bio: Biografia

@@ -48,7 +48,8 @@ module Ahoy
       BillboardEvent.create(billboard_id: ahoy_params[:bb].to_i,
                             category: "click",
                             user_id: user&.id || current_user&.id,
-                            context_type: "email")
+                            context_type: "email",
+                            user_agent: request.user_agent)
       update_billboard_counts
     rescue StandardError => e
       Rails.logger.error "Error processing billboard click: #{e.message}"
@@ -58,9 +59,10 @@ module Ahoy
       billboard = Billboard.find_by(id: ahoy_params[:bb].to_i)
       return unless billboard
 
-      num_impressions = billboard.billboard_events.impressions.sum(:counts_for)
-      num_clicks = billboard.billboard_events.clicks.sum(:counts_for)
-      num_seconds_visible = billboard.billboard_events.impressions.sum(:seconds_visible)
+      # One pass over the billboard's events instead of one SUM query per tally.
+      # Shares the worker's columns so the /ahoy/click path tallies identically.
+      num_impressions, num_clicks, num_seconds_visible =
+        billboard.billboard_events.pick(*Billboards::TrackEmailClickWorker::TALLY_COLUMNS)
       rate = num_impressions.positive? ? (num_clicks.to_f / num_impressions) : 0
       billboard.update_columns(
         success_rate: rate,

@@ -37,6 +37,19 @@ RSpec.describe Concepts::Classifier do
 
         expect(article.concepts).to be_empty
       end
+
+      it "updates the distance of existing memberships without duplicating them" do
+        article = create(:article, semantic_embedding: embedding1)
+        membership = create(:concept_membership, concept: concept1, record: article, distance: 0.5)
+        classifier = described_class.new(article)
+
+        expect {
+          classifier.call(threshold: 0.14)
+        }.to change(ConceptMembership, :count).by(1)
+
+        expect(membership.reload.distance).to be_within(0.0001).of(0.0)
+        expect(article.concepts).to contain_exactly(concept1, concept2)
+      end
     end
 
     context "with a comment" do

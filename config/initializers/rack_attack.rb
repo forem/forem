@@ -117,6 +117,12 @@ module Rack
       end
     end
 
+    throttle("calendar_throttle", limit: 20, period: 1.minute) do |request|
+      if request.path.chomp("/") == "/calendar"
+        request.track_and_return_ip
+      end
+    end
+
     # Removed user_signed_in? helper method - no longer needed
     # since we removed authentication-based throttling rules
 

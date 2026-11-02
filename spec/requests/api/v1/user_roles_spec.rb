@@ -393,4 +393,176 @@ RSpec.describe "Api::V1::UserRoles" do
       end
     end
   end
+
+  describe "PUT /api/users/:id/base_subscriber", :aggregate_failures do
+    let(:target_user) { create(:user) }
+
+    before { Audit::Subscribe.listen listener }
+    after { Audit::Subscribe.forget listener }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        put api_user_add_role_path(target_user, "base_subscriber"), headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized if api key is invalid" do
+        put api_user_add_role_path(target_user, "base_subscriber"),
+            headers: headers.merge({ "api-key" => "invalid api key" })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns unauthorized if api key belongs to non-admin user" do
+        put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(target_user.reload.base_subscriber?).to be false
+      end
+    end
+
+    context "when request is authenticated" do
+      before { api_secret.user.add_role(:super_admin) }
+
+      it "assigns the base_subscriber role to a user" do
+        expect do
+          put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+          expect(response).to have_http_status(:no_content)
+          expect(target_user.reload.base_subscriber?).to be true
+          expect(Note.last.reason).to eq("Base Subscriber")
+        end.to change(Note, :count).by(1)
+      end
+
+      it "sends the base subscriber role email" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+
+        expect do
+          put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
+
+        expect(ActionMailer::Base.deliveries.last.to).to eq([target_user.email])
+      end
+
+      it "does nothing when the user already has the role" do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect do
+          put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+          expect(response).to have_http_status(:no_content)
+          expect(target_user.reload.base_subscriber?).to be true
+        end.to not_change { ActionMailer::Base.deliveries.count }
+          .and not_change(Note, :count)
+          .and not_change(AuditLog, :count)
+      end
+
+      it "creates an audit log of the action taken" do
+        put api_user_add_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_user_base_subscriber")
+        expect(log.data["target_user_id"]).to eq(target_user.id)
+        expect(log.user_id).to eq(api_secret.user.id)
+      end
+    end
+  end
+
+  describe "DELETE /api/users/:id/base_subscriber", :aggregate_failures do
+    let(:target_user) do
+      user = create(:user, :trusted)
+      user.add_role(:base_subscriber)
+      user
+    end
+
+    before { Audit::Subscribe.listen listener }
+    after { Audit::Subscribe.forget listener }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: headers
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized if api key is invalid" do
+        delete api_user_remove_role_path(target_user, "base_subscriber"),
+               headers: headers.merge({ "api-key" => "invalid api key" })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns unauthorized if api key belongs to non-admin user" do
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(target_user.reload.base_subscriber?).to be true
+      end
+    end
+
+    context "when request is authenticated" do
+      before { api_secret.user.add_role(:super_admin) }
+
+      it "removes only the base_subscriber role from a user" do
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(response).to have_http_status(:no_content)
+        target_user.reload
+        expect(target_user.base_subscriber?).to be false
+        expect(target_user.has_trusted_role?).to be true
+      end
+
+      it "touches the user and profile" do
+        target_user.update_columns(updated_at: 1.day.ago)
+        target_user.profile.update_columns(updated_at: 1.day.ago)
+
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(target_user.reload.updated_at).to be > 1.hour.ago
+        expect(target_user.profile.reload.updated_at).to be > 1.hour.ago
+      end
+
+      it "succeeds when the user does not have the role" do
+        target_user.remove_role(:base_subscriber)
+
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        expect(response).to have_http_status(:no_content)
+        expect(target_user.reload.base_subscriber?).to be false
+      end
+
+      it "creates an audit log of the action taken" do
+        delete api_user_remove_role_path(target_user, "base_subscriber"), headers: auth_headers
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.data["action"]).to eq("api_user_remove_base_subscriber")
+        expect(log.data["target_user_id"]).to eq(target_user.id)
+        expect(log.user_id).to eq(api_secret.user.id)
+      end
+    end
+  end
+
+  describe "DELETE /api/users/:id/limited for a base subscriber" do
+    let(:target_user) do
+      user = create(:user, :limited)
+      user.add_role(:base_subscriber)
+      user
+    end
+
+    before { api_secret.user.add_role(:super_admin) }
+
+    it "keeps the base_subscriber role" do
+      delete api_user_remove_role_path(target_user, "limited"), headers: auth_headers
+
+      expect(response).to have_http_status(:no_content)
+      expect(target_user.reload.limited?).to be false
+      expect(target_user.base_subscriber?).to be true
+    end
+  end
 end

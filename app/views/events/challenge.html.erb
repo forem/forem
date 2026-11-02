@@ -55,10 +55,10 @@
         </header>
 
         <div class="crayons-article__body text-lg">
-          <% if @event.data&.dig('body_markdown').present? %>
+          <% if @event.body_markdown.blank? && @event.data&.dig('body_markdown').present? %>
             <%= MarkdownProcessor::Parser.new(@event.data['body_markdown']).finalize.html_safe %>
           <% else %>
-            <%= simple_format(@event.description) %>
+            <%= @event.body_html %>
           <% end %>
         </div>
       </article>

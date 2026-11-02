@@ -46,5 +46,19 @@ RSpec.describe Events::Billboards::Takeover do
       html = service.post_html
       expect(html).to include("src=\"https://example.com/org.jpg\"")
     end
+
+    it "falls back to the backup avatar when the host has removed their profile image" do
+      user = create(:user)
+      allow(user).to receive(:profile_image_url).and_return(nil)
+
+      event.data.delete("image_url")
+      event.organization = nil
+      event.user = user
+
+      html = service.post_html
+
+      expect(html).to include(%(src="#{Images::Profile.call(nil, length: 90)}"))
+      expect(html).not_to include(%(src=""))
+    end
   end
 end

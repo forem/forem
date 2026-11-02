@@ -247,4 +247,36 @@ describe('<GithubRepos />', () => {
     expect(errorAlert.textContent).toEqual('An error occurred: some error');
     expect(Honeybadger.notify).toHaveBeenCalledTimes(1);
   });
+
+  it('should render the server error message when the response is not ok', async () => {
+    fetch.mockResponse(
+      JSON.stringify({
+        error: 'GitHub Unauthorized: Bad credentials',
+        status: 401,
+      }),
+      { status: 401, statusText: '' },
+    );
+
+    const { findByRole } = render(<GithubRepos />);
+    const errorAlert = await findByRole('alert');
+
+    expect(errorAlert.textContent).toEqual(
+      'An error occurred: GitHub Unauthorized: Bad credentials',
+    );
+    expect(Honeybadger.notify).toHaveBeenCalledTimes(1);
+  });
+
+  it('should fall back to the status text when the error response is not JSON', async () => {
+    fetch.mockResponse('<html>Oops</html>', {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+
+    const { findByRole } = render(<GithubRepos />);
+    const errorAlert = await findByRole('alert');
+
+    expect(errorAlert.textContent).toEqual(
+      'An error occurred: Internal Server Error',
+    );
+  });
 });

@@ -106,10 +106,10 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-feed-#{event.id}");
-              const countdownEl = document.getElementById("countdown-feed-#{event.id}");
-              const playerContainer = document.getElementById("player-container-feed-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-feed-#{event.id}");
+                const countdownEl = document.getElementById("countdown-feed-#{event.id}");
+                const playerContainer = document.getElementById("player-container-feed-#{event.id}");
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
@@ -299,10 +299,10 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-post-#{event.id}");
-              const countdownEl = document.getElementById("countdown-post-#{event.id}");
-              const playerContainer = document.getElementById("player-container-post-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-post-#{event.id}");
+                const countdownEl = document.getElementById("countdown-post-#{event.id}");
+                const playerContainer = document.getElementById("player-container-post-#{event.id}");
                 const now = Date.now();
 
                 if (now >= TARGET_TIME) {
@@ -417,12 +417,12 @@ module Events
           </style>
 
           <div class="live-stream-minimized" style="min-width:60px;display: flex; flex-direction: column; gap: var(--su-2);">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: var(--su-2);">
-              <h4 style="font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight);">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: var(--su-2);">
+              <h4 style="flex: 1 1 auto; min-width: 0; font-size: var(--fs-base); font-weight: bold; margin: 0; line-height: var(--lh-tight); overflow-wrap: anywhere;">
                 #{escaped_title}
               </h4>
-              <div id="live-indicator-minimized-#{event.id}" style="display: none; align-items: center; gap: 6px; background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: var(--fs-xs); font-weight: bold; text-transform: uppercase;">
-                <span style="display: inline-block; width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse-live 1.5s infinite;"></span>
+              <div id="live-indicator-minimized-#{event.id}" style="display: none; flex: 0 0 auto; align-items: center; gap: 6px; white-space: nowrap; line-height: 1.4; margin-top: 2px; background: #dc2626; color: white; padding: 2px 8px; border-radius: 4px; font-size: var(--fs-xs); font-weight: bold; text-transform: uppercase;">
+                <span style="display: inline-block; flex: 0 0 auto; width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse-live 1.5s infinite;"></span>
                 Live
               </div>
             </div>
@@ -451,11 +451,11 @@ module Events
               const TARGET_TIME = new Date(#{event.start_time.iso8601.to_json}).getTime();
               const IFRAME_SRC = #{event.primary_stream_url.to_json};
 
-              const overlay = document.getElementById("overlay-minimized-#{event.id}");
-              const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
-              const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
-              const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
               function update() {
+                const overlay = document.getElementById("overlay-minimized-#{event.id}");
+                const countdownEl = document.getElementById("countdown-minimized-#{event.id}");
+                const playerContainer = document.getElementById("player-container-minimized-#{event.id}");
+                const liveIndicator = document.getElementById("live-indicator-minimized-#{event.id}");
                 const now = Date.now();
                 if (now >= TARGET_TIME) {
                   if (window.liveStreamIntervals && window.liveStreamIntervals["#{event.id}"]) {

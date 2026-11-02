@@ -19,15 +19,14 @@ module Settings
 
     class << self
       def clear_cache
-        # Clear the main cache
-        RequestStore.delete(cache_key)
+        # Clear the main cache and any subforem-specific caches in RequestStore
+        RequestStore.store.delete_if { |key, _| key == cache_key || key.to_s.start_with?("#{cache_key}-") }
         Rails.cache.delete(cache_key)
+        return if Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
 
-        # Clear any subforem-specific caches
-        Subforem.find_each do |subforem|
-          subforem_cache_key = "#{cache_key}-#{subforem.id}"
-          RequestStore.delete(subforem_cache_key)
-          Rails.cache.delete(subforem_cache_key)
+        # Clear any subforem-specific caches in Rails.cache
+        Subforem.ids.each do |subforem_id|
+          Rails.cache.delete("#{cache_key}-#{subforem_id}")
         end
       end
 

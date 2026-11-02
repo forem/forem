@@ -48,4 +48,25 @@ RSpec.describe "Follows #show" do
     get "/follows/#{user.id}", params: { followable_type: "User" }
     expect(response.body).to eq("mutual")
   end
+
+  it "raises RecordNotFound for a user id that does not exist (unchanged)" do
+    missing_id = User.maximum(:id).to_i + 1
+
+    expect do
+      get "/follows/#{missing_id}", params: { followable_type: "User" }
+    end.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "loads the followed-back candidate with only the columns needed for the cache key" do
+    user_queries = []
+    callback = lambda do |*, payload|
+      user_queries << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" = /)
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      get "/follows/#{user.id}", params: { followable_type: "User" }
+    end
+
+    expect(user_queries).to include(a_string_starting_with('SELECT "users"."id", "users"."updated_at" FROM "users"'))
+  end
 end

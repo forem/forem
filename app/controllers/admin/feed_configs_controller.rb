@@ -4,7 +4,22 @@ module Admin
 
     def index
       @best_feed_config = best_feed_config
-      @feed_configs = FeedConfig.order(feed_success_score: :desc, created_at: :desc).page(params[:page]).per(25)
+      @top_pool_ids = top_pool_ids
+      @new_pool_ids = FeedConfig.where("feed_impressions_count < ?", FeedConfig::LOW_IMPRESSION_COUNT)
+        .order(created_at: :desc)
+        .limit(FeedConfig::TOP_POOL_LIMIT)
+        .ids
+
+      order_clause = case params[:sort]
+                     when "newest"
+                       { created_at: :desc, feed_success_score: :desc }
+                     when "impressions"
+                       { feed_impressions_count: :desc, feed_success_score: :desc }
+                     else
+                       { feed_success_score: :desc, created_at: :desc }
+                     end
+
+      @feed_configs = FeedConfig.order(order_clause).page(params[:page]).per(25)
     end
 
     def show
@@ -53,8 +68,26 @@ module Admin
 
     private
 
+    def top_pool_ids
+      ids = FeedConfig.where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
+        .order(feed_success_score: :desc)
+        .limit(FeedConfig::TOP_POOL_LIMIT)
+        .ids
+      return ids if ids.any?
+
+      FeedConfig.where("feed_impressions_count > 0")
+        .order(feed_success_score: :desc)
+        .limit(FeedConfig::TOP_POOL_LIMIT)
+        .ids
+    end
+
     def best_feed_config
-      FeedConfig.order("feed_success_score DESC NULLS LAST").first || FeedConfig.last
+      FeedConfig.where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
+        .order("feed_success_score DESC NULLS LAST")
+        .first ||
+        FeedConfig.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
+        FeedConfig.order("feed_success_score DESC NULLS LAST").first ||
+        FeedConfig.last
     end
 
     def feed_config_params

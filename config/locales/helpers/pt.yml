@@ -559,6 +559,24 @@ pt:
       upload:
         title: Limit number of images uploaded
         description: How many images can someone upload within any 30 second period?
+      api_upload:
+        title: Limitar o número de imagens enviadas pela API
+        description: Quantas imagens alguém pode enviar pela API dentro da janela de
+          envio de imagens da API? Defina como 0 para desativar o envio de imagens pela
+          API.
+      api_upload_window:
+        title: Janela de envio de imagens da API (segundos)
+        description: Duração da janela, em segundos, para o limite de envio de imagens
+          pela API (por exemplo, 3600 para uma hora).
+      api_generation:
+        title: Limitar o número de imagens de IA geradas pela API
+        description: Quantas imagens de IA alguém pode gerar pela API dentro da janela
+          de geração de imagens da API? Tentativas que falharem também contam. Defina
+          como 0 para desativar a geração de imagens pela API.
+      api_generation_window:
+        title: Janela de geração de imagens de IA da API (segundos)
+        description: Duração da janela, em segundos, para o limite de geração de imagens
+          de IA pela API (por exemplo, 86400 para um dia).
       user:
         title: Limit number of changes someone can make to their account
         description: How many changes can someone make to their user account within

@@ -171,14 +171,38 @@
         });
       }
 
+      function executeFeedBillboardScripts(el) {
+        var scriptElements = el.getElementsByTagName("script");
+        for (var i = 0; i < scriptElements.length; i++) {
+          var originalElement = scriptElements[i];
+          if (!originalElement) continue;
+          var copyElement = document.createElement("script");
+          for (var j = 0; j < originalElement.attributes.length; j++) {
+            copyElement.setAttribute(
+              originalElement.attributes[j].name,
+              originalElement.attributes[j].value
+            );
+          }
+          copyElement.textContent = originalElement.textContent;
+          var parentNode = originalElement.parentNode;
+          var nextSibling = originalElement.nextSibling;
+          parentNode.removeChild(originalElement);
+          parentNode.insertBefore(copyElement, nextSibling);
+        }
+      }
+
       function initializeFeedNavigation() {
-        window._feedLastPath = window.location.pathname;
+        if (!window._feedLastPath) {
+          window._feedLastPath = window.location.pathname;
+        }
         updateFeedNavActiveState();
 
         // Setup soft navigations
         var feedLinks = document.querySelectorAll(".pill-nav-item");
         feedLinks.forEach(function(link) {
           link.setAttribute("data-no-instant", "true"); // Prevent full page reload
+          if (link.dataset.feedNavBound === "true") return;
+          link.dataset.feedNavBound = "true";
           link.addEventListener("click", function(e) {
             var targetHref = link.getAttribute("href");
             if (window.location.pathname === targetHref) return;
@@ -203,6 +227,9 @@
           };
           window.addEventListener("popstate", window.feedPopstateHandler);
           if (window.InstantClick) {
+            window.InstantClick.on("change", function() {
+              window._feedLastPath = window.location.pathname;
+            });
             window.InstantClick.on("restore", updateFeedNavActiveState);
           }
         }
@@ -247,6 +274,7 @@
               
               if (container && newFeed) {
                 container.innerHTML = newFeed.innerHTML;
+                executeFeedBillboardScripts(container);
                 container.style.opacity = "1";
               }
             }).catch(() => {

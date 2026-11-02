@@ -69,7 +69,7 @@ module Articles
           .order(Arel.sql("computed_score DESC"))
           .limit(@number_of_articles)
           .offset((@page - 1) * @number_of_articles)
-          .includes(:subforem, :distinct_reaction_categories, :context_notes)
+          .includes(:context_notes)
           .from_subforem
 
         comments_assoc = case comments_variant.to_s

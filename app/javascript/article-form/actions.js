@@ -1,7 +1,11 @@
 import { validateFileInputs } from '../packs/validateFileInputs';
 
 function getCsrfToken() {
-  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || window.csrfToken;
+  return (
+    document
+      .querySelector('meta[name="csrf-token"]')
+      ?.getAttribute('content') || window.csrfToken
+  );
 }
 
 export function previewArticle(payload, successCb, failureCb) {
@@ -45,10 +49,32 @@ export function processPayload(payload) {
     organizations,
     authorId,
     coAuthorsData,
+    coAuthorInvitations,
+    coAuthorInvitationsMax,
     /* eslint-enable no-unused-vars */
+    coAuthorInvitationsEnabled,
+    coAuthorInvitees,
     ...neededPayload
   } = payload;
+
+  // Invitations only apply to personal posts. Leaving the list out (rather than sending it
+  // empty) tells the server not to touch the post's invitations.
+  if (coAuthorInvitationsEnabled && !neededPayload.organizationId) {
+    neededPayload.coAuthorInviteeIds = (coAuthorInvitees || []).map(
+      ({ id }) => id,
+    );
+  }
+
   return neededPayload;
+}
+
+export function acceptedCoAuthorInvitees(invitations, invitees) {
+  const acceptedIds = new Set(
+    (invitations || [])
+      .filter(({ status }) => status === 'accepted')
+      .map(({ user }) => user.id),
+  );
+  return (invitees || []).filter(({ id }) => acceptedIds.has(id));
 }
 
 export function submitArticle({ payload, onSuccess, onError }) {
@@ -161,9 +187,10 @@ export function generateAiImage({ prompt, successCb, failureCb, signal }) {
     .catch((error) => {
       clearTimeout(timeoutId);
       // Ensure the error message is a clean string, not HTML
-      const errorMessage = error.message && !error.message.includes('<html') 
-        ? error.message 
-        : 'An error occurred, please try again later';
+      const errorMessage =
+        error.message && !error.message.includes('<html')
+          ? error.message
+          : 'An error occurred, please try again later';
       failureCb(new Error(errorMessage));
     });
 }

@@ -37,7 +37,9 @@ pre {
 // Set core body defaults
 body {
   scroll-behavior: smooth;
-  text-rendering: optimizeSpeed;
+  // `optimizeSpeed` disables kerning in Chromium, which makes headings look
+  // loosely set. Explicitly ask for kerning instead.
+  font-kerning: normal;
   line-height: 1.5;
 }
 

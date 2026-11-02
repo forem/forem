@@ -78,7 +78,7 @@ module Api
     def paginated_survey_responses(model_class)
       after_id = params[:after].to_i if params[:after].present?
 
-      num = [per_page, per_page_max].min
+      num = per_page.clamp(1, per_page_max)
 
       model_class.joins(:poll)
         .where(polls: { survey_id: @survey.id })

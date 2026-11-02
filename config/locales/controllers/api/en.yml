@@ -20,3 +20,10 @@ en:
         redis_not_connected: Redis NOT connected!
       listings_controller:
         no_credit: Not enough available credits
+    v1:
+      images_controller:
+        image_required: An 'image' file is required (multipart/form-data)
+        prompt_required: A 'prompt' is required
+        prompt_too_long: The 'prompt' must be %{max} characters or fewer
+        invalid_aspect_ratio: "'aspect_ratio' must be one of: %{valid}"
+        generation_unavailable: AI image generation is not available on this Forem

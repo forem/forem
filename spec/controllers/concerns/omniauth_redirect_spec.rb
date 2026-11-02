@@ -8,9 +8,11 @@ RSpec.describe "Omniauth redirect", type: :request do
   let!(:mock_warden) { Warden::Proxy.new({}, Warden::Manager.new(nil)) }
 
   before do
-    allow(controller).to receive(:current_user).and_return(user)
-    allow(controller).to receive(:stored_location_for).and_return(nil)
-    allow(controller).to receive(:root_path).and_return("/new")
+    allow(controller).to receive_messages(
+      current_user: user,
+      stored_location_for: nil,
+      root_path: "/new",
+    )
   end
 
   it "avoids i=i param in after_sign_in_path_for" do
@@ -39,6 +41,14 @@ RSpec.describe "Omniauth redirect", type: :request do
 
     path = controller.after_sign_in_path_for(user)
     expect(path).to eq("/settings?signin=true")
+  end
+
+  it "falls back to root_path when stored_location_for points to a password reset page" do
+    mock_request = OpenStruct.new(env: { "warden" => mock_warden })
+    allow(controller).to receive_messages(stored_location_for: "/users/password/new", request: mock_request)
+
+    path = controller.after_sign_in_path_for(user)
+    expect(path).to eq("/new?signin=true")
   end
 end
 # rubocop:enable Style/OpenStructUse

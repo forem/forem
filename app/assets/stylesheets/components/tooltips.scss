@@ -36,6 +36,13 @@
   }
 }
 
+@keyframes crayons-hover-tooltip-in {
+  from {
+    opacity: 0;
+    transform: translateY(var(--su-1));
+  }
+}
+
 // Minimal version for hover tooltips not triggered by keyboard
 .crayons-hover-tooltip[data-tooltip] {
   position: relative;
@@ -43,6 +50,10 @@
   &:after {
     @extend .crayons-tooltip__content;
     content: attr(data-tooltip);
+    // Keep the tooltip out of layout until hovered: a long, invisible
+    // max-content tooltip can otherwise extend past the viewport and cause
+    // horizontal scrolling on narrow screens.
+    display: none;
     left: 0;
     bottom: 100%;
     top: unset;
@@ -53,9 +64,11 @@
 
   &:hover {
     &:after {
+      display: block;
       opacity: 1;
       transform: translateY(calc(-1 * var(--su-1)));
       transition-delay: 0s;
+      animation: var(--transition-props) crayons-hover-tooltip-in;
     }
   }
 

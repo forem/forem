@@ -30,7 +30,7 @@ module Subforems
       Rails.logger.info("Successfully created subforem #{subforem.domain} with AI services")
     rescue StandardError => e
       Rails.logger.error("Failed to create subforem #{subforem_id} with AI services: #{e.message}")
-      Honeybadger.notify(e) if defined?(Honeybadger)
+      Rails.error.report(e)
       raise e
     end
   end

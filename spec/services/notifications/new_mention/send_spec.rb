@@ -71,6 +71,27 @@ RSpec.describe Notifications::NewMention::Send, type: :service do
     expect(Notification.all.size).to eq prior_notification_size
   end
 
+  it "does not send if the mentionable has an active mascot vomit reaction even before score recalculation" do
+    mascot_user = create(:user)
+    allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+    comment = create(:comment, commentable: article)
+    comment_mention = create(:mention, mentionable: comment, user: user)
+    create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "valid")
+
+    expect(comment.reload.score).to be >= 0
+    expect { described_class.call(comment_mention) }.not_to change(Notification, :count)
+  end
+
+  it "still sends if the mascot vomit reaction was marked invalid by an admin" do
+    mascot_user = create(:user)
+    allow(Settings::General).to receive(:mascot_user_id).and_return(mascot_user.id)
+    comment = create(:comment, commentable: article)
+    comment_mention = create(:mention, mentionable: comment, user: user)
+    create(:reaction, user: mascot_user, reactable: comment, category: "vomit", status: "invalid")
+
+    expect { described_class.call(comment_mention) }.to change(Notification, :count).by(1)
+  end
+
   it "doesn't create a mobile notification if the mobile receive notification is false" do
     user.notification_setting.update(mobile_mention_notifications: false)
     allow(PushNotifications::Send).to receive(:call)
