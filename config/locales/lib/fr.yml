@@ -254,6 +254,17 @@ fr:
           feed_lookback_days:
             description: Determines how far back the feed looks for new posts (in days)
             placeholder: '10'
+          feed_config_sticky_hours:
+            label: Durée de la configuration attribuée (heures)
+            description: Durée pendant laquelle une configuration du fil d’accueil reste attribuée à un membre. Saisissez 0 pour désactiver cette attribution.
+          feed_config_sticky_percentage:
+            label: Trafic de la configuration attribuée (%)
+            description: Pourcentage des chargements du fil d’accueil utilisant la configuration attribuée. Les autres utilisent la sélection habituelle. Saisissez 0 pour désactiver cette attribution.
+          feed_config_repeat_visit_minutes:
+            label: Intervalle entre les retours au fil d’accueil (minutes)
+            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué. Chaque retour ajoute un demi-clic à son score de réussite ; la première visite visible ne rapporte aucun crédit.
+          feed_repeat_visits:
+            label: Retours au fil d’accueil
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
           index_minimum_date:

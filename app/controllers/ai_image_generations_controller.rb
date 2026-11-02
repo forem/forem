@@ -21,17 +21,18 @@ class AiImageGenerationsController < ApplicationController
     end
 
     begin
-      url = Ai::ArticleImageGenerator.call(prompt: prompt, user: current_user)
+      result = Ai::ArticleImageGenerator.call(prompt: prompt, user: current_user)
 
-      if url
+      if result.success?
         rate_limiter.track_limit_by_action(:ai_image_generation)
         respond_to do |format|
-          format.json { render json: { url: url }, status: :ok }
+          format.json { render json: { url: result.url }, status: :ok }
         end
       else
+        error_key = result.refused? ? "generation_refused" : "generation_failed"
         respond_to do |format|
           format.json do
-            render json: { error: I18n.t("ai_image_generations_controller.generation_failed") },
+            render json: { error: I18n.t("ai_image_generations_controller.#{error_key}") },
                    status: :unprocessable_entity
           end
         end

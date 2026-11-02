@@ -1,6 +1,7 @@
 class FeedConfig < ApplicationRecord
   LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
+  REPEAT_VISIT_SCORE_MULTIPLIER = 0.5
 
   BUCKET_ALL = "all".freeze
   BUCKET_FEED_NEW_USER = "feed_new_user".freeze
@@ -36,6 +37,9 @@ class FeedConfig < ApplicationRecord
   MIN_SEMANTIC_CANDIDATE_LIMIT = 100
   MAX_SEMANTIC_CANDIDATE_LIMIT = 1000
 
+  DEFAULT_FEED_LOOKBACK_DAYS = 10
+  MIN_FEED_LOOKBACK_HOURS = 1
+
   has_many :feed_events, dependent: :nullify
 
   validates :targeting_bucket, inclusion: { in: TARGETING_BUCKETS }, presence: true
@@ -45,6 +49,12 @@ class FeedConfig < ApplicationRecord
               greater_than_or_equal_to: MIN_SEMANTIC_CANDIDATE_LIMIT,
               less_than_or_equal_to: MAX_SEMANTIC_CANDIDATE_LIMIT
             }
+  validates :feed_lookback_hours,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0
+            }
+  validates :published_at_diversity_weight, numericality: { greater_than_or_equal_to: 0 }
 
   ARCHIVE_TOP_LIMIT = 1000
   ARCHIVE_AGE_THRESHOLD = 2.days
@@ -129,11 +139,21 @@ class FeedConfig < ApplicationRecord
         .limit(ARCHIVE_TOP_LIMIT)
         .ids
 
-      bucket_scope
+      stale_configs = bucket_scope
         .where("created_at < ?", cutoff)
         .where.not(id: top_ids)
-        .in_batches(of: 1000)
-        .update_all(archived: true, updated_at: Time.current)
+        .where(
+          "NOT EXISTS (SELECT 1 FROM feed_config_assignments " \
+          "WHERE feed_config_id = feed_configs.id AND expires_at > ?)", Time.current
+        )
+      stale_configs.in_batches(of: 1000) do |batch|
+        transaction do
+          # Selection holds this same lock until its assignment commits. The
+          # subsequent UPDATE gets a fresh snapshot of those assignments.
+          locked_ids = batch.reorder(:id).lock.ids
+          stale_configs.where(id: locked_ids).update_all(archived: true, updated_at: Time.current)
+        end
+      end
     end
   end
 
@@ -149,6 +169,25 @@ class FeedConfig < ApplicationRecord
     else
       select_from_scope(active)
     end
+  end
+
+  def self.max_feed_lookback_hours
+    lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    days = lookback_days.positive? ? lookback_days : DEFAULT_FEED_LOOKBACK_DAYS
+    days * 24
+  end
+
+  def self.record_repeat_visit(config_id)
+    # Use the last measured impression-user denominator, just as the engagement
+    # score does. Normal feedback refreshes reconcile it with any new viewers.
+    # Both score refreshes and this increment read the counter inside UPDATE so
+    # concurrent engagement feedback cannot overwrite newly earned return credit.
+    where(id: config_id, archived: false).update_all(
+      "feed_repeat_visits_count = feed_repeat_visits_count + 1, " \
+      "feed_success_score = COALESCE(feed_success_score, 0) + " \
+      "CASE WHEN feed_impression_users_count > 0 " \
+      "THEN #{REPEAT_VISIT_SCORE_MULTIPLIER} / feed_impression_users_count ELSE 0 END",
+    )
   end
 
   def self.resolve_selection_bucket(user: nil, context_type: nil, targeting_bucket: nil)
@@ -223,6 +262,12 @@ class FeedConfig < ApplicationRecord
       legacy_score_sql(user, include_semantic: false)
   end
 
+  # A blank admin form field would cast to nil; treat it as "disabled" rather than
+  # failing validation or hitting the NOT NULL constraint on save.
+  def published_at_diversity_weight=(value)
+    super(value.presence || 0.0)
+  end
+
   def semantic_similarity_active?(user)
     return false unless semantic_similarity_weight.positive? && user.respond_to?(:user_activity)
 
@@ -234,6 +279,21 @@ class FeedConfig < ApplicationRecord
     (semantic_candidate_limit.presence || DEFAULT_SEMANTIC_CANDIDATE_LIMIT)
       .to_i
       .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
+  end
+
+  def effective_feed_lookback_hours(max_hours: self.class.max_feed_lookback_hours)
+    hours = feed_lookback_hours.to_i
+    return max_hours unless hours.positive?
+
+    hours.clamp(MIN_FEED_LOOKBACK_HOURS, [max_hours, MIN_FEED_LOOKBACK_HOURS].max)
+  end
+
+  # Midpoint (in hours) of the effective candidate window. The
+  # `published_at_diversity_weight` SQL term is a U-shaped curve centred here, so
+  # it honours the per-config `feed_lookback_hours` (and the
+  # DEFAULT_FEED_LOOKBACK_DAYS fallback) exactly like the candidate query does.
+  def published_at_diversity_half_lookback_hours
+    effective_feed_lookback_hours / 2.0
   end
 
   def semantic_similarity_sql(user)
@@ -268,10 +328,17 @@ class FeedConfig < ApplicationRecord
         .round
         .clamp(MIN_SEMANTIC_CANDIDATE_LIMIT, MAX_SEMANTIC_CANDIDATE_LIMIT)
     end
+    if feed_lookback_hours.to_i.positive?
+      max_hours = [self.class.max_feed_lookback_hours, MIN_FEED_LOOKBACK_HOURS].max
+      clone.feed_lookback_hours = (effective_feed_lookback_hours(max_hours: max_hours) * rand(0.9..1.1))
+        .round
+        .clamp(MIN_FEED_LOOKBACK_HOURS, max_hours)
+    end
     clone.lookback_window_weight = lookback_window_weight * rand(0.9..1.1)
     clone.organization_follow_weight = organization_follow_weight * rand(0.9..1.1)
     clone.precomputed_selections_weight = precomputed_selections_weight * rand(0.9..1.1)
     clone.recency_weight = recency_weight * rand(0.9..1.1)
+    clone.published_at_diversity_weight = published_at_diversity_weight * rand(0.9..1.1)
     clone.score_weight = score_weight * rand(0.9..1.1)
     clone.tag_follow_weight = tag_follow_weight * rand(0.9..1.1)
     clone.user_follow_weight = user_follow_weight * rand(0.9..1.1)
@@ -306,6 +373,8 @@ class FeedConfig < ApplicationRecord
       requested_bucket: targeting_bucket,
     )
     clone.feed_impressions_count = 0
+    clone.feed_impression_users_count = 0
+    clone.feed_repeat_visits_count = 0
     clone.feed_success_score = 0.0
     clone.archived = false
     clone.tap(&:save)
@@ -434,6 +503,7 @@ class FeedConfig < ApplicationRecord
       compellingness_score_weight,
       language_match_weight,
       randomness_weight,
+      published_at_diversity_weight,
     ]
 
     context = [
@@ -461,6 +531,7 @@ class FeedConfig < ApplicationRecord
       now_nanos,
       default_second_sec,
       cutoff_30d_sec,
+      published_at_diversity_weight.positive? ? published_at_diversity_half_lookback_hours : 0.0,
     ]
 
     [weights, context]
@@ -550,6 +621,11 @@ class FeedConfig < ApplicationRecord
     if comment_recency_weight.positive?
       terms << "((1.0 / (1.0 + (EXTRACT(epoch FROM (NOW() - articles.last_comment_at)) / 3600.0))) * " \
                "#{comment_recency_weight})"
+    end
+    if published_at_diversity_weight.positive?
+      half = published_at_diversity_half_lookback_hours
+      terms << "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - #{half}) / " \
+               "#{half}, 1.0), 2) * #{published_at_diversity_weight})"
     end
 
     if lookback_window_weight.positive?

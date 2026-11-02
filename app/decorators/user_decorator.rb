@@ -18,6 +18,35 @@ class UserDecorator < ApplicationDecorator
     },
   ].freeze
 
+  # Built once rather than on every #assigned_color call: enriched_colors reads it twice per
+  # profile card, and profile cards render for every comment author on an article page.
+  ASSIGNED_COLORS = ([
+    {
+      bg: "#19063A",
+      text: "#dce9f3"
+    },
+    {
+      bg: "#0D4D4B",
+      text: "#fdf9f3"
+    },
+    {
+      bg: "#010C1F",
+      text: "#aebcd5"
+    },
+    {
+      bg: "#d7dee2",
+      text: "#022235"
+    },
+    {
+      bg: "#161616",
+      text: "#66e2d5"
+    },
+    {
+      bg: "#1c0bba",
+      text: "#c9d2dd"
+    },
+  ].map(&:freeze) | WHITE_TEXT_COLORS).freeze
+
   DEFAULT_PROFILE_SUMMARY = -> { I18n.t("stories_controller.404_bio_not_found") }
 
   # The relevant attribute names for cached tags.  These are the attributes that we'll make
@@ -126,34 +155,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def assigned_color
-    colors = [
-      {
-        bg: "#19063A",
-        text: "#dce9f3"
-      },
-      {
-        bg: "#0D4D4B",
-        text: "#fdf9f3"
-      },
-      {
-        bg: "#010C1F",
-        text: "#aebcd5"
-      },
-      {
-        bg: "#d7dee2",
-        text: "#022235"
-      },
-      {
-        bg: "#161616",
-        text: "#66e2d5"
-      },
-      {
-        bg: "#1c0bba",
-        text: "#c9d2dd"
-      },
-    ]
-    colors |= WHITE_TEXT_COLORS
-    colors[(id || rand(100)) % 10]
+    ASSIGNED_COLORS[(id || rand(100)) % 10]
   end
 
   # returns true if the user has been suspended and has no content

@@ -1,10 +1,13 @@
 class CalendarController < ApplicationController
   EVENTS_PER_PAGE = 12
+  VALID_YEAR_RANGE = (2000..2100)
   AGENDA_COLUMNS = %i[
     id title type_of start_time end_time event_name_slug event_variation_slug
     delegate_to_page page_id organization_id user_id
   ].freeze
-  private_constant :AGENDA_COLUMNS
+  # event_link_target only reads Page#path, so skip the page body/template columns.
+  PAGE_LINK_COLUMNS = %i[id slug is_top_level_path].freeze
+  private_constant :AGENDA_COLUMNS, :PAGE_LINK_COLUMNS
 
   def index
     @range_start, @range_end = calendar_range
@@ -21,6 +24,7 @@ class CalendarController < ApplicationController
                                       @range_start.beginning_of_day, @range_end.end_of_day)
       @events = agenda.order(start_time: :asc).page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = @events.group_by { |event| event.start_time.to_date }
+      preload_delegated_pages
     else
       @events = Event.none.page(params[:page]).per(EVENTS_PER_PAGE)
       @events_by_day = {}
@@ -31,9 +35,15 @@ class CalendarController < ApplicationController
   private
 
   def published_events
-    events = Event.published.select(AGENDA_COLUMNS).includes(:page, :organization, :user)
+    events = Event.published.select(AGENDA_COLUMNS).includes(:organization, :user)
     events = events.where(type_of: params[:type_of]) if valid_type?
     events
+  end
+
+  def preload_delegated_pages
+    ActiveRecord::Associations::Preloader.new(
+      records: @events.to_a.select(&:delegate_to_page?), associations: :page, scope: Page.select(PAGE_LINK_COLUMNS),
+    ).call
   end
 
   def range_has_events?
@@ -63,6 +73,7 @@ class CalendarController < ApplicationController
   def calendar_range
     start_date = parse_date(params[:start])
     end_date = parse_date(params[:end])
+    @explicit_range = start_date.present? || end_date.present?
 
     if start_date.nil? && end_date.nil?
       today = Time.zone.today
@@ -76,7 +87,10 @@ class CalendarController < ApplicationController
   end
 
   def parse_date(value)
-    Date.iso8601(value) if value.present?
+    return if value.blank?
+
+    date = Date.iso8601(value)
+    date if VALID_YEAR_RANGE.cover?(date.year)
   rescue ArgumentError, TypeError
     nil
   end
@@ -88,7 +102,10 @@ class CalendarController < ApplicationController
   end
 
   def parse_month(value)
-    Date.strptime(value, "%Y-%m").beginning_of_month if value.present?
+    return if value.blank?
+
+    date = Date.strptime(value, "%Y-%m").beginning_of_month
+    date if VALID_YEAR_RANGE.cover?(date.year)
   rescue ArgumentError, TypeError
     nil
   end

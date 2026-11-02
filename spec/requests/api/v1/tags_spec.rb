@@ -64,6 +64,52 @@ RSpec.describe "Api::V1::Tags" do
       expected_key = ["tags", tag.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    context "when looking up a tag by name" do
+      let!(:tag) { create(:tag, name: "javascript", taggings_count: 1) }
+
+      before { create(:tag, name: "ruby", taggings_count: 10) }
+
+      it "returns only the tag with that name" do
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
+        expect_valid_json_body(response.parsed_body.first, tag)
+      end
+
+      it "matches the name in any case" do
+        get api_tags_path, params: { name: "JavaScript" }, headers: headers
+
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+      end
+
+      it "returns an empty list when no tag has that name" do
+        get api_tags_path, params: { name: "java" }, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+
+      it "sets the surrogate key for the matching tag" do
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+
+        expect(response.headers["surrogate-key"].split.to_set).to eq(["tags", tag.record_key].to_set)
+      end
+
+      it "finds an unsupported tag on the root subforem, where the list only has supported tags" do
+        root_subforem = create(:subforem, domain: "root.com", root: true)
+        allow(Subforem).to receive_messages(cached_id_by_domain: root_subforem.id, cached_root_id: root_subforem.id,
+                                            cached_default_id: root_subforem.id)
+        tag.update_column(:supported, false)
+
+        get api_tags_path, headers: headers
+        expect(response.parsed_body.pluck("id")).not_to include(tag.id)
+
+        get api_tags_path, params: { name: "javascript" }, headers: headers
+        expect(response.parsed_body.pluck("id")).to eq([tag.id])
+      end
+    end
   end
 
   describe "GET /api/tags/supported" do
@@ -491,6 +537,177 @@ RSpec.describe "Api::V1::Tags" do
           put "/api/tags/#{tag.id}", params: { pretty_name: "Nope" }.to_json, headers: v0_headers
         end.to raise_error(ActionController::RoutingError)
         expect(tag.reload.pretty_name).to eq("Old")
+      end
+    end
+  end
+
+  describe "POST and DELETE /api/tags/:id/moderators" do
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
+    let(:tag) { create(:tag, name: "javascript", supported: false) }
+    let(:moderator) { create(:user) }
+    let(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
+    let(:auth_headers) { v1_headers.merge("api-key" => api_secret.secret) }
+
+    def add_moderator(params, headers: auth_headers)
+      post moderators_api_tag_path(tag.id), params: params.to_json, headers: headers
+    end
+
+    def remove_moderator(params, headers: auth_headers)
+      delete moderators_api_tag_path(tag.id), params: params.to_json, headers: headers
+    end
+
+    context "when the user is an admin" do
+      before do
+        user.add_role(:admin)
+        Audit::Subscribe.listen :admin_api
+      end
+
+      after { Audit::Subscribe.forget :admin_api }
+
+      it "adds a moderator by username with the same side effects as the admin tag page", :aggregate_failures do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body).to eq(
+          "tag_id" => tag.id, "tag_name" => "javascript", "user_id" => moderator.id, "username" => moderator.username,
+        )
+        expect(tag.tag_moderator_ids).to include(moderator.id)
+        expect(moderator.reload.trusted?).to be(true)
+        expect(tag.reload.supported).to be(true)
+      end
+
+      it "adds a moderator by user id and logs the actor, tag and moderator" do
+        add_moderator({ user_id: moderator.id })
+
+        log = AuditLog.last
+        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
+        expect(log.user_id).to eq(user.id)
+        expect(log.slug).to eq("api_tag_moderator_add")
+        expect(log.data).to eq("action" => "api_tag_moderator_add", "tag_id" => tag.id, "user_id" => moderator.id)
+      end
+
+      it "returns unprocessable entity without calling the service or logging when the user is already a moderator" do
+        moderator.add_role(:tag_moderator, tag)
+        allow(TagModerators::Add).to receive(:call)
+
+        add_moderator({ username: moderator.username })
+
+        expect(TagModerators::Add).not_to have_received(:call)
+        expect(AuditLog.count).to eq(0)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq("#{moderator.username} is already a moderator of this tag")
+      end
+
+      it "returns not found for an unknown username" do
+        add_moderator({ username: "nobody-here" })
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found for an unknown user id" do
+        remove_moderator({ user_id: User.maximum(:id).to_i + 1 })
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns unprocessable entity when neither user_id nor username is given" do
+        add_moderator({})
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns not found for an unknown tag" do
+        unknown_id = Tag.maximum(:id).to_i + 1
+        post moderators_api_tag_path(unknown_id), params: { username: moderator.username }.to_json,
+                                                  headers: auth_headers
+
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "removes a moderator and logs the change", :aggregate_failures do
+        moderator.add_role(:tag_moderator, tag)
+
+        remove_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["user_id"]).to eq(moderator.id)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+        expect(AuditLog.last.data).to eq(
+          "action" => "api_tag_moderator_remove", "tag_id" => tag.id, "user_id" => moderator.id,
+        )
+      end
+
+      it "returns unprocessable entity when removing a user who is not a moderator" do
+        remove_moderator({ user_id: moderator.id })
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(AuditLog.count).to eq(0)
+      end
+    end
+
+    context "when the user is a single resource admin for Tag" do
+      before { user.add_role(:single_resource_admin, Tag) }
+
+      it "adds and removes a moderator" do
+        add_moderator({ username: moderator.username })
+        expect(response).to have_http_status(:created)
+
+        remove_moderator({ username: moderator.username })
+        expect(response).to have_http_status(:ok)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+      end
+    end
+
+    context "when the user is a moderator of the tag" do
+      before { user.add_role(:tag_moderator, tag) }
+
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(tag.tag_moderator_ids).not_to include(moderator.id)
+      end
+    end
+
+    context "when the user is a single resource admin for another resource" do
+      before { user.add_role(:single_resource_admin, Billboard) }
+
+      it "returns unauthorized" do
+        moderator.add_role(:tag_moderator, tag)
+
+        remove_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+        expect(tag.tag_moderator_ids).to include(moderator.id)
+      end
+    end
+
+    context "when the user is not an admin" do
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when no API key is given" do
+      it "returns unauthorized" do
+        add_moderator({ username: moderator.username }, headers: v1_headers)
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when the V0 API is used" do
+      it "does not route the request" do
+        user.add_role(:admin)
+        v0_headers = { "content-type" => "application/json", "api-key" => api_secret.secret }
+
+        expect do
+          post "/api/tags/#{tag.id}/moderators", params: { username: moderator.username }.to_json, headers: v0_headers
+        end.to raise_error(ActionController::RoutingError)
       end
     end
   end

@@ -2,6 +2,9 @@ class SyncLiquidEmbedReferencesWorker
   include Sidekiq::Job
   sidekiq_options queue: :low_priority
 
+  # Postgres btree index rows are capped at 2704 bytes, and url is indexed with tag_name.
+  MAX_URL_BYTES = 2000
+
   def perform(record_class_name, record_id)
     record_class = record_class_name.safe_constantize
     return unless record_class
@@ -10,7 +13,7 @@ class SyncLiquidEmbedReferencesWorker
     return unless record
 
     embed_data = LiquidEmbedExtractor.extract(record)
-    
+
     LiquidEmbedReference.transaction do
       # 1. Clear out all existing embeds
       record.liquid_embed_references.delete_all
@@ -22,7 +25,7 @@ class SyncLiquidEmbedReferencesWorker
             record_type: record_class_name,
             record_id: record.id,
             tag_name: data[:tag_name],
-            url: data[:url],
+            url: data[:url]&.truncate_bytes(MAX_URL_BYTES, omission: nil),
             referenced_type: data[:referenced_type],
             referenced_id: data[:referenced_id],
             options: data[:options],

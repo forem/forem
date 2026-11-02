@@ -83,87 +83,78 @@ RSpec.describe "/api/admin/users" do
     before { Audit::Subscribe.listen :admin_api }
     after  { Audit::Subscribe.forget :admin_api }
 
-    let!(:older) { create(:user, email: "alpha@example.com", username: "alpha_user", created_at: 2.days.ago) }
-    let!(:newer) { create(:user, email: "beta@example.com",  username: "beta_user",  created_at: 1.day.ago) }
-
-    it "rejects requests without an api key" do
+    it "rejects requests without an api key or from non-super-admin callers", :aggregate_failures do
       get "/api/admin/users", headers: { "Accept" => "application/vnd.forem.api-v1+json" }
       expect(response).to have_http_status(:unauthorized)
-    end
 
-    it "rejects non-super-admin callers" do
       get "/api/admin/users", headers: non_admin_api_headers
       expect(response).to have_http_status(:unauthorized)
     end
 
-    it "returns users ordered by created_at DESC" do
-      get "/api/admin/users", headers: admin_api_headers
+    context "with existing users" do
+      let!(:older) { create(:user, email: "alpha@example.com", username: "alpha_user", created_at: 2.days.ago) }
+      let!(:newer) { create(:user, email: "beta@example.com",  username: "beta_user",  created_at: 1.day.ago) }
+      let(:headers) { admin_api_headers }
 
-      expect(response).to have_http_status(:ok)
-      ids = response.parsed_body["users"].pluck("id")
-      # `admin_api_headers` creates a super_admin caller (created_at = Time.current),
-      # so the caller appears first. Newer/older follow it in DESC order.
-      newer_index = ids.index(newer.id)
-      older_index = ids.index(older.id)
-      expect(newer_index).not_to be_nil
-      expect(older_index).not_to be_nil
-      expect(newer_index).to be < older_index
-    end
+      it "returns users ordered by created_at DESC without logging an audit entry", :aggregate_failures do
+        expect do
+          get "/api/admin/users", headers: headers
+        end.not_to change(AuditLog, :count)
 
-    it "filters by exact email" do
-      get "/api/admin/users", params: { email: "alpha@example.com" }, headers: admin_api_headers
+        expect(response).to have_http_status(:ok)
+        ids = response.parsed_body["users"].pluck("id")
+        # `admin_api_headers` creates a super_admin caller (created_at = Time.current),
+        # so the caller appears first. Newer/older follow it in DESC order.
+        newer_index = ids.index(newer.id)
+        older_index = ids.index(older.id)
+        expect(newer_index).not_to be_nil
+        expect(older_index).not_to be_nil
+        expect(newer_index).to be < older_index
+      end
 
-      expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
-    end
+      it "paginates with page and per_page and clamps per_page above 100 to 100", :aggregate_failures do
+        get "/api/admin/users", params: { page: 1, per_page: 1 }, headers: headers
 
-    it "filters by exact username" do
-      get "/api/admin/users", params: { username: "beta_user" }, headers: admin_api_headers
+        body = response.parsed_body
+        expect(body["users"].size).to eq(1)
+        expect(body["page"]).to eq(1)
+        expect(body["per_page"]).to eq(1)
+        expect(body["total"]).to be >= 2
 
-      expect(response.parsed_body["users"].pluck("id")).to eq([newer.id])
-    end
+        get "/api/admin/users", params: { per_page: 999 }, headers: headers
 
-    it "filters by identity_provider + identity_uid" do
-      omniauth_mock_mlh_payload
-      create(:identity, user: older, provider: "mlh", uid: "core-12345")
+        expect(response.parsed_body["per_page"]).to eq(100)
+      end
 
-      get "/api/admin/users",
-          params: { identity_provider: "mlh", identity_uid: "core-12345" },
-          headers: admin_api_headers
+      it "filters by exact email, exact username, and identity_provider + identity_uid", :aggregate_failures do
+        get "/api/admin/users", params: { email: "alpha@example.com" }, headers: headers
+        expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
 
-      expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
-    end
+        get "/api/admin/users", params: { username: "beta_user" }, headers: headers
+        expect(response.parsed_body["users"].pluck("id")).to eq([newer.id])
 
-    it "paginates with page and per_page" do
-      get "/api/admin/users", params: { page: 1, per_page: 1 }, headers: admin_api_headers
+        omniauth_mock_mlh_payload
+        create(:identity, user: older, provider: "mlh", uid: "core-12345")
 
-      body = response.parsed_body
-      expect(body["users"].size).to eq(1)
-      expect(body["page"]).to eq(1)
-      expect(body["per_page"]).to eq(1)
-      expect(body["total"]).to be >= 2
-    end
-
-    it "clamps per_page above 100 to 100" do
-      get "/api/admin/users", params: { per_page: 999 }, headers: admin_api_headers
-
-      expect(response.parsed_body["per_page"]).to eq(100)
-    end
-
-    it "does not log an audit entry for reads" do
-      expect do
-        get "/api/admin/users", headers: admin_api_headers
-      end.not_to change(AuditLog, :count)
+        get "/api/admin/users",
+            params: { identity_provider: "mlh", identity_uid: "core-12345" },
+            headers: headers
+        expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
+      end
     end
   end
 
   describe "GET /api/admin/users/:id" do
-    let!(:user) { create(:user) }
+    let(:user) { create(:user) }
 
-    it "returns the user payload" do
+    it "returns the user payload without logging an audit entry", :aggregate_failures do
       omniauth_mock_mlh_payload if defined?(omniauth_mock_mlh_payload)
       create(:identity, user: user, provider: "mlh", uid: "core-99")
+      headers = admin_api_headers
 
-      get "/api/admin/users/#{user.id}", headers: admin_api_headers
+      expect do
+        get "/api/admin/users/#{user.id}", headers: headers
+      end.not_to change(AuditLog, :count)
 
       expect(response).to have_http_status(:ok)
       body = response.parsed_body
@@ -172,17 +163,11 @@ RSpec.describe "/api/admin/users" do
       expect(body["identities"].pluck("uid")).to include("core-99")
     end
 
-    it "returns 404 with error_code for missing user" do
+    it "returns 404 with error_code for missing user", :aggregate_failures do
       get "/api/admin/users/999999", headers: admin_api_headers
 
       expect(response).to have_http_status(:not_found)
       expect(response.parsed_body["error_code"]).to eq("not_found")
-    end
-
-    it "does not log an audit entry" do
-      expect do
-        get "/api/admin/users/#{user.id}", headers: admin_api_headers
-      end.not_to change(AuditLog, :count)
     end
   end
 

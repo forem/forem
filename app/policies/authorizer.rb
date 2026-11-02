@@ -183,7 +183,7 @@ module Authorizer
     def trusted?
       return @trusted if defined? @trusted
 
-      @trusted = Rails.cache.fetch("user-#{user.id}/has_trusted_role", expires_in: 200.hours) do
+      @trusted = Rails.cache.fetch("user-#{user.id}/has_trusted_role", expires_in: 200.hours, local_cache: false) do
         has_role?(:trusted)
       end
     end

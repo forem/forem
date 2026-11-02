@@ -23,10 +23,21 @@
     "lint:frontend": "eslint 'app/assets/javascripts/**/*.js' 'app/javascript/**/*.jsx' 'app/javascript/**/*.js' 'cypress/**/*.js'",
     "test": "jest app/javascript/ bin/ --coverage",
     "test:watch": "jest app/javascript/ bin/ --watch",
-    "postcss": "postcss public/assets/*.css -d public/assets",
+    "postcss": "postcss public/assets/*.css -d public/assets --no-map",
     "e2e": "bin/e2e",
     "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed",
     "build": "node esbuild.config.mjs"
+  },
+  "dependenciesMeta": {
+    "core-js": {
+      "built": false
+    },
+    "core-js-pure": {
+      "built": false
+    },
+    "cypress": {
+      "built": false
+    }
   },
   "nyc": {
     "report-dir": "coverage/cypress"
@@ -156,6 +167,5 @@
     "react-colorful": "^5.6.1",
     "react-dates": "^21.8.0",
     "web-share-wrapper": "^0.2.2"
-  },
-  "packageManager": "yarn@4.1.0"
+  }
 }

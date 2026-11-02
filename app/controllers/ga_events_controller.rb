@@ -11,10 +11,8 @@ class GaEventsController < ApplicationController
       json = JSON.parse(request.raw_post)
       user_id = user_signed_in? ? current_user.id : nil
       client_id = generate_anonymous_client_id
-      tracking_service = Ga::TrackingService.new(Settings::General.ga_analytics_4_id,
-                                                 Settings::General.ga_api_secret,
-                                                 client_id)
-      tracking_service.track_event("page_view", event_params(json, user_id))
+      # The Google Analytics round-trip doesn't affect the (empty) response, so send it from a job.
+      Ga::TrackEventWorker.perform_async(client_id, event_params(json, user_id).stringify_keys)
     end
     render body: nil
   end

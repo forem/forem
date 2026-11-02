@@ -1,9 +1,15 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength, RSpec/ContextWording, Style/Send
 RSpec.describe Ai::CommunityCopy do
-  let(:subforem) { create(:subforem) }
+  let(:subforem) { build_stubbed(:subforem) }
   let(:brain_dump) { "A community focused on web development and programming" }
   let(:service) { described_class.new(subforem.id, brain_dump) }
+
+  before do
+    allow(Subforem).to receive(:find).with(subforem.id).and_return(subforem)
+    allow(service).to receive(:sleep)
+  end
 
   describe "#write!" do
     context "when all AI calls succeed on first attempt" do
@@ -71,9 +77,12 @@ RSpec.describe Ai::CommunityCopy do
         allow(Rails.logger).to receive(:warn)
       end
 
-      it "retries and eventually succeeds" do
+      it "retries, logs warning messages for failed attempts, and eventually succeeds", :aggregate_failures do
         service.write!
 
+        expect(service).to have_received(:sleep).with(1).twice
+        expect(Rails.logger).to have_received(:warn).with("Attempt 1 failed to generate description: API Error")
+        expect(Rails.logger).to have_received(:warn).with("Attempt 2 failed to generate description: API Error")
         expect(Settings::Community).to have_received(:set_community_description).with(
           "A vibrant community for web developers and programmers to share knowledge and collaborate on projects", subforem_id: subforem.id
         )
@@ -81,12 +90,6 @@ RSpec.describe Ai::CommunityCopy do
         expect(Settings::RateLimit).to have_received(:set_internal_content_description_spec).with(
           "This community focuses on web development and programming content", subforem_id: subforem.id
         )
-      end
-
-      it "logs warning messages for failed attempts" do
-        service.write!
-        expect(Rails.logger).to have_received(:warn).with("Attempt 1 failed to generate description: API Error")
-        expect(Rails.logger).to have_received(:warn).with("Attempt 2 failed to generate description: API Error")
       end
     end
 
@@ -96,8 +99,9 @@ RSpec.describe Ai::CommunityCopy do
         allow(Rails.logger).to receive(:error)
       end
 
-      it "logs error and returns without saving" do
+      it "logs error and returns without saving", :aggregate_failures do
         service.write!
+        expect(service).to have_received(:sleep).with(1).exactly(6).times
         expect(Rails.logger).to have_received(:error).with("Failed to generate description after 3 attempts")
         expect(Rails.logger).to have_received(:error).with("Failed to generate tagline after 3 attempts")
         expect(Rails.logger).to have_received(:error).with("Failed to generate content description after 3 attempts")
@@ -370,3 +374,4 @@ RSpec.describe Ai::CommunityCopy do
     end
   end
 end
+# rubocop:enable Layout/LineLength, RSpec/ContextWording, Style/Send

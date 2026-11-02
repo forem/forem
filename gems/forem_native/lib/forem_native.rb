@@ -832,6 +832,107 @@ module ForemNative
       Native.extract_mentioned_usernames(html)
     end
 
+    # Renders the day links of the `calendar/_calendar_widget` month grid in one pass, matching
+    # `CalendarHelper#legacy_calendar_grid_days_html`. Days are `Date#jd` Integers. Returns `nil`
+    # for grids, paths, or `type_of` values outside the plain-ASCII, 1583-9999 fast path.
+    def calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected,
+                                range_start_jd, range_end_jd, today_jd, base_path, type_of)
+      return unless Native.respond_to?(:calendar_grid_days_html)
+      return unless [grid_start_jd, grid_end_jd, display_month, range_start_jd, range_end_jd, today_jd].all?(Integer)
+      return unless event_day_jds.instance_of?(Array) && base_path.instance_of?(String)
+      return unless type_of.nil? || type_of.instance_of?(String)
+
+      Native.calendar_grid_days_html(grid_start_jd, grid_end_jd, display_month, event_day_jds, selected ? true : false,
+                                     range_start_jd, range_end_jd, today_jd, base_path, type_of)
+    end
+
+    # Quotes a String as JSON exactly like ActiveSupport's `string.to_json`, including its
+    # HTML-safe escapes. Returns `nil` for String subclasses and non-UTF-8 or invalid strings.
+    def json_quote(string, escape_html_entities: true)
+      return unless Native.respond_to?(:json_quote)
+      return unless string.instance_of?(String)
+
+      Native.json_quote(string, escape_html_entities ? true : false)
+    end
+
+    # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
+    # default `JSONGemEncoder`. The fast path covers Hash, Array, String, Symbol, Integer (64-bit),
+    # true, false, and nil, with String or Symbol keys. Returns `nil` for anything else (Floats,
+    # Times, subclasses such as SafeBuffer, other key types, non-UTF-8 strings, or nesting deeper
+    # than 100) so callers can fall back to `value.to_json`.
+    def encode_json(value, escape_html_entities: true)
+      return unless Native.respond_to?(:encode_json)
+
+      Native.encode_json(value, escape_html_entities ? true : false)
+    end
+
+    # Truncates an RSS (`<item>...</item>`) or Atom (`<entry>...</entry>`) XML feed string
+    # to at most `max_items` items, preserving all non-item XML structure.
+    # Returns the input String itself with zero allocations when the feed already contains
+    # `<= max_items` items, or `nil` for non-Strings / invalid UTF-8.
+    def truncate_feed_xml_items(xml, max_items)
+      return unless Native.respond_to?(:truncate_feed_xml_items)
+      return unless xml.instance_of?(String) && max_items.is_a?(Integer) && max_items.positive?
+
+      Native.truncate_feed_xml_items(xml, max_items)
+    end
+
+    # Checks whether feed item `content` is predominantly HTML rather than Markdown/plain text,
+    # matching `Feeds::AssembleArticleMarkdown#html_content?`.
+    def feed_html_content(content)
+      return unless Native.respond_to?(:feed_html_content)
+      return unless content.instance_of?(String)
+
+      Native.feed_html_content(content)
+    end
+
+    # Fuses the post-`ReverseMarkdown` normalizations in `Feeds::AssembleArticleMarkdown`:
+    # strips `"```\n\n```"`, replaces `"&nbsp;"` and `"\u00A0"` with `" "`, and unescapes
+    # `\_` inside `{% youtube ... %}` Liquid tags.
+    def postprocess_feed_markdown(content)
+      return unless Native.respond_to?(:postprocess_feed_markdown)
+      return unless content.instance_of?(String)
+
+      Native.postprocess_feed_markdown(content)
+    end
+
+    # Resolves relative URLs in inline `<img ... src="...">` tags and Markdown `![alt](path)`
+    # image syntax in a single pass, matching `Feeds::AssembleArticleMarkdown#resolve_relative_image_urls`.
+    def resolve_feed_markdown_images(content, base_url, feed_source_url)
+      return unless Native.respond_to?(:resolve_feed_markdown_images)
+      return unless content.instance_of?(String) && base_url.instance_of?(String) &&
+        feed_source_url.instance_of?(String)
+
+      Native.resolve_feed_markdown_images(content, base_url, feed_source_url)
+    end
+
+    # Formats up to 4 RSS/Atom category tags by stripping spaces and non-alphanumeric characters
+    # and truncating each to 20 characters, matching `Feeds::AssembleArticleMarkdown#get_tags`.
+    def format_feed_tags(categories)
+      return unless Native.respond_to?(:format_feed_tags)
+      return unless categories.is_a?(Array)
+
+      Native.format_feed_tags(categories)
+    end
+
+    # Extracts `[email, name]` from an RSS/Atom author string in a single pass, matching
+    # `Feeds::ResolveAuthor`.
+    def extract_feed_author(author_string)
+      return unless Native.respond_to?(:extract_feed_author)
+      return unless author_string.instance_of?(String)
+
+      Native.extract_feed_author(author_string)
+    end
+
+    # Scrubs Ruby file/line paths (`/path/to/file.rb:123` -> `"[path]"`) and truncates to 500
+    # characters, matching `Feeds::Import#sanitize_error`.
+    def sanitize_feed_error(message)
+      return unless Native.respond_to?(:sanitize_feed_error)
+      return unless message.instance_of?(String)
+
+      Native.sanitize_feed_error(message)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

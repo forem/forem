@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Billboards" do
-  let(:user)    { create(:user) }
-  let(:article) { create(:article, user: user, tags: "") }
+  let(:user)    { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
 
   let(:max_age) { 3.minutes.to_i }
   let(:stale_if_error) { 26_400 }
@@ -14,6 +14,7 @@ RSpec.describe "Billboards" do
       display_to: :all,
       color: "#FF5733"
     }
+    defaults[:organization] = nil unless options.key?(:organization) || options.key?(:organization_id)
     create(:billboard, **options.reverse_merge(defaults))
   end
 
@@ -464,7 +465,7 @@ RSpec.describe "Billboards" do
     end
 
     context "when requesting test billboard" do
-      let(:admin) { create(:user, :admin) }
+      let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
       let(:test_billboard) { create_billboard(id: 123, placement_area: "post_sidebar", approved: false) }
 
       before do
@@ -529,7 +530,10 @@ RSpec.describe "Billboards" do
   end
 
   describe "GET /:username/:slug/billboards/:placement_area with article exclusion" do
-    let(:article2) { create(:article, user: create(:user), slug: article.slug, tags: "") }
+    let(:article2) do
+      create(:article, user: create(:user, :without_profile, profile_image: nil),
+                       slug: article.slug, with_tags: false, with_main_image: false)
+    end
 
     context "when billboard excludes the current article" do
       let!(:billboard) { create_billboard(placement_area: "post_comments", exclude_article_ids: [article.id]) }
@@ -567,14 +571,14 @@ RSpec.describe "Billboards" do
     it "targets billboards by the article's tags" do
       ruby_billboard = create_billboard(placement_area: "post_comments", tag_list: "ruby")
 
-      get_article_billboard(create(:article, user: user, tags: "ruby"))
+      get_article_billboard(create(:article, user: user, tags: "ruby", with_main_image: false))
 
       expect(response.body).to include(ruby_billboard.processed_html)
     end
 
     it "serves community billboards of the article's organization" do
       organization = create(:organization)
-      org_article = create(:article, user: user, organization: organization, tags: "")
+      org_article = create(:article, user: user, organization: organization, with_tags: false, with_main_image: false)
       community_billboard = create_billboard(placement_area: "post_comments", type_of: :community,
                                              organization: organization)
       create_billboard(placement_area: "post_comments", type_of: :in_house)
@@ -585,7 +589,7 @@ RSpec.describe "Billboards" do
     end
 
     it "does not serve external billboards when a co-author opts out of adjacent sponsors" do
-      co_author = create(:user)
+      co_author = create(:user, :without_profile, profile_image: nil)
       co_author.setting.update!(permit_adjacent_sponsors: false)
       article.update!(co_author_ids: [co_author.id])
       create_billboard(placement_area: "post_comments", type_of: :external)
@@ -598,7 +602,10 @@ RSpec.describe "Billboards" do
 
   describe "GET /:username/:slug/billboards/:placement_area viewer country and anonymous tracking" do
     let!(:billboard) { create_billboard(placement_area: "post_comments") }
-    let(:billboard_element) { Nokogiri::HTML(response.body).at_css("[data-display-unit]") }
+
+    def billboard_element
+      Nokogiri::HTML(response.body).at_css("[data-display-unit]")
+    end
 
     def get_billboard(headers)
       get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments"),
@@ -656,28 +663,19 @@ RSpec.describe "Billboards" do
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
       end
 
-      it "allows anonymous tracking in an allowed country, including its regions" do
+      it "allows anonymous tracking only in allowed countries or regions with cacheable geo", :aggregate_failures do
         get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "US-NY")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
-      end
 
-      it "allows anonymous tracking in an allowed region" do
         get_billboard("X-Client-Geo" => "GB-SCT", "X-Cacheable-Client-Geo" => "GB-SCT")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to eq("true")
-      end
 
-      it "does not allow a whole country when only one of its regions is allowed" do
+        # Does not allow a whole country when only one of its regions is allowed
         get_billboard("X-Client-Geo" => "GB-ENG", "X-Cacheable-Client-Geo" => "GB")
-
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
-      end
 
-      it "does not allow anonymous tracking when the edge has no cacheable location" do
         # Fastly leaves this blank for countries outside its active_geofencing_regions dictionary
         get_billboard("X-Client-Geo" => "US-NY", "X-Cacheable-Client-Geo" => "")
-
         expect(billboard_element["data-viewer-country"]).to be_nil
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
       end
@@ -849,7 +847,7 @@ RSpec.describe "Billboards" do
     end
 
     it "hides external billboards when a co-author's setting is nil" do
-      co_author = create(:user)
+      co_author = create(:user, :without_profile, profile_image: nil)
       co_author.setting.update_column(:permit_adjacent_sponsors, nil)
       article.update_column(:co_author_ids, [co_author.id])
 
