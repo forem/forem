@@ -635,6 +635,20 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "User Experience" do
+        it "updates the sticky feed duration, traffic percentage, and repeat interval" do
+          post admin_settings_user_experiences_path, params: {
+            settings_user_experience: {
+              feed_config_sticky_hours: 24,
+              feed_config_sticky_percentage: 75,
+              feed_config_repeat_visit_minutes: 45
+            }
+          }
+          expect(response).to have_http_status(:ok)
+          expect(Settings::UserExperience.feed_config_sticky_hours).to eq(24)
+          expect(Settings::UserExperience.feed_config_sticky_percentage).to eq(75)
+          expect(Settings::UserExperience.feed_config_repeat_visit_minutes).to eq(45)
+        end
+
         it "updates the feed_style" do
           feed_style = "basic"
           post admin_settings_user_experiences_path, params: {

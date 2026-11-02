@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_02_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -833,6 +833,20 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.check_constraint "broadcast_config IS NOT NULL", name: "events_broadcast_config_null"
   end
 
+  create_table "feed_config_assignments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.bigint "feed_config_id"
+    t.datetime "last_rewarded_at"
+    t.bigint "subforem_id"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["feed_config_id"], name: "index_feed_config_assignments_on_feed_config_id"
+    t.index ["subforem_id"], name: "index_feed_config_assignments_on_subforem_id"
+    t.index ["user_id", "subforem_id"], name: "index_feed_config_assignments_on_user_id_and_subforem_id", unique: true, where: "(subforem_id IS NOT NULL)"
+    t.index ["user_id"], name: "index_feed_config_assignments_on_unscoped_user", unique: true, where: "(subforem_id IS NULL)"
+  end
+
   create_table "feed_configs", force: :cascade do |t|
     t.float "ai_disclosure_matching_weight", default: 0.0, null: false
     t.integer "all_time_tag_count_max", default: 0
@@ -846,8 +860,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.datetime "created_at", null: false
     t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
+    t.bigint "feed_impression_users_count", default: 0, null: false
     t.bigint "feed_impressions_count", default: 0
     t.integer "feed_lookback_hours", default: 0, null: false
+    t.bigint "feed_repeat_visits_count", default: 0, null: false
     t.float "feed_success_score", default: 0.0
     t.float "feed_success_weight", default: 1.0
     t.float "follow_status_weight", default: 0.0, null: false
@@ -2321,6 +2337,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
   add_foreign_key "events", "organizations"
   add_foreign_key "events", "pages", on_delete: :restrict
   add_foreign_key "events", "users"
+  add_foreign_key "feed_config_assignments", "feed_configs", on_delete: :nullify
+  add_foreign_key "feed_config_assignments", "subforems", on_delete: :cascade
+  add_foreign_key "feed_config_assignments", "users", on_delete: :cascade
   add_foreign_key "feed_events", "articles", on_delete: :cascade
   add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feed_import_items", "articles", on_delete: :nullify

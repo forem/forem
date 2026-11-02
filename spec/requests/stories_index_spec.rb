@@ -17,6 +17,25 @@ RSpec.describe "StoriesIndex" do
     let(:user) { create(:user) }
     let(:org) { create(:organization) }
 
+    it "preserves the configured Discover preload for visibility acknowledgements" do
+      sign_in user
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+      get root_path
+
+      preloads = Nokogiri::HTML(response.body).css('link[rel="preload"]').pluck("href")
+      expect(preloads).to include("/stories/feed/?page=1&type_of=discover")
+      expect(preloads).to include("/sidebars/home")
+    end
+
+    it "preserves the basic Discover preload" do
+      sign_in user
+      allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+      get root_path
+
+      preloads = Nokogiri::HTML(response.body).css('link[rel="preload"]').pluck("href")
+      expect(preloads).to include("/stories/feed/?page=1&type_of=discover")
+    end
+
     it "redirects www to non-www if ENV var set" do
       allow(ApplicationConfig).to receive(:[]).with("REDIRECT_WWW_TO_ROOT").and_return("true")
       get "http://www.example.com/"
