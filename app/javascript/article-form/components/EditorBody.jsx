@@ -32,7 +32,7 @@ const MENTION_REGEX = /\B@([a-z0-9_-]+)/gi;
  */
 const splitCodeSegments = (text) => {
   // Matches a fenced block (```...``` or ~~~...~~~) or an inline code span.
-  const codePattern = /(```[\s\S]*?```|~~~[\s\S]*?~~~|`[^`\n]*`)/g;
+  const codePattern = /(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g;
   const segments = [];
   let lastIndex = 0;
   let match;
