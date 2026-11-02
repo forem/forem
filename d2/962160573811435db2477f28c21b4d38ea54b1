@@ -1,0 +1,16 @@
+app/services/rate_limit_checker.rb
+  h_f968154a99632d 13-14,24
+spec/services/rate_limit_checker_spec.rb
+  h_f968154a99632d 34,146-151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d2962160573811435db2477f28c21b4d38ea54b1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

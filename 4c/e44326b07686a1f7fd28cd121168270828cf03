@@ -1,0 +1,43 @@
+app/models/user.rb
+  s_2717fea812dfa4::t_21d12bf7bfea05 919
+app/views/api/v1/admin/user_identities/bulk_create.json.jbuilder
+  s_5b319532a74600::t_32a2a0cdf86c14 1
+config/locales/en.yml
+  s_5b319532a74600::t_8552beb0e98537 205
+config/routes.rb
+  s_5b319532a74600::t_8bc00568ea8a9a 41-42,47,130-133,183-184,243,247,428-429,436-439,546-547
+app/controllers/concerns/api/admin/user_identities_controller.rb
+  s_5b319532a74600::t_7109b4bb05474c 11-12,18,68-77,80-89,92-110,135-138,140-141,164-165
+  s_5b319532a74600::t_85a383fd15a92d 78-79,111-134,139,142-163
+spec/requests/api/v1/admin/user_identities_spec.rb
+  s_5b319532a74600::t_29e54464d47276 175-225,245-293
+  s_5b319532a74600::t_e9094a70e4ef3c 11-13,226-244
+config/locales/fr.yml
+  s_5b319532a74600::t_045f72c98a6b4b 236
+config/locales/pt.yml
+  s_5b319532a74600::t_3d731fa80e7b55 236
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4ce44326b07686a1f7fd28cd121168270828cf03",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

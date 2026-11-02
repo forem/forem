@@ -1,0 +1,20 @@
+app/javascript/analytics/dashboard.js
+  h_b2f6efe2daa9cd 4-12,96-103,108-109,179,187-190,198-200,248,472-489,512-527,529-530,534,538-549,554,557-560,584-594,596-598,600-611,616,621
+app/javascript/analytics/__tests__/dashboard.test.js
+  h_b2f6efe2daa9cd 71-75,77-81,90-91,151,154-155,257-362
+app/views/shared/_stats.html.erb
+  h_b2f6efe2daa9cd 17,20,23,26,30,40,50,60,69,75,85,123
+app/javascript/packs/analyticsDashboard.js
+  h_b2f6efe2daa9cd 1,18-20,30-37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "675c98f7af2356716ee407c2922b0d2b441cd740",
+  "prompts": {},
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

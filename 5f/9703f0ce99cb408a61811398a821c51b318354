@@ -1,0 +1,22 @@
+config/locales/views/settings/en.yml
+  h_f968154a99632d 82
+config/locales/views/settings/fr.yml
+  h_f968154a99632d 82
+config/locales/views/settings/pt.yml
+  h_f968154a99632d 96
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 34,469,1388,1408
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 1581,1601
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "5f9703f0ce99cb408a61811398a821c51b318354",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

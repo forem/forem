@@ -1,0 +1,54 @@
+Gemfile
+  h_f968154a99632d 40,185
+Gemfile.lock
+  h_f968154a99632d 324-325,1070-1071,1191,1304
+app/lib/redcarpet/render/html_rouge.rb
+  h_f968154a99632d 106
+app/liquid_tags/legacy_code_tag.rb
+  h_f968154a99632d 1,39
+app/models/article.rb
+  h_f968154a99632d 960,974,977-982
+app/models/podcast_episode.rb
+  h_f968154a99632d 61,69
+app/services/ai/editor_helper_service.rb
+  h_f968154a99632d 36-38
+app/services/spam/domain_detector.rb
+  h_f968154a99632d 92,94-96,98,104,106-107
+app/views/users/_profile.html.erb
+  h_f968154a99632d 56-62
+config/initializers/omniauth_twitter_monkey_patch.rb
+  h_f968154a99632d 1-29
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 14
+gems/forem_native/crates/forem_core/src/sanitize.rs
+  h_f968154a99632d 1-1160
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 405-414,487
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 321-331
+spec/initializers/omniauth_twitter_monkey_patch_spec.rb
+  h_f968154a99632d 1-105
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1055,1890-2122
+spec/models/article_spec.rb
+  h_f968154a99632d 1115,1119,1142,1146,4609,4615
+spec/models/podcast_episode_spec.rb
+  h_f968154a99632d 51-73
+spec/requests/user/user_settings_spec.rb
+  h_f968154a99632d 45-48
+spec/services/spam/domain_detector_spec.rb
+  h_f968154a99632d 97-106
+spec/support/request_store_reset.rb
+  h_f968154a99632d 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f5f4fa0716484112ef578baa2aae3b05ad77d45a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

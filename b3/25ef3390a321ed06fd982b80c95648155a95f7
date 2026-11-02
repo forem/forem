@@ -1,0 +1,32 @@
+app/assets/stylesheets/views/events.scss
+  h_f968154a99632d 375-510
+app/helpers/events_helper.rb
+  h_f968154a99632d 9-36,75-110
+app/models/event.rb
+  h_f968154a99632d 125-128
+app/views/sidebars/_homepage_content.html.erb
+  h_f968154a99632d 29-35,38,40-56,59-76
+config/locales/views/main/en.yml
+  h_f968154a99632d 56-76
+config/locales/views/main/fr.yml
+  h_f968154a99632d 55-74
+config/locales/views/main/pt.yml
+  h_f968154a99632d 56-75
+spec/helpers/events_helper_spec.rb
+  h_f968154a99632d 54-138
+spec/models/event_spec.rb
+  h_f968154a99632d 310-326
+spec/requests/sidebars_spec.rb
+  h_f968154a99632d 203-240
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b325ef3390a321ed06fd982b80c95648155a95f7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

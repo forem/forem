@@ -1,0 +1,20 @@
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 107-111
+db/migrate/20260903120000_add_feed_lookback_index_to_articles.rb
+  h_f968154a99632d 22-27,34,49-53,57,61,63
+db/migrate/20260903120001_add_user_expires_at_index_to_recommended_articles_lists.rb
+  h_f968154a99632d 20-25,32,47-51,55,59,61
+spec/models/user_language_spec.rb
+  h_f968154a99632d 31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d64b7b9608040f2c52b72b207fab7683921ce649",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

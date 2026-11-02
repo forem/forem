@@ -1,0 +1,18 @@
+config/initializers/carrierwave_monkeypatch.rb
+  h_f968154a99632d 18-26
+spec/initializers/carrierwave_monkeypatch_spec.rb
+  h_f968154a99632d 37-86
+spec/uploaders/profile_image_uploader_spec.rb
+  h_f968154a99632d 141-152
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "de9eda6fb32585dfd24123e4fed87678457b14e1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+app/assets/stylesheets/ltags/FeaturesTag.scss
+  589592171ada3650 6-7
+app/views/liquids/_feature.html.erb
+  589592171ada3650 3
+app/assets/stylesheets/ltags/RowColTag.scss
+  589592171ada3650 6-7
+app/liquid_tags/slide_tag.rb
+  589592171ada3650 30,32-33
+app/liquid_tags/quote_tag.rb
+  589592171ada3650 39,41-42
+app/liquid_tags/feature_tag.rb
+  589592171ada3650 30,32-33
+app/assets/stylesheets/ltags/SlidesTag.scss
+  589592171ada3650 10-11
+spec/liquid_tags/features_tag_spec.rb
+  589592171ada3650 45
+app/liquid_tags/offer_tag.rb
+  589592171ada3650 29,31-32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "9f68c21eef410de75b11955982261e0c78a4ad18",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 24,
+      "total_deletions": 15,
+      "accepted_lines": 20,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/0b7c70e6a0318873225c5134643fd35586c6808f7762bb89858b598a05d91979"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+app/controllers/admin/tools_controller.rb
+  s_453fa138d842db::t_36613c5be3d98d 30-31
+spec/requests/admin/tools_spec.rb
+  s_453fa138d842db::t_e6ffe9be5d80f9 66-73,78-84
+app/workers/articles/reprocess_by_image_host_worker.rb
+  s_453fa138d842db::t_5f33649dc5eedc 8-12,20,23-27,36-44
+app/views/admin/tools/index.html.erb
+  s_453fa138d842db::t_edc6afb55f79c1 38-39,45-48,51
+spec/workers/articles/reprocess_by_image_host_worker_spec.rb
+  s_453fa138d842db::t_ccaea9262bf4e6 5-6,16,19-20,22,26-28,32-33,38-42,47-60
+  s_453fa138d842db::t_f2ac62369729c3 43-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "048a943b1c372257d7070bedcb2e6bef92ebe0b7",
+  "prompts": {},
+  "sessions": {
+    "s_453fa138d842db": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3f83ae5c-325d-45d4-a6a5-13af64b5fd47",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,34 @@
+app/controllers/co_author_invitations_controller.rb
+  h_f968154a99632d 13,15
+app/javascript/article-form/__tests__/actions.test.js
+  h_f968154a99632d 1,25,154-170
+app/javascript/article-form/actions.js
+  h_f968154a99632d 4-8,71-79,190-193
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 8-12,62,67-77,81,90,98,101-103,109-111,116-118,247-248,281-282,385-402,420-435,638-640
+app/models/article.rb
+  h_f968154a99632d 358-360,1679-1682,2088-2095
+app/services/co_author_invitations/sync.rb
+  h_f968154a99632d 23,29,38-41,53-56,67-68,75-78
+app/services/notifications/co_author/send.rb
+  h_f968154a99632d 69-70
+app/services/notifications/co_author_invitations/update.rb
+  h_f968154a99632d 31
+spec/models/article_spec.rb
+  h_f968154a99632d 4417-4434
+spec/requests/co_author_invitations_spec.rb
+  h_f968154a99632d 34-39
+spec/services/co_author_invitations/sync_spec.rb
+  h_f968154a99632d 97-115,150-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ece1561f2f831e6c0f1b3cd7bcf55274fda1a408",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

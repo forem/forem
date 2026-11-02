@@ -1,0 +1,28 @@
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 13-34,45-118,120-146,149,153,155-166,168-174,176-181,183,185-201,204-244,248,250,255-277,279-292,295,301,308-309,312,316-317,320,322-323,325-332,334-338,340-343,345-347,349-351,355
+app/services/ai/base.rb
+  h_f968154a99632d 15-16,29
+app/services/ai/embedding.rb
+  h_f968154a99632d 6-7
+app/services/ai/function_registry.rb
+  h_f968154a99632d 95-98
+app/services/ai/search_reranker.rb
+  h_f968154a99632d 1-113
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 1823,1875,1877-1892,1895,1897,1918-2002
+spec/services/ai/embedding_spec.rb
+  h_f968154a99632d 34-38
+spec/services/ai/search_reranker_spec.rb
+  h_f968154a99632d 1-133
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d47c32f61510b5857962e5a181b36136ebf18aab",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

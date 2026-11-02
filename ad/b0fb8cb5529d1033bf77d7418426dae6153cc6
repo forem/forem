@@ -1,0 +1,18 @@
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 28-30,34,56-57,59,61-66
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1802,1809
+spec/lib/middlewares/set_subforem_spec.rb
+  h_f968154a99632d 172-173,177-179,184-185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "adb0fb8cb5529d1033bf77d7418426dae6153cc6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

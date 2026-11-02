@@ -1,0 +1,18 @@
+app/javascript/profileDropdown/flagButton.js
+  h_f968154a99632d 9
+app/views/users/show.html.erb
+  h_f968154a99632d 48
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 589-612
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e49ef0f1be008dfd6adfdc4d2b52f5fdcb16f0f5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

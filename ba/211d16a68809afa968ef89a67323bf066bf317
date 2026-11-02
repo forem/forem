@@ -1,0 +1,68 @@
+app/assets/images/favorite-filled.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+app/models/async_info.rb
+  s_1e049bdc81f15e::t_3aace8d975b5c2 48
+app/assets/images/small-favorite-checked.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+app/views/comments/_comment_footer.html.erb
+  s_1e049bdc81f15e::t_5ea7d6a5489794 18
+  s_1e049bdc81f15e::t_3fd21ce1ce081e 19
+app/assets/images/favorite.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+spec/models/async_info_spec.rb
+  s_1e049bdc81f15e::t_51ec622647a44d 26-33
+app/javascript/packs/favoriteControls.jsx
+  s_1e049bdc81f15e::t_5ea7d6a5489794 1-55
+spec/services/community_leaders/remove_spec.rb
+  s_1e049bdc81f15e::t_c9cc87e156c1ae 28-30,32-33,36-39,41-42,45
+  s_1e049bdc81f15e::t_6d8ec6965e5b3e 31,34-35,40,43-44
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  s_1e049bdc81f15e::t_bda4d6396be532 1-27,29-43,45-52,54-58,60-68,70-76,78-84,86-105,107-125,127-140,142-150,152-159,161-169
+  s_1e049bdc81f15e::t_d64ba7e9878839 28
+  s_1e049bdc81f15e::t_e0f47ea5f55201 44,53,59,69,77,85,106,126,141,151,160
+app/views/articles/show.html.erb
+  s_1e049bdc81f15e::t_5ea7d6a5489794 303
+app/assets/images/small-favorite-filled.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+app/helpers/favorites_helper.rb
+  s_1e049bdc81f15e::t_5ea7d6a5489794 2-9
+  s_1e049bdc81f15e::t_16fd214860b724 1,10-22
+app/views/articles/_actions.html.erb
+  s_1e049bdc81f15e::t_d41afca5c54e1c 14
+  s_1e049bdc81f15e::t_5ea7d6a5489794 13
+app/assets/stylesheets/views/article.scss
+  s_1e049bdc81f15e::t_5ea7d6a5489794 311-359
+  s_1e049bdc81f15e::t_2810f581335337 360-364,745
+app/assets/images/small-favorite.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+app/javascript/favoriteControl/FavoriteControl.jsx
+  s_1e049bdc81f15e::t_5ea7d6a5489794 1-162
+spec/requests/favorites_spec.rb
+  s_1e049bdc81f15e::t_5ea7d6a5489794 79-87
+  s_1e049bdc81f15e::t_b6673e805f2d4e 1-78,88-92
+app/assets/images/favorite-checked.svg
+  s_1e049bdc81f15e::t_b2c809caae6e77 1
+app/services/community_leaders/add.rb
+  s_1e049bdc81f15e::t_0b323e79466693 21-23,29-31
+app/views/comments/index.html.erb
+  s_1e049bdc81f15e::t_5ea7d6a5489794 91
+spec/services/community_leaders/add_spec.rb
+  s_1e049bdc81f15e::t_5617c41fa73c4d 47,50-51,57-58,61-63
+  s_1e049bdc81f15e::t_905b99b5997a95 45-46,48-49,52-56,59-60,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "ba211d16a68809afa968ef89a67323bf066bf317",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}

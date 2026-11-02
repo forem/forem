@@ -1,0 +1,19 @@
+config/initializers/cors.rb
+  s_6b38f4548ba35e::t_91ccbdf923632b 35-36,39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3d52003aaa967ed260943db1f2266c971286544e",
+  "prompts": {},
+  "sessions": {
+    "s_6b38f4548ba35e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c0a0f081-d4ac-4e90-aad4-360426e89728",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

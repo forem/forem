@@ -1,0 +1,22 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 24,122
+config/environments/test.rb
+  h_f968154a99632d 23-26
+config/initializers/honeybadger.rb
+  h_f968154a99632d 38-39
+spec/initializers/honeybadger_spec.rb
+  h_f968154a99632d 26-31
+spec/rails_helper.rb
+  h_f968154a99632d 32-33,104-115,117-120,283,323-324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fd25ff55099899a10918334a1905c3c904231eb5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

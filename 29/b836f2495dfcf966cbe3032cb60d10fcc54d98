@@ -1,0 +1,38 @@
+spec/requests/billboards_spec.rb
+  s_1b4cacf506c8d4::t_71c14e90bd45a5 711
+  s_1b4cacf506c8d4::t_5df350f2cdb944 235-238,765-767,773-781,783,788-796
+spec/requests/admin/configs_spec.rb
+  s_1b4cacf506c8d4::t_2c3ee22e920066 389-390,397-402
+app/javascript/__tests__/billboard.test.js
+  s_1b4cacf506c8d4::t_7b89c7049646a0 238-256
+app/controllers/billboards_controller.rb
+  s_1b4cacf506c8d4::t_16b1eb4768d988 35,87-90,97-106
+app/models/billboard_placement_area_config.rb
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 36-39,42,120-123,198-201
+  s_1b4cacf506c8d4::t_3ff2682b768687 202-203
+app/services/settings/general/upsert.rb
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 17,22-24,28-32
+  s_1b4cacf506c8d4::t_7c705399a8f126 33-34
+app/javascript/packs/billboard.js
+  s_1b4cacf506c8d4::t_16b1eb4768d988 141-142,145,147
+app/models/billboard.rb
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 54-64
+spec/models/billboard_placement_area_config_spec.rb
+  s_1b4cacf506c8d4::t_2c3ee22e920066 290-302
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "29b836f2495dfcf966cbe3032cb60d10fcc54d98",
+  "prompts": {},
+  "sessions": {
+    "s_1b4cacf506c8d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ad87735c-3655-4625-91fd-c994ee041f6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+app/controllers/concerns/valid_request.rb
+  h_f968154a99632d 27-28
+app/controllers/pages_controller.rb
+  h_f968154a99632d 105-108,110,190-205
+app/models/feedback_message.rb
+  h_f968154a99632d 68-75
+spec/controllers/application_controller_spec.rb
+  h_f968154a99632d 49-80
+spec/models/feedback_message_spec.rb
+  h_f968154a99632d 190-207
+spec/requests/pages_spec.rb
+  h_f968154a99632d 519-578
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c33f99d5967d811f5d7a03d2d1b85032ae73801b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

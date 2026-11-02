@@ -1,0 +1,36 @@
+app/controllers/admin/bulk_assign_role_controller.rb
+  h_f968154a99632d 59,66-71
+app/policies/role_policy.rb
+  h_f968154a99632d 6
+app/services/moderator/manage_activity_and_roles.rb
+  h_f968154a99632d 44,140
+app/services/users/remove_role.rb
+  h_f968154a99632d 24-27,39-43
+config/locales/views/admin/en.yml
+  h_f968154a99632d 349-350
+config/locales/views/admin/fr.yml
+  h_f968154a99632d 341-342
+config/locales/views/admin/pt.yml
+  h_f968154a99632d 38-39
+spec/policies/role_policy_spec.rb
+  h_f968154a99632d 9-10,26-37
+spec/requests/admin/bulk_assign_role_spec.rb
+  h_f968154a99632d 117-132
+spec/requests/admin/users_manage_spec.rb
+  h_f968154a99632d 149-151,157-177
+spec/services/moderator/manage_activity_and_roles_spec.rb
+  h_f968154a99632d 91-100,157-158,252,257,418-427
+spec/services/users/remove_role_spec.rb
+  h_f968154a99632d 79-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bce0225fea8d8785a9720f416a9339d0bdcf1d31",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

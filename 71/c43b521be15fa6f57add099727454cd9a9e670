@@ -1,0 +1,26 @@
+spec/liquid_tags/feed_tag_spec.rb
+  589592171ada3650 162-166,169-175
+app/assets/stylesheets/ltags/RowColTag.scss
+  589592171ada3650 6-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.8",
+  "base_commit_sha": "71c43b521be15fa6f57add099727454cd9a9e670",
+  "prompts": {
+    "589592171ada3650": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "598eacfd-fbaa-4c95-8016-1d4fa7a1051b",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 875,
+      "total_deletions": 44,
+      "accepted_lines": 833,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5062982bc33749d8a37cbd48c4bc9c75339a2d82965ca233307db5026e93618a"
+    }
+  }
+}

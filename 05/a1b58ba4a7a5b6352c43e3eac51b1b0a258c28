@@ -1,0 +1,69 @@
+app/models/user.rb
+  s_2717fea812dfa4::t_3e113f449284e2 47-51
+  s_2717fea812dfa4::t_21d12bf7bfea05 883-884,886,894-903,914-916,917-919,923
+  s_2717fea812dfa4::t_6c327873e6c734 970
+  s_2717fea812dfa4::t_aabc4ff6bfcac2 52-58
+  s_2717fea812dfa4::t_43e4cc2c524f16 861-862,864-878,881-882,887,889-893
+  s_2717fea812dfa4::t_bceb939cab6732 904-913,920-922,924-925
+  s_2717fea812dfa4::t_deffee35865b8f 821-823
+  s_2717fea812dfa4::t_cb75a37a14d680 971-972
+  s_5b319532a74600::t_0b635897ad4618 932-934
+spec/services/authentication/authenticator_spec.rb
+  s_2717fea812dfa4::t_63631891b11335 955-966,968-979
+  s_2717fea812dfa4::t_804fdd85f29e03 967
+app/services/authentication/authenticator.rb
+  s_2717fea812dfa4::t_a59fb6ee6f5cf6 65-69
+app/models/users/notification_setting.rb
+  s_2717fea812dfa4::t_0ca8f5e7ad67a7 16,28-39
+  s_2717fea812dfa4::t_823604a3590bcb 40
+spec/models/users/notification_setting_spec.rb
+  s_2717fea812dfa4::t_4d53bc86ad0307 43-80
+spec/models/user_spec.rb
+  s_2717fea812dfa4::t_f5e4b827e0f8ce 205
+  s_2717fea812dfa4::t_6f0c229afa5b8f 140,142-176,255-266
+  s_2717fea812dfa4::t_17693614b0fd4c 177-204,206-217,253-254
+  s_2717fea812dfa4::t_b11928e3013d69 70,72-96
+  s_2717fea812dfa4::t_b5b81945286777 141
+  s_2717fea812dfa4::t_fa211fc21b3862 218-246
+  s_5b319532a74600::t_2b608aa638197b 249-254
+app/controllers/admin/users_controller.rb
+  s_5b319532a74600::t_fc903c3d39edb5 147-149,588-590
+app/controllers/concerns/api/admin/users_controller.rb
+  s_5b319532a74600::t_fb314a2fee0163 71-73
+app/controllers/magic_links_controller.rb
+  s_5b319532a74600::t_0955aca02fd48a 5-10
+app/workers/trackable/dispatch_worker.rb
+  s_5b319532a74600::t_a6acbba025616a 9-17
+spec/requests/admin/users_spec.rb
+  s_5b319532a74600::t_340384ff89e912 593-610,760-778
+spec/requests/api/v1/admin/users_spec.rb
+  s_5b319532a74600::t_ba9798b478b606 271-290
+spec/requests/magic_links_spec.rb
+  s_5b319532a74600::t_f3a41aad0e5d51 162-199
+spec/workers/trackable/dispatch_worker_spec.rb
+  s_5b319532a74600::t_6439ad5abdf2a7 71-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "05a1b58ba4a7a5b6352c43e3eac51b1b0a258c28",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_5b319532a74600": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4aaa04b8-231a-4a23-82ea-b602aa660d7f",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

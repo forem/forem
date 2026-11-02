@@ -1,0 +1,201 @@
+app/services/ai/spam_escalation_check.rb
+  s_51ba84eed8ea03::t_0a01a3d69be576 1-2,10,13,14-16,29-30,31-37,39,42,47-50,60-61
+  s_4fd81060a96b33::t_fb6b2fb4c30f50 3-9,11-12,17-28,38,40-41,43,45
+  s_4fd81060a96b33::t_43ec43fb9f8ec9 46,51-58
+  s_4fd81060a96b33::t_8dbc1935fa12e3 44
+  s_4fd81060a96b33::t_6a8aa22c2c54ae 59
+app/services/spam/handler.rb
+  s_51ba84eed8ea03::t_c9f67d8525bb47 86,123-124,242-246
+  s_4fd81060a96b33::t_35f71bc300e099 84,122
+  s_4fd81060a96b33::t_bf3cc442ec8a5f 163,259,293
+  s_4fd81060a96b33::t_36ecb2c1d62a10 239-241
+spec/services/ai/spam_escalation_check_spec.rb
+  s_51ba84eed8ea03::t_6b0a245cf9bf03 1-6,7,10,13,31,73-74,79,81-82,88,90-91
+  s_4fd81060a96b33::t_6937d904d5ab8f 8-9,14-16,36-40,42-72,75-78,80,83-87,89
+  s_4fd81060a96b33::t_4ff26853c1acdf 11-12,17-34
+  s_4fd81060a96b33::t_b16300840658bc 35
+spec/services/spam/handler_spec.rb
+  s_51ba84eed8ea03::t_341ab90ce2ccb1 99-114,116-120,122-126,168-169,624-636
+  s_4fd81060a96b33::t_71b6598016e3d9 766-798,800
+  s_4fd81060a96b33::t_ff1e30f22075f9 115,121,127-167
+db/schema.rb
+  s_4fd81060a96b33::t_0bb246dc22755c 13,1647-1654
+  s_4fd81060a96b33::t_18d9683ed0993b 1655-1656
+app/services/ai/function_config.rb
+  s_4fd81060a96b33::t_d05d5b01732686 9-76,77,78-81,86-92,94,96-99
+  s_4fd81060a96b33::t_5f54ab5fe34fe7 1-6,100-144
+  s_4fd81060a96b33::t_1916442f6da78a 7-8,82-85,93,95
+app/helpers/admin/settings_helper.rb
+  s_4fd81060a96b33::t_d05d5b01732686 18-21,25-26
+  s_4fd81060a96b33::t_dd0244c2d10d0c 11-15,27-28
+  s_4fd81060a96b33::t_69991cea7cafd5 16-17,22-24
+app/services/ai/function_registry.rb
+  s_4fd81060a96b33::t_d05d5b01732686 13-15,19,20-23,24-27,28-43,46-47,55-131,133-139
+  s_4fd81060a96b33::t_95587aa51066c7 1-12,16-18,140-154
+  s_4fd81060a96b33::t_b8a6358d30c766 44-45,48-54,132
+.env_sample
+  s_4fd81060a96b33::t_426106d47b5936 231-239
+Gemfile
+  s_4fd81060a96b33::t_8093769c864e1b 109-111
+Gemfile.lock
+  s_4fd81060a96b33::t_c8a5447e10b772 966-974,1276-1278
+app/controllers/admin/settings/ai_functions_controller.rb
+  s_4fd81060a96b33::t_ae6fb160b4ff9b 1-19,29-34,37-40
+  s_4fd81060a96b33::t_43ec43fb9f8ec9 20-28,35-36
+app/models/article.rb
+  s_4fd81060a96b33::t_c70dc5ea187e71 1821
+app/models/settings/ai_functions.rb
+  s_4fd81060a96b33::t_4cfe3ef08efe72 1-14,19-31,47-58
+  s_4fd81060a96b33::t_43ec43fb9f8ec9 15-18,32-45
+  s_4fd81060a96b33::t_a5c2fc0184fc6d 46
+app/services/ai/about_page_generator.rb
+  s_4fd81060a96b33::t_e0c0c44a357805 68-69
+app/services/ai/article_check.rb
+  s_4fd81060a96b33::t_9d2c7ab8e106a5 8-11,13-22,28-32,40-41,52-60,62-154
+  s_4fd81060a96b33::t_8dbc1935fa12e3 61
+app/services/ai/article_enhancer.rb
+  s_4fd81060a96b33::t_e49b8841f8db4d 6-11,13-29,32-33,36,45-47,79,81,113-128,130-192
+  s_4fd81060a96b33::t_8dbc1935fa12e3 129
+app/services/ai/article_quality_assessor.rb
+  s_4fd81060a96b33::t_8e11dbb3c4a856 7-12,14-28,35-38,48,61-175
+app/services/ai/article_summary_generator.rb
+  s_4fd81060a96b33::t_12451142f12a31 11-12
+app/services/ai/badge_criteria_assessor.rb
+  s_4fd81060a96b33::t_b6502437e912d2 6-9,11-19,26-30,38-39,51-89
+app/services/ai/chat_service.rb
+  s_4fd81060a96b33::t_32d33248d900c2 8-9
+app/services/ai/comment_check.rb
+  s_4fd81060a96b33::t_46c22dad934810 7-10,12-19,25-29,37-38,49-52,54-128
+  s_4fd81060a96b33::t_8dbc1935fa12e3 53
+app/services/ai/comment_helpfulness_assessor.rb
+  s_4fd81060a96b33::t_e1599b73f85a1d 11-13,15-22,29-33,41-42,54-120
+app/services/ai/community_copy.rb
+  s_4fd81060a96b33::t_714904c34741c1 125,135,141
+app/services/ai/concept_article_evaluator.rb
+  s_4fd81060a96b33::t_c32167a372833e 3-6,8-15,22-26,32-33,44-68
+app/services/ai/content_moderation_labeler.rb
+  s_4fd81060a96b33::t_1e327b0743b9c6 6-12,14-41,47-52,68-69,97-101,103-287
+  s_4fd81060a96b33::t_8dbc1935fa12e3 102
+app/services/ai/context_note_generator.rb
+  s_4fd81060a96b33::t_2ca4178592368c 8-9
+app/services/ai/editor_helper_service.rb
+  s_4fd81060a96b33::t_e05626a3f0c274 9-10
+app/services/ai/email_digest_summary.rb
+  s_4fd81060a96b33::t_88ccf5efb0b318 6-7
+app/services/ai/forem_tags.rb
+  s_4fd81060a96b33::t_8e9e32d70d7a57 2-5,7-9,12-15,76-77,220-222,227,236-249
+app/services/ai/freeform_context_note_generator.rb
+  s_4fd81060a96b33::t_8fa4735f85e8ed 8-9
+app/services/ai/github_repo_recap.rb
+  s_4fd81060a96b33::t_827dcee2491732 36-37
+app/services/ai/profile_moderation_labeler.rb
+  s_4fd81060a96b33::t_cab6e569a86bc8 5-7,9-11,30-34,36,39-43,51-52,62-150
+app/services/ai/subforem_finder.rb
+  s_4fd81060a96b33::t_c8852c255779b0 5-9,11-20,25-29,74,87-92,94-146
+  s_4fd81060a96b33::t_8dbc1935fa12e3 93
+app/services/ai/survey_context_generator.rb
+  s_4fd81060a96b33::t_9cbac1b7eb7cdc 8-9
+app/services/ai/trend_detector.rb
+  s_4fd81060a96b33::t_b8911a8be51446 6
+app/services/ai/type_safe/client.rb
+  s_4fd81060a96b33::t_7271d614ae35d7 1-11,18-26,29,33-34,43-52,76-78,80-86,89-100,102-108,110-112,114-115,120,124-205
+  s_4fd81060a96b33::t_9ef64eb66bdc2b 12-17,27-28,30-32,35-42,53-75,79,87-88,101,109,113
+  s_4fd81060a96b33::t_7bbfc4e882fff9 116-119,121-123
+app/services/ai/type_safe/questions.rb
+  s_4fd81060a96b33::t_26040eb573e88d 1-48
+app/services/ai/type_safe/result.rb
+  s_4fd81060a96b33::t_edb600d7646027 1-76
+app/services/articles/detect_code_block_languages.rb
+  s_4fd81060a96b33::t_59b39dedd3dd62 4-8,10-16,41-50,63-67,85,89-97,99,102-105,107-110,114-128
+  s_4fd81060a96b33::t_8dbc1935fa12e3 106,111-113
+app/services/concepts/anchor_generator.rb
+  s_4fd81060a96b33::t_d7787002386d51 7-8
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_4fd81060a96b33::t_0cee74c4b2b67a 1-47,64-77
+  s_4fd81060a96b33::t_43ec43fb9f8ec9 48-63
+app/views/admin/settings/show.html.erb
+  s_4fd81060a96b33::t_3457130b1e4bd5 30
+app/workers/articles/detect_code_block_languages_worker.rb
+  s_4fd81060a96b33::t_4553eda60e9aa4 8
+app/workers/articles/handle_spam_worker.rb
+  s_4fd81060a96b33::t_95c9fc07829574 24-25
+config/application.rb
+  s_4fd81060a96b33::t_9a61e6ce359742 25-29
+config/initializers/sentry.rb
+  s_4fd81060a96b33::t_ae812e5e3f7aea 1-46
+config/routes/admin.rb
+  s_4fd81060a96b33::t_6aea187b499ad8 38
+db/migrate/20260924120000_create_settings_ai_functions.rb
+  s_4fd81060a96b33::t_db71b767b7427c 1-15
+spec/models/settings/ai_functions_spec.rb
+  s_4fd81060a96b33::t_2111d929bde04b 1-18,40-46
+  s_4fd81060a96b33::t_5d2578fa69aa35 19-39
+spec/rails_helper.rb
+  s_4fd81060a96b33::t_6f30884a1aed93 129,209
+spec/requests/admin/settings/ai_functions_spec.rb
+  s_4fd81060a96b33::t_dd73488ca69b68 1-41,66-88,91-94
+  s_4fd81060a96b33::t_62c74845214c95 89
+  s_4fd81060a96b33::t_5d2578fa69aa35 42-65,90
+spec/services/ai/article_check_spec.rb
+  s_4fd81060a96b33::t_6042617bbbf2f1 53-120
+spec/services/ai/article_enhancer_spec.rb
+  s_4fd81060a96b33::t_c513c63b16ca0e 198-266
+spec/services/ai/article_quality_assessor_spec.rb
+  s_4fd81060a96b33::t_98cb0b6923bdc2 303-356
+spec/services/ai/badge_criteria_assessor_spec.rb
+  s_4fd81060a96b33::t_eb6ecf6fc40d82 66-89
+spec/services/ai/comment_check_spec.rb
+  s_4fd81060a96b33::t_645c5e0b58d1eb 1-66
+spec/services/ai/comment_helpfulness_assessor_spec.rb
+  s_4fd81060a96b33::t_17d7c0e81636d7 119-161
+spec/services/ai/concept_article_evaluator_spec.rb
+  s_4fd81060a96b33::t_4fb9fdf5e54959 68-91
+spec/services/ai/content_moderation_labeler_spec.rb
+  s_4fd81060a96b33::t_ec2b40711cd1dc 199-273
+spec/services/ai/forem_tags_spec.rb
+  s_4fd81060a96b33::t_3664fcf7b2d14d 426-447
+spec/services/ai/function_config_spec.rb
+  s_4fd81060a96b33::t_4f835c11386dfc 1-79,85-89,99-106,108-120
+  s_4fd81060a96b33::t_ff1e30f22075f9 80-84,90-98,107
+spec/services/ai/profile_moderation_labeler_spec.rb
+  s_4fd81060a96b33::t_4a7d30b47f3836 1-65
+spec/services/ai/subforem_finder_spec.rb
+  s_4fd81060a96b33::t_8fb62400a4e9a3 1-61
+spec/services/ai/type_safe/client_spec.rb
+  s_4fd81060a96b33::t_10ceb86b7cbc8a 1-105,182-192
+  s_4fd81060a96b33::t_5d2578fa69aa35 176-178
+  s_4fd81060a96b33::t_4ff26853c1acdf 106-130,132-136,139-154,157-171,174-175,179-181
+  s_4fd81060a96b33::t_7bbfc4e882fff9 137-138,155-156,172-173
+  s_4fd81060a96b33::t_581dc2ab92e8ee 131
+spec/services/ai/type_safe/questions_spec.rb
+  s_4fd81060a96b33::t_c9172a263c99e7 1-34
+spec/services/articles/detect_code_block_languages_spec.rb
+  s_4fd81060a96b33::t_de1ac6681e7584 88-117,127-133
+  s_4fd81060a96b33::t_5d2578fa69aa35 118-126
+spec/support/jev_helpers.rb
+  s_4fd81060a96b33::t_41c13e4cf59ec0 1-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cf9e5c257b506089daea9574f3f0b675849780cb",
+  "prompts": {},
+  "sessions": {
+    "s_4fd81060a96b33": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be371a62-1300-43a1-a82d-e6232acde14b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    },
+    "s_51ba84eed8ea03": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "96def48d-85a8-4d0d-b638-a9e54e6b4826",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

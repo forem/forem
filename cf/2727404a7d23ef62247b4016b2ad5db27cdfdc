@@ -1,0 +1,24 @@
+app/services/notifications/new_mention/send.rb
+  h_f968154a99632d 19,61-65
+app/services/notifications/remove_by_spammer.rb
+  h_f968154a99632d 18-23
+app/services/spam/handler.rb
+  h_f968154a99632d 239-240,244,250-257,360
+spec/services/notifications/new_mention/send_spec.rb
+  h_f968154a99632d 74-94
+spec/services/notifications/remove_by_spammer_spec.rb
+  h_f968154a99632d 1-33
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 959-989,1073-1074,1077
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cf2727404a7d23ef62247b4016b2ad5db27cdfdc",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

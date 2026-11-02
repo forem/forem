@@ -1,0 +1,22 @@
+app/models/async_info.rb
+  h_f968154a99632d 69
+app/models/user_subscription.rb
+  h_f968154a99632d 69
+spec/models/async_info_spec.rb
+  h_f968154a99632d 72-81
+spec/models/user_subscription_spec.rb
+  h_f968154a99632d 32-40
+spec/requests/user_subscriptions_spec.rb
+  h_f968154a99632d 149,152-155,157-166
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cfebc3c54da213c9def3911cad303c3f21b6b556",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

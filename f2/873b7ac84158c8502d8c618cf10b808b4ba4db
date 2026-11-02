@@ -1,0 +1,26 @@
+spec/services/feeds/import_spec.rb
+  s_a81258baa83ccf::t_105c55f88c3254 388-406
+  s_a81258baa83ccf::t_227ad4d5832a7d 333,335,337
+  s_a81258baa83ccf::t_cc11497d59b189 329,358
+  s_a81258baa83ccf::t_4bc0c76e5dba34 407-408
+app/services/feeds/import.rb
+  s_a81258baa83ccf::t_dab09bf92a47a4 472-474
+  s_a81258baa83ccf::t_829dd1f71944ab 146-153,459,468-471,475
+  s_a81258baa83ccf::t_ca21461948259e 476
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f2873b7ac84158c8502d8c618cf10b808b4ba4db",
+  "prompts": {},
+  "sessions": {
+    "s_a81258baa83ccf": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a188ab-fb8b-7ab3-b3cf-96a2123dd1ea",
+        "model": "gpt-6-luna"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

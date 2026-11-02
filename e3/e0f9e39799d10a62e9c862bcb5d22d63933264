@@ -1,0 +1,18 @@
+app/controllers/application_controller.rb
+  h_f968154a99632d 506
+app/lib/org_custom_domain_constraint.rb
+  h_f968154a99632d 2-23,28,32-33,35-44,46-49,51,54-55
+config/routes.rb
+  h_f968154a99632d 42,48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "e3e0f9e39799d10a62e9c862bcb5d22d63933264",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
