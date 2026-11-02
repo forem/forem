@@ -1,0 +1,45 @@
+spec/requests/feed_config_visits_spec.rb
+  s_ec7b7b3eb43adb::t_eeaf54d82ade4f 177
+  s_ec7b7b3eb43adb::t_5fa05059fe878e 169-176,178-202
+db/schema.rb
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 13
+app/controllers/feed_config_visits_controller.rb
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 2
+app/javascript/articles/__tests__/feedConfigVisits.test.js
+  s_ec7b7b3eb43adb::t_e11c2ad5f80943 230-261
+app/models/feed_config.rb
+  s_ec7b7b3eb43adb::t_94cc690f2a12e0 153
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 142,149-152,154-156
+docs/analytics/feed_impressions.md
+  s_ec7b7b3eb43adb::t_5fa05059fe878e 55-56,73-74
+  s_ec7b7b3eb43adb::t_eeaf54d82ade4f 80-84
+app/javascript/articles/feedConfigVisits.js
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 102
+app/services/feeds/sticky_config.rb
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 20-21,33-41
+  s_ec7b7b3eb43adb::t_8bc28b5025e697 42
+db/migrate/20261102120001_add_indexes_to_feed_config_assignments.rb
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 1-15
+spec/services/feeds/sticky_config_spec.rb
+  s_ec7b7b3eb43adb::t_eeaf54d82ade4f 36-37,73,95,191
+  s_ec7b7b3eb43adb::t_e11c2ad5f80943 137-190,192-211
+  s_ec7b7b3eb43adb::t_d88f2f553d8705 29,35,71,88
+db/migrate/20261102120000_add_sticky_feed_config_assignments.rb
+  s_ec7b7b3eb43adb::t_441509cf6fa89e 3-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c5ffcb43f27ae14a388b255c72f93ff544ceca7e",
+  "prompts": {},
+  "sessions": {
+    "s_ec7b7b3eb43adb": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19c69-6dea-7933-a9b9-0558a8ea9cae",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
