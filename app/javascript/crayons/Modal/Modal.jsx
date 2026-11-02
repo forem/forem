@@ -6,6 +6,20 @@ import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { ButtonNew as Button } from '@crayons';
 import CloseIcon from '@images/x.svg';
 
+/**
+ * An accessible modal dialog with a focus trap, a close button and an optional
+ * backdrop.
+ *
+ * @param {object} props
+ * @param {string} props.title Heading of the dialog, also used as its accessible name.
+ * @param {string} [props.describedBy] The id of the element that describes the
+ *   dialog. It is set as `aria-describedby` on the dialog.
+ * @param {boolean} [props.backdropDismissible] Whether a click on the backdrop
+ *   closes the dialog. It also decides whether a click outside deactivates the
+ *   focus trap.
+ * @param {Function} [props.onClose] Called when the dialog is dismissed (close
+ *   button, Escape or, if enabled, a backdrop click).
+ */
 export const Modal = ({
   children,
   size,

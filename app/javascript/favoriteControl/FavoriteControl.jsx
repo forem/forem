@@ -79,7 +79,27 @@ const Tooltip = ({ label }) => (
 );
 
 /**
- * Control for marking content as favorite.
+ * Control for marking content as favorite (a "gem").
+ *
+ * Clicking the control opens a confirmation dialog first. The gem is only
+ * awarded, through the existing favorite request, once the user confirms.
+ *
+ * The `label*` and `modal*` props, not listed below, are translated copy for
+ * the control and its result dialogs.
+ *
+ * @param {object} props
+ * @param {object|null} props.currentUser The signed-in user, or null for visitors.
+ * @param {'article'|'comment'|'dropdown'} [props.variant] Where the control is rendered.
+ * @param {'Article'|'Comment'} props.favoritableType The kind of content being favorited.
+ * @param {number|string} props.favoritableId The id of the content being favorited.
+ * @param {number|string} props.favoritableUserId The id of the content's author.
+ * @param {boolean|string} props.favorited Whether the content is already a favorite.
+ * @param {number|string} props.favoritedByUserId The id of the user who favorited it.
+ * @param {string} [props.confirmTitle] Title of the confirmation dialog. Defaults
+ *   to wording for a post or a comment, depending on `favoritableType`.
+ * @param {string} [props.confirmBody] Description shown in the confirmation dialog.
+ * @param {string} [props.confirmSubmit] Label of the button that awards the gem.
+ * @param {string} [props.confirmCancel] Label of the button that closes the dialog.
  */
 export const FavoriteControl = ({
   currentUser,
@@ -232,8 +252,13 @@ export const FavoriteControl = ({
     );
   };
 
-  // Dismissing is a cancel, so it is ignored while a request is in flight.
-  // Otherwise the dialog could disappear while the gem is still being awarded.
+  /**
+   * Closes the confirmation dialog without awarding a gem (Cancel, the close
+   * button, Escape and, before submitting, a backdrop click).
+   *
+   * Dismissing is ignored while a request is in flight, otherwise the dialog
+   * could disappear while the gem is still being awarded.
+   */
   const closeConfirmModal = () => {
     if (submittingRef.current) {
       return;
@@ -241,6 +266,13 @@ export const FavoriteControl = ({
     setShowConfirmModal(false);
   };
 
+  /**
+   * Renders the dialog that asks the user to confirm giving the gem, with a
+   * "Give Gem" and a "Cancel" action. Both are disabled while the request is
+   * in flight.
+   *
+   * @returns {import('preact').VNode|null} The dialog, or null while it is closed.
+   */
   const renderConfirmModal = () => {
     if (!showConfirmModal) {
       return null;
@@ -337,8 +369,11 @@ export const FavoriteControl = ({
     return null;
   }
 
-  // Clicking the control only asks for confirmation. Nothing is sent, and no
-  // allowance is spent, until the user confirms in the dialog.
+  /**
+   * Click handler for the gem button. It only asks for confirmation: nothing
+   * is sent, and no allowance is spent, until the user confirms in the dialog.
+   * Users with no allowance left see the "Out of Gems" modal instead.
+   */
   const onClick = () => {
     if (submittingRef.current) return;
 
@@ -350,6 +385,14 @@ export const FavoriteControl = ({
     setShowConfirmModal(true);
   };
 
+  /**
+   * Awards the gem through the existing favorite request, once the user has
+   * confirmed. Ignores repeated calls while a request is already in flight.
+   * Whatever the outcome (success, error or no allowance), the confirmation
+   * dialog is closed afterwards.
+   *
+   * @returns {Promise<void>}
+   */
   const submitFavorite = async () => {
     if (submittingRef.current) return;
 

@@ -1,5 +1,12 @@
 module FavoritesHelper
-  # Emits the mount node for the Preact FavoriteControl with initial server-rendered markup
+  # Emits the mount node for the Preact FavoriteControl with initial server-rendered markup.
+  # The node also carries the translated copy for the control, including the
+  # confirmation dialog shown before a gem is given.
+  #
+  # @param favoritable [Article, Comment] the content the gem is given to
+  # @param variant [Symbol] where the control is rendered (+:article+, +:dropdown+ or +:comment+)
+  # @return [ActiveSupport::SafeBuffer, nil] the mount node, or nil when the
+  #   +community_favorites+ feature flag is disabled
   def favorite_control_tag(favoritable, variant: :article)
     return unless FeatureFlag.enabled?(:community_favorites)
 
@@ -110,6 +117,9 @@ module FavoritesHelper
 
   # Wording for the dialog shown before a gem is given, so the user is told
   # whether they're about to give it to a post or to a comment.
+  #
+  # @param favoritable [Article, Comment] the content the gem is given to
+  # @return [Hash{Symbol => String}] the translated +:title+ and +:body+ of the dialog
   def favorite_confirm_copy(favoritable)
     if favoritable.is_a?(Comment)
       { title: t("favorites.confirm.title_comment"), body: t("favorites.confirm.body_comment") }
