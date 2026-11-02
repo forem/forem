@@ -1,5 +1,5 @@
 class CommentsController < ApplicationController
-  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
   # The settings page (and CommentPolicy#settings?) only reads these, so skip the comment's body,
   # processed HTML and ~3KB TOASTed semantic_embedding vector.
   SETTINGS_COMMENT_COLUMNS = %i[id user_id commentable_id commentable_type].freeze
@@ -318,8 +318,8 @@ class CommentsController < ApplicationController
     end
   end
 
-  # The comments page never reads the article's ~3KB TOASTed semantic_embedding vector,
-  # so load the root comment's article without detoasting it.
+  # The comments page never reads the article's TOASTed semantic_embedding vector or
+  # reading_list_document search tsvector, so load the root comment's article without detoasting them.
   def preload_root_article
     return unless @root_comment.commentable_type == "Article" && @root_comment.commentable_id
 
