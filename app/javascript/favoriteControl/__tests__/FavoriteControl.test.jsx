@@ -544,6 +544,55 @@ describe('<FavoriteControl />', () => {
       ).toBeNull();
     });
 
+    it('keeps focus inside the dialog after a backdrop click while the request is in flight', async () => {
+      const user = userEvent.setup();
+      let resolveRequest;
+      makeFavorite.mockReturnValue(
+        new Promise((resolve) => {
+          resolveRequest = resolve;
+        }),
+      );
+      renderControl();
+      clickGem();
+      confirmGem();
+      await waitFor(() =>
+        expect(screen.getByRole('button', { name: 'Give Gem' })).toBeDisabled(),
+      );
+
+      // A real pointer click (mousedown + click), unlike fireEvent.click, is
+      // what makes the focus trap react to a click outside of the dialog.
+      await user.click(screen.getByTestId('modal-overlay'));
+
+      const dialog = screen.getByRole('dialog', {
+        name: 'Give this post a Gem?',
+      });
+      expect(dialog).toBeInTheDocument();
+
+      // Both actions are disabled, so only the close button can take focus.
+      // Focus must stay in the dialog however many times Tab is pressed.
+      for (let i = 0; i < 3; i += 1) {
+        await user.tab();
+        expect(dialog).toContainElement(document.activeElement);
+      }
+
+      resolveRequest({
+        ok: true,
+        json: async () => ({ remaining_allowance: 4 }),
+      });
+      expect(await screen.findByText('Gem Picked!')).toBeInTheDocument();
+    });
+
+    it('still closes on a backdrop click before the request is sent', async () => {
+      const user = userEvent.setup();
+      renderControl();
+      clickGem();
+
+      await user.click(screen.getByTestId('modal-overlay'));
+
+      expect(screen.queryByRole('dialog')).toBeNull();
+      expect(makeFavorite).not.toHaveBeenCalled();
+    });
+
     it('closes the dialog and shows the existing error message when the award fails', async () => {
       makeFavorite.mockResolvedValue({
         ok: false,

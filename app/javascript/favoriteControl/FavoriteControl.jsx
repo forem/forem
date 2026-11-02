@@ -253,7 +253,10 @@ export const FavoriteControl = ({
         title={confirmTitle}
         describedBy={descriptionId}
         onClose={closeConfirmModal}
-        backdropDismissible
+        // A click outside deactivates the focus trap, so it can't stay enabled
+        // while the dialog refuses to close: focus would escape a visible,
+        // aria-modal dialog.
+        backdropDismissible={!submitting}
         size="small"
       >
         <div class="p-6 grid gap-4" data-testid="gem-confirm-modal-content">
