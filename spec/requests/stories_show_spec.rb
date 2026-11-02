@@ -206,6 +206,32 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "checks the renamed user's article with an existence query instead of loading the full row" do
+      old_username = user.username
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
+      queries = []
+      callback = lambda { |*, payload|
+        queries << payload[:sql] if payload[:sql].include?(%("articles"."slug"))
+      }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{old_username}/#{article.slug}"
+      end
+
+      expect(response).to have_http_status(:moved_permanently)
+      scoped_to_user = /FROM "articles" WHERE "articles"."user_id"/
+      expect(queries).to include(a_string_matching(/SELECT 1 AS one #{scoped_to_user.source}/))
+      expect(queries).not_to include(a_string_matching(/SELECT "articles"\.\* #{scoped_to_user.source}/))
+    end
+
+    it "returns not found when the renamed user has no article with the slug" do
+      other_user = create(:user)
+      old_username = other_user.username
+      other_user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username)
+
+      expect { get "/#{old_username}/#{article.slug}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "redirects to appropriate page if user changes username twice" do
       old_username = user.username
       user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
