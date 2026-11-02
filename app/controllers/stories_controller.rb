@@ -150,7 +150,8 @@ class StoriesController < ApplicationController
                 .where.not(username: potential_username)
                 .order(profile_updated_at: :desc)
                 .first
-    if @user&.articles&.find_by(slug: params[:slug])
+    # Only existence matters here, so probe the (slug, user_id) index instead of hydrating the full row.
+    if @user&.articles&.exists?(slug: params[:slug])
       set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
