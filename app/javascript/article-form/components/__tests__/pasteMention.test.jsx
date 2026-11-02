@@ -97,29 +97,61 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         expect(evtArg).toBeInstanceOf(Event);
     });
 
-    it('Non-URL text paste does not trigger mention suggestions (no mention UI, no mention fetch)', async () => {
+    // The server-side mention matcher (Html::Parser#wrap_mentions_with_links)
+    // uses /\B@[a-z0-9_-]+/i. A neutralized token must no longer match it.
+    const MENTION_MATCH = /\B@[a-z0-9_-]+/i;
+
+    it('Non-URL text paste ending on an @mention neutralizes the mention and does not trigger suggestions', async () => {
         renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 
-        // Paste content with '@' that would normally trigger mention suggestions
-        await userEvent.paste(textArea, 'Hey @john — welcome!');
+        // Paste content that ENDS on '@john', so the caret lands immediately
+        // after the mention. This is the position where autocomplete would
+        // normally fire, which makes it the meaningful regression case.
+        await userEvent.paste(textArea, 'Hey @john');
 
-        // 1) The text shows up in the editor as pasted
-        expect(textArea).toHaveValue('Hey @john — welcome!');
+        // 1) The '@john' in prose is neutralized so it no longer matches the
+        //    server-side mention regex, while staying visually identical.
+        const value = textArea.value;
+        expect(value).toContain('@\u200Bjohn');
+        expect(value.replace(/\u200B/g, '')).toBe('Hey @john');
+        expect(MENTION_MATCH.test(value)).toBe(false);
 
         // 2) No URL handler for non-URL text
         expect(mockURLHandler).not.toHaveBeenCalled();
 
-        // 3) No mention suggestion UI becomes visible (adjust roles if your UI differs)
+        // 3) No mention suggestion UI becomes visible
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
         expect(screen.queryByRole('combobox', { hidden: true })).not.toBeInTheDocument();
 
-        // 4) No network calls to mention endpoints
+        // 4) No network calls to the mention suggestion endpoint.
+        //    EditorBody fetches suggestions via fetchSearch('usernames', ...)
+        //    which requests /search/usernames, so that is the URL to guard.
         const mentionsRequests = fetch.mock.calls.filter(([url]) =>
-            /mentions|user_suggest|\/users\/suggest/i.test(String(url)),
+            /search\/usernames|mentions|user_suggest|\/users\/suggest/i.test(
+                String(url),
+            ),
         );
         expect(mentionsRequests.length).toBe(0);
+    });
+
+    it('Does not modify an @handle inside fenced or inline code', async () => {
+        renderEditor();
+
+        const textArea = screen.getByRole('textbox', { name: /post content/i });
+
+        // @pkg appears inside both a fenced block and an inline code span.
+        const pasted = 'See ```npm i @pkg/core``` and `@pkg` for details';
+        await userEvent.paste(textArea, pasted);
+
+        // Code-enclosed handles must survive verbatim (no zero-width space).
+        const value = textArea.value;
+        expect(value).not.toContain('\u200B');
+        expect(value).toBe(pasted);
+
+        expect(mockURLHandler).not.toHaveBeenCalled();
+        expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
     });
 
     it('Image/file paste is unaffected (no URL handler; paste not blocked)', async () => {
@@ -156,9 +188,9 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         // 1) URL-specific handler should not run
         expect(mockURLHandler).not.toHaveBeenCalled();
 
-        // 2) New neutralization logic should not block file pastes
-        // If your image paste flow intentionally prevents default, flip this expectation.
-        expect(preventDefaultSpy).not.toHaveBeenCalled();
+        // 2) The image paste handler owns file pastes and calls preventDefault
+        //    (pasteImageHelpers#handleImagePasted) before processing the image.
+        expect(preventDefaultSpy).toHaveBeenCalled();
 
         // 3) No mention UI either
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
