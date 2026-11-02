@@ -119,7 +119,7 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
-      it "renders article content and attribution without loading feed snapshots or search payloads" do
+      it "renders article content and attribution with feed snapshots but without search payloads" do
         article_queries = []
         callback = lambda do |*, payload|
           sql = payload[:sql]
@@ -141,8 +141,8 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(article_queries).to all(
           include(%("articles"."processed_html"))
             .and(exclude(%("articles".*)))
-            .and(exclude(%("articles"."cached_user")))
-            .and(exclude(%("articles"."cached_organization")))
+            .and(include(%("articles"."cached_user")))
+            .and(include(%("articles"."cached_organization")))
             .and(exclude("semantic_embedding"))
             .and(exclude("reading_list_document")),
         )

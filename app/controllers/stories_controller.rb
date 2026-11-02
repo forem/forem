@@ -16,7 +16,7 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
-  UNRENDERED_ARTICLE_COLUMNS = %w[cached_user cached_organization semantic_embedding reading_list_document].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -71,8 +71,8 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    # The page uses the loaded author/organization, not their serialized feed snapshots.
-    # It also never reads the embedding or search document, so skip these payloads.
+    # Story cards still need the serialized author/organization snapshots.
+    # The page never reads the embedding or search document, so skip those payloads.
     if (@article = Article.includes(:organization, user: %i[profile setting roles])
         .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(path: path)&.decorate)
       handle_article_show
