@@ -1,0 +1,25 @@
+app/controllers/stories_controller.rb
+  s_cb726b391349f6::t_d07f568582c5c2 19,74-75
+spec/requests/org_custom_domain_spec.rb
+  s_cb726b391349f6::t_e714979399bea9 122,144-145
+spec/requests/stories_show_spec.rb
+  s_cb726b391349f6::t_91ade174687d03 48,63-64,301
+spec/views/articles/_single_story.html.erb_spec.rb
+  s_cb726b391349f6::t_bb77560810a7ef 10-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d5403786b8eb410e7cd7a01c01acbec11959ee51",
+  "prompts": {},
+  "sessions": {
+    "s_cb726b391349f6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19db9-1926-7e22-998e-ed89663dbbaa",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
