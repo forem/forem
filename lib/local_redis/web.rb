@@ -4,11 +4,12 @@ module LocalRedis
   # Keep Puma alive through optional cache failures; restart auxiliaries with
   # backoff. All children receive TERM, including outside Heroku's process group.
   class Web
-    def initialize(command:, cache_commands: nil)
+    def initialize(command:, cache_commands: nil, restart_delay: 2)
       @commands = (cache_commands || {
         redis: [RbConfig.ruby, "bin/redis-local-server"],
         sync: [RbConfig.ruby, "bin/redis-local-sync"]
       }).merge(web: command)
+      @restart_delay = restart_delay
       @children = {}
       @restart_at = {}
       @stopping = false
@@ -40,8 +41,8 @@ module LocalRedis
       # A cache auxiliary that cannot be spawned (EAGAIN, ENOENT) must not stop Puma.
       raise if role == :web
 
-      warn "LocalRedis #{role} could not start (#{e.class}); retrying in 2s"
-      @restart_at[role] = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 2
+      warn "LocalRedis #{role} could not start (#{e.class}); retrying in #{@restart_delay}s"
+      @restart_at[role] = Process.clock_gettime(Process::CLOCK_MONOTONIC) + @restart_delay
     end
 
     def reap
@@ -54,8 +55,8 @@ module LocalRedis
           @exit_status = status.exitstatus || 1
           @stopping = true
         elsif role && !@stopping
-          warn "LocalRedis #{role} exited; restarting in 2s (Puma continues using authoritative Redis)"
-          @restart_at[role] = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 2
+          warn "LocalRedis #{role} exited; restarting in #{@restart_delay}s (Puma continues using authoritative Redis)"
+          @restart_at[role] = Process.clock_gettime(Process::CLOCK_MONOTONIC) + @restart_delay
         end
       end
     rescue Errno::ECHILD

@@ -9,6 +9,7 @@ RSpec.describe LocalRedis::Web do
   let(:directory) { Dir.mktmpdir("forem-web-", "/tmp") }
   let(:web_pid_path) { File.join(directory, "web.pid") }
   let(:cache_pid_path) { File.join(directory, "cache.pids") }
+  let(:supervisor_log_path) { File.join(directory, "supervisor.log") }
 
   after do
     if process_state[:pid]
@@ -31,9 +32,12 @@ RSpec.describe LocalRedis::Web do
   end
 
   def launch(web_command, cache_command)
-    supervisor = described_class.new(command: web_command, cache_commands: { redis: cache_command })
+    # A short backoff exercises the same restart path as production's 2s default.
+    supervisor = described_class.new(command: web_command, cache_commands: { redis: cache_command },
+                                     restart_delay: 0.2)
     process_state[:pid] = fork do
       Process.setpgrp
+      $stderr.reopen(supervisor_log_path, "a")
       exit! supervisor.run
     end
   end
@@ -57,7 +61,10 @@ RSpec.describe LocalRedis::Web do
     web_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", web_pid_path]
     launch(web_command, [File.join(directory, "missing-redis-server")])
     wait_until { File.exist?(web_pid_path) }
-    sleep 2.3 # Past the first respawn attempt, which also fails.
+    # Wait past the first respawn attempt, which also fails.
+    wait_until do
+      File.exist?(supervisor_log_path) && File.read(supervisor_log_path).scan("redis could not start").size >= 2
+    end
     expect(Process.waitpid2(process_state[:pid], Process::WNOHANG)).to be_nil
     expect(Process.kill(0, File.read(web_pid_path).to_i)).to eq(1)
     Process.kill("TERM", process_state[:pid])
