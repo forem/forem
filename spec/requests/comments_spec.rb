@@ -55,7 +55,8 @@ RSpec.describe "Comments" do
       expect(user_id_queries).to be_empty
     end
 
-    it "loads the root comment's article once and without the semantic_embedding vector", :aggregate_failures do
+    it "loads the root comment's article once and without the semantic_embedding vector or search tsvector",
+       :aggregate_failures do
       comment_path = comment.path
       article_queries = []
       callback = lambda do |*, payload|
@@ -67,10 +68,12 @@ RSpec.describe "Comments" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(article.title))
       expect(article_queries.size).to eq(1)
-      expect(article_queries.first).to include(%("articles"."processed_html")).and(exclude("semantic_embedding"))
+      expect(article_queries.first).to include(%("articles"."processed_html"))
+        .and(exclude("semantic_embedding"))
+        .and(exclude("reading_list_document"))
     end
 
-    it "loads the article by slug without the semantic_embedding vector", :aggregate_failures do
+    it "loads the article by slug without the semantic_embedding vector or search tsvector", :aggregate_failures do
       article_path = article.path
       slug_queries = []
       callback = lambda do |*, payload|
@@ -81,7 +84,11 @@ RSpec.describe "Comments" do
 
       expect(response).to have_http_status(:ok)
       expect(slug_queries).not_to be_empty
-      expect(slug_queries).to all(include(%("articles"."processed_html")).and(exclude("semantic_embedding")))
+      expect(slug_queries).to all(
+        include(%("articles"."processed_html"))
+          .and(exclude("semantic_embedding"))
+          .and(exclude("reading_list_document")),
+      )
     end
 
     context "when there are comments with different score" do
