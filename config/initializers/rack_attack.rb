@@ -1,3 +1,8 @@
+require Rails.root.join("lib/local_redis/rack_attack_proxy")
+if Rails.cache.is_a?(ActiveSupport::Cache::LocalRedisCacheStore)
+  Rack::Attack.cache.store = Rails.cache
+end
+
 Rack::Attack.throttled_response_retry_after_header = true
 
 module Rack
@@ -14,7 +19,7 @@ module Rack
       return false if api_key.nil?
 
       # Admin API Secrets are cached to avoid making DB queries on each request
-      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours) do
+      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours, local_cache: false) do
         ApiSecret.joins(user: :roles)
           .where(roles: { name: ADMIN_ROLES })
           .group("api_secrets.id")

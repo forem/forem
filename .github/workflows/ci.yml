@@ -180,6 +180,10 @@ jobs:
 
       - name: Wait for services
         run: |
+          # Local-cache integration specs start isolated Unix-socket servers.
+          if ! command -v redis-server >/dev/null 2>&1; then
+            sudo apt-get update && sudo apt-get install -y --no-install-recommends redis-server
+          fi
           if ! identify -version >/dev/null 2>&1; then
             sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick || (sudo apt-get update && sudo apt-get install -y --no-install-recommends -o Dpkg::Options::="--force-unsafe-io" imagemagick)
           fi
