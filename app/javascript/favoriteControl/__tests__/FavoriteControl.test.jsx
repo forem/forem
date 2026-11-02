@@ -582,6 +582,39 @@ describe('<FavoriteControl />', () => {
       expect(await screen.findByText('Gem Picked!')).toBeInTheDocument();
     });
 
+    it('gives controls for the same article distinct description ids', () => {
+      // The article page mounts the article and dropdown variants for the same
+      // article, so their dialogs must not share an element id.
+      render(
+        <div>
+          <FavoriteControl {...defaultProps} variant="article" />
+          <FavoriteControl {...defaultProps} variant="dropdown" />
+        </div>,
+      );
+
+      screen.getAllByLabelText('Pick as gem').forEach((trigger) => {
+        fireEvent.click(trigger);
+      });
+
+      const dialogs = screen.getAllByRole('dialog', {
+        name: 'Give this post a Gem?',
+      });
+      expect(dialogs).toHaveLength(2);
+
+      const ids = dialogs.map((dialog) =>
+        dialog.getAttribute('aria-describedby'),
+      );
+      expect(new Set(ids).size).toBe(2);
+      dialogs.forEach((dialog) => {
+        expect(dialog).toHaveAccessibleDescription(
+          'Are you sure you want to give this post a Gem?',
+        );
+      });
+      expect(
+        document.querySelectorAll('[id^="favorite-confirm-description"]'),
+      ).toHaveLength(2);
+    });
+
     it('still closes on a backdrop click before the request is sent', async () => {
       const user = userEvent.setup();
       renderControl();

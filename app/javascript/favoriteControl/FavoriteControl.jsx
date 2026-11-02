@@ -278,7 +278,9 @@ export const FavoriteControl = ({
       return null;
     }
 
-    const descriptionId = `favorite-confirm-description-${favoritableType}-${favoritableId}`;
+    // The article page mounts more than one control (variant) for the same
+    // article, so the variant is part of the id to keep each dialog's unique.
+    const descriptionId = `favorite-confirm-description-${variant}-${favoritableType}-${favoritableId}`;
 
     return (
       <Modal
