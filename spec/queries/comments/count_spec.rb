@@ -67,6 +67,35 @@ RSpec.describe Comments::Count do
     expect(count).to eq(3) # comment, active reply, and comment2 are displayed
   end
 
+  it "only treats an exact last ancestry segment as a reply to a hidden comment" do
+    comment.update_column(:score, -500)
+    other_parent = create(:comment, commentable: article)
+    reply = create(:comment, commentable: article, parent: other_parent)
+    # Ancestries whose last segment merely contains the hidden comment's id are not its replies
+    reply.update_column(:ancestry, "#{comment.id}/#{other_parent.id}#{comment.id}")
+    article.reload
+    expect(described_class.new(article).call).to eq(3)
+  end
+
+  it "matches the correlated LIKE count across a randomized comment tree" do
+    comment.update_column(:score, -500)
+    comments = [comment, comment2]
+    25.times do
+      parent = [nil, *comments].sample
+      comments << create(:comment, commentable: article, parent: parent, score: [-500, -401, 0, 10].sample,
+                                   deleted: [true, false, false].sample)
+    end
+    create(:comment, commentable: create(:article), parent: nil).update_column(:ancestry, comment.id.to_s)
+    legacy_hidden = Comment.count_by_sql(Comment.sanitize_sql([<<~SQL.squish, Comment::HIDE_THRESHOLD, article.id]))
+      SELECT COUNT(id) FROM comments c1 WHERE (score < ? OR deleted = TRUE) AND commentable_id = ?
+      AND commentable_type = 'Article' AND NOT EXISTS (SELECT 1 FROM comments c2
+      WHERE c2.commentable_id = c1.commentable_id AND c2.commentable_type = c1.commentable_type
+      AND (c2.ancestry LIKE CONCAT('%/', c1.id::varchar(255)) OR c2.ancestry = c1.id::varchar(255)))
+    SQL
+    article.reload
+    expect(described_class.call(article, recalculate: true)).to eq(article.comments.count - legacy_hidden)
+  end
+
   context "with recalculate option" do
     # displayed comments count = 4
     # comments count = 5
