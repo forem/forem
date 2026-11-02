@@ -21,5 +21,40 @@ RSpec.describe "GaEvents", vcr: vcr_option do
       }.to_json
       expect(response.body).to eq("")
     end
+
+    context "when GA4 is configured" do
+      let(:tracking_service) { instance_double(Ga::TrackingService, track_event: nil) }
+
+      before do
+        allow(Settings::General).to receive_messages(ga_analytics_4_id: "G-TEST", ga_api_secret: "secret")
+        allow(Ga::TrackingService).to receive(:new).and_return(tracking_service)
+      end
+
+      it "sends the page_view from a job instead of during the request", :aggregate_failures do
+        sidekiq_assert_enqueued_jobs(1, only: Ga::TrackEventWorker) do
+          post "/fallback_activity_recorder", params: { path: "/example", user_language: "en" }.to_json
+        end
+
+        expect(response.body).to eq("")
+        expect(response.cookies["client_id"]).to be_present
+        expect(Ga::TrackingService).not_to have_received(:new)
+      end
+
+      it "sends the same page_view payload to Google Analytics", :aggregate_failures do
+        sidekiq_perform_enqueued_jobs do
+          post "/fallback_activity_recorder", params: {
+            document_title: "Example", path: "/example", user_language: "en", referrer: "https://example.com/"
+          }.to_json
+        end
+
+        expect(Ga::TrackingService).to have_received(:new).with("G-TEST", "secret", kind_of(String))
+        expected_params = {
+          page_title: "Example", page_location: nil, page_path: "/example", user_id: nil,
+          user_language: "en", referrer: "https://example.com/", user_agent: nil, viewport_size: nil,
+          screen_resolution: nil, document_encoding: nil, data_source: "web"
+        }.stringify_keys
+        expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
+      end
+    end
   end
 end
