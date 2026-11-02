@@ -45,7 +45,7 @@ RSpec.describe "StoriesShow" do
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
     end
 
-    it "loads the article by path without the semantic_embedding vector or search tsvector" do
+    it "renders the article without loading feed snapshots, the embedding, or the search document" do
       path_queries = []
       callback = lambda do |*, payload|
         path_queries << payload[:sql] if payload[:sql].include?(%("articles"."path" =))
@@ -59,7 +59,9 @@ RSpec.describe "StoriesShow" do
       expect(path_queries).to all(
         include(%("articles"."processed_html"))
           .and(exclude("semantic_embedding"))
-          .and(exclude("reading_list_document")),
+          .and(exclude("reading_list_document"))
+          .and(exclude(%("articles"."cached_user")))
+          .and(exclude(%("articles"."cached_organization"))),
       )
     end
 
@@ -69,6 +71,32 @@ RSpec.describe "StoriesShow" do
       get "#{old_path}?i=i"
       expect(response.body).to redirect_to "#{article.path}?i=i"
       expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "preserves the article JSON response with the narrower show projection" do
+      article.update_column(:body_html, "<p>Legacy article HTML</p>")
+
+      get article.path, headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq(
+        "id" => article.id,
+        "title" => article.title,
+        "body_html" => "<p>Legacy article HTML</p>",
+        "created_at" => article.created_at.as_json,
+        "updated_at" => article.updated_at.as_json,
+      )
+    end
+
+    it "renders organization and author details without the serialized feed snapshots" do
+      article.update!(organization: org)
+
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(org.name), CGI.escapeHTML(user.name))
+      expect(response.body).to include(article.processed_html_final)
+      expect(response.headers["Surrogate-Key"]).to include(article.record_key)
     end
 
     it "does not have ?i=i on redirects which did not originally include it" do
@@ -270,7 +298,8 @@ RSpec.describe "StoriesShow" do
       path = article.path
       relation = instance_double(ActiveRecord::Relation)
       allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
-      selected_columns = Article.column_names - %w[semantic_embedding reading_list_document]
+      excluded_columns = %w[cached_user cached_organization semantic_embedding reading_list_document]
+      selected_columns = Article.column_names - excluded_columns
       allow(relation).to receive(:select).with(selected_columns).and_return(relation)
       allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
       get path

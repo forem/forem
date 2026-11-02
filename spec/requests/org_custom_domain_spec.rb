@@ -119,6 +119,35 @@ RSpec.describe "Organization Custom Domain Routing", type: :request do
         expect(response.body).to include("Test Article Content")
       end
 
+      it "renders article content and attribution without loading feed snapshots or search payloads" do
+        article_queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql]
+          article_queries << sql if sql.include?(%("articles"."slug" =))
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "http://custom.org/#{article.slug}"
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(
+          article.processed_html_final,
+          CGI.escapeHTML(user.name),
+          CGI.escapeHTML(organization.name),
+        )
+        expect(response.headers["Surrogate-Key"]).to include(article.record_key)
+        expect(article_queries).not_to be_empty
+        expect(article_queries).to all(
+          include(%("articles"."processed_html"))
+            .and(exclude(%("articles".*)))
+            .and(exclude(%("articles"."cached_user")))
+            .and(exclude(%("articles"."cached_organization")))
+            .and(exclude("semantic_embedding"))
+            .and(exclude("reading_list_document")),
+        )
+      end
+
       it "routes /:slug to the organization's article when requested via fetch / link preload" do
         get "http://custom.org/#{article.slug}", headers: { "Sec-Fetch-Dest" => "empty", "Sec-Fetch-Mode" => "cors" }
 
