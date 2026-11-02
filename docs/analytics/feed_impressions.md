@@ -1,5 +1,90 @@
 # Feed impression accounting
 
+## Sticky home-feed configurations and return credit
+
+The configured feed assigns a member a home-feed configuration per subforem.
+Each first-page Discover request, including preloads, randomly chooses between
+that assignment and ordinary configuration selection. Assignments begin on the
+first sticky selection and expire at a fixed time; visits never extend them.
+Other feed strategies, explicit configuration previews, sidebar feeds, tag feeds,
+and pagination retain ordinary selection and receive no visibility token.
+
+The User Experience admin settings control:
+
+| Setting | Default | Meaning |
+| --- | --- | --- |
+| `feed_config_sticky_hours` | 60 | Assignment lifetime in hours; 0 disables stickiness. |
+| `feed_config_sticky_percentage` | 50 | Chance of using the assigned config on each eligible load; 0 disables stickiness. |
+| `feed_config_repeat_visit_minutes` | 30 | Minimum elapsed time between credited visible visits. |
+
+A nonempty sticky response carries `X-Feed-Visit-Token`. This signed proof binds
+its user, host, subforem, config, and exact assignment expiry. It is outside shared
+article fragment caches; signed-in responses are private and no-store. Discover
+preloading remains enabled, and consuming a preload preserves the proof header.
+Fetching or preloading alone never earns credit or starts the reward cooldown.
+
+After the feed renders, the browser acknowledges it with
+`POST /feed_config_visits`, using `visit_token`, a UUID `event_id`, session/JWT
+authentication, and CSRF protection for browser sessions. A background-loaded
+feed waits until visible. Visibility changes, window focus, and `pageshow`
+(including browser-history restores) report later visits while that rendered
+feed remains current and connected. Continuously leaving a tab open produces no
+periodic credit. Unmounting stops tracking and cancels retries; stale fetch
+responses cannot reactivate tracking for a previous tab or route.
+
+The first visible acknowledgement starts the cooldown without credit. Further
+eligible acknowledgements increment `feed_repeat_visits_count`, with one rolling
+cooldown shared across tabs and devices. The default window allows at most 119
+repeat credits, excluding the initial display and the expiry instant. Selection
+on the ordinary branch earns no return credit. There is no additional reward cap
+or wait for the assignment window to finish.
+
+The server validates ownership, scope, signature, expiry, and active config under
+an assignment row lock. Receipt reservation, cooldown, counter, and score share a
+transaction. Accepted and cooldown-suppressed IDs use the existing
+`feed_event_receipts` table, so even a late delivery retry cannot become a new
+visit. Replays cannot inflate rewards, and scoring failures roll back receipts.
+The endpoint limits admission to 60 requests per minute per authenticated user
+and respects `disable_browser_feed_events`. Disabled, stale, or unauthenticated
+proofs return 204; valid acknowledgements return 200 with `X-Feed-Visit-Wait` in
+seconds. Malformed payloads return 400, and admission exhaustion returns 429 with
+Retry-After. The client uses the server's relative cooldown to avoid dependence
+on synchronized clocks.
+
+Delivery has one pending event with a stable UUID, a ten-second timeout, at most
+six attempts, and bounded backoff that honors Retry-After, including the deadline
+on the final failed attempt before another visit can be sent. Pending events pause
+while offline, hidden, or detached and resume when appropriate. Permanent errors
+stop tracking that rendered feed. Delivery remains best effort: page replacement,
+retry exhaustion, or disabled JavaScript can lose an acknowledgement. An old
+rendered feed's proof stops earning credit when its assignment expires; another
+feed load is needed to receive a new assignment and proof.
+
+Each return adds 0.5 (half an unboosted, first-position click) to the existing
+success-score numerator. The denominator remains distinct impression users;
+return credit does not change article scores or impression totals. Return counts
+and immediate score increments use one atomic config update without new Sidekiq
+jobs. Engagement feedback refreshes persist `feed_impression_users_count` and
+recompute the combined score using the current return count inside SQL, so a
+concurrent return cannot be overwritten. Before a nonzero denominator is first
+measured, return counts are retained and enter the score on that feedback refresh.
+Both automated and admin clones reset the counters.
+
+Automatic archival and new assignments coordinate through config row locks and
+recheck eligibility after waiting, preserving newly committed assignments.
+Automatic archival preserves configs with unexpired assignments so its two-day
+age threshold cannot truncate a 60-hour assignment. Manual archival or deletion
+invalidates proofs immediately; subsequent loads select a replacement. Assignment
+rows are reused per user/subforem, with user/subforem deletion cascading to them.
+
+Apply `20261102120000_add_sticky_feed_config_assignments.rb` and
+`20261102120001_add_indexes_to_feed_config_assignments.rb` before deploying the
+server, then serve the new browser bundle. The schema changes are transactional;
+the concurrent indexes are installed separately. Both unique indexes must exist
+before assignments are enabled. Older clients can receive sticky
+selections but do not acknowledge visibility or earn return credit. No API-versioned
+routes or public article JSON fields change.
+
 ## Metric contract
 
 The home-feed chart sums `feed_events.counts_for` where `category = 0` and

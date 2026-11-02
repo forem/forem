@@ -15,6 +15,95 @@ RSpec.describe "Stories::Feeds" do
     let(:response_json) { response.parsed_body }
     let(:response_article) { response_json.first }
 
+    context "with sticky configured home feeds" do
+      let!(:feed_config) { create(:feed_config) }
+
+      before do
+        sign_in user
+        allow(Settings::UserExperience).to receive_messages(
+          feed_strategy: "configured", feed_config_sticky_percentage: 100,
+        )
+      end
+
+      it "serves a signed token on preloads without recording a visible visit" do
+        get stories_feed_path
+        token = response.headers["X-Feed-Visit-Token"]
+        expect(token).to be_present
+        expect(response_article["feed_config"]).to eq(feed_config.id)
+        expect(response.headers["Cache-Control"]).to eq("private, no-store")
+        expect(response.headers["Surrogate-Control"]).to be_nil
+        expect(FeedConfigAssignment.find_by!(user: user).last_rewarded_at).to be_nil
+        expect(feed_config.reload.feed_repeat_visits_count).to eq(0)
+
+        Timecop.travel(30.minutes.from_now) do
+          get stories_feed_path
+          expect(feed_config.reload.feed_repeat_visits_count).to eq(0)
+        end
+      end
+
+      it "issues a token that acknowledges visibility and immediately scores a subsequent return" do
+        Timecop.freeze do
+          get stories_feed_path
+          token = response.headers["X-Feed-Visit-Token"]
+          create(:feed_event, article: article, user: user, feed_config: feed_config, category: :impression)
+          post feed_config_visits_path, params: { visit_token: token, event_id: SecureRandom.uuid }
+          expect(response).to have_http_status(:ok)
+          expect(feed_config.reload.feed_repeat_visits_count).to eq(0)
+
+          Timecop.travel(30.minutes.from_now) do
+            post feed_config_visits_path, params: { visit_token: token, event_id: SecureRandom.uuid }
+            expect(response).to have_http_status(:ok)
+            expect(feed_config.reload.feed_repeat_visits_count).to eq(1)
+            expect(feed_config.feed_success_score).to eq(0.5)
+          end
+        end
+      end
+
+      [
+        { page: 2 }, { tag: "alpha" }, { passed_domain: "forem.test" },
+        { type_of: "following" }, { type_of: "curated" }, { timeframe: "latest" }
+      ].each do |feed_params|
+        it "does not issue a visibility token for another surface: #{feed_params}" do
+          expect do
+            get stories_feed_path, params: feed_params
+          end.not_to change(FeedConfigAssignment, :count)
+          expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+        end
+      end
+
+      it "preserves explicit config previews without issuing a visibility token" do
+        get stories_feed_path, params: { item: feed_config.id }
+        expect(response_article["feed_config"]).to eq(feed_config.id)
+        expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+      end
+
+      it "does not issue a visibility token for an empty feed" do
+        article.destroy!
+        get stories_feed_path
+        expect(response.parsed_body).to eq([])
+        expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+      end
+
+      it "keeps signed-out requests edge cached without a token" do
+        sign_out user
+        expect { get stories_feed_path }.not_to change(FeedConfigAssignment, :count)
+        expect(response.headers["Surrogate-Control"]).to include("max-age=60")
+        expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+      end
+
+      it "does not issue a token for the basic feed strategy" do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
+        expect { get stories_feed_path }.not_to change(FeedConfigAssignment, :count)
+        expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+      end
+
+      it "does not issue a token for the exploration half of requests" do
+        allow(Settings::UserExperience).to receive(:feed_config_sticky_percentage).and_return(0)
+        get stories_feed_path
+        expect(response.headers["X-Feed-Visit-Token"]).to be_nil
+      end
+    end
+
     it "renders article list as json" do
       get stories_feed_path
 

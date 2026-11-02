@@ -318,6 +318,43 @@ RSpec.describe FeedEvent do
       allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
     end
 
+    it "adds return credit to engagement and reconciles the denominator as new viewers arrive" do
+      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
+      create(:feed_event, category: :click, feed_config: feed_config, user: user1, article_position: 1)
+      FeedConfig.record_repeat_visit(feed_config.id)
+      FeedConfig.record_repeat_visit(feed_config.id)
+      expect(feed_config.reload.feed_success_score).to eq(2.5)
+
+      create(:feed_event, category: :impression, feed_config: feed_config, user: user2, article_position: 1)
+      expect(feed_config.reload.feed_impression_users_count).to eq(2)
+      expect(feed_config.feed_success_score).to eq(1.25)
+      described_class.update_single_feed_config_counters(feed_config.id)
+      expect(feed_config.reload.feed_success_score).to eq(1.25)
+      expect(feed_config.feed_repeat_visits_count).to eq(2)
+    end
+
+    it "preserves a repeat visit arriving between aggregation and the score update" do
+      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
+      allow(described_class).to receive(:calculate_feed_config_counters).and_wrap_original do |method, *args|
+        counters = method.call(*args)
+        FeedConfig.record_repeat_visit(feed_config.id)
+        counters
+      end
+
+      described_class.update_single_feed_config_counters(feed_config.id)
+      expect(feed_config.reload.feed_success_score).to eq(0.5)
+      expect(feed_config.feed_repeat_visits_count).to eq(1)
+    end
+
+    it "stores return credit before the first impression and includes it on the next feedback refresh" do
+      FeedConfig.record_repeat_visit(feed_config.id)
+      expect(feed_config.reload.feed_repeat_visits_count).to eq(1)
+      expect(feed_config.feed_success_score).to eq(0.0)
+
+      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
+      expect(feed_config.reload.feed_success_score).to eq(0.5)
+    end
+
     context "when impression events exist for the feed config on newly published articles" do
       before do
         # Two distinct impression events

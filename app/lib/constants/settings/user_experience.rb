@@ -39,6 +39,15 @@ module Constants
             description: I18n.t("lib.constants.settings.user_experience.feed_lookback_days.description"),
             placeholder: I18n.t("lib.constants.settings.user_experience.feed_lookback_days.placeholder")
           },
+          feed_config_sticky_hours: {
+            description: I18n.t("lib.constants.settings.user_experience.feed_config_sticky_hours.description")
+          },
+          feed_config_sticky_percentage: {
+            description: I18n.t("lib.constants.settings.user_experience.feed_config_sticky_percentage.description")
+          },
+          feed_config_repeat_visit_minutes: {
+            description: I18n.t("lib.constants.settings.user_experience.feed_config_repeat_visit_minutes.description")
+          },
           home_feed_minimum_score: {
             description: I18n.t("lib.constants.settings.user_experience.home_feed.description"),
             placeholder: "0"

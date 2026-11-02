@@ -254,6 +254,17 @@ en:
           feed_lookback_days:
             description: Determines how far back the feed looks for new posts (in days)
             placeholder: '10'
+          feed_config_sticky_hours:
+            label: Sticky feed duration (hours)
+            description: How long a home-feed configuration stays assigned to a member. Set to 0 to disable sticky feeds.
+          feed_config_sticky_percentage:
+            label: Sticky feed traffic (%)
+            description: Percentage of home-feed loads that use the assigned configuration. Other loads use normal selection. Set to 0 to disable sticky feeds.
+          feed_config_repeat_visit_minutes:
+            label: Repeat home-feed visit interval (minutes)
+            description: Minimum time between credited visible visits to the assigned home feed. Each return adds half a click to its success score; the first visible visit earns no credit.
+          feed_repeat_visits:
+            label: Repeat home-feed visits
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
           index_minimum_date:
