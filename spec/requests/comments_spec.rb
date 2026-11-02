@@ -443,6 +443,45 @@ RSpec.describe "Comments" do
     end
   end
 
+  describe "GET /:username/comment/:id_code/settings" do
+    let(:settings_path) { "/#{user.username}/comment/#{comment.id_code_generated}/settings" }
+
+    it "renders the mute form for the comment author" do
+      sign_in user
+      get settings_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("/notification_subscriptions/Comment/#{comment.id}")
+    end
+
+    it "offers to unsubscribe from the parent post when subscribed to it" do
+      create(:notification_subscription, user: user, notifiable: article, config: "all_comments")
+      sign_in user
+      get settings_path
+
+      expect(response.body).to include("/notification_subscriptions/Article/#{article.id}")
+    end
+
+    it "does not load the comment's body or embedding columns" do
+      path = settings_path
+      sign_in user
+      comment_queries = []
+      callback = lambda do |*, payload|
+        comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get path }
+
+      expect(comment_queries).to be_present
+      expect(comment_queries).to all(exclude("semantic_embedding", "body_markdown", '"comments".*'))
+    end
+
+    it "denies users who did not write the comment" do
+      sign_in create(:user)
+
+      expect { get settings_path }.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
   describe "PUT /comments/:id" do
     before do
       sign_in user

@@ -1,5 +1,8 @@
 class CommentsController < ApplicationController
   UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding].freeze
+  # The settings page (and CommentPolicy#settings?) only reads these, so skip the comment's body,
+  # processed HTML and ~3KB TOASTed semantic_embedding vector.
+  SETTINGS_COMMENT_COLUMNS = %i[id user_id commentable_id commentable_type].freeze
 
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
@@ -214,7 +217,7 @@ class CommentsController < ApplicationController
   end
 
   def settings
-    @comment = Comment.find(params[:id_code].to_i(26))
+    @comment = Comment.select(*SETTINGS_COMMENT_COLUMNS).find(params[:id_code].to_i(26))
     authorize @comment
     @notification_subscription = NotificationSubscription.find_or_initialize_by(
       user_id: @comment.user_id,
