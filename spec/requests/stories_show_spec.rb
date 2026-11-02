@@ -45,7 +45,7 @@ RSpec.describe "StoriesShow" do
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
     end
 
-    it "renders the article without loading feed snapshots, the embedding, or the search document" do
+    it "renders the article with feed snapshots but without the embedding or search document" do
       path_queries = []
       callback = lambda do |*, payload|
         path_queries << payload[:sql] if payload[:sql].include?(%("articles"."path" =))
@@ -60,8 +60,8 @@ RSpec.describe "StoriesShow" do
         include(%("articles"."processed_html"))
           .and(exclude("semantic_embedding"))
           .and(exclude("reading_list_document"))
-          .and(exclude(%("articles"."cached_user")))
-          .and(exclude(%("articles"."cached_organization"))),
+          .and(include(%("articles"."cached_user")))
+          .and(include(%("articles"."cached_organization"))),
       )
     end
 
@@ -298,7 +298,7 @@ RSpec.describe "StoriesShow" do
       path = article.path
       relation = instance_double(ActiveRecord::Relation)
       allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
-      excluded_columns = %w[cached_user cached_organization semantic_embedding reading_list_document]
+      excluded_columns = %w[semantic_embedding reading_list_document]
       selected_columns = Article.column_names - excluded_columns
       allow(relation).to receive(:select).with(selected_columns).and_return(relation)
       allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
