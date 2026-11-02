@@ -1,0 +1,23 @@
+spec/initializers/sentry_spec.rb
+  s_f831849363d5ae::t_cf4e5b45576217 7-9,49-51
+  s_f831849363d5ae::t_ae211ac054e7a4 52-53
+spec/system/search/user_searches_users_spec.rb
+  s_f831849363d5ae::t_30c237d6103f6d 6-7
+  s_f831849363d5ae::t_cf4e5b45576217 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e65e0d205478495b3b8671f68f78507704119afb",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
