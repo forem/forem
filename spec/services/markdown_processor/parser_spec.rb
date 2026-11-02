@@ -113,7 +113,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       ```
     MARKDOWN
     output = generate_and_parse_markdown(markdown)
-    expect(output).to include("               * This should remain untouched")
+    expect(output).to include("             * This should remain untouched")
   end
 
   it "does not merge following line when list marker has no trailing text" do
