@@ -77,7 +77,6 @@ const getPreviousMatchingSibling = (element, selector) => {
  */
 export const MarkdownToolbar = ({
   textAreaId,
-  editorVersion = 'v2',
   additionalPrimaryToolbarElements = [],
   additionalSecondaryToolbarElements = [],
 }) => {
@@ -410,7 +409,11 @@ export const MarkdownToolbar = ({
       })}
 
       <ImageUploader
-        editorVersion={editorVersion}
+        // Always use the v2 icon-button uploader. The toolbar is shared across
+        // v1 and v2, and its buttonProps/cursor-aware insertion flow only works
+        // with the v2 uploader (V1EditorImageUpload ignores buttonProps, which
+        // breaks cursor tracking, roving tabindex, and toolbar layout).
+        editorVersion="v2"
         onImageUploadStart={handleImageUploadStarted}
         onImageUploadSuccess={handleImageUploadEnd}
         onImageUploadError={handleImageUploadEnd}

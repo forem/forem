@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { ImageUploader } from './ImageUploader';
 import { MarkdownToolbar, Link } from '@crayons';
 import HelpIcon from '@images/help.svg';
 import AgentSessionIcon from '@images/agent-session.svg';
@@ -13,7 +12,6 @@ export const Toolbar = ({ version, textAreaId }) => {
     >
       <MarkdownToolbar
         textAreaId={textAreaId}
-        editorVersion={version}
         additionalPrimaryToolbarElements={[
           <Link
             key="agent-session-link"
