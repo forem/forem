@@ -2,6 +2,10 @@ module Stories
   class FeedsController < ApplicationController
     include Instrumentation
 
+    # Feed previews render processed_html; source Markdown, legacy HTML, and vectors
+    # are only needed by other comment paths, which keep their normal projections.
+    UNRENDERED_COMMENT_COLUMNS = %w[body_markdown body_html semantic_embedding].freeze
+
     respond_to :json
 
     before_action :current_user_by_token, only: [:show]
@@ -16,6 +20,9 @@ module Stories
       preload_common_settings
 
       @stories = assign_feed_stories
+      if @sticky_config && @stories.any?
+        response.headers["X-Feed-Visit-Token"] = @sticky_config.visit_token(host: request.host)
+      end
 
       # After getting stories, preload settings for any additional subforems if in root
       preload_additional_subforem_settings
@@ -24,7 +31,10 @@ module Stories
       preload_feed_associations
 
       # Add edge cache headers for signed out users only
-      return if user_signed_in?
+      if user_signed_in?
+        response.headers["Cache-Control"] = "private, no-store"
+        return
+      end
 
       set_cache_control_headers(60) # 1 minute expiration
     end
@@ -69,11 +79,7 @@ module Stories
       feed = if feed_strategy == "basic" && params[:type_of] != "following"
                Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
              elsif feed_strategy == "configured" && params[:type_of] != "following"
-               @feed_config = FeedConfig.select_for_feed(
-                 preferred_id: params[:item],
-                 user: current_user,
-                 context_type: FeedEvent::CONTEXT_TYPE_HOME,
-               )
+               @feed_config = configured_feed_config
                Articles::Feeds::Custom.new(user: current_user, page: @page, tag: params[:tag],
                                            feed_config: @feed_config)
              else
@@ -123,6 +129,17 @@ module Stories
         # weighted query implementation as it returns a lovely
         # ActiveRecord::Relation.  So this is a compromise.
         feed.default_home_feed(user_signed_in: false).to_a
+      end
+    end
+
+    def configured_feed_config
+      if @page == 1 && params[:tag].blank? && params[:item].blank? && params[:passed_domain].blank?
+        @sticky_config = Feeds::StickyConfig.new(user: current_user)
+        @sticky_config.select
+      else
+        FeedConfig.select_for_feed(
+          preferred_id: params[:item], user: current_user, context_type: FeedEvent::CONTEXT_TYPE_HOME,
+        )
       end
     end
 
@@ -208,13 +225,15 @@ module Stories
       comments_assoc = @comments_variant.to_sym
       comments_missing = records.select { |r| r.comments_count.positive? && !r.association(comments_assoc).loaded? }
       if comments_missing.any?
+        columns = Comment.column_names - UNRENDERED_COMMENT_COLUMNS
         ranked = Comment.where(
           commentable_type: "Article", commentable_id: comments_missing.map(&:id),
           score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false
-        ).select("comments.id, ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS rn")
+        ).select(*columns)
+          .select("ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS feed_comment_rank")
         ActiveRecord::Associations::Preloader.new(
           records: comments_missing, associations: comments_assoc,
-          scope: Comment.where(id: Comment.from(ranked, :ranked_comments).where("rn <= 3").select(:id)).includes(:user)
+          scope: Comment.from(ranked, :comments).where("feed_comment_rank <= 3").select(*columns).includes(:user)
         ).call
       end
 

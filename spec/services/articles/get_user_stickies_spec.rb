@@ -86,5 +86,24 @@ RSpec.describe Articles::GetUserStickies, type: :service do
                                        orders: { "published_at" => :desc },
                                        where: "(published = true)")
     end
+
+    it "orders published organization articles by published_at descending with a matching partial index" do
+      organization = create(:organization)
+      org_article = create(:article, user: user, organization: organization, published: true, cached_tag_list: "ruby")
+      newer_article = create(:article, user: user, organization: organization, published: true, cached_tag_list: "ruby")
+      older_article = create(:article, user: user, organization: organization, published: true, cached_tag_list: "ruby")
+      newer_article.update_column(:published_at, 2.hours.ago)
+      older_article.update_column(:published_at, 3.hours.ago)
+      relation = described_class.call(org_article, organization)
+      index = ActiveRecord::Base.connection.indexes(:articles).detect do |idx|
+        idx.name == "index_articles_on_org_id_and_published_at_for_published"
+      end
+
+      expect(relation.where_values_hash).to include("organization_id" => organization.id, "published" => true)
+      expect(relation.map(&:id)).to eq([newer_article.id, older_article.id])
+      expect(index).to have_attributes(columns: %w[organization_id published_at],
+                                       orders: { "published_at" => :desc },
+                                       where: "((published = true) AND (organization_id IS NOT NULL))")
+    end
   end
 end

@@ -17,7 +17,7 @@ gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 5.5" # Tracking analytics for Rails
 gem "algoliasearch-rails", "~> 2.3" # Algolia Search API Client
 gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Trackers::CustomerioCdp pointed at cdp.customer.io
-gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
+gem "ancestry", "~> 5.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 3.1" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -94,6 +94,7 @@ gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML pars
 
 gem "redis", "~> 4.7.1" # Redis ruby client
 gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-client", "~> 0.31.0", require: false # RESP3 invalidations for the optional local cache daemon
 gem "rpush", "~> 9.2" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
@@ -115,7 +116,7 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
+gem "strong_migrations", "~> 2.8" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails

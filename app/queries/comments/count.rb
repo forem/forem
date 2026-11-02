@@ -23,13 +23,17 @@ module Comments
         #   (b) it was soft-deleted with deleted = true (e.g. via admin_delete on a childless comment).
         # Soft-deleted comments that DO have children are still visible as "[deleted]" placeholders,
         # so those are intentionally included in the displayed count.
+        # A comment has children when some ancestry on the article ends with its id (the last ancestry
+        # segment is the direct parent). Collecting those parent ids once lets Postgres probe a hashed
+        # subplan, instead of rescanning every comment on the article with a LIKE per candidate.
+        # The regex always matches, so the subquery never yields NULL and NOT IN is safe.
         count_sql = "SELECT COUNT(id) FROM comments c1 " \
                     "WHERE (score < ? OR deleted = TRUE) AND commentable_id = ? " \
-                    "AND commentable_type = ? AND NOT EXISTS " \
-                    "(SELECT 1 FROM comments c2 WHERE c2.commentable_id = c1.commentable_id " \
-                    "AND c2.commentable_type = c1.commentable_type " \
-                    "AND (c2.ancestry LIKE CONCAT('%/', c1.id::varchar(255)) OR c2.ancestry = c1.id::varchar(255)))"
-        san_count_sql = Comment.sanitize_sql([count_sql, Comment::HIDE_THRESHOLD, @article.id, "Article"])
+                    "AND commentable_type = ? AND c1.id::varchar(255) NOT IN " \
+                    "(SELECT substring(c2.ancestry from '[^/]*$') FROM comments c2 " \
+                    "WHERE c2.commentable_id = ? AND c2.commentable_type = ? AND c2.ancestry IS NOT NULL)"
+        san_count_sql = Comment.sanitize_sql([count_sql, Comment::HIDE_THRESHOLD, @article.id, "Article",
+                                              @article.id, "Article"])
         hidden_comments_cnt = Comment.count_by_sql(san_count_sql)
         displayed_comments_count = article.comments.count - hidden_comments_cnt
         article.update_column(:displayed_comments_count, displayed_comments_count)

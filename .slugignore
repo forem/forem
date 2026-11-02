@@ -29,6 +29,7 @@ README.md
 SECURITY.md
 app/**/*.test.js
 app/**/*.test.jsx
+app/**/__tests__/
 app/**/.eslintrc.js
 app/**/.storybook/
 app/**/__stories__/

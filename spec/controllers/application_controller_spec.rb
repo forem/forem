@@ -8,6 +8,12 @@ RSpec.describe "ApplicationController", type: :request do
     allow(controller).to receive(:current_user).and_return(user)
   end
 
+  describe "#authenticate_user!" do
+    it "accepts Devise authentication options" do
+      expect(controller.authenticate_user!(force: true)).to be(true)
+    end
+  end
+
   describe "#feature_flag_enabled?" do
     it "calls FeatureFlag.enabled_for_user with current_user" do
       allow(FeatureFlag).to receive(:enabled_for_user?)

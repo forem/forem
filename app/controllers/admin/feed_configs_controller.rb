@@ -61,6 +61,8 @@ module Admin
       @feed_config = if source_config
                        source_config.dup.tap do |config|
                          config.feed_impressions_count = 0
+                         config.feed_impression_users_count = 0
+                         config.feed_repeat_visits_count = 0
                          config.feed_success_score = 0.0
                          config.archived = false
                          if requested_bucket
@@ -175,6 +177,7 @@ module Admin
         :compellingness_score_weight,
         :favorited_weight,
         :featured_weight,
+        :feed_lookback_hours,
         :feed_success_weight,
         :follow_status_weight,
         :general_past_day_bonus_weight,
@@ -183,6 +186,7 @@ module Admin
         :lookback_window_weight,
         :organization_follow_weight,
         :precomputed_selections_weight,
+        :published_at_diversity_weight,
         :published_today_weight,
         :randomness_weight,
         :recency_weight,

@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+require_relative "../lib/local_redis/sync"
+
+Signal.trap("TERM") { exit }
+Signal.trap("INT") { exit }
+LocalRedis::Sync.new(local_url: ENV.fetch("LOCAL_REDIS_URL"),
+                     remote_url: ENV["REDISCLOUD_URL"] || ENV["REDIS_URL"]).run

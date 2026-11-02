@@ -50,6 +50,10 @@
         <dt class="fs-xs color-base-60">Impressions Count</dt>
         <dd class="fs-l fw-bold color-base-90"><%= number_with_delimiter(@feed_config.feed_impressions_count) %></dd>
       </div>
+      <div>
+        <dt class="fs-xs color-base-60"><%= t("lib.constants.settings.user_experience.feed_repeat_visits.label") %></dt>
+        <dd class="fs-l fw-bold color-base-90"><%= number_with_delimiter(@feed_config.feed_repeat_visits_count) %></dd>
+      </div>
     </dl>
   </div>
 

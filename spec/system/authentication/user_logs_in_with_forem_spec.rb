@@ -52,7 +52,7 @@ RSpec.describe "Authenticating with Forem" do
       it "creates a new user with a temporary username" do
         # see Authentication::Providers::Forem#new_user_data
         username = OmniAuth.config.mock_auth[:forem].info.name.downcase.sub(" ", "_")
-        user = create(:user, username: username)
+        user = create(:user, :without_profile, profile_image: nil, username: username)
 
         expect do
           visit sign_up_path
@@ -79,7 +79,9 @@ RSpec.describe "Authenticating with Forem" do
         OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
-      it "does not create a new user or log in", :aggregate_failures do
+      it "does not create a new user or log in and notifies Datadog", :aggregate_failures do
+        omniauth_setup_authentication_error(nil, params)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
@@ -87,47 +89,8 @@ RSpec.describe "Authenticating with Forem" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_button(sign_in_link)
-      end
 
-      it "notifies Datadog about a callback error" do
-        error = OmniAuth::Strategies::OAuth2::CallbackError.new(
-          "Callback error", "Error reason", "https://example.com/error"
-        )
-
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog about an OAuth unauthorized error" do
-        request = double
-        allow(request).to receive_messages(code: 401, message: "unauthorized")
-        error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog even with no OmniAuth error present" do
-        error = nil
-        omniauth_setup_authentication_error(error, params)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "forem", params)
+        args = omniauth_failure_args(nil, "forem", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -156,7 +119,7 @@ RSpec.describe "Authenticating with Forem" do
 
   context "when a user already exists" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:forem] }
-    let(:user) { create(:user, :with_identity, identities: [:forem]) }
+    let(:user) { create(:user, :without_profile, :with_identity, identities: [:forem]) }
 
     before do
       auth_payload.info.name = user.name

@@ -130,6 +130,26 @@ RSpec.describe "Calendar" do
 
         expect(response.body).not_to include("calendar__day--has-event")
       end
+
+      it "renders every grid day as a link that keeps the type filter" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "takeover")
+
+        cells = Nokogiri::HTML(response.body).css("[data-calendar-grid] a[data-calendar-day]")
+        expect(cells.size).to eq(35)
+        march_12 = cells.detect { |cell| cell["data-calendar-day"] == "2026-03-12" }
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=takeover")
+        expect(march_12["class"]).to eq("calendar__day text-center p-1 calendar__day--selected")
+        # March 2026 starts on a Sunday, so the grid ends on Saturday, April 4.
+        expect(cells.last["data-calendar-day"]).to eq("2026-04-04")
+        expect(cells.last["class"]).to eq("calendar__day text-center p-1 color-base-30")
+      end
+
+      it "escapes a type filter that needs URL encoding in the grid links" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "a b&c")
+
+        march_12 = Nokogiri::HTML(response.body).at_css('[data-calendar-day="2026-03-12"]')
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=a+b%26c")
+      end
     end
 
     context "with event row details" do
@@ -381,6 +401,43 @@ RSpec.describe "Calendar" do
         expect(agenda_query).not_to include('"events".*')
         expect(agenda_query).not_to include("body_markdown")
         expect(agenda_query).not_to include("processed_html")
+      end
+
+      it "links delegated events to their page without hydrating page bodies" do
+        page = create(:page, slug: "calendar-delegated-page", is_top_level_path: true)
+        create(:event, title: "Delegated Event", published: true, delegate_to_page: true, page: page,
+                       start_time: Time.zone.today.beginning_of_month + 9.hours,
+                       end_time: Time.zone.today.beginning_of_month + 11.hours)
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        expect(response.body).to include('href="/calendar-delegated-page"')
+        page_queries = queries.grep(/FROM "pages"/)
+        expect(page_queries.size).to eq(1)
+        expect(page_queries.first).not_to include('"pages".*')
+        expect(page_queries.first).not_to include("body_markdown")
+      end
+    end
+
+    context "with out-of-range year parameters" do
+      it "falls back to the current month when start, end, or month years are outside VALID_YEAR_RANGE",
+         :aggregate_failures do
+        current_month_label = Time.zone.today.strftime("%B %Y")
+
+        get calendar_path(start: "0973-11-11", end: "0973-11-11", month: "0973-11")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
+        expect(response.body).not_to include("0973-11-11")
+
+        get calendar_path(start: "1405-02-19", end: "1405-02-19")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
       end
     end
   end

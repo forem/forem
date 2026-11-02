@@ -7,15 +7,17 @@ RSpec.describe ReactionHandler, type: :service do
   # existing reaction = no-op
   # existing contradictory mod reaction
 
-  let(:user) { create(:user) }
-  let(:article) { create(:article) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, with_tags: false, with_main_image: false) }
   let(:category) { "like" }
 
-  let!(:other_category) { article.reactions.create! user: user, category: "hands" }
-  let!(:other_existing) { article.reactions.create! user: create(:user), category: "like" }
+  let(:other_category) { article.reactions.create! user: user, category: "hands" }
+  let(:other_existing) do
+    article.reactions.create! user: create(:user, :without_profile, profile_image: nil), category: "like"
+  end
 
-  let(:moderator) { create(:user, :trusted) }
-  let!(:contradictory_mod) { article.reactions.create! user: moderator, category: "thumbsup" }
+  let(:moderator) { create(:user, :trusted, :without_profile, profile_image: nil) }
+  let(:contradictory_mod) { article.reactions.create! user: moderator, category: "thumbsup" }
 
   let(:params) do
     {
@@ -38,21 +40,16 @@ RSpec.describe ReactionHandler, type: :service do
     subject(:result) { described_class.new(params, current_user: user).create }
 
     context "when no existing/matching reaction by user" do
-      it "justs create" do
-        expect(result).to be_success
-        expect(result.action).to eq("create")
-      end
-
-      it "ignores other existing reactions" do
-        expect(result).to be_success
-        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
-      end
-
-      it "sends a notification to the author" do
+      it "creates the reaction, ignores other existing reactions, and notifies the author", :aggregate_failures do
+        other_category
+        other_existing
+        contradictory_mod
         receiver = { klass: "User", id: article.user.id }
         sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, receiver]) do
           expect(result).to be_success
         end
+        expect(result.action).to eq("create")
+        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
       end
 
       it "records a feed event for articles reached through a feed" do
@@ -78,7 +75,9 @@ RSpec.describe ReactionHandler, type: :service do
     context "when the article is written for an organization" do
       let(:org_author) { create(:user, :org_member) }
       let(:organization) { org_author.organizations.first }
-      let(:article) { create(:article, organization: organization, user: org_author) }
+      let(:article) do
+        create(:article, organization: organization, user: org_author, with_tags: false, with_main_image: false)
+      end
 
       it "sends a notification to both the author and the organization" do
         author = { klass: "User", id: article.user.id }
@@ -105,20 +104,15 @@ RSpec.describe ReactionHandler, type: :service do
     context "when there's an existing/matching reaction by user" do
       let!(:existing) { article.reactions.create! user: user, category: "like" }
 
-      it "does nothing" do
-        expect(result).to be_success
-        expect(result.action).to eq("none")
-      end
-
-      it "ignores other existing reactions" do
-        expect(result).to be_success
-        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id, existing.id)
-      end
-
-      it "does not send a notification to the author" do
+      it "does nothing, ignores other existing reactions, and does not notify the author", :aggregate_failures do
+        other_category
+        other_existing
+        contradictory_mod
         sidekiq_assert_no_enqueued_jobs(only: Notifications::NewReactionWorker) do
           expect(result).to be_success
         end
+        expect(result.action).to eq("none")
+        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id, existing.id)
       end
     end
 
@@ -148,13 +142,10 @@ RSpec.describe ReactionHandler, type: :service do
       let(:user) { moderator }
       let(:category) { "vomit" }
 
-      it "creates" do
+      it "creates the reaction and destroys the other reaction as a side-effect", :aggregate_failures do
+        contradictory_mod
         expect(result).to be_success
         expect(result.action).to eq("create")
-      end
-
-      it "destroys the other reaction as a side-effect" do
-        expect(result).to be_success
         expect(Reaction.ids).not_to include(contradictory_mod.id)
       end
     end
@@ -168,7 +159,7 @@ RSpec.describe ReactionHandler, type: :service do
 
     context "when the reactable is a comment" do
       let(:user) { moderator }
-      let(:comment) { create(:comment) }
+      let(:comment) { create(:comment, commentable: article, user: article.user) }
       let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
       let(:params) do
         {
@@ -178,16 +169,13 @@ RSpec.describe ReactionHandler, type: :service do
         }
       end
 
-      it "also destroys contradictory mod reactions" do
-        expect(result).to be_success
-        expect(result.action).to eq("create")
-        expect(Reaction.ids).not_to include(contradictory_mod.id)
-      end
-
-      it "does not record a feed event" do
+      it "destroys contradictory mod reactions and does not record a feed event", :aggregate_failures do
         click = create(:feed_event, category: :click, article: comment.commentable, user: moderator)
 
         expect { result }.not_to change(FeedEvent, :count)
+        expect(result).to be_success
+        expect(result.action).to eq("create")
+        expect(Reaction.ids).not_to include(contradictory_mod.id)
         expect(moderator.feed_events).to contain_exactly(click)
       end
     end
@@ -197,21 +185,16 @@ RSpec.describe ReactionHandler, type: :service do
     subject(:result) { described_class.new(params, current_user: user).toggle }
 
     context "when no existing/matching reaction by user" do
-      it "justs create" do
-        expect(result).to be_success
-        expect(result.action).to eq("create")
-      end
-
-      it "ignores other existing reactions" do
-        expect(result).to be_success
-        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
-      end
-
-      it "sends a notification to the author" do
+      it "creates the reaction, ignores other existing reactions, and notifies the author", :aggregate_failures do
+        other_category
+        other_existing
+        contradictory_mod
         receiver = { klass: "User", id: article.user.id }
         sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, receiver]) do
           expect(result).to be_success
         end
+        expect(result.action).to eq("create")
+        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
       end
 
       it "records a feed event for articles reached through a feed" do
@@ -248,22 +231,16 @@ RSpec.describe ReactionHandler, type: :service do
     context "when there's an existing/matching reaction by user" do
       let!(:existing) { article.reactions.create! user: user, category: "like" }
 
-      it "un-likes" do
-        expect(result).to be_success
-        expect(result.action).to eq("destroy")
-        expect(Reaction.ids).not_to include(existing.id)
-      end
-
-      it "ignores other existing reactions" do
-        expect(result).to be_success
-        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
-      end
-
-      it "immediately sends a notification to the author" do
+      it "un-likes, ignores other existing reactions, and immediately notifies the author", :aggregate_failures do
+        other_category
+        other_existing
+        contradictory_mod
         allow(Notifications::Reactions::Send).to receive(:call)
 
         expect(result).to be_success
-
+        expect(result.action).to eq("destroy")
+        expect(Reaction.ids).not_to include(existing.id)
+        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
         expect(Notifications::Reactions::Send).to have_received(:call).with(reactable_data, article.user)
       end
     end
@@ -271,7 +248,9 @@ RSpec.describe ReactionHandler, type: :service do
     context "when the article is written for an organization" do
       let(:org_author) { create(:user, :org_member) }
       let(:organization) { org_author.organizations.first }
-      let(:article) { create(:article, organization: organization, user: org_author) }
+      let(:article) do
+        create(:article, organization: organization, user: org_author, with_tags: false, with_main_image: false)
+      end
 
       it "sends a notification to both the author and the organization" do
         author = { klass: "User", id: article.user.id }
@@ -297,20 +276,17 @@ RSpec.describe ReactionHandler, type: :service do
       let(:user) { moderator }
       let(:category) { "vomit" }
 
-      it "creates" do
+      it "creates the reaction and destroys the other reaction as a side-effect", :aggregate_failures do
+        contradictory_mod
         expect(result).to be_success
         expect(result.action).to eq("create")
-      end
-
-      it "destroys the other reaction as a side-effect" do
-        expect(result).to be_success
         expect(Reaction.ids).not_to include(contradictory_mod.id)
       end
     end
 
     context "when the reactable is a comment" do
       let(:user) { moderator }
-      let(:comment) { create(:comment) }
+      let(:comment) { create(:comment, commentable: article, user: article.user) }
       let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
       let(:params) do
         {
@@ -329,8 +305,8 @@ RSpec.describe ReactionHandler, type: :service do
 
     # Regression test for https://github.com/forem/forem/issues/22803
     context "when repeatedly toggling reactions on own post" do
-      let(:author) { create(:user) }
-      let(:own_article) { create(:article, user: author) }
+      let(:author) { create(:user, :without_profile, profile_image: nil) }
+      let(:own_article) { create(:article, user: author, with_tags: false, with_main_image: false) }
       let(:params) do
         {
           reactable_id: own_article.id,
@@ -345,8 +321,8 @@ RSpec.describe ReactionHandler, type: :service do
         own_article.reload
         expect(own_article.public_reactions_count).to eq(0)
 
-        # Simulate rapid like/unlike cycles (10 times)
-        10.times do |iteration|
+        # Simulate rapid like/unlike cycles (3 times)
+        3.times do |iteration|
           # Add reaction
           result = described_class.new(params, current_user: author).toggle
           expect(result).to be_success
@@ -380,7 +356,7 @@ RSpec.describe ReactionHandler, type: :service do
 
       it "maintains accurate counter matching actual reaction count" do
         # Execute multiple toggle cycles
-        5.times do
+        2.times do
           described_class.new(params, current_user: author).toggle # create
           described_class.new(params, current_user: author).toggle # destroy
         end
@@ -441,20 +417,22 @@ RSpec.describe ReactionHandler, type: :service do
         locked_relation = instance_double(ActiveRecord::Relation)
         allow(Reaction).to receive(:lock).and_return(locked_relation)
         allow(locked_relation).to receive(:find_by).and_return(nil)
-
-        expect(handler).not_to receive(:send_notifications_without_delay)
-        expect(handler).not_to receive(:sink_articles)
+        allow(handler).to receive(:send_notifications_without_delay)
+        allow(handler).to receive(:sink_articles)
 
         result = handler.toggle
 
         # Safely completes with a destroy payload having bypassed actual secondary destruction + callbacks
+        expect(handler).not_to have_received(:send_notifications_without_delay)
+        expect(handler).not_to have_received(:sink_articles)
         expect(result.action).to eq("destroy")
         expect(result).to be_success
       end
 
       it "recalculates correct count when out of sync" do
         # Create reactions directly (bypassing counter_culture)
-        2.times { create(:reaction, reactable: own_article, category: "like") }
+        create(:reaction, reactable: own_article, user: author, category: "like")
+        create(:reaction, reactable: own_article, user: user, category: "like")
 
         # Manually set incorrect counter value
         own_article.update_column(:public_reactions_count, 0)

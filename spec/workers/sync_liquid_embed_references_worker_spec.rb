@@ -7,9 +7,9 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
     it "synchronizes liquid embed definitions into the database safely" do
       LiquidEmbedReference.delete_all
 
-      expect {
+      expect do
         described_class.new.perform("Comment", comment.id)
-      }.to change(LiquidEmbedReference, :count).by(1)
+      end.to change(LiquidEmbedReference, :count).by(1)
 
       ref = LiquidEmbedReference.last
       expect(ref.record).to eq(comment)
@@ -17,7 +17,7 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
       expect(ref.url).to eq("dQw4w9WgXcQ")
     end
 
-    it "persists newly populated attributes for publication status, date, and score mapping natively to the source record" do
+    it "persists newly populated attributes for publication status, date, and score mapping to the source record" do
       body = <<~MARKDOWN
         ---
         title: Valid Native Test Title
@@ -26,9 +26,9 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
       MARKDOWN
       article = create(:article, body_markdown: body)
       article.update_columns(score: 42, published: true, published_at: 2.days.ago)
-      
+
       described_class.new.perform("Article", article.id)
-      
+
       ref = LiquidEmbedReference.last
       expect(ref.score).to eq(42)
       expect(ref.published).to be(true)
@@ -53,11 +53,26 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
 
       # Trigger the after_commit sync_liquid_embed_metadata mapping simulated update!
       article.update_columns(score: 99, published: true)
-      article.send(:sync_liquid_embed_metadata)
+      article.__send__(:sync_liquid_embed_metadata)
 
       ref.reload
       expect(ref.score).to eq(99)
       expect(ref.published).to be(true)
+    end
+
+    it "truncates urls that would exceed the btree index row size limit" do
+      long_url = "https://example.com/#{SecureRandom.alphanumeric(6000)}"
+      comment.update_column(:body_markdown, "{% embed #{long_url} %} {% youtube dQw4w9WgXcQ %}")
+      LiquidEmbedReference.delete_all
+
+      expect do
+        described_class.new.perform("Comment", comment.id)
+      end.to change(LiquidEmbedReference, :count).by(2)
+
+      ref = LiquidEmbedReference.find_by(tag_name: "embed")
+      expect(ref.url.bytesize).to eq(described_class::MAX_URL_BYTES)
+      expect(long_url).to start_with(ref.url)
+      expect(ref.options).to eq(long_url)
     end
 
     it "flushes and overwrites previous embeds strictly mirroring the latest markdown state" do
@@ -65,7 +80,7 @@ RSpec.describe SyncLiquidEmbedReferencesWorker do
       expect(LiquidEmbedReference.count).to eq(1)
 
       comment.update!(body_markdown: "{% twitter 1234567890 %}")
-      
+
       described_class.new.perform("Comment", comment.id)
 
       expect(LiquidEmbedReference.count).to eq(1)

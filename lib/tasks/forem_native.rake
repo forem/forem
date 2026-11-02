@@ -360,6 +360,61 @@ namespace :forem_native do
       x.report("Rust Magnus (Feed Scoring + Heatmap pipeline)") { native_scoring_heatmap_pipeline.call }
       x.compare!
     end
+
+    puts "\n=== RSS Feed Import Pipeline Benchmark ==="
+    rss_items = Array.new(60) do |idx|
+      "<item><title>Post #{idx}</title><link>https://blog.example.com/posts/#{idx}</link>" \
+        "<description><![CDATA[<p>Paragraph #{idx}</p>]]></description></item>"
+    end.join("\n")
+    sample_rss_xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel>#{rss_items}</channel></rss>"
+    sample_feed_html = "<p>Intro</p>\n\n<div><h2>Section</h2><p>Body text</p></div>" * 8
+    sample_feed_md = "Intro\n```\n\n```\nHello&nbsp;world\u00A0![img](/a/b.png) " \
+                     "<img src=\"rel.jpg\"> {% youtube dQw4w9WgXcQ\\_1 %}\n" * 6
+    sample_feed_tags = ["Ruby on Rails", "web-dev", "sidekiq-perf", "rust", "extra"]
+    sample_feed_author = "Jane Developer <jane+rss@example.com>"
+    sample_feed_err = "Failed at /Users/dev/forem/app/services/feeds/import.rb:120:in `call'"
+
+    legacy_rss_pipeline = lambda do
+      sample_rss_xml.scan(%r{</item>}i)
+      block_count = sample_feed_html.scan(/<\s*(p|div|h[1-6]|ul|ol|li|blockquote|pre|table|section|figure)[\s>]/i).size
+      _is_html = block_count > sample_feed_html.scan(/\n\s*\n/).size
+      cleaned = sample_feed_md
+        .gsub("```\n\n```", "")
+        .gsub(/&nbsp;|\u00A0/, " ")
+        .gsub(/\{%\syoutube\s(.{11,18})\s%\}/) { |match| match.gsub("\\_", "_") }
+      cleaned
+        .gsub(%r{(<img\s[^>]*?src=["'])(?!https?://)([^"']+)(["'])}, '\1https://blog.example.com/\2\3')
+        .gsub(%r{(!\[[^\]]*\]\()(?!https?://)([^)]+)(\))}, '\1https://blog.example.com\2\3')
+      sample_feed_tags.first(4).map { |t| t.gsub(/[^[:alnum:]]/, "").slice(0, 20) }.join(",")
+      sample_feed_author[/[\w.+-]+@[\w.-]+\.\w+/]
+      sample_feed_author.sub(/<[^>]+>/, "").strip
+      sample_feed_err.gsub(%r{/[\w/.-]+\.rb:\d+}, "[path]").truncate(500)
+    end
+
+    native_rss_pipeline = lambda do
+      ForemNative.truncate_feed_xml_items(sample_rss_xml, 25)
+      ForemNative.feed_html_content(sample_feed_html)
+      cleaned = ForemNative.postprocess_feed_markdown(sample_feed_md)
+      ForemNative.resolve_feed_markdown_images(
+        cleaned, "https://blog.example.com", "https://blog.example.com/posts/1"
+      )
+      ForemNative.format_feed_tags(sample_feed_tags)
+      ForemNative.extract_feed_author(sample_feed_author)
+      ForemNative.sanitize_feed_error(sample_feed_err)
+    end
+
+    rss_ruby_mem = MemoryProfiler.report { 10.times { legacy_rss_pipeline.call } }
+    rss_rust_mem = MemoryProfiler.report { 10.times { native_rss_pipeline.call } }
+    puts "RSS Feed Import Ruby Legacy allocations (10 runs): " \
+         "#{rss_ruby_mem.total_allocated} objects (#{rss_ruby_mem.total_allocated_memsize} bytes)"
+    puts "RSS Feed Import Rust Magnus allocations (10 runs): " \
+         "#{rss_rust_mem.total_allocated} objects (#{rss_rust_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (RSS Feed Import pipeline)") { legacy_rss_pipeline.call }
+      x.report("Rust Magnus (RSS Feed Import pipeline)") { native_rss_pipeline.call }
+      x.compare!
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

@@ -345,6 +345,29 @@ RSpec.describe Organizations::TrackPromotionalBillboardImpressionsWorker, type: 
           expect(paused_ids).to contain_exactly(organization.id)
         end
       end
+
+      it "keeps the cached paused organization IDs alive across the 30-minute cron window" do
+        travel_to(now) { worker.perform }
+
+        travel_to(now + 20.minutes) do
+          expect(described_class.paused_organization_ids).to contain_exactly(organization.id)
+        end
+      end
+
+      it "scopes the impression aggregation query to organizations with tracking enabled" do
+        queries = []
+        callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] }
+
+        travel_to(now) do
+          ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            worker.perform
+          end
+        end
+
+        impression_query = queries.detect { |sql| sql.include?("FROM display_ad_events") }
+        expect(impression_query).to include("INNER JOIN organizations ON organizations.id = billboards.organization_id")
+        expect(impression_query).to include("organizations.ideal_daily_promoted_billboard_impressions > 0")
+      end
     end
   end
 
@@ -362,6 +385,23 @@ RSpec.describe Organizations::TrackPromotionalBillboardImpressionsWorker, type: 
 
       it "returns the cached organization IDs" do
         expect(described_class.paused_organization_ids).to eq([1, 2, 3])
+      end
+
+      it "serves repeat reads from process memory instead of Redis" do
+        described_class.paused_organization_ids
+        allow(Rails.cache).to receive(:read).and_call_original
+
+        expect(described_class.paused_organization_ids).to eq([1, 2, 3])
+        expect(Rails.cache).not_to have_received(:read)
+      end
+
+      it "picks up a refreshed list once the memory window expires" do
+        described_class.paused_organization_ids
+        Rails.cache.write(described_class::CACHE_KEY, [4])
+
+        travel(described_class::MEMORY_CACHE_EXPIRY + 1.second) do
+          expect(described_class.paused_organization_ids).to eq([4])
+        end
       end
     end
   end

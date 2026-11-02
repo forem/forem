@@ -48,25 +48,8 @@ RSpec.describe "Tags", :proper_status do
   end
 
   describe "GET /tags/suggest" do
-    it "returns a JSON representation of the top tags", :aggregate_failures do
-      badge = create(:badge)
-      tag = create(:tag, badge: badge)
-
-      get suggest_tags_path
-
-      expect(response).to have_http_status(:ok)
-      expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
-      response_tag = response.parsed_body.first
-      expect(response_tag["name"]).to eq(tag.name)
-      expect(response_tag).to have_key("rules_html")
-      expect(response_tag).to have_key("short_summary")
-      expect(response_tag).to have_key("bg_color_hex")
-      expect(response_tag).to have_key("badge")
-      expect(response_tag["badge"]).to have_key("badge_image")
-    end
-
-    it "loads tag badges in a single query" do
-      3.times { create(:tag, badge: create(:badge)) }
+    it "returns a JSON representation of the top tags and preloads badges in a single query", :aggregate_failures do
+      badged_tags = Array.new(2) { create(:tag, badge: create(:badge)) }
       create(:tag)
 
       badge_queries = []
@@ -77,17 +60,23 @@ RSpec.describe "Tags", :proper_status do
         get suggest_tags_path
       end
 
+      expect(response).to have_http_status(:ok)
+      expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
       expect(badge_queries.size).to eq(1)
-      expect(response.parsed_body.count { |tag| tag["badge"].present? }).to eq(3)
+      expect(response.parsed_body.count { |t| t["badge"].present? }).to eq(2)
+
+      response_tag = response.parsed_body.detect { |t| t["name"] == badged_tags.first.name }
+      expect(response_tag).to include("rules_html", "short_summary", "bg_color_hex", "badge")
+      expect(response_tag["badge"]).to have_key("badge_image")
     end
   end
 
   describe "GET /t/:tag/edit" do
     let(:tag)                  { create(:tag) }
     let(:another_tag)          { create(:tag) }
-    let(:unauthorized_user)    { create(:user) }
-    let(:tag_moderator)        { create(:user) }
-    let(:super_admin)          { create(:user, :super_admin) }
+    let(:unauthorized_user)    { create(:user, :without_profile, profile_image: nil) }
+    let(:tag_moderator)        { create(:user, :without_profile, profile_image: nil) }
+    let(:super_admin)          { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
     before do
       allow(Settings::General).to receive(:suggested_tags).and_return(%w[beginners javascript career])
@@ -128,9 +117,9 @@ RSpec.describe "Tags", :proper_status do
     valid_params = { tag: { text_color_hex: "", bg_color_hex: "" } }
     let(:tag)                  { create(:tag) }
     let(:another_tag)          { create(:tag) }
-    let(:unauthorized_user)    { create(:user) }
-    let(:tag_moderator)        { create(:user) }
-    let(:super_admin)          { create(:user, :super_admin) }
+    let(:unauthorized_user)    { create(:user, :without_profile, profile_image: nil) }
+    let(:tag_moderator)        { create(:user, :without_profile, profile_image: nil) }
+    let(:super_admin)          { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
     it "does not allow not logged-in users" do
       patch "/tag/#{tag.id}"

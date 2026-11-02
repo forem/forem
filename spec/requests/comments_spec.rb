@@ -55,6 +55,42 @@ RSpec.describe "Comments" do
       expect(user_id_queries).to be_empty
     end
 
+    it "loads the root comment's article once and without the semantic_embedding vector or search tsvector",
+       :aggregate_failures do
+      comment_path = comment.path
+      article_queries = []
+      callback = lambda do |*, payload|
+        article_queries << payload[:sql] if payload[:sql].match?(/FROM "articles" WHERE "articles"."id" =/)
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get comment_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(article_queries.size).to eq(1)
+      expect(article_queries.first).to include(%("articles"."processed_html"))
+        .and(exclude("semantic_embedding"))
+        .and(exclude("reading_list_document"))
+    end
+
+    it "loads the article by slug without the semantic_embedding vector or search tsvector", :aggregate_failures do
+      article_path = article.path
+      slug_queries = []
+      callback = lambda do |*, payload|
+        slug_queries << payload[:sql] if payload[:sql].include?(%("articles"."slug" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "#{article_path}/comments" }
+
+      expect(response).to have_http_status(:ok)
+      expect(slug_queries).not_to be_empty
+      expect(slug_queries).to all(
+        include(%("articles"."processed_html"))
+          .and(exclude("semantic_embedding"))
+          .and(exclude("reading_list_document")),
+      )
+    end
+
     context "when there are comments with different score" do
       let!(:spam_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
@@ -411,6 +447,45 @@ RSpec.describe "Comments" do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response).to have_http_status(:ok)
       end
+    end
+  end
+
+  describe "GET /:username/comment/:id_code/settings" do
+    let(:settings_path) { "/#{user.username}/comment/#{comment.id_code_generated}/settings" }
+
+    it "renders the mute form for the comment author" do
+      sign_in user
+      get settings_path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("/notification_subscriptions/Comment/#{comment.id}")
+    end
+
+    it "offers to unsubscribe from the parent post when subscribed to it" do
+      create(:notification_subscription, user: user, notifiable: article, config: "all_comments")
+      sign_in user
+      get settings_path
+
+      expect(response.body).to include("/notification_subscriptions/Article/#{article.id}")
+    end
+
+    it "does not load the comment's body or embedding columns" do
+      path = settings_path
+      sign_in user
+      comment_queries = []
+      callback = lambda do |*, payload|
+        comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get path }
+
+      expect(comment_queries).to be_present
+      expect(comment_queries).to all(exclude("semantic_embedding", "body_markdown", '"comments".*'))
+    end
+
+    it "denies users who did not write the comment" do
+      sign_in create(:user)
+
+      expect { get settings_path }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
 

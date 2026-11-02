@@ -1,14 +1,15 @@
 require "rails_helper"
 
-RSpec.describe "Subforems", type: :request do
-  let(:admin_user) { create(:user, :super_admin) }
-  let(:moderator_user) { create(:user) }
-  let(:regular_user) { create(:user) }
-  let(:subforem) { create(:subforem, domain: "test1.com", discoverable: true) }
-
-  before do
-    moderator_user.add_role(:subforem_moderator, subforem)
+# rubocop:disable Layout/LineLength, Layout/TrailingWhitespace, RSpec/AnyInstance, RSpec/ContextWording, RSpec/ExpectChange, RSpec/MultipleExpectations, Rails/ResponseParsedBody, Style/TrailingCommaInArguments
+RSpec.describe "Subforems" do
+  let(:admin_user) { create(:user, :without_profile, :super_admin, profile_image: nil) }
+  let(:moderator_user) do
+    create(:user, :without_profile, profile_image: nil).tap do |user|
+      user.add_role(:subforem_moderator, subforem)
+    end
   end
+  let(:regular_user) { create(:user, :without_profile, profile_image: nil) }
+  let(:subforem) { create(:subforem, domain: "test1.com", discoverable: true) }
 
   describe "GET /subforems" do
     context "when user is admin" do
@@ -73,7 +74,7 @@ RSpec.describe "Subforems", type: :request do
     end
 
     context "when user is not moderator for the subforem" do
-      let(:other_moderator) { create(:user) }
+      let(:other_moderator) { create(:user, :without_profile, profile_image: nil) }
       let(:other_subforem) { create(:subforem, domain: "test2.com") }
 
       before do
@@ -124,7 +125,7 @@ RSpec.describe "Subforems", type: :request do
     end
 
     context "when user is not moderator for the current subforem" do
-      let(:other_moderator) { create(:user) }
+      let(:other_moderator) { create(:user, :without_profile, profile_image: nil) }
       let(:other_subforem) { create(:subforem, domain: "test2.com") }
 
       before do
@@ -311,7 +312,7 @@ RSpec.describe "Subforems", type: :request do
     end
 
     context "when user is not moderator for the subforem" do
-      let(:other_moderator) { create(:user) }
+      let(:other_moderator) { create(:user, :without_profile, profile_image: nil) }
       let(:other_subforem) { create(:subforem, domain: "test3.com") }
 
       before do
@@ -333,7 +334,7 @@ RSpec.describe "Subforems", type: :request do
     end
 
     context "when user is super moderator" do
-      let(:super_moderator_user) { create(:user, :super_moderator) }
+      let(:super_moderator_user) { create(:user, :without_profile, :super_moderator, profile_image: nil) }
 
       before { sign_in super_moderator_user }
 
@@ -1139,11 +1140,11 @@ RSpec.describe "Subforems", type: :request do
 
   describe "GET /subforems/:id/edit_page/:page_id" do
     let(:subforem) { create(:subforem) }
-    let!(:subforem_page) do
+    let(:subforem_page) do
       create(:page, subforem: subforem, title: "Subforem Page", slug: "subforem-page",
                     description: "Test", body_markdown: "# Test", is_top_level_path: false)
     end
-    let!(:top_level_page) do
+    let(:top_level_page) do
       create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
                     description: "Test", body_markdown: "# Test", is_top_level_path: true)
     end
@@ -1182,11 +1183,11 @@ RSpec.describe "Subforems", type: :request do
 
     context "when page belongs to different subforem" do
       let(:other_subforem) { create(:subforem, domain: "other.com") }
-      let!(:other_regular_page) do
+      let(:other_regular_page) do
         create(:page, subforem: other_subforem, title: "Other Page", slug: "other-page",
                       description: "Test", body_markdown: "# Test", is_top_level_path: false)
       end
-      let!(:other_top_level_page) do
+      let(:other_top_level_page) do
         create(:page, subforem: other_subforem, title: "Other Top Level", slug: "other-top",
                       description: "Test", body_markdown: "# Test", is_top_level_path: true)
       end
@@ -1218,11 +1219,11 @@ RSpec.describe "Subforems", type: :request do
 
   describe "PATCH /subforems/:id/update_page/:page_id" do
     let(:subforem) { create(:subforem) }
-    let!(:subforem_page) do
+    let(:subforem_page) do
       create(:page, subforem: subforem, title: "Original Title", slug: "original-slug",
                     description: "Original description", body_markdown: "# Original", is_top_level_path: false)
     end
-    let!(:top_level_page) do
+    let(:top_level_page) do
       create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
                     description: "Top level page", body_markdown: "# Top Level", is_top_level_path: true)
     end
@@ -1316,11 +1317,11 @@ RSpec.describe "Subforems", type: :request do
 
     context "when page belongs to different subforem" do
       let(:other_subforem) { create(:subforem, domain: "other.com") }
-      let!(:other_regular_page) do
+      let(:other_regular_page) do
         create(:page, subforem: other_subforem, title: "Other", slug: "other",
                       description: "Test", body_markdown: "# Test", is_top_level_path: false)
       end
-      let!(:other_top_level_page) do
+      let(:other_top_level_page) do
         create(:page, subforem: other_subforem, title: "Other Top", slug: "other-top",
                       description: "Test", body_markdown: "# Test", is_top_level_path: true)
       end
@@ -1462,3 +1463,4 @@ RSpec.describe "Subforems", type: :request do
     end
   end
 end
+# rubocop:enable Layout/LineLength, Layout/TrailingWhitespace, RSpec/AnyInstance, RSpec/ContextWording, RSpec/ExpectChange, RSpec/MultipleExpectations, Rails/ResponseParsedBody, Style/TrailingCommaInArguments
