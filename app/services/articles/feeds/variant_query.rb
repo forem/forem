@@ -91,7 +91,8 @@ module Articles
       #    puts strategy.call.to_sql
       #
       # rubocop:disable Layout/LineLength
-      def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [], comments_variant: default_comments_variant)
+      # Keep comments_variant for existing callers; the renderer now loads bounded previews.
+      def call(only_featured: false, must_have_main_image: false, limit: default_limit, offset: default_offset, omit_article_ids: [], comments_variant: default_comments_variant) # rubocop:disable Lint/UnusedMethodArgument
         # rubocop:enable Layout/LineLength
 
         # These are the variables we'll pass to the SQL statement.
@@ -140,21 +141,6 @@ module Articles
           .minimal_feed_column_select
           .includes(:context_notes)
           .order(config.order_by.to_sql)
-
-        scope = case comments_variant
-                when "top_comments"
-                  scope.includes(top_comments: :user)
-                when "more_inclusive_top_comments"
-                  scope.includes(more_inclusive_top_comments: :user)
-                when "recent_good_comments"
-                  scope.includes(recent_good_comments: :user)
-                when "more_inclusive_recent_good_comments"
-                  scope.includes(more_inclusive_recent_good_comments: :user)
-                when "most_inclusive_recent_good_comments"
-                  scope.includes(most_inclusive_recent_good_comments: :user)
-                else
-                  scope.includes(top_comments: :user) # fallback default
-                end
 
         if @user.present? && (hidden_tags = @user.cached_antifollowed_tag_names).any?
           scope = scope.not_cached_tagged_with_any(hidden_tags)

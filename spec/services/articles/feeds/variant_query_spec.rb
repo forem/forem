@@ -110,7 +110,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call.to_a).not_to include(article)
         end
 
-        it "returns proper scope when passed the different test values" do
+        it "accepts comment variants without eagerly loading their full comment collections" do
           # rubocop:disable Performance/CollectionLiteralInLoop
           %w[top_comments
              more_inclusive_top_comments
@@ -118,7 +118,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
              more_inclusive_recent_good_comments
              most_inclusive_recent_good_comments].each do |test_value|
             expect(variant_query.call(comments_variant: test_value).includes_values)
-              .to include({ test_value.to_sym => :user })
+              .not_to include({ test_value.to_sym => :user })
           end
           # rubocop:enable Performance/CollectionLiteralInLoop
         end
@@ -134,6 +134,19 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
 
           expect(reaction_queries).to be_empty
+        end
+
+        it "does not load comment collections while selecting and ranking articles" do
+          article = create(:article, user: author)
+          create(:comment, commentable: article, user: author, score: 20)
+          article.update_column(:score, 100)
+          queries = []
+          callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
+
+          expect(result).to include(article)
+          expect(queries).to be_empty
         end
 
         it "still returns the reaction categories of each article" do

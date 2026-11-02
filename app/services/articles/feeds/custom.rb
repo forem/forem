@@ -13,15 +13,15 @@ module Articles
         @feed_config = feed_config
       end
 
-      def default_home_feed(comments_variant: "more_inclusive_recent_good_comments", **_kwargs)
+      def default_home_feed(**_kwargs)
         return [] if @feed_config.nil? || @user.nil?
         
-        execute_feed_query(comments_variant: comments_variant)
+        execute_feed_query
       end
 
       private
 
-      def execute_feed_query(comments_variant: "more_inclusive_recent_good_comments")
+      def execute_feed_query
         # Optimize lookback calculation - cache the result
         # Note: Partial indexes are optimized for 7-day lookback (covers 95%+ of queries)
         # If you change this, consider updating the partial indexes in the migration
@@ -31,7 +31,7 @@ module Articles
         user_data = preload_user_data
         
         # Build optimized base query with better index usage and preloaded associations
-        articles = build_optimized_base_query(lookback, user_data, comments_variant: comments_variant)
+        articles = build_optimized_base_query(lookback, user_data)
         
         # Apply user-specific filters early in the query
         articles = apply_user_filters(articles, user_data)
@@ -71,7 +71,7 @@ module Articles
         }
       end
 
-      def build_optimized_base_query(lookback, user_data, comments_variant: "more_inclusive_recent_good_comments")
+      def build_optimized_base_query(lookback, user_data)
         # Use limited_column_select with computed_score to avoid transferring heavy columns
         # (e.g., body_markdown, body_html, 768-dimension semantic_embedding, tsvector).
         base_query = Article.published
@@ -101,28 +101,15 @@ module Articles
                                score_sql_method
                              end
 
-        base_query = base_query
+        # Preview comments are loaded after ranking and fragment-cache lookup by
+        # Stories::FeedsController, at most three per uncached article.
+        base_query
           .limited_column_select
           .select("(#{computed_score_sql}) as computed_score")
           .order(Arel.sql(order_clause))
           .limit(@number_of_articles)
           .offset(outer_offset)
           .includes(:context_notes)
-
-        comments_assoc = case comments_variant.to_s
-                         when "more_inclusive_recent_good_comments"
-                           { more_inclusive_recent_good_comments: :user }
-                         when "recent_good_comments"
-                           { recent_good_comments: :user }
-                         when "more_inclusive_top_comments"
-                           { more_inclusive_top_comments: :user }
-                         when "most_inclusive_recent_good_comments"
-                           { most_inclusive_recent_good_comments: :user }
-                         else
-                           { top_comments: :user }
-                         end
-
-        base_query.includes(comments_assoc)
       end
 
       def two_stage_semantic_scoring?

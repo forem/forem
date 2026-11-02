@@ -608,10 +608,15 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
   describe "performance optimizations" do
     before { [high_score_article, medium_score_article, low_score_article, old_article] }
 
-    it "preloads the requested comments_variant to prevent downstream N+1 queries" do
-      result = feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments")
+    it "defers comment previews until the renderer has selected uncached stories" do
+      comment_queries = []
+      callback = ->(*, payload) { comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+      result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments").to_a
+      end
       first_article = result.first
-      expect(first_article.association(:more_inclusive_recent_good_comments)).to be_loaded
+      expect(first_article.association(:more_inclusive_recent_good_comments)).not_to be_loaded
+      expect(comment_queries).to be_empty
     end
 
     it "uses limited_column_select avoiding heavy text and vector columns" do
