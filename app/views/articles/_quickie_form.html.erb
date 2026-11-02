@@ -58,7 +58,8 @@
   
   // --- Formatting toolbar -------------------------------------------------------------
   // Syntax (rendered server-side by Articles::QuickieFormatter): **bold**, *italic*,
-  // __underline__ and [text](https://url). Plain text without these markers is unaffected.
+  // __underline__, `code` and [text](https://url). A backslash shows the next marker character
+  // as plain text (\* \_ \[ \] \` \\). Plain text without these markers is unaffected.
   var quickieMarkers = { bold: ['**', '**'], italic: ['*', '*'], underline: ['__', '__'] };
 
   function applyQuickieFormat(format) {
@@ -94,7 +95,7 @@
   // so nothing the author types is ever interpreted as HTML.
   var quickieLinkPattern = /\[([^\[\]\n]{1,100})\]\((https?:\/\/[^\s<>"{}|\\^`\[\]()]+)\)/;
   var quickieInlineRules = [
-    { pattern: /\*\*(?=[^\s*])(.*?[^\s*])\*\*/, tag: 'strong' },
+    { pattern: /\*\*(?=[^\s*])(.*?[^\s*])\*\*/, tag: 'strong', marker: '**' },
     { pattern: /__(?=[^\s_])(.*?[^\s_])__/, tag: 'u', marker: '_' },
     { pattern: /\*(?=[^\s*])([^*\n]*[^\s*])\*/, tag: 'em', marker: '*' },
     { pattern: /_(?=[^\s_])([^_\n]*[^\s_])_/, tag: 'em', marker: '_' }
@@ -107,33 +108,73 @@
     return !(previous && wordOrMarker.test(previous)) && !(next && wordOrMarker.test(next));
   }
 
-  function appendQuickieText(parent, text) {
+  // `\*` escapes and `code spans` are swapped for placeholders first, exactly like the server,
+  // so nothing inside them is read as formatting.
+  var quickieLiteralPattern = /\\([\\*_\[\]`])|`([^`\n]+)`/g;
+  var quickieUrlHint = /https?:\/\//i;
+
+  function hideQuickieLiterals(line, tokens) {
+    return line.replace(/[]/g, '').replace(quickieLiteralPattern, function (all, escaped, code) {
+      tokens.push(escaped !== undefined ? { text: escaped } : { code: code });
+      return '' + (tokens.length - 1) + '';
+    });
+  }
+
+  function appendQuickieLiteral(parent, text, tokens) {
+    text.split(/(\d+)/).forEach(function (part) {
+      var token = /^(\d+)$/.exec(part);
+      if (!token) {
+        if (part) { parent.appendChild(document.createTextNode(part)); }
+        return;
+      }
+      var literal = tokens[Number(token[1])];
+      if (literal.code === undefined) {
+        parent.appendChild(document.createTextNode(literal.text));
+      } else {
+        var code = document.createElement('code');
+        code.textContent = literal.code;
+        parent.appendChild(code);
+      }
+    });
+  }
+
+  // First match that passes the word-boundary rule. Spans containing a URL are skipped and stay
+  // plain text, as on the server where the base renderer shortens bare URLs.
+  function findQuickieMatch(pattern, text, marker) {
+    var regex = new RegExp(pattern.source, 'g');
+    var match;
+    while ((match = regex.exec(text))) {
+      if (marker && !quickieBoundaryOk(text, match, marker)) {
+        regex.lastIndex = match.index + 1;
+      } else if (quickieUrlHint.test(match[1])) {
+        regex.lastIndex = match.index + match[0].length;
+      } else {
+        return match;
+      }
+    }
+    return null;
+  }
+
+  function appendQuickieText(parent, text, tokens) {
     var best = null;
-    var link = quickieLinkPattern.exec(text);
+    var link = findQuickieMatch(quickieLinkPattern, text, null);
     if (link) { best = { match: link, link: true }; }
 
     quickieInlineRules.forEach(function (rule) {
-      var pattern = new RegExp(rule.pattern.source, 'g');
-      var match;
-      while ((match = pattern.exec(text))) {
-        if (!rule.marker || quickieBoundaryOk(text, match, rule.marker)) {
-          if (!best || match.index < best.match.index) { best = { match: match, rule: rule }; }
-          break;
-        }
-        pattern.lastIndex = match.index + 1;
-      }
+      var found = findQuickieMatch(rule.pattern, text, rule.marker);
+      if (found && (!best || found.index < best.match.index)) { best = { match: found, rule: rule }; }
     });
 
     if (!best) {
-      parent.appendChild(document.createTextNode(text));
+      appendQuickieLiteral(parent, text, tokens);
       return;
     }
     var match = best.match;
-    parent.appendChild(document.createTextNode(text.slice(0, match.index)));
+    appendQuickieLiteral(parent, text.slice(0, match.index), tokens);
     var element = document.createElement(best.link ? 'u' : best.rule.tag);
-    appendQuickieText(element, match[1]);
+    appendQuickieText(element, match[1], tokens);
     parent.appendChild(element);
-    appendQuickieText(parent, text.slice(match.index + match[0].length));
+    appendQuickieText(parent, text.slice(match.index + match[0].length), tokens);
   }
 
   function renderQuickiePreview(text, container) {
@@ -144,7 +185,8 @@
       block.className = 'quickie-paragraph';
       paragraph.trim().split('\n').forEach(function (line, index) {
         if (index > 0) { block.appendChild(document.createElement('br')); }
-        appendQuickieText(block, line);
+        var tokens = [];
+        appendQuickieText(block, hideQuickieLiterals(line, tokens), tokens);
       });
       container.appendChild(block);
     });

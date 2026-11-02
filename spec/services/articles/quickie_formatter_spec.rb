@@ -35,6 +35,79 @@ RSpec.describe Articles::QuickieFormatter, type: :service do
     end
   end
 
+  describe "code spans" do
+    it "renders backticked text as code and leaves its contents literal" do
+      expect(render("call `__init__` or `2**10**3` or `*x*`"))
+        .to eq("call <code>__init__</code> or <code>2**10**3</code> or <code>*x*</code>")
+    end
+
+    it "escapes markup inside a code span" do
+      expect(render("`<b>bold</b>`")).to eq("<code>&lt;b&gt;bold&lt;/b&gt;</code>")
+    end
+
+    it "keeps backslashes inside a code span as typed" do
+      expect(render("`a\\*b`")).to eq("<code>a\\*b</code>")
+    end
+
+    it "can sit inside bold text" do
+      expect(render("**run `rake` now**")).to eq("<strong>run <code>rake</code> now</strong>")
+    end
+
+    it "leaves an unclosed backtick alone" do
+      expect(render("one ` tick")).to eq("one ` tick")
+    end
+  end
+
+  describe "backslash escapes" do
+    it "shows an escaped marker as plain text" do
+      expect(render("\\*not italic\\* and \\_not italic\\_")).to eq("*not italic* and _not italic_")
+    end
+
+    it "lets authors write dunder names literally" do
+      expect(render("Python's \\_\\_init\\_\\_ method")).to eq("Python's __init__ method")
+    end
+
+    it "escapes brackets, backticks and the backslash itself" do
+      expect(render("\\[a\\](https://example.com) \\`x\\` \\\\*y*")).to eq("[a](https://example.com) `x` \\<em>y</em>")
+    end
+
+    it "does not let an escaped marker open bold text" do
+      expect(render("\\**x**")).to eq("**x**")
+    end
+
+    it "keeps a backslash before any other character" do
+      expect(render("C:\\dir\\file")).to eq("C:\\dir\\file")
+    end
+  end
+
+  describe "markers inside words" do
+    it "leaves exponents and bold-looking markers between word characters alone" do
+      expect(render("2**10**3")).to eq("2**10**3")
+      expect(render("a**b**c")).to eq("a**b**c")
+    end
+
+    it "still renders bold next to punctuation and spaces" do
+      expect(render("(**bold**), **bold**!")).to eq("(<strong>bold</strong>), <strong>bold</strong>!")
+    end
+  end
+
+  describe "URLs" do
+    it "leaves a span that contains a URL as text so the base renderer can shorten it" do
+      expect(render("**https://example.com/a/very/long/path**")).to eq("**https://example.com/a/very/long/path**")
+      expect(render("_see https://example.com_")).to eq("_see https://example.com_")
+    end
+
+    it "leaves a link whose label is a URL as text" do
+      expect(render("[https://example.com](https://example.com)", links: true))
+        .to eq("[https://example.com](https://example.com)")
+    end
+
+    it "still formats a span around a link" do
+      expect(render("**[docs](https://docs.forem.com)**", links: true))
+        .to include("<strong>", "</strong>", "<a href=")
+    end
+  end
+
   describe "text that is left alone" do
     [
       "plain text",

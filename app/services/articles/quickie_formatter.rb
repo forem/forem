@@ -3,6 +3,12 @@ module Articles
   #
   # Supported syntax (single line only, unmatched markers stay literal text):
   #   **bold**   *italic* or _italic_   __underline__   [text](https://example.com)
+  #   `code`     (contents stay literal)
+  #   \* \_ \[ \] \` \\   (a backslash shows the next marker character as plain text)
+  #
+  # Markers touching a word character don't count (`__init__`-style names stay as typed unless
+  # escaped, and `2**10**3` stays literal). Spans that contain a URL are left as text so the base
+  # renderer can still shorten the URL.
   #
   # The formatter works on text that is *already HTML-escaped* and is wrapped around the
   # existing renderer: formatted spans are swapped for opaque placeholders before the base
@@ -19,11 +25,15 @@ module Articles
     PLACEHOLDER_CLOSE = "".freeze
     PLACEHOLDER_CHARACTERS = /[]/
     PLACEHOLDER = /(\d+)/
-    FORMATTING_HINT = /[*_\[]/
+    FORMATTING_HINT = /[*_\[`\\]/
 
+    # `\*` style escapes and `code spans`, found in a single pass so the leftmost one wins and
+    # whatever sits inside a code span (including backslashes) stays literal.
+    LITERALS = /\\([\\*_\[\]`])|`([^`\n]+)`/
+    URL_HINT = %r{https?://}i
     LINK = %r{\[([^\[\]\n]{1,100})\]\((https?://[^\s<>"{}|\\^`\[\]()]+)\)}
     INLINE_RULES = [
-      [/\*\*(?=[^\s*])(.*?[^\s*])\*\*/, "strong"],
+      [/(?<![[:word:]])\*\*(?=[^\s*])(.*?[^\s*])\*\*(?![[:word:]])/, "strong"],
       [/(?<![[:word:]_])__(?=[^\s_])(.*?[^\s_])__(?![[:word:]_])/, "u"],
       [/(?<![[:word:]*])\*(?=[^\s*])([^*\n]*[^\s*])\*(?![[:word:]*])/, "em"],
       [/(?<![[:word:]_])_(?=[^\s_])([^_\n]*[^\s_])_(?![[:word:]_])/, "em"],
@@ -51,7 +61,8 @@ module Articles
     def prepare(text)
       return text unless text.valid_encoding? && text.match?(FORMATTING_HINT)
 
-      prepared = replace_inline(replace_links(text.gsub(PLACEHOLDER_CHARACTERS, "")))
+      literals_hidden = replace_literals(text.gsub(PLACEHOLDER_CHARACTERS, ""))
+      prepared = replace_inline(replace_links(literals_hidden))
       @tokens.empty? ? text : prepared
     end
 
@@ -67,11 +78,25 @@ module Articles
 
     private
 
+    # Swaps backslash escapes (`\*` shows a plain `*`) and `code spans` for placeholders, so the
+    # characters inside them are never read as formatting.
+    def replace_literals(text)
+      text.gsub(LITERALS) do
+        escaped = Regexp.last_match(1)
+        code = Regexp.last_match(2)
+        stash(escaped || "<code>#{code}</code>")
+      end
+    end
+
     # Swaps `[label](url)` for placeholders; the label may itself contain inline formatting.
+    # A label that is or contains a URL is left as text, so the base renderer can shorten it.
     def replace_links(text)
       text.gsub(LINK) do
+        link = Regexp.last_match(0)
         label = Regexp.last_match(1)
         url = Regexp.last_match(2)
+        next link if label.match?(URL_HINT)
+
         stash(link_html(replace_inline(label), url))
       end
     end
@@ -81,7 +106,11 @@ module Articles
     def replace_inline(text)
       INLINE_RULES.reduce(text) do |current, (pattern, tag)|
         current.gsub(pattern) do
+          span = Regexp.last_match(0)
           inner = Regexp.last_match(1)
+          # Keep URLs out of spans: the base renderer shortens bare URLs, and can't reach into one.
+          next span if inner.match?(URL_HINT)
+
           stash("<#{tag}>#{replace_inline(inner)}</#{tag}>")
         end
       end
