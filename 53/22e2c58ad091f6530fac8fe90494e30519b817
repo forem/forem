@@ -1,0 +1,46 @@
+app/services/articles/feeds/basic.rb
+  s_07d051b0ad57ba::t_0c665169ac3976 19
+app/services/articles/feeds/custom.rb
+  s_07d051b0ad57ba::t_3de2d8eb8d8c34 16,19,24,34,74
+  s_07d051b0ad57ba::t_38a08586b309b3 104-106
+app/controllers/stories/feeds_controller.rb
+  s_07d051b0ad57ba::t_8248361d240d2a 228,232-233,236
+  s_07d051b0ad57ba::t_0c665169ac3976 5-8
+spec/services/articles/feeds/custom_spec.rb
+  s_07d051b0ad57ba::t_a53cfe6c23aa72 611-616,618-619
+spec/requests/stories/feed_comment_preloading_spec.rb
+  s_07d051b0ad57ba::t_f5f9f190584ef7 6
+  s_07d051b0ad57ba::t_27fa2628bcd6f3 136
+  s_07d051b0ad57ba::t_a53cfe6c23aa72 1-5,7-17,19-21,23-31,33-38,40-64,66-95,97-101,103-107,109-122,130-132,134-135,137-146,207
+  s_07d051b0ad57ba::t_3de2d8eb8d8c34 22,32,39,65,96,102,108,133
+  s_07d051b0ad57ba::t_867934f8235bfe 123-129
+  s_07d051b0ad57ba::t_bc5234e8a6834b 18
+  s_07d051b0ad57ba::t_68235c2fe3e744 147-206
+app/services/articles/feeds/large_forem_experimental.rb
+  s_07d051b0ad57ba::t_0c665169ac3976 83,122
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  s_07d051b0ad57ba::t_68235c2fe3e744 62-74
+spec/services/articles/feeds/basic_spec.rb
+  s_07d051b0ad57ba::t_68235c2fe3e744 40-50
+spec/services/articles/feeds/variant_query_spec.rb
+  s_07d051b0ad57ba::t_ce1609c1d277ec 139-151
+  s_07d051b0ad57ba::t_a53cfe6c23aa72 113,121
+app/services/articles/feeds/variant_query.rb
+  s_07d051b0ad57ba::t_3de2d8eb8d8c34 94-95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5322e2c58ad091f6530fac8fe90494e30519b817",
+  "prompts": {},
+  "sessions": {
+    "s_07d051b0ad57ba": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a19792-62dd-7f20-97d1-39e9779833f4",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
