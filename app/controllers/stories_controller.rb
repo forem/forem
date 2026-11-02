@@ -596,8 +596,11 @@ class StoriesController < ApplicationController
     )
   end
 
+  # users/_github_repositories_area only reads these columns, so skip the large
+  # YAML-serialized info_hash blob (and the rest of the row) when loading repos.
   def assign_user_github_repositories
     @github_repositories = @user.github_repos.featured
+      .select(:id, :name, :description, :url, :language, :stargazers_count, :fork)
   end
 
   def assign_podcasts
