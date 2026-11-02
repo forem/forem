@@ -11,6 +11,13 @@ en:
     favorite: Pick as gem
     favorited: Picked as gem
     favorited_by_you: Picked as gem by you
+    confirm:
+      title_article: Give this post a Gem?
+      title_comment: Give this comment a Gem?
+      body_article: Are you sure you want to give this post a Gem?
+      body_comment: Are you sure you want to give this comment a Gem?
+      submit: Give Gem
+      cancel: Cancel
     modal:
       title: Gem Picked!
       body: You've picked this as a community gem!

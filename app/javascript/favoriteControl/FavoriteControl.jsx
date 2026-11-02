@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
+import { useRef, useState } from 'preact/hooks';
 import { Icon, Modal, ButtonNew as Button } from '@crayons';
 import FavoriteSVG from '@images/favorite.svg';
 import FavoriteFilledSVG from '@images/favorite-filled.svg';
@@ -92,6 +92,14 @@ export const FavoriteControl = ({
   labelFavorite = 'Pick as gem',
   labelFavorited = 'Picked as gem',
   labelFavoritedByYou = 'Picked as gem by you',
+  confirmTitle = favoritableType === 'Comment'
+    ? 'Give this comment a Gem?'
+    : 'Give this post a Gem?',
+  confirmBody = favoritableType === 'Comment'
+    ? 'Are you sure you want to give this comment a Gem?'
+    : 'Are you sure you want to give this post a Gem?',
+  confirmSubmit = 'Give Gem',
+  confirmCancel = 'Cancel',
   modalTitle = 'Gem Picked!',
   modalBody = "You've picked this as a community gem!",
   modalRemainingZero = 'You have no more gems left to give out today.',
@@ -110,6 +118,10 @@ export const FavoriteControl = ({
     initialFavoritedByUserId ? Number(initialFavoritedByUserId) : null,
   );
   const [submitting, setSubmitting] = useState(false);
+  // State updates are applied asynchronously, so a ref is what actually keeps
+  // two rapid confirm clicks from sending two requests.
+  const submittingRef = useRef(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showExhaustedModal, setShowExhaustedModal] = useState(false);
   const [remainingAllowance, setRemainingAllowance] = useState(null);
@@ -220,6 +232,55 @@ export const FavoriteControl = ({
     );
   };
 
+  // Dismissing is a cancel, so it is ignored while a request is in flight.
+  // Otherwise the dialog could disappear while the gem is still being awarded.
+  const closeConfirmModal = () => {
+    if (submittingRef.current) {
+      return;
+    }
+    setShowConfirmModal(false);
+  };
+
+  const renderConfirmModal = () => {
+    if (!showConfirmModal) {
+      return null;
+    }
+
+    const descriptionId = `favorite-confirm-description-${favoritableType}-${favoritableId}`;
+
+    return (
+      <Modal
+        title={confirmTitle}
+        describedBy={descriptionId}
+        onClose={closeConfirmModal}
+        backdropDismissible
+        size="small"
+      >
+        <div class="p-6 grid gap-4" data-testid="gem-confirm-modal-content">
+          <p id={descriptionId} class="fs-base color-base-70 m-0">
+            {confirmBody}
+          </p>
+          <div class="flex gap-2">
+            <Button
+              variant="primary"
+              disabled={submitting}
+              onClick={submitFavorite}
+            >
+              {confirmSubmit}
+            </Button>
+            <Button
+              variant="secondary"
+              disabled={submitting}
+              onClick={closeConfirmModal}
+            >
+              {confirmCancel}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  };
+
   if (favorited) {
     const label = favoritedByCurrentUser ? labelFavoritedByYou : labelFavorited;
     if (variant === 'dropdown') {
@@ -273,14 +334,23 @@ export const FavoriteControl = ({
     return null;
   }
 
-  const onClick = async () => {
-    if (submitting) return;
+  // Clicking the control only asks for confirmation. Nothing is sent, and no
+  // allowance is spent, until the user confirms in the dialog.
+  const onClick = () => {
+    if (submittingRef.current) return;
 
     if (currentUser?.favorite_allowance != null && currentUser.favorite_allowance <= 0) {
       setShowExhaustedModal(true);
       return;
     }
 
+    setShowConfirmModal(true);
+  };
+
+  const submitFavorite = async () => {
+    if (submittingRef.current) return;
+
+    submittingRef.current = true;
     setSubmitting(true);
     try {
       const response = await makeFavorite({ favoritableId, favoritableType });
@@ -313,7 +383,11 @@ export const FavoriteControl = ({
         window.top.addSnackbarItem({ message: error, addCloseButton: true });
       }
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
+      // Whatever the outcome (success, error, exhausted allowance), the
+      // confirmation has been answered, so the dialog always closes here.
+      setShowConfirmModal(false);
     }
   };
 
@@ -330,6 +404,7 @@ export const FavoriteControl = ({
           <span class="fw-bold">{labelFavorite}</span>
           <FavoriteIcon variant={variant} />
         </button>
+        {renderConfirmModal()}
         {renderSuccessModal()}
         {renderExhaustedModal()}
       </Fragment>
@@ -348,6 +423,7 @@ export const FavoriteControl = ({
         <FavoriteIcon variant={variant} />
         <Tooltip label={labelFavorite} />
       </button>
+      {renderConfirmModal()}
       {renderSuccessModal()}
       {renderExhaustedModal()}
     </Fragment>

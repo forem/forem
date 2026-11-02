@@ -11,6 +11,7 @@ export const Modal = ({
   size,
   className,
   title,
+  describedBy,
   prompt,
   sheet,
   centered,
@@ -47,6 +48,7 @@ export const Modal = ({
           role="dialog"
           aria-modal="true"
           aria-label={title || 'modal'}
+          aria-describedby={describedBy}
           className="crayons-modal__box"
         >
           {showHeader && (
@@ -84,6 +86,7 @@ Modal.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
   className: PropTypes.string,
   title: PropTypes.string.isRequired,
+  describedBy: PropTypes.string,
   backdrop: PropTypes.bool,
   backdropDismissible: PropTypes.bool,
   prompt: PropTypes.bool,
