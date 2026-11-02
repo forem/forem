@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Viewing a comment", :js do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id, show_comments: true) }
+  let(:article) { create(:article, user_id: user.id, show_comments: true, with_tags: false, with_main_image: false) }
   let(:comment) { create(:comment, commentable: article, user: user) }
 
   before do
@@ -19,49 +19,28 @@ RSpec.describe "Viewing a comment", :js do
     Timecop.return
   end
 
-  context "when viewing the comment date" do
-    it "contains a time tag with the correct datetime attribute and published date in the user's local time zone",
-       :aggregate_failures do
-      sign_in user
-      visit comment.path
-      comment.reload
-      timestamp = comment.decorate.published_timestamp
-      date = comment.created_at.getlocal.strftime("%b %-d")
+  it "formats current-year, past-year, and edited comment dates in the user's local time zone", :aggregate_failures do
+    comment.update(body_markdown: "This message is edited.", edited_at: 1.day.from_now.change(usec: 0))
+    Timecop.freeze(1.year.from_now.change(usec: 0))
+    current_comment = create(:comment, commentable: article, parent: comment, user: user)
 
-      expect(page).to have_css(".comment-date time[datetime='#{timestamp}']")
-      expect(page).to have_css(".comment-date time", text: date)
-    end
-  end
+    sign_in user
+    visit comment.path
+    comment.reload
+    current_comment.reload
 
-  context "when a year has passed" do
-    before do
-      comment
-      Timecop.freeze(1.year.from_now.change(usec: 0))
+    current_timestamp = current_comment.decorate.published_timestamp
+    current_date = current_comment.created_at.getlocal.strftime("%b %-d")
+    within("#comment-node-#{current_comment.id} > .comment__inner") do
+      expect(page).to have_css(".comment-date time[datetime='#{current_timestamp}']")
+      expect(page).to have_css(".comment-date time", text: current_date)
     end
 
-    it "shows the published date in the correct format" do
-      sign_in user
-      visit comment.path
-      comment.reload
-      date = comment.created_at.getlocal.strftime("%b %-d '%y")
-
-      expect(page).to have_css(".comment-date time", text: date)
-    end
-  end
-
-  context "when the comment is edited and a year has passed" do
-    before do
-      comment.update(body_markdown: "This message is edited.", edited_at: 1.day.from_now.change(usec: 0))
-      Timecop.freeze(1.year.from_now.change(usec: 0))
-    end
-
-    it "shows the edited date in the correct format" do
-      sign_in user
-      visit comment.path
-      comment.reload
-      date = comment.edited_at.getlocal.strftime("%b %-d")
-
-      expect(page).to have_content("Edited on #{date}")
+    past_date = comment.created_at.getlocal.strftime("%b %-d '%y")
+    edited_date = comment.edited_at.getlocal.strftime("%b %-d")
+    within("#comment-node-#{comment.id} > .comment__inner") do
+      expect(page).to have_css(".comment-date time", text: past_date)
+      expect(page).to have_content("Edited on #{edited_date}")
     end
   end
 end

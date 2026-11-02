@@ -17,7 +17,7 @@ RSpec.describe "/admin/customization/billboards" do
   end
 
   context "when the user is not an admin" do
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
 
     before { sign_in user }
 
@@ -35,7 +35,7 @@ RSpec.describe "/admin/customization/billboards" do
   end
 
   context "when the user is a super admin" do
-    let(:super_admin) { create(:user, :super_admin) }
+    let(:super_admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
 
     before { sign_in super_admin }
 
@@ -47,7 +47,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "GET /admin/customization/billboards/:id/edit" do
-      let!(:billboard) { create(:billboard) }
+      let!(:billboard) { create(:billboard, organization: nil) }
 
       it "allows the request" do
         get edit_admin_billboard_path(billboard.id)
@@ -56,7 +56,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "GET /admin/customization/billboards/:id" do
-      let!(:billboard) { create(:billboard) }
+      let!(:billboard) { create(:billboard, organization: nil) }
 
       it "allows the request" do
         get admin_billboard_path(billboard.id)
@@ -96,7 +96,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "PUT /admin/customization/billboards" do
-      let!(:billboard) { create(:billboard, approved: false) }
+      let!(:billboard) { create(:billboard, approved: false, organization: nil) }
 
       it "updates Billboard's approved and priority values and redirects back to edit path", :aggregate_failures do
         Timecop.freeze(Time.current) do
@@ -118,7 +118,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "DELETE /admin/billboards/:id" do
-      let!(:billboard) { create(:billboard) }
+      let!(:billboard) { create(:billboard, organization: nil) }
 
       it "deletes the Billboard" do
         expect do
@@ -129,7 +129,9 @@ RSpec.describe "/admin/customization/billboards" do
   end
 
   context "when the user is a single resource admin" do
-    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: Billboard) }
+    let(:single_resource_admin) do
+      create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Billboard)
+    end
 
     before { sign_in single_resource_admin }
 
@@ -150,7 +152,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "PUT /admin/customization/billboards" do
-      let!(:billboard) { create(:billboard, approved: false) }
+      let!(:billboard) { create(:billboard, approved: false, organization: nil) }
 
       it "updates Billboard's approved value" do
         Timecop.freeze(Time.current) do
@@ -162,7 +164,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "DELETE /admin/billboards/:id" do
-      let!(:billboard) { create(:billboard) }
+      let!(:billboard) { create(:billboard, organization: nil) }
 
       it "deletes the Billboard" do
         expect do
@@ -173,7 +175,9 @@ RSpec.describe "/admin/customization/billboards" do
   end
 
   context "when the user is the wrong single resource admin" do
-    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: Article) }
+    let(:single_resource_admin) do
+      create(:user, :single_resource_admin, :without_profile, profile_image: nil, resource: Article)
+    end
 
     before { sign_in single_resource_admin }
 

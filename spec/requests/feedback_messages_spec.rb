@@ -175,6 +175,7 @@ RSpec.describe "feedback_messages" do
             post feedback_messages_path, params: valid_abuse_report_params, headers: headers
           end
         end.not_to change { ActionMailer::Base.deliveries.count }
+        expect(Rails.cache).to have_received(:fetch).with(cache_key, expires_in: 24.hours, local_cache: false)
       end
     end
 

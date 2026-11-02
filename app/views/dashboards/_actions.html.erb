@@ -68,6 +68,37 @@
     </li>
     <%- end %>
 
+    <% if @organizations.present? && (params[:which].blank? || params[:which] == "organization") %>
+    <li>
+      <details class="dashboard-sidebar-orgs" data-sidebar-org-menu>
+        <summary class="crayons-link crayons-link--block dashboard-sidebar-orgs__trigger">
+          <span><%= t("views.dashboard.actions.org_analytics") %></span>
+          <span class="dashboard-sidebar-orgs__meta">
+            <span class="c-indicator"><%= @organizations.size %></span>
+            <svg class="dashboard-sidebar-orgs__chevron" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M12 15.5l-6-6 1.4-1.4L12 12.7l4.6-4.6L18 9.5z" />
+            </svg>
+          </span>
+        </summary>
+        <ul class="dashboard-sidebar-orgs__list list-none p-0">
+          <% @organizations.each do |org| %>
+            <li>
+              <a class="crayons-link crayons-link--block dashboard-sidebar-orgs__link"
+                href="<%= dashboard_analytics_org_path(org.id) %>"
+                title="<%= t("views.dashboard.actions.for_org", org: org.name) %>"
+                aria-label="<%= t("views.dashboard.actions.for_org", org: org.name) %>">
+                <% if org.profile_image_90.present? %>
+                  <img src="<%= org.profile_image_90 %>" alt="" class="dashboard-sidebar-orgs__avatar" width="20" height="20" loading="lazy" />
+                <% end %>
+                <span class="truncate"><%= org.name %></span>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </details>
+    </li>
+    <% end %>
+
     <li>
       <a class="crayons-link crayons-link--block <%= "crayons-link--current" if @action == "feed_imports" %>"
         href="/dashboard/feed_imports"
@@ -92,18 +123,10 @@
         <span class="c-indicator"><%= @agent_sessions_count %></span>
       </a>
     </li>
-
-  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-    <% @organizations.each do |org| %>
-      <li>
-        <a class="crayons-link crayons-link--block" href="<%= dashboard_analytics_org_path(org.id) %>"><%= t("views.dashboard.actions.for_org", org: org.name) %></a>
-      </li>
-    <% end %>
-  <% end %>
+  </ul>
 
   <% if policy(:video).new? %>
     <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant><%= t("views.dashboard.actions.upload") %>
     </a>
   <% end %>
-  </ul>
 </nav>

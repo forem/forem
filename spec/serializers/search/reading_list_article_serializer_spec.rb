@@ -1,7 +1,9 @@
 require "rails_helper"
 
 RSpec.describe Search::ReadingListArticleSerializer do
-  let(:reaction) { create(:reaction) }
+  let(:user) { create(:user, :without_profile) }
+  let(:source_article) { create(:article, user: user, with_tags: false, with_main_image: false) }
+  let(:reaction) { create(:reaction, user: user, reactable: source_article) }
 
   # article and users are workarounds to allow the serializer to work. The search uses a custom
   # query and select to build the associations to pass to the serializer. We need reaction_id,
@@ -34,14 +36,11 @@ RSpec.describe Search::ReadingListArticleSerializer do
       .index_by(&:id)
   end
 
-  it "serializes an Article" do
+  it "serializes an Article and its reactable attributes", :aggregate_failures do
     data_hash = described_class.new(article, params: { users: users }).serializable_hash.dig(:data, :attributes)
     expect(data_hash.keys).to include(:id, :user_id, :reactable)
-  end
 
-  it "serializes the reactable" do
-    reactable = described_class.new(article, params: { users: users }).serializable_hash.dig(:data, :attributes,
-                                                                                             :reactable)
+    reactable = data_hash[:reactable]
     expect(reactable.keys).to include(:path, :readable_publish_date_string, :reading_time, :tag_list, :tags, :title,
                                       :user)
   end

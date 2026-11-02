@@ -43,10 +43,11 @@ module ArticlesHelper
   end
 
   def should_show_updated_on?(article)
-    article.edited_at &&
+    article.edited_at.present? &&
       article.published &&
       !article.published_from_feed &&
-      article.published_at.next_day < article.edited_at
+      article.published_at.present? &&
+      article.edited_at > article.published_at
   end
 
   def should_show_crossposted_on?(article)

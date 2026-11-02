@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'preact/hooks';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
 import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
 import { debounceAction } from '@utilities/debounceAction';
 
@@ -273,43 +273,40 @@ export const useTextAreaAutoResize = () => {
     useState(false);
   const [additionalElements, setAdditionalElements] = useState([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!textArea) {
       return;
     }
 
     const resizeTextArea = () => {
-      const allElements = [textArea, ...additionalElements];
+      const allElements = [textArea, ...additionalElements].filter(Boolean);
       const allContentHeights = allElements.map(
         (element) => calculateTextAreaHeight(element).height,
       );
-      // Determine the dynamic height properly based on content.
-      // `calculateTextAreaHeight` already accounts for scrollHeight safely.
-      const height = Math.max(...allContentHeights);
+      const height = Math.max(...allContentHeights, 0);
       const newHeight = `${height}px`;
 
       allElements.forEach((element) => {
         element.style['min-height'] = newHeight;
         if (constrainToContentHeight) {
-          // Don't allow the textarea to grow to a size larger than the content
           element.style['max-height'] = newHeight;
+        } else {
+          element.style.removeProperty('max-height');
         }
       });
     };
 
-    // Resize on first attach
     resizeTextArea();
 
-    // Resize on window size changes
-    const resizeCallback = debounceAction(() => resizeTextArea(), 300);
+    const resizeCallback = debounceAction(() => resizeTextArea(), { time: 300 });
     const resizeObserver = new ResizeObserver(resizeCallback);
     resizeObserver.observe(textArea);
 
-    // Resize on subsequent value changes
     textArea.addEventListener('input', resizeTextArea);
 
     return () => {
       resizeObserver.disconnect();
+      resizeCallback.cancel();
       textArea.removeEventListener('input', resizeTextArea);
     };
   }, [textArea, additionalElements, constrainToContentHeight]);

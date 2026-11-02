@@ -26,7 +26,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
 
       scoped_users = User.where(id: [recent_article_user.id, recent_present_user.id, stale_user.id, no_source_user.id])
       importer = described_class.new(users_scope: scoped_users)
-      filtered = importer.send(:filter_feed_sources, users_scope: scoped_users, earlier_than: nil)
+      filtered = importer.__send__(:filter_feed_sources, users_scope: scoped_users, earlier_than: nil)
 
       expect(filtered.pluck(:user_id)).to contain_exactly(recent_article_user.id, recent_present_user.id)
     end
@@ -110,17 +110,24 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
 
       it "retries on transient network errors then succeeds" do
         call_count = 0
-        allow(HTTParty).to receive(:get).and_wrap_original do |_method, *args, **kwargs|
+        response_class = Class.new do
+          attr_reader :body
+
+          def initialize(body)
+            @body = body
+          end
+        end
+        allow(HTTParty).to receive(:get).and_wrap_original do |_method, *_args, **_kwargs|
           call_count += 1
           raise Net::OpenTimeout if call_count == 1
 
           # Return a minimal valid RSS response on retry
-          double("Response", body: <<~XML)
+          response_class.new(<<~XML)
             <?xml version="1.0"?>
             <rss version="2.0"><channel><title>Test</title></channel></rss>
           XML
         end
-        allow_any_instance_of(described_class).to receive(:sleep) # don't actually wait
+        allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
         source = Feeds::Source.first
         described_class.call(users_scope: User.where(id: source.user_id))
@@ -131,7 +138,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       it "gives up after max retries on persistent timeouts" do
         allow(HTTParty).to receive(:get).and_raise(Net::ReadTimeout)
         allow(Rails.logger).to receive(:error)
-        allow_any_instance_of(described_class).to receive(:sleep)
+        allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
         described_class.call
 
@@ -292,6 +299,130 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       end
         .to change(rss_feed_user1.articles, :count).by(10)
         .and change(rss_feed_user2.articles, :count).by(10)
+    end
+  end
+
+  describe "memory and performance safeguards" do
+    it "rejects oversized XML feeds exceeding MAX_XML_SIZE while streaming and records a fetch failure" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      source = create(:feed_source, user: user, feed_url: "https://example.com/huge-feed.xml")
+      chunk = "x" * ((described_class::MAX_XML_SIZE / 2) + 10)
+      chunks_read = 0
+
+      allow(HTTParty).to receive(:get) do |_url, **_opts, &block|
+        3.times do
+          chunks_read += 1
+          block.call(chunk)
+        end
+      end
+      allow(Rails.logger).to receive(:error)
+
+      expect(described_class.call(users_scope: User.where(id: user.id))).to eq(0)
+      expect(chunks_read).to eq(2)
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log).to be_present
+      expect(log.status).to eq("failed")
+      expect(log.error_message).to include("Feed XML exceeds maximum size")
+    end
+
+    it "reparses oldest-first feeds beyond the XML cap, including binary UTF-8 streams" do
+      stub_const("#{described_class}::MAX_XML_ENTRIES", 25)
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      source = create(:feed_source, user: user, feed_url: "https://example.com/many-items.xml")
+      base_time = Time.utc(2026, 1, 1, 12, 0, 0)
+      items_xml = (1..30).map do |idx|
+        pub_date = (base_time + idx.hours).rfc2822
+        "<item><title>Post #{idx} Café</title><link>https://example.com/posts/#{idx}</link>" \
+          "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
+      end.join("\n")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Blog</title>#{items_xml}</channel></rss>".b
+      fragment_class = Class.new(String) do
+        def code = 200
+      end
+      binary_chunk = fragment_class.new(xml)
+
+      allow(HTTParty).to receive(:get) do |_url, **_opts, &block|
+        block.call(binary_chunk)
+      end
+
+      parsed_xml_arg = nil
+      allow(Feedjira).to receive(:parse).and_wrap_original do |original, xml_str|
+        parsed_xml_arg = xml_str
+        original.call(xml_str)
+      end
+
+      imported_count = described_class.call(users_scope: User.where(id: user.id))
+      expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+      expect(parsed_xml_arg.encoding).to eq(Encoding::UTF_8)
+      expect(parsed_xml_arg).to include("Post 14 Café", "Post 30 Café")
+
+      log = Feeds::ImportLog.where(feed_source: source).last
+      expect(log.items_in_feed).to eq(described_class::MAX_ENTRIES_PER_FEED)
+      expect(log.items_imported).to eq(described_class::MAX_ENTRIES_PER_FEED)
+    end
+
+    it "selects the newest MAX_ENTRIES_PER_FEED items when a feed is ordered oldest-first (ascending)" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: user, feed_url: "https://example.com/ascending.xml")
+      base_time = Time.utc(2026, 1, 1, 12, 0, 0)
+      items_xml = (1..30).map do |idx|
+        pub_date = (base_time + idx.hours).rfc2822
+        "<item><title>Ascending Post #{idx}</title><link>https://example.com/asc/#{idx}</link>" \
+          "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
+      end.join("\n")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Asc</title>#{items_xml}</channel></rss>"
+      fragment_class = Class.new(String) do
+        def code = 200
+      end
+      allow(HTTParty).to receive(:get).and_yield(fragment_class.new(xml.b))
+
+      imported_count = described_class.call(users_scope: User.where(id: user.id))
+      expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+
+      imported_titles = user.articles.pluck(:title)
+      expect(imported_titles).to include("Ascending Post 30", "Ascending Post 6")
+      expect(imported_titles).not_to include("Ascending Post 1", "Ascending Post 5")
+    end
+
+    it "keeps the newest entries from oldest-first feeds larger than MAX_XML_ENTRIES" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: user, feed_url: "https://example.com/large-ascending.xml")
+      base_time = Time.utc(2026, 1, 1, 12, 0, 0)
+      items_xml = (1..130).map do |idx|
+        pub_date = (base_time + idx.hours).rfc2822
+        "<item><title>Large Ascending Post #{idx}</title><link>https://example.com/large-asc/#{idx}</link>" \
+          "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
+      end.join("\n")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Asc</title>#{items_xml}</channel></rss>"
+      fragment_class = Class.new(String) do
+        def code = 200
+      end
+      allow(HTTParty).to receive(:get).and_yield(fragment_class.new(xml.b))
+
+      imported_count = described_class.call(users_scope: User.where(id: user.id))
+
+      expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
+      expect(user.articles.pluck(:title)).to match_array((106..130).map { |idx| "Large Ascending Post #{idx}" })
+    end
+
+    it "does not spawn Parallel worker threads when importing a single feed source" do
+      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: user, feed_url: "https://example.com/single.xml")
+      xml = "<?xml version=\"1.0\"?><rss version=\"2.0\"><channel><title>Single</title></channel></rss>"
+      response_double = Class.new do
+        attr_reader :body
+
+        def initialize(body)
+          @body = body
+        end
+      end.new(xml)
+
+      allow(HTTParty).to receive(:get).and_return(response_double)
+      allow(Parallel).to receive(:map).and_call_original
+
+      described_class.call(users_scope: User.where(id: user.id))
+      expect(Parallel).not_to have_received(:map)
     end
   end
 end

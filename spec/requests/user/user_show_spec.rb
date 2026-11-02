@@ -5,7 +5,7 @@ RSpec.describe "UserShow" do
     create(
       :profile,
       :with_DEV_info,
-      user: create(:user, :without_profile),
+      user: create(:user, :without_profile, profile_image: nil),
     )
   end
   let(:user) { profile.user }
@@ -16,13 +16,10 @@ RSpec.describe "UserShow" do
       FeatureFlag.enable(:subscriber_icon)
     end
 
-    it "returns a 200 status when navigating to the user's page" do
+    it "returns 200 and renders the proper JSON-LD for an unauthenticated visitor", :aggregate_failures do
       get user.path
       expect(response).to have_http_status(:ok)
-    end
-
-    it "renders the proper JSON-LD for a user" do
-      get user.path
+      expect(response.body).to include("application/ld+json")
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
       expect(response_json).to include(
@@ -52,31 +49,22 @@ RSpec.describe "UserShow" do
       expect(response_json.key?("email")).to be(false)
     end
 
-    it "includes a subscription icon if user is subscribed" do
-      user.add_role("base_subscriber")
-      get user.path
-      expect(response.body).to include('class="subscription-icon"')
-    end
-
-    it "does not include a subscription icon if user is not subscribed" do
-      get user.path
-      expect(response.body).not_to include('class="subscription-icon"')
-    end
-
     context "when rendering the icons next to the profile name" do
       let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
 
       after { FeatureFlag.remove(:community_favorites) }
 
-      it "does not render an icon wrapper when the user has no icons" do
+      it "does not render a subscription icon or icon wrapper when the user has no icons", :aggregate_failures do
         get user.path
+        expect(response.body).not_to include('class="subscription-icon"')
         expect(title).not_to be_nil
         expect(title.at_css("span.ml-2")).to be_nil
       end
 
-      it "wraps a subscription icon in a spaced span" do
+      it "includes and wraps a subscription icon in a spaced span when subscribed", :aggregate_failures do
         user.add_role("base_subscriber")
         get user.path
+        expect(response.body).to include('class="subscription-icon"')
         expect(title.at_css("span.ml-2 .subscription-icon")).not_to be_nil
       end
 
@@ -94,7 +82,7 @@ RSpec.describe "UserShow" do
     end
 
     it "does not render a key if no value is given" do
-      incomplete_user = create(:user)
+      incomplete_user = create(:user, profile_image: nil)
       get incomplete_user.path
       text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
       response_json = JSON.parse(text)
@@ -103,35 +91,13 @@ RSpec.describe "UserShow" do
       expect(response_json.value?("")).to be(false)
     end
 
-    context "when user signed in" do
-      before do
-        sign_in user
-        get user.path
-      end
+    it "does not render json ld for internal navigation or signed-in users", :aggregate_failures do
+      get "#{user.path}?i=i"
+      expect(response.body).not_to include("application/ld+json")
 
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
-      end
-    end
-
-    context "when user not signed in" do
-      before do
-        get user.path
-      end
-
-      it "does not render json ld" do
-        expect(response.body).to include "application/ld+json"
-      end
-    end
-
-    context "when user not signed in but internal nav triggered" do
-      before do
-        get "#{user.path}?i=i"
-      end
-
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
-      end
+      sign_in user
+      get user.path
+      expect(response.body).not_to include("application/ld+json")
     end
   end
 
@@ -150,7 +116,7 @@ RSpec.describe "UserShow" do
     end
 
     context "when user **is** signed in **and** trusted" do
-      let(:trusted) { create(:user, :trusted) }
+      let(:trusted) { create(:user, :trusted, :without_profile, profile_image: nil) }
 
       before do
         sign_in trusted
@@ -169,13 +135,6 @@ RSpec.describe "UserShow" do
     let!(:other_subforem)   { create(:subforem, domain: "other.com") }
 
     context "when user is 'inactive' in the current subforem" do
-      before do
-        # Ensure user has no pinned stories, no stories, no comments
-        user.articles.delete_all
-        user.profile_pins.delete_all
-        user.comments.delete_all
-      end
-
       after do
         RequestStore.store[:default_subforem_id] = nil
         RequestStore.store[:subforem_id] = nil
@@ -192,7 +151,7 @@ RSpec.describe "UserShow" do
 
     context "when user has pinned stories, stories, or comments for the subforem" do
       before do
-        create(:article, user: user, subforem: other_subforem)
+        create(:article, user: user, subforem: other_subforem, with_tags: false)
       end
 
       after do
@@ -210,7 +169,7 @@ RSpec.describe "UserShow" do
 
     context "when the user has pinned stories, stories, or comments for the default subforem" do
       before do
-        create(:article, user: user, subforem: default_subforem)
+        create(:article, user: user, subforem: default_subforem, with_tags: false)
       end
 
       after do

@@ -130,6 +130,7 @@
         <th scope="col">Status</th>
         <th scope="col">Success Score</th>
         <th scope="col">Impressions</th>
+        <th scope="col"><%= t("lib.constants.settings.user_experience.feed_repeat_visits.label") %></th>
         <th scope="col">AI Weights (Matching / Penalty)</th>
         <th scope="col">Created</th>
         <th scope="col" class="text-right">Actions</th>
@@ -163,6 +164,7 @@
           </td>
           <td><%= config.feed_success_score.round(4) %></td>
           <td><%= number_with_delimiter(config.feed_impressions_count) %></td>
+          <td><%= number_with_delimiter(config.feed_repeat_visits_count) %></td>
           <td>
             <%= config.ai_disclosure_matching_weight %> / <%= config.autonomous_ai_penalty_weight %>
           </td>

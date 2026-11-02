@@ -3,16 +3,14 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex" do
   include ActionView::Helpers::DateHelper
 
-  let(:staff_account) { create(:user) }
-  let(:mascot_account) { create(:user) }
-  let(:user) { create(:user, last_reacted_at: 2.days.ago) }
+  let(:staff_account) { create(:user, :without_profile) }
+  let(:mascot_account) { create(:user, :without_profile) }
+  let(:user) { create(:user, :without_profile, last_reacted_at: 2.days.ago) }
   let(:organization) { create(:organization) }
 
   before do
-    # rubocop:disable RSpec/ReceiveMessages
-    allow(User).to receive(:staff_account).and_return(staff_account)
-    allow(User).to receive(:mascot_account).and_return(mascot_account)
-    # rubocop:enable RSpec/ReceiveMessages
+    allow(User).to receive(:staff_account) { staff_account }
+    allow(User).to receive(:mascot_account) { mascot_account }
   end
 
   def has_both_names(response_body)
@@ -37,14 +35,8 @@ RSpec.describe "NotificationsIndex" do
   end
 
   describe "GET /notifications" do
-
     context "when signed out" do
-
-      it "renders page with the proper heading" do
-        get "/notifications"
-        expect(response.body).to redirect_to(new_magic_link_path)
-      end  
-      it "renders the signin page" do
+      it "redirects to the signin page" do
         get "/notifications"
 
         expect(response.body).to redirect_to(new_magic_link_path)
@@ -52,13 +44,6 @@ RSpec.describe "NotificationsIndex" do
     end
 
     context "when signed in" do
-      it "does not render the signup cue" do
-        sign_in user
-
-        get "/notifications"
-        expect(response.body).not_to include("By signing in")
-      end
-
       it "assigns the ids of the user's latest reaction and comment", :aggregate_failures do
         article = create(:article)
         create(:reaction, user: user, reactable: article, category: "like")
@@ -73,10 +58,12 @@ RSpec.describe "NotificationsIndex" do
         expect(controller.instance_variable_get(:@last_user_comment)).to eq(latest_comment.id)
       end
 
-      it "assigns nil ids when the user has no reactions or comments", :aggregate_failures do
+      it "does not render the signup cue and assigns nil ids when the user has no reactions or comments",
+         :aggregate_failures do
         sign_in user
 
         get "/notifications"
+        expect(response.body).not_to include("By signing in")
         expect(controller.instance_variable_get(:@last_user_reaction)).to be_nil
         expect(controller.instance_variable_get(:@last_user_comment)).to be_nil
       end
@@ -104,7 +91,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "renders the proper message for three or more notifications in the same day" do
-        mock_follow_notifications(rand(3..10))
+        mock_follow_notifications(3)
         get "/notifications"
         follow_message = "others followed you!"
         expect(response.body).to include follow_message
@@ -134,11 +121,17 @@ RSpec.describe "NotificationsIndex" do
         users
       end
 
-      it "renders the proper message for a single notification" do
+      it "renders a single notification only for the :org filter with a matching :org_id", :aggregate_failures do
         users = mock_follow_notifications(1, organization)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include(CGI.escapeHTML(users.last.name))
+
+        get notifications_path(filter: :org)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
 
       it "renders the proper message for two notifications in the same day" do
@@ -149,7 +142,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "renders the proper message for three or more notifications in the same day" do
-        mock_follow_notifications(rand(3..5), organization)
+        mock_follow_notifications(3, organization)
 
         get notifications_path(filter: :org, org_id: organization.id)
         follow_message = "others followed you!"
@@ -163,13 +156,6 @@ RSpec.describe "NotificationsIndex" do
         get notifications_path(filter: :org, org_id: organization.id)
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq(1)
-      end
-
-      it "does not render the proper message for a single notification if missing :org_id" do
-        users = mock_follow_notifications(1, organization)
-
-        get notifications_path(filter: :org)
-        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
 
       it "does not render notifications belonging to other orgs" do
@@ -187,13 +173,6 @@ RSpec.describe "NotificationsIndex" do
 
         get notifications_path(filter: :org, org_id: other_org.id)
         expect(response.body).to include(CGI.escapeHTML(users.last.name))
-      end
-
-      it "does not render the proper message for a single notification if :filter is comments" do
-        users = mock_follow_notifications(1, organization)
-
-        get notifications_path(filter: :comments, org_id: organization.id)
-        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
     end
 
@@ -220,10 +199,11 @@ RSpec.describe "NotificationsIndex" do
         end
       end
 
-      it "renders the correct user for a single reaction" do
-        mock_heart_reaction_notifications(1, %w[like unicorn])
+      it "renders the correct user and reactable title for a single reaction", :aggregate_failures do
+        mock_heart_reaction_notifications(1, %w[like unicorn], special_characters_article)
         get "/notifications"
         expect(response.body).to include CGI.escapeHTML(User.last.name)
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
 
       it "renders the correct usernames for two or more reactions" do
@@ -232,11 +212,11 @@ RSpec.describe "NotificationsIndex" do
         expect(has_both_names(response.body)).to be true
       end
 
-      it "renders the proper message for multiple reactions" do
-        random_amount = rand(3..10)
-        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
+      it "renders the proper message and reactable title for multiple reactions", :aggregate_failures do
+        mock_heart_reaction_notifications(3, %w[unicorn like], special_characters_article)
         get "/notifications"
-        expect(response.body).to include CGI.escapeHTML("and #{random_amount - 1} others")
+        expect(response.body).to include CGI.escapeHTML("and 2 others")
+        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
 
       it "does group notifications that are on different days but have the same reactable" do
@@ -253,19 +233,6 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq 2
-      end
-
-      it "properly renders reactable titles" do
-        mock_heart_reaction_notifications(1, %w[unicorn like], special_characters_article)
-        get "/notifications"
-        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
-      end
-
-      it "properly renders reactable titles for multiple reactions" do
-        amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like], special_characters_article)
-        get "/notifications"
-        expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
     end
 
@@ -296,11 +263,19 @@ RSpec.describe "NotificationsIndex" do
         users
       end
 
-      it "renders the correct user for a single reaction" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+      it "renders the user and reactable title for a single reaction only for the :org filter with a matching :org_id",
+         :aggregate_failures do
+        users = mock_heart_reaction_notifications(1, %w[like unicorn], special_characters_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include CGI.escapeHTML(users.last.name)
+        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
+
+        get notifications_path(filter: :org)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
 
       it "renders the correct usernames for two or more reactions" do
@@ -310,12 +285,12 @@ RSpec.describe "NotificationsIndex" do
         expect(has_both_names(response.body)).to be(true)
       end
 
-      it "renders the proper message for multiple reactions" do
-        random_amount = rand(3..10)
-        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
+      it "renders the proper message and reactable title for multiple reactions", :aggregate_failures do
+        mock_heart_reaction_notifications(3, %w[unicorn like], special_characters_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include(CGI.escapeHTML("and #{random_amount - 1} others"))
+        expect(response.body).to include(CGI.escapeHTML("and 2 others"))
+        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
       end
 
       it "does group notifications that are on different days but have the same reactable" do
@@ -336,28 +311,6 @@ RSpec.describe "NotificationsIndex" do
         expect(notifications.count).to eq(2)
       end
 
-      it "properly renders reactable titles" do
-        mock_heart_reaction_notifications(1, %w[unicorn like], special_characters_article)
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
-      end
-
-      it "properly renders reactable titles for multiple reactions" do
-        amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like], special_characters_article)
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
-      end
-
-      it "does not render the proper message for a single notification if missing :org_id" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
-
-        get notifications_path(filter: :org)
-        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
-      end
-
       it "does not render notifications belonging to other orgs" do
         users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
 
@@ -374,13 +327,6 @@ RSpec.describe "NotificationsIndex" do
         get notifications_path(filter: :org, org_id: other_org_article.organization_id)
         expect(response.body).to include(CGI.escapeHTML(users.last.name))
       end
-
-      it "does not render the proper message for a single notification if :filter is comments" do
-        users = mock_heart_reaction_notifications(1, %w[like unicorn])
-
-        get notifications_path(filter: :comments, org_id: organization.id)
-        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
-      end
     end
 
     context "when a user has a new comment notification" do
@@ -388,37 +334,31 @@ RSpec.describe "NotificationsIndex" do
       let(:subforem) { create(:subforem) }
       let(:article)  { create(:article, :with_notification_subscription, user_id: user.id, subforem_id: subforem.id) }
       let(:second_subforem) { create(:subforem, domain: "seconds.domain") }
-      let(:second_article) { create(:article, :with_notification_subscription, user_id: user.id, subforem_id: second_subforem.id) }
-      let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
-      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: second_article.id, commentable_type: "Article") }
+      let(:second_article) { create(:article, :with_notification_subscription, user: user, subforem: second_subforem) }
+      let(:comment) { create(:comment, user: user2, commentable: article) }
+      let(:second_comment) { create(:comment, user: user2, commentable: second_article) }
 
       before do
         sign_in user
         Notification.send_new_comment_notifications_without_delay(comment)
-        Notification.send_new_comment_notifications_without_delay(second_comment)
-        get "/notifications"
       end
 
-      it "renders the correct message data", :aggregate_failures do
+      it "renders the correct message data and the reaction once it was reacted on", :aggregate_failures do
+        get "/notifications"
         expect(response.body).to include "commented on"
         expect(response.body).not_to include "replied to a thread in"
         expect(response.body).not_to include "As a trusted member"
         renders_article_path(article)
         renders_comments_html(comment)
-        does_not_render_reaction
-      end
-
-      def does_not_render_reaction
         expect(response.body).not_to include "reaction-button reacted"
-      end
 
-      it "renders the reaction as previously reacted if it was reacted on" do
         Reaction.create(user: user, reactable: comment, category: "like")
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
       end
 
       it "renders the second article if second subforem is current" do
+        Notification.send_new_comment_notifications_without_delay(second_comment)
         headers = { "Host" => second_subforem.domain }
         get "/notifications", headers: headers
 
@@ -440,38 +380,28 @@ RSpec.describe "NotificationsIndex" do
         sign_in user
       end
 
-      it "renders the correct message data", :aggregate_failures do
+      it "renders the correct message data across filters and the reaction once it was reacted on",
+         :aggregate_failures do
         Notification.send_new_comment_notifications_without_delay(comment)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include("commented on")
         expect(response.body).not_to include("replied to a thread in")
         expect(response.body).not_to include("As a trusted member")
+        expect(response.body).not_to include("reaction-button reacted")
         renders_article_path(article)
         renders_comments_html(comment)
-      end
 
-      it "renders the reaction as previously reacted if it was reacted on" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-        Reaction.create(user: user, reactable: comment, category: "like")
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).to include("reaction-button reacted")
-      end
-
-      it "does not render the reaction as reacted if it was not reacted on" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :org, org_id: organization.id)
-        expect(response.body).not_to include("reaction-button reacted")
-      end
-
-      it "does not render notifications if missing :org_id" do
-        Notification.send_new_comment_notifications_without_delay(comment)
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).to include("commented on")
 
         get notifications_path(filter: :org)
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.filter_map(&:organization_id).size).to eq(0)
+
+        Reaction.create(user: user, reactable: comment, category: "like")
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include("reaction-button reacted")
       end
 
       it "does not render notifications belonging to other orgs" do
@@ -489,13 +419,6 @@ RSpec.describe "NotificationsIndex" do
         Notification.send_new_comment_notifications_without_delay(other_org_comment)
 
         get notifications_path(filter: :org, org_id: other_org.id)
-        expect(response.body).to include("commented on")
-      end
-
-      it "does render the proper message for a single notification if :filter is comments" do
-        Notification.send_new_comment_notifications_without_delay(comment)
-
-        get notifications_path(filter: :comments, org_id: organization.id)
         expect(response.body).to include("commented on")
       end
     end
@@ -683,11 +606,12 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
       end
 
-      it "renders the correct badge's notification", :aggregate_failures do
+      it "renders the correct badge's notification without credits", :aggregate_failures do
         renders_title
         renders_correct_message(user)
         renders_correct_description
         renders_visit_profile_button
+        expect(response.body).not_to include "new credits"
       end
 
       def renders_title
@@ -704,10 +628,6 @@ RSpec.describe "NotificationsIndex" do
 
       def renders_visit_profile_button
         expect(response.body).to include "Visit your profile"
-      end
-
-      it "has no information about credits" do
-        expect(response.body).not_to include "new credits"
       end
     end
 
@@ -742,9 +662,7 @@ RSpec.describe "NotificationsIndex" do
       let(:mention) { create(:mention, mentionable: comment, user: user) }
 
       before do
-        sidekiq_perform_enqueued_jobs do
-          Notification.send_mention_notification(mention)
-        end
+        Notification.send_mention_notification_without_delay(mention)
         sign_in user
         get "/notifications"
       end
@@ -762,9 +680,7 @@ RSpec.describe "NotificationsIndex" do
 
       before do
         article.update!(body_markdown: "Hello, @#{user.username}!")
-        sidekiq_perform_enqueued_jobs do
-          Notification.send_mention_notification(mention)
-        end
+        Notification.send_mention_notification_without_delay(mention)
         sign_in user
         get "/notifications"
       end
@@ -787,24 +703,19 @@ RSpec.describe "NotificationsIndex" do
           Notification.send_to_mentioned_users_and_followers(article)
         end
         sign_in user2
-        get "/notifications"
       end
 
-      it "renders the proper message", :aggregate_failures do
+      it "renders the proper message and the reaction once it was reacted on", :aggregate_failures do
+        get "/notifications"
         expect(response.body).to include "made a new post"
+        expect(response.body).not_to include "reaction-button reacted"
         renders_article_path(article)
         renders_authors_name(article)
         renders_article_published_at(article)
-      end
 
-      it "renders the reaction as previously reacted if it was reacted on" do
         Reaction.create(user: user2, reactable: article, category: "like")
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
-      end
-
-      it "does not render the reaction as reacted if it was not reacted on" do
-        expect(response.body).not_to include "reaction-button reacted"
       end
     end
 
@@ -819,16 +730,14 @@ RSpec.describe "NotificationsIndex" do
         sign_in co_author
       end
 
-      it "renders the proper message in GET /notifications", :aggregate_failures do
+      it "renders the proper message in GET /notifications and the /notifications/posts filter", :aggregate_failures do
         get "/notifications"
 
         expect(response.body).to include "published a post you are credited on"
         renders_article_path(article)
         renders_authors_name(article)
         renders_article_published_at(article)
-      end
 
-      it "renders cleanly in GET /notifications/posts filter", :aggregate_failures do
         get "/notifications/posts"
 
         expect(response.body).to include "published a post you are credited on"

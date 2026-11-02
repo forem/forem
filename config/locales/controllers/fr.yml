@@ -85,6 +85,7 @@ fr:
   ai_image_generations_controller:
     prompt_required: Le prompt d'image est requis
     generation_failed: Échec de la génération de l'image. Veuillez réessayer.
+    generation_refused: Ce prompt ne peut pas être transformé en image. Essayez de le décrire autrement.
     timeout: La génération de l'image a expiré. Veuillez réessayer.
     unexpected_error: Une erreur inattendue s'est produite lors de la génération de l'image.
   image_uploads_controller:

@@ -15,6 +15,10 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
   before do
     allow(Settings::Authentication).to receive(:providers).and_return([:github])
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({ provider: "github", uid: "123456" })
+    # Never actually block on the Search API pacing / backoff sleeps in tests.
+    # rubocop:disable RSpec/AnyInstance
+    allow_any_instance_of(described_class).to receive(:sleep)
+    # rubocop:enable RSpec/AnyInstance
   end
 
   describe "#throttle_search" do
@@ -132,8 +136,33 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
         allow(github_client).to receive(:contributors).and_return([])
         # ...but surfaced as the author of a recently merged PR.
         allow(github_client).to receive(:search_issues)
-          .with(/is:pr is:merged merged:>=/, any_args)
+          .with(/is:pr is:merged merged:/, any_args)
           .and_return(search_results_struct.new(0, [issue_struct.new(author_struct.new("123456"))]))
+        allow(github_client).to receive(:search_issues)
+          .with(/author:.* is:merged is:pr/, any_args)
+          .and_return(search_results_struct.new(20, []))
+
+        described_class.call
+
+        expect(user.badge_achievements.pluck(:badge_id)).to include(sixteen_x_commit_badge.id)
+      end
+    end
+
+    context "when a merged PR author only appears beyond the first search page" do
+      let!(:sixteen_x_commit_badge) { create(:badge, title: "16x-commit-club") }
+
+      it "pages through recent merged PRs and still awards the badge" do
+        allow(github_client).to receive(:contributors).and_return([])
+
+        # Page 1 is full of other authors (a full page signals there is more to
+        # fetch); the eligible author only shows up on page 2.
+        full_first_page = Array.new(100) { issue_struct.new(author_struct.new("999999")) }
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, hash_including(page: 1))
+          .and_return(search_results_struct.new(101, full_first_page))
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, hash_including(page: 2))
+          .and_return(search_results_struct.new(101, [issue_struct.new(author_struct.new("123456"))]))
         allow(github_client).to receive(:search_issues)
           .with(/author:.* is:merged is:pr/, any_args)
           .and_return(search_results_struct.new(20, []))
@@ -191,6 +220,94 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
         expect(badge_ids).to include(dev_contributor_badge.id)
         expect(badge_ids).to include(four_x_commit_badge.id)
       end
+    end
+
+    context "when managing the scan window and marker" do
+      it "records the scan marker after a successful run" do
+        Timecop.freeze(Time.utc(2026, 10, 28, 11, 20)) do
+          expect(described_class.call).to be(true)
+        end
+
+        expect(Settings::General.github_contributor_prs_scanned_through).to eq("2026-10-28")
+      end
+
+      it "scans forward from the stored marker (with overlap) on an hourly run" do
+        Settings::General.github_contributor_prs_scanned_through = "2026-10-20"
+
+        Timecop.freeze(Time.utc(2026, 10, 28, 11, 20)) do
+          described_class.call
+        end
+
+        # Overlap of 2 days means the earliest slice begins at 2026-10-18.
+        expect(github_client).to have_received(:search_issues)
+          .with(/merged:2026-10-18\.\.2026-10-28/, any_args).at_least(:once)
+      end
+
+      it "falls back to the recent window when no marker is set" do
+        Settings::General.github_contributor_prs_scanned_through = ""
+
+        Timecop.freeze(Time.utc(2026, 10, 28, 11, 20)) do
+          described_class.call
+        end
+
+        # 14-day fallback window begins at 2026-10-14.
+        expect(github_client).to have_received(:search_issues)
+          .with(/merged:2026-10-14\.\.2026-10-28/, any_args).at_least(:once)
+      end
+
+      it "does not advance the marker when a merged PR page search fails" do
+        Settings::General.github_contributor_prs_scanned_through = "2026-10-20"
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, any_args)
+          .and_raise(Github::Errors::TooManyRequests.new({}))
+
+        Timecop.freeze(Time.utc(2026, 10, 28, 11, 20)) do
+          expect(described_class.call).to be(false)
+        end
+
+        expect(Settings::General.github_contributor_prs_scanned_through).to eq("2026-10-20")
+      end
+    end
+  end
+
+  describe ".backfill" do
+    let(:github_client) { instance_double(Octokit::Client) }
+
+    before do
+      stub_const("#{described_class}::SEARCH_MIN_INTERVAL", 0.seconds)
+      identity
+      allow(Github::OauthClient).to receive(:new).and_return(github_client)
+      allow(github_client).to receive(:auto_paginate=)
+      allow(github_client).to receive_messages(
+        commits: [],
+        contributors: [],
+        search_issues: search_results_struct.new(0, []),
+      )
+    end
+
+    it "scans from the full history start and records the marker" do
+      Timecop.freeze(Time.utc(2026, 10, 28)) do
+        expect(described_class.backfill).to be(true)
+      end
+
+      # The first slice of the full-history walk starts at MERGED_PR_HISTORY_START.
+      expect(github_client).to have_received(:search_issues)
+        .with(/merged:2018-01-01\.\./, any_args).at_least(:once)
+      expect(Settings::General.github_contributor_prs_scanned_through).to eq("2026-10-28")
+    end
+
+    it "stops scanning remaining slices and returns false when a slice page fails" do
+      allow(github_client).to receive(:search_issues)
+        .with(/is:pr is:merged merged:/, any_args)
+        .and_raise(Github::Errors::TooManyRequests.new({}))
+
+      Timecop.freeze(Time.utc(2026, 10, 28)) do
+        expect(described_class.backfill).to be(false)
+      end
+
+      expect(github_client).to have_received(:search_issues)
+        .with(/is:pr is:merged merged:/, any_args).once
+      expect(Settings::General.github_contributor_prs_scanned_through).to eq("")
     end
   end
 end

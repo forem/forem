@@ -72,7 +72,7 @@
             </a>
           </div>
         <% elsif @tag.supported? %>
-          <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max %>
+          <% number_of_pages = [(@num_published_articles.to_f / @number_of_articles).ceil, 1].max.clamp(1, Stories::TaggedArticlesController::MAX_PAGE) %>
           <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <hr />
           <div class="olderposts-header fs-base fw-medium"><%= t("views.tags.sidebar.older", tag: @tag.name) %></div>
@@ -84,7 +84,7 @@
                   <a href="<%= tag_url(@tag, n) %>" class="olderposts-pagenumber"><%= n %></a>
               <% end %>
             <% end %>
-            <% if @page == 1 && number_of_pages > 100 %>
+            <% if @page == 1 && number_of_pages >= Stories::TaggedArticlesController::MAX_PAGE %>
               <div>
                 …<a href="<%= tag_url(@tag, 75) %>" class="olderposts-pagenumber">75</a>
                 …<a href="<%= tag_url(@tag, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>

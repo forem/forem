@@ -206,6 +206,13 @@ module ApplicationHelper
     ForemNative.beautified_url(url) || legacy_beautified_url(url)
   end
 
+  # JSON for a `<script type="application/ld+json">` block, identical to `data.to_json`. Article
+  # JSON-LD embeds the rendered article and comment HTML, so ActiveSupport's whole-document
+  # HTML-entity escaping passes are a measurable share of signed-out article renders.
+  def structured_data_json(data)
+    native_structured_data_json(data) || legacy_structured_data_json(data)
+  end
+
   def org_bg_or_white(org)
     org&.bg_color_hex ? org.bg_color_hex : "#ffffff"
   end
@@ -607,6 +614,19 @@ module ApplicationHelper
   end
 
   private
+
+  # ForemNative mirrors ActiveSupport's default JSONGemEncoder, so only use it while that encoder
+  # is in place. It returns nil for Floats, Times, SafeBuffers, and other values needing as_json.
+  def native_structured_data_json(data)
+    encoding = ActiveSupport::JSON::Encoding
+    return unless encoding.json_encoder == encoding::JSONGemEncoder
+
+    ForemNative.encode_json(data, escape_html_entities: encoding.escape_html_entities_in_json)
+  end
+
+  def legacy_structured_data_json(data)
+    data.to_json
+  end
 
   def legacy_beautified_url(url)
     url.sub(%r{\A((https?|ftp):/)?/}, "").sub(/\?.*/, "").chomp("/")

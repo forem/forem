@@ -32,8 +32,7 @@ RSpec.describe "Flagging users from profile pages" do
       sign_in trusted_user
 
       visit user_profile_path(trusted_user.username)
-      click_on(id: "user-profile-dropdown")
-      expect(page).to have_no_link("Flag @#{trusted_user.username}")
+      expect(page).to have_no_selector("#user-profile-dropdownmenu-flag-button", visible: :all)
 
       visit user_profile_path(user.username)
       click_on(id: "user-profile-dropdown")
