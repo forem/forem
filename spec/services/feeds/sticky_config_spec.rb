@@ -26,13 +26,15 @@ RSpec.describe Feeds::StickyConfig do
 
   describe "selection" do
     it "starts a fixed 60-hour assignment without rewarding the initial load" do
-      Timecop.freeze do
+      Timecop.freeze(Time.current.change(nsec: 123_456_789)) do
         selector = sticky_selector
         expect(selector.select).to eq(config)
         record_visit(selector)
 
         expect(FeedConfigAssignment.find_by!(user: user)).to have_attributes(
-          feed_config_id: config.id, expires_at: 60.hours.from_now, last_rewarded_at: Time.current,
+          feed_config_id: config.id,
+          expires_at: be_within(0.000001).of(60.hours.from_now),
+          last_rewarded_at: be_within(0.000001).of(Time.current),
         )
         expect(config.reload.feed_repeat_visits_count).to eq(0)
       end
@@ -66,9 +68,9 @@ RSpec.describe Feeds::StickyConfig do
 
     it "supports a custom assignment duration" do
       allow(Settings::UserExperience).to receive(:feed_config_sticky_hours).and_return(12)
-      Timecop.freeze do
+      Timecop.freeze(Time.current.change(nsec: 123_456_789)) do
         sticky_selector.select
-        expect(FeedConfigAssignment.find_by!(user: user).expires_at).to eq(12.hours.from_now)
+        expect(FeedConfigAssignment.find_by!(user: user).expires_at).to be_within(0.000001).of(12.hours.from_now)
       end
     end
 
@@ -83,14 +85,14 @@ RSpec.describe Feeds::StickyConfig do
     end
 
     it "reassigns at expiry and starts a fresh cooldown even if the same config is selected" do
-      Timecop.freeze do
+      Timecop.freeze(Time.current.change(nsec: 123_456_789)) do
         assignment = create(:feed_config_assignment, user: user, feed_config: config,
                                                      expires_at: Time.current, last_rewarded_at: 1.hour.ago)
         selector = sticky_selector
         selector.select
         record_visit(selector)
 
-        expect(assignment.reload.expires_at).to eq(60.hours.from_now)
+        expect(assignment.reload.expires_at).to be_within(0.000001).of(60.hours.from_now)
         expect(config.reload.feed_repeat_visits_count).to eq(0)
       end
     end
@@ -130,6 +132,81 @@ RSpec.describe Feeds::StickyConfig do
     after do
       user.destroy!
       config.destroy!
+    end
+
+    def wait_for_database_lock(pid)
+      Timeout.timeout(10) do
+        loop do
+          blockers = ActiveRecord::Base.connection.select_value("SELECT cardinality(pg_blocking_pids(#{Integer(pid)}))")
+          break if blockers.positive?
+
+          sleep 0.01
+        end
+      end
+    end
+
+    it "protects an uncommitted assignment when archival starts before the assignment is visible" do
+      config.update!(created_at: 3.days.ago)
+      stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 0)
+      selector = sticky_selector
+      selected = Queue.new
+      release = Queue.new
+      archive_pid = Queue.new
+      allow(selector).to receive(:select_active_config).and_wrap_original do |method|
+        method.call.tap do
+          selected << true
+          release.pop
+        end
+      end
+
+      selection = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection { selector.select }
+      end
+      Timeout.timeout(10) { selected.pop }
+      archival = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do |connection|
+          archive_pid << connection.raw_connection.backend_pid
+          FeedConfig.archive_stale_configs!
+        end
+      end
+      wait_for_database_lock(Timeout.timeout(10) { archive_pid.pop })
+      expect(FeedConfigAssignment.where(user: user).pick(:feed_config_id)).to be_nil
+      release << true
+      expect(selection.value).to eq(config)
+      archival.value
+
+      expect(config.reload).not_to be_archived
+      expect(FeedConfigAssignment.find_by!(user: user).feed_config_id).to eq(config.id)
+      expect(record_visit(selector)).to be_present
+    ensure
+      release << true
+      [selection, archival].compact.each { |thread| thread.join(10) || thread.kill }
+    end
+
+    it "reselects when archival commits while selection is waiting for the config lock" do
+      alternative = create(:feed_config)
+      selector = sticky_selector
+      allow(FeedConfig).to receive(:select_for_feed).and_return(config, alternative)
+      selection_pid = Queue.new
+      selection = nil
+
+      config.with_lock do
+        config.update!(archived: true)
+        selection = Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection do |connection|
+            selection_pid << connection.raw_connection.backend_pid
+            selector.select
+          end
+        end
+        wait_for_database_lock(Timeout.timeout(10) { selection_pid.pop })
+      end
+
+      expect(selection.value).to eq(alternative)
+      expect(FeedConfigAssignment.find_by!(user: user).feed_config_id).to eq(alternative.id)
+      expect(record_visit(selector)).to be_present
+    ensure
+      selection&.join(10) || selection&.kill
+      alternative&.destroy!
     end
 
     it "creates only one assignment when first loads arrive on separate connections" do

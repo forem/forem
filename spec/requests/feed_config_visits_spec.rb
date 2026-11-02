@@ -166,6 +166,40 @@ RSpec.describe "Feed config visibility visits" do
     expect(config.reload.feed_repeat_visits_count).to eq(1)
   end
 
+  context "with production CSRF callbacks enabled" do
+    before do
+      # Metal omits the inherited CSRF callback in test. Load the endpoint under
+      # a protected base to exercise the same callback order as production.
+      protected_base = Class.new(ApplicationMetalController)
+      protected_base.protect_from_forgery with: :exception, prepend: true
+      protected_base.allow_forgery_protection = true
+      stub_const("ApplicationMetalController", protected_base)
+      stub_const("FeedConfigVisitsController", Class.new(protected_base))
+      load Rails.root.join("app/controllers/feed_config_visits_controller.rb")
+    end
+
+    it "authenticates a bearer request before checking its missing CSRF token" do
+      token
+      sign_out user
+      jwt = JWT.encode({ "user_id" => user.id }, Rails.application.secret_key_base, "HS256")
+      post feed_config_visits_path, params: params, headers: { "Authorization" => "Bearer #{jwt}" }
+      expect(response).to have_http_status(:ok)
+      expect(config.reload.feed_repeat_visits_count).to eq(1)
+    end
+
+    it "still rejects a session request without a CSRF token" do
+      expect { post feed_config_visits_path, params: params }.to raise_error(ActionController::InvalidAuthenticityToken)
+      expect(config.reload.feed_repeat_visits_count).to eq(0)
+    end
+
+    it "does not let an invalid bearer token bypass CSRF verification" do
+      expect do
+        post feed_config_visits_path, params: params, headers: { "Authorization" => "Bearer invalid" }
+      end.to raise_error(ActionController::InvalidAuthenticityToken)
+      expect(config.reload.feed_repeat_visits_count).to eq(0)
+    end
+  end
+
   [nil, "invalid", [], {}].each do |invalid|
     it "rejects a malformed event ID #{invalid.inspect}" do
       post feed_config_visits_path, params: params.merge(event_id: invalid), as: :json

@@ -227,6 +227,38 @@ describe('FeedConfigVisitTracker', () => {
     expect(window.fetch).toHaveBeenCalledTimes(6);
   });
 
+  it.each(['seconds', 'HTTP-date'])('preserves the final Retry-After %s deadline after exhausting retries', async (format) => {
+    window.fetch.mockResolvedValue(response(503));
+    tracker.start();
+    await flush();
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      jest.advanceTimersByTime(1000);
+      await flush();
+    }
+    const deadline = Date.now() + 1000 + 3600000;
+    window.fetch.mockResolvedValueOnce(response(429, {
+      'Retry-After': format === 'seconds' ? '3600' : new Date(deadline).toUTCString(),
+    }));
+    jest.advanceTimersByTime(1000);
+    await flush();
+    expect(window.fetch).toHaveBeenCalledTimes(6);
+    const exhaustedId = body(5).event_id;
+
+    jest.advanceTimersByTime(300000);
+    window.dispatchEvent(new Event('focus'));
+    await flush();
+    expect(window.fetch).toHaveBeenCalledTimes(6);
+    jest.advanceTimersByTime(3300000);
+    await flush();
+    expect(window.fetch).toHaveBeenCalledTimes(6);
+
+    window.fetch.mockResolvedValue(response());
+    window.dispatchEvent(new Event('focus'));
+    await flush();
+    expect(window.fetch).toHaveBeenCalledTimes(7);
+    expect(body(6).event_id).not.toBe(exhaustedId);
+  });
+
   it('times out hanging requests and reuses their event IDs', async () => {
     window.fetch.mockImplementationOnce((url, { signal }) => new Promise((resolve, reject) => {
       signal.addEventListener('abort', () => reject(new Error('aborted')));

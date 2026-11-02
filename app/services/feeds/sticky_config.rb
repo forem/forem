@@ -17,8 +17,8 @@ module Feeds
         now = Time.current
         @config = FeedConfig.active.find_by(id: @assignment.feed_config_id)
         if @config.nil? || @assignment.expires_at.nil? || @assignment.expires_at <= now
-          @config = select_random_config
-          @assignment.update!(feed_config: @config, expires_at: now + hours.hours, last_rewarded_at: nil)
+          @config = select_active_config
+          @assignment.update!(feed_config: @config, expires_at: Time.current + hours.hours, last_rewarded_at: nil)
         end
       end
       @config
@@ -29,6 +29,16 @@ module Feeds
     end
 
     private
+
+    def select_active_config
+      loop do
+        candidate = select_random_config
+        # Archival takes the same row lock. Recheck active status after waiting,
+        # and hold the lock until the assignment commits.
+        config = FeedConfig.active.lock.find_by(id: candidate.id)
+        return config if config
+      end
+    end
 
     def select_random_config
       FeedConfig.select_for_feed(user: @user, context_type: FeedEvent::CONTEXT_TYPE_HOME)

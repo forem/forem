@@ -139,15 +139,21 @@ class FeedConfig < ApplicationRecord
         .limit(ARCHIVE_TOP_LIMIT)
         .ids
 
-      bucket_scope
+      stale_configs = bucket_scope
         .where("created_at < ?", cutoff)
         .where.not(id: top_ids)
         .where(
           "NOT EXISTS (SELECT 1 FROM feed_config_assignments " \
           "WHERE feed_config_id = feed_configs.id AND expires_at > ?)", Time.current
         )
-        .in_batches(of: 1000)
-        .update_all(archived: true, updated_at: Time.current)
+      stale_configs.in_batches(of: 1000) do |batch|
+        transaction do
+          # Selection holds this same lock until its assignment commits. The
+          # subsequent UPDATE gets a fresh snapshot of those assignments.
+          locked_ids = batch.reorder(:id).lock.ids
+          stale_configs.where(id: locked_ids).update_all(archived: true, updated_at: Time.current)
+        end
+      end
     end
   end
 

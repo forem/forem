@@ -1,5 +1,5 @@
 class FeedConfigVisitsController < ApplicationMetalController
-  before_action :current_user_by_token, only: [:create]
+  prepend_before_action :current_user_by_token, only: [:create]
   skip_forgery_protection if: :token_authenticated?
   include ActionController::Head
 

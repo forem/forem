@@ -99,7 +99,7 @@ export class FeedConfigVisitTracker {
       if (!this.stopped && retryDelay !== null) {
         if (event.attempts >= MAX_ATTEMPTS) {
           this.pending = null;
-          this.nextVisitAt = Date.now() + 300000;
+          this.nextVisitAt = Date.now() + Math.max(300000, retryDelay);
         } else {
           this.nextAttemptAt = Date.now() + retryDelay;
           this.schedule(retryDelay);

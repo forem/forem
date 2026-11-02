@@ -52,7 +52,8 @@ Retry-After. The client uses the server's relative cooldown to avoid dependence
 on synchronized clocks.
 
 Delivery has one pending event with a stable UUID, a ten-second timeout, at most
-six attempts, and bounded backoff that honors Retry-After. Pending events pause
+six attempts, and bounded backoff that honors Retry-After, including the deadline
+on the final failed attempt before another visit can be sent. Pending events pause
 while offline, hidden, or detached and resume when appropriate. Permanent errors
 stop tracking that rendered feed. Delivery remains best effort: page replacement,
 retry exhaustion, or disabled JavaScript can lose an acknowledgement. An old
@@ -69,13 +70,18 @@ concurrent return cannot be overwritten. Before a nonzero denominator is first
 measured, return counts are retained and enter the score on that feedback refresh.
 Both automated and admin clones reset the counters.
 
+Automatic archival and new assignments coordinate through config row locks and
+recheck eligibility after waiting, preserving newly committed assignments.
 Automatic archival preserves configs with unexpired assignments so its two-day
 age threshold cannot truncate a 60-hour assignment. Manual archival or deletion
 invalidates proofs immediately; subsequent loads select a replacement. Assignment
 rows are reused per user/subforem, with user/subforem deletion cascading to them.
 
-Apply `20261102120000_add_sticky_feed_config_assignments.rb` before deploying the
-server, then serve the new browser bundle. Older clients can receive sticky
+Apply `20261102120000_add_sticky_feed_config_assignments.rb` and
+`20261102120001_add_indexes_to_feed_config_assignments.rb` before deploying the
+server, then serve the new browser bundle. The schema changes are transactional;
+the concurrent indexes are installed separately. Both unique indexes must exist
+before assignments are enabled. Older clients can receive sticky
 selections but do not acknowledge visibility or earn return credit. No API-versioned
 routes or public article JSON fields change.
 
