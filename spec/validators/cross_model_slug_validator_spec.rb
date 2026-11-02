@@ -113,4 +113,5 @@ RSpec.describe CrossModelSlugValidator do
       expect(page).to be_valid
     end
   end
+
 end
