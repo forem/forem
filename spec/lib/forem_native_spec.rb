@@ -4496,4 +4496,261 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "ApplicationMetalController & BillboardEvent Kernels (forem_core::metal)" do
+    describe ".verify_authenticity_token" do
+      let(:csrf_harness) do
+        Class.new(ApplicationMetalController) do
+          attr_accessor :mock_path, :mock_method, :mock_real_token
+
+          def request
+            @request ||= Struct.new(:env, :path, :request_method).new(
+              { ActionController::RequestForgeryProtection::CSRF_TOKEN => mock_real_token },
+              mock_path || "/bb_tabulations",
+              mock_method || "POST",
+            )
+          end
+
+          def generate_global_masked(real_raw)
+            global = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), real_raw, "!real_csrf_token")
+            mask_token(global)
+          end
+
+          def generate_real_masked(real_raw)
+            mask_token(real_raw)
+          end
+
+          def generate_per_form_masked(real_raw, path, method)
+            per_form = OpenSSL::HMAC.digest(
+              OpenSSL::Digest.new("SHA256"), real_raw, "#{path.chomp('/')}##{method.downcase}"
+            )
+            mask_token(per_form)
+          end
+        end.new
+      end
+
+      it "verifies global, real, unmasked, and per-form CSRF tokens and matches Rails across 1,000 random inputs" do
+        real_raw = SecureRandom.random_bytes(32)
+        encoded_real = Base64.urlsafe_encode64(real_raw, padding: false)
+        csrf_harness.mock_real_token = encoded_real
+
+        global_masked = csrf_harness.generate_global_masked(real_raw)
+        real_masked = csrf_harness.generate_real_masked(real_raw)
+        per_form_masked = csrf_harness.generate_per_form_masked(real_raw, "/bb_tabulations/", "PATCH")
+
+        expect(
+          [
+            described_class.verify_authenticity_token(global_masked, encoded_real),
+            described_class.verify_authenticity_token(real_masked, encoded_real),
+            described_class.verify_authenticity_token(encoded_real, encoded_real),
+            described_class.verify_authenticity_token(per_form_masked, encoded_real, "/bb_tabulations/", "PATCH"),
+            described_class.verify_authenticity_token(per_form_masked, encoded_real, "/bb_tabulations", "POST"),
+            described_class.verify_authenticity_token("", encoded_real),
+            described_class.verify_authenticity_token("invalid!base64", encoded_real),
+            described_class.verify_authenticity_token(global_masked, "short"),
+          ],
+        ).to eq([true, true, true, true, false, false, false, nil])
+
+        rng = Random.new(20_261_103)
+        paths = ["/bb_tabulations", "/bb_tabulations/", "/page_views", "/feed_events/"]
+        methods = %w[POST PUT PATCH DELETE]
+
+        1_000.times do |i|
+          raw_key = rng.bytes(32)
+          enc_key = Base64.urlsafe_encode64(raw_key, padding: rng.rand < 0.3)
+          path = paths.sample(random: rng)
+          method = methods.sample(random: rng)
+          per_form_enabled = rng.rand < 0.5
+
+          csrf_harness.mock_real_token = enc_key
+          csrf_harness.mock_path = path
+          csrf_harness.mock_method = method
+          csrf_harness.request.path = path
+          csrf_harness.request.request_method = method
+          csrf_harness.request.env[ActionController::RequestForgeryProtection::CSRF_TOKEN] = enc_key
+          allow(csrf_harness).to receive(:per_form_csrf_tokens).and_return(per_form_enabled)
+
+          candidate = case i % 7
+                      when 0 then csrf_harness.generate_global_masked(raw_key)
+                      when 1 then csrf_harness.generate_real_masked(raw_key)
+                      when 2 then enc_key
+                      when 3 then csrf_harness.generate_per_form_masked(raw_key, path, method)
+                      when 4 then csrf_harness.generate_per_form_masked(raw_key, "/other", method)
+                      when 5 then Base64.urlsafe_encode64(rng.bytes(rng.rand(1..80)), padding: rng.rand < 0.5)
+                      else "bad-token-#{i}-!@#"
+                      end
+
+          native_res = if per_form_enabled
+                         described_class.verify_authenticity_token(candidate, enc_key, path, method)
+                       else
+                         described_class.verify_authenticity_token(candidate, enc_key)
+                       end
+          rails_res = ActionController::RequestForgeryProtection.instance_method(:valid_authenticity_token?)
+            .bind_call(csrf_harness, {}, candidate)
+
+          expect(native_res).to eq(rails_res), "iteration #{i}: candidate=#{candidate.inspect}"
+          expect(csrf_harness.valid_authenticity_token?({}, candidate)).to eq(rails_res)
+        end
+      end
+    end
+
+    describe ".verify_hs256_jwt" do
+      let(:secret) { Rails.application.secret_key_base }
+      let(:metal_controller) { ApplicationMetalController.new }
+
+      it "verifies HS256 JWT tokens, rejects invalid/expired tokens, and matches JWT.decode across 1,000 inputs" do
+        now_sec = Time.now.to_i
+        valid_token = JWT.encode({ "user_id" => 42, "exp" => now_sec + 300 }, secret, "HS256")
+        expired_token = JWT.encode({ "user_id" => 42, "exp" => now_sec - 10 }, secret, "HS256")
+        wrong_secret_token = JWT.encode({ "user_id" => 42 }, "wrong_secret", "HS256")
+
+        expect(described_class.verify_hs256_jwt(valid_token, secret, now_sec))
+          .to eq({ "user_id" => 42, "exp" => now_sec + 300 })
+        expect(described_class.verify_hs256_jwt(expired_token, secret, now_sec)).to be(false)
+        expect(described_class.verify_hs256_jwt(wrong_secret_token, secret, now_sec)).to be(false)
+        expect(described_class.verify_hs256_jwt("invalid.token", secret, now_sec)).to be(false)
+
+        # Uncommon registered claim (`nbf`) defers to Ruby `JWT.decode`
+        nbf_token = JWT.encode({ "user_id" => 42, "nbf" => now_sec - 10 }, secret, "HS256")
+        expect(described_class.verify_hs256_jwt(nbf_token, secret, now_sec)).to be_nil
+        expect(metal_controller.decode_auth_token(nbf_token)).to eq({ "user_id" => 42, "nbf" => now_sec - 10 })
+
+        rng = Random.new(20_261_104)
+        1_000.times do |i|
+          token = case i % 5
+                  when 0
+                    JWT.encode({ "user_id" => rng.rand(1..1_000_000) }, secret, "HS256")
+                  when 1
+                    JWT.encode(
+                      { "user_id" => rng.rand(1..1_000_000), "exp" => now_sec + rng.rand(10..3600) },
+                      secret,
+                      "HS256",
+                    )
+                  when 2
+                    JWT.encode(
+                      { "user_id" => rng.rand(1..1_000_000), "exp" => now_sec - rng.rand(1..3600) },
+                      secret,
+                      "HS256",
+                    )
+                  when 3
+                    JWT.encode({ "user_id" => rng.rand(1..1_000_000) }, "bad_secret_#{i}", "HS256")
+                  else
+                    "malformed.#{i}.token"
+                  end
+
+          expected = metal_controller.__send__(:legacy_decode_auth_token, token)
+          actual = metal_controller.decode_auth_token(token)
+          expect(actual).to eq(expected), "iteration #{i}: token=#{token}"
+        end
+      end
+    end
+
+    describe ".billboard_event_update_sql and .billboard_event_insert_sql" do
+      it "matches legacy_add_impression_seconds_sql across 1,000 randomized inputs" do
+        rng = Random.new(20_261_105)
+        id_samples = [1, 42, "99", "  123  ", "42px", "px42", "-5", "1_000", "1__000", "", "   ", nil, [1], { a: 1 }]
+        user_samples = [nil, 1, 777, "888", ""]
+
+        1_000.times do |i|
+          id = id_samples.sample(random: rng)
+          uid = user_samples.sample(random: rng)
+          secs = rng.rand(1..60)
+          now = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand < 0.2 ? 0 : rng.rand(1..999_999)).utc
+          throttle = rng.rand(1..30).seconds
+
+          expected = BillboardEvent.__send__(
+            :legacy_add_impression_seconds_sql,
+            id: id, user_id: uid, now: now, seconds: secs, throttle: throttle,
+          )
+          actual = BillboardEvent.build_add_impression_seconds_sql(
+            id: id, user_id: uid, now: now, seconds: secs, throttle: throttle,
+          )
+          expect(actual).to eq(expected), "iteration #{i}: id=#{id.inspect} uid=#{uid.inspect}"
+        end
+      end
+
+      it "matches legacy_create_with_async_commit_sql across 1,000 randomized inputs and supports inline EXISTS" do
+        billboard = Billboard.new(id: 555)
+        now = Time.utc(2026, 11, 3, 17, 30, 0, 123_456)
+
+        # Inline WHERE EXISTS when billboard_id is passed without a Billboard model instance
+        inline_sql = BillboardEvent.build_create_with_async_commit_sql(
+          {
+            billboard_id: "555",
+            category: "impression",
+            context_type: "home",
+            user_id: 77,
+            article_id: "42",
+            geolocation: "US-NY",
+            user_agent: "Mozilla/5.0's test"
+          },
+          now: now,
+        )
+        expect(inline_sql).to include("SELECT 42, 'impression', 'home', 1")
+        expect(inline_sql).to end_with(
+          'WHERE EXISTS (SELECT 1 FROM "display_ads" WHERE "display_ads"."id" = 555) RETURNING "id"',
+        )
+
+        rng = Random.new(20_261_106)
+        categories = %w[impression click signup conversion invalid_cat] + [nil]
+        contexts = %w[home article email embed invalid_ctx] + [nil]
+        geos = [nil, "US-NY", "CA-ON", "O'Brien"]
+        uas = [nil, "Mozilla/5.0 (Macintosh)", "Custom'Agent\\1.0", ""]
+        article_ids = [nil, 42, "100", "", [1]]
+
+        1_000.times do |i|
+          cat = categories.sample(random: rng)
+          ctx = contexts.sample(random: rng)
+          # Use anonymous user for signup/conversion so legacy validation doesn't need DB queries
+          uid = %w[signup conversion].include?(cat) ? nil : [nil, 12, "34"].sample(random: rng)
+          attrs = {
+            billboard: rng.rand < 0.15 ? nil : billboard,
+            category: cat,
+            context_type: ctx,
+            user_id: uid,
+            article_id: article_ids.sample(random: rng),
+            geolocation: geos.sample(random: rng),
+            user_agent: uas.sample(random: rng)
+          }
+          ts = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand < 0.2 ? 0 : rng.rand(1..999_999)).utc
+
+          expected = BillboardEvent.__send__(:legacy_create_with_async_commit_sql, attrs, now: ts)
+          actual = BillboardEvent.build_create_with_async_commit_sql(attrs, now: ts)
+          expect(actual).to eq(expected), "iteration #{i}: attrs=#{attrs.inspect}"
+        end
+      end
+    end
+
+    describe ".origin_in_comma_list, .valid_uuid, and .feed_events_advisory_lock_key" do
+      it "matches legacy Ruby implementations across 1,000 randomized inputs" do
+        rng = Random.new(20_261_107)
+        origins_pool = [
+          "https://embed.example.com", "https://other.example.com",
+          "https://dev.to", "http://localhost:3000", ""
+        ]
+
+        1_000.times do |i|
+          raw_list = Array.new(rng.rand(0..5)) { "  #{origins_pool.sample(random: rng)} \t" }.join(",")
+          candidate = origins_pool.sample(random: rng)
+          expected_origin = raw_list.to_s.split(",").map(&:strip).reject(&:empty?).include?(candidate)
+          expect(described_class.origin_in_comma_list(candidate, raw_list)).to eq(expected_origin)
+
+          uuid_candidate = case i % 4
+                           when 0 then SecureRandom.uuid
+                           when 1 then SecureRandom.uuid.upcase
+                           when 2 then "#{SecureRandom.uuid}x"
+                           else "not-a-uuid-#{i}"
+                           end
+          expect(described_class.valid_uuid(uuid_candidate))
+            .to eq(Feeds::RecordConfigVisit::UUID_PATTERN.match?(uuid_candidate))
+          expect(Feeds::RecordConfigVisit.valid_uuid?(uuid_candidate))
+            .to eq(Feeds::RecordConfigVisit::UUID_PATTERN.match?(uuid_candidate))
+
+          uid = rng.rand(-1_000_000..10_000_000)
+          expected_lock = Digest::SHA256.digest("feed_events:#{uid}").unpack1("q>")
+          expect(described_class.feed_events_advisory_lock_key(uid)).to eq(expected_lock)
+        end
+      end
+    end
+  end
 end

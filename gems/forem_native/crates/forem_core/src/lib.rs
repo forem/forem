@@ -16,6 +16,7 @@ pub mod html;
 pub mod image;
 pub mod json;
 pub mod markdown;
+pub mod metal;
 pub(crate) mod psl_data;
 pub mod sanitize;
 pub mod scrubber;
