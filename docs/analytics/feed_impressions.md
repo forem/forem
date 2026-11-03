@@ -34,10 +34,11 @@ responses cannot reactivate tracking for a previous tab or route.
 
 The first visible acknowledgement starts the cooldown without credit. Further
 eligible acknowledgements increment `feed_repeat_visits_count`, with one rolling
-cooldown shared across tabs and devices. The default window allows at most 119
+cooldown shared across tabs and devices. Each assignment window allows at most 20
 repeat credits, excluding the initial display and the expiry instant. Selection
-on the ordinary branch earns no return credit. There is no additional reward cap
-or wait for the assignment window to finish.
+on the ordinary branch earns no return credit. Once an assignment reaches 20
+repeat credits, further visits return 204 without credit until the assignment
+window finishes and rotates.
 
 The server validates ownership, scope, signature, expiry, and active config under
 an assignment row lock. Receipt reservation, cooldown, counter, and score share a
@@ -60,8 +61,9 @@ retry exhaustion, or disabled JavaScript can lose an acknowledgement. An old
 rendered feed's proof stops earning credit when its assignment expires; another
 feed load is needed to receive a new assignment and proof.
 
-Each return adds 0.5 (half an unboosted, first-position click) to the existing
-success-score numerator. The denominator remains distinct impression users;
+Each return adds 1.0 (one unboosted, first-position click) to the existing
+success-score numerator for standard configurations, and 1.5 for `feed_power_user`
+configurations. The denominator remains distinct impression users;
 return credit does not change article scores or impression totals. Return counts
 and immediate score increments use one atomic config update without new Sidekiq
 jobs. Engagement feedback refreshes persist `feed_impression_users_count` and

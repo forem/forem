@@ -675,6 +675,16 @@ RSpec.describe FeedConfig, type: :model do
       expect(config.published_at_diversity_half_lookback_hours)
         .to eq(described_class::DEFAULT_FEED_LOOKBACK_DAYS * 12.0)
     end
+
+    it "resolves max_feed_lookback_hours against Subforem.cached_default_id when RequestStore is empty" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      expect(described_class.max_feed_lookback_hours).to eq(120)
+    end
   end
 
   describe ".targeting_bucket_for" do
@@ -1225,6 +1235,17 @@ RSpec.describe FeedConfig, type: :model do
         expect(zero_weight_config.base_score_sql(user)).to include("(articles.score * 2.0)")
         expect(zero_weight_config.base_score_sql(user)).not_to include("semantic_embedding")
       end
+    end
+  end
+
+  describe "#repeat_visit_score_multiplier" do
+    it "returns 1.0 for standard buckets and 1.5 for feed_power_user" do
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_ALL).repeat_visit_score_multiplier)
+        .to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_CASUAL_USER)
+        .repeat_visit_score_multiplier).to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_POWER_USER)
+        .repeat_visit_score_multiplier).to eq(1.5)
     end
   end
 end

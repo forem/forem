@@ -68,6 +68,18 @@ RSpec.describe Ai::SpamEscalationCheck do
       expect(requests.first[:state][:community]).to eq("A place for coders.")
     end
 
+    it "falls back to Subforem.cached_default_id when content has no subforem_id" do
+      allow(article).to receive(:subforem_id).and_return(nil)
+      allow(Subforem).to receive(:cached_default_id).and_return(1)
+      allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+        .with(subforem_id: 1).and_return("DEV default community spec.")
+      requests = stub_jev
+
+      check.escalate?
+
+      expect(requests.first[:state][:community]).to eq("DEV default community spec.")
+    end
+
     it "does not escalate when every answer is below the threshold" do
       stub_jev(spam: 0.1, offplatform_contact: 0.1)
 

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useState } from 'preact/hooks';
 import classNames from 'classnames/bind';
-import { Icon } from '@crayons';
+import { Icon } from '@crayons/Icons';
 import XIcon from '@images/x.svg';
 
 export const Pill = ({
