@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_03_163000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -838,6 +838,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.datetime "expires_at"
     t.bigint "feed_config_id"
     t.datetime "last_rewarded_at"
+    t.integer "repeat_visits_count", default: 0, null: false
     t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false

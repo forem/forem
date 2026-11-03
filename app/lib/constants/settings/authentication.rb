@@ -27,6 +27,9 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.blocked.description"),
             placeholder: "seo-hunt.com"
           },
+          captcha_provider: {
+            description: I18n.t("lib.constants.settings.authentication.captcha_provider.description")
+          },
           display_email_domain_allow_list_publicly: {
             description: I18n.t("lib.constants.settings.authentication.display_list.description")
           },
@@ -97,6 +100,14 @@ module Constants
           require_captcha_for_email_password_registration: {
             description: I18n.t("lib.constants.settings.authentication.require_recaptcha.description"),
             placeholder: ""
+          },
+          turnstile_site_key: {
+            description: I18n.t("lib.constants.settings.authentication.turnstile_site.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.turnstile_site.placeholder")
+          },
+          turnstile_secret_key: {
+            description: I18n.t("lib.constants.settings.authentication.turnstile_secret.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.turnstile_secret.placeholder")
           },
           twitter_key: {
             description: I18n.t("lib.constants.settings.authentication.twitter_key.description"),

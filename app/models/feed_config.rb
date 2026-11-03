@@ -1,7 +1,8 @@
 class FeedConfig < ApplicationRecord
   LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
-  REPEAT_VISIT_SCORE_MULTIPLIER = 0.5
+  REPEAT_VISIT_SCORE_MULTIPLIER = 1.0
+  POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER = 1.5
 
   BUCKET_ALL = "all".freeze
   BUCKET_FEED_NEW_USER = "feed_new_user".freeze
@@ -179,6 +180,13 @@ class FeedConfig < ApplicationRecord
     days * 24
   end
 
+  def self.repeat_visit_score_multiplier_sql
+    power_user_bucket = targeting_buckets.fetch(BUCKET_FEED_POWER_USER)
+    "CASE WHEN targeting_bucket = #{power_user_bucket} " \
+      "THEN #{POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER} " \
+      "ELSE #{REPEAT_VISIT_SCORE_MULTIPLIER} END"
+  end
+
   def self.record_repeat_visit(config_id)
     # Use the last measured impression-user denominator, just as the engagement
     # score does. Normal feedback refreshes reconcile it with any new viewers.
@@ -188,7 +196,7 @@ class FeedConfig < ApplicationRecord
       "feed_repeat_visits_count = feed_repeat_visits_count + 1, " \
       "feed_success_score = COALESCE(feed_success_score, 0) + " \
       "CASE WHEN feed_impression_users_count > 0 " \
-      "THEN #{REPEAT_VISIT_SCORE_MULTIPLIER} / feed_impression_users_count ELSE 0 END",
+      "THEN (#{repeat_visit_score_multiplier_sql}) / feed_impression_users_count ELSE 0 END",
     )
   end
 
@@ -253,6 +261,14 @@ class FeedConfig < ApplicationRecord
       bucket_scope.first_or_create
   end
   private_class_method :select_for_targeted_bucket
+
+  def repeat_visit_score_multiplier
+    if bucket_feed_power_user?
+      POWER_USER_REPEAT_VISIT_SCORE_MULTIPLIER
+    else
+      REPEAT_VISIT_SCORE_MULTIPLIER
+    end
+  end
 
   def score_sql(user, include_semantic: true)
     ForemNative.feed_config_score_sql(*native_score_sql_payload(user, include_semantic: include_semantic)) ||

@@ -50,6 +50,9 @@ en:
             description: The "Secret" portion of the MyMLH applications portal
           providers:
             description: How can users sign in?
+          captcha_provider:
+            label: CAPTCHA provider
+            description: Select the provider for email/password signup and report-abuse forms. Only the selected provider's keys are used.
           recaptcha_secret:
             description: Add the secret key for Google reCAPTCHA, which is used for reporting abuse
             placeholder: What is the Google reCAPTCHA secret key?
@@ -57,7 +60,16 @@ en:
             description: Add the site key for Google reCAPTCHA, which is used for reporting abuse
             placeholder: What is the Google reCAPTCHA site key?
           require_recaptcha:
-            description: People will be required to fill out a captcha when they're creating a new account in your community
+            label: Enable CAPTCHA for email password registration
+            description: Require CAPTCHA for email/password signup. This checkbox does not control CAPTCHA on report-abuse forms.
+          turnstile_site:
+            label: Cloudflare Turnstile site key
+            description: The public site key for your Cloudflare Turnstile widget, used on signup and report-abuse forms when Turnstile is selected.
+            placeholder: What is the Cloudflare Turnstile site key?
+          turnstile_secret:
+            label: Cloudflare Turnstile secret key
+            description: The private secret key used to verify Cloudflare Turnstile responses on the server.
+            placeholder: What is the Cloudflare Turnstile secret key?
           twitter_key:
             description: The "API key" portion of consumer keys in the Twitter developer portal.
           twitter_secret:
@@ -262,7 +274,7 @@ en:
             description: Percentage of home-feed loads that use the assigned configuration. Other loads use normal selection. Set to 0 to disable sticky feeds.
           feed_config_repeat_visit_minutes:
             label: Repeat home-feed visit interval (minutes)
-            description: Minimum time between credited visible visits to the assigned home feed. Each return adds half a click to its success score; the first visible visit earns no credit.
+            description: Minimum time between credited visible visits to the assigned home feed (capped at 20 repeat visits per assignment). Each return adds 1 click (1.5 for power-user configurations) to its success score; the first visible visit earns no credit.
           feed_repeat_visits:
             label: Repeat home-feed visits
           home_feed:

@@ -57,6 +57,8 @@ module Feeds
     end
 
     def record_event(assignment)
+      return if assignment.repeat_visits_count >= FeedConfigAssignment::MAX_REPEAT_VISITS
+
       interval = Settings::UserExperience.feed_config_repeat_visit_minutes(
         subforem_id: assignment.subforem_id,
       ).minutes
@@ -68,7 +70,10 @@ module Feeds
       elsif inserted && assignment.last_rewarded_at <= @now - interval
         return if FeedConfig.record_repeat_visit(assignment.feed_config_id).zero?
 
-        assignment.update!(last_rewarded_at: @now)
+        assignment.update!(
+          last_rewarded_at: @now,
+          repeat_visits_count: assignment.repeat_visits_count + 1,
+        )
       end
       assignment.last_rewarded_at + interval if assignment.last_rewarded_at
     end
