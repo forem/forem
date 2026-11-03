@@ -70,6 +70,14 @@ en:
             label: Cloudflare Turnstile secret key
             description: The private secret key used to verify Cloudflare Turnstile responses on the server.
             placeholder: What is the Cloudflare Turnstile secret key?
+          hcaptcha_site:
+            label: hCaptcha site key
+            description: The public site key for your visible hCaptcha widget, used on signup and report-abuse forms when hCaptcha is selected.
+            placeholder: What is the hCaptcha site key?
+          hcaptcha_secret:
+            label: hCaptcha secret key
+            description: The private secret key used to verify hCaptcha responses on the server.
+            placeholder: What is the hCaptcha secret key?
           twitter_key:
             description: The "API key" portion of consumer keys in the Twitter developer portal.
           twitter_secret:

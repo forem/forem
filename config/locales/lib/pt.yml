@@ -70,6 +70,14 @@ pt:
             label: Chave secreta do Cloudflare Turnstile
             description: A chave secreta privada usada para verificar as respostas do Cloudflare Turnstile no servidor.
             placeholder: Qual é a chave secreta do Cloudflare Turnstile?
+          hcaptcha_site:
+            label: Chave do site do hCaptcha
+            description: A chave pública do site do seu widget hCaptcha visível, usada nos cadastros e nas denúncias de abuso quando o hCaptcha está selecionado.
+            placeholder: Qual é a chave do site do hCaptcha?
+          hcaptcha_secret:
+            label: Chave secreta do hCaptcha
+            description: A chave secreta privada usada para verificar as respostas do hCaptcha no servidor.
+            placeholder: Qual é a chave secreta do hCaptcha?
           twitter_key:
             description: A parte "API key" das chaves de consumidor no portal de desenvolvedor do Twitter.
           twitter_secret:
