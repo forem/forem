@@ -22,7 +22,7 @@ module Spam
         BlockedEmailDomain.find_or_create_by(domain: domain)
 
         User.where("email LIKE ?", "%@#{domain}").find_each do |user|
-          next if user.spam? || user.suspended?
+          next if user.spam? || user.suspended? || user.member_of_minimum_indexed_organization?
 
           user.add_role(:suspended)
           Spam::Handler.audit_automatic_block!(user: user, role: :suspended, reason: "email_domain", domain: domain)
