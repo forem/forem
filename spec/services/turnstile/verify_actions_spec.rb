@@ -32,4 +32,11 @@ RSpec.describe Turnstile::Verify do
 
     it { is_expected.to be(false) }
   end
+
+  [EOFError, IOError].each do |error|
+    it "rejects an interrupted connection raising #{error}" do
+      stub_request(:post, described_class::ENDPOINT).to_raise(error)
+      expect(verified).to be(false)
+    end
+  end
 end
