@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_03_195500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -838,6 +838,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.datetime "expires_at"
     t.bigint "feed_config_id"
     t.datetime "last_rewarded_at"
+    t.integer "repeat_visits_count", default: 0, null: false
     t.bigint "subforem_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -894,6 +895,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.datetime "updated_at", null: false
     t.float "user_follow_weight", default: 1.0
     t.index ["feed_success_score"], name: "index_feed_configs_on_active_feed_success_score", order: :desc, where: "(archived = false)"
+    t.index ["targeting_bucket", "feed_success_score"], name: "index_feed_configs_on_active_bucket_and_success_score", order: :desc, where: "(archived = false)"
   end
 
   create_table "feed_event_receipts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1860,6 +1862,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_02_120001) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
+    t.index ["article_id"], name: "index_tag_adjustments_on_article_id"
   end
 
   create_table "tag_subforem_relationships", force: :cascade do |t|

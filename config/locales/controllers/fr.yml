@@ -135,6 +135,7 @@ fr:
     not_upserted_successfully: Pas d'insertion réussie
   registrations_controller:
     error:
+      captcha: Vous devez effectuer la vérification CAPTCHA.
       recaptcha: Vous devez remplir le recaptcha ✅
       domain: n'est pas inclus dans les domaines autorisés.
   response_templates_controller:

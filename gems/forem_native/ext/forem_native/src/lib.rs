@@ -2147,6 +2147,460 @@ fn sanitize_feed_error(message: RString) -> Option<String> {
     Some(forem_core::feed::sanitize_feed_error(text))
 }
 
+fn verify_authenticity_token(
+    ruby: &Ruby,
+    encoded_masked: RString,
+    encoded_real: RString,
+    action_path: Option<RString>,
+    request_method: Option<RString>,
+) -> Option<bool> {
+    if !is_ascii_compatible_host(ruby, encoded_masked)
+        || !is_ascii_compatible_host(ruby, encoded_real)
+    {
+        return None;
+    }
+    if let Some(p) = action_path {
+        if !is_ascii_compatible_host(ruby, p) {
+            return None;
+        }
+    }
+    if let Some(m) = request_method {
+        if !is_ascii_compatible_host(ruby, m) {
+            return None;
+        }
+    }
+    // SAFETY: Zero-copy `RString` slice borrows; `forem_core` never calls into Ruby.
+    unsafe {
+        forem_core::metal::verify_authenticity_token(
+            encoded_masked.as_slice(),
+            encoded_real.as_slice(),
+            action_path.as_ref().map(|p| p.as_slice()),
+            request_method.as_ref().map(|m| m.as_slice()),
+        )
+    }
+}
+
+fn verify_hs256_jwt(ruby: &Ruby, token: RString, secret: RString, now_sec: i64) -> Value {
+    if !is_ascii_compatible_host(ruby, token) || !is_ascii_compatible_host(ruby, secret) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Zero-copy `RString` slice borrows; `forem_core` never calls into Ruby, and
+    // the borrows end before allocating the Ruby Hash.
+    let outcome = unsafe {
+        forem_core::metal::verify_hs256_jwt(token.as_slice(), secret.as_slice(), now_sec)
+    };
+    match outcome {
+        forem_core::metal::JwtVerifyOutcome::Invalid => ruby.qfalse().as_value(),
+        forem_core::metal::JwtVerifyOutcome::DeferToRuby => ruby.qnil().as_value(),
+        forem_core::metal::JwtVerifyOutcome::Valid(claims) => {
+            let hash = ruby.hash_new_capa(claims.len());
+            for (k, v) in claims {
+                let key_val = ruby.str_new(&k);
+                let val_obj = match v {
+                    forem_core::metal::JwtClaimValue::Int(n) => ruby.integer_from_i64(n).as_value(),
+                    forem_core::metal::JwtClaimValue::Str(s) => ruby.str_new(&s).as_value(),
+                    forem_core::metal::JwtClaimValue::Bool(true) => ruby.qtrue().as_value(),
+                    forem_core::metal::JwtClaimValue::Bool(false) => ruby.qfalse().as_value(),
+                    forem_core::metal::JwtClaimValue::Null => ruby.qnil().as_value(),
+                };
+                if hash.aset(key_val, val_obj).is_err() {
+                    return ruby.qnil().as_value();
+                }
+            }
+            hash.as_value()
+        }
+    }
+}
+
+fn cast_ar_bigint_value(ruby: &Ruby, val: Value) -> forem_core::metal::ActiveRecordIntCast {
+    use forem_core::metal::ActiveRecordIntCast;
+    if val.is_nil() {
+        return ActiveRecordIntCast::Null;
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return match int.to_i64() {
+            Ok(n) => ActiveRecordIntCast::Value(n),
+            Err(_) => ActiveRecordIntCast::DeferToRuby,
+        };
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return ActiveRecordIntCast::DeferToRuby;
+        }
+        // SAFETY: Zero-copy `RString` slice borrow; `forem_core` never touches the Ruby VM.
+        return forem_core::metal::cast_active_record_bigint_bytes(unsafe { rstr.as_slice() });
+    }
+    if let Some(fl) = Float::from_value(val) {
+        let f = fl.to_f64();
+        if f.is_finite() && f >= (i64::MIN as f64) && f < (i64::MAX as f64) {
+            return ActiveRecordIntCast::Value(f as i64);
+        }
+        return ActiveRecordIntCast::DeferToRuby;
+    }
+    if Qtrue::from_value(val).is_some() {
+        return ActiveRecordIntCast::Value(1);
+    }
+    if Qfalse::from_value(val).is_some() {
+        return ActiveRecordIntCast::Value(0);
+    }
+    if RArray::from_value(val).is_some()
+        || RHash::from_value(val).is_some()
+        || Symbol::from_value(val).is_some()
+    {
+        return ActiveRecordIntCast::Null;
+    }
+    ActiveRecordIntCast::DeferToRuby
+}
+
+#[allow(clippy::too_many_arguments)]
+fn billboard_event_update_sql(
+    ruby: &Ruby,
+    id: Value,
+    user_id: Value,
+    seconds: i64,
+    now_sec: i64,
+    now_usec: u32,
+    cutoff_sec: i64,
+    cutoff_usec: u32,
+) -> Value {
+    use forem_core::metal::ActiveRecordIntCast;
+    let event_id = match cast_ar_bigint_value(ruby, id) {
+        ActiveRecordIntCast::Null => return ruby.to_symbol("invalid").as_value(),
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => v,
+    };
+    let uid = match cast_ar_bigint_value(ruby, user_id) {
+        ActiveRecordIntCast::Null => None,
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => Some(v),
+    };
+    match forem_core::metal::billboard_event_update_sql(
+        event_id,
+        uid,
+        seconds,
+        now_sec,
+        now_usec,
+        cutoff_sec,
+        cutoff_usec,
+    ) {
+        Some(sql) => ruby.str_new(&sql).as_value(),
+        None => ruby.qnil().as_value(),
+    }
+}
+
+fn extract_optional_header_utf8_string(ruby: &Ruby, val: Value) -> Option<Option<String>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let s = RString::from_value(val)?;
+    if !is_ascii_compatible_host(ruby, s) {
+        return None;
+    }
+    // SAFETY: Copy out short header bytes before any Ruby allocation.
+    std::str::from_utf8(unsafe { s.as_slice() })
+        .ok()
+        .map(|t| Some(t.to_owned()))
+}
+
+fn billboard_event_insert_sql(ruby: &Ruby, args: RArray) -> Value {
+    use forem_core::metal::{
+        ActiveRecordIntCast, BillboardEventInsert, BillboardEventInsertOutcome,
+    };
+    let items: Vec<Value> = unsafe { args.as_slice() }.to_vec();
+    if items.len() != 12 {
+        return ruby.qnil().as_value();
+    }
+
+    let display_ad_id = match cast_ar_bigint_value(ruby, items[0]) {
+        ActiveRecordIntCast::Null => return ruby.to_symbol("invalid").as_value(),
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => v,
+    };
+
+    let category = match extract_optional_utf8_string(items[1]) {
+        Some(Some(s)) => s,
+        Some(None) => return ruby.to_symbol("invalid").as_value(),
+        None => return ruby.qnil().as_value(),
+    };
+    let context_type = match extract_optional_utf8_string(items[2]) {
+        Some(Some(s)) => s,
+        Some(None) => return ruby.to_symbol("invalid").as_value(),
+        None => return ruby.qnil().as_value(),
+    };
+
+    let user_id = match cast_ar_bigint_value(ruby, items[3]) {
+        ActiveRecordIntCast::Null => None,
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => Some(v),
+    };
+    let article_id = match cast_ar_bigint_value(ruby, items[4]) {
+        ActiveRecordIntCast::Null => None,
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => match i32::try_from(v) {
+            Ok(i) => Some(i),
+            Err(_) => return ruby.qnil().as_value(),
+        },
+    };
+
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, items[5]) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(user_agent) = extract_optional_header_utf8_string(ruby, items[6]) else {
+        return ruby.qnil().as_value();
+    };
+
+    let counts_for = match cast_ar_bigint_value(ruby, items[7]) {
+        ActiveRecordIntCast::Null => 1,
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => match i32::try_from(v) {
+            Ok(i) => i,
+            Err(_) => return ruby.qnil().as_value(),
+        },
+    };
+    let seconds_visible = match cast_ar_bigint_value(ruby, items[8]) {
+        ActiveRecordIntCast::Null => 10,
+        ActiveRecordIntCast::DeferToRuby => return ruby.qnil().as_value(),
+        ActiveRecordIntCast::Value(v) => match i32::try_from(v) {
+            Ok(i) => i,
+            Err(_) => return ruby.qnil().as_value(),
+        },
+    };
+
+    let Some(now_sec) = Integer::from_value(items[9]).and_then(|i| i.to_i64().ok()) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(now_usec) = Integer::from_value(items[10]).and_then(|i| i.to_u32().ok()) else {
+        return ruby.qnil().as_value();
+    };
+    let verify_billboard_exists = Qtrue::from_value(items[11]).is_some();
+
+    let outcome = forem_core::metal::billboard_event_insert_sql(&BillboardEventInsert {
+        display_ad_id,
+        category: &category,
+        context_type: &context_type,
+        user_id,
+        article_id,
+        geolocation: geolocation.as_deref(),
+        user_agent: user_agent.as_deref(),
+        counts_for,
+        seconds_visible,
+        now_sec,
+        now_usec,
+        verify_billboard_exists,
+    });
+
+    match outcome {
+        BillboardEventInsertOutcome::Sql(sql) => ruby.str_new(&sql).as_value(),
+        BillboardEventInsertOutcome::Invalid => ruby.to_symbol("invalid").as_value(),
+        BillboardEventInsertOutcome::DeferToRuby => ruby.qnil().as_value(),
+    }
+}
+
+fn origin_in_comma_list(ruby: &Ruby, origin: RString, raw_list: RString) -> Option<bool> {
+    if !is_ascii_compatible_host(ruby, origin) || !is_ascii_compatible_host(ruby, raw_list) {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` slice borrows; `forem_core` never calls into Ruby.
+    unsafe {
+        Some(forem_core::metal::origin_in_comma_list(
+            origin.as_slice(),
+            raw_list.as_slice(),
+        ))
+    }
+}
+
+fn valid_uuid(ruby: &Ruby, value: RString) -> Option<bool> {
+    if !is_ascii_compatible_host(ruby, value) {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` slice borrow; `forem_core` never calls into Ruby.
+    unsafe { Some(forem_core::metal::is_valid_uuid(value.as_slice())) }
+}
+
+fn feed_events_advisory_lock_key(user_id: i64) -> i64 {
+    forem_core::metal::feed_events_advisory_lock_key(user_id)
+}
+
+fn valid_request_origin(
+    ruby: &Ruby,
+    referer: Value,
+    origin: Value,
+    base_url: Value,
+    request_host: Value,
+    request_port: Value,
+) -> Value {
+    use forem_core::metal::OriginValidation;
+
+    let extract_ascii_bytes = |v: Value| -> Result<Option<Vec<u8>>, ()> {
+        if v.is_nil() {
+            return Ok(None);
+        }
+        let s = RString::from_value(v).ok_or(())?;
+        if !is_ascii_compatible_host(ruby, s) {
+            return Err(());
+        }
+        // SAFETY: Copy out short header bytes so no borrow spans across Ruby calls.
+        Ok(Some(unsafe { s.as_slice().to_vec() }))
+    };
+
+    let ref_bytes = match extract_ascii_bytes(referer) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let orig_bytes = match extract_ascii_bytes(origin) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let base_bytes = match extract_ascii_bytes(base_url) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let host_bytes = match extract_ascii_bytes(request_host) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let Some(port_val) = extract_optional_i64(request_port) else {
+        return ruby.qnil().as_value();
+    };
+
+    match forem_core::metal::valid_request_origin(
+        ref_bytes.as_deref(),
+        orig_bytes.as_deref(),
+        base_bytes.as_deref(),
+        host_bytes.as_deref(),
+        port_val,
+    ) {
+        Some(OriginValidation::Valid) => ruby.qtrue().as_value(),
+        Some(OriginValidation::Invalid) => ruby.qfalse().as_value(),
+        Some(OriginValidation::NullOrigin) => ruby.to_symbol("null_origin").as_value(),
+        None => ruby.qnil().as_value(),
+    }
+}
+
+fn extract_referrer_domain_and_path(ruby: &Ruby, referrer: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, referrer) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: `referrer` is not mutated during `extract_referrer_domain_and_path`.
+    let outcome =
+        unsafe { forem_core::metal::extract_referrer_domain_and_path(referrer.as_slice()) };
+    match outcome {
+        Some((domain, path)) => {
+            let arr = ruby.ary_new_capa(2);
+            let dom_val = match domain {
+                Some(d) => ruby.str_new(&d).as_value(),
+                None => ruby.qnil().as_value(),
+            };
+            let _ = arr.push(dom_val);
+            let _ = arr.push(ruby.str_new(&path));
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
+}
+
+fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> Value {
+    use forem_core::metal::MetalTelemetryRoute;
+
+    if !is_ascii_compatible_host(ruby, method) || !is_ascii_compatible_host(ruby, path) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Copy result before allocating Ruby symbols/strings.
+    let matched = unsafe {
+        forem_core::metal::match_metal_telemetry_route(method.as_slice(), path.as_slice()).map(
+            |route| match route {
+                MetalTelemetryRoute::BillboardUpdate(id) => (0u8, Some(id.to_owned())),
+                MetalTelemetryRoute::BillboardCreate => (1u8, None),
+                MetalTelemetryRoute::PageViewUpdate(id) => (2u8, Some(id.to_owned())),
+                MetalTelemetryRoute::PageViewCreate => (3u8, None),
+            },
+        )
+    };
+    match matched {
+        Some((kind, id_opt)) => {
+            let sym_name = match kind {
+                0 => "billboard_update",
+                1 => "billboard_create",
+                2 => "page_view_update",
+                _ => "page_view_create",
+            };
+            let arr = ruby.ary_new_capa(2);
+            let _ = arr.push(ruby.to_symbol(sym_name));
+            match id_opt {
+                Some(id) => {
+                    let _ = arr.push(ruby.str_new(&id));
+                }
+                None => {
+                    let _ = arr.push(ruby.qnil());
+                }
+            }
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn billboard_event_create_from_json_sql(
+    ruby: &Ruby,
+    json_body: RString,
+    user_id_val: Value,
+    geolocation_val: Value,
+    header_ua_val: Value,
+    is_embed: bool,
+    now_sec: i64,
+    now_usec: u32,
+) -> Value {
+    use forem_core::metal::BillboardJsonCreateOutcome;
+
+    if !is_ascii_compatible_host(ruby, json_body) {
+        return ruby.qnil().as_value();
+    }
+    let Some(user_id) = extract_optional_i64(user_id_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, geolocation_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(header_ua) = extract_optional_header_utf8_string(ruby, header_ua_val) else {
+        return ruby.qnil().as_value();
+    };
+
+    // SAFETY: `json_body` is not mutated during `billboard_event_create_from_json_sql`.
+    let outcome = unsafe {
+        forem_core::metal::billboard_event_create_from_json_sql(
+            json_body.as_slice(),
+            user_id,
+            geolocation.as_deref(),
+            header_ua.as_deref(),
+            is_embed,
+            now_sec,
+            now_usec,
+        )
+    };
+
+    match outcome {
+        Some(BillboardJsonCreateOutcome::BlankId) => ruby.to_symbol("blank_id").as_value(),
+        Some(BillboardJsonCreateOutcome::Parsed {
+            sql,
+            raw_billboard_id,
+        }) => {
+            let arr = ruby.ary_new_capa(2);
+            match sql {
+                Some(s) => {
+                    let _ = arr.push(ruby.str_new(&s));
+                }
+                None => {
+                    let _ = arr.push(ruby.to_symbol("invalid"));
+                }
+            }
+            let _ = arr.push(ruby.str_new(&raw_billboard_id));
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -2378,5 +2832,39 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method("format_feed_tags", function!(format_feed_tags, 1))?;
     native_mod.define_singleton_method("extract_feed_author", function!(extract_feed_author, 1))?;
     native_mod.define_singleton_method("sanitize_feed_error", function!(sanitize_feed_error, 1))?;
+    native_mod.define_singleton_method(
+        "verify_authenticity_token",
+        function!(verify_authenticity_token, 4),
+    )?;
+    native_mod.define_singleton_method("verify_hs256_jwt", function!(verify_hs256_jwt, 3))?;
+    native_mod.define_singleton_method(
+        "billboard_event_update_sql",
+        function!(billboard_event_update_sql, 7),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_event_insert_sql",
+        function!(billboard_event_insert_sql, 1),
+    )?;
+    native_mod
+        .define_singleton_method("origin_in_comma_list", function!(origin_in_comma_list, 2))?;
+    native_mod.define_singleton_method("valid_uuid", function!(valid_uuid, 1))?;
+    native_mod.define_singleton_method(
+        "feed_events_advisory_lock_key",
+        function!(feed_events_advisory_lock_key, 1),
+    )?;
+    native_mod
+        .define_singleton_method("valid_request_origin", function!(valid_request_origin, 5))?;
+    native_mod.define_singleton_method(
+        "extract_referrer_domain_and_path",
+        function!(extract_referrer_domain_and_path, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "match_metal_telemetry_route",
+        function!(match_metal_telemetry_route, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_event_create_from_json_sql",
+        function!(billboard_event_create_from_json_sql, 7),
+    )?;
     Ok(())
 }

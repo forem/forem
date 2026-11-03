@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "Feed comment preview loading" do
-  let(:author) { create(:user) }
-  let(:viewer) { create(:user) }
+  let(:author) { create(:user, :without_profile, profile_image: nil) }
+  let(:viewer) { create(:user, :without_profile, profile_image: nil) }
   let(:articles) { create_list(:article, 2, user: author, featured: true, score: 100, tags: "ruby") }
   let(:comments) do
     articles.flat_map do |article|
-      Array.new(6) do |index|
+      Array.new(4) do |index|
         create(:comment, commentable: article, user: author, score: 20,
                          body_markdown: "Preview #{article.id}-#{index}", created_at: (10 - index).minutes.ago)
       end
@@ -53,16 +53,28 @@ RSpec.describe "Feed comment preview loading" do
 
   %w[basic configured weighted large_forem_experimental].each do |strategy|
     context "with the #{strategy} strategy" do
-      before { allow(Settings::UserExperience).to receive(:feed_strategy).and_return(strategy) }
+      around do |example|
+        original = ActionController::Base.perform_caching
+        ActionController::Base.perform_caching = true
+        example.run
+      ensure
+        ActionController::Base.perform_caching = original
+      end
 
-      it "loads only three previews per article in one narrow query and preserves the JSON payload" do
+      before do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return(strategy)
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
         create(:feed_config) if strategy == "configured"
+      end
 
+      it "bounds cold comment loading, skips comment queries on full cache hits, and loads only changed cards",
+         :aggregate_failures do
         loading = capture_comment_loading { get stories_feed_path }
 
         expect(response).to have_http_status(:ok)
+        first_payload = response.parsed_body
         articles.each do |article|
-          card = response.parsed_body.detect { |item| item["id"] == article.id }
+          card = first_payload.detect { |item| item["id"] == article.id }
           expect(card.fetch("top_comments")).to eq(expected_previews(article))
         end
         expect(loading[:rows]).to eq(6)
@@ -70,45 +82,22 @@ RSpec.describe "Feed comment preview loading" do
         projection = loading[:queries].first.split(" FROM ").first
         expect(projection).to include('"comments"."processed_html"')
         expect(projection).not_to include('"comments".*', '"body_markdown"', '"body_html"', '"semantic_embedding"')
-      end
 
-      context "with fragment caching" do
-        around do |example|
-          original = ActionController::Base.perform_caching
-          ActionController::Base.perform_caching = true
-          example.run
-        ensure
-          ActionController::Base.perform_caching = original
-        end
+        cached_loading = capture_comment_loading { get stories_feed_path }
 
-        before do
-          allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
-          create(:feed_config) if strategy == "configured"
-        end
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.sort_by { |item| item["id"] }).to eq(first_payload.sort_by { |item| item["id"] })
+        expect(cached_loading).to eq(queries: [], rows: 0)
 
-        it "loads no comment rows on a fully cached feed and returns identical cards" do
-          get stories_feed_path
-          first_payload = response.parsed_body
+        unchanged_card = first_payload.detect { |item| item["id"] == articles.last.id }
+        articles.first.update_column(:last_comment_at, 1.minute.from_now)
 
-          loading = capture_comment_loading { get stories_feed_path }
+        partial_loading = capture_comment_loading { get stories_feed_path }
 
-          expect(response).to have_http_status(:ok)
-          expect(response.parsed_body.sort_by { |item| item["id"] }).to eq(first_payload.sort_by { |item| item["id"] })
-          expect(loading).to eq(queries: [], rows: 0)
-        end
-
-        it "loads previews only for the changed card on a partial cache hit" do
-          get stories_feed_path
-          unchanged_card = response.parsed_body.detect { |item| item["id"] == articles.last.id }
-          articles.first.update_column(:last_comment_at, 1.minute.from_now)
-
-          loading = capture_comment_loading { get stories_feed_path }
-
-          expect(response).to have_http_status(:ok)
-          expect(response.parsed_body.detect { |item| item["id"] == articles.last.id }).to eq(unchanged_card)
-          expect(loading[:rows]).to eq(3)
-          expect(loading[:queries].size).to eq(1)
-        end
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.detect { |item| item["id"] == articles.last.id }).to eq(unchanged_card)
+        expect(partial_loading[:rows]).to eq(3)
+        expect(partial_loading[:queries].size).to eq(1)
       end
     end
   end
@@ -133,7 +122,7 @@ RSpec.describe "Feed comment preview loading" do
     card = response.parsed_body.detect { |item| item["id"] == articles.first.id }
     expect(card.fetch("top_comments")).to eq(expected_previews(articles.first))
     expect(loading[:rows]).to eq(6)
-    expect(articles.first.more_inclusive_recent_good_comments.count).to eq(7)
+    expect(articles.first.more_inclusive_recent_good_comments.count).to eq(5)
   end
 
   it "does not preload feed comments while rendering the HTML home page" do
@@ -174,7 +163,7 @@ RSpec.describe "Feed comment preview loading" do
   it "loads previews for a pinned article outside the selected feed" do
     allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
     pinned = create(:article, user: author)
-    pinned_comments = create_list(:comment, 5, commentable: pinned, user: author, score: 20)
+    pinned_comments = create_list(:comment, 4, commentable: pinned, user: author, score: 20)
     pinned.update_columns(score: -1000, featured: false)
     PinnedArticle.set(pinned)
 

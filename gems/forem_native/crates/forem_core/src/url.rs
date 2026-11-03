@@ -454,15 +454,19 @@ enum PslRuleKind {
     Exception,
 }
 
-fn lookup_psl_rule(query: &[u8]) -> Option<PslRuleKind> {
+fn lookup_psl_rule(query: &[u8], ignore_private: bool) -> Option<PslRuleKind> {
     let idx = PSL_ENTRIES
         .binary_search_by(|&entry| {
-            let offset = (entry >> 10) as usize;
+            let offset = ((entry & 0x7fff_ffff) >> 10) as usize;
             let len = ((entry >> 2) & 0xff) as usize;
             PSL_BLOB[offset..offset + len].cmp(query)
         })
         .ok()?;
-    match PSL_ENTRIES[idx] & 0x3 {
+    let entry = PSL_ENTRIES[idx];
+    if ignore_private && (entry & 0x8000_0000) != 0 {
+        return None;
+    }
+    match entry & 0x3 {
         0 => Some(PslRuleKind::Normal),
         1 => Some(PslRuleKind::Wildcard),
         2 => Some(PslRuleKind::Exception),
@@ -502,6 +506,13 @@ pub enum SubforemSubdomain {
 /// - `None` for non-ASCII inputs, NUL bytes, embedded newlines, or consecutive dots (`..`)
 ///   so Ruby can fall back to `PublicSuffix.parse`.
 pub fn parse_public_suffix(host: &[u8]) -> Option<Result<PublicSuffixParts<'_>, ()>> {
+    parse_public_suffix_inner(host, false)
+}
+
+fn parse_public_suffix_inner(
+    host: &[u8],
+    ignore_private: bool,
+) -> Option<Result<PublicSuffixParts<'_>, ()>> {
     if !host.is_ascii() || host.contains(&0) {
         return None;
     }
@@ -563,7 +574,7 @@ pub fn parse_public_suffix(host: &[u8]) -> Option<Result<PublicSuffixParts<'_>, 
     let mut memo: Option<(PslRuleKind, usize)> = None;
     for k in 1..=n {
         let query = &lower[label_starts[n - k]..];
-        let Some(kind) = lookup_psl_rule(query) else {
+        let Some(kind) = lookup_psl_rule(query, ignore_private) else {
             continue;
         };
         let r_len = match kind {
@@ -621,6 +632,12 @@ pub fn parse_public_suffix(host: &[u8]) -> Option<Result<PublicSuffixParts<'_>, 
 /// `Middlewares::SetCookieDomain`, `ApplicationController#root_domain`, and `session_store.rb`.
 pub fn public_suffix_domain(host: &[u8]) -> Option<Result<Cow<'_, str>, ()>> {
     Some(parse_public_suffix(host)?.map(|parts| parts.domain))
+}
+
+/// Registrable root domain ignoring PRIVATE PSL rules (`PublicSuffix.domain(host, ignore_private: true)`),
+/// matching `Addressable::URI#domain` in `PageView#extract_domain_and_path`.
+pub fn public_suffix_domain_ignore_private(host: &[u8]) -> Option<Result<Cow<'_, str>, ()>> {
+    Some(parse_public_suffix_inner(host, true)?.map(|parts| parts.domain))
 }
 
 /// Checks whether `host` is a single-label subdomain of its Public Suffix List registrable
