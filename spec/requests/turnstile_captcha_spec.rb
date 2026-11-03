@@ -36,7 +36,7 @@ RSpec.describe "Turnstile CAPTCHA" do
   it "renders Turnstile rather than reCAPTCHA on signup", :aggregate_failures do
     get sign_up_path, params: { state: "email_signup" }
 
-    expect(response.body).to include("cf-turnstile", "turnstile-site", "challenges.cloudflare.com")
+    expect(response.body).to include('class="cf-turnstile"', 'data-sitekey="turnstile-site"')
     expect(response.body).not_to include("turnstile-secret", "recaptcha-tag-container")
   end
 
