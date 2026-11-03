@@ -44,9 +44,11 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         expect(prompt).not_to include("a" * 2000)
       end
 
-      it "omits very_good and great labels from the prompt" do
+      it "omits very_good and great labels from the prompt even when the article is a status" do
+        allow(article).to receive(:status?).and_return(true)
         labeler = described_class.new(article)
-        prompt = labeler.send(:build_prompt)
+        prompt = labeler.__send__(:build_prompt)
+        expect(prompt).to include("This article is a \"status\" post")
         expect(prompt).not_to include("very_good_and_on_topic")
         expect(prompt).not_to include("great_and_on_topic")
       end
@@ -68,11 +70,12 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
 
       it "includes linked article context in the prompt when the status embeds an internal article" do
         linked = create(:article, user: user, title: "Deep Dive into React 19")
+        internal_url = URL.url(linked.path)
         status_article = create(:article, user: user)
         status_article.update_columns(
           type_of: Article.type_ofs[:status],
-          title: "Interesting benchmark showing how Zustand handles 1,000 rows in React 19 https://example.com#{linked.path}",
-          body_markdown: "{% embed https://example.com#{linked.path} minimal %}",
+          title: "Interesting benchmark showing how Zustand handles 1,000 rows in React 19 #{internal_url}",
+          body_markdown: "{% embed #{internal_url} minimal %}",
         )
 
         labeler = described_class.new(status_article)
@@ -81,12 +84,43 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         expect(prompt).to include("Linked Article: \"Deep Dive into React 19\" by @#{user.username}")
         expect(prompt).to include("Linked Article Excerpt:")
       end
+
+      it "does not attach local article details when an external URL shares a local path" do
+        linked = create(:article, user: user, title: "Deep Dive into React 19")
+        external_url = "https://external.example#{linked.path}"
+        status_article = create(:article, user: user)
+        status_article.update_columns(
+          type_of: Article.type_ofs[:status],
+          title: "Interesting post #{external_url}",
+          body_markdown: "{% embed #{external_url} minimal %}",
+        )
+
+        labeler = described_class.new(status_article)
+        prompt = labeler.__send__(:build_prompt)
+
+        expect(prompt).not_to include("Linked Article: \"Deep Dive into React 19\"")
+        expect(prompt).to include("Linked URL(s): #{external_url}")
+      end
     end
 
-    context "when article has no subforem_id and default subforem exists" do
-      it "falls back to Subforem.cached_default_id for community_description" do
+    context "when article has no subforem_id or a legacy subforem without a spec and default subforem exists" do
+      it "falls back to Subforem.cached_default_id for community_description when subforem_id is nil" do
         allow(article).to receive(:subforem_id).and_return(nil)
         allow(Subforem).to receive(:cached_default_id).and_return(1)
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+          .with(subforem_id: 1).and_return("DEV default community spec.")
+
+        labeler = described_class.new(article)
+        expect(labeler.__send__(:community_description)).to eq("DEV default community spec.")
+      end
+
+      it "falls back to Subforem.cached_default_id when article has a legacy subforem_id with no spec" do
+        allow(article).to receive(:subforem_id).and_return(12)
+        allow(Subforem).to receive(:cached_default_id).and_return(1)
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+          .with(subforem_id: 12).and_return(nil)
+        allow(Settings::Community).to receive(:community_description)
+          .with(subforem_id: 12).and_return(nil)
         allow(Settings::RateLimit).to receive(:internal_content_description_spec)
           .with(subforem_id: 1).and_return("DEV default community spec.")
 
@@ -298,11 +332,12 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         create(:article, user: user, title: "How Agentic Video Editing Works")
       end
       let(:status_article) do
+        internal_url = URL.url(linked_article.path)
         post = create(:article, user: user)
         post.update_columns(
           type_of: Article.type_ofs[:status],
-          title: "Anthropic had an agent edit its own launch video—the edit was text https://example.com#{linked_article.path}",
-          body_markdown: "{% embed https://example.com#{linked_article.path} minimal %}",
+          title: "Anthropic had an agent edit its own launch video—the edit was text #{internal_url}",
+          body_markdown: "{% embed #{internal_url} minimal %}",
         )
         post
       end

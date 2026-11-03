@@ -161,18 +161,25 @@ module Ai
       author_trustworthiness_profile(article).present?
     end
 
+    # Resolves the community description for the target subforem, falling back to the
+    # default subforem and global settings when needed.
+    # @return [String, nil]
     def community_description
       @community_description ||= begin
-        subforem_id = @subforem_id || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
-        if subforem_id
-          Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-            Settings::Community.community_description(subforem_id: subforem_id).presence ||
-            Settings::RateLimit.internal_content_description_spec.presence ||
-            Settings::Community.community_description
-        else
-          Settings::RateLimit.internal_content_description_spec.presence ||
-            Settings::Community.community_description
+        default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
+        subforem_id = @subforem_id || default_subforem_id
+        description = if subforem_id
+                        Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+                          Settings::Community.community_description(subforem_id: subforem_id).presence
+                      end
+        if description.blank? && default_subforem_id && default_subforem_id != subforem_id
+          description =
+            Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
+            Settings::Community.community_description(subforem_id: default_subforem_id).presence
         end
+        description ||
+          Settings::RateLimit.internal_content_description_spec.presence ||
+          Settings::Community.community_description
       end
     end
 

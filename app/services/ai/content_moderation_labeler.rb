@@ -121,6 +121,8 @@ module Ai
       JEV_FALLBACK.dup
     end
 
+    # Builds the structured state payload passed to Jev for content moderation and scoring.
+    # @return [Hash]
     def jev_state
       user = @article.user
       limit = @is_negative ? 2000 : 5000
@@ -205,6 +207,8 @@ module Ai
       questions
     end
 
+    # Builds the Jev quality score question calibrated to either status posts or full articles.
+    # @return [Hash]
     def quality_question
       if @article.status?
         score(
@@ -248,6 +252,8 @@ module Ai
       end
     end
 
+    # Builds the Jev originality score question calibrated to either status posts or full articles.
+    # @return [Hash]
     def originality_question
       if @article.status?
         score(
@@ -273,6 +279,8 @@ module Ai
       end
     end
 
+    # Builds the Jev personal voice score question calibrated to either status posts or full articles.
+    # @return [Hash]
     def personal_voice_question
       if @article.status?
         score(
@@ -345,6 +353,9 @@ module Ai
       relevance_label(tier, on_topic: result.noul(:on_topic) >= SUPPORTING)
     end
 
+    # Maps a raw Jev quality score position to a symbolic quality tier.
+    # @param position [Float]
+    # @return [Symbol]
     def quality_tier(position)
       tiers = @article.status? ? STATUS_QUALITY_TIERS : QUALITY_TIERS
       tiers.detect { |upper_bound, _tier| position < upper_bound }.last
@@ -369,17 +380,25 @@ module Ai
         .clamp(0.0, 1.0).round(3)
     end
 
+    # Resolves the community description for the article's subforem, falling back to the
+    # default subforem and global settings when a record has no subforem or a legacy subforem
+    # without its own content specification.
+    # @return [String, nil]
     def community_description
-      subforem_id = @article.subforem_id || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
-      if subforem_id
-        Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-          Settings::Community.community_description(subforem_id: subforem_id).presence ||
-          Settings::RateLimit.internal_content_description_spec.presence ||
-          Settings::Community.community_description
-      else
-        Settings::RateLimit.internal_content_description_spec.presence ||
-          Settings::Community.community_description
+      default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
+      subforem_id = @article.subforem_id || default_subforem_id
+      description = if subforem_id
+                      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+                        Settings::Community.community_description(subforem_id: subforem_id).presence
+                    end
+      if description.blank? && default_subforem_id && default_subforem_id != subforem_id
+        description =
+          Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
+          Settings::Community.community_description(subforem_id: default_subforem_id).presence
       end
+      description ||
+        Settings::RateLimit.internal_content_description_spec.presence ||
+        Settings::Community.community_description
     end
 
     def tag_instructions
@@ -388,6 +407,8 @@ module Ai
         .map { |name, instructions| { tag: name, instructions: instructions } }
     end
 
+    # Extracts normalized URLs from a status post's body_url, embed tags, and title.
+    # @return [Array<String>]
     def embedded_urls
       @embedded_urls ||= begin
         urls = []
@@ -400,12 +421,17 @@ module Ai
       end
     end
 
+    # Resolves the first embedded URL that points to a published internal Article on this Forem.
+    # @return [Article, nil]
     def linked_article
       return @linked_article if defined?(@linked_article)
 
       @linked_article = if @article.status?
                           embedded_urls.lazy.filter_map do |url|
-                            path = URI.parse(url).path.to_s.downcase.chomp("/")
+                            uri = URI.parse(url)
+                            next unless internal_host?(uri.host)
+
+                            path = uri.path.to_s.downcase.chomp("/")
                             next if path.blank? || path.count("/") < 2
 
                             Article.published
@@ -416,6 +442,33 @@ module Ai
                             nil
                           end.first
                         end
+    end
+
+    # Checks whether a URL host belongs to this Forem instance or one of its configured subforems.
+    # @param host [String, nil]
+    # @return [Boolean]
+    def internal_host?(host)
+      normalized_host = host.to_s.downcase.delete_prefix("www.")
+      return false if normalized_host.blank?
+
+      internal_hosts.include?(normalized_host)
+    end
+
+    # Collects normalized hostnames for the application domain and any configured subforems.
+    # @return [Array<String>]
+    def internal_hosts
+      @internal_hosts ||= begin
+        domains = [
+          URL.domain,
+          Settings::General.app_domain,
+          ApplicationConfig["APP_DOMAIN"],
+          *Subforem.cached_domains,
+        ]
+        domains.filter_map do |domain|
+          domain.to_s.downcase.sub(%r{\Ahttps?://}, "")
+            .split("/").first&.split(":")&.first&.delete_prefix("www.")&.presence
+        end.uniq
+      end
     end
 
     # --- Gemini ---
@@ -434,15 +487,21 @@ module Ai
       tag_instructions_context = build_tag_instructions_context
 
       quickie_context = if @article.status?
+                          positive_quickie_tiers = if @is_negative
+                                                     ""
+                                                   else
+                                                     <<~POSITIVE_QUICKIE_TIERS
+                                                       - **Assign `great_and_on_topic` (and `compellingness_score` 0.80–1.0)** when the status post is a sharp, insightful, clever, or memorable developer thought/observation, a great discussion prompt, or a compelling takeaway that highlights something genuinely interesting or surprising about a linked article or project.
+                                                       - **Assign `very_good_and_on_topic` (and `compellingness_score` 0.65–0.85)** when the status post would make an insightful or genuinely interesting developer tweet/update, asks a worthwhile community question, shares a concrete tip, or points out something specific, useful, or interesting about a linked article or resource (rather than just dropping a bare link).
+                                                     POSITIVE_QUICKIE_TIERS
+                                                   end
                           <<~QUICKIE
 
                             **Important Context — Status Post ("Quickie") Calibration:**
                             Note: This article is a "status" post (a short, tweet-length update, thought, question, or commentary on a linked article/resource). In status posts, the `Title` field contains the entire text of the post, and `Body` is either empty or contains an `{% embed ... %}` link.
                             Do NOT judge a status post against long-form blog post criteria (do not require multiple paragraphs, section headers, or long-form depth). Instead, calibrate quality labels and `compellingness_score` against what makes a genuinely good developer tweet or link commentary:
-                            - **Assign `great_and_on_topic` (and `compellingness_score` 0.80–1.0)** when the status post is a sharp, insightful, clever, or memorable developer thought/observation, a great discussion prompt, or a compelling takeaway that highlights something genuinely interesting or surprising about a linked article or project.
-                            - **Assign `very_good_and_on_topic` (and `compellingness_score` 0.65–0.85)** when the status post would make an insightful or genuinely interesting developer tweet/update, asks a worthwhile community question, shares a concrete tip, or points out something specific, useful, or interesting about a linked article or resource (rather than just dropping a bare link).
-                            - **Assign `okay_and_on_topic` (and `compellingness_score` 0.35–0.60)** only when the status post is a plain, unremarkable on-topic update, a generic announcement with no real insight/hook, or a bare `[Boost]` of an on-topic post with no added commentary.
-                            - **Maintain strict quality & spam standards (`likely_low_quality`, `clear_and_obvious_low_quality`, `likely_spam`, `clear_and_obvious_spam`)**: Do NOT reward low-effort noise (e.g., bare greetings like "hi" or "first time here", test posts, "up up", single keywords, engagement bait with no substance, or spam/off-topic promotional links). Real quality and genuine insight or interest are still strictly required.
+                            #{positive_quickie_tiers}- **Assign `okay_and_on_topic` (and `compellingness_score` 0.35–0.60)** when the status post is a plain, routine on-topic update, a generic announcement, or a link share with brief, generic commentary that lacks a standout insight or hook.
+                            - **Maintain strict quality & spam standards (`likely_low_quality`, `clear_and_obvious_low_quality`, `likely_spam`, `clear_and_obvious_spam`)**: Do NOT reward low-effort noise (e.g., bare greetings like "hi" or "first time here", test posts, "up up", single keywords, bare `[Boost]` or link drops with no added commentary, engagement bait with no substance, or spam/off-topic promotional links). Real quality and genuine insight or interest are still strictly required.
                           QUICKIE
                         else
                           ""
