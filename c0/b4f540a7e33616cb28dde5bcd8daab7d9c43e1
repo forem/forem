@@ -1,0 +1,66 @@
+app/javascript/Snackbar/Snackbar.jsx
+  h_f968154a99632d 4,6,49,60
+app/javascript/Snackbar/SnackbarItem.jsx
+  h_f968154a99632d 23-32
+app/javascript/Snackbar/addSnackbarItem.js
+  h_f968154a99632d 1-5,7-9
+app/javascript/crayons/AutocompleteTriggerTextArea/AutocompleteTriggerTextArea.jsx
+  h_f968154a99632d 106
+app/javascript/crayons/Buttons/Button.jsx
+  h_f968154a99632d 6
+app/javascript/crayons/CTAs/CTA.jsx
+  h_f968154a99632d 5
+app/javascript/crayons/Links/Link.jsx
+  h_f968154a99632d 5
+app/javascript/crayons/MarkdownToolbar/MarkdownToolbar.jsx
+  h_f968154a99632d 9
+app/javascript/crayons/MarkdownToolbar/markdownSyntaxFormatters.jsx
+  h_f968154a99632d 23
+app/javascript/crayons/Modal/Modal.jsx
+  h_f968154a99632d 6
+app/javascript/crayons/MultiSelectAutocomplete/TagAutocompleteSelection.jsx
+  h_f968154a99632d 3-4
+app/javascript/crayons/Pills/Pill.jsx
+  h_f968154a99632d 5
+app/javascript/crayons/formElements/ColorPicker/ColorPicker.jsx
+  h_f968154a99632d 7
+app/javascript/crayons/formElements/DateRangePicker/DateRangePicker.jsx
+  h_f968154a99632d 15-16
+app/javascript/crayons/formElements/DateRangePicker/__stories__/DateRangePicker.stories.jsx
+  h_f968154a99632d 10
+app/javascript/crayons/formElements/DateRangePicker/__tests__/DateRangePicker.test.jsx
+  h_f968154a99632d 12
+app/javascript/packs/CommentTextArea/CommentTextArea.jsx
+  h_f968154a99632d 4,215-219
+app/javascript/packs/admin/creatorOnboarding.jsx
+  h_f968154a99632d 1,3,7-15
+app/javascript/packs/admin/users/filtersModal.js
+  h_f968154a99632d 35
+app/javascript/packs/application.jsx
+  h_f968154a99632d 11,29,34,45
+app/javascript/utilities/__tests__/commentTextAreaLoader.test.js
+  h_f968154a99632d 1-74
+app/javascript/utilities/__tests__/locale.test.js
+  h_f968154a99632d 1-55
+app/javascript/utilities/commentTextAreaLoader.js
+  h_f968154a99632d 1-38
+app/javascript/utilities/locale.js
+  h_f968154a99632d 1-3,5-11,13-26,28,30-61
+app/views/layouts/application.html.erb
+  h_f968154a99632d 36
+esbuild.config.mjs
+  h_f968154a99632d 1-2,8-133,141-143,153,160
+spec/requests/layout_script_meta_tags_spec.rb
+  h_f968154a99632d 1-14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c0b4f540a7e33616cb28dde5bcd8daab7d9c43e1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
