@@ -56,6 +56,10 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
+    if Settings::Authentication.captcha_provider == "turnstile"
+      return Turnstile::Verify.call(token: params["cf-turnstile-response"], hostname: request.host)
+    end
+
     recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end
