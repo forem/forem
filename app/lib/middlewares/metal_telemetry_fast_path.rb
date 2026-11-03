@@ -222,13 +222,13 @@ module Middlewares
       article_id = raw_params["article_id"]
       return unless article_id.present? && current_user_id
 
-      passed_domain = raw_params["passed_domain"]
-      raw_domain = if passed_domain.present? && passed_domain.exclude?("/") && passed_domain.exclude?(":")
+      passed_domain = req.GET["passed_domain"]
+      raw_domain = if passed_domain.is_a?(String) && passed_domain.valid_encoding? && passed_domain.present?
                      passed_domain
                    else
                      req.host
                    end
-      domain = ForemNative.subforem_request_domain(raw_domain) || raw_domain.sub(/:\d+\z/, "")
+      domain = ForemNative.subforem_request_domain(raw_domain) || legacy_subforem_request_domain(raw_domain)
       RequestStore.store[:default_subforem_id] ||= Subforem.cached_default_id
       RequestStore.store[:subforem_id] ||= Subforem.cached_id_by_domain(domain)
       return unless Settings::General.algolia_application_id.present? && Settings::General.algolia_api_key.present?
@@ -243,6 +243,16 @@ module Middlewares
         nil,
         nil,
       )
+    end
+
+    def legacy_subforem_request_domain(raw_domain)
+      parsed_host = begin
+        URI.parse(raw_domain).host
+      rescue StandardError
+        nil
+      end
+      parsed_host.presence ||
+        raw_domain.gsub(%r{\Ahttps?://}, "").split("/").first&.split(":")&.first.presence || raw_domain
     end
 
     def skip_session_commit!(env)
