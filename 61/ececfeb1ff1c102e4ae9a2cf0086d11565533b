@@ -1,0 +1,14 @@
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 225-226,231,248-257
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "61ececfeb1ff1c102e4ae9a2cf0086d11565533b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
