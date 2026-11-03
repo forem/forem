@@ -5,7 +5,10 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
-import { initializePodcastPlayback } from '../utilities/podcastPlayback';
+import {
+  loadMediaPlaybackBundle,
+  shouldInitializePodcastPlayback,
+} from '../utilities/mediaPlaybackLoader';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
@@ -28,6 +31,12 @@ const queuedBillboardPlacementReveals =
 const existingCommentTextArea = window.Forem?.CommentTextArea;
 const existingRenderCommentTextArea = window.Forem?.renderCommentTextArea;
 const existingCreateEmojiPopup = window.Forem?.createEmojiPopup;
+const existingRenderWindowModal = window.Forem?.renderWindowModal;
+const existingUnmountWindowModal = window.Forem?.unmountWindowModal;
+const existingPostscribe = window.Forem?.postscribe;
+const existingInitializePodcastPlayback =
+  window.Forem?.initializePodcastPlayback;
+const existingInitializeVideoPlayback = window.Forem?.initializeVideoPlayback;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
@@ -35,13 +44,11 @@ window.Forem = {
   CommentTextArea: existingCommentTextArea,
   renderCommentTextArea: existingRenderCommentTextArea,
   createEmojiPopup: existingCreateEmojiPopup,
-  preactImport: undefined,
-  getPreactImport() {
-    if (!this.preactImport) {
-      this.preactImport = import('preact');
-    }
-    return this.preactImport;
-  },
+  renderWindowModal: existingRenderWindowModal,
+  unmountWindowModal: existingUnmountWindowModal,
+  postscribe: existingPostscribe,
+  initializePodcastPlayback: existingInitializePodcastPlayback,
+  initializeVideoPlayback: existingInitializeVideoPlayback,
   enhancedCommentTextAreaImport: undefined,
   getEnhancedCommentTextAreaImports() {
     if (!this.enhancedCommentTextAreaImport) {
@@ -52,10 +59,7 @@ window.Forem = {
         },
       );
     }
-    return Promise.all([
-      this.enhancedCommentTextAreaImport,
-      this.getPreactImport(),
-    ]);
+    return Promise.all([this.enhancedCommentTextAreaImport]);
   },
   initializeEnhancedCommentTextArea: async (originalTextArea) => {
     const parentContainer = originalTextArea?.parentElement;
@@ -88,6 +92,34 @@ window.Forem = {
   Runtime,
 };
 
+window.initializePodcastPlayback =
+  window.initializePodcastPlayback ||
+  (() => {
+    loadMediaPlaybackBundle().then(({ initializePodcastPlayback }) => {
+      initializePodcastPlayback?.();
+    });
+  });
+
+function maybeInitializeMediaPlayback() {
+  const needsVideo = Boolean(document.getElementById('video-player-source'));
+  const needsPodcast = shouldInitializePodcastPlayback(Runtime);
+
+  if (!needsVideo && !needsPodcast) {
+    return;
+  }
+
+  loadMediaPlaybackBundle().then(
+    ({ initializePodcastPlayback, initializeVideoPlayback }) => {
+      if (needsVideo && document.getElementById('video-player-source')) {
+        initializeVideoPlayback?.();
+      }
+      if (needsPodcast) {
+        initializePodcastPlayback?.();
+      }
+    },
+  );
+}
+
 queuedBillboardPlacementReveals.forEach(revealBillboardPlacement);
 
 if (document.location.pathname.startsWith('/dashboard')) {
@@ -96,13 +128,7 @@ if (document.location.pathname.startsWith('/dashboard')) {
   });
 }
 
-if (document.getElementById('video-player-source')) {
-  import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
-    initializeVideoPlayback();
-  });
-}
-
-initializePodcastPlayback();
+maybeInitializeMediaPlayback();
 document.ready.then(() => {
   initializeSlides();
 });
@@ -113,14 +139,9 @@ InstantClick.on('change', () => {
     });
   }
 
-  if (document.getElementById('video-player-source')) {
-    import('../utilities/videoPlayback').then(({ initializeVideoPlayback }) => {
-      initializeVideoPlayback();
-    });
-  }
-
-  initializePodcastPlayback();
+  maybeInitializeMediaPlayback();
   initializeSlides();
+  trackCreateAccountClicks('sidebar-wrapper-left');
 
   if (window.instgrm?.Embeds?.process) {
     window.instgrm.Embeds.process();
@@ -244,3 +265,4 @@ document.ready.then(() => {
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
 trackCreateAccountClicks('comments-locked-cta');
+trackCreateAccountClicks('sidebar-wrapper-left');

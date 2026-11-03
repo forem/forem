@@ -8,7 +8,6 @@ import {
 } from '../packs/billboardAfterRenderActions';
 import { observeFeedElements } from '../packs/feedEvents';
 import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
-import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
 const frontPageFeedPathNames = new Map([
@@ -197,5 +196,3 @@ if (!window._homePageSidebarListenersRegistered) {
   window._homePageSidebarListenersRegistered = true;
 }
 InstantClick.init();
-
-trackCreateAccountClicks('sidebar-wrapper-left');
