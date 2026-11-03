@@ -34,7 +34,8 @@ module Authentication
         {
           email: info.email.to_s,
           name: info.name,
-          username: Users::UsernameGenerator.call([user_nickname])
+          username: Users::UsernameGenerator.call([user_nickname]),
+          profile_image: Images::ProfileImageGenerator.call
         }
       end
 

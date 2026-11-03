@@ -19,7 +19,8 @@ class PodcastEpisode < ApplicationRecord
 
   validates :comments_count, presence: true
   validates :guid, presence: true, uniqueness: true
-  validates :media_url, presence: true, uniqueness: true
+  validates :media_url, presence: true, uniqueness: true, url: { schemes: %w[https http] }
+  validates :website_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :reactions_count, presence: true
   validates :slug, presence: true
   validates :title, presence: true
@@ -58,7 +59,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def description
-    ActionView::Base.full_sanitizer.sanitize(body)
+    ForemNative.full_sanitize(body) || ActionView::Base.full_sanitizer.sanitize(body)
   end
 
   def profile_image_url
@@ -66,7 +67,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize(processed_html)
+    ForemNative.full_sanitize(processed_html) || ActionView::Base.full_sanitizer.sanitize(processed_html)
   end
 
   def score

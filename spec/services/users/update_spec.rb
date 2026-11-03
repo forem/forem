@@ -30,10 +30,14 @@ RSpec.describe Users::Update, type: :service do
     expect(user.profile.location).to eq "123"
   end
 
-  it "removes old attributes from the profile" do
+  it "removes old attributes from the profile while preserving social_image" do
+    profile.update_column(:data, profile.data.merge("social_image" => "https://example.com/user_og.png"))
+
     expect do
       described_class.call(user, profile: {})
     end.to change { profile.data.key?("removed") }.to(false)
+
+    expect(profile.reload.social_image).to eq("https://example.com/user_og.png")
   end
 
   it "propagates changes to user", :aggregate_failures do

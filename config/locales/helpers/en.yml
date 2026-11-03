@@ -584,6 +584,9 @@ en:
       feedback:
         title: Limit number of times someone can report abuse
         description: How many times can someone report abuse within any 5 minute period?
+      flag_appeal:
+        title: Limit number of moderation appeals someone can submit
+        description: How many moderation flag appeals can someone submit within any 5 minute period?
       comment:
         title: Limit number of comments created
         description: How many comments can someone create within any 30 second period?

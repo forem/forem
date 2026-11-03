@@ -716,6 +716,283 @@ fn default_image_alt_len(rest: &[u8]) -> Option<usize> {
     Some(i)
 }
 
+#[inline]
+fn chain_cow<'a>(input: Cow<'a, str>, f: impl FnOnce(&str) -> Cow<'_, str>) -> Cow<'a, str> {
+    match f(&input) {
+        Cow::Borrowed(_) => input,
+        Cow::Owned(s) => Cow::Owned(s),
+    }
+}
+
+/// Outcome of the fused pre-Redcarpet pipeline in `MarkdownProcessor::Parser#finalize`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum FinalizePreprocessOutcome<'a> {
+    /// `contains_xss_attempt` detected an XSS pattern outside code blocks/spans.
+    XssAttempt,
+    /// Preprocessed Markdown ready for `Redcarpet::Markdown#render`.
+    Ready(Cow<'a, str>),
+}
+
+/// Fuses the five sequential pre-Redcarpet steps in `MarkdownProcessor::Parser#finalize`
+/// into a single Rust call without intermediate Ruby `String` allocations:
+/// 1. `contains_xss_attempt` (returns `FinalizePreprocessOutcome::XssAttempt` when true)
+/// 2. `convert_deeply_nested_links_to_html`
+/// 3. `convert_escaped_pipes_outside_codeblocks`
+/// 4. `convert_code_tags_to_triple_backticks`
+/// 5. `escape_liquid_tags_in_codeblock`
+///
+/// Returns `FinalizePreprocessOutcome::Ready(Cow::Borrowed(content))` when none of the
+/// transformations modify `content`.
+pub fn preprocess_for_finalize(content: &str) -> FinalizePreprocessOutcome<'_> {
+    if contains_xss_attempt(content) {
+        return FinalizePreprocessOutcome::XssAttempt;
+    }
+
+    let step = convert_deeply_nested_links_to_html(content);
+    let step = chain_cow(step, convert_escaped_pipes_outside_codeblocks);
+    let step = chain_cow(step, convert_code_tags_to_triple_backticks);
+    let step = chain_cow(step, escape_liquid_tags_in_codeblock);
+    FinalizePreprocessOutcome::Ready(step)
+}
+
+/// Matched spans of a fenced code block matching `Articles::DetectCodeBlockLanguages::FENCED_CODE_BLOCK_REGEX`:
+///
+/// ```ruby
+/// /
+///   (?<leading>\A|\n)
+///   (?<indent>[ ]{0,3})
+///   (?<fence>`{3,}|~{3,})
+///   (?<info>[^\n]*)
+///   \n
+///   (?<code>.*?)
+///   \n
+///   \k<indent>\k<fence>(?<closing_whitespace>[ \t]*)
+///   (?=\n|\z)
+/// /mx
+/// ```
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct FencedCodeBlockMatch {
+    info_start: usize,
+    info_end: usize,
+    code_start: usize,
+    code_end: usize,
+    match_end: usize,
+}
+
+/// Equivalent of `info.to_s.strip.blank?` in Ruby 3.3 + ActiveSupport:
+/// `String#strip` strips leading/trailing ASCII whitespace and NUL (`\0`) bytes, and
+/// `String#blank?` checks whether all remaining characters match Unicode `[[:space:]]`
+/// (`char::is_whitespace`).
+#[inline]
+fn is_info_blank(info: &str) -> bool {
+    info.trim_matches(|c: char| c == '\0' || c.is_ascii_whitespace())
+        .chars()
+        .all(char::is_whitespace)
+}
+
+/// Attempts to match `FENCED_CODE_BLOCK_REGEX` with `indent` starting at `line_start`
+/// (`line_start == 0` for `\A` or right after a `\n` for `(?<leading>\n)`).
+///
+/// Uses `unclosed_max_fence` (`[[usize; 4]; 2]`) to memoize failed searches to EOF so
+/// documents with many unclosed fences stay strictly linear `O(N)`.
+fn match_fenced_code_block_at(
+    bytes: &[u8],
+    line_start: usize,
+    unclosed_max_fence: &mut [[usize; 4]; 2],
+) -> Option<FencedCodeBlockMatch> {
+    let indent_len = bytes
+        .get(line_start..)?
+        .iter()
+        .take_while(|&&b| b == b' ')
+        .count();
+    if indent_len > 3 {
+        return None;
+    }
+
+    let fence_start = line_start + indent_len;
+    let fence_char = *bytes.get(fence_start)?;
+    if fence_char != b'`' && fence_char != b'~' {
+        return None;
+    }
+    let max_fence_len = bytes[fence_start..]
+        .iter()
+        .take_while(|&&b| b == fence_char)
+        .count();
+    if max_fence_len < 3 {
+        return None;
+    }
+
+    let fence_idx = usize::from(fence_char == b'~');
+    if max_fence_len <= unclosed_max_fence[fence_idx][indent_len] {
+        return None;
+    }
+
+    let info_newline = find_byte(bytes, fence_start + max_fence_len, b'\n')?;
+    let code_start = info_newline + 1;
+
+    // The regex requires `\n(?<code>.*?)\n\k<indent>\k<fence>[ \t]*(?=\n|\z)`, so the closing
+    // fence line must start right after a `\n` at `code_end >= code_start`.
+    let mut fallback: Option<(usize, usize, usize)> = None;
+    let mut search_nl_from = code_start;
+
+    while let Some(code_end) = find_byte(bytes, search_nl_from, b'\n') {
+        let close_line_start = code_end + 1;
+        search_nl_from = close_line_start;
+
+        let close_indent = bytes[close_line_start..]
+            .iter()
+            .take_while(|&&b| b == b' ')
+            .count();
+        if close_indent != indent_len {
+            continue;
+        }
+
+        let close_fence_start = close_line_start + indent_len;
+        let close_fence_len = bytes[close_fence_start..]
+            .iter()
+            .take_while(|&&b| b == fence_char)
+            .count();
+        if close_fence_len < 3 || close_fence_len > max_fence_len {
+            continue;
+        }
+
+        let ws_start = close_fence_start + close_fence_len;
+        let ws_len = bytes[ws_start..]
+            .iter()
+            .take_while(|&&b| b == b' ' || b == b'\t')
+            .count();
+        let ws_end = ws_start + ws_len;
+        if !matches!(bytes.get(ws_end), None | Some(&b'\n')) {
+            continue;
+        }
+
+        if close_fence_len == max_fence_len {
+            return Some(FencedCodeBlockMatch {
+                info_start: fence_start + max_fence_len,
+                info_end: info_newline,
+                code_start,
+                code_end,
+                match_end: ws_end,
+            });
+        }
+
+        // Record if this closing line achieves a strictly longer `fence_len` than any
+        // fallback seen so far (since Onigmo tries `fence_len` from `max_fence_len` down to 3,
+        // and for a fixed `fence_len` takes the earliest closing line).
+        if fallback.is_none_or(|(best_len, _, _)| close_fence_len > best_len) {
+            fallback = Some((close_fence_len, code_end, ws_end));
+        }
+    }
+
+    if let Some((fence_len, code_end, ws_end)) = fallback {
+        return Some(FencedCodeBlockMatch {
+            info_start: fence_start + fence_len,
+            info_end: info_newline,
+            code_start,
+            code_end,
+            match_end: ws_end,
+        });
+    }
+
+    unclosed_max_fence[fence_idx][indent_len] =
+        unclosed_max_fence[fence_idx][indent_len].max(max_fence_len);
+    None
+}
+
+/// Iterates over all non-overlapping matches of `FENCED_CODE_BLOCK_REGEX` in `markdown`,
+/// invoking `visitor` for each match and stopping early if `visitor` returns `true`.
+fn visit_fenced_code_blocks(
+    markdown: &str,
+    mut visitor: impl FnMut(FencedCodeBlockMatch) -> bool,
+) -> bool {
+    let bytes = markdown.as_bytes();
+    if bytes.len() < 8 {
+        return false;
+    }
+
+    let mut unclosed_max_fence = [[0usize; 4]; 2];
+    let mut line_start = 0usize;
+
+    loop {
+        if let Some(m) = match_fenced_code_block_at(bytes, line_start, &mut unclosed_max_fence) {
+            if visitor(m) {
+                return true;
+            }
+            // The regex ends with `(?=\n|\z)` at `m.match_end`. If `bytes[m.match_end]` is `\n`,
+            // that `\n` can serve as `(?<leading>\n)` for a new block starting at `m.match_end + 1`.
+            if bytes.get(m.match_end) == Some(&b'\n') {
+                line_start = m.match_end + 1;
+                continue;
+            }
+            break;
+        }
+
+        let Some(next_nl) = find_byte(bytes, line_start, b'\n') else {
+            break;
+        };
+        line_start = next_nl + 1;
+    }
+
+    false
+}
+
+/// Returns whether `markdown` contains at least one fenced code block whose info string is blank,
+/// matching `Articles::DetectCodeBlockLanguages.contains_unlabeled_code_blocks?`.
+pub fn contains_unlabeled_code_blocks(markdown: &str) -> bool {
+    visit_fenced_code_blocks(markdown, |m| {
+        is_info_blank(&markdown[m.info_start..m.info_end])
+    })
+}
+
+/// Extracts the inner `code` slices of all unlabeled fenced code blocks in `markdown`,
+/// matching `Articles::DetectCodeBlockLanguages#extract_unlabeled_blocks`.
+pub fn extract_unlabeled_code_blocks(markdown: &str) -> Vec<&str> {
+    let mut blocks = Vec::new();
+    visit_fenced_code_blocks(markdown, |m| {
+        if is_info_blank(&markdown[m.info_start..m.info_end]) {
+            blocks.push(&markdown[m.code_start..m.code_end]);
+        }
+        false
+    });
+    blocks
+}
+
+/// Applies `languages` in order to each unlabeled fenced code block in `markdown` (defaulting
+/// missing entries to `"plaintext"`), matching `Articles::DetectCodeBlockLanguages#apply_languages`.
+///
+/// Returns `Cow::Borrowed(markdown)` when there are no unlabeled fenced code blocks.
+pub fn apply_code_block_languages<'a, S: AsRef<str>>(
+    markdown: &'a str,
+    languages: &[S],
+) -> Cow<'a, str> {
+    let mut out: Option<String> = None;
+    let mut copied = 0usize;
+    let mut unlabeled_index = 0usize;
+
+    visit_fenced_code_blocks(markdown, |m| {
+        if is_info_blank(&markdown[m.info_start..m.info_end]) {
+            let lang = languages
+                .get(unlabeled_index)
+                .map_or("plaintext", S::as_ref);
+            unlabeled_index += 1;
+
+            let buf = out.get_or_insert_with(|| String::with_capacity(markdown.len() + 32));
+            buf.push_str(&markdown[copied..m.info_start]);
+            buf.push_str(lang);
+            copied = m.info_end;
+        }
+        false
+    });
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&markdown[copied..]);
+            Cow::Owned(buf)
+        }
+        None => Cow::Borrowed(markdown),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1207,5 +1484,72 @@ mod tests {
                 "{input:?}"
             );
         }
+    }
+
+    #[test]
+    fn preprocess_for_finalize_detects_xss_or_fuses_transforms() {
+        assert_eq!(
+            preprocess_for_finalize("hello src='data:text/html;base64,xxx'"),
+            FinalizePreprocessOutcome::XssAttempt
+        );
+        assert_eq!(
+            preprocess_for_finalize("plain text without code or tables"),
+            FinalizePreprocessOutcome::Ready(Cow::Borrowed("plain text without code or tables"))
+        );
+
+        let indent = " ".repeat(16);
+        let complex =
+            format!("{indent}- [DEV](https://dev.to)\n| a\\|b |\n<code>\n{{% raw %}}\n</code>");
+        let expected = format!(
+            "{indent}- <a href=\"https://dev.to\">DEV</a>\n| a&#124;b |\n{{% raw %}}\n\n\n```\n\n{{----% raw %----}}\n\n```\n{{% endraw %}}\n\n"
+        );
+        assert_eq!(
+            preprocess_for_finalize(&complex),
+            FinalizePreprocessOutcome::Ready(Cow::Owned(expected))
+        );
+    }
+
+    #[test]
+    fn unlabeled_code_block_detection_extraction_and_application() {
+        let labeled_only = "```ruby\nputs :hi\n```\n~~~js\nconst x = 1;\n~~~";
+        assert!(!contains_unlabeled_code_blocks(labeled_only));
+        assert!(extract_unlabeled_code_blocks(labeled_only).is_empty());
+        assert!(matches!(
+            apply_code_block_languages(labeled_only, &["python"]),
+            Cow::Borrowed(_)
+        ));
+
+        let mixed = "Intro\n```\ndef hi\n  1\nend\n```\n```ruby\nalready\n```\n  ~~~ \t\nconst a = 2;\n  ~~~\t ";
+        assert!(contains_unlabeled_code_blocks(mixed));
+        assert_eq!(
+            extract_unlabeled_code_blocks(mixed),
+            vec!["def hi\n  1\nend", "const a = 2;"]
+        );
+        assert_eq!(
+            apply_code_block_languages(mixed, &["ruby", "javascript"]),
+            "Intro\n```ruby\ndef hi\n  1\nend\n```\n```ruby\nalready\n```\n  ~~~javascript\nconst a = 2;\n  ~~~\t "
+        );
+        // Missing language entries default to "plaintext"
+        assert_eq!(
+            apply_code_block_languages(mixed, &["ruby"]),
+            "Intro\n```ruby\ndef hi\n  1\nend\n```\n```ruby\nalready\n```\n  ~~~plaintext\nconst a = 2;\n  ~~~\t "
+        );
+    }
+
+    #[test]
+    fn unlabeled_code_blocks_handle_fence_backtracking_and_nul_info() {
+        // 4 opening backticks + 3 closing backticks backtracks to fence="```" and info="`", which is not blank!
+        let backtracked = "````\ncode\n```";
+        assert!(!contains_unlabeled_code_blocks(backtracked));
+        assert!(extract_unlabeled_code_blocks(backtracked).is_empty());
+
+        // NUL and Unicode whitespace in info string are treated as blank by `.strip.blank?`
+        let nul_info = "```\0 \u{3000}\ncode_here\n```";
+        assert!(contains_unlabeled_code_blocks(nul_info));
+        assert_eq!(extract_unlabeled_code_blocks(nul_info), vec!["code_here"]);
+        assert_eq!(
+            apply_code_block_languages(nul_info, &["rust"]),
+            "```rust\ncode_here\n```"
+        );
     }
 }

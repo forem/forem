@@ -42,6 +42,19 @@ RSpec.describe Comment do
       expect(some_ai_comment.ai_disclosure_label).to eq("AI-assisted")
       expect(autonomous_comment.ai_disclosure_label).to eq("Fully Autonomous")
     end
+
+    it "translates similar AI disclosure terms instead of raising ArgumentError" do
+      new_comment = build(:comment, user: user, commentable: article)
+
+      new_comment.ai_disclosure_level = "ai_generated"
+      expect(new_comment.ai_disclosure_level).to eq("fully_autonomous")
+
+      new_comment.ai_disclosure_level = "ai_assisted"
+      expect(new_comment.ai_disclosure_level).to eq("some_ai")
+
+      new_comment.ai_disclosure_level = "human"
+      expect(new_comment.ai_disclosure_level).to eq("no_ai")
+    end
   end
 
   describe "validations" do

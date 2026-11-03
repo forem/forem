@@ -5,9 +5,8 @@ source "https://rubygems.org"
 ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
 
 group :production do
-  gem "hypershield", "~> 0.2.2" # Allow admins to query data via internal
+  gem "hypershield", "~> 0.6.1" # Allow admins to query data via internal
   gem "nakayoshi_fork", "~> 0.0.4" # solves CoW friendly problem on MRI 2.2 and later
-  gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 end
 
 gem "active_record_union", "~> 1.4" # Adds proper union and union_all methods to ActiveRecord::Relation
@@ -18,7 +17,7 @@ gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 5.5" # Tracking analytics for Rails
 gem "algoliasearch-rails", "~> 2.3" # Algolia Search API Client
 gem "analytics-ruby", "~> 2.5" # Segment-compatible analytics client; used by Trackers::CustomerioCdp pointed at cdp.customer.io
-gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
+gem "ancestry", "~> 5.1" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 3.1" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
@@ -26,15 +25,14 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cld3", "~> 3.5" # Ruby interface for Compact Language Detector v3
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "countries", "~> 5.5" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
+gem "counter_culture", "~> 3.14" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "countries", "~> 8.1" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
 gem "customerio", "~> 6.1" # Customer.io App API client; transactional email delivery (see DeliveryMethods::CustomerIo)
 gem "ddtrace", "~> 1.16.2", require: false # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
 gem "dogstatsd-ruby", "~> 5.6", require: false # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "email_validator", "~> 2.2" # Email validator for Rails and ActiveModel
-gem "emoji_regex", "~> 3.2" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "fastimage", "~> 2.2" # FastImage finds the size or type of an image given its uri by fetching as little as needed.
 gem "fastly", "~> 3.0" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 4.0" # A feed fetching and parsing library
@@ -45,11 +43,10 @@ gem "flipper-active_support_cache_store", "~> 1.4" # Cache feature flags for a s
 gem "flipper-ui", "~> 1.4" # UI for the Flipper gem
 gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 4.1.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 1.3.1" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 5.1" # Used for tracking application errors
-gem "honeycomb-beeline", "~> 2.11.0" # Monitoring and Observability gem
+gem "honeycomb-beeline", "~> 2.11.0", require: false # Monitoring and Observability gem
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
 gem "httparty", "~> 0.24" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "httpclient", "~> 2.9.0" # Gives something like the functionality of libwww-perl (LWP) in Ruby
@@ -88,6 +85,7 @@ gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "public_suffix", "~> 7.0" # Domain name parser based on the Public Suffix List
 gem "rack-attack", "~> 6.8.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 2.0" # Middleware that will make Rack-based apps CORS compatible
+gem "rack-host-redirect", "~> 1.3" # Lean and simple host redirection via Rack middleware
 gem "rack-timeout", "~> 0.7.0" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "8.0.5" # Ruby on Rails
 gem "ransack", "~> 4.2" # Searching and sorting
@@ -96,6 +94,7 @@ gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML pars
 
 gem "redis", "~> 4.7.1" # Redis ruby client
 gem "redis-actionpack", "~> 5.5.0" # Redis session store for ActionPack. Used for storing the Rails session in Redis.
+gem "redis-client", "~> 0.31.0", require: false # RESP3 invalidations for the optional local cache daemon
 gem "rpush", "~> 9.2" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.2" # Redis module capability for rpush library
 
@@ -117,13 +116,12 @@ gem "slack-notifier", "~> 2.4" # A slim ruby wrapper for posting to slack webhoo
 gem "sprockets-rails", "~> 3.4" # Sprockets Rails integration
 gem "sterile", "~> 1.0" # Transliterate Unicode and Latin1 text to 7-bit ASCII for URLs
 gem "stripe", "~> 5.55" # Ruby library for the Stripe API
-gem "strong_migrations", "~> 1.7" # Catch unsafe migrations
+gem "strong_migrations", "~> 2.8" # Catch unsafe migrations
 gem "terser", "~> 1.1" # Terser is a Ruby wrapper for the terser JavaScript parser and minifier
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "vault", "~> 0.20" # Used to store secrets
 gem "warning", "~> 1.3" # Adds custom processing for warnings, including the ability to ignore specific warning messages
-gem "wcag_color_contrast", "~> 0.1" # Detect contrast of colors to determine readability and a11y.
 
 group :development do
   gem "better_errors", "~> 2.9" # Provides a better error page for Rails and other Rack apps
@@ -174,11 +172,11 @@ group :test do
   gem "factory_bot_rails", "~> 6.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "fakeredis", "~> 0.8.0" # Fake (In-memory) driver for redis-rb. Useful for testing environment and machines without Redis.
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
-  gem "pundit-matchers", "~> 1.7" # A set of RSpec matchers for testing Pundit authorisation policies
+  gem "pundit-matchers", "~> 4.0" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rails-controller-testing", "~> 1.0" # Testing helpers for Rails controllers
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
-  gem "shoulda-matchers", "~> 5.3", require: false # Simple one-liner tests for common Rails functionality
+  gem "shoulda-matchers", "~> 8.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "~> 0.21.2", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
   gem "stripe-ruby-mock", "3.1.0.rc3", require: "stripe_mock" # A drop-in library to test stripe without hitting their servers

@@ -74,6 +74,13 @@ RSpec.describe Deliverable do
             .test_email.message
         end.not_to have_enqueued_mail(DeliverableTestMailer, :test_email)
       end
+
+      it "still resolves the recipient user via find_user_for_email when the To address is an unconfirmed email" do
+        message = DeviseMailer.confirmation_instructions(unlinked, "faketoken", to: "pending@example.com").message
+
+        expect(message.perform_deliveries).to be(false)
+        expect(message.delivery_method).not_to be_a(DeliveryMethods::CustomerIo)
+      end
     end
 
     it "passes customerio_delivery_options through to the delivery method" do

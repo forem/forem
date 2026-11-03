@@ -2,7 +2,7 @@ class GistTag < LiquidTagBase
   PARTIAL = "liquids/gist".freeze
   VALID_LINK_REGEXP =
     %r{\Ahttps://gist\.github\.com/([a-zA-Z0-9](-?[a-zA-Z0-9]){0,38})/([a-zA-Z0-9]){1,32}(/[a-zA-Z0-9]+)?\Z}
-  REGISTRY_REGEXP = %r{https?://gist.github.com}
+  REGISTRY_REGEXP = %r{\Ahttps?://gist\.github\.com}
 
   def initialize(_tag_name, link, _parse_context)
     super
@@ -58,7 +58,7 @@ class GistTag < LiquidTagBase
   end
 
   def valid_option?(option)
-    (option =~ /\Afile=[^\\]*(\.(\w+))?\Z/)&.zero?
+    (option =~ /\Afile=[\w.\- ]+\z/)&.zero?
   end
 end
 

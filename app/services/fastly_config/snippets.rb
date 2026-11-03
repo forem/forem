@@ -12,6 +12,7 @@
 module FastlyConfig
   class Snippets < Base
     FASTLY_FILES = Rails.root.join("config/fastly/snippets/*.vcl").freeze
+    TABLE_LOOKUP_REGEX = /table\.lookup\(\s*([a-zA-Z0-9_]+)\s*,\s*"[^"]*"\s*,\s*("[^"]*")\s*\)/
 
     private
 
@@ -21,14 +22,13 @@ module FastlyConfig
 
       return true if snippet.nil?
 
-      new_snippet_content = File.read(filename)
-      new_snippet_content != snippet.content
+      snippet_content(filename) != snippet.content
     end
 
     def upsert_config(new_version, filename)
       snippet_name = File.basename(filename, ".vcl").humanize
       snippet = find_snippet(fastly, new_version, snippet_name)
-      new_snippet_content = File.read(filename)
+      new_snippet_content = snippet_content(filename)
 
       if snippet
         snippet.content = new_snippet_content
@@ -49,6 +49,30 @@ module FastlyConfig
       end
 
       true
+    end
+
+    def snippet_content(filename)
+      File.read(filename).gsub(TABLE_LOOKUP_REGEX) do |match|
+        dictionary_name = Regexp.last_match(1)
+        default_value = Regexp.last_match(2)
+        dictionary_exists?(dictionary_name) ? match : default_value
+      end
+    end
+
+    def dictionary_exists?(dictionary_name)
+      @dictionary_exists ||= {}
+      return @dictionary_exists[dictionary_name] if @dictionary_exists.key?(dictionary_name)
+
+      @dictionary_exists[dictionary_name] = !find_dictionary(fastly, active_version, dictionary_name).nil?
+    end
+
+    def find_dictionary(fastly, version, dictionary_name)
+      fastly.get_dictionary(ApplicationConfig["FASTLY_SERVICE_ID"], version.number, dictionary_name)
+    rescue Fastly::Error => e
+      error_message = JSON.parse(e.message)
+      raise e unless error_message["msg"] == "Record not found"
+
+      nil
     end
 
     def find_snippet(fastly, new_version, snippet_name)

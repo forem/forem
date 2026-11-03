@@ -1,6 +1,10 @@
 <div id="delete-user">
-  <% if current_user.super_admin? %>
+  <% user_policy = policy(@user) %>
+  <% if user_policy.admin_delete? %>
     <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('#{j t('views.admin.users.delete.onsubmit')}')", id: nil }) do |f| %>
+      <% if user_policy.above_admin_delete_activity_limit? %>
+        <div class="crayons-notice crayons-notice--warning"><%= t("views.admin.users.delete.activity_threshold_notice", count: UserPolicy::ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT) %></div>
+      <% end %>
       <p><%= t("views.admin.users.danger.desc1") %></p>
       <p><%= t("views.admin.users.delete.desc2", user: @user.name) %></p>
       <p><%= t("views.admin.users.danger.desc3") %></p>
@@ -9,6 +13,17 @@
       </div>
     <% end %>
   <% else %>
-    <div class="crayons-notice crayons-notice--danger"><%= t("views.admin.users.delete.notice") %></div>
+    <% delete_notice = if @user == current_user
+                         t("views.admin.users.delete.self_delete_notice")
+                       elsif !current_user.any_admin?
+                         t("views.admin.users.delete.notice")
+                       elsif @user.any_admin?
+                         t("views.admin.users.delete.super_admin_notice")
+                       elsif user_policy.above_admin_delete_activity_limit?
+                         t("views.admin.users.delete.activity_threshold_notice", count: UserPolicy::ADMIN_DELETE_PUBLISHED_ACTIVITY_LIMIT)
+                       else
+                         t("views.admin.users.delete.notice")
+                       end %>
+    <div class="crayons-notice crayons-notice--danger"><%= delete_notice %></div>
   <% end %>
 </div>

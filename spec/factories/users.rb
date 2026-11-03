@@ -14,7 +14,7 @@ FactoryBot.define do
     end
     email                        { generate(:email) }
     username                     { generate(:username) }
-    profile_image                { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
+    profile_image                { CarrierWave::SanitizedFile.new(image_path) }
     twitter_username             { generate(:twitter_username) }
     github_username              { generate(:github_username) }
     confirmed_at                 { Time.current }

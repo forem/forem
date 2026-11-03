@@ -90,6 +90,57 @@ RSpec.describe "Api::V1::Docs::Comments" do
       end
     end
   end
+
+  describe "POST /comments/preview" do
+    let(:api_secret) { create(:api_secret) }
+
+    path "/api/comments/preview" do
+      post "Preview a comment" do
+        tags "comments"
+        description "This endpoint allows the client to preview a comment's rendered HTML from Markdown without saving it."
+        operationId "previewComment"
+        produces "application/json"
+        consumes "application/json"
+        parameter name: :comment,
+                  in: :body,
+                  description: "Comment markdown to preview",
+                  schema: {
+                    type: :object,
+                    properties: {
+                      body_markdown: { type: :string, description: "The comment body in Markdown format" }
+                    }
+                  }
+
+        response "200", "Rendered Comment Preview" do
+          let(:"api-key") { api_secret.secret }
+          let(:comment) { { body_markdown: "Great post! **Thanks** for sharing." } }
+          schema type: :object,
+                 properties: {
+                   processed_html: { type: :string }
+                 }
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:comment) { { body_markdown: "Hello" } }
+          add_examples
+
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:comment) { { body_markdown: "{% link invalid_link_that_does_not_exist %}" } }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
 end
 
 # rubocop:enable RSpec/VariableName

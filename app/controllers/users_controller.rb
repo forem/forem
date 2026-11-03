@@ -107,7 +107,7 @@ class UsersController < ApplicationController
       redirect_to sign_up_path and return
     end
 
-    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}")
+    destroy_token = Rails.cache.read("user-destroy-token-#{@user.id}", local_cache: false)
 
     if destroy_token.blank?
       flash[:settings_notice] = I18n.t("users_controller.token_expired")
@@ -171,15 +171,15 @@ class UsersController < ApplicationController
 
   def join_org
     authorize User
-    if (@organization = Organization.find_by(secret: params[:org_secret].strip))
+    secret = params[:org_secret].is_a?(String) ? params[:org_secret].strip : nil
+    if secret.present? && (@organization = Organization.find_by(secret: secret))
       OrganizationMembership.create(user_id: current_user.id, organization_id: @organization.id, type_of_user: "member")
       flash[:settings_notice] =
         I18n.t("users_controller.joined_org", organization_name: @organization.name)
-      redirect_to "/settings/organization"
     else
       flash[:error] = I18n.t("users_controller.invalid_secret")
-      redirect_to "/settings/organization"
     end
+    redirect_to "/settings/organization"
   end
 
   def leave_org
@@ -346,7 +346,7 @@ class UsersController < ApplicationController
   end
 
   def destroy_request_in_progress?
-    Rails.cache.exist?("user-destroy-token-#{@user.id}")
+    Rails.cache.exist?("user-destroy-token-#{@user.id}", local_cache: false)
   end
 
   def import_articles_from_feed(user)

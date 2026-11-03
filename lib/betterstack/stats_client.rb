@@ -1,6 +1,3 @@
-require "logtail"
-require_relative "log_device"
-
 module Betterstack
   # Stands in for ForemStatsClient: every call is passed on to `forward_to` (a Datadog::Statsd when
   # DD_API_KEY is set) unchanged, and written to Better Stack as one structured log event when
@@ -9,6 +6,9 @@ module Betterstack
   class StatsClient
     def initialize(source_token = nil, ingesting_host: nil, forward_to: nil)
       if source_token.present?
+        require "logtail"
+        require_relative "log_device"
+
         @logger = Logtail::Logger.new(LogDevice.new(source_token, ingesting_host: ingesting_host))
         # Logtail::Logger defaults to ENV["LOG_LEVEL"], which drops these info events in production.
         @logger.level = :info

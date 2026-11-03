@@ -33,10 +33,26 @@ RSpec.describe ResponseTemplate do
   end
 
   describe "user validation" do
-    it "validates the number of templates for a normal user" do
+    def seed_response_templates(user_id, count)
+      now = Time.current
+      records = Array.new(count) do |i|
+        {
+          user_id: user_id,
+          title: "Template #{i}",
+          content: "Template content #{i}",
+          type_of: "personal_comment",
+          content_type: "body_markdown",
+          created_at: now,
+          updated_at: now
+        }
+      end
+      ResponseTemplate.insert_all!(records)
+    end
+
+    it "validates the number of templates for a normal user", :aggregate_failures do
       user = create(:user)
-      create_list(:response_template, 30, user_id: user.id)
-      invalid_template = create(:response_template, user_id: user.id)
+      seed_response_templates(user.id, 31)
+      invalid_template = build(:response_template, user: user)
 
       expect(invalid_template).not_to be_valid
       expect(invalid_template.errors.full_messages.join).to include("limit of 30 per user has been reached")
@@ -44,9 +60,10 @@ RSpec.describe ResponseTemplate do
 
     it "allows trusted users to have unlimited templates" do
       user = create(:user, :trusted)
-      create_list(:response_template, 31, user_id: user.id)
+      seed_response_templates(user.id, 31)
+      valid_template = build(:response_template, user: user)
 
-      expect(user.response_templates.all?(&:valid?)).to be(true)
+      expect(valid_template).to be_valid
     end
   end
 end

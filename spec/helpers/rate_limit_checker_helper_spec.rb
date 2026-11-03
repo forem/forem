@@ -8,6 +8,7 @@ describe RateLimitCheckerHelper do
         expect(settings_keys).to include(key)
         expect(value_hash.keys).to match_array(%i[title min placeholder description enabled])
       end
+      expect(helper.configurable_rate_limits).to have_key(:flag_appeal_creation)
     end
   end
 end

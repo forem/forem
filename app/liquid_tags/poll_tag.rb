@@ -13,6 +13,12 @@ class PollTag < LiquidTagBase
         json.voting_data.votes_distribution.forEach(function(point) {
           var pollOptionItem = document.getElementById('poll_option_list_item_'+point[0]);
           var optionText = document.getElementById('poll_option_label_'+point[0]).textContent;
+          var escapedOptionText = optionText
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
           if (json.user_vote_poll_option_id === point[0]) {
             var votedClass = 'optionvotedfor'
           } else {
@@ -26,7 +32,7 @@ class PollTag < LiquidTagBase
           var roundedPercent = Math.round( percent * 10 ) / 10
           var percentFromRight = (100-roundedPercent)
           var html = '<span><span class="ltag-votepercent ltag-'+votedClass+'" style="right:'+percentFromRight+'%"></span>\
-            <span class="ltag-votepercenttext">'+optionText+' — '+roundedPercent+'%</span></span>';
+            <span class="ltag-votepercenttext">'+escapedOptionText+' — '+roundedPercent+'%</span></span>';
           pollOptionItem.innerHTML = html;
           pollOptionItem.classList.add('already-voted')
           document.getElementById('showmethemoney-'+json.poll_id).innerHTML = '<span class="ltag-voting-results-count">'+totalVotes+' total votes</span>';

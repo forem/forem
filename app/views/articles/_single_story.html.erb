@@ -5,12 +5,12 @@
   <% end %>
   <% if story.video.present? && (story.video.include?("youtube") || story.video.include?("player.mux.com") || story.video.include?("player.twitch.tv")) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="width: 100%; aspect-ratio: 16 / 9; position: relative;">
-      <iframe src="<%= story.video %>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true" title="<%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title%>" style="border: 0px; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe>
+      <iframe src="<%= story.video %>" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="true" title="<%= story.title %>" style="border: 0px; position: absolute; top: 0px; left: 0px; width: 100%; height: 100%;"></iframe>
     </div>
   <% elsif featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed" style="aspect-ratio: auto 1000 / <%= story.main_image_height %>;">
-              <a href="<%= URL.article(story) %>" title="<%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
-        <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %>">
+              <a href="<%= URL.article(story) %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
+        <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
       </a>
     </div>
   <% end %>
@@ -150,7 +150,7 @@
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
-          <a href="<%= URL.article(story) %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+          <a href="<%= URL.article(story) %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
             <div class="multiple_reactions_aggregate">
               <span class="multiple_reactions_icons_container" dir="rtl">
                 <% story.public_reaction_categories.reverse.each do |reaction_type| %>
@@ -197,7 +197,7 @@
                 <%= t("views.leadership.cards.further_discussion") %> (<%= t("views.leadership.cards.comments_count", count: story.comments_count) %>)
               </a>
             <% else %>
-              <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+              <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
                 <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
                 <%= t("views.comments.summary.count_html",
                       count: story.comments_count,
@@ -206,7 +206,7 @@
               </a>
             <% end %>
           <% elsif story.comments_count > 0 %>
-            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",
                     count: story.comments_count,
@@ -214,7 +214,7 @@
                     end: "</span>".html_safe) %>
             </a>
           <% else %>
-            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+            <a href="<%= URL.article(story) %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <span class="hidden s:inline"><%= t("views.comments.add") %></span>
             </a>
@@ -231,8 +231,8 @@
               class="c-btn c-btn--icon-alone bookmark-button"
               data-reactable-id="<%= story.id %>"
               data-article-author-id="<%= story.user_id %>"
-              aria-label="<%= t("views.articles.save.aria_label", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>"
-              title="<%= t("views.articles.save.title", title: story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title) %>">
+              aria-label="<%= t("views.articles.save.aria_label", title: story.title) %>"
+              title="<%= t("views.articles.save.title", title: story.title) %>">
               <span class="bm-initial crayons-icon c-btn__icon">
                 <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
               </span>
@@ -241,6 +241,16 @@
               </span>
             </button>
           <% end %>
+          
+          <div class="only-sidebar-menu-item trusted-visible-block print-hidden align-center">
+                <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded mod-actions-menu-btn" data-article-path="<%= story.path %>">
+                    <svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-labelledby="mod-actions-button-title-<%= story.id %>">
+                     <title id="mod-actions-button-title-<%= story.id %>">Moderation</title>
+                    <path d="M3.783 2.826L12 1l8.217 1.826a1 1 0 01.783.976v9.987a6 6 0 01-2.672 4.992L12 23l-6.328-4.219A6 6 0 013 13.79V3.802a1 1 0 01.783-.976zM5 4.604v9.185a4 4 0 001.781 3.328L12 20.597l5.219-3.48A4 4 0 0019 13.79V4.604L12 3.05 5 4.604zM13 10h3l-5 7v-5H8l5-7v5z" />
+                  </svg>
+                </button>
+          </div>
+
         </div>
       </div>
     </div>

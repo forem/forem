@@ -10,7 +10,7 @@ RSpec.describe "Feedback report" do
       sign_in user
     end
 
-    it "feedback message should increase by one", js: true do
+    it "feedback message should increase by one" do
       expect do
         post "/feedback_messages", params: {
           feedback_message: {
@@ -25,23 +25,21 @@ RSpec.describe "Feedback report" do
   end
 
   context "when user creates too many report abuse feedback messages" do
-    let(:rate_limit_checker) { RateLimitChecker.new(user) }
+    let(:rate_limit_checker) { RateLimitChecker.new }
 
     before do
-      # avoid hitting new user rate limit check
-      allow(user).to receive(:created_at).and_return(1.week.ago)
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
       allow(rate_limit_checker).to receive(:limit_by_action)
         .with(:feedback_message_creation)
         .and_return(true)
     end
 
-    it "displays a rate limit warning", :flaky, js: true do
+    it "displays a rate limit warning", :aggregate_failures do
       visit report_abuse_path
       choose("Other")
       fill_in "feedback_message_message", with: message
       fill_in "feedback_message_reported_url", with: url
-      click_button "Send Feedback"
+      click_on "Send Feedback"
       expect(page).to have_current_path("/feedback_messages")
       expect(page).to have_text("Rate limit reached")
     end

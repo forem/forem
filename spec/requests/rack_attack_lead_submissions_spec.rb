@@ -4,6 +4,7 @@ RSpec.describe "Rack::Attack Lead Submissions Throttling", type: :request do
   include ActiveSupport::Testing::TimeHelpers
 
   before do
+    freeze_time
     Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
     Rack::Attack.reset!

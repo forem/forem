@@ -6,4 +6,11 @@ RSpec.describe PollTag, type: :liquid_tag do
 
     it { is_expected.to eq(:any_admin?) }
   end
+
+  describe ".script" do
+    it "escapes HTML in poll option text before inserting into innerHTML" do
+      expect(described_class.script).to include("escapedOptionText")
+      expect(described_class.script).to include(".replace(/</g, '&lt;')")
+    end
+  end
 end

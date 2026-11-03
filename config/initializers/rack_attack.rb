@@ -1,9 +1,16 @@
+require Rails.root.join("lib/local_redis/rack_attack_proxy")
+if Rails.cache.is_a?(ActiveSupport::Cache::LocalRedisCacheStore)
+  Rack::Attack.cache.store = Rails.cache
+end
+
 Rack::Attack.throttled_response_retry_after_header = true
 
 module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
+    API_SEARCH_PATH_REGEX =
+      %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
 
     # Method that checks API Key from the request and returns true if it
     # belongs to an admin, false otherwise
@@ -12,7 +19,7 @@ module Rack
       return false if api_key.nil?
 
       # Admin API Secrets are cached to avoid making DB queries on each request
-      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours) do
+      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours, local_cache: false) do
         ApiSecret.joins(user: :roles)
           .where(roles: { name: ADMIN_ROLES })
           .group("api_secrets.id")
@@ -20,6 +27,20 @@ module Rack
       end
 
       admin_keys.include?(api_key)
+    end
+
+    # Checks whether the request is from a signed-in user (via session/Warden, remember cookie, or API key)
+    def self.user_signed_in?(request)
+      session = request.env["rack.session"]
+      return true if session && session["warden.user.user.key"].present?
+
+      warden = request.env["warden"]
+      return true if warden.respond_to?(:authenticated?) && warden.authenticated?(:user)
+
+      return true if request.cookies["remember_user_token"].present?
+      return true if request.env["HTTP_API_KEY"].present?
+
+      false
     end
 
     class Request < ::Rack::Request
@@ -33,34 +54,54 @@ module Rack
       end
     end
 
-    throttle("search_throttle", limit: 5, period: 1) do |request|
-      if request.path.starts_with?("/search/")
+    throttle("search_throttle", limit: 4, period: 1) do |request|
+      if request.path.starts_with?("/search/") && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_throttle", limit: 3, period: 1) do |request|
+    throttle("search_throttle_signed_in", limit: 20, period: 1) do |request|
+      if request.path.starts_with?("/search/") && user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_throttle", limit: 2, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && request.get? && !admin_api_key?(request)
+      if api_endpoint && request.get? && !user_signed_in?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+    throttle("api_throttle_signed_in", limit: 4, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && request.get? && !admin_api_key?(request)
+      if api_endpoint && request.get? && user_signed_in?(request) && !admin_api_key?(request)
         request.track_and_return_ip
       end
     end
 
-    throttle("api_key_throttle", limit: 3, period: 1) do |request|
+    throttle("api_throttle_per_minute", limit: 25, period: 1.minute) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_throttle_signed_in_per_minute", limit: 40, period: 1.minute) do |request|
+      api_endpoint = request.path.starts_with?("/api/")
+      if api_endpoint && request.get? && user_signed_in?(request) && !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_key_throttle", limit: 4, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
         request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
       end
     end
 
-    throttle("api_key_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+    throttle("api_key_throttle_per_minute", limit: 40, period: 1.minute) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && request.get? && !admin_api_key?(request)
         request.env["HTTP_API_KEY"] if request.env["HTTP_API_KEY"].present?
@@ -112,8 +153,41 @@ module Rack
     end
 
     throttle("search_feed_content_throttle", limit: 10, period: 1.minute) do |request|
-      if request.path.chomp("/") == "/search/feed_content"
+      if request.path.chomp("/") == "/search/feed_content" && !user_signed_in?(request)
         request.track_and_return_ip
+      end
+    end
+
+    throttle("search_feed_content_throttle_signed_in", limit: 60, period: 1.minute) do |request|
+      if request.path.chomp("/") == "/search/feed_content" && user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_throttle", limit: 2, period: 1) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_throttle_per_minute", limit: 10, period: 1.minute) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !user_signed_in?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_signed_in_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+      if request.get? &&
+          request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) &&
+          user_signed_in?(request) &&
+          !admin_api_key?(request)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("api_search_key_throttle_per_minute", limit: 30, period: 1.minute) do |request|
+      if request.get? && request.path.chomp("/").match?(API_SEARCH_PATH_REGEX) && !admin_api_key?(request)
+        request.env["HTTP_API_KEY"].presence
       end
     end
 
@@ -122,9 +196,6 @@ module Rack
         request.track_and_return_ip
       end
     end
-
-    # Removed user_signed_in? helper method - no longer needed
-    # since we removed authentication-based throttling rules
 
     # Removed edge-cached page throttling rules to reduce Redis overhead
     # These pages are edge-cached globally (signed-in vs signed-out only)

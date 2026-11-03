@@ -13,6 +13,8 @@ class User < ApplicationRecord
     included do
       has_one :profile, dependent: :delete
 
+      delegate :social_image, to: :profile, allow_nil: true
+
       # NOTE: There are rare cases were we want to skip this callback, primarily
       # in tests. `skip_callback` modifies global state, which is not thread-safe
       # and can cause hard to track down bugs. We use an instance-level attribute
@@ -181,7 +183,8 @@ class User < ApplicationRecord
   validates :blocking_others_count, presence: true
   validates :comments_count, presence: true
   validates :credits_count, presence: true
-  validates :email, length: { maximum: 254 }, email: true, allow_nil: true
+  validates :email, length: { maximum: 254 }, allow_nil: true
+  validates :email, email: { mode: :strict }, allow_nil: true, if: :email_changed?
   validate :reject_encoded_word_email, if: -> { email.present? }
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
   validates :following_orgs_count, presence: true
@@ -211,7 +214,7 @@ class User < ApplicationRecord
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
 
-  validate :non_banished_username, :username_changed?
+  validate :non_banished_username, if: :username_changed?
 
   unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
 
@@ -518,11 +521,21 @@ class User < ApplicationRecord
 
   def cached_role_names
     return roles.map(&:name) if association(:roles).loaded?
+    if defined?(@cached_role_names) && @cached_role_names && Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+      return @cached_role_names
+    end
 
     cache_key = "user-#{id}/role_names"
-    Rails.cache.fetch(cache_key, expires_in: 200.hours) do
+    result = Rails.cache.fetch(cache_key, expires_in: 200.hours) do
       roles.pluck(:name)
     end
+    @cached_role_names = result if Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
+    result
+  end
+
+  def reload(*args)
+    @cached_role_names = nil
+    super
   end
 
   def cached_base_subscriber?
@@ -530,7 +543,8 @@ class User < ApplicationRecord
   end
 
   def cached_community_leader?
-    CommunityLeaders::ROLES.any? { |role| cached_role_names.include?(role.to_s) }
+    role_names = cached_role_names
+    CommunityLeaders::ROLES.any? { |role| role_names.include?(role.to_s) }
   end
 
   # Fast negative path via cached_role_names so non-suspended users never hit the database,
@@ -540,6 +554,7 @@ class User < ApplicationRecord
     return false unless cached_role_names.include?("suspended")
     return true if suspended?
 
+    @cached_role_names = nil
     Rails.cache.delete("user-#{id}/role_names")
     false
   end
@@ -548,6 +563,7 @@ class User < ApplicationRecord
     return false unless (cached_role_names & %w[spam suspended]).any?
     return true if spam_or_suspended?
 
+    @cached_role_names = nil
     Rails.cache.delete("user-#{id}/role_names")
     false
   end
@@ -932,10 +948,10 @@ class User < ApplicationRecord
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
       email.present? &&
-      !has_role?(:suspended) &&
-      !has_role?(:spam) &&
+      score.to_i >= 0 &&
       notification_setting&.email_newsletter? &&
-      score.to_i >= 0
+      !has_role?(:suspended) &&
+      !has_role?(:spam)
 
     return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
 
@@ -1107,10 +1123,18 @@ class User < ApplicationRecord
   private
 
   def generate_social_images
-    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
-    return unless change && articles.published.from_subforem.size.positive?
+    return if previously_new_record?
 
-    Images::SocialImageWorker.perform_async(id, self.class.name)
+    if saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+    elsif saved_change_to_attribute?(:username)
+      if profile&.id
+        profile_id = profile.id
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(profile_id, "Profile") }
+      else
+        ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(id, self.class.name) }
+      end
+    end
   end
 
   def create_users_settings_and_notification_settings_records
@@ -1257,6 +1281,7 @@ class User < ApplicationRecord
   end
 
   def update_user_roles_cache(role)
+    @cached_role_names = nil
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
     Rails.cache.delete("user-#{id}/role_names")

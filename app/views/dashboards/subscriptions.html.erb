@@ -5,7 +5,7 @@
   <main id="main-content">
     <section class="flex items-center justify-between p-2 m:p-0">
       <div>
-        <h1 class="crayons-title"><% t("views.dashboard.subscriptions.heading") %></h1>
+        <h1 class="crayons-title"><%= t("views.dashboard.subscriptions.heading") %></h1>
         <h2 class="fs-base s:fs-xl fw-medium">
           <%= t "views.dashboard.subscriptions.subhead.text_html", for: tag.em(t("views.dashboard.subscriptions.subhead.for"), class: %w[fs-italic fw-normal color-base-60]), source: link_to(@source.title, @source.path) %>
         </h2>
@@ -20,8 +20,8 @@
           <% @subscriptions.each do |subscription| %>
             <% subscriber = subscription.subscriber %>
             <tr>
-              <td class="fw-medium"><a href=<%= user_profile_path(subscriber.username) %> <%= "#{subscriber.name} DEV profile" %>><%= subscriber.name %></a></td>
-              <td><a href="<%= "mailto: #{subscription.subscriber_email}" %>"><%= subscription.subscriber_email %></a></td>
+              <td class="fw-medium"><%= link_to subscriber.name, user_profile_path(subscriber.username) %></td>
+              <td><a href="mailto:<%= subscription.subscriber_email %>"><%= subscription.subscriber_email %></a></td>
               <td class="fs-s color-base-60"><%= time_ago_in_words subscription.created_at, scope: :"datetime.distance_in_words_ago" %></td>
             </tr>
           <% end %>

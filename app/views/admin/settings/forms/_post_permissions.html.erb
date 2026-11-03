@@ -1,0 +1,26 @@
+<%= form_for(Settings::General.new,
+             url: admin_settings_general_settings_path,
+             html: { data: {
+               action: "submit->config#updateConfigurationSettings",
+               testid: "postPermissionsForm"
+             } }) do |f| %>
+  <details class="crayons-card">
+    <summary class="crayons-subtitle-2 p-6">Post Permissions</summary>
+
+    <div class="p-6 pt-0">
+      <fieldset class="grid gap-4">
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :limit_post_creation_to_admins, checked: Settings::General.limit_post_creation_to_admins, class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :limit_post_creation_to_admins %>
+            <%= admin_config_description(
+                  "#{Constants::Settings::General.details[:limit_post_creation_to_admins][:description]} " \
+                  "#{t('lib.constants.settings.general.limit_post_creation_to_admins.cache_expiry_note', count: AsyncInfoController::NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY)}",
+                ) %>
+          </div>
+        </div>
+      </fieldset>
+      <%= render "update_setting_button", f: f %>
+    </div>
+  </details>
+<% end %>

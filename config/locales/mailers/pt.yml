@@ -32,6 +32,23 @@ pt:
         other: "🔥 Você tem %{count} notificações não lidas no %{community}"
       new_badge: Você acabou de receber um badge
       video_upload: O upload do seu vídeo está completo
+      gem_received:
+        article_subject: "💎 Seu post foi escolhido como joia"
+        comment_subject: "💎 Seu comentário foi escolhido como joia"
+        article_heading: Seu post é uma joia!
+        comment_heading: Seu comentário é uma joia!
+        untitled: um post
+        greeting: "Olá %{name},"
+        article_intro: Os curadores da comunidade escolheram seu post, "%{title}", como joia.
+        comment_intro: Os curadores da comunidade escolheram seu comentário em "%{title}" como joia.
+        why: Joias são raras. Os curadores têm poucas para dar e as guardam para posts e comentários que ensinam algo novo, começam uma ótima discussão ou deixam o dia de alguém um pouco melhor. O seu se destacou, e uma joia ajuda mais pessoas no %{community} a encontrá-lo. Isso é muito importante, então obrigado!
+        view_article: Ver seu post
+        view_comment: Ver seu comentário
+        pay_forward_heading: Você tem uma joia para dar
+        pay_forward: Cada joia que você recebe lhe dá uma joia para passar adiante. Quando encontrar um post ou comentário no %{community} que merece mais carinho, selecione o ícone de joia para escolhê-lo. Espalhe o amor!
+        pay_forward_cta: Encontrar algo para dar uma joia
+        sign_off: Obrigado por tornar o %{community} melhor,
+        team: Equipe %{community}
     verification_mailer:
       from: "%{community} Verificação de E-mail <%{email}>"
       verify_ownership: Verifique a Propriedade da Sua Conta %{community}

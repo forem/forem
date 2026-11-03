@@ -42,7 +42,7 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges" do
       post "Create a badge" do
         tags "badges"
-        description "Create a new badge. Requires administrator privileges.
+        description "Create a new badge. Requires administrator privileges.  Successful writes log `api_badge_create` with the actor and target ids in the admin API audit log.
 
 ### Body Parameter Guidelines:
 - **title**: Unique name for the badge.
@@ -110,7 +110,7 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges/{id}" do
       patch "Update a badge" do
         tags "badges"
-        description "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges."
+        description "Update badge details (title, description, credits awarded, etc.) by unique ID. Requires administrator privileges.  Successful writes log `api_badge_update` with the actor and target ids in the admin API audit log."
         consumes "application/json"
         produces "application/json"
         parameter name: :id, in: :path, required: true,
@@ -149,7 +149,7 @@ RSpec.describe "Api::V1::Docs::Badges" do
     path "/api/badges/{id}" do
       delete "Delete a badge" do
         tags "badges"
-        description "Delete a badge configuration from the system by ID. Requires administrator privileges."
+        description "Delete a badge configuration from the system by ID. Requires administrator privileges.  Successful writes log `api_badge_destroy` with the actor and target ids in the admin API audit log."
         produces "application/json"
         parameter name: :id, in: :path, required: true,
                   description: "Unique badge ID to delete.",

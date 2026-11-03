@@ -4,7 +4,7 @@ class ColorContrastValidator < ActiveModel::EachValidator
 
     record.errors.add(attribute,
                       (options[:message] || I18n.t("validators.color_contrast_validator.must_be_darker")))
-  rescue WCAGColorContrast::InvalidColorError
+  rescue Color::Accessibility::InvalidColorError
     # nothing to do here, this should be picked up by the format validation
   end
 end

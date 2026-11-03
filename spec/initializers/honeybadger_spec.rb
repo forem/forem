@@ -23,6 +23,12 @@ describe Honeybadger do
     end
   end
 
+  context "when running in the test environment" do
+    it "disables breadcrumbs to avoid instrumenting every ActiveSupport notification" do
+      expect(described_class.config.get(:"breadcrumbs.enabled")).to be(false)
+    end
+  end
+
   context "when error is raised from an internal route" do
     it "sets fingerprint to internal" do
       notice = Honeybadger::Notice.new(

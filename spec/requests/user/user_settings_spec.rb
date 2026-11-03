@@ -42,7 +42,10 @@ RSpec.describe "UserSettings" do
 
         expect(response.body).to include("user[remove_profile_image]")
         html = Nokogiri::HTML(response.body)
-        expect(html.css('label[for="user[remove_profile_image]"] p.crayons-field__description')).to be_present
+        checkbox = html.at_css('input[type="checkbox"][id="user[remove_profile_image]"]')
+        expect(checkbox["aria-describedby"]).to eq("remove-profile-image-description")
+        expect(html.css('label[for="user[remove_profile_image]"] p')).to be_empty
+        expect(html.css("p#remove-profile-image-description.crayons-field__description")).to be_present
       end
 
       it "renders the Profile tab without the removal checkbox when there is no profile image" do
@@ -106,6 +109,22 @@ RSpec.describe "UserSettings" do
         titles = ["Comment templates", "API Keys"]
         expect(response.body).to include(*titles)
         expect(response.body).to include("Manage my RSS feeds")
+      end
+
+      it "renders the API key generation form with description and accessible markup" do
+        get user_settings_path(:extensions)
+
+        html = Nokogiri::HTML(response.body)
+        desc = html.at_css("p#api-key-description.crayons-field__description")
+        expect(desc).to be_present
+        expect(desc.text.strip).to eq(I18n.t("views.settings.extensions.api.gen.text"))
+
+        input = html.at_css('input#api_secret_description[name="api_secret[description]"]')
+        expect(input["aria-describedby"]).to eq("api-key-description")
+
+        button = html.at_css('form[action="/users/api_secrets"] button[type="submit"]')
+        expect(button[:class].split).to include("crayons-btn", "crayons-btn--secondary")
+        expect(button[:class].split).not_to include("crayon-btn--secondary")
       end
 
       it "renders heads up dupe account message with proper param" do
@@ -353,6 +372,35 @@ RSpec.describe "UserSettings" do
       end.to change { user.setting.reload.disallow_subforem_reassignment }.from(true).to(false)
 
       expect(user.setting.reload.disallow_subforem_reassignment).to be(false)
+    end
+
+    it "updates the users theme to follow the operating system color scheme" do
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "system_theme" } }
+      end.to change { user.setting.reload.config_theme }.from("light_theme").to("system_theme")
+    end
+
+    it "keeps an explicit theme choice when the user picks one" do
+      user.setting.update!(config_theme: :system_theme)
+
+      expect do
+        put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "dark_theme" } }
+      end.to change { user.setting.reload.config_theme }.from("system_theme").to("dark_theme")
+    end
+
+    it "offers every theme, including the system one, in the customization form" do
+      get user_settings_path(:customization)
+
+      expect(response.body).to include("theme-selector--system-theme")
+      expect(response.body).to include("theme-selector--light-theme")
+      expect(response.body).to include("theme-selector--dark-theme")
+    end
+
+    it "inlines the color mode helper so the theme is resolved before first paint" do
+      get user_settings_path(:customization)
+
+      expect(response.body).to include("function applyColorMode")
+      expect(response.body).to include("prefers-color-scheme: dark")
     end
 
     it "displays the subforem reassignment setting in the customization form" do

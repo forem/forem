@@ -45,12 +45,58 @@ RSpec.describe "StoriesShow" do
       expect(slug_queries).to all(exclude("body_markdown").and(exclude(%("articles".*))))
     end
 
+    it "renders the article with feed snapshots but without the embedding or search document" do
+      path_queries = []
+      callback = lambda do |*, payload|
+        path_queries << payload[:sql] if payload[:sql].include?(%("articles"."path" =))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get article.path }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(path_queries).not_to be_empty
+      expect(path_queries).to all(
+        include(%("articles"."processed_html"))
+          .and(exclude("semantic_embedding"))
+          .and(exclude("reading_list_document"))
+          .and(include(%("articles"."cached_user")))
+          .and(include(%("articles"."cached_organization"))),
+      )
+    end
+
     it "preserves internal nav param (i=i) upon redirect" do
       old_path = article.path
       article.update(organization: org)
       get "#{old_path}?i=i"
       expect(response.body).to redirect_to "#{article.path}?i=i"
       expect(response).to have_http_status(:moved_permanently)
+    end
+
+    it "preserves the article JSON response with the narrower show projection" do
+      article.update_column(:body_html, "<p>Legacy article HTML</p>")
+
+      get article.path, headers: { "Accept" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to eq(
+        "id" => article.id,
+        "title" => article.title,
+        "body_html" => "<p>Legacy article HTML</p>",
+        "created_at" => article.created_at.as_json,
+        "updated_at" => article.updated_at.as_json,
+      )
+    end
+
+    it "renders organization and author details without the serialized feed snapshots" do
+      article.update!(organization: org)
+
+      get article.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(CGI.escapeHTML(org.name), CGI.escapeHTML(user.name))
+      expect(response.body).to include(article.processed_html_final)
+      expect(response.headers["Surrogate-Key"]).to include(article.record_key)
     end
 
     it "does not have ?i=i on redirects which did not originally include it" do
@@ -188,6 +234,32 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    it "checks the renamed user's article with an existence query instead of loading the full row" do
+      old_username = user.username
+      user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
+                          old_old_username: user.old_username)
+      queries = []
+      callback = lambda { |*, payload|
+        queries << payload[:sql] if payload[:sql].include?(%("articles"."slug"))
+      }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/#{old_username}/#{article.slug}"
+      end
+
+      expect(response).to have_http_status(:moved_permanently)
+      scoped_to_user = /FROM "articles" WHERE "articles"."user_id"/
+      expect(queries).to include(a_string_matching(/SELECT 1 AS one #{scoped_to_user.source}/))
+      expect(queries).not_to include(a_string_matching(/SELECT "articles"\.\* #{scoped_to_user.source}/))
+    end
+
+    it "returns not found when the renamed user has no article with the slug" do
+      other_user = create(:user)
+      old_username = other_user.username
+      other_user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username)
+
+      expect { get "/#{old_username}/#{article.slug}" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     it "redirects to appropriate page if user changes username twice" do
       old_username = user.username
       user.update_columns(username: "new_hotness_#{rand(10_000)}", old_username: old_username,
@@ -223,10 +295,14 @@ RSpec.describe "StoriesShow" do
     end
 
     it "handles invalid slug characters" do
-      # rubocop:disable RSpec/MessageChain
-      allow(Article).to receive_message_chain(:includes, :find_by).and_raise(ArgumentError)
-      # rubocop:enable RSpec/MessageChain
-      get article.path
+      path = article.path
+      relation = instance_double(ActiveRecord::Relation)
+      allow(Article).to receive(:includes).with(:organization, user: %i[profile setting roles]).and_return(relation)
+      excluded_columns = %w[semantic_embedding reading_list_document]
+      selected_columns = Article.column_names - excluded_columns
+      allow(relation).to receive(:select).with(selected_columns).and_return(relation)
+      allow(relation).to receive(:find_by).with(path: path).and_raise(ArgumentError)
+      get path
 
       expect(response).to have_http_status(:bad_request)
     end
@@ -548,6 +624,23 @@ RSpec.describe "StoriesShow" do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    context "when the organization has a cover image" do
+      before { org.update!(cover_image: fixture_file_upload("800x600.png", "image/png")) }
+
+      it "serves the cover at 1600px for 1x screens and 3200px for 2x screens" do
+        allow(Images::Optimizer).to receive(:call).and_call_original
+
+        get org.path
+
+        expect(response).to have_http_status(:ok)
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 1600))
+        expect(Images::Optimizer).to have_received(:call)
+          .with(a_string_including("organization/cover_image/#{org.id}"), hash_including(width: 3200))
+        expect(response.body).to include("image-set(")
+      end
+    end
+
     context "with comment cue popup data attributes" do
       it "renders cue data attributes when the flag is fully enabled globally" do
         allow(FeatureFlag).to receive(:enabled?).and_call_original
@@ -568,6 +661,40 @@ RSpec.describe "StoriesShow" do
         expect(response.body).not_to include("data-cue-message=")
         expect(response.body).not_to include("data-cue-close-label=")
       end
+    end
+
+    it "renders the organization's generated social_image in og:image and twitter:image:src when present" do
+      org.update_column(:social_image, "https://example.com/org-social-card.png")
+
+      get org.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/org-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/org-social-card.png"')
+    end
+  end
+
+  describe "GET /:username (user)" do
+    it "renders the user's generated social_image in og:image and twitter:image:src when present" do
+      user.profile.update_column(
+        :data,
+        user.profile.data.merge("social_image" => "https://example.com/user-social-card.png"),
+      )
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/user-social-card.png"')
+      expect(response.body).to include('name="twitter:image:src" content="https://example.com/user-social-card.png"')
+    end
+
+    it "falls back to Settings::General.main_social_image when social_image is blank" do
+      allow(Settings::General).to receive(:main_social_image).and_return("https://example.com/default-main-social.png")
+
+      get user.path
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include('property="og:image" content="https://example.com/default-main-social.png"')
     end
   end
 end

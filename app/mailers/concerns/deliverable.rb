@@ -147,7 +147,8 @@ module Deliverable
   def customerio_recipient
     return @customerio_recipient if defined?(@customerio_recipient)
 
-    @customerio_recipient = User.find_by(email: mail.to.first.to_s.downcase)
+    @customerio_recipient = find_user_for_email if respond_to?(:find_user_for_email, true)
+    @customerio_recipient ||= User.find_by(email: Array(mail.to).first.to_s.downcase)
   end
 
   # People in Customer.io are keyed by MLH Core user id (DEV profiles were
@@ -155,7 +156,7 @@ module Deliverable
   # hold_until_linked waits for the id instead -- so email only identifies
   # recipients who are not users at all.
   def customerio_identifiers
-    customerio_recipient ? { id: customerio_mlh_uid } : { email: mail.to.first }
+    customerio_recipient ? { id: customerio_mlh_uid } : { email: Array(mail.to).first }
   end
 
   def customerio_mlh_uid

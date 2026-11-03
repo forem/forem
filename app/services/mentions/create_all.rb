@@ -38,6 +38,11 @@ module Mentions
     end
 
     def extract_usernames_from_mentions_in_text
+      ForemNative.extract_mentioned_usernames(notifiable.processed_html) ||
+        legacy_extract_usernames_from_mentions_in_text
+    end
+
+    def legacy_extract_usernames_from_mentions_in_text
       # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
       doc = Nokogiri::HTML(notifiable.processed_html)
 

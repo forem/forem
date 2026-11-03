@@ -160,7 +160,10 @@ en:
           heading: Delete %{user}'s account
           onsubmit: Are you sure? This action is irreversible.
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
-          notice: Only Super Admins are allowed to delete users.
+          notice: Only admins are allowed to delete users.
+          activity_threshold_notice: Only Super Admins are allowed to delete users with %{count} or more published posts and comments.
+          super_admin_notice: Only Super Admins are allowed to delete admin accounts.
+          self_delete_notice: You cannot delete your own account from the admin panel.
           submit: Delete now
         update_email:
           heading: Update User Email

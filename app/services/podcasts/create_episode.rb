@@ -36,6 +36,7 @@ module Podcasts
 
     def podcast_episode_attributes
       now = Time.current
+      safe_website_url = item.link.to_s.match?(%r{\Ahttps?://}i) ? item.link : nil
 
       {
         podcast_id: podcast_id,
@@ -43,7 +44,7 @@ module Podcasts
         slug: title_to_slug(item.title),
         subtitle: item.itunes_subtitle,
         summary: item.itunes_summary,
-        website_url: item.link,
+        website_url: safe_website_url,
         guid: item.guid,
         body: item.body,
         created_at: now,
@@ -53,6 +54,7 @@ module Podcasts
 
     def add_media_url(attributes)
       return attributes if item.enclosure_url.blank?
+      return attributes unless item.enclosure_url.to_s.match?(%r{\Ahttps?://}i)
 
       result = GetMediaUrl.call(item.enclosure_url)
 

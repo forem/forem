@@ -15,55 +15,38 @@ RSpec.describe "ResponseTemplate" do
     context "when signed in as a regular user" do
       before { sign_in user }
 
-      it "responds with JSON" do
-        create(:response_template, user: user, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.media_type).to eq "application/json"
-      end
-
       it "raises RoutingError if the format is not JSON" do
         expect { get response_templates_path }.to raise_error ActionController::RoutingError
       end
 
-      it "returns an array of all the user's response templates" do
-        total_response_templates = 2
-        create_list(:response_template, total_response_templates, user: user, type_of: "personal_comment")
+      it "responds with a JSON array of only the user's personal response templates", :aggregate_failures do
+        create(:response_template, user: nil, type_of: "mod_comment")
+        create_list(:response_template, 2, user: user, type_of: "personal_comment")
 
         headers = { HTTP_ACCEPT: "application/json" }
         get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
+
+        expect(response.media_type).to eq "application/json"
         expect(response.parsed_body.class).to eq Array
-        expect(response.parsed_body.length).to eq total_response_templates
+        expect(response.parsed_body.length).to eq 2
+        expect(response.parsed_body.pluck("user_id")).to eq([user.id, user.id])
       end
 
-      it "returns a hash with personal response templates if type_of unspecified" do
+      it "returns a hash with personal response templates if type_of unspecified", :aggregate_failures do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: user, type_of: "personal_comment")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
         json = response.parsed_body
+        expect(response.media_type).to eq "application/json"
         expect(json.keys).to contain_exactly("personal_comment")
         expect(json.values.flatten.count).to eq(2)
       end
 
-      it "returns only the users' response templates" do
-        create(:response_template, user: nil, type_of: "mod_comment")
-        create_list(:response_template, 2, user: user, type_of: "personal_comment")
-
-        headers = { HTTP_ACCEPT: "application/json" }
-        get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
-
-        user_ids = response.parsed_body.pluck("user_id")
-        expect(user_ids).to eq([user.id, user.id])
-      end
-
-      it "raises an error if trying to view moderator response templates" do
-        create(:response_template, user: nil, type_of: "mod_comment")
+      it "raises an error if trying to view moderator or admin response templates", :aggregate_failures do
         expect do
           get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
         end.to raise_error Pundit::NotAuthorizedError
-      end
 
-      it "raises an error if trying to view admin response templates" do
-        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
         expect do
           get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
         end.to raise_error Pundit::NotAuthorizedError
@@ -73,16 +56,11 @@ RSpec.describe "ResponseTemplate" do
     context "when signed in as a mod user" do
       before { sign_in moderator }
 
-      it "responds with JSON" do
-        create(:response_template, user: moderator, type_of: "personal_comment")
-        get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.media_type).to eq "application/json"
-      end
-
-      it "returns the correct amount of moderator response templates" do
+      it "responds with JSON and returns the correct amount of moderator response templates", :aggregate_failures do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.media_type).to eq "application/json"
         expect(response.parsed_body.length).to eq 2
       end
 
@@ -96,7 +74,6 @@ RSpec.describe "ResponseTemplate" do
       end
 
       it "raises unauthorized error if trying to view admin response templates" do
-        create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
         expect do
           get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
         end.to raise_error Pundit::NotAuthorizedError
@@ -106,14 +83,10 @@ RSpec.describe "ResponseTemplate" do
     context "when signed in as an admin" do
       before { sign_in admin }
 
-      it "allows access by responding with status OK" do
-        get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.status_message).to eq "OK"
-      end
-
-      it "allows access and returns an array of admin level response templates" do
+      it "allows access with status OK and returns an array of admin level response templates", :aggregate_failures do
         create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
         get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.status_message).to eq "OK"
         expect(response.parsed_body.length).to eq 2
       end
     end
@@ -131,7 +104,7 @@ RSpec.describe "ResponseTemplate" do
         }
       end
 
-      it "successfully creates the proper response template" do
+      it "successfully creates the proper response template and redirects to the edit page", :aggregate_failures do
         post response_templates_path, params: {
           response_template: {
             title: attributes[:title],
@@ -144,6 +117,8 @@ RSpec.describe "ResponseTemplate" do
         expect(response_template.title).to eq attributes[:title]
         expect(response_template.content).to eq attributes[:content]
         expect(response_template.type_of).to eq attributes[:type_of]
+        expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
+                                                                    id: response_template.id)
       end
 
       it "can only create personal response templates" do
@@ -158,17 +133,6 @@ RSpec.describe "ResponseTemplate" do
         response_template = ResponseTemplate.last
         expect(response_template.type_of).to eq "personal_comment"
       end
-
-      it "redirects to the edit page upon success" do
-        post response_templates_path, params: {
-          response_template: {
-            title: attributes[:title],
-            content: attributes[:content]
-          }
-        }
-        expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
-                                                                    id: ResponseTemplate.last.id)
-      end
     end
 
     context "when signed in as trusted user" do
@@ -182,7 +146,7 @@ RSpec.describe "ResponseTemplate" do
         }
       end
 
-      it "successfully creates a personal response template" do
+      it "successfully creates a personal response template and redirects to the edit page", :aggregate_failures do
         post response_templates_path, params: {
           response_template: {
             title: attributes[:title],
@@ -195,6 +159,8 @@ RSpec.describe "ResponseTemplate" do
         expect(response_template.title).to eq attributes[:title]
         expect(response_template.content).to eq attributes[:content]
         expect(response_template.type_of).to eq "personal_comment"
+        expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
+                                                                    id: response_template.id)
       end
 
       it "**cannot** create a mod_comment response template" do
@@ -212,17 +178,6 @@ RSpec.describe "ResponseTemplate" do
         expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
                                                                     id: nil)
       end
-
-      it "redirects to the edit page upon success" do
-        post response_templates_path, params: {
-          response_template: {
-            title: attributes[:title],
-            content: attributes[:content]
-          }
-        }
-        expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
-                                                                    id: ResponseTemplate.last.id)
-      end
     end
   end
 
@@ -232,14 +187,10 @@ RSpec.describe "ResponseTemplate" do
 
       let(:response_template) { create(:response_template, user: user) }
 
-      it "successfully updates the response template" do
+      it "successfully updates the response template and redirects back to it", :aggregate_failures do
         title = "something else"
         patch response_template_path(response_template.id), params: { response_template: { title: title } }
         expect(ResponseTemplate.first.title).to eq title
-      end
-
-      it "redirects back to the response template" do
-        patch response_template_path(response_template.id), params: { response_template: { title: "something else" } }
         expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
                                                                     id: ResponseTemplate.first.id)
       end
@@ -293,11 +244,9 @@ RSpec.describe "ResponseTemplate" do
 
     let(:response_template) { create(:response_template, user: user) }
 
-    it "successfully destroys the response template" do
+    it "successfully destroys the response template and redirects to /settings/response_templates",
+       :aggregate_failures do
       expect(ResponseTemplate.count).to eq 0
-    end
-
-    it "redirects to /settings/response_templates" do
       expect(response.redirect_url).to include user_settings_path(tab: "response-templates")
     end
   end

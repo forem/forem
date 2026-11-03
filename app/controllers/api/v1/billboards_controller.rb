@@ -21,12 +21,16 @@ module Api
       def create
         @billboard = Billboard.new(permitted_params)
         @billboard.save!
+        payload = { "action" => "api_billboard_create", "billboard_id" => @billboard.id }
+        Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard, status: :created
       end
 
       def update
         @billboard = Billboard.find(params[:id])
         @billboard.update!(permitted_params)
+        payload = { "action" => "api_billboard_update", "billboard_id" => @billboard.id }
+        Audit::Logger.log(:admin_api, @user, payload)
         render json: @billboard
       end
 
@@ -34,20 +38,44 @@ module Api
         @billboard = Billboard.find(params[:id])
         result = @billboard.update(published: false)
         if result
+          payload = { "action" => "api_billboard_unpublish", "billboard_id" => @billboard.id }
+          Audit::Logger.log(:admin_api, @user, payload)
           head :no_content
         else
           render json: @billboard, status: :unprocessable_entity
         end
       end
 
+      def preview
+        @billboard = Billboard.new(preview_params)
+        @billboard.creator ||= @user
+
+        render json: {
+          processed_html: @billboard.render_preview_html(@billboard.body_markdown),
+          minimized_processed_html: @billboard.render_preview_html(@billboard.minimized_body_markdown)
+        }, status: :ok
+      rescue ContentRenderer::ContentParsingError => e
+        error_unprocessable_entity(ErrorMessages::Clean.call(e.message))
+      end
+
       private
+
+      def preview_params
+        source_params = if params[:billboard].is_a?(ActionController::Parameters)
+                          params[:billboard]
+                        else
+                          params
+                        end
+        source_params.permit(:body_markdown, :minimized_body_markdown, :placement_area, :render_mode)
+      end
 
       def require_admin
         authorize Billboard, :access?, policy_class: InternalPolicy
       end
 
       def permitted_params
-        params.permit :approved, :body_markdown, :minimized_body_markdown, :creator_id, :display_to, :page_id, :browser_context,
+        params.permit :approved, :body_markdown, :minimized_body_markdown, :creator_id, :display_to, :page_id,
+                      :browser_context,
                       :name, :organization_id, :placement_area, :published, :dismissal_sku,
                       :tag_list, :type_of, :exclude_article_ids, :weight, :requires_cookies, :color,
                       :audience_segment_type, :audience_segment_id, :priority, :special_behavior,

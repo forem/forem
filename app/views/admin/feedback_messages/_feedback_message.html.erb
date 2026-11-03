@@ -60,7 +60,11 @@
               Reported URL:
             </h3>
             <p>
-              <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+              <% if feedback_message.reported_url.to_s.match?(%r{\A(https?://|/[^/])}i) %>
+                <a href="<%= feedback_message.reported_url %>" target="_blank" rel="noopener"><%= feedback_message.reported_url %></a>
+              <% else %>
+                <%= feedback_message.reported_url %>
+              <% end %>
             </p>
           <% end %>
         </div>

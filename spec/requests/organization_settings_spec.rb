@@ -129,4 +129,31 @@ RSpec.describe "OrganizationSettings" do
       end
     end
   end
+
+  describe "POST /:slug/settings/verify" do
+    before do
+      FeatureFlag.add(:org_verification)
+      FeatureFlag.enable(:org_verification, FeatureFlag::Actor[organization])
+      organization.update!(url: "https://example.com")
+      sign_in user
+    end
+
+    it "rejects non-http(s) schemes in verification_url" do
+      post organization_request_verification_path(organization.slug), params: {
+        verification_url: "javascript://example.com/%0aalert(1)"
+      }
+
+      expect(organization.reload.verification_url).to be_nil
+    end
+
+    it "normalizes a domain-only verification_url to https://" do
+      allow(Organizations::VerifyLinkbackWorker).to receive(:perform_async)
+
+      post organization_request_verification_path(organization.slug), params: {
+        verification_url: "example.com/about"
+      }
+
+      expect(organization.reload.verification_url).to eq("https://example.com/about")
+    end
+  end
 end

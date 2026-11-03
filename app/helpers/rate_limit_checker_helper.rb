@@ -92,6 +92,13 @@ module RateLimitCheckerHelper
         title: I18n.t("helpers.rate_limit_checker_helper.feedback.title"),
         description: I18n.t("helpers.rate_limit_checker_helper.feedback.description")
       },
+      flag_appeal_creation: {
+        enabled: true,
+        min: 1,
+        placeholder: 3,
+        title: I18n.t("helpers.rate_limit_checker_helper.flag_appeal.title"),
+        description: I18n.t("helpers.rate_limit_checker_helper.flag_appeal.description")
+      },
       comment_creation: {
         enabled: true,
         min: 0,

@@ -48,7 +48,7 @@ xml.rss(:version => "2.0",
     articles.each do |article|
       xml.item do
         xml.title article.title
-        xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.user.name)
+        xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.cached_user_name.presence || article.user.name)
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         article_link = if request.env["forem.custom_domain_org"].present?
                          "#{request.base_url}/#{article.slug}"
@@ -58,7 +58,7 @@ xml.rss(:version => "2.0",
         xml.link article_link
         xml.guid article_link
         xml.description descriptions[article.id]
-        article.tag_list.each do |tag_name|
+        article.cached_tag_list_array.each do |tag_name|
           xml.category tag_name
         end
       end

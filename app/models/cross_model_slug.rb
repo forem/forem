@@ -27,9 +27,15 @@ class CrossModelSlug
 
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
-      MODELS.detect do |class_name, attribute|
-        class_name.constantize.exists?({ attribute => value })
+      conn = ApplicationRecord.connection
+      quoted_value = conn.quote(value)
+      union_queries = MODELS.map do |class_name, attribute|
+        table_name = conn.quote_table_name(class_name.constantize.table_name)
+        column_name = conn.quote_column_name(attribute)
+        "SELECT 1 FROM #{table_name} WHERE #{column_name} = #{quoted_value}"
       end
+
+      conn.select_value("SELECT EXISTS (#{union_queries.join(' UNION ALL ')})")
     end
   end
 end

@@ -42,6 +42,20 @@ class UserActivityHeatmapService
     comments   = comments_by_day
     reactions  = reactions_by_day
 
+    ForemNative.build_activity_heatmap_payload(
+      start_date.iso8601,
+      end_date.iso8601,
+      articles,
+      comments,
+      reactions,
+    ) || legacy_build_payload(articles, comments, reactions)
+  end
+
+  def legacy_build_payload(articles, comments, reactions)
+    articles = articles.transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
+    comments = comments.transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
+    reactions = reactions.transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
+
     rows = (start_date..end_date).map do |date|
       a = articles[date].to_i
       c = comments[date].to_i
@@ -70,14 +84,12 @@ class UserActivityHeatmapService
       .where(user_id: user.id)
       .where(published_at: range)
       .group(Arel.sql("DATE(published_at)")).count
-      .transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
   end
 
   def comments_by_day
     Comment.where(user_id: user.id, deleted: false)
       .where(created_at: range)
       .group(Arel.sql("DATE(created_at)")).count
-      .transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
   end
 
   def reactions_by_day
@@ -85,7 +97,6 @@ class UserActivityHeatmapService
       .public_category.valid_or_confirmed
       .where(created_at: range)
       .group(Arel.sql("DATE(created_at)")).count
-      .transform_keys { |k| k.is_a?(String) ? Date.parse(k) : k }
   end
 
   def range

@@ -10,13 +10,23 @@
     <h3 class=" mb-2 "><%= t("views.settings.extensions.api.gen.heading") %></h3>
     <%= form_tag users_api_secrets_path, method: :post do %>
       <%= fields_for :api_secret do |api_secret| %>
-        <div class=" crayons-field mb-6 ">
-          <%= api_secret.label(:description, t("views.settings.extensions.api.gen.label"), class: "crayons-field__label") %>
-          <p class=" crayons-field__description "><% t("views.settings.extensions.api.gen.text") %></p>
-          <%= api_secret.text_field(:description, placeholder: t("views.settings.extensions.api.gen.placeholder"), required: true, class: "crayons-textfield") %>
+        <div class="crayons-field mb-6">
+          <%= api_secret.label :description,
+                               t("views.settings.extensions.api.gen.label"),
+                               class: "crayons-field__label" %>
+          <p id="api-key-description" class="crayons-field__description">
+            <%= t("views.settings.extensions.api.gen.text") %>
+          </p>
+          <%= api_secret.text_field :description,
+                                    placeholder: t("views.settings.extensions.api.gen.placeholder"),
+                                    required: true,
+                                    class: "crayons-textfield",
+                                    aria: { describedby: "api-key-description" } %>
         </div>
       <% end %>
-      <button class=" crayons-btn crayon-btn--secondary " type=" submit "><%= t("views.settings.extensions.api.gen.submit") %></button>
+      <button class="crayons-btn crayons-btn--secondary" type="submit">
+        <%= t("views.settings.extensions.api.gen.submit") %>
+      </button>
     <% end %>
   </div>
 

@@ -14,6 +14,7 @@ module LiquidTagHelpers
 
   def parse_options(markup)
     cleaned = respond_to?(:strip_tags, true) ? strip_tags(markup) : markup
+    cleaned = fully_unescape_html(cleaned)
     options = {}
     cleaned.scan(OPTION_REGEXP) do |key, quoted_val, plain_val|
       options[key] = (quoted_val || plain_val).strip
@@ -44,11 +45,17 @@ module LiquidTagHelpers
     )
   end
 
-  def validate_url!(url, option_name = "url")
-    return if url.blank?
+  def validate_url!(url, option_name = "url", allow_blank: true)
+    if url.blank?
+      return if allow_blank
+
+      raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name)
+    end
 
     uri = URI.parse(url)
-    raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name) unless %w[http https].include?(uri.scheme)
+    unless %w[http https].include?(uri.scheme) && uri.host.present?
+      raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name)
+    end
   rescue URI::InvalidURIError
     raise StandardError, I18n.t("liquid_tags.invalid_url_scheme", option: option_name)
   end

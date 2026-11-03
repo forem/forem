@@ -18,7 +18,7 @@ module Users
           # notify admins internally that they need to delete gdpr data (a
           # request needs an email, users without one never got a record)
           if user.email.present?
-            GDPRDeleteRequest.create!(user_id: user.id, email: user.email, username: user.username)
+            GDPRDeleteRequest.create!(user_id: user.id, email: user.email, username: user.username, name: user.name)
           end
           # tell MLH Core so it can erase the DEV-derived data it holds (the user
           # object is destroyed, but its in-memory attributes still feed the payload)

@@ -19,7 +19,7 @@ module Users
     enum :inbox_type, { private: 0, open: 1 }, suffix: :inbox
     enum :config_navbar, { default: 0, static: 1 }, suffix: :navbar
     # NOTE: We previously had a set of 5 themes with values from 0 to 4.
-    enum :config_theme, { light_theme: 0, dark_theme: 2 }
+    enum :config_theme, { light_theme: 0, system_theme: 1, dark_theme: 2 }
     enum :config_homepage_feed, { default: 0, latest: 1, top_week: 2, top_month: 3, top_year: 4, top_infinity: 5 },
          suffix: :feed
     enum :feed_status, { healthy: 0, degraded: 1, failing: 2, inactive: 3 }, prefix: :feed
@@ -40,6 +40,7 @@ module Users
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
+    after_update :generate_social_images, if: :saved_change_to_brand_color1?
     after_commit :bust_user_profile_details_cache, on: :update, if: :display_email_setting_changed_for_cache?
 
     def resolved_font_name
@@ -84,6 +85,10 @@ module Users
 
     def display_email_setting_changed_for_cache?
       saved_change_to_display_email_on_profile?
+    end
+
+    def generate_social_images
+      ActiveRecord.after_all_transactions_commit { Images::SocialImageWorker.perform_async(user_id, "User") }
     end
   end
 end

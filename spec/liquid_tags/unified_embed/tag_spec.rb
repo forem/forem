@@ -329,6 +329,13 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
           described_class.validate_link(input: bsky_link)
         end.not_to raise_error
       end
+
+      it "rejects non-http(s) schemes even for allowlisted hosts" do
+        error_msg = "URL provided may have a typo or error; please check and try again"
+        expect { described_class.validate_link(input: "javascript://twitter.com/%0aalert(1)") }
+          .to raise_error(StandardError, error_msg)
+        expect { Liquid::Template.parse("{% embed javascript:alert(1) %}") }.to raise_error(StandardError, error_msg)
+      end
     end
 
     describe "HTTP timeout settings" do

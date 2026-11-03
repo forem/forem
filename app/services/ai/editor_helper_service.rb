@@ -33,7 +33,9 @@ module Ai
 
         # Strip out ERB tags from the main guide
         content_without_erb = raw_guide.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")
-        clean_guide = ActionView::Base.full_sanitizer.sanitize(content_without_erb).gsub(/\s+/, " ").strip
+        sanitized_guide = ForemNative.full_sanitize(content_without_erb) ||
+          ActionView::Base.full_sanitizer.sanitize(content_without_erb)
+        clean_guide = sanitized_guide.gsub(/\s+/, " ").strip
 
         # Preserve layout of the Markdown Embed lists
         clean_url_embeds = raw_url_embeds.gsub(/<%=.*?%>/, "").gsub(/<%.*?%>/, "")

@@ -4,10 +4,9 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
   # We're exercising each named feed variant to ensure that the queries are valid SQL.
   # Only test the 3 most recent variant files to reduce test time
   Rails.root.glob(File.join(Articles::Feeds::VariantAssembler::DIRECTORY, "/*.json"))
-       .sort_by(&:basename)
-       .reverse
-       .first(3)
-       .each do |pathname|
+    .sort_by(&:basename)
+    .last(3)
+    .reverse_each do |pathname|
     variant = pathname.basename(".json").to_s.to_sym
 
     describe ".build_for with #{variant} variant" do
@@ -22,6 +21,33 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           article = create(:article)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
+        end
+
+        it "factors the shared published_at lower bound outside the discover OR predicate" do
+          sql = query_call.to_sql.squish
+          expected_pattern = /
+            AND\ articles\.published_at\ >\ '[^']+'\s+
+            AND\ \(\(articles\.published_at\ >\ '[^']+'\)\ OR\ \(articles\.last_comment_at\ >\ '[^']+'\)\)
+          /x
+          expect(sql).to match(expected_pattern)
+        end
+
+        it "includes an article in the conditional lookback window only when it has a recent comment",
+           :aggregate_failures do
+          lookback_offset = variant_query.config.max_days_since_published.days
+          recent_comment_article = create(:article)
+          recent_comment_article.update_columns(published_at: (lookback_offset + 6.hours).ago,
+                                                last_comment_at: 4.hours.ago)
+          stale_comment_article = create(:article)
+          stale_comment_article.update_columns(published_at: (lookback_offset + 6.hours).ago,
+                                               last_comment_at: 8.hours.ago)
+          too_old_article = create(:article)
+          too_old_article.update_columns(published_at: (lookback_offset + 18.hours).ago,
+                                         last_comment_at: 4.hours.ago)
+
+          results = query_call.to_a
+          expect(results).to include(recent_comment_article)
+          expect(results).not_to include(stale_comment_article, too_old_article)
         end
 
         it "loads articles from the current subforem without querying subforems", :aggregate_failures do
@@ -44,45 +70,47 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
       end
 
       describe "#call with a non-nil user" do
-        let(:user) { create(:user) }
+        let(:user) { create(:user, :without_profile, profile_image: nil) }
+        let(:author) { create(:user, :without_profile, profile_image: nil) }
+        let(:viewed_article) { create(:article, user: author, with_tags: false) }
 
         it "is a valid ActiveRecord::Relation", :aggregate_failures do
-          article = create(:article)
+          article = create(:article, user: author)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
 
         it "does not return negative scored articles", :aggregate_failures do
-          article = create(:article, score: -1)
+          article = create(:article, score: -1, user: author)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).not_to match_array(article)
         end
 
         it "does not return an article published 27 hours before last page view if last comment at is too old" do
-          create_list(:page_view, 5, user: user) # Recent pageviews
-          article = create(:article)
+          article = create(:article, user: author)
+          create_list(:page_view, 2, user: user, article: viewed_article) # Recent pageviews
           article.update_columns(published_at: 27.hours.ago, last_comment_at: 22.hours.ago)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).not_to include(article)
         end
 
         it "does return article published 27 hours before last page view if last comment is within 6 hours" do
-          create_list(:page_view, 5, user: user) # Recent pageviews
-          article = create(:article)
+          article = create(:article, user: author)
+          create_list(:page_view, 2, user: user, article: viewed_article) # Recent pageviews
           article.update_columns(published_at: 27.hours.ago, last_comment_at: 4.hours.ago)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to include(article)
         end
 
         it "does not return article published 38 hours before last page view if last comment is within 6 hours" do
-          create_list(:page_view, 5, user: user) # Recent pageviews
-          article = create(:article)
+          article = create(:article, user: author)
+          create_list(:page_view, 2, user: user, article: viewed_article) # Recent pageviews
           article.update_columns(published_at: 38.hours.ago, last_comment_at: 4.hours.ago)
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).not_to include(article)
         end
 
-        it "returns proper scope when passed the different test values" do
+        it "accepts comment variants without eagerly loading their full comment collections" do
           # rubocop:disable Performance/CollectionLiteralInLoop
           %w[top_comments
              more_inclusive_top_comments
@@ -90,7 +118,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
              more_inclusive_recent_good_comments
              most_inclusive_recent_good_comments].each do |test_value|
             expect(variant_query.call(comments_variant: test_value).includes_values)
-              .to include({ test_value.to_sym => :user })
+              .not_to include({ test_value.to_sym => :user })
           end
           # rubocop:enable Performance/CollectionLiteralInLoop
         end
@@ -108,18 +136,32 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(reaction_queries).to be_empty
         end
 
+        it "does not load comment collections while selecting and ranking articles" do
+          article = create(:article, user: author)
+          create(:comment, commentable: article, user: author, score: 20)
+          article.update_column(:score, 100)
+          queries = []
+          callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { query_call.to_a }
+
+          expect(result).to include(article)
+          expect(queries).to be_empty
+        end
+
         it "still returns the reaction categories of each article" do
-          article = create(:article)
+          article = create(:article, user: author)
           create(:reaction, reactable: article, category: "like")
 
-          story = query_call.to_a.find { |result| result.id == article.id }
+          story = query_call.to_a.detect { |result| result.id == article.id }
 
           expect(story.public_reaction_categories.map(&:slug)).to eq([:like])
         end
 
+        # rubocop:disable RSpec/NestedGroups
         context "with AI disclosure preferences" do
-          let!(:no_ai_article) { create(:article, ai_disclosure_level: :no_ai) }
-          let!(:autonomous_article) { create(:article, ai_disclosure_level: :fully_autonomous) }
+          let!(:no_ai_article) { create(:article, ai_disclosure_level: :no_ai, user: author) }
+          let!(:autonomous_article) { create(:article, ai_disclosure_level: :fully_autonomous, user: author) }
 
           context "when user has hide_fully_autonomous preference" do
             before { user.setting.update(feed_ai_preference: :hide_fully_autonomous) }
@@ -138,6 +180,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
             end
           end
         end
+        # rubocop:enable RSpec/NestedGroups
       end
 
       describe "#featured_story_and_default_home_feed" do

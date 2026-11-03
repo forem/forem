@@ -341,7 +341,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           allow_any_instance_of(EmailDigestArticleCollector).to receive(:feed_config_id).and_return(feed_config.id)
         end
 
-        it "creates FeedEvent impressions using BulkUpsert and updates feed config counters" do
+        it "creates FeedEvent impressions and refreshes counters through committed feedback" do
           create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
           
           expect(FeedEvents::BulkUpsert).to receive(:call).with(
@@ -357,6 +357,9 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
             )
           ).and_call_original
           
+          allow(FeedEvents::FeedbackWorker).to receive(:perform_async) do |ids|
+            FeedEvents::FeedbackWorker.new.perform(ids)
+          end
           expect(FeedEvent).to receive(:update_single_feed_config_counters).with(feed_config.id).and_call_original
 
           expect {

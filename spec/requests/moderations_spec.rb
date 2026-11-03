@@ -13,7 +13,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   end
 
   context "when user is not trusted" do
-    before { sign_in create(:user) }
+    before { sign_in create(:user, :without_profile, profile_image: nil) }
 
     it "does not grant access", :proper_status do
       get path
@@ -27,10 +27,11 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
 end
 
 RSpec.describe "Moderations" do
-  let(:trusted_user) { create(:user, :trusted) }
-  let(:article) { create(:article) }
-  let(:comment) { create(:comment, commentable: article) }
-  let(:staff_account) { create(:user) }
+  let(:trusted_user) { create(:user, :trusted, :without_profile, profile_image: nil) }
+  let(:author) { create(:user, :without_profile, profile_image: nil) }
+  let(:article) { create(:article, user: author) }
+  let(:comment) { create(:comment, commentable: article, user: author) }
+  let(:staff_account) { build_stubbed(:user) }
 
   it_behaves_like "an elevated privilege required request", "/username/random-article/mod"
   it_behaves_like "an elevated privilege required request", "/username/comment/1/mod"
@@ -52,38 +53,23 @@ RSpec.describe "Moderations" do
       expect(response).to have_http_status(:ok)
     end
 
-    it "grants access to /mod index" do
-      create(:rating_vote, article: article, user: trusted_user)
+    it "grants access to /mod index and excludes [Boost] articles", :aggregate_failures do
+      article
+      boost_article = create(:article, user: author, title: "[Boost]", with_tags: false)
       get "/mod"
       expect(response).to have_http_status(:ok)
-    end
-
-    it "grants access to /mod index with articles" do
-      article = create(:article, published: true)
-      get "/mod"
       expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
     end
 
-    it "grants access to /mod/:tag index with articles" do
-      create(:article, published: true)
+    it "grants access to /mod/:tag index with articles", :aggregate_failures do
       get "/mod/#{article.tags.first}"
       expect(response.body).to include("##{article.tags.first.name}")
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
-    it "returns not found for inappropriate tags" do
+    it "returns not found for inappropriate tags or missing articles", :aggregate_failures do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
-    end
-
-    it "only includes articles which do not have [Boost] in as title" do
-      non_boost_article = create(:article, title: "Not Boost")
-      boost_article = create(:article, title: "[Boost]")
-      get "/mod"
-      expect(response.body).to include(CGI.escapeHTML(non_boost_article.title))
-      expect(response.body).not_to include(CGI.escapeHTML(boost_article.title))
-    end
-
-    it "renders not_found when an article can't be found" do
       expect do
         get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
       end.to raise_exception(ActiveRecord::RecordNotFound)
@@ -92,22 +78,17 @@ RSpec.describe "Moderations" do
 
   describe "actions_panel" do
     context "when the user is a tag moderator" do
-      let(:tag_mod) { create(:user, :tag_moderator) }
+      let(:tag_mod) { create(:user, :tag_moderator, :without_profile, profile_image: nil) }
       let(:tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
-      let(:article1) { create(:article, tags: tag) }
-      let(:article2) { create(:article, tags: "javascript, cool, beans") }
+      let(:article1) { create(:article, user: author, tags: tag) }
+      let(:article2) { create(:article, user: author, tags: "javascript, cool, beans") }
 
-      it "shows the option to remove the tag when the article has the tag" do
+      it "shows remove option when article has tag and add option when it does not", :aggregate_failures do
         tag_mod.add_role(:trusted)
         sign_in tag_mod
 
         get "#{article1.path}/actions_panel"
         expect(response.body).to include "circle centered-icon remove-icon"
-      end
-
-      it "shows the option to add the tag when the article has the tag" do
-        tag_mod.add_role(:trusted)
-        sign_in tag_mod
 
         get "#{article2.path}/actions_panel"
         expect(response.body).to include "circle centered-icon add-icon"
@@ -116,23 +97,18 @@ RSpec.describe "Moderations" do
   end
 
   context "when the user is trusted" do
-    before do
+    it "shows the experience level option without adjust tags options", :aggregate_failures do
       sign_in trusted_user
       get "#{article.path}/actions_panel"
-    end
 
-    it "does not show the adjust tags options" do
       expect(response.body).not_to include "other-things-btn adjust-tags"
-    end
-
-    it "shows the experience level option" do
       expect(response.body).to include "other-things-btn set-experience"
     end
   end
 
   context "when the user is an admin" do
-    let(:admin) { create(:user, :admin) }
-    let(:article) { create(:article, tags: "javascript, cool, beans") }
+    let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+    let(:article) { create(:article, user: author, tags: "javascript, cool, beans") }
 
     before do
       sign_in admin
@@ -146,21 +122,19 @@ RSpec.describe "Moderations" do
   end
 
   describe "article approval on /mod" do
-    let(:admin) { create(:user, :admin) }
-    let!(:article) { create(:article, tags: "javascript, cool, beans") }
+    let(:admin) { create(:user, :admin, :without_profile, profile_image: nil) }
+    let!(:article) { create(:article, user: author, tags: "javascript, cool, beans") }
 
     before { sign_in admin }
 
-    it "shows the approval button when one of the article's tags requires approval" do
-      Tag.find_by(name: "cool").update!(requires_approval: true)
-      get "#{article.path}/mod"
-      expect(response.body).to include 'action="/article_approvals"'
-    end
-
-    it "hides the approval button when only other tags require approval" do
+    it "shows the approval button only when one of the article's tags requires approval", :aggregate_failures do
       create(:tag, name: "unrelated", requires_approval: true)
       get "#{article.path}/mod"
       expect(response.body).not_to include 'action="/article_approvals"'
+
+      Tag.find_by(name: "cool").update!(requires_approval: true)
+      get "#{article.path}/mod"
+      expect(response.body).to include 'action="/article_approvals"'
     end
   end
 
@@ -173,7 +147,7 @@ RSpec.describe "Moderations" do
     # rubocop:enable Layout/LineLength
     let(:become_mod_copy) { "If you'd like to assist us as a trusted user or tag mod" }
     let(:logged_out_copy) { "P.S. You are not currently signed in." }
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
 
     before do
       allow(Settings::Community).to receive(:community_name).and_return("DEV")
@@ -200,39 +174,19 @@ RSpec.describe "Moderations" do
     end
 
     context "when user is trusted" do
-      let!(:first_article) { create(:article) }
-      let!(:second_article) { create(:article, score: 0) } # Above minimum score threshold
-      let(:spamer) { create(:user, :spam) }
-      let(:suspended_user) { create(:user, :suspended) }
+      let!(:first_article) { create(:article, user: author, with_tags: false) }
+      let!(:second_article) { create(:article, user: author, score: 0, with_tags: false) }
+      let(:spamer) { create(:user, :spam, :without_profile, profile_image: nil) }
+      let(:suspended_user) { create(:user, :suspended, :without_profile, profile_image: nil) }
 
       before do
         sign_in trusted_user
       end
 
-      it "does not show articles the user has already reacted to for inbox" do
-        # Create a reaction for second_article so it gets filtered out of inbox
-        create(:reaction, user: trusted_user, reactable: second_article, category: "like")
-        
-        get "/mod"
-
-        expect(response.body).to include(CGI.escapeHTML(first_article.title))
-        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
-      end
-
-      it "doesn't include spam and suspended articles" do
-        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
-        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
-
-        get "/mod"
-
-        expect(response.body).to include(CGI.escapeHTML(first_article.title))
-        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
-        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
-      end
-
-      it "includes non-spam articles and doesn't include spam/suspended articles on latest" do
-        spam_article = create(:article, user: spamer, score: -10) # Below minimum score threshold
-        suspended_article = create(:article, user: suspended_user, score: -8) # Below minimum score threshold
+      it "includes non-spam articles on latest and excludes reacted, spam, and suspended articles from inbox",
+         :aggregate_failures do
+        spam_article = create(:article, user: spamer, score: -10, with_tags: false) # Below minimum score threshold
+        suspended_article = create(:article, user: suspended_user, score: -8, with_tags: false)
 
         get "/mod?state=latest"
 
@@ -240,12 +194,24 @@ RSpec.describe "Moderations" do
         expect(response.body).to include(CGI.escapeHTML(second_article.title))
         expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
         expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
+
+        create(:reaction, user: trusted_user, reactable: second_article, category: "like")
+
+        get "/mod"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).not_to include(
+          CGI.escapeHTML(second_article.title),
+          CGI.escapeHTML(spam_article.title),
+          CGI.escapeHTML(suspended_article.title),
+        )
       end
     end
   end
 
   describe "Super moderator Note & AuditLog" do
-    let(:super_mod) { create(:user, :super_moderator) }
+    let(:super_mod) { create(:user, :super_moderator, :without_profile, profile_image: nil) }
+    let(:target_user) { create(:user, profile_image: nil) }
 
     before do
       sign_in super_mod
@@ -255,101 +221,76 @@ RSpec.describe "Moderations" do
     after { Audit::Subscribe.forget(:moderator) }
 
     context "when unpublish a post of user" do
-      it "creates a note on a user" do
+      it "creates a note on a user and an AuditLog for the action taken", :aggregate_failures do
         expected_note = "#{super_mod.username} unpublished post with ID #{article.id}"
         expect do
           patch "/articles/#{article.id}/admin_unpublish",
                 params: { slug: article.slug, username: article.user.username }
-        end.to change(Note, :count).by(1)
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
         expect(Note.last.content).to eq(expected_note)
-      end
-
-      it "creates an AuditLog for the action taken" do
-        expect do
-          patch "/articles/#{article.id}/admin_unpublish",
-                params: { slug: article.slug, username: article.user.username }
-        end.to change(AuditLog, :count).by(1)
       end
     end
 
     context "when unpublish all posts of user" do
-      it "creates a note on a user when note content is provided" do
+      it "creates a note on a user when note content is provided, unpublishes articles, and logs an AuditLog",
+         :aggregate_failures do
+        target_article = create(:article, user: target_user, published: true, with_tags: false)
         note_content = "Unpublish due to Spam"
         expect do
-          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles",
+          post "/admin/member_manager/users/#{target_user.id}/unpublish_all_articles",
                params: { note: { content: note_content } }
-        end.to change(Note, :count).by(1)
+          sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker)
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
         expect(Note.last.content).to eq(note_content)
+        expect(target_article.reload.published).to be(false)
       end
 
       it "creates a default note on a user when note content isn't provided" do
         expected_note = "#{super_mod.username} unpublished all articles"
         expect do
-          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles"
+          post "/admin/member_manager/users/#{target_user.id}/unpublish_all_articles"
         end.to change(Note, :count).by(1)
         expect(Note.last.content).to eq(expected_note)
-      end
-
-      it "creates an AuditLog for the action taken" do
-        expect do
-          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles",
-               params: { note: { content: "Test note" } }
-          sidekiq_perform_enqueued_jobs
-        end.to change(AuditLog, :count).by(1)
       end
     end
 
     context "when suspend user" do
-      it "creates a note on a user when note content is provided" do
+      it "creates a note on a user when note content is provided and logs an AuditLog", :aggregate_failures do
         note_content = "Unpublish due to Spam"
         expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+          patch "/admin/member_manager/users/#{target_user.id}/user_status",
                 params: { user: { user_status: "Suspend", note_for_current_role: note_content } }
-        end.to change(Note, :count).by(1)
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
         expect(Note.last.content).to eq(note_content)
       end
 
       it "creates a default note on a user when note content isn't provided" do
-        expected_note = "#{super_mod.username} updated #{article.user.username}"
+        expected_note = "#{super_mod.username} updated #{target_user.username}"
         expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+          patch "/admin/member_manager/users/#{target_user.id}/user_status",
                 params: { user: { user_status: "Suspend" } }
         end.to change(Note, :count).by(1)
         expect(Note.last.content).to eq(expected_note)
       end
-
-      it "creates an AuditLog for the action taken" do
-        expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
-                params: { user: { user_status: "Suspend", new_note: "Test note" } }
-        end.to change(AuditLog, :count).by(1)
-      end
     end
 
     context "when adding the spam role to the user" do
-      it "creates a note on a user when note content is provided" do
+      it "creates a note on a user when note content is provided and logs an AuditLog", :aggregate_failures do
         note_content = "Spam acount"
         expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+          patch "/admin/member_manager/users/#{target_user.id}/user_status",
                 params: { user: { user_status: "Spam", note_for_current_role: note_content } }
-        end.to change(Note, :count).by(1)
+        end.to change(Note, :count).by(1).and change(AuditLog, :count).by(1)
         expect(Note.last.content).to eq(note_content)
       end
 
       it "creates a default note on a user when note content isn't provided" do
-        expected_note = "#{super_mod.username} updated #{article.user.username}"
+        expected_note = "#{super_mod.username} updated #{target_user.username}"
         expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+          patch "/admin/member_manager/users/#{target_user.id}/user_status",
                 params: { user: { user_status: "Spam" } }
         end.to change(Note, :count).by(1)
         expect(Note.last.content).to eq(expected_note)
-      end
-
-      it "creates an AuditLog for the action taken" do
-        expect do
-          patch "/admin/member_manager/users/#{article.user_id}/user_status",
-                params: { user: { user_status: "Spam", new_note: "Test note" } }
-        end.to change(AuditLog, :count).by(1)
       end
     end
   end

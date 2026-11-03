@@ -97,6 +97,29 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
       expect(cache_bust).to have_received(:call).with("/top/infinity").at_least(:once)
     end
 
+    it "busts top pages for an article in the top 3 among lower-scoring articles" do
+      create_list(:article, 2, :past, tags: "go", score: 50, published: true, past_published_at: 2.days.ago)
+      create_list(:article, 3, :past, tags: "go", score: 5, published: true, past_published_at: 2.days.ago)
+      third = create(:article, :past, tags: "go", score: 20, published: true, past_published_at: 1.day.ago)
+      described_class.call(third)
+      expect(cache_bust).to have_received(:call).with("/top/week").twice
+      expect(cache_bust).to have_received(:call).with("/api/articles?tag=go&top=0").once
+    end
+
+    it "ranks by the stored score rather than a stale in-memory score" do
+      create_list(:article, 3, :past, tags: "elixir", score: 100, published: true, past_published_at: 2.days.ago)
+      low = create(:article, :past, tags: "elixir", score: 1, published: true, past_published_at: 1.day.ago)
+      high = create(:article, :past, tags: "rust", score: 500, published: true, past_published_at: 1.day.ago)
+
+      low.score = 1000
+      described_class.call(low)
+      expect(cache_bust).not_to have_received(:call).with("/api/articles?tag=elixir&top=0")
+
+      high.score = 0
+      described_class.call(high)
+      expect(cache_bust).to have_received(:call).with("/api/articles?tag=rust&top=0").once
+    end
+
     it "purges each tag API path once even when the article is top in every timeframe" do
       top = create(:article, :past, tags: "ruby, rails", score: 500, published: true, past_published_at: 1.day.ago)
       described_class.call(top)

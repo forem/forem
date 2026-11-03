@@ -1,12 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Search::ReadingList, type: :service do
-  let(:user) { create(:user) }
-  let(:article) { create(:article) }
-  let(:article_not_in_reading_list) { create(:article) }
-  let(:article_1) { create(:article, with_tags: false) }
-  let(:article_2) { create(:article, with_tags: false) }
-  let(:unpublished_article) { create(:article) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:author) { create(:user, :without_profile) }
+  let(:article) { create(:article, user: author, with_main_image: false) }
+  let(:article_not_in_reading_list) { create(:article, user: author, with_tags: false, with_main_image: false) }
+  let(:article_1) { create(:article, user: author, with_tags: false, with_main_image: false) }
+  let(:article_2) { create(:article, user: author, with_tags: false, with_main_image: false) }
+  let(:unpublished_article) { create(:article, user: author, with_tags: false, with_main_image: false) }
 
   def extract_from_results(result, attribute)
     result[:items].pluck(:reactable).pluck(attribute)
@@ -52,7 +53,7 @@ RSpec.describe Search::ReadingList, type: :service do
     end
 
     it "returns the total count of the articles in the reading list" do
-      articles = create_list(:article, 2)
+      articles = create_list(:article, 2, user: author, with_tags: false, with_main_image: false)
       articles.each { |article| create(:reaction, category: :readinglist, reactable: article, user: user) }
 
       result = described_class.search_documents(user)
@@ -74,13 +75,11 @@ RSpec.describe Search::ReadingList, type: :service do
     context "when describing the result format" do
       let(:result) { described_class.search_documents(user) }
 
-      it "returns the correct attributes for the result", :aggregate_failures do
+      it "returns the correct attributes for the result, item, reactable, and user", :aggregate_failures do
         expect(result.keys).to match_array(%i[items total])
         expect(result[:total]).to be_present
         expect(result[:items]).to be_present
-      end
 
-      it "returns the correct attributes for a reading list item", :aggregate_failures do
         item = result[:items].first
 
         expect(item.keys).to match_array(%i[id user_id reactable])
@@ -90,10 +89,7 @@ RSpec.describe Search::ReadingList, type: :service do
         # search is on the user's reading list.
         expect(user.reactions.readinglist.map(&:id)).to include(item[:id])
         expect(item[:user_id]).to eq(user.id)
-      end
 
-      it "returns the correct attributes for a reading list item's reactable", :aggregate_failures do
-        item = result[:items].first
         reactable = item[:reactable]
 
         expect(reactable.keys).to match_array(
@@ -109,11 +105,6 @@ RSpec.describe Search::ReadingList, type: :service do
         expect(reactable[:tag_list]).to eq(tags)
         expect(reactable[:tags]).to eq(tags.map { |tag| { name: tag } })
         expect(reactable[:title]).to eq(article.title)
-      end
-
-      it "returns the correct attributes for a reading list item's reactable's user", :aggregate_failures do
-        item = result[:items].first
-        reactable = item[:reactable]
 
         reactable_user = reactable[:user]
         expect(reactable_user.keys).to eq(%i[name profile_image_90 username])
@@ -334,28 +325,22 @@ RSpec.describe Search::ReadingList, type: :service do
     end
 
     context "when paginating" do
-      let(:articles) { create_list(:article, 2) }
+      let(:articles) { create_list(:article, 2, user: author, with_tags: false, with_main_image: false) }
 
       before do
         articles.each { |article| create(:reaction, category: :readinglist, reactable: article, user: user) }
       end
 
-      it "returns the total count of the articles pre-pagination" do
+      it "returns paginated items, pre-pagination total count, and empty out-of-bounds results", :aggregate_failures do
         result = described_class.search_documents(user, page: 1, per_page: 1)
         expect(result[:total]).to eq(count_of_published_readling_items_for(user: user))
-      end
-
-      it "returns no items when out of pagination bounds" do
-        result = described_class.search_documents(user, page: 99)
-        expect(result[:items]).to be_empty
-      end
-
-      it "returns paginated items", :aggregate_failures do
-        result = described_class.search_documents(user, page: 1, per_page: 1)
         expect(result[:items].length).to eq(1)
 
         result = described_class.search_documents(user, page: 2, per_page: 1)
         expect(result[:items].length).to eq(1)
+
+        result = described_class.search_documents(user, page: 99)
+        expect(result[:items]).to be_empty
       end
     end
 
@@ -363,9 +348,15 @@ RSpec.describe Search::ReadingList, type: :service do
       let(:subforem_a) { create(:subforem, discoverable: true) }
       let(:subforem_b) { create(:subforem, discoverable: true) }
       let(:root_subforem) { create(:subforem, root: true) }
-      let(:article_in_subforem_a) { create(:article, subforem_id: subforem_a.id) }
-      let(:article_in_subforem_b) { create(:article, subforem_id: subforem_b.id) }
-      let(:article_with_no_subforem) { create(:article, subforem_id: nil) }
+      let(:article_in_subforem_a) do
+        create(:article, user: author, subforem_id: subforem_a.id, with_tags: false, with_main_image: false)
+      end
+      let(:article_in_subforem_b) do
+        create(:article, user: author, subforem_id: subforem_b.id, with_tags: false, with_main_image: false)
+      end
+      let(:article_with_no_subforem) do
+        create(:article, user: author, subforem_id: nil, with_tags: false, with_main_image: false)
+      end
 
       before do
         # Add all articles to the user's reading list
@@ -379,16 +370,22 @@ RSpec.describe Search::ReadingList, type: :service do
         RequestStore.store[:root_subforem_id] = nil
       end
 
-      it "filters articles by subforem_id when provided" do
+      it "filters articles and total count by subforem_id when provided", :aggregate_failures do
         result = described_class.search_documents(user, subforem_id: subforem_a.id)
         paths = extract_from_results(result, :path)
 
+        expect(result[:total]).to eq(1)
         expect(paths).to include(article_in_subforem_a.path)
         expect(paths).not_to include(article_in_subforem_b.path)
         expect(paths).not_to include(article_with_no_subforem.path)
       end
 
-      it "returns articles from all subforems when subforem_id is the root subforem" do
+      it "returns articles from all subforems when subforem_id is root or nil", :aggregate_failures do
+        all_result = described_class.search_documents(user, subforem_id: nil)
+        expect(extract_from_results(all_result, :path)).to include(
+          article_in_subforem_a.path, article_in_subforem_b.path, article_with_no_subforem.path
+        )
+
         RequestStore.store[:root_subforem_id] = root_subforem.id
 
         result = described_class.search_documents(user, subforem_id: root_subforem.id)
@@ -397,20 +394,6 @@ RSpec.describe Search::ReadingList, type: :service do
         expect(paths).to include(article_in_subforem_a.path)
         expect(paths).to include(article_in_subforem_b.path)
         expect(paths).to include(article_with_no_subforem.path)
-      end
-
-      it "returns all articles when subforem_id is not provided" do
-        result = described_class.search_documents(user, subforem_id: nil)
-        paths = extract_from_results(result, :path)
-
-        expect(paths).to include(article_in_subforem_a.path)
-        expect(paths).to include(article_in_subforem_b.path)
-        expect(paths).to include(article_with_no_subforem.path)
-      end
-
-      it "correctly counts total articles when filtering by subforem" do
-        result = described_class.search_documents(user, subforem_id: subforem_a.id)
-        expect(result[:total]).to eq(1)
       end
 
       it "works with other filters (tags) when filtering by subforem" do

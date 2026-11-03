@@ -61,6 +61,15 @@
                              value: Settings::AiFunctions.global_spam_escalation_threshold,
                              min: 0.01, max: 1, step: 0.01 %>
         </div>
+        <div class="crayons-field">
+          <%= f.label :appeal_auto_unflag_threshold, "Appeal auto-unflag threshold", class: "crayons-field__label" %>
+          <%= admin_config_description Constants::Settings::General.details[:appeal_auto_unflag_threshold][:description] %>
+          <%= f.number_field :appeal_auto_unflag_threshold,
+                             class: "crayons-textfield",
+                             value: Settings::General.appeal_auto_unflag_threshold,
+                             placeholder: Constants::Settings::General.details[:appeal_auto_unflag_threshold][:placeholder],
+                             min: 0, max: 1.01, step: 0.01 %>
+        </div>
       </fieldset>
 
       <fieldset class="grid gap-2">

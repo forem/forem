@@ -27,13 +27,36 @@ class CommunityController < ApplicationController
       @tags = Tag.from_subforem.direct.includes(:badge).order(hotness_score: :desc).limit(12)
     end
     
-    # Get top recent authors (users with most recent published articles)
+    # Get top recent authors ranked by community engagement rather than raw post volume.
+    # Excludes feed-imported articles (RSS bots) and spam/suspended accounts.
+    exclude_ids = [Settings::General.mascot_user_id, Settings::Community.staff_user_id].compact
     @top_authors = User
+      .registered
+      .where("users.score >= ?", 0)
+      .where.not(
+        UserRole.joins(:role)
+          .where("users_roles.user_id = users.id")
+          .where(roles: { name: %w[suspended spam], resource_type: nil, resource_id: nil })
+          .select(1)
+          .arel.exists,
+      )
       .joins(:articles)
-      .merge(Article.from_subforem.published.where("published_at > ?", 30.days.ago))
-      .select("users.*, COUNT(articles.id) as recent_articles_count, SUM(articles.score) as total_score")
+      .merge(
+        Article.from_subforem
+          .published
+          .where(published_from_feed: false)
+          .where("published_at > ?", 30.days.ago)
+          .where("articles.score >= ?", 0),
+      )
+      .then { |scope| exclude_ids.any? ? scope.where.not(id: exclude_ids) : scope }
+      .select(
+        "users.*",
+        "COUNT(articles.id) as recent_articles_count",
+        "SUM(articles.public_reactions_count) as total_reactions",
+        "SUM(articles.score) as total_score",
+      )
       .group("users.id")
-      .order("total_score DESC, recent_articles_count DESC")
+      .order("total_reactions DESC, total_score DESC, recent_articles_count DESC")
       .limit(8)
     
     # Get top recent videos

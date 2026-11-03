@@ -1,4 +1,5 @@
 require "rails_helper"
+require Rails.root.join("app/lib/honeycomb/noise_cancelling_sampler")
 
 RSpec.describe Honeycomb::NoiseCancellingSampler do
   let(:trace_id) { "TRACE_ID" }

@@ -114,4 +114,48 @@ RSpec.describe "/admin/content_manager/organizations org features" do
       end
     end
   end
+
+  # With CACHE_FEATURE_FLAGS_SECONDS set, each Puma worker caches flags in its own
+  # in-memory store (config/initializers/flipper.rb). A toggle expires only the cache
+  # of the worker that handled the PATCH, so the redirected GET can land on a worker
+  # that still holds the old value.
+  describe "GET /admin/organizations/:id after a toggle served by a worker with a stale flag cache" do
+    let(:stale_worker) do
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 1.hour)
+      Flipper.new(Flipper::Adapters::ActiveSupportCacheStore.new(Flipper.configuration.adapter, cache))
+    end
+
+    def as_stale_worker
+      Flipper.instance = stale_worker
+      yield
+    ensure
+      Flipper.instance = nil
+    end
+
+    it "shows the state that was just saved, not the cached state" do
+      as_stale_worker { get admin_organization_path(organization) }
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_readme", enabled: "true" }
+
+      as_stale_worker { follow_redirect! }
+
+      expect(response.body).to include(I18n.t("views.admin.organizations.org_features.readme.disable"))
+      expect(response.body).not_to include(I18n.t("views.admin.organizations.org_features.readme.enable"))
+      expect(response.body).to include(I18n.t("views.admin.organizations.org_features.readme.enabled_notice"))
+    end
+
+    it "submits the opposite of the saved state on the next click" do
+      as_stale_worker { get admin_organization_path(organization) }
+
+      patch update_org_feature_admin_organization_path(organization),
+            params: { feature: "org_lead_forms", enabled: "true" }
+      as_stale_worker { follow_redirect! }
+
+      form = Nokogiri::HTML(response.body).css("form").detect do |f|
+        f.at_css("input[name='feature']")&.[]("value") == "org_lead_forms"
+      end
+      expect(form.at_css("input[name='enabled']")["value"]).to eq("false")
+    end
+  end
 end

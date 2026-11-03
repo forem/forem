@@ -146,7 +146,6 @@ RSpec.describe UserQuery, type: :model do
         :user_query,
         name: "Timeout Test Query #{SecureRandom.hex(4)}",
         query: "SELECT id FROM users LIMIT 1",
-        max_execution_time_ms: 1,
       )
 
       allow_any_instance_of(UserQueryExecutor).to receive(:execute_with_timeout).and_raise(PG::QueryCanceled.new("timeout"))

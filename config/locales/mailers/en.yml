@@ -32,6 +32,23 @@ en:
         other: "🔥 You have %{count} unread notifications on %{community}"
       new_badge: You just got a badge
       video_upload: Your video upload is complete
+      gem_received:
+        article_subject: "💎 Your post was picked as a gem"
+        comment_subject: "💎 Your comment was picked as a gem"
+        article_heading: Your post is a gem!
+        comment_heading: Your comment is a gem!
+        untitled: a post
+        greeting: "Hi %{name},"
+        article_intro: Community curators picked your post, "%{title}", as a gem.
+        comment_intro: Community curators picked your comment on "%{title}" as a gem.
+        why: Gems are rare. Curators only have a few to give, and they save them for the posts and comments that teach something new, start a great discussion, or make someone's day a little better. Yours stood out, and a gem helps more people on %{community} find it. That's a big deal, so thank you!
+        view_article: View your post
+        view_comment: View your comment
+        pay_forward_heading: You have a gem to give
+        pay_forward: Every gem you receive gives you a gem of your own to pass on. When you find a post or comment on %{community} that deserves more love, select the gem icon to pick it. Share the love!
+        pay_forward_cta: Find something to gem
+        sign_off: Thanks for making %{community} better,
+        team: The %{community} Team
     verification_mailer:
       from: "%{community} Email Verification <%{email}>"
       verify_ownership: Verify Your %{community} Account Ownership

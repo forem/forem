@@ -193,6 +193,13 @@ fr:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           enable_ai_disclosure:
             description: "Permettre aux auteurs de divulguer l'utilisation d'outils d'IA lors de la publication ou de l'édition d'articles."
+          limit_post_creation_to_admins:
+            description: "Seuls les administrateurs peuvent créer de nouveaux articles (y compris au nom d'une organisation) ; les brouillons existants peuvent toujours être modifiés et publiés par leurs auteurs, et les autres membres peuvent réagir et commenter."
+            cache_expiry_note:
+              one: "Remarque : les modifications de l'interface peuvent prendre jusqu'à %{count} minute pour s'appliquer à tous les membres en raison du cache."
+              other: "Remarque : les modifications de l'interface peuvent prendre jusqu'à %{count} minutes pour s'appliquer à tous les membres en raison du cache."
+          appeal_auto_unflag_threshold:
+            description: "Score de confiance minimal de l'IA (de 0,0 à 1,0) requis pour approuver automatiquement un recours lorsque l'IA recommande auto_unflag (s'applique uniquement aux restrictions automatisées, jamais aux suspensions par un modérateur humain). Définissez une valeur supérieure à 1,0 (par ex. 1,01) pour désactiver le désignalement automatique."
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:
@@ -247,6 +254,17 @@ fr:
           feed_lookback_days:
             description: Determines how far back the feed looks for new posts (in days)
             placeholder: '10'
+          feed_config_sticky_hours:
+            label: Durée de la configuration attribuée (heures)
+            description: Durée pendant laquelle une configuration du fil d’accueil reste attribuée à un membre. Saisissez 0 pour désactiver cette attribution.
+          feed_config_sticky_percentage:
+            label: Trafic de la configuration attribuée (%)
+            description: Pourcentage des chargements du fil d’accueil utilisant la configuration attribuée. Les autres utilisent la sélection habituelle. Saisissez 0 pour désactiver cette attribution.
+          feed_config_repeat_visit_minutes:
+            label: Intervalle entre les retours au fil d’accueil (minutes)
+            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué. Chaque retour ajoute un demi-clic à son score de réussite ; la première visite visible ne rapporte aucun crédit.
+          feed_repeat_visits:
+            label: Retours au fil d’accueil
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
           index_minimum_date:

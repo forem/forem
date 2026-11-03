@@ -19,3 +19,5 @@ Rails.autoloaders.main.ignore(Rails.root.join("lib/cypress-rails"))
 
 # Required by config/initializers/betterstack.rb only when Better Stack is configured
 Rails.autoloaders.main.ignore(Rails.root.join("lib/betterstack"))
+# Required by config/initializers/honeycomb.rb only when Honeycomb is configured
+Rails.autoloaders.main.ignore(Rails.root.join("app/lib/honeycomb"))

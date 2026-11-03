@@ -204,5 +204,7 @@ en:
       sign_in_required: Sign in with your %{community} account to submit this form and unlock the content.
       sign_in: Sign in to unlock
       data_shared: "Shares your name, email, username, company, and title with this organization."
+    vimeo_tag:
+      invalid_vimeo_id: Invalid Vimeo ID
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL

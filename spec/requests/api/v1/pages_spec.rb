@@ -449,5 +449,72 @@ RSpec.describe "Api::V1::Pages" do
     ensure
       FeatureFlag.disable(:org_readme, FeatureFlag::Actor[other_org])
     end
+
+    it "previews an organization page with organization liquid tags without saving" do
+      expect do
+        post preview_api_pages_path,
+             params: {
+               organization_id: organization.id,
+               body_markdown: "# Welcome to #{organization.name}\n\n{% org_team #{organization.slug} %}"
+             }.to_json,
+             headers: org_auth_header
+      end.not_to change(Page, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["processed_html"]).to include("Welcome to #{organization.name}")
+      expect(response.parsed_body["processed_html"]).to include("org-team")
+    end
+
+    it "returns 422 when previewing invalid liquid syntax on an organization page" do
+      post preview_api_pages_path,
+           params: {
+             organization_id: organization.id,
+             body_markdown: "{% org_lead_form invalid %}"
+           }.to_json,
+           headers: org_auth_header
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to be_present
+    end
+
+    it "forbids previewing a page without organization_id or for another organization" do
+      other_org = create(:organization)
+      FeatureFlag.enable(:org_readme, FeatureFlag::Actor[other_org])
+
+      post preview_api_pages_path,
+           params: { body_markdown: "# Global" }.to_json,
+           headers: org_auth_header
+      expect(response).to have_http_status(:unauthorized)
+
+      post preview_api_pages_path,
+           params: { organization_id: other_org.id, body_markdown: "# Other Org" }.to_json,
+           headers: org_auth_header
+      expect(response).to have_http_status(:unauthorized)
+    ensure
+      FeatureFlag.disable(:org_readme, FeatureFlag::Actor[other_org])
+    end
+  end
+
+  describe "POST /api/pages/preview" do
+    include_context "when user is authorized"
+
+    it "renders markdown preview for a site admin without persisting a page" do
+      expect do
+        post preview_api_pages_path,
+             params: { body_markdown: "## Custom Page Preview" }.to_json,
+             headers: auth_header
+      end.not_to change(Page, :count)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["processed_html"]).to include("Custom Page Preview")
+    end
+
+    it "returns 401 when unauthenticated" do
+      post preview_api_pages_path,
+           params: { body_markdown: "## Custom Page Preview" }.to_json,
+           headers: v1_headers
+
+      expect(response).to have_http_status(:unauthorized)
+    end
   end
 end

@@ -5,15 +5,15 @@ module Api
     class ArticlesController < ApiController
       include Api::ArticlesController
 
-      before_action :authenticate!, only: %i[create update me]
+      before_action :authenticate!, only: %i[create update me preview]
 
       before_action :validate_article_param_is_hash, only: %i[create update]
 
       before_action :set_cache_control_headers, only: %i[index show show_by_slug]
 
-      skip_before_action :verify_authenticity_token, only: %i[create update]
+      skip_before_action :verify_authenticity_token, only: %i[create update preview]
 
-      after_action :verify_authorized, only: %i[create]
+      after_action :verify_authorized, only: %i[create preview]
     end
   end
 end

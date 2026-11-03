@@ -66,14 +66,10 @@ RSpec.describe "/admin/advanced/response_templates" do
   describe "GET /admin/advanced/response_templates/:id/edit" do
     let(:response_template) { create(:response_template) }
 
-    it "renders successfully if a valid response template was found" do
+    it "renders the response template's attributes with status 200", :aggregate_failures do
       get edit_admin_response_template_path(response_template.id)
+
       expect(response).to have_http_status(:ok)
-    end
-
-    it "renders the response template's attributes" do
-      get edit_admin_response_template_path(response_template.id)
-
       expect(response.body).to include(
         CGI.escapeHTML(response_template.content),
         CGI.escapeHTML(response_template.title),

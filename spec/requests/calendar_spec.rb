@@ -130,6 +130,26 @@ RSpec.describe "Calendar" do
 
         expect(response.body).not_to include("calendar__day--has-event")
       end
+
+      it "renders every grid day as a link that keeps the type filter" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "takeover")
+
+        cells = Nokogiri::HTML(response.body).css("[data-calendar-grid] a[data-calendar-day]")
+        expect(cells.size).to eq(35)
+        march_12 = cells.detect { |cell| cell["data-calendar-day"] == "2026-03-12" }
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=takeover")
+        expect(march_12["class"]).to eq("calendar__day text-center p-1 calendar__day--selected")
+        # March 2026 starts on a Sunday, so the grid ends on Saturday, April 4.
+        expect(cells.last["data-calendar-day"]).to eq("2026-04-04")
+        expect(cells.last["class"]).to eq("calendar__day text-center p-1 color-base-30")
+      end
+
+      it "escapes a type filter that needs URL encoding in the grid links" do
+        get calendar_path(start: "2026-03-12", end: "2026-03-12", type_of: "a b&c")
+
+        march_12 = Nokogiri::HTML(response.body).at_css('[data-calendar-day="2026-03-12"]')
+        expect(march_12["href"]).to eq("/calendar?end=2026-03-12&start=2026-03-12&type_of=a+b%26c")
+      end
     end
 
     context "with event row details" do
@@ -275,12 +295,26 @@ RSpec.describe "Calendar" do
                        end_time: Date.new(2026, 3, 18).in_time_zone + 17.hours)
       end
 
+      let!(:overlapping_event) do
+        create(:event, title: "Overlapping Conference", published: true,
+                       start_time: Date.new(2026, 3, 14).in_time_zone + 9.hours,
+                       end_time: Date.new(2026, 3, 20).in_time_zone + 17.hours)
+      end
+
       it "dots every day it spans" do
         get calendar_path(start: "2026-03-01", end: "2026-03-31")
 
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>10</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>14</)
         expect(response.body).to match(/calendar__day--has-event[^"]*"[^>]*>18</)
+      end
+
+      it "renders each overlapping day once in the calendar grid" do
+        get calendar_path(start: "2026-03-01", end: "2026-03-31")
+
+        march_14_cell = Nokogiri::HTML(response.body).css('[data-calendar-day="2026-03-14"]')
+        expect(march_14_cell.size).to eq(1)
+        expect(march_14_cell.first["class"]).to include("calendar__day--has-event")
       end
 
       it "lists the event when a day within its span is selected" do
@@ -322,6 +356,88 @@ RSpec.describe "Calendar" do
         expect(response.body).to include('name="end"')
         expect(response.body).to include('value="2026-03-10"')
         expect(response.body).to include('value="2026-03-12"')
+      end
+    end
+
+    context "with query efficiency" do
+      it "skips the agenda and signup queries when no event days fall in the in-grid range" do
+        login_as(create(:user))
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path(start: "2025-01-15", end: "2025-01-15")
+        end
+
+        event_queries = queries.grep(/FROM "events"/)
+        expect(event_queries.size).to eq(1)
+        expect(queries.grep(/FROM "event_signups"/)).to be_empty
+      end
+
+      it "still queries the agenda when the selected range is outside the displayed month grid" do
+        march_event = create(:event, title: "March Event Viewed From April", published: true,
+                                     start_time: Date.new(2026, 3, 10).in_time_zone + 9.hours,
+                                     end_time: Date.new(2026, 3, 10).in_time_zone + 11.hours)
+
+        get calendar_path(start: "2026-03-10", end: "2026-03-12", month: "2026-04")
+
+        expect(response.body).to include(march_event.title)
+      end
+
+      it "selects only agenda columns without hydrating body_markdown or processed_html" do
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        agenda_query = queries.grep(/FROM "events".*ORDER BY/m).first
+        expect(agenda_query).to be_present
+        expect(agenda_query).not_to include('"events".*')
+        expect(agenda_query).not_to include("body_markdown")
+        expect(agenda_query).not_to include("processed_html")
+      end
+
+      it "links delegated events to their page without hydrating page bodies" do
+        page = create(:page, slug: "calendar-delegated-page", is_top_level_path: true)
+        create(:event, title: "Delegated Event", published: true, delegate_to_page: true, page: page,
+                       start_time: Time.zone.today.beginning_of_month + 9.hours,
+                       end_time: Time.zone.today.beginning_of_month + 11.hours)
+        queries = []
+        callback = lambda { |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get calendar_path
+        end
+
+        expect(response.body).to include('href="/calendar-delegated-page"')
+        page_queries = queries.grep(/FROM "pages"/)
+        expect(page_queries.size).to eq(1)
+        expect(page_queries.first).not_to include('"pages".*')
+        expect(page_queries.first).not_to include("body_markdown")
+      end
+    end
+
+    context "with out-of-range year parameters" do
+      it "falls back to the current month when start, end, or month years are outside VALID_YEAR_RANGE",
+         :aggregate_failures do
+        current_month_label = Time.zone.today.strftime("%B %Y")
+
+        get calendar_path(start: "0973-11-11", end: "0973-11-11", month: "0973-11")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
+        expect(response.body).not_to include("0973-11-11")
+
+        get calendar_path(start: "1405-02-19", end: "1405-02-19")
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(current_month_label)
       end
     end
   end

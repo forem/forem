@@ -21,6 +21,15 @@ class BaseUploader < CarrierWave::Uploader::Base
     1..(25.megabytes)
   end
 
+  # Avoid triggering a synchronous S3 HEAD request when checking `#blank?` / `#present?`
+  # (e.g. inside ActiveModel::EachValidator#validate or view/controller presence checks).
+  def blank?
+    return true if file.nil?
+    return file.path.blank? if file.is_a?(CarrierWave::Storage::Fog::File)
+
+    file.blank?
+  end
+
   protected
 
   def strip_exif

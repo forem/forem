@@ -134,6 +134,25 @@ RSpec.describe Search::Article, type: :service do
         expect(results.pluck(:id)).to eq([article1.id, article2.id])
       end
 
+      it "uses expression-wrapped ORDER BY with a search term and sort_by to prevent B-tree index scan traps",
+         :aggregate_failures do
+        create(:article, tags: "ruby")
+        sql_queries = []
+        callback = lambda do |*, payload|
+          sql_queries << payload[:sql] if payload[:sql].include?("reading_list_document @@")
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          described_class.search_documents(term: "ruby", sort_by: :published_at, sort_direction: :desc)
+          described_class.search_documents(term: "ruby", sort_by: :hotness_score, sort_direction: :desc)
+        end
+
+        expect(sql_queries.first).to include("(articles.published_at + INTERVAL '0 seconds') DESC")
+        expect(sql_queries.first).not_to include("ts_rank")
+        expect(sql_queries.second).to include("(articles.hotness_score + 0) DESC, articles.comments_count DESC")
+        expect(sql_queries.second).not_to include("ts_rank")
+      end
+
       it "supports sorting by published_at in ascending and descending order without a search term",
          :aggregate_failures do
         article1 = create(:article)

@@ -29,7 +29,7 @@ RSpec.describe Rack::Timeout, type: :initializer do
         env["rack-timeout.request_thread"] = mock_thread
       end
 
-      it "closes the raw database connection socket for the tracked thread" do
+      it "cancels in-flight query and closes the raw database connection socket for the tracked thread" do
         pool = ActiveRecord::Base.connection_pool
         mock_connection = double("ActiveRecord::ConnectionAdapters::PostgreSQLAdapter")
         mock_raw_connection = double("PG::Connection")
@@ -38,6 +38,8 @@ RSpec.describe Rack::Timeout, type: :initializer do
         # Mock the connection pool internals
         allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
         allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:cancel).and_return(true)
+        allow(mock_raw_connection).to receive(:cancel)
         allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(true)
         allow(mock_raw_connection).to receive(:close)
         allow(mock_connection).to receive(:disconnect!)
@@ -50,9 +52,30 @@ RSpec.describe Rack::Timeout, type: :initializer do
 
         observer_proc.call(env)
 
-        expect(mock_raw_connection).to have_received(:close)
+        expect(mock_raw_connection).to have_received(:cancel).ordered
+        expect(mock_raw_connection).to have_received(:close).ordered
         expect(mock_connection).not_to have_received(:disconnect!)
         expect(pool).not_to have_received(:release_connection)
+      end
+
+      it "still closes the raw connection if cancel raises an exception" do
+        pool = ActiveRecord::Base.connection_pool
+        mock_connection = double("ActiveRecord::ConnectionAdapters::PostgreSQLAdapter")
+        mock_raw_connection = double("PG::Connection")
+        mock_tcc = { mock_thread => mock_connection }
+
+        allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
+        allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:cancel).and_return(true)
+        allow(mock_raw_connection).to receive(:cancel).and_raise(StandardError.new("cancel error"))
+        allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(true)
+        allow(mock_raw_connection).to receive(:close)
+
+        observers = described_class.instance_variable_get(:@state_change_observers)
+        observer_proc = observers[:clear_db_connections_on_timeout]
+
+        expect { observer_proc.call(env) }.not_to raise_error
+        expect(mock_raw_connection).to have_received(:close)
       end
 
       it "falls back to calling finish if the raw connection does not respond to close but responds to finish" do
@@ -64,6 +87,7 @@ RSpec.describe Rack::Timeout, type: :initializer do
         # Mock the connection pool internals
         allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
         allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:cancel).and_return(false)
         allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(false)
         allow(mock_raw_connection).to receive(:respond_to?).with(:finish).and_return(true)
         allow(mock_raw_connection).to receive(:finish)
@@ -91,6 +115,7 @@ RSpec.describe Rack::Timeout, type: :initializer do
         # Mock the connection pool internals
         allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(mock_tcc)
         allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+        allow(mock_raw_connection).to receive(:respond_to?).with(:cancel).and_return(false)
         allow(mock_raw_connection).to receive(:respond_to?).with(:close).and_return(true)
         allow(mock_raw_connection).to receive(:close).and_raise(StandardError.new("close error"))
         allow(mock_connection).to receive(:disconnect!)

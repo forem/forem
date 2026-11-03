@@ -40,7 +40,11 @@ RSpec.describe "Api::V1::Docs::Events" do
 
       post "Create an event" do
         tags "events"
-        description "Create a new event. Requires administrator privileges."
+        description(<<~DESCRIBE.strip)
+          Create a new event. Requires administrator privileges.
+
+          Successful writes log `api_event_create` with the actor and target ids in the admin API audit log.
+        DESCRIBE
         operationId "createEvent"
         consumes "application/json"
         produces "application/json"
@@ -96,7 +100,11 @@ RSpec.describe "Api::V1::Docs::Events" do
 
       patch "Update an event" do
         tags "events"
-        description "Update an existing event. Requires administrator privileges."
+        description(<<~DESCRIBE.strip)
+          Update an existing event. Requires administrator privileges.
+
+          Successful writes log `api_event_update` with the actor and target ids in the admin API audit log.
+        DESCRIBE
         operationId "updateEvent"
         consumes "application/json"
         produces "application/json"
@@ -127,7 +135,11 @@ RSpec.describe "Api::V1::Docs::Events" do
 
       delete "Delete an event" do
         tags "events"
-        description "Delete an event. Requires administrator privileges."
+        description(<<~DESCRIBE.strip)
+          Delete an event. Requires administrator privileges.
+
+          Successful writes log `api_event_destroy` with the actor and target ids in the admin API audit log.
+        DESCRIBE
         operationId "deleteEvent"
         parameter name: :id, in: :path, required: true,
                   description: "ID of the event to delete.",

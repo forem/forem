@@ -20,6 +20,15 @@ module DeliveryMethods
     end
 
     def deliver!(mail)
+      recipient = Array(mail.to).join(",")
+      unless mail.to.is_a?(Array) && recipient.present? && EmailValidator.valid?(recipient, mode: :strict)
+        mail.perform_deliveries = false
+        Rails.logger.warn(
+          "[DeliveryMethods::CustomerIo] Skipping delivery to invalid email address: #{mail.to.inspect}",
+        )
+        return
+      end
+
       request = Customerio::SendEmailRequest.new(build_message(mail))
       mail.attachments.each do |attachment|
         request.attach(attachment.filename, attachment.body.to_s)

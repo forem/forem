@@ -28,19 +28,12 @@ module Authentication
         name = I18n.t("services.authentication.providers.apple.name", first: info.first_name, last: info.last_name).strip
         name = name.presence || user_nickname
 
-        user_data = {
+        {
           email: info.email,
           apple_username: user_nickname,
-          name: name
+          name: name,
+          profile_image: Images::ProfileImageGenerator.call
         }
-
-        user_data[:profile_image] = if Rails.env.test?
-                                      Settings::General.mascot_image_url
-                                    else
-                                      Images::ProfileImageGenerator.call
-                                    end
-
-        user_data
       end
 
       def existing_user_data
@@ -61,18 +54,21 @@ module Authentication
       # always be the same on each login so we use the email hash as suffix to
       # avoid collisions with other registrations with the same first_name
       def user_nickname
+        identifier_hash = Digest::SHA512.hexdigest((info.email.presence || auth_payload.uid).to_s)
+
         if info.first_name.present? || info.last_name.present?
           # We sometimes get `info.first_name` and `info.last_name`
-          [
+          name_prefix = [
             info.first_name&.downcase,
             info.last_name&.downcase,
-            Digest::SHA512.hexdigest(info.email),
-          ].join("_")[0...25]
+          ].join("_")[0...16]
+
+          [name_prefix, identifier_hash].join("_")[0...25]
         else
           # This covers an edge case where the Apple Id has already given
           # permissions to the forem auth and we don't have anything else
-          # to work with other than the email
-          ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
+          # to work with other than the email or uid
+          ["user", identifier_hash].join("_")[0...15]
         end
       end
 

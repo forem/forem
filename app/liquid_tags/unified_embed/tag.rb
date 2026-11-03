@@ -63,7 +63,11 @@ module UnifiedEmbed
     end
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
-      uri = URI.parse(input.split.first)
+      uri = URI.parse(input.to_s.split.first.to_s)
+      unless %w[http https].include?(uri.scheme) && uri.host.present?
+        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      end
+
       return input if uri.host == "twitter.com" || uri.host == "x.com" || uri.host == "bsky.app"
 
       # Prevent SSRF attacks on internal networks

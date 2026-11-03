@@ -74,27 +74,29 @@ module URL
     is_signed_in = user_signed_in.nil? ? RequestStore.store[:user_signed_in] : user_signed_in
     is_on_custom_domain = RequestStore.store[:custom_domain_org].present?
 
+    record = article.is_a?(ApplicationDecorator) ? article.object : article
+    ar_record = record.is_a?(ActiveRecord::Base)
+
     unless is_signed_in && !is_on_custom_domain
-      has_org_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization)
-      if has_org_attr && (org = article.try(:organization))
+      has_org_attr = ar_record ? record.has_attribute?(:organization_id) : record.respond_to?(:organization)
+      org_loaded = !ar_record || record.association(:organization).loaded?
+      if has_org_attr && org_loaded && (org = record.try(:organization))
         if org && org.respond_to?(:custom_domain) && org.custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
           return url("/#{article.slug}", org.custom_domain)
         end
-      elsif (article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:organization_id) : article.respond_to?(:organization_id)) && article.organization_id.present?
-        org_id = article.organization_id
+      elsif (ar_record ? record.has_attribute?(:organization_id) : record.respond_to?(:organization_id)) &&
+          record.organization_id.present?
+        org_id = record.organization_id
         custom_domain = MemoryFirstCache.fetch("org_custom_domain:#{org_id}", redis_expires_in: 12.hours, return_type: :string) do
           Organization.where(id: org_id).pick(:custom_domain).to_s
         end
-        if custom_domain.present?
-          org = Organization.find_by(id: org_id)
-          if org && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor.new(org))
-            return url("/#{article.slug}", custom_domain)
-          end
+        if custom_domain.present? && FeatureFlag.enabled?(:org_custom_domain, FeatureFlag::Actor[org_id])
+          return url("/#{article.slug}", custom_domain)
         end
       end
     end
 
-    has_subforem_attr = article.is_a?(ActiveRecord::Base) ? article.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
+    has_subforem_attr = ar_record ? record.has_attribute?(:subforem_id) : article.respond_to?(:subforem_id)
     return url(article.path) unless has_subforem_attr
     
     # Use cached lookup to avoid N+1 queries

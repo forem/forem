@@ -975,4 +975,42 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(described_class.new(three_hundred_words).calculate_reading_time).to eq(2)
     end
   end
+
+  describe "URI and attribute handling across Markdown and Liquid passes" do
+    it "rejects non-http(s) URLs in cta liquid tags" do
+      markdown = "{% cta javascript:alert(1) %}Press this button{% endcta %}"
+
+      expect do
+        generate_and_parse_markdown(markdown)
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+    end
+
+    it "escapes quotes in markdown image attributes during the second pass" do
+      markdown = "<div>\n![x\" onerror=\"alert(1)](https://example.com/a.png)\n</div>"
+      output = generate_and_parse_markdown(markdown)
+      doc = Nokogiri::HTML.fragment(output)
+      img = doc.at_css("img")
+
+      expect(img).to be_present
+      expect(img["onerror"]).to be_nil
+    end
+
+    it "omits non-http(s) links during the second pass" do
+      markdown = "<div>\n[click](javascript:alert(1))\n</div>"
+      output = generate_and_parse_markdown(markdown)
+
+      expect(output).not_to include("javascript:")
+    end
+
+    it "removes unsupported attributes from elements with highlight classes or nested in code tags" do
+      img_payload = '<img class="highlight" src="https://example.com/x.png" onerror="alert(1)">'
+      span_payload = '<code><span onclick="alert(1)">click</span></code>'
+
+      img_output = generate_and_parse_markdown(img_payload)
+      span_output = generate_and_parse_markdown(span_payload)
+
+      expect(img_output).not_to include("onerror")
+      expect(span_output).not_to include("onclick")
+    end
+  end
 end

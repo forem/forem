@@ -204,5 +204,7 @@ fr:
       sign_in_required: Connectez-vous avec votre compte %{community} pour envoyer ce formulaire et déverrouiller le contenu.
       sign_in: Se connecter pour déverrouiller
       data_shared: "Partage votre nom, e-mail, nom d’utilisateur, entreprise et poste avec cette organisation."
+    vimeo_tag:
+      invalid_vimeo_id: ID Vimeo non valide
     youtube_tag:
       invalid_youtube_id: ID ou URL YouTube non valide

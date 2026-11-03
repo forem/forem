@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 /// Opening tag of a quickie (status post) title paragraph.
 const PARAGRAPH_OPEN: &str = "<p class=\"quickie-paragraph\">";
 const PARAGRAPH_CLOSE: &str = "</p>";
@@ -9,6 +11,59 @@ const URL_SPAN_CLOSE: &str = "</span>";
 const FEED_LINES: usize = 6;
 const URL_DISPLAY_CHARS: usize = 25;
 const URL_TRUNCATED_CHARS: usize = 22;
+
+/// Normalizes a status post title into a single-line string for metadata (`og:title`,
+/// `twitter:title`, `<title>`, and feed serialization), matching `Article#title_for_metadata`:
+/// `title.gsub(/\s*\n\s*/, " ").gsub(/\s+/, " ").strip`.
+///
+/// ### Behavioral Equivalence Notes
+/// - Ruby's `\s` is ASCII-only (`' '`, `\t`, `\n`, `\v`, `\f`, `\r`); non-ASCII spaces such as
+///   U+00A0 (`NBSP`) or U+3000 are preserved verbatim.
+/// - Every run of `\s+` (which subsumes `\s*\n\s*`) is collapsed to a single `' '`.
+/// - Ruby's `String#strip` strips leading and trailing `\0`, `\t`, `\n`, `\v`, `\f`, `\r`, and `' '`.
+pub fn title_for_metadata(title: &str) -> Cow<'_, str> {
+    let bytes = title.as_bytes();
+    let is_strip = |b: u8| matches!(b, 0 | b'\t'..=b'\r' | b' ');
+
+    let start = bytes.iter().take_while(|&&b| is_strip(b)).count();
+    let end = bytes.len()
+        - bytes[start..]
+            .iter()
+            .rev()
+            .take_while(|&&b| is_strip(b))
+            .count();
+    let trimmed = &title[start..end];
+    let tbytes = trimmed.as_bytes();
+
+    // Fast path: if `trimmed` has no non-space ASCII whitespace (`\t..=\r`) and no adjacent spaces
+    // (`"  "`), we can borrow the trimmed slice without allocating.
+    let needs_collapse = tbytes.iter().enumerate().any(|(idx, &b)| {
+        matches!(b, b'\t'..=b'\r') || (b == b' ' && tbytes.get(idx + 1) == Some(&b' '))
+    });
+    if !needs_collapse {
+        return Cow::Borrowed(trimmed);
+    }
+
+    let mut out = String::with_capacity(trimmed.len());
+    let mut i = 0;
+    while i < tbytes.len() {
+        if is_space(tbytes[i]) {
+            out.push(' ');
+            i += 1;
+            while i < tbytes.len() && is_space(tbytes[i]) {
+                i += 1;
+            }
+        } else {
+            let run_start = i;
+            i += 1;
+            while i < tbytes.len() && !is_space(tbytes[i]) {
+                i += 1;
+            }
+            out.push_str(&trimmed[run_start..i]);
+        }
+    }
+    Cow::Owned(out)
+}
 
 /// Renders a status post title as HTML, matching `Article#legacy_title_finalized` (and, with
 /// `truncate_for_feed`, `Article#legacy_truncate_title_for_feed`): its sequence of `gsub!`
@@ -267,5 +322,40 @@ mod tests {
                 "{title:?}"
             );
         }
+    }
+
+    #[test]
+    fn normalizes_title_for_metadata_matching_ruby() {
+        let cases = [
+            ("", ""),
+            ("This is a regular title", "This is a regular title"),
+            ("Line one\nLine two", "Line one Line two"),
+            (
+                "First paragraph\n\nSecond paragraph",
+                "First paragraph Second paragraph",
+            ),
+            ("Line one\n\n\nLine two", "Line one Line two"),
+            ("  \nLine one\nLine two\n  ", "Line one Line two"),
+            (
+                "Line one  \n  Line two  \n  \n  Paragraph two",
+                "Line one Line two Paragraph two",
+            ),
+            (
+                "Check this out\nhttps://example.com\n\nMore text",
+                "Check this out https://example.com More text",
+            ),
+            ("\0\t\n\r\x0B\x0C  hello\t\r\nworld  \0\n", "hello world"),
+            ("a\0 \0b", "a\0 \0b"),
+            ("a\u{a0}\u{3000}b\nc", "a\u{a0}\u{3000}b c"),
+            ("日本語\n\n🎉\tタイトル", "日本語 🎉 タイトル"),
+            ("   \t\n\r\0   ", ""),
+        ];
+        for (input, expected) in cases {
+            assert_eq!(title_for_metadata(input), expected, "{input:?}");
+        }
+        assert!(matches!(
+            title_for_metadata("Already clean title"),
+            Cow::Borrowed("Already clean title")
+        ));
     }
 }

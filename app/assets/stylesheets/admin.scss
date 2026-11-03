@@ -317,3 +317,27 @@ which may be more easily removed once we no longer wish admin layouts to have a 
     transform: rotate(180deg);
   }
 }
+
+.flag-appeal-card {
+  summary {
+    list-style: none;
+
+    &::marker,
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  .summary-icon {
+    transition: transform var(--transition-props);
+  }
+
+  &[open] .summary-icon {
+    transform: rotate(90deg);
+  }
+}
+
+.flag-appeal-pre {
+  white-space: pre-wrap;
+  max-height: 12rem;
+}

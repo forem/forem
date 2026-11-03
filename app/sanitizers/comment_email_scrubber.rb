@@ -11,7 +11,8 @@ class CommentEmailScrubber < Rails::Html::PermitScrubber
 
   # The default behavior of PermitScrubber removes the <script> tags
   # but keeps the contents and this is required to fix that
-  def skip_node?(node)
-    node.name == "script" || super
+  def scrub_node(node)
+    node.children.remove if node.name == "script"
+    super
   end
 end

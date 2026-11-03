@@ -25,10 +25,7 @@ module Color
 
     # Returns the first valid hex string it finds (# + 6 digits)
     def accent(amount = 1)
-      ACCENT_MODIFIERS.each do |modifier|
-        with_brightness = brightness(modifier**amount)
-        break with_brightness if with_brightness.size == 7
-      end
+      ForemNative.color_accent(smallest, amount) || legacy_accent(amount)
     end
 
     def opacity(value = 0.0)
@@ -36,6 +33,13 @@ module Color
     end
 
     private
+
+    def legacy_accent(amount)
+      ACCENT_MODIFIERS.each do |modifier|
+        with_brightness = brightness(modifier**amount)
+        break with_brightness if with_brightness.size == 7
+      end
+    end
 
     # Handles the inputs ForemNative declines (malformed hexes, alphas needing rounding).
     def legacy_opacity(value)

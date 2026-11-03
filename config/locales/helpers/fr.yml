@@ -629,6 +629,10 @@ fr:
         title: Limiter le nombre de fois où une personne peut signaler un abus
         description: Combien de fois une personne peut-elle signaler un abus sur une
           période de 5 minutes ?
+      flag_appeal:
+        title: Limiter le nombre de recours de modération qu'une personne peut soumettre
+        description: Combien de recours de modération une personne peut-elle soumettre
+          sur une période de 5 minutes ?
       comment:
         title: Limiter le nombre de commentaires créés
         description: Combien de commentaires une personne peut-elle créer dans une

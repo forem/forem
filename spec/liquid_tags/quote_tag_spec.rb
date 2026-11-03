@@ -118,6 +118,12 @@ RSpec.describe "Quote liquid tag", type: :liquid_tag do
         parse('{% quote author="Jane" link="javascript:alert(1)" %}Nope{% endquote %}')
       end.to raise_error(StandardError, /Invalid URL for 'link'/)
     end
+
+    it "rejects a hostless external link URL" do
+      expect do
+        parse('{% quote author="Jane" link="https:javascript:alert(1)" %}Nope{% endquote %}')
+      end.to raise_error(StandardError, /Invalid URL for 'link'/)
+    end
   end
 
   describe "combined options" do

@@ -24,6 +24,8 @@ module ValidRequest
 
       origin.nil? || origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
+  rescue URI::InvalidURIError
+    false
   end
 
   def _compute_redirect_to_location(request, options) # :nodoc:

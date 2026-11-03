@@ -1,3 +1,5 @@
+require "honeycomb/deterministic_sampler"
+
 module Honeycomb
   class NoiseCancellingSampler
     extend Honeycomb::DeterministicSampler

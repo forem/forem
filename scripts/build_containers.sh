@@ -7,7 +7,52 @@ set -euo pipefail
 
 export DOCKER_BUILDKIT=1
 
+CONTAINER_BUILD_PATHS_REGEX='^(Containerfile(\.base)?|Dockerfile|\.dockerignore|\.buildkite/.*|\.github/workflows/buildkite\.yml|scripts/(build_containers|create_buildkite_pr_build|entrypoint|bundle)\.sh|\.ruby-version|Gemfile(\.lock)?|vendor/cache/.*|gems/.*|\.nvmrc|package\.json|yarn\.lock|esbuild\.config\.mjs)$'
+
+function should_build_pr_containers {
+  if [[ "${FORCE_CONTAINER_BUILD:-}" == "true" || "${FORCE_CONTAINER_BUILD:-}" == "1" ]]; then
+    echo "FORCE_CONTAINER_BUILD is set; proceeding with container build."
+    return 0
+  fi
+
+  local base_branch="${BUILDKITE_PULL_REQUEST_BASE_BRANCH:-main}"
+  local changed_files=""
+
+  if ! git rev-parse --verify "origin/${base_branch}" >/dev/null 2>&1; then
+    git fetch origin "${base_branch}" --depth=50 >/dev/null 2>&1 || true
+  fi
+
+  if git rev-parse --verify "origin/${base_branch}" >/dev/null 2>&1; then
+    if ! changed_files=$(git diff --name-only "origin/${base_branch}...HEAD" 2>/dev/null); then
+      git fetch origin "${base_branch}" --deepen=100 >/dev/null 2>&1 || true
+      changed_files=$(git diff --name-only "origin/${base_branch}...HEAD" 2>/dev/null || git diff --name-only "origin/${base_branch}" HEAD 2>/dev/null || echo "__DIFF_FAILED__")
+    fi
+  else
+    echo "Could not resolve origin/${base_branch}; proceeding with container build."
+    return 0
+  fi
+
+  if [[ "${changed_files}" == "__DIFF_FAILED__" ]]; then
+    echo "Could not determine changed files against origin/${base_branch}; proceeding with container build."
+    return 0
+  fi
+
+  local matching_files
+  matching_files=$(echo "${changed_files}" | grep -E "${CONTAINER_BUILD_PATHS_REGEX}" || true)
+
+  if [[ -n "${matching_files}" ]]; then
+    echo "Container-relevant files changed relative to ${base_branch}:"
+    echo "${matching_files}"
+    return 0
+  fi
+
+  echo "No container-relevant files changed relative to ${base_branch}. Skipping PR container build."
+  return 1
+}
+
 function create_pr_containers {
+
+  trap prune_containers ERR INT EXIT
 
   PULL_REQUEST=$1
 
@@ -55,6 +100,8 @@ function create_pr_containers {
 }
 
 function create_production_containers {
+
+  trap prune_containers ERR INT EXIT
 
   # Pull images if available for caching
   docker pull "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder ||:
@@ -113,6 +160,8 @@ function create_production_containers {
 }
 
 function create_release_containers {
+  trap prune_containers ERR INT EXIT
+
   BRANCH=$1
 
   # Pull images if available for caching
@@ -153,7 +202,7 @@ function create_release_containers {
 
   # If the env var for the git tag doesn't exist or is an empty string, then we
   # won't build a container image for a cut release.
-  if [ -v BUILDKITE_TAG ] && [ ! -z "${BUILDKITE_TAG}" ]; then
+  if [[ -n "${BUILDKITE_TAG+x}" && -n "${BUILDKITE_TAG}" ]]; then
     echo "Buildkite Tag: ${BUILDKITE_TAG}"
     docker build --target production \
                  --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
@@ -175,17 +224,15 @@ function prune_containers {
 
 }
 
-trap prune_containers ERR INT EXIT
-
-if [ -v BUILDKITE ]
+if [[ -n "${BUILDKITE+x}" ]]
 then
-    echo "Branch: $BUILDKITE_BRANCH"
-    echo "PR    : $BUILDKITE_PULL_REQUEST"
-    echo "Commit: $BUILDKITE_COMMIT"
-    echo "Tag   : $BUILDKITE_TAG"
+    echo "Branch: ${BUILDKITE_BRANCH:-}"
+    echo "PR    : ${BUILDKITE_PULL_REQUEST:-}"
+    echo "Commit: ${BUILDKITE_COMMIT:-}"
+    echo "Tag   : ${BUILDKITE_TAG:-}"
 fi
 
-if [ ! -v BUILDKITE_BRANCH ]; then
+if [[ -z "${BUILDKITE_BRANCH+x}" ]]; then
 
     echo "Not running in Buildkite. Building Production Containers..."
     BUILDKITE_COMMIT=$(git rev-parse --short HEAD)
@@ -208,7 +255,7 @@ elif [[ ${BUILDKITE_BRANCH} = stable* ]]; then
 
 else
 
-  if [ ! -v BUILDKITE_PULL_REQUEST ]; then
+  if [[ -z "${BUILDKITE_PULL_REQUEST+x}" ]]; then
 
         echo "BUILDKITE_PULL_REQUEST is unset! Exiting..."
         exit 1
@@ -217,6 +264,10 @@ else
 
         echo "BUILDKITE_PULL_REQUEST is set to an empty string! Exiting..."
         exit 1
+
+    elif ! should_build_pr_containers; then
+
+        exit 0
 
     else
 

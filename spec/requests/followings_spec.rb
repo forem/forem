@@ -6,12 +6,6 @@ RSpec.describe "FollowingsController" do
   describe "GET /followings/users" do
     let(:followed) { create(:user) }
 
-    before do
-      user.follow(followed)
-
-      user.reload
-    end
-
     context "when user is unauthorized" do
       it "returns unauthorized" do
         get followings_users_path
@@ -22,10 +16,12 @@ RSpec.describe "FollowingsController" do
 
     context "when user is authorized" do
       before do
+        user.follow(followed)
+        user.reload
         sign_in user
       end
 
-      it "returns user's followings list with the correct format" do
+      it "returns user's followings list with the correct format", :aggregate_failures do
         get followings_users_path
         expect(response).to have_http_status(:ok)
 
@@ -42,13 +38,6 @@ RSpec.describe "FollowingsController" do
 
   describe "GET /followings/tags" do
     context "when user is unauthorized" do
-      let(:followed) { create(:tag) }
-
-      before do
-        user.follow(followed)
-        user.reload
-      end
-
       it "returns unauthorized" do
         get followings_tags_path
 
@@ -74,25 +63,12 @@ RSpec.describe "FollowingsController" do
         user.reload
       end
 
-      it "returns the user's followings tag list" do
+      it "returns the user's followings tag list with the correct format", :aggregate_failures do
         get followings_tags_path, params: { controller_action: "following_tags" }
         expect(response).to have_http_status(:ok)
 
         expect(response.parsed_body.count).to eq(2)
         expect(response.parsed_body.pluck("name")).to eq(%w[tagthree tagone])
-      end
-
-      it "returns the user's hidden tag list" do
-        get followings_tags_path, params: { controller_action: "hidden_tags" }
-        expect(response).to have_http_status(:ok)
-
-        expect(response.parsed_body.count).to eq(1)
-        expect(response.parsed_body.pluck("name")).to eq(%w[tagtwo])
-      end
-
-      it "returns a list with the correct format" do
-        get followings_tags_path
-        expect(response).to have_http_status(:ok)
 
         followed_object = user.follows.detect { |obj| obj["followable_id"] == first_followed_tag.id }
         followed_object_response = response.parsed_body.detect { |obj| obj["name"] == "tagone" }
@@ -105,17 +81,19 @@ RSpec.describe "FollowingsController" do
         expect(followed_object_response["token"]).to be_present
         expect(followed_object_response["color"]).to eq("#000000")
       end
+
+      it "returns the user's hidden tag list", :aggregate_failures do
+        get followings_tags_path, params: { controller_action: "hidden_tags" }
+        expect(response).to have_http_status(:ok)
+
+        expect(response.parsed_body.count).to eq(1)
+        expect(response.parsed_body.pluck("name")).to eq(%w[tagtwo])
+      end
     end
   end
 
   describe "GET /followings/organizations" do
     let(:followed) { create(:organization) }
-
-    before do
-      user.follow(followed)
-
-      user.reload
-    end
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
@@ -127,10 +105,12 @@ RSpec.describe "FollowingsController" do
 
     context "when user is authorized" do
       before do
+        user.follow(followed)
+        user.reload
         sign_in user
       end
 
-      it "returns user's followings list with the correct format" do
+      it "returns user's followings list with the correct format", :aggregate_failures do
         get followings_organizations_path
         expect(response).to have_http_status(:ok)
 
@@ -148,12 +128,6 @@ RSpec.describe "FollowingsController" do
   describe "GET /followings/podcasts" do
     let(:followed) { create(:podcast) }
 
-    before do
-      user.follow(followed)
-
-      user.reload
-    end
-
     context "when user is unauthorized" do
       it "returns unauthorized" do
         get followings_podcasts_path
@@ -164,10 +138,12 @@ RSpec.describe "FollowingsController" do
 
     context "when user is authorized" do
       before do
+        user.follow(followed)
+        user.reload
         sign_in user
       end
 
-      it "returns user's followings list with the correct format" do
+      it "returns user's followings list with the correct format", :aggregate_failures do
         get followings_podcasts_path
         expect(response).to have_http_status(:ok)
 

@@ -243,12 +243,12 @@ RSpec.describe Reaction do
     end
 
     it "updates updated_at if the reactable is a comment" do
+      updated_at = 1.day.ago
+      comment = create(:comment, commentable: article, updated_at: updated_at)
       sidekiq_perform_enqueued_jobs do
-        updated_at = 1.day.ago
-        comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
-        expect(comment.reload.updated_at).to be > updated_at
       end
+      expect(comment.reload.updated_at).to be > updated_at
     end
   end
 

@@ -40,6 +40,23 @@ RSpec.describe Favorites::Create, type: :service do
       .to have_received(:call).with(favoritable: article, favoriter: leader)
   end
 
+  it "enqueues the gem received email for the author" do
+    allow(Favorites::SendGemReceivedEmailWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(Favorites::SendGemReceivedEmailWorker).to have_received(:perform_async).with("Article", article.id)
+  end
+
+  it "does not enqueue the gem received email when the favorite fails" do
+    article.update_columns(favorited_by_user_id: create(:user).id)
+    allow(Favorites::SendGemReceivedEmailWorker).to receive(:perform_async)
+
+    described_class.call(favoritable: article, user: leader)
+
+    expect(Favorites::SendGemReceivedEmailWorker).not_to have_received(:perform_async)
+  end
+
   it "favorites a comment" do
     comment = create(:comment, commentable: article, user: author)
     result = described_class.call(favoritable: comment, user: leader)

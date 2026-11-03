@@ -16,7 +16,7 @@ describe('toggling the actions panel', () => {
     const path = '/fakeuser/fake-article-slug-1d3a';
 
     test('it should have a click listener that toggles the appropriate classes', () => {
-      initializeActionsPanel(path);
+      initializeActionsPanel({}, path);
 
       const modContainer = document.getElementById('mod-container');
       modContainer.contentWindow.document.write(
@@ -39,6 +39,31 @@ describe('toggling the actions panel', () => {
         'close-actions-panel',
       )[0];
       expect(closeButton.classList.contains('hidden')).toBeFalsy();
+    });
+
+    test('it should create the moderation menu container when one is missing', () => {
+      document.body.innerHTML = `
+        <div id="mod-actions-menu-btn-area">
+          <button class="mod-actions-menu-btn" data-article-path="/fakeuser/fake-article-slug">
+            Moderate
+          </button>
+        </div>
+      `;
+
+      initializeActionsPanel({}, '/fallback-path');
+
+      const modActionsMenuBtn = document.getElementsByClassName(
+        'mod-actions-menu-btn',
+      )[0];
+      modActionsMenuBtn.click();
+
+      const modActionsMenu = document.getElementsByClassName('mod-actions-menu')[0];
+      const modContainer = document.getElementById('mod-container');
+
+      expect(modActionsMenu).toBeTruthy();
+      expect(modContainer.getAttribute('src')).toBe(
+        '/fakeuser/fake-article-slug/actions_panel',
+      );
     });
   });
 });

@@ -15,7 +15,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
 
     after { FeatureFlag.remove(:dev_core_user_sync) }
 
-    it "emits user_banished carrying the pre-banish username" do
+    it "emits user_banished carrying the pre-banish username without emitting user_suspended", :aggregate_failures do
       original_username = user.username
 
       with_trackable_events do
@@ -27,15 +27,6 @@ RSpec.describe Moderator::BanishUser, type: :service do
       expect(Trackable::DispatchWorker).to have_received(:perform_async)
         .with(anything, "user_banished", [user.id],
               hash_including("old_username" => original_username), anything)
-    end
-
-    it "does not also emit user_suspended for the banish-internal role grant" do
-      with_trackable_events do
-        sidekiq_perform_enqueued_jobs do
-          described_class.call(user: user, admin: admin)
-        end
-      end
-
       expect(Trackable::DispatchWorker).not_to have_received(:perform_async)
         .with(anything, "user_suspended", anything, anything, anything)
     end
@@ -62,7 +53,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
     # should remove:
     #   articles, comments, podcasts, organizations, abuse_reports, and vomit reactions
 
-    article = create(:article, user: user, published: true)
+    article = create(:article, user: user, published: true, with_tags: false)
     podcast = create(:podcast, creator: user)
     create(:podcast_ownership, owner: user, podcast: podcast)
     create(:comment, user: user, commentable: article)

@@ -38,6 +38,7 @@ module CommunityBots
         password: password,
         password_confirmation: password,
         invited_by: @created_by,
+        profile_image: @profile_image.presence || Images::ProfileImageGenerator.call,
       )
 
       # Set profile image after user creation (temporarily disabled for testing)

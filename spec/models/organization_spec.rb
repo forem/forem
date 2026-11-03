@@ -461,30 +461,25 @@ RSpec.describe Organization do
 
   describe "#generate_social_images" do
     before do
+      organization
       allow(Images::SocialImageWorker).to receive(:perform_async)
-      create(:article, organization: organization)
     end
 
-    context "when the name or profile_image has changed and the organization has articles" do
-      it "calls SocialImageWorker.perform_async" do
-        organization.name = "New name for this org!"
-        organization.save
-        expect(Images::SocialImageWorker).to have_received(:perform_async)
+    context "when a displayed primary detail changes" do
+      it "calls SocialImageWorker.perform_async when name changes even without articles" do
+        organization.update!(name: "New name for this org!")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
+      end
+
+      it "calls SocialImageWorker.perform_async when summary, location, url, slug, or bg_color_hex changes" do
+        organization.update!(summary: "Updated org summary")
+        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
       end
     end
 
-    context "when the name or profile_image has not changed or the organization has no articles" do
+    context "when non-displayed attributes change" do
       it "does not call SocialImageWorker.perform_async" do
-        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
-        organization.save
-      end
-    end
-
-    context "when the name or profile_image has changed and the organization has no articles" do
-      it "does not call SocialImageWorker.perform_async" do
-        organization.articles.destroy_all
-        organization.name = "New name for this org!!"
-        organization.save
+        organization.update!(story: "Our long story", company_size: "50", twitter_username: "orgtwitter")
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end

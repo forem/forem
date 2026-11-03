@@ -75,6 +75,12 @@ RSpec.describe BandcampTag, type: :liquid_tag do
         output = generate_liquid_output(not_bandcamp_url)
         expect(output).to include("Invalid Bandcamp URL")
       end
+
+      it "rejects unanchored javascript: URLs containing a Bandcamp URL" do
+        output = generate_liquid_output("javascript:alert(1)//https://caribouband.bandcamp.com/album/our-love")
+        expect(output).to include("Invalid Bandcamp URL")
+        expect(output).not_to include("javascript:")
+      end
     end
 
     context "when fetching page data fails" do

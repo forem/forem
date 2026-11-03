@@ -211,19 +211,27 @@ module Billboards
 
     def user_targeting_ads
       if @user_id
-        segment_ids = SegmentedUser.where(user_id: @user_id).pluck(:audience_segment_id)
-        @filtered_billboards.where("audience_segment_id IS NULL OR audience_segment_id IN (?)", segment_ids)
+        @filtered_billboards.where(
+          "audience_segment_id IS NULL OR audience_segment_id IN (?)",
+          SegmentedUser.where(user_id: @user_id).select(:audience_segment_id),
+        )
       else
         @filtered_billboards.where(audience_segment_id: nil)
       end
     end
 
     def role_filtered_ads
-      @filtered_billboards.where(
-        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[:role_names]::varchar[])
-        AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
-        role_names: @role_names,
-      )
+      if @role_names.present?
+        @filtered_billboards.where(
+          "(target_role_names IS NULL OR cardinality(target_role_names) = 0 " \
+          "OR target_role_names && ARRAY[:role_names]::varchar[]) " \
+          "AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 " \
+          "OR NOT exclude_role_names && ARRAY[:role_names]::varchar[])",
+          role_names: @role_names,
+        )
+      else
+        @filtered_billboards.where("target_role_names IS NULL OR cardinality(target_role_names) = 0")
+      end
     end
 
     def location_targeted_ads
@@ -236,13 +244,6 @@ module Billboards
     end
 
     def type_of_ads
-      # If this is an organization article and community-type ads exist, show them
-      if @organization_id.present?
-        community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
-                                               organization_id: @organization_id)
-        return community if community.any?
-      end
-
       types_matching = []
 
       # Always match in-house-type ads
@@ -253,31 +254,27 @@ module Billboards
         types_matching << :external
       end
 
-      @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
+      standard = @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
+      return standard if @organization_id.blank?
+
+      # If this is an organization article and community-type ads exist, show only them. The
+      # existence check is an uncorrelated NOT EXISTS (evaluated once by Postgres) inside the
+      # same query, rather than a separate SELECT 1 round-trip on every organization article.
+      community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
+                                             organization_id: @organization_id)
+      community.or(standard.where(community.arel.exists.not))
     end
 
     def survey_completion_filtered_ads
-      return @filtered_billboards unless @user_id.present?
+      return @filtered_billboards if @user_id.blank?
 
-      # Get billboards that either don't exclude survey completions or
-      # exclude survey completions but the user hasn't completed any of the specified surveys
-      billboards_without_survey_exclusion = @filtered_billboards.where(exclude_survey_completions: false)
-
-      # For billboards that do exclude survey completions, we need to check if the user
-      # has completed any of the surveys specified in exclude_survey_ids
-      billboards_with_survey_exclusion = @filtered_billboards.where(exclude_survey_completions: true)
-
-      if billboards_with_survey_exclusion.any?
-        # Get survey IDs that the user has completed
-        completed_survey_ids = SurveyCompletion.completed_survey_ids_for_user(@user_id)
-
-        # Filter out billboards where the user has completed any of the excluded surveys
-        billboards_with_survey_exclusion = billboards_with_survey_exclusion.where(
-          "NOT (exclude_survey_ids && ARRAY[?]::integer[])", completed_survey_ids
-        )
-      end
-
-      billboards_without_survey_exclusion.or(billboards_with_survey_exclusion)
+      @filtered_billboards.where(
+        "exclude_survey_completions = FALSE OR NOT EXISTS (" \
+        "SELECT 1 FROM survey_completions " \
+        "WHERE survey_completions.user_id = :user_id " \
+        "AND survey_completions.survey_id = ANY(display_ads.exclude_survey_ids))",
+        user_id: @user_id.respond_to?(:id) ? @user_id.id : @user_id,
+      )
     end
   end
 end

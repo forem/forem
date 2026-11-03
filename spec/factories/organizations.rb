@@ -1,10 +1,12 @@
 FactoryBot.define do
   sequence(:slug) { |n| "org#{n}" }
 
+  image_path = Rails.root.join("app/assets/images/android-icon-36x36.png")
+
   factory :organization do
     name               { Faker::Company.name }
     summary            { Faker::Hipster.paragraph(sentence_count: 1)[0..150] }
-    profile_image      { Rails.root.join("app/assets/images/android-icon-36x36.png").open }
+    profile_image      { CarrierWave::SanitizedFile.new(image_path) }
     url                { Faker::Internet.url }
     slug               { generate(:slug) }
     github_username    { "org#{rand(10_000)}" }

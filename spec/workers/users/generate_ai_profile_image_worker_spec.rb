@@ -5,89 +5,58 @@ RSpec.describe Users::GenerateAiProfileImageWorker, type: :worker do
 
   describe "#perform" do
     let(:user_id) { 123 }
-    let(:generator) { instance_double(Ai::ImageGenerator) }
-
-    before do
-      RequestStore.clear!
-      allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions).with(no_args).and_return(nil)
-    end
 
     context "when user cannot be found" do
       it "does not attempt to generate an image" do
         allow(User).to receive(:find_by).with(id: user_id).and_return(nil)
-
-        expect(Ai::ImageGenerator).not_to receive(:new)
+        allow(Images::ProfileImageGenerator).to receive(:call)
 
         worker.perform(user_id)
+
+        expect(Images::ProfileImageGenerator).not_to have_received(:call)
       end
     end
 
     context "when image generation succeeds" do
       let(:user) { instance_double(User, id: user_id) }
-      let(:result) do
-        Ai::ImageGenerator::GenerationResult.new(url: "https://example.com/sloth.png", text_response: nil)
-      end
+      let(:generated_file) { Rails.root.join("app/assets/images/1.png").open }
 
       before do
         allow(User).to receive(:find_by).with(id: user_id).and_return(user)
-        allow(Ai::ImageGenerator).to receive(:new).and_return(generator)
-        allow(generator).to receive(:generate).and_return(result)
-        allow(user).to receive(:remote_profile_image_url=)
+        allow(Images::ProfileImageGenerator).to receive(:call).with(seed: user_id).and_return(generated_file)
+        allow(user).to receive(:profile_image=)
         allow(user).to receive(:save!)
       end
 
-      it "sets the remote profile image and saves the user" do
+      after do
+        generated_file.close unless generated_file.closed?
+      end
+
+      it "sets the algorithmic profile image and saves the user" do
         worker.perform(user_id)
 
-        expect(Ai::ImageGenerator).to have_received(:new)
-          .with("#{described_class::MAGIC_LINK_PLACEHOLDER_PROMPT}.\n\n#{described_class::CONTENT_SAFETY_SUFFIX}", affected_user: user)
-        expect(user).to have_received(:remote_profile_image_url=).with(result.url)
+        expect(Images::ProfileImageGenerator).to have_received(:call).with(seed: user_id)
+        expect(user).to have_received(:profile_image=).with(generated_file)
         expect(user).to have_received(:save!)
-      end
-
-      it "includes aesthetic instructions when available" do
-        instructions = "Hand-drawn, pastel gradients"
-        prompt_with_instructions =
-          "#{described_class::MAGIC_LINK_PLACEHOLDER_PROMPT} Style to use if not otherwise contradicted previously: " \
-          "#{instructions}.\n\n#{described_class::CONTENT_SAFETY_SUFFIX}"
-
-        allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions).with(no_args).and_return(instructions)
-
-        worker.perform(user_id)
-
-        expect(Ai::ImageGenerator).to have_received(:new).with(prompt_with_instructions, affected_user: user)
-      end
-
-      it "falls back to default subforem aesthetic instructions" do
-        default_subforem_id = 99
-        RequestStore.store[:default_subforem_id] = default_subforem_id
-        allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions).with(no_args).and_return(nil)
-        allow(Settings::UserExperience).to receive(:cover_image_aesthetic_instructions)
-          .with(subforem_id: default_subforem_id)
-          .and_return("Vibrant coding-inspired patterns")
-
-        worker.perform(user_id)
-
-        expect(Ai::ImageGenerator).to have_received(:new).with(include("Vibrant coding-inspired patterns"), affected_user: user)
       end
     end
 
-    context "when image generation does not return a url" do
+    context "when image generation returns nil" do
       let(:user) { instance_double(User, id: user_id) }
 
       before do
         allow(User).to receive(:find_by).with(id: user_id).and_return(user)
-        allow(Ai::ImageGenerator).to receive(:new).and_return(generator)
-        allow(generator).to receive(:generate).and_return(nil)
+        allow(Images::ProfileImageGenerator).to receive(:call).with(seed: user_id).and_return(nil)
+        allow(user).to receive(:profile_image=)
+        allow(user).to receive(:save!)
       end
 
       it "does not attempt to update the profile image" do
-        expect(user).not_to receive(:remote_profile_image_url=)
-        expect(user).not_to receive(:save!)
-
         worker.perform(user_id)
+
+        expect(user).not_to have_received(:profile_image=)
+        expect(user).not_to have_received(:save!)
       end
     end
   end
 end
-

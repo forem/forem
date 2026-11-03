@@ -16,7 +16,12 @@ namespace :assets do
 
   desc "Remove asset and vendor caches"
   task clean_caches: :environment do
-    FileUtils.rm_rf "tmp/cache"
+    Dir.glob("tmp/cache/*").each do |path|
+      FileUtils.rm_rf(path) unless File.basename(path) == "bootsnap"
+    end
+    Dir.glob("vendor/cache/*.gem").each do |path|
+      FileUtils.rm_f(path)
+    end
   end
 end
 

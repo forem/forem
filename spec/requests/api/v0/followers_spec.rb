@@ -8,12 +8,6 @@ RSpec.describe "Api::V0::FollowersController" do
   let(:follower2) { create(:user) }
 
   describe "GET /api/followers/users" do
-    before do
-      follower.follow(user)
-
-      user.reload
-    end
-
     context "when user is unauthorized" do
       it "returns unauthorized" do
         get api_followers_users_path
@@ -32,7 +26,12 @@ RSpec.describe "Api::V0::FollowersController" do
     end
 
     context "when user is authorized with api key" do
-      it "returns user's followers list with the correct format" do
+      before do
+        follower.follow(user)
+        user.reload
+      end
+
+      it "returns user's followers list with the correct format", :aggregate_failures do
         get api_followers_users_path, headers: headers
         expect(response).to have_http_status(:ok)
 
@@ -46,8 +45,12 @@ RSpec.describe "Api::V0::FollowersController" do
         expect(response_follower["created_at"]).to be_an_instance_of(String)
       end
 
-      it "supports pagination" do
+      it "supports pagination and descending order by default", :aggregate_failures do
         follower2.follow(user)
+
+        get api_followers_users_path, headers: headers
+        follows = user.followings.order(id: :desc).last(2).map(&:id)
+        expect(response.parsed_body.pluck("id")).to eq(follows)
 
         get api_followers_users_path, params: { page: 1, per_page: 1 }, headers: headers
         expect(response.parsed_body.length).to eq(1)
@@ -57,16 +60,6 @@ RSpec.describe "Api::V0::FollowersController" do
 
         get api_followers_users_path, params: { page: 3, per_page: 1 }, headers: headers
         expect(response.parsed_body.length).to eq(0)
-      end
-
-      it "orders results by descending following date by default" do
-        follower2.follow(user)
-
-        get api_followers_users_path, headers: headers
-
-        follows = user.followings.order(id: :desc).last(2).map(&:id)
-        result = response.parsed_body.pluck("id")
-        expect(result).to eq(follows)
       end
 
       it "orders results by ascending following date if the 'sort' param is specified" do

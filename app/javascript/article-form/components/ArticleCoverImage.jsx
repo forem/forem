@@ -210,7 +210,7 @@ const StandardImageUpload = ({
   );
 };
 
-const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
+const AiImagePromptModal = ({ onClose, onGenerate, isGenerating, errorMessage }) => {
   const [prompt, setPrompt] = useState('');
 
   const handleSubmit = (e) => {
@@ -264,6 +264,15 @@ const AiImagePromptModal = ({ onClose, onGenerate, isGenerating }) => {
                 required
               />
             </div>
+            {errorMessage && !isGenerating && (
+              <p
+                className="articleform__uploaderror mb-4"
+                role="alert"
+                data-testid="ai-prompt-error"
+              >
+                {errorMessage}
+              </p>
+            )}
             <div className="flex gap-2">
               <Button 
                 type="submit" 
@@ -578,7 +587,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
               )}
             </Fragment>
           </div>
-          {uploadError && (
+          {uploadError && !showAiPrompt && (
             <p className="articleform__uploaderror">{uploadErrorMessage}</p>
           )}
         </div>
@@ -589,6 +598,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageH
           onClose={handleCloseAiPrompt}
           onGenerate={handleAiGenerate}
           isGenerating={generatingAiImage}
+          errorMessage={uploadError ? uploadErrorMessage : null}
         />
       )}
     </Fragment>

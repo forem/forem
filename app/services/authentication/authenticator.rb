@@ -218,10 +218,12 @@ module Authentication
       existing_user = User.find_by(
         provider.user_username_field => username,
       )
-      return existing_user if existing_user
+      return existing_user if existing_user && provider.user_username_field != :apple_username
 
       User.new.tap do |user|
-        user.assign_attributes(provider.new_user_data)
+        user.assign_attributes(normalize_user_data(provider.new_user_data))
+        ensure_profile_image(user)
+        user.apple_username = available_apple_username(user.apple_username) if existing_user
         user.assign_attributes(default_user_fields)
         user.onboarding_subforem_id = RequestStore.store[:subforem_id] if RequestStore.store[:subforem_id].present?
 
@@ -231,6 +233,31 @@ module Authentication
         # The user must be saved in the database before
         # we assign the user to a new identity.
         user.new_record? ? user.save! : user.save # Throw excption if new record.
+      end
+    end
+
+    def normalize_user_data(data)
+      normalized = data.dup
+      if normalized[:remote_profile_image_url].is_a?(File)
+        normalized[:profile_image] = normalized.delete(:remote_profile_image_url)
+      end
+      normalized
+    end
+
+    def ensure_profile_image(user)
+      return if user.profile_image.present? || user.remote_profile_image_url.present?
+
+      user.profile_image = Images::ProfileImageGenerator.call
+    end
+
+    def available_apple_username(base_username)
+      suffix = 1
+      loop do
+        suffix_str = "_#{suffix}"
+        candidate = "#{base_username[0...(25 - suffix_str.length)]}#{suffix_str}"
+        return candidate unless User.exists?(apple_username: candidate)
+
+        suffix += 1
       end
     end
 
@@ -261,6 +288,7 @@ module Authentication
           model.assign_attributes(provider.existing_user_data)
         end
 
+        ensure_profile_image(model)
         update_profile_updated_at(model)
 
         model.set_remember_fields

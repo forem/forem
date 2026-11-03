@@ -136,6 +136,16 @@ RSpec.describe Tag do
     end
   end
 
+  it "purges edge-cached tag lists when a tag is created, but not on update" do
+    allow(EdgeCache::PurgeByKey).to receive(:call)
+
+    tag.save!
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+
+    tag.update!(short_summary: "Updated")
+    expect(EdgeCache::PurgeByKey).to have_received(:call).with("tags").once
+  end
+
   it "delete tag-colors server cache on save" do
     allow(Rails.cache).to receive(:delete)
     tag.save
@@ -168,6 +178,18 @@ RSpec.describe Tag do
 
     it "returns self if there's no preferred tag" do
       expect(described_class.find_preferred_alias_for("something")).to eq("something")
+    end
+  end
+
+  describe ".find_preferred_aliases_for" do
+    it "resolves preferred aliases in batch while preserving tag order" do
+      create(:tag, name: "rails")
+      create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.find_preferred_aliases_for(%w[RoR something])).to eq(%w[rails something])
+    end
+
+    it "returns an empty array for blank input" do
+      expect(described_class.find_preferred_aliases_for([])).to eq([])
     end
   end
 

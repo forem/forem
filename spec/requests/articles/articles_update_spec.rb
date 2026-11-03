@@ -3,14 +3,18 @@ require "rails_helper"
 RSpec.describe "ArticlesUpdate" do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
-  let(:user) { create(:user, :org_admin) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user_org) do
+    create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+    organization
+  end
   let(:user2) do
-    user = create(:user)
+    user = create(:user, :without_profile, profile_image: nil)
     create(:organization_membership, user: user, organization: organization2)
     user
   end
-  let(:article) { create(:article, user_id: user.id) }
-  let(:other_article) { create(:article, user: user2) }
+  let(:article) { create(:article, user_id: user.id, with_tags: false, with_main_image: false) }
+  let(:other_article) { create(:article, user: user2, with_tags: false, with_main_image: false) }
   let(:collection) { create(:collection, user: user) }
 
   before do
@@ -48,7 +52,7 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "adds organization ID when user updates" do
-    user_org_id = user.organizations.first.id
+    user_org_id = user_org.id
     put "/articles/#{article.id}", params: {
       article: { organization_id: user_org_id }
     }
@@ -56,7 +60,7 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "removes organization ID when user updates" do
-    article.update_column(:organization_id, user.organizations.first.id)
+    article.update_column(:organization_id, user_org.id)
     put "/articles/#{article.id}", params: {
       # use empty string instead of nil to mock article form submission
       article: { organization_id: "" }
@@ -82,10 +86,10 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "allows an org admin to assign an org article to another user" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    other_user = create(:user)
-    create(:organization_membership, user: other_user, organization: user.organizations.first)
+    other_user = create(:user, :without_profile, profile_image: nil)
+    create(:organization_membership, user: other_user, organization: user_org)
 
     put "/articles/#{article.id}", params: { article: { user_id: other_user.id } }
     expect(article.reload.user).to eq(other_user)
@@ -93,10 +97,10 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "allows an org admin to update co-authors from the editor" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    co_author = create(:user)
-    create(:organization_membership, user: co_author, organization: user.organizations.first)
+    co_author = create(:user, :without_profile, profile_image: nil)
+    create(:organization_membership, user: co_author, organization: user_org)
 
     put "/articles/#{article.id}", params: { article: { co_author_ids_list: co_author.id.to_s } }
 
@@ -104,9 +108,9 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   it "rejects co-authors who are not active members of the selected organization" do
-    admin_org_id = user.organizations.first.id
+    admin_org_id = user_org.id
     article.update_columns(organization_id: admin_org_id)
-    outsider = create(:user)
+    outsider = create(:user, :without_profile, profile_image: nil)
 
     put "/articles/#{article.id}", params: { article: { co_author_ids_list: outsider.id.to_s }, format: :json }
 
@@ -115,7 +119,7 @@ RSpec.describe "ArticlesUpdate" do
   end
 
   describe "co-author invitations" do
-    let(:follower) { create(:user) }
+    let(:follower) { create(:user, :without_profile, profile_image: nil) }
 
     def put_invitees(invitee_ids, on: article)
       put "/articles/#{on.id}", params: { article: { co_author_invitee_ids: invitee_ids } }, as: :json

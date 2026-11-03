@@ -1,15 +1,18 @@
 <div class="crayons-card p-4">
-  <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-b border-border">
-    <h1 class="crayons-title text-xl"><%= t("views.admin.flag_appeals.title") %></h1>
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-4 pb-3 border-0 border-b-1 border-solid border-base-10">
+    <h1 class="crayons-title"><%= t("views.admin.flag_appeals.title") %></h1>
 
-    <div class="flex items-center gap-3">
-      <div class="crayons-navigation border-0 m-0">
-        <div class="crayons-navigation__content">
-          <% %w[pending approved rejected].each do |status| %>
-            <%= link_to t("views.admin.flag_appeals.tabs.#{status}"), admin_flag_appeals_path(status: status), class: "crayons-navigation__item #{@status == status ? 'crayons-navigation__item--current' : ''}" %>
-          <% end %>
-        </div>
-      </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <ul class="crayons-navigation crayons-navigation--horizontal">
+        <% %w[pending approved rejected].each do |status| %>
+          <li>
+            <%= link_to t("views.admin.flag_appeals.tabs.#{status}"),
+                        admin_flag_appeals_path(status: status),
+                        class: "crayons-navigation__item #{@status == status ? 'crayons-navigation__item--current' : ''}",
+                        aria: @status == status ? { current: "page" } : {} %>
+          </li>
+        <% end %>
+      </ul>
 
       <% if @flag_appeals.any? %>
         <button id="toggleAllAppeals" type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s"
@@ -31,7 +34,7 @@
       <%= paginate @flag_appeals %>
     </div>
   <% else %>
-    <p class="color-base-60 p-4 text-center"><%= t("views.admin.flag_appeals.empty") %></p>
+    <p class="color-base-60 p-4 align-center mb-0"><%= t("views.admin.flag_appeals.empty") %></p>
   <% end %>
 </div>
 

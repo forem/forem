@@ -141,6 +141,22 @@ RSpec.describe Authentication::Authenticator, type: :service do
           "identity.created", tags: ["provider:apple"]
         )
       end
+
+      it "does not match an existing user by a colliding apple_username when uid and email do not match" do
+        auth_payload.info.email = nil
+        colliding_nickname = Authentication::Providers::Apple.new(auth_payload).user_nickname
+        existing_user = create(:user, apple_username: colliding_nickname)
+
+        authenticated_user = nil
+        expect do
+          authenticated_user = service.call
+        end.to change(User, :count).by(1).and change(Identity, :count).by(1)
+
+        expect(authenticated_user).not_to eq(existing_user)
+        expect(authenticated_user.apple_username).to be_present
+        expect(authenticated_user.apple_username).not_to eq(colliding_nickname)
+        expect(Identity.find_by(provider: "apple", uid: auth_payload.uid)&.user).to eq(authenticated_user)
+      end
     end
 
     describe "existing user" do
@@ -955,6 +971,32 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
   context "when authenticating through MLH" do
     let!(:auth_payload) { omniauth_mock_mlh_payload }
+
+    it "assigns a generated profile_image when creating a new user via MLH" do
+      user = described_class.call(auth_payload)
+
+      expect(user.attributes["profile_image"]).to be_present
+      expect(user.profile_image_url).not_to eq(Images::Profile::BACKUP_LINK)
+    end
+
+    it "backfills a generated profile_image when an existing user has a nil profile_image" do
+      user = create(:user, email: auth_payload.info.email)
+      user.update_column(:profile_image, nil)
+
+      described_class.call(auth_payload)
+
+      expect(user.reload.attributes["profile_image"]).to be_present
+    end
+
+    it "converts a fallback File in remote_profile_image_url into profile_image on signup" do
+      github_payload = OmniAuth.config.mock_auth[:github].deep_dup
+      github_payload.info.image = nil
+
+      user = described_class.call(github_payload)
+
+      expect(user).to be_persisted
+      expect(user.attributes["profile_image"]).to be_present
+    end
 
     # The mlh identity carries the Core user id (uid), which rides along in
     # User#trackable_payload — so linking it must surface a user_updated to the

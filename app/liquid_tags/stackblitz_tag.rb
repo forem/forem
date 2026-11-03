@@ -5,19 +5,19 @@ class StackblitzTag < LiquidTagBase
   #  • https://stackblitz.com/edit/<id>
   #  • https://<id>.stackblitz.io
   REGISTRY_REGEXP = %r{
-    https://
+    \Ahttps://
     (?:
       stackblitz\.com/edit/(?<id>[\w-]{1,60}) |
       (?<id>[\w-]{1,60})\.stackblitz\.io
     )
-    (?<params>\?.*)?
+    (?<params>\?\S*)?\z
   }x
 
   ID_REGEXP      = /\A(?<id>[\w-]{1,60})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
 
   # rubocop:disable Layout/LineLength
-  PARAM_REGEXP = /\A(view=(preview|editor|both))|(file=(.*))|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=\d)|(hidedevtools=1)|(initialpath=(.*))|(showSidebar=1)|(terminalHeight=\d)|(startScript=(.*))\Z/
+  PARAM_REGEXP = %r{\A(?:(view=(preview|editor|both))|(file=[\w./-]+)|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=\d+)|(hidedevtools=1)|(initialpath=[\w./-]+)|(showSidebar=1)|(terminalHeight=\d+)|(startScript=[\w./-]+))\z}
   # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, input, _parse_context)
@@ -57,7 +57,7 @@ class StackblitzTag < LiquidTagBase
     return unless match.names.include?("params") && match[:params]
 
     # Strip leading '?', return param string
-    match[:params].sub(/\A\?/, "")
+    match[:params].delete_prefix("?")
   end
 
   def build_link_with_params(id, params)

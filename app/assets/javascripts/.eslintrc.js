@@ -14,6 +14,8 @@ module.exports = {
     'vars-on-top': 'off',
   },
   globals: {
+    applyColorMode: false,
+    watchColorModeChanges: false,
     getCsrfToken: false,
     sendFetch: false,
     preventDefaultAction: false,
@@ -27,6 +29,7 @@ module.exports = {
     initializeBaseUserData: false,
     initializeBillboardVisibility: false,
     initializeFavoritedMarkers: false,
+    initializeOnboardingTaskCard: false,
     initializeReadingListIcons: false,
     ActiveXObject: false,
     AndroidBridge: false,

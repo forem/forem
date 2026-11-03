@@ -220,7 +220,8 @@ module Api
         {
           email: params.require(:email),
           name: params[:name],
-          username: params[:email]
+          username: params[:email],
+          profile_image: ::Images::ProfileImageGenerator.call
         }.compact_blank
       end
 

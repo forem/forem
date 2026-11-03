@@ -191,6 +191,13 @@ pt:
             description: Enable the Agent Sessions feature for uploading and embedding coding agent session transcripts.
           enable_ai_disclosure:
             description: "Permitir que os autores divulguem o uso de ferramentas de IA ao publicar ou editar artigos."
+          limit_post_creation_to_admins:
+            description: "Apenas administradores podem criar novos artigos (inclusive em nome de uma organização); rascunhos existentes ainda podem ser editados e publicados por seus autores, e outros membros podem reagir e comentar."
+            cache_expiry_note:
+              one: "Nota: as alterações na interface podem levar até %{count} minuto para entrar em vigor para todos os membros devido ao cache."
+              other: "Nota: as alterações na interface podem levar até %{count} minutos para entrar em vigor para todos os membros devido ao cache."
+          appeal_auto_unflag_threshold:
+            description: "Pontuação mínima de confiança da IA (0,0 a 1,0) necessária para aprovar automaticamente um recurso quando a IA recomendar auto_unflag (aplica-se apenas a restrições automatizadas, nunca a bloqueios de moderadores humanos). Defina acima de 1,0 (por ex. 1,01) para desativar a remoção automática de sinalização."
           video:
             description: Video settings
           payment:
@@ -247,6 +254,17 @@ pt:
           feed_lookback_days:
             description: Feed lookback days
             placeholder: Feed lookback days
+          feed_config_sticky_hours:
+            label: Duração da configuração atribuída (horas)
+            description: Tempo durante o qual uma configuração do feed inicial permanece atribuída a um membro. Defina 0 para desativar essa atribuição.
+          feed_config_sticky_percentage:
+            label: Tráfego da configuração atribuída (%)
+            description: Porcentagem de carregamentos do feed inicial que usam a configuração atribuída. Os demais usam a seleção normal. Defina 0 para desativar essa atribuição.
+          feed_config_repeat_visit_minutes:
+            label: Intervalo entre retornos ao feed inicial (minutos)
+            description: Tempo mínimo entre visitas visíveis creditadas ao feed inicial atribuído. Cada retorno adiciona meio clique à pontuação de sucesso; a primeira visita visível não recebe crédito.
+          feed_repeat_visits:
+            label: Retornos ao feed inicial
           home_feed:
             description: Home feed settings
           index_minimum_score:

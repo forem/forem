@@ -9,17 +9,19 @@ import {
 document
   .getElementById('gdpr-delete-requests-content')
   ?.addEventListener('click', ({ target }) => {
+    const button = target.closest?.('button[data-gdpr-form-action]') || target;
     const {
-      dataset: { username, gdprFormAction },
-    } = target;
+      dataset: { username, name, gdprFormAction } = {},
+    } = button;
     if (gdprFormAction) {
-      handleConfirmDelete(username, gdprFormAction);
+      handleConfirmDelete(username, name, gdprFormAction);
     }
   });
 
-const handleConfirmDelete = (username, formAction) => {
+const handleConfirmDelete = (username, name, formAction) => {
+  const userIdentifier = name ? `${name} (@${username})` : `@${username}`;
   showWindowModal({
-    title: `Are you sure you have deleted all external data for @${username}?`,
+    title: `Are you sure you have deleted all external data for ${userIdentifier}?`,
     contentSelector: '#gdpr-confirm-delete-modal',
     onOpen: () => {
       // Set the action of the form

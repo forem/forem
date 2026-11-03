@@ -25,6 +25,7 @@ pt:
         hidden_tags: Tags ocultas
         listings: Anúncios
         analytics: Analytics
+        org_analytics: Analytics de organizações
         feed_imports: Importações de Feeds RSS
         for_org: Analytics para %{org}
         upload: Fazer upload de um vídeo
@@ -41,6 +42,7 @@ pt:
         audience_heading: Seu público
         back: "Voltar ao Painel Principal"
         your: Seu Painel
+        organizations_menu: Organizações
         org: "Painel de Analytics do %{org}"
         readers: Leitores
         comments: Comentários

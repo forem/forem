@@ -32,6 +32,23 @@ fr:
         other: "🔥 Vous avez %{count} notifications non lues sur  %{community}"
       new_badge: Vous venez de recevoir un badge
       video_upload: Le téléchargement de votre vidéo est terminé
+      gem_received:
+        article_subject: "💎 Votre article a été choisi comme pépite"
+        comment_subject: "💎 Votre commentaire a été choisi comme pépite"
+        article_heading: Votre article est une pépite !
+        comment_heading: Votre commentaire est une pépite !
+        untitled: un article
+        greeting: "Bonjour %{name},"
+        article_intro: Les curateurs de la communauté ont choisi votre article, « %{title} », comme pépite.
+        comment_intro: Les curateurs de la communauté ont choisi votre commentaire sur « %{title} » comme pépite.
+        why: Les pépites sont rares. Les curateurs n'en ont que quelques-unes à offrir, et ils les réservent aux articles et commentaires qui apprennent quelque chose de nouveau, lancent une belle discussion ou illuminent la journée de quelqu'un. Le vôtre s'est démarqué, et une pépite aide davantage de personnes sur %{community} à le découvrir. C'est une belle reconnaissance, alors merci !
+        view_article: Voir votre article
+        view_comment: Voir votre commentaire
+        pay_forward_heading: Vous avez une pépite à offrir
+        pay_forward: Chaque pépite que vous recevez vous en donne une à transmettre. Quand vous trouvez un article ou un commentaire sur %{community} qui mérite plus d'attention, sélectionnez l'icône de pépite pour le choisir. Partagez l'amour !
+        pay_forward_cta: Trouver une pépite à offrir
+        sign_off: Merci de rendre %{community} meilleur,
+        team: L'équipe %{community}
     verification_mailer:
       from: "%{community} Vérification de l'e-mail <%{email}>"
       verify_ownership: Vérifiez la propriété de votre compte %{community}.

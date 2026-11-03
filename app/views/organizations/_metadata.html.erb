@@ -4,8 +4,8 @@
       <div class="crayons-definition">
         <strong class="crayons-definition__title"><%= t("views.organizations.support") %></strong>
         <p class="crayons-definition__value">
-          <a href="mailto:<%= sanitize @organization.email %>">
-            <%= sanitize @organization.email %>
+          <a href="mailto:<%= @organization.email %>">
+            <%= @organization.email %>
           </a>
         </p>
       </div>

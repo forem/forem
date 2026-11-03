@@ -37,6 +37,16 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.with(badge_achievement: badge_achievement).new_badge_email
   end
 
+  def gem_received_email
+    favoritable = Article.where.not(favorited_by_user_id: nil).first || Article.first
+    NotifyMailer.with(favoritable: favoritable).gem_received_email
+  end
+
+  def gem_received_comment_email
+    favoritable = Comment.where.not(favorited_by_user_id: nil).first || Comment.first
+    NotifyMailer.with(favoritable: favoritable).gem_received_email
+  end
+
   def tag_moderator_confirmation_email
     NotifyMailer.with(user: User.first, tag: Tag.find(1)).tag_moderator_confirmation_email
   end

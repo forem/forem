@@ -13,13 +13,16 @@ module Settings
     setting :article_published_slack_channel, type: :string, default: "activity"
     # AI confidence needed to auto-approve an appeal. Scores are capped at 1.0, so the 1.01 default
     # disables auto-approval and routes every appeal to human review; lower it to opt in.
-    setting :appeal_auto_unflag_threshold, type: :float, default: 1.01
+    setting :appeal_auto_unflag_threshold,
+            type: :float,
+            default: 1.01,
+            validates: { numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 1.01 } }
 
     # Meta
     setting :admin_action_taken_at, type: :datetime, default: Time.current
 
     # Core setup
-    setting :waiting_on_first_user, type: :boolean, default: !User.exists?
+    setting :waiting_on_first_user, type: :boolean, default: proc { !User.exists? }
     setting :app_domain, type: :string, default: ApplicationConfig["APP_DOMAIN"]
 
     # API Tokens
@@ -69,6 +72,9 @@ module Settings
     setting :enable_video_upload, type: :boolean, default: false
     setting :enable_agent_sessions, type: :boolean, default: true
     setting :enable_ai_disclosure, type: :boolean, default: false
+    setting :limit_post_creation_to_admins,
+            type: :boolean,
+            default: proc { FeatureFlag.enabled?(:limit_post_creation_to_admins) }
 
     # Mascot
     setting :mascot_user_id, type: :integer, default: nil
@@ -195,6 +201,15 @@ module Settings
             default: "This is a premium feature. Contact our partnerships team to learn more."
     setting :org_features_cta_url, type: :string
 
+    # High-water mark (ISO8601 date string) for Badges::AwardContributorFromGithub.
+    # It records the most recent "merged before" date the job has already scanned
+    # for candidate PR authors. Hourly runs only scan merged PRs from this date
+    # forward, then advance it, so the job never re-reads the full repo history.
+    # Blank means "not yet backfilled" - the rake task does the one-time full
+    # history walk and sets this; until then, hourly runs fall back to a short
+    # recent window so a fresh instance still works.
+    setting :github_contributor_prs_scanned_through, type: :string, default: ""
+
     def self.algolia_search_enabled?
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end
@@ -233,6 +248,63 @@ module Settings
     
         # c) return the raw value
         value
+      end
+
+      # Appeal assessments run in Sidekiq (Appeals::AiReviewWorker), where RequestStore has no
+      # subforem_id, so store the threshold globally (subforem_id: nil) even when saved from a
+      # subforem-scoped admin request.
+      def set_appeal_auto_unflag_threshold(value, subforem_id: nil) # rubocop:disable Lint/UnusedMethodArgument
+        record = find_by(var: "appeal_auto_unflag_threshold", subforem_id: nil) ||
+          new(var: "appeal_auto_unflag_threshold", subforem_id: nil)
+        record.value = convert_string_to_value_type(:float, value)
+        record.save!
+        where(var: "appeal_auto_unflag_threshold").where.not(subforem_id: nil).delete_all
+        clear_cache
+        value
+      end
+
+      def appeal_auto_unflag_threshold=(value)
+        set_appeal_auto_unflag_threshold(value)
+      end
+
+      alias __orig_set_limit_post_creation_to_admins set_limit_post_creation_to_admins
+
+      # Updates the limit_post_creation_to_admins setting, preserving subforem independence
+      # while keeping the legacy global FeatureFlag synchronized for unscoped updates.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @param subforem_id [Integer, nil] optional subforem scope
+      # @return [Object] the raw value passed in
+      def set_limit_post_creation_to_admins(value, subforem_id: nil)
+        effective_subforem_id =
+          subforem_id || RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id]
+        if effective_subforem_id.present? && !exists?(var: "limit_post_creation_to_admins", subforem_id: nil)
+          __orig_set_limit_post_creation_to_admins(
+            FeatureFlag.enabled?(:limit_post_creation_to_admins),
+            subforem_id: nil,
+          )
+        end
+
+        __orig_set_limit_post_creation_to_admins(value, subforem_id: subforem_id)
+
+        if effective_subforem_id.nil?
+          if convert_string_to_value_type(:boolean, value)
+            FeatureFlag.enable(:limit_post_creation_to_admins)
+          else
+            FeatureFlag.disable(:limit_post_creation_to_admins)
+          end
+        end
+
+        Spaces::BustCachesForSpaceChangeWorker.perform_async
+        value
+      end
+
+      # Assigns the limit_post_creation_to_admins setting using the current request scope.
+      #
+      # @param value [Boolean, String, Integer, nil] the new boolean value to persist
+      # @return [Object] the raw value passed in
+      def limit_post_creation_to_admins=(value)
+        set_limit_post_creation_to_admins(value)
       end
     end
   end

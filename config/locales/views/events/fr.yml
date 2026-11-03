@@ -2,6 +2,9 @@
 fr:
   views:
     events:
+      challenge:
+        upcoming: À VENIR
+        starts_on: "Commence le %{date}"
       meta:
         title: Événements à venir
         description: Découvrez les événements virtuels, défis, streams et hackathons à venir.

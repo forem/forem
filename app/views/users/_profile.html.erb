@@ -53,11 +53,13 @@
 
       <% if @user.profile_image_url.present? %>
         <div class="crayons-field crayons-field--checkbox mt-2">
-          <%= f.check_box "user[remove_profile_image]", class: "crayons-checkbox" %>
-          <%= f.label :remove_profile_image, for: "user[remove_profile_image]", class: "crayons-field__label" do %>
-            <%= t("views.settings.profile_image.remove") %>
-            <p class="crayons-field__description"><%= t("views.settings.profile_image.remove_description") %></p>
-          <% end %>
+          <%= f.check_box "user[remove_profile_image]",
+                          class: "crayons-checkbox",
+                          aria: { describedby: "remove-profile-image-description" } %>
+          <div class="mt-0">
+            <%= f.label :remove_profile_image, t("views.settings.profile_image.remove"), for: "user[remove_profile_image]", class: "crayons-field__label" %>
+            <p id="remove-profile-image-description" class="crayons-field__description"><%= t("views.settings.profile_image.remove_description") %></p>
+          </div>
         </div>
       <% end %>
     </div>

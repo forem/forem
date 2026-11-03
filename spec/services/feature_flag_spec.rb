@@ -140,6 +140,23 @@ describe FeatureFlag, type: :service do
     end
   end
 
+  describe ".uncached" do
+    it "reads a value written elsewhere even when this process has it cached" do
+      cache = ActiveSupport::Cache::MemoryStore.new(expires_in: 1.hour)
+      cached_adapter = Flipper::Adapters::ActiveSupportCacheStore.new(Flipper.configuration.adapter, cache)
+      Flipper.instance = Flipper.new(cached_adapter)
+      described_class.disable(:flag)
+      described_class.enabled?(:flag) # cache the "off" value in this process
+
+      Flipper.new(Flipper.configuration.adapter).enable(:flag) # another process enables it
+
+      expect(described_class.enabled?(:flag)).to be(false)
+      expect(described_class.uncached.enabled?(:flag)).to be(true)
+    ensure
+      Flipper.instance = nil
+    end
+  end
+
   describe FeatureFlag::Actor, type: :service do
     context "when user object" do
       subject(:actor) { described_class[user] }

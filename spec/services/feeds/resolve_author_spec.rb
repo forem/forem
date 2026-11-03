@@ -9,7 +9,13 @@ RSpec.describe Feeds::ResolveAuthor do
   end
 
   def item_with_author(author_string)
-    double("FeedItem", author: author_string)
+    Class.new do
+      attr_reader :author
+
+      def initialize(author)
+        @author = author
+      end
+    end.new(author_string)
   end
 
   describe ".call" do
@@ -20,62 +26,56 @@ RSpec.describe Feeds::ResolveAuthor do
         build(:feed_source, user: feed_owner, organization: organization)
       end
 
-      context "when RSS author matches an org member by email" do
-        it "returns the matched org member" do
-          org_member = create(:user, email: "alice@example.com")
-          create(:organization_membership, user: org_member, organization: organization)
-          item = item_with_author("alice@example.com")
+      it "returns the matched org member by email" do
+        org_member = create(:user, email: "alice@example.com")
+        create(:organization_membership, user: org_member, organization: organization)
+        item = item_with_author("alice@example.com")
 
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(org_member)
-        end
-
-        it "extracts email from 'Name <email>' format" do
-          org_member = create(:user, email: "bob@example.com")
-          create(:organization_membership, user: org_member, organization: organization)
-          item = item_with_author("Bob Smith <bob@example.com>")
-
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(org_member)
-        end
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(org_member)
       end
 
-      context "when RSS author matches an org member by name" do
-        it "returns the matched org member" do
-          org_member = create(:user, name: "Alice Johnson")
-          create(:organization_membership, user: org_member, organization: organization)
-          item = item_with_author("Alice Johnson")
+      it "extracts email from 'Name <email>' format for org members" do
+        org_member = create(:user, email: "bob@example.com")
+        create(:organization_membership, user: org_member, organization: organization)
+        item = item_with_author("Bob Smith <bob@example.com>")
 
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(org_member)
-        end
-
-        it "strips email and matches by name" do
-          org_member = create(:user, name: "Bob Smith")
-          create(:organization_membership, user: org_member, organization: organization)
-          item = item_with_author("Bob Smith <unknown@other.com>")
-
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(org_member)
-        end
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(org_member)
       end
 
-      context "when RSS author matches a user outside the organization" do
-        it "does not match and falls back to feed source effective author" do
-          _outsider = create(:user, name: "Alice Johnson", email: "alice@example.com")
-          item = item_with_author("Alice Johnson")
+      it "returns the matched org member by name" do
+        org_member = create(:user, name: "Alice Johnson")
+        create(:organization_membership, user: org_member, organization: organization)
+        item = item_with_author("Alice Johnson")
 
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(feed_owner)
-        end
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(org_member)
+      end
 
-        it "does not match by email for non-org users" do
-          _outsider = create(:user, email: "outsider@example.com")
-          item = item_with_author("outsider@example.com")
+      it "strips email and matches org member by name" do
+        org_member = create(:user, name: "Bob Smith")
+        create(:organization_membership, user: org_member, organization: organization)
+        item = item_with_author("Bob Smith <unknown@example.org>")
 
-          result = described_class.call(item, feed_source)
-          expect(result).to eq(feed_owner)
-        end
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(org_member)
+      end
+
+      it "does not match a user outside the organization by name" do
+        _outsider = create(:user, name: "Alice Johnson", email: "alice@example.com")
+        item = item_with_author("Alice Johnson")
+
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
+      end
+
+      it "does not match by email for non-org users" do
+        _outsider = create(:user, email: "outsider@example.com")
+        item = item_with_author("outsider@example.com")
+
+        result = described_class.call(item, feed_source)
+        expect(result).to eq(feed_owner)
       end
     end
 
@@ -109,6 +109,17 @@ RSpec.describe Feeds::ResolveAuthor do
 
         result = described_class.call(item, feed_source)
         expect(result).to eq(feed_owner)
+      end
+
+      it "resolves against preloaded feed_source.user in memory without issuing User SQL queries" do
+        persisted_source = create(:feed_source, user: feed_owner)
+        loaded_source = Feeds::Source.includes(:user).find(persisted_source.id)
+        item = item_with_author("#{feed_owner.name} <#{feed_owner.email}>")
+
+        allow(User).to receive(:where).and_call_original
+        result = described_class.call(item, loaded_source)
+        expect(result).to eq(feed_owner)
+        expect(User).not_to have_received(:where)
       end
     end
 
@@ -145,8 +156,7 @@ RSpec.describe Feeds::ResolveAuthor do
 
     context "when item does not respond to author" do
       it "returns feed source effective author" do
-        item = double("FeedItem")
-        allow(item).to receive(:try).with(:author).and_return(nil)
+        item = Object.new
         result = described_class.call(item, feed_source)
         expect(result).to eq(feed_owner)
       end

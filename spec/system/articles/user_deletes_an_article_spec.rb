@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Deleting Article" do
-  let(:article) { create(:article) }
+  let(:article) { create(:article, with_tags: false) }
 
   before do
     sign_in article.user
@@ -9,7 +9,7 @@ RSpec.describe "Deleting Article" do
     click_on "Manage"
   end
 
-  it "author of article deletes own article", js: true do
+  it "author of article deletes own article" do
     within "#section-delete" do
       click_on "Delete Post"
     end
