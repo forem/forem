@@ -121,6 +121,37 @@ function initReactions() {
           }, 30);
         };
       }
+
+      // Dismissing an inline reply form should only hide it (and restore the
+      // "Reply" toggle button) so it can be reopened, rather than removing the
+      // form from the DOM like the shared handleFormClose does.
+      butts = document.getElementsByClassName('js-notification-reply-dismiss');
+
+      for (let i = 0; i < butts.length; i++) {
+        const butt = butts[i];
+
+        butt.onclick = function (event) {
+          event.preventDefault();
+          const { reactableId } = this.dataset;
+
+          const form = document.getElementById(
+            `comment-form-for-${reactableId}`,
+          );
+          if (form) {
+            form.classList.add('hidden');
+          }
+
+          // Restore the matching "Reply" toggle button that was hidden when the
+          // form was opened.
+          const toggle = document.querySelector(
+            `.toggle-reply-form[data-reactable-id="${reactableId}"]`,
+          );
+          if (toggle) {
+            toggle.classList.remove('hidden');
+            toggle.classList.add('inline-flex');
+          }
+        };
+      }
     }
   }, 180);
 }
