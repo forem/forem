@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
@@ -8,6 +9,8 @@ import {
   ContentTitle,
   FavoritedMarker,
   Meta,
+  QuickieCommentSection,
+  QuickieReactions,
   SaveButton,
   SearchSnippet,
   TagList,
@@ -28,9 +31,33 @@ export const Article = ({
   pinned,
   saveable,
 }) => {
+  const isStatus = article && article.type_of === 'status';
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [localComments, setLocalComments] = useState(
+    () => (article && article.top_comments) || [],
+  );
+  const [localCommentsCount, setLocalCommentsCount] = useState(
+    () => (article && article.comments_count) || 0,
+  );
+  const [addedCommentsCount, setAddedCommentsCount] = useState(0);
+
+  useEffect(() => {
+    setLocalComments((article && article.top_comments) || []);
+    setLocalCommentsCount((article && article.comments_count) || 0);
+    setAddedCommentsCount(0);
+    setIsCommentOpen(false);
+  }, [article?.id, article?.comments_count, article?.top_comments]);
+
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
   }
+
+  const handleCommentCreated = (newComment) => {
+    setLocalComments((prev) => [newComment, ...(prev || [])]);
+    setLocalCommentsCount((prev) => (prev || 0) + 1);
+    setAddedCommentsCount((prev) => prev + 1);
+    setIsCommentOpen(false);
+  };
 
   const isArticle = article.class_name === 'Article';
   const clickableClassList = [
@@ -49,10 +76,15 @@ export const Article = ({
     !article.cloudinary_video_url &&
     !article.video;
 
-  const parsedUrl = new URL(article.url);
-  const domain = parsedUrl.hostname
-    .replace('.forem.com', '')
-    .replace('.to', '');
+  let domain = '';
+  if (article.url) {
+    try {
+      const parsedUrl = new URL(article.url, window.location.origin);
+      domain = parsedUrl.hostname.replace('.forem.com', '').replace('.to', '');
+    } catch (_e) {
+      domain = '';
+    }
+  }
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
@@ -61,7 +93,7 @@ export const Article = ({
     <article
       className={`crayons-story cursor-pointer${
         isFeatured ? ' crayons-story--featured' : ''
-      }`}
+      }${isStatus ? ' crayons-story--status' : ''}`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-feed-content-id={isArticle ? article.id : null}
       data-content-user-id={article.user_id}
@@ -89,7 +121,9 @@ export const Article = ({
           }
         }}
       >
-        {article.video && <Video article={article} />}
+        {(article.video || article.cloudinary_video_url) && (
+          <Video article={article} />
+        )}
 
         {showCover && <ArticleCoverImage article={article} />}
         <div
@@ -105,6 +139,24 @@ export const Article = ({
           <div className="crayons-story__top">
             {article.user && (
               <Meta article={article} organization={article.organization} />
+            )}
+            {isStatus && !pinned && (
+              <span
+                className="crayons-story__status-badge"
+                data-testid="quickie-badge"
+                title="Quickie status update"
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                  className="crayons-story__status-badge-icon"
+                >
+                  <path d="M13 10h7l-9 13v-9H4l9-13z" />
+                </svg>
+                Quickie
+              </span>
             )}
             {pinned && (
               <div
@@ -151,15 +203,32 @@ export const Article = ({
             <div className="crayons-story__bottom">
               {article.class_name !== 'User' && article.user && (
                 <div className="crayons-story__details">
-                  <ReactionsCount article={article} />
+                  {isStatus ? (
+                    <QuickieReactions
+                      article={article}
+                      currentUserId={currentUserId}
+                    />
+                  ) : (
+                    <ReactionsCount article={article} />
+                  )}
                   <FavoritedMarker
                     favoritedByUserId={article.favorited_by_user_id}
                     currentUserId={currentUserId}
                   />
                   <CommentsCount
-                    count={article.comments_count}
+                    count={isStatus ? localCommentsCount : article.comments_count}
                     articlePath={article.url}
-                    articleTitle={article.title}
+                    articleTitle={
+                      isStatus
+                        ? article.title_for_metadata || article.title
+                        : article.title
+                    }
+                    onToggleInlineComment={
+                      isStatus
+                        ? () => setIsCommentOpen((prev) => !prev)
+                        : undefined
+                    }
+                    isInlineCommentOpen={isStatus ? isCommentOpen : undefined}
                   />
                 </div>
               )}
@@ -199,12 +268,26 @@ export const Article = ({
           </div>
         </div>
 
-        {article.top_comments && article.top_comments.length > 0 && (
-          <CommentsList
-            comments={article.top_comments}
-            articlePath={article.url}
-            totalCount={article.comments_count}
+        {isStatus ? (
+          <QuickieCommentSection
+            article={article}
+            comments={localComments}
+            totalCount={localCommentsCount}
+            maxVisibleComments={Math.max(2, addedCommentsCount + 2)}
+            isOpen={isCommentOpen}
+            onClose={() => setIsCommentOpen(false)}
+            onCommentCreated={handleCommentCreated}
+            currentUserId={currentUserId}
           />
+        ) : (
+          article.top_comments &&
+          article.top_comments.length > 0 && (
+            <CommentsList
+              comments={article.top_comments}
+              articlePath={article.url}
+              totalCount={article.comments_count}
+            />
+          )
         )}
       </div>
     </article>

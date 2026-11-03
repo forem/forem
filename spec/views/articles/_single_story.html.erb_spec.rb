@@ -85,4 +85,25 @@ RSpec.describe "articles/_single_story.html.erb", type: :view do
       expect(rendered).not_to have_css(".bookmark-button")
     end
   end
+
+  context "when story is a status (Quickie) post" do
+    let(:status_article) do
+      record = create(:article, user: author, type_of: "status", title: "Quick status thought",
+                                body_markdown: "", main_image: nil)
+      record.update!(published: true, title: "Quick status thought")
+      record
+    end
+    let(:status_story) { status_article.decorate }
+
+    it "renders the status card modifier, Quickie badge, and omits reading time", :aggregate_failures do
+      allow(view).to receive(:user_signed_in?).and_return(false)
+
+      render partial: "articles/single_story",
+             locals: { story: status_story, featured: false, feed_style_preference: "basic" }
+
+      expect(rendered).to have_css(".crayons-story.crayons-story--status")
+      expect(rendered).to have_css(".crayons-story__status-badge", text: "Quickie")
+      expect(rendered).not_to include("min read")
+    end
+  end
 end

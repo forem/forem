@@ -5,6 +5,8 @@ export * from './CommentsList';
 export * from './FavoritedMarker';
 export * from './Meta';
 export * from './PublishDate';
+export * from './QuickieCommentSection';
+export * from './QuickieReactions';
 export * from './ReactionsCount';
 export * from './ReadingTime';
 export * from './SaveButton';

@@ -396,7 +396,7 @@ function buildArticleHTML(article, currentUserId = null) {
     }
 
     var readingTimeHTML = '';
-    if (article.class_name === 'Article') {
+    if (article.class_name === 'Article' && article.type_of !== 'status') {
       // we have ` ... || null` for the case article.reading_time is undefined
       readingTimeHTML =
         '<small class="crayons-story__tertiary fs-xs mr-2">' +
@@ -492,7 +492,13 @@ function buildArticleHTML(article, currentUserId = null) {
       feedContentAttribute = `data-feed-content-id="${article.id}"`;
     }
 
-    return `<article class="crayons-story"
+    var statusBadgeHTML = '';
+    if (article.type_of === 'status') {
+      statusBadgeHTML =
+        '<span class="crayons-story__status-badge" title="Quickie status update"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" class="crayons-story__status-badge-icon"><path d="M13 10h7l-9 13v-9H4l9-13z" /></svg>Quickie</span>';
+    }
+
+    return `<article class="crayons-story${article.type_of === 'status' ? ' crayons-story--status' : ''}"
       data-article-path="${article.path}"
       id="article-${article.id}"
       ${feedContentAttribute}
@@ -502,7 +508,8 @@ function buildArticleHTML(article, currentUserId = null) {
           ${videoHTML}\
           <div class="crayons-story__body crayons-story__body-${article.type_of}">\
             <div class="crayons-story__top">\
-              ${meta}
+              ${meta}\
+              ${statusBadgeHTML}
             </div>\
             <div class="crayons-story__indention">
               <h3 class="crayons-story__title crayons-story__title-${article.type_of}">

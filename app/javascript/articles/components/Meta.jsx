@@ -85,12 +85,36 @@ export const Meta = ({ article, organization }) => {
                 </a>
               </span>
             )}
-          {article.type_of === 'status' && (<div class='color-base-60 pl-1 inline-block fs-xs'>{timeAgo({
-              oldTimeInSeconds: article.published_at_int,
-              formatter: (x) => x,
-              maxDisplayedAge: 60 * 60 * 24 * 7,
-            })}</div>)}
-          {article.type_of === 'status' && article.edited_at > article.published_timestamp && (<div class='color-base-60 pl-1 inline-block fs-xs'>(Edited)</div>)}
+          {article.type_of === 'status' && (
+            <div className="crayons-story__status-meta">
+              <span className="crayons-story__status-handle color-base-60 fs-xs">
+                @{article.user.username}
+              </span>
+              <span
+                className="crayons-story__status-sep color-base-50 fs-xs"
+                aria-hidden="true"
+              >
+                ·
+              </span>
+              <a
+                href={article.url}
+                className="crayons-story__tertiary crayons-story__status-time fs-xs"
+              >
+                {(typeof timeAgo === 'function' &&
+                  timeAgo({
+                    oldTimeInSeconds: article.published_at_int,
+                    formatter: (x) => x,
+                    maxDisplayedAge: 60 * 60 * 24 * 7,
+                  })) ||
+                  article.readable_publish_date}
+              </a>
+              {article.edited_at > article.published_timestamp && (
+                <span className="color-base-60 pl-1 inline-block fs-xs">
+                  (Edited)
+                </span>
+              )}
+            </div>
+          )}
         </div>
         {article.type_of !== 'status' && (
           <div className="flex items-center">

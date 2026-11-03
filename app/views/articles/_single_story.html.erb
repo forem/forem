@@ -1,4 +1,4 @@
-<div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-feed-content-id="<%= story.id %>" data-content-user-id="<%= story.user_id %>">
+<div class="crayons-story <% if featured == true %>crayons-story--featured<% end %><% if story.type_of == "status" %> crayons-story--status<% end %>" data-feed-content-id="<%= story.id %>" data-content-user-id="<%= story.user_id %>">
   <a href="<%= URL.article(story) %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link"><%= story.type_of == "status" && story.title_finalized ? story.title_finalized : story.title %></a>
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
@@ -118,6 +118,13 @@
           data-testid="pinned-article">
           <%= inline_svg_tag("pin.svg", alt: "", aria_hidden: true, class: "mr-1 align-text-bottom color-accent-brand") %><%= t("views.pins.article") %>
         </div>
+      <% elsif story.type_of == "status" %>
+        <span class="crayons-story__status-badge" title="Quickie status update">
+          <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" class="crayons-story__status-badge-icon">
+            <path d="M13 10h7l-9 13v-9H4l9-13z" />
+          </svg>
+          Quickie
+        </span>
       <% end %>
     </div>
 
@@ -221,9 +228,11 @@
           <% end %>
         </div>
         <div class="crayons-story__save">
-          <small class="crayons-story__tertiary fs-xs mr-2">
-            <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
-          </small>
+          <% if story.type_of != "status" %>
+            <small class="crayons-story__tertiary fs-xs mr-2">
+              <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
+            </small>
+          <% end %>
           <% if local_assigns[:is_home_feed] && (user_signed_in? rescue false) && ((@user == nil) || (@user.id != story.user_id)) %>
             <button
               type="button"

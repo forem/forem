@@ -485,6 +485,18 @@ RSpec.describe "Stories::Feeds" do
           "main_image_background_hex_color", "public_reaction_categories", "body_preview"
         )
       end
+
+      it "preloads fresh non-negative (score >= 0) root comments for status articles in top_comments" do
+        fresh_comment = create(:comment, commentable: quickie_article, user: user, score: 0,
+                                         body_markdown: "Fresh quickie reply!")
+        quickie_article.update_columns(comments_count: 1)
+
+        get stories_feed_path
+
+        quickie_response = response.parsed_body.detect { |item| item["id"] == quickie_article.id }
+        expect(quickie_response["comments_count"]).to eq(1)
+        expect(quickie_response["top_comments"].pluck("comment_id")).to include(fresh_comment.id)
+      end
     end
 
     context "when rendering long quickie articles (truncation test)" do

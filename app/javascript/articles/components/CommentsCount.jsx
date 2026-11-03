@@ -3,7 +3,13 @@ import PropTypes from 'prop-types';
 import { Button } from '../../crayons/Button';
 import { locale } from '../../utilities/locale';
 
-export const CommentsCount = ({ count, articlePath, articleTitle }) => {
+export const CommentsCount = ({
+  count,
+  articlePath,
+  articleTitle,
+  onToggleInlineComment,
+  isInlineCommentOpen,
+}) => {
   const commentsSVG = () => (
     <svg
       className="crayons-icon"
@@ -15,6 +21,44 @@ export const CommentsCount = ({ count, articlePath, articleTitle }) => {
     </svg>
   );
   const commentsAriaLabelText = `Add a comment to post - ${articleTitle}`;
+
+  if (typeof onToggleInlineComment === 'function') {
+    const commentNoun =
+      count > 1 ? `${locale('core.comment')}s` : locale('core.comment');
+    return (
+      <Button
+        variant="ghost"
+        size="s"
+        contentType="icon-left"
+        icon={commentsSVG}
+        tagName="button"
+        type="button"
+        className={`flex items-center quickie-comment-trigger${
+          isInlineCommentOpen ? ' is-open' : ''
+        }`}
+        data-testid={count === 0 ? 'add-a-comment' : 'quickie-comments-button'}
+        aria-label={commentsAriaLabelText}
+        aria-expanded={Boolean(isInlineCommentOpen)}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          onToggleInlineComment();
+        }}
+      >
+        {count > 0 ? (
+          <span title="Number of comments">
+            {count}
+            <span className="hidden s:inline">&nbsp;{commentNoun}</span>
+          </span>
+        ) : (
+          <span>
+            <span className="inline s:hidden">0</span>
+            <span className="hidden s:inline">{locale('core.add_comment')}</span>
+          </span>
+        )}
+      </Button>
+    );
+  }
 
   if (count > 0) {
     return (
@@ -70,6 +114,8 @@ CommentsCount.propTypes = {
   count: PropTypes.number,
   articlePath: PropTypes.string.isRequired,
   articleTitle: PropTypes.string.isRequired,
+  onToggleInlineComment: PropTypes.func,
+  isInlineCommentOpen: PropTypes.bool,
 };
 
 CommentsCount.displayName = 'CommentsCount';

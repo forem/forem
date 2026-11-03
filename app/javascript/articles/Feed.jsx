@@ -404,13 +404,15 @@ function initializeMainStatusForm() {
     if (mainForm.contains(lastClickedElement)) {
       e.preventDefault();
       e.target.focus();
-    }
-    else if (document.getElementById("index-container")) {
-      e.target.classList.remove('element-focused')
+    } else if (
+      document.getElementById('index-container') &&
+      e.target.value.trim() === ''
+    ) {
+      e.target.classList.remove('element-focused');
       document.getElementById('main-status-form-controls').classList.remove('flex');
       document.getElementById('main-status-form-controls').classList.add('hidden');
     }
-  }
+  };
 }
 
 Feed.defaultProps = {

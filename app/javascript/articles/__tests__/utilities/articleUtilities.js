@@ -412,3 +412,35 @@ export const featuredArticleWithOrganization = {
   ...articleWithOrganization,
   main_image: '/images/12.png',
 };
+
+export const quickieArticle = {
+  id: 98101,
+  title: 'Shipped a new zero-copy parser in Rust today.\n\nBenchmark latency dropped by 42%!',
+  title_finalized_for_feed:
+    '<p class="quickie-paragraph">Shipped a new zero-copy parser in Rust today.</p><p class="quickie-paragraph">Benchmark latency dropped by 42%!</p>',
+  title_for_metadata:
+    'Shipped a new zero-copy parser in Rust today. Benchmark latency dropped by 42%!',
+  path: '/emil99/shipped-zero-copy-parser-123',
+  url: 'http://example.com/emil99/shipped-zero-copy-parser-123',
+  type_of: 'status',
+  class_name: 'Article',
+  tag_list: [],
+  cached_tag_list_array: [],
+  user_id: 23289,
+  user: {
+    username: 'Emil99',
+    name: 'Stella Macejkovic',
+    profile_image_90: '/images/10.png',
+  },
+  published_at_int: 1582037964,
+  published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
+  published_at: '2020-02-18T14:59:24Z',
+  readable_publish_date: 'Feb 18',
+  body_preview:
+    '<div class="ltag__link"><div class="ltag__link__content"><h2>Deep Dive into Zero-Copy Parsing</h2></div></div>',
+  public_reactions_count: 0,
+  public_reaction_categories: [],
+  comments_count: 0,
+  top_comments: [],
+  current_user_signed_in: true,
+};

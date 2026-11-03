@@ -222,22 +222,45 @@ module Stories
         ).call
       end
 
+      preload_feed_comments(records)
+
+      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
+    end
+
+    def preload_feed_comments(records)
       comments_assoc = @comments_variant.to_sym
       comments_missing = records.select { |r| r.comments_count.positive? && !r.association(comments_assoc).loaded? }
-      if comments_missing.any?
-        columns = Comment.column_names - UNRENDERED_COMMENT_COLUMNS
+      return if comments_missing.empty?
+
+      columns = Comment.column_names - UNRENDERED_COMMENT_COLUMNS
+      status_ids = comments_missing.filter_map { |r| r.id if r.type_of == "status" }
+      if status_ids.any?
+        score_condition = Comment.where(score: 5..).or(Comment.where(commentable_id: status_ids, score: 0..))
+        ranked = score_condition.where(
+          commentable_type: "Article", commentable_id: comments_missing.map(&:id),
+          ancestry: nil, hidden_by_commentable_user: false, deleted: false,
+        ).select(*columns)
+          .select("ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS feed_comment_rank")
+        comments_by_article = Comment.from(ranked, :comments)
+          .where("feed_comment_rank <= 3")
+          .select(*columns)
+          .order(created_at: :desc)
+          .includes(:user)
+          .group_by(&:commentable_id)
+        comments_missing.each do |record|
+          record.association(comments_assoc).target = comments_by_article[record.id] || []
+        end
+      else
         ranked = Comment.where(
           commentable_type: "Article", commentable_id: comments_missing.map(&:id),
-          score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false
+          score: 5.., ancestry: nil, hidden_by_commentable_user: false, deleted: false,
         ).select(*columns)
           .select("ROW_NUMBER() OVER (PARTITION BY commentable_id ORDER BY created_at DESC) AS feed_comment_rank")
         ActiveRecord::Associations::Preloader.new(
           records: comments_missing, associations: comments_assoc,
-          scope: Comment.from(ranked, :comments).where("feed_comment_rank <= 3").select(*columns).includes(:user)
+          scope: Comment.from(ranked, :comments).where("feed_comment_rank <= 3").select(*columns).includes(:user),
         ).call
       end
-
-      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
     end
 
     def story_cache_key(rec, vc, digest_path)
