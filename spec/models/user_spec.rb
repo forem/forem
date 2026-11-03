@@ -1384,7 +1384,22 @@ RSpec.describe User do
 
       Articles::Unpublish.call(article2.user, article2)
 
-      expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
+      reaction_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        reaction_queries << payload[:sql] if payload[:sql].include?('FROM "reactions"')
+      end
+
+      result = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        result = user.cached_reading_list_article_ids
+      end
+
+      expect(result).to eq([article3.id, article.id])
+      expect(reaction_queries.size).to eq(1)
+      expect(reaction_queries.first).to include('SELECT "reactions"."reactable_id" FROM "reactions"')
+      expect(reaction_queries.first).to include("reactions.created_at + INTERVAL '0 seconds' DESC")
     end
 
     it "uses user_activity.alltime_reading_list_articles if present before falling back to Reaction query" do
