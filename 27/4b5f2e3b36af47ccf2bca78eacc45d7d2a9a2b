@@ -1,0 +1,54 @@
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 10,55-60,63-65
+app/javascript/packs/application.jsx
+  h_f968154a99632d 8-11,34-39,47-51,62,95-122,131,142,144,268
+app/javascript/packs/mediaPlayback.js
+  h_f968154a99632d 1-11
+app/javascript/packs/postscribeLoader.js
+  h_f968154a99632d 1-6
+app/javascript/packs/windowModal.jsx
+  h_f968154a99632d 1-57
+app/javascript/utilities/__tests__/gist.test.js
+  h_f968154a99632d 1-67
+app/javascript/utilities/__tests__/mediaPlaybackLoader.test.js
+  h_f968154a99632d 1-73
+app/javascript/utilities/__tests__/windowModalLoader.test.js
+  h_f968154a99632d 1-93
+app/javascript/utilities/gist.js
+  h_f968154a99632d 1-9,11-12,15-46,48-68,90-92,102,105,108-112,130-135,137-139
+app/javascript/utilities/mediaPlaybackLoader.js
+  h_f968154a99632d 1-124
+app/javascript/utilities/showModal.jsx
+  h_f968154a99632d 1-4,6-7,24-27,36-41
+app/javascript/utilities/windowModalLoader.js
+  h_f968154a99632d 1-96
+app/views/articles/index.html.erb
+  h_f968154a99632d 27-29,76-80
+app/views/articles/show.html.erb
+  h_f968154a99632d 320-324
+app/views/comments/index.html.erb
+  h_f968154a99632d 93-97
+app/views/layouts/admin.html.erb
+  h_f968154a99632d 16
+app/views/layouts/application.html.erb
+  h_f968154a99632d 38-40
+app/views/pages/show.en.html.erb
+  h_f968154a99632d 20-22
+app/views/pages/show.fr.html.erb
+  h_f968154a99632d 20-22
+app/views/pages/show.pt.html.erb
+  h_f968154a99632d 20-22
+app/views/podcast_episodes/show.html.erb
+  h_f968154a99632d 28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "274b5f2e3b36af47ccf2bca78eacc45d7d2a9a2b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
