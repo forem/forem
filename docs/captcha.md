@@ -1,5 +1,12 @@
 # CAPTCHA providers
 
+Provider selection is centralized in `Captcha::PROVIDERS`. Each provider supplies
+its verification, widget partial, availability, and presentation through the same
+interface. Shared `Captcha::CheckEnabled` and `Captcha::CheckRegistrationEnabled`
+rules determine which submissions require verification; adding a provider does
+not require adding provider branches to the protected controllers or forms.
+The existing `ReCaptcha` eligibility constants remain aliases for compatibility.
+
 Forem supports Google reCAPTCHA and Cloudflare Turnstile. Google reCAPTCHA is the
 default, so existing installations keep using their configured reCAPTCHA keys
 without changing settings.
