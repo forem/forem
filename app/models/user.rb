@@ -1304,6 +1304,7 @@ class User < ApplicationRecord
     Rails.cache.delete("user-#{id}/role_names")
     Rails.cache.delete("user-#{id}/moderator_for_tags")
     Rails.cache.delete("user-#{id}/moderator_for_subforems")
+    Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY) if role.name.in?(Rack::Attack::ADMIN_ROLES)
     refresh_auto_audience_segments
     trusted?
 
