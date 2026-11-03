@@ -1,0 +1,24 @@
+app/models/user.rb
+  h_f968154a99632d 813-819
+app/services/spam/handler.rb
+  h_f968154a99632d 30,50-51,84,163,198,211-212,349-350,359,411-419,422-425,430-431,434,436,447-449,453-488,607-610
+app/workers/spam/block_domain_and_suspend_users_worker.rb
+  h_f968154a99632d 25
+spec/models/user_spec.rb
+  h_f968154a99632d 2096-2115
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 730-805,1182-1207,1393-1409,1440-1449
+spec/workers/spam/block_domain_and_suspend_users_worker_spec.rb
+  h_f968154a99632d 13-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e929f7cdce2ac3a41f93a0045b665acab66921a4",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
