@@ -109,6 +109,14 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.turnstile_secret.description"),
             placeholder: I18n.t("lib.constants.settings.authentication.turnstile_secret.placeholder")
           },
+          hcaptcha_site_key: {
+            description: I18n.t("lib.constants.settings.authentication.hcaptcha_site.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.hcaptcha_site.placeholder")
+          },
+          hcaptcha_secret_key: {
+            description: I18n.t("lib.constants.settings.authentication.hcaptcha_secret.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.hcaptcha_secret.placeholder")
+          },
           twitter_key: {
             description: I18n.t("lib.constants.settings.authentication.twitter_key.description"),
             placeholder: ""

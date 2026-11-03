@@ -7,7 +7,7 @@ rules determine which submissions require verification; adding a provider does
 not require adding provider branches to the protected controllers or forms.
 The existing `ReCaptcha` eligibility constants remain aliases for compatibility.
 
-Forem supports Google reCAPTCHA and Cloudflare Turnstile. Google reCAPTCHA is the
+Forem supports Google reCAPTCHA, Cloudflare Turnstile, and hCaptcha. Google reCAPTCHA is the
 default, so existing installations keep using their configured reCAPTCHA keys
 without changing settings.
 
@@ -18,7 +18,7 @@ without changing settings.
 2. Check **Enable CAPTCHA for email password registration** to reveal the CAPTCHA
    settings.
 3. Configure the new provider's site key and secret key before switching providers.
-   Select Google reCAPTCHA or Cloudflare Turnstile, then save the settings.
+   Select Google reCAPTCHA, Cloudflare Turnstile, or hCaptcha, then save the settings.
    The other provider's keys can remain configured; only the selected provider is
    used. Keep secret keys private. Public forms receive only the site key.
 
@@ -63,3 +63,25 @@ used to authorize the other. Tokens expire after five minutes and are single-use
 failed submissions re-render or reload the form with a fresh widget, preserving
 report text. Widgets are also refreshed after InstantClick navigation and history
 restoration. Forms opened before deploying action validation must be refreshed.
+
+## hCaptcha behavior
+
+Use a standard visible hCaptcha widget. Enter its site key and secret key, then
+select hCaptcha in Authentication settings. Invisible widgets and Enterprise
+scoring are not supported. A selected hCaptcha provider with missing credentials
+blocks protected submissions rather than disabling verification.
+
+The server posts `h-captcha-response` to hCaptcha's Siteverify endpoint, including
+the expected sitekey to prevent tokens issued for another sitekey from being
+accepted. Verification requires `success: true`; expired, replayed, or invalid
+tokens and service failures are rejected. Report text is retained on errors.
+Widget setup and cleanup share the same InstantClick lifecycle as Turnstile.
+The hCaptcha SDK's reCAPTCHA compatibility mode is disabled so it does not replace
+Google's SDK when a visitor navigates between pages using different providers.
+
+If your deployment sets a Content Security Policy, permit `https://hcaptcha.com`
+and `https://*.hcaptcha.com` in `script-src`, `frame-src`, `style-src`, and
+`connect-src`, as described in the [hCaptcha developer guide](https://docs.hcaptcha.com/).
+Also permit outbound server requests to `https://api.hcaptcha.com/siteverify`.
+Do not pin asset subdomains, which can change. Use separate non-production keys;
+production must not use hCaptcha's public test credentials.
