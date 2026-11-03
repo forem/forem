@@ -280,7 +280,11 @@ module Middlewares
 
       verified = ForemNative.verify_authenticity_token(x_csrf_token, encoded_real_token)
       return :defer if verified.nil?
-      raise ActionController::InvalidAuthenticityToken unless verified
+
+      unless verified
+        skip_session_commit!(env)
+        raise ActionController::InvalidAuthenticityToken
+      end
 
       :ok
     end
@@ -317,8 +321,10 @@ module Middlewares
                end
 
       if native == :null_origin
+        skip_session_commit!(env)
         raise ActionController::InvalidAuthenticityToken, ApplicationController::NULL_ORIGIN_MESSAGE
       elsif native == false
+        skip_session_commit!(env)
         raise ActionController::InvalidAuthenticityToken
       elsif native.nil?
         return :defer

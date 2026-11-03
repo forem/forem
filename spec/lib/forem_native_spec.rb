@@ -4845,7 +4845,7 @@ RSpec.describe ForemNative do
           "https://github.com/",
           "https://t.co/abc123XYZ",
           "android-app://com.google.android.googlequicksearchbox/",
-          "https://example.invalidtld/some/path"
+          "https://example.invalidtld/some/path",
         ]
 
         expect(described_class.extract_referrer_domain_and_path("https://someone.github.io/post"))
@@ -4886,10 +4886,12 @@ RSpec.describe ForemNative do
           .to eq([:page_view_update, "12345"])
         expect(described_class.match_metal_telemetry_route("POST", "/page_views"))
           .to eq([:page_view_create, nil])
-        expect(described_class.match_metal_telemetry_route("GET", "/bb_tabulations"))
-          .to be_nil
-        expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"))
-          .to be_nil
+        expect(
+          [
+            described_class.match_metal_telemetry_route("GET", "/bb_tabulations"),
+            described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"),
+          ],
+        ).to eq([nil, nil])
       end
 
       it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
@@ -4900,6 +4902,15 @@ RSpec.describe ForemNative do
         )
         expect(ascii_8bit_outcome).to be_an(Array)
         expect(ascii_8bit_outcome.first).to include("'Mozilla/5.0'")
+
+        ascii_8bit_insert = described_class.billboard_event_insert_sql(
+          [
+            555, "impression", "home", 42, nil, "US-NY".b, "Mozilla/5.0".b,
+            1, 10, sample_now.tv_sec, sample_now.usec, true
+          ],
+        )
+        expect(ascii_8bit_insert).to be_a(String)
+        expect(ascii_8bit_insert).to include("'Mozilla/5.0'")
 
         rng = Random.new(20_261_110)
         categories = %w[impression click signup conversion invalid_cat]

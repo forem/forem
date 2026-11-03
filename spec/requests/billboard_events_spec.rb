@@ -308,5 +308,21 @@ RSpec.describe "BillboardEvents", type: :request do
       event = BillboardEvent.find(response.parsed_body["id"])
       expect(event.article_id).to eq(article.id)
     end
+
+    it "raises InvalidAuthenticityToken and skips session commit on mismatched Origin when forgery protection runs" do
+      allow(Rails.env).to receive(:test?).and_return(false)
+      middleware = Middlewares::MetalTelemetryFastPath.new(->(_env) { [200, {}, ["deferred"]] })
+      allow(middleware).to receive(:forgery_protection_enabled?).and_return(true)
+      session_opts = {}
+      env = Rack::MockRequest.env_for(
+        "http://forem.test/bb_tabulations",
+        method: "POST",
+        "HTTP_ORIGIN" => "https://evil.example.com",
+        Rack::RACK_SESSION_OPTIONS => session_opts,
+      )
+
+      expect { middleware.call(env) }.to raise_error(ActionController::InvalidAuthenticityToken)
+      expect(session_opts[:skip]).to be(true)
+    end
   end
 end

@@ -2288,6 +2288,20 @@ fn billboard_event_update_sql(
     }
 }
 
+fn extract_optional_header_utf8_string(ruby: &Ruby, val: Value) -> Option<Option<String>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let s = RString::from_value(val)?;
+    if !is_ascii_compatible_host(ruby, s) {
+        return None;
+    }
+    // SAFETY: Copy out short header bytes before any Ruby allocation.
+    std::str::from_utf8(unsafe { s.as_slice() })
+        .ok()
+        .map(|t| Some(t.to_owned()))
+}
+
 fn billboard_event_insert_sql(ruby: &Ruby, args: RArray) -> Value {
     use forem_core::metal::{
         ActiveRecordIntCast, BillboardEventInsert, BillboardEventInsertOutcome,
@@ -2328,10 +2342,10 @@ fn billboard_event_insert_sql(ruby: &Ruby, args: RArray) -> Value {
         },
     };
 
-    let Some(geolocation) = extract_optional_utf8_string(items[5]) else {
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, items[5]) else {
         return ruby.qnil().as_value();
     };
-    let Some(user_agent) = extract_optional_utf8_string(items[6]) else {
+    let Some(user_agent) = extract_optional_header_utf8_string(ruby, items[6]) else {
         return ruby.qnil().as_value();
     };
 
@@ -2545,23 +2559,10 @@ fn billboard_event_create_from_json_sql(
     let Some(user_id) = extract_optional_i64(user_id_val) else {
         return ruby.qnil().as_value();
     };
-    let extract_header = |v: Value| -> Option<Option<String>> {
-        if v.is_nil() {
-            return Some(None);
-        }
-        let s = RString::from_value(v)?;
-        if !is_ascii_compatible_host(ruby, s) {
-            return None;
-        }
-        // SAFETY: Copy out short header bytes before any Ruby allocation.
-        std::str::from_utf8(unsafe { s.as_slice() })
-            .ok()
-            .map(|t| Some(t.to_owned()))
-    };
-    let Some(geolocation) = extract_header(geolocation_val) else {
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, geolocation_val) else {
         return ruby.qnil().as_value();
     };
-    let Some(header_ua) = extract_header(header_ua_val) else {
+    let Some(header_ua) = extract_optional_header_utf8_string(ruby, header_ua_val) else {
         return ruby.qnil().as_value();
     };
 
