@@ -7,7 +7,7 @@ import {
   YEAR_UNTIL_TODAY,
   MONTH_UNTIL_TODAY,
 } from '../dateRangeUtils';
-import { DateRangePicker } from '@crayons';
+import { DateRangePicker } from '@crayons/formElements/DateRangePicker';
 
 export default {
   component: DateRangePicker,
