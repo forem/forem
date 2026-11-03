@@ -1,0 +1,44 @@
+app/models/feed_config.rb
+  h_f968154a99632d 4-5,183-189,199,265-272
+app/models/feed_config_assignment.rb
+  h_f968154a99632d 2-3
+app/models/feed_event.rb
+  h_f968154a99632d 133-134
+app/services/feeds/record_config_visit.rb
+  h_f968154a99632d 60-61,73-76
+app/services/feeds/sticky_config.rb
+  h_f968154a99632d 24-29,37
+config/locales/lib/en.yml
+  h_f968154a99632d 265
+config/locales/lib/fr.yml
+  h_f968154a99632d 265
+config/locales/lib/pt.yml
+  h_f968154a99632d 265
+db/migrate/20261103163000_add_repeat_visits_count_to_feed_config_assignments.rb
+  h_f968154a99632d 1-5
+db/schema.rb
+  h_f968154a99632d 13,841
+docs/analytics/feed_impressions.md
+  h_f968154a99632d 37,39-41,64-66
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 1240-1250
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 346,350,352-368,381,391
+spec/requests/feed_config_visits_spec.rb
+  h_f968154a99632d 31-56
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 57
+spec/services/feeds/sticky_config_spec.rb
+  h_f968154a99632d 87,90-91,96-99,270,275,286-287,301,307-324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "309fc4107d5e2f056027b90213465facfee2d89d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
