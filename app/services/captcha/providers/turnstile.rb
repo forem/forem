@@ -9,8 +9,9 @@ module Captcha
         true
       end
 
-      def self.verify(context:, **)
-        ::Turnstile::Verify.call(token: context.params["cf-turnstile-response"], hostname: context.request.host)
+      def self.verify(context:, action:)
+        ::Turnstile::Verify.call(token: context.params["cf-turnstile-response"], hostname: context.request.host,
+                                 action: action)
       end
 
       def self.partial

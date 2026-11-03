@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe Turnstile::Verify do
-  subject(:verified) { described_class.call(token: token, hostname: "forem.test") }
+  subject(:verified) { described_class.call(token: token, hostname: "forem.test", action: "signup") }
 
   let(:token) { "challenge-token" }
-  let(:result) { { success: true, hostname: "forem.test" } }
+  let(:result) { { success: true, hostname: "forem.test", action: "signup" } }
   let!(:verification) do
     stub_request(:post, described_class::ENDPOINT)
       .with(body: { secret: "turnstile-secret", response: "challenge-token" })
@@ -29,8 +29,10 @@ RSpec.describe Turnstile::Verify do
     end
   end
 
-  [{ success: false }, { success: "true", hostname: "forem.test" },
-   { success: true }, { success: true, hostname: "other.example" }, [], nil].each do |invalid_result|
+  [{ success: false, hostname: "forem.test", action: "signup" },
+   { success: "true", hostname: "forem.test", action: "signup" },
+   { success: true, action: "signup" },
+   { success: true, hostname: "other.example", action: "signup" }, [], nil].each do |invalid_result|
     context "with response #{invalid_result.inspect}" do
       let(:result) { invalid_result }
 
