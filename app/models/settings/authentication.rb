@@ -35,7 +35,7 @@ module Settings
     }
     setting :providers, type: :array, default: %w[]
     setting :captcha_provider, type: :string, default: "recaptcha", validates: {
-      inclusion: { in: %w[recaptcha turnstile] }
+      inclusion: { in: Captcha::PROVIDERS.keys }
     }
     setting :require_captcha_for_email_password_registration, type: :boolean, default: false
     setting :turnstile_site_key, type: :string

@@ -23,7 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
     authorize(params, policy_class: RegistrationPolicy)
 
     unless recaptcha_verified?
-      error = Settings::Authentication.captcha_provider == "turnstile" ? "captcha" : "recaptcha"
+      error = Captcha.provider.error_key
       flash[:notice] = I18n.t("registrations_controller.error.#{error}")
       return redirect_to new_user_registration_path(state: "email_signup")
     end
@@ -57,16 +57,9 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def recaptcha_verified?
-    if ReCaptcha::CheckRegistrationEnabled.call
-      if Settings::Authentication.captcha_provider == "turnstile"
-        return Turnstile::Verify.call(token: params["cf-turnstile-response"], hostname: request.host)
-      end
+    return true unless Captcha::CheckRegistrationEnabled.call
 
-      recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
-      params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
-    else
-      true
-    end
+    Captcha.provider.verify(context: self, action: "signup")
   end
 
   def check_allowed_email(resource)

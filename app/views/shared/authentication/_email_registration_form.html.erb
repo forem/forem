@@ -100,9 +100,9 @@
       <% end %>
     <% end %>
 
-    <% if ReCaptcha::CheckRegistrationEnabled.call %>
-      <div class="<%= Settings::Authentication.captcha_provider == "turnstile" ? "captcha-tag-container" : "recaptcha-tag-container" %> mt-2">
-        <%= render "shared/captcha" %>
+    <% if Captcha::CheckRegistrationEnabled.call %>
+      <div class="<%= Captcha.provider.container_class %> mt-2">
+        <%= render "shared/captcha", action: "signup" %>
       </div>
     <% end %>
 

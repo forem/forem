@@ -115,7 +115,7 @@
                     <%= admin_config_label :captcha_provider, t("lib.constants.settings.authentication.captcha_provider.label"), model: Settings::Authentication %>
                     <%= admin_config_description Constants::Settings::Authentication.details[:captcha_provider][:description] %>
                     <%= f.select :captcha_provider,
-                                 [["Google reCAPTCHA", "recaptcha"], ["Cloudflare Turnstile", "turnstile"]],
+                                 Captcha::PROVIDERS.map { |key, provider| [provider.label, key] },
                                  { selected: Settings::Authentication.captcha_provider },
                                  class: "crayons-select" %>
                   </div>

@@ -1,5 +1,1 @@
-<% if Settings::Authentication.captcha_provider == "turnstile" %>
-  <div class="cf-turnstile" data-sitekey="<%= Settings::Authentication.turnstile_site_key %>"></div>
-<% else %>
-  <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
-<% end %>
+<%= render Captcha.provider.partial, action: action %>

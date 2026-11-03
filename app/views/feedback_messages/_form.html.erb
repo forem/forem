@@ -67,9 +67,9 @@
     <%= f.text_area :message, class: "crayons-textfield", placeholder: t("views.feedback.form.message.placeholder"), value: @previous_message, required: true %>
   </div>
 
-  <% if ReCaptcha::CheckEnabled.call(current_user) %>
-    <div class="<%= Settings::Authentication.captcha_provider == "turnstile" ? "captcha-tag-container" : "recaptcha-tag-container" %>">
-      <%= render "shared/captcha" %>
+  <% if Captcha::CheckEnabled.call(current_user) %>
+    <div class="<%= Captcha.provider.container_class %>">
+      <%= render "shared/captcha", action: "abuse_report" %>
     </div>
   <% end %>
 

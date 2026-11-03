@@ -9,7 +9,7 @@ class FeedbackMessagesController < ApplicationController
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
 
-    recaptcha_enabled = ReCaptcha::CheckEnabled.call(current_user)
+    recaptcha_enabled = Captcha::CheckEnabled.call(current_user)
     if (!recaptcha_enabled || recaptcha_verified?) && !rate_limit? && @feedback_message.save
       Slack::Messengers::Feedback.call(
         user: current_user,
@@ -56,12 +56,7 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
-    if Settings::Authentication.captcha_provider == "turnstile"
-      return Turnstile::Verify.call(token: params["cf-turnstile-response"], hostname: request.host)
-    end
-
-    recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
-    params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
+    Captcha.provider.verify(context: self, action: "abuse_report")
   end
 
   def feedback_message_params
