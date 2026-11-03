@@ -42,6 +42,7 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(event.user_id).to eq(user.id)
 
       expect(response.status).to eq(200)
+      expect(request.session_options[:skip]).to be(true)
       json = JSON.parse(response.body)
       expect(json["id"]).to eq(event.id)
     end
@@ -192,6 +193,7 @@ RSpec.describe "BillboardEvents", type: :request do
         allow(BillboardEvent).to receive(:find_by).and_call_original
         patch "/bb_tabulations/#{event.id}"
         expect([response.status, event.reload.seconds_visible]).to eq([200, 20])
+        expect(request.session_options[:skip]).to be(true)
         expect(BillboardEvent).not_to have_received(:find_by)
       end
 
