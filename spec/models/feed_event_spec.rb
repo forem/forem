@@ -91,9 +91,9 @@ RSpec.describe FeedEvent do
   end
 
   describe "after_save .update_article_counters_and_scores" do
-    let!(:article) { create(:article, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0) }
-    let!(:user1)   { create(:user) }
-    let!(:user2)   { create(:user) }
+    let(:article) { create(:article, feed_success_score: 0.0, feed_impressions_count: 0, feed_clicks_count: 0) }
+    let(:user1)   { create(:user) }
+    let(:user2)   { create(:user) }
 
     before do
       # Bypass throttling so that the update block runs immediately.
@@ -312,20 +312,28 @@ RSpec.describe FeedEvent do
     let(:feed_config) { create(:feed_config, feed_success_score: 0.0, feed_impressions_count: 0) }
     let(:user1)       { create(:user) }
     let(:user2)       { create(:user) }
+    let(:article)     { create(:article) }
 
     before do
       allow(ThrottledCall).to receive(:perform).and_yield
       allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(10)
     end
 
+    # Feed config scoring only reads each event's article published_at, so events share one fresh
+    # article instead of letting the factory create (and author) a new article per event.
+    def create_event(category, user)
+      create(:feed_event, category: category, feed_config: feed_config, article: article, user: user,
+                          article_position: 1)
+    end
+
     it "adds return credit to engagement and reconciles the denominator as new viewers arrive" do
-      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
-      create(:feed_event, category: :click, feed_config: feed_config, user: user1, article_position: 1)
+      create_event(:impression, user1)
+      create_event(:click, user1)
       FeedConfig.record_repeat_visit(feed_config.id)
       FeedConfig.record_repeat_visit(feed_config.id)
       expect(feed_config.reload.feed_success_score).to eq(2.5)
 
-      create(:feed_event, category: :impression, feed_config: feed_config, user: user2, article_position: 1)
+      create_event(:impression, user2)
       expect(feed_config.reload.feed_impression_users_count).to eq(2)
       expect(feed_config.feed_success_score).to eq(1.25)
       described_class.update_single_feed_config_counters(feed_config.id)
@@ -334,7 +342,7 @@ RSpec.describe FeedEvent do
     end
 
     it "preserves a repeat visit arriving between aggregation and the score update" do
-      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
+      create_event(:impression, user1)
       allow(described_class).to receive(:calculate_feed_config_counters).and_wrap_original do |method, *args|
         counters = method.call(*args)
         FeedConfig.record_repeat_visit(feed_config.id)
@@ -351,23 +359,23 @@ RSpec.describe FeedEvent do
       expect(feed_config.reload.feed_repeat_visits_count).to eq(1)
       expect(feed_config.feed_success_score).to eq(0.0)
 
-      create(:feed_event, category: :impression, feed_config: feed_config, user: user1, article_position: 1)
+      create_event(:impression, user1)
       expect(feed_config.reload.feed_success_score).to eq(0.5)
     end
 
     context "when impression events exist for the feed config on newly published articles" do
       before do
         # Two distinct impression events
-        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
-        create(:feed_event, category: "impression", feed_config: feed_config, user: user2, article_position: 1)
+        create_event("impression", user1)
+        create_event("impression", user2)
         # One click event: POWER(2.0/3, article_position - 1) with article_position 1 gives 1 * 1.5 freshness.
-        create(:feed_event, category: "click", feed_config: feed_config, user: user1, article_position: 1)
+        create_event("click", user1)
         # One reaction event from user1: multiplier = reaction_multiplier * 2 * 1.5 freshness.
-        create(:feed_event, category: "reaction", feed_config: feed_config, user: user1, article_position: 1)
+        create_event("reaction", user1)
         # One comment event from user2: multiplier = comment_multiplier * 2 * 1.5 freshness.
-        create(:feed_event, category: "comment", feed_config: feed_config, user: user2, article_position: 1)
+        create_event("comment", user2)
         # One extended pageview event from user2: multiplier = 1 * 1.5 freshness.
-        create(:feed_event, category: "extended_pageview", feed_config: feed_config, user: user2, article_position: 1)
+        create_event("extended_pageview", user2)
       end
 
       it "calculates and updates the feed config counters with the 1.5x freshness boost" do
@@ -395,9 +403,9 @@ RSpec.describe FeedEvent do
 
     context "when some events have no user" do
       it "counts anonymous events as one distinct user" do
-        create_list(:feed_event, 2, category: "impression", feed_config: feed_config, user: nil, article_position: 1)
-        create(:feed_event, category: "impression", feed_config: feed_config, user: user1, article_position: 1)
-        create(:feed_event, category: "click", feed_config: feed_config, user: nil, article_position: 1)
+        2.times { create_event("impression", nil) }
+        create_event("impression", user1)
+        create_event("click", nil)
 
         described_class.update_single_feed_config_counters(feed_config.id)
         feed_config.reload
@@ -454,8 +462,8 @@ RSpec.describe FeedEvent do
 
     context "when no impression events exist for the feed config" do
       before do
-        create(:feed_event, category: "click", feed_config: feed_config, user: user1, article_position: 1)
-        create(:feed_event, category: "reaction", feed_config: feed_config, user: user1, article_position: 1)
+        create_event("click", user1)
+        create_event("reaction", user1)
       end
 
       it "does not update feed config counters" do

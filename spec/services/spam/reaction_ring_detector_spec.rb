@@ -203,6 +203,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
       it "plucks each ring member's reacted-to authors only once" do
         member_ids = [ring_member1, ring_member2, ring_member3].map(&:id)
         member_plucks = Hash.new(0)
+        member_reaction_queries = 0
         callback = lambda do |*, payload|
           sql = payload[:sql]
           next unless sql.include?('FROM "reactions"')
@@ -211,9 +212,14 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
           binds = payload[:type_casted_binds]
           binds = Array(binds.respond_to?(:call) ? binds.call : binds)
 
+          matched_member = false
           member_ids.each do |id|
-            member_plucks[id] += 1 if binds.include?(id) || sql.match?(/"reactions"\."user_id" = #{id}\b/)
+            next unless binds.include?(id) || sql.match?(/"reactions"\."user_id" (?:=|IN \([^)]*)\s*#{id}\b/)
+
+            member_plucks[id] += 1
+            matched_member = true
           end
+          member_reaction_queries += 1 if matched_member
         end
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -221,6 +227,7 @@ RSpec.describe Spam::ReactionRingDetector, type: :service do
         end
 
         expect(member_plucks.values_at(*member_ids)).to eq([1, 1, 1])
+        expect(member_reaction_queries).to eq(1)
       end
 
       it "checks ring members' admin roles without a roles COUNT query per member" do

@@ -37,6 +37,24 @@ RSpec.describe "Collections" do
       expect(response.body).not_to include(articles.first.path)
     end
 
+    it "skips the heavy article columns when loading the series articles", :aggregate_failures do
+      article_queries = []
+      collector = lambda do |_name, _start, _finish, _id, payload|
+        sql = payload[:sql]
+        article_queries << sql if sql.include?("FROM \"articles\"") && sql.include?("\"collection_id\"")
+      end
+
+      ActiveSupport::Notifications.subscribed(collector, "sql.active_record") do
+        get collection.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(*collection.articles.map(&:path))
+      expect(article_queries).not_to be_empty
+      expect(article_queries.join).not_to include("\"articles\".*", "body_markdown", "semantic_embedding",
+                                                  "reading_list_document")
+    end
+
     it "preloads context notes instead of querying them per article" do
       context_note_queries = 0
       counter = lambda do |_name, _start, _finish, _id, payload|
