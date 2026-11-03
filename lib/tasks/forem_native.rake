@@ -490,6 +490,66 @@ namespace :forem_native do
       x.report("Rust Magnus (ApplicationMetalController pipeline)") { native_metal_pipeline.call }
       x.compare!
     end
+
+    puts "\n=== Phase 2 MetalTelemetryFastPath & Origin/Referrer Pipeline Benchmark ==="
+    metal_json_body =
+      '{"billboard_event":{"billboard_id":555,"category":"impression","context_type":"home","article_id":1001}}'
+    metal_referrer = "https://www.google.com/search?q=ruby+rust+magnus"
+    pv_sample = PageView.new(referrer: metal_referrer)
+    origin_harness = Class.new do
+      include ValidRequest
+
+      def request
+        @request ||= Struct.new(:referer, :origin, :base_url, :host, :port).new(
+          "https://dev.to/ben/post",
+          "https://dev.to",
+          "https://dev.to",
+          "dev.to",
+          443,
+        )
+      end
+    end.new
+
+    legacy_phase2_pipeline = lambda do
+      origin_harness.__send__(:legacy_valid_request_origin?)
+      pv_sample.__send__(:legacy_extract_domain_and_path)
+      parsed_json = JSON.parse(metal_json_body)["billboard_event"]
+      BillboardEvent.__send__(
+        :legacy_create_with_async_commit_sql,
+        {
+          billboard: metal_billboard,
+          category: parsed_json["category"],
+          context_type: parsed_json["context_type"],
+          user_id: 42,
+          article_id: parsed_json["article_id"],
+          geolocation: "US-NY",
+          user_agent: "Mozilla/5.0"
+        },
+        now: metal_now,
+      )
+    end
+
+    native_phase2_pipeline = lambda do
+      ForemNative.match_metal_telemetry_route("POST", "/bb_tabulations")
+      origin_harness.__send__(:evaluate_request_origin)
+      pv_sample.__send__(:extract_domain_and_path)
+      ForemNative.billboard_event_create_from_json_sql(
+        metal_json_body, 42, "US-NY", "Mozilla/5.0", false, metal_now
+      )
+    end
+
+    phase2_ruby_mem = MemoryProfiler.report { 10.times { legacy_phase2_pipeline.call } }
+    phase2_rust_mem = MemoryProfiler.report { 10.times { native_phase2_pipeline.call } }
+    puts "Phase 2 Metal FastPath Ruby Legacy allocations (10 runs): " \
+         "#{phase2_ruby_mem.total_allocated} objects (#{phase2_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Phase 2 Metal FastPath Rust Magnus allocations (10 runs): " \
+         "#{phase2_rust_mem.total_allocated} objects (#{phase2_rust_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (Phase 2 Metal Origin + Referrer + JSON SQL)") { legacy_phase2_pipeline.call }
+      x.report("Rust Magnus (Phase 2 Metal Origin + Referrer + JSON SQL)") { native_phase2_pipeline.call }
+      x.compare!
+    end
   end
 end
 # rubocop:enable Metrics/BlockLength

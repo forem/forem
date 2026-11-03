@@ -2,6 +2,7 @@
 module ValidRequest
   extend ActiveSupport::Concern
 
+  # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
   def valid_request_origin?
     # This manually does what it was supposed to do on its own.
     # We were getting this issue:
@@ -10,7 +11,29 @@ module ValidRequest
     # We are at least secure for now.
     return if Rails.env.test?
 
-    if (referer = request.referer).present?
+    evaluate_request_origin
+  end
+  # rubocop:enable Style/ReturnNilInPredicateMethodDefinition
+
+  def evaluate_request_origin
+    referer = request.referer
+    origin = referer.present? ? nil : request.origin
+    base_url = referer.present? || origin.nil? || origin == "null" ? nil : request.base_url
+    req_host = referer.present? ? request.host : nil
+    req_port = referer.present? ? request.port : nil
+
+    native = ForemNative.valid_request_origin(referer, origin, base_url, req_host, req_port)
+    if native == :null_origin
+      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE
+    end
+    return native unless native.nil?
+
+    legacy_valid_request_origin?(referer)
+  end
+  private :evaluate_request_origin
+
+  def legacy_valid_request_origin?(referer = request.referer)
+    if referer.present?
       # -      subforem = Subforem.find_by(domain: request.host)
       # -      referer.start_with?(URL.url(nil, subforem))
       # only compare host (and port), regardless of http vs https
@@ -27,6 +50,7 @@ module ValidRequest
   rescue URI::InvalidURIError
     false
   end
+  private :legacy_valid_request_origin?
 
   def _compute_redirect_to_location(request, options) # :nodoc:
     case options

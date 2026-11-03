@@ -2288,6 +2288,20 @@ fn billboard_event_update_sql(
     }
 }
 
+fn extract_optional_header_utf8_string(ruby: &Ruby, val: Value) -> Option<Option<String>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    let s = RString::from_value(val)?;
+    if !is_ascii_compatible_host(ruby, s) {
+        return None;
+    }
+    // SAFETY: Copy out short header bytes before any Ruby allocation.
+    std::str::from_utf8(unsafe { s.as_slice() })
+        .ok()
+        .map(|t| Some(t.to_owned()))
+}
+
 fn billboard_event_insert_sql(ruby: &Ruby, args: RArray) -> Value {
     use forem_core::metal::{
         ActiveRecordIntCast, BillboardEventInsert, BillboardEventInsertOutcome,
@@ -2328,10 +2342,10 @@ fn billboard_event_insert_sql(ruby: &Ruby, args: RArray) -> Value {
         },
     };
 
-    let Some(geolocation) = extract_optional_utf8_string(items[5]) else {
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, items[5]) else {
         return ruby.qnil().as_value();
     };
-    let Some(user_agent) = extract_optional_utf8_string(items[6]) else {
+    let Some(user_agent) = extract_optional_header_utf8_string(ruby, items[6]) else {
         return ruby.qnil().as_value();
     };
 
@@ -2405,6 +2419,186 @@ fn valid_uuid(ruby: &Ruby, value: RString) -> Option<bool> {
 
 fn feed_events_advisory_lock_key(user_id: i64) -> i64 {
     forem_core::metal::feed_events_advisory_lock_key(user_id)
+}
+
+fn valid_request_origin(
+    ruby: &Ruby,
+    referer: Value,
+    origin: Value,
+    base_url: Value,
+    request_host: Value,
+    request_port: Value,
+) -> Value {
+    use forem_core::metal::OriginValidation;
+
+    let extract_ascii_bytes = |v: Value| -> Result<Option<Vec<u8>>, ()> {
+        if v.is_nil() {
+            return Ok(None);
+        }
+        let s = RString::from_value(v).ok_or(())?;
+        if !is_ascii_compatible_host(ruby, s) {
+            return Err(());
+        }
+        // SAFETY: Copy out short header bytes so no borrow spans across Ruby calls.
+        Ok(Some(unsafe { s.as_slice().to_vec() }))
+    };
+
+    let ref_bytes = match extract_ascii_bytes(referer) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let orig_bytes = match extract_ascii_bytes(origin) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let base_bytes = match extract_ascii_bytes(base_url) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let host_bytes = match extract_ascii_bytes(request_host) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let Some(port_val) = extract_optional_i64(request_port) else {
+        return ruby.qnil().as_value();
+    };
+
+    match forem_core::metal::valid_request_origin(
+        ref_bytes.as_deref(),
+        orig_bytes.as_deref(),
+        base_bytes.as_deref(),
+        host_bytes.as_deref(),
+        port_val,
+    ) {
+        Some(OriginValidation::Valid) => ruby.qtrue().as_value(),
+        Some(OriginValidation::Invalid) => ruby.qfalse().as_value(),
+        Some(OriginValidation::NullOrigin) => ruby.to_symbol("null_origin").as_value(),
+        None => ruby.qnil().as_value(),
+    }
+}
+
+fn extract_referrer_domain_and_path(ruby: &Ruby, referrer: RString) -> Value {
+    if !is_ascii_compatible_host(ruby, referrer) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: `referrer` is not mutated during `extract_referrer_domain_and_path`.
+    let outcome =
+        unsafe { forem_core::metal::extract_referrer_domain_and_path(referrer.as_slice()) };
+    match outcome {
+        Some((domain, path)) => {
+            let arr = ruby.ary_new_capa(2);
+            let dom_val = match domain {
+                Some(d) => ruby.str_new(&d).as_value(),
+                None => ruby.qnil().as_value(),
+            };
+            let _ = arr.push(dom_val);
+            let _ = arr.push(ruby.str_new(&path));
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
+}
+
+fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> Value {
+    use forem_core::metal::MetalTelemetryRoute;
+
+    if !is_ascii_compatible_host(ruby, method) || !is_ascii_compatible_host(ruby, path) {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: Copy result before allocating Ruby symbols/strings.
+    let matched = unsafe {
+        forem_core::metal::match_metal_telemetry_route(method.as_slice(), path.as_slice()).map(
+            |route| match route {
+                MetalTelemetryRoute::BillboardUpdate(id) => (0u8, Some(id.to_owned())),
+                MetalTelemetryRoute::BillboardCreate => (1u8, None),
+                MetalTelemetryRoute::PageViewUpdate(id) => (2u8, Some(id.to_owned())),
+                MetalTelemetryRoute::PageViewCreate => (3u8, None),
+            },
+        )
+    };
+    match matched {
+        Some((kind, id_opt)) => {
+            let sym_name = match kind {
+                0 => "billboard_update",
+                1 => "billboard_create",
+                2 => "page_view_update",
+                _ => "page_view_create",
+            };
+            let arr = ruby.ary_new_capa(2);
+            let _ = arr.push(ruby.to_symbol(sym_name));
+            match id_opt {
+                Some(id) => {
+                    let _ = arr.push(ruby.str_new(&id));
+                }
+                None => {
+                    let _ = arr.push(ruby.qnil());
+                }
+            }
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn billboard_event_create_from_json_sql(
+    ruby: &Ruby,
+    json_body: RString,
+    user_id_val: Value,
+    geolocation_val: Value,
+    header_ua_val: Value,
+    is_embed: bool,
+    now_sec: i64,
+    now_usec: u32,
+) -> Value {
+    use forem_core::metal::BillboardJsonCreateOutcome;
+
+    if !is_ascii_compatible_host(ruby, json_body) {
+        return ruby.qnil().as_value();
+    }
+    let Some(user_id) = extract_optional_i64(user_id_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(geolocation) = extract_optional_header_utf8_string(ruby, geolocation_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(header_ua) = extract_optional_header_utf8_string(ruby, header_ua_val) else {
+        return ruby.qnil().as_value();
+    };
+
+    // SAFETY: `json_body` is not mutated during `billboard_event_create_from_json_sql`.
+    let outcome = unsafe {
+        forem_core::metal::billboard_event_create_from_json_sql(
+            json_body.as_slice(),
+            user_id,
+            geolocation.as_deref(),
+            header_ua.as_deref(),
+            is_embed,
+            now_sec,
+            now_usec,
+        )
+    };
+
+    match outcome {
+        Some(BillboardJsonCreateOutcome::BlankId) => ruby.to_symbol("blank_id").as_value(),
+        Some(BillboardJsonCreateOutcome::Parsed {
+            sql,
+            raw_billboard_id,
+        }) => {
+            let arr = ruby.ary_new_capa(2);
+            match sql {
+                Some(s) => {
+                    let _ = arr.push(ruby.str_new(&s));
+                }
+                None => {
+                    let _ = arr.push(ruby.to_symbol("invalid"));
+                }
+            }
+            let _ = arr.push(ruby.str_new(&raw_billboard_id));
+            arr.as_value()
+        }
+        None => ruby.qnil().as_value(),
+    }
 }
 
 #[magnus::init]
@@ -2657,6 +2851,20 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "feed_events_advisory_lock_key",
         function!(feed_events_advisory_lock_key, 1),
+    )?;
+    native_mod
+        .define_singleton_method("valid_request_origin", function!(valid_request_origin, 5))?;
+    native_mod.define_singleton_method(
+        "extract_referrer_domain_and_path",
+        function!(extract_referrer_domain_and_path, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "match_metal_telemetry_route",
+        function!(match_metal_telemetry_route, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "billboard_event_create_from_json_sql",
+        function!(billboard_event_create_from_json_sql, 7),
     )?;
     Ok(())
 }

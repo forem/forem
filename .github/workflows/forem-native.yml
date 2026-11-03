@@ -8,7 +8,10 @@ on:
       - "gems/forem_native/**"
       - "app/controllers/application_metal_controller.rb"
       - "app/controllers/billboard_events_controller.rb"
+      - "app/controllers/concerns/valid_request.rb"
+      - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/models/billboard_event.rb"
+      - "app/models/page_view.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
       - "app/services/articles/feeds/custom.rb"
@@ -92,5 +95,8 @@ jobs:
             raise "Unexpected valid_uuid!" unless ForemNative.valid_uuid("550e8400-e29b-41d4-a716-446655440000") == true
             raise "Unexpected origin_in_comma_list!" unless ForemNative.origin_in_comma_list("https://a.com", "https://a.com, https://b.com") == true
             raise "Unexpected feed_events_advisory_lock_key!" unless ForemNative.feed_events_advisory_lock_key(42).is_a?(Integer)
+            raise "Unexpected valid_request_origin!" unless ForemNative.valid_request_origin("https://dev.to/foo", "https://dev.to", "https://dev.to", "dev.to", 443) == true
+            raise "Unexpected extract_referrer_domain_and_path!" unless ForemNative.extract_referrer_domain_and_path("https://dev.to/foo") == ["dev.to", "/foo"]
+            raise "Unexpected match_metal_telemetry_route!" unless ForemNative.match_metal_telemetry_route("PATCH", "/bb_tabulations/42") == [:billboard_update, "42"]
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '

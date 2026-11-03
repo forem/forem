@@ -1059,6 +1059,708 @@ pub fn feed_events_advisory_lock_key(user_id: i64) -> i64 {
     ])
 }
 
+/// Outcome of `ValidRequest#valid_request_origin?` fast-path evaluation.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OriginValidation {
+    Valid,
+    Invalid,
+    NullOrigin,
+}
+
+#[inline]
+fn is_valid_rfc3986_tail_char(b: u8) -> bool {
+    matches!(
+        b,
+        b'A'..=b'Z'
+            | b'a'..=b'z'
+            | b'0'..=b'9'
+            | b'-'
+            | b'.'
+            | b'_'
+            | b'~'
+            | b'!'
+            | b'$'
+            | b'&'
+            | b'\''
+            | b'('
+            | b')'
+            | b'*'
+            | b'+'
+            | b','
+            | b';'
+            | b'='
+            | b':'
+            | b'@'
+            | b'/'
+            | b'?'
+            | b'#'
+    )
+}
+
+#[inline]
+fn validate_rfc3986_tail(tail: &[u8]) -> bool {
+    let mut i = 0usize;
+    while i < tail.len() {
+        let b = tail[i];
+        if b == b'%' {
+            if i + 2 >= tail.len()
+                || !tail[i + 1].is_ascii_hexdigit()
+                || !tail[i + 2].is_ascii_hexdigit()
+            {
+                return false;
+            }
+            i += 3;
+        } else if is_valid_rfc3986_tail_char(b) {
+            i += 1;
+        } else {
+            return false;
+        }
+    }
+    true
+}
+
+#[inline]
+fn eq_replacing_https_with_http(a: &[u8], b: &[u8]) -> bool {
+    let mut ia = 0usize;
+    let mut ib = 0usize;
+    while ia < a.len() && ib < b.len() {
+        let ba = a[ia];
+        let bb = b[ib];
+        if ba != bb {
+            return false;
+        }
+        let a_https = ia + 5 <= a.len() && &a[ia..ia + 5] == b"https";
+        let b_https = ib + 5 <= b.len() && &b[ib..ib + 5] == b"https";
+        if a_https || b_https {
+            let a_http = a_https || (ia + 4 <= a.len() && &a[ia..ia + 4] == b"http");
+            let b_http = b_https || (ib + 4 <= b.len() && &b[ib..ib + 4] == b"http");
+            if !a_http || !b_http {
+                return false;
+            }
+            ia += if a_https { 5 } else { 4 };
+            ib += if b_https { 5 } else { 4 };
+        } else {
+            ia += 1;
+            ib += 1;
+        }
+    }
+    ia == a.len() && ib == b.len()
+}
+
+/// Evaluates `ValidRequest#valid_request_origin?` without allocating `URI::HTTP` objects or
+/// running `String#gsub` on the heap.
+///
+/// Returns `None` if `referer` is a non-standard URI that should fall back to Ruby's `URI.parse`.
+pub fn valid_request_origin(
+    referer: Option<&[u8]>,
+    origin: Option<&[u8]>,
+    base_url: Option<&[u8]>,
+    request_host: Option<&[u8]>,
+    request_port: Option<i64>,
+) -> Option<OriginValidation> {
+    if let Some(ref_bytes) = referer {
+        if ref_bytes.iter().any(|&b| b >= 0x80) {
+            return None;
+        }
+        let is_blank = ref_bytes.iter().all(|&b| is_ruby_strip_ascii_ws(b));
+        if !is_blank {
+            let req_host = request_host?;
+            let req_port = request_port?;
+
+            let (default_port, rest) =
+                if ref_bytes.len() >= 8 && ref_bytes[..8].eq_ignore_ascii_case(b"https://") {
+                    (443i64, &ref_bytes[8..])
+                } else if ref_bytes.len() >= 7 && ref_bytes[..7].eq_ignore_ascii_case(b"http://") {
+                    (80i64, &ref_bytes[7..])
+                } else {
+                    return None;
+                };
+
+            let auth_end = rest
+                .iter()
+                .position(|&b| b == b'/' || b == b'?' || b == b'#')
+                .unwrap_or(rest.len());
+            let authority = &rest[..auth_end];
+            let tail = &rest[auth_end..];
+            if authority.is_empty() || !validate_rfc3986_tail(tail) {
+                return None;
+            }
+
+            let (host_part, uri_port) = match authority.iter().position(|&b| b == b':') {
+                Some(colon_pos) => {
+                    let h = &authority[..colon_pos];
+                    let p = &authority[colon_pos + 1..];
+                    if p.contains(&b':') {
+                        return None;
+                    }
+                    if p.is_empty() {
+                        (h, default_port)
+                    } else {
+                        if p.len() > 5 || !p.iter().all(|b| b.is_ascii_digit()) {
+                            return None;
+                        }
+                        let mut port_val = 0i64;
+                        for &d in p {
+                            port_val = port_val * 10 + (d - b'0') as i64;
+                        }
+                        (h, port_val)
+                    }
+                }
+                None => (authority, default_port),
+            };
+
+            if host_part.is_empty()
+                || !host_part
+                    .iter()
+                    .all(|&b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+            {
+                return None;
+            }
+
+            return if host_part == req_host && uri_port == req_port {
+                Some(OriginValidation::Valid)
+            } else {
+                Some(OriginValidation::Invalid)
+            };
+        }
+    }
+
+    match origin {
+        None => Some(OriginValidation::Valid),
+        Some(b"null") => Some(OriginValidation::NullOrigin),
+        Some(orig_bytes) => {
+            let base_bytes = base_url?;
+            if eq_replacing_https_with_http(orig_bytes, base_bytes) {
+                Some(OriginValidation::Valid)
+            } else {
+                Some(OriginValidation::Invalid)
+            }
+        }
+    }
+}
+
+/// Extracts `(domain, path)` from a `PageView#referrer` string matching
+/// `parsed_url = Addressable::URI.parse(referrer); [parsed_url.domain, parsed_url.path]`.
+///
+/// Returns `None` for non-standard/complex URIs so the caller falls back to `Addressable::URI.parse`.
+pub fn extract_referrer_domain_and_path(referrer: &[u8]) -> Option<(Option<String>, String)> {
+    if referrer.is_empty() {
+        return Some((None, String::new()));
+    }
+    if referrer
+        .iter()
+        .all(|&b| b.is_ascii_alphanumeric() || b == b'_' || b == b'-')
+    {
+        let s = std::str::from_utf8(referrer).ok()?;
+        return Some((None, s.to_owned()));
+    }
+
+    let rest = if referrer.starts_with(b"https://") {
+        &referrer[8..]
+    } else if referrer.starts_with(b"http://") {
+        &referrer[7..]
+    } else {
+        return None;
+    };
+
+    let auth_end = rest
+        .iter()
+        .position(|&b| b == b'/' || b == b'?' || b == b'#')
+        .unwrap_or(rest.len());
+    let authority = &rest[..auth_end];
+    if authority.is_empty() {
+        return None;
+    }
+
+    let host_part = match authority.iter().position(|&b| b == b':') {
+        Some(colon_pos) => {
+            let h = &authority[..colon_pos];
+            let p = &authority[colon_pos + 1..];
+            if p.len() > 5 || !p.iter().all(|b| b.is_ascii_digit()) {
+                return None;
+            }
+            h
+        }
+        None => authority,
+    };
+
+    if host_part.is_empty()
+        || !host_part
+            .iter()
+            .all(|&b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+    {
+        return None;
+    }
+
+    let tail = &rest[auth_end..];
+    let path_bytes = if tail.starts_with(b"/") {
+        let path_end = tail
+            .iter()
+            .position(|&b| b == b'?' || b == b'#')
+            .unwrap_or(tail.len());
+        let p = &tail[..path_end];
+        // Defer dot-segments or percent-encoding or backslashes to Addressable::URI.
+        if p.iter()
+            .any(|&b| b <= 0x20 || b >= 0x7F || b == b'%' || b == b'\\')
+            || p.windows(2).any(|w| w == b"//")
+            || p.windows(3).any(|w| w == b"/./" || w == b"/..")
+            || p.ends_with(b"/.")
+            || p.ends_with(b"/..")
+        {
+            return None;
+        }
+        p
+    } else {
+        b""
+    };
+
+    let domain = if !host_part.contains(&b'.') {
+        None
+    } else {
+        match crate::url::public_suffix_domain_ignore_private(host_part)? {
+            Ok(d) => Some(d.into_owned()),
+            Err(()) => return None,
+        }
+    };
+    let path_str = std::str::from_utf8(path_bytes).ok()?.to_owned();
+    Some((domain, path_str))
+}
+
+/// Fast-path route classification for `Middlewares::MetalTelemetryFastPath`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MetalTelemetryRoute<'a> {
+    BillboardUpdate(&'a str),
+    BillboardCreate,
+    PageViewUpdate(&'a str),
+    PageViewCreate,
+}
+
+#[inline]
+fn extract_single_id_segment(rest: &[u8]) -> Option<&str> {
+    if rest.is_empty() || rest.contains(&b'/') || rest.contains(&b'.') {
+        return None;
+    }
+    std::str::from_utf8(rest).ok()
+}
+
+/// Classifies `(REQUEST_METHOD, PATH_INFO)` for `Middlewares::MetalTelemetryFastPath`.
+#[inline]
+pub fn match_metal_telemetry_route<'a>(
+    method: &[u8],
+    path: &'a [u8],
+) -> Option<MetalTelemetryRoute<'a>> {
+    let norm_path = if path.len() > 1 {
+        path.strip_suffix(b"/").unwrap_or(path)
+    } else {
+        path
+    };
+    match method {
+        b"PATCH" => {
+            if let Some(rest) = norm_path.strip_prefix(b"/bb_tabulations/") {
+                return extract_single_id_segment(rest).map(MetalTelemetryRoute::BillboardUpdate);
+            }
+            if let Some(rest) = norm_path.strip_prefix(b"/page_views/") {
+                return extract_single_id_segment(rest).map(MetalTelemetryRoute::PageViewUpdate);
+            }
+            None
+        }
+        b"PUT" => {
+            if let Some(rest) = norm_path.strip_prefix(b"/page_views/") {
+                return extract_single_id_segment(rest).map(MetalTelemetryRoute::PageViewUpdate);
+            }
+            None
+        }
+        b"POST" => match norm_path {
+            b"/bb_tabulations" | b"/billboard_events" | b"/display_ad_events" => {
+                Some(MetalTelemetryRoute::BillboardCreate)
+            }
+            b"/page_views" => Some(MetalTelemetryRoute::PageViewCreate),
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
+/// Outcome of parsing a JSON body and building the `BillboardEvent` `INSERT` SQL statement.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BillboardJsonCreateOutcome {
+    BlankId,
+    Parsed {
+        sql: Option<String>,
+        raw_billboard_id: String,
+    },
+}
+
+struct JsonScanner<'a> {
+    bytes: &'a [u8],
+    pos: usize,
+}
+
+impl<'a> JsonScanner<'a> {
+    #[inline]
+    fn new(bytes: &'a [u8]) -> Self {
+        Self { bytes, pos: 0 }
+    }
+
+    #[inline]
+    fn skip_ws(&mut self) {
+        while self.pos < self.bytes.len() {
+            match self.bytes[self.pos] {
+                b' ' | b'\t' | b'\r' | b'\n' => self.pos += 1,
+                _ => break,
+            }
+        }
+    }
+
+    #[inline]
+    fn peek(&self) -> Option<u8> {
+        self.bytes.get(self.pos).copied()
+    }
+
+    #[inline]
+    fn consume_byte(&mut self, expected: u8) -> bool {
+        self.skip_ws();
+        if self.peek() == Some(expected) {
+            self.pos += 1;
+            true
+        } else {
+            false
+        }
+    }
+
+    fn parse_string(&mut self) -> Option<String> {
+        self.skip_ws();
+        if self.peek() != Some(b'"') {
+            return None;
+        }
+        self.pos += 1;
+        let start = self.pos;
+        let mut has_escape = false;
+        while self.pos < self.bytes.len() {
+            let b = self.bytes[self.pos];
+            if b == b'"' {
+                let raw = &self.bytes[start..self.pos];
+                self.pos += 1;
+                if !has_escape {
+                    return std::str::from_utf8(raw).ok().map(str::to_owned);
+                }
+                return Self::unescape_simple(raw);
+            }
+            if b == b'\\' {
+                has_escape = true;
+                self.pos += 1;
+                if self.pos >= self.bytes.len() {
+                    return None;
+                }
+            } else if b < 0x20 {
+                return None;
+            }
+            self.pos += 1;
+        }
+        None
+    }
+
+    fn unescape_simple(raw: &[u8]) -> Option<String> {
+        let mut out = Vec::with_capacity(raw.len());
+        let mut i = 0usize;
+        while i < raw.len() {
+            let b = raw[i];
+            if b == b'\\' {
+                i += 1;
+                if i >= raw.len() {
+                    return None;
+                }
+                match raw[i] {
+                    b'"' => out.push(b'"'),
+                    b'\\' => out.push(b'\\'),
+                    b'/' => out.push(b'/'),
+                    b'n' => out.push(b'\n'),
+                    b'r' => out.push(b'\r'),
+                    b't' => out.push(b'\t'),
+                    _ => return None,
+                }
+            } else {
+                out.push(b);
+            }
+            i += 1;
+        }
+        String::from_utf8(out).ok()
+    }
+
+    /// Parses a JSON scalar value (`"..."`, integer, `null`, `true`, `false`) as an optional string.
+    /// Returns `None` (aborting fast-path) if the value is an array, object, float, or malformed.
+    fn parse_scalar_as_string(&mut self) -> Option<Option<String>> {
+        self.skip_ws();
+        match self.peek()? {
+            b'"' => self.parse_string().map(Some),
+            b'n' => {
+                if self.bytes[self.pos..].starts_with(b"null") {
+                    self.pos += 4;
+                    Some(None)
+                } else {
+                    None
+                }
+            }
+            b't' => {
+                if self.bytes[self.pos..].starts_with(b"true") {
+                    self.pos += 4;
+                    Some(Some("true".to_owned()))
+                } else {
+                    None
+                }
+            }
+            b'f' => {
+                if self.bytes[self.pos..].starts_with(b"false") {
+                    self.pos += 5;
+                    Some(Some("false".to_owned()))
+                } else {
+                    None
+                }
+            }
+            b'-' | b'0'..=b'9' => {
+                let start = self.pos;
+                if self.bytes[self.pos] == b'-' {
+                    self.pos += 1;
+                }
+                let digit_start = self.pos;
+                while self.pos < self.bytes.len() && self.bytes[self.pos].is_ascii_digit() {
+                    self.pos += 1;
+                }
+                if self.pos == digit_start {
+                    return None;
+                }
+                // Defer floats/exponents to Ruby JSON parser.
+                if matches!(self.peek(), Some(b'.' | b'e' | b'E')) {
+                    return None;
+                }
+                let s = std::str::from_utf8(&self.bytes[start..self.pos]).ok()?;
+                Some(Some(s.to_owned()))
+            }
+            _ => None,
+        }
+    }
+}
+
+#[derive(Default)]
+struct RawEventFields {
+    billboard_id: Option<String>,
+    display_ad_id: Option<String>,
+    context_type: Option<String>,
+    category: Option<String>,
+    article_id: Option<String>,
+    user_agent: Option<String>,
+}
+
+fn parse_inner_event_object(scanner: &mut JsonScanner<'_>) -> Option<RawEventFields> {
+    if !scanner.consume_byte(b'{') {
+        return None;
+    }
+    let mut fields = RawEventFields::default();
+    if scanner.consume_byte(b'}') {
+        return Some(fields);
+    }
+    loop {
+        let key = scanner.parse_string()?;
+        if !scanner.consume_byte(b':') {
+            return None;
+        }
+        let val = scanner.parse_scalar_as_string()?;
+        match key.as_str() {
+            "billboard_id" => fields.billboard_id = val,
+            "display_ad_id" => fields.display_ad_id = val,
+            "context_type" => fields.context_type = val,
+            "category" => fields.category = val,
+            "article_id" => fields.article_id = val,
+            "user_agent" => fields.user_agent = val,
+            _ => {}
+        }
+        if scanner.consume_byte(b',') {
+            continue;
+        }
+        if scanner.consume_byte(b'}') {
+            break;
+        }
+        return None;
+    }
+    Some(fields)
+}
+
+#[inline]
+fn non_blank_str(opt: Option<&str>) -> Option<&str> {
+    let s = opt?;
+    if s.bytes().all(is_ruby_strip_ascii_ws) {
+        None
+    } else {
+        Some(s)
+    }
+}
+
+/// Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
+/// in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
+pub fn billboard_event_create_from_json_sql(
+    json_body: &[u8],
+    user_id: Option<i64>,
+    geolocation: Option<&str>,
+    header_user_agent: Option<&str>,
+    is_embed: bool,
+    now_sec: i64,
+    now_usec: u32,
+) -> Option<BillboardJsonCreateOutcome> {
+    let mut scanner = JsonScanner::new(json_body);
+    if !scanner.consume_byte(b'{') {
+        return None;
+    }
+
+    let mut billboard_event: Option<RawEventFields> = None;
+    let mut display_ad_event: Option<RawEventFields> = None;
+    let mut top_article_id: Option<String> = None;
+    let mut top_user_agent: Option<String> = None;
+
+    if !scanner.consume_byte(b'}') {
+        loop {
+            let key = scanner.parse_string()?;
+            if !scanner.consume_byte(b':') {
+                return None;
+            }
+            match key.as_str() {
+                "billboard_event" => {
+                    scanner.skip_ws();
+                    if scanner.peek() == Some(b'{') {
+                        billboard_event = Some(parse_inner_event_object(&mut scanner)?);
+                    } else if scanner.parse_scalar_as_string()?.is_none() {
+                        billboard_event = None;
+                    } else {
+                        return None;
+                    }
+                }
+                "display_ad_event" => {
+                    scanner.skip_ws();
+                    if scanner.peek() == Some(b'{') {
+                        display_ad_event = Some(parse_inner_event_object(&mut scanner)?);
+                    } else if scanner.parse_scalar_as_string()?.is_none() {
+                        display_ad_event = None;
+                    } else {
+                        return None;
+                    }
+                }
+                "article_id" => {
+                    top_article_id = scanner.parse_scalar_as_string()?;
+                }
+                "user_agent" => {
+                    top_user_agent = scanner.parse_scalar_as_string()?;
+                }
+                _ => {
+                    scanner.parse_scalar_as_string()?;
+                }
+            }
+            if scanner.consume_byte(b',') {
+                continue;
+            }
+            if scanner.consume_byte(b'}') {
+                break;
+            }
+            return None;
+        }
+    }
+    scanner.skip_ws();
+    if scanner.pos != scanner.bytes.len() {
+        return None;
+    }
+
+    let ev = billboard_event.or(display_ad_event).unwrap_or_default();
+    let raw_billboard_id = ev.billboard_id.as_deref().or(ev.display_ad_id.as_deref());
+
+    let raw_id_str = match non_blank_str(raw_billboard_id) {
+        Some(s) => s,
+        None => return Some(BillboardJsonCreateOutcome::BlankId),
+    };
+
+    let display_ad_id = match cast_active_record_bigint_bytes(raw_id_str.as_bytes()) {
+        ActiveRecordIntCast::Value(n) => n,
+        ActiveRecordIntCast::Null => {
+            return Some(BillboardJsonCreateOutcome::Parsed {
+                sql: None,
+                raw_billboard_id: raw_id_str.to_owned(),
+            });
+        }
+        ActiveRecordIntCast::DeferToRuby => return None,
+    };
+
+    let effective_article_str = if non_blank_str(top_article_id.as_deref()).is_some() {
+        top_article_id.as_deref()
+    } else {
+        ev.article_id.as_deref()
+    };
+
+    let article_id = match effective_article_str {
+        None => None,
+        Some(s) => match cast_active_record_bigint_bytes(s.as_bytes()) {
+            ActiveRecordIntCast::Value(n) => match i32::try_from(n) {
+                Ok(v) => Some(v),
+                Err(_) => return None,
+            },
+            ActiveRecordIntCast::Null => None,
+            ActiveRecordIntCast::DeferToRuby => return None,
+        },
+    };
+
+    let effective_context_type = if is_embed {
+        "embed"
+    } else {
+        match ev.context_type.as_deref() {
+            Some(c) => c,
+            None => {
+                return Some(BillboardJsonCreateOutcome::Parsed {
+                    sql: None,
+                    raw_billboard_id: raw_id_str.to_owned(),
+                });
+            }
+        }
+    };
+
+    let category = match ev.category.as_deref() {
+        Some(c) => c,
+        None => {
+            return Some(BillboardJsonCreateOutcome::Parsed {
+                sql: None,
+                raw_billboard_id: raw_id_str.to_owned(),
+            });
+        }
+    };
+
+    let effective_user_id = if is_embed { None } else { user_id };
+    let effective_user_agent = non_blank_str(ev.user_agent.as_deref())
+        .or_else(|| non_blank_str(top_user_agent.as_deref()))
+        .or(header_user_agent);
+
+    let insert_outcome = billboard_event_insert_sql(&BillboardEventInsert {
+        display_ad_id,
+        category,
+        context_type: effective_context_type,
+        user_id: effective_user_id,
+        article_id,
+        geolocation,
+        user_agent: effective_user_agent,
+        counts_for: 1,
+        seconds_visible: 10,
+        now_sec,
+        now_usec,
+        verify_billboard_exists: true,
+    });
+
+    match insert_outcome {
+        BillboardEventInsertOutcome::Sql(sql) => Some(BillboardJsonCreateOutcome::Parsed {
+            sql: Some(sql),
+            raw_billboard_id: raw_id_str.to_owned(),
+        }),
+        BillboardEventInsertOutcome::Invalid => Some(BillboardJsonCreateOutcome::Parsed {
+            sql: None,
+            raw_billboard_id: raw_id_str.to_owned(),
+        }),
+        BillboardEventInsertOutcome::DeferToRuby => None,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1214,5 +1916,153 @@ mod tests {
             b"https://evil.example.com",
             b"https://embed.example.com, https://other.example.com"
         ));
+    }
+
+    #[test]
+    fn test_valid_request_origin() {
+        assert_eq!(
+            valid_request_origin(
+                Some(b"https://dev.to/ben/some-post"),
+                None,
+                Some(b"http://dev.to"),
+                Some(b"dev.to"),
+                Some(443)
+            ),
+            Some(OriginValidation::Valid)
+        );
+        assert_eq!(
+            valid_request_origin(
+                Some(b"https://evil.com/phish"),
+                None,
+                Some(b"http://dev.to"),
+                Some(b"dev.to"),
+                Some(443)
+            ),
+            Some(OriginValidation::Invalid)
+        );
+        assert_eq!(
+            valid_request_origin(
+                None,
+                Some(b"null"),
+                Some(b"http://dev.to"),
+                Some(b"dev.to"),
+                Some(80)
+            ),
+            Some(OriginValidation::NullOrigin)
+        );
+        assert_eq!(
+            valid_request_origin(
+                None,
+                Some(b"https://dev.to"),
+                Some(b"http://dev.to"),
+                Some(b"dev.to"),
+                Some(80)
+            ),
+            Some(OriginValidation::Valid)
+        );
+        assert_eq!(
+            valid_request_origin(
+                None,
+                Some(b"https://evil.com"),
+                Some(b"http://dev.to"),
+                Some(b"dev.to"),
+                Some(80)
+            ),
+            Some(OriginValidation::Invalid)
+        );
+    }
+
+    #[test]
+    fn test_extract_referrer_domain_and_path() {
+        assert_eq!(
+            extract_referrer_domain_and_path(b"https://www.google.com/search?q=forem#top"),
+            Some((Some("google.com".to_owned()), "/search".to_owned()))
+        );
+        assert_eq!(
+            extract_referrer_domain_and_path(b"https://www.google.com"),
+            Some((Some("google.com".to_owned()), String::new()))
+        );
+        assert_eq!(
+            extract_referrer_domain_and_path(b"https://someone.github.io/post"),
+            Some((Some("github.io".to_owned()), "/post".to_owned()))
+        );
+        assert_eq!(
+            extract_referrer_domain_and_path(b"https://localhost:3000/articles"),
+            Some((None, "/articles".to_owned()))
+        );
+        assert_eq!(
+            extract_referrer_domain_and_path(b"test"),
+            Some((None, "test".to_owned()))
+        );
+    }
+
+    #[test]
+    fn test_match_metal_telemetry_route() {
+        assert_eq!(
+            match_metal_telemetry_route(b"PATCH", b"/bb_tabulations/12345"),
+            Some(MetalTelemetryRoute::BillboardUpdate("12345"))
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/bb_tabulations"),
+            Some(MetalTelemetryRoute::BillboardCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/billboard_events"),
+            Some(MetalTelemetryRoute::BillboardCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/display_ad_events"),
+            Some(MetalTelemetryRoute::BillboardCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"PUT", b"/page_views/999"),
+            Some(MetalTelemetryRoute::PageViewUpdate("999"))
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/page_views"),
+            Some(MetalTelemetryRoute::PageViewCreate)
+        );
+        assert_eq!(match_metal_telemetry_route(b"GET", b"/articles"), None);
+    }
+
+    #[test]
+    fn test_billboard_event_create_from_json_sql() {
+        let json = br#"{"billboard_event":{"billboard_id":"555","context_type":"home","category":"impression","article_id":"42","user_agent":"Mozilla/5.0"}}"#;
+        let res = billboard_event_create_from_json_sql(
+            json,
+            Some(77),
+            Some("US-NY"),
+            Some("FallbackUA"),
+            false,
+            1_793_727_000,
+            123_456,
+        );
+        match res {
+            Some(BillboardJsonCreateOutcome::Parsed {
+                sql: Some(sql),
+                raw_billboard_id,
+            }) => {
+                assert_eq!(raw_billboard_id, "555");
+                assert!(sql.contains("SELECT 42, 'impression', 'home', 1"));
+                assert!(sql.ends_with(
+                    "WHERE EXISTS (SELECT 1 FROM \"display_ads\" WHERE \"display_ads\".\"id\" = 555) RETURNING \"id\""
+                ));
+            }
+            other => panic!("unexpected outcome: {other:?}"),
+        }
+
+        let blank_json = br#"{"billboard_event":{"billboard_id":"","context_type":"home","category":"impression"}}"#;
+        assert_eq!(
+            billboard_event_create_from_json_sql(
+                blank_json,
+                Some(77),
+                None,
+                None,
+                false,
+                1_793_727_000,
+                0
+            ),
+            Some(BillboardJsonCreateOutcome::BlankId)
+        );
     }
 }

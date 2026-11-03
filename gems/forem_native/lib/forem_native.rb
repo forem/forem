@@ -1007,6 +1007,47 @@ module ForemNative
       Native.feed_events_advisory_lock_key(user_id)
     end
 
+    # Evaluates `ValidRequest#valid_request_origin?` without allocating `URI::HTTP` objects or
+    # running `String#gsub` on the heap. Returns `true`, `false`, `:null_origin`, or `nil` when
+    # the caller should fall back to `URI.parse`.
+    def valid_request_origin(referer, origin, base_url, request_host, request_port)
+      return unless Native.respond_to?(:valid_request_origin)
+
+      Native.valid_request_origin(referer, origin, base_url, request_host, request_port)
+    end
+
+    # Extracts `[domain, path]` from a `PageView#referrer` string matching
+    # `parsed_url = Addressable::URI.parse(referrer); [parsed_url.domain, parsed_url.path]`.
+    def extract_referrer_domain_and_path(referrer)
+      return unless Native.respond_to?(:extract_referrer_domain_and_path)
+      return unless referrer.instance_of?(String)
+
+      Native.extract_referrer_domain_and_path(referrer)
+    end
+
+    # Classifies `(method, path)` for `Middlewares::MetalTelemetryFastPath`, returning
+    # `[:billboard_update, id]`, `[:billboard_create, nil]`, `[:page_view_update, id]`,
+    # `[:page_view_create, nil]`, or `nil`.
+    def match_metal_telemetry_route(method, path)
+      return unless Native.respond_to?(:match_metal_telemetry_route)
+      return unless method.instance_of?(String) && path.instance_of?(String)
+
+      Native.match_metal_telemetry_route(method, path)
+    end
+
+    # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
+    # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
+    def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)
+      return unless Native.respond_to?(:billboard_event_create_from_json_sql)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        now_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      Native.billboard_event_create_from_json_sql(
+        json_body, user_id, geolocation, header_user_agent, is_embed ? true : false, now_utc.tv_sec, now_utc.usec
+      )
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
