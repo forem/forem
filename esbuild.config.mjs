@@ -80,12 +80,47 @@ function rewriteCrayonsBarrelImports(source, filePath) {
   )
 }
 
+function stripBalancedPropTypes(source) {
+  const propTypesStartRegex = /^[ \t]*[A-Za-z0-9_$]+\.propTypes\s*=\s*\{/gm
+  let result = ''
+  let lastIndex = 0
+  let match
+
+  while ((match = propTypesStartRegex.exec(source)) !== null) {
+    const startIdx = match.index
+    const openBraceIdx = startIdx + match[0].length - 1
+    let depth = 1
+    let cursor = openBraceIdx + 1
+
+    while (cursor < source.length && depth > 0) {
+      const ch = source[cursor]
+      if (ch === '{') {
+        depth += 1
+      } else if (ch === '}') {
+        depth -= 1
+      }
+      cursor += 1
+    }
+
+    if (depth === 0) {
+      while (cursor < source.length && (source[cursor] === ' ' || source[cursor] === '\t')) {
+        cursor += 1
+      }
+      if (source[cursor] === ';') {
+        cursor += 1
+      }
+      result += source.slice(lastIndex, startIdx)
+      lastIndex = cursor
+      propTypesStartRegex.lastIndex = cursor
+    }
+  }
+
+  result += source.slice(lastIndex)
+  return result
+}
+
 function stripProductionPropTypes(source) {
-  let result = source
-    .replace(
-      /^[ \t]*[A-Za-z0-9_$]+\.propTypes\s*=\s*\{[\s\S]*?\n[ \t]*\};?[ \t]*$/gm,
-      '',
-    )
+  let result = stripBalancedPropTypes(source)
     .replace(
       /^[ \t]*[A-Za-z0-9_$]+\.propTypes\s*=\s*[A-Za-z0-9_$.]+;?[ \t]*$/gm,
       '',
@@ -100,11 +135,20 @@ function stripProductionPropTypes(source) {
     '',
   )
   if (!/\bPropTypes\b/.test(withoutPropTypesImport)) {
-    result = withoutPropTypesImport
-      .replace(
-        /^[ \t]*import\s*\{[^}]+\}\s*from\s*['"][^'"]*common-prop-types[^'"]*['"]\s*;?[ \t]*$/gm,
-        '',
-      )
+    result = withoutPropTypesImport.replace(
+      /^[ \t]*import\s*\{([^}]+)\}\s*from\s*['"][^'"]*common-prop-types[^'"]*['"]\s*;?[ \t]*$/gm,
+      (fullImport, specifiers) => {
+        const remainingCode = withoutPropTypesImport.replace(fullImport, '')
+        const importedNames = specifiers
+          .split(',')
+          .map((s) => s.trim().split(/\s+as\s+/).pop().trim())
+          .filter(Boolean)
+        const stillUsed = importedNames.some((name) =>
+          new RegExp(`\\b${name}\\b`).test(remainingCode),
+        )
+        return stillUsed ? fullImport : ''
+      },
+    )
   }
 
   return result
@@ -138,9 +182,7 @@ let ctx = {
     '.png': 'file',
   },
   target: ['es2019'],
-  entryPoints: glob.sync("app/javascript/packs/**/*.*", {
-    ignore: ["**/*.test.*", "**/__tests__/**", "**/initializers/**"],
-  }),
+  entryPoints: glob.sync("app/javascript/packs/**/*.*", { ignore: ["**/*.test.*", "**/__tests__/**"] }),
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   bundle: true,

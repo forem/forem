@@ -47,6 +47,21 @@ describe('locale utility', () => {
     expect(locale('core.greeting', { name: 'Alex' })).toEqual('Hello Alex!');
   });
 
+  it('synchronizes active locale with #i18n-translations data-locale across page swaps', () => {
+    document.body.dataset.locale = 'en';
+    const translationsEl = document.getElementById('i18n-translations');
+    translationsEl.dataset.locale = 'fr';
+    translationsEl.dataset.translations = JSON.stringify({
+      fr: {
+        core: {
+          follow: 'Suivre maintenant',
+        },
+      },
+    });
+
+    expect(locale('core.follow')).toEqual('Suivre maintenant');
+  });
+
   it('returns the standard missing translation notice for unknown keys', () => {
     expect(locale('core.nonexistent_key')).toEqual(
       '[missing "en.core.nonexistent_key" translation]',

@@ -8,7 +8,6 @@ import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
-import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
@@ -26,12 +25,10 @@ Document.prototype.ready = new Promise((resolve) => {
 // pack ran, queued by the stub in layouts/application.html.erb.
 const queuedBillboardPlacementReveals =
   window.Forem?.queuedBillboardPlacementReveals || [];
-const existingCommentTextArea = window.Forem?.CommentTextArea;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   audioInitialized: false,
-  CommentTextArea: existingCommentTextArea,
   preactImport: undefined,
   getPreactImport() {
     if (!this.preactImport) {
@@ -42,7 +39,9 @@ window.Forem = {
   enhancedCommentTextAreaImport: undefined,
   getEnhancedCommentTextAreaImports() {
     if (!this.enhancedCommentTextAreaImport) {
-      this.enhancedCommentTextAreaImport = loadCommentTextAreaBundle();
+      this.enhancedCommentTextAreaImport = import(
+        './CommentTextArea/CommentTextArea'
+      );
     }
     return Promise.all([
       this.enhancedCommentTextAreaImport,

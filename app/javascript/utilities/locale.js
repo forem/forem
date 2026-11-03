@@ -1,6 +1,7 @@
 const DEFAULT_LOCALE = 'en';
 let translations = {};
 let lastRawTranslations = null;
+let payloadLocale = null;
 
 function loadTranslations() {
   const translationsDiv = document.getElementById('i18n-translations');
@@ -9,11 +10,13 @@ function loadTranslations() {
     lastRawTranslations = rawTranslations;
     translations = JSON.parse(rawTranslations);
   }
+  payloadLocale = translationsDiv?.dataset?.locale || null;
 }
 
 loadTranslations();
 
-const initialLocale = document.body?.dataset?.locale || DEFAULT_LOCALE;
+const initialLocale =
+  payloadLocale || document.body?.dataset?.locale || DEFAULT_LOCALE;
 
 function lookupPath(root, pathSegments) {
   let current = root;
@@ -30,7 +33,10 @@ export function locale(term, params = {}) {
   loadTranslations();
 
   const activeLocale =
-    document.body?.dataset?.locale || initialLocale || DEFAULT_LOCALE;
+    payloadLocale ||
+    document.body?.dataset?.locale ||
+    initialLocale ||
+    DEFAULT_LOCALE;
   const pathSegments = String(term).split('.');
 
   let value = lookupPath(translations[activeLocale], pathSegments);

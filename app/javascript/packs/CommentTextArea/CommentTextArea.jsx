@@ -212,8 +212,3 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     </div>
   );
 };
-
-if (typeof window !== 'undefined') {
-  window.Forem = window.Forem || {};
-  window.Forem.CommentTextArea = CommentTextArea;
-}

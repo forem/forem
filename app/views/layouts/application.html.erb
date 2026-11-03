@@ -33,7 +33,6 @@
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
-      <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -171,7 +170,7 @@
     <% end %>
     <%= yield %>
     <div id="runtime-banner-container"></div>
-    <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <div id="i18n-translations" data-locale="<%= I18n.locale %>" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
   </div>
 </div>
 <% unless internal_navigation? %>
