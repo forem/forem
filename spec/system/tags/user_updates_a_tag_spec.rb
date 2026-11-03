@@ -1,81 +1,34 @@
 require "rails_helper"
 
 RSpec.describe "User updates a tag" do
-  let(:super_admin) { create(:user, :super_admin) }
-  let(:tag_moderator) { create(:user) }
+  let(:super_admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
+  let(:tag_moderator) { create(:user, :without_profile, profile_image: nil) }
   let(:bg_color_hex) { "#000000" }
+  let(:tag) { create(:tag) }
+
+  def assert_default_and_preserved_bg_color
+    visit edit_tag_path(tag.name)
+    click_on(I18n.t("views.tags.edit.form.submit"))
+    expect(tag.reload.bg_color_hex).to eq(bg_color_hex)
+
+    tag.update!(bg_color_hex: "#0000ff")
+    visit edit_tag_path(tag.name)
+    click_on(I18n.t("views.tags.edit.form.submit"))
+    expect(tag.reload.bg_color_hex).to eq("#0000ff")
+  end
 
   describe "Update tag as a super_admin" do
-    let(:tag) { create(:tag) }
-
-    context "when no colors have been chosen for the tag" do
-      before do
-        sign_in super_admin
-        visit edit_tag_path(tag.name)
-      end
-
-      it "defaults to black and white upon update", :aggregate_failures do
-        click_button(I18n.t("views.tags.edit.form.submit"))
-
-        tag.reload
-
-        expect(tag.bg_color_hex).to eq(bg_color_hex)
-      end
-    end
-
-    context "when colors have already been chosen for the tag" do
-      let(:tag) { create(:tag, bg_color_hex: "#0000ff") }
-
-      before do
-        sign_in super_admin
-        visit edit_tag_path(tag.name)
-      end
-
-      it "remains the same color it was unless otherwise updated via the color picker", :aggregate_failures do
-        old_bg_color_hex = tag.bg_color_hex
-
-        click_button(I18n.t("views.tags.edit.form.submit"))
-
-        expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
-      end
+    it "defaults unset color to black and preserves an existing color", :aggregate_failures do
+      sign_in super_admin
+      assert_default_and_preserved_bg_color
     end
   end
 
   describe "Update tag as a tag_moderator" do
-    let(:tag) { create(:tag) }
-
-    context "when no colors have been chosen for the tag" do
-      before do
-        tag_moderator.add_role(:tag_moderator, tag)
-        sign_in tag_moderator
-        visit edit_tag_path(tag.name)
-      end
-
-      it "defaults to black and white upon update", :aggregate_failures do
-        click_button(I18n.t("views.tags.edit.form.submit"))
-
-        tag.reload
-
-        expect(tag.bg_color_hex).to eq(bg_color_hex)
-      end
-    end
-
-    context "when colors have already been chosen for the tag" do
-      let(:tag) { create(:tag, bg_color_hex: "#0000ff") }
-
-      before do
-        tag_moderator.add_role(:tag_moderator, tag)
-        sign_in tag_moderator
-        visit edit_tag_path(tag.name)
-      end
-
-      it "remains the same color it was unless otherwise updated via the color picker", :aggregate_failures do
-        old_bg_color_hex = tag.bg_color_hex
-
-        click_button(I18n.t("views.tags.edit.form.submit"))
-
-        expect(tag.reload.bg_color_hex).to eq(old_bg_color_hex)
-      end
+    it "defaults unset color to black and preserves an existing color", :aggregate_failures do
+      tag_moderator.add_role(:tag_moderator, tag)
+      sign_in tag_moderator
+      assert_default_and_preserved_bg_color
     end
   end
 end

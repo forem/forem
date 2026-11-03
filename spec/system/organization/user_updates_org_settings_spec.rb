@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Organization setting page(/settings/organization)", type: :system do
+RSpec.describe "Organization setting page(/settings/organization)" do
   def fill_in_org_form
     fill_in "organization[name]", with: "Organization Name"
     fill_in "organization[slug]", with: "Organization"
@@ -13,8 +13,8 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     fill_in "organization[proof]", with: "Proof"
   end
 
-  let(:user) { create(:user) }
-  let(:user2) { create(:user, username: "newuser") }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+  let(:user2) { create(:user, :without_profile, profile_image: nil, username: "newuser") }
   let(:organization) { create(:organization) }
 
   before do
@@ -33,45 +33,27 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
   it "user creates an organization" do
     visit "/settings/organization"
     fill_in_org_form
-    click_button "Create Organization"
+    click_on "Create Organization"
 
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
-  it "promotes a member to an admin" do
+  it "promotes, revokes, and removes a member and renders the update page on error", :aggregate_failures do
     join_org(user, organization, :admin)
     join_org(user2, organization, :member)
 
     visit "/#{organization.slug}/settings"
-    click_button("Make admin")
-
+    click_on("Make admin")
     expect(page).to have_text("#{user2.name} is now an admin.")
-  end
 
-  it "revokes an admin's privileges" do
-    join_org(user, organization, :admin)
-    join_org(user2, organization, :admin)
-
-    visit "/#{organization.slug}/settings"
-    click_button("Revoke admin status")
+    click_on("Revoke admin status")
     expect(page).to have_text("#{user2.name} is no longer an admin.")
-  end
 
-  it "remove user from organization" do
-    join_org(user, organization, :admin)
-    join_org(user2, organization, :member)
-
-    visit "/#{organization.slug}/settings"
-    click_button("Remove from org")
+    click_on("Remove from org")
     expect(page).to have_text("#{user2.name} is no longer part of your organization.")
-  end
 
-  it "uses the update page when an update error occurs" do
-    join_org(user, organization, :admin)
-
-    visit "/#{organization.slug}/settings"
     fill_in "organization[name]", with: ""
-    click_button("Save page")
+    click_on("Save page")
     expect(page).to have_text("Organization details")
   end
 end

@@ -1,39 +1,34 @@
 require "rails_helper"
 
 RSpec.describe "Admin manages organizations" do
-  let(:admin) { create(:user, :super_admin) }
+  let(:admin) { create(:user, :super_admin, :without_profile, profile_image: nil) }
   let(:organization) { create(:organization) }
 
   before { sign_in admin }
 
   context "when searching for organizations" do
-    it "searches for organizations" do
-      create_list(:organization, 5)
+    it "searches for organizations", :aggregate_failures do
+      other_organization = create(:organization)
       visit admin_organizations_path
 
       fill_in "search", with: organization.name.to_s
       click_on "Search"
 
       expect(page.body).to have_link(organization.name)
+      expect(page.body).to have_no_link(other_organization.name)
     end
   end
 
-  context "when managing credits for a single organization" do
+  context "when viewing and bulk adding users to an organization" do
+    let!(:user1) { create(:user, :without_profile, profile_image: nil, username: "sys_alice") }
+    let!(:user2) { create(:user, :without_profile, profile_image: nil, username: "sys_bob") }
+
     before { visit admin_organization_path(organization) }
 
-    it "does not show the remove form when there are no credits" do
+    it "hides remove credits when none exist and bulk adds members", :aggregate_failures do
       expect(page).to have_button("Add Org Credits")
       expect(page).to have_no_button("Remove Org Credits")
-    end
-  end
 
-  context "when bulk adding users to an organization" do
-    let!(:user1) { create(:user, username: "sys_alice") }
-    let!(:user2) { create(:user, username: "sys_bob") }
-
-    before { visit admin_organization_path(organization) }
-
-    it "adds users to the organization from the admin page", :aggregate_failures do
       fill_in "Usernames", with: "@#{user1.username}, #{user2.username}"
       select "Member", from: "Role"
       click_on "Bulk Add Members"
