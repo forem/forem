@@ -1,0 +1,34 @@
+app/models/feed_config.rb
+  h_f968154a99632d 175-177
+app/models/feed_config_assignment.rb
+  h_f968154a99632d 11-12
+app/models/feed_event.rb
+  h_f968154a99632d 151-153
+app/services/email_digest_article_collector.rb
+  h_f968154a99632d 28,47-48,167-168,172,285,293-296
+app/services/feeds/sticky_config.rb
+  h_f968154a99632d 11-12,15-17,19-20,22-33,45-49
+lib/sidekiq/request_store_middleware.rb
+  h_f968154a99632d 2-4,16-17,23-32
+spec/lib/sidekiq/request_store_middleware_spec.rb
+  h_f968154a99632d 22,32-48
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 678-687
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 306-317
+spec/services/email_digest_article_collector_spec.rb
+  h_f968154a99632d 430-446
+spec/services/feeds/sticky_config_spec.rb
+  h_f968154a99632d 114-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1a65fe67247c7038b8e44c967c6c6dd5203dff88",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
