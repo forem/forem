@@ -236,6 +236,60 @@ RSpec.describe Badges::AwardContributorFromGithub, type: :service do
         expect(described_class.call).to be(false)
         expect(user.badge_achievements.pluck(:badge_id)).to include(dev_contributor_badge.id)
       end
+
+      it "persists the user's PR search as pending" do
+        described_class.call
+
+        expect(Settings::General.github_contributor_pending_pr_search_user_ids).to eq([user.id.to_s])
+      end
+    end
+
+    context "when a PR search left pending by an earlier rate-limited run is retried" do
+      let!(:dev_contributor_badge) { create(:badge, title: "dev-contributor") }
+      let!(:sixteen_x_commit_badge) { create(:badge, title: "16x-commit-club") }
+
+      before do
+        allow(github_client).to receive_messages(commits: [], contributors: [])
+      end
+
+      it "retries the search on the next hourly run despite the existing badge", :aggregate_failures do
+        # Run 1: the user is a recent merged PR author, gets the baseline badge,
+        # then the per-user search exhausts its retries.
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, any_args)
+          .and_return(search_results_struct.new(1, [issue_struct.new(author_struct.new("123456"))]))
+        allow(github_client).to receive(:search_issues)
+          .with(/author:.* is:merged is:pr/, any_args)
+          .and_raise(Github::Errors::TooManyRequests.new("rate limit", response_status: 429))
+
+        expect(described_class.call).to be(false)
+        expect(user.badge_achievements.pluck(:badge_id)).to eq([dev_contributor_badge.id])
+
+        # Run 2: the user is no longer in the scan window and already holds a
+        # badge, but the pending search is retried and awards the higher badge.
+        allow(github_client).to receive(:search_issues)
+          .with(/is:pr is:merged merged:/, any_args)
+          .and_return(search_results_struct.new(0, []))
+        allow(github_client).to receive(:search_issues)
+          .with(/author:.* is:merged is:pr/, any_args)
+          .and_return(search_results_struct.new(20, []))
+
+        expect(described_class.call).to be(true)
+        expect(user.badge_achievements.pluck(:badge_id))
+          .to include(dev_contributor_badge.id, sixteen_x_commit_badge.id)
+        expect(Settings::General.github_contributor_pending_pr_search_user_ids).to be_empty
+      end
+
+      it "drops pending ids that no longer have a GitHub identity" do
+        Settings::General.github_contributor_pending_pr_search_user_ids = "#{user.id},999999999"
+        allow(github_client).to receive(:search_issues)
+          .with(/author:.* is:merged is:pr/, any_args)
+          .and_return(search_results_struct.new(0, []))
+
+        described_class.call
+
+        expect(Settings::General.github_contributor_pending_pr_search_user_ids).to be_empty
+      end
     end
 
     context "when badges exist in the database, and github provider is a symbol" do

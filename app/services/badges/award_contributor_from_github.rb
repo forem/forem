@@ -100,11 +100,15 @@ module Badges
 
       @badge_slugs_with_id = get_badge_slugs_with_id
       @scan_incomplete = false
-      @newly_awarded_user_ids = Set.new
+      @pending_pr_search_user_ids = load_pending_pr_search_user_ids
 
-      REPOSITORIES.each do |repo|
-        award_single_commit_contributors(repo)
-        award_multi_commit_contributors(repo)
+      begin
+        REPOSITORIES.each do |repo|
+          award_single_commit_contributors(repo)
+          award_multi_commit_contributors(repo)
+        end
+      ensure
+        persist_pending_pr_search_user_ids
       end
 
       !@scan_incomplete
@@ -125,7 +129,10 @@ module Badges
         BadgeAchievement
           .where(user_id: i.user_id, badge_id: dev_contributor_badge_id)
           .first_or_create(rewarding_context_message_markdown: msg) do
-            @newly_awarded_user_ids.add(i.user_id)
+            # A badge awarded in this run is not proof that PR counting ran for
+            # this user. Mark the PR search pending (persisted across runs) so it
+            # still happens even if this run stops early on Search API budget.
+            @pending_pr_search_user_ids.add(i.user_id)
           end
       end
     end
@@ -150,7 +157,14 @@ module Badges
       pr_author_uids = merged_pr_author_uids(repo, scan_start, today)
       candidate_uids = contributions_map.keys.to_set | pr_author_uids
 
-      Identity.github.where(uid: candidate_uids.to_a).find_each do |identity|
+      # Users whose PR search is still pending from an earlier run are retried
+      # even if they fall outside this run's candidate window.
+      candidates = Identity.github.where(uid: candidate_uids.to_a)
+      if @pending_pr_search_user_ids.any?
+        candidates = candidates.or(Identity.github.where(user_id: @pending_pr_search_user_ids.to_a))
+      end
+
+      candidates.find_each do |identity|
         process_candidate_identity(repo, identity, contributions_map, pr_author_uids)
       end
 
@@ -200,12 +214,22 @@ module Badges
       # Short-circuit the paced Search API call when it cannot change the outcome:
       # the commit count already clears the top badge threshold, the user already
       # holds every badge we could award, or (on an hourly run) the user already
-      # holds a contributor badge and did not merge a PR in the scan window.
+      # holds a contributor badge, has no pending PR search, and did not merge a
+      # PR in the scan window.
       needs_pr_search = search_pr_count_needed?(
         identity.user_id,
         commits_count,
         recent_pr_author: recent_pr_author,
       )
+
+      # Mark the search pending before awarding the baseline badge, so that if
+      # the search below exhausts its retries (SearchBudgetExhausted) the user is
+      # retried next run instead of being skipped for already holding a badge.
+      if needs_pr_search
+        @pending_pr_search_user_ids.add(identity.user_id)
+      else
+        @pending_pr_search_user_ids.delete(identity.user_id)
+      end
 
       create_badges_for_user(identity.user_id, baseline_count)
       return unless needs_pr_search
@@ -213,13 +237,17 @@ module Badges
       github_user = github_nickname(identity)
       pr_count = github_user ? merged_pr_count(repo, github_user) : 0
       create_badges_for_user(identity.user_id, pr_count) if pr_count > baseline_count
+      # Only reached once the search completed; a budget-exhausted search raises
+      # past this line and leaves the user pending.
+      @pending_pr_search_user_ids.delete(identity.user_id)
     end
 
     # True only when a merged-PR lookup could still award a badge the user does
     # not already have: the commit count falls short of the highest threshold,
     # at least one badge slug remains unawarded for this user, and either this is
     # a full-history backfill, the user authored a merged PR in the current scan
-    # window, or the user has no contributor badges yet.
+    # window, the user's PR search is pending (from this or an earlier run), or
+    # the user has no contributor badges yet.
     def search_pr_count_needed?(user_id, commits_count, recent_pr_author: false)
       return false if commits_count >= MAX_BADGE_THRESHOLD
 
@@ -228,9 +256,26 @@ module Badges
         badge_id: badge_slugs_with_id.values,
       ).pluck(:badge_id)
       return false if awarded_badge_ids.size >= badge_slugs_with_id.size
-      return true if @full_history || recent_pr_author || @newly_awarded_user_ids&.include?(user_id)
+      return true if @full_history || recent_pr_author || @pending_pr_search_user_ids.include?(user_id)
 
       awarded_badge_ids.empty?
+    end
+
+    # Reads the persisted pending set, dropping ids that no longer have a GitHub
+    # identity (they can never be processed, so they would otherwise linger).
+    def load_pending_pr_search_user_ids
+      ids = Array(Settings::General.github_contributor_pending_pr_search_user_ids).map(&:to_i).select(&:positive?)
+      return Set.new if ids.empty?
+
+      Identity.github.where(user_id: ids).distinct.pluck(:user_id).to_set
+    end
+
+    def persist_pending_pr_search_user_ids
+      value = @pending_pr_search_user_ids.to_a.sort.map(&:to_s)
+      current = Array(Settings::General.github_contributor_pending_pr_search_user_ids).map(&:to_s).sort
+      return if value == current
+
+      Settings::General.github_contributor_pending_pr_search_user_ids = value.join(",")
     end
 
     # Collects the uids of users who had a PR merged in the repo between
