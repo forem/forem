@@ -105,6 +105,16 @@
         <%= f.label :language_match_weight, "Language Match Weight", class: "crayons-field__label" %>
         <%= f.number_field :language_match_weight, step: "any", class: "crayons-textfield" %>
       </div>
+      <div class="crayons-field">
+        <%= f.label :country_match_weight, "Country Match Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Boost given when the article's published country matches the current user's country.</p>
+        <%= f.number_field :country_match_weight, step: "any", class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= f.label :region_match_weight, "Region Match Weight", class: "crayons-field__label" %>
+        <p class="fs-xs color-base-60 mb-1">Boost given when the article's published region matches the current user's region.</p>
+        <%= f.number_field :region_match_weight, step: "any", class: "crayons-textfield" %>
+      </div>
     </div>
   </fieldset>
 

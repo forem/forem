@@ -3010,6 +3010,7 @@ RSpec.describe ForemNative do
         tag_pool = %w[ruby rust javascript webdev ai beginners career devops postgres performance]
         label_pool = %w[featured_candidate staff_pick evergreen deep_dive discussion]
         lang_pool = %w[en es fr pt de ja]
+        geo_pool = [nil, "", "US-NY", "US-CA", "CA-ON", "FR", "DE", "JP-13", "GB-ENG", "invalid;drop"]
 
         travel_to(Time.utc(2026, 10, 27, 15, 0, 0)) do
           rec_list = instance_double(RecommendedArticlesList, article_ids: [111, 222, 333])
@@ -3017,6 +3018,7 @@ RSpec.describe ForemNative do
           allow(rec_relation).to receive(:where).and_return(rec_relation)
           allow(RecommendedArticlesList).to receive(:where).and_return(rec_relation)
           native_diversity_hits = 0
+          native_location_hits = 0
 
           1_000.times do |iteration|
             config = FeedConfig.new(
@@ -3049,6 +3051,8 @@ RSpec.describe ForemNative do
               language_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               randomness_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               published_at_diversity_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              country_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
+              region_match_weight: rng.rand < 0.5 ? (rng.rand * 10.0).round(3) : 0.0,
               feed_lookback_hours: rng.rand < 0.5 ? rng.rand(1..300) : 0,
               recent_tag_count_min: 2,
               recent_tag_count_max: 5,
@@ -3095,6 +3099,7 @@ RSpec.describe ForemNative do
               :cached_followed_tag_names,
               :cached_languages,
               :setting,
+              :last_known_geolocation,
             ).new(
               42,
               activity_double,
@@ -3103,11 +3108,13 @@ RSpec.describe ForemNative do
               tags,
               langs,
               setting_double,
+              geo_pool.sample(random: rng),
             )
 
             root_match = rng.rand < 0.6
             RequestStore.store[:subforem_id] = 1
             RequestStore.store[:root_subforem_id] = root_match ? 1 : 2
+            RequestStore.store[:client_geolocation] = geo_pool.sample(random: rng)
             ENV["OPTIMIZED_FEED_TAGS_QUERY"] = rng.rand < 0.5 ? "true" : nil
 
             seed = rng.rand(1..1_000_000)
@@ -3117,6 +3124,8 @@ RSpec.describe ForemNative do
             expected_sql = config.__send__(:legacy_score_sql, user_double)
 
             expect(actual_sql).to eq(expected_sql), "iteration #{iteration}"
+
+            native_location_hits += 1 if actual_sql.include?("articles.region =")
 
             next unless config.published_at_diversity_weight.positive?
 
@@ -3131,8 +3140,9 @@ RSpec.describe ForemNative do
             native_diversity_hits += 1
           end
 
-          # The Rust kernel (not only the legacy fallback) must emit published_at_diversity_weight.
+          # The Rust kernel (not only the legacy fallback) must emit published_at_diversity_weight and location match.
           expect(native_diversity_hits).to be > 100
+          expect(native_location_hits).to be > 100
 
           # Verify out-of-domain float transparently falls back to legacy_score_sql
           extreme_config = FeedConfig.new(feed_success_weight: 1e-7)
@@ -3150,6 +3160,7 @@ RSpec.describe ForemNative do
         ENV.delete("OPTIMIZED_FEED_TAGS_QUERY")
         RequestStore.store.delete(:subforem_id)
         RequestStore.store.delete(:root_subforem_id)
+        RequestStore.store.delete(:client_geolocation)
       end
     end
   end

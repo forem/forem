@@ -289,4 +289,52 @@ RSpec.describe "ArticlesCreate" do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
+  describe "article geolocation region tracking" do
+    it "stores region from Fastly geo headers on non-API article creation" do
+      post "/articles",
+           params: { article: { title: new_title, body_markdown: "Hello from New York", published: true } },
+           headers: { "X-Client-Geo" => "US-NY" }
+
+      expect(response).to have_http_status(:ok)
+      expect(Article.last.region).to eq("US-NY")
+    end
+
+    it "updates region when publishing a web-created draft and preserves it on subsequent edits" do
+      post "/articles",
+           params: { article: { title: new_title, body_markdown: "Draft in CA", published: false } },
+           headers: { "X-Client-Geo" => "US-CA" }
+      article = Article.last
+      expect(article.region).to eq("US-CA")
+
+      put "/articles/#{article.id}",
+          params: { article: { title: new_title, body_markdown: "Published in NY", published: true } },
+          headers: { "X-Client-Geo" => "US-NY" }
+      expect(article.reload.region).to eq("US-NY")
+
+      put "/articles/#{article.id}",
+          params: { article: { title: new_title, body_markdown: "Edited in TX", published: true } },
+          headers: { "X-Client-Geo" => "US-TX" }
+      expect(article.reload.region).to eq("US-NY")
+    end
+
+    it "does not track region on API-created articles even when geo headers are present" do
+      api_user = create(:user)
+      api_secret = create(:api_secret, user: api_user)
+      payload = { article: { title: "API Article #{rand(100)}", body_markdown: "Created via API", published: true } }
+
+      post "/api/articles",
+           params: payload.to_json,
+           headers: {
+             "Content-Type" => "application/json",
+             "Accept" => "application/vnd.forem.api-v1+json",
+             "api-key" => api_secret.secret,
+             "X-Client-Geo" => "US-NY",
+             "HTTP_FASTLY_CLIENT_GEO_REGION" => "US-NY"
+           }
+
+      expect(response).to have_http_status(:created)
+      expect(Article.last.region).to be_nil
+    end
+  end
 end

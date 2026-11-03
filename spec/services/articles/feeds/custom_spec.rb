@@ -864,5 +864,48 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
       end
     end
   end
+
+  describe "country and region location matching weights" do
+    let(:real_feed_config) do
+      create(
+        :feed_config,
+        score_weight: 1.0,
+        country_match_weight: 20.0,
+        region_match_weight: 50.0,
+        shuffle_weight: 0.0,
+        recent_page_views_shuffle_weight: 0.0
+      )
+    end
+    let!(:other_country_article) { create_feed_article(score: 40, days_ago: 8, region: "FR-IDF") }
+    let!(:same_country_article) { create_feed_article(score: 30, days_ago: 8, region: "US-CA") }
+    let!(:same_region_article) { create_feed_article(score: 10, days_ago: 8, region: "US-NY") }
+
+    before do
+      FeedConfig.new.attributes.each_key do |attr|
+        next if %w[score_weight country_match_weight region_match_weight].include?(attr)
+
+        real_feed_config[attr] = 0.0 if attr.ends_with?("_weight") || attr.ends_with?("_rate")
+      end
+      RequestStore.store[:client_geolocation] = "US-NY"
+    end
+
+    after { RequestStore.store.delete(:client_geolocation) }
+
+    it "boosts articles whose published country and/or region match the current user's location" do
+      geo_feed = described_class.new(
+        user: user,
+        number_of_articles: 10,
+        page: 1,
+        feed_config: real_feed_config
+      )
+
+      # Scores:
+      # same_region_article (US-NY): 10 * 1.0 + 20.0 (country) + 50.0 (region) = 80.0
+      # same_country_article (US-CA): 30 * 1.0 + 20.0 (country) + 0.0 (region) = 50.0
+      # other_country_article (FR-IDF): 40 * 1.0 + 0.0 = 40.0
+      result = geo_feed.default_home_feed.to_a
+      expect(result).to eq([same_region_article, same_country_article, other_country_article])
+    end
+  end
 end
 # rubocop:enable Layout/TrailingWhitespace, Style/Send, Style/TrailingCommaInArguments, RSpec/NestedGroups, Rails/DurationArithmetic, RSpec/LeadingSubject, RSpec/MessageSpies, RSpec/SubjectStub, Layout/ArgumentAlignment, RSpec/AnyInstance, Style/CollectionMethods, Style/SlicingWithRange, Style/TrailingCommaInArrayLiteral

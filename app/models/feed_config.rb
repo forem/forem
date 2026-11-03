@@ -54,6 +54,10 @@ class FeedConfig < ApplicationRecord
               greater_than_or_equal_to: 0
             }
   validates :published_at_diversity_weight, numericality: { greater_than_or_equal_to: 0 }
+  validates :country_match_weight, numericality: { greater_than_or_equal_to: 0 }
+  validates :region_match_weight, numericality: { greater_than_or_equal_to: 0 }
+
+  GEO_CODE_FORMAT = /\A([A-Z]{2})(?:-([A-Z0-9]{1,3}))?\z/
 
   ARCHIVE_TOP_LIMIT = 1000
   ARCHIVE_AGE_THRESHOLD = 2.days
@@ -244,6 +248,14 @@ class FeedConfig < ApplicationRecord
     super(value.presence || 0.0)
   end
 
+  def country_match_weight=(value)
+    super(value.presence || 0.0)
+  end
+
+  def region_match_weight=(value)
+    super(value.presence || 0.0)
+  end
+
   def semantic_similarity_active?(user)
     return false unless semantic_similarity_weight.positive? && user.respond_to?(:user_activity)
 
@@ -330,6 +342,8 @@ class FeedConfig < ApplicationRecord
     clone.clickbait_score_weight = clickbait_score_weight * rand(0.9..1.1)
     clone.compellingness_score_weight = compellingness_score_weight * rand(0.9..1.1)
     clone.language_match_weight = language_match_weight * rand(0.9..1.1)
+    clone.country_match_weight = country_match_weight * rand(0.9..1.1)
+    clone.region_match_weight = region_match_weight * rand(0.9..1.1)
     clone.recent_subforem_weight = recent_subforem_weight * rand(0.9..1.1)
     clone.subforem_follow_weight = subforem_follow_weight * rand(0.9..1.1)
     clone.recent_page_views_shuffle_weight = recent_page_views_shuffle_weight * rand(0.9..1.1)
@@ -367,6 +381,22 @@ class FeedConfig < ApplicationRecord
                   []
                 end
     languages.presence || [I18n.default_locale.to_s]
+  end
+
+  def resolve_user_country_and_region(user)
+    return [nil, nil] unless country_match_weight.positive? || region_match_weight.positive?
+
+    raw_geo = RequestStore.store[:client_geolocation].presence ||
+      (user.respond_to?(:last_known_geolocation) ? user.last_known_geolocation : nil)
+    return [nil, nil] if raw_geo.blank?
+
+    normalized = raw_geo.to_s.strip.upcase
+    match = GEO_CODE_FORMAT.match(normalized)
+    return [nil, nil] unless match
+
+    country = match[1]
+    region = match[2].present? ? normalized : nil
+    [country, region]
   end
 
   def resolve_relevant_tag_names(user, activity_store)
@@ -435,6 +465,7 @@ class FeedConfig < ApplicationRecord
 
     ai_pref_code = resolve_ai_preference_code(user)
     languages = resolve_user_languages(user) if language_match_weight.positive? && score_weight.positive?
+    user_country, user_region = resolve_user_country_and_region(user)
     random_seed = randomness_weight.positive? ? rand(10_000) : 0
     now = Time.current
     now_sec = now.tv_sec
@@ -478,6 +509,8 @@ class FeedConfig < ApplicationRecord
       language_match_weight,
       randomness_weight,
       published_at_diversity_weight,
+      country_match_weight,
+      region_match_weight,
     ]
 
     context = [
@@ -506,6 +539,8 @@ class FeedConfig < ApplicationRecord
       default_second_sec,
       cutoff_30d_sec,
       published_at_diversity_weight.positive? ? published_at_diversity_half_lookback_hours : 0.0,
+      user_country,
+      user_region,
     ]
 
     [weights, context]
@@ -695,6 +730,16 @@ class FeedConfig < ApplicationRecord
     if language_match_weight.positive? && score_weight.positive?
       languages = resolve_user_languages(user)
       terms << "(CASE WHEN articles.language IN ('#{languages.join("','")}') THEN #{language_match_weight} ELSE 0 END)"
+    end
+    if country_match_weight.positive? || region_match_weight.positive?
+      user_country, user_region = resolve_user_country_and_region(user)
+      if country_match_weight.positive? && user_country.present?
+        terms << "(CASE WHEN articles.region = '#{user_country}' OR articles.region LIKE '#{user_country}-%' " \
+                 "THEN #{country_match_weight} ELSE 0 END)"
+      end
+      if region_match_weight.positive? && user_region.present?
+        terms << "(CASE WHEN articles.region = '#{user_region}' THEN #{region_match_weight} ELSE 0 END)"
+      end
     end
     if randomness_weight.positive?
       terms << "((CASE WHEN articles.id IS NOT NULL THEN MOD((articles.id * 137 + #{rand(10_000)}), 1000) / 1000.0 " \

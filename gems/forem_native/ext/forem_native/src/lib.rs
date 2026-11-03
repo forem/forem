@@ -929,7 +929,7 @@ fn sql_squish(sql: RString) -> Option<String> {
 fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String> {
     let w = {
         let ws = unsafe { weights_arr.as_slice() };
-        if ws.len() < 29 {
+        if ws.len() < 31 {
             return None;
         }
         forem_core::feed::FeedScoreWeights {
@@ -962,11 +962,13 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
             language_match_weight: extract_f64_value(ws[26])?,
             randomness_weight: extract_f64_value(ws[27])?,
             published_at_diversity_weight: extract_f64_value(ws[28])?,
+            country_match_weight: extract_f64_value(ws[29])?,
+            region_match_weight: extract_f64_value(ws[30])?,
         }
     };
 
     let cs: Vec<Value> = unsafe { ctx_arr.as_slice() }.to_vec();
-    if cs.len() < 25 {
+    if cs.len() < 27 {
         return None;
     }
 
@@ -1124,6 +1126,26 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
         _ => forem_core::feed::AiPreference::ShowAll,
     };
 
+    let user_country_str: Option<String> = if w.country_match_weight > 0.0 && !cs[25].is_nil() {
+        let rstr = RString::from_value(cs[25])?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(unsafe { rstr.as_str() }.ok()?.to_owned())
+    } else {
+        None
+    };
+
+    let user_region_str: Option<String> = if w.region_match_weight > 0.0 && !cs[26].is_nil() {
+        let rstr = RString::from_value(cs[26])?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(unsafe { rstr.as_str() }.ok()?.to_owned())
+    } else {
+        None
+    };
+
     let ctx = forem_core::feed::FeedScoreContext {
         recent_pageviews_count,
         organization_follow_ids: &organization_follow_ids,
@@ -1147,6 +1169,8 @@ fn feed_config_score_sql(weights_arr: RArray, ctx_arr: RArray) -> Option<String>
         languages: &languages,
         random_seed,
         published_at_diversity_half_lookback_hours,
+        user_country: user_country_str.as_deref(),
+        user_region: user_region_str.as_deref(),
     };
 
     forem_core::feed::build_feed_config_score_sql(&w, &ctx)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_03_170100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -214,6 +214,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.tsvector "reading_list_document"
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
+    t.string "region"
     t.integer "score", default: 0
     t.string "search_optimized_description_replacement"
     t.string "search_optimized_title_preamble"
@@ -843,6 +844,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.float "comment_recency_weight", default: 1.0
     t.float "comment_score_weight", default: 1.0
     t.float "compellingness_score_weight", default: 0.0, null: false
+    t.float "country_match_weight", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.float "favorited_weight", default: 0.0, null: false
     t.float "featured_weight", default: 0.0, null: false
@@ -867,6 +869,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_10_30_120000) do
     t.integer "recent_tag_count_max", default: 0
     t.integer "recent_tag_count_min", default: 0
     t.float "recently_active_past_day_bonus_weight", default: 0.0, null: false
+    t.float "region_match_weight", default: 0.0, null: false
     t.float "score_weight", default: 1.0
     t.integer "semantic_candidate_limit", default: 200, null: false
     t.float "semantic_similarity_weight", default: 0.0, null: false

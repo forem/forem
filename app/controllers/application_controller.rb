@@ -424,6 +424,7 @@ class ApplicationController < ActionController::Base
   def set_request_signed_in_context
     RequestStore.store[:user_signed_in] = user_signed_in?
     RequestStore.store[:custom_domain_org] = request.env["forem.custom_domain_org"]
+    RequestStore.store[:client_geolocation] = request_geolocation
   end
 
   def after_sign_out_path_for(_resource_or_scope)
@@ -443,6 +444,7 @@ class ApplicationController < ActionController::Base
 
     @current_user = user
     @token_authenticated = true
+    RequestStore.store[:client_geolocation] = request_geolocation
   end
 
   def token_authenticated?
@@ -465,6 +467,12 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :client_geolocation
+
+  def request_geolocation
+    request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence ||
+      client_geolocation.presence ||
+      (request.headers["X-Client-Geo"].presence if user_signed_in?)
+  end
 
   def default_email_optin_allowed?
     return false if Settings::General.geos_with_allowed_default_email_opt_in.blank?

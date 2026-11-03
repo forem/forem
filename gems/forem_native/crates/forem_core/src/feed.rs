@@ -664,6 +664,8 @@ pub struct FeedScoreWeights {
     pub language_match_weight: f64,
     pub randomness_weight: f64,
     pub published_at_diversity_weight: f64,
+    pub country_match_weight: f64,
+    pub region_match_weight: f64,
 }
 
 /// Pre-extracted user, activity, and request context for `build_feed_config_score_sql`.
@@ -693,6 +695,8 @@ pub struct FeedScoreContext<'a> {
     /// Midpoint (hours) of the effective feed lookback window, used by
     /// `published_at_diversity_weight` (`FeedConfig#published_at_diversity_half_lookback_hours`).
     pub published_at_diversity_half_lookback_hours: f64,
+    pub user_country: Option<&'a str>,
+    pub user_region: Option<&'a str>,
 }
 
 #[inline]
@@ -1097,6 +1101,38 @@ pub fn build_feed_config_score_sql(
             return None;
         }
         out.push_str(" ELSE 0 END)");
+    }
+
+    // 27b. country_match_weight & region_match_weight
+    if w.country_match_weight > 0.0 {
+        if let Some(country) = ctx.user_country {
+            if !country.is_empty() {
+                begin_term(&mut out, &mut has_terms);
+                out.push_str("(CASE WHEN articles.region = '");
+                out.push_str(country);
+                out.push_str("' OR articles.region LIKE '");
+                out.push_str(country);
+                out.push_str("-%' THEN ");
+                if !write_ruby_float(&mut out, w.country_match_weight) {
+                    return None;
+                }
+                out.push_str(" ELSE 0 END)");
+            }
+        }
+    }
+    if w.region_match_weight > 0.0 {
+        if let Some(region) = ctx.user_region {
+            if !region.is_empty() {
+                begin_term(&mut out, &mut has_terms);
+                out.push_str("(CASE WHEN articles.region = '");
+                out.push_str(region);
+                out.push_str("' THEN ");
+                if !write_ruby_float(&mut out, w.region_match_weight) {
+                    return None;
+                }
+                out.push_str(" ELSE 0 END)");
+            }
+        }
     }
 
     // 28. randomness_weight
@@ -2556,6 +2592,8 @@ mod tests {
             languages: &[],
             random_seed: 42,
             published_at_diversity_half_lookback_hours: 120.0,
+            user_country: None,
+            user_region: None,
         };
         assert_eq!(
             build_feed_config_score_sql(&weights, &ctx).as_deref(),
@@ -2592,6 +2630,8 @@ mod tests {
             languages: &[],
             random_seed: 42,
             published_at_diversity_half_lookback_hours: 24.0,
+            user_country: None,
+            user_region: None,
         };
         assert_eq!(
             build_feed_config_score_sql(&weights, &ctx).as_deref(),
@@ -2606,6 +2646,47 @@ mod tests {
             ..FeedScoreWeights::default()
         };
         assert!(build_feed_config_score_sql(&tiny, &ctx).is_none());
+    }
+
+    #[test]
+    fn build_score_sql_country_and_region_match_terms() {
+        let weights = FeedScoreWeights {
+            country_match_weight: 2.5,
+            region_match_weight: 4.0,
+            ..FeedScoreWeights::default()
+        };
+        let ctx = FeedScoreContext {
+            recent_pageviews_count: 0,
+            organization_follow_ids: &[],
+            user_follow_ids: &[],
+            tag_names: &[],
+            optimized_tags_query: false,
+            optimized_tags_limit: 20,
+            is_root_subforem: false,
+            subforem_follow_ids: &[],
+            label_names: &[],
+            lookback_window_utc_sec: 0,
+            second_latest_pageview_utc_sec: 0,
+            precomputed_selection_ids: &[],
+            has_activity_store: false,
+            recent_article_ids: &[],
+            published_since_24h_utc_sec: 0,
+            recent_subforem_ids: &[],
+            interest_embedding: &[],
+            published_since_30d_utc_sec: 0,
+            ai_preference: AiPreference::ShowAll,
+            languages: &[],
+            random_seed: 42,
+            published_at_diversity_half_lookback_hours: 24.0,
+            user_country: Some("US"),
+            user_region: Some("US-NY"),
+        };
+        assert_eq!(
+            build_feed_config_score_sql(&weights, &ctx).as_deref(),
+            Some(
+                "((CASE WHEN articles.region = 'US' OR articles.region LIKE 'US-%' THEN 2.5 ELSE 0 END) + (CASE WHEN articles.region = 'US-NY' THEN 4.0 ELSE 0 END))"
+            )
+        );
     }
 
     #[test]

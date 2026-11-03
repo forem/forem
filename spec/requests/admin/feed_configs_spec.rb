@@ -14,7 +14,9 @@ RSpec.describe "/admin/advanced/feed_configs" do
         semantic_similarity_weight: 12.0,
         semantic_candidate_limit: 350,
         feed_lookback_hours: 96,
-        published_at_diversity_weight: 4.5
+        published_at_diversity_weight: 4.5,
+        country_match_weight: 3.5,
+        region_match_weight: 6.0
       }
     }
   end
@@ -169,15 +171,21 @@ RSpec.describe "/admin/advanced/feed_configs" do
           semantic_candidate_limit: 350,
           feed_lookback_hours: 96,
           published_at_diversity_weight: 4.5,
+          country_match_weight: 3.5,
+          region_match_weight: 6.0,
         )
         expect(response).to redirect_to(admin_feed_config_path(new_config))
       end
 
       it "treats a blank published_at_diversity_weight as disabled (0.0)" do
         params[:feed_config][:published_at_diversity_weight] = ""
+        params[:feed_config][:country_match_weight] = ""
+        params[:feed_config][:region_match_weight] = ""
 
         expect { post_resource }.to change(FeedConfig, :count).by(1)
         expect(FeedConfig.last.published_at_diversity_weight).to eq(0.0)
+        expect(FeedConfig.last.country_match_weight).to eq(0.0)
+        expect(FeedConfig.last.region_match_weight).to eq(0.0)
       end
 
       it "re-renders the form for a negative published_at_diversity_weight" do

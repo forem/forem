@@ -597,6 +597,11 @@ class User < ApplicationRecord
     end
   end
 
+  def last_known_geolocation
+    user_visit_contexts.where.not(geolocation: [nil, ""]).order(last_visit_at: :desc, id: :desc).pick(:geolocation) ||
+      page_views.where.not(region: [nil, ""]).order(created_at: :desc, id: :desc).pick(:region)
+  end
+
   def refresh_auto_audience_segments
     if ENV["ENABLE_REFRESH_SEGMENT_WORKERS"]  == "true"
       SegmentedUserRefreshWorker.perform_async(id)

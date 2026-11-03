@@ -180,6 +180,7 @@ class ArticlesController < ApplicationController
     authorize Article
     @user = current_user
     article_params_json[:subforem_id] ||= RequestStore.store[:subforem_id]
+    article_params_json[:region] = request_geolocation if request_geolocation.present?
     article = Articles::Creator.call(@user, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 
     if article.persisted?
@@ -196,6 +197,9 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+    if !@article.published? && @article.region.present? && request_geolocation.present?
+      article_params_json[:region] = request_geolocation
+    end
 
     updated = Articles::Updater.call(@user, @article, article_params_json, co_author_invitee_ids: co_author_invitee_ids)
 

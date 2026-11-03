@@ -112,7 +112,8 @@ namespace :forem_native do
       :cached_followed_tag_names,
       :cached_languages,
       :setting,
-    ).new(1, activity_mock, alltime_users, alltime_orgs, tags, %w[en es], setting_mock)
+      :last_known_geolocation,
+    ).new(1, activity_mock, alltime_users, alltime_orgs, tags, %w[en es], setting_mock, "US-NY")
 
     feed_config = FeedConfig.new(
       feed_success_weight: 2.5,
@@ -143,6 +144,8 @@ namespace :forem_native do
       compellingness_score_weight: 6.0,
       language_match_weight: 7.0,
       randomness_weight: 8.0,
+      country_match_weight: 4.0,
+      region_match_weight: 6.0,
       recent_page_views_shuffle_weight: 1.25,
       shuffle_weight: 1.5,
       recent_tag_count_min: 3,

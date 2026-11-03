@@ -612,7 +612,7 @@ module ForemNative
     end
 
     # Compiles the complete `FeedConfig#score_sql` expression in a single pass from the
-    # 28 weight floats and 24-element context array. Returns nil if any input is outside
+    # 31 weight floats and 27-element context array. Returns nil if any input is outside
     # the fast-path domain so `FeedConfig#score_sql` can fall back to `legacy_score_sql`.
     def feed_config_score_sql(weights, context)
       return unless Native.respond_to?(:feed_config_score_sql)

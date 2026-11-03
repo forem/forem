@@ -399,6 +399,8 @@ RSpec.describe FeedConfig, type: :model do
       feed_config.ai_disclosure_matching_weight = 24.0
       feed_config.autonomous_ai_penalty_weight  = 25.0
       feed_config.published_at_diversity_weight = 26.0
+      feed_config.country_match_weight          = 27.0
+      feed_config.region_match_weight           = 28.0
       feed_config.recent_tag_count_min           = 2
       feed_config.recent_tag_count_max           = 5
       feed_config.all_time_tag_count_min         = 3
@@ -443,6 +445,8 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.ai_disclosure_matching_weight).to eq(24.0 * 1.1)
       expect(clone.autonomous_ai_penalty_weight).to eq(25.0 * 1.1)
       expect(clone.published_at_diversity_weight).to eq(26.0 * 1.1)
+      expect(clone.country_match_weight).to eq(27.0 * 1.1)
+      expect(clone.region_match_weight).to eq(28.0 * 1.1)
     end
 
     it "does not modify the original feed_config" do
@@ -475,6 +479,8 @@ RSpec.describe FeedConfig, type: :model do
         "ai_disclosure_matching_weight",
         "autonomous_ai_penalty_weight",
         "published_at_diversity_weight",
+        "country_match_weight",
+        "region_match_weight",
         "recent_tag_count_min",
         "recent_tag_count_max",
         "all_time_tag_count_min",
@@ -655,6 +661,26 @@ RSpec.describe FeedConfig, type: :model do
       expect(config.published_at_diversity_weight).to eq(0.0)
 
       config.published_at_diversity_weight = -0.5
+      expect(config).not_to be_valid
+    end
+
+    it "defaults country_match_weight and region_match_weight to 0.0, normalizes blanks, and rejects negatives" do
+      config = described_class.new
+      expect(config.country_match_weight).to eq(0.0)
+      expect(config.region_match_weight).to eq(0.0)
+      expect(config).to be_valid
+
+      config.country_match_weight = ""
+      config.region_match_weight = nil
+      expect(config.country_match_weight).to eq(0.0)
+      expect(config.region_match_weight).to eq(0.0)
+      expect(config).to be_valid
+
+      config.country_match_weight = -1.0
+      expect(config).not_to be_valid
+
+      config.country_match_weight = 2.5
+      config.region_match_weight = -0.5
       expect(config).not_to be_valid
     end
 
@@ -1107,10 +1133,73 @@ RSpec.describe FeedConfig, type: :model do
       end
     end
 
+    context "when country_match_weight and/or region_match_weight are configured" do
+      after { RequestStore.store.delete(:client_geolocation) }
+
+      it "emits both country and region match SQL terms when RequestStore client_geolocation has country and region" do
+        RequestStore.store[:client_geolocation] = "US-NY"
+        feed_config.country_match_weight = 4.0
+        feed_config.region_match_weight = 6.5
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("(CASE WHEN articles.region = 'US' OR articles.region LIKE 'US-%' THEN 4.0 ELSE 0 END)")
+        expect(sql).to include("(CASE WHEN articles.region = 'US-NY' THEN 6.5 ELSE 0 END)")
+        expect(sql).to eq(feed_config.__send__(:legacy_score_sql, user))
+      end
+
+      it "emits only country match SQL when geolocation is country-only even if region_match_weight is positive" do
+        RequestStore.store[:client_geolocation] = "FR"
+        feed_config.country_match_weight = 3.5
+        feed_config.region_match_weight = 5.0
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("(CASE WHEN articles.region = 'FR' OR articles.region LIKE 'FR-%' THEN 3.5 ELSE 0 END)")
+        expect(sql).not_to include("THEN 5.0")
+        expect(sql).to eq(feed_config.__send__(:legacy_score_sql, user))
+      end
+
+      it "falls back to user.last_known_geolocation when RequestStore has no client_geolocation" do
+        create(:user_visit_context, user: user, geolocation: "CA-ON", last_visit_at: 1.hour.ago)
+        feed_config.country_match_weight = 2.0
+        feed_config.region_match_weight = 4.5
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("(CASE WHEN articles.region = 'CA' OR articles.region LIKE 'CA-%' THEN 2.0 ELSE 0 END)")
+        expect(sql).to include("(CASE WHEN articles.region = 'CA-ON' THEN 4.5 ELSE 0 END)")
+      end
+
+      it "falls back to user's most recent page_view region when user_visit_contexts have no geolocation" do
+        article = create(:article)
+        create(:page_view, user: user, article: article, region: "DE-BE", created_at: 2.hours.ago)
+        feed_config.country_match_weight = 1.5
+        feed_config.region_match_weight = 3.0
+
+        sql = feed_config.score_sql(user)
+        expect(sql).to include("(CASE WHEN articles.region = 'DE' OR articles.region LIKE 'DE-%' THEN 1.5 ELSE 0 END)")
+        expect(sql).to include("(CASE WHEN articles.region = 'DE-BE' THEN 3.0 ELSE 0 END)")
+      end
+
+      it "omits location terms when weights are zero or geolocation is malformed/absent" do
+        RequestStore.store[:client_geolocation] = "invalid'; DROP TABLE articles;--"
+        feed_config.country_match_weight = 4.0
+        feed_config.region_match_weight = 6.5
+
+        expect(feed_config.score_sql(user)).not_to include("articles.region")
+
+        RequestStore.store[:client_geolocation] = "US-NY"
+        feed_config.country_match_weight = 0.0
+        feed_config.region_match_weight = 0.0
+        expect(feed_config.score_sql(user)).not_to include("articles.region")
+      end
+    end
+
     context "when comparing native Rust kernel with legacy_score_sql" do
+      after { RequestStore.store.delete(:client_geolocation) }
+
       it "produces identical SQL across all scoring weights and activity signals" do
         now = Time.utc(2026, 4, 18, 12, 0, 0)
         allow(Time).to receive(:current).and_return(now)
+        RequestStore.store[:client_geolocation] = "US-NY"
 
         user_activity = create(
           :user_activity,
@@ -1159,6 +1248,8 @@ RSpec.describe FeedConfig, type: :model do
           ai_disclosure_matching_weight: 12.0,
           autonomous_ai_penalty_weight: 25.0,
           published_at_diversity_weight: 6.5,
+          country_match_weight: 4.25,
+          region_match_weight: 5.75,
           feed_lookback_hours: 49,
           recent_tag_count_min: 2,
           recent_tag_count_max: 2,
@@ -1177,6 +1268,10 @@ RSpec.describe FeedConfig, type: :model do
           "(POWER(LEAST(ABS((EXTRACT(epoch FROM (NOW() - articles.published_at)) / 3600.0) - 24.5) / 24.5, " \
           "1.0), 2) * 6.5)",
         )
+        expect(native_sql).to include(
+          "(CASE WHEN articles.region = 'US' OR articles.region LIKE 'US-%' THEN 4.25 ELSE 0 END)",
+        )
+        expect(native_sql).to include("(CASE WHEN articles.region = 'US-NY' THEN 5.75 ELSE 0 END)")
 
         native_base_sql = full_config.base_score_sql(user)
         legacy_base_sql = full_config.__send__(:legacy_score_sql, user, include_semantic: false)
