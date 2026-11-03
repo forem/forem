@@ -2093,4 +2093,24 @@ RSpec.describe User do
         .to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
     end
   end
+
+  describe "#member_of_minimum_indexed_organization?" do
+    let(:indexed_org) { create(:organization, baseline_score: 15) }
+    let(:default_org) { create(:organization, baseline_score: 0) }
+
+    it "returns true when the user is an active member of an organization with baseline_score > 0" do
+      create(:organization_membership, user: user, organization: indexed_org, type_of_user: "member")
+      expect(user.member_of_minimum_indexed_organization?).to be(true)
+    end
+
+    it "returns false when the user's membership in the organization is pending" do
+      create(:organization_membership, user: user, organization: indexed_org, type_of_user: "pending")
+      expect(user.member_of_minimum_indexed_organization?).to be(false)
+    end
+
+    it "returns false when the user belongs only to organizations with baseline_score 0" do
+      create(:organization_membership, user: user, organization: default_org, type_of_user: "member")
+      expect(user.member_of_minimum_indexed_organization?).to be(false)
+    end
+  end
 end

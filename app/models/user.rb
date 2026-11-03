@@ -810,6 +810,13 @@ class User < ApplicationRecord
     organization_memberships.admin.exists?(organization: organization)
   end
 
+  def member_of_minimum_indexed_organization?
+    organizations
+      .merge(OrganizationMembership.active)
+      .where("organizations.baseline_score > 0")
+      .exists?
+  end
+
   def block; end
 
   def all_blocked_by

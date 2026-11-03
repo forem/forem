@@ -727,6 +727,82 @@ RSpec.describe Spam::Handler, type: :service do
         expect(handler).to eq(:not_spam)
       end
     end
+
+    context "when the article comes from an account with minimum indexing set" do
+      let(:organization) { create(:organization, baseline_score: 15) }
+      let!(:article) { create(:article, organization: organization) }
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+        allow(Ai::ArticleCheck).to receive(:new)
+      end
+
+      it "never marks the article as spam and enforces a minimum label of okay_and_on_topic" do
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "clear_and_obvious_spam", compellingness_score: 0.3 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect { expect(handler).to eq(:not_spam) }
+          .not_to(change { Reaction.where(reactable: article, category: "vomit").count })
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+        expect(article.compellingness_score).to eq(0.3)
+        expect(article.user.reload).not_to be_spam
+        expect(article.user).not_to be_suspended
+        expect(Ai::ArticleCheck).not_to have_received(:new)
+      end
+
+      it "preserves positive recognition when the labeler assigns a higher quality label" do
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "very_good_and_on_topic", compellingness_score: 0.85 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("very_good_and_on_topic")
+        expect(article.compellingness_score).to eq(0.85)
+      end
+
+      it "skips linked-domain and repeated-title spam overrides" do
+        LinkedDomain.create!(host: "bad-seo-site.com", net_score: -50_000)
+        allow(article).to receive(:processed_html).and_return('<a href="https://bad-seo-site.com/foo">link</a>')
+        create_list(:article, 2, user: article.user).each do |copy|
+          copy.update_columns(title: article.title, published_at: article.published_at - 1.hour)
+        end
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "likely_spam", compellingness_score: 0.4 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(article).and_return(labeler)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+
+      it "assigns okay_and_on_topic when content moderation is unavailable" do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+
+        expect(handler).to eq(:not_spam)
+        expect(article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+
+      it "applies the same protection when the author is a member of a minimum-indexed organization" do
+        personal_article = create(:article, organization: nil)
+        create(:organization_membership, user: personal_article.user, organization: organization,
+                                         type_of_user: "member")
+        labeler = instance_double(
+          Ai::ContentModerationLabeler,
+          evaluate: { label: "clear_and_obvious_spam", compellingness_score: 0.5 },
+        )
+        allow(Ai::ContentModerationLabeler).to receive(:new).with(personal_article).and_return(labeler)
+
+        expect(described_class.handle_article!(article: personal_article)).to eq(:not_spam)
+        expect(personal_article.reload.automod_label).to eq("okay_and_on_topic")
+      end
+    end
   end
 
   describe ".handle_comment!" do
@@ -1103,6 +1179,32 @@ RSpec.describe Spam::Handler, type: :service do
           .update_columns(commentable_id: comment.commentable_id, commentable_type: comment.commentable_type)
         expect(handler).to eq(:not_spam)
       end
+
+      it "leaves members of minimum-indexed organizations alone" do
+        organization = create(:organization, baseline_score: 10)
+        create(:organization_membership, user: commenter, organization: organization, type_of_user: "member")
+
+        expect(handler).to eq(:not_spam)
+        expect(commenter.reload).not_to be_spam
+      end
+    end
+
+    context "when the commenter belongs to an organization with baseline_score > 0" do
+      let(:organization) { create(:organization, baseline_score: 10) }
+
+      before do
+        create(:organization_membership, user: comment.user, organization: organization, type_of_user: "member")
+      end
+
+      it "creates a spam reaction on the comment but never auto-suspends or marks the user as spam" do
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).with(text: comment.body_markdown).and_return(true)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
+          .with(user: comment.user, include_user_profile: false).and_return(true)
+
+        expect { handler }.to change { Reaction.where(reactable: comment, category: "vomit").count }.by(1)
+        expect(comment.user.reload).not_to be_suspended
+        expect(comment.user).not_to be_spam
+      end
     end
   end
 
@@ -1288,6 +1390,23 @@ RSpec.describe Spam::Handler, type: :service do
         expect(user.reload).not_to be_spam
       end
     end
+
+    context "when user belongs to an organization with baseline_score > 0" do
+      let(:organization) { create(:organization, baseline_score: 10) }
+
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+      end
+
+      it "does not mark the user as spam or suspend them when profile moderation flags a clear violation" do
+        labeler = instance_double(Ai::ProfileModerationLabeler, label: "clear_and_obvious_spam")
+        allow(Ai::ProfileModerationLabeler).to receive(:new).with(user).and_return(labeler)
+
+        expect { handler }.to change { Reaction.where(reactable: user, category: "vomit").count }.by(1)
+        expect(user.reload).not_to be_spam
+        expect(user).not_to be_suspended
+      end
+    end
   end
 
   describe ".suspend!" do
@@ -1317,6 +1436,16 @@ RSpec.describe Spam::Handler, type: :service do
 
       expect(published.reload).to be_published
       expect(suspension_log.data).not_to have_key("unpublished_article_ids")
+    end
+
+    it "never auto-suspends a user who belongs to an organization with baseline_score > 0" do
+      organization = create(:organization, baseline_score: 15)
+      create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+
+      described_class.__send__(:suspend!, user: user)
+
+      expect(user.reload).not_to be_suspended
+      expect(suspension_log).to be_nil
     end
   end
 
