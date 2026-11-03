@@ -15,7 +15,7 @@ class FeedConfigVisitsController < ApplicationMetalController
       return head :too_many_requests
     end
     return head :bad_request unless params[:visit_token].is_a?(String) && params[:visit_token].bytesize <= 4096 &&
-      params[:event_id].is_a?(String) && Feeds::RecordConfigVisit::UUID_PATTERN.match?(params[:event_id])
+      Feeds::RecordConfigVisit.valid_uuid?(params[:event_id])
 
     next_visit_at = Feeds::RecordConfigVisit.call(
       token: params[:visit_token], event_id: params[:event_id], user_id: session_current_user_id, host: request.host,

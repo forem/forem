@@ -6,7 +6,7 @@ import {
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
-import { ButtonNew as Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons/Buttons';
 import { useKeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';

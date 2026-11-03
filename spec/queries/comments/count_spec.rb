@@ -135,5 +135,25 @@ RSpec.describe Comments::Count do
       article.reload
       expect(article.displayed_comments_count).to eq(4)
     end
+
+    it "computes the count in a single comments SELECT query and skips update_column when unchanged",
+       :aggregate_failures do
+      article.update_column(:displayed_comments_count, 4)
+      allow(article).to receive(:update_column).and_call_original
+
+      comment_selects = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        comment_selects << sql if !payload[:cached] && sql.match?(/\ASELECT .* FROM "?comments"?/i)
+      end
+
+      cnt = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.call(article, recalculate: true)
+      end
+
+      expect(cnt).to eq(4)
+      expect(comment_selects.size).to eq(1)
+      expect(article).not_to have_received(:update_column)
+    end
   end
 end

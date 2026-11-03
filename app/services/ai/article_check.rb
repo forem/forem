@@ -63,10 +63,16 @@ module Ai
                                affected_content: @article, **Ai::TypeSafe::Client::FAIL_FAST)
     end
 
+    # Builds the structured state payload passed to Jev for spam evaluation.
+    # @return [Hash]
     def jev_state
+      article_state = { title: @article.title, body: @article.body_markdown.to_s.truncate(JEV_BODY_CHARS) }
+      if @article.respond_to?(:status?) && @article.status?
+        article_state[:format] = "status post: a short update or commentary where title is the full post text"
+      end
       state = {
         community: { description: community_description.presence || "No community description provided." },
-        article: { title: @article.title, body: @article.body_markdown.to_s.truncate(JEV_BODY_CHARS) }
+        article: article_state
       }
       state[:community][:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
       state[:author_recent_article_titles] = recent_titles if recent_titles.any?
@@ -136,10 +142,26 @@ module Ai
       false
     end
 
+    # Resolves the community description for the article's subforem, falling back to the
+    # default subforem and global settings when needed.
+    # @return [String, nil]
     def community_description
-      @community_description ||=
-        Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) ||
-        Settings::Community.community_description(subforem_id: @article.subforem_id)
+      @community_description ||= begin
+        default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
+        subforem_id = @article.subforem_id || default_subforem_id
+        description = if subforem_id
+                        Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+                          Settings::Community.community_description(subforem_id: subforem_id).presence
+                      end
+        if description.blank? && default_subforem_id && default_subforem_id != subforem_id
+          description =
+            Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
+            Settings::Community.community_description(subforem_id: default_subforem_id).presence
+        end
+        description ||
+          Settings::RateLimit.internal_content_description_spec.presence ||
+          Settings::Community.community_description
+      end
     end
 
     def recent_titles
@@ -162,9 +184,6 @@ module Ai
       user_history = @article.user.articles.last(10).map.with_index(1) do |a, i|
         "Article #{i}: \"#{a.title}\""
       end.join("\n")
-
-      # Fetch the description of the community the article is posted in.
-      community_description = Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) || Settings::Community.community_description(subforem_id: @article.subforem_id)
 
       # Gather custom tag moderation instructions
       tag_instructions_text = build_tag_instructions_context

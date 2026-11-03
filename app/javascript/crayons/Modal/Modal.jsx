@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import { FocusTrap } from '../../shared/components/focusTrap';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
-import { ButtonNew as Button } from '@crayons';
+import { ButtonNew as Button } from '@crayons/Buttons';
 import CloseIcon from '@images/x.svg';
 
 export const Modal = ({

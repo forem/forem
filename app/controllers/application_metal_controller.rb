@@ -51,14 +51,48 @@ class ApplicationMetalController < ActionController::Metal
   end
 
   def decode_auth_token(token)
-    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
-  rescue JWT::ExpiredSignature
-    nil
-  rescue
-    nil
+    native = ForemNative.verify_hs256_jwt(token, Rails.application.secret_key_base, Time.now.to_i)
+    return if native == false
+    return native if native
+
+    legacy_decode_auth_token(token)
+  end
+
+  def valid_authenticity_token?(session, encoded_masked_token)
+    return false if !encoded_masked_token.is_a?(String) || encoded_masked_token.empty?
+
+    encoded_real_token = request.env[CSRF_TOKEN]
+    if encoded_real_token.nil?
+      fetched = csrf_token_storage_strategy.fetch(request)
+      encoded_real_token = request.env[CSRF_TOKEN] = fetched if fetched
+    end
+
+    if encoded_real_token.is_a?(String)
+      verified = if per_form_csrf_tokens
+                   ForemNative.verify_authenticity_token(
+                     encoded_masked_token,
+                     encoded_real_token,
+                     request.path,
+                     request.request_method,
+                   )
+                 else
+                   ForemNative.verify_authenticity_token(encoded_masked_token, encoded_real_token)
+                 end
+      return verified unless verified.nil?
+    end
+
+    super
   end
 
   private
+
+  def legacy_decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue StandardError
+    nil
+  end
 
   # Metal controllers are read-only consumers of the session (CSRF verification
   # and session_current_user_id). Skipping Rack's post-request session commit

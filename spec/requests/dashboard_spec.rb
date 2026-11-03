@@ -90,6 +90,22 @@ RSpec.describe "Dashboards" do
         get dashboard_path
         expect(response.body).not_to include("Upload a video")
       end
+
+      it "renders the mobile navigation dropdown with pre-rendered fallback options", :aggregate_failures do
+        get "/dashboard"
+
+        html = Nokogiri::HTML(response.body)
+        mobile_option_values = html.css("select#mobile_nav_dashboard option").map { |option| option["value"] }
+
+        expect(mobile_option_values).to include(
+          "/dashboard",
+          user_series_path(user.username),
+          "/dashboard/user_followers",
+          "/dashboard/following_tags",
+          "/dashboard/following_users",
+          "/dashboard/following_organizations"
+        )
+      end
     end
 
     context "when logged in with many archived posts" do
@@ -252,12 +268,29 @@ RSpec.describe "Dashboards" do
           expect(response).to have_http_status(:ok)
           expect(response.body).to include('id="mobile_nav_dashboard"')
           expect(response.body).to include("Posts (1)")
+          expect(response.body).to include("Series")
           expect(response.body).to include("Following organizations (3)")
           expect(response.body).to include("Following users (2)")
           expect(response.body).to include("Agent Sessions (5)")
           expect(response.body).to include(CGI.escapeHTML(organization.name))
           expect(response.body).to include("Upload a video")
         end
+      end
+
+      it "marks the correct option as selected in mobile actions dropdown based on state", :aggregate_failures do
+        sign_in user
+
+        get "/dashboard/sidebar", params: { state: "analytics", type_of: "mobile" }, xhr: true
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("option[value='#{dashboard_analytics_path}'][selected]")).to be_present
+
+        get "/dashboard/sidebar", params: { state: "series", type_of: "mobile" }, xhr: true
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("option[value='#{user_series_path(user.username)}'][selected]")).to be_present
+
+        get "/dashboard/sidebar", params: { state: "agent_sessions", type_of: "mobile" }, xhr: true
+        html = Nokogiri::HTML(response.body)
+        expect(html.at_css("option[value='#{agent_sessions_path}'][selected]")).to be_present
       end
     end
 

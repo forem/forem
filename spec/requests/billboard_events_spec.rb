@@ -47,7 +47,7 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
-    it "checks the billboard exists without loading its full row" do
+    it "checks the billboard exists inline without a separate SELECT query" do
       billboard
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("display_ads") }
@@ -56,7 +56,10 @@ RSpec.describe "BillboardEvents", type: :request do
       end
 
       expect(BillboardEvent.last.billboard_id).to eq(billboard.id)
-      expect(queries.grep(/\ASELECT/)).to contain_exactly(a_string_starting_with('SELECT "display_ads"."id" FROM'))
+      expect(queries.grep(/\ASELECT/)).to be_empty
+      expect(queries).to contain_exactly(
+        a_string_including('WHERE EXISTS (SELECT 1 FROM "display_ads" WHERE "display_ads"."id" ='),
+      )
     end
 
     it "inserts the event in a single statement that keeps synchronous_commit off" do
@@ -254,6 +257,72 @@ RSpec.describe "BillboardEvents", type: :request do
         patch "/bb_tabulations/not-an-id"
         expect(response).to have_http_status(:not_found)
       end
+    end
+  end
+
+  describe "Middlewares::MetalTelemetryFastPath" do
+    let!(:article) { create(:article) }
+
+    it "handles JSON POST /bb_tabulations in the fast path without invoking BillboardEvent.create_with_async_commit" do
+      allow(BillboardEvent).to receive(:create_with_async_commit).and_call_original
+
+      post "/bb_tabulations",
+           params: {
+             billboard_event: {
+               billboard_id: billboard.id,
+               category: "impression",
+               context_type: "article",
+               article_id: article.id
+             }
+           }.to_json,
+           headers: { "CONTENT_TYPE" => "application/json", "User-Agent" => "FastPathAgent/1.0" }
+
+      expect(response).to have_http_status(:ok)
+      created_id = response.parsed_body["id"]
+      expect(created_id).to be_present
+      expect(BillboardEvent).not_to have_received(:create_with_async_commit)
+
+      event = BillboardEvent.find(created_id)
+      expect(event).to have_attributes(
+        billboard_id: billboard.id,
+        category: "impression",
+        context_type: "article",
+        article_id: article.id,
+        user_id: user.id,
+        user_agent: "FastPathAgent/1.0",
+      )
+    end
+
+    it "preserves query-string article_id when JSON body omits article_id" do
+      post "/bb_tabulations?article_id=#{article.id}",
+           params: {
+             billboard_event: {
+               billboard_id: billboard.id,
+               category: "impression",
+               context_type: "article"
+             }
+           }.to_json,
+           headers: { "CONTENT_TYPE" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      event = BillboardEvent.find(response.parsed_body["id"])
+      expect(event.article_id).to eq(article.id)
+    end
+
+    it "raises InvalidAuthenticityToken and skips session commit on mismatched Origin when forgery protection runs" do
+      allow(Rails.env).to receive(:test?).and_return(false)
+      middleware = Middlewares::MetalTelemetryFastPath.new(->(_env) { [200, {}, ["deferred"]] })
+      allow(middleware).to receive(:forgery_protection_enabled?).and_return(true)
+      session_opts = {}
+      env = Rack::MockRequest.env_for(
+        "http://forem.test/bb_tabulations",
+        method: "POST",
+        "HTTP_ORIGIN" => "https://evil.example.com",
+        Rack::RACK_SESSION_OPTIONS => session_opts,
+      )
+
+      expect { middleware.call(env) }.to raise_error(ActionController::InvalidAuthenticityToken)
+      expect(session_opts[:skip]).to be(true)
     end
   end
 end

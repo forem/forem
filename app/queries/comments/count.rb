@@ -27,16 +27,17 @@ module Comments
         # segment is the direct parent). Collecting those parent ids once lets Postgres probe a hashed
         # subplan, instead of rescanning every comment on the article with a LIKE per candidate.
         # The regex always matches, so the subquery never yields NULL and NOT IN is safe.
-        count_sql = "SELECT COUNT(id) FROM comments c1 " \
-                    "WHERE (score < ? OR deleted = TRUE) AND commentable_id = ? " \
-                    "AND commentable_type = ? AND c1.id::varchar(255) NOT IN " \
+        count_sql = "SELECT COUNT(id) - COUNT(id) FILTER (" \
+                    "WHERE (score < ? OR deleted = TRUE) AND c1.id::varchar(255) NOT IN " \
                     "(SELECT substring(c2.ancestry from '[^/]*$') FROM comments c2 " \
-                    "WHERE c2.commentable_id = ? AND c2.commentable_type = ? AND c2.ancestry IS NOT NULL)"
+                    "WHERE c2.commentable_id = ? AND c2.commentable_type = ? AND c2.ancestry IS NOT NULL)" \
+                    ") FROM comments c1 WHERE commentable_id = ? AND commentable_type = ?"
         san_count_sql = Comment.sanitize_sql([count_sql, Comment::HIDE_THRESHOLD, @article.id, "Article",
                                               @article.id, "Article"])
-        hidden_comments_cnt = Comment.count_by_sql(san_count_sql)
-        displayed_comments_count = article.comments.count - hidden_comments_cnt
-        article.update_column(:displayed_comments_count, displayed_comments_count)
+        displayed_comments_count = Comment.count_by_sql(san_count_sql)
+        if article.displayed_comments_count != displayed_comments_count
+          article.update_column(:displayed_comments_count, displayed_comments_count)
+        end
       end
       article.displayed_comments_count
     end

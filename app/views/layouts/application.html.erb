@@ -170,7 +170,7 @@
     <% end %>
     <%= yield %>
     <div id="runtime-banner-container"></div>
-    <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <div id="i18n-translations" data-locale="<%= I18n.locale %>" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
   </div>
 </div>
 <% unless internal_navigation? %>
