@@ -427,6 +427,23 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(FeedConfig).not_to have_received(:order)
       end
 
+      it "uses default subforem settings in Sidekiq when RequestStore default_subforem_id is nil" do
+        RequestStore.store[:subforem_id] = nil
+        RequestStore.store[:default_subforem_id] = nil
+        Settings::UserExperience.set_feed_strategy("large_forem_experimental", subforem_id: nil)
+        Settings::UserExperience.set_feed_strategy("configured", subforem_id: default_subforem.id)
+
+        other_user = create(:user)
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
+        collector = described_class.new(user)
+        articles = collector.articles_to_send
+
+        expect(articles.length).to eq(3)
+        expect(collector.feed_config_id).to eq(feed_config.id)
+      end
+
       it "skips personalized path when feature flag is disabled" do
         FeatureFlag.disable(:personalized_email_digests)
         allow(FeedConfig).to receive(:order).and_call_original

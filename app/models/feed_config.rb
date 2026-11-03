@@ -172,7 +172,9 @@ class FeedConfig < ApplicationRecord
   end
 
   def self.max_feed_lookback_hours
-    lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    lookback_days = Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
     days = lookback_days.positive? ? lookback_days : DEFAULT_FEED_LOOKBACK_DAYS
     days * 24
   end

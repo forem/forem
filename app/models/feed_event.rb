@@ -148,7 +148,9 @@ class FeedEvent < ApplicationRecord
     age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
     return FRESHNESS_MAX_MULTIPLIER if age_in_hours <= FRESHNESS_MAX_BONUS_HOURS
 
-    lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    lookback_setting = Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
     lookback_days = lookback_setting.positive? ? lookback_setting : DEFAULT_FRESHNESS_LOOKBACK_DAYS
     lookback_hours = lookback_days * 24.0
     return FRESHNESS_MIN_MULTIPLIER if age_in_hours >= lookback_hours || lookback_hours <= FRESHNESS_MAX_BONUS_HOURS
