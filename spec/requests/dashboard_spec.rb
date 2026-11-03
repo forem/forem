@@ -94,13 +94,17 @@ RSpec.describe "Dashboards" do
       it "renders the mobile navigation dropdown with pre-rendered fallback options", :aggregate_failures do
         get "/dashboard"
 
-        expect(response.body).to include('id="mobile_nav_dashboard"')
-        expect(response.body).to include("Posts")
-        expect(response.body).to include("Series")
-        expect(response.body).to include("Followers")
-        expect(response.body).to include("Following tags")
-        expect(response.body).to include("Following users")
-        expect(response.body).to include("Following organizations")
+        html = Nokogiri::HTML(response.body)
+        mobile_option_values = html.css("select#mobile_nav_dashboard option").map { |option| option["value"] }
+
+        expect(mobile_option_values).to include(
+          "/dashboard",
+          user_series_path(user.username),
+          "/dashboard/user_followers",
+          "/dashboard/following_tags",
+          "/dashboard/following_users",
+          "/dashboard/following_organizations"
+        )
       end
     end
 

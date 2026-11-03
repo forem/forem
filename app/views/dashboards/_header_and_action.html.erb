@@ -92,28 +92,45 @@
   </div>
 
   <script>
+    const mainWrapper = document.getElementById('dashboard-main-sidebar-wrapper');
+    const mobileWrapper = document.getElementById('dashboard-mobile-sidebar-wrapper');
+
     fetch('/dashboard/sidebar?state=<%= params[:action] %>&which=<%= params[:which] %>', {
       credentials: 'same-origin'
     })
       .then(response => (response.ok && !response.redirected ? response.text() : ''))
       .then(html => {
-        if (html && html.includes('main-dashboard-side-nav')) {
-          document.getElementById('dashboard-main-sidebar-wrapper').innerHTML = html;
+        if (mainWrapper && document.contains(mainWrapper) && html && html.includes('main-dashboard-side-nav')) {
+          mainWrapper.innerHTML = html;
         }
       });
+
+    function navigateToUrl(rawUrl) {
+      if (typeof rawUrl !== 'string' || !rawUrl.startsWith('/') || rawUrl.startsWith('//')) {
+        return;
+      }
+      try {
+        const parsedUrl = new URL(rawUrl, window.location.origin);
+        if (parsedUrl.origin === window.location.origin && (parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:')) {
+          const safePath = parsedUrl.pathname + parsedUrl.search;
+          if (typeof InstantClick !== 'undefined' && InstantClick.supported && InstantClick.display) {
+            InstantClick.preload(safePath);
+            InstantClick.display(safePath);
+          } else {
+            window.location.assign(safePath);
+          }
+        }
+      } catch (e) {
+        // Ignore invalid URLs
+      }
+    }
 
     function bindMobileNav() {
       let navtrigger = document.getElementById('mobile_nav_dashboard');
       if (navtrigger && !navtrigger.dataset.bound) {
         navtrigger.dataset.bound = 'true';
         navtrigger.addEventListener('change', (event) => {
-          let url = event.target.value;
-          if (typeof InstantClick !== 'undefined' && InstantClick.display) {
-            InstantClick.preload(url);
-            InstantClick.display(url);
-          } else {
-            window.location.href = url;
-          }
+          navigateToUrl(event.target.value);
         });
       }
     }
@@ -125,8 +142,8 @@
     })
       .then(response => (response.ok && !response.redirected ? response.text() : ''))
       .then(html => {
-        if (html && html.includes('mobile_nav_dashboard')) {
-          document.getElementById('dashboard-mobile-sidebar-wrapper').innerHTML = html;
+        if (mobileWrapper && document.contains(mobileWrapper) && html && html.includes('mobile_nav_dashboard')) {
+          mobileWrapper.innerHTML = html;
           bindMobileNav();
         }
       });
