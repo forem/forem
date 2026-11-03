@@ -47,13 +47,13 @@ class Subforem < ApplicationRecord
 
   def self.cached_default_id
     MemoryFirstCache.fetch("subforem_default_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.first&.id
+      Subforem.first&.id || ""
     end
   end
 
   def self.cached_root_id
     MemoryFirstCache.fetch("subforem_root_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.find_by(root: true)&.id
+      Subforem.find_by(root: true)&.id || ""
     end
   end
 
@@ -77,14 +77,14 @@ class Subforem < ApplicationRecord
 
   def self.cached_default_domain
     MemoryFirstCache.fetch("subforem_default_domain", redis_expires_in: 12.hours, return_type: :string) do
-      Subforem.first&.domain
+      Subforem.first&.domain || ""
     end
   end
 
   def self.cached_root_domain
     MemoryFirstCache.fetch("subforem_root_domain", redis_expires_in: 12.hours, return_type: :string) do
       domain = Subforem.find_by(root: true)&.domain
-      return unless domain
+      next "" unless domain
 
       domain += ":#{URL.dev_port}" if Rails.env.development? && !domain.include?(":#{URL.dev_port}")
       domain
@@ -119,7 +119,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_misc_subforem_id
     MemoryFirstCache.fetch("subforem_misc_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.find_by(misc: true)&.id
+      Subforem.find_by(misc: true)&.id || ""
     end
   end
 
@@ -154,16 +154,17 @@ class Subforem < ApplicationRecord
 
   def bust_caches
     Rails.cache.delete("cached_domains")
-    Rails.cache.delete("subforem_id_to_domain_hash")
-    Rails.cache.delete("subforem_postable_array")
-    Rails.cache.delete("subforem_discoverable_ids")
+    MemoryFirstCache.delete("subforem_domains")
+    MemoryFirstCache.delete("subforem_id_to_domain_hash")
+    MemoryFirstCache.delete("subforem_postable_array")
+    MemoryFirstCache.delete("subforem_discoverable_ids")
     MemoryFirstCache.delete("subforem_root_id")
     MemoryFirstCache.delete("subforem_default_domain")
     MemoryFirstCache.delete("subforem_root_domain")
-    Rails.cache.delete("subforem_all_domains")
+    MemoryFirstCache.delete("subforem_all_domains")
     MemoryFirstCache.delete("subforem_default_id")
     MemoryFirstCache.delete("subforem_id_by_domain_#{domain}")
-    Rails.cache.delete("subforem_misc_id")
+    MemoryFirstCache.delete("subforem_misc_id")
     Rails.cache.delete("subforem_misc_object")
   end
 

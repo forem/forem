@@ -259,4 +259,38 @@ RSpec.describe "BillboardEvents", type: :request do
       end
     end
   end
+
+  describe "Middlewares::MetalTelemetryFastPath" do
+    let!(:article) { create(:article) }
+
+    it "handles JSON POST /bb_tabulations in the fast path without invoking BillboardEvent.create_with_async_commit" do
+      allow(BillboardEvent).to receive(:create_with_async_commit).and_call_original
+
+      post "/bb_tabulations",
+           params: {
+             billboard_event: {
+               billboard_id: billboard.id,
+               category: "impression",
+               context_type: "article",
+               article_id: article.id
+             }
+           }.to_json,
+           headers: { "CONTENT_TYPE" => "application/json", "User-Agent" => "FastPathAgent/1.0" }
+
+      expect(response).to have_http_status(:ok)
+      created_id = response.parsed_body["id"]
+      expect(created_id).to be_present
+      expect(BillboardEvent).not_to have_received(:create_with_async_commit)
+
+      event = BillboardEvent.find(created_id)
+      expect(event).to have_attributes(
+        billboard_id: billboard.id,
+        category: "impression",
+        context_type: "article",
+        article_id: article.id,
+        user_id: user.id,
+        user_agent: "FastPathAgent/1.0",
+      )
+    end
+  end
 end

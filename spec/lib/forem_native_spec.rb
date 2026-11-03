@@ -4752,5 +4752,192 @@ RSpec.describe ForemNative do
         end
       end
     end
+
+    describe ".valid_request_origin (ValidRequest#valid_request_origin?)" do
+      let(:harness_class) do
+        Class.new do
+          include ValidRequest
+
+          attr_accessor :mock_request
+
+          def request
+            mock_request
+          end
+        end
+      end
+
+      let(:mock_req_class) do
+        Struct.new(:referer, :origin, :base_url, :host, :port)
+      end
+
+      it "matches legacy_valid_request_origin? across 1,000 randomized inputs and handles null_origin" do
+        harness = harness_class.new
+        rng = Random.new(20_261_108)
+        referers = [
+          nil, "", "   ",
+          "https://dev.to/ben/some-post",
+          "http://dev.to/ben/some-post",
+          "https://dev.to:3000/feed",
+          "http://localhost:3000/page",
+          "https://evil.example.com/phish",
+          "https://Sub.Dev.To:8080/path?q=1#frag",
+          "mailto:user@example.com",
+          "not a valid url [::1"
+        ]
+        origins = [
+          nil, "null", "https://dev.to", "http://dev.to",
+          "https://dev.to:3000", "http://localhost:3000",
+          "https://evil.example.com", "https://sub.dev.to:8080"
+        ]
+        hosts = ["dev.to", "localhost", "sub.dev.to", "evil.example.com"]
+        ports = [80, 443, 3000, 8080]
+        base_urls = [
+          "https://dev.to", "http://dev.to",
+          "https://dev.to:3000", "http://localhost:3000",
+          "https://sub.dev.to:8080"
+        ]
+
+        1_000.times do |i|
+          ref = referers.sample(random: rng)
+          orig = origins.sample(random: rng)
+          host = hosts.sample(random: rng)
+          port = ports.sample(random: rng)
+          base = base_urls.sample(random: rng)
+
+          harness.mock_request = mock_req_class.new(
+            ref,
+            orig,
+            base,
+            host,
+            port,
+          )
+
+          if ref.blank? && orig == "null"
+            expect { harness.__send__(:evaluate_request_origin) }
+              .to raise_error(ActionController::InvalidAuthenticityToken)
+            expect { harness.__send__(:legacy_valid_request_origin?) }
+              .to raise_error(ActionController::InvalidAuthenticityToken)
+          else
+            expected = harness.__send__(:legacy_valid_request_origin?)
+            actual = harness.__send__(:evaluate_request_origin)
+            expect(actual).to eq(expected),
+                              "iteration #{i}: ref=#{ref.inspect} orig=#{orig.inspect} " \
+                              "base=#{base.inspect} host=#{host.inspect} port=#{port.inspect}"
+          end
+        end
+      end
+    end
+
+    describe ".extract_referrer_domain_and_path (PageView#extract_domain_and_path)" do
+      it "matches legacy_extract_domain_and_path across 1,000 randomized referrer URLs" do
+        rng = Random.new(20_261_109)
+        referrers = [
+          "https://www.google.com/search?q=ruby+rust",
+          "https://news.ycombinator.com/item?id=12345",
+          "https://dev.to/ben/hello-world#comments",
+          "https://sub.blog.co.uk/posts/2026/11/03?utm_source=dev",
+          "http://localhost:3000/internal",
+          "https://192.168.1.1/admin",
+          "https://github.com",
+          "https://github.com/",
+          "https://t.co/abc123XYZ",
+          "android-app://com.google.android.googlequicksearchbox/",
+          "https://example.invalidtld/some/path"
+        ]
+
+        1_000.times do |i|
+          ref = if i % 5 == 0
+                  "https://sub#{i % 20}.example.com/path/#{i}?ref=1"
+                else
+                  referrers.sample(random: rng)
+                end
+
+          pv_legacy = PageView.new(referrer: ref)
+          pv_legacy.__send__(:legacy_extract_domain_and_path)
+
+          pv_native = PageView.new(referrer: ref)
+          pv_native.__send__(:extract_domain_and_path)
+
+          expect([pv_native.domain, pv_native.path])
+            .to eq([pv_legacy.domain, pv_legacy.path]), "iteration #{i}: ref=#{ref.inspect}"
+        end
+      end
+    end
+
+    describe ".match_metal_telemetry_route and .billboard_event_create_from_json_sql" do
+      it "classifies metal telemetry routes and rejects non-matching paths or methods" do
+        expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42"))
+          .to eq([:billboard_update, "42"])
+        expect(described_class.match_metal_telemetry_route("POST", "/bb_tabulations"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/billboard_events/"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/display_ad_events"))
+          .to eq([:billboard_create, nil])
+        expect(described_class.match_metal_telemetry_route("PUT", "/page_views/12345"))
+          .to eq([:page_view_update, "12345"])
+        expect(described_class.match_metal_telemetry_route("PATCH", "/page_views/12345"))
+          .to eq([:page_view_update, "12345"])
+        expect(described_class.match_metal_telemetry_route("POST", "/page_views"))
+          .to eq([:page_view_create, nil])
+        expect(described_class.match_metal_telemetry_route("GET", "/bb_tabulations"))
+          .to be_nil
+        expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"))
+          .to be_nil
+      end
+
+      it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
+        rng = Random.new(20_261_110)
+        categories = %w[impression click signup conversion invalid_cat]
+        contexts = %w[home article email embed invalid_ctx]
+        geos = [nil, "US-NY", "CA-ON", "O'Brien"]
+        uas = [nil, "Mozilla/5.0 (Macintosh)", "Custom'Agent\\1.0"]
+
+        1_000.times do |i|
+          bb_id = [42, "99", "", nil, "not_an_int"].sample(random: rng)
+          cat = categories.sample(random: rng)
+          ctx = contexts.sample(random: rng)
+          art_id = [nil, 100, "205", ""].sample(random: rng)
+          is_embed = rng.rand < 0.25
+          uid = is_embed || %w[signup conversion].include?(cat) ? nil : [nil, 77].sample(random: rng)
+          geo = geos.sample(random: rng)
+          ua = uas.sample(random: rng)
+          now = Time.at(1_700_000_000 + rng.rand(0..100_000_000), rng.rand(1..999_999)).utc
+
+          event_key = rng.rand < 0.8 ? "billboard_event" : "display_ad_event"
+          payload = {
+            event_key => {
+              "billboard_id" => bb_id,
+              "category" => cat,
+              "context_type" => ctx,
+              "article_id" => art_id
+            }
+          }
+          json = JSON.generate(payload)
+
+          outcome = described_class.billboard_event_create_from_json_sql(
+            json, uid, geo, ua, is_embed, now
+          )
+
+          if bb_id.to_s.strip.empty?
+            expect(outcome).to eq(:blank_id), "iteration #{i}: expected :blank_id for #{json}"
+          else
+            expected_sql = BillboardEvent.build_create_with_async_commit_sql(
+              {
+                billboard_id: bb_id.to_s,
+                category: cat,
+                context_type: is_embed ? BillboardEvent::CONTEXT_TYPE_EMBED : ctx,
+                user_id: is_embed ? nil : uid,
+                article_id: art_id.to_s.strip.empty? ? nil : art_id,
+                geolocation: geo,
+                user_agent: ua
+              },
+              now: now,
+            )
+            expect(outcome).to eq([expected_sql || :invalid, bb_id.to_s]), "iteration #{i}: json=#{json}"
+          end
+        end
+      end
+    end
   end
 end
