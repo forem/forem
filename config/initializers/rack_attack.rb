@@ -19,7 +19,7 @@ module Rack
       return false if api_key.nil?
 
       # Admin API Secrets are cached to avoid making DB queries on each request
-      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours, local_cache: false) do
+      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours) do
         ApiSecret.joins(user: :roles)
           .where(roles: { name: ADMIN_ROLES })
           .group("api_secrets.id")
