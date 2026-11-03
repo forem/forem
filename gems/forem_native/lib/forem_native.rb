@@ -933,6 +933,80 @@ module ForemNative
       Native.sanitize_feed_error(message)
     end
 
+    # Verifies a Rails `encoded_masked_token` against the session's `encoded_real_token` in
+    # constant time, matching `ActionController::RequestForgeryProtection#valid_authenticity_token?`.
+    # Returns `true` or `false`, or `nil` if `encoded_real_token` is outside the 32-byte token domain.
+    def verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path = nil, request_method = nil)
+      return unless Native.respond_to?(:verify_authenticity_token)
+      return unless encoded_masked_token.instance_of?(String) && encoded_real_token.instance_of?(String)
+      return unless (action_path.nil? || action_path.instance_of?(String)) &&
+        (request_method.nil? || request_method.instance_of?(String))
+
+      Native.verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path, request_method)
+    end
+
+    # Verifies an HS256 JWT token against `secret` and `now_sec` in constant time, returning
+    # the decoded payload Hash for standard flat payloads, `false` when malformed/invalid/expired,
+    # or `nil` when the caller should fall back to `JWT.decode`.
+    def verify_hs256_jwt(token, secret, now_sec = Time.now.to_i)
+      return unless Native.respond_to?(:verify_hs256_jwt)
+      return unless token.instance_of?(String) && secret.instance_of?(String) && now_sec.is_a?(Integer)
+
+      Native.verify_hs256_jwt(token, secret, now_sec)
+    end
+
+    # Builds the single-statement `SET LOCAL synchronous_commit TO OFF; UPDATE "display_ad_events" ...`
+    # SQL query for `BillboardEvent.add_impression_seconds`. Returns `:invalid` when `id` casts to nil,
+    # the SQL String when valid, or `nil` for out-of-domain inputs.
+    def billboard_event_update_sql(id, user_id, seconds, now_time, cutoff_time)
+      return unless Native.respond_to?(:billboard_event_update_sql)
+      return unless (user_id.nil? || user_id.is_a?(Integer)) && seconds.is_a?(Integer) &&
+        now_time.respond_to?(:tv_sec) && cutoff_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      cutoff_utc = cutoff_time.utc? ? cutoff_time : cutoff_time.getutc
+      Native.billboard_event_update_sql(
+        id, user_id, seconds, now_utc.tv_sec, now_utc.usec, cutoff_utc.tv_sec, cutoff_utc.usec
+      )
+    end
+
+    # Validates and builds the single-statement `SET LOCAL synchronous_commit TO OFF; INSERT INTO ...`
+    # SQL query for `BillboardEvent.create_with_async_commit`. Returns the SQL String, `:invalid` when
+    # validation fails, or `nil` when the caller should fall back to `legacy_create_with_async_commit`.
+    def billboard_event_insert_sql(args)
+      return unless Native.respond_to?(:billboard_event_insert_sql) && args.is_a?(Array)
+
+      Native.billboard_event_insert_sql(args)
+    end
+
+    # Checks whether `origin` matches any whitespace-trimmed non-empty entry in `raw_origins`,
+    # matching `raw_origins.to_s.split(",").map(&:strip).reject(&:empty?).include?(origin)`.
+    def origin_in_comma_list(origin, raw_origins)
+      return false if origin.nil? || raw_origins.nil?
+      return unless Native.respond_to?(:origin_in_comma_list)
+      return unless origin.instance_of?(String) && raw_origins.instance_of?(String)
+
+      Native.origin_in_comma_list(origin, raw_origins)
+    end
+
+    # Checks whether `value` matches `Feeds::RecordConfigVisit::UUID_PATTERN`
+    # (`/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i`).
+    def valid_uuid(value)
+      return false unless value.is_a?(String)
+      return unless Native.respond_to?(:valid_uuid) && value.instance_of?(String)
+
+      Native.valid_uuid(value)
+    end
+
+    # Computes `Digest::SHA256.digest("feed_events:#{user_id}").unpack1("q>")` for
+    # `FeedEvents::BulkUpsert#call` on the stack with zero heap allocations.
+    def feed_events_advisory_lock_key(user_id)
+      return unless Native.respond_to?(:feed_events_advisory_lock_key)
+      return unless user_id.is_a?(Integer) && user_id >= -2**63 && user_id < 2**63
+
+      Native.feed_events_advisory_lock_key(user_id)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

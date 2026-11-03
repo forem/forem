@@ -6,6 +6,13 @@ module Feeds
       new(...).call
     end
 
+    def self.valid_uuid?(value)
+      return false unless value.is_a?(String)
+
+      native = ForemNative.valid_uuid(value)
+      native.nil? ? UUID_PATTERN.match?(value) : native
+    end
+
     def initialize(token:, event_id:, user_id:, host:,
                    subforem_id: RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id])
       @token = token
@@ -38,7 +45,7 @@ module Feeds
 
     def valid_payload?
       return false unless @token.is_a?(String) && @token.bytesize <= 4096
-      return false unless @event_id.is_a?(String) && UUID_PATTERN.match?(@event_id)
+      return false unless self.class.valid_uuid?(@event_id)
 
       @data = FeedConfigAssignment.visit_verifier.verified(@token, purpose: :feed_config_visit)
       @data.is_a?(Hash) && @data["user_id"] == @user_id && @data["host"] == @host &&

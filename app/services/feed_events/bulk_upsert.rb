@@ -30,7 +30,8 @@ module FeedEvents
         # Serialize ingestion for each user, including across web processes. Acquire
         # locks in a stable order so overlapping batches cannot deadlock.
         valid_events.map(&:user_id).uniq.sort_by(&:to_i).each do |user_id|
-          key = Digest::SHA256.digest("feed_events:#{user_id}").unpack1("q>")
+          key = ForemNative.feed_events_advisory_lock_key(user_id) ||
+            Digest::SHA256.digest("feed_events:#{user_id}").unpack1("q>")
           FeedEvent.connection.execute("SELECT pg_advisory_xact_lock(#{key})")
         end
         insert_events!
