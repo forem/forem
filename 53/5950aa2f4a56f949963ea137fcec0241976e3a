@@ -1,0 +1,26 @@
+app/javascript/Snackbar/SnackbarItem.jsx
+  h_f968154a99632d 23,26
+app/javascript/packs/application.jsx
+  h_f968154a99632d 42-44
+app/javascript/utilities/__tests__/locale.test.js
+  h_f968154a99632d 50-64
+app/javascript/utilities/locale.js
+  h_f968154a99632d 4,13,18-19,36-39
+app/views/layouts/application.html.erb
+  h_f968154a99632d 173
+esbuild.config.mjs
+  h_f968154a99632d 83-121,123,138-151,185
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 133-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "535950aa2f4a56f949963ea137fcec0241976e3a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
