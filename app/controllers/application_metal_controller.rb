@@ -8,6 +8,7 @@ class ApplicationMetalController < ActionController::Metal
   # the specific controller.
 
   protect_from_forgery with: :exception, prepend: true unless Rails.env.test?
+  prepend_before_action :skip_session_commit
 
   include SessionCurrentUser
   include ValidRequest
@@ -55,5 +56,14 @@ class ApplicationMetalController < ActionController::Metal
     nil
   rescue
     nil
+  end
+
+  private
+
+  # Metal controllers are read-only consumers of the session (CSRF verification
+  # and session_current_user_id). Skipping Rack's post-request session commit
+  # avoids a redundant Redis SETEX and Set-Cookie on every telemetry ping.
+  def skip_session_commit
+    request.session_options[:skip] = true
   end
 end
