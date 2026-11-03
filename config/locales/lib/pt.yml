@@ -50,6 +50,9 @@ pt:
             description: The "Secret" portion of the MyMLH applications portal
           providers:
             description: Como os usuários podem fazer login?
+          captcha_provider:
+            label: Provedor de CAPTCHA
+            description: Selecione o provedor para cadastros com e-mail e senha e denúncias de abuso. Apenas as chaves do provedor selecionado são usadas.
           recaptcha_secret:
             description: Adicione a chave secreta do Google reCAPTCHA, que é usada para reportar abuso
             placeholder: Qual é a chave secreta do Google reCAPTCHA?
@@ -57,7 +60,16 @@ pt:
             description: Adicione a chave do site do Google reCAPTCHA, que é usada para reportar abuso
             placeholder: Qual é a chave do site do Google reCAPTCHA?
           require_recaptcha:
-            description: As pessoas serão obrigadas a preencher um captcha quando estiverem criando uma nova conta na sua comunidade
+            label: Ativar CAPTCHA para cadastros com e-mail e senha
+            description: Exigir CAPTCHA para cadastros com e-mail e senha. Esta caixa não controla o CAPTCHA dos formulários de denúncia de abuso.
+          turnstile_site:
+            label: Chave do site do Cloudflare Turnstile
+            description: A chave pública do site do seu widget Cloudflare Turnstile, usada nos cadastros e nas denúncias de abuso quando o Turnstile está selecionado.
+            placeholder: Qual é a chave do site do Cloudflare Turnstile?
+          turnstile_secret:
+            label: Chave secreta do Cloudflare Turnstile
+            description: A chave secreta privada usada para verificar as respostas do Cloudflare Turnstile no servidor.
+            placeholder: Qual é a chave secreta do Cloudflare Turnstile?
           twitter_key:
             description: A parte "API key" das chaves de consumidor no portal de desenvolvedor do Twitter.
           twitter_secret:

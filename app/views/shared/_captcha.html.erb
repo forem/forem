@@ -1,0 +1,6 @@
+<% if Settings::Authentication.captcha_provider == "turnstile" %>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <div class="cf-turnstile" data-sitekey="<%= Settings::Authentication.turnstile_site_key %>"></div>
+<% else %>
+  <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
+<% end %>
