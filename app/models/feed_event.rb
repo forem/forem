@@ -125,12 +125,15 @@ class FeedEvent < ApplicationRecord
 
     ThrottledCall.perform(throttle_key, throttle_for: 5.minutes) do
       executed = true
-      impressions_total, score = calculate_feed_config_counters(feed_config_id)
+      impressions_total, score, impression_users = calculate_feed_config_counters(feed_config_id)
       next if impressions_total.zero?
 
       FeedConfig.where(id: feed_config_id).update_all(
-        feed_success_score: score,
+        feed_success_score: Arel.sql(
+          "#{score} + feed_repeat_visits_count * #{FeedConfig::REPEAT_VISIT_SCORE_MULTIPLIER} / #{impression_users}",
+        ),
         feed_impressions_count: impressions_total,
+        feed_impression_users_count: impression_users,
       )
     end
 
@@ -145,7 +148,9 @@ class FeedEvent < ApplicationRecord
     age_in_hours = (event_time.to_f - published_at.to_f) / 3600.0
     return FRESHNESS_MAX_MULTIPLIER if age_in_hours <= FRESHNESS_MAX_BONUS_HOURS
 
-    lookback_setting = Settings::UserExperience.feed_lookback_days.to_i
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    lookback_setting = Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
     lookback_days = lookback_setting.positive? ? lookback_setting : DEFAULT_FRESHNESS_LOOKBACK_DAYS
     lookback_hours = lookback_days * 24.0
     return FRESHNESS_MIN_MULTIPLIER if age_in_hours >= lookback_hours || lookback_hours <= FRESHNESS_MAX_BONUS_HOURS
@@ -191,7 +196,7 @@ class FeedEvent < ApplicationRecord
     pageviews_score = best_freshness["extended_pageview"].values.sum
     score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / impressions_users.size
 
-    [impressions_total, score]
+    [impressions_total, score, impressions_users.size]
   end
   private_class_method :calculate_feed_config_counters
 

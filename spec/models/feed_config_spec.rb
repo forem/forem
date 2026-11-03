@@ -487,7 +487,10 @@ RSpec.describe FeedConfig, type: :model do
     end
 
     it "adjusts tag count ranges with +/- offsets and resets impressions and success score" do
-      feed_config.update_columns(feed_impressions_count: 250, feed_success_score: 1.45)
+      feed_config.update_columns(
+        feed_impressions_count: 250, feed_success_score: 1.45,
+        feed_impression_users_count: 10, feed_repeat_visits_count: 6
+      )
       feed_config.create_slightly_modified_clone!
       clone = FeedConfig.last
 
@@ -495,8 +498,9 @@ RSpec.describe FeedConfig, type: :model do
       expect(clone.recent_tag_count_max).to eq(6)
       expect(clone.all_time_tag_count_min).to eq(4)
       expect(clone.all_time_tag_count_max).to eq(9)
-      expect(clone.feed_impressions_count).to eq(0)
-      expect(clone.feed_success_score).to eq(0.0)
+      expect(clone).to have_attributes(
+        feed_impressions_count: 0, feed_impression_users_count: 0, feed_repeat_visits_count: 0, feed_success_score: 0.0,
+      )
       expect(clone.archived).to be(false)
     end
 
@@ -671,6 +675,16 @@ RSpec.describe FeedConfig, type: :model do
       expect(config.published_at_diversity_half_lookback_hours)
         .to eq(described_class::DEFAULT_FEED_LOOKBACK_DAYS * 12.0)
     end
+
+    it "resolves max_feed_lookback_hours against Subforem.cached_default_id when RequestStore is empty" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      expect(described_class.max_feed_lookback_hours).to eq(120)
+    end
   end
 
   describe ".targeting_bucket_for" do
@@ -774,6 +788,22 @@ RSpec.describe FeedConfig, type: :model do
   describe ".archive_stale_configs!" do
     before do
       stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 3)
+    end
+
+    it "keeps an assigned config active until its 60-hour window expires" do
+      Timecop.freeze do
+        config = create(:feed_config, created_at: 3.days.ago)
+        create(:feed_config_assignment, feed_config: config, expires_at: 60.hours.from_now)
+        stub_const("FeedConfig::ARCHIVE_TOP_LIMIT", 0)
+
+        described_class.archive_stale_configs!
+        expect(config.reload).not_to be_archived
+
+        Timecop.freeze(60.hours.from_now) do
+          described_class.archive_stale_configs!
+          expect(config.reload).to be_archived
+        end
+      end
     end
 
     it "archives configs outside the top limit that are older than 2 days" do

@@ -12,6 +12,9 @@ module Organizations
     # so keep the cache warm across runs with a 2x TTL buffer instead of expiring
     # 15 minutes into every 30-minute window.
     CACHE_EXPIRY = 1.hour
+    # Every billboard request reads this list, but it only changes once per 30-minute cron run,
+    # so serve it from in-process memory for a short window instead of a Redis GET per request.
+    MEMORY_CACHE_EXPIRY = 1.minute
     STATEMENT_TIMEOUT = ENV.fetch("STATEMENT_TIMEOUT_BULK_DELETE", 30_000).to_i
 
     def perform
@@ -99,7 +102,7 @@ module Organizations
 
     # Class method to get cached paused organization IDs
     def self.paused_organization_ids
-      cached_ids = Rails.cache.read(CACHE_KEY)
+      cached_ids = MemoryFirstCache.fetch(CACHE_KEY, memory_expires_in: MEMORY_CACHE_EXPIRY)
       # Ensure we always return an array of integers
       return [] if cached_ids.nil? || cached_ids.empty?
 

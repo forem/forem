@@ -21,7 +21,8 @@ class FeedbackMessagesController < ApplicationController
       rate_limiter.track_limit_by_action(:feedback_message_creation)
 
       if user_signed_in?
-        Rails.cache.fetch("#{current_user.cache_key}/feedback-response-sent-at", expires_in: 24.hours) do
+        Rails.cache.fetch("#{current_user.cache_key}/feedback-response-sent-at",
+                          expires_in: 24.hours, local_cache: false) do
           NotifyMailer.with(email_to: current_user.email).feedback_response_email.deliver_later
           Time.current
         end
@@ -55,6 +56,10 @@ class FeedbackMessagesController < ApplicationController
   private
 
   def recaptcha_verified?
+    if Settings::Authentication.captcha_provider == "turnstile"
+      return Turnstile::Verify.call(token: params["cf-turnstile-response"], hostname: request.host)
+    end
+
     recaptcha_params = { secret_key: Settings::Authentication.recaptcha_secret_key }
     params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
   end

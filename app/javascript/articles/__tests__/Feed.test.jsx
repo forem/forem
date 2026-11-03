@@ -1,4 +1,5 @@
 /* eslint-disable no-irregular-whitespace */
+import { webcrypto } from 'crypto';
 import { h } from 'preact';
 import { render, waitFor } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
@@ -37,6 +38,121 @@ describe('<Feed /> component', () => {
     node.setAttribute('id', 'followed-podcasts');
     node.setAttribute('data-episodes', JSON.stringify(podcastEpisodes));
     document.body.appendChild(node);
+  });
+
+  describe('home-feed visibility acknowledgements', () => {
+    let visibility;
+    let originalCrypto;
+    beforeEach(() => {
+      originalCrypto = window.crypto;
+      Object.defineProperty(window, 'crypto', { configurable: true, value: webcrypto });
+      visibility = jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('visible');
+      window.csrfToken = 'csrf-test';
+      fetch.resetMocks();
+      fetch.mockResponse((request) => {
+        if (request.url === '/feed_config_visits') {
+          return Promise.resolve({ body: '', init: { headers: { 'X-Feed-Visit-Wait': '1800' } } });
+        }
+        if (request.url.startsWith('/stories/feed/')) {
+          return Promise.resolve({
+            body: JSON.stringify(feedPosts),
+            init: { headers: { 'content-type': 'application/json', 'X-Feed-Visit-Token': 'signed-proof' } },
+          });
+        }
+        return Promise.resolve({ body: '', init: { headers: { 'content-type': 'text/html' } } });
+      });
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+      Object.defineProperty(window, 'crypto', { configurable: true, value: originalCrypto });
+      localStorage.removeItem('current_feed');
+      delete window.csrfToken;
+    });
+
+    it.each([
+      ['visible', '', 'discover', true],
+      ['hidden', '', 'discover', false],
+      ['visible', 'latest', 'discover', false],
+      ['visible', '', 'following', false],
+      ['visible', '', 'curated', false],
+    ])(
+      'acknowledges only visible rendered Discover content (%s, %s, %s)',
+      async (state, timeFrame, feedType, expected) => {
+        visibility.mockReturnValue(state);
+        localStorage.setItem('current_feed', feedType);
+        const callback = jest.fn(() => null);
+        render(<Feed timeFrame={timeFrame} renderFeed={callback} />);
+        await waitFor(() => expect(callback).toHaveBeenLastCalledWith(expect.objectContaining({ isLoading: false })));
+        await waitFor(() => {
+          const visits = fetch.mock.calls.filter(([url]) => url === '/feed_config_visits');
+          expect(visits).toHaveLength(expected ? 1 : 0);
+        });
+        expect(fetch.mock.calls[0][1].headers['X-Feed-Visit']).toBeUndefined();
+
+        if (state === 'hidden') {
+          visibility.mockReturnValue('visible');
+          document.dispatchEvent(new Event('visibilitychange'));
+          await waitFor(() => expect(fetch.mock.calls.filter(([url]) => url === '/feed_config_visits')).toHaveLength(1));
+        }
+      },
+    );
+
+    it('does not acknowledge empty feed responses even if they include a token', async () => {
+      fetch.mockResponseOnce('[]', {
+        headers: { 'content-type': 'application/json', 'X-Feed-Visit-Token': 'signed-proof' },
+      });
+      const callback = jest.fn(() => null);
+      render(<Feed timeFrame="" renderFeed={callback} />);
+      await waitFor(() => expect(callback).toHaveBeenLastCalledWith(expect.objectContaining({ isLoading: false })));
+      expect(fetch.mock.calls.some(([url]) => url === '/feed_config_visits')).toBe(false);
+    });
+
+    it('shows a failed feed once without acknowledging it or creating a request loop', async () => {
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        status: 503,
+        headers: { 'content-type': 'application/json', 'X-Feed-Visit-Token': 'signed-proof' },
+      });
+      const { getByText } = render(<Feed timeFrame="" renderFeed={() => null} />);
+      await waitFor(() => expect(getByText('There was a problem fetching your feed.')).toBeInTheDocument());
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(fetch.mock.calls.filter(([url]) => url.startsWith('/stories/feed/'))).toHaveLength(1);
+      expect(fetch.mock.calls.some(([url]) => url === '/feed_config_visits')).toBe(false);
+    });
+
+    it('ignores a stale Discover response after switching to another feed', async () => {
+      let finishInitial;
+      const feedResponse = {
+        ok: true,
+        headers: { get: (name) => name === 'content-type' ? 'application/json' : 'old-proof' },
+        json: async () => JSON.parse(JSON.stringify(feedPosts)),
+      };
+      fetch.mockImplementation((url) => {
+        if (url.startsWith('/stories/feed/latest')) return Promise.resolve(feedResponse);
+        if (url.startsWith('/stories/feed/')) {
+          return new Promise((resolve) => { finishInitial = () => resolve(feedResponse); });
+        }
+        return Promise.resolve({ headers: { get: () => 'text/html' }, text: async () => '' });
+      });
+      const callback = jest.fn(() => null);
+      const { container } = render(<Feed timeFrame="" renderFeed={callback} />);
+      await waitFor(() => expect(finishInitial).toBeDefined());
+      render(<Feed timeFrame="latest" renderFeed={callback} />, { container });
+      await waitFor(() => expect(callback).toHaveBeenLastCalledWith(expect.objectContaining({ isLoading: false })));
+      finishInitial();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(fetch.mock.calls.some(([url]) => url === '/feed_config_visits')).toBe(false);
+    });
+
+    it('does not acknowledge the previous feed while transitioning away from displayed Discover content', async () => {
+      const callback = jest.fn(() => null);
+      const { container } = render(<Feed timeFrame="" renderFeed={callback} />);
+      await waitFor(() => expect(fetch.mock.calls.filter(([url]) => url === '/feed_config_visits')).toHaveLength(1));
+      render(<Feed timeFrame="latest" renderFeed={callback} />, { container });
+      await waitFor(() => expect(callback).toHaveBeenLastCalledWith(expect.objectContaining({ isLoading: false })));
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(fetch.mock.calls.filter(([url]) => url === '/feed_config_visits')).toHaveLength(1);
+    });
   });
 
   describe('feedItem organization', () => {

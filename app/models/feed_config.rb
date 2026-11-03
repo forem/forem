@@ -1,6 +1,7 @@
 class FeedConfig < ApplicationRecord
   LOW_IMPRESSION_COUNT = 25
   TOP_POOL_LIMIT = 15
+  REPEAT_VISIT_SCORE_MULTIPLIER = 0.5
 
   BUCKET_ALL = "all".freeze
   BUCKET_FEED_NEW_USER = "feed_new_user".freeze
@@ -138,11 +139,21 @@ class FeedConfig < ApplicationRecord
         .limit(ARCHIVE_TOP_LIMIT)
         .ids
 
-      bucket_scope
+      stale_configs = bucket_scope
         .where("created_at < ?", cutoff)
         .where.not(id: top_ids)
-        .in_batches(of: 1000)
-        .update_all(archived: true, updated_at: Time.current)
+        .where(
+          "NOT EXISTS (SELECT 1 FROM feed_config_assignments " \
+          "WHERE feed_config_id = feed_configs.id AND expires_at > ?)", Time.current
+        )
+      stale_configs.in_batches(of: 1000) do |batch|
+        transaction do
+          # Selection holds this same lock until its assignment commits. The
+          # subsequent UPDATE gets a fresh snapshot of those assignments.
+          locked_ids = batch.reorder(:id).lock.ids
+          stale_configs.where(id: locked_ids).update_all(archived: true, updated_at: Time.current)
+        end
+      end
     end
   end
 
@@ -161,9 +172,24 @@ class FeedConfig < ApplicationRecord
   end
 
   def self.max_feed_lookback_hours
-    lookback_days = Settings::UserExperience.feed_lookback_days.to_i
+    subforem_id = RequestStore.store[:subforem_id] || RequestStore.store[:default_subforem_id] ||
+      Subforem.cached_default_id
+    lookback_days = Settings::UserExperience.feed_lookback_days(subforem_id: subforem_id).to_i
     days = lookback_days.positive? ? lookback_days : DEFAULT_FEED_LOOKBACK_DAYS
     days * 24
+  end
+
+  def self.record_repeat_visit(config_id)
+    # Use the last measured impression-user denominator, just as the engagement
+    # score does. Normal feedback refreshes reconcile it with any new viewers.
+    # Both score refreshes and this increment read the counter inside UPDATE so
+    # concurrent engagement feedback cannot overwrite newly earned return credit.
+    where(id: config_id, archived: false).update_all(
+      "feed_repeat_visits_count = feed_repeat_visits_count + 1, " \
+      "feed_success_score = COALESCE(feed_success_score, 0) + " \
+      "CASE WHEN feed_impression_users_count > 0 " \
+      "THEN #{REPEAT_VISIT_SCORE_MULTIPLIER} / feed_impression_users_count ELSE 0 END",
+    )
   end
 
   def self.resolve_selection_bucket(user: nil, context_type: nil, targeting_bucket: nil)
@@ -349,6 +375,8 @@ class FeedConfig < ApplicationRecord
       requested_bucket: targeting_bucket,
     )
     clone.feed_impressions_count = 0
+    clone.feed_impression_users_count = 0
+    clone.feed_repeat_visits_count = 0
     clone.feed_success_score = 0.0
     clone.archived = false
     clone.tap(&:save)

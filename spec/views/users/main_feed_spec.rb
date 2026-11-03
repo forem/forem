@@ -108,6 +108,7 @@ RSpec.describe "users/show" do
   it "renders without exception" do
     render
     expect(rendered).to have_css(".profile-header")
+    expect(rendered).to include("articleModerationTools")
     expect(rendered).not_to have_css(".featured-story-marker")
     expect(rendered).not_to have_css(".crayons-story__body")
     expect(rendered).not_to have_css(".profile-comment-row")

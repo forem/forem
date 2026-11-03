@@ -85,6 +85,7 @@ en:
   ai_image_generations_controller:
     prompt_required: Image prompt is required
     generation_failed: Failed to generate image. Please try again.
+    generation_refused: This prompt can't be turned into an image. Try describing it differently.
     timeout: Image generation timed out. Please try again.
     unexpected_error: An unexpected error occurred while generating the image.
   image_uploads_controller:
@@ -134,6 +135,7 @@ en:
     not_upserted_successfully: Not Upserted Successfully
   registrations_controller:
     error:
+      captcha: You must complete the CAPTCHA verification.
       recaptcha: You must complete the recaptcha ✅
       domain: is not included in allowed domains.
   response_templates_controller:

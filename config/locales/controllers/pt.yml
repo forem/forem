@@ -85,6 +85,7 @@ pt:
   ai_image_generations_controller:
     prompt_required: Prompt de imagem é obrigatório
     generation_failed: Falha ao gerar imagem. Por favor, tente novamente.
+    generation_refused: Não é possível gerar uma imagem a partir deste prompt. Tente descrevê-lo de outra forma.
     timeout: A geração da imagem expirou. Por favor, tente novamente.
     unexpected_error: Ocorreu um erro inesperado ao gerar a imagem.
   image_uploads_controller:
@@ -134,6 +135,7 @@ pt:
     not_upserted_successfully: Não inserido com sucesso
   registrations_controller:
     error:
+      captcha: Você deve concluir a verificação CAPTCHA.
       recaptcha: Você deve completar o recaptcha ✅
       domain: não está incluído nos domínios permitidos.
   response_templates_controller:

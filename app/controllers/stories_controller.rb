@@ -16,6 +16,7 @@ class StoriesController < ApplicationController
 
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
+  UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -46,6 +47,7 @@ class StoriesController < ApplicationController
     not_found if params[:org_slug].present? && params[:org_slug] != @organization.slug
 
     @article = Article.includes(user: %i[profile setting roles])
+      .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS)
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
@@ -69,7 +71,10 @@ class StoriesController < ApplicationController
   def show
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
-    if (@article = Article.includes(:organization, user: %i[profile setting roles]).find_by(path: path)&.decorate)
+    # Story cards still need the serialized author/organization snapshots.
+    # The page never reads the embedding or search document, so skip those payloads.
+    if (@article = Article.includes(:organization, user: %i[profile setting roles])
+        .select(Article.column_names - UNRENDERED_ARTICLE_COLUMNS).find_by(path: path)&.decorate)
       handle_article_show
     # The slug fallback only redirects or 404s, so skip hydrating the heavy body/embedding columns.
     elsif (@article = Article.select(:id, :path, :organization_id).find_by(slug: params[:slug])&.decorate)
@@ -146,7 +151,8 @@ class StoriesController < ApplicationController
                 .where.not(username: potential_username)
                 .order(profile_updated_at: :desc)
                 .first
-    if @user&.articles&.find_by(slug: params[:slug])
+    # Only existence matters here, so probe the (slug, user_id) index instead of hydrating the full row.
+    if @user&.articles&.exists?(slug: params[:slug])
       set_surrogate_key_header(@article.record_key, *@user.profile_cache_keys)
       redirect_permanently_to(Addressable::URI.parse("/#{@user.username}/#{params[:slug]}").path)
       return
@@ -591,8 +597,11 @@ class StoriesController < ApplicationController
     )
   end
 
+  # users/_github_repositories_area only reads these columns, so skip the large
+  # YAML-serialized info_hash blob (and the rest of the row) when loading repos.
   def assign_user_github_repositories
     @github_repositories = @user.github_repos.featured
+      .select(:id, :name, :description, :url, :language, :stargazers_count, :fork)
   end
 
   def assign_podcasts

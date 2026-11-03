@@ -510,10 +510,26 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}_#{RequestStore.store[:subforem_id]}") do
-      ids = user_activity&.alltime_reading_list_articles.presence || begin
-        readinglist = Reaction.readinglist_for_user(self).order("created_at DESC").limit(1000)
-        published = Article.published.from_subforem.where(id: readinglist.pluck(:reactable_id)).ids
-        readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
+      # Only read alltime_reading_list_articles instead of hydrating the full user_activities row
+      # (which carries the 768-dim interest_embedding vector and 10 other JSONB columns).
+      activity_ids = if association(:user_activity).loaded?
+                       user_activity&.alltime_reading_list_articles
+                     else
+                       UserActivity.where(user_id: id).pick(:alltime_reading_list_articles)
+                     end
+      ids = activity_ids.presence || begin
+        # Order by `(created_at + INTERVAL '0 seconds') DESC` so high-volume accounts in
+        # `pg_stats.most_common_vals` use `index_reactions_on_user_id_reactable_id_reactable_type_category`
+        # + Sort instead of a backward scan across the full `index_reactions_on_created_at` index on LIMIT 1000.
+        readinglist_ids = Reaction.readinglist_for_user(self)
+          .order(Arel.sql("reactions.created_at + INTERVAL '0 seconds' DESC"))
+          .limit(1000)
+          .pluck(:reactable_id)
+        if readinglist_ids.empty?
+          []
+        else
+          readinglist_ids & Article.published.from_subforem.where(id: readinglist_ids).ids
+        end
       end
       ids.first(1000)
     end
@@ -1287,6 +1303,7 @@ class User < ApplicationRecord
     Rails.cache.delete("user-#{id}/role_names")
     Rails.cache.delete("user-#{id}/moderator_for_tags")
     Rails.cache.delete("user-#{id}/moderator_for_subforems")
+    Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY) if role.name.in?(Rack::Attack::ADMIN_ROLES)
     refresh_auto_audience_segments
     trusted?
 

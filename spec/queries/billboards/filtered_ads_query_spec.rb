@@ -225,6 +225,23 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(other_community)
     end
 
+    it "checks for matching community ads within the single billboards query" do
+      no_ads_org_id = no_ads_org.id
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      with_community = nil
+      without_community = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        with_community = filter_billboards(organization_id: organization.id).to_a
+        without_community = filter_billboards(organization_id: no_ads_org_id).to_a
+      end
+
+      expect(with_community).to contain_exactly(community_ad)
+      expect(without_community).to contain_exactly(in_house_ad, external_ad, other_external)
+      expect(queries.grep(/FROM "display_ads"/).size).to eq(2)
+      expect(queries.grep(/SELECT 1 AS one FROM "display_ads"/)).to be_empty
+    end
+
     it "does not preload organizations for every candidate billboard" do
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] }

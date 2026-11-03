@@ -322,6 +322,7 @@ Rails.application.routes.draw do
     resources :page_views, only: %i[create update]
     resources :insights, only: %i[create]
     resources :feed_events, only: %i[create]
+    resources :feed_config_visits, only: %i[create]
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
     end

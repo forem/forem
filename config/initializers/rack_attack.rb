@@ -1,3 +1,8 @@
+require Rails.root.join("lib/local_redis/rack_attack_proxy")
+if Rails.cache.is_a?(ActiveSupport::Cache::LocalRedisCacheStore)
+  Rack::Attack.cache.store = Rails.cache
+end
+
 Rack::Attack.throttled_response_retry_after_header = true
 
 module Rack

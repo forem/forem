@@ -15,8 +15,7 @@ module ReCaptcha
     end
 
     def call
-      # recaptcha will not be enabled if site key and secret key aren't set
-      return false unless keys_configured?
+      return false unless Settings::Authentication.captcha_provider == "turnstile" || keys_configured?
       # recaptcha will always be enabled when not logged in
       return true if @user.nil?
 

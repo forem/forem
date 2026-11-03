@@ -227,6 +227,38 @@ RSpec.describe "Dashboards" do
         html = Nokogiri::HTML(response.body)
         expect(html.at_css("details.dashboard-sidebar-orgs")).to be_nil
       end
+
+      it "renders mobile actions dropdown with proper counts", :aggregate_failures do
+        create(
+          :organization_membership,
+          type_of_user: :admin,
+          organization: organization,
+          user: user
+        )
+        create(:article, user: user)
+        user.reload.update!(
+          agent_sessions_count: 5,
+          following_orgs_count: 3,
+          following_users_count: 2
+        )
+
+        Timecop.freeze(Time.current) do
+          user.update!(created_at: 3.weeks.ago)
+          allow(Settings::General).to receive(:enable_video_upload).and_return(true)
+
+          sign_in user
+          get "/dashboard/sidebar", params: { state: "show", type_of: "mobile" }, xhr: true
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include('id="mobile_nav_dashboard"')
+          expect(response.body).to include("Posts (1)")
+          expect(response.body).to include("Following organizations (3)")
+          expect(response.body).to include("Following users (2)")
+          expect(response.body).to include("Agent Sessions (5)")
+          expect(response.body).to include(CGI.escapeHTML(organization.name))
+          expect(response.body).to include("Upload a video")
+        end
+      end
     end
 
     context "when logged in as a super admin" do

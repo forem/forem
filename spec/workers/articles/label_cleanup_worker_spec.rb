@@ -2,146 +2,107 @@ require "rails_helper"
 
 RSpec.describe Articles::LabelCleanupWorker, type: :worker do
   let(:worker) { described_class.new }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
+
+  def create_cleanup_article(published_at:, **attributes)
+    article = create(
+      :article,
+      user: user,
+      published: true,
+      automod_label: "no_moderation_label",
+      with_tags: false,
+      **attributes,
+    )
+    article.update_columns(published_at: published_at)
+    article
+  end
+
+  def perform_cleanup
+    allow(Articles::HandleSpamWorker).to receive(:perform_async)
+    allow(Rails.logger).to receive(:info)
+    worker.perform
+  end
 
   describe "#perform" do
-    let!(:user) { create(:user) }
-
     context "when there are eligible articles" do
-      it "processes eligible articles and enqueues HandleSpamWorker jobs" do
-        # Create articles within the eligible time range
-        article1 = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article1.update_columns(published_at: 1.hour.ago)
-        
-        article2 = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article2.update_columns(published_at: 2.hours.ago)
+      it "processes eligible articles, enqueues HandleSpamWorker jobs, and logs progress", :aggregate_failures do
+        article1 = create_cleanup_article(published_at: 1.hour.ago)
+        article2 = create_cleanup_article(published_at: 2.hours.ago)
 
-        expect(Articles::HandleSpamWorker).to receive(:perform_async).with(article1.id)
-        expect(Articles::HandleSpamWorker).to receive(:perform_async).with(article2.id)
+        perform_cleanup
 
-        worker.perform
+        expect(Articles::HandleSpamWorker).to have_received(:perform_async).with(article2.id).ordered
+        expect(Articles::HandleSpamWorker).to have_received(:perform_async).with(article1.id).ordered
+        expect(Rails.logger).to have_received(:info).with(
+          "LabelCleanupWorker: Processing 2 articles with no_moderation_label",
+        )
+        expect(Rails.logger).to have_received(:info).with(
+          "LabelCleanupWorker: Enqueued 2 HandleSpamWorker jobs",
+        )
       end
 
-      it "logs the number of articles being processed" do
-        # Create articles within the eligible time range
-        article1 = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article1.update_columns(published_at: 1.hour.ago)
-        
-        article2 = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article2.update_columns(published_at: 2.hours.ago)
+      it "limits to MAX_ARTICLES_PER_RUN when there are more articles", :aggregate_failures do
+        stub_const("Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN", 2)
 
-        allow(Rails.logger).to receive(:info)
-        allow(Articles::HandleSpamWorker).to receive(:perform_async)
+        oldest_article = create_cleanup_article(published_at: 3.hours.ago)
+        middle_article = create_cleanup_article(published_at: 2.hours.ago)
+        newest_article = create_cleanup_article(published_at: 1.hour.ago)
 
-        worker.perform
+        eligible_articles = worker.__send__(:find_eligible_articles)
+        expect(eligible_articles.limit_value).to eq(Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN)
+        expect(eligible_articles.size).to eq(2)
 
-        expect(Rails.logger).to have_received(:info).with("LabelCleanupWorker: Processing 2 articles with no_moderation_label")
-        expect(Rails.logger).to have_received(:info).with("LabelCleanupWorker: Enqueued 2 HandleSpamWorker jobs")
-      end
+        perform_cleanup
 
-      it "limits to MAX_ARTICLES_PER_RUN when there are more articles" do
-        # Create 160 articles (more than the max limit of 150)
-        160.times do |i|
-          article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-          article.update_columns(published_at: (15 + i).minutes.ago)
-        end
-
-        # Test that the query itself is limited
-        eligible_articles = worker.send(:find_eligible_articles)
-        expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
-
-        # Should only process up to 150 articles due to LIMIT clause
-        expect(Articles::HandleSpamWorker).to receive(:perform_async).at_most(150).times
-
-        worker.perform
+        expect(Articles::HandleSpamWorker).to have_received(:perform_async).with(oldest_article.id).ordered
+        expect(Articles::HandleSpamWorker).to have_received(:perform_async).with(middle_article.id).ordered
+        expect(Articles::HandleSpamWorker).not_to have_received(:perform_async).with(newest_article.id)
       end
     end
 
     context "when there are no eligible articles" do
-      it "does not enqueue any HandleSpamWorker jobs" do
-        expect(Articles::HandleSpamWorker).not_to receive(:perform_async)
+      it "does not enqueue any HandleSpamWorker jobs and logs that none were found", :aggregate_failures do
+        perform_cleanup
 
-        worker.perform
-      end
-
-      it "logs that no eligible articles were found" do
-        allow(Rails.logger).to receive(:info)
-
-        worker.perform
-
-        expect(Rails.logger).to have_received(:info).with("LabelCleanupWorker: No eligible articles found for processing")
+        expect(Articles::HandleSpamWorker).not_to have_received(:perform_async)
+        expect(Rails.logger).to have_received(:info).with(
+          "LabelCleanupWorker: No eligible articles found for processing",
+        )
       end
     end
 
     context "when articles exist but are not eligible" do
-      it "does not process articles that are too recent" do
-        # Create article that's too recent (5 minutes ago)
-        article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article.update_columns(published_at: 5.minutes.ago)
+      it "ignores too-recent, differently labeled, or low-score articles and logs that none were found",
+         :aggregate_failures do
+        create_cleanup_article(published_at: 5.minutes.ago)
+        create_cleanup_article(published_at: 1.hour.ago, automod_label: "okay_and_on_topic")
+        create_cleanup_article(published_at: 1.hour.ago, score: -80)
 
-        expect(Articles::HandleSpamWorker).not_to receive(:perform_async)
+        perform_cleanup
 
-        worker.perform
-      end
-
-      it "does not process articles with different labels" do
-        # Create article with different label
-        article = create(:article, user: user, published: true, automod_label: "okay_and_on_topic")
-        article.update_columns(published_at: 1.hour.ago)
-
-        expect(Articles::HandleSpamWorker).not_to receive(:perform_async)
-
-        worker.perform
-      end
-
-      it "does not process articles with a score of -80 or lower" do
-        # Create article with score of -80
-        article = create(:article, user: user, published: true, automod_label: "no_moderation_label", score: -80)
-        article.update_columns(published_at: 1.hour.ago)
-
-        expect(Articles::HandleSpamWorker).not_to receive(:perform_async)
-
-        worker.perform
-      end
-
-      it "logs that no eligible articles were found when none exist" do
-        allow(Rails.logger).to receive(:info)
-
-        worker.perform
-
-        expect(Rails.logger).to have_received(:info).with("LabelCleanupWorker: No eligible articles found for processing")
+        expect(Articles::HandleSpamWorker).not_to have_received(:perform_async)
+        expect(Rails.logger).to have_received(:info).with(
+          "LabelCleanupWorker: No eligible articles found for processing",
+        )
       end
     end
   end
 
   describe "private methods" do
     describe "#find_eligible_articles" do
-      let!(:user) { create(:user) }
-      let!(:eligible_article) do
-        article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        article.update_columns(published_at: 1.hour.ago)
-        article
-      end
-
+      let!(:eligible_article) { create_cleanup_article(published_at: 1.hour.ago) }
+      let!(:older_article) { create_cleanup_article(published_at: 6.hours.ago) }
       let!(:ineligible_article) do
-        article = create(:article, user: user, published: true, automod_label: "okay_and_on_topic")
-        article.update_columns(published_at: 1.hour.ago)
-        article
+        create_cleanup_article(published_at: 1.hour.ago, automod_label: "okay_and_on_topic")
       end
 
-      it "returns only published articles with no_moderation_label in the correct time range" do
-        eligible_articles = worker.send(:find_eligible_articles)
+      it "returns only eligible articles ordered by published_at ascending within MAX_ARTICLES_PER_RUN",
+         :aggregate_failures do
+        eligible_articles = worker.__send__(:find_eligible_articles)
 
         expect(eligible_articles).to include(eligible_article)
         expect(eligible_articles).not_to include(ineligible_article)
-      end
-
-      it "orders results by published_at ascending and limits to MAX_ARTICLES_PER_RUN" do
-        older_article = create(:article, user: user, published: true, automod_label: "no_moderation_label")
-        older_article.update_columns(published_at: 6.hours.ago)
-
-        eligible_articles = worker.send(:find_eligible_articles)
-
-        # Should return articles ordered by published_at and be limited to MAX_ARTICLES_PER_RUN
+        expect(eligible_articles.limit_value).to eq(Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN)
         expect(eligible_articles.size).to be <= Articles::LabelCleanupWorker::MAX_ARTICLES_PER_RUN
         expect(eligible_articles.to_a).to eq([older_article, eligible_article])
       end
