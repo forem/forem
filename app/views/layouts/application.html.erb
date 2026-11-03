@@ -33,6 +33,8 @@
         <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <% end %>
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
+      <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
+      <meta name="emoji-picker-script" content="<%= asset_path 'emojiPicker.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>

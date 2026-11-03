@@ -2,7 +2,11 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
-import moment from 'moment';
+import {
+  parseArticleDate,
+  formatHHmm,
+  formatYYYYMMDD,
+} from './dateHelpers';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
 import {
@@ -196,9 +200,9 @@ export class ArticleForm extends Component {
     this.publishedAtWas = '';
 
     if (this.article.published_at) {
-      this.publishedAtWas = moment(this.article.published_at);
-      this.publishedAtTime = this.publishedAtWas.format('HH:mm');
-      this.publishedAtDate = this.publishedAtWas.format('YYYY-MM-DD');
+      this.publishedAtWas = parseArticleDate(this.article.published_at);
+      this.publishedAtTime = formatHHmm(this.publishedAtWas);
+      this.publishedAtDate = formatYYYYMMDD(this.publishedAtWas);
     }
 
     this.state = {

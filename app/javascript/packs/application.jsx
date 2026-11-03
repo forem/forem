@@ -6,8 +6,8 @@ import {
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
-import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
+import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
@@ -25,10 +25,16 @@ Document.prototype.ready = new Promise((resolve) => {
 // pack ran, queued by the stub in layouts/application.html.erb.
 const queuedBillboardPlacementReveals =
   window.Forem?.queuedBillboardPlacementReveals || [];
+const existingCommentTextArea = window.Forem?.CommentTextArea;
+const existingRenderCommentTextArea = window.Forem?.renderCommentTextArea;
+const existingCreateEmojiPopup = window.Forem?.createEmojiPopup;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   audioInitialized: false,
+  CommentTextArea: existingCommentTextArea,
+  renderCommentTextArea: existingRenderCommentTextArea,
+  createEmojiPopup: existingCreateEmojiPopup,
   preactImport: undefined,
   getPreactImport() {
     if (!this.preactImport) {
@@ -39,8 +45,11 @@ window.Forem = {
   enhancedCommentTextAreaImport: undefined,
   getEnhancedCommentTextAreaImports() {
     if (!this.enhancedCommentTextAreaImport) {
-      this.enhancedCommentTextAreaImport = import(
-        './CommentTextArea/CommentTextArea'
+      this.enhancedCommentTextAreaImport = loadCommentTextAreaBundle().catch(
+        (err) => {
+          this.enhancedCommentTextAreaImport = undefined;
+          throw err;
+        },
       );
     }
     return Promise.all([
@@ -49,7 +58,10 @@ window.Forem = {
     ]);
   },
   initializeEnhancedCommentTextArea: async (originalTextArea) => {
-    const parentContainer = originalTextArea.parentElement;
+    const parentContainer = originalTextArea?.parentElement;
+    if (!parentContainer) {
+      return;
+    }
 
     const alreadyInitialized =
       parentContainer.classList.contains('c-autocomplete');
@@ -58,13 +70,17 @@ window.Forem = {
       return;
     }
 
-    const [{ CommentTextArea }, { render, h }] =
+    if (typeof window.Forem.renderCommentTextArea === 'function') {
+      window.Forem.renderCommentTextArea(originalTextArea);
+      return;
+    }
+
+    const [{ renderCommentTextArea }] =
       await window.Forem.getEnhancedCommentTextAreaImports();
 
-    render(
-      <CommentTextArea vanillaTextArea={originalTextArea} />,
-      createRootFragment(parentContainer, originalTextArea),
-    );
+    if (typeof renderCommentTextArea === 'function') {
+      renderCommentTextArea(originalTextArea);
+    }
   },
   showModal: showWindowModal,
   closeModal: () => closeWindowModal(),
