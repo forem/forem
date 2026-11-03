@@ -675,6 +675,16 @@ RSpec.describe FeedConfig, type: :model do
       expect(config.published_at_diversity_half_lookback_hours)
         .to eq(described_class::DEFAULT_FEED_LOOKBACK_DAYS * 12.0)
     end
+
+    it "resolves max_feed_lookback_hours against Subforem.cached_default_id when RequestStore is empty" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      expect(described_class.max_feed_lookback_hours).to eq(120)
+    end
   end
 
   describe ".targeting_bucket_for" do

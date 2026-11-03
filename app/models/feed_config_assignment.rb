@@ -8,6 +8,8 @@ class FeedConfigAssignment < ApplicationRecord
   end
 
   def visit_token(host:)
+    return unless persisted? && feed_config_id.present? && expires_at.present?
+
     self.class.visit_verifier.generate(
       { "assignment_id" => id, "user_id" => user_id, "subforem_id" => subforem_id,
         "feed_config_id" => feed_config_id, "expires_at" => expires_at.utc.iso8601(6), "host" => host },
