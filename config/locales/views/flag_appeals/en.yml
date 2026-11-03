@@ -20,3 +20,6 @@ en:
         description: Your account has been suspended and has limited access. Your ability to post and comment may be limited.
         contact_or_appeal_html: "For more information, you may send a message to %{contact} or %{appeal_link}."
         appeal_link: submit an appeal
+      spam_notice:
+        heading: Account Flagged
+        description: Your account has been flagged and is read-only for now. You can view your dashboard and post stats, but you can't publish, edit, or comment until the flag is reviewed.

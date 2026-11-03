@@ -22,7 +22,7 @@
       </optgroup>
     <% end %>
 
-    <% if policy(:video).new? %>
+    <% if !current_user.actively_spam_or_suspended? && policy(:video).new? %>
       <option value="<%= new_video_path %>"><%= t("views.dashboard.actions.upload") %></option>
     <% end %>
   </select>
