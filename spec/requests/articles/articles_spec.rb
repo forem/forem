@@ -402,6 +402,15 @@ RSpec.describe "Articles" do
         expect(response.body).to include("Gem Giver")
       end
 
+      it "orders the gem entry newest-first alongside reactions" do
+        reactor = create(:user, name: "Newer Reactor")
+        article.update_columns(favorited_by_user_id: gem_giver.id, favorited_at: 2.days.ago)
+        create(:reaction, reactable: article, user: reactor, category: "like", created_at: 1.day.ago)
+        get "#{article.path}/stats"
+
+        expect(response.body.index("Newer Reactor")).to be < response.body.index("gem-history-entry")
+      end
+
       it "does not show a gem entry when the article has not been gemmed" do
         create(:reaction, reactable: article, category: "like")
         get "#{article.path}/stats"
