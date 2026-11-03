@@ -86,7 +86,8 @@ describe('<Form /> – paste behavior (regression tests)', () => {
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 
-        await userEvent.paste(textArea, 'https://example.com/some-page?ref=utm');
+        textArea.focus();
+        await userEvent.paste('https://example.com/some-page?ref=utm');
 
         await waitFor(() => {
             expect(mockURLHandler).toHaveBeenCalled();
@@ -105,7 +106,8 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         // Paste content that ENDS on '@john', so the caret lands immediately
         // after the mention. This is the position where autocomplete would
         // normally fire, which makes it the meaningful regression case.
-        await userEvent.paste(textArea, 'Hey @john');
+        textArea.focus();
+        await userEvent.paste('Hey @john');
 
         // 1) The pasted text is saved exactly as authored. We deliberately do
         //    NOT inject a zero-width space: mentions are resolved server-side by
@@ -140,7 +142,8 @@ describe('<Form /> – paste behavior (regression tests)', () => {
 
         // @pkg appears inside both a fenced block and an inline code span.
         const pasted = 'See ```npm i @pkg/core``` and `@pkg` for details';
-        await userEvent.paste(textArea, pasted);
+        textArea.focus();
+        await userEvent.paste(pasted);
 
         // Code (and everything else) must survive verbatim, with no injected
         // zero-width space that would corrupt a copied snippet.
@@ -165,7 +168,8 @@ describe('<Form /> – paste behavior (regression tests)', () => {
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
 
-        await userEvent.paste(textArea, pasted);
+        textArea.focus();
+        await userEvent.paste(pasted);
 
         const value = textArea.value;
         expect(value).toBe(pasted);
