@@ -66,4 +66,11 @@ RSpec.describe HCaptcha::Verify do
       .to_return(status: 302, headers: { "Location" => "https://other.example/verify" })
     expect(verified).to be(false)
   end
+
+  [EOFError, IOError].each do |error|
+    it "rejects an interrupted connection raising #{error}" do
+      stub_request(:post, "https://api.hcaptcha.com/siteverify").to_raise(error)
+      expect(verified).to be(false)
+    end
+  end
 end

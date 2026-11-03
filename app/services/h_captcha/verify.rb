@@ -20,7 +20,8 @@ module HCaptcha
 
       result = JSON.parse(response.body)
       result.is_a?(Hash) && result["success"] == true
-    rescue JSON::ParserError, HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError
+    rescue JSON::ParserError, HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError,
+           IOError
       false
     end
   end
