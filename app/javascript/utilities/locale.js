@@ -1,17 +1,62 @@
-import { I18n } from 'i18n-js';
+const DEFAULT_LOCALE = 'en';
+let translations = {};
+let lastRawTranslations = null;
 
-const i18n = new I18n();
+function loadTranslations() {
+  const translationsDiv = document.getElementById('i18n-translations');
+  const rawTranslations = translationsDiv?.dataset?.translations;
+  if (rawTranslations && rawTranslations !== lastRawTranslations) {
+    lastRawTranslations = rawTranslations;
+    translations = JSON.parse(rawTranslations);
+  }
+}
 
-const translationsDiv = document.getElementById('i18n-translations');
-if (translationsDiv) {
-  const translations = JSON.parse(translationsDiv.dataset.translations);
-  i18n.store(translations);
+loadTranslations();
+
+const initialLocale = document.body?.dataset?.locale || DEFAULT_LOCALE;
+
+function lookupPath(root, pathSegments) {
+  let current = root;
+  for (let i = 0; i < pathSegments.length; i += 1) {
+    if (current == null || typeof current !== 'object') {
+      return undefined;
+    }
+    current = current[pathSegments[i]];
+  }
+  return current;
 }
-i18n.defaultLocale = 'en';
-const { locale: userLocale } = document.body.dataset;
-if (userLocale) {
-  i18n.locale = userLocale;
-}
+
 export function locale(term, params = {}) {
-  return i18n.t(term, params);
+  loadTranslations();
+
+  const activeLocale =
+    document.body?.dataset?.locale || initialLocale || DEFAULT_LOCALE;
+  const pathSegments = String(term).split('.');
+
+  let value = lookupPath(translations[activeLocale], pathSegments);
+  if (value === undefined && activeLocale !== DEFAULT_LOCALE) {
+    value = lookupPath(translations[DEFAULT_LOCALE], pathSegments);
+  }
+
+  if (
+    value != null &&
+    typeof value === 'object' &&
+    Object.prototype.hasOwnProperty.call(params, 'count')
+  ) {
+    if (params.count === 0 && 'zero' in value) {
+      value = value.zero;
+    } else if (params.count === 1 && 'one' in value) {
+      value = value.one;
+    } else {
+      value = value.other;
+    }
+  }
+
+  if (typeof value !== 'string') {
+    return `[missing "${activeLocale}.${term}" translation]`;
+  }
+
+  return value.replace(/%\{(\w+)\}/g, (match, key) =>
+    Object.prototype.hasOwnProperty.call(params, key) ? params[key] : match,
+  );
 }

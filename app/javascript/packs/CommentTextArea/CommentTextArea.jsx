@@ -1,8 +1,7 @@
 import { h, Fragment } from 'preact';
 import { useState, useRef, useLayoutEffect } from 'preact/hooks';
-import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { createPopup } from '@picmo/popup-picker';
-import { addSnackbarItem } from '../../Snackbar';
+import { populateTemplates } from '../../responseTemplates/responseTemplates';
 import { handleImagePasted } from '../../article-form/components/pasteImageHelpers';
 import {
   handleImageUploading,
@@ -213,3 +212,8 @@ export const CommentTextArea = ({ vanillaTextArea }) => {
     </div>
   );
 };
+
+if (typeof window !== 'undefined') {
+  window.Forem = window.Forem || {};
+  window.Forem.CommentTextArea = CommentTextArea;
+}

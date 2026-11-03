@@ -9,7 +9,7 @@ import {
   LAST_FULL_MONTH,
   LAST_FULL_QUARTER,
   LAST_FULL_YEAR,
-} from '@crayons';
+} from '@crayons/formElements/DateRangePicker';
 import '@testing-library/jest-dom';
 
 const windowNavigator = window.navigator;

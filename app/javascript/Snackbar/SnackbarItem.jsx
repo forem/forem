@@ -3,17 +3,6 @@ import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../common-prop-types';
 import { Button } from '@crayons';
 
-export const snackbarItemProps = {
-  children: defaultChildrenPropTypes.isRequired,
-  actions: PropTypes.arrayOf(
-    PropTypes.shape({
-      message: PropTypes.string.isRequired,
-      handler: PropTypes.func.isRequired,
-      lifespan: PropTypes.number.isRequired,
-    }),
-  ),
-};
-
 export const SnackbarItem = ({ message, actions = [] }) => (
   <div className="crayons-snackbar__item flex" data-testid="snackbar">
     <div className="crayons-snackbar__body" role="alert">
@@ -31,4 +20,13 @@ export const SnackbarItem = ({ message, actions = [] }) => (
 
 SnackbarItem.displayName = 'SnackbarItem';
 
-SnackbarItem.propTypes = snackbarItemProps.isRequired;
+SnackbarItem.propTypes = {
+  children: defaultChildrenPropTypes.isRequired,
+  actions: PropTypes.arrayOf(
+    PropTypes.shape({
+      message: PropTypes.string.isRequired,
+      handler: PropTypes.func.isRequired,
+      lifespan: PropTypes.number.isRequired,
+    }),
+  ),
+};

@@ -8,6 +8,7 @@ import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
 import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
+import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 import { initializeSlides } from '../initializers/initializeSlides';
@@ -25,10 +26,12 @@ Document.prototype.ready = new Promise((resolve) => {
 // pack ran, queued by the stub in layouts/application.html.erb.
 const queuedBillboardPlacementReveals =
   window.Forem?.queuedBillboardPlacementReveals || [];
+const existingCommentTextArea = window.Forem?.CommentTextArea;
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   audioInitialized: false,
+  CommentTextArea: existingCommentTextArea,
   preactImport: undefined,
   getPreactImport() {
     if (!this.preactImport) {
@@ -39,9 +42,7 @@ window.Forem = {
   enhancedCommentTextAreaImport: undefined,
   getEnhancedCommentTextAreaImports() {
     if (!this.enhancedCommentTextAreaImport) {
-      this.enhancedCommentTextAreaImport = import(
-        './CommentTextArea/CommentTextArea'
-      );
+      this.enhancedCommentTextAreaImport = loadCommentTextAreaBundle();
     }
     return Promise.all([
       this.enhancedCommentTextAreaImport,
@@ -192,26 +193,6 @@ waitOnBaseData()
 
 // we need to call initializeNav here for the initial page load
 initializeNav();
-
-async function loadCreatorSettings() {
-  try {
-    const [{ LogoUploadController }, { Application }] = await Promise.all([
-      import('@admin/controllers/logo_upload_controller'),
-      import('@hotwired/stimulus'),
-    ]);
-
-    const application = Application.start();
-    application.register('logo-upload', LogoUploadController);
-  } catch (error) {
-    Honeybadger.notify(
-      `Error loading the creator settings controller: ${error.message}`,
-    );
-  }
-}
-
-if (document.location.pathname === '/admin/creator_settings/new') {
-  loadCreatorSettings();
-}
 
 document.ready.then(() => {
   setTimeout(() => {
