@@ -246,6 +246,10 @@ class ArticlesController < ApplicationController
     authorize @article
     @organization_id = @article.organization_id
     @reactions = @article.reactions.public_category.order(created_at: :desc).limit(500).includes(:user)
+    # Gems are stored on the article itself rather than as Reactions, so they
+    # are surfaced separately in the Reaction History.
+    @gem_given_by = @article.favorited_by_user
+    @gem_given_at = @article.favorited_at
   end
 
   def admin_unpublish

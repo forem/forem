@@ -389,5 +389,25 @@ RSpec.describe "Articles" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Stats for Your Article")
     end
+
+    context "when the article has been gemmed" do
+      let(:gem_giver) { create(:user, name: "Gem Giver") }
+      let(:article) { create(:article, user: user) }
+
+      it "lists who gave the gem in the reaction history" do
+        article.update_columns(favorited_by_user_id: gem_giver.id, favorited_at: Time.current)
+        get "#{article.path}/stats"
+
+        expect(response.body).to include("gem-history-entry")
+        expect(response.body).to include("Gem Giver")
+      end
+
+      it "does not show a gem entry when the article has not been gemmed" do
+        create(:reaction, reactable: article, category: "like")
+        get "#{article.path}/stats"
+
+        expect(response.body).not_to include("gem-history-entry")
+      end
+    end
   end
 end
