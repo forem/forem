@@ -1,7 +1,8 @@
 module Captcha
   PROVIDERS = {
     "recaptcha" => Providers::Recaptcha,
-    "turnstile" => Providers::Turnstile
+    "turnstile" => Providers::Turnstile,
+    "hcaptcha" => Providers::HCaptcha
   }.freeze
 
   def self.provider
