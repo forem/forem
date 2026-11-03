@@ -319,6 +319,62 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       ).to be(true)
     end
 
+    it "renders ten-level nested lists without dropping the deeply nested item text" do
+      # Redcarpet drops link text once list nesting reaches level 5 (16+ spaces
+      # of indentation). Parser#finalize works around this by rewriting the
+      # markdown links on those deeply nested lines into raw <a> HTML. This
+      # fixture builds a genuine ten-level list WITH its parent items, so the
+      # whole tree renders as list elements rather than an indented code block.
+      labels = %w[one two three four five six seven eight nine ten]
+      nested_list = labels.each_with_index.map do |label, index|
+        indent = " " * (index * 4)
+        "#{indent}- The [#{label}](https://dev.to/) list:"
+      end.join("\n")
+
+      test = generate_and_parse_markdown("#{nested_list}\n")
+      doc = Nokogiri::HTML.fragment(test)
+
+      # No deeply nested line should have been swallowed into a code block.
+      expect(doc.css("pre")).to be_empty
+
+      links = doc.css('a[href="https://dev.to/"]')
+
+      # All ten link texts must survive, including the deeper-than-fifth entries
+      # that are flattened by the normalization step.
+      expect(links.map(&:text)).to match_array(labels)
+
+      # Every item renders as a list element (either a true <li>, or, for the
+      # flattened deep levels, inside the list structure rather than a code block).
+      expect(doc.css("li").size).to be >= 5
+      expect(doc.css("ul, ol").size).to be >= 5
+
+      # The levels deeper than five are the ones the disconnected helper fails to
+      # cover: assert their text specifically survived the finalize pipeline.
+      %w[six seven eight nine ten].each do |deep_label|
+        expect(links.map(&:text)).to include(deep_label)
+      end
+    end
+
+    it "preserves indentation beyond the nested-list cutoff inside fenced code blocks" do
+      # The deeply-nested-list workaround targets lines indented 16+ spaces.
+      # Content inside fenced code blocks must be left untouched even when it is
+      # indented past that cutoff. We build the fixture without a squiggly
+      # heredoc (`<<~`) on purpose: `<<~` strips common leading whitespace, which
+      # would dedent the body below 16 spaces and hide any regression that
+      # truncates indentation above the cutoff.
+      deep_indent = " " * 20
+      markdown = "```\n#{deep_indent}deeply indented code line\n```\n"
+
+      output = generate_and_parse_markdown(markdown)
+      code = Nokogiri::HTML.fragment(output).at_css("pre code")
+
+      expect(code).to be_present
+      # The full 20-space indentation must survive verbatim.
+      expect(code.text).to include("#{deep_indent}deeply indented code line")
+      # The markdown link normalization must not have rewritten anything here.
+      expect(output).not_to include("<a href")
+    end
+
     it "renders tel links correctly" do
       code_span = "[Call us](tel:+1234567890)"
       test = generate_and_parse_markdown(code_span)

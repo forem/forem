@@ -215,12 +215,19 @@ module MarkdownProcessor
     end
 
     def preprocess_for_finalize(content)
-      result = ForemNative.preprocess_markdown_for_finalize(content)
+      # Cap excessive list indentation before the fused preprocessing chain so the
+      # normalization reaches Redcarpet on BOTH the native
+      # (ForemNative.preprocess_markdown_for_finalize) and legacy paths. Without this,
+      # normal UTF-8 article/comment rendering (the native path) would still drop the
+      # text of list items nested beyond MAX_LIST_INDENT_SPACES.
+      normalized_content = normalize_overly_nested_lists(content)
+
+      result = ForemNative.preprocess_markdown_for_finalize(normalized_content)
       if result == :xss_attempt
         raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
       end
 
-      result || legacy_preprocess_for_finalize(content)
+      result || legacy_preprocess_for_finalize(normalized_content)
     end
 
     private
