@@ -1405,6 +1405,36 @@ RSpec.describe User do
       expect(user.cached_reading_list_article_ids).to eq((1..1000).to_a)
     end
 
+    it "picks only alltime_reading_list_articles without hydrating full user_activities rows" do
+      create(:user_activity, user: user, alltime_reading_list_articles: [42])
+      fresh_user = described_class.find(user.id)
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(fresh_user.cached_reading_list_article_ids).to eq([42])
+      end
+
+      ua_queries = queries.grep(/FROM "user_activities"/)
+      expect(ua_queries.size).to eq(1)
+      expect(ua_queries.first).to include('"user_activities"."alltime_reading_list_articles"')
+      expect(ua_queries.first).not_to include('"user_activities".*')
+      expect(fresh_user.association(:user_activity)).not_to be_loaded
+    end
+
+    it "queries reactions once without hydrating Reaction records and skips articles when empty" do
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(user.cached_reading_list_article_ids).to eq([])
+      end
+
+      reaction_queries = queries.grep(/FROM "reactions"/)
+      expect(reaction_queries.size).to eq(1)
+      expect(reaction_queries.first).to include("reactions.created_at + INTERVAL '0 seconds' DESC")
+      expect(queries.grep(/FROM "articles"/)).to be_empty
+    end
+
     it "has an accurate agent_sessions_count using counter cache" do
       expect(user.agent_sessions_count).to eq(0)
       create(:agent_session, user: user)
