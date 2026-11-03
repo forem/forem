@@ -113,6 +113,28 @@ RSpec.describe Feeds::StickyConfig do
       expect(assignment.reload.feed_config).to eq(config)
     end
 
+    it "does not persist a stub assignment with nil feed_config_id or expires_at if selection fails" do
+      selector = sticky_selector
+      allow(selector).to receive(:select_active_config).and_raise(ActiveRecord::StatementInvalid, "aborted")
+
+      expect { selector.select }.to raise_error(ActiveRecord::StatementInvalid, "aborted")
+      expect(FeedConfigAssignment.where(user: user)).to be_empty
+      expect(selector.visit_token(host: "forem.test")).to be_nil
+    end
+
+    it "heals a legacy incomplete assignment row and never generates a visit token when incomplete" do
+      stub_assignment = create(:feed_config_assignment, user: user, feed_config: nil, expires_at: nil)
+      expect(stub_assignment.visit_token(host: "forem.test")).to be_nil
+
+      selector = sticky_selector
+      expect(selector.select).to eq(config)
+      expect(stub_assignment.reload).to have_attributes(
+        feed_config_id: config.id,
+        expires_at: be_present,
+      )
+      expect(selector.visit_token(host: "forem.test")).to be_present
+    end
+
     it "isolates assignments by user and subforem" do
       other_user = create(:user)
       create(:feed_config_assignment, user: other_user, feed_config: config)

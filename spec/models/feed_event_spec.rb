@@ -303,6 +303,18 @@ RSpec.describe FeedEvent do
       ).to be_between(1.0, 1.5).exclusive
     end
 
+    it "falls back to Subforem.cached_default_id when RequestStore subforem keys are nil" do
+      default_subforem = create(:subforem, domain: "default.forem.test")
+      RequestStore.store[:subforem_id] = nil
+      RequestStore.store[:default_subforem_id] = nil
+      allow(Subforem).to receive(:cached_default_id).and_return(default_subforem.id)
+      allow(Settings::UserExperience).to receive(:feed_lookback_days).and_call_original
+      Settings::UserExperience.set_feed_lookback_days(5, subforem_id: default_subforem.id)
+
+      event_time = Time.current
+      expect(described_class.article_freshness_multiplier(event_time - 5.days, event_time)).to eq(1.0)
+    end
+
     it "returns 1.0 when published_at is nil" do
       expect(described_class.article_freshness_multiplier(nil, Time.current)).to eq(1.0)
     end
