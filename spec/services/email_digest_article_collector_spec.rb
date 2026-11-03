@@ -427,7 +427,9 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(FeedConfig).not_to have_received(:order)
       end
 
-      it "uses default subforem settings in Sidekiq when RequestStore default_subforem_id is nil" do
+      it "uses default subforem settings in Sidekiq when RequestStore default_subforem_id is nil",
+         :aggregate_failures do
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_call_original
         RequestStore.store[:subforem_id] = nil
         RequestStore.store[:default_subforem_id] = nil
         Settings::UserExperience.set_feed_strategy("large_forem_experimental", subforem_id: nil)
@@ -440,6 +442,8 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         collector = described_class.new(user)
         articles = collector.articles_to_send
 
+        expect(Settings::UserExperience.feed_strategy(subforem_id: nil)).to eq("large_forem_experimental")
+        expect(Settings::UserExperience.feed_strategy(subforem_id: default_subforem.id)).to eq("configured")
         expect(articles.length).to eq(3)
         expect(collector.feed_config_id).to eq(feed_config.id)
       end
