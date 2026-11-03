@@ -51,6 +51,27 @@ describe ProfileHelper do
         expected = { github: "https://example.com", twitter: "https://example.com", facebook: "https://example.com" }
         expect(actual).to eq(expected)
       end
+
+      it "queries only the supported social providers in a single pluck without hydrating Identity records" do
+        target_user = user
+        queries = []
+        callback = lambda { |*, payload|
+          next if payload[:name] == "SCHEMA"
+
+          binds = payload[:type_casted_binds]
+          binds = binds.call if binds.respond_to?(:call)
+          queries << { sql: payload[:sql], binds: Array(binds) }
+        }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          helper.social_authentication_links_for(target_user)
+        end
+
+        expect(queries.size).to eq(1)
+        expect(queries.first[:sql]).to include('"identities"."auth_data_dump"')
+        expect(queries.first[:sql]).to include('"identities"."provider" IN')
+        expect(queries.first[:sql]).not_to include('"identities".*')
+        expect(queries.first[:binds]).to eq([target_user.id, "github", "twitter", "facebook"])
+      end
     end
 
     context "when third party authentication providers are not enabled" do
@@ -64,7 +85,15 @@ describe ProfileHelper do
       end
 
       it "returns a link to the social authentication provider's link" do
-        expect(actual).to eq({})
+        target_user = user
+        queries = []
+        callback = lambda { |*, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          expect(helper.social_authentication_links_for(target_user)).to eq({})
+        end
+        expect(queries).to be_empty
       end
     end
   end

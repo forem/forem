@@ -84,15 +84,19 @@ RSpec.describe Feeds::StickyConfig do
       expect { expect(sticky_selector.select).to eq(config) }.not_to change(FeedConfigAssignment, :count)
     end
 
-    it "reassigns at expiry and starts a fresh cooldown even if the same config is selected" do
+    it "reassigns at expiry and starts a fresh cooldown and repeat counter even if the same config is selected" do
       Timecop.freeze(Time.current.change(nsec: 123_456_789)) do
         assignment = create(:feed_config_assignment, user: user, feed_config: config,
-                                                     expires_at: Time.current, last_rewarded_at: 1.hour.ago)
+                                                     expires_at: Time.current, last_rewarded_at: 1.hour.ago,
+                                                     repeat_visits_count: 20)
         selector = sticky_selector
         selector.select
         record_visit(selector)
 
-        expect(assignment.reload.expires_at).to be_within(0.000001).of(60.hours.from_now)
+        expect(assignment.reload).to have_attributes(
+          expires_at: be_within(0.000001).of(60.hours.from_now),
+          repeat_visits_count: 0,
+        )
         expect(config.reload.feed_repeat_visits_count).to eq(0)
       end
     end
@@ -263,12 +267,12 @@ RSpec.describe Feeds::StickyConfig do
       threads.each(&:value)
 
       expect(config.reload.feed_repeat_visits_count).to eq(1)
-      expect(config.feed_success_score).to eq(0.25)
+      expect(config.feed_success_score).to eq(0.5)
     end
   end
 
   describe "repeat credit" do
-    it "allows at most 119 repeat credits in an exclusive 60-hour assignment window" do
+    it "allows at most 20 repeat credits in a 60-hour assignment window" do
       Timecop.freeze do
         started_at = Time.current
         selector = sticky_selector
@@ -279,7 +283,8 @@ RSpec.describe Feeds::StickyConfig do
           Timecop.freeze(started_at + (interval * 30).minutes) { record_visit(selector) }
         end
 
-        expect(config.reload.feed_repeat_visits_count).to eq(119)
+        expect(config.reload.feed_repeat_visits_count).to eq(20)
+        expect(FeedConfigAssignment.find_by!(user: user).repeat_visits_count).to eq(20)
       end
     end
 
@@ -293,13 +298,30 @@ RSpec.describe Feeds::StickyConfig do
         Timecop.freeze(30.minutes.from_now) do
           record_visit(selector)
           expect(config.reload.feed_repeat_visits_count).to eq(1)
-          expect(config.feed_success_score).to eq(0.25)
+          expect(config.feed_success_score).to eq(0.5)
           expect(FeedConfigAssignment.find_by!(user: user).expires_at).to eq(expiry)
         end
         Timecop.freeze(60.minutes.from_now) do
           record_visit(selector)
           expect(config.reload.feed_repeat_visits_count).to eq(2)
-          expect(config.feed_success_score).to eq(0.5)
+          expect(config.feed_success_score).to eq(1.0)
+        end
+      end
+    end
+
+    it "awards 1.5 clicks per repeat visit for feed_power_user configurations" do
+      config.update!(targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER)
+      Timecop.freeze do
+        selector = sticky_selector
+        selector.select
+        record_visit(selector)
+
+        Timecop.freeze(30.minutes.from_now) do
+          record_visit(selector)
+          expect(config.reload).to have_attributes(
+            feed_repeat_visits_count: 1,
+            feed_success_score: 0.75,
+          )
         end
       end
     end

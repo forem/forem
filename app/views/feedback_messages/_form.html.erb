@@ -68,8 +68,8 @@
   </div>
 
   <% if ReCaptcha::CheckEnabled.call(current_user) %>
-    <div class="recaptcha-tag-container">
-      <%= recaptcha_tags site_key: Settings::Authentication.recaptcha_site_key %>
+    <div class="<%= Settings::Authentication.captcha_provider == "turnstile" ? "captcha-tag-container" : "recaptcha-tag-container" %>">
+      <%= render "shared/captcha" %>
     </div>
   <% end %>
 

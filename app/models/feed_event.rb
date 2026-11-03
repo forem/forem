@@ -130,7 +130,8 @@ class FeedEvent < ApplicationRecord
 
       FeedConfig.where(id: feed_config_id).update_all(
         feed_success_score: Arel.sql(
-          "#{score} + feed_repeat_visits_count * #{FeedConfig::REPEAT_VISIT_SCORE_MULTIPLIER} / #{impression_users}",
+          "#{score} + feed_repeat_visits_count * " \
+          "(#{FeedConfig.repeat_visit_score_multiplier_sql}) / #{impression_users}",
         ),
         feed_impressions_count: impressions_total,
         feed_impression_users_count: impression_users,

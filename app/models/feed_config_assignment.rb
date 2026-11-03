@@ -1,4 +1,6 @@
 class FeedConfigAssignment < ApplicationRecord
+  MAX_REPEAT_VISITS = 20
+
   belongs_to :user
   belongs_to :subforem, optional: true
   belongs_to :feed_config, optional: true
