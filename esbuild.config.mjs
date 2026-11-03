@@ -77,12 +77,6 @@ function rewriteCrayonsBarrelImports(source, filePath) {
     /import\s*\{\s*addSnackbarItem\s*\}\s*from\s*['"]([^'"]*\/Snackbar)['"]\s*;?/g,
     (_fullMatch, snackbarPath) =>
       `import { addSnackbarItem } from '${snackbarPath}/addSnackbarItem';`,
-  ).replace(
-    /import\s+ahoy\s+from\s+['"]ahoy\.js['"]\s*;?/g,
-    (fullMatch) =>
-      /[\\/]admin[\\/]/.test(filePath)
-        ? fullMatch
-        : 'const ahoy = (typeof window !== "undefined" && window.ahoy) || { track() {}, trackView() {}, trackClicks() {}, configure() {} };',
   )
 }
 

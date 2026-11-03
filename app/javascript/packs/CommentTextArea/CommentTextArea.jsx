@@ -89,25 +89,27 @@ const EmojiPickerButton = ({ textAreaId }) => {
       if (!createPopup) {
         return;
       }
-      pickerRef.current = createPopup(
-        {},
-        {
-          referenceElement: triggerEl,
-          triggerElement: triggerEl,
-          position: 'bottom-start',
-          className: 'c-emoji-popup',
-        },
-      );
-      pickerRef.current.addEventListener('emoji:select', (event) => {
-        pickerRef.current.close();
-        const liveTextArea = document.getElementById(textAreaId);
-        if (liveTextArea) {
-          // 50ms timeout ensures Picmo removes any active focus traps prior to insertion
-          setTimeout(() => {
-            insertTextAtCursor(liveTextArea, event.emoji);
-          }, 50);
-        }
-      });
+      if (!pickerRef.current) {
+        pickerRef.current = createPopup(
+          {},
+          {
+            referenceElement: triggerEl,
+            triggerElement: triggerEl,
+            position: 'bottom-start',
+            className: 'c-emoji-popup',
+          },
+        );
+        pickerRef.current.addEventListener('emoji:select', (event) => {
+          pickerRef.current.close();
+          const liveTextArea = document.getElementById(textAreaId);
+          if (liveTextArea) {
+            // 50ms timeout ensures Picmo removes any active focus traps prior to insertion
+            setTimeout(() => {
+              insertTextAtCursor(liveTextArea, event.emoji);
+            }, 50);
+          }
+        });
+      }
     }
     pickerRef.current.toggle();
   };
