@@ -274,7 +274,7 @@ pt:
             description: Porcentagem de carregamentos do feed inicial que usam a configuração atribuída. Os demais usam a seleção normal. Defina 0 para desativar essa atribuição.
           feed_config_repeat_visit_minutes:
             label: Intervalo entre retornos ao feed inicial (minutos)
-            description: Tempo mínimo entre visitas visíveis creditadas ao feed inicial atribuído. Cada retorno adiciona meio clique à pontuação de sucesso; a primeira visita visível não recebe crédito.
+            description: Tempo mínimo entre visitas visíveis creditadas ao feed inicial atribuído (limitado a 20 retornos por atribuição). Cada retorno adiciona 1 clique (1,5 para configurações de usuários muito ativos) à pontuação de sucesso; a primeira visita visível não recebe crédito.
           feed_repeat_visits:
             label: Retornos ao feed inicial
           home_feed:

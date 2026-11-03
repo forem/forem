@@ -28,7 +28,32 @@ RSpec.describe "Feed config visibility visits" do
     expect(response).to have_http_status(:ok)
     expect(response.headers["X-Feed-Visit-Wait"]).to eq("1800")
     expect(response.headers["Cache-Control"]).to eq("private, no-store")
-    expect(config.reload).to have_attributes(feed_repeat_visits_count: 1, feed_success_score: 0.25)
+    expect(config.reload).to have_attributes(feed_repeat_visits_count: 1, feed_success_score: 0.5)
+    expect(assignment.reload.repeat_visits_count).to eq(1)
+  end
+
+  it "credits 1.5 clicks per return for power-user configurations" do
+    config.update!(targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER)
+    post feed_config_visits_path, params: params
+    expect(response).to have_http_status(:ok)
+    expect(config.reload).to have_attributes(feed_repeat_visits_count: 1, feed_success_score: 0.75)
+  end
+
+  it "stops awarding credit once an assignment reaches 20 repeat visits" do
+    assignment.update!(repeat_visits_count: 19)
+    post feed_config_visits_path, params: params
+    expect(response).to have_http_status(:ok)
+    expect(config.reload.feed_repeat_visits_count).to eq(1)
+    expect(assignment.reload.repeat_visits_count).to eq(20)
+
+    Timecop.travel(31.minutes.from_now) do
+      expect do
+        post feed_config_visits_path, params: params.merge(event_id: SecureRandom.uuid)
+      end.not_to change(FeedEventReceipt, :count)
+      expect(response).to have_http_status(:no_content)
+      expect(config.reload.feed_repeat_visits_count).to eq(1)
+      expect(assignment.reload.repeat_visits_count).to eq(20)
+    end
   end
 
   it "establishes the first visible exposure without rewarding the initial display" do

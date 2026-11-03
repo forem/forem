@@ -274,7 +274,7 @@ en:
             description: Percentage of home-feed loads that use the assigned configuration. Other loads use normal selection. Set to 0 to disable sticky feeds.
           feed_config_repeat_visit_minutes:
             label: Repeat home-feed visit interval (minutes)
-            description: Minimum time between credited visible visits to the assigned home feed. Each return adds half a click to its success score; the first visible visit earns no credit.
+            description: Minimum time between credited visible visits to the assigned home feed (capped at 20 repeat visits per assignment). Each return adds 1 click (1.5 for power-user configurations) to its success score; the first visible visit earns no credit.
           feed_repeat_visits:
             label: Repeat home-feed visits
           home_feed:

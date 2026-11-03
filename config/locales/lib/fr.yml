@@ -274,7 +274,7 @@ fr:
             description: Pourcentage des chargements du fil d’accueil utilisant la configuration attribuée. Les autres utilisent la sélection habituelle. Saisissez 0 pour désactiver cette attribution.
           feed_config_repeat_visit_minutes:
             label: Intervalle entre les retours au fil d’accueil (minutes)
-            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué. Chaque retour ajoute un demi-clic à son score de réussite ; la première visite visible ne rapporte aucun crédit.
+            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué (limité à 20 retours par attribution). Chaque retour ajoute 1 clic (1,5 pour les configurations d’utilisateurs très actifs) à son score de réussite ; la première visite visible ne rapporte aucun crédit.
           feed_repeat_visits:
             label: Retours au fil d’accueil
           home_feed:
