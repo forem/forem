@@ -11,17 +11,17 @@ class BillboardEventsController < ApplicationMetalController
     # Only tracking for logged‐in users at the moment
     user_id = embed_request? ? nil : session_current_user_id
     billboard_event_create_params = billboard_event_params.merge(user_id: user_id)
-    return head :ok if billboard_event_create_params[:billboard_id].blank?
+    raw_billboard_id = billboard_event_create_params[:billboard_id]
+    return head :ok if raw_billboard_id.blank?
 
-    billboard_event_id = BillboardEvent.create_with_async_commit(billboard_event_create_params.except(:billboard_id)
-      .merge(billboard: billboard_for_event(billboard_event_create_params[:billboard_id])))
+    billboard_event_id = BillboardEvent.create_with_async_commit(billboard_event_create_params)
 
     unless ApplicationConfig["DISABLE_BILLBOARD_DATA_UPDATE"] == "yes"
       # Enqueue the worker instead of doing the update inline
       throttle_minutes = (ApplicationConfig["BILLBOARD_EVENT_THROTTLE_TIME"] || THROTTLE_TIME).to_i
-      throttle_key = "billboards_data_update-#{billboard_event_create_params[:billboard_id]}"
+      throttle_key = "billboards_data_update-#{raw_billboard_id}"
       ThrottledCall.perform(throttle_key, throttle_for: throttle_minutes.minutes) do
-        Billboards::DataUpdateWorker.perform_async(billboard_event_params[:billboard_id])
+        Billboards::DataUpdateWorker.perform_async(raw_billboard_id)
       end
     end
 
@@ -53,14 +53,6 @@ class BillboardEventsController < ApplicationMetalController
 
   private
 
-  # The required belongs_to :billboard check would load the whole billboard row (body, html and
-  # targeting arrays) on every event. Only its existence matters here, so look up just the id,
-  # cast exactly as assigning display_ad_id would. A missing billboard still fails validation.
-  def billboard_for_event(raw_billboard_id)
-    billboard_id = BillboardEvent.type_for_attribute(:display_ad_id).cast(raw_billboard_id)
-    Billboard.select(:id).find_by(id: billboard_id) if billboard_id
-  end
-
   def billboard_event_params
     event_params = params[:billboard_event] || params[:display_ad_event] || ActionController::Parameters.new
     # Keeping while we may receive data in the "old" format from cached JS
@@ -74,6 +66,8 @@ class BillboardEventsController < ApplicationMetalController
   end
 
   def embed_request?
-    Billboard.embed_origins.include?(request.origin)
+    return @embed_request if defined?(@embed_request)
+
+    @embed_request = Billboard.embed_origin?(request.origin)
   end
 end

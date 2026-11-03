@@ -47,7 +47,7 @@ RSpec.describe "BillboardEvents", type: :request do
       expect(json["id"]).to eq(event.id)
     end
 
-    it "checks the billboard exists without loading its full row" do
+    it "checks the billboard exists inline without a separate SELECT query" do
       billboard
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("display_ads") }
@@ -56,7 +56,10 @@ RSpec.describe "BillboardEvents", type: :request do
       end
 
       expect(BillboardEvent.last.billboard_id).to eq(billboard.id)
-      expect(queries.grep(/\ASELECT/)).to contain_exactly(a_string_starting_with('SELECT "display_ads"."id" FROM'))
+      expect(queries.grep(/\ASELECT/)).to be_empty
+      expect(queries).to contain_exactly(
+        a_string_including('WHERE EXISTS (SELECT 1 FROM "display_ads" WHERE "display_ads"."id" ='),
+      )
     end
 
     it "inserts the event in a single statement that keeps synchronous_commit off" do

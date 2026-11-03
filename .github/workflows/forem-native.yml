@@ -6,6 +6,9 @@ on:
       - main
     paths:
       - "gems/forem_native/**"
+      - "app/controllers/application_metal_controller.rb"
+      - "app/controllers/billboard_events_controller.rb"
+      - "app/models/billboard_event.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
       - "app/services/articles/feeds/custom.rb"
@@ -44,19 +47,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: "3.3.0"
-      - name: Verify precompiled platform binary works without compiling
-        env:
-          FOREM_NATIVE_SKIP_BUILD: "1"
-        run: |
-          ruby -Ilib -rforem_native -e '
-            raise "Native not loaded!" unless ForemNative.available?
-            raise "Unexpected word count!" unless ForemNative.split_word_count("hello world") == 2
-            raise "Unexpected reading time!" unless ForemNative.calculate_reading_time("hello world") == 1
-            raise "Unexpected color brightness!" unless ForemNative.color_brightness("#ccddee", 0.5) == "#666f77"
-            raise "Unexpected video duration!" unless ForemNative.format_video_duration(125) == "02:05"
-            raise "Unexpected sql_int_list!" unless ForemNative.sql_int_list([1, 2, 3]) == "1,2,3"
-            puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
-          '
       - name: Cache Cargo registry and target
         uses: actions/cache@v5
         with:
@@ -88,3 +78,19 @@ jobs:
         with:
           name: forem-native-macos
           path: gems/forem_native/target/release/libforem_native.dylib
+      - name: Verify precompiled platform binary works without compiling
+        env:
+          FOREM_NATIVE_SKIP_BUILD: "1"
+        run: |
+          ruby -Ilib -rforem_native -e '
+            raise "Native not loaded!" unless ForemNative.available?
+            raise "Unexpected word count!" unless ForemNative.split_word_count("hello world") == 2
+            raise "Unexpected reading time!" unless ForemNative.calculate_reading_time("hello world") == 1
+            raise "Unexpected color brightness!" unless ForemNative.color_brightness("#ccddee", 0.5) == "#666f77"
+            raise "Unexpected video duration!" unless ForemNative.format_video_duration(125) == "02:05"
+            raise "Unexpected sql_int_list!" unless ForemNative.sql_int_list([1, 2, 3]) == "1,2,3"
+            raise "Unexpected valid_uuid!" unless ForemNative.valid_uuid("550e8400-e29b-41d4-a716-446655440000") == true
+            raise "Unexpected origin_in_comma_list!" unless ForemNative.origin_in_comma_list("https://a.com", "https://a.com, https://b.com") == true
+            raise "Unexpected feed_events_advisory_lock_key!" unless ForemNative.feed_events_advisory_lock_key(42).is_a?(Integer)
+            puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
+          '
