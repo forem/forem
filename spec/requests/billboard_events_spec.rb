@@ -292,5 +292,21 @@ RSpec.describe "BillboardEvents", type: :request do
         user_agent: "FastPathAgent/1.0",
       )
     end
+
+    it "preserves query-string article_id when JSON body omits article_id" do
+      post "/bb_tabulations?article_id=#{article.id}",
+           params: {
+             billboard_event: {
+               billboard_id: billboard.id,
+               category: "impression",
+               context_type: "article"
+             }
+           }.to_json,
+           headers: { "CONTENT_TYPE" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      event = BillboardEvent.find(response.parsed_body["id"])
+      expect(event.article_id).to eq(article.id)
+    end
   end
 end

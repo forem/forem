@@ -98,7 +98,9 @@ module Middlewares
       user_id = is_embed ? nil : resolve_user_id(env, BillboardEventsController)
       geolocation = resolve_geolocation(env, user_id, BillboardEventsController)
 
-      if env["CONTENT_TYPE"].to_s.start_with?("application/json") && (input = env[Rack::RACK_INPUT])
+      if env[Rack::QUERY_STRING].blank? &&
+          env["CONTENT_TYPE"].to_s.start_with?("application/json") &&
+          (input = env[Rack::RACK_INPUT])
         raw_body = input.read
         input.rewind if input.respond_to?(:rewind)
         outcome = ForemNative.billboard_event_create_from_json_sql(
@@ -212,14 +214,23 @@ module Middlewares
       end
 
       Articles::UpdatePageViewsWorker.perform_at(2.minutes.from_now, page_view_params)
-      send_algolia_insight_if_needed(raw_params["article_id"], current_user_id)
+      send_algolia_insight_if_needed(req, raw_params, current_user_id)
       head_response(200)
     end
 
-    def send_algolia_insight_if_needed(article_id, current_user_id)
+    def send_algolia_insight_if_needed(req, raw_params, current_user_id)
+      article_id = raw_params["article_id"]
       return unless article_id.present? && current_user_id
 
+      passed_domain = raw_params["passed_domain"]
+      raw_domain = if passed_domain.present? && passed_domain.exclude?("/") && passed_domain.exclude?(":")
+                     passed_domain
+                   else
+                     req.host
+                   end
+      domain = ForemNative.subforem_request_domain(raw_domain) || raw_domain.sub(/:\d+\z/, "")
       RequestStore.store[:default_subforem_id] ||= Subforem.cached_default_id
+      RequestStore.store[:subforem_id] ||= Subforem.cached_id_by_domain(domain)
       return unless Settings::General.algolia_application_id.present? && Settings::General.algolia_api_key.present?
 
       AlgoliaInsightsService.new.track_event(
@@ -308,7 +319,7 @@ module Middlewares
       if native == :null_origin
         raise ActionController::InvalidAuthenticityToken, ApplicationController::NULL_ORIGIN_MESSAGE
       elsif native == false
-        raise ActionController::InvalidAuthenticityToken, ActionController::RequestForgeryProtection::ORIGIN_MESSAGE
+        raise ActionController::InvalidAuthenticityToken
       elsif native.nil?
         return :defer
       end

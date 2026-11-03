@@ -2545,10 +2545,23 @@ fn billboard_event_create_from_json_sql(
     let Some(user_id) = extract_optional_i64(user_id_val) else {
         return ruby.qnil().as_value();
     };
-    let Some(geolocation) = extract_optional_utf8_string(geolocation_val) else {
+    let extract_header = |v: Value| -> Option<Option<String>> {
+        if v.is_nil() {
+            return Some(None);
+        }
+        let s = RString::from_value(v)?;
+        if !is_ascii_compatible_host(ruby, s) {
+            return None;
+        }
+        // SAFETY: Copy out short header bytes before any Ruby allocation.
+        std::str::from_utf8(unsafe { s.as_slice() })
+            .ok()
+            .map(|t| Some(t.to_owned()))
+    };
+    let Some(geolocation) = extract_header(geolocation_val) else {
         return ruby.qnil().as_value();
     };
-    let Some(header_ua) = extract_optional_utf8_string(header_ua_val) else {
+    let Some(header_ua) = extract_header(header_ua_val) else {
         return ruby.qnil().as_value();
     };
 

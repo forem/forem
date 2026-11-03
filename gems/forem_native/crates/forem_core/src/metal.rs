@@ -1317,7 +1317,7 @@ pub fn extract_referrer_domain_and_path(referrer: &[u8]) -> Option<(Option<Strin
     let domain = if !host_part.contains(&b'.') {
         None
     } else {
-        match crate::url::public_suffix_domain(host_part)? {
+        match crate::url::public_suffix_domain_ignore_private(host_part)? {
             Ok(d) => Some(d.into_owned()),
             Err(()) => return None,
         }
@@ -1981,6 +1981,10 @@ mod tests {
         assert_eq!(
             extract_referrer_domain_and_path(b"https://www.google.com"),
             Some((Some("google.com".to_owned()), String::new()))
+        );
+        assert_eq!(
+            extract_referrer_domain_and_path(b"https://someone.github.io/post"),
+            Some((Some("github.io".to_owned()), "/post".to_owned()))
         );
         assert_eq!(
             extract_referrer_domain_and_path(b"https://localhost:3000/articles"),

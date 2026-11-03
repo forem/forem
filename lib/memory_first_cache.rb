@@ -73,9 +73,10 @@ class MemoryFirstCache
       # may stringify values, or when we need explicit type coercion
       case return_type
       when :integer
-        value == "" ? nil : value.to_i
+        return nil if value == ""
+        value.to_i
       when :string
-        value == "" ? nil : value.to_s
+        value.to_s
       when :boolean
         case value
         when true, "true", "1", 1 then true
@@ -83,7 +84,8 @@ class MemoryFirstCache
         else !!value
         end
       when :float
-        value == "" ? nil : value.to_f
+        return nil if value == ""
+        value.to_f
       when :symbol
         value.to_sym
       else

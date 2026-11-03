@@ -4836,6 +4836,9 @@ RSpec.describe ForemNative do
           "https://news.ycombinator.com/item?id=12345",
           "https://dev.to/ben/hello-world#comments",
           "https://sub.blog.co.uk/posts/2026/11/03?utm_source=dev",
+          "https://someone.github.io/post",
+          "https://myblog.blogspot.com/entry",
+          "https://myapp.vercel.app/page",
           "http://localhost:3000/internal",
           "https://192.168.1.1/admin",
           "https://github.com",
@@ -4844,6 +4847,9 @@ RSpec.describe ForemNative do
           "android-app://com.google.android.googlequicksearchbox/",
           "https://example.invalidtld/some/path"
         ]
+
+        expect(described_class.extract_referrer_domain_and_path("https://someone.github.io/post"))
+          .to eq(["github.io", "/post"])
 
         1_000.times do |i|
           ref = if i % 5 == 0
@@ -4887,6 +4893,14 @@ RSpec.describe ForemNative do
       end
 
       it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
+        sample_now = Time.utc(2026, 11, 3, 18, 0, 0, 123_456)
+        ascii_8bit_json = '{"billboard_event":{"billboard_id":555,"category":"impression","context_type":"home"}}'.b
+        ascii_8bit_outcome = described_class.billboard_event_create_from_json_sql(
+          ascii_8bit_json, 42, "US-NY".b, "Mozilla/5.0".b, false, sample_now
+        )
+        expect(ascii_8bit_outcome).to be_an(Array)
+        expect(ascii_8bit_outcome.first).to include("'Mozilla/5.0'")
+
         rng = Random.new(20_261_110)
         categories = %w[impression click signup conversion invalid_cat]
         contexts = %w[home article email embed invalid_ctx]
