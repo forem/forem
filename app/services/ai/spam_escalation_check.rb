@@ -67,10 +67,12 @@ module Ai
     # The same description of what belongs on the (sub)forem that Ai::ContentModerationLabeler uses,
     # so "off-topic" means off-topic for this community rather than a hardcoded subject.
     def community_description
-      subforem_id = @content.subforem_id
+      subforem_id = @content.try(:subforem_id) || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
       description = if subforem_id
                       Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-                        Settings::Community.community_description(subforem_id: subforem_id)
+                        Settings::Community.community_description(subforem_id: subforem_id).presence ||
+                        Settings::RateLimit.internal_content_description_spec.presence ||
+                        Settings::Community.community_description
                     else
                       Settings::RateLimit.internal_content_description_spec.presence ||
                         Settings::Community.community_description

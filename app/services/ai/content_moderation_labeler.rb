@@ -13,7 +13,7 @@ module Ai
   class ContentModerationLabeler
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.1".freeze
+    VERSION = "1.2".freeze
     FUNCTION_KEY = :content_moderation
 
     # Jev policy thresholds. "clear_and_obvious" labels require a high probability; "likely"
@@ -28,6 +28,18 @@ module Ai
       [1.5, :likely_low],
       [2.5, :okay],
       [3.5, :very_good],
+      [Float::INFINITY, :great],
+    ].freeze
+
+    # Status posts ("quickies") are tweet-length thoughts or commentary on a linked article.
+    # Keep the low-quality floor identical so noise/filler is still filtered, while making
+    # very_good and great attainable when the status post itself is genuinely insightful or
+    # interesting.
+    STATUS_QUALITY_TIERS = [
+      [0.75, :clear_low],
+      [1.5, :likely_low],
+      [2.15, :okay],
+      [3.15, :very_good],
       [Float::INFINITY, :great],
     ].freeze
 
@@ -112,6 +124,31 @@ module Ai
     def jev_state
       user = @article.user
       limit = @is_negative ? 2000 : 5000
+      format_description = if @article.status?
+                             "status post (quickie): a short tweet-style update, thought, or commentary on a " \
+                               "linked article/resource where title is the full post text"
+                           else
+                             "full post"
+                           end
+      article_state = {
+        format: format_description,
+        title: @article.title,
+        tags: @article.cached_tag_list,
+        body: @article.body_markdown.to_s.truncate(limit)
+      }
+      if @article.status?
+        if linked_article
+          article_state[:linked_article] = {
+            title: linked_article.title,
+            author: "@#{linked_article.cached_user_username}",
+            tags: linked_article.cached_tag_list,
+            excerpt: linked_article.body_markdown.to_s.truncate(400)
+          }
+        elsif embedded_urls.any?
+          article_state[:linked_urls] = embedded_urls.first(3)
+        end
+      end
+
       state = {
         community: { description: community_description.presence || "No specific community description provided." },
         author: {
@@ -121,12 +158,7 @@ module Ai
           comments: user.comments.count,
           profile_summary: user.profile&.summary.presence || "No summary provided"
         },
-        article: {
-          format: @article.status? ? "status post: a short, casual update or thought" : "full post",
-          title: @article.title,
-          tags: @article.cached_tag_list,
-          body: @article.body_markdown.to_s.truncate(limit)
-        }
+        article: article_state
       }
       state[:community][:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
       state
@@ -157,7 +189,48 @@ module Ai
         auto_generated: noul(
           "Does `article` read as generic, impersonal, mass-produced text with no real author perspective?",
         ),
-        quality: score(
+        quality: quality_question,
+        on_topic: noul(
+          "Does the subject of `article` fit the purpose described in `community.description`?",
+        ),
+        originality: originality_question,
+        personal_voice: personal_voice_question,
+        discussion_potential: discussion_potential_question
+      }
+      if tag_instructions.any?
+        questions[:violates_tag_rules] = noul(
+          "Does `article` break a rule in `community.tag_moderation_instructions`?",
+        )
+      end
+      questions
+    end
+
+    def quality_question
+      if @article.status?
+        score(
+          {
+            question: "How good is `article` as a short status post (tweet-length thought, observation, question, " \
+                      "or commentary on a linked article) for this community?",
+            focus: "Judge it on the scale of a developer tweet or curated link commentary, NOT a long-form article. " \
+                   "In a status post, `article.title` is the full text of the post. Pointing out something " \
+                   "interesting, insightful, or specific about `article.linked_article` or a linked resource " \
+                   "counts as genuine quality, whereas bare noise or a commentary-free '[Boost]' does not.",
+            rules: "Apply `community.tag_moderation_instructions` where they are relevant."
+          },
+          [
+            "Low-effort or uninformative: meaningless noise (e.g. 'hi', 'test', 'up up'), a bare keyword, or " \
+            "says nothing of substance.",
+            "Weak: vague filler, generic self-promo, or a bare '[Boost]' / link drop with no real commentary or " \
+            "point of view.",
+            "Acceptable: a readable, on-topic casual update, simple question, or basic link share with brief context.",
+            "Very good: would make an insightful or genuinely interesting developer tweet, shares a concrete tip " \
+            "or question, or points out something specific and worthwhile about a linked article or project.",
+            "Exceptional: a sharp, insightful, or memorable tweet-length observation or standout takeaway on a " \
+            "linked article that community members will want to read and engage with.",
+          ],
+        )
+      else
+        score(
           {
             question: "How good is `article` as a contribution to this community?",
             status_posts: "If `article.format` is a status post, judge it as a short, casual update, " \
@@ -171,11 +244,24 @@ module Ai
             "Very good: clear, well-structured and informative, with real insight or experience.",
             "Exceptional: original and deep; the kind of post members share and cite.",
           ],
-        ),
-        on_topic: noul(
-          "Does the subject of `article` fit the purpose described in `community.description`?",
-        ),
-        originality: score(
+        )
+      end
+    end
+
+    def originality_question
+      if @article.status?
+        score(
+          "How original or interesting is the angle, takeaway, or observation in `article` " \
+          "(as a short status post or commentary on a linked article)?",
+          [
+            "Empty filler, bare '[Boost]', or repeats a cliché with no angle of its own.",
+            "A basic, familiar update or plain link summary.",
+            "An interesting observation, concrete takeaway, or worthwhile angle on a topic or linked article.",
+            "A sharp, distinctive insight, clever hook, or perspective that stands out in a feed.",
+          ],
+        )
+      else
+        score(
           "How original is the perspective or content of `article`?",
           [
             "Rehashes common material with nothing new.",
@@ -183,8 +269,24 @@ module Ai
             "A fresh angle, example, or finding.",
             "A distinctive idea or experience readers are unlikely to find elsewhere.",
           ],
-        ),
-        personal_voice: score(
+        )
+      end
+    end
+
+    def personal_voice_question
+      if @article.status?
+        score(
+          "How much does `article` read like an authentic developer sharing a real thought, experience, " \
+          "or take (rather than generic bot/marketing copy)?",
+          [
+            "Impersonal, robotic, or bare boilerplate.",
+            "Plain and neutral with a hint of personal voice.",
+            "Clearly a real person's voice, sharing their own take, project, or why a linked post is interesting.",
+            "Vivid, authentic, and personable tweet-style voice.",
+          ],
+        )
+      else
+        score(
           "How much does `article` carry the author's own voice and lived experience?",
           [
             "Impersonal; could have been written by anyone.",
@@ -192,23 +294,20 @@ module Ai
             "Clearly the author's own voice, with personal experience.",
             "Vivid, personal, and emotionally resonant.",
           ],
-        ),
-        discussion_potential: score(
-          "How likely is `article` to spark discussion among community members?",
-          [
-            "Unlikely; nothing to respond to.",
-            "Might draw a few polite replies.",
-            "Raises points or questions members will want to weigh in on.",
-            "Very likely to start a lively, substantive thread.",
-          ],
-        )
-      }
-      if tag_instructions.any?
-        questions[:violates_tag_rules] = noul(
-          "Does `article` break a rule in `community.tag_moderation_instructions`?",
         )
       end
-      questions
+    end
+
+    def discussion_potential_question
+      score(
+        "How likely is `article` to spark discussion among community members?",
+        [
+          "Unlikely; nothing to respond to.",
+          "Might draw a few polite replies.",
+          "Raises points or questions members will want to weigh in on.",
+          "Very likely to start a lively, substantive thread.",
+        ],
+      )
     end
 
     def label_from_jev(result)
@@ -247,7 +346,8 @@ module Ai
     end
 
     def quality_tier(position)
-      QUALITY_TIERS.detect { |upper_bound, _tier| position < upper_bound }.last
+      tiers = @article.status? ? STATUS_QUALITY_TIERS : QUALITY_TIERS
+      tiers.detect { |upper_bound, _tier| position < upper_bound }.last
     end
 
     def tag_rule_violation?(result)
@@ -270,11 +370,14 @@ module Ai
     end
 
     def community_description
-      if @article.subforem_id
-        Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) ||
-          Settings::Community.community_description(subforem_id: @article.subforem_id)
+      subforem_id = @article.subforem_id || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
+      if subforem_id
+        Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+          Settings::Community.community_description(subforem_id: subforem_id).presence ||
+          Settings::RateLimit.internal_content_description_spec.presence ||
+          Settings::Community.community_description
       else
-        Settings::RateLimit.internal_content_description_spec ||
+        Settings::RateLimit.internal_content_description_spec.presence ||
           Settings::Community.community_description
       end
     end
@@ -285,21 +388,42 @@ module Ai
         .map { |name, instructions| { tag: name, instructions: instructions } }
     end
 
+    def embedded_urls
+      @embedded_urls ||= begin
+        urls = []
+        urls << @article.body_url if @article.respond_to?(:body_url) && @article.body_url.present?
+        if @article.body_markdown.present?
+          @article.body_markdown.scan(%r{\{%\s*embed\s+(https?://[^\s%]+)}i) { |match| urls << match.first }
+        end
+        urls.concat(@article.extract_urls_from_title) if @article.respond_to?(:extract_urls_from_title)
+        urls.filter_map { |url| url.to_s.strip.sub(/[.,;:!?)]+$/, "").presence }.uniq
+      end
+    end
+
+    def linked_article
+      return @linked_article if defined?(@linked_article)
+
+      @linked_article = if @article.status?
+                          embedded_urls.lazy.filter_map do |url|
+                            path = URI.parse(url).path.to_s.downcase.chomp("/")
+                            next if path.blank? || path.count("/") < 2
+
+                            Article.published
+                              .where.not(id: @article.id)
+                              .select(:id, :title, :cached_user_username, :cached_tag_list, :body_markdown)
+                              .find_by(path: path)
+                          rescue URI::Error
+                            nil
+                          end.first
+                        end
+    end
+
     # --- Gemini ---
 
     ##
     # Builds a detailed prompt for the AI to assess article content.
     # @return [String] The prompt to be sent to the Gemini API.
     def build_prompt
-      # Get the community description for context, specific to subforem if provided
-      community_description = if @article.subforem_id
-                                Settings::RateLimit.internal_content_description_spec(subforem_id: @article.subforem_id) ||
-                                  Settings::Community.community_description(subforem_id: @article.subforem_id)
-                              else
-                                Settings::RateLimit.internal_content_description_spec ||
-                                  Settings::Community.community_description
-                              end
-
       # Gather user context
       user_context = build_user_context
 
@@ -312,8 +436,13 @@ module Ai
       quickie_context = if @article.status?
                           <<~QUICKIE
 
-                            **Important Context:**
-                            Note: This article is a "status" post (a quick update or thought). These are shorter, more casual posts that we encourage for community engagement. Please err on the side of higher quality labels and higher compellingness scores, provided it is not clear spam or completely low quality.
+                            **Important Context — Status Post ("Quickie") Calibration:**
+                            Note: This article is a "status" post (a short, tweet-length update, thought, question, or commentary on a linked article/resource). In status posts, the `Title` field contains the entire text of the post, and `Body` is either empty or contains an `{% embed ... %}` link.
+                            Do NOT judge a status post against long-form blog post criteria (do not require multiple paragraphs, section headers, or long-form depth). Instead, calibrate quality labels and `compellingness_score` against what makes a genuinely good developer tweet or link commentary:
+                            - **Assign `great_and_on_topic` (and `compellingness_score` 0.80–1.0)** when the status post is a sharp, insightful, clever, or memorable developer thought/observation, a great discussion prompt, or a compelling takeaway that highlights something genuinely interesting or surprising about a linked article or project.
+                            - **Assign `very_good_and_on_topic` (and `compellingness_score` 0.65–0.85)** when the status post would make an insightful or genuinely interesting developer tweet/update, asks a worthwhile community question, shares a concrete tip, or points out something specific, useful, or interesting about a linked article or resource (rather than just dropping a bare link).
+                            - **Assign `okay_and_on_topic` (and `compellingness_score` 0.35–0.60)** only when the status post is a plain, unremarkable on-topic update, a generic announcement with no real insight/hook, or a bare `[Boost]` of an on-topic post with no added commentary.
+                            - **Maintain strict quality & spam standards (`likely_low_quality`, `clear_and_obvious_low_quality`, `likely_spam`, `clear_and_obvious_spam`)**: Do NOT reward low-effort noise (e.g., bare greetings like "hi" or "first time here", test posts, "up up", single keywords, engagement bait with no substance, or spam/off-topic promotional links). Real quality and genuine insight or interest are still strictly required.
                           QUICKIE
                         else
                           ""
@@ -425,13 +554,28 @@ module Ai
     # @return [String] Article context information.
     def build_article_context
       limit = @is_negative ? 2000 : 5000
+      word_count = if @article.status?
+                     "#{@article.title} #{@article.body_markdown}".split.size
+                   else
+                     @article.body_markdown.split.size
+                   end
+      linked_context = if @article.status? && linked_article
+                         <<~LINKED
+                           Linked Article: "#{linked_article.title}" by @#{linked_article.cached_user_username} (Tags: #{linked_article.cached_tag_list})
+                           Linked Article Excerpt: #{linked_article.body_markdown.to_s.truncate(400)}
+                         LINKED
+                       elsif @article.status? && embedded_urls.any?
+                         "Linked URL(s): #{embedded_urls.first(3).join(', ')}\n"
+                       else
+                         ""
+                       end
       <<~ARTICLE_CONTEXT
         Title: #{@article.title}
         Tags: #{@article.cached_tag_list}
         Body: #{@article.body_markdown.truncate(limit)} #{'(Truncated)' if @article.body_markdown.length > limit}
-        Published: #{@article.published_at&.strftime('%B %d, %Y') || 'Not published'}
+        #{linked_context}Published: #{@article.published_at&.strftime('%B %d, %Y') || 'Not published'}
         Reading time: #{@article.reading_time} minutes
-        Word count: #{@article.body_markdown.split.size} words
+        Word count: #{word_count} words
       ARTICLE_CONTEXT
     end
 

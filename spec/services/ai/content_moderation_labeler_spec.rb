@@ -62,6 +62,36 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
         labeler = described_class.new(article)
         prompt = labeler.send(:build_prompt)
         expect(prompt).to include("This article is a \"status\" post")
+        expect(prompt).to include("Assign `great_and_on_topic`")
+        expect(prompt).to include("Assign `very_good_and_on_topic`")
+      end
+
+      it "includes linked article context in the prompt when the status embeds an internal article" do
+        linked = create(:article, user: user, title: "Deep Dive into React 19")
+        status_article = create(:article, user: user)
+        status_article.update_columns(
+          type_of: Article.type_ofs[:status],
+          title: "Interesting benchmark showing how Zustand handles 1,000 rows in React 19 https://example.com#{linked.path}",
+          body_markdown: "{% embed https://example.com#{linked.path} minimal %}",
+        )
+
+        labeler = described_class.new(status_article)
+        prompt = labeler.__send__(:build_prompt)
+
+        expect(prompt).to include("Linked Article: \"Deep Dive into React 19\" by @#{user.username}")
+        expect(prompt).to include("Linked Article Excerpt:")
+      end
+    end
+
+    context "when article has no subforem_id and default subforem exists" do
+      it "falls back to Subforem.cached_default_id for community_description" do
+        allow(article).to receive(:subforem_id).and_return(nil)
+        allow(Subforem).to receive(:cached_default_id).and_return(1)
+        allow(Settings::RateLimit).to receive(:internal_content_description_spec)
+          .with(subforem_id: 1).and_return("DEV default community spec.")
+
+        labeler = described_class.new(article)
+        expect(labeler.__send__(:community_description)).to eq("DEV default community spec.")
       end
     end
 
@@ -261,6 +291,49 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       result = evaluate_with(originality: 3.0, personal_voice: 3.0, discussion_potential: 0.0)
 
       expect(result[:compellingness_score]).to eq(0.7)
+    end
+
+    context "when article is a status post (quickie)" do
+      let(:linked_article) do
+        create(:article, user: user, title: "How Agentic Video Editing Works")
+      end
+      let(:status_article) do
+        post = create(:article, user: user)
+        post.update_columns(
+          type_of: Article.type_ofs[:status],
+          title: "Anthropic had an agent edit its own launch video—the edit was text https://example.com#{linked_article.path}",
+          body_markdown: "{% embed https://example.com#{linked_article.path} minimal %}",
+        )
+        post
+      end
+
+      def evaluate_status_with(answers)
+        stub_jev({ on_topic: 0.9, quality: 2.0 }.merge(answers))
+        described_class.new(status_article).evaluate
+      end
+
+      it "includes linked_article context and status-calibrated questions in the Jev request" do
+        requests = stub_jev(on_topic: 0.9, quality: 2.5)
+
+        described_class.new(status_article).evaluate
+
+        expect(requests.size).to eq(1)
+        article_state = requests.first[:state][:article]
+        expect(article_state[:format]).to include("status post (quickie)")
+        expect(article_state[:linked_article]).to include(
+          title: "How Agentic Video Editing Works",
+          author: "@#{user.username}",
+        )
+        expect(requests.first[:questions][:quality].to_s).to include("short status post")
+      end
+
+      it "calibrates quality tiers for status posts while keeping low-quality filtering strict" do
+        expect(evaluate_status_with(quality: 2.3)[:label]).to eq("very_good_and_on_topic")
+        expect(evaluate_status_with(quality: 3.2)[:label]).to eq("great_and_on_topic")
+        expect(evaluate_status_with(quality: 1.8)[:label]).to eq("okay_and_on_topic")
+        expect(evaluate_status_with(quality: 1.0)[:label]).to eq("likely_low_quality")
+        expect(evaluate_status_with(quality: 0.2)[:label]).to eq("clear_and_obvious_low_quality")
+      end
     end
 
     it "falls back to the safe default when TypeSafe fails" do

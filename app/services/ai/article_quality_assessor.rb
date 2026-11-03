@@ -162,13 +162,18 @@ module Ai
     end
 
     def community_description
-      @community_description ||= if @subforem_id
-                                   Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem_id) ||
-                                     Settings::Community.community_description(subforem_id: @subforem_id)
-                                 else
-                                   Settings::RateLimit.internal_content_description_spec ||
-                                     Settings::Community.community_description
-                                 end
+      @community_description ||= begin
+        subforem_id = @subforem_id || RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
+        if subforem_id
+          Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
+            Settings::Community.community_description(subforem_id: subforem_id).presence ||
+            Settings::RateLimit.internal_content_description_spec.presence ||
+            Settings::Community.community_description
+        else
+          Settings::RateLimit.internal_content_description_spec.presence ||
+            Settings::Community.community_description
+        end
+      end
     end
 
     # --- Gemini ---
@@ -177,15 +182,6 @@ module Ai
     # Builds a detailed prompt for the AI to assess article quality.
     # @return [String] The prompt to be sent to the Gemini API.
     def build_prompt
-      # Get the community description for context, specific to subforem if provided
-      community_description = if @subforem_id
-                                Settings::RateLimit.internal_content_description_spec(subforem_id: @subforem_id) ||
-                                  Settings::Community.community_description(subforem_id: @subforem_id)
-                              else
-                                Settings::RateLimit.internal_content_description_spec ||
-                                  Settings::Community.community_description
-                              end
-
       articles_text = @articles.map.with_index(1) do |article, index|
         bg_context = author_trustworthiness_profile(article)
         <<~ARTICLE
