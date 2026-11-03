@@ -1,0 +1,50 @@
+app/javascript/article-form/__tests__/dateHelpers.test.js
+  h_f968154a99632d 1-37
+app/javascript/article-form/articleForm.jsx
+  h_f968154a99632d 5-9,203-205
+app/javascript/article-form/components/EditorActions.jsx
+  h_f968154a99632d 4,46,48,51-53
+app/javascript/article-form/components/Options.jsx
+  h_f968154a99632d 4-10,82-84,126-128,130-133,181
+app/javascript/article-form/dateHelpers.js
+  h_f968154a99632d 1-106
+app/javascript/onboarding/components/FollowUsers.jsx
+  h_f968154a99632d 8-14,250
+app/javascript/onboarding/components/__tests__/FollowUsers.test.jsx
+  h_f968154a99632d 56,87-89
+app/javascript/packs/CommentTextArea/CommentTextArea.jsx
+  h_f968154a99632d 1,4,29,84,86,88-100,224-245
+app/javascript/packs/application.jsx
+  h_f968154a99632d 10,28-30,35-37,48-52,61-64,73-78,81-83
+app/javascript/packs/emojiPicker.js
+  h_f968154a99632d 1-8
+app/javascript/utilities/__tests__/commentTextAreaLoader.test.js
+  h_f968154a99632d 1-81
+app/javascript/utilities/__tests__/emojiPickerLoader.test.js
+  h_f968154a99632d 1-55
+app/javascript/utilities/commentTextAreaLoader.js
+  h_f968154a99632d 1-87
+app/javascript/utilities/emojiPickerLoader.js
+  h_f968154a99632d 1-62
+app/views/articles/index.html.erb
+  h_f968154a99632d 74
+app/views/comments/_form.html.erb
+  h_f968154a99632d 3-5
+app/views/layouts/application.html.erb
+  h_f968154a99632d 36-37
+app/views/notifications/index.html.erb
+  h_f968154a99632d 69
+esbuild.config.mjs
+  h_f968154a99632d 80-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a61bbc20d2534bf22e639882b11de0616d0dde5d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
