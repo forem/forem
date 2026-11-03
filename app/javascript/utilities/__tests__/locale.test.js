@@ -62,6 +62,30 @@ describe('locale utility', () => {
     expect(locale('core.follow')).toEqual('Suivre maintenant');
   });
 
+  it('preserves conditional page translations across InstantClick page navigations', () => {
+    const translationsEl = document.getElementById('i18n-translations');
+    translationsEl.dataset.translations = JSON.stringify({
+      en: {
+        core: { follow: 'Follow' },
+        views: {
+          stories: {
+            feed: { no_results: 'No posts found' },
+          },
+        },
+      },
+    });
+    expect(locale('views.stories.feed.no_results')).toEqual('No posts found');
+
+    // Simulate InstantClick swap from home page to article page (which only includes core)
+    translationsEl.dataset.translations = JSON.stringify({
+      en: {
+        core: { follow: 'Follow' },
+      },
+    });
+    expect(locale('core.follow')).toEqual('Follow');
+    expect(locale('views.stories.feed.no_results')).toEqual('No posts found');
+  });
+
   it('returns the standard missing translation notice for unknown keys', () => {
     expect(locale('core.nonexistent_key')).toEqual(
       '[missing "en.core.nonexistent_key" translation]',

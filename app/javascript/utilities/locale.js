@@ -3,12 +3,32 @@ let translations = {};
 let lastRawTranslations = null;
 let payloadLocale = null;
 
+function mergeTranslations(target, source) {
+  Object.keys(source).forEach((key) => {
+    const sourceVal = source[key];
+    const targetVal = target[key];
+    if (
+      sourceVal &&
+      typeof sourceVal === 'object' &&
+      !Array.isArray(sourceVal) &&
+      targetVal &&
+      typeof targetVal === 'object' &&
+      !Array.isArray(targetVal)
+    ) {
+      mergeTranslations(targetVal, sourceVal);
+    } else {
+      target[key] = sourceVal; // eslint-disable-line no-param-reassign
+    }
+  });
+  return target;
+}
+
 function loadTranslations() {
   const translationsDiv = document.getElementById('i18n-translations');
   const rawTranslations = translationsDiv?.dataset?.translations;
   if (rawTranslations && rawTranslations !== lastRawTranslations) {
     lastRawTranslations = rawTranslations;
-    translations = JSON.parse(rawTranslations);
+    mergeTranslations(translations, JSON.parse(rawTranslations));
   }
   payloadLocale = translationsDiv?.dataset?.locale || null;
 }
