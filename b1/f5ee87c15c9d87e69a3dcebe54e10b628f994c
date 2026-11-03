@@ -1,0 +1,40 @@
+app/workers/articles/reprocess_by_image_host_worker.rb
+  s_453fa138d842db::t_eb11757252a4e1 1-28
+app/controllers/admin/tools_controller.rb
+  s_453fa138d842db::t_c09dca7173afd6 25-37
+spec/services/images/optimizer_spec.rb
+  s_453fa138d842db::t_a7d4e061c01861 390-413
+  s_453fa138d842db::t_ecda6b84b6a492 350
+app/services/images/optimizer.rb
+  s_453fa138d842db::t_d937b7a9c14fd1 136-137,143-161
+spec/workers/articles/reprocess_by_image_host_worker_spec.rb
+  s_453fa138d842db::t_f1f81191bded1c 1-48
+spec/requests/admin/tools_spec.rb
+  s_453fa138d842db::t_936945df604808 57-79
+app/views/admin/tools/index.html.erb
+  s_453fa138d842db::t_3b1058bfcb0bd6 34-50
+config/locales/controllers/admin/pt.yml
+  s_453fa138d842db::t_ed13d59c4fb262 158-159
+config/locales/controllers/admin/fr.yml
+  s_453fa138d842db::t_ed13d59c4fb262 197-198
+config/locales/controllers/admin/en.yml
+  s_453fa138d842db::t_ed13d59c4fb262 197-198
+config/routes/admin.rb
+  s_453fa138d842db::t_5d577740c7a703 203
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.2",
+  "base_commit_sha": "b1f5ee87c15c9d87e69a3dcebe54e10b628f994c",
+  "prompts": {},
+  "sessions": {
+    "s_453fa138d842db": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "3f83ae5c-325d-45d4-a6a5-13af64b5fd47",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

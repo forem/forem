@@ -1,0 +1,16 @@
+app/services/articles/page_view_updater.rb
+  h_f968154a99632d 22
+app/services/edge_cache/bust_article.rb
+  h_f968154a99632d 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aa26d51aa59d00f15a2745b542b48058d29652fd",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

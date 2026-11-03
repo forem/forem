@@ -1,0 +1,16 @@
+lib/sidekiq/memory_killer.rb
+  h_f968154a99632d 3-24,26-31,36,39,44-62,64-65,70,72-78,80-89,95-98,100,106-129
+spec/lib/sidekiq/memory_killer_spec.rb
+  h_f968154a99632d 6,12,28,30,36-43,47,49,52-66,68-78,81-99,102-146,148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7ee27b81e3f25d3012ff2d34933a09f4daf82273",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

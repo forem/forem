@@ -1,0 +1,16 @@
+app/javascript/packs/analyticsDashboard.js
+  h_a5e25bc086eb00 3-13,15-16,23
+app/javascript/__tests__/analyticsDashboard.test.js
+  h_a5e25bc086eb00 1-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "ab6caf558ab5a25a6cb16defdfc534f24b91d92c",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

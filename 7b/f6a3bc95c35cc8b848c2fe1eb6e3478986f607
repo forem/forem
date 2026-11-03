@@ -1,0 +1,28 @@
+app/models/billboard_event.rb
+  s_f75395e02f3bc0::t_e293b4939d0ee0 37-57
+app/controllers/billboard_events_controller.rb
+  s_f75395e02f3bc0::t_8148ae8db5030b 35
+spec/models/billboard_event_spec.rb
+  s_f75395e02f3bc0::t_4f1be56d96e9a0 49-54,56-61,63-67,69-74,76-80,82-86,88-91,94-103
+  s_f75395e02f3bc0::t_a6397a522529b7 47-48,55,62,68,75,81,87,92-93,104-119
+spec/requests/billboard_events_spec.rb
+  s_f75395e02f3bc0::t_dcd5bd5dbd757c 64,66-68
+  s_f75395e02f3bc0::t_26613a94a6394e 73,117
+  s_f75395e02f3bc0::t_a6397a522529b7 62-63,65,69-72,74-78,114-116,118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7bf6a3bc95c35cc8b848c2fe1eb6e3478986f607",
+  "prompts": {},
+  "sessions": {
+    "s_f75395e02f3bc0": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff411730-99ed-4414-88ff-698d9ea96b37",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

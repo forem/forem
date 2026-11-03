@@ -1,0 +1,16 @@
+db/migrate/20260903120000_add_feed_lookback_index_to_articles.rb
+  h_f968154a99632d 6-13,15-21,27-28
+db/migrate/20260903120001_add_user_expires_at_index_to_recommended_articles_lists.rb
+  h_f968154a99632d 6-13,15-20,26-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "02af32b556d2c811ca3f9dd026ec7421cbedc1d5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

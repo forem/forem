@@ -1,0 +1,21 @@
+Gemfile
+  s_ab02a8f2696e17::t_8ea398e175972c 58-62
+Gemfile.lock
+  ai_agent 503,1092
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.8",
+  "base_commit_sha": "45a6c464f32a8630514d85cbce402b4d591fdaa5",
+  "prompts": {},
+  "sessions": {
+    "s_ab02a8f2696e17": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "777b3f9c-1fd4-4537-8753-fda9290525ce",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

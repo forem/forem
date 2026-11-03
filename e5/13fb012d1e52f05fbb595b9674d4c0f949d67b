@@ -1,0 +1,41 @@
+spec/swagger_helper.rb
+  s_c2ca01f4f175dc::t_32086b0e67343d 246
+app/views/api/v1/articles/_article.json.jbuilder
+  s_c2ca01f4f175dc::t_62068a921b0b6b 17-18,21
+  s_c2ca01f4f175dc::t_b726b5fc174677 22
+app/controllers/concerns/api/articles_controller.rb
+  s_c2ca01f4f175dc::t_85f80767d4346e 91,169-179
+  s_c2ca01f4f175dc::t_a288337b8a8448 180-181
+app/views/api/v1/articles/show.json.jbuilder
+  s_c2ca01f4f175dc::t_7c7fa64997ed77 23-26
+spec/requests/api/v1/articles_spec.rb
+  s_c2ca01f4f175dc::t_5353bfcfc496cf 1864,1882-1891
+  s_c2ca01f4f175dc::t_a2ca94eec5b7ff 473
+  s_c2ca01f4f175dc::t_f5f571f073aa03 1863,1865-1874,1894-1917
+  s_c2ca01f4f175dc::t_3fb8ed0e2305d8 1875-1881,1892-1893
+  s_c2ca01f4f175dc::t_1f790863544f78 42
+spec/requests/api/v1/docs/articles_spec.rb
+  s_c2ca01f4f175dc::t_75b4bc8143a01c 36
+  s_c2ca01f4f175dc::t_2fab049f1dede5 62
+app/views/api/v0/articles/show.json.jbuilder
+  s_c2ca01f4f175dc::t_04879e9c97f076 23-26
+swagger/v1/api_v1.json
+  s_c2ca01f4f175dc::t_2fab049f1dede5 6351-6355
+  s_c2ca01f4f175dc::t_b764de38f6ae98 568
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e513fb012d1e52f05fbb595b9674d4c0f949d67b",
+  "prompts": {},
+  "sessions": {
+    "s_c2ca01f4f175dc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1b4aa082-af28-4158-b56e-5054f767135a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

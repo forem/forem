@@ -1,0 +1,23 @@
+app/controllers/profile_field_groups_controller.rb
+  s_6b474c17d6be01::t_2e4d1aa0a46f38 5-11
+spec/requests/profile_field_groups_request_spec.rb
+  s_6b474c17d6be01::t_d751b75b4eaff2 83,91
+  s_6b474c17d6be01::t_696457073acd41 92-94
+  s_6b474c17d6be01::t_5d628c23bbb8b4 47-82,84-90,95-96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2a55829fc6fceb38ba5ea0bfd729e9c14ce2fe1a",
+  "prompts": {},
+  "sessions": {
+    "s_6b474c17d6be01": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a18a10-773a-7ad2-9a1b-14f3c8d2c492",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

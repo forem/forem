@@ -1,0 +1,14 @@
+db/migrate/20261026150001_add_active_success_score_index_to_feed_configs.rb
+  h_f968154a99632d 5,10,17-18,26-32,40-49
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bbad258aa11d13c673655c675d4a061ad387e62b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

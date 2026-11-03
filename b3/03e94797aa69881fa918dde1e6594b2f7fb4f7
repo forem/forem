@@ -1,0 +1,20 @@
+app/services/authentication/providers/mlh.rb
+  s_2717fea812dfa4::t_0065e6dc05b354 28
+  s_2717fea812dfa4::t_19416656d0a447 29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "b303e94797aa69881fa918dde1e6594b2f7fb4f7",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

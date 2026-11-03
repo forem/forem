@@ -1,0 +1,22 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 340,544-547
+app/services/moderator/merge_user.rb
+  h_f968154a99632d 102,107,112
+app/views/users/_sidebar.html.erb
+  h_f968154a99632d 12,53,66
+spec/requests/stories_index_spec.rb
+  h_f968154a99632d 928-976
+spec/services/moderator/merge_user_spec.rb
+  h_f968154a99632d 41-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "58302f22d8c6bbc4300ccb4d40b82175384f4a78",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

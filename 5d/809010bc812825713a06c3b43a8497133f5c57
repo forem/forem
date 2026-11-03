@@ -1,0 +1,16 @@
+config/initializers/honeycomb.rb
+  h_f968154a99632d 58-59,61-64,66-69
+spec/initializers/honeycomb_spec.rb
+  h_f968154a99632d 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5d809010bc812825713a06c3b43a8497133f5c57",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

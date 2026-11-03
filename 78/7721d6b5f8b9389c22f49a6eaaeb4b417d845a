@@ -1,0 +1,16 @@
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 64
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 64,72-73,82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "787721d6b5f8b9389c22f49a6eaaeb4b417d845a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

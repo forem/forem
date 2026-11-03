@@ -1,0 +1,18 @@
+db/migrate/20261016120000_add_active_placement_area_index_to_display_ads.rb
+  h_f968154a99632d 1-60
+db/schema.rb
+  h_f968154a99632d 13,735
+spec/models/billboard_spec.rb
+  h_f968154a99632d 1628-1639
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5c32e09c2b4878e9922b50ad921e60a70ec69df5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+app/controllers/concerns/api/tags_controller.rb
+  s_f7a64a93327cf1::t_aea8b895157175 21-43
+app/models/tag_subforem_relationship.rb
+  s_f7a64a93327cf1::t_aea8b895157175 7-14
+app/controllers/api/v1/tags_controller.rb
+  s_f7a64a93327cf1::t_aea8b895157175 6
+spec/requests/api/v1/docs/tags_spec.rb
+  s_f7a64a93327cf1::t_7d58c3992dc610 36-39,41-57
+  s_f7a64a93327cf1::t_7ad381883d23fb 40
+  s_f7a64a93327cf1::t_7b481bc0ddd2fb 35
+app/models/tag.rb
+  s_f7a64a93327cf1::t_f814e8496ea111 35,108-109,111
+  s_f7a64a93327cf1::t_a87e6e5d32b2e5 112
+  s_f7a64a93327cf1::t_9eddc42153154b 110
+spec/requests/api/v1/tags_spec.rb
+  s_f7a64a93327cf1::t_7d58c3992dc610 69-72,74-117
+  s_f7a64a93327cf1::t_7ad381883d23fb 73
+app/controllers/api/v0/tags_controller.rb
+  s_f7a64a93327cf1::t_aea8b895157175 6
+swagger/v1/api_v1.json
+  s_f7a64a93327cf1::t_922ca33acf59b6 5001-5009,5011-5028
+  s_f7a64a93327cf1::t_7ad381883d23fb 5010
+  s_f7a64a93327cf1::t_0a03fe577b3594 6643-6646
+  s_26a269fa3c3c7f::t_f0e791e4128e0a 1149
+app/services/edge_cache/bust_tag.rb
+  s_f7a64a93327cf1::t_aea8b895157175 7
+config/routes/api.rb
+  s_f7a64a93327cf1::t_aea8b895157175 29-33
+spec/requests/api/v0/tags_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 74-93
+spec/models/tag_subforem_relationship_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 22-48
+spec/services/edge_cache/bust_tag_spec.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 22,33
+spec/swagger_helper.rb
+  s_f7a64a93327cf1::t_9eddc42153154b 305-306
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 13-34,45-118,120-146,149,153,155-166,168-174,176-181,183,185-201,204-243,283,289-290,293,296-307,310-312,315,321,328-329,332,336-337,340,342-343,345-352,354-358,360-363,365-367,369-371,375
+app/services/ai/base.rb
+  h_f968154a99632d 15-16,29
+app/services/ai/embedding.rb
+  h_f968154a99632d 6-7
+app/services/ai/function_registry.rb
+  h_f968154a99632d 95-98
+app/services/ai/search_reranker.rb
+  h_f968154a99632d 1-113
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 1823,1875,1877-1892,1895,1897,1932-2016
+  s_26a269fa3c3c7f::t_07e9772c8d30c2 1900-1913,2017-2044
+spec/services/ai/embedding_spec.rb
+  h_f968154a99632d 34-38
+spec/services/ai/search_reranker_spec.rb
+  h_f968154a99632d 1-133
+spec/requests/api/v1/docs/articles_spec.rb
+  s_26a269fa3c3c7f::t_ca11c41fa77014 593-594
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc069607bbf1cbb7d6eb0c300a132b6069f586f0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_f7a64a93327cf1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee32541d-f4af-4731-a5a3-4bd1c8d8b532",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

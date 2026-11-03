@@ -1,0 +1,25 @@
+spec/models/user_spec.rb
+  s_2717fea812dfa4::t_fa211fc21b3862 218-246
+spec/services/authentication/authenticator_spec.rb
+  s_2717fea812dfa4::t_804fdd85f29e03 967
+app/models/user.rb
+  s_2717fea812dfa4::t_bceb939cab6732 904-913,920-922,924-925
+  s_2717fea812dfa4::t_deffee35865b8f 821-823
+  s_2717fea812dfa4::t_cb75a37a14d680 968-969
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "bea936e7d8889670e0f3da2e0a1e1fb60a1683c7",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

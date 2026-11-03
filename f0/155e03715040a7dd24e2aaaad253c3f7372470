@@ -1,0 +1,19 @@
+app/services/ai/image_generator.rb
+  s_8b0c4c86e7f979::t_d847e3549e0c0b 37-40,42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f0155e03715040a7dd24e2aaaad253c3f7372470",
+  "prompts": {},
+  "sessions": {
+    "s_8b0c4c86e7f979": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "f32b8bc9-2315-4d5a-924a-0bffd0cee926",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

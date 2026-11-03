@@ -1,0 +1,26 @@
+app/models/comment.rb
+  s_f747b314b5f30e::t_12bc701e87b01a 212
+app/models/article.rb
+  s_f747b314b5f30e::t_12bc701e87b01a 637
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.0",
+  "base_commit_sha": "c104e814e67b88b544776c2d73961d05fa9bfd41",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f747b314b5f30e": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "6d1f6d7d-eaaf-42d9-b5fb-fc61ef73e444",
+        "model": "gpt-5-mini"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

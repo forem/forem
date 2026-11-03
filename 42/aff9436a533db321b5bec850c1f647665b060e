@@ -1,0 +1,50 @@
+app/assets/stylesheets/admin.scss
+  h_f968154a99632d 320-343
+app/controllers/admin/settings/ai_functions_controller.rb
+  h_f968154a99632d 28-30,39-43
+app/helpers/rate_limit_checker_helper.rb
+  h_f968154a99632d 95-101
+app/lib/constants/settings/general.rb
+  h_f968154a99632d 161-164
+app/models/settings/general.rb
+  h_f968154a99632d 16-19,240-256
+app/views/admin/flag_appeals/_flag_appeal.html.erb
+  h_f968154a99632d 8-11,20,25,30-41,43-47,51,53,55-56,58,75-76,80,83,90,96,103,107,114-121,123-124,130-131,135-138,141,146-147,152,154,171,176
+app/views/admin/flag_appeals/index.html.erb
+  h_f968154a99632d 2-3,5-15,37
+app/views/admin/settings/forms/_ai_functions.html.erb
+  h_f968154a99632d 64-72
+app/views/flag_appeals/_suspended_notice.html.erb
+  h_f968154a99632d 8
+app/views/flag_appeals/new.html.erb
+  h_f968154a99632d 13,23-29
+config/locales/helpers/en.yml
+  h_f968154a99632d 587-589
+config/locales/helpers/fr.yml
+  h_f968154a99632d 632-635
+config/locales/helpers/pt.yml
+  h_f968154a99632d 594-596
+config/locales/lib/en.yml
+  h_f968154a99632d 196-197
+config/locales/lib/fr.yml
+  h_f968154a99632d 196-197
+config/locales/lib/pt.yml
+  h_f968154a99632d 194-195
+spec/helpers/rate_limit_checker_helper_spec.rb
+  h_f968154a99632d 11
+spec/models/settings/general_spec.rb
+  h_f968154a99632d 110-136
+spec/requests/admin/settings/ai_functions_spec.rb
+  h_f968154a99632d 54-72,85-99,127-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "42aff9436a533db321b5bec850c1f647665b060e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
