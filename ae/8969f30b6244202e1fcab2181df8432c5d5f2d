@@ -1,0 +1,3032 @@
+.cursorrules
+  h_a5e25bc086eb00 33-36,72-85
+.dockerignore
+  h_a5e25bc086eb00 62-70
+.env_sample
+  h_a5e25bc086eb00 76-87,93-98,138-141,201-208,222-243
+.github/copilot-instructions.md
+  h_a5e25bc086eb00 33-36,72-85
+.github/workflows/cd.yml
+  h_a5e25bc086eb00 4,8-54
+.github/workflows/ci.yml
+  h_a5e25bc086eb00 15,24,35-81,85,89-100,105,107-111,126-127,130-165,172-175,183-186,188-192,196-200
+.github/workflows/create-cache.yml
+  h_a5e25bc086eb00 15,20-47,51,55-66,71,73-77
+.github/workflows/forem-native.yml
+  h_a5e25bc086eb00 1-90
+.gitignore
+  h_a5e25bc086eb00 134-143
+.nvmrc
+  h_a5e25bc086eb00 1
+.windsurfrules
+  h_a5e25bc086eb00 33-36,72-85
+AGENTS.md
+  h_a5e25bc086eb00 33-36,71-85
+Containerfile
+  h_a5e25bc086eb00 6-29,89-90,108,123,228
+Containerfile.base
+  h_a5e25bc086eb00 5
+Gemfile
+  h_a5e25bc086eb00 8,17,20,28-29,31,34,38-39,49,51,60,64,68,75,85,87-88,103,107-109,118,128,132,140,150,174,178,182,191
+Gemfile.lock
+  h_a5e25bc086eb00 9-13,100-102,115,117,153-155,167,171,203,206,212,277,282,324-325,340-341,343,454-455,460-461,565-575,674,697,746,751-755,761,856,976-984,987-988,1066-1067,1072-1073,1111-1112,1114,1153,1157,1161,1164,1170-1171,1184,1191-1192,1198,1207,1209,1218,1226,1233,1240,1250,1253,1255,1268,1284-1287,1301,1303,1310
+README.md
+  h_a5e25bc086eb00 51
+app/assets/config/manifest.js
+  h_a5e25bc086eb00 2,6-8
+app/assets/images/agent-antigravity-cli.svg
+  h_a5e25bc086eb00 1-11
+app/assets/images/gem.svg
+  h_a5e25bc086eb00 1
+app/assets/images/robot.svg
+  h_a5e25bc086eb00 1-3
+app/assets/images/sparkles.svg
+  h_a5e25bc086eb00 1-3
+app/assets/javascripts/.eslintrc.js
+  h_a5e25bc086eb00 32
+app/assets/javascripts/base.js.erb
+  h_a5e25bc086eb00 23,36,53-63,161-166,511,537,660,685,694-775
+app/assets/javascripts/initializePage.js
+  h_a5e25bc086eb00 30
+app/assets/javascripts/initializers/initializeBaseUserData.js
+  h_a5e25bc086eb00 107-131,153
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  h_a5e25bc086eb00 37,110,170-171
+app/assets/javascripts/initializers/initializeCommentsPage.js.erb
+  h_a5e25bc086eb00 455-481,490-521
+app/assets/javascripts/initializers/initializeLocalStorageRender.js
+  h_a5e25bc086eb00 7
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_a5e25bc086eb00 6-14,26-27,32,43-44,48,51-52,64-65,69,71,74,102-103,107,109,112,177,254,277,279,285,287,383-387,389,439
+app/assets/stylesheets/admin.scss
+  h_a5e25bc086eb00 320-343
+app/assets/stylesheets/base/layout.scss
+  h_a5e25bc086eb00 210-229
+app/assets/stylesheets/base/reset.scss
+  h_a5e25bc086eb00 40-42
+app/assets/stylesheets/base/typography.scss
+  h_a5e25bc086eb00 47-58,167-168,211-220,374-413,464-475,489-507
+app/assets/stylesheets/billboards.scss
+  h_a5e25bc086eb00 5-19,259-268
+app/assets/stylesheets/components/avatars.scss
+  h_a5e25bc086eb00 141
+app/assets/stylesheets/components/cards.scss
+  h_a5e25bc086eb00 7,15
+app/assets/stylesheets/components/ctas.scss
+  h_a5e25bc086eb00 23-24
+app/assets/stylesheets/components/dropdowns.scss
+  h_a5e25bc086eb00 14
+app/assets/stylesheets/components/forms.scss
+  h_a5e25bc086eb00 22
+app/assets/stylesheets/components/header.scss
+  h_a5e25bc086eb00 11
+app/assets/stylesheets/components/links.scss
+  h_a5e25bc086eb00 17-18,43-48
+app/assets/stylesheets/components/modals.scss
+  h_a5e25bc086eb00 229,255,288,326
+app/assets/stylesheets/components/stories.scss
+  h_a5e25bc086eb00 50,54-60,124,217,242
+app/assets/stylesheets/components/tooltips.scss
+  h_a5e25bc086eb00 39-45,53-56,67,71
+app/assets/stylesheets/config/_colors.css
+  h_a5e25bc086eb00 46,61-62,67,404,409-411
+app/assets/stylesheets/config/_variables.scss
+  h_a5e25bc086eb00 37-41,48,56-57
+app/assets/stylesheets/dashboard.scss
+  h_a5e25bc086eb00 207-245,251-252,258-261,263-264,266-267,269,272-274,278-322,326-370,372-384,386-394,397-417,420-449,453-476,480-488,491-509,513-526,534,537,543-546,551,606-609
+app/assets/stylesheets/ltags/AgentSessionTag.scss
+  h_a5e25bc086eb00 43
+app/assets/stylesheets/themes/dark.css
+  h_a5e25bc086eb00 77-78,83,400,404
+app/assets/stylesheets/views/article-form.scss
+  h_a5e25bc086eb00 110-111,325-370
+app/assets/stylesheets/views/article.scss
+  h_a5e25bc086eb00 36-38,251-253,256,264-271,380,382-386,392-395,397,399-407
+app/assets/stylesheets/views/comments.scss
+  h_a5e25bc086eb00 98-99,107-109,114,151-152,156-159,187-190,196-199,205-209,221-228,232-234,236,239-297,315-318,326-327
+app/assets/stylesheets/views/dashboard.scss
+  h_a5e25bc086eb00 65-122,132-134
+app/assets/stylesheets/views/events.scss
+  h_a5e25bc086eb00 239-510
+app/assets/stylesheets/views/mod-actions.scss
+  h_a5e25bc086eb00 829-832
+app/assets/stylesheets/views/organizations_showcase.scss
+  h_a5e25bc086eb00 207-214
+app/controllers/admin/application_controller.rb
+  h_a5e25bc086eb00 13
+app/controllers/admin/audience_segments_controller.rb
+  h_a5e25bc086eb00 1-201
+app/controllers/admin/badges_controller.rb
+  h_a5e25bc086eb00 44
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  h_a5e25bc086eb00 49-50
+app/controllers/admin/bulk_assign_role_controller.rb
+  h_a5e25bc086eb00 59,66-71
+app/controllers/admin/comments_controller.rb
+  h_a5e25bc086eb00 3-4,45-47,49-53
+app/controllers/admin/emails_controller.rb
+  h_a5e25bc086eb00 26-27,31,38-42,45,62,70-75,77-80,84-87
+app/controllers/admin/events_controller.rb
+  h_a5e25bc086eb00 6,28-29,54,57-58,72,75-79,81-82,86-87,91-94
+app/controllers/admin/feed_configs_controller.rb
+  h_a5e25bc086eb00 1-210
+app/controllers/admin/flag_appeals_controller.rb
+  h_a5e25bc086eb00 2,4,7,11-23,26-27,29-41,43-44,49-59
+app/controllers/admin/linked_domains_controller.rb
+  h_a5e25bc086eb00 5-8,11-33
+app/controllers/admin/org_features_controller.rb
+  h_a5e25bc086eb00 26
+app/controllers/admin/organizations_controller.rb
+  h_a5e25bc086eb00 5,48,74,98-126,202-215,239-296
+app/controllers/admin/reactions_controller.rb
+  h_a5e25bc086eb00 8-9,21-37
+app/controllers/admin/settings/ai_functions_controller.rb
+  h_a5e25bc086eb00 1-47
+app/controllers/admin/settings/base_controller.rb
+  h_a5e25bc086eb00 5,20-27
+app/controllers/admin/user_queries_controller.rb
+  h_a5e25bc086eb00 15,33,41,50,59,80,89
+app/controllers/admin/users_controller.rb
+  h_a5e25bc086eb00 16-17,72-78,280-281,378-379,501-549,711,751-754,768,869-936
+app/controllers/ahoy/email_clicks_controller.rb
+  h_a5e25bc086eb00 51-52,62-65
+app/controllers/ai_image_generations_controller.rb
+  h_a5e25bc086eb00 24,26,29
+app/controllers/api/v0/api_controller.rb
+  h_a5e25bc086eb00 35-36
+app/controllers/api/v0/articles_controller.rb
+  h_a5e25bc086eb00 8,14,16
+app/controllers/api/v0/comments_controller.rb
+  h_a5e25bc086eb00 6,8
+app/controllers/api/v0/events_controller.rb
+  h_a5e25bc086eb00 17-22,29,39,50,60-62,71-73,84,87-95,97
+app/controllers/api/v0/tags_controller.rb
+  h_a5e25bc086eb00 6
+app/controllers/api/v1/api_controller.rb
+  h_a5e25bc086eb00 22-25,34-35,43-46,58-97,135-136,138-140,168-170
+app/controllers/api/v1/articles_controller.rb
+  h_a5e25bc086eb00 8,11-33,42,45-84,86-146,149,153,155-163,165-174,176-181,183,185-201,204-271,273-280,282-283,285,288-292,294-312,315,321,328-329,332,336-337,340,342-343,345-352,354-358,360-363,365-367,369-371,375,385-388,392-403
+app/controllers/api/v1/billboards_controller.rb
+  h_a5e25bc086eb00 24-25,32-33,41-42,49-60,63-71,77-78
+app/controllers/api/v1/comments_controller.rb
+  h_a5e25bc086eb00 6
+app/controllers/api/v1/images_controller.rb
+  h_a5e25bc086eb00 1-81
+app/controllers/api/v1/pages_controller.rb
+  h_a5e25bc086eb00 5,8-12,21-29,31,34,39-58,61,66-67,69,72,76-96,99-198,206-207
+app/controllers/api/v1/tags_controller.rb
+  h_a5e25bc086eb00 6-106
+app/controllers/api/v1/user_roles_controller.rb
+  h_a5e25bc086eb00 8,19-21,32-38,61-64,71-82
+app/controllers/application_controller.rb
+  h_a5e25bc086eb00 29,44,156-172,302-303,341-342,348,384,424-428,526,624-627,636,638
+app/controllers/articles_controller.rb
+  h_a5e25bc086eb00 36,42,60-61,123,133,159-160,164-166,171-172,183,200,306-308,317,322-323,325-326,355,359-362,383-394,413,422-423
+app/controllers/auth_pass_controller.rb
+  h_a5e25bc086eb00 8,11-12,97-117,139-146,148
+app/controllers/billboard_events_controller.rb
+  h_a5e25bc086eb00 6-9,12-13,15-17,22-23,28,31,38-43,47,51,56-63,71-77
+app/controllers/billboards_controller.rb
+  h_a5e25bc086eb00 3,7-17,28,31,34-36,44,46,58-147,168-205
+app/controllers/calendar_controller.rb
+  h_a5e25bc086eb00 3-7,19-27,34,39-45,51,55,58,60,101
+app/controllers/co_author_invitations_controller.rb
+  h_a5e25bc086eb00 1-55
+app/controllers/collections_controller.rb
+  h_a5e25bc086eb00 2-3,12-15
+app/controllers/comments_controller.rb
+  h_a5e25bc086eb00 29,306-310,312,318-324
+app/controllers/community_controller.rb
+  h_a5e25bc086eb00 30-32,34-42,44-57,59
+app/controllers/concerns/api/admin/users_controller.rb
+  h_a5e25bc086eb00 14-20,111-113,120,128-131,137,140,223-224
+app/controllers/concerns/api/analytics_controller.rb
+  h_a5e25bc086eb00 70-73,78,82
+app/controllers/concerns/api/articles_controller.rb
+  h_a5e25bc086eb00 7,16,34,84-88,90,95-96,147,151-185,190-224,235-259,264-276,284,286-289,301-305
+app/controllers/concerns/api/badge_achievements_controller.rb
+  h_a5e25bc086eb00 19-24,26-27,36-43,54-55,59-64,69
+app/controllers/concerns/api/badges_controller.rb
+  h_a5e25bc086eb00 19,30,40-42,55,63
+app/controllers/concerns/api/comments_controller.rb
+  h_a5e25bc086eb00 6,13-17,23,26,37,40,49-61,64-69
+app/controllers/concerns/api/surveys_controller.rb
+  h_a5e25bc086eb00 81
+app/controllers/concerns/api/tags_controller.rb
+  h_a5e25bc086eb00 14-17,21-43
+app/controllers/concerns/caching_headers.rb
+  h_a5e25bc086eb00 17-19,22,32,50,59-60,75-83
+app/controllers/concerns/edge_cache_safety_check.rb
+  h_a5e25bc086eb00 9-11
+app/controllers/concerns/session_current_user.rb
+  h_a5e25bc086eb00 5-13
+app/controllers/concerns/valid_request.rb
+  h_a5e25bc086eb00 27-28
+app/controllers/dashboards_controller.rb
+  h_a5e25bc086eb00 67,69,224-231
+app/controllers/favorites_controller.rb
+  h_a5e25bc086eb00 21-25
+app/controllers/feeds/xml_imports_controller.rb
+  h_a5e25bc086eb00 1-25
+app/controllers/flag_appeals_controller.rb
+  h_a5e25bc086eb00 1-54
+app/controllers/follows_controller.rb
+  h_a5e25bc086eb00 19-21,36-51,55,57-58,78-79,81
+app/controllers/github_repos_controller.rb
+  h_a5e25bc086eb00 12
+app/controllers/incoming_webhooks/stripe_events_controller.rb
+  h_a5e25bc086eb00 79,137
+app/controllers/lead_submissions_controller.rb
+  h_a5e25bc086eb00 9
+app/controllers/leadership_dashboards_controller.rb
+  h_a5e25bc086eb00 5,11-13,15-16,18
+app/controllers/moderations_controller.rb
+  h_a5e25bc086eb00 70
+app/controllers/notification_subscriptions_controller.rb
+  h_a5e25bc086eb00 50,61-84
+app/controllers/notifications/reads_controller.rb
+  h_a5e25bc086eb00 15-18
+app/controllers/notifications_controller.rb
+  h_a5e25bc086eb00 40-47
+app/controllers/omniauth_callbacks_controller.rb
+  h_a5e25bc086eb00 36,51,61-95,98-169,179,195-198,225-236,240-243,251,255-275
+app/controllers/onboardings_controller.rb
+  h_a5e25bc086eb00 10
+app/controllers/organization_pages_controller.rb
+  h_a5e25bc086eb00 24
+app/controllers/organization_settings_controller.rb
+  h_a5e25bc086eb00 26-27,33-37
+app/controllers/pages_controller.rb
+  h_a5e25bc086eb00 3,105-108,110,122-139,166-171,190-205
+app/controllers/passwords_controller.rb
+  h_a5e25bc086eb00 7-17,24-63
+app/controllers/poll_skips_controller.rb
+  h_a5e25bc086eb00 21,33,48-65
+app/controllers/poll_text_responses_controller.rb
+  h_a5e25bc086eb00 14,18,28,38-74
+app/controllers/poll_votes_controller.rb
+  h_a5e25bc086eb00 4,17-18,22,26,31,36,38,41,47,54-108
+app/controllers/profiles_controller.rb
+  h_a5e25bc086eb00 4
+app/controllers/reactions_controller.rb
+  h_a5e25bc086eb00 44-45,79-80,91-92,109-111,115-116
+app/controllers/registrations_controller.rb
+  h_a5e25bc086eb00 7,89-107
+app/controllers/search_controller.rb
+  h_a5e25bc086eb00 83-88
+app/controllers/sidebars_controller.rb
+  h_a5e25bc086eb00 3,26-30,33-47,63-69
+app/controllers/stories/feeds_controller.rb
+  h_a5e25bc086eb00 3-4,24,44,52-53,72-76,95-100,116-119,148-156,166,182,189-231
+app/controllers/stories/tagged_articles_controller.rb
+  h_a5e25bc086eb00 30,38-42,58,63-68,70-80,95,102-104
+app/controllers/stories_controller.rb
+  h_a5e25bc086eb00 48-49,72,74-75,119-127,129-130,139,145-148,150,159-161,163,169-170,172,188,253-256,313,340,392-403,416-417,437-441,445-455,485,491-509,523-524,526-530,536-542,544-547,555-581,645,702,745
+app/controllers/surveys_controller.rb
+  h_a5e25bc086eb00 38-40,43-51
+app/controllers/tags_controller.rb
+  h_a5e25bc086eb00 67
+app/controllers/users/settings_controller.rb
+  h_a5e25bc086eb00 20
+app/controllers/users_controller.rb
+  h_a5e25bc086eb00 174-175,182,252-254
+app/controllers/video_states_controller.rb
+  h_a5e25bc086eb00 14
+app/decorators/article_decorator.rb
+  h_a5e25bc086eb00 117-129,132-133,166-167
+app/decorators/notification_decorator.rb
+  h_a5e25bc086eb00 13-27,103-109,148-156,164-171,194-208,297-364
+app/decorators/profile_decorator.rb
+  h_a5e25bc086eb00 5-7
+app/decorators/user_decorator.rb
+  h_a5e25bc086eb00 21-49,111-112,158
+app/errors/authentication/errors.rb
+  h_a5e25bc086eb00 23-37
+app/helpers/admin/settings_helper.rb
+  h_a5e25bc086eb00 11-28
+app/helpers/admin/users_helper.rb
+  h_a5e25bc086eb00 4,6,13-27
+app/helpers/agent_sessions_helper.rb
+  h_a5e25bc086eb00 3
+app/helpers/application_helper.rb
+  h_a5e25bc086eb00 152,170-172,175-177,180-196,198,206-213,284,351-353,382-384,478-479,481-483,586-662
+app/helpers/articles_helper.rb
+  h_a5e25bc086eb00 20,25,62-67,70,72,93-126
+app/helpers/billboard_helper.rb
+  h_a5e25bc086eb00 32-50
+app/helpers/calendar_helper.rb
+  h_a5e25bc086eb00 1-36
+app/helpers/co_author_invitations_helper.rb
+  h_a5e25bc086eb00 1-22
+app/helpers/comments_helper.rb
+  h_a5e25bc086eb00 8-10,23,121-127
+app/helpers/crayons_helper.rb
+  h_a5e25bc086eb00 2-7,41-70
+app/helpers/events_helper.rb
+  h_a5e25bc086eb00 9-36,75-110
+app/helpers/favorites_helper.rb
+  h_a5e25bc086eb00 2,8-74,83,87-97,99-101
+app/helpers/notifications_helper.rb
+  h_a5e25bc086eb00 23
+app/helpers/rate_limit_checker_helper.rb
+  h_a5e25bc086eb00 39-66,95-101
+app/helpers/social_image_helper.rb
+  h_a5e25bc086eb00 5-10
+app/javascript/Snackbar/__stories__/Snackbar.stories.jsx
+  h_a5e25bc086eb00 3
+app/javascript/__tests__/__snapshots__/convertCoauthorIdsToUsernameInputs.test.js.snap
+  h_a5e25bc086eb00 22,50
+app/javascript/__tests__/analyticsDashboard.test.js
+  h_a5e25bc086eb00 11-14,29-37,54,72-100
+app/javascript/__tests__/billboard.test.js
+  h_a5e25bc086eb00 1-2,208-276,340-384
+app/javascript/__tests__/billboardImpressionBotGate.test.js
+  h_a5e25bc086eb00 81,83-84,91-102
+app/javascript/__tests__/billboardPlacementVisibility.test.js
+  h_a5e25bc086eb00 1-167
+app/javascript/article-form/__tests__/actions.test.js
+  h_a5e25bc086eb00 1,25,73-137,154-170
+app/javascript/article-form/actions.js
+  h_a5e25bc086eb00 4-8,52-53,55-56,59-67,71-79,190-193
+app/javascript/article-form/articleForm.jsx
+  h_a5e25bc086eb00 8-12,62,67-77,81,90,95-120,133-136,141-144,147-153,164-167,171,232-238,247-248,281-282,385-402,414-436,531-533,638-640
+app/javascript/article-form/components/AiDisclosureModal.jsx
+  h_a5e25bc086eb00 1-162
+app/javascript/article-form/components/CoAuthorInvitationSelector.jsx
+  h_a5e25bc086eb00 1-207
+app/javascript/article-form/components/EditorActions.jsx
+  h_a5e25bc086eb00 1,6,9,32,57,63-71,88,91,93-94,98,100-123,125-128,130-137,139-196
+app/javascript/article-form/components/Options.jsx
+  h_a5e25bc086eb00 7,34-37,221,228,292-301,336-339
+app/javascript/article-form/components/Preview.jsx
+  h_a5e25bc086eb00 8,137
+app/javascript/article-form/components/__tests__/CoAuthorInvitationSelector.test.jsx
+  h_a5e25bc086eb00 1-206
+app/javascript/article-form/components/__tests__/Options.test.jsx
+  h_a5e25bc086eb00 3,134-185
+app/javascript/article-form/components/index.js
+  h_a5e25bc086eb00 1
+app/javascript/articles/Feed.jsx
+  h_a5e25bc086eb00 11,26-32,98-99,102-104,156,159,162
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_a5e25bc086eb00 300-413
+app/javascript/articles/components/CommentListItem.jsx
+  h_a5e25bc086eb00 69
+app/javascript/articles/components/Meta.jsx
+  h_a5e25bc086eb00 4,7,95-127
+app/javascript/articles/components/__tests__/CommentListItem.test.jsx
+  h_a5e25bc086eb00 1-18
+app/javascript/crayons/Modal/Modal.jsx
+  h_a5e25bc086eb00 49
+app/javascript/crayons/Modal/__tests__/Modal.test.jsx
+  h_a5e25bc086eb00 26-51
+app/javascript/crayons/MultiSelectAutocomplete/MultiSelectAutocomplete.jsx
+  h_a5e25bc086eb00 111-117,236,579,582,605,616-619,638,642-643,668,671
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/MultiSelectAutocomplete.test.jsx
+  h_a5e25bc086eb00 38-57,238-265,555-585
+app/javascript/crayons/MultiSelectAutocomplete/__tests__/__snapshots__/MultiSelectAutocomplete.test.jsx.snap
+  h_a5e25bc086eb00 5
+app/javascript/crayons/formElements/DateRangePicker/DateRangePicker.jsx
+  h_a5e25bc086eb00 67
+app/javascript/crayons/formElements/DateRangePicker/__tests__/DateRangePicker.test.jsx
+  h_a5e25bc086eb00 94-114
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_a5e25bc086eb00 1,3,12,24-28,42,50,62,65,92-104,113-115,121-222,225-245,247-258,262-267,278-283,288-294,297-298,307-309,320-338,340-353
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_a5e25bc086eb00 26-28,52,54,60-67,87,90,101-106,108,115,117-219,226,232,236,246,252,254,257,270,289,300,310-333
+app/javascript/githubRepos/__tests__/githubRepos.test.jsx
+  h_a5e25bc086eb00 250-281
+app/javascript/githubRepos/githubRepos.jsx
+  h_a5e25bc086eb00 22-30,35
+app/javascript/onboarding/components/ProfileForm/ProfileImage.jsx
+  h_a5e25bc086eb00 69
+app/javascript/onboarding/components/__tests__/ProfileImage.test.jsx
+  h_a5e25bc086eb00 10-16,18-20,143-193
+app/javascript/onboarding/components/actions.js
+  h_a5e25bc086eb00 1-2,26-43,47-49,52-63
+app/javascript/packs/__tests__/billboard.test.js
+  h_a5e25bc086eb00 1,147-167
+app/javascript/packs/__tests__/mermaidRenderer.test.js
+  h_a5e25bc086eb00 1-93
+app/javascript/packs/admin/billboards.jsx
+  h_a5e25bc086eb00 155,157,163,165
+app/javascript/packs/admin/editUser.jsx
+  h_a5e25bc086eb00 9-13
+app/javascript/packs/admin/users/filtersModal.js
+  h_a5e25bc086eb00 212,221-224,230
+app/javascript/packs/admin/users/gdprDeleteRequests.jsx
+  h_a5e25bc086eb00 12,14-15,17,21-22,24
+app/javascript/packs/analyticsDashboard.js
+  h_a5e25bc086eb00 19-45,50
+app/javascript/packs/application.jsx
+  h_a5e25bc086eb00 14,24-28,71,75-76
+app/javascript/packs/articleForm.jsx
+  h_a5e25bc086eb00 38-51,62-65
+app/javascript/packs/baseInitializers.js
+  h_a5e25bc086eb00 8,21,30
+app/javascript/packs/billboard.js
+  h_a5e25bc086eb00 7-21,24,31-34,61-63,141-142,145,147,244-261,265
+app/javascript/packs/billboardAfterRenderActions.js
+  h_a5e25bc086eb00 58-125,132-135,156-161,163,194,267
+app/javascript/packs/favoriteControls.jsx
+  h_a5e25bc086eb00 25-34,49-58
+app/javascript/packs/feedEvents.js
+  h_a5e25bc086eb00 223-228
+app/javascript/packs/homePage.jsx
+  h_a5e25bc086eb00 26,98,105-106,108,113-125,129,133,137-140,146-178,187-192,194-198
+app/javascript/packs/homePageFeed.jsx
+  h_a5e25bc086eb00 68,73,176-182,185,212
+app/javascript/packs/initializers/initializeCommentPreview.js
+  h_a5e25bc086eb00 2,20
+app/javascript/packs/mermaidRenderer.js
+  h_a5e25bc086eb00 1-99
+app/javascript/packs/onboardingRedirectCheck.jsx
+  h_a5e25bc086eb00 12-13
+app/javascript/packs/userProfileSettings.js
+  h_a5e25bc086eb00 38-39
+app/javascript/profileDropdown/flagButton.js
+  h_a5e25bc086eb00 9
+app/javascript/shared/components/NoResults.jsx
+  h_a5e25bc086eb00 48
+app/javascript/shared/components/UserStore.js
+  h_a5e25bc086eb00 35
+app/javascript/shared/components/__tests__/UserStore.test.js
+  h_a5e25bc086eb00 68-77
+app/javascript/utilities/__tests__/anonymousVisitor.test.js
+  h_a5e25bc086eb00 1-179
+app/javascript/utilities/__tests__/billboardInteractivity.test.js
+  h_a5e25bc086eb00 150-174
+app/javascript/utilities/__tests__/mermaidDiagrams.test.js
+  h_a5e25bc086eb00 1-91
+app/javascript/utilities/anonymousVisitor.js
+  h_a5e25bc086eb00 1-196
+app/javascript/utilities/billboardInteractivity.jsx
+  h_a5e25bc086eb00 87-89
+app/javascript/utilities/mermaidDiagrams.js
+  h_a5e25bc086eb00 1-35
+app/lib/black_box.rb
+  h_a5e25bc086eb00 15,30,43-48
+app/lib/constants/role.rb
+  h_a5e25bc086eb00 32
+app/lib/constants/settings/general.rb
+  h_a5e25bc086eb00 119-122,157-167
+app/lib/constants/settings/user_experience.rb
+  h_a5e25bc086eb00 4-13
+app/lib/constants/user_details.rb
+  h_a5e25bc086eb00 7,12-18
+app/lib/honeycomb/noise_cancelling_sampler.rb
+  h_a5e25bc086eb00 1-2
+app/lib/middlewares/restore_original_host.rb
+  h_a5e25bc086eb00 29-34
+app/lib/middlewares/set_cookie_domain.rb
+  h_a5e25bc086eb00 16-19
+app/lib/middlewares/set_subforem.rb
+  h_a5e25bc086eb00 11-12,28-39,41,56-57,59,61-64,71-96
+app/lib/org_custom_domain_constraint.rb
+  h_a5e25bc086eb00 2-29,31-33,35-42,46-47,49-58,60-63,65,68-69
+app/lib/redcarpet/render/html_rouge.rb
+  h_a5e25bc086eb00 8-11,16-19,23-24,26-34,37,44-46,50,54,56-59,61,63,65,67,85-101,111-140
+app/lib/release_phase_notifier.rb
+  h_a5e25bc086eb00 13
+app/lib/server_warmup.rb
+  h_a5e25bc086eb00 1-690
+app/lib/url.rb
+  h_a5e25bc086eb00 11-15,17-18,47-48,50-55,59-68,72-93,99
+app/lib/url_domain_helper.rb
+  h_a5e25bc086eb00 5-8
+app/liquid_tags/agent_session_tag.rb
+  h_a5e25bc086eb00 39-58
+app/liquid_tags/bandcamp_tag.rb
+  h_a5e25bc086eb00 7-9,13,30,32-34,88-93,186
+app/liquid_tags/concerns/liquid_tag_helpers.rb
+  h_a5e25bc086eb00 17,48-53,56-58
+app/liquid_tags/cta_tag.rb
+  h_a5e25bc086eb00 3,13-14
+app/liquid_tags/details_tag.rb
+  h_a5e25bc086eb00 6-25,35
+app/liquid_tags/dotnet_fiddle_tag.rb
+  h_a5e25bc086eb00 5,31
+app/liquid_tags/feed_tag.rb
+  h_a5e25bc086eb00 121
+app/liquid_tags/gist_tag.rb
+  h_a5e25bc086eb00 5,61
+app/liquid_tags/git_pitch_tag.rb
+  h_a5e25bc086eb00 3
+app/liquid_tags/glitch_tag.rb
+  h_a5e25bc086eb00 49
+app/liquid_tags/js_fiddle_tag.rb
+  h_a5e25bc086eb00 52
+app/liquid_tags/kotlin_tag.rb
+  h_a5e25bc086eb00 3-4,26
+app/liquid_tags/legacy_code_tag.rb
+  h_a5e25bc086eb00 1,39
+app/liquid_tags/open_graph_tag.rb
+  h_a5e25bc086eb00 9-13,16-18
+app/liquid_tags/org_lead_gate_tag.rb
+  h_a5e25bc086eb00 1-54
+app/liquid_tags/org_posts_tag.rb
+  h_a5e25bc086eb00 23
+app/liquid_tags/poll_tag.rb
+  h_a5e25bc086eb00 16-21,35
+app/liquid_tags/spotify_tag.rb
+  h_a5e25bc086eb00 7-8
+app/liquid_tags/stackblitz_tag.rb
+  h_a5e25bc086eb00 8,13,20,60
+app/liquid_tags/survey_tag.rb
+  h_a5e25bc086eb00 64-66,82-83,95,98,119,121-122,147-151,155-158,192-198,236,245,247,249-250,255-261,265,302-305,316-320,323,328-334,336-338,343,372,374-378,387-390,414-418
+app/liquid_tags/twitch_tag.rb
+  h_a5e25bc086eb00 3,10,44-54
+app/liquid_tags/unified_embed/tag.rb
+  h_a5e25bc086eb00 9-27,66-70,127-137,139-143,145,149,151,153-155,159,163-164,167-173
+app/liquid_tags/vimeo_tag.rb
+  h_a5e25bc086eb00 4,6,31-34
+app/liquid_tags/youtube_tag.rb
+  h_a5e25bc086eb00 7-8,17-18,22-30,44,49-51,72
+app/mailers/concerns/deliverable.rb
+  h_a5e25bc086eb00 6-22,28-33,38-43,54-59,61-62,67-73,75-80,128-144,150-151,155-157,159-182,184-186
+app/mailers/custom_mailer.rb
+  h_a5e25bc086eb00 14-21,23-33,38-40,57-100
+app/mailers/devise_mailer.rb
+  h_a5e25bc086eb00 73,89-90
+app/mailers/digest_mailer.rb
+  h_a5e25bc086eb00 19-24,26-28
+app/mailers/notify_mailer.rb
+  h_a5e25bc086eb00 45,174-202,394-403
+app/mailers/survey_mailer.rb
+  h_a5e25bc086eb00 8,16-18,32-33,40
+app/models/admin_menu.rb
+  h_a5e25bc086eb00 27-28,50,61
+app/models/agent_session.rb
+  h_a5e25bc086eb00 2,14,16,18,23-33,96-102,112-121,126-129,136-138,146-153
+app/models/article.rb
+  h_a5e25bc086eb00 11-12,64-84,151-158,204,348-354,363-368,370-371,443-446,451-489,515-518,590,602,613,639-641,643,651,657-660,784-789,791,833-834,849-861,865-871,873,926-927,944,973-977,988,991-997,1007-1029,1084,1090-1095,1100,1170,1178,1334-1344,1563,1583,1592-1593,1614,1627-1644,1669-1672,1674-1676,1694,1751-1752,1754-1760,1871,1882-1894,1896-1899,1901-1902,1916-1917,1935,1984-2055,2159-2185
+app/models/article_activity.rb
+  h_a5e25bc086eb00 16-17,141,145,155-159,299-304,306,309,313-319,321
+app/models/async_info.rb
+  h_a5e25bc086eb00 27,50,54,69,86
+app/models/audience_segment.rb
+  h_a5e25bc086eb00 20-24,27,86-97,99-121
+app/models/audit_log.rb
+  h_a5e25bc086eb00 13,16,20
+app/models/badge.rb
+  h_a5e25bc086eb00 11,23,29-33
+app/models/billboard.rb
+  h_a5e25bc086eb00 23,25,27,30-31,45,47,49,52-57,60-70,117,145,169,185-187,190,192,204,214,220-222,224-226,241-249,251-252,254-275,279-307,511-524,629-631,634-636,638-657,669
+app/models/billboard_event.rb
+  h_a5e25bc086eb00 26-27,38-80
+app/models/billboard_placement_area_config.rb
+  h_a5e25bc086eb00 36-39,42,73-77,80-83,88,105-132,207-212
+app/models/co_author_invitation.rb
+  h_a5e25bc086eb00 1-65
+app/models/comment.rb
+  h_a5e25bc086eb00 10-11,22-34,128-132,224-237,249,287-319,376-379,417-418
+app/models/concerns/activity_trackable.rb
+  h_a5e25bc086eb00 1-94
+app/models/concerns/ai_disclosable.rb
+  h_a5e25bc086eb00 1-181
+app/models/concerns/article_activity_bulk_backfillable.rb
+  h_a5e25bc086eb00 1-82
+app/models/concerns/reactable.rb
+  h_a5e25bc086eb00 52-91,134,136-143
+app/models/cross_model_slug.rb
+  h_a5e25bc086eb00 30-35,37-38
+app/models/email.rb
+  h_a5e25bc086eb00 2-5,15-37,120-121,145-159
+app/models/email_message.rb
+  h_a5e25bc086eb00 35-38
+app/models/event.rb
+  h_a5e25bc086eb00 10,21-24,26-27,29-31,33,35-37,42-55,60,66-164,181-189,192-204,208-210,220-221,227,229-234,236,240,243,268-269,286
+app/models/event_signup.rb
+  h_a5e25bc086eb00 2-3,14-30
+app/models/feed_config.rb
+  h_a5e25bc086eb00 2-41,44-380,382-389,391-505,507,511-515,526,532,538-540,545-549,551,553-554,560-561,563,568-570,574-580,583-586,589-593,602,613-614,624-627,649-662,666-668,672-675,677-678,688-697,699
+app/models/feed_event.rb
+  h_a5e25bc086eb00 47-50,68-73,82-95,98-101,103,108-109,114-138,141-145,148-151,153-156,163-169,173-201,203-211
+app/models/feedback_message.rb
+  h_a5e25bc086eb00 62-63,69-76,147-156
+app/models/feeds/source.rb
+  h_a5e25bc086eb00 45,51-53,69-71
+app/models/flag_appeal.rb
+  h_a5e25bc086eb00 1-40
+app/models/follow.rb
+  h_a5e25bc086eb00 31-35,38-49
+app/models/forem_instance.rb
+  h_a5e25bc086eb00 56-62,70-78
+app/models/geolocation.rb
+  h_a5e25bc086eb00 48-59
+app/models/notification.rb
+  h_a5e25bc086eb00 16,76-89
+app/models/organization.rb
+  h_a5e25bc086eb00 132-133,225-227,326-327,329
+app/models/page.rb
+  h_a5e25bc086eb00 81-82
+app/models/pinned_article.rb
+  h_a5e25bc086eb00 7-8,10,23
+app/models/podcast.rb
+  h_a5e25bc086eb00 20-21
+app/models/podcast_episode.rb
+  h_a5e25bc086eb00 22-23,62,70
+app/models/profile.rb
+  h_a5e25bc086eb00 9,76-85,95
+app/models/profile_field.rb
+  h_a5e25bc086eb00 21-22,24-44,48-51
+app/models/reaction.rb
+  h_a5e25bc086eb00 2-3,72-73,126-127,139-140,167-168,171-172,213-254,353,355-357
+app/models/role.rb
+  h_a5e25bc086eb00 47-50,53-55,57,69-78
+app/models/settings/ai_functions.rb
+  h_a5e25bc086eb00 1-58
+app/models/settings/base.rb
+  h_a5e25bc086eb00 22-23,25,27-29,210
+app/models/settings/general.rb
+  h_a5e25bc086eb00 14-19,25,74-77,107-130,243-299
+app/models/settings/rate_limit.rb
+  h_a5e25bc086eb00 7-19,27,39-42
+app/models/subforem.rb
+  h_a5e25bc086eb00 38-42,44
+app/models/survey.rb
+  h_a5e25bc086eb00 16,31-37,39-40,90-98
+app/models/tag.rb
+  h_a5e25bc086eb00 35,37-38,66,111-115,131-138,202-216,342-345,348,356-361
+app/models/tag_subforem_relationship.rb
+  h_a5e25bc086eb00 7-14
+app/models/user.rb
+  h_a5e25bc086eb00 16-17,82,100,186-187,217,349-354,372-375,523-527,529,532-538,546-568,593-599,693-700,702,711,713,724-732,764-768,848-851,853,951,953-954,989-1001,1106-1113,1126-1137,1277-1278,1280,1284,1295-1297,1299-1302
+app/models/user_activity.rb
+  h_a5e25bc086eb00 10-16,23-29,33,35-43,49-77
+app/models/user_language.rb
+  h_a5e25bc086eb00 5-12
+app/models/user_query.rb
+  h_a5e25bc086eb00 16,25-26,28-31,34,38-39,45,73-75,77-79,82,85,87,90-91,93-95,122-125
+app/models/user_subscription.rb
+  h_a5e25bc086eb00 69
+app/models/users/notification_setting.rb
+  h_a5e25bc086eb00 8-35,64-67,69-70,72-73,75-77
+app/models/users/setting.rb
+  h_a5e25bc086eb00 26,43,89-92
+app/policies/article_policy.rb
+  h_a5e25bc086eb00 5,46
+app/policies/authorizer.rb
+  h_a5e25bc086eb00 168,174,210-211,216-228
+app/policies/badge_achievement_policy.rb
+  h_a5e25bc086eb00 3,5
+app/policies/badge_policy.rb
+  h_a5e25bc086eb00 3,5
+app/policies/co_author_invitation_policy.rb
+  h_a5e25bc086eb00 1-25
+app/policies/comment_policy.rb
+  h_a5e25bc086eb00 56-62,64,80
+app/policies/reaction_policy.rb
+  h_a5e25bc086eb00 29-42
+app/policies/role_policy.rb
+  h_a5e25bc086eb00 6
+app/policies/user_policy.rb
+  h_a5e25bc086eb00 2-3,81-94
+app/queries/admin/gdpr_delete_requests_query.rb
+  h_a5e25bc086eb00 4-5
+app/queries/articles/api_search_query.rb
+  h_a5e25bc086eb00 13-14,22-34,36-37,40
+app/queries/audit_log/unpublish_alls_query.rb
+  h_a5e25bc086eb00 17
+app/queries/billboards/filtered_ads_query.rb
+  h_a5e25bc086eb00 12-13,17-20,35,45,200-211,214-217,224-234,268,270-276
+app/queries/comments/tree.rb
+  h_a5e25bc086eb00 5,11-12,16-25,28,32-41,43-65
+app/queries/homepage/articles_query.rb
+  h_a5e25bc086eb00 23-24,63-64,95-98
+app/sanitizers/comment_email_scrubber.rb
+  h_a5e25bc086eb00 14-16
+app/sanitizers/rendered_markdown_scrubber.rb
+  h_a5e25bc086eb00 5,22-25,30,65-69,74-75,80-81,83
+app/serializers/homepage/article_serializer.rb
+  h_a5e25bc086eb00 7-8,11,13-14,16
+app/serializers/search/user_serializer.rb
+  h_a5e25bc086eb00 21
+app/services/agent_session_parsers/sensitive_data_scrubber.rb
+  h_a5e25bc086eb00 102-114,143-152
+app/services/agent_session_renderers/heading_anchors.rb
+  h_a5e25bc086eb00 1-58
+app/services/agent_session_renderers/markdown_renderer.rb
+  h_a5e25bc086eb00 4-6,8-21,24,28,38-40
+app/services/agent_sessions/s3_storage.rb
+  h_a5e25bc086eb00 9,21-27,29-35,49,63,68
+app/services/ai/about_page_generator.rb
+  h_a5e25bc086eb00 68-69
+app/services/ai/appeal_assessor.rb
+  h_a5e25bc086eb00 1-176
+app/services/ai/article_check.rb
+  h_a5e25bc086eb00 8-11,13-22,28-32,40-41,45-46,54-156
+app/services/ai/article_enhancer.rb
+  h_a5e25bc086eb00 6-11,13-29,32-33,36,45-47,79,81,113-192
+app/services/ai/article_image_generator.rb
+  h_a5e25bc086eb00 1-90
+app/services/ai/article_quality_assessor.rb
+  h_a5e25bc086eb00 7-12,14-28,35-38,48,61-175
+app/services/ai/article_summary_generator.rb
+  h_a5e25bc086eb00 11-12
+app/services/ai/badge_criteria_assessor.rb
+  h_a5e25bc086eb00 6-9,11-19,26-30,38-39,51-89
+app/services/ai/base.rb
+  h_a5e25bc086eb00 11-16,29,106-109
+app/services/ai/chat_service.rb
+  h_a5e25bc086eb00 8-9
+app/services/ai/comment_check.rb
+  h_a5e25bc086eb00 7-10,12-19,25-29,37-38,42-43,51-145
+app/services/ai/comment_helpfulness_assessor.rb
+  h_a5e25bc086eb00 11-13,15-22,29-33,41-42,54-120
+app/services/ai/community_copy.rb
+  h_a5e25bc086eb00 125,135,141
+app/services/ai/concept_article_evaluator.rb
+  h_a5e25bc086eb00 3-6,8-15,22-26,32-33,44-68
+app/services/ai/content_moderation_labeler.rb
+  h_a5e25bc086eb00 6-12,14-41,47-52,68-69,79-80,99-289
+app/services/ai/context_note_generator.rb
+  h_a5e25bc086eb00 8-9
+app/services/ai/editor_helper_service.rb
+  h_a5e25bc086eb00 9-10,36-38
+app/services/ai/email_digest_summary.rb
+  h_a5e25bc086eb00 6-7
+app/services/ai/embedding.rb
+  h_a5e25bc086eb00 6-7
+app/services/ai/forem_tags.rb
+  h_a5e25bc086eb00 2-5,7-9,12-15,76-77,220-222,227,236-249
+app/services/ai/freeform_context_note_generator.rb
+  h_a5e25bc086eb00 8-9
+app/services/ai/function_config.rb
+  h_a5e25bc086eb00 1-144
+app/services/ai/function_registry.rb
+  h_a5e25bc086eb00 1-162
+app/services/ai/github_repo_recap.rb
+  h_a5e25bc086eb00 36-37
+app/services/ai/profile_moderation_labeler.rb
+  h_a5e25bc086eb00 5-7,9-11,30-35,37,40-44,52-53,56-57,65-204,235-239,256-261,270-287
+app/services/ai/search_reranker.rb
+  h_a5e25bc086eb00 1-113
+app/services/ai/spam_escalation_check.rb
+  h_a5e25bc086eb00 1-88
+app/services/ai/subforem_finder.rb
+  h_a5e25bc086eb00 5-9,11-20,25-29,74,87-146
+app/services/ai/survey_context_generator.rb
+  h_a5e25bc086eb00 8-9
+app/services/ai/trend_detector.rb
+  h_a5e25bc086eb00 6
+app/services/ai/type_safe/client.rb
+  h_a5e25bc086eb00 1-205
+app/services/ai/type_safe/questions.rb
+  h_a5e25bc086eb00 1-48
+app/services/ai/type_safe/result.rb
+  h_a5e25bc086eb00 1-76
+app/services/algolia_insights_service.rb
+  h_a5e25bc086eb00 42
+app/services/analytics_service.rb
+  h_a5e25bc086eb00 12,15-17,22-25,27-28,32-35,37,39-40,90,92-93,118,127,155,157,159-161,172-176,188-190,194-195,198,203,205-209,219-247,250,270,272,289-293,295,398,424,426,428-430,446,468,478,480,487,489,494-499,504,511,514-519,528,535,538-543,548,553,572,577-578,588,593-594
+app/services/appeals/resolver.rb
+  h_a5e25bc086eb00 1-256
+app/services/article_api_index_service.rb
+  h_a5e25bc086eb00 15,47-48,55,61,70
+app/services/articles/attributes.rb
+  h_a5e25bc086eb00 5-6,17-19
+app/services/articles/creator.rb
+  h_a5e25bc086eb00 21-23,26,41,92,98,103-115
+app/services/articles/destroyer.rb
+  h_a5e25bc086eb00 13-18,23
+app/services/articles/detect_code_block_languages.rb
+  h_a5e25bc086eb00 4-8,10-16,36-42,47-57,71-75,93,97-105,107,110-136,138-142,145,203-207,212
+app/services/articles/feeds/article_score_calculator_for_user.rb
+  h_a5e25bc086eb00 23-25,36,49-54,56-57,71-73,81-113,116-120,123-124,127-138,140-180
+app/services/articles/feeds/basic.rb
+  h_a5e25bc086eb00 19,25-27,31-37,42,47,63
+app/services/articles/feeds/curated.rb
+  h_a5e25bc086eb00 1-21
+app/services/articles/feeds/custom.rb
+  h_a5e25bc086eb00 6-7,16,19,24,28,33-34,51-55,57-58,64-65,69-71,75-99,101-181,183-184,186-205,218-221,224-228,247-252,256-257,289-291,293-316
+app/services/articles/feeds/large_forem_experimental.rb
+  h_a5e25bc086eb00 56-59,67,77-79,85,87-89,93,104-114,124
+app/services/articles/feeds/tag.rb
+  h_a5e25bc086eb00 15
+app/services/articles/feeds/variant_query.rb
+  h_a5e25bc086eb00 141,255-258,293-295,300-302
+app/services/articles/get_user_stickies.rb
+  h_a5e25bc086eb00 5,7,14,17
+app/services/articles/page_view_updater.rb
+  h_a5e25bc086eb00 19-22,32-35,40-70
+app/services/articles/suggest_stickies.rb
+  h_a5e25bc086eb00 29-31,36,41,45,48,62,70,75
+app/services/articles/updater.rb
+  h_a5e25bc086eb00 9-11,15,20,23,41-59,108-109
+app/services/authentication/authenticator.rb
+  h_a5e25bc086eb00 28,32,45,55,175-198,221,224-226,239-263,291
+app/services/authentication/external_return.rb
+  h_a5e25bc086eb00 1-70
+app/services/authentication/mlh_core_bridge.rb
+  h_a5e25bc086eb00 1-45
+app/services/authentication/providers/apple.rb
+  h_a5e25bc086eb00 31,34-35,57-58,61,64-66,70-71
+app/services/authentication/providers/mlh.rb
+  h_a5e25bc086eb00 18-23,37-38
+app/services/authentication/providers/provider.rb
+  h_a5e25bc086eb00 32-39
+app/services/badges/award_community_favorite.rb
+  h_a5e25bc086eb00 3,17-43,45,48,50,55-62,64-145,147-153
+app/services/badges/award_contributor_from_github.rb
+  h_a5e25bc086eb00 3-7,16-62,78-79,105-108,110-117,119-120,122-288,296-298,304-305,307-311,313-319
+app/services/billboard_event_rollup.rb
+  h_a5e25bc086eb00 3
+app/services/broadcasts/welcome_notification/generator.rb
+  h_a5e25bc086eb00 19
+app/services/co_author_invitations/accept.rb
+  h_a5e25bc086eb00 1-43
+app/services/co_author_invitations/decline.rb
+  h_a5e25bc086eb00 1-43
+app/services/co_author_invitations/sync.rb
+  h_a5e25bc086eb00 1-97
+app/services/color/accessibility.rb
+  h_a5e25bc086eb00 3-4,10-13
+app/services/color/compare_hex.rb
+  h_a5e25bc086eb00 22-23,28-37,44-45,50-58
+app/services/comments/calculate_score.rb
+  h_a5e25bc086eb00 15
+app/services/community_bots/create_bot.rb
+  h_a5e25bc086eb00 41
+app/services/concepts/anchor_generator.rb
+  h_a5e25bc086eb00 7-8
+app/services/concepts/classifier.rb
+  h_a5e25bc086eb00 31-32,34
+app/services/delegated_access/configuration.rb
+  h_a5e25bc086eb00 1-111
+app/services/delegated_access/errors.rb
+  h_a5e25bc086eb00 1-6
+app/services/delegated_access/jwks_client.rb
+  h_a5e25bc086eb00 1-78
+app/services/delegated_access/verifier.rb
+  h_a5e25bc086eb00 1-193
+app/services/delivery_methods/customer_io.rb
+  h_a5e25bc086eb00 23-31,45-52,59-74
+app/services/delivery_methods/customer_io_event.rb
+  h_a5e25bc086eb00 1-72
+app/services/edge_cache/bust.rb
+  h_a5e25bc086eb00 18,51
+app/services/edge_cache/bust/fastly.rb
+  h_a5e25bc086eb00 14-17,37-55,57,59,61,68-79
+app/services/edge_cache/bust_article.rb
+  h_a5e25bc086eb00 18,24-35,47-49,67-71,74,78-80,83,85,93
+app/services/edge_cache/bust_organization.rb
+  h_a5e25bc086eb00 6-10
+app/services/edge_cache/bust_page.rb
+  h_a5e25bc086eb00 9-15
+app/services/edge_cache/bust_tag.rb
+  h_a5e25bc086eb00 7
+app/services/edge_cache/purge_by_key.rb
+  h_a5e25bc086eb00 12,22
+app/services/email_digest.rb
+  h_a5e25bc086eb00 2-3,13-25,33-40,42-45,49
+app/services/email_digest_article_collector.rb
+  h_a5e25bc086eb00 14,56,66,85,97,115,129,157-160,163,166,170,174,177,180-187,191,200-223,280-289
+app/services/emails/ahoy_link_decorator.rb
+  h_a5e25bc086eb00 1-109
+app/services/emails/ahoy_link_tracking.rb
+  h_a5e25bc086eb00 1-104
+app/services/events/billboards/live_stream.rb
+  h_a5e25bc086eb00 110-112,303-305,420-421,424-425,455-458
+app/services/events/billboards/takeover.rb
+  h_a5e25bc086eb00 152
+app/services/fastly_config/snippets.rb
+  h_a5e25bc086eb00 15,25,31,54-77
+app/services/favorites/create.rb
+  h_a5e25bc086eb00 22,26-27,76-77,95-108,124-128
+app/services/favorites/fetch.rb
+  h_a5e25bc086eb00 12,14,32,47,59,61
+app/services/feature_flag.rb
+  h_a5e25bc086eb00 26-41
+app/services/feed_events/bulk_upsert.rb
+  h_a5e25bc086eb00 76,100
+app/services/feeds/assemble_article_markdown.rb
+  h_a5e25bc086eb00 3-4,7,15,82-84,95-96,124-125,136-149,157
+app/services/feeds/check_item_medium_reply.rb
+  h_a5e25bc086eb00 26-30,37-42
+app/services/feeds/check_item_previously_imported.rb
+  h_a5e25bc086eb00 15-18
+app/services/feeds/import_from_xml.rb
+  h_a5e25bc086eb00 1-164
+app/services/feeds/validate_url.rb
+  h_a5e25bc086eb00 3-15,21,27-45,50-52
+app/services/flare_tag.rb
+  h_a5e25bc086eb00 3-22,31,36,43-46
+app/services/follows/check_cached.rb
+  h_a5e25bc086eb00 3-38,47,50-59,61,68-72
+app/services/github/errors.rb
+  h_a5e25bc086eb00 4-15,38-46
+app/services/github/oauth_client.rb
+  h_a5e25bc086eb00 83,88-95,103-112
+app/services/homepage/fetch_tag_flares.rb
+  h_a5e25bc086eb00 7,22,35-43
+app/services/html/parser.rb
+  h_a5e25bc086eb00 16-20,34,44-55,57-62,72,74-75,81,83-84,90,92-93,99-100,129-132,137,139-156,162-163,165-166,168-169,171-173,181-182,188-189,201-202,208,210-211,219,225-226,250-256,261-281,308-437
+app/services/images/generate_social_image_magickally.rb
+  h_a5e25bc086eb00 7-17,19-86,100-101,103-104,107-112,114,116,120-121,123,126,131,134,138,143-195,198-228,232-263,265-274,276-281,283-298,300-303,307-316,319-332,334,336-343,345-356,358-380,382-406,410-457,461-462,464,468-469,471-476,478-512,515-520,522,524,526-536,538-689,693-697,711-716,718-779,782-784,787-789,792,794-799
+app/services/images/generate_subforem_images.rb
+  h_a5e25bc086eb00 23
+app/services/images/optimizer.rb
+  h_a5e25bc086eb00 3-6,9,22-25,46,48-69,71,73-74,77,89,91-92,159,163-164
+app/services/images/profile_image_generator.rb
+  h_a5e25bc086eb00 3-654
+app/services/images/social_image_quote.rb
+  h_a5e25bc086eb00 1-77
+app/services/instrumentation.rb
+  h_a5e25bc086eb00 2-11,13-28
+app/services/markdown_processor.rb
+  h_a5e25bc086eb00 65-66,80-81,93-94
+app/services/markdown_processor/fixer/base.rb
+  h_a5e25bc086eb00 19-22,25,40,44-49,52,55,59,71-77,99-131
+app/services/markdown_processor/fixer/fix_all.rb
+  h_a5e25bc086eb00 12-17
+app/services/markdown_processor/fixer/fix_for_comment.rb
+  h_a5e25bc086eb00 7-12
+app/services/markdown_processor/fixer/fix_for_preview.rb
+  h_a5e25bc086eb00 9-14
+app/services/markdown_processor/parser.rb
+  h_a5e25bc086eb00 3-4,27-29,36-59,61-62,67-68,94-95,101,121,124-125,132,164-166,171,173-243,255-259,261-265,267-271,273-279,294,302-317
+app/services/markdown_processor/reading_time.rb
+  h_a5e25bc086eb00 1-12
+app/services/mentions/create_all.rb
+  h_a5e25bc086eb00 41-45
+app/services/moderator/manage_activity_and_roles.rb
+  h_a5e25bc086eb00 41,44,52,140
+app/services/moderator/merge_user.rb
+  h_a5e25bc086eb00 19,27-28,38-49,102,107,112
+app/services/moderator/unpublish_all_articles.rb
+  h_a5e25bc086eb00 59-61
+app/services/notifications/co_author/remove.rb
+  h_a5e25bc086eb00 1-32
+app/services/notifications/co_author/send.rb
+  h_a5e25bc086eb00 1-84
+app/services/notifications/co_author_invitations.rb
+  h_a5e25bc086eb00 1-21
+app/services/notifications/co_author_invitations/send.rb
+  h_a5e25bc086eb00 1-28
+app/services/notifications/co_author_invitations/update.rb
+  h_a5e25bc086eb00 1-49
+app/services/notifications/new_mention/send.rb
+  h_a5e25bc086eb00 19,61-65
+app/services/notifications/notifiable_action/send.rb
+  h_a5e25bc086eb00 35-40,45
+app/services/notifications/remove_by_spammer.rb
+  h_a5e25bc086eb00 18-23
+app/services/notifications/update.rb
+  h_a5e25bc086eb00 32-34
+app/services/open_graph.rb
+  h_a5e25bc086eb00 13,17,30,61,89,93-150
+app/services/organizations/bulk_add_users.rb
+  h_a5e25bc086eb00 1-100
+app/services/payments/customer.rb
+  h_a5e25bc086eb00 74
+app/services/podcasts/create_episode.rb
+  h_a5e25bc086eb00 39,47,57
+app/services/rate_limit_checker.rb
+  h_a5e25bc086eb00 4-6,10-11,13-14,16,25,48-63,80,98-105
+app/services/re_captcha/check_enabled.rb
+  h_a5e25bc086eb00 22-23
+app/services/read_only_database_service.rb
+  h_a5e25bc086eb00 3-6,8,14,18,26,29,31-39,41-45,49,54,56-57,75-85,87,93,108,113-116,120,123,135,137
+app/services/search/article.rb
+  h_a5e25bc086eb00 26-38
+app/services/segmented_users/user_identifier_parser.rb
+  h_a5e25bc086eb00 1-170
+app/services/settings/general/upsert.rb
+  h_a5e25bc086eb00 17,22-24,28-34
+app/services/spam/domain_detector.rb
+  h_a5e25bc086eb00 83-84,86,92,94-96,98,104,106-107
+app/services/spam/handler.rb
+  h_a5e25bc086eb00 27-29,49,58,60,66,78,80,86-89,102-107,111,119-121,124-126,162,169-171,174,176,179-206,213-214,216-220,229,231,238-255,262-374,405-409,411,415,431-432,451,464,488-504,515,523-531,556,558,562-567
+app/services/spam/reaction_ring_detector.rb
+  h_a5e25bc086eb00 66-81,85-95,97-109,128,131,133,136,150,160
+app/services/tag_moderators/add.rb
+  h_a5e25bc086eb00 22
+app/services/tag_moderators/remove.rb
+  h_a5e25bc086eb00 8
+app/services/trackable/event_name.rb
+  h_a5e25bc086eb00 1-20
+app/services/trackers/customerio_cdp.rb
+  h_a5e25bc086eb00 41
+app/services/user_activity_heatmap_service.rb
+  h_a5e25bc086eb00 45-58
+app/services/user_query_executor.rb
+  h_a5e25bc086eb00 29,36,45,51-73,81-83,87,90,93-94,146,154-157,160,163,166,169-171,182,194-195,204-207,209-211,220,227-234,238-247,250-253,255-260,263-281,285
+app/services/user_query_validator.rb
+  h_a5e25bc086eb00 1-2,12-14,31,64-67,123-127,130,132-133,137-142,150,153,157,160,163-164,166-168,170-171,173-174,196-197,199-204,206-215,217-244,250-275,299,302,305-310,312,314
+app/services/users/cancel_stripe_subscriptions.rb
+  h_a5e25bc086eb00 19
+app/services/users/create_mascot_account.rb
+  h_a5e25bc086eb00 5,20-24,27-31
+app/services/users/delete.rb
+  h_a5e25bc086eb00 3-4,11-14,16-19,25,28-33,43-53
+app/services/users/delete_activity.rb
+  h_a5e25bc086eb00 5-6,16,34-42,48-52
+app/services/users/delete_articles.rb
+  h_a5e25bc086eb00 5-14,16-28,30-62,64-66,69,71
+app/services/users/delete_comments.rb
+  h_a5e25bc086eb00 5-10,14-26,28-30,33-38
+app/services/users/delete_podcasts.rb
+  h_a5e25bc086eb00 7-10,12-14,16-17,19-20,22-27
+app/services/users/email_footer_payload.rb
+  h_a5e25bc086eb00 1-99
+app/services/users/remove_role.rb
+  h_a5e25bc086eb00 21,24-27,39-43
+app/services/users/update.rb
+  h_a5e25bc086eb00 8,65-66,68-69,71-72,115-116
+app/uploaders/base_uploader.rb
+  h_a5e25bc086eb00 24-32
+app/uploaders/event_cover_image_uploader.rb
+  h_a5e25bc086eb00 1-26
+app/validators/color_contrast_validator.rb
+  h_a5e25bc086eb00 7
+app/validators/emoji_only_validator.rb
+  h_a5e25bc086eb00 2-4,7
+app/views/admin/audience_segments/_form.html.erb
+  h_a5e25bc086eb00 1-48
+app/views/admin/audience_segments/edit.html.erb
+  h_a5e25bc086eb00 1-10
+app/views/admin/audience_segments/index.html.erb
+  h_a5e25bc086eb00 1-117
+app/views/admin/audience_segments/new.html.erb
+  h_a5e25bc086eb00 1-10
+app/views/admin/audience_segments/show.html.erb
+  h_a5e25bc086eb00 1-164
+app/views/admin/badges/edit.html.erb
+  h_a5e25bc086eb00 11-15,17,19
+app/views/admin/badges/new.html.erb
+  h_a5e25bc086eb00 10-15
+app/views/admin/billboard_placement_area_configs/edit.html.erb
+  h_a5e25bc086eb00 40-59
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  h_a5e25bc086eb00 19-20,30-43
+app/views/admin/billboards/_form.html.erb
+  h_a5e25bc086eb00 93,140
+app/views/admin/creator_settings/_form.html.erb
+  h_a5e25bc086eb00 34,50,66
+app/views/admin/emails/_form.html.erb
+  h_a5e25bc086eb00 2,9-22,28,32-35,61-78,87,90-102,127,129,131-153,155,157,161-216,219-235
+app/views/admin/emails/show.html.erb
+  h_a5e25bc086eb00 3-5,7-12,15-27,31-34,38,41-47,60-73
+app/views/admin/events/_form.html.erb
+  h_a5e25bc086eb00 38-41,45-79,123-144,153-165
+app/views/admin/events/show.html.erb
+  h_a5e25bc086eb00 19-36,88-98
+app/views/admin/feed_configs/_form.html.erb
+  h_a5e25bc086eb00 1-192
+app/views/admin/feed_configs/index.html.erb
+  h_a5e25bc086eb00 1-185
+app/views/admin/feed_configs/new.html.erb
+  h_a5e25bc086eb00 1-30
+app/views/admin/feed_configs/show.html.erb
+  h_a5e25bc086eb00 1-90
+app/views/admin/feedback_messages/_feedback_message.html.erb
+  h_a5e25bc086eb00 63-67
+app/views/admin/flag_appeals/_flag_appeal.html.erb
+  h_a5e25bc086eb00 1-181
+app/views/admin/flag_appeals/index.html.erb
+  h_a5e25bc086eb00 1-53
+app/views/admin/flag_appeals/show.html.erb
+  h_a5e25bc086eb00 1-7
+app/views/admin/gdpr_delete_requests/index.html.erb
+  h_a5e25bc086eb00 10,26-29,36,57-62,66
+app/views/admin/linked_domains/index.html.erb
+  h_a5e25bc086eb00 3-61
+app/views/admin/navigation_links/_form.html.erb
+  h_a5e25bc086eb00 52
+app/views/admin/organizations/show.html.erb
+  h_a5e25bc086eb00 76-85,112-113,121,142,163,184,260-281
+app/views/admin/read_only_database/show.html.erb
+  h_a5e25bc086eb00 38,43
+app/views/admin/settings/forms/_ai_disclosure.html.erb
+  h_a5e25bc086eb00 1-25
+app/views/admin/settings/forms/_ai_functions.html.erb
+  h_a5e25bc086eb00 1-88
+app/views/admin/settings/forms/_monetization.html.erb
+  h_a5e25bc086eb00 43-53
+app/views/admin/settings/forms/_post_permissions.html.erb
+  h_a5e25bc086eb00 1-8,10-26
+app/views/admin/settings/forms/_user_experience.html.erb
+  h_a5e25bc086eb00 97
+app/views/admin/settings/show.html.erb
+  h_a5e25bc086eb00 28,30-31
+app/views/admin/shared/_deployment_drift_notice.html.erb
+  h_a5e25bc086eb00 1-41
+app/views/admin/shared/_flag_reaction_item.html.erb
+  h_a5e25bc086eb00 12-18
+app/views/admin/shared/_flag_reactions_table.html.erb
+  h_a5e25bc086eb00 1-9,12-15
+app/views/admin/surveys/_form.html.erb
+  h_a5e25bc086eb00 60
+app/views/admin/tags/_form.html.erb
+  h_a5e25bc086eb00 9-17,20-28
+app/views/admin/user_queries/_form.html.erb
+  h_a5e25bc086eb00 1-205
+app/views/admin/user_queries/edit.html.erb
+  h_a5e25bc086eb00 6
+app/views/admin/user_queries/index.html.erb
+  h_a5e25bc086eb00 6-11,40,63-65
+app/views/admin/user_queries/new.html.erb
+  h_a5e25bc086eb00 6
+app/views/admin/user_queries/show.html.erb
+  h_a5e25bc086eb00 6-9,67
+app/views/admin/users/show.html.erb
+  h_a5e25bc086eb00 49-54,79-106
+app/views/admin/users/show/_tabs.html.erb
+  h_a5e25bc086eb00 1-12,16-17,20-51
+app/views/admin/users/show/agent_sessions/_index.html.erb
+  h_a5e25bc086eb00 1-57
+app/views/admin/users/show/badges/_index.html.erb
+  h_a5e25bc086eb00 1-56
+app/views/admin/users/show/blocks/_index.html.erb
+  h_a5e25bc086eb00 1-62
+app/views/admin/users/show/collections/_index.html.erb
+  h_a5e25bc086eb00 1-46
+app/views/admin/users/show/flags/_index.html.erb
+  h_a5e25bc086eb00 24-34
+app/views/admin/users/show/follows/_index.html.erb
+  h_a5e25bc086eb00 1-62
+app/views/admin/users/show/identities/_index.html.erb
+  h_a5e25bc086eb00 1-59
+app/views/admin/users/show/profile/actions/_delete.html.erb
+  h_a5e25bc086eb00 2-3,5-7,16-27
+app/views/admin/users/show/reactions/_index.html.erb
+  h_a5e25bc086eb00 1-61
+app/views/admin/users/show/reports/_index.html.erb
+  h_a5e25bc086eb00 24-25
+app/views/admin/users/show/security/_password.html.erb
+  h_a5e25bc086eb00 1-26
+app/views/agent_sessions/new.html.erb
+  h_a5e25bc086eb00 342-345
+app/views/api/v0/articles/_article.json.jbuilder
+  h_a5e25bc086eb00 17-18,21-22
+app/views/api/v0/articles/index.json.jbuilder
+  h_a5e25bc086eb00 1-2,19
+app/views/api/v0/articles/me.json.jbuilder
+  h_a5e25bc086eb00 1-2,25
+app/views/api/v0/articles/show.json.jbuilder
+  h_a5e25bc086eb00 23-26
+app/views/api/v0/comments/_comment.json.jbuilder
+  h_a5e25bc086eb00 4-5
+app/views/api/v1/articles/_article.json.jbuilder
+  h_a5e25bc086eb00 17-18,21-22
+app/views/api/v1/articles/index.json.jbuilder
+  h_a5e25bc086eb00 1-2,19
+app/views/api/v1/articles/me.json.jbuilder
+  h_a5e25bc086eb00 1-2,25
+app/views/api/v1/articles/show.json.jbuilder
+  h_a5e25bc086eb00 23-26
+app/views/api/v1/comments/_comment.json.jbuilder
+  h_a5e25bc086eb00 4-5
+app/views/api/v1/tags/update.json.jbuilder
+  h_a5e25bc086eb00 1-3
+app/views/articles/_actions.html.erb
+  h_a5e25bc086eb00 7-62,69-71,73-81,90-92
+app/views/articles/_collection.html.erb
+  h_a5e25bc086eb00 1-2,4,10
+app/views/articles/_comments_actions.html.erb
+  h_a5e25bc086eb00 10-11,13
+app/views/articles/_feed_nav.html.erb
+  h_a5e25bc086eb00 3-4,6-41,51,53-54,62-63,71-81,139,143,152,158,172-198,204-205,211,219-225,229-234,247,277
+app/views/articles/_fullscreen_embed.html.erb
+  h_a5e25bc086eb00 296-314,316
+app/views/articles/_multiple_reactions.html.erb
+  h_a5e25bc086eb00 15,48
+app/views/articles/_reaction_button.html.erb
+  h_a5e25bc086eb00 15
+app/views/articles/_single_story.html.erb
+  h_a5e25bc086eb00 8,12-13,79,100-111,153,169,184-209,217,234-235
+app/views/articles/_sticky_nav.html.erb
+  h_a5e25bc086eb00 2,4,12,59-62
+app/views/articles/_v2_form.html.erb
+  h_a5e25bc086eb00 62,69-75
+app/views/articles/feed.rss.builder
+  h_a5e25bc086eb00 46-47,51,60-61
+app/views/articles/index.html.erb
+  h_a5e25bc086eb00 52,74
+app/views/articles/show.html.erb
+  h_a5e25bc086eb00 28,98,109,176,178,181,185-186,190-191,198-206,224,275-278,285-287,326,352,372-390,392
+app/views/badges/index.html.erb
+  h_a5e25bc086eb00 10
+app/views/billboards/show.html.erb
+  h_a5e25bc086eb00 2-11
+app/views/calendar/_calendar_widget.html.erb
+  h_a5e25bc086eb00 22-27
+app/views/collections/show.html.erb
+  h_a5e25bc086eb00 17-20,22
+app/views/comments/_comment.html.erb
+  h_a5e25bc086eb00 2,4,23,39
+app/views/comments/_comment_header.html.erb
+  h_a5e25bc086eb00 39-46,75
+app/views/comments/_comment_proper.html.erb
+  h_a5e25bc086eb00 30
+app/views/comments/_form.html.erb
+  h_a5e25bc086eb00 72
+app/views/comments/index.html.erb
+  h_a5e25bc086eb00 4,6-7,148,151-161,172-173,175
+app/views/dashboards/_actions.html.erb
+  h_a5e25bc086eb00 9,71-101,126
+app/views/dashboards/_actions_mobile.html.erb
+  h_a5e25bc086eb00 3,17-22
+app/views/dashboards/_header_and_action.html.erb
+  h_a5e25bc086eb00 2,17,23,29,35,41,47,60,66
+app/views/dashboards/analytics.erb
+  h_a5e25bc086eb00 3-8,10-13,17-33,35-62,64-76,78
+app/views/dashboards/feed_imports.html.erb
+  h_a5e25bc086eb00 11-13,77-80,270-273,277-295
+app/views/dashboards/subscriptions.html.erb
+  h_a5e25bc086eb00 8,23-24
+app/views/devise/mailer/reset_password_instructions.html.erb
+  h_a5e25bc086eb00 4-7
+app/views/devise/passwords/new.html.erb
+  h_a5e25bc086eb00 30-34,39-46
+app/views/events/challenge.html.erb
+  h_a5e25bc086eb00 1-13,15,47,49-53,61-62,65,81,116,127,138,146
+app/views/events/index.html.erb
+  h_a5e25bc086eb00 1-28,32,34-83,86,91
+app/views/events/show.html.erb
+  h_a5e25bc086eb00 3-13,78-122,127-128,141,167,194-196
+app/views/flag_appeals/_suspended_notice.html.erb
+  h_a5e25bc086eb00 1-8
+app/views/flag_appeals/new.html.erb
+  h_a5e25bc086eb00 1-40
+app/views/flag_appeals/show.html.erb
+  h_a5e25bc086eb00 1-12
+app/views/layouts/_bottom_scripts.html.erb
+  h_a5e25bc086eb00 3-11,21,24-25,27,32,34,36-40,47-56,58-62,65-108
+app/views/layouts/_top_bar.html.erb
+  h_a5e25bc086eb00 107
+app/views/layouts/admin.html.erb
+  h_a5e25bc086eb00 64
+app/views/layouts/application.html.erb
+  h_a5e25bc086eb00 4,9-10,35,56-58,96-97,105-110,183
+app/views/layouts/mailer.html.erb
+  h_a5e25bc086eb00 23-24,27
+app/views/leadership_dashboards/_favorited_row.html.erb
+  h_a5e25bc086eb00 1-38,40-54,56
+app/views/leadership_dashboards/_feed.html.erb
+  h_a5e25bc086eb00 1-20
+app/views/leadership_dashboards/_nav_menu.html.erb
+  h_a5e25bc086eb00 1-7,9-13,15,18-20
+app/views/leadership_dashboards/_sidebar.html.erb
+  h_a5e25bc086eb00 1-6,8,10-20,22-24,26-29,31-33,35,37-38,40
+app/views/leadership_dashboards/show.html.erb
+  h_a5e25bc086eb00 5-8,12,16
+app/views/liquids/_agent_session.html.erb
+  h_a5e25bc086eb00 53,67,73
+app/views/liquids/_bandcamp.html.erb
+  h_a5e25bc086eb00 2-3
+app/views/liquids/_blogcast.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_cloud_run.html.erb
+  h_a5e25bc086eb00 14
+app/views/liquids/_codesandbox.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_glitch.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_jsitor.html.erb
+  h_a5e25bc086eb00 2
+app/views/liquids/_kotlin.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_livecodes.html.erb
+  h_a5e25bc086eb00 2-3
+app/views/liquids/_loom.html.erb
+  h_a5e25bc086eb00 4-5
+app/views/liquids/_neon.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_nexttech.html.erb
+  h_a5e25bc086eb00 3-4
+app/views/liquids/_open_graph.html.erb
+  h_a5e25bc086eb00 2,4,8,15,39
+app/views/liquids/_org_lead_gate.html.erb
+  h_a5e25bc086eb00 1-42,44-49,52-55,57-64,66-69,71-75,77-98,100-101
+app/views/liquids/_user_subscription.html.erb
+  h_a5e25bc086eb00 9
+app/views/liquids/_youtube.html.erb
+  h_a5e25bc086eb00 5-7,15-17
+app/views/mailers/notify_mailer/gem_received_email.html.erb
+  h_a5e25bc086eb00 1-46
+app/views/mailers/notify_mailer/gem_received_email.text.erb
+  h_a5e25bc086eb00 1-19
+app/views/mailers/survey_mailer/pulse_survey.html.erb
+  h_a5e25bc086eb00 7-8,13-14,24-25
+app/views/moderations/mod.html.erb
+  h_a5e25bc086eb00 21,73-77
+app/views/notifications/_article.html.erb
+  h_a5e25bc086eb00 14-22,40-48
+app/views/notifications/_broadcast.html.erb
+  h_a5e25bc086eb00 4,6
+app/views/notifications/_coauthorinvitation.html.erb
+  h_a5e25bc086eb00 1-39
+app/views/notifications/_comment.html.erb
+  h_a5e25bc086eb00 52-61
+app/views/notifications/shared/_comment_box.html.erb
+  h_a5e25bc086eb00 53
+app/views/omniauth_callbacks/account_switch.html.erb
+  h_a5e25bc086eb00 1-18
+app/views/organizations/_header.html.erb
+  h_a5e25bc086eb00 3,11-13,16-18,242-243,260,274-275
+app/views/organizations/_main_feed.html.erb
+  h_a5e25bc086eb00 1
+app/views/organizations/_metadata.html.erb
+  h_a5e25bc086eb00 7-8
+app/views/pages/_editor_frontmatter_help.en.html.erb
+  h_a5e25bc086eb00 25
+app/views/pages/_editor_frontmatter_help.fr.html.erb
+  h_a5e25bc086eb00 25
+app/views/pages/_editor_frontmatter_help.pt.html.erb
+  h_a5e25bc086eb00 25
+app/views/pages/forbidden.en.html.erb
+  h_a5e25bc086eb00 1-3,5-8,10-12
+app/views/pages/forbidden.fr.html.erb
+  h_a5e25bc086eb00 1-3,5-8,10-12
+app/views/pages/forbidden.pt.html.erb
+  h_a5e25bc086eb00 1-3,5-8,10-12
+app/views/pages/llms.text.erb
+  h_a5e25bc086eb00 1-54
+app/views/pages/show.en.html.erb
+  h_a5e25bc086eb00 44
+app/views/pages/show.fr.html.erb
+  h_a5e25bc086eb00 44
+app/views/pages/show.pt.html.erb
+  h_a5e25bc086eb00 44
+app/views/shared/_billboard.html.erb
+  h_a5e25bc086eb00 15-26,30,43,72,95,128,143,148,181
+app/views/shared/_profile_card_content.html.erb
+  h_a5e25bc086eb00 26
+app/views/shared/_stats.html.erb
+  h_a5e25bc086eb00 1-18,20-22,24-25,27-28,30-31,34-35,40-45,52-57,65-69,76-80,85-88,97-101,113-118,139-143,156-159
+app/views/sidebars/_homepage_content.html.erb
+  h_a5e25bc086eb00 2,29-35,38,40-56,59-76
+app/views/stories/_main_stories_feed.html.erb
+  h_a5e25bc086eb00 1
+app/views/stories/feeds/show.json.jbuilder
+  h_a5e25bc086eb00 6,14,18,32,36,99-100
+app/views/stories/tagged_articles/_main_feed.html.erb
+  h_a5e25bc086eb00 1
+app/views/stories/tagged_articles/_sidebar_additional.html.erb
+  h_a5e25bc086eb00 6-16
+app/views/users/_api_keys.html.erb
+  h_a5e25bc086eb00 13-24,27-29
+app/views/users/_badges_area.html.erb
+  h_a5e25bc086eb00 10
+app/views/users/_comments_section.html.erb
+  h_a5e25bc086eb00 6,43,49
+app/views/users/_customization.html.erb
+  h_a5e25bc086eb00 73-85
+app/views/users/_main_feed.html.erb
+  h_a5e25bc086eb00 1,17-18,22-23
+app/views/users/_meta.html.erb
+  h_a5e25bc086eb00 8,16
+app/views/users/_profile.html.erb
+  h_a5e25bc086eb00 53-64
+app/views/users/_sidebar.html.erb
+  h_a5e25bc086eb00 12-13,21,53-54,58,62,66
+app/views/users/edit.html.erb
+  h_a5e25bc086eb00 53-54
+app/views/users/show.html.erb
+  h_a5e25bc086eb00 14,48,59-62,74-77,170
+app/workers/appeals/ai_review_worker.rb
+  h_a5e25bc086eb00 1-39
+app/workers/articles/backfill_activities_worker.rb
+  h_a5e25bc086eb00 19-20
+app/workers/articles/bust_deleted_article_cache_worker.rb
+  h_a5e25bc086eb00 1-19
+app/workers/articles/detect_code_block_languages_worker.rb
+  h_a5e25bc086eb00 8
+app/workers/articles/handle_spam_worker.rb
+  h_a5e25bc086eb00 24-25
+app/workers/articles/quality_reaction_worker.rb
+  h_a5e25bc086eb00 25-30,47-48,57
+app/workers/articles/update_dependent_embeds_worker.rb
+  h_a5e25bc086eb00 7-9,11-13
+app/workers/articles/update_organic_page_views_worker.rb
+  h_a5e25bc086eb00 13-15
+app/workers/articles/update_page_views_worker.rb
+  h_a5e25bc086eb00 25,27,30-31,35-36,38-39,41,43-48,51-91
+app/workers/billboards/data_update_worker.rb
+  h_a5e25bc086eb00 10-17,37-39,54-55,68-75
+app/workers/billboards/track_email_click_worker.rb
+  h_a5e25bc086eb00 7-13,16,27-28,39-40
+app/workers/bust_cache_base_worker.rb
+  h_a5e25bc086eb00 4-8
+app/workers/comments/bust_commentable_cache_worker.rb
+  h_a5e25bc086eb00 1-14
+app/workers/data_update_worker.rb
+  h_a5e25bc086eb00 33
+app/workers/edge_cache/purge_by_key_worker.rb
+  h_a5e25bc086eb00 1-10
+app/workers/emails/batch_custom_send_worker.rb
+  h_a5e25bc086eb00 21-25,29,44-45,50,59-61,69-91
+app/workers/emails/drip_email_worker.rb
+  h_a5e25bc086eb00 56-63
+app/workers/emails/enqueue_custom_batch_send_worker.rb
+  h_a5e25bc086eb00 36-37,87-107,115,124
+app/workers/emails/merge_email_keyed_customerio_profiles_worker.rb
+  h_a5e25bc086eb00 1-26
+app/workers/emails/send_user_digest_worker.rb
+  h_a5e25bc086eb00 11-19,48,108
+app/workers/favorites/send_gem_received_email_worker.rb
+  h_a5e25bc086eb00 1-25
+app/workers/feeds/archive_stale_configs_worker.rb
+  h_a5e25bc086eb00 1-3,5-8
+app/workers/follows/update_points_worker.rb
+  h_a5e25bc086eb00 34,36-37
+app/workers/images/social_image_worker.rb
+  h_a5e25bc086eb00 5,8-10
+app/workers/moderator/banish_user_worker.rb
+  h_a5e25bc086eb00 13
+app/workers/moderator/sink_articles_worker.rb
+  h_a5e25bc086eb00 14
+app/workers/notifications/co_author_invitation_worker.rb
+  h_a5e25bc086eb00 1-15
+app/workers/notifications/co_author_worker.rb
+  h_a5e25bc086eb00 1-16
+app/workers/organizations/delete_worker.rb
+  h_a5e25bc086eb00 30
+app/workers/organizations/track_promotional_billboard_impressions_worker.rb
+  h_a5e25bc086eb00 11-14,79-82,87-89
+app/workers/reactions/bust_homepage_cache_worker.rb
+  h_a5e25bc086eb00 9,11-12,15
+app/workers/spam/block_domain_and_suspend_users_worker.rb
+  h_a5e25bc086eb00 28
+app/workers/spam/domain_detector_worker.rb
+  h_a5e25bc086eb00 1-14
+app/workers/spam/reaction_ring_detection_worker.rb
+  h_a5e25bc086eb00 20-22,24-25,36-39,52
+app/workers/subforems/create_from_scratch_worker.rb
+  h_a5e25bc086eb00 33
+app/workers/trackable/dispatch_worker.rb
+  h_a5e25bc086eb00 12
+app/workers/trends/generate_cover_image_worker.rb
+  h_a5e25bc086eb00 31
+app/workers/update_user_interest_embedding_worker.rb
+  h_a5e25bc086eb00 7-11
+app/workers/users/bust_profile_identity_cache_worker.rb
+  h_a5e25bc086eb00 8
+app/workers/users/delete_worker.rb
+  h_a5e25bc086eb00 14-26,28-40
+app/workers/users/generate_ai_profile_image_worker.rb
+  h_a5e25bc086eb00 11-12,14,17-18
+app/workers/users/send_account_deleted_email_worker.rb
+  h_a5e25bc086eb00 1-13
+bin/knapsack_pro_rspec
+  h_a5e25bc086eb00 2-5,11-12,14-25
+config/application.rb
+  h_a5e25bc086eb00 22-30,137-139
+config/environments/production.rb
+  h_a5e25bc086eb00 43-44,48-51
+config/environments/test.rb
+  h_a5e25bc086eb00 21-25,82
+config/fastly/snippets/check_for_remember_user_token_in_cookie_to_set_header.vcl
+  h_a5e25bc086eb00 8-14,24-43,46-48
+config/fastly/snippets/safe_params_list.vcl
+  h_a5e25bc086eb00 5
+config/initializers/ahoy_custom_visit.rb
+  h_a5e25bc086eb00 7,11-12,14-16,18-19,21-31
+config/initializers/ahoy_email.rb
+  h_a5e25bc086eb00 31-35,43-55,57-58,70-74
+config/initializers/ahoy_messages_controller_monkeypatch.rb
+  h_a5e25bc086eb00 10
+config/initializers/assets.rb
+  h_a5e25bc086eb00 3-28,32
+config/initializers/betterstack.rb
+  h_a5e25bc086eb00 1-56
+config/initializers/carrierwave.rb
+  h_a5e25bc086eb00 14
+config/initializers/carrierwave_monkeypatch.rb
+  h_a5e25bc086eb00 14-26
+config/initializers/cors.rb
+  h_a5e25bc086eb00 34-46
+config/initializers/customerio.rb
+  h_a5e25bc086eb00 5-14
+config/initializers/datadog.rb
+  h_a5e25bc086eb00 1-32,35-41
+config/initializers/delegated_access.rb
+  h_a5e25bc086eb00 1-7
+config/initializers/devise.rb
+  h_a5e25bc086eb00 71-72,81-84,89-91
+config/initializers/filter_parameter_logging.rb
+  h_a5e25bc086eb00 5
+config/initializers/flipper.rb
+  h_a5e25bc086eb00 2-5,8-11,14
+config/initializers/honeybadger.rb
+  h_a5e25bc086eb00 38-39
+config/initializers/honeycomb.rb
+  h_a5e25bc086eb00 1-5,24,49-72
+config/initializers/inline_svg.rb
+  h_a5e25bc086eb00 1-8
+config/initializers/middlewares.rb
+  h_a5e25bc086eb00 7,10-15
+config/initializers/omniauth_twitter_monkey_patch.rb
+  h_a5e25bc086eb00 1-29
+config/initializers/rack_attack.rb
+  h_a5e25bc086eb00 7-8,27-40,52-59,64,66,71-99,151-178,183-193
+config/initializers/rack_host_redirect_monkey_patch.rb
+  h_a5e25bc086eb00 1-31
+config/initializers/rpush.rb
+  h_a5e25bc086eb00 76-78
+config/initializers/sentry.rb
+  h_a5e25bc086eb00 1-131
+config/initializers/session_store.rb
+  h_a5e25bc086eb00 22-25,27-34
+config/initializers/sidekiq.rb
+  h_a5e25bc086eb00 9,87-89,91
+config/initializers/strong_migrations.rb
+  h_a5e25bc086eb00 8
+config/initializers/timeout.rb
+  h_a5e25bc086eb00 18-40,45-54
+config/initializers/zeitwerk.rb
+  h_a5e25bc086eb00 19-23
+config/locales/controllers/admin/en.yml
+  h_a5e25bc086eb00 43,45,76-87,95-117,154,166-171,249-253,261
+config/locales/controllers/admin/fr.yml
+  h_a5e25bc086eb00 43,45,76-87,95-117,154,166-171,249-253,261
+config/locales/controllers/admin/pt.yml
+  h_a5e25bc086eb00 8,10,41-52,60-82,119,131-136,210-214,223
+config/locales/controllers/api/en.yml
+  h_a5e25bc086eb00 23-29
+config/locales/controllers/api/fr.yml
+  h_a5e25bc086eb00 23-29
+config/locales/controllers/api/pt.yml
+  h_a5e25bc086eb00 23-29
+config/locales/controllers/en.yml
+  h_a5e25bc086eb00 13-14,48-50,56-69,74-76,98-102
+config/locales/controllers/fr.yml
+  h_a5e25bc086eb00 13-14,48-50,56-69,74-76,96-100
+config/locales/controllers/pt.yml
+  h_a5e25bc086eb00 13-14,48-50,56-69,74-76,96-100
+config/locales/devise.en.yml
+  h_a5e25bc086eb00 28
+config/locales/devise.fr.yml
+  h_a5e25bc086eb00 2,28
+config/locales/devise.pt.yml
+  h_a5e25bc086eb00 19
+config/locales/en.yml
+  h_a5e25bc086eb00 11-25,35,55-62
+config/locales/fr.yml
+  h_a5e25bc086eb00 11-25,35,55-62
+config/locales/helpers/en.yml
+  h_a5e25bc086eb00 556-572,587-589
+config/locales/helpers/fr.yml
+  h_a5e25bc086eb00 598-615,632-635
+config/locales/helpers/pt.yml
+  h_a5e25bc086eb00 562-579,594-596
+config/locales/lib/en.yml
+  h_a5e25bc086eb00 170-172,194-202
+config/locales/lib/fr.yml
+  h_a5e25bc086eb00 170-172,194-202
+config/locales/lib/pt.yml
+  h_a5e25bc086eb00 167-169,192-200
+config/locales/liquid_tags/en.yml
+  h_a5e25bc086eb00 202-208
+config/locales/liquid_tags/fr.yml
+  h_a5e25bc086eb00 202-208
+config/locales/liquid_tags/pt.yml
+  h_a5e25bc086eb00 202-208
+config/locales/mailers/en.yml
+  h_a5e25bc086eb00 35-51
+config/locales/mailers/fr.yml
+  h_a5e25bc086eb00 35-51
+config/locales/mailers/pt.yml
+  h_a5e25bc086eb00 35-51
+config/locales/models/en.yml
+  h_a5e25bc086eb00 30-34,62-66,75-81
+config/locales/models/fr.yml
+  h_a5e25bc086eb00 29-33,61-65,74-80
+config/locales/models/pt.yml
+  h_a5e25bc086eb00 29-33,61-65,74-80
+config/locales/pt.yml
+  h_a5e25bc086eb00 11-25,35,55-62
+config/locales/services/en.yml
+  h_a5e25bc086eb00 6-9,15,23-32,60-65,129-132
+config/locales/services/fr.yml
+  h_a5e25bc086eb00 6-9,14,23-32,60-65,127-130
+config/locales/services/pt.yml
+  h_a5e25bc086eb00 6-9,14,23-32,60-65,137-140
+config/locales/views/admin/en.yml
+  h_a5e25bc086eb00 163-166,330,353-354,367-370,395-406,475,480-486,489,509,526-527,544-614,616-620,673-682,686-687,689-690,764-776
+config/locales/views/admin/flag_appeals/en.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/admin/flag_appeals/fr.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/admin/flag_appeals/pt.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/admin/fr.yml
+  h_a5e25bc086eb00 163-166,322,345-346,359-362,386-397,463,465-477,479-480,500,517-518,535-605,607-611,664-673,677-678,680-681,755-767
+config/locales/views/admin/pt.yml
+  h_a5e25bc086eb00 15-32,37,48-49,52,63-64,94-106,424,429-435,438-513,515-519,572-581,585-586,588-589,663-675
+config/locales/views/articles/en.yml
+  h_a5e25bc086eb00 7-10
+config/locales/views/articles/fr.yml
+  h_a5e25bc086eb00 6-10
+config/locales/views/articles/pt.yml
+  h_a5e25bc086eb00 7-10
+config/locales/views/comments/en.yml
+  h_a5e25bc086eb00 111-115,132-134
+config/locales/views/comments/fr.yml
+  h_a5e25bc086eb00 111-115,132-134
+config/locales/views/comments/pt.yml
+  h_a5e25bc086eb00 8-13,148-151
+config/locales/views/dashboard/en.yml
+  h_a5e25bc086eb00 30,41,279-288
+config/locales/views/dashboard/fr.yml
+  h_a5e25bc086eb00 28,39,276-285
+config/locales/views/dashboard/pt.yml
+  h_a5e25bc086eb00 28,45,228-237
+config/locales/views/events/en.yml
+  h_a5e25bc086eb00 1-12
+config/locales/views/events/fr.yml
+  h_a5e25bc086eb00 1-12
+config/locales/views/events/pt.yml
+  h_a5e25bc086eb00 1-12
+config/locales/views/flag_appeals/en.yml
+  h_a5e25bc086eb00 1-22
+config/locales/views/flag_appeals/fr.yml
+  h_a5e25bc086eb00 1-22
+config/locales/views/flag_appeals/pt.yml
+  h_a5e25bc086eb00 1-22
+config/locales/views/leadership/en.yml
+  h_a5e25bc086eb00 4-5,7,10-39
+config/locales/views/leadership/fr.yml
+  h_a5e25bc086eb00 4-5,7,10-39
+config/locales/views/leadership/pt.yml
+  h_a5e25bc086eb00 5-6,8,11-40
+config/locales/views/main/en.yml
+  h_a5e25bc086eb00 36,56-76
+config/locales/views/main/fr.yml
+  h_a5e25bc086eb00 35-36,55-74
+config/locales/views/main/pt.yml
+  h_a5e25bc086eb00 35,56-75
+config/locales/views/moderations/en.yml
+  h_a5e25bc086eb00 163-164
+config/locales/views/moderations/fr.yml
+  h_a5e25bc086eb00 162-163
+config/locales/views/moderations/pt.yml
+  h_a5e25bc086eb00 163-164
+config/locales/views/notifications/en.yml
+  h_a5e25bc086eb00 30-41
+config/locales/views/notifications/fr.yml
+  h_a5e25bc086eb00 30-41
+config/locales/views/notifications/pt.yml
+  h_a5e25bc086eb00 30-41
+config/locales/views/settings/en.yml
+  h_a5e25bc086eb00 81-86,310-312
+config/locales/views/settings/fr.yml
+  h_a5e25bc086eb00 81-86,310-312
+config/locales/views/settings/pt.yml
+  h_a5e25bc086eb00 95-100,138-140
+config/locales/views/stories/en.yml
+  h_a5e25bc086eb00 34,50-54
+config/locales/views/stories/fr.yml
+  h_a5e25bc086eb00 34,50-54
+config/locales/views/stories/pt.yml
+  h_a5e25bc086eb00 34,50-54
+config/locales/views/subforems/en.yml
+  h_a5e25bc086eb00 184
+config/locales/views/subforems/fr.yml
+  h_a5e25bc086eb00 184
+config/locales/views/subforems/pt.yml
+  h_a5e25bc086eb00 184
+config/locales/views/users/en.yml
+  h_a5e25bc086eb00 98
+config/locales/views/users/fr.yml
+  h_a5e25bc086eb00 98
+config/locales/views/users/pt.yml
+  h_a5e25bc086eb00 5
+config/puma.rb
+  h_a5e25bc086eb00 27-38,54-57,61-69
+config/routes.rb
+  h_a5e25bc086eb00 17,20-23,44-45,49,55,92,97,107-116,129-132,136,140,242,249-251,271-277,353-354,458-475,546,576-577,629
+config/routes/admin.rb
+  h_a5e25bc086eb00 38,69-70,95,121,127,140-147,208,222-224,230
+config/routes/api.rb
+  h_a5e25bc086eb00 11,22-26,34-38
+config/schedule.yml
+  h_a5e25bc086eb00 205-208
+cypress/e2e/seededFlows/articleFlows/boostPostModal.spec.js
+  h_a5e25bc086eb00 1-44
+cypress/support/commands.js
+  h_a5e25bc086eb00 414-418,421-422
+db/migrate/20260730170000_create_flag_appeals.rb
+  h_a5e25bc086eb00 1-25
+db/migrate/20260814130000_add_ai_disclosure_level_to_articles_and_comments.rb
+  h_a5e25bc086eb00 1-6
+db/migrate/20260814130100_add_index_to_articles_and_comments_ai_disclosure_level.rb
+  h_a5e25bc086eb00 1-32
+db/migrate/20260814130200_add_feed_ai_preference_to_users_settings_and_feed_configs.rb
+  h_a5e25bc086eb00 1-7
+db/migrate/20260819150645_add_cover_image_to_events.rb
+  h_a5e25bc086eb00 1-3
+db/migrate/20260819181500_add_bg_color_hex_to_events.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20260821120000_add_metadata_to_badge_achievements.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20260825100500_add_full_details_to_events.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20260901140000_add_favorited_weight_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20260903120000_add_feed_lookback_index_to_articles.rb
+  h_a5e25bc086eb00 1-58
+db/migrate/20260903120001_add_user_expires_at_index_to_recommended_articles_lists.rb
+  h_a5e25bc086eb00 1-57
+db/migrate/20260915160000_add_footer_override_to_emails.rb
+  h_a5e25bc086eb00 1-6
+db/migrate/20260924120000_create_settings_ai_functions.rb
+  h_a5e25bc086eb00 1-15
+db/migrate/20260929120000_add_body_markdown_to_events.rb
+  h_a5e25bc086eb00 1-6
+db/migrate/20261007120000_create_co_author_invitations.rb
+  h_a5e25bc086eb00 1-15
+db/migrate/20261009120000_add_hidden_by_default_to_billboard_placement_area_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261012120000_add_fully_cached_to_billboard_placement_area_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261016120000_add_active_placement_area_index_to_display_ads.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261019120000_add_unread_user_index_to_notifications.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261020120000_add_feed_import_log_id_and_status_index_to_feed_import_items.rb
+  h_a5e25bc086eb00 1-59
+db/migrate/20261020170000_add_legacy_slug_indexes_to_organizations.rb
+  h_a5e25bc086eb00 1-8
+db/migrate/20261020174500_add_role_id_index_to_users_roles.rb
+  h_a5e25bc086eb00 1-7
+db/migrate/20261020180000_add_rewarder_id_index_to_badge_achievements.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261022140000_add_suggest_stickies_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261023120000_add_user_agent_to_display_ad_events.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261026150000_add_archived_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261026150001_add_active_success_score_index_to_feed_configs.rb
+  h_a5e25bc086eb00 1-2,4-5,7-10,12-16,18,23-26,28-31,33,35,38,40-45,47,50-67,69-72
+db/migrate/20261027120000_add_social_image_to_organizations.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261027160000_add_featured_published_hotness_score_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261027163000_add_targeting_bucket_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261027193000_add_user_id_published_at_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261028120000_add_analytics_index_to_follows.rb
+  h_a5e25bc086eb00 1-59
+db/migrate/20261028180000_add_semantic_candidate_limit_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/migrate/20261028212000_add_org_id_published_at_index_to_articles.rb
+  h_a5e25bc086eb00 1-60
+db/migrate/20261029140000_add_feed_lookback_hours_to_feed_configs.rb
+  h_a5e25bc086eb00 1-5
+db/schema.rb
+  h_a5e25bc086eb00 13,144,238,251,256,264,266,276,306,312,342-343,466-476,495,522,679,741,765,769,798-799,803,812,817,836,839-840,846,849,869,875,878,909,989-1007,1039,1231,1296,1318-1319,1632,1698-1707,2206,2226,2285-2286,2327-2328
+db/seeds.rb
+  h_a5e25bc086eb00 70,201,246,260,274,303,306-307,309-322,1191,1193-1301,1305-1307,1316,1321-1357
+docs/README.md
+  h_a5e25bc086eb00 3-7,11-34,36,38,40,42-45,47
+docs/delegated_access.md
+  h_a5e25bc086eb00 1-91
+docs/rust_native_extensions.md
+  h_a5e25bc086eb00 1-142
+gems/forem_native/.cargo/config.toml
+  h_a5e25bc086eb00 1-2
+gems/forem_native/Cargo.lock
+  h_a5e25bc086eb00 1-286
+gems/forem_native/Cargo.toml
+  h_a5e25bc086eb00 1-11
+gems/forem_native/README.md
+  h_a5e25bc086eb00 1-63
+gems/forem_native/Rakefile
+  h_a5e25bc086eb00 1-30
+gems/forem_native/crates/forem_core/Cargo.toml
+  h_a5e25bc086eb00 1-11
+gems/forem_native/crates/forem_core/src/calendar.rs
+  h_a5e25bc086eb00 1-271
+gems/forem_native/crates/forem_core/src/color.rs
+  h_a5e25bc086eb00 1-369
+gems/forem_native/crates/forem_core/src/emoji.rs
+  h_a5e25bc086eb00 1-884
+gems/forem_native/crates/forem_core/src/emoji_data.rs
+  h_a5e25bc086eb00 1-4992
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_a5e25bc086eb00 1-1870
+gems/forem_native/crates/forem_core/src/html.rs
+  h_a5e25bc086eb00 1-2171
+gems/forem_native/crates/forem_core/src/image.rs
+  h_a5e25bc086eb00 1-180
+gems/forem_native/crates/forem_core/src/json.rs
+  h_a5e25bc086eb00 1-299
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_a5e25bc086eb00 1-25
+gems/forem_native/crates/forem_core/src/markdown.rs
+  h_a5e25bc086eb00 1-1555
+gems/forem_native/crates/forem_core/src/psl_data.rs
+  h_a5e25bc086eb00 1-2793
+gems/forem_native/crates/forem_core/src/sanitize.rs
+  h_a5e25bc086eb00 1-1160
+gems/forem_native/crates/forem_core/src/scrubber.rs
+  h_a5e25bc086eb00 1-1671
+gems/forem_native/crates/forem_core/src/svg.rs
+  h_a5e25bc086eb00 1-250
+gems/forem_native/crates/forem_core/src/text.rs
+  h_a5e25bc086eb00 1-654
+gems/forem_native/crates/forem_core/src/title.rs
+  h_a5e25bc086eb00 1-361
+gems/forem_native/crates/forem_core/src/url.rs
+  h_a5e25bc086eb00 1-1130
+gems/forem_native/ext/forem_native/Cargo.toml
+  h_a5e25bc086eb00 1-15
+gems/forem_native/ext/forem_native/extconf.rb
+  h_a5e25bc086eb00 1-45
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_a5e25bc086eb00 1-2250
+gems/forem_native/forem_native.gemspec
+  h_a5e25bc086eb00 1-31
+gems/forem_native/lib/forem_native.rb
+  h_a5e25bc086eb00 1-895
+gems/forem_native/lib/forem_native/builder.rb
+  h_a5e25bc086eb00 1-76
+gems/forem_native/lib/forem_native/version.rb
+  h_a5e25bc086eb00 1-3
+lib/betterstack/log_device.rb
+  h_a5e25bc086eb00 1-38
+lib/betterstack/request_context.rb
+  h_a5e25bc086eb00 1-26
+lib/betterstack/stats_client.rb
+  h_a5e25bc086eb00 1-49
+lib/data_update_scripts/20220105112823_migrate_logo_svg_data.rb
+  h_a5e25bc086eb00 31-38
+lib/data_update_scripts/20260923030000_merge_email_keyed_customerio_profiles.rb
+  h_a5e25bc086eb00 1-31
+lib/data_update_scripts/20260930120000_backfill_agent_session_message_indices.rb
+  h_a5e25bc086eb00 1-16
+lib/data_update_scripts/20261007120001_add_co_author_invitations_feature_flag.rb
+  h_a5e25bc086eb00 1-9
+lib/memory_first_cache.rb
+  h_a5e25bc086eb00 63
+lib/sidekiq/memory_killer.rb
+  h_a5e25bc086eb00 3-24,26-31,36,39,44-62,64-65,70,72-78,80-89,95-98,100,106-129
+lib/sidekiq/request_store_middleware.rb
+  h_a5e25bc086eb00 1-20
+lib/tasks/app_initializer.rake
+  h_a5e25bc086eb00 6-7
+lib/tasks/assets.rake
+  h_a5e25bc086eb00 19-21
+lib/tasks/cache.rake
+  h_a5e25bc086eb00 4-13
+lib/tasks/forem_native.rake
+  h_a5e25bc086eb00 1-365
+lib/tasks/post_precompile_assets.rake
+  h_a5e25bc086eb00 1-11
+lib/tasks/release_migrate.rake
+  h_a5e25bc086eb00 1-16,20,22
+package.json
+  h_a5e25bc086eb00 6,50,62,66,69,81,90,92,100,102,130,132,135,144
+scripts/build_containers.sh
+  h_a5e25bc086eb00 10-52,55-56,104-105,163-164,205,227,229-232,235,258,268-271
+scripts/create_buildkite_pr_build.sh
+  h_a5e25bc086eb00 47-58,62-113,170-173,175
+spec/controllers/admin/billboard_placement_area_configs_controller_spec.rb
+  h_a5e25bc086eb00 84-107,141-156
+spec/controllers/application_controller_spec.rb
+  h_a5e25bc086eb00 49-80
+spec/controllers/billboard_events_controller_spec.rb
+  h_a5e25bc086eb00 30-35
+spec/controllers/concerns/omniauth_redirect_spec.rb
+  h_a5e25bc086eb00 11-15,45-52
+spec/controllers/feeds/xml_imports_controller_spec.rb
+  h_a5e25bc086eb00 3-5,7,9-49,51-52,55-56,58,60
+spec/decorators/article_decorator_spec.rb
+  h_a5e25bc086eb00 290-348
+spec/decorators/notification_decorator_spec.rb
+  h_a5e25bc086eb00 5-11,14,16,21,28,37,40,85,87,164,166,249,288-289,319-329,352,389-390,444,502-503,550-634
+spec/decorators/profile_decorator_spec.rb
+  h_a5e25bc086eb00 3,5,7-13,15-25
+spec/decorators/user_decorator_spec.rb
+  h_a5e25bc086eb00 75-94
+spec/factories/audience_segment.rb
+  h_a5e25bc086eb00 3
+spec/factories/co_author_invitations.rb
+  h_a5e25bc086eb00 1-27
+spec/factories/emails.rb
+  h_a5e25bc086eb00 6-15
+spec/factories/flag_appeals.rb
+  h_a5e25bc086eb00 1-11
+spec/factories/gdpr_delete_requests.rb
+  h_a5e25bc086eb00 6
+spec/factories/organizations.rb
+  h_a5e25bc086eb00 4-5,9
+spec/factories/users.rb
+  h_a5e25bc086eb00 17,63-66,214-215
+spec/helpers/admin/users_helper_spec.rb
+  h_a5e25bc086eb00 11,18
+spec/helpers/application_helper_spec.rb
+  h_a5e25bc086eb00 355-382,398-406,454-463,489,491-492,494-495,524-580,765-879
+spec/helpers/articles_helper_spec.rb
+  h_a5e25bc086eb00 20-24,103-149
+spec/helpers/billboard_helper_spec.rb
+  h_a5e25bc086eb00 54-97
+spec/helpers/comments_helper_spec.rb
+  h_a5e25bc086eb00 68-148
+spec/helpers/crayons_helper_spec.rb
+  h_a5e25bc086eb00 46-54
+spec/helpers/events_helper_spec.rb
+  h_a5e25bc086eb00 54-138
+spec/helpers/rate_limit_checker_helper_spec.rb
+  h_a5e25bc086eb00 11
+spec/initializers/assets_spec.rb
+  h_a5e25bc086eb00 1-105
+spec/initializers/betterstack_spec.rb
+  h_a5e25bc086eb00 1-111
+spec/initializers/carrierwave_monkeypatch_spec.rb
+  h_a5e25bc086eb00 17-86
+spec/initializers/carrierwave_spec.rb
+  h_a5e25bc086eb00 14,32
+spec/initializers/datadog_spec.rb
+  h_a5e25bc086eb00 1-83
+spec/initializers/flipper_spec.rb
+  h_a5e25bc086eb00 1-35
+spec/initializers/honeybadger_spec.rb
+  h_a5e25bc086eb00 26-31
+spec/initializers/honeycomb_spec.rb
+  h_a5e25bc086eb00 1-80
+spec/initializers/mlh_omniauth_setup_spec.rb
+  h_a5e25bc086eb00 6-16,22-63
+spec/initializers/omniauth_twitter_monkey_patch_spec.rb
+  h_a5e25bc086eb00 1-105
+spec/initializers/rack_attack_spec.rb
+  h_a5e25bc086eb00 18,22,33-48,57,74-92,109-233,237,239,251-265,272,290,293,302,305-308,310-312,332-404,541-576
+spec/initializers/rack_host_redirect_monkey_patch_spec.rb
+  h_a5e25bc086eb00 1-74
+spec/initializers/sentry_spec.rb
+  h_a5e25bc086eb00 1-127
+spec/initializers/timeout_spec.rb
+  h_a5e25bc086eb00 32,41-42,55-56,61-80,90,118
+spec/lib/betterstack/log_device_spec.rb
+  h_a5e25bc086eb00 1-49
+spec/lib/betterstack/request_context_spec.rb
+  h_a5e25bc086eb00 1-30
+spec/lib/black_box_spec.rb
+  h_a5e25bc086eb00 26-47
+spec/lib/buildkite_container_triggers_spec.rb
+  h_a5e25bc086eb00 1-317
+spec/lib/ci_knapsack_pro_skip_shallow_fetch_spec.rb
+  h_a5e25bc086eb00 1-20
+spec/lib/constants/settings/user_experience_spec.rb
+  h_a5e25bc086eb00 1-34
+spec/lib/data_update_scripts/add_co_author_invitations_feature_flag_spec.rb
+  h_a5e25bc086eb00 1-13
+spec/lib/data_update_scripts/backfill_agent_session_message_indices_spec.rb
+  h_a5e25bc086eb00 1-21
+spec/lib/data_update_scripts/backfill_creator_role_for_first_super_admin_spec.rb
+  h_a5e25bc086eb00 12-13
+spec/lib/data_update_scripts/merge_email_keyed_customerio_profiles_spec.rb
+  h_a5e25bc086eb00 1-27
+spec/lib/forem_native_spec.rb
+  h_a5e25bc086eb00 1-4204
+spec/lib/honeycomb/noise_cancelling_sampler_spec.rb
+  h_a5e25bc086eb00 2
+spec/lib/memory_first_cache_spec.rb
+  h_a5e25bc086eb00 179-198
+spec/lib/middlewares/set_cookie_domain_spec.rb
+  h_a5e25bc086eb00 1-39
+spec/lib/middlewares/set_subforem_spec.rb
+  h_a5e25bc086eb00 117-193,209-249
+spec/lib/org_custom_domain_constraint_spec.rb
+  h_a5e25bc086eb00 60-162
+spec/lib/redcarpet/render/html_rouge_spec.rb
+  h_a5e25bc086eb00 1-113
+spec/lib/server_warmup_spec.rb
+  h_a5e25bc086eb00 1-701
+spec/lib/sidekiq/honeycomb_middleware_spec.rb
+  h_a5e25bc086eb00 23-24,26-29,35-39
+spec/lib/sidekiq/memory_killer_spec.rb
+  h_a5e25bc086eb00 6,12,28,30,36-43,47,49,52-66,68-78,81-99,102-146,148
+spec/lib/sidekiq/request_store_middleware_spec.rb
+  h_a5e25bc086eb00 1-78
+spec/lib/url_spec.rb
+  h_a5e25bc086eb00 19-20,27-28,33-48,89-94,138-148,167-195,199-200,202-204
+spec/liquid_tags/agent_session_tag_spec.rb
+  h_a5e25bc086eb00 215-269
+spec/liquid_tags/bandcamp_tag_spec.rb
+  h_a5e25bc086eb00 78-83
+spec/liquid_tags/cta_tag_spec.rb
+  h_a5e25bc086eb00 46-89
+spec/liquid_tags/descript_tag_spec.rb
+  h_a5e25bc086eb00 29-36
+spec/liquid_tags/details_tag_spec.rb
+  h_a5e25bc086eb00 97,99,101-103,108-162
+spec/liquid_tags/dotnet_fiddle_tag_spec.rb
+  h_a5e25bc086eb00 11
+spec/liquid_tags/gist_tag_spec.rb
+  h_a5e25bc086eb00 82,84-87
+spec/liquid_tags/git_pitch_tag_spec.rb
+  h_a5e25bc086eb00 36,38-41
+spec/liquid_tags/glitch_tag_spec.rb
+  h_a5e25bc086eb00 87-103
+spec/liquid_tags/js_fiddle_tag_spec.rb
+  h_a5e25bc086eb00 41-46
+spec/liquid_tags/kotlin_tag_spec.rb
+  h_a5e25bc086eb00 32-37,49-52
+spec/liquid_tags/link_tag_spec.rb
+  h_a5e25bc086eb00 120-138
+spec/liquid_tags/offer_tag_spec.rb
+  h_a5e25bc086eb00 52-69
+spec/liquid_tags/org_lead_gate_tag_spec.rb
+  h_a5e25bc086eb00 1-86
+spec/liquid_tags/poll_tag_spec.rb
+  h_a5e25bc086eb00 9-15
+spec/liquid_tags/quote_tag_spec.rb
+  h_a5e25bc086eb00 121-126
+spec/liquid_tags/slides_tag_spec.rb
+  h_a5e25bc086eb00 95-104
+spec/liquid_tags/spotify_tag_spec.rb
+  h_a5e25bc086eb00 46-51
+spec/liquid_tags/stackblitz_tag_spec.rb
+  h_a5e25bc086eb00 97-101
+spec/liquid_tags/twitch_tag_spec.rb
+  h_a5e25bc086eb00 42-60
+spec/liquid_tags/unified_embed/registry_spec.rb
+  h_a5e25bc086eb00 112-113
+spec/liquid_tags/unified_embed/tag_spec.rb
+  h_a5e25bc086eb00 25,189,218,234,283,285-286,332-338,434-514
+spec/liquid_tags/vimeo_tag_spec.rb
+  h_a5e25bc086eb00 37-46
+spec/liquid_tags/youtube_tag_spec.rb
+  h_a5e25bc086eb00 53-55,60-62,93
+spec/mailers/concerns/deliverable_spec.rb
+  h_a5e25bc086eb00 33-37,48,52-53,55,57-83,137-211
+spec/mailers/custom_mailer_spec.rb
+  h_a5e25bc086eb00 142-255,277-334
+spec/mailers/devise_mailer_spec.rb
+  h_a5e25bc086eb00 42-55,148-172,283,301,318,326
+spec/mailers/digest_mailer_spec.rb
+  h_a5e25bc086eb00 120,132,138
+spec/mailers/notify_mailer_spec.rb
+  h_a5e25bc086eb00 40,83,139,181,241,256-359,396,564,602,643,705,738,780,830,873,913,977,997,1049
+spec/mailers/organization_invitation_mailer_spec.rb
+  h_a5e25bc086eb00 50,72
+spec/mailers/organization_membership_notification_mailer_spec.rb
+  h_a5e25bc086eb00 54,76
+spec/mailers/previews/notify_mailer_preview.rb
+  h_a5e25bc086eb00 40-49
+spec/mailers/survey_mailer_spec.rb
+  h_a5e25bc086eb00 57-96,102,117-120,132-133,144,163,174-193
+spec/mailers/verification_mailer_spec.rb
+  h_a5e25bc086eb00 61
+spec/models/ab_experiment_spec.rb
+  h_a5e25bc086eb00 104-124
+spec/models/admin_menu_spec.rb
+  h_a5e25bc086eb00 48-57
+spec/models/agent_session_spec.rb
+  h_a5e25bc086eb00 28,48-54,64-92,97-124,171,182,187,193-196,198,202,207,211,215,231
+spec/models/ahoy/store_spec.rb
+  h_a5e25bc086eb00 6-12,53-78,84-85
+spec/models/api_secret_spec.rb
+  h_a5e25bc086eb00 5,11,13-25
+spec/models/article_activity_spec.rb
+  h_a5e25bc086eb00 108-221
+spec/models/article_spec.rb
+  h_a5e25bc086eb00 17-108,239-256,1095-1147,1166-1202,1759-1840,1960-2001,2244-2266,2367-2413,2720,2752-2759,2946-2956,3011,3154,3441-3506,3668-3669,3672-3761,4279-4285,4619-4808
+spec/models/async_info_spec.rb
+  h_a5e25bc086eb00 26-37,54-60,69-93
+spec/models/audience_segment_spec.rb
+  h_a5e25bc086eb00 45-158
+spec/models/audit_log_spec.rb
+  h_a5e25bc086eb00 59-70
+spec/models/badge_spec.rb
+  h_a5e25bc086eb00 19-25,41-48,50-51,57-58,64-65,70-98
+spec/models/billboard_event_spec.rb
+  h_a5e25bc086eb00 47-119
+spec/models/billboard_placement_area_config_spec.rb
+  h_a5e25bc086eb00 199-215,257-328
+spec/models/billboard_spec.rb
+  h_a5e25bc086eb00 132-143,384-425,1432-1555,1692-1703
+spec/models/co_author_invitation_spec.rb
+  h_a5e25bc086eb00 1-109
+spec/models/comment_spec.rb
+  h_a5e25bc086eb00 10-59,378-400
+spec/models/concerns/activity_trackable_spec.rb
+  h_a5e25bc086eb00 1-473
+spec/models/email_message_spec.rb
+  h_a5e25bc086eb00 33-37
+spec/models/email_spec.rb
+  h_a5e25bc086eb00 227-385
+spec/models/event_spec.rb
+  h_a5e25bc086eb00 3,13,17,20,22,25,38,114,128-129,131,133,140,146,151,155,160-161,175-176,178,180,185,190,204,231-404
+spec/models/feed_config_spec.rb
+  h_a5e25bc086eb00 195-205,250,294-298,389,399-400,432,442-443,465,473-474,486-487,496-951,957,969-1113,1115
+spec/models/feed_event_spec.rb
+  h_a5e25bc086eb00 53-65,120-149,309-332,352-470,476,478-482,489,496-580,594-605
+spec/models/feedback_message_spec.rb
+  h_a5e25bc086eb00 54-59,66-71,196-213
+spec/models/flag_appeal_spec.rb
+  h_a5e25bc086eb00 1-68
+spec/models/follow_spec.rb
+  h_a5e25bc086eb00 99-117
+spec/models/forem_instance_spec.rb
+  h_a5e25bc086eb00 112-136,165-191
+spec/models/geolocation_spec.rb
+  h_a5e25bc086eb00 150-178
+spec/models/notification_spec.rb
+  h_a5e25bc086eb00 562-576,713-755
+spec/models/organization_spec.rb
+  h_a5e25bc086eb00 377-394,464,468-471,474-476,480,482
+spec/models/pinned_article_spec.rb
+  h_a5e25bc086eb00 96-114
+spec/models/podcast_episode_spec.rb
+  h_a5e25bc086eb00 36-45,61-83
+spec/models/podcast_spec.rb
+  h_a5e25bc086eb00 63-70
+spec/models/profile_field_spec.rb
+  h_a5e25bc086eb00 70-114
+spec/models/profile_spec.rb
+  h_a5e25bc086eb00 133-166,180,186-199
+spec/models/reaction_ring_detection_spec.rb
+  h_a5e25bc086eb00 3,5-13,16-20,22-23,27-28,37-38,45-46,53,56,59-60,67,72-73
+spec/models/reaction_spec.rb
+  h_a5e25bc086eb00 246-247,251
+spec/models/response_template_spec.rb
+  h_a5e25bc086eb00 36-52,54-55,63-64,66
+spec/models/role_spec.rb
+  h_a5e25bc086eb00 53-124
+spec/models/settings/ai_functions_spec.rb
+  h_a5e25bc086eb00 1-46
+spec/models/settings/base_spec.rb
+  h_a5e25bc086eb00 306-328
+spec/models/settings/general_spec.rb
+  h_a5e25bc086eb00 110-173
+spec/models/shared_examples/sync_reactions_count.rb
+  h_a5e25bc086eb00 11
+spec/models/subforem_spec.rb
+  h_a5e25bc086eb00 65-95
+spec/models/survey_spec.rb
+  h_a5e25bc086eb00 87-101,270,272-280,285-290,354-385
+spec/models/tag_spec.rb
+  h_a5e25bc086eb00 139-148,184-195,231-266,273-284
+spec/models/tag_subforem_relationship_spec.rb
+  h_a5e25bc086eb00 22-48
+spec/models/user_activity_spec.rb
+  h_a5e25bc086eb00 158-167,186-198
+spec/models/user_language_spec.rb
+  h_a5e25bc086eb00 22-47
+spec/models/user_query_spec.rb
+  h_a5e25bc086eb00 65,68,70-71,144-146,151-153
+spec/models/user_role_spec.rb
+  h_a5e25bc086eb00 6-19
+spec/models/user_spam_detection_spec.rb
+  h_a5e25bc086eb00 20,26,32
+spec/models/user_spec.rb
+  h_a5e25bc086eb00 74-78,82-169,645-669,1085-1106,1140-1155,1336-1358,1494-1500,1502,1505,1507,1510-1537,1708-1711,1715-1722,1724,1940-1957,1963-1967,2010-2049
+spec/models/user_subscription_spec.rb
+  h_a5e25bc086eb00 32-40
+spec/models/users/notification_setting_spec.rb
+  h_a5e25bc086eb00 44,69-70,104-189
+spec/models/users/setting_spec.rb
+  h_a5e25bc086eb00 25,243-258
+spec/policies/article_policy_spec.rb
+  h_a5e25bc086eb00 8-9,11,14,18-19,25-27,41,50,60-63,67-68,72-76,99,101-103,105-106,129-130,132-135,139,155,162-171,203,209,215,231,237,294,303-310
+spec/policies/authorizer_spec.rb
+  h_a5e25bc086eb00 143-172
+spec/policies/badge_achievement_policy_spec.rb
+  h_a5e25bc086eb00 1-35
+spec/policies/badge_policy_spec.rb
+  h_a5e25bc086eb00 1-35
+spec/policies/co_author_invitation_policy_spec.rb
+  h_a5e25bc086eb00 1-33
+spec/policies/comment_policy_spec.rb
+  h_a5e25bc086eb00 142-154
+spec/policies/reaction_policy_spec.rb
+  h_a5e25bc086eb00 72-90
+spec/policies/response_template_policy_spec.rb
+  h_a5e25bc086eb00 12,19-30,35-43,48,50-53,58,65,72,74-78
+spec/policies/role_policy_spec.rb
+  h_a5e25bc086eb00 9-10,26-37
+spec/policies/user_policy_spec.rb
+  h_a5e25bc086eb00 45-70,76-87,94
+spec/policies/video_policy_spec.rb
+  h_a5e25bc086eb00 19
+spec/queries/admin/gdpr_delete_requests_query_spec.rb
+  h_a5e25bc086eb00 6-17,59-70
+spec/queries/articles/api_search_query_spec.rb
+  h_a5e25bc086eb00 32-66
+spec/queries/billboards/filtered_ads_query_spec.rb
+  h_a5e25bc086eb00 13,128,132,150-179,227-239,405-411,413-415,417-419,421-422,495,511,531,556,564-567,570,575,580-583,586-587,590-593,595-608,610-621,623-628
+spec/queries/comments/tree_spec.rb
+  h_a5e25bc086eb00 18-65,71-107,171-239
+spec/queries/homepage/articles_query_spec.rb
+  h_a5e25bc086eb00 190-201
+spec/rails_helper.rb
+  h_a5e25bc086eb00 32-33,104-115,117-120,146,194-197,201,231,283,301-306,329-330
+spec/requests/account_switch_interstitial_spec.rb
+  h_a5e25bc086eb00 1-156
+spec/requests/admin/audience_segments_spec.rb
+  h_a5e25bc086eb00 1-332
+spec/requests/admin/badges_spec.rb
+  h_a5e25bc086eb00 28,32-41,48,52-59
+spec/requests/admin/billboards_spec.rb
+  h_a5e25bc086eb00 68,87,89-90,101,103-107,111-113,144
+spec/requests/admin/bulk_assign_role_spec.rb
+  h_a5e25bc086eb00 117-132
+spec/requests/admin/comments_spec.rb
+  h_a5e25bc086eb00 8-40
+spec/requests/admin/configs_spec.rb
+  h_a5e25bc086eb00 40-42,48-49,53,56,58,170-179,248-249,251,254,369-371,374,376-377,380,382,384,386-387,389-394,396-399,404,411,628,633,747-774
+spec/requests/admin/emails_spec.rb
+  h_a5e25bc086eb00 29,32-33,44-59,76,95-111,129-159,187-206,232-244,265-275
+spec/requests/admin/events_spec.rb
+  h_a5e25bc086eb00 3,6,22,24,30,45,52,54,75-84,99,101,122,124-125,134,136,145,148,154,157-224,237,239,258-260,267
+spec/requests/admin/feed_configs_spec.rb
+  h_a5e25bc086eb00 1-184
+spec/requests/admin/feedback_messages_spec.rb
+  h_a5e25bc086eb00 77,122,155,159,181-184
+spec/requests/admin/flag_appeals_spec.rb
+  h_a5e25bc086eb00 1-124
+spec/requests/admin/gdpr_delete_requests_spec.rb
+  h_a5e25bc086eb00 11,23-27,46-61
+spec/requests/admin/linked_domains_spec.rb
+  h_a5e25bc086eb00 86-128
+spec/requests/admin/organizations_bulk_add_users_spec.rb
+  h_a5e25bc086eb00 1-97
+spec/requests/admin/organizations_org_features_spec.rb
+  h_a5e25bc086eb00 117-160
+spec/requests/admin/organizations_spec.rb
+  h_a5e25bc086eb00 4-5,12-14,18,21,98-137
+spec/requests/admin/overview_spec.rb
+  h_a5e25bc086eb00 12-13,16,19-20,23-33,38-39,42,46-71,93,96-101,105,108,110,121,129-132,137,142-145,150,155,159
+spec/requests/admin/reactions_spec.rb
+  h_a5e25bc086eb00 56-98
+spec/requests/admin/response_templates_spec.rb
+  h_a5e25bc086eb00 69,72
+spec/requests/admin/settings/ai_functions_spec.rb
+  h_a5e25bc086eb00 1-131
+spec/requests/admin/tags_spec.rb
+  h_a5e25bc086eb00 40-55
+spec/requests/admin/users_manage_spec.rb
+  h_a5e25bc086eb00 4-5,15,64-67,76-78,80-82,88,90,92,95,125-156,194,228-275,366-368,373-377,379,381-382,384-405,408-464,469,482-483,485,496,506
+spec/requests/admin/users_spec.rb
+  h_a5e25bc086eb00 4,16,18-32,50-51,54,56-70,73,79-81,83,85-89,93-97,136-139,141-164,172-175,178,180,182,185-201,204-211,214,216,580,583-585,590-592,632,638,946-976,1041-1175
+spec/requests/agent_sessions_create_spec.rb
+  h_a5e25bc086eb00 5,26,37-53,61,79,99,114,130,145,159-163,199,205,220,231,233,242,270
+spec/requests/ahoy/email_clicks_spec.rb
+  h_a5e25bc086eb00 35-37,43-45,49-77,92-93,95,105-107,124-126,132-196
+spec/requests/ahoy/external_email_clicks_spec.rb
+  h_a5e25bc086eb00 24,26-28,32
+spec/requests/api/badge_audit_spec.rb
+  h_a5e25bc086eb00 1-140
+spec/requests/api/v0/analytics_spec.rb
+  h_a5e25bc086eb00 14,24
+spec/requests/api/v0/articles_spec.rb
+  h_a5e25bc086eb00 34,469,599-606,654-662,1032-1075,1343-1373,1406-1413,1424,1444
+spec/requests/api/v0/comments_spec.rb
+  h_a5e25bc086eb00 4-8,10-11,13-18,50-52,57,63-65,67-68,73-74,88,92,95-99,105,109,112-116,123,130-131,146-147,151-152,154-155,157-158,170,174,177-181,187,191,194-198
+spec/requests/api/v0/event_audit_spec.rb
+  h_a5e25bc086eb00 1-77
+spec/requests/api/v0/events_spec.rb
+  h_a5e25bc086eb00 3,20-21,30,38,42-103,107-111,113-115,144,164-165,167,169-200
+spec/requests/api/v0/followers_spec.rb
+  h_a5e25bc086eb00 29-34,48,51-54
+spec/requests/api/v0/tags_spec.rb
+  h_a5e25bc086eb00 74-93
+spec/requests/api/v0/videos_spec.rb
+  h_a5e25bc086eb00 7,13-17,22,25-27,35-37,51,65
+spec/requests/api/v1/admin/users_spec.rb
+  h_a5e25bc086eb00 351-355,392-394,413-454,474-520,604-617
+spec/requests/api/v1/agent_sessions_spec.rb
+  h_a5e25bc086eb00 8,32-33,39-51,57,72,111,122,127,130-140,166-170,211,217,232
+spec/requests/api/v1/analytics_spec.rb
+  h_a5e25bc086eb00 4,22,32,85,152-190,195
+spec/requests/api/v1/articles_spec.rb
+  h_a5e25bc086eb00 42,104-111,175-182,489,614-624,1239-1270,1513-1525,1571-1669,1743-1750,1761,1766-1797,1813,1818-1832,1999-2003,2017,2044-2238,2289-2412
+spec/requests/api/v1/badge_achievements_spec.rb
+  h_a5e25bc086eb00 54-57,59-84,86-96,99,114-152
+spec/requests/api/v1/badges_spec.rb
+  h_a5e25bc086eb00 144-189
+spec/requests/api/v1/billboard_audit_spec.rb
+  h_a5e25bc086eb00 1-77
+spec/requests/api/v1/billboards_spec.rb
+  h_a5e25bc086eb00 21,35,57-63,84-86,112-124,168-170,194-204,215-241
+spec/requests/api/v1/comments_spec.rb
+  h_a5e25bc086eb00 5-9,11-12,14-19,51-53,58,64-66,68-69,74-75,87-88,90-93,98,102,105-109,115,119,122-126,133,140-141,150-151,156,164,166,181-182,186-187,189-190,192-193,203-205,207,209-211,213-216,219,222-226,232,236,239-243,245-246,248-252,254-257,259-260,262-267,269-271
+spec/requests/api/v1/docs/agent_sessions_spec.rb
+  h_a5e25bc086eb00 168-282
+spec/requests/api/v1/docs/articles_spec.rb
+  h_a5e25bc086eb00 36,38,40-41,62-63,289-292,590,595-596,602,612-613,666-725
+spec/requests/api/v1/docs/badge_achievements_spec.rb
+  h_a5e25bc086eb00 38,43-45,59-60,76-99,129
+spec/requests/api/v1/docs/badges_spec.rb
+  h_a5e25bc086eb00 45,113,152
+spec/requests/api/v1/docs/billboards_spec.rb
+  h_a5e25bc086eb00 52,160,221,266-327
+spec/requests/api/v1/docs/comments_spec.rb
+  h_a5e25bc086eb00 93-143
+spec/requests/api/v1/docs/events_spec.rb
+  h_a5e25bc086eb00 1-161
+spec/requests/api/v1/docs/followers_spec.rb
+  h_a5e25bc086eb00 38-40
+spec/requests/api/v1/docs/images_spec.rb
+  h_a5e25bc086eb00 1-172
+spec/requests/api/v1/docs/openapi_spec.rb
+  h_a5e25bc086eb00 1-32
+spec/requests/api/v1/docs/pages_spec.rb
+  h_a5e25bc086eb00 34-37,52,56,60-62,80-83,160,211,247,257-314
+spec/requests/api/v1/docs/tags_spec.rb
+  h_a5e25bc086eb00 5,19-22,29-33,44-346,349
+spec/requests/api/v1/docs/user_roles_spec.rb
+  h_a5e25bc086eb00 384-482
+spec/requests/api/v1/docs/users_spec.rb
+  h_a5e25bc086eb00 14-21,36,54-79,380,394-400,414-423,429-432,441,556-559,626-629
+spec/requests/api/v1/images_spec.rb
+  h_a5e25bc086eb00 1-199
+spec/requests/api/v1/page_audit_spec.rb
+  h_a5e25bc086eb00 1-105
+spec/requests/api/v1/pages_spec.rb
+  h_a5e25bc086eb00 222-235,245-518
+spec/requests/api/v1/surveys_spec.rb
+  h_a5e25bc086eb00 250-254
+spec/requests/api/v1/tags_spec.rb
+  h_a5e25bc086eb00 67-712
+spec/requests/api/v1/user_roles_spec.rb
+  h_a5e25bc086eb00 396-567
+spec/requests/api/v1/users_spec.rb
+  h_a5e25bc086eb00 109-244
+spec/requests/api/v1/videos_spec.rb
+  h_a5e25bc086eb00 8,14-18,23,26-28,36-38,52,66
+spec/requests/api_secrets_create_spec.rb
+  h_a5e25bc086eb00 12-20,25-27,32-40,45-57,60-64
+spec/requests/api_secrets_destroy_spec.rb
+  h_a5e25bc086eb00 4-5,11-12,22,27,41-44,51,69
+spec/requests/api_secrets_unauthenticated_spec.rb
+  h_a5e25bc086eb00 13,15,19-20,25,27,31-32
+spec/requests/articles/articles_create_spec.rb
+  h_a5e25bc086eb00 4-9,42,54-55,71,73,88-134
+spec/requests/articles/articles_feed_spec.rb
+  h_a5e25bc086eb00 12-102
+spec/requests/articles/articles_show_spec.rb
+  h_a5e25bc086eb00 6,13,15,20-25,70-71,76,128,132,136,170,174-175,178-179,188,231-232,235,239-240,249-251,260-263,265-266,268-272,278-280,283-285,293-294,296-301,304-307,309-313,322,325,328-331,334,338,340-342,345-348,350-353,355-360,362-364,368-381,383,385-403
+spec/requests/articles/articles_spec.rb
+  h_a5e25bc086eb00 240-254,295-313
+spec/requests/articles/articles_update_spec.rb
+  h_a5e25bc086eb00 6-10,12,16-17,55,63,89,91-92,100,102-103,111,113,121-180,261-311
+spec/requests/articles/pending_org_membership_spec.rb
+  h_a5e25bc086eb00 1-154
+spec/requests/articles/video_player_show_spec.rb
+  h_a5e25bc086eb00 13
+spec/requests/async_info_spec.rb
+  h_a5e25bc086eb00 33-47,73-84
+spec/requests/auth_passes_spec.rb
+  h_a5e25bc086eb00 98-170
+spec/requests/badges_spec.rb
+  h_a5e25bc086eb00 31-48
+spec/requests/billboard_events_spec.rb
+  h_a5e25bc086eb00 48-183,190,192,194-211,250-254
+spec/requests/billboards_spec.rb
+  h_a5e25bc086eb00 5,110,121,124,148,155,169,176-177,193-194,208-209,212-214,235-236,240-242,246,261,271,277-279,283-294,296,299-300,302-305,308-310,312-374,399,404-405,411-433,468,500,515,532,537,539-540,542,544-733,737-800,803-805,809-860
+spec/requests/calendar_spec.rb
+  h_a5e25bc086eb00 133-152,298-303,312-319,361-405
+spec/requests/challenge_event_status_spec.rb
+  h_a5e25bc086eb00 1-33
+spec/requests/co_author_invitations_spec.rb
+  h_a5e25bc086eb00 1-130
+spec/requests/collections_spec.rb
+  h_a5e25bc086eb00 19-64
+spec/requests/comments_create_spec.rb
+  h_a5e25bc086eb00 30-34
+spec/requests/comments_spec.rb
+  h_a5e25bc086eb00 7,10-24,27,30-31,34-55,91-92,96-99,104-106,112-113,130-131,145-146,162-163,167,195-196,200,203,209,213,215,221-223,238,240,245,247-249,258-262,270-271,274,279,284,300-306,321,325-328,330,347,349,353-355,358-360,362,364-365,395,408,432,460,562-563,590,598,602-603,606,617,638-650,656
+spec/requests/comments_with_cache_spec.rb
+  h_a5e25bc086eb00 83-109
+spec/requests/community_spec.rb
+  h_a5e25bc086eb00 37-132
+spec/requests/custom_domain_auth_redirect_spec.rb
+  h_a5e25bc086eb00 1-90
+spec/requests/custom_domain_redirect_spec.rb
+  h_a5e25bc086eb00 86,88,90-91,94,96,98-99
+spec/requests/dashboard_spec.rb
+  h_a5e25bc086eb00 25-27,30,33-34,37,41-42,45,48-50,53,57-58,77,80,83-84,86,90,97,100-102,105,110,113-115,119,123,126,154-166,173,177-186,189-191,197,199,203-239,252,254,257-260,293,321-322,324-326,328,330-332,337,350,398,408-413,416,419-420,422-428,446,453-454,456,462,465,467,472,477,482,487,521-522,531-543,552,560,562,566,571-584,587
+spec/requests/discussion_locks_spec.rb
+  h_a5e25bc086eb00 81-147
+spec/requests/editor_spec.rb
+  h_a5e25bc086eb00 4-6,43-89,105-118,122,125-127,139-140
+spec/requests/events_spec.rb
+  h_a5e25bc086eb00 3,10,14-29,35,38,41-42,47-49,55-67,79,87,101-113,126,128,134,138,140,146,151,158,162,164,169-172,175
+spec/requests/favorites_spec.rb
+  h_a5e25bc086eb00 16-17,59-77
+spec/requests/feedback_messages_spec.rb
+  h_a5e25bc086eb00 38,40-42,60,101,113,117,129-130,134-135,172,197-199,202-203,215-216,220-221,231-232,234,237
+spec/requests/feeds/xml_imports_spec.rb
+  h_a5e25bc086eb00 1-121
+spec/requests/flag_appeals_spec.rb
+  h_a5e25bc086eb00 1-234
+spec/requests/followings_spec.rb
+  h_a5e25bc086eb00 19-20,24,66,84-91,108-109,113,141-142,146
+spec/requests/follows_bulk_show_spec.rb
+  h_a5e25bc086eb00 43-80
+spec/requests/follows_create_spec.rb
+  h_a5e25bc086eb00 69-75
+spec/requests/follows_show_spec.rb
+  h_a5e25bc086eb00 51-71
+spec/requests/github_repos_spec.rb
+  h_a5e25bc086eb00 77-86
+spec/requests/incoming_webhooks/stripe/stripe_events_spec.rb
+  h_a5e25bc086eb00 15-16,68
+spec/requests/lead_submissions_spec.rb
+  h_a5e25bc086eb00 8-30
+spec/requests/leaderboards_spec.rb
+  h_a5e25bc086eb00 5-6,8-9,12,14-15,18,21,30-33,48,53-54,61-63,77-90,94
+spec/requests/leadership_dashboards_spec.rb
+  h_a5e25bc086eb00 3,6,10-11,14-16,19-22,24-25,27,29-31,34-36,38,41,44-46,48,51,54-60,62,65-67,69,71-72,74,76-77,80-81,89,97,103-115
+spec/requests/mlh_oauth_callbacks_spec.rb
+  h_a5e25bc086eb00 1-152
+spec/requests/moderations_spec.rb
+  h_a5e25bc086eb00 16,30-34,56-58,62,65,71,81,83-84,86,100,110-111,124-140,150,177-180,186-189,191,194,198,200,203-207,213-214,224,229,235-237,240,242-243,245,251,258,261,263,268,270,278,281,283,288,290
+spec/requests/notification_subscriptions_spec.rb
+  h_a5e25bc086eb00 113-146
+spec/requests/notifications/reads_spec.rb
+  h_a5e25bc086eb00 50-65
+spec/requests/notifications_spec.rb
+  h_a5e25bc086eb00 6-8,12-13,39,53-74,99,144,215-216,219,228-229,231-232,279-280,284,294-295,298-299,357-359,367,387,416,646,651,702,720,746,748,759,761-855
+spec/requests/omniauth_callbacks_failure_spec.rb
+  h_a5e25bc086eb00 1,3,8,24,36,40-43,49-51,64,68-70,77-92,104,116,128
+spec/requests/onboardings_spec.rb
+  h_a5e25bc086eb00 4,12,16-25,51,74,80,129,134,136,140,185-198,293-294,303-304,313-314,323-326,340
+spec/requests/org_custom_domain_spec.rb
+  h_a5e25bc086eb00 79-99,122-136,184-198
+spec/requests/organization_pages_spec.rb
+  h_a5e25bc086eb00 52-60
+spec/requests/organization_settings_spec.rb
+  h_a5e25bc086eb00 132-158
+spec/requests/organizations_invite_spec.rb
+  h_a5e25bc086eb00 4,6,13-29,45-47,91-95,169,172,185-186,189,202-205,218-221,234-238
+spec/requests/pages_spec.rb
+  h_a5e25bc086eb00 26-37,164-169,206-237,424-425,434-508,519-578
+spec/requests/passwords_spec.rb
+  h_a5e25bc086eb00 1-206
+spec/requests/podcasts/podcast_episodes_index_spec.rb
+  h_a5e25bc086eb00 10-21,23-25,28-33
+spec/requests/podcasts/podcast_episodes_show_spec.rb
+  h_a5e25bc086eb00 9,12-63
+spec/requests/poll_skips_spec.rb
+  h_a5e25bc086eb00 29-53
+spec/requests/poll_text_responses_controller_spec.rb
+  h_a5e25bc086eb00 55-93
+spec/requests/poll_votes_controller_spec.rb
+  h_a5e25bc086eb00 71-166,191-223,263-282
+spec/requests/profiles_request_spec.rb
+  h_a5e25bc086eb00 30-43
+spec/requests/rack_attack_lead_submissions_spec.rb
+  h_a5e25bc086eb00 7
+spec/requests/rack_attack_sitemaps_spec.rb
+  h_a5e25bc086eb00 21
+spec/requests/reactions_spec.rb
+  h_a5e25bc086eb00 39-49,100-113
+spec/requests/registrations_spec.rb
+  h_a5e25bc086eb00 361-406
+spec/requests/response_templates_spec.rb
+  h_a5e25bc086eb00 22-24,28-29,31-32,35,40,45,59,63,86,89,107,120-121,149,162-163,190,247-248
+spec/requests/search_spec.rb
+  h_a5e25bc086eb00 4,34,40,58,63-73,75,114,116,136-138,150-151,153,156,161,176,193-196,210-215,228,230,233,236-237,241-242
+spec/requests/shared_examples/comment_hide_or_unhide_request.rb
+  h_a5e25bc086eb00 3,22,24-25,28-30
+spec/requests/sidebars_spec.rb
+  h_a5e25bc086eb00 12-20,93-95,103-105,111-140,168-218,254-291
+spec/requests/stories/articles_by_timeframe_spec.rb
+  h_a5e25bc086eb00 3,26-28,30-32,34-36,38,40-69,72,75-86
+spec/requests/stories/feeds_spec.rb
+  h_a5e25bc086eb00 33-56,281-293,633-646,840-897,1027-1039,1080-1106
+spec/requests/stories/tagged_articles_spec.rb
+  h_a5e25bc086eb00 15,24,62-77,79,97,101-102,116-142,160,167,196-197,200-201,204-222,257-260,262,264-267,277-289,293-326,329-330,379-381,384
+spec/requests/stories_index_spec.rb
+  h_a5e25bc086eb00 176-186,245-262,348-366,496-520,576-713,741,762-783,869-870,873,879,882-883,887-1030
+spec/requests/stories_performance_fix_spec.rb
+  h_a5e25bc086eb00 21,81-106
+spec/requests/stories_show_spec.rb
+  h_a5e25bc086eb00 32-47,136-148,265-340,395-532,551-567,589-622
+spec/requests/surveys_controller_spec.rb
+  h_a5e25bc086eb00 113-125
+spec/requests/tags_spec.rb
+  h_a5e25bc086eb00 5,11,32-35,51-53,55-61,65-69,77-79,103,120-122,147,150,152-154
+spec/requests/user/user_changes_password_spec.rb
+  h_a5e25bc086eb00 46,57-61
+spec/requests/user/user_destroy_spec.rb
+  h_a5e25bc086eb00 4,14,28,39,63-64,80,121-123,125,129-130,133,138-140
+spec/requests/user/user_organization_spec.rb
+  h_a5e25bc086eb00 24-29
+spec/requests/user/user_profile_comments_spec.rb
+  h_a5e25bc086eb00 1-189
+spec/requests/user/user_profile_spec.rb
+  h_a5e25bc086eb00 6,9,11-12,16,23-25,33,36-38,49-113,121,127,140-150,154,199-202,235,237-238,247-253,262,268-269,275,281,288,295,304,310-314,329,373,378,382,387,420-421,424,430-431,434,485,493
+spec/requests/user/user_settings_spec.rb
+  h_a5e25bc086eb00 40-59,114-129
+spec/requests/user/user_show_spec.rb
+  h_a5e25bc086eb00 4,8,19,22,52-53,55,57,59-61,64-68,71-75,77-80,82,84-91,94-96,98-100,119,133,147,154,172,184,189-206
+spec/requests/user_subscriptions_spec.rb
+  h_a5e25bc086eb00 149,152-155,157-166
+spec/requests/videos_spec.rb
+  h_a5e25bc086eb00 10-12,14,16,20,29,31,33,37,39,41,63
+spec/sanitizers/comment_email_scrubber_spec.rb
+  h_a5e25bc086eb00 1-23
+spec/sanitizers/rendered_markdown_scrubber_spec.rb
+  h_a5e25bc086eb00 67-113
+spec/serializers/homepage/article_serializer_spec.rb
+  h_a5e25bc086eb00 34-66
+spec/services/admin/stats_data_spec.rb
+  h_a5e25bc086eb00 5-6,15,22,35-37,45-47,63,65,73-76
+spec/services/agent_session_renderers/heading_anchors_spec.rb
+  h_a5e25bc086eb00 3-13,15-18,20-21,24-25,29-31,34-38,40-41,45-48,51-57,59-65,67-69
+spec/services/agent_session_renderers/markdown_renderer_spec.rb
+  h_a5e25bc086eb00 1-55
+spec/services/agent_sessions/s3_storage_spec.rb
+  h_a5e25bc086eb00 31-64,68,74-81,84,90,92,100,104,106-110,113-124,130-134,145,151-153,164,168-169,194
+spec/services/ai/about_page_generator_spec.rb
+  h_a5e25bc086eb00 3,10-13,49,81,88-90,114,116,128,130,246
+spec/services/ai/appeal_assessor_spec.rb
+  h_a5e25bc086eb00 1-146
+spec/services/ai/article_check_spec.rb
+  h_a5e25bc086eb00 53-120
+spec/services/ai/article_enhancer_spec.rb
+  h_a5e25bc086eb00 198-266
+spec/services/ai/article_image_generator_spec.rb
+  h_a5e25bc086eb00 1-69
+spec/services/ai/article_quality_assessor_spec.rb
+  h_a5e25bc086eb00 303-356
+spec/services/ai/badge_criteria_assessor_spec.rb
+  h_a5e25bc086eb00 66-89
+spec/services/ai/base_spec.rb
+  h_a5e25bc086eb00 48-71
+spec/services/ai/comment_check_spec.rb
+  h_a5e25bc086eb00 1-66
+spec/services/ai/comment_helpfulness_assessor_spec.rb
+  h_a5e25bc086eb00 119-161
+spec/services/ai/community_copy_spec.rb
+  h_a5e25bc086eb00 3,5,9-13,80,83-85,102,104,377
+spec/services/ai/concept_article_evaluator_spec.rb
+  h_a5e25bc086eb00 68-91
+spec/services/ai/content_moderation_labeler_spec.rb
+  h_a5e25bc086eb00 199-273
+spec/services/ai/embedding_spec.rb
+  h_a5e25bc086eb00 34-38
+spec/services/ai/forem_tags_spec.rb
+  h_a5e25bc086eb00 3,9-12,34,38-39,73,77,89,91,426-447,449
+spec/services/ai/function_config_spec.rb
+  h_a5e25bc086eb00 1-120
+spec/services/ai/profile_moderation_labeler_spec.rb
+  h_a5e25bc086eb00 1-124
+spec/services/ai/search_reranker_spec.rb
+  h_a5e25bc086eb00 1-133
+spec/services/ai/spam_escalation_check_spec.rb
+  h_a5e25bc086eb00 1-126
+spec/services/ai/subforem_finder_spec.rb
+  h_a5e25bc086eb00 1-61
+spec/services/ai/type_safe/client_spec.rb
+  h_a5e25bc086eb00 1-192
+spec/services/ai/type_safe/questions_spec.rb
+  h_a5e25bc086eb00 3-7,9-10,12,16-18,21-24,28-31
+spec/services/algolia_insights_service_spec.rb
+  h_a5e25bc086eb00 25
+spec/services/analytics_service_spec.rb
+  h_a5e25bc086eb00 4,6,8,23-25,138,144,153-158,163-168,170-172,174-180,184,217,250-271,301,309,320-321,323,330-331,333-335,337-341,343-346,350,381-401,537,593,626
+spec/services/appeals/resolver_spec.rb
+  h_a5e25bc086eb00 1-385
+spec/services/article_api_index_service_spec.rb
+  h_a5e25bc086eb00 1-39
+spec/services/articles/attributes_spec.rb
+  h_a5e25bc086eb00 40-56
+spec/services/articles/destroyer_spec.rb
+  h_a5e25bc086eb00 12-19
+spec/services/articles/detect_code_block_languages_spec.rb
+  h_a5e25bc086eb00 88-133
+spec/services/articles/feeds/article_score_calculator_for_user_spec.rb
+  h_a5e25bc086eb00 4-6,116,162-164,194-240
+spec/services/articles/feeds/basic_spec.rb
+  h_a5e25bc086eb00 26-39,80-114
+spec/services/articles/feeds/curated_spec.rb
+  h_a5e25bc086eb00 1-47
+spec/services/articles/feeds/custom_spec.rb
+  h_a5e25bc086eb00 3,6-7,11-15,17-18,21-23,49-50,91-109,111-112,133-158,195-198,229-230,257,294,321,339,539,568-806,808
+spec/services/articles/feeds/large_forem_experimental_spec.rb
+  h_a5e25bc086eb00 4-7,9-10,12-13,19,33-43,61-81,159-161,222-275
+spec/services/articles/feeds/latest_spec.rb
+  h_a5e25bc086eb00 19-38
+spec/services/articles/feeds/tag_spec.rb
+  h_a5e25bc086eb00 20-39
+spec/services/articles/feeds/variant_query_spec.rb
+  h_a5e25bc086eb00 7-9,25-69,73-75,78,84,90-91,98-99,106-107,121,125-170
+spec/services/articles/get_user_stickies_spec.rb
+  h_a5e25bc086eb00 32-37,56,58-59,61,63-106
+spec/services/articles/page_view_updater_spec.rb
+  h_a5e25bc086eb00 10,12-14,16,66-124
+spec/services/articles/suggest_stickies_spec.rb
+  h_a5e25bc086eb00 7,11,17,90,92-155
+spec/services/articles/updater_spec.rb
+  h_a5e25bc086eb00 303-309
+spec/services/authentication/authenticator_account_switch_spec.rb
+  h_a5e25bc086eb00 1-79
+spec/services/authentication/authenticator_spec.rb
+  h_a5e25bc086eb00 144-159,975-1000
+spec/services/authentication/external_return_spec.rb
+  h_a5e25bc086eb00 1-82
+spec/services/authentication/providers/apple_spec.rb
+  h_a5e25bc086eb00 43-79
+spec/services/authentication/providers/github_spec.rb
+  h_a5e25bc086eb00 16-21
+spec/services/authentication/providers/mlh_spec.rb
+  h_a5e25bc086eb00 25-30,45,47-52
+spec/services/badges/award_community_favorite_spec.rb
+  h_a5e25bc086eb00 8,11-15,18-24,26-38,40-43,46-53,55-62,65-76,78-83,86-128,130-156,158-161,164-169
+spec/services/badges/award_contributor_from_github_spec.rb
+  h_a5e25bc086eb00 4-13,20-35,37-39,42,45-52,56-59,61-63,70-75,77-156,162,164,168-175
+spec/services/billboard_event_rollup_spec.rb
+  h_a5e25bc086eb00 149-160
+spec/services/co_author_invitations/accept_spec.rb
+  h_a5e25bc086eb00 1-66
+spec/services/co_author_invitations/decline_spec.rb
+  h_a5e25bc086eb00 1-35
+spec/services/co_author_invitations/sync_spec.rb
+  h_a5e25bc086eb00 1-169
+spec/services/comments/calculate_score_spec.rb
+  h_a5e25bc086eb00 18-53
+spec/services/concepts/classifier_spec.rb
+  h_a5e25bc086eb00 40-52
+spec/services/delegated_access/configuration_spec.rb
+  h_a5e25bc086eb00 1-79
+spec/services/delegated_access/jwks_client_spec.rb
+  h_a5e25bc086eb00 1-80
+spec/services/delegated_access/verifier_spec.rb
+  h_a5e25bc086eb00 1-236
+spec/services/delivery_methods/customer_io_event_spec.rb
+  h_a5e25bc086eb00 1-122
+spec/services/delivery_methods/customer_io_spec.rb
+  h_a5e25bc086eb00 42-54,98-126,137-202
+spec/services/edge_cache/bust_article_spec.rb
+  h_a5e25bc086eb00 67-111
+spec/services/edge_cache/bust_organization_spec.rb
+  h_a5e25bc086eb00 12,21-26
+spec/services/edge_cache/bust_page_spec.rb
+  h_a5e25bc086eb00 10,16,31-36,52,55
+spec/services/edge_cache/bust_spec.rb
+  h_a5e25bc086eb00 64-122
+spec/services/edge_cache/bust_tag_spec.rb
+  h_a5e25bc086eb00 22,33
+spec/services/email_digest_article_collector_spec.rb
+  h_a5e25bc086eb00 5,8-11,14-19,23-34,274,276,293,295,309,314-318,320-324,328-330,333,335,338-340,346-366,387,394-397,411-412,497,499,528-621
+spec/services/email_digest_spec.rb
+  h_a5e25bc086eb00 4-9,12,20,29-85
+spec/services/emails/ahoy_link_decorator_spec.rb
+  h_a5e25bc086eb00 1-156
+spec/services/emails/ahoy_link_tracking_parity_spec.rb
+  h_a5e25bc086eb00 1-60
+spec/services/events/billboards/live_stream_spec.rb
+  h_a5e25bc086eb00 32-40,56-64
+spec/services/events/billboards/takeover_spec.rb
+  h_a5e25bc086eb00 49-62
+spec/services/fastly_config/snippets_spec.rb
+  h_a5e25bc086eb00 7,10-13,39-74
+spec/services/favorites/create_spec.rb
+  h_a5e25bc086eb00 16-23,43-59,68-113,174-200
+spec/services/feature_flag_spec.rb
+  h_a5e25bc086eb00 143-159
+spec/services/feed_events/bulk_upsert_spec.rb
+  h_a5e25bc086eb00 39-50,118,122,126,128-129
+spec/services/feeds/assemble_article_markdown_spec.rb
+  h_a5e25bc086eb00 180-236
+spec/services/feeds/check_item_previously_imported_spec.rb
+  h_a5e25bc086eb00 3,5-7,9-12,14-17,19-21,24-27,29-32,34-35
+spec/services/feeds/import_from_xml_spec.rb
+  h_a5e25bc086eb00 1-332
+spec/services/feeds/validate_url_spec.rb
+  h_a5e25bc086eb00 6,12-19,24,27-119
+spec/services/flare_tag_spec.rb
+  h_a5e25bc086eb00 35-91
+spec/services/follows/check_cached_spec.rb
+  h_a5e25bc086eb00 16-79
+spec/services/homepage/fetch_tag_flares_spec.rb
+  h_a5e25bc086eb00 44-62
+spec/services/html/parser_alerts_spec.rb
+  h_a5e25bc086eb00 3-5,8-15,17-18,22-24,27-29,32-34,37-40,43-48,51-53,55-56,59-60,62-63,66-67,69-71,73-76,79-80,82-83,86-107,109,111-116,119-123,126-127,130-131,133-134,137-138,140-141
+spec/services/html/parser_spec.rb
+  h_a5e25bc086eb00 31-49,121,123-145,242-251,481,487-505
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_a5e25bc086eb00 4,7-11,13-16,19,26,33,36-37,40-43,46-53,56-57,59,61-95,100,102,106-107,113,115,119-120,126,128,132-133,137-139,143,146,148-149,151-158,161-162,164-166,168-171,175-176,180,183-190,192,194-211,213-233,236-238,241-243,245-247,249-250,252-254,256-258,260-264,266-268,270-279,283-284,286-290,292,294-299,301,303-308,310-311,313-316,318,320-325,327-333,335-340,344-349,351-353,355-362,364-365,367-369,371-373,375,377-379,381-383,385-388,390-392,394,396-398,400-403,405-409,411-421,424-430,432-437,439-446,448-450,452-457,459-465,467-472,475-477,479-483,485-486,488-490,492-493,496-498,500-502,504-508,510-525,527-534,536-538,540-544,546-549,551-554,556-573,575-585,588-591,593-596,598-601,603-607,609-613,615-620,622-638,640-641,643-650,652-682,684,686-689,691,693-698,700,702-706,708-713,715-716,718-722,726-728,731
+spec/services/images/optimizer_spec.rb
+  h_a5e25bc086eb00 24-31,61,167-214,334-351
+spec/services/images/profile_image_generator_spec.rb
+  h_a5e25bc086eb00 4-58
+spec/services/images/social_image_quote_spec.rb
+  h_a5e25bc086eb00 1-76
+spec/services/instrumentation_spec.rb
+  h_a5e25bc086eb00 2,4-8,11-34,36-41,43-44,46-51,53-59,61
+spec/services/liquid_embed_extractor_spec.rb
+  h_a5e25bc086eb00 77-78
+spec/services/markdown_processor/parser_spec.rb
+  h_a5e25bc086eb00 695-773,970-1015
+spec/services/markdown_processor/reading_time_spec.rb
+  h_a5e25bc086eb00 1-30
+spec/services/moderator/banish_user_spec.rb
+  h_a5e25bc086eb00 18,56
+spec/services/moderator/manage_activity_and_roles_spec.rb
+  h_a5e25bc086eb00 4-5,19-22,24,26,31-35,37,39-41,50-51,136,145,150,188-189,194-195,205-207,220-222,234,236,242-244,270-275,278-279,282,285
+spec/services/moderator/merge_user_spec.rb
+  h_a5e25bc086eb00 26-114,149-152
+spec/services/moderator/unpublish_all_articles_spec.rb
+  h_a5e25bc086eb00 6,9,13
+spec/services/notifications/co_author/remove_spec.rb
+  h_a5e25bc086eb00 1-30
+spec/services/notifications/co_author/send_spec.rb
+  h_a5e25bc086eb00 1-115
+spec/services/notifications/co_author_invitations/send_spec.rb
+  h_a5e25bc086eb00 3-7,9-10,12-24,26-27,29
+spec/services/notifications/new_mention/send_spec.rb
+  h_a5e25bc086eb00 74-94
+spec/services/notifications/notifiable_action/send_spec.rb
+  h_a5e25bc086eb00 12-32,111-133
+spec/services/notifications/remove_by_spammer_spec.rb
+  h_a5e25bc086eb00 1-33
+spec/services/open_graph_spec.rb
+  h_a5e25bc086eb00 56-284
+spec/services/organizations/bulk_add_users_spec.rb
+  h_a5e25bc086eb00 1-122
+spec/services/podcasts/create_episode_spec.rb
+  h_a5e25bc086eb00 130-150
+spec/services/rate_limit_checker_spec.rb
+  h_a5e25bc086eb00 34,53-68,162-167,173-178,193-238
+spec/services/re_captcha/check_enabled_spec.rb
+  h_a5e25bc086eb00 3,15,33-44,59
+spec/services/read_only_database_service_spec.rb
+  h_a5e25bc086eb00 1-160
+spec/services/search/article_spec.rb
+  h_a5e25bc086eb00 137-155
+spec/services/segmented_users/user_identifier_parser_spec.rb
+  h_a5e25bc086eb00 1-96
+spec/services/spam/domain_detector_spec.rb
+  h_a5e25bc086eb00 18-25,97-106
+spec/services/spam/handler_spec.rb
+  h_a5e25bc086eb00 49-50,99-249,288-304,412-590,902-1106,1212-1223,1236-1245,1258-1335,1337
+spec/services/spam/reaction_ring_detector_spec.rb
+  h_a5e25bc086eb00 3,5,9-15,17-18,20-21,30-31,33-34,45-46,48,59-60,62,71-72,75,107-112,116-118,138-144,148-149,165,180-254,349,449-451,580
+spec/services/tag_moderators/add_spec.rb
+  h_a5e25bc086eb00 29-35
+spec/services/tag_moderators/remove_spec.rb
+  h_a5e25bc086eb00 13-20
+spec/services/user_query_executor_spec.rb
+  h_a5e25bc086eb00 129,136-173,188-189,339-350
+spec/services/user_query_validator_spec.rb
+  h_a5e25bc086eb00 172-227
+spec/services/users/create_mascot_account_spec.rb
+  h_a5e25bc086eb00 4,6-20
+spec/services/users/delete_activity_spec.rb
+  h_a5e25bc086eb00 3,5-6,8-17,20-26,29-35,38-49,52-58,61-75
+spec/services/users/delete_articles_spec.rb
+  h_a5e25bc086eb00 55-170,172-177,182,190-198,200-236
+spec/services/users/delete_comments_spec.rb
+  h_a5e25bc086eb00 14,23-121,123-135,143-152
+spec/services/users/delete_podcasts_spec.rb
+  h_a5e25bc086eb00 34-56
+spec/services/users/delete_spec.rb
+  h_a5e25bc086eb00 23,32-163
+spec/services/users/remove_role_spec.rb
+  h_a5e25bc086eb00 52-58,79-94
+spec/services/users/update_spec.rb
+  h_a5e25bc086eb00 33-35,39-40,83-127,141-160
+spec/support/ci/schema_railtie.rb
+  h_a5e25bc086eb00 1-57
+spec/support/jev_helpers.rb
+  h_a5e25bc086eb00 1-68
+spec/support/memory_first_cache_reset.rb
+  h_a5e25bc086eb00 2,5,10,13
+spec/support/omniauth_helpers.rb
+  h_a5e25bc086eb00 315-321
+spec/support/omniauth_session_helpers.rb
+  h_a5e25bc086eb00 1-35
+spec/support/request_store_reset.rb
+  h_a5e25bc086eb00 6-7
+spec/support/shared_examples/api_analytics.rb
+  h_a5e25bc086eb00 2,4-9,11-13,18,38
+spec/swagger_helper.rb
+  h_a5e25bc086eb00 26-29,41,67-72,170-177,216-217,263-265,305-306,309-325,339-346,479-481,858-862,899-953
+spec/system/admin/admin_awards_badges_spec.rb
+  h_a5e25bc086eb00 23,28,46
+spec/system/admin/admin_deletes_user_spec.rb
+  h_a5e25bc086eb00 14,17-18,27,30
+spec/system/admin/admin_invites_user_spec.rb
+  h_a5e25bc086eb00 4,16,22-23,26-27,37-39
+spec/system/admin/admin_manages_organizations_spec.rb
+  h_a5e25bc086eb00 26-43
+spec/system/admin/admin_manages_pages_spec.rb
+  h_a5e25bc086eb00 4,11-25,39-41,45,50,54,57,60,63,92,144
+spec/system/admin/admin_updates_tag_spec.rb
+  h_a5e25bc086eb00 4,7-10,18,21,23,39
+spec/system/admin/admin_views_tags_spec.rb
+  h_a5e25bc086eb00 4,8-11,17-18,20,25-27,31-32
+spec/system/admin/admin_visits_badge_achievements_spec.rb
+  h_a5e25bc086eb00 4,11-13
+spec/system/admin/admin_visits_extensions_spec.rb
+  h_a5e25bc086eb00 4,11-13
+spec/system/admin/admin_visits_overview_spec.rb
+  h_a5e25bc086eb00 3,11
+spec/system/admin/config/admin_updates_smtp_settings_spec.rb
+  h_a5e25bc086eb00 15,21,23-25,32-33,38,42,44,52,57,59-61,69,74,77-78
+spec/system/ahoy/tracking_create_account_spec.rb
+  h_a5e25bc086eb00 3,5,8-9,12
+spec/system/articles/moderator_moderates_an_article_spec.rb
+  h_a5e25bc086eb00 3,6,12-13,15-17,20
+spec/system/articles/user_creates_an_article_spec.rb
+  h_a5e25bc086eb00 11-12,15,23-24,26-27,29-31,34,36,39,41,45-46,49,51,56,59,63,67,85,87,89
+spec/system/articles/user_deletes_an_article_spec.rb
+  h_a5e25bc086eb00 4,12
+spec/system/articles/user_edits_an_article_spec.rb
+  h_a5e25bc086eb00 3,5-6,9-14,18,20,23-27,32-34,50,52-53
+spec/system/articles/user_visits_an_article_spec.rb
+  h_a5e25bc086eb00 5,17,22-25,57,60,62,95,100,113-115,151,212-224
+spec/system/articles/user_visits_article_stats_spec.rb
+  h_a5e25bc086eb00 3,5,7,13
+spec/system/articles/user_visits_articles_by_tag_spec.rb
+  h_a5e25bc086eb00 5-13,19-20,24-25,29,36,45
+spec/system/authentication/creator_config_edit_spec.rb
+  h_a5e25bc086eb00 3,12,17
+spec/system/authentication/redirects_using_referer_spec.rb
+  h_a5e25bc086eb00 6,23,25,30-31,33,40-41,48-49
+spec/system/authentication/user_logs_in_with_apple_spec.rb
+  h_a5e25bc086eb00 13,85,118-120,127
+spec/system/authentication/user_logs_in_with_email_spec.rb
+  h_a5e25bc086eb00 24,27,30-33,46,50,53,64,66,76-78,85,90-92,114,122,124,126,140-144
+spec/system/authentication/user_logs_in_with_facebook_spec.rb
+  h_a5e25bc086eb00 13,35,55,82-84,93,106-108,115,122,159
+spec/system/authentication/user_logs_in_with_forem_spec.rb
+  h_a5e25bc086eb00 13,35,55,82-84,93,106-108,115,122,159
+spec/system/authentication/user_logs_in_with_github_spec.rb
+  h_a5e25bc086eb00 13,32,59-61,70,83-85,92,119,124-127,139
+spec/system/authentication/user_logs_in_with_twitter_spec.rb
+  h_a5e25bc086eb00 13,32,55-57,66,79-81,88,111,131
+spec/system/collections/user_views_collections_spec.rb
+  h_a5e25bc086eb00 4,16,22
+spec/system/comments/like_button_state_after_reply_spec.rb
+  h_a5e25bc086eb00 3-10,13-14,32-47
+spec/system/comments/user_delete_a_comment_spec.rb
+  h_a5e25bc086eb00 3,14,17
+spec/system/comments/user_edits_a_comment_spec.rb
+  h_a5e25bc086eb00 5-8,37-39,41,45-46,48-49,51,55-56
+spec/system/comments/user_views_a_comment_spec.rb
+  h_a5e25bc086eb00 3,5,22-36,39-43
+spec/system/comments/user_views_article_comments_spec.rb
+  h_a5e25bc086eb00 5,7-15,18-19,21-27,29,31-37,42,45-46,48,51
+spec/system/dashboards/user_scrolls_down_dashboard_follows_spec.rb
+  h_a5e25bc086eb00 3-4,7-10,86
+spec/system/dashboards/user_sorts_dashboard_articles_spec.rb
+  h_a5e25bc086eb00 3
+spec/system/events/challenge_layout_spec.rb
+  h_a5e25bc086eb00 1-36
+spec/system/feedback_message_spec.rb
+  h_a5e25bc086eb00 13,28,37,42
+spec/system/homepage/user_visits_homepage_articles_spec.rb
+  h_a5e25bc086eb00 5-12,21-24,26-27,30,41-42,45-46,51-52,54-57
+spec/system/homepage/user_visits_homepage_spec.rb
+  h_a5e25bc086eb00 5-8,10,23,30,35,41,47,52-53,55-57,61-62,68,73,75-76,91,97-99,101-102,112,120,127,132,140-141,145
+spec/system/homepage/user_visits_homepage_with_announcement_spec.rb
+  h_a5e25bc086eb00 4-8,10,14,18-20,22,24-25,27,29-30,35,41-45,47,49-50,52,54-55
+spec/system/link_for_tags_in_posts_in_notifications_spec.rb
+  h_a5e25bc086eb00 13,27,29
+spec/system/notifications/notifications_page_spec.rb
+  h_a5e25bc086eb00 3,12-13,19,22,32-33,36,45,47-48,62,69,81-83,86,92,102-104,109
+spec/system/onboardings/user_completes_onboarding_spec.rb
+  h_a5e25bc086eb00 3-4,6-7,18,22,27-28,30-32
+spec/system/organization/user_leaves_an_organization_spec.rb
+  h_a5e25bc086eb00 4,11-12,14,16
+spec/system/organization/user_views_an_organization_spec.rb
+  h_a5e25bc086eb00 4,10,14,19,31,42,49,61-64,76,83,92-103,111,119,128
+spec/system/podcasts/user_visits_podcast_page_spec.rb
+  h_a5e25bc086eb00 7,11,16-17,20
+spec/system/search/display_articles_search_spec.rb
+  h_a5e25bc086eb00 3-6,11-15,19-20,22,27
+spec/system/search/display_comments_search_spec.rb
+  h_a5e25bc086eb00 3,6-8
+spec/system/search/display_users_search_spec.rb
+  h_a5e25bc086eb00 3-7,9,18-19,22,25
+spec/system/search/search_title_spec.rb
+  h_a5e25bc086eb00 4-5,7-8,10,12-13
+spec/system/user/admin_views_admin_profile_link_spec.rb
+  h_a5e25bc086eb00 1-47
+spec/system/user/trusted_user_flags_user_spec.rb
+  h_a5e25bc086eb00 3,9,11-13,18,23-24,28-29,31-32,34-36,39-40,43
+spec/system/user/user_edits_profile_spec.rb
+  h_a5e25bc086eb00 5-6,12,24-25,28,33-34,46-47,49,52,58-60,64
+spec/system/user/user_manages_api_secrets_spec.rb
+  h_a5e25bc086eb00 9,17,21,23,29,31-32,34,37-38
+spec/system/user/user_settings_response_templates_spec.rb
+  h_a5e25bc086eb00 14,16,21,25-28
+spec/system/user/view_user_comments_spec.rb
+  h_a5e25bc086eb00 4-8,16,18-19,33,35-38,46,51
+spec/system/user/view_user_index_spec.rb
+  h_a5e25bc086eb00 17,25,31,43-54,62-63,73,75,84-85,88
+spec/system/user_logs_in_with_password_spec.rb
+  h_a5e25bc086eb00 6-10,14-16,22-24,26,31-33,38,49,59
+spec/system/user_uses_the_editor_spec.rb
+  h_a5e25bc086eb00 4,19,23-24,26,29,31-32,36,41,52-58,63,65-73,76-86,89-90,96
+spec/system/user_visits_a_comments_page_spec.rb
+  h_a5e25bc086eb00 3,6-10,12-13,15-18,21-25,27,29-31,35,38-41,44-105,107-110
+spec/system/videos/user_visits_videos_spec.rb
+  h_a5e25bc086eb00 8,11,13-14
+spec/tasks/assets_spec.rb
+  h_a5e25bc086eb00 3-8,11-15,18-19,22-23,25-27
+spec/tasks/cache_spec.rb
+  h_a5e25bc086eb00 1-36
+spec/tasks/release_migrate_spec.rb
+  h_a5e25bc086eb00 1-77
+spec/uploaders/profile_image_uploader_spec.rb
+  h_a5e25bc086eb00 87-153
+spec/views/agent_sessions/new.html.erb_spec.rb
+  h_a5e25bc086eb00 4-7,14-15
+spec/views/comments/_comment.html.erb_spec.rb
+  h_a5e25bc086eb00 9
+spec/views/users/main_feed_digest_spec.rb
+  h_a5e25bc086eb00 1-10
+spec/views/users/main_feed_spec.rb
+  h_a5e25bc086eb00 74-84
+spec/workers/appeals/ai_review_worker_spec.rb
+  h_a5e25bc086eb00 1-124
+spec/workers/articles/backfill_activities_worker_spec.rb
+  h_a5e25bc086eb00 1-26
+spec/workers/articles/bust_deleted_article_cache_worker_spec.rb
+  h_a5e25bc086eb00 1-59
+spec/workers/articles/quality_reaction_worker_spec.rb
+  h_a5e25bc086eb00 250-267
+spec/workers/articles/update_article_activity_worker_spec.rb
+  h_a5e25bc086eb00 130-131,133,136
+spec/workers/articles/update_dependent_embeds_worker_spec.rb
+  h_a5e25bc086eb00 20-21,23-25,80,124-139
+spec/workers/articles/update_organic_page_views_worker_spec.rb
+  h_a5e25bc086eb00 1-32
+spec/workers/articles/update_page_views_worker_spec.rb
+  h_a5e25bc086eb00 91-96
+spec/workers/billboards/data_update_worker_spec.rb
+  h_a5e25bc086eb00 153-183
+spec/workers/billboards/track_email_click_worker_spec.rb
+  h_a5e25bc086eb00 1-46
+spec/workers/comments/bust_commentable_cache_worker_spec.rb
+  h_a5e25bc086eb00 1-41
+spec/workers/edge_cache/purge_by_key_worker_spec.rb
+  h_a5e25bc086eb00 1-22
+spec/workers/emails/batch_custom_send_worker_spec.rb
+  h_a5e25bc086eb00 31-93,240-256
+spec/workers/emails/drip_email_worker_spec.rb
+  h_a5e25bc086eb00 106-115,127-136,144-153,159-160,174-188
+spec/workers/emails/enqueue_custom_batch_send_worker_spec.rb
+  h_a5e25bc086eb00 26-29,31,53-79
+spec/workers/emails/merge_email_keyed_customerio_profiles_worker_spec.rb
+  h_a5e25bc086eb00 3-4,7-8,11-30,32
+spec/workers/emails/send_user_digest_worker_spec.rb
+  h_a5e25bc086eb00 34-73,135,141-144,152,157,317
+spec/workers/emails/survey_daily_email_worker_spec.rb
+  h_a5e25bc086eb00 151,157,161-163,173,175
+spec/workers/favorites/send_gem_received_email_worker_spec.rb
+  h_a5e25bc086eb00 1-59
+spec/workers/feeds/archive_stale_configs_worker_spec.rb
+  h_a5e25bc086eb00 1-11
+spec/workers/follows/update_points_worker_spec.rb
+  h_a5e25bc086eb00 66-80
+spec/workers/notifications/co_author_invitation_worker_spec.rb
+  h_a5e25bc086eb00 1-29
+spec/workers/notifications/co_author_worker_spec.rb
+  h_a5e25bc086eb00 1-35
+spec/workers/organizations/track_promotional_billboard_impressions_worker_spec.rb
+  h_a5e25bc086eb00 348-370
+spec/workers/push_notifications/deliver_worker_spec.rb
+  h_a5e25bc086eb00 1-23
+spec/workers/reactions/bust_homepage_cache_worker_spec.rb
+  h_a5e25bc086eb00 25-44
+spec/workers/spam/block_domain_and_suspend_users_worker_spec.rb
+  h_a5e25bc086eb00 1-13
+spec/workers/spam/domain_detector_worker_spec.rb
+  h_a5e25bc086eb00 1-23
+spec/workers/spam/reaction_ring_detection_worker_spec.rb
+  h_a5e25bc086eb00 5-16,21-22,28-29,34,43,52,58-60,63-64,71-73,76-78,80,82-84
+spec/workers/subforems/create_from_scratch_worker_spec.rb
+  h_a5e25bc086eb00 46,55
+spec/workers/trackable/dispatch_worker_spec.rb
+  h_a5e25bc086eb00 75,80
+spec/workers/update_user_interest_embedding_worker_spec.rb
+  h_a5e25bc086eb00 33-56
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_a5e25bc086eb00 8,17-35
+spec/workers/users/delete_worker_spec.rb
+  h_a5e25bc086eb00 48,54,58-71,77,84-92,99-107,137-237
+spec/workers/users/generate_ai_profile_image_worker_spec.rb
+  h_a5e25bc086eb00 12,15-16,22,26-27,31-32,35,38-40,44,49-51,56-58
+spec/workers/users/send_account_deleted_email_worker_spec.rb
+  h_a5e25bc086eb00 1-17
+swagger/v1/api_v1.json
+  h_a5e25bc086eb00 6,86,146-233,569,857,1149,1164,1251-1325,1634,1648-1676,1699-1702,1754,1812,1903,1962,2012,2090,2147,2175-2272,2375-2426,3001-3003,3005,3007-3187,3469-3594,3612-3652,3986-4002,4019,4064-4073,4137,4186,4221-4283,5284,5292-5301,5319-5712,6020-6089,6095,6106,6117,6121-6122,6128,6139,6156,6174-6176,6537,6565-6582,6604,6925-6929,6940-6945,7037-7049,7162-7175,7287-7291,7296-7305,7397-7400,7404-7455,7490-7500,7833-7846,7919,7921,7923,7926-7927,8330-8331,8429-8430,8439-8440,8965-8969,9071-9264
+yarn.lock
+  h_a5e25bc086eb00 300-309,1856,1926-1939,2438-2441,2526-2543,2760-2768,3027-3035,3126-3132,3870-3872,3874,3877-3878,3880,4009-4280,4339-4345,4537-4543,4592-4606,4820-4825,5641-5644,6554-6560,6680-6697,6728-6730,6732-6733,6781,6992-7383,7491-7497,7651-7659,7707,7723,7727,7740,7747,7749,7756,7763,7772,7774,7782,7799,7801,7814-7817,7925-7936,8524-8537,8545-8548,8801-8803,8807-8808,9480-9482,9484-9485,10114-10120,10434,10502-10508,10587-10600,11398-11400,11402-11404,11406,11524-11526,11529-11532,11588-11590,11592-11594,11612-11618,11664-11666,11669-11672,12261-12278,12309-12322,12506-12512,12562,12774-12782,12856-12884,13176,13190-13203,13709-13715,13780-13786,13955-13971,14460,14487,14584,14607-14618,15463-15481,15491-15497,15608-15610,15614,15620,15628-15630,16438,16447-16453,16536-16539,16700-16706,16802-16808,17286-17294
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ae8969f30b6244202e1fcab2181df8432c5d5f2d",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
