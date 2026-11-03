@@ -29,8 +29,24 @@ RSpec.describe Turnstile::Verify do
 
   context "when no expected action was provided" do
     let(:action) { nil }
+    let(:returned_action) { action }
 
-    it { is_expected.to be(false) }
+    it "rejects the action without contacting Cloudflare", :aggregate_failures do
+      expect(verified).to be(false)
+      expect(WebMock).not_to have_requested(:post, described_class::ENDPOINT)
+    end
+  end
+
+  ["", " ", [], {}, 1].each do |invalid_action|
+    context "with invalid expected action #{invalid_action.inspect}" do
+      let(:action) { invalid_action }
+      let(:returned_action) { action }
+
+      it "rejects the action without contacting Cloudflare", :aggregate_failures do
+        expect(verified).to be(false)
+        expect(WebMock).not_to have_requested(:post, described_class::ENDPOINT)
+      end
+    end
   end
 
   [EOFError, IOError].each do |error|

@@ -29,8 +29,10 @@ RSpec.describe Turnstile::Verify do
     end
   end
 
-  [{ success: false }, { success: "true", hostname: "forem.test" },
-   { success: true }, { success: true, hostname: "other.example" }, [], nil].each do |invalid_result|
+  [{ success: false, hostname: "forem.test", action: "signup" },
+   { success: "true", hostname: "forem.test", action: "signup" },
+   { success: true, action: "signup" },
+   { success: true, hostname: "other.example", action: "signup" }, [], nil].each do |invalid_result|
     context "with response #{invalid_result.inspect}" do
       let(:result) { invalid_result }
 
