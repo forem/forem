@@ -35,6 +35,9 @@
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
       <meta name="emoji-picker-script" content="<%= asset_path 'emojiPicker.js' %>">
+      <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
+      <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
+      <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
