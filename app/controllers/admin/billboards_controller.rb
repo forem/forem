@@ -2,6 +2,11 @@ module Admin
   class BillboardsController < Admin::ApplicationController
     layout "admin"
 
+    # Events listed on a billboard's admin page. An allow-list, so a new category stays off the page
+    # until someone decides it belongs there.
+    ADMIN_EVENT_CATEGORIES = [BillboardEvent::CATEGORY_CLICK, BillboardEvent::CATEGORY_SIGNUP,
+                              BillboardEvent::CATEGORY_CONVERSION].freeze
+
     def index
       @billboards = Billboard.order(id: :desc)
         .page(params[:page]).per(50)
@@ -14,7 +19,7 @@ module Admin
     def show
       @billboard = Billboard.find(params[:id])
       @events = @billboard.billboard_events.order("created_at DESC").where.not(user_id: nil)
-        .where.not(category: "impression").includes(:user).limit(25)
+        .where(category: ADMIN_EVENT_CATEGORIES).includes(:user).limit(25)
     end
 
     def new

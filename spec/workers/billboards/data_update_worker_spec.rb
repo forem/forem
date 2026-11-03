@@ -171,6 +171,19 @@ RSpec.describe Billboards::DataUpdateWorker, type: :worker do
         expect(billboard.success_rate).to eq((7 + 50).to_f / 17)
       end
 
+      it "does not count partner impressions as impressions, clicks, conversions or seconds visible" do
+        create(:billboard_event, billboard: billboard, category: "partner_impression", counts_for: 4,
+                                 seconds_visible: 0, created_at: now - 1.hour)
+
+        travel_to(now) { worker.perform(billboard.id) }
+        billboard.reload
+
+        expect(billboard.impressions_count).to eq(17)
+        expect(billboard.clicks_count).to eq(7)
+        expect(billboard.seconds_visible).to eq(200)
+        expect(billboard.success_rate).to eq((7 + 25).to_f / 17)
+      end
+
       it "leaves the counters unchanged when there are no new events" do
         travel_to(now) { worker.perform(billboard.id) }
         travel_to(now + 1.hour) { worker.perform(billboard.id) }
