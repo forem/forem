@@ -6,6 +6,7 @@ describe('initializeTurnstile', () => {
     const container = document.createElement('div');
     container.className = 'cf-turnstile';
     container.dataset.sitekey = 'public-site-key';
+    container.dataset.action = 'signup';
     document.body.appendChild(container);
     return container;
   }
@@ -74,6 +75,7 @@ describe('initializeTurnstile', () => {
     expect(window.onForemTurnstileLoad).toBeUndefined();
     expect(api.render).toHaveBeenCalledWith(container, {
       sitekey: 'public-site-key',
+      action: 'signup',
     });
   });
 
@@ -116,6 +118,7 @@ describe('initializeTurnstile', () => {
     expect(oldContainer.childNodes).toHaveLength(0);
     expect(api.render).toHaveBeenLastCalledWith(replacement, {
       sitekey: 'public-site-key',
+      action: 'signup',
     });
     expect(api.render).toHaveBeenCalledTimes(2);
   });
@@ -158,6 +161,7 @@ describe('initializeTurnstile', () => {
     expect(api.remove).toHaveBeenCalledWith('widget-1');
     expect(api.render).toHaveBeenLastCalledWith(cached, {
       sitekey: 'public-site-key',
+      action: 'signup',
     });
   });
 
@@ -184,6 +188,7 @@ describe('initializeTurnstile', () => {
     expect(api.render).toHaveBeenCalledTimes(1);
     expect(api.render).toHaveBeenCalledWith(replacement, {
       sitekey: 'public-site-key',
+      action: 'signup',
     });
   });
 

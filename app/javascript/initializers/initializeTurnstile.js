@@ -50,6 +50,7 @@ export async function initializeTurnstile() {
       container.replaceChildren();
       const widgetId = turnstile.render(container, {
         sitekey: container.dataset.sitekey,
+        action: container.dataset.action,
       });
       widgets.set(container, widgetId);
     });

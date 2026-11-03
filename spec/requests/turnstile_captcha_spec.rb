@@ -17,7 +17,7 @@ RSpec.describe "Turnstile CAPTCHA" do
         feedback_type: "abuse-reports", category: "rude or vulgar",
         reported_url: "https://example.com", message: "An abuse report"
       },
-      "cf-turnstile-response" => "challenge-token"
+      "cf-turnstile-response" => "abuse-token"
     }
   end
 
@@ -28,9 +28,11 @@ RSpec.describe "Turnstile CAPTCHA" do
       turnstile_secret_key: "turnstile-secret", recaptcha_site_key: nil, recaptcha_secret_key: nil,
       allow_email_password_registration: true, require_captcha_for_email_password_registration: true
     )
-    stub_request(:post, Turnstile::Verify::ENDPOINT)
-      .with(body: { secret: "turnstile-secret", response: "challenge-token" })
-      .to_return(status: 200, body: verification_result.to_json)
+    { "challenge-token" => "signup", "abuse-token" => "abuse_report" }.each do |token, action|
+      stub_request(:post, Turnstile::Verify::ENDPOINT)
+        .with(body: { secret: "turnstile-secret", response: token })
+        .to_return(status: 200, body: verification_result.merge(action: action).to_json)
+    end
   end
 
   it "renders Turnstile rather than reCAPTCHA on signup", :aggregate_failures do
