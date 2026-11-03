@@ -97,11 +97,7 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         expect(evtArg).toBeInstanceOf(Event);
     });
 
-    // The server-side mention matcher (Html::Parser#wrap_mentions_with_links)
-    // uses /\B@[a-z0-9_-]+/i. A neutralized token must no longer match it.
-    const MENTION_MATCH = /\B@[a-z0-9_-]+/i;
-
-    it('Non-URL text paste ending on an @mention neutralizes the mention and does not trigger suggestions', async () => {
+    it('Pastes a prose @mention verbatim and does not trigger suggestions', async () => {
         renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
@@ -111,21 +107,22 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         // normally fire, which makes it the meaningful regression case.
         await userEvent.paste(textArea, 'Hey @john');
 
-        // 1) The '@john' in prose is neutralized so it no longer matches the
-        //    server-side mention regex, while staying visually identical.
+        // 1) The pasted text is saved exactly as authored. We deliberately do
+        //    NOT inject a zero-width space: mentions are resolved server-side by
+        //    Html::Parser#wrap_mentions_with_links, so body_markdown must stay
+        //    byte-for-byte what the author pasted.
         const value = textArea.value;
-        expect(value).toContain('@\u200Bjohn');
-        expect(value.replace(/\u200B/g, '')).toBe('Hey @john');
-        expect(MENTION_MATCH.test(value)).toBe(false);
+        expect(value).toBe('Hey @john');
+        expect(value).not.toContain('\u200B');
 
         // 2) No URL handler for non-URL text
         expect(mockURLHandler).not.toHaveBeenCalled();
 
-        // 3) No mention suggestion UI becomes visible
+        // 3) No mention suggestion UI becomes visible on paste
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
         expect(screen.queryByRole('combobox', { hidden: true })).not.toBeInTheDocument();
 
-        // 4) No network calls to the mention suggestion endpoint.
+        // 4) No network calls to the mention suggestion endpoint on paste.
         //    EditorBody fetches suggestions via fetchSearch('usernames', ...)
         //    which requests /search/usernames, so that is the URL to guard.
         const mentionsRequests = fetch.mock.calls.filter(([url]) =>
@@ -136,7 +133,7 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         expect(mentionsRequests.length).toBe(0);
     });
 
-    it('Does not modify an @handle inside fenced or inline code', async () => {
+    it('Pastes an @handle inside fenced or inline code verbatim', async () => {
         renderEditor();
 
         const textArea = screen.getByRole('textbox', { name: /post content/i });
@@ -145,13 +142,34 @@ describe('<Form /> – paste behavior (regression tests)', () => {
         const pasted = 'See ```npm i @pkg/core``` and `@pkg` for details';
         await userEvent.paste(textArea, pasted);
 
-        // Code-enclosed handles must survive verbatim (no zero-width space).
+        // Code (and everything else) must survive verbatim, with no injected
+        // zero-width space that would corrupt a copied snippet.
         const value = textArea.value;
         expect(value).not.toContain('\u200B');
         expect(value).toBe(pasted);
 
         expect(mockURLHandler).not.toHaveBeenCalled();
         expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+    });
+
+    // Regression guard: '@' after '/' (inside URLs, markdown link targets, and
+    // liquid tags) must never be altered. A previous approach inserted U+200B
+    // after every '@', which broke these by pointing links at the wrong page
+    // and stopping MediumTag::REGISTRY_REGEXP from matching.
+    it.each([
+        ['a URL in prose', 'Read https://medium.com/@author/post today'],
+        ['a markdown link target', '[me](https://mastodon.social/@alice)'],
+        ['a liquid embed tag', 'before {% embed https://medium.com/@a/b %} after'],
+    ])('pastes %s verbatim, leaving @ after / untouched', async (_label, pasted) => {
+        renderEditor();
+
+        const textArea = screen.getByRole('textbox', { name: /post content/i });
+
+        await userEvent.paste(textArea, pasted);
+
+        const value = textArea.value;
+        expect(value).toBe(pasted);
+        expect(value).not.toContain('\u200B');
     });
 
     it('Image/file paste is unaffected (no URL handler; paste not blocked)', async () => {

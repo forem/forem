@@ -17,76 +17,6 @@ import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
 import { gatherPriorityUserIds } from '../../shared/helpers/contextUsers';
 
-// Zero-width space inserted after '@' to break the server-side and client-side
-// mention match (\B@[a-z0-9_-]+) without visibly changing the pasted text.
-const ZERO_WIDTH_SPACE = '\u200B';
-const MENTION_REGEX = /\B@([a-z0-9_-]+)/gi;
-
-/**
- * Splits text into alternating prose and code segments. Fenced code blocks
- * (``` or ~~~) and inline code spans (`...`) are preserved verbatim so their
- * contents are never treated as mentions.
- *
- * @param {string} text
- * @returns {{ code: boolean, text: string }[]} Ordered segments.
- */
-const splitCodeSegments = (text) => {
-  // Matches a fenced block (```...``` or ~~~...~~~) or an inline code span.
-  const codePattern = /(```[\s\S]*?(?:```|$)|~~~[\s\S]*?(?:~~~|$)|`[^`\n]*`)/g;
-  const segments = [];
-  let lastIndex = 0;
-  let match;
-
-  while ((match = codePattern.exec(text)) !== null) {
-    if (match.index > lastIndex) {
-      segments.push({ code: false, text: text.slice(lastIndex, match.index) });
-    }
-    segments.push({ code: true, text: match[0] });
-    lastIndex = codePattern.lastIndex;
-  }
-
-  if (lastIndex < text.length) {
-    segments.push({ code: false, text: text.slice(lastIndex) });
-  }
-
-  return segments;
-};
-
-/**
- * Inserts a zero-width space after '@' for mention-like tokens found in prose,
- * leaving fenced blocks and inline code spans untouched.
- *
- * @param {string} text The pasted text.
- * @returns {string} The text with prose mentions neutralized.
- */
-const neutralizeMentionsOutsideCode = (text) =>
-  splitCodeSegments(text)
-    .map((segment) =>
-      segment.code
-        ? segment.text
-        : segment.text.replace(MENTION_REGEX, `@${ZERO_WIDTH_SPACE}$1`),
-    )
-    .join('');
-
-/**
- * Determines whether the end of the given text sits inside an unterminated code
- * fence or inline code span. Used to detect when the paste cursor is already
- * inside code in the existing editor content.
- *
- * @param {string} text Editor content up to the cursor.
- * @returns {boolean} True if the cursor is inside open code.
- */
-const isInsideCode = (text) => {
-  // Odd number of fence markers means a fence is still open.
-  const fenceCount = (text.match(/```|~~~/g) || []).length;
-  if (fenceCount % 2 === 1) return true;
-
-  // Within the current line, an odd number of backticks means an open inline span.
-  const currentLine = text.slice(text.lastIndexOf('\n') + 1);
-  const backtickCount = (currentLine.match(/`/g) || []).length;
-  return backtickCount % 2 === 1;
-};
-
 export const EditorBody = ({
   onChange,
   defaultValue,
@@ -125,8 +55,10 @@ export const EditorBody = ({
     }
   }, [setElement, setPasteElement]);
 
-  // If it's a URL, embed as a URL. Otherwise paste as plain text with
-  // accidental @mentions neutralized (outside of code).
+  // If it's a URL, offer to embed it. Otherwise let the browser paste the text
+  // normally so body_markdown is saved exactly as the author wrote it. Mentions
+  // are handled server-side by Html::Parser#wrap_mentions_with_links, which
+  // already skips <code>, so pasted @handles in code are never linked/notified.
   useEffect(() => {
     // Make sure we are in the editor
     const textarea = textAreaRef.current;
@@ -157,51 +89,8 @@ export const EditorBody = ({
         return;
       }
 
-      // If the cursor is already inside an open code fence/span in the
-      // existing content, the paste lands in code too. Leave it untouched so
-      // we never corrupt code the author is writing.
-      const textBeforeCursor = textarea.value.slice(
-        0,
-        textarea.selectionStart,
-      );
-      if (isInsideCode(textBeforeCursor)) return;
-
-      // Neutralize @mentions in prose only (skip fenced and inline code), so a
-      // pasted "@handle" in a sentence isn't linked server-side by
-      // Html::Parser#wrap_mentions_with_links or picked up by the editor's
-      // autocomplete. A zero-width space after '@' breaks the \B@ match.
-      const neutralized = neutralizeMentionsOutsideCode(pastedText);
-
-      // Nothing changed (e.g. the whole paste is code) — let the browser
-      // handle it normally to preserve the undo stack.
-      if (neutralized === pastedText) return;
-
-      e.preventDefault();
-
-      // Prefer execCommand so the change is added to the native undo stack.
-      const el = textarea;
-      let inserted = false;
-      try {
-        el.focus();
-        inserted = document.execCommand('insertText', false, neutralized);
-      } catch {
-        inserted = false;
-      }
-
-      if (!inserted) {
-        // Fallback for environments without execCommand support.
-        const start = el.selectionStart;
-        const end = el.selectionEnd;
-        if (typeof el.setRangeText === 'function') {
-          el.setRangeText(neutralized, start, end, 'end');
-        } else {
-          const before = el.value.slice(0, start);
-          const after = el.value.slice(end);
-          el.value = before + neutralized + after;
-          el.selectionStart = el.selectionEnd = (before + neutralized).length;
-        }
-        el.dispatchEvent(new Event('input', { bubbles: true }));
-      }
+      // For plain text, let the browser handle the paste normally. This keeps
+      // the native undo stack intact and leaves the saved markdown untouched.
     };
 
     textarea.addEventListener('paste', onPaste);
