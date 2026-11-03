@@ -528,8 +528,7 @@ class User < ApplicationRecord
         if readinglist_ids.empty?
           []
         else
-          published_ids = Article.published.from_subforem.where(id: readinglist_ids).ids.to_set
-          readinglist_ids.select { |article_id| published_ids.include?(article_id) }
+          readinglist_ids & Article.published.from_subforem.where(id: readinglist_ids).ids
         end
       end
       ids.first(1000)
