@@ -73,6 +73,25 @@ RSpec.describe "Comments" do
         .and(exclude("reading_list_document"))
     end
 
+    it "loads the root comment and its replies without the semantic_embedding vector", :aggregate_failures do
+      reply = create(:comment, commentable: article, parent: comment, user: user)
+      comment_path = comment.path
+      comment_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        next unless sql.include?('FROM "comments"')
+
+        comment_queries << sql if sql.include?(%("comments"."id" =)) || sql.include?(%("comments"."ancestry"))
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get comment_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(comment.processed_html).and(include(reply.processed_html))
+      expect(comment_queries.size).to be >= 2
+      expect(comment_queries).to all(exclude("semantic_embedding", '"comments".*'))
+    end
+
     it "loads the article by slug without the semantic_embedding vector or search tsvector", :aggregate_failures do
       article_path = article.path
       slug_queries = []
