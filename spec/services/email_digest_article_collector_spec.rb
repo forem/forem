@@ -8,15 +8,16 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
   def create(name, *traits, **options)
     return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
 
+    if name == :article
+      options[:user] ||= other_user unless options.key?(:user_id)
+      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+      options[:with_main_image] = false unless options.key?(:with_main_image)
+    end
     super
   end
 
   def create_list(name, amount, *traits, **options)
-    if name == :article && (options.key?(:user) || options.key?(:featured))
-      options[:user] ||= other_user
-      options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
-    end
-    super(name, amount, *traits, **options)
+    Array.new(amount) { create(name, *traits, **options) }
   end
 
   describe "#articles_to_send" do
@@ -33,45 +34,33 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
     end
 
     context "when user is brand new with no-follow" do
-      it "provides top 3 articles from default subforem" do
-        create_list(:article, 3, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
+      it "provides top 3 default-subforem articles only when at least 3 are digest-eligible", :aggregate_failures do
+        create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
+        expect(described_class.new(user).articles_to_send).to be_empty
+
+        create_list(:article, 2, public_reactions_count: 40, email_digest_eligible: false, subforem: default_subforem)
+        expect(described_class.new(user).articles_to_send).to be_empty
+
+        create(:article, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to eq(3)
         expect(articles.first.subforem_id).to eq(default_subforem.id)
       end
-
-      it "marks as not ready if there isn't at least 3 articles" do
-        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: default_subforem)
-        articles = described_class.new(user).articles_to_send
-        expect(articles).to be_empty
-      end
-
-      it "marks as not ready if there isn't at least 3 email-digest-eligible articles" do
-        create_list(:article, 2, public_reactions_count: 40, score: 40, subforem: default_subforem)
-        create_list(:article, 2, public_reactions_count: 40, email_digest_eligible: false, subforem: default_subforem)
-        articles = described_class.new(user).articles_to_send
-        expect(articles).to be_empty
-      end
     end
 
     context "when the user has no follows, but does have a few pageviews" do
-      it "provides featured 3 articles and articles tagged with their viewed articles from default subforem" do
+      it "provides featured, viewed-tag, and career-tagged articles from default subforem", :aggregate_failures do
         user.page_views.create(article: create(:article, tag_list: "ruby", subforem: default_subforem))
         create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
         create_list(:article, 2, tag_list: "ruby", public_reactions_count: 40, score: 40, subforem: default_subforem)
         articles = described_class.new(user).articles_to_send
         expect(articles.length).to eq(4)
         expect(articles.all? { |a| a.subforem_id == default_subforem.id }).to be true
-      end
 
-      it "provides articles tagged with career in addition to featured and viewed from default subforem" do
-        user.page_views.create(article: create(:article, tag_list: "ruby", subforem: default_subforem))
-        create_list(:article, 2, public_reactions_count: 40, featured: true, score: 40, subforem: default_subforem)
-        create_list(:article, 2, tag_list: "ruby", public_reactions_count: 40, score: 40, subforem: default_subforem)
         create_list(:article, 2, tag_list: "career", public_reactions_count: 40, score: 40, subforem: default_subforem)
-        articles = described_class.new(user).articles_to_send
-        expect(articles.length).to eq(6)
-        expect(articles.all? { |a| a.subforem_id == default_subforem.id }).to be true
+        articles_with_career = described_class.new(user).articles_to_send
+        expect(articles_with_career.length).to eq(6)
+        expect(articles_with_career.all? { |a| a.subforem_id == default_subforem.id }).to be true
       end
     end
 
@@ -86,7 +75,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "provides articles only from followed subforems" do
-        other_user = create(:user)
         create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: followed_subforem, featured: true,
                                  user: other_user)
         create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: other_subforem, featured: true,
@@ -99,7 +87,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "falls back to default subforem if not enough articles from followed subforems" do
-        other_user = create(:user)
         create_list(:article, 1, public_reactions_count: 40, score: 40, subforem: followed_subforem,
                                  tag_list: "career", user: other_user, featured: true)
         create_list(:article, 5, public_reactions_count: 40, score: 40, subforem: default_subforem,
@@ -123,7 +110,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "provides articles from all followed subforems" do
-        other_user = create(:user)
         create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: subforem1, tag_list: "career",
                                  user: other_user)
         create_list(:article, 4, public_reactions_count: 40, score: 40, subforem: subforem2, tag_list: "productivity",
@@ -144,7 +130,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "does not filter articles by subforem when user has custom onboarding subforem" do
-        other_user = create(:user)
         # Create articles in different subforems
         create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: custom_onboarding_subforem,
                                  tag_list: "career", user: other_user, featured: true)
@@ -165,7 +150,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "still filters by subforem if user also follows subforems" do
-        other_user = create(:user)
         followed_subforem = create(:subforem, domain: "followed.test")
 
         # Create user activity with followed subforems
@@ -191,25 +175,18 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when it's been less than the set number of digest email days" do
       before do
-        author = create(:user)
-        user.follow(author)
+        user.follow(other_user)
         user.update(following_users_count: 1)
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, subforem: default_subforem)
+        create_list(:article, 3, user: other_user, public_reactions_count: 20, score: 20, subforem: default_subforem)
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: Time.current.utc)
       end
 
-      it "returns no articles when user shouldn't receive any" do
+      it "returns no articles unless force_send is true", :aggregate_failures do
         Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
-          articles = described_class.new(user).articles_to_send
-          expect(articles).to be_empty
-        end
-      end
+          expect(described_class.new(user).articles_to_send).to be_empty
 
-      it "returns articles even when last email was sent recently if force_send is true" do
-        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
           articles = described_class.new(user, force_send: true).articles_to_send
-          expect(articles).not_to be_empty
           expect(articles.length).to eq(3)
         end
       end
@@ -219,10 +196,10 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       before do
         Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
                              sent_at: Time.current.utc)
-        author = create(:user)
-        user.follow(author)
+        user.follow(other_user)
         user.update(following_users_count: 1)
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40, subforem: default_subforem)
+        create_list(:article, 3, user_id: other_user.id, public_reactions_count: 40, score: 40,
+                                 subforem: default_subforem, with_tags: true)
         user.follow(Article.last.tags.first)
       end
 
@@ -236,7 +213,8 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
     context "when using tags" do
       it "takes 'antifollowed' tags into account", :aggregate_failures do
-        articles = create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: default_subforem)
+        articles = create_list(:article, 3, public_reactions_count: 40, score: 40,
+                                            subforem: default_subforem, with_tags: true)
         tag = articles.first.tags.first
         user.follow(tag)
 
@@ -366,64 +344,44 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(collector.feed_config_id).to eq(digest_config.id)
       end
 
-      it "does not set feed_config_id when fallback to legacy occurs" do
-        other_user = create(:user)
-        # Only 2 eligible articles → personalized returns nil → fallback to legacy
+      it "falls back to legacy selection without setting feed_config_id when < 3 articles or score_sql raises",
+         :aggregate_failures do
         create_list(:article, 2, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
 
-        collector = described_class.new(user)
         collector.articles_to_send
         expect(collector.feed_config_id).to be_nil
-      end
 
-      it "falls back to legacy selection when personalized result has < 3 articles" do
-        other_user = create(:user)
-        # Only 2 eligible articles → personalized returns nil → legacy path runs
-        create_list(:article, 2, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
-        # Add a 3rd article that the legacy path can also find
         create(:article, score: 40, featured: true, email_digest_eligible: true,
                          subforem: default_subforem, user: other_user, with_tags: false)
+        expect(described_class.new(user).articles_to_send.length).to be >= 3
 
-        articles = described_class.new(user).articles_to_send
-        expect(articles.length).to be >= 3
+        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
+        allow(feed_config).to receive(:score_sql).and_raise(StandardError, "boom")
+        expect(described_class.new(user).articles_to_send.length).to be >= 3
       end
 
-      it "falls back to legacy selection when field test assigns legacy variant" do
+      it "skips personalized path when field test is legacy, feed_strategy is not configured, or flag is disabled",
+         :aggregate_failures do
+        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
+                                 subforem: default_subforem, user: other_user)
+
         allow(collector).to receive(:field_test)
           .with(:personalized_email_digests_ab_test, participant: user)
           .and_return("legacy")
-
-        other_user = create(:user)
-        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
         described_class.new(user).articles_to_send
-
-        # If legacy is used, FeedConfig is not evaluated
         expect(FeedConfig).not_to have_received(:order)
-      end
 
-      it "falls back to legacy selection when personalized path raises" do
-        other_user = create(:user)
-        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
-        allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
-        allow(feed_config).to receive(:score_sql).and_raise(StandardError, "boom")
-
-        articles = described_class.new(user).articles_to_send
-        expect(articles.length).to be >= 3
-      end
-
-      it "skips personalized path when feed_strategy is not 'configured'" do
+        allow(collector).to receive(:field_test)
+          .with(:personalized_email_digests_ab_test, participant: user)
+          .and_return("personalized")
         allow(Settings::UserExperience).to receive(:feed_strategy).and_return("basic")
-        allow(FeedConfig).to receive(:order).and_call_original
-
-        other_user = create(:user)
-        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
         described_class.new(user).articles_to_send
+        expect(FeedConfig).not_to have_received(:order)
 
+        allow(Settings::UserExperience).to receive(:feed_strategy).and_return("configured")
+        FeatureFlag.disable(:personalized_email_digests)
+        described_class.new(user).articles_to_send
         expect(FeedConfig).not_to have_received(:order)
       end
 
@@ -435,7 +393,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         Settings::UserExperience.set_feed_strategy("large_forem_experimental", subforem_id: nil)
         Settings::UserExperience.set_feed_strategy("configured", subforem_id: default_subforem.id)
 
-        other_user = create(:user)
         create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
                                  subforem: default_subforem, user: other_user)
 
@@ -448,73 +405,40 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(collector.feed_config_id).to eq(feed_config.id)
       end
 
-      it "skips personalized path when feature flag is disabled" do
-        FeatureFlag.disable(:personalized_email_digests)
-        allow(FeedConfig).to receive(:order).and_call_original
-
-        other_user = create(:user)
-        create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
-        described_class.new(user).articles_to_send
-
-        expect(FeedConfig).not_to have_received(:order)
-      end
-
-      it "never includes the user's own articles" do
-        own_articles = create_list(:article, 5, score: 40, featured: true, email_digest_eligible: true,
-                                                subforem: default_subforem, user: user)
-        other_user = create(:user)
-        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
-
-        articles = described_class.new(user).articles_to_send
-        own_paths = own_articles.map(&:path)
-        expect(articles.none? { |a| own_paths.include?(a.path) }).to be true
-      end
-
-      it "never includes digest-ineligible articles" do
-        other_user = create(:user)
-        ineligible = create_list(:article, 3, score: 40, email_digest_eligible: false,
-                                              subforem: default_subforem, user: other_user)
-        create_list(:article, 3, score: 30, email_digest_eligible: true, featured: true,
-                                 subforem: default_subforem, user: other_user)
-
-        articles = described_class.new(user).articles_to_send
-        ineligible_paths = ineligible.map(&:path)
-        expect(articles.none? { |a| ineligible_paths.include?(a.path) }).to be true
-      end
-
-      it "never includes articles with a score lower than the custom minimum" do
-        other_user = create(:user)
-        offset = described_class::MINIMUM_SCORE_OFFSET
-        low_score = create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + offset - 1,
-                                             email_digest_eligible: true, subforem: default_subforem, user: other_user)
-        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + offset + 5,
-                                 email_digest_eligible: true, subforem: default_subforem, user: other_user)
-
-        articles = described_class.new(user).articles_to_send
-        low_score_paths = low_score.map(&:path)
-        expect(articles.none? { |a| low_score_paths.include?(a.path) }).to be true
-      end
-
-      it "never includes articles from blocked authors" do
+      it "excludes own, digest-ineligible, below-minimum-score, blocked-author, and antifollowed-tag articles",
+         :aggregate_failures do
         blocked_author = create(:user)
         create(:user_block, blocker: user, blocked: blocked_author, config: "default")
         allow(UserBlock).to receive(:cached_blocked_ids_for_blocker).with(user.id).and_return([blocked_author.id])
 
-        blocked_articles = create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                                    subforem: default_subforem, user: blocked_author)
-        other_user = create(:user)
-        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
-                                 subforem: default_subforem, user: other_user)
+        tag = Tag.find_by(name: "ruby") || create(:tag, name: "ruby")
+        user.follow(tag)
+        user.follows.find_by(followable: tag).update!(explicit_points: -999)
+        allow(user).to receive(:cached_antifollowed_tag_names).and_return(["ruby"])
+
+        offset = described_class::MINIMUM_SCORE_OFFSET
+        min_score = Settings::UserExperience.home_feed_minimum_score + offset
+        excluded = [
+          create(:article, score: 40, featured: true, email_digest_eligible: true,
+                           subforem: default_subforem, user: user),
+          create(:article, score: 40, email_digest_eligible: false,
+                           subforem: default_subforem, user: other_user),
+          create(:article, score: min_score - 1, email_digest_eligible: true,
+                           subforem: default_subforem, user: other_user),
+          create(:article, score: 40, featured: true, email_digest_eligible: true,
+                           subforem: default_subforem, user: blocked_author),
+          create(:article, score: 40, featured: true, email_digest_eligible: true,
+                           tag_list: "ruby", subforem: default_subforem, user: other_user),
+        ]
+        eligible = create_list(:article, 3, score: min_score + 5, featured: true, email_digest_eligible: true,
+                                            tag_list: "python", subforem: default_subforem, user: other_user)
 
         articles = described_class.new(user).articles_to_send
-        blocked_paths = blocked_articles.map(&:path)
-        expect(articles.none? { |a| blocked_paths.include?(a.path) }).to be true
+        expect(articles.map(&:path)).to match_array(eligible.map(&:path))
+        expect(articles.map(&:path) & excluded.map(&:path)).to be_empty
       end
 
       it "bumps the second article to the top when the first matches the last email subject" do
-        other_user = create(:user)
         articles = (1..3).map do |i|
           create(:article, score: 100 - i, featured: true, email_digest_eligible: true,
                            subforem: default_subforem, user: other_user, with_tags: false)
@@ -528,23 +452,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         result = described_class.new(user).articles_to_send
         expect(result.first.title).to eq articles.second.title
         expect(result.last.title).to eq articles.first.title
-      end
-
-      it "never includes articles tagged with antifollowed tags" do
-        other_user = create(:user)
-        antifollowed_articles = create_list(:article, 3, score: 40, featured: true, email_digest_eligible: true,
-                                                         tag_list: "ruby", subforem: default_subforem, user: other_user)
-        create_list(:article, 3, score: 30, featured: true, email_digest_eligible: true,
-                                 tag_list: "python", subforem: default_subforem, user: other_user)
-
-        tag = Tag.find_by(name: "ruby") || create(:tag, name: "ruby")
-        user.follow(tag)
-        user.follows.find_by(followable: tag).update!(explicit_points: -999)
-        allow(user).to receive(:cached_antifollowed_tag_names).and_return(["ruby"])
-
-        articles = described_class.new(user).articles_to_send
-        antifollowed_paths = antifollowed_articles.map(&:path)
-        expect(articles.none? { |a| antifollowed_paths.include?(a.path) }).to be true
       end
 
       it "uses two-stage candidate pre-filtering when semantic_similarity_weight is active" do
@@ -565,7 +472,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         allow(FeedConfig).to receive(:select_for_feed).and_return(feed_config)
         allow(feed_config).to receive(:score_sql).and_call_original
 
-        other_user = create(:user)
         a1 = create(:article, score: 80, featured: true, email_digest_eligible: true,
                               subforem: default_subforem, user: other_user)
         a2 = create(:article, score: 50, featured: true, email_digest_eligible: true,
@@ -592,7 +498,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
 
       it "applies feed_config.feed_lookback_hours when set within the digest cutoff window and caps at hard cutoff" do
-        other_user = create(:user)
         recent_articles = Array.new(3) do |i|
           create(:article, :past, score: 50 + i, featured: true, email_digest_eligible: true,
                                   subforem: default_subforem, user: other_user, past_published_at: (12 + i).hours.ago)
@@ -618,8 +523,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
 
       it "caps personalized_cutoff_date at global feed_lookback_days and preserves cutoff on legacy fallback" do
         allow(Settings::UserExperience).to receive(:feed_lookback_days).and_return(1)
-        other_user = create(:user)
-        # Only 2 articles within 1 day (24 hours), plus 2 articles at 36 hours (inside 48h config, outside 1-day global cap)
+        # 2 articles within 24h, plus 2 articles at 36h (inside 48h config, outside 1-day global cap)
         create_list(:article, 2, :past, score: 60, featured: true, email_digest_eligible: true,
                                         subforem: default_subforem, user: other_user, past_published_at: 12.hours.ago)
         outside_global_cap = create_list(:article, 2, :past, score: 80, featured: true, email_digest_eligible: true,
