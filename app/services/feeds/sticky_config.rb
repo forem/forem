@@ -21,7 +21,12 @@ module Feeds
           @config = select_active_config
           expires_at = Time.current + hours.hours
           if @assignment
-            @assignment.update!(feed_config: @config, expires_at: expires_at, last_rewarded_at: nil)
+            @assignment.update!(
+              feed_config: @config,
+              expires_at: expires_at,
+              last_rewarded_at: nil,
+              repeat_visits_count: 0,
+            )
           else
             @assignment = FeedConfigAssignment.create!(
               user: @user,
@@ -29,6 +34,7 @@ module Feeds
               feed_config: @config,
               expires_at: expires_at,
               last_rewarded_at: nil,
+              repeat_visits_count: 0,
             )
           end
         end

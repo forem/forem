@@ -343,13 +343,29 @@ RSpec.describe FeedEvent do
       create_event(:click, user1)
       FeedConfig.record_repeat_visit(feed_config.id)
       FeedConfig.record_repeat_visit(feed_config.id)
-      expect(feed_config.reload.feed_success_score).to eq(2.5)
+      expect(feed_config.reload.feed_success_score).to eq(3.5)
 
       create_event(:impression, user2)
       expect(feed_config.reload.feed_impression_users_count).to eq(2)
-      expect(feed_config.feed_success_score).to eq(1.25)
+      expect(feed_config.feed_success_score).to eq(1.75)
       described_class.update_single_feed_config_counters(feed_config.id)
-      expect(feed_config.reload.feed_success_score).to eq(1.25)
+      expect(feed_config.reload.feed_success_score).to eq(1.75)
+      expect(feed_config.feed_repeat_visits_count).to eq(2)
+    end
+
+    it "uses a 1.5 repeat-visit multiplier for feed_power_user configs" do
+      feed_config.update!(targeting_bucket: FeedConfig::BUCKET_FEED_POWER_USER)
+      create_event(:impression, user1)
+      create_event(:click, user1)
+      FeedConfig.record_repeat_visit(feed_config.id)
+      FeedConfig.record_repeat_visit(feed_config.id)
+      expect(feed_config.reload.feed_success_score).to eq(4.5)
+
+      create_event(:impression, user2)
+      expect(feed_config.reload.feed_impression_users_count).to eq(2)
+      expect(feed_config.feed_success_score).to eq(2.25)
+      described_class.update_single_feed_config_counters(feed_config.id)
+      expect(feed_config.reload.feed_success_score).to eq(2.25)
       expect(feed_config.feed_repeat_visits_count).to eq(2)
     end
 
@@ -362,7 +378,7 @@ RSpec.describe FeedEvent do
       end
 
       described_class.update_single_feed_config_counters(feed_config.id)
-      expect(feed_config.reload.feed_success_score).to eq(0.5)
+      expect(feed_config.reload.feed_success_score).to eq(1.0)
       expect(feed_config.feed_repeat_visits_count).to eq(1)
     end
 
@@ -372,7 +388,7 @@ RSpec.describe FeedEvent do
       expect(feed_config.feed_success_score).to eq(0.0)
 
       create_event(:impression, user1)
-      expect(feed_config.reload.feed_success_score).to eq(0.5)
+      expect(feed_config.reload.feed_success_score).to eq(1.0)
     end
 
     context "when impression events exist for the feed config on newly published articles" do

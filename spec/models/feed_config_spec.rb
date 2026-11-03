@@ -1237,4 +1237,15 @@ RSpec.describe FeedConfig, type: :model do
       end
     end
   end
+
+  describe "#repeat_visit_score_multiplier" do
+    it "returns 1.0 for standard buckets and 1.5 for feed_power_user" do
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_ALL).repeat_visit_score_multiplier)
+        .to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_CASUAL_USER)
+        .repeat_visit_score_multiplier).to eq(1.0)
+      expect(described_class.new(targeting_bucket: described_class::BUCKET_FEED_POWER_USER)
+        .repeat_visit_score_multiplier).to eq(1.5)
+    end
+  end
 end

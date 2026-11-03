@@ -54,7 +54,7 @@ RSpec.describe "Stories::Feeds" do
             post feed_config_visits_path, params: { visit_token: token, event_id: SecureRandom.uuid }
             expect(response).to have_http_status(:ok)
             expect(feed_config.reload.feed_repeat_visits_count).to eq(1)
-            expect(feed_config.feed_success_score).to eq(0.5)
+            expect(feed_config.feed_success_score).to eq(1.0)
           end
         end
       end
