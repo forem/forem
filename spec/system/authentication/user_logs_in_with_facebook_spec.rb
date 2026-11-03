@@ -130,22 +130,15 @@ RSpec.describe "Authenticating with Facebook" do
       sign_out user
     end
 
-    context "when using valid credentials" do
-      it "logs in" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
+    it "logs in with valid credentials and redirects to the dashboard when already signed in", :aggregate_failures do
+      visit sign_up_path
+      click_on(sign_in_link, match: :first)
 
-        expect(page).to have_current_path("/?signin=true")
-      end
-    end
+      expect(page).to have_current_path("/?signin=true")
 
-    context "when already signed in" do
-      it "redirects to the dashboard" do
-        sign_in user
-        visit user_facebook_omniauth_authorize_path
+      visit user_facebook_omniauth_authorize_path
 
-        expect(page).to have_current_path("/?signin=true")
-      end
+      expect(page).to have_current_path("/?signin=true")
     end
   end
 

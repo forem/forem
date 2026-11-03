@@ -98,26 +98,19 @@ RSpec.describe "Authenticating with Twitter" do
       auth_payload.info.email = user.email
     end
 
-    context "when using valid credentials" do
-      it "logs in" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
+    it "logs in, redirects when already signed in, and renders the twitter icon on the profile", :aggregate_failures do
+      visit sign_up_path
+      click_on(sign_in_link, match: :first)
 
-        expect(page).to have_current_path("/?signin=true")
-      end
-    end
+      expect(page).to have_current_path("/?signin=true")
 
-    context "when already signed in" do
-      it "redirects to the feed and renders the twitter icon on the profile", :aggregate_failures do
-        sign_in user
-        visit user_twitter_omniauth_authorize_path
+      visit user_twitter_omniauth_authorize_path
 
-        expect(page).to have_current_path("/?signin=true")
+      expect(page).to have_current_path("/?signin=true")
 
-        visit user_profile_path(user.username)
+      visit user_profile_path(user.username)
 
-        expect(page).to have_css("svg.crayons-icon.shrink-0", text: "twitter website")
-      end
+      expect(page).to have_css("svg.crayons-icon.shrink-0", text: "twitter website")
     end
   end
 

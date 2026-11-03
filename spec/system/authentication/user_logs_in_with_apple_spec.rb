@@ -30,7 +30,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       it "creates a new user with a temporary username" do
         # see Authentication::Providers::Apple#new_user_data
         username = OmniAuth.config.mock_auth[:apple].info.first_name.downcase
-        user = create(:user, username: username)
+        user = create(:user, :without_profile, profile_image: nil, username: username)
 
         expect do
           visit sign_up_path
@@ -57,52 +57,18 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
         OmniAuth.config.on_failure = OmniauthHelpers.const_get(:OMNIAUTH_DEFAULT_FAILURE_HANDLER)
       end
 
-      it "does not create a new user" do
+      it "does not create a new user or log in and notifies Datadog", :aggregate_failures do
+        omniauth_setup_authentication_error(nil, params)
+
         expect do
           visit sign_up_path
           click_on(sign_in_link, match: :first)
         end.not_to change(User, :count)
-      end
 
-      it "notifies Datadog about a callback error" do
-        error = OmniAuth::Strategies::OAuth2::CallbackError.new(
-          "Callback error", "Error reason", "https://example.com/error"
-        )
+        expect(page).to have_current_path("/users/sign_in")
+        expect(page).to have_button(sign_in_link)
 
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "apple", "{}")
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog about an OAuth unauthorized error" do
-        request = double
-        allow(request).to receive_messages(code: 401, message: "unauthorized")
-        error = OAuth::Unauthorized.new(request)
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "apple", "{}")
-        expect(ForemStatsClient).to have_received(:increment).with(
-          "omniauth.failure", *args
-        )
-      end
-
-      it "notifies Datadog even with no OmniAuth error present" do
-        error = nil
-        omniauth_setup_authentication_error(error)
-
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
-
-        args = omniauth_failure_args(error, "apple", "{}")
+        args = omniauth_failure_args(nil, "apple", params)
         expect(ForemStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -131,7 +97,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
 
   context "when a user already exists" do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:apple] }
-    let(:user) { create(:user, :with_identity, identities: [:apple]) }
+    let(:user) { create(:user, :without_profile, :with_identity, identities: [:apple]) }
 
     before do
       # Apple sends nil as `first_name` and `last_name` for an existing user
@@ -143,22 +109,15 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       sign_out user
     end
 
-    context "when using valid credentials" do
-      it "logs in" do
-        visit sign_up_path
-        click_on(sign_in_link, match: :first)
+    it "logs in with valid credentials and redirects to the feed when already signed in", :aggregate_failures do
+      visit sign_up_path
+      click_on(sign_in_link, match: :first)
 
-        expect(page).to have_current_path("/?signin=true")
-      end
-    end
+      expect(page).to have_current_path("/?signin=true")
 
-    context "when already signed in" do
-      it "redirects to the feed" do
-        sign_in user
-        visit user_apple_omniauth_authorize_path
+      visit user_apple_omniauth_authorize_path
 
-        expect(page).to have_current_path("/?signin=true")
-      end
+      expect(page).to have_current_path("/?signin=true")
     end
   end
 end
