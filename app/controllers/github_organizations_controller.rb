@@ -18,11 +18,18 @@ class GithubOrganizationsController < ApplicationController
     authorize GithubRepo, :manage_organizations?
 
     setting = current_user.setting
+    name = organization_param
+
+    # Cheap checks and the GitHub request come first, so no lock is held during the request.
+    errors = Users::Setting.github_organization_errors(setting.github_organizations + [name])
+    return render json: { error: errors.to_sentence }, status: :unprocessable_entity if errors.any?
+    return organization_not_found unless organization_exists?(name)
+
     # The lock serializes concurrent changes, so none of them overwrites the organizations of another.
     setting.with_lock do
-      setting.github_organizations += [organization_param]
+      setting.github_organizations += [name]
+      # Validated again, as the organizations may have changed while GitHub was being asked.
       return render_validation_errors(setting) unless setting.valid?
-      return organization_not_found unless organization_exists?(organization_param)
 
       setting.save!
       render json: { organizations: setting.github_organizations }, status: :created
@@ -34,13 +41,15 @@ class GithubOrganizationsController < ApplicationController
 
     setting = current_user.setting
     organization = nil
+    # Removing the organization and unpinning its repositories succeed or fail together.
     setting.with_lock do
       organization = setting.github_organizations.find { |name| name.casecmp?(params[:id]) }
-      setting.update!(github_organizations: setting.github_organizations - [organization]) if organization
+      next unless organization
+
+      setting.update!(github_organizations: setting.github_organizations - [organization])
+      unpin_repositories_of(organization)
     end
     return organization_not_found unless organization
-
-    unpin_repositories_of(organization)
 
     render json: { organizations: setting.github_organizations }
   end
@@ -64,7 +73,7 @@ class GithubOrganizationsController < ApplicationController
     repos = current_user.github_repos.select { |repo| repo.owner_login&.casecmp?(organization) }
     return if repos.empty?
 
-    repos.each(&:destroy)
+    repos.each(&:destroy!)
     current_user.touch(:github_repos_updated_at)
   end
 

@@ -12,6 +12,22 @@ module Users
     GITHUB_ORGANIZATION_REGEXP = /\A[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}\z/
 
     belongs_to :user, touch: true
+
+    # Error messages for a list of GitHub organization usernames.
+    # Unlike a full validation it has no side effects (e.g. no RSS feed request).
+    def self.github_organization_errors(names)
+      messages = []
+      if names.size > MAX_GITHUB_ORGANIZATIONS
+        messages << I18n.t("models.users.setting.too_many_github_organizations", count: MAX_GITHUB_ORGANIZATIONS)
+      end
+      unless names.all? { |name| name.match?(GITHUB_ORGANIZATION_REGEXP) }
+        messages << I18n.t("models.users.setting.invalid_github_organization")
+      end
+      unless names.uniq(&:downcase).size == names.size
+        messages << I18n.t("models.users.setting.duplicate_github_organization")
+      end
+      messages
+    end
     scope :with_feed, lambda {
       where(user_id: Feeds::Source.active.select(:user_id))
         .or(where.not(feed_url: [nil, ""]))
@@ -69,18 +85,9 @@ module Users
     end
 
     def validate_github_organizations
-      if github_organizations.size > MAX_GITHUB_ORGANIZATIONS
-        errors.add(:github_organizations,
-                   I18n.t("models.users.setting.too_many_github_organizations", count: MAX_GITHUB_ORGANIZATIONS))
+      self.class.github_organization_errors(github_organizations).each do |message|
+        errors.add(:github_organizations, message)
       end
-
-      unless github_organizations.all? { |name| name.match?(GITHUB_ORGANIZATION_REGEXP) }
-        errors.add(:github_organizations, I18n.t("models.users.setting.invalid_github_organization"))
-      end
-
-      return if github_organizations.uniq(&:downcase).size == github_organizations.size
-
-      errors.add(:github_organizations, I18n.t("models.users.setting.duplicate_github_organization"))
     end
 
     def validate_feed_url

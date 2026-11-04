@@ -64,6 +64,7 @@ RSpec.describe "GithubOrganizations" do
         post github_organizations_path, params: { organization: "Necoz-OSS" }.to_json, headers: headers
 
         expect(response).to have_http_status(:unprocessable_entity)
+        expect(github_client).not_to have_received(:organization)
       end
 
       it "rejects more organizations than the maximum" do
@@ -73,6 +74,7 @@ RSpec.describe "GithubOrganizations" do
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body["error"]).to include("up to 3")
+        expect(github_client).not_to have_received(:organization)
       end
 
       it "returns service unavailable on temporary GitHub failures" do
