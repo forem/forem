@@ -9,6 +9,7 @@ module Users
       return unless user
 
       activity = UserActivity.find_or_initialize_by(user_id: user.id)
+      activity.user = user
       activity.set_activity
       activity.save!
     end

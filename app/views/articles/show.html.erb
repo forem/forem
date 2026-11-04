@@ -317,7 +317,11 @@
   <% end %>
 
   <div class="fullscreen-code js-fullscreen-code"></div>
-  <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", "favoriteControls", defer: true %>
+  <% if FeatureFlag.enabled?(:community_favorites) %>
+    <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", "favoriteControls", defer: true %>
+  <% else %>
+    <%= javascript_include_tag "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+  <% end %>
 
   <script>
     <%# we consider these scripts safe for embedding as they come from our code %>

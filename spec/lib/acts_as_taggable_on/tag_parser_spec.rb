@@ -40,5 +40,24 @@ RSpec.describe ActsAsTaggableOn::TagParser, type: :lib do
       tags = [tag2.name, tag3.name]
       expect(create_tag_parser(tags)).to eq [tag2.alias_for, tag3.alias_for]
     end
+
+    it "batches initial tag alias lookups for existing and unknown names into a single query" do
+      t1 = create(:tag, name: "alpha")
+      t2 = create(:tag, name: "beta")
+      t3 = create(:tag, name: "gamma")
+
+      tag_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        tag_queries << sql if sql.include?('"tags"') && !payload[:cached]
+      end
+
+      parsed = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        create_tag_parser([t1.name, "unknowntag", t2.name, "anothernewtag", t3.name])
+      end
+
+      expect(parsed).to eq(%w[alpha unknowntag beta anothernewtag gamma])
+      expect(tag_queries.size).to eq(1)
+    end
   end
 end

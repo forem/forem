@@ -5,6 +5,7 @@ import { initializeNotifications } from './initializers/initializeNotifications'
 import { initializeDateHelpers } from './initializers/initializeDateTimeHelpers';
 import { initializeSettings } from './initializers/initializeSettings';
 import { initializeTurnstile } from '../initializers/initializeTurnstile';
+import { initializeHcaptcha } from '../initializers/initializeHcaptcha';
 import { initializeGifVideos } from '@utilities/gifVideo';
 import { initializeMermaidDiagrams } from '@utilities/mermaidDiagrams';
 import {
@@ -21,6 +22,7 @@ initializeDateHelpers();
 initializeGifVideos(document);
 initializeMermaidDiagrams(document);
 initializeTurnstile();
+initializeHcaptcha();
 
 InstantClick.on('change', () => {
   initializeCommentDate();
@@ -31,9 +33,11 @@ InstantClick.on('change', () => {
   initializeGifVideos(document);
   initializeMermaidDiagrams(document);
   initializeTurnstile();
+  initializeHcaptcha();
 });
 
 InstantClick.on('restore', initializeTurnstile);
+InstantClick.on('restore', initializeHcaptcha);
 
 window.showUserAlertModal = showUserAlertModal;
 window.showModalAfterError = showModalAfterError;

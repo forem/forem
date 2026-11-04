@@ -151,6 +151,22 @@
                                      value: Settings::Authentication.turnstile_secret_key,
                                      placeholder: Constants::Settings::Authentication.details[:turnstile_secret_key][:placeholder] %>
                   </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :hcaptcha_site_key, t("lib.constants.settings.authentication.hcaptcha_site.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:hcaptcha_site_key][:description] %>
+                    <%= f.text_field :hcaptcha_site_key,
+                                     class: "crayons-textfield",
+                                     value: Settings::Authentication.hcaptcha_site_key,
+                                     placeholder: Constants::Settings::Authentication.details[:hcaptcha_site_key][:placeholder] %>
+                  </div>
+                  <div class="crayons-field">
+                    <%= admin_config_label :hcaptcha_secret_key, t("lib.constants.settings.authentication.hcaptcha_secret.label"), model: Settings::Authentication %>
+                    <%= admin_config_description Constants::Settings::Authentication.details[:hcaptcha_secret_key][:description] %>
+                    <%= f.password_field :hcaptcha_secret_key,
+                                         class: "crayons-textfield",
+                                         value: Settings::Authentication.hcaptcha_secret_key,
+                                         placeholder: Constants::Settings::Authentication.details[:hcaptcha_secret_key][:placeholder] %>
+                  </div>
                 </div>
                 <div class="crayons-btn-actions">
                   <% if Settings::Authentication.allow_email_password_registration %>
