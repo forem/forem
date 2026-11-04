@@ -417,6 +417,58 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             expect(response.body).to include(expected_link)
             expect(response.body).not_to include("/page/5000")
           end
+
+          def capture_count_queries(tag_name)
+            count_queries = []
+            callback = lambda do |*, payload|
+              next unless payload[:sql].include?("SELECT COUNT(*)")
+
+              binds = payload[:type_casted_binds]
+              binds = binds.call if binds.respond_to?(:call)
+              count_queries << { sql: payload[:sql], binds: Array(binds) }
+            end
+            ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+              get "/t/#{tag_name}"
+            end
+            count_queries
+          end
+
+          def capped_subquery_count?(query, expected_limit)
+            match = query[:sql].match(/LIMIT (?:\$(\d+)|(\d+))\b.*subquery_for_count/)
+            return false unless match
+
+            match[1] ? query[:binds][match[1].to_i - 1] == expected_limit : match[2].to_i == expected_limit
+          end
+
+          it "caps the published article count query at SIGNED_OUT_RECORD_COUNT * MAX_PAGE", :aggregate_failures do
+            stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 2)
+            stub_const("Stories::TaggedArticlesController::MAX_PAGE", 2)
+            create_list(:article, 5, user: user, published: true, tags: [tag.name], score: 20)
+
+            count_queries = capture_count_queries(tag.name)
+
+            expect(response).to have_http_status(:ok)
+            expect(count_queries).to include(satisfy { |query| capped_subquery_count?(query, 4) })
+            expected_link = %(<a href="http://forem.test/t/#{tag.name}/page/2" class="olderposts-pagenumber">2</a>)
+            expect(response.body).to include(expected_link)
+            expect(response.body).not_to include("/page/3")
+          end
+
+          it "caps the approved article count query when tag requires approval", :aggregate_failures do
+            approval_tag = create(:tag, supported: true, requires_approval: true)
+            stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 2)
+            stub_const("Stories::TaggedArticlesController::MAX_PAGE", 2)
+            create_list(:article, 5, user: user, published: true, approved: true, tags: [approval_tag.name], score: 20)
+
+            count_queries = capture_count_queries(approval_tag.name)
+
+            expect(response).to have_http_status(:ok)
+            expect(count_queries).to include(satisfy { |query| capped_subquery_count?(query, 4) })
+            expect(response.body).to include(
+              %(<a href="http://forem.test/t/#{approval_tag.name}/page/2" class="olderposts-pagenumber">2</a>),
+            )
+            expect(response.body).not_to include("/page/3")
+          end
         end
       end
     end
