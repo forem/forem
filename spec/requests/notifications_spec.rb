@@ -840,5 +840,46 @@ RSpec.describe "NotificationsIndex" do
         expect { get "/notifications/feed" }.not_to raise_error
       end
     end
+
+    context "when filtering by comments and paginating with offset" do
+      let(:user2) { create(:user) }
+      let(:article) { create(:article, :with_notification_subscription, user: user) }
+      let(:comment) { create(:comment, user: user2, commentable: article) }
+      let(:mention_article) { create(:article, user: user2) }
+      let(:mention) { create(:mention, mentionable: mention_article, user: user) }
+
+      before do
+        mention_article.update!(body_markdown: "Hello, @#{user.username}!")
+        sign_in user
+        Notification.send_new_comment_notifications_without_delay(comment)
+        Notification.send_mention_notification_without_delay(mention)
+      end
+
+      it "returns both comment and mention notifications using an action IS NULL IN-clause", :aggregate_failures do
+        queries = []
+        callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] }
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/notifications/comments"
+        end
+
+        expect(response.body).to include("commented on")
+        expect(response.body).to include("mentioned you in a post")
+        notification_sql = queries.detect { |sql| sql.include?('FROM "notifications"') && sql.include?("ORDER BY") }
+        expect(notification_sql).to include('"notifications"."action" IS NULL')
+        expect(notification_sql).to include("(notifications.notified_at + INTERVAL '0 seconds') DESC")
+      end
+
+      it "paginates earlier notifications by offset using a narrow notified_at lookup", :aggregate_failures do
+        older = user.notifications.order(:notified_at).first
+        newer = user.notifications.order(:notified_at).last
+        older.update_column(:notified_at, 2.hours.ago)
+        newer.update_column(:notified_at, 1.hour.ago)
+
+        get "/notifications", params: { offset: newer.id }
+
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.map(&:id)).to eq([older.id])
+      end
+    end
   end
 end
