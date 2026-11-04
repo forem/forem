@@ -35,7 +35,6 @@ RSpec.describe ApplicationMailer do
   context "magic link heads up logic" do
     it "includes the magic link heads up if user has no page views past 4 weeks" do
       create(:page_view, user: user, created_at: 5.weeks.ago)
-      user.page_views.destroy_all
 
       email.deliver_now
 
@@ -49,6 +48,21 @@ RSpec.describe ApplicationMailer do
       email.deliver_now
 
       expect(email.body.encoded).not_to include("Not signed-in on this device?")
+    end
+
+    it "checks for recent page views via exists? without hydrating page_views.* or sorting by id" do
+      create(:page_view, user: user, created_at: 3.weeks.ago)
+      queries = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        queries << payload[:sql] if payload[:sql].include?("page_views")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        email.deliver_now
+      end
+
+      expect(queries).to all(include("SELECT 1 AS one FROM \"page_views\""))
+      expect(queries).not_to include(a_string_including("ORDER BY \"page_views\".\"id\" DESC"))
     end
   end
 
