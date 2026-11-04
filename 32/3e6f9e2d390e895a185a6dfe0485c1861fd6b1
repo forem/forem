@@ -1,0 +1,58 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 8-175
+app/assets/javascripts/initializePage.js
+  h_f968154a99632d 3-5,13-126,129
+app/assets/javascripts/lib/xss.js
+  h_f968154a99632d 2,4-7,9-10,12,16-19,22-24,26,30
+app/javascript/leftSidebar/TagsFollowed.jsx
+  h_f968154a99632d 2
+app/javascript/packs/application.jsx
+  h_f968154a99632d 12,133,145
+app/javascript/packs/billboardAfterRenderActions.js
+  h_f968154a99632d 3,163
+app/javascript/packs/commentsPage.js
+  h_f968154a99632d 1-269,286,290-297,300,302-303,308-310,312-315,318,321-337,339-341,344-348,350,354-355,360-372,374-375,383-390,398-400,405-406,422-426,434-435,438,464-466,468,470-492,494,496,500-502,515-518,520-522,535-537,540,543-545,547,557,559-560,562,564,566,569,573-576,579-586,589-594,599-600,604,606-610,612-617,619-620,625,647,650,652,680-683,700-702,721-723,730-731,734,739-741,761-765,767,769,771,779,782-790,794-797,802,812,814,820,822-823,828,832-836,839-843,850,864,867,869-870,872,874-876,889,893,895,899-900,905,907-915,919-923,927,929-939,944-953,955-983
+app/javascript/packs/homePage.jsx
+  h_f968154a99632d 2
+app/javascript/packs/homePageFeedShortcuts.jsx
+  h_f968154a99632d 1-28,30-36
+app/javascript/packs/honeybadgerClient.js
+  h_f968154a99632d 1-5
+app/javascript/packs/signupModalShortcuts.jsx
+  h_f968154a99632d 1,3,5-23
+app/javascript/previewCards/feedPreviewCards.jsx
+  h_f968154a99632d 9-92,118,189
+app/javascript/utilities/__tests__/eventSignupButtonsLoader.test.js
+  h_f968154a99632d 1-89
+app/javascript/utilities/__tests__/keyboardShortcuts.test.js
+  h_f968154a99632d 1-89
+app/javascript/utilities/ahoy/client.js
+  h_f968154a99632d 1-20
+app/javascript/utilities/ahoy/trackEvents.jsx
+  h_f968154a99632d 1
+app/javascript/utilities/eventSignupButtonsLoader.js
+  h_f968154a99632d 1-65
+app/javascript/utilities/keyboardShortcuts.js
+  h_f968154a99632d 1-117
+app/javascript/utilities/listNavigation.js
+  h_f968154a99632d 1-124
+app/javascript/utilities/podcastPlayback.js
+  h_f968154a99632d 28
+app/javascript/utilities/videoPlayback.js
+  h_f968154a99632d 17
+app/views/layouts/application.html.erb
+  h_f968154a99632d 27-33,47-49
+spec/initializers/assets_spec.rb
+  h_f968154a99632d 141-155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "323e6f9e2d390e895a185a6dfe0485c1861fd6b1",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
