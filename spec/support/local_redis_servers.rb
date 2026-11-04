@@ -19,14 +19,15 @@ class LocalRedisServers
 
   def initialize
     @directory = Dir.mktmpdir("forem-l1-", "/tmp")
-    @pids = []
+    @servers = {}
   end
 
   def start(name, *options)
     socket = File.join(directory, "#{name}.sock")
-    @pids << Process.spawn(ENV.fetch("REDIS_SERVER", "redis-server"), "--port", "0", "--unixsocket", socket,
-                           "--save", "", "--appendonly", "no", *options, out: File::NULL, err: File::NULL)
     url = "unix://#{socket}"
+    pid = Process.spawn(ENV.fetch("REDIS_SERVER", "redis-server"), "--port", "0", "--unixsocket", socket,
+                        "--save", "", "--appendonly", "no", *options, out: File::NULL, err: File::NULL)
+    @servers[pid] = url
     client = Redis.new(url: url, timeout: 0.1, reconnect_attempts: 0)
     deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 5
     loop do
@@ -42,12 +43,30 @@ class LocalRedisServers
   end
 
   def close
-    @pids.each do |pid|
-      Process.kill("TERM", pid)
+    @servers.each do |pid, url|
+      shutdown(url)
+      begin
+        Process.kill("TERM", pid)
+      rescue Errno::ESRCH
+        nil
+      end
       Process.waitpid(pid)
-    rescue Errno::ESRCH, Errno::ECHILD
+    rescue Errno::ECHILD
       nil
     end
     FileUtils.remove_entry(directory)
+  end
+
+  private
+
+  def shutdown(url)
+    # SHUTDOWN exits immediately; TERM waits for Redis's next server cron tick.
+    client = Redis.new(url: url, timeout: 0.1, reconnect_attempts: 0)
+    client.shutdown
+  rescue Redis::BaseError, SystemCallError
+    # Keep signal cleanup for unavailable servers or a disabled SHUTDOWN command.
+    nil
+  ensure
+    client&.close
   end
 end
