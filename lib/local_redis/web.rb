@@ -5,6 +5,7 @@ module LocalRedis
   # Keep Puma alive through optional cache failures; restart auxiliaries with
   # backoff. All children receive TERM, including outside Heroku's process group.
   class Web
+    # Initializes the supervisor for the web process and local Redis cache auxiliaries.
     def initialize(command:, cache_commands: nil, restart_delay: 2, web_environment: WebEnvironment.build)
       @commands = (cache_commands || {
         redis: [RbConfig.ruby, "bin/redis-local-server"],
