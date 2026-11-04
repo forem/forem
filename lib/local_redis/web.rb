@@ -1,15 +1,18 @@
 require "rbconfig"
+require_relative "web_environment"
 
 module LocalRedis
   # Keep Puma alive through optional cache failures; restart auxiliaries with
   # backoff. All children receive TERM, including outside Heroku's process group.
   class Web
-    def initialize(command:, cache_commands: nil, restart_delay: 2)
+    # Initializes the supervisor for the web process and local Redis cache auxiliaries.
+    def initialize(command:, cache_commands: nil, restart_delay: 2, web_environment: WebEnvironment.build)
       @commands = (cache_commands || {
         redis: [RbConfig.ruby, "bin/redis-local-server"],
         sync: [RbConfig.ruby, "bin/redis-local-sync"]
       }).merge(web: command)
       @restart_delay = restart_delay
+      @web_environment = web_environment
       @children = {}
       @restart_at = {}
       @stopping = false
@@ -35,7 +38,11 @@ module LocalRedis
     private
 
     def start(role)
-      environment = { "LOCAL_REDIS_ACTIVE" => role == :web ? "1" : nil }
+      environment = if role == :web
+                      @web_environment.merge("LOCAL_REDIS_ACTIVE" => "1")
+                    else
+                      { "LOCAL_REDIS_ACTIVE" => nil }
+                    end
       @children[Process.spawn(environment, *@commands.fetch(role))] = role
     rescue SystemCallError => e
       # A cache auxiliary that cannot be spawned (EAGAIN, ENOENT) must not stop Puma.
