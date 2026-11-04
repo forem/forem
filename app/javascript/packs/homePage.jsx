@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import ahoy from 'ahoy.js';
+import { ahoy } from '@utilities/ahoy/client';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import {
   observeBillboards,

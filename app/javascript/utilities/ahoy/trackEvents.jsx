@@ -1,4 +1,4 @@
-import ahoy from 'ahoy.js';
+import { ahoy } from './client';
 
 // * Create an ahoy event that will track a click on the
 // * passed in element.
