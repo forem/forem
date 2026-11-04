@@ -27,7 +27,7 @@ namespace :forem_native do
   end
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
-  task benchmark: :environment do
+  task benchmark: %i[environment benchmark_extractors] do
     require "benchmark/ips"
     require "memory_profiler"
 
@@ -549,6 +549,61 @@ namespace :forem_native do
       x.report("Ruby Legacy (Phase 2 Metal Origin + Referrer + JSON SQL)") { legacy_phase2_pipeline.call }
       x.report("Rust Magnus (Phase 2 Metal Origin + Referrer + JSON SQL)") { native_phase2_pipeline.call }
       x.compare!
+    end
+  end
+
+  desc "Compare Markdown extractors and tag cleanup with their legacy Ruby calculations"
+  task benchmark_extractors: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    markdown = <<~MD * 30
+      A paragraph with [a link](https://example.com/page).
+      {% user synthetic_user %}
+      {% embed https://example.com/post extra %}
+      Inline `https://example.com/ignored` and fenced code:
+      ```ruby
+      {% tag ignored %}
+      ```
+      ![alt](https://example.com/image.png)
+      <img src="https://example.com/photo.jpg">
+    MD
+    excluded = "https://synthetic-bucket.s3.amazonaws.com"
+    tags = "Ruby, Rails, w o r d, Optimización, Καλημέρα, Français"
+    cases = {
+      extract_liquid_embed_tags: [
+        -> { LiquidEmbedExtractor.legacy_extract_tags(markdown) },
+        -> { ForemNative.extract_liquid_embed_tags(markdown) },
+      ],
+      extract_markdown_webpage_urls: [
+        -> { WebpageExtractor.__send__(:legacy_extract, markdown) },
+        -> { ForemNative.extract_markdown_webpage_urls(markdown) },
+      ],
+      extract_markdown_and_html_image_urls: [
+        -> { Articles::EnrichImageAttributes.__send__(:legacy_extract_image_urls, markdown, excluded) },
+        -> { ForemNative.extract_markdown_and_html_image_urls(markdown, excluded) },
+      ],
+      clean_tag_list: [
+        -> { ActsAsTaggableOn::TagParser.new(tags).__send__(:legacy_clean, tags) },
+        -> { ForemNative.clean_tag_list(tags) },
+      ]
+    }
+
+    puts "\n=== Markdown Extractors (#{markdown.bytesize} bytes) and Tag Cleanup ==="
+    cases.each do |name, (legacy, native)|
+      raise "#{name} differs from Ruby" unless legacy.call == native.call
+
+      [[:Ruby, legacy], [:Rust, native]].each do |label, calculation|
+        memory = MemoryProfiler.report { 100.times { calculation.call } }
+        puts "#{name} #{label} allocations (100 runs): " \
+             "#{memory.total_allocated} objects (#{memory.total_allocated_memsize} bytes)"
+      end
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("#{name} Ruby", &legacy)
+        x.report("#{name} Rust", &native)
+        x.compare!
+      end
     end
   end
 end

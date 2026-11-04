@@ -2601,6 +2601,84 @@ fn billboard_event_create_from_json_sql(
     }
 }
 
+fn extract_liquid_embed_tags(ruby: &Ruby, content: RString) -> Option<RArray> {
+    if !content.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before allocating the Ruby Arrays.
+    let tags = {
+        let text = unsafe { content.test_as_str() }?;
+        forem_core::markdown::extract_liquid_embed_tags(text)
+    };
+    let ary = ruby.ary_new_capa(tags.len());
+    for (tag_name, url, options) in tags {
+        let tuple = ruby.ary_new_capa(3);
+        tuple.push(ruby.str_new(&tag_name)).ok()?;
+        tuple.push(ruby.str_new(&url)).ok()?;
+        tuple.push(ruby.str_new(&options)).ok()?;
+        ary.push(tuple).ok()?;
+    }
+    Some(ary)
+}
+
+fn extract_markdown_webpage_urls(ruby: &Ruby, content: RString) -> Option<RArray> {
+    if !content.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before allocating the Ruby Array.
+    let urls = {
+        let text = unsafe { content.test_as_str() }?;
+        forem_core::markdown::extract_markdown_webpage_urls(text)
+    };
+    let ary = ruby.ary_new_capa(urls.len());
+    for url in urls {
+        ary.push(ruby.str_new(&url)).ok()?;
+    }
+    Some(ary)
+}
+
+fn extract_markdown_and_html_image_urls(
+    ruby: &Ruby,
+    markdown: RString,
+    excluded_substring: RString,
+) -> Option<RArray> {
+    if !markdown.is_utf8_compatible_encoding() || !excluded_substring.is_utf8_compatible_encoding()
+    {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrows; `forem_core` never calls into Ruby, and the
+    // borrows end before allocating the Ruby Array.
+    let urls = {
+        let md = unsafe { markdown.test_as_str() }?;
+        let excl = unsafe { excluded_substring.test_as_str() }?;
+        forem_core::markdown::extract_markdown_and_html_image_urls(md, excl)
+    };
+    let ary = ruby.ary_new_capa(urls.len());
+    for url in urls {
+        ary.push(ruby.str_new(&url)).ok()?;
+    }
+    Some(ary)
+}
+
+fn clean_tag_list(ruby: &Ruby, input: RString) -> Option<RArray> {
+    if !input.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before allocating the Ruby Array.
+    let tags = {
+        let text = unsafe { input.test_as_str() }?;
+        forem_core::text::clean_tag_list(text)?
+    };
+    let ary = ruby.ary_new_capa(tags.len());
+    for tag in tags {
+        ary.push(ruby.str_new(&tag)).ok()?;
+    }
+    Some(ary)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -2866,5 +2944,18 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "billboard_event_create_from_json_sql",
         function!(billboard_event_create_from_json_sql, 7),
     )?;
+    native_mod.define_singleton_method(
+        "extract_liquid_embed_tags",
+        function!(extract_liquid_embed_tags, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_markdown_webpage_urls",
+        function!(extract_markdown_webpage_urls, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_markdown_and_html_image_urls",
+        function!(extract_markdown_and_html_image_urls, 2),
+    )?;
+    native_mod.define_singleton_method("clean_tag_list", function!(clean_tag_list, 1))?;
     Ok(())
 }

@@ -419,6 +419,77 @@ pub fn beautified_url(url: &str) -> Cow<'_, str> {
     Cow::Borrowed(after_prefix.strip_suffix('/').unwrap_or(after_prefix))
 }
 
+#[inline]
+fn is_supported_tag_alpha(ch: char) -> bool {
+    ch.is_alphabetic()
+        && matches!(
+            ch,
+            '\u{00C0}'..='\u{00D6}'
+                | '\u{00D8}'..='\u{00F6}'
+                | '\u{00F8}'..='\u{012F}'
+                | '\u{0131}'..='\u{02AF}'
+                | '\u{0386}'
+                | '\u{0388}'..='\u{038A}'
+                | '\u{038C}'
+                | '\u{038E}'..='\u{03A1}'
+                | '\u{03A3}'..='\u{03CE}'
+                | '\u{0400}'..='\u{0481}'
+                | '\u{048A}'..='\u{04FF}'
+        )
+}
+
+/// Cleans a comma-delimited tag list string in a single pass, matching
+/// `ActsAsTaggableOn::TagParser#clean`:
+///
+/// ```ruby
+/// return [] if string.blank?
+/// string.downcase.split(",").map do |t|
+///   t.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
+/// end
+/// ```
+///
+/// Covers all ASCII characters and verified Latin, Greek, and Cyrillic alphabetic code points.
+/// Returns `None` if the input contains non-ASCII symbols, numbers, combining marks, or scripts
+/// outside the verified case-folding domain so the caller can fall back to `legacy_clean`.
+pub fn clean_tag_list(input: &str) -> Option<Vec<String>> {
+    if input.chars().all(char::is_whitespace) {
+        return Some(Vec::new());
+    }
+
+    let without_trailing_commas = input.trim_end_matches(',');
+    if without_trailing_commas.is_empty() {
+        return Some(Vec::new());
+    }
+
+    let count = without_trailing_commas
+        .as_bytes()
+        .iter()
+        .filter(|&&b| b == b',')
+        .count()
+        + 1;
+    let mut tags = Vec::with_capacity(count);
+
+    for part in without_trailing_commas.split(',') {
+        let mut tag = String::with_capacity(part.len());
+        for ch in part.chars() {
+            if ch.is_ascii() {
+                if ch.is_ascii_alphanumeric() {
+                    tag.push(ch.to_ascii_lowercase());
+                }
+            } else if is_supported_tag_alpha(ch) {
+                for lc in ch.to_lowercase() {
+                    tag.push(lc);
+                }
+            } else {
+                return None;
+            }
+        }
+        tags.push(tag);
+    }
+
+    Some(tags)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -650,5 +721,41 @@ mod tests {
         let res = link_heading_anchor_fragments(unchanged, &ids).unwrap();
         assert!(matches!(res, Cow::Borrowed(_)));
         assert_eq!(res, unchanged);
+    }
+
+    #[test]
+    fn cleans_tag_lists_matching_tag_parser() {
+        assert_eq!(clean_tag_list(""), Some(Vec::<String>::new()));
+        assert_eq!(clean_tag_list("   \t\n  "), Some(Vec::<String>::new()));
+        assert_eq!(clean_tag_list(",,,"), Some(Vec::<String>::new()));
+        assert_eq!(
+            clean_tag_list("w o r d, a-pp-le, w0rd, app|3, &!tes4@#$%^&*,"),
+            Some(vec![
+                "word".to_string(),
+                "apple".to_string(),
+                "w0rd".to_string(),
+                "app3".to_string(),
+                "tes4".to_string()
+            ])
+        );
+        assert_eq!(
+            clean_tag_list(",a,,b"),
+            Some(vec![
+                String::new(),
+                "a".to_string(),
+                String::new(),
+                "b".to_string()
+            ])
+        );
+        assert_eq!(
+            clean_tag_list("Optimización, Καλημέρα, Français"),
+            Some(vec![
+                "optimización".to_string(),
+                "καλημέρα".to_string(),
+                "français".to_string()
+            ])
+        );
+        assert_eq!(clean_tag_list("tag², foo"), None);
+        assert_eq!(clean_tag_list("İstanbul"), None);
     }
 }

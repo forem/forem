@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+use std::collections::HashSet;
 
 /// Words read per minute constant matching `MarkdownProcessor::Parser::WORDS_READ_PER_MINUTE`.
 pub const WORDS_READ_PER_MINUTE: usize = 275;
@@ -993,6 +994,440 @@ pub fn apply_code_block_languages<'a, S: AsRef<str>>(
     }
 }
 
+#[inline]
+fn find_subslice(haystack: &[u8], needle: &[u8]) -> Option<usize> {
+    if needle.is_empty() {
+        return Some(0);
+    }
+    let first = needle[0];
+    let mut pos = 0;
+    while pos + needle.len() <= haystack.len() {
+        let rel = haystack[pos..].iter().position(|&b| b == first)?;
+        let idx = pos + rel;
+        if idx + needle.len() > haystack.len() {
+            return None;
+        }
+        if &haystack[idx..idx + needle.len()] == needle {
+            return Some(idx);
+        }
+        pos = idx + 1;
+    }
+    None
+}
+
+#[inline]
+fn trim_ruby_strip(text: &str) -> &str {
+    let bytes = text.as_bytes();
+    let is_strip = |b: u8| matches!(b, 0 | b'\t'..=b'\r' | b' ');
+    let start = bytes.iter().take_while(|&&b| is_strip(b)).count();
+    let end = bytes.len()
+        - bytes[start..]
+            .iter()
+            .rev()
+            .take_while(|&&b| is_strip(b))
+            .count();
+    &text[start..end]
+}
+
+/// Strips fenced code blocks (`content.gsub(/```.*?```/m, "")`) and single-line inline code
+/// spans (`.gsub(/`.*?`/, "")`), returning `Cow::Borrowed(content)` when no code block or
+/// inline code span is removed.
+fn strip_fenced_and_inline_code(content: &str) -> Cow<'_, str> {
+    if !content.as_bytes().contains(&b'`') {
+        return Cow::Borrowed(content);
+    }
+
+    let step1: Cow<'_, str> = if content.contains("```") {
+        let bytes = content.as_bytes();
+        let mut out: Option<String> = None;
+        let mut copied = 0usize;
+        let mut pos = 0usize;
+
+        while let Some(open_rel) = find_subslice(&bytes[pos..], b"```") {
+            let open = pos + open_rel;
+            let Some(close_rel) = find_subslice(&bytes[open + 3..], b"```") else {
+                break;
+            };
+            let close_end = open + 3 + close_rel + 3;
+            let buf = out.get_or_insert_with(|| String::with_capacity(content.len()));
+            buf.push_str(&content[copied..open]);
+            copied = close_end;
+            pos = close_end;
+        }
+
+        match out {
+            Some(mut buf) => {
+                buf.push_str(&content[copied..]);
+                Cow::Owned(buf)
+            }
+            None => Cow::Borrowed(content),
+        }
+    } else {
+        Cow::Borrowed(content)
+    };
+
+    let s = step1.as_ref();
+    let bytes = s.as_bytes();
+    if !bytes.contains(&b'`') {
+        return step1;
+    }
+
+    let mut out: Option<String> = None;
+    let mut copied = 0usize;
+    let mut pos = 0usize;
+
+    while let Some(open_rel) = find_byte(bytes, pos, b'`') {
+        let open = open_rel;
+        let mut j = open + 1;
+        let mut matched_end = None;
+        while j < bytes.len() {
+            let b = bytes[j];
+            if b == b'`' {
+                matched_end = Some(j + 1);
+                break;
+            }
+            if b == b'\n' {
+                break;
+            }
+            j += 1;
+        }
+
+        if let Some(close_end) = matched_end {
+            let buf = out.get_or_insert_with(|| String::with_capacity(s.len()));
+            buf.push_str(&s[copied..open]);
+            copied = close_end;
+            pos = close_end;
+        } else if j < bytes.len() {
+            // Stopped at `\n` with no backtick in `open + 1..j`.
+            pos = j + 1;
+        } else {
+            break;
+        }
+    }
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&s[copied..]);
+            Cow::Owned(buf)
+        }
+        None => step1,
+    }
+}
+
+/// Strips single-line Liquid tags (`content.gsub(/\{%.*?%\}/, "")`), returning
+/// `Cow::Borrowed` when no single-line Liquid tag is present.
+fn strip_single_line_liquid_tags(content: &str) -> Cow<'_, str> {
+    if !content.contains("{%") {
+        return Cow::Borrowed(content);
+    }
+
+    let bytes = content.as_bytes();
+    let mut out: Option<String> = None;
+    let mut copied = 0usize;
+    let mut pos = 0usize;
+
+    while let Some(open_rel) = find_subslice(&bytes[pos..], b"{%") {
+        let open = pos + open_rel;
+        let mut j = open + 2;
+        let mut matched_end = None;
+        while j < bytes.len() {
+            if bytes[j] == b'\n' {
+                break;
+            }
+            if bytes[j..].starts_with(b"%}") {
+                matched_end = Some(j + 2);
+                break;
+            }
+            j += 1;
+        }
+
+        if let Some(close_end) = matched_end {
+            let buf = out.get_or_insert_with(|| String::with_capacity(content.len()));
+            buf.push_str(&content[copied..open]);
+            copied = close_end;
+            pos = close_end;
+        } else if j < bytes.len() {
+            // Hit `\n` before any `%}` on this line; no `{ %` before `j` can close on this line.
+            pos = j + 1;
+        } else {
+            break;
+        }
+    }
+
+    match out {
+        Some(mut buf) => {
+            buf.push_str(&content[copied..]);
+            Cow::Owned(buf)
+        }
+        None => Cow::Borrowed(content),
+    }
+}
+
+/// Extracts deduplicated `(tag_name, url, options)` tuples from `content`, matching
+/// `LiquidEmbedExtractor.extract`:
+/// 1. Strips fenced (`content.gsub(/```.*?```/m, "")`) and inline (`.gsub(/`.*?`/, "")`) code.
+/// 2. Scans `/\{%\s*([a-zA-Z0-9_]+)\s+(.*?)\s*%\}/`.
+/// 3. Computes `tag_name = match[0].downcase`, `options = match[1].strip`, and
+///    `url = options.split(" ").first || options`.
+/// 4. Deduplicates by `(tag_name, url, options)` in first-seen order.
+pub fn extract_liquid_embed_tags(content: &str) -> Vec<(String, String, String)> {
+    if !content.as_bytes().contains(&b'{') {
+        return Vec::new();
+    }
+
+    let stripped = strip_fenced_and_inline_code(content);
+    let text = stripped.as_ref();
+    if !text.contains("{%") {
+        return Vec::new();
+    }
+
+    let bytes = text.as_bytes();
+    let Some(mut next_close) = find_subslice(bytes, b"%}") else {
+        return Vec::new();
+    };
+    let mut results: Vec<(String, String, String)> = Vec::new();
+    let mut seen = HashSet::new();
+    let mut pos = 0usize;
+    let mut cached_line: Option<(usize, Option<usize>)> = None;
+
+    while let Some(open_rel) = find_subslice(&bytes[pos..], b"{%") {
+        let open = pos + open_rel;
+        let mut idx = open + 2;
+        while idx < bytes.len() && is_ruby_space(bytes[idx]) {
+            idx += 1;
+        }
+
+        let name_start = idx;
+        while idx < bytes.len() && is_ascii_word_byte(bytes[idx]) {
+            idx += 1;
+        }
+        let name_end = idx;
+        if name_end == name_start || idx >= bytes.len() || !is_ruby_space(bytes[idx]) {
+            pos = idx;
+            continue;
+        }
+
+        while idx < bytes.len() && is_ruby_space(bytes[idx]) {
+            idx += 1;
+        }
+        let ws_end = idx;
+
+        if next_close < ws_end {
+            let Some(close_rel) = find_subslice(&bytes[ws_end..], b"%}") else {
+                break;
+            };
+            next_close = ws_end + close_rel;
+        }
+
+        let matched = if next_close == ws_end {
+            Some(("", ws_end + 2))
+        } else {
+            let (line_end, after_nl_close_end) = match cached_line {
+                Some(entry) if entry.0 >= ws_end => entry,
+                _ => {
+                    let le = find_byte(bytes, ws_end, b'\n').unwrap_or(bytes.len());
+                    let after_nl = if le < bytes.len() {
+                        let mut ws2 = le + 1;
+                        while ws2 < bytes.len() && is_ruby_space(bytes[ws2]) {
+                            ws2 += 1;
+                        }
+                        bytes[ws2..].starts_with(b"%}").then_some(ws2 + 2)
+                    } else {
+                        None
+                    };
+                    cached_line = Some((le, after_nl));
+                    (le, after_nl)
+                }
+            };
+
+            if next_close < line_end {
+                Some((&text[ws_end..next_close], next_close + 2))
+            } else {
+                after_nl_close_end.map(|close_end| (&text[ws_end..line_end], close_end))
+            }
+        };
+
+        let Some((raw_options, match_end)) = matched else {
+            pos = ws_end;
+            continue;
+        };
+
+        let tag_name = text[name_start..name_end].to_ascii_lowercase();
+        let options = trim_ruby_strip(raw_options);
+        let opt_bytes = options.as_bytes();
+        let url_start = opt_bytes.iter().take_while(|&&b| is_ruby_space(b)).count();
+        let url_str = if url_start < opt_bytes.len() {
+            let url_len = opt_bytes[url_start..]
+                .iter()
+                .take_while(|&&b| !is_ruby_space(b))
+                .count();
+            &options[url_start..url_start + url_len]
+        } else {
+            options
+        };
+
+        if seen.insert((tag_name.clone(), url_str, options)) {
+            results.push((tag_name, url_str.to_owned(), options.to_owned()));
+        }
+
+        pos = match_end;
+    }
+
+    results
+}
+
+#[inline]
+const fn is_webpage_url_excluded_byte(b: u8) -> bool {
+    is_ruby_space(b)
+        || matches!(
+            b,
+            b'<' | b'>' | b'"' | b'{' | b'}' | b'|' | b'\\' | b'^' | b'`' | b'[' | b']'
+        )
+}
+
+#[inline]
+const fn is_webpage_url_trailing_punct(b: u8) -> bool {
+    matches!(b, b'.' | b',' | b':' | b';' | b'!' | b'?' | b')')
+}
+
+/// Extracts deduplicated webpage URLs from `content`, matching `WebpageExtractor.extract`:
+/// 1. Strips fenced code blocks (`content.gsub(/```.*?```/m, "")`), single-line inline code
+///    spans (`.gsub(/`.*?`/, "")`), and single-line Liquid tags (`.gsub(/\{%.*?%\}/, "")`).
+/// 2. Scans `%r{https?://[^\s<>"{}|\\^`\[\]]+}`.
+/// 3. Trims trailing punctuation (`.gsub(/[.,:;!?)]+$/, "")`) and deduplicates in first-seen order.
+pub fn extract_markdown_webpage_urls(content: &str) -> Vec<String> {
+    if !content.contains("http") && !content.as_bytes().contains(&b'`') && !content.contains("{%") {
+        return Vec::new();
+    }
+
+    let step12 = strip_fenced_and_inline_code(content);
+    let stripped = strip_single_line_liquid_tags(&step12);
+    let text = stripped.as_ref();
+    if !text.contains("http") {
+        return Vec::new();
+    }
+
+    let bytes = text.as_bytes();
+    let mut urls: Vec<String> = Vec::new();
+    let mut seen = HashSet::new();
+    let mut pos = 0usize;
+
+    while let Some(rel) = find_subslice(&bytes[pos..], b"http") {
+        let start = pos + rel;
+        let scheme_len = if bytes[start..].starts_with(b"https://") {
+            8
+        } else if bytes[start..].starts_with(b"http://") {
+            7
+        } else {
+            pos = start + 4;
+            continue;
+        };
+
+        let mut end = start + scheme_len;
+        while end < bytes.len() && !is_webpage_url_excluded_byte(bytes[end]) {
+            end += 1;
+        }
+        if end == start + scheme_len {
+            pos = start + scheme_len;
+            continue;
+        }
+
+        let mut trimmed_end = end;
+        while trimmed_end > start && is_webpage_url_trailing_punct(bytes[trimmed_end - 1]) {
+            trimmed_end -= 1;
+        }
+
+        let cleaned = &text[start..trimmed_end];
+        if seen.insert(cleaned) {
+            urls.push(cleaned.to_owned());
+        }
+
+        pos = end;
+    }
+
+    urls
+}
+
+/// Extracts deduplicated Markdown (`!\[.*?\]\((.*?)\)`) and HTML (`<img.*?src=["'](.*?)["']`)
+/// image URLs from `markdown` excluding any URL containing `excluded_substring` (when non-empty),
+/// matching `Articles::EnrichImageAttributes.store_image_if_appropriate`.
+pub fn extract_markdown_and_html_image_urls(
+    markdown: &str,
+    excluded_substring: &str,
+) -> Vec<String> {
+    let bytes = markdown.as_bytes();
+    let mut urls: Vec<String> = Vec::new();
+    let mut seen = HashSet::new();
+
+    let mut push_url = |url| {
+        if !excluded_substring.is_empty() && str::contains(url, excluded_substring) {
+            return;
+        }
+        if seen.insert(url) {
+            urls.push(url.to_owned());
+        }
+    };
+
+    // Pass 1: `/!\[.*?\]\((.*?)\)/` (single-line `.` in Ruby)
+    if markdown.contains("![") {
+        let mut pos = 0usize;
+        let mut line_end = 0usize;
+        while let Some(open_rel) = find_subslice(&bytes[pos..], b"![") {
+            let open = pos + open_rel;
+            if open + 2 > line_end {
+                line_end = find_byte(bytes, open + 2, b'\n').unwrap_or(bytes.len());
+            }
+            if let Some(mid_rel) = find_subslice(&bytes[open + 2..line_end], b"](") {
+                let url_start = open + 2 + mid_rel + 2;
+                if let Some(close_paren) = find_byte(&bytes[..line_end], url_start, b')') {
+                    push_url(&markdown[url_start..close_paren]);
+                    pos = close_paren + 1;
+                    continue;
+                }
+            }
+            pos = (line_end + 1).min(bytes.len());
+        }
+    }
+
+    // Pass 2: `/<img.*?src=["'](.*?)["']/` (single-line `.` in Ruby)
+    if markdown.contains("<img") {
+        let mut pos = 0usize;
+        let mut line_end = 0usize;
+        while let Some(open_rel) = find_subslice(&bytes[pos..], b"<img") {
+            let open = pos + open_rel;
+            if open + 4 > line_end {
+                line_end = find_byte(bytes, open + 4, b'\n').unwrap_or(bytes.len());
+            }
+            let mut search_src = open + 4;
+            let mut matched_next_pos = None;
+
+            while search_src + 5 <= line_end {
+                let Some(src_rel) = find_subslice(&bytes[search_src..line_end], b"src=") else {
+                    break;
+                };
+                let src_pos = search_src + src_rel;
+                if matches!(bytes.get(src_pos + 4), Some(b'"' | b'\'')) {
+                    let url_start = src_pos + 5;
+                    if let Some(quote_rel) = bytes[url_start..line_end]
+                        .iter()
+                        .position(|&b| b == b'"' || b == b'\'')
+                    {
+                        let url_end = url_start + quote_rel;
+                        push_url(&markdown[url_start..url_end]);
+                        matched_next_pos = Some(url_end + 1);
+                    }
+                    break;
+                }
+                search_src = src_pos + 4;
+            }
+
+            pos = matched_next_pos.unwrap_or_else(|| (line_end + 1).min(bytes.len()));
+        }
+    }
+
+    urls
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1550,6 +1985,111 @@ mod tests {
         assert_eq!(
             apply_code_block_languages(nul_info, &["rust"]),
             "```rust\ncode_here\n```"
+        );
+    }
+
+    #[test]
+    fn extracts_liquid_embed_tags_skipping_code_and_deduplicating() {
+        let md = "\
+Hey check out these videos!\n\
+{% youtube synthetic_video %}\n\
+{% TWITTER synthetic_post extra_opt %}\n\
+```ruby\n\
+{% youtube ignored_in_fence %}\n\
+```\n\
+Inline `{% user ignored_inline %}` here.\n\
+{% youtube synthetic_video %}\n\
+{%   %}\n\
+{% user   %}\n\
+";
+        assert_eq!(
+            extract_liquid_embed_tags(md),
+            vec![
+                (
+                    "youtube".to_string(),
+                    "synthetic_video".to_string(),
+                    "synthetic_video".to_string()
+                ),
+                (
+                    "twitter".to_string(),
+                    "synthetic_post".to_string(),
+                    "synthetic_post extra_opt".to_string()
+                ),
+                ("user".to_string(), String::new(), String::new()),
+            ]
+        );
+    }
+
+    #[test]
+    fn liquid_embed_tags_stay_linear_on_long_unclosed_lines_and_preserve_multiline_semantics() {
+        let unclosed_32k = "{% tag x ".repeat(32_000);
+        assert!(extract_liquid_embed_tags(&unclosed_32k).is_empty());
+
+        let raw_wrapped = format!(
+            "{{% raw %}}\n{}\n{{% endraw %}}",
+            "{% tag x ".repeat(16_000)
+        );
+        assert_eq!(
+            extract_liquid_embed_tags(&raw_wrapped),
+            vec![
+                ("raw".to_string(), String::new(), String::new()),
+                ("endraw".to_string(), String::new(), String::new()),
+            ]
+        );
+
+        let nested_and_multiline =
+            "{% bad unclosed {% user\nsynthetic_alice %}\n{% tag arg1 arg2\n   %}";
+        assert_eq!(
+            extract_liquid_embed_tags(nested_and_multiline),
+            vec![
+                (
+                    "user".to_string(),
+                    "synthetic_alice".to_string(),
+                    "synthetic_alice".to_string()
+                ),
+                (
+                    "tag".to_string(),
+                    "arg1".to_string(),
+                    "arg1 arg2".to_string()
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn extracts_markdown_webpage_urls_skipping_code_and_liquid_tags() {
+        let md = "\
+Here is [a link](https://example.com/page1).\n\
+And [another](http://test.com/path?x=1,2!).\n\
+Repeated: https://example.com/page1.\n\
+```ruby\n\
+url = \"https://example.com/codeblock\"\n\
+```\n\
+Inline `https://example.com/inline` and {% embed https://example.com/liquid %}.\n\
+Unclosed `https://example.com/unclosed_tick\n\
+Unclosed {% https://example.com/unclosed_liquid\n\
+";
+        assert_eq!(
+            extract_markdown_webpage_urls(md),
+            vec![
+                "https://example.com/page1",
+                "http://test.com/path?x=1,2",
+                "https://example.com/unclosed_tick",
+                "https://example.com/unclosed_liquid",
+            ]
+        );
+    }
+
+    #[test]
+    fn extracts_markdown_and_html_image_urls_in_order_with_exclusion() {
+        let md = "\
+![first](https://example.com/1.png) and ![s3](https://my-bucket.s3.amazonaws.com/skip.png)\n\
+<img alt=\"x\" src='https://example.com/2.jpg'> <img src=\"https://example.com/1.png\">\n\
+<img src=\"https://my-bucket.s3.amazonaws.com/skip2.jpg\">\n\
+";
+        assert_eq!(
+            extract_markdown_and_html_image_urls(md, "https://my-bucket.s3.amazonaws.com"),
+            vec!["https://example.com/1.png", "https://example.com/2.jpg"]
         );
     }
 }
