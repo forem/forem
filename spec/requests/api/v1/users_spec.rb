@@ -42,6 +42,13 @@ RSpec.describe "Api::V1::Users" do
       expect(response).to have_http_status(:unauthorized)
     end
 
+    it "does not expose the LinkedIn url" do
+      user.profile.update!(linkedin_url: "https://www.linkedin.com/in/jane-doe")
+      get api_user_path(user.id), headers: headers
+
+      expect(response.parsed_body).not_to have_key("linkedin_url")
+    end
+
     it "returns the correct json representation of the user", :aggregate_failures do
       get api_user_path(user.id), headers: headers
 

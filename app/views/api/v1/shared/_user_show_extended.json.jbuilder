@@ -12,7 +12,7 @@ json.extract!(
 show_email = user == authenticated_user || (user.setting.display_email_on_profile && authenticated_user.present?)
 json.email show_email ? user.email : nil
 
-Profile.static_fields.each do |attr|
+Profile.api_static_fields.each do |attr|
   json.set! attr, user.profile.public_send(attr)
 end
 

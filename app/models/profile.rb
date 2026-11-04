@@ -24,6 +24,8 @@ class Profile < ApplicationRecord
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url linkedin_url].freeze
+  # Static fields that are intentionally not part of the public API responses.
+  API_EXCLUDED_FIELDS = %w[linkedin_url].freeze
   # Matches linkedin.com and any number of subdomain labels, e.g. www.linkedin.com or www.uk.linkedin.com.
   LINKEDIN_HOST_REGEX = /\A([a-z0-9-]+\.)*linkedin\.com\z/i
 
@@ -41,6 +43,12 @@ class Profile < ApplicationRecord
 
   def self.static_fields
     STATIC_FIELDS
+  end
+
+  # Static fields serialized by the public API. Keeps API responses (and their
+  # documented OpenAPI schemas) unchanged when a UI-only static field is added.
+  def self.api_static_fields
+    STATIC_FIELDS - API_EXCLUDED_FIELDS
   end
 
   def clear!

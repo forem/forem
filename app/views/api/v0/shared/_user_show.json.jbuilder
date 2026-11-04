@@ -9,7 +9,7 @@ json.extract!(
   :github_username,
 )
 
-Profile.static_fields.each do |attr|
+Profile.api_static_fields.each do |attr|
   json.set! attr, user.profile.public_send(attr)
 end
 

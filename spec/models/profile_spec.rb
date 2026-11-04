@@ -99,6 +99,12 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
     end
   end
 
+  describe ".api_static_fields" do
+    it "includes the public static fields but not linkedin_url" do
+      expect(described_class.api_static_fields).to match_array(%w[summary location website_url])
+    end
+  end
+
   describe "validating linkedin_url" do
     it "is valid if blank" do
       profile.linkedin_url = nil
