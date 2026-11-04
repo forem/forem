@@ -9,7 +9,7 @@
             grid_class: "grid-cols-3 s:grid-cols-4 m:grid-cols-2"
           } %>
     <% end %>
-    <% member_organizations = @user.member_organizations.to_a %>
+    <% member_organizations = @user.member_organizations.select(:id, :name, :slug, :profile_image).to_a %>
     <% if member_organizations.present? %>
       <div class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
