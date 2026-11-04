@@ -24,8 +24,8 @@ class Profile < ApplicationRecord
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
   STATIC_FIELDS = %w[summary location website_url linkedin_url].freeze
-  # Matches linkedin.com, www.linkedin.com and country subdomains such as uk.linkedin.com.
-  LINKEDIN_HOST_REGEX = /\A([a-z0-9-]+\.)?linkedin\.com\z/i
+  # Matches linkedin.com and any number of subdomain labels, e.g. www.linkedin.com or www.uk.linkedin.com.
+  LINKEDIN_HOST_REGEX = /\A([a-z0-9-]+\.)*linkedin\.com\z/i
 
   # Update the Rails cache with the currently available attributes.
   def self.refresh_attributes!

@@ -120,6 +120,16 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
       expect(profile).to be_valid
     end
 
+    it "is valid with a nested subdomain" do
+      profile.linkedin_url = "https://www.uk.linkedin.com/in/jane-doe"
+      expect(profile).to be_valid
+    end
+
+    it "is invalid when linkedin.com is only a prefix of another domain" do
+      profile.linkedin_url = "https://www.linkedin.com.evil.com/in/jane-doe"
+      expect(profile).not_to be_valid
+    end
+
     it "is invalid with a url that is not a LinkedIn url" do
       profile.linkedin_url = "https://example.com/in/jane-doe"
       expect(profile).not_to be_valid
