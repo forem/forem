@@ -88,6 +88,23 @@
     </div>
 
     <div class="crayons-field">
+      <label class="crayons-field__label" for="profile[linkedin_url]">
+        <%= t("views.users.profile_fields.linkedin.label") %>
+      </label>
+      <%= f.url_field "profile[linkedin_url]",
+                      maxlength: 100,
+                      value: profile.linkedin_url,
+                      placeholder: t("views.users.profile_fields.linkedin.placeholder"),
+                      class: "crayons-textfield",
+                      aria: { describedby: "linkedin-url-description" },
+                      data: { character_span_id: "linkedin-url-characters" } %>
+      <p id="linkedin-url-description" class="crayons-field__description align-right">
+        <span class="screen-reader-only"><%= t("views.settings.characters") %></span>
+        <span id="linkedin-url-characters"></span>/100
+      </p>
+    </div>
+
+    <div class="crayons-field">
       <label class="crayons-field__label" for="profile[location]">
         <%= t("views.users.profile_fields.location.label") %>
       </label>

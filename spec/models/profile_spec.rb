@@ -99,6 +99,57 @@ text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy tex
     end
   end
 
+  describe "validating linkedin_url" do
+    it "is valid if blank" do
+      profile.linkedin_url = nil
+      expect(profile).to be_valid
+    end
+
+    it "is valid with a www.linkedin.com profile url" do
+      profile.linkedin_url = "https://www.linkedin.com/in/jane-doe"
+      expect(profile).to be_valid
+    end
+
+    it "is valid with a linkedin.com company url" do
+      profile.linkedin_url = "https://linkedin.com/company/forem"
+      expect(profile).to be_valid
+    end
+
+    it "is valid with a country subdomain" do
+      profile.linkedin_url = "https://uk.linkedin.com/in/jane-doe"
+      expect(profile).to be_valid
+    end
+
+    it "is invalid with a url that is not a LinkedIn url" do
+      profile.linkedin_url = "https://example.com/in/jane-doe"
+      expect(profile).not_to be_valid
+      expect(profile.errors_as_sentence).to eq "Linkedin url must be a valid LinkedIn URL"
+    end
+
+    it "is invalid when linkedin.com is only part of another host" do
+      profile.linkedin_url = "https://notlinkedin.com/in/jane-doe"
+      expect(profile).not_to be_valid
+    end
+
+    it "is invalid when linkedin.com only appears in the path or userinfo" do
+      profile.linkedin_url = "https://evil.com/linkedin.com/in/jane-doe"
+      expect(profile).not_to be_valid
+
+      profile.linkedin_url = "https://linkedin.com@evil.com/in/jane-doe"
+      expect(profile).not_to be_valid
+    end
+
+    it "is invalid without a scheme" do
+      profile.linkedin_url = "linkedin.com/in/jane-doe"
+      expect(profile).not_to be_valid
+    end
+
+    it "is invalid when too long" do
+      profile.linkedin_url = "https://www.linkedin.com/in/#{'a' * 100}"
+      expect(profile).not_to be_valid
+    end
+  end
+
   context "when accessing profile fields" do
     before do
       create(:profile_field, label: "Test 1")
