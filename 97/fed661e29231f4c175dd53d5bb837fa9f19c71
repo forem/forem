@@ -1,0 +1,30 @@
+app/assets/javascripts/base.js.erb
+  h_f968154a99632d 48-49,68-70,105-106,111,113-114,155,161-163
+app/assets/javascripts/initializePage.js
+  h_f968154a99632d 18,50,65
+app/assets/javascripts/lib/xss.js
+  h_f968154a99632d 16-23
+app/javascript/packs/commentsPage.js
+  h_f968154a99632d 57
+app/javascript/packs/homePageFeedShortcuts.jsx
+  h_f968154a99632d 4-6,8-9,14,24,29-38
+app/javascript/packs/signupModalShortcuts.jsx
+  h_f968154a99632d 3-5,7-8,13,19-27
+app/javascript/utilities/__tests__/eventSignupButtonsLoader.test.js
+  h_f968154a99632d 57-85
+app/javascript/utilities/__tests__/keyboardShortcuts.test.js
+  h_f968154a99632d 85
+app/javascript/utilities/eventSignupButtonsLoader.js
+  h_f968154a99632d 3-5,10-14,19-23,50,64,74-78
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "97fed661e29231f4c175dd53d5bb837fa9f19c71",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
