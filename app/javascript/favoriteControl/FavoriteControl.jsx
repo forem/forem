@@ -1,6 +1,8 @@
 import { h, Fragment } from 'preact';
-import { useState } from 'preact/hooks';
-import { Icon, Modal, ButtonNew as Button } from '@crayons';
+import { useState, useEffect } from 'preact/hooks';
+import { Icon } from '@crayons/Icons';
+import { ButtonNew as Button } from '@crayons/Buttons';
+import CloseIcon from '@images/x.svg';
 import FavoriteSVG from '@images/favorite.svg';
 import FavoriteFilledSVG from '@images/favorite-filled.svg';
 import FavoriteCheckedSVG from '@images/favorite-checked.svg';
@@ -78,6 +80,48 @@ const Tooltip = ({ label }) => (
   </span>
 );
 
+const FavoriteModal = ({ title, onClose, children }) => {
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [onClose]);
+
+  return (
+    <div
+      data-testid="modal-container"
+      class="crayons-modal crayons-modal--small crayons-modal--bg-dismissible"
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={title || 'modal'}
+        class="crayons-modal__box"
+      >
+        <header class="crayons-modal__box__header">
+          <h2 class="crayons-subtitle-2">{title}</h2>
+          <Button
+            icon={CloseIcon}
+            aria-label="Close"
+            className="crayons-modal__dismiss"
+            onClick={onClose}
+          />
+        </header>
+        <div class="crayons-modal__box__body">{children}</div>
+      </div>
+      <div
+        data-testid="modal-overlay"
+        class="crayons-modal__backdrop"
+        onClick={onClose}
+      />
+    </div>
+  );
+};
+
 /**
  * Control for marking content as favorite.
  */
@@ -137,11 +181,9 @@ export const FavoriteControl = ({
     }
 
     return (
-      <Modal
+      <FavoriteModal
         title={modalTitle}
         onClose={() => setShowSuccessModal(false)}
-        backdropDismissible
-        size="small"
       >
         <div class="p-6 text-center grid gap-4" data-testid="gem-modal-content">
           <div
@@ -172,7 +214,7 @@ export const FavoriteControl = ({
             </Button>
           </div>
         </div>
-      </Modal>
+      </FavoriteModal>
     );
   };
 
@@ -182,11 +224,9 @@ export const FavoriteControl = ({
     }
 
     return (
-      <Modal
+      <FavoriteModal
         title={modalExhaustedTitle}
         onClose={() => setShowExhaustedModal(false)}
-        backdropDismissible
-        size="small"
       >
         <div class="p-6 text-center grid gap-4" data-testid="gem-exhausted-modal-content">
           <div
@@ -216,7 +256,7 @@ export const FavoriteControl = ({
             </Button>
           </div>
         </div>
-      </Modal>
+      </FavoriteModal>
     );
   };
 

@@ -72,4 +72,16 @@ describe('asyncUserStatusCheck', () => {
       expect(document.body.innerHTML).toMatch(/Suspended/);
     });
   });
+
+  describe('when viewer is logged out', () => {
+    afterEach(() => {
+      delete document.body.dataset.userStatus;
+    });
+
+    it('does not fetch user status JSON', async () => {
+      document.body.dataset.userStatus = 'logged-out';
+      await asyncUserStatusCheck();
+      expect(fetch).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -1,45 +1,205 @@
-import { h, render } from 'preact';
-import { Snackbar } from '../Snackbar/Snackbar';
 import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToken';
 
-/* global showLoginModal  */
+/* global showLoginModal, browserStoreCache */
 
 // This Pack file has some dependencies for it to function accurately:
-// Copy and paste the FOllow and Hide button snippets from a tag card.
+// Copy and paste the Follow and Hide button snippets from a tag card.
 // An example can be found in app/views/tags/index.html.erb
 // The tag card needs to contain a class .js-tag-card elements,
 // with data attributes for the tag-id and name.
 // The follow button and the hide button need to contain classes
 // js-follow-tag-button and/or js-hide-tag-button respectively.
 
-function renderPage(currentUser) {
-  import('../tags/TagButtonContainer')
-    .then(({ Tag }) => {
-      const tagCards = document.getElementsByClassName('js-tag-card');
+let snackTimeoutId = null;
 
-      const followedTags = JSON.parse(currentUser.followed_tags);
-      Array.from(tagCards).forEach((element) => {
-        const followedTag = followedTags.find(
-          (tag) => tag.id == element.dataset.tagId,
-        );
-        const following = followedTag?.points >= 0;
-        const hidden = followedTag?.points < 0;
+function showTagSnackbar(message) {
+  const snackZone = document.getElementById('snack-zone');
+  if (!snackZone) {
+    return;
+  }
 
-        render(
-          <Tag
-            id={element.dataset.tagId}
-            name={element.dataset.tagName}
-            isFollowing={following || hidden}
-            isHidden={hidden}
-          />,
-          document.getElementById(`tag-buttons-${element.dataset.tagId}`),
-        );
+  if (snackTimeoutId) {
+    clearTimeout(snackTimeoutId);
+    snackTimeoutId = null;
+  }
+
+  snackZone.textContent = '';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'crayons-snackbar';
+
+  const item = document.createElement('div');
+  item.className = 'crayons-snackbar__item flex';
+  item.dataset.testid = 'snackbar';
+
+  const body = document.createElement('div');
+  body.className = 'crayons-snackbar__body';
+  body.setAttribute('role', 'alert');
+  body.textContent = message;
+
+  const actions = document.createElement('div');
+  actions.className = 'crayons-snackbar__actions';
+
+  const dismissBtn = document.createElement('button');
+  dismissBtn.type = 'button';
+  dismissBtn.className =
+    'crayons-btn crayons-btn--ghost-success crayons-btn--inverted';
+  dismissBtn.textContent = 'Dismiss';
+
+  const dismiss = () => {
+    if (snackTimeoutId) {
+      clearTimeout(snackTimeoutId);
+      snackTimeoutId = null;
+    }
+    wrapper.className = 'hidden';
+    wrapper.textContent = '';
+  };
+
+  dismissBtn.addEventListener('click', dismiss);
+  actions.appendChild(dismissBtn);
+  item.appendChild(body);
+  item.appendChild(actions);
+  wrapper.appendChild(item);
+  snackZone.appendChild(wrapper);
+
+  snackTimeoutId = setTimeout(dismiss, 2000);
+}
+
+function postFollowItem({ id, following, hidden }) {
+  return fetch('/follows', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      followable_type: 'Tag',
+      followable_id: id,
+      verb: `${following ? '' : 'un'}follow`,
+      explicit_points: hidden ? -1 : 1,
+    }),
+    credentials: 'same-origin',
+  });
+}
+
+function mountTagButtons(container, { id, name, isFollowing, isHidden }) {
+  if (!container) {
+    return;
+  }
+
+  let following = Boolean(isFollowing);
+  let hidden = Boolean(isHidden);
+
+  const renderButtons = () => {
+    container.textContent = '';
+
+    const group = document.createElement('div');
+    group.className = 'flex gap-2';
+
+    if (!hidden) {
+      const followButtonLabel = following ? 'Following' : 'Follow';
+      const followBtn = document.createElement('button');
+      followBtn.type = 'button';
+      followBtn.className = following
+        ? 'crayons-btn crayons-btn--outlined'
+        : 'c-btn c-btn--primary';
+      followBtn.setAttribute('aria-pressed', String(following));
+      followBtn.setAttribute('aria-label', `${followButtonLabel} tag: ${name}`);
+      followBtn.textContent = followButtonLabel;
+
+      followBtn.addEventListener('click', () => {
+        const updatedFollowState = !following;
+        postFollowItem({
+          id,
+          following: updatedFollowState,
+          hidden,
+        }).then((response) => {
+          if (response.ok) {
+            const wasFollowing = following;
+            following = updatedFollowState;
+            renderButtons();
+            if (typeof browserStoreCache === 'function') {
+              browserStoreCache('remove');
+            }
+            showTagSnackbar(
+              `You have ${wasFollowing ? 'un' : ''}followed ${name}.`,
+            );
+            return;
+          }
+          showTagSnackbar('An error has occurred.');
+        });
       });
-    })
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.error('Unable to load tags', error);
+
+      group.appendChild(followBtn);
+    }
+
+    const hideButtonLabel = hidden ? 'Unhide' : 'Hide';
+    const hideBtn = document.createElement('button');
+    hideBtn.type = 'button';
+    hideBtn.className = `c-btn ${
+      hidden ? 'c-btn--primary c-btn--destructive' : ''
+    }`;
+    hideBtn.setAttribute('aria-label', `${hideButtonLabel} tag: ${name}`);
+    hideBtn.textContent = hideButtonLabel;
+
+    hideBtn.addEventListener('click', () => {
+      const updatedHiddenState = !hidden;
+      const updatedFollowState = updatedHiddenState;
+
+      postFollowItem({
+        id,
+        hidden: updatedHiddenState,
+        following: updatedFollowState,
+      }).then((response) => {
+        if (response.ok) {
+          const wasHidden = hidden;
+          hidden = updatedHiddenState;
+          following = updatedFollowState;
+          renderButtons();
+          if (typeof browserStoreCache === 'function') {
+            browserStoreCache('remove');
+          }
+          showTagSnackbar(`You have ${wasHidden ? 'un' : ''}hidden ${name}.`);
+          return;
+        }
+        showTagSnackbar('An error has occurred.');
+      });
     });
+
+    group.appendChild(hideBtn);
+    container.appendChild(group);
+  };
+
+  renderButtons();
+}
+
+function renderPage(currentUser) {
+  try {
+    const tagCards = document.getElementsByClassName('js-tag-card');
+    const followedTags = JSON.parse(currentUser.followed_tags || '[]');
+
+    Array.from(tagCards).forEach((element) => {
+      const followedTag = followedTags.find(
+        (tag) => tag.id == element.dataset.tagId,
+      );
+      const following = followedTag?.points >= 0;
+      const hidden = followedTag?.points < 0;
+
+      mountTagButtons(
+        document.getElementById(`tag-buttons-${element.dataset.tagId}`),
+        {
+          id: element.dataset.tagId,
+          name: element.dataset.tagName,
+          isFollowing: following || hidden,
+          isHidden: hidden,
+        },
+      );
+    });
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Unable to load tags', error);
+  }
 }
 
 /**
@@ -48,7 +208,7 @@ function renderPage(currentUser) {
 function listenForButtonClicks() {
   document
     .getElementById('page-content-inner')
-    .addEventListener('click', handleButtonClick);
+    ?.addEventListener('click', handleButtonClick);
 }
 
 function handleButtonClick({ target }) {
@@ -71,17 +231,8 @@ function handleButtonClick({ target }) {
   }
 }
 
-function loadSnackbar() {
-  const snackZone = document.getElementById('snack-zone');
-
-  if (snackZone) {
-    render(<Snackbar lifespan="1" />, document.getElementById('snack-zone'));
-  }
-}
-
 document.ready.then(() => {
   const userStatus = document.body.getAttribute('data-user-status');
-  loadSnackbar();
 
   if (userStatus === 'logged-out') {
     listenForButtonClicks();

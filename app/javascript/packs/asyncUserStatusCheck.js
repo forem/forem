@@ -1,6 +1,10 @@
 import '@utilities/document_ready';
 
 export async function asyncUserStatusCheck() {
+  if (document.body?.dataset?.userStatus === 'logged-out') {
+    return;
+  }
+
   const profile = document.querySelector('.profile-header__details');
 
   if (profile && !profile.dataset.statusChecked) {
