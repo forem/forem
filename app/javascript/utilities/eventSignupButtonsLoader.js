@@ -1,13 +1,26 @@
 let eventSignupButtonsPromise;
 
+/**
+ * Resets cached promise state between Jest tests.
+ */
 export function resetEventSignupButtonsLoaderForTests() {
   eventSignupButtonsPromise = undefined;
 }
 
+/**
+ * Checks whether the current DOM contains any event signup buttons.
+ *
+ * @returns {boolean} True when at least one `[data-event-signup-button="true"]` element is present
+ */
 export function shouldLoadEventSignupButtons() {
   return Boolean(document.querySelector('[data-event-signup-button="true"]'));
 }
 
+/**
+ * Loads the `eventSignupButtons` bundle once using the URL from `meta[name="event-signup-buttons-script"]`.
+ *
+ * @returns {Promise<void>} Resolves when the script finishes loading or if unavailable
+ */
 export function loadEventSignupButtonsBundle() {
   if (typeof window.eventSignupCleanup === 'function') {
     return Promise.resolve();
@@ -34,6 +47,7 @@ export function loadEventSignupButtonsBundle() {
       existingScript.addEventListener(
         'error',
         () => {
+          existingScript.remove();
           eventSignupButtonsPromise = undefined;
           resolve();
         },
@@ -47,6 +61,7 @@ export function loadEventSignupButtonsBundle() {
     script.defer = true;
     script.onload = () => resolve();
     script.onerror = () => {
+      script.remove();
       eventSignupButtonsPromise = undefined;
       resolve();
     };
@@ -56,6 +71,11 @@ export function loadEventSignupButtonsBundle() {
   return eventSignupButtonsPromise;
 }
 
+/**
+ * Conditionally loads the `eventSignupButtons` bundle when event signup buttons exist in the DOM.
+ *
+ * @returns {Promise<void>}
+ */
 export function maybeLoadEventSignupButtons() {
   if (!shouldLoadEventSignupButtons()) {
     return Promise.resolve();

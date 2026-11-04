@@ -54,7 +54,7 @@ function reply(comment) {
   var replyButton = `<button class="js actions crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
     data-comment-id="${comment.id}"
     data-path="${comment.url}"
-    data-tracking-name="comment_reply_button"
+    data-tracking-name="comment_reply_button">
     ${iconSmallComment}
     <span class="hidden m:inline-block">Reply</span>
   </button>`;

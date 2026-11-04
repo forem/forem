@@ -15,6 +15,7 @@ var commentsPageBundlePromise = null;
 function pageNeedsCommentsBundle() {
   return Boolean(
     document.getElementById('comments-container') ||
+      document.getElementById('notifications-container') ||
       document.querySelector(
         '.comment-form, .comment-textarea, .js-comment-wrapper',
       ),
@@ -46,6 +47,7 @@ function loadCommentsPageBundle() {
       existingScript.addEventListener(
         'error',
         function () {
+          existingScript.remove();
           commentsPageBundlePromise = null;
           resolve();
         },
@@ -60,6 +62,7 @@ function loadCommentsPageBundle() {
       resolve();
     };
     script.onerror = function () {
+      script.remove();
       commentsPageBundlePromise = null;
       resolve();
     };

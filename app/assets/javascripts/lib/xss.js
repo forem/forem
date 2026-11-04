@@ -13,10 +13,14 @@ function filterXSS(html) {
   html = html || '';
   html = html.toString();
   if (!html) return '';
-  return html
-    .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+
+  var prev;
+  do {
+    prev = html;
+    html = html.replace(/<!--[\s\S]*?-->/g, '');
+  } while (html !== prev);
+
+  return html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 if (typeof exports !== 'undefined') {

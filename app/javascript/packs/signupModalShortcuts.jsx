@@ -1,19 +1,30 @@
 import { initKeyboardShortcuts } from '../utilities/keyboardShortcuts';
 
-let cleanupSignupShortcuts = null;
-
+/**
+ * Registers the `Escape` shortcut for closing `#global-signup-modal` and cleans up any prior listener.
+ */
 function setupSignupModalShortcuts() {
+  window.__signupModalShortcutsCleanup?.();
+
   if (!document.getElementById('global-signup-modal')) {
     return;
   }
 
-  cleanupSignupShortcuts?.();
-  cleanupSignupShortcuts = initKeyboardShortcuts({
+  const cleanupEscape = initKeyboardShortcuts({
     Escape() {
       const modal = document.getElementById('global-signup-modal');
       modal?.classList.add('hidden');
     },
   });
+
+  const cleanup = () => {
+    cleanupEscape?.();
+    if (window.__signupModalShortcutsCleanup === cleanup) {
+      window.__signupModalShortcutsCleanup = null;
+    }
+  };
+
+  window.__signupModalShortcutsCleanup = cleanup;
 }
 
 if (document.readyState !== 'loading') {

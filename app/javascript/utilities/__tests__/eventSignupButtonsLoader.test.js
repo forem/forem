@@ -55,6 +55,35 @@ describe('eventSignupButtonsLoader', () => {
 
       await expect(promise).resolves.toBeUndefined();
     });
+
+    it('removes the failed script element on error so a subsequent attempt can retry', async () => {
+      document.head.innerHTML =
+        '<meta name="event-signup-buttons-script" content="/assets/eventSignupButtons-123.js">';
+
+      const firstPromise = loadEventSignupButtonsBundle();
+      const firstScript = document.querySelector(
+        'script[src="/assets/eventSignupButtons-123.js"]',
+      );
+
+      expect(firstScript).toBeInTheDocument();
+      firstScript.onerror();
+      await firstPromise;
+
+      expect(
+        document.querySelector(
+          'script[src="/assets/eventSignupButtons-123.js"]',
+        ),
+      ).not.toBeInTheDocument();
+
+      const retryPromise = loadEventSignupButtonsBundle();
+      const retryScript = document.querySelector(
+        'script[src="/assets/eventSignupButtons-123.js"]',
+      );
+
+      expect(retryScript).toBeInTheDocument();
+      retryScript.onload();
+      await expect(retryPromise).resolves.toBeUndefined();
+    });
   });
 
   describe('maybeLoadEventSignupButtons', () => {

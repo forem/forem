@@ -45,6 +45,8 @@ var I18n = window.I18n = {
   var hbContext = {};
   var hbQueue = [];
   var hbLoadingPromise = null;
+  var hbLoadFailed = false;
+  var HB_MAX_QUEUE = 20;
 
   function passesBeforeNotify(err) {
     var message = typeof err === 'string' ? err : (err && err.message);
@@ -62,6 +64,9 @@ var I18n = window.I18n = {
   function loadHoneybadgerClient() {
     if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
       return Promise.resolve(window.Honeybadger);
+    }
+    if (hbLoadFailed) {
+      return Promise.resolve(null);
     }
     if (hbLoadingPromise) {
       return hbLoadingPromise;
@@ -97,11 +102,16 @@ var I18n = window.I18n = {
           }
           resolve(realHb);
         } else {
+          hbLoadFailed = true;
+          hbQueue.length = 0;
           resolve(null);
         }
       };
       script.onerror = function() {
+        hbLoadFailed = true;
         hbLoadingPromise = null;
+        hbQueue.length = 0;
+        script.remove();
         resolve(null);
       };
       document.head.appendChild(script);
@@ -142,13 +152,15 @@ var I18n = window.I18n = {
       return this;
     },
     notify: function(err, name, extra) {
-      if (!hbConfig.apiKey || !passesBeforeNotify(err)) {
+      if (hbLoadFailed || !hbConfig.apiKey || !passesBeforeNotify(err)) {
         return false;
       }
       if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
         return window.Honeybadger.notify(err, name, extra);
       }
-      hbQueue.push([err, name, extra]);
+      if (hbQueue.length < HB_MAX_QUEUE) {
+        hbQueue.push([err, name, extra]);
+      }
       loadHoneybadgerClient();
       return true;
     }

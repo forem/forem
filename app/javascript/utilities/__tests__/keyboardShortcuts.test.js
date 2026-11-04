@@ -82,6 +82,7 @@ describe('filterXSS', () => {
     expect(filterXSS('Hello <!-- comment --><b>World</b>')).toBe(
       'Hello &lt;b&gt;World&lt;/b&gt;',
     );
+    expect(filterXSS('<!<!-- comment -->-- inner -->')).toBe('');
     expect(filterXSS('<script>alert(1)</script>')).toBe(
       '&lt;script&gt;alert(1)&lt;/script&gt;',
     );
