@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_03_195500) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_04_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1093,9 +1093,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_03_195500) do
     t.string "url"
     t.bigint "user_id"
     t.integer "watchers_count"
-    t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
-    t.index ["url"], name: "index_github_repos_on_url", unique: true
     t.index ["user_id", "featured"], name: "index_github_repos_on_user_id_and_featured"
+    t.index ["user_id", "github_id_code"], name: "index_github_repos_on_user_id_and_github_id_code", unique: true
+    t.index ["user_id", "url"], name: "index_github_repos_on_user_id_and_url", unique: true
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -2257,6 +2257,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_03_195500) do
     t.integer "feed_status", default: 0, null: false
     t.string "feed_status_message"
     t.string "feed_url"
+    t.string "github_organizations", default: [], null: false, array: true
     t.string "inbox_guidelines"
     t.integer "inbox_type", default: 0, null: false
     t.boolean "permit_adjacent_sponsors", default: true

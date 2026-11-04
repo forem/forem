@@ -79,6 +79,10 @@ pt:
     daily_limit: Limite diário de seguidores de conta atingido!
     followed: seguido
     unfollowed: não seguido
+  github_organizations_controller:
+    github_unauthorized: 'GitHub não autorizado: %{e_message}'
+    github_unavailable: Não foi possível acessar o GitHub, tente novamente mais tarde
+    organization_not_found: Organização do GitHub não encontrada
   github_repos_controller:
     repo_not_found: Repositório GitHub não encontrado
     github_unauthorized: 'GitHub não autorizado: %{e_message}'

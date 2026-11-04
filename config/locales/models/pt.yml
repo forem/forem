@@ -168,5 +168,8 @@ pt:
       deleted_user:
         name: '[Usuário Excluído]'
       setting:
+        duplicate_github_organization: Esta organização já foi adicionada
+        invalid_github_organization: Esse não é um nome de usuário de organização do GitHub válido
         invalid_hex: não é uma cor hex válida
         invalid_rss: não é um feed RSS/Atom válido
+        too_many_github_organizations: Você pode adicionar até %{count} organizações do GitHub

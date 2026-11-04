@@ -4,6 +4,7 @@ class GithubRepoPolicy < ApplicationPolicy
   end
 
   alias update_or_create? index?
+  alias manage_organizations? index?
 
   def permitted_attributes
     %i[github_id_code featured]

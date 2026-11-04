@@ -13,6 +13,39 @@ RSpec.describe Users::Setting do
   describe "validations" do
     subject { setting }
 
+    describe "github_organizations" do
+      it "defaults to no organizations" do
+        expect(setting.github_organizations).to eq([])
+      end
+
+      it "accepts up to the maximum number of valid organizations" do
+        setting.github_organizations = %w[necoz-oss a1 Forem]
+
+        expect(setting).to be_valid
+      end
+
+      it "rejects more than the maximum number of organizations" do
+        setting.github_organizations = %w[one two three four]
+
+        expect(setting).not_to be_valid
+        expect(setting.errors[:github_organizations]).to include("You can add up to 3 GitHub organizations")
+      end
+
+      it "rejects invalid GitHub usernames" do
+        ["-leading", "trailing-", "double--hyphen", "with space", "under_score", "a" * 40, "\u212Aelvin"].each do |name|
+          setting.github_organizations = [name]
+
+          expect(setting).not_to be_valid, "expected #{name.inspect} to be invalid"
+        end
+      end
+
+      it "rejects duplicates regardless of case" do
+        setting.github_organizations = %w[necoz-oss Necoz-OSS]
+
+        expect(setting).not_to be_valid
+      end
+    end
+
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
     it { is_expected.to validate_numericality_of(:experience_level).is_in(1..10) }
     it { is_expected.to validate_inclusion_of(:disallow_subforem_reassignment).in_array([true, false]) }

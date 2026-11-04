@@ -78,12 +78,45 @@ RSpec.describe GithubRepo do
     end
   end
 
+  describe ".upsert with a repository pinned by another user" do
+    let(:other_user) { create(:user) }
+    let!(:other_repo) { create(:github_repo, user: other_user, featured: true) }
+
+    it "creates the repository for the user without touching the other user's one" do
+      expect do
+        described_class.upsert(user, github_id_code: other_repo.github_id_code, name: "x", url: other_repo.url,
+                                     featured: false)
+      end.to change(described_class, :count).by(1)
+
+      expect(other_repo.reload.featured).to be(true)
+      expect(user.github_repos.pluck(:url)).to eq([other_repo.url])
+    end
+
+    it "does not allow a user to pin the same repository twice" do
+      duplicate = build(:github_repo, user: other_user, github_id_code: other_repo.github_id_code)
+
+      expect(duplicate).not_to be_valid
+    end
+  end
+
   describe "::update_to_latest" do
     it "enqueues GithubRepos::RepoSyncWorker" do
       repo.update(updated_at: 1.week.ago)
       allow(GithubRepos::RepoSyncWorker).to receive(:perform_bulk)
       described_class.update_to_latest
       expect(GithubRepos::RepoSyncWorker).to have_received(:perform_bulk).with([[repo.id]])
+    end
+  end
+
+  describe "#owner_login" do
+    it "returns the login of the repository owner" do
+      repo = build(:github_repo, info_hash: { owner: { login: "necoz-oss" } })
+
+      expect(repo.owner_login).to eq("necoz-oss")
+    end
+
+    it "returns nil when the owner is unknown" do
+      expect(build(:github_repo, info_hash: {}).owner_login).to be_nil
     end
   end
 end

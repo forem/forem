@@ -12,7 +12,14 @@
       </p>
     </header>
 
-    <div id="github-repos-container">
+    <h3 class="crayons-subtitle-2"><%= t("views.settings.extensions.github.organizations_heading") %></h3>
+    <p class="color-base-70">
+      <%= t("views.settings.extensions.github.organizations_desc", max: Users::Setting::MAX_GITHUB_ORGANIZATIONS) %>
+    </p>
+
+    <div id="github-repos-container"
+         data-organizations="<%= current_user.setting.github_organizations.to_json %>"
+         data-max-organizations="<%= Users::Setting::MAX_GITHUB_ORGANIZATIONS %>">
       <div class="github-repos loading-repos">
       </div>
     </div>

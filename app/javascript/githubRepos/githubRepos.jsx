@@ -1,9 +1,11 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
+import PropTypes from 'prop-types';
 import { SingleRepo } from './singleRepo';
+import { GithubOrganizations } from './githubOrganizations';
 import { request } from '@utilities/http';
 
-export const GithubRepos = () => {
+export const GithubRepos = ({ organizations, maxOrganizations }) => {
   const [repos, setRepos] = useState([]);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -18,6 +20,7 @@ export const GithubRepos = () => {
       if (response.ok) {
         const repositories = await response.json();
         setRepos(repositories);
+        setError(false);
       } else {
         // The server responds with a JSON `error` message (e.g. when the
         // GitHub token was revoked). `statusText` is empty over HTTP/2, so
@@ -36,36 +39,59 @@ export const GithubRepos = () => {
     }
   };
 
-  if (error) {
-    return (
-      <div className="github-repos github-repos-errored" role="alert">
-        An error occurred: {errorMessage}
-      </div>
-    );
-  }
+  const renderRepos = () => {
+    if (error) {
+      return (
+        <div className="github-repos github-repos-errored" role="alert">
+          An error occurred: {errorMessage}
+        </div>
+      );
+    }
 
-  if (repos.length > 0) {
+    if (repos.length > 0) {
+      return (
+        <div className="github-repos" data-testid="github-repos-list">
+          {repos.map((repo) => (
+            <SingleRepo
+              key={repo.github_id_code}
+              githubIdCode={repo.github_id_code}
+              name={repo.name}
+              fork={repo.fork}
+              featured={repo.featured}
+            />
+          ))}
+        </div>
+      );
+    }
+
     return (
-      <div className="github-repos" data-testid="github-repos-list">
-        {repos.map((repo) => (
-          <SingleRepo
-            key={repo.github_id_code}
-            githubIdCode={repo.github_id_code}
-            name={repo.name}
-            fork={repo.fork}
-            featured={repo.featured}
-          />
-        ))}
-      </div>
+      <div
+        title="Loading GitHub repositories"
+        className="github-repos loading-repos"
+      />
     );
-  }
+  };
 
   return (
-    <div
-      title="Loading GitHub repositories"
-      className="github-repos loading-repos"
-    />
+    <Fragment>
+      <GithubOrganizations
+        initialOrganizations={organizations}
+        maxOrganizations={maxOrganizations}
+        onChange={getGithubRepos}
+      />
+      {renderRepos()}
+    </Fragment>
   );
+};
+
+GithubRepos.propTypes = {
+  organizations: PropTypes.arrayOf(PropTypes.string),
+  maxOrganizations: PropTypes.number,
+};
+
+GithubRepos.defaultProps = {
+  organizations: [],
+  maxOrganizations: 3,
 };
 
 GithubRepos.displayName = 'GitHub Repositories Wrapper';

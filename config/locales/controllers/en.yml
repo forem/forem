@@ -79,6 +79,10 @@ en:
     daily_limit: Daily account follow limit reached!
     followed: followed
     unfollowed: unfollowed
+  github_organizations_controller:
+    github_unauthorized: 'GitHub Unauthorized: %{e_message}'
+    github_unavailable: Could not reach GitHub, please try again later
+    organization_not_found: GitHub organization not found
   github_repos_controller:
     repo_not_found: GitHub repository not found
     github_unauthorized: 'GitHub Unauthorized: %{e_message}'
