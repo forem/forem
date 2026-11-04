@@ -6,8 +6,28 @@ module Users
     self.table_name_prefix = "users_"
 
     HEX_COLOR_REGEXP = /\A#?(?:\h{6}|\h{3})\z/
+    MAX_GITHUB_ORGANIZATIONS = 3
+    # GitHub usernames: ASCII alphanumeric or single hyphens, not starting/ending with a hyphen, up to 39 characters.
+    # NOTE: no /i flag, as Ruby's case folding would also match non-ASCII letters (e.g. the Kelvin sign for "k").
+    GITHUB_ORGANIZATION_REGEXP = /\A[A-Za-z\d](?:[A-Za-z\d]|-(?=[A-Za-z\d])){0,38}\z/
 
     belongs_to :user, touch: true
+
+    # Error messages for a list of GitHub organization usernames.
+    # Unlike a full validation it has no side effects (e.g. no RSS feed request).
+    def self.github_organization_errors(names)
+      messages = []
+      if names.size > MAX_GITHUB_ORGANIZATIONS
+        messages << I18n.t("models.users.setting.too_many_github_organizations", count: MAX_GITHUB_ORGANIZATIONS)
+      end
+      unless names.all? { |name| name.match?(GITHUB_ORGANIZATION_REGEXP) }
+        messages << I18n.t("models.users.setting.invalid_github_organization")
+      end
+      unless names.uniq(&:downcase).size == names.size
+        messages << I18n.t("models.users.setting.duplicate_github_organization")
+      end
+      messages
+    end
     scope :with_feed, lambda {
       where(user_id: Feeds::Source.active.select(:user_id))
         .or(where.not(feed_url: [nil, ""]))
@@ -37,6 +57,7 @@ module Users
     validates :content_preferences_input, length: { maximum: 1250 }, allow_nil: true
 
     validate :validate_feed_url, if: :feed_url_changed?
+    validate :validate_github_organizations, if: :github_organizations_changed?
 
     before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
@@ -61,6 +82,12 @@ module Users
 
     def refresh_auto_audience_segments
       user.refresh_auto_audience_segments
+    end
+
+    def validate_github_organizations
+      self.class.github_organization_errors(github_organizations).each do |message|
+        errors.add(:github_organizations, message)
+      end
     end
 
     def validate_feed_url

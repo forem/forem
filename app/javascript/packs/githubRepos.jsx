@@ -4,7 +4,14 @@ import { GithubRepos } from '../githubRepos/githubRepos';
 function loadElement() {
   const root = document.getElementById('github-repos-container');
   if (root) {
-    render(<GithubRepos />, root);
+    const { organizations, maxOrganizations } = root.dataset;
+    render(
+      <GithubRepos
+        organizations={JSON.parse(organizations)}
+        maxOrganizations={Number(maxOrganizations)}
+      />,
+      root,
+    );
   }
 }
 

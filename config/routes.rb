@@ -298,6 +298,7 @@ Rails.application.routes.draw do
         post "/update_or_create", to: "github_repos#update_or_create"
       end
     end
+    resources :github_organizations, only: %i[create destroy]
     resources :videos, only: %i[index create new]
     resources :subforems, only: %i[index new edit update] do
       member do

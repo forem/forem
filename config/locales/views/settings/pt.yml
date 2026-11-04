@@ -193,6 +193,9 @@ pt:
             text: Você deve rotacionar isso regularmente!
             submit: Gerar novo segredo
       extensions:
+        github:
+          organizations_desc: Adicione até %{max} organizações para navegar e fixar seus repositórios públicos.
+          organizations_heading: Organizações do GitHub
         rss_moved_html: 'As configurações de feed RSS foram movidas! Gerencie seus feeds no <a href="%{link}" class="crayons-link">painel de importações</a>.'
         list:
           heading: Suas organizações

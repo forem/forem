@@ -158,6 +158,8 @@ en:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
           desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
+          organizations_desc: Add up to %{max} organizations to browse and pin their public repositories.
+          organizations_heading: GitHub organizations
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:

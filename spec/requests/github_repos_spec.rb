@@ -5,6 +5,8 @@ RSpec.describe "GithubRepos" do
     Class.new(Github::OauthClient) do
       def repositories(*_args); end
 
+      def org_repos(*_args); end
+
       def repository(name); end
     end
   end
@@ -29,6 +31,7 @@ RSpec.describe "GithubRepos" do
     instance_double(
       fake_github_client,
       repositories: stubbed_github_repos,
+      org_repos: [],
       repository: stubbed_github_repos.first,
     )
   end
@@ -100,6 +103,60 @@ RSpec.describe "GithubRepos" do
         expect(response_repo2["name"]).to eq(repo2.name)
         expect(response_repo2["fork"]).to eq(repo2.fork)
         expect(response_repo2["featured"]).to be(true)
+      end
+
+      context "with configured GitHub organizations" do
+        let(:org_repo) do
+          OpenStruct.new( # rubocop:disable Performance/OpenStruct, Style/OpenStructUse
+            id: 42, name: "C", fork: false, html_url: Faker::Internet.url,
+          )
+        end
+
+        before { user.setting.update!(github_organizations: %w[necoz-oss]) }
+
+        it "includes the public repositories of the organizations" do
+          allow(github_client).to receive(:org_repos).with("necoz-oss", type: :public).and_return([org_repo])
+
+          get github_repos_path, headers: headers
+
+          expect(response.parsed_body.pluck("name")).to eq(%w[A B C])
+        end
+
+        it "does not repeat repositories returned both for the user and the organization" do
+          allow(github_client).to receive(:org_repos).and_return([stubbed_github_repos.first])
+
+          get github_repos_path, headers: headers
+
+          expect(response.parsed_body.pluck("name")).to eq(%w[A B])
+        end
+
+        it "keeps pinned organization repositories when the organization could not be fetched" do
+          pinned = create(:github_repo, user: user, featured: true, info_hash: { owner: { login: "necoz-oss" } })
+          allow(github_client).to receive(:org_repos).and_raise(Github::Errors::TooManyRequests)
+
+          expect do
+            get github_repos_path, headers: headers
+          end.not_to change { GithubRepo.exists?(pinned.id) }.from(true)
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body.pluck("github_id_code")).to include(pinned.github_id_code)
+        end
+
+        it "deletes pinned repositories of an organization that no longer exists" do
+          pinned = create(:github_repo, user: user, featured: true, info_hash: { owner: { login: "necoz-oss" } })
+          allow(github_client).to receive(:org_repos).and_raise(Github::Errors::NotFound)
+
+          expect do
+            get github_repos_path, headers: headers
+          end.to change { GithubRepo.exists?(pinned.id) }.from(true).to(false)
+        end
+
+        it "still deletes unavailable repositories of organizations that were fetched" do
+          pinned = create(:github_repo, user: user, featured: true, info_hash: { owner: { login: "necoz-oss" } })
+
+          expect do
+            get github_repos_path, headers: headers
+          end.to change { GithubRepo.exists?(pinned.id) }.from(true).to(false)
+        end
       end
 
       it "deletes repositories which are no longer publicly accessible" do

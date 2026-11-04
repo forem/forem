@@ -40,9 +40,9 @@ class GithubReposController < ApplicationController
   private
 
   def fetch_repositories_from_github(known_repositories)
-    client = Github::OauthClient.for_user(current_user)
+    result = GithubRepos::FetchPublic.call(current_user)
 
-    repos = client.repositories(visibility: :public).map do |repo|
+    repos = result.repositories.map do |repo|
       if (known_index = known_repositories.find_index { |known| known.github_id_code == repo.id })
         repo.featured = true
         known_repositories.delete_at(known_index)
@@ -52,9 +52,21 @@ class GithubReposController < ApplicationController
 
     # Remove pinned repositories that were removed from GH or are now private,
     # since the user will not be able to remove them by themselves.
-    known_repositories.each(&:destroy)
+    # Repositories of organizations that could not be fetched right now are
+    # kept, as we can't tell whether they are still available.
+    known_repositories.each do |known|
+      if owned_by_any?(known, result.unreachable_organizations)
+        repos << known
+      else
+        known.destroy
+      end
+    end
 
     repos.sort_by(&:name)
+  end
+
+  def owned_by_any?(repo, organizations)
+    organizations.any? { |organization| organization.casecmp?(repo.owner_login.to_s) }
   end
 
   def fetch_repository_from_github(repository_id)

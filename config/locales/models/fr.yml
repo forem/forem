@@ -168,5 +168,8 @@ fr:
       deleted_user:
         name: '[Deleted User]'
       setting:
+        duplicate_github_organization: Cette organisation a déjà été ajoutée
+        invalid_github_organization: Ce n'est pas un nom d'utilisateur d'organisation GitHub valide
         invalid_hex: n'est pas une couleur hexagonale valide
         invalid_rss: n'est pas un flux RSS/Atom valide
+        too_many_github_organizations: Vous pouvez ajouter jusqu'à %{count} organisations GitHub
