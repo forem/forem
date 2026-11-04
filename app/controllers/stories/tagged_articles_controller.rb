@@ -43,7 +43,8 @@ module Stories
       return if user_signed_in? || !tag.supported?
 
       @num_published_articles = if tag.requires_approval?
-                                  tag.articles.published.from_subforem.approved.count
+                                  tag.articles.published.from_subforem.approved
+                                    .limit(max_paginated_articles).count
                                 else
                                   Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
                                                     expires_in: 72.hours) do
@@ -82,8 +83,18 @@ module Stories
       )
     end
 
+    # Sidebar pagination clamps `(@num_published_articles.to_f / @number_of_articles).ceil`
+    # to `MAX_PAGE`, so cap the count subquery at that ceiling instead of scanning every
+    # historical tagging on high-volume tags.
     def tagged_count(tag:)
-      tag.articles.published.from_subforem.where(score: Settings::UserExperience.tag_feed_minimum_score..).count
+      tag.articles.published.from_subforem
+        .where(score: Settings::UserExperience.tag_feed_minimum_score..)
+        .limit(max_paginated_articles)
+        .count
+    end
+
+    def max_paginated_articles
+      (@number_of_articles || SIGNED_OUT_RECORD_COUNT) * MAX_PAGE
     end
 
     # Do we have an established tag?  That means it's supported OR we have at least one published story.
