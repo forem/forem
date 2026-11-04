@@ -1,29 +1,45 @@
-import { h, render, Fragment } from 'preact';
-import { ListNavigation } from '../shared/components/useListNavigation';
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { initKeyboardShortcuts } from '../utilities/keyboardShortcuts';
+import { initListNavigation } from '../utilities/listNavigation';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('main-content');
+/**
+ * Registers keyboard shortcuts (`b`, `j`, `k`) for story feeds and cleans up any prior listeners.
+ */
+function setupHomePageFeedShortcuts() {
+  window.__homePageFeedShortcutsCleanup?.();
 
-  render(
-    <Fragment>
-      <KeyboardShortcuts
-        shortcuts={{
-          b: (event) => {
-            const article = event.target?.closest('.crayons-story');
+  if (!document.getElementById('main-content')) {
+    return;
+  }
 
-            if (!article) return;
+  const cleanupKeyShortcuts = initKeyboardShortcuts({
+    b: (event) => {
+      const article = event.target?.closest('.crayons-story');
 
-            article.querySelector('button[id^=article-save-button-]')?.click();
-          },
-        }}
-      />
-      <ListNavigation
-        itemSelector=".crayons-story"
-        focusableSelector="a.crayons-story__hidden-navigation-link"
-        waterfallItemContainerSelector="div.paged-stories,div.substories"
-      />
-    </Fragment>,
-    root,
+      if (!article) return;
+
+      article.querySelector('button[id^=article-save-button-]')?.click();
+    },
+  });
+
+  const cleanupListNav = initListNavigation(
+    '.crayons-story',
+    'a.crayons-story__hidden-navigation-link',
+    'div.paged-stories,div.substories',
   );
-});
+
+  const cleanup = () => {
+    cleanupKeyShortcuts?.();
+    cleanupListNav?.();
+    if (window.__homePageFeedShortcutsCleanup === cleanup) {
+      window.__homePageFeedShortcutsCleanup = null;
+    }
+  };
+
+  window.__homePageFeedShortcutsCleanup = cleanup;
+}
+
+if (document.readyState !== 'loading') {
+  setupHomePageFeedShortcuts();
+} else {
+  document.addEventListener('DOMContentLoaded', setupHomePageFeedShortcuts);
+}
