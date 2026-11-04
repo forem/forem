@@ -17,8 +17,8 @@ RSpec.describe GithubRepo do
 
       it { is_expected.to validate_presence_of(:name) }
       it { is_expected.to validate_presence_of(:url) }
-      it { is_expected.to validate_uniqueness_of(:github_id_code) }
-      it { is_expected.to validate_uniqueness_of(:url) }
+      it { is_expected.to validate_uniqueness_of(:github_id_code).scoped_to(:user_id) }
+      it { is_expected.to validate_uniqueness_of(:url).scoped_to(:user_id) }
       it { is_expected.to validate_url_of(:url) }
     end
   end
