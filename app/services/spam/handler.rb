@@ -27,6 +27,7 @@ module Spam
     CLEAR_VIOLATION_LABELS = %w[clear_and_obvious_spam clear_and_obvious_harmful clear_and_obvious_inciting].freeze
     HIGH_QUALITY_LABELS = %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
                              great_but_off_topic_for_subforem].freeze
+    MINIMUM_INDEXED_ARTICLE_LABEL = "okay_and_on_topic".freeze
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -46,13 +47,8 @@ module Spam
     # @param article [Article] the article to check for spamminess
     # @param attributes [Array<Symbol>] test these attributes of the article.
     def self.handle_article!(article:, attributes: %i[title body_markdown])
-      if article_linked_domain_spam?(article) || repeated_title_spam?(article)
-        article.update_column(:automod_label, "clear_and_obvious_spam")
-        article.automod_label = "clear_and_obvious_spam"
-      else
-        # First, run content moderation labeling
-        label_article_content!(article)
-      end
+      assign_article_automod_label!(article)
+      return :not_spam if minimum_indexed_article?(article)
 
       # Handle clear and obvious violations immediately
       if CLEAR_VIOLATION_LABELS.include?(article.automod_label)
@@ -85,8 +81,7 @@ module Spam
       issue_spam_reaction_for!(reactable: article)
       escalate_flagged_author!(user: article.user)
     rescue Ai::Base::ProhibitedContentError
-      article.update_column(:automod_label, "clear_and_obvious_harmful")
-      spam_block!(reactable: article, user: article.user)
+      handle_prohibited_article_content!(article)
     end
 
     # Test the comment for spamminess.  If it's not spammy, don't do anything.
@@ -165,6 +160,7 @@ module Spam
       return :not_spam unless clear_profile_violation_label?(label)
 
       issue_spam_reaction_for!(reactable: user)
+      return :spam if exempt_from_auto_block?(user: user)
 
       # Snapshot the profile: users often clear it after being blocked, leaving moderators nothing to review.
       details = { reason: "profile_moderation", label: label, name: user.name, summary: user.profile&.summary,
@@ -199,7 +195,7 @@ module Spam
     # its refusal is treated as a clear violation: flag the content and mark the author as spam.
     def self.spam_block!(reactable:, user:)
       issue_spam_reaction_for!(reactable: reactable)
-      unless user.spam?
+      unless user.spam? || exempt_from_auto_block?(user: user)
         user.add_role(:spam)
         audit_automatic_block!(user: user, role: :spam, reason: "prohibited_content",
                                reactable_type: reactable.class.name, reactable_id: reactable.id)
@@ -212,6 +208,8 @@ module Spam
     # @param user [User]
     # @param reason [String] which automated check suspended the user, for the audit log
     def self.suspend!(user:, reason: "too_many_spam_reactions", **details)
+      return if exempt_from_auto_block?(user: user)
+
       user.add_role(:suspended)
       unpublish = unpublish_all_posts_when_user_auto_suspended?
       # Recorded so an approved appeal (Appeals::Resolver) can restore exactly the posts hidden here.
@@ -348,8 +346,8 @@ module Spam
     # @return [Integer, nil] how many posts a new account commented on in the last day, when over the limit
     def self.new_account_comment_flood_count(user:, limit: 20)
       return unless user.registered_at&.after?(3.days.ago)
-      # Staff and trusted accounts may seed discussions on a new Forem.
-      return if user.auditable? || user.super_moderator?
+      # Staff, trusted accounts, and members of minimum-indexed organizations may seed discussions.
+      return if user.auditable? || user.super_moderator? || exempt_from_auto_block?(user: user)
 
       count = user.comments.where("created_at > ?", 24.hours.ago).distinct.count(:commentable_id)
       count if count > limit
@@ -358,7 +356,7 @@ module Spam
     # Leave a note so moderators can see why the account was marked as spam. Skipped when the
     # user is already spam so queued jobs for the same user don't pile up duplicate notes.
     def self.mark_as_spam!(user:, reason:, note:, **details)
-      return if user.spam?
+      return if user.spam? || exempt_from_auto_block?(user: user)
 
       user.add_role(:spam)
       Notifications::RemoveBySpammerWorker.perform_async(user.id)
@@ -410,19 +408,32 @@ module Spam
     end
     private_class_method :link_or_escalated?
 
+    def self.assign_article_automod_label!(article)
+      if !minimum_indexed_article?(article) && (article_linked_domain_spam?(article) || repeated_title_spam?(article))
+        article.update_column(:automod_label, "clear_and_obvious_spam")
+        article.automod_label = "clear_and_obvious_spam"
+      else
+        label_article_content!(article)
+      end
+    end
+
     # NEW/private: Label article content using AI moderation and calculate compellingness.
     def self.label_article_content!(article)
-      return unless Ai::FunctionConfig.available?(:content_moderation)
+      unless Ai::FunctionConfig.available?(:content_moderation)
+        ensure_minimum_indexed_label!(article) if minimum_indexed_article?(article)
+        return
+      end
 
       begin
         labeler = Ai::ContentModerationLabeler.new(article)
         results = labeler.evaluate
-        label = results[:label]
-        
+        label = apply_minimum_indexed_label_floor(article, results[:label])
+
         article.update_columns(
           automod_label: label,
-          compellingness_score: results[:compellingness_score]
+          compellingness_score: results[:compellingness_score],
         )
+        article.automod_label = label
 
         # Only check for subforem reassignment if the article is marked as offtopic
         if offtopic_label?(label)
@@ -433,8 +444,46 @@ module Spam
       rescue StandardError => e
         Rails.logger.error("Failed to label article content: #{e}")
         # Set a safe default label
-        article.update_columns(automod_label: "no_moderation_label", compellingness_score: 0.0)
+        fallback_label = apply_minimum_indexed_label_floor(article, "no_moderation_label")
+        article.update_columns(automod_label: fallback_label, compellingness_score: 0.0)
+        article.automod_label = fallback_label
       end
+    end
+
+    def self.handle_prohibited_article_content!(article)
+      if minimum_indexed_article?(article)
+        ensure_minimum_indexed_label!(article)
+        return :not_spam
+      end
+
+      article.update_column(:automod_label, "clear_and_obvious_harmful")
+      spam_block!(reactable: article, user: article.user)
+    end
+
+    def self.minimum_indexed_article?(article)
+      article.organization&.baseline_score.to_i.positive? ||
+        article.baseline_score.to_i.positive? ||
+        article.user&.base_subscriber? == true ||
+        article.user&.member_of_minimum_indexed_organization? == true
+    end
+
+    def self.apply_minimum_indexed_label_floor(article, label)
+      return label unless minimum_indexed_article?(article)
+      return label if HIGH_QUALITY_LABELS.include?(label.to_s)
+
+      MINIMUM_INDEXED_ARTICLE_LABEL
+    end
+
+    def self.ensure_minimum_indexed_label!(article)
+      floored_label = apply_minimum_indexed_label_floor(article, article.automod_label)
+      return if article.automod_label == floored_label
+
+      article.update_column(:automod_label, floored_label)
+      article.automod_label = floored_label
+    end
+
+    def self.exempt_from_auto_block?(user:)
+      user&.member_of_minimum_indexed_organization? == true
     end
 
     # NEW/private: Check if a label indicates the content is offtopic
@@ -555,7 +604,10 @@ module Spam
 
     private_class_method :suspend!, :issue_spam_reaction_for!, :remove_spam_comment_notifications!,
                          :extensive_domain_spam?, :extract_first_domain_from,
-                         :escalate_flagged_commenter!, :label_article_content!,
+                         :escalate_flagged_commenter!, :assign_article_automod_label!, :label_article_content!,
+                         :handle_prohibited_article_content!, :minimum_indexed_article?,
+                         :apply_minimum_indexed_label_floor,
+                         :ensure_minimum_indexed_label!, :exempt_from_auto_block?,
                          :offtopic_label?, :check_subforem_reassignment,
                          :clear_profile_violation_label?, :eligible_for_profile_spam_check?,
                          :published_articles_over_limit?, :published_comments_over_limit?,

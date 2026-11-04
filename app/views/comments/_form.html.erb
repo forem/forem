@@ -1,6 +1,8 @@
 <div id="response-templates-data" class="hidden"></div>
 <% if user_signed_in? %>
-  <%= javascript_include_tag "validateFileInputs", defer: true %>
+  <%= javascript_include_tag "validateFileInputs", "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
+<% else %>
+  <%= javascript_include_tag "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
 <% end %>
 
 <% if @comment.errors.any? %>

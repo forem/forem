@@ -1048,6 +1048,40 @@ module ForemNative
       )
     end
 
+    # Extracts deduplicated `[tag_name, url, options]` tuples from Markdown outside fenced and
+    # single-line inline code spans, matching `LiquidEmbedExtractor.extract`.
+    def extract_liquid_embed_tags(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_liquid_embed_tags(content)
+    end
+
+    # Extracts deduplicated `http(s)://` URLs from Markdown outside fenced code blocks, inline
+    # code spans, and single-line Liquid tags with trailing punctuation stripped, matching
+    # `WebpageExtractor.extract`.
+    def extract_markdown_webpage_urls(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_markdown_webpage_urls(content)
+    end
+
+    # Extracts deduplicated Markdown (`!\[.*?\]\((.*?)\)`) and HTML (`<img.*?src=["'](.*?)["']`)
+    # image URLs excluding `excluded_substring`, matching
+    # `Articles::EnrichImageAttributes.store_image_if_appropriate`.
+    def extract_markdown_and_html_image_urls(markdown, excluded_substring = "")
+      return unless markdown.instance_of?(String) && excluded_substring.instance_of?(String)
+
+      Native.extract_markdown_and_html_image_urls(markdown, excluded_substring)
+    end
+
+    # Cleans a comma-delimited tag list string in a single pass, matching
+    # `ActsAsTaggableOn::TagParser#clean`.
+    def clean_tag_list(input)
+      return unless input.instance_of?(String)
+
+      Native.clean_tag_list(input)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

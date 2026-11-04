@@ -239,8 +239,11 @@ RSpec.describe "Feed config visibility visits" do
 
   it "bounds admission per authenticated user" do
     allow(Feeds::RecordConfigVisit).to receive(:call).and_return(30.minutes.from_now)
-    60.times { post feed_config_visits_path, params: params }
-    post feed_config_visits_path, params: params
+    # Keep every request in the same Rack::Attack fixed minute window.
+    Timecop.freeze do
+      60.times { post feed_config_visits_path, params: params }
+      post feed_config_visits_path, params: params
+    end
     expect(response).to have_http_status(:too_many_requests)
     expect(response.headers["Retry-After"]).to eq("60")
     expect(Feeds::RecordConfigVisit).to have_received(:call).exactly(60).times

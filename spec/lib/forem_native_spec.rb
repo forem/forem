@@ -4965,4 +4965,301 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".extract_liquid_embed_tags" do
+    let(:liquid_tag_regex) { /\{%\s*([a-zA-Z0-9_]+)\s+(.*?)\s*%\}/ }
+
+    let(:legacy_extract_liquid_embed_tags) do
+      lambda do |content|
+        stripped = content.to_s.gsub(/```.*?```/m, "").gsub(/`.*?`/, "")
+        stripped.scan(liquid_tag_regex).map do |match|
+          tag_name = match[0].downcase
+          options = match[1].strip
+          url = options.split.first || options
+          [tag_name, url, options]
+        end.uniq
+      end
+    end
+
+    it "extracts deduplicated liquid tags while skipping fenced and inline code" do
+      markdown = <<~MD
+        Hello world!
+        {% YOUTUBE synthetic_video %}
+        {% user synthetic_user %}
+        ```ruby
+        {% youtube ignored_fenced %}
+        ```
+        Inline `{% tag ignored_inline %}` here.
+        {% youtube synthetic_video %}
+        {% embed https://example.com/synthetic_user/post extra_arg %}
+      MD
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_liquid_embed_tags(nil)).to be_nil
+      expect(described_class.extract_liquid_embed_tags(123)).to be_nil
+      invalid = (+"{% user test %}\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_liquid_embed_tags(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order and options when deduplicating many mixed-case tags" do
+      tags = Array.new(4_096) { |i| "{% TAG synthetic#{i} %}" }
+      markdown = (tags + tags.map(&:downcase) + ["{% tag synthetic0 extra %}"]).join("\n")
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "handles long lines of unclosed tags in linear time while preserving nested and multiline matches" do
+      unclosed_line = "{% tag x " * 16_000
+      raw_wrapped = "{% raw %}\n#{unclosed_line}\n{% endraw %}"
+      multiline_after_unclosed = "#{unclosed_line}\n{% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+      nested_multiline = "{% bad unclosed {% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+
+      [unclosed_line, raw_wrapped, multiline_after_unclosed, nested_multiline].each do |doc|
+        expect(described_class.extract_liquid_embed_tags(doc)).to eq(
+          legacy_extract_liquid_embed_tags.call(doc),
+        )
+      end
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_242)
+      tag_names = %w[youtube USER twitter comment tag podcast organization org_posts embed]
+      urls = %w[synthetic_video synthetic_user https://example.com/synthetic_user/hello test_org ruby]
+      extras = ["", " foo", " bar baz", "   "]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          case rng.rand(6)
+          when 0
+            "Plain text paragraph #{rng.rand(100)} 🚀"
+          when 1
+            "{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)}#{extras.sample(random: rng)} %}"
+          when 2
+            "```ruby\n{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}\n```"
+          when 3
+            "`{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}`"
+          when 4
+            "{% #{tag_names.sample(random: rng)} \n #{urls.sample(random: rng)} %}"
+          else
+            "Unclosed `backtick or {% broken tag"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_liquid_embed_tags(doc)
+        expected = legacy_extract_liquid_embed_tags.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_webpage_urls" do
+    let(:url_regex) { %r{https?://[^\s<>"{}|\\^`\[\]]+} }
+
+    let(:legacy_extract_webpage_urls) do
+      lambda do |content|
+        stripped = content.to_s
+          .gsub(/```.*?```/m, "")
+          .gsub(/`.*?`/, "")
+          .gsub(/\{%.*?%\}/, "")
+        urls = stripped.scan(url_regex)
+        urls.map! { |u| u.gsub(/[.,:;!?)]+$/, "") }
+        urls.uniq
+      end
+    end
+
+    it "extracts deduplicated URLs outside code and liquid tags and strips trailing punctuation" do
+      markdown = <<~MD
+        Visit [Example](https://example.com/path?a=1&b=2)!
+        Or http://test.org/doc, and https://example.com/path?a=1&b=2.
+        ```
+        https://ignored-fence.com/a
+        ```
+        Inline `https://ignored-inline.com/b` and {% embed https://ignored-liquid.com/c %}.
+      MD
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(
+        legacy_extract_webpage_urls.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_webpage_urls(nil)).to be_nil
+      invalid = (+"https://example.com\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_markdown_webpage_urls(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order for many unique and repeated URLs" do
+      urls = Array.new(4_096) { |i| "https://example.com/page#{i}" }
+      markdown = (urls + urls.reverse).join(" ")
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(urls)
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_243)
+      hosts = %w[https://example.com http://dev.to https://rust-lang.org/learn http://test.io/a/b]
+      puncts = ["", ".", ",", ":", ";", "!", "?", ")", ").", "?!"]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          url = "#{hosts.sample(random: rng)}/#{rng.rand(20)}#{puncts.sample(random: rng)}"
+          case rng.rand(6)
+          when 0
+            "Check out #{url} in text"
+          when 1
+            "[link](#{url})"
+          when 2
+            "```\n#{url}\n```"
+          when 3
+            "`#{url}`"
+          when 4
+            "{% embed #{url} %}"
+          else
+            "Unclosed `#{url} or http:// or https://."
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_webpage_urls(doc)
+        expected = legacy_extract_webpage_urls.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_and_html_image_urls" do
+    let(:legacy_extract_image_urls) do
+      lambda do |markdown_text, stored_image_url|
+        markdown_pattern = /!\[.*?\]\((.*?)\)/
+        html_pattern = /<img.*?src=["'](.*?)["']/
+        all_urls = markdown_text.scan(markdown_pattern).flatten + markdown_text.scan(html_pattern).flatten
+        all_urls.reject { |url| !stored_image_url.empty? && url.include?(stored_image_url) }.uniq
+      end
+    end
+
+    it "extracts markdown and HTML image URLs in order while excluding stored S3 URLs" do
+      s3_prefix = "https://synthetic-bucket.s3.amazonaws.com"
+      md = <<~MD
+        ![alt](https://example.com/a.png)
+        ![stored](#{s3_prefix}/uploads/1.png)
+        <img alt="b" src="https://example.com/b.jpg">
+        <img src='https://example.com/a.png'>
+        <img src="#{s3_prefix}/uploads/2.jpg">
+      MD
+
+      expect(described_class.extract_markdown_and_html_image_urls(md, s3_prefix)).to eq(
+        legacy_extract_image_urls.call(md, s3_prefix),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_and_html_image_urls(nil, "")).to be_nil
+      expect(described_class.extract_markdown_and_html_image_urls("![a](b)", nil)).to be_nil
+    end
+
+    it "matches Ruby for long image lines, duplicates, exclusions, and newline boundaries" do
+      images = Array.new(4_096) { |i| "![alt](https://example.com/image#{i}.png)" }.join(" ")
+      html = Array.new(4_096) { |i| "<img src='https://example.com/image#{i}.png'>" }.join(" ")
+      markdown = "#{html}\n![broken\n](ignored) #{images}\n<img src='broken\nignored'>\n" \
+                 "<img src='https://example.com/last.png'>\n#{images}"
+      excluded = "https://example.com/image0.png"
+
+      expect(described_class.extract_markdown_and_html_image_urls(markdown, excluded)).to eq(
+        legacy_extract_image_urls.call(markdown, excluded),
+      )
+    end
+
+    it "matches the Ruby reference across 1,000 randomized inputs" do
+      rng = Random.new(424_244)
+      s3_prefix = "https://my-bucket.s3.amazonaws.com"
+      urls = [
+        "https://example.com/img1.png",
+        "https://example.com/img2.gif",
+        "#{s3_prefix}/uploads/stored.png",
+        "/relative/path.jpg",
+        "",
+      ]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          u = urls.sample(random: rng)
+          case rng.rand(5)
+          when 0
+            "![alt #{rng.rand(10)}](#{u})"
+          when 1
+            "<img alt=\"x\" src=\"#{u}\">"
+          when 2
+            "<img data-src=foo src='#{u}' width='100'>"
+          when 3
+            "![unclosed](#{u}"
+          else
+            "<img malformed src=#{u}> plain text"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_and_html_image_urls(doc, s3_prefix)
+        expected = legacy_extract_image_urls.call(doc, s3_prefix)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".clean_tag_list" do
+    let(:legacy_clean_tag_list) do
+      lambda do |string|
+        string = string.to_s
+        next [] if string.blank?
+
+        string.downcase.split(",").map do |t|
+          t.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
+        end
+      end
+    end
+
+    it "cleans ASCII and supported Unicode tag lists and returns nil for out-of-domain codepoints" do
+      %w[
+        ruby,rails,webdev
+        Optimización,Καλημέρα,Français
+      ].each do |input|
+        expect(described_class.clean_tag_list(input)).to eq(legacy_clean_tag_list.call(input))
+      end
+
+      expect(described_class.clean_tag_list("")).to eq([])
+      expect(described_class.clean_tag_list("   \t\n ")).to eq([])
+      expect(described_class.clean_tag_list(",,,")).to eq([])
+      expect(described_class.clean_tag_list("tag², other")).to be_nil
+      expect(described_class.clean_tag_list("İstanbul")).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized tag list strings" do
+      rng = Random.new(424_245)
+      tokens = [
+        "Ruby", "w o r d", "a-pp-le", "w0rd", "app|3", "&!tes4@#$%^&*",
+        "Optimización", "Καλημέρα", "Français", "", "   ", "tag²", "🚀rust"
+      ]
+
+      1_000.times do |i|
+        input = Array.new(rng.rand(0..6)) { tokens.sample(random: rng) }.join(",")
+        input += "," * rng.rand(0..2)
+
+        actual = described_class.clean_tag_list(input)
+        expected = legacy_clean_tag_list.call(input)
+        if actual.nil?
+          # Verify out-of-domain fallback produces the exact reference result
+          expect(ActsAsTaggableOn::TagParser.new(input).__send__(:clean, input)).to eq(expected)
+        else
+          expect(actual).to eq(expected), "iteration #{i}: input=#{input.inspect}"
+        end
+      end
+    end
+  end
 end

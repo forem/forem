@@ -1,10 +1,16 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import he from 'he';
 import { getContentOfToken } from '../utilities';
 import { locale } from '../../utilities/locale';
 import { Navigation } from './Navigation';
 import { Spinner } from '@crayons/Spinner/Spinner';
+
+function decodeHtmlEntities(text) {
+  if (!text) return '';
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = text;
+  return textarea.value;
+}
 
 function groupFollowsByType(array) {
   return array.reduce((returning, item) => {
@@ -241,7 +247,7 @@ export class FollowUsers extends Component {
                     <div className="user-info">
                       <h4 className="user-name">{follow.name}</h4>
                       <p className="user-summary">
-                        {he.unescape(follow.summary || '')}
+                        {decodeHtmlEntities(follow.summary || '')}
                       </p>
                     </div>
                     <label
