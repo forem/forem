@@ -129,7 +129,7 @@ module Api
 
       def authenticate_with_api_key
         api_key = request.headers["api-key"]
-        return unless api_key
+        return unless valid_api_key?(api_key)
 
         api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
         return unless api_secret
@@ -138,6 +138,10 @@ module Api
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
         api_secret.user if secure_secret
+      end
+
+      def valid_api_key?(api_key)
+        api_key.is_a?(String) && api_key.ascii_only? && api_key.b.exclude?("\x00")
       end
 
       def cookie_authenticated_request?
