@@ -96,4 +96,25 @@ RSpec.describe LocalRedis::Web do
   ensure
     ENV["LOCAL_REDIS_ACTIVE"] = original_marker
   end
+
+  it "passes web_environment overrides only to the web child and not to cache auxiliaries" do
+    probe = "File.write(ARGV[0], ENV.fetch('RUBY_GC_MALLOC_LIMIT', 'absent')); sleep 30"
+    supervisor = described_class.new(
+      command: [RbConfig.ruby, "-e", probe, web_pid_path],
+      cache_commands: {
+        redis: [RbConfig.ruby, "-e", probe, cache_pid_path]
+      },
+      restart_delay: 0.2,
+      web_environment: { "RUBY_GC_MALLOC_LIMIT" => "67108864" },
+    )
+    process_state[:pid] = fork do
+      Process.setpgrp
+      $stderr.reopen(supervisor_log_path, "a")
+      exit! supervisor.run
+    end
+
+    wait_until { File.exist?(web_pid_path) && File.exist?(cache_pid_path) }
+    expect(File.read(web_pid_path)).to eq("67108864")
+    expect(File.read(cache_pid_path)).to eq("absent")
+  end
 end
