@@ -49,6 +49,22 @@ RSpec.describe "UserShow" do
       expect(response_json.key?("email")).to be(false)
     end
 
+    context "when rendering the LinkedIn icon in the profile header" do
+      it "renders a LinkedIn link when the profile has a LinkedIn url", :aggregate_failures do
+        profile.update!(linkedin_url: "https://www.linkedin.com/in/jane-doe")
+        get user.path
+        link = Nokogiri::HTML(response.body).at_css(".profile-header__meta a[href='https://www.linkedin.com/in/jane-doe']")
+        expect(link).not_to be_nil
+        expect(link["rel"]).to include("noopener")
+        expect(link.at_css("svg title")&.text).to eq("LinkedIn website")
+      end
+
+      it "does not render a LinkedIn link when the profile has no LinkedIn url" do
+        get user.path
+        expect(response.body).not_to include("linkedin.com/in/")
+      end
+    end
+
     context "when rendering the icons next to the profile name" do
       let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
 

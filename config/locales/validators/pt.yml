@@ -11,6 +11,7 @@ pt:
       default: deve ser um identificador de Artigo publicado válido
     profile_validator:
       bio_too_long: Biografia é muito longa
+      linkedin_url_invalid: deve ser uma URL válida do LinkedIn
     cross_model_slug_validator:
       is_taken: já foi usado
       is_invalid: é inválido

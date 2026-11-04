@@ -12,8 +12,10 @@ class Profile < ApplicationRecord
   after_commit :enqueue_profile_spam_check, on: :update, if: :profile_spam_check_triggered?
 
   validates :user_id, uniqueness: true
-  validates :location, :website_url, length: { maximum: 100 }
+  validates :location, :website_url, :linkedin_url, length: { maximum: 100 }
   validates :website_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  validates :linkedin_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  validate :linkedin_url_points_to_linkedin
   validates_with ProfileValidator
 
   ATTRIBUTE_NAME_REGEX = /(?<attribute_name>\w+)=?/
@@ -21,7 +23,11 @@ class Profile < ApplicationRecord
   # Static fields are columns on the profiles table; they have no relationship
   # to a ProfileField record. These are columns we can safely assume exist for
   # any profile on a given Forem.
-  STATIC_FIELDS = %w[summary location website_url].freeze
+  STATIC_FIELDS = %w[summary location website_url linkedin_url].freeze
+  # Static fields that are intentionally not part of the public API responses.
+  API_EXCLUDED_FIELDS = %w[linkedin_url].freeze
+  # Matches linkedin.com and any number of subdomain labels, e.g. www.linkedin.com or www.uk.linkedin.com.
+  LINKEDIN_HOST_REGEX = /\A([a-z0-9-]+\.)*linkedin\.com\z/i
 
   # Update the Rails cache with the currently available attributes.
   def self.refresh_attributes!
@@ -37,6 +43,12 @@ class Profile < ApplicationRecord
 
   def self.static_fields
     STATIC_FIELDS
+  end
+
+  # Static fields serialized by the public API. Keeps API responses (and their
+  # documented OpenAPI schemas) unchanged when a UI-only static field is added.
+  def self.api_static_fields
+    STATIC_FIELDS - API_EXCLUDED_FIELDS
   end
 
   def clear!
@@ -87,12 +99,26 @@ class Profile < ApplicationRecord
     saved_change_to_summary? ||
       saved_change_to_location? ||
       saved_change_to_website_url? ||
+      saved_change_to_linkedin_url? ||
       saved_change_to_attribute?(:social_image) ||
       saved_change_to_data?
   end
 
   def profile_spam_check_triggered?
     (saved_change_to_website_url? && website_url.present?) || summary_contains_spam_trigger_terms?
+  end
+
+  def linkedin_url_points_to_linkedin
+    return if linkedin_url.blank?
+    # Format problems (e.g. a missing scheme) are reported by the url validator.
+    return if errors.include?(:linkedin_url)
+
+    host = URI.parse(linkedin_url.strip).host
+    return if host&.match?(LINKEDIN_HOST_REGEX)
+
+    errors.add(:linkedin_url, I18n.t("validators.profile_validator.linkedin_url_invalid"))
+  rescue URI::InvalidURIError
+    errors.add(:linkedin_url, I18n.t("validators.profile_validator.linkedin_url_invalid"))
   end
 
   def summary_contains_spam_trigger_terms?

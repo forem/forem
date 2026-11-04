@@ -45,6 +45,9 @@ fr:
         website:
           label: Website URL
           placeholder: https://yoursite.com
+        linkedin:
+          label: URL LinkedIn
+          placeholder: https://www.linkedin.com/in/votrenom
         education: Education
         currently learning: Currently learning
         currently hacking on: Currently hacking on

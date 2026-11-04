@@ -34,6 +34,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
 
   it "updates username, clears profile, and add BanishedUser record", :aggregate_failures do
     original_username = user.username
+    user.profile.update!(linkedin_url: "https://www.linkedin.com/in/spammer")
     sidekiq_perform_enqueued_jobs do
       described_class.call(user: user, admin: admin)
     end
@@ -42,6 +43,7 @@ RSpec.describe Moderator::BanishUser, type: :service do
     expect(user.profile.summary).to be_blank
     expect(user.profile.location).to be_blank
     expect(user.profile.website_url).to be_blank
+    expect(user.profile.linkedin_url).to be_blank
     expect(user.profile.data).to be_empty
     expect(user.github_username).to be_blank
     expect(user.twitter_username).to be_blank

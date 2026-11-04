@@ -28,6 +28,20 @@ RSpec.describe "Profiles" do
         end.to change { profile.reload.location }.to(new_location)
       end
 
+      it "updates the LinkedIn url" do
+        url = "https://www.linkedin.com/in/jane-doe"
+        expect do
+          patch profile_path(profile), params: { profile: { linkedin_url: url } }
+        end.to change { profile.reload.linkedin_url }.to(url)
+      end
+
+      it "rejects a LinkedIn url that is not a LinkedIn url" do
+        expect do
+          patch profile_path(profile), params: { profile: { linkedin_url: "https://example.com/in/jane" } }
+        end.not_to change { profile.reload.linkedin_url }
+        expect(response.body).to include("must be a valid LinkedIn URL")
+      end
+
       it "removes the profile image" do
         expect(profile.user.profile_image_url).to be_present
 

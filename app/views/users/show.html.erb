@@ -118,6 +118,12 @@
               </a>
             <% end %>
 
+            <% if @user.profile.linkedin_url.present? %>
+              <a href="<%= @user.profile.linkedin_url %>" target="_blank" rel="noopener me <%= "ugc" unless @user.trusted? %>" class="profile-header__meta__item p-1">
+                <%= crayons_icon_tag(:linkedin, class: "shrink-0", title: t("views.users.social", service: "LinkedIn")) %>
+              </a>
+            <% end %>
+
             <% social_authentication_links_for(@user).each do |provider_name, url| %>
               <a href="<%= url %>" target="_blank" rel="noopener me" class="profile-header__meta__item p-1">
                 <%= crayons_icon_tag(provider_name, class: "shrink-0", title: t("views.users.social", service: provider_name)) %>
