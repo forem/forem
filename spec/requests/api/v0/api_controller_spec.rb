@@ -4,7 +4,13 @@ require "rails_helper"
 module Api
   module V0
     class TestsController < ApiController
+      before_action :authenticate!, only: :show
+
       def index; end
+
+      def show
+        head :ok
+      end
     end
   end
 end
@@ -83,6 +89,33 @@ RSpec.describe "Api::V0::ApiController" do
           .to eq("299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information.")
         # rubocop:enable Layout/LineLength
       end
+    end
+  end
+
+  describe "authentication with malformed api-key header" do
+    it "returns unauthorized instead of raising when api-key has invalid multibyte characters or null bytes",
+       :aggregate_failures do
+      invalid_keys = [
+        (+"invalid\xFFkey").force_encoding(Encoding::ASCII_8BIT),
+        (+"truncated\xE2\x80").force_encoding(Encoding::ASCII_8BIT),
+        (+"\xC3\xA9").force_encoding(Encoding::ASCII_8BIT),
+        (+"invalid\xFFkey").force_encoding(Encoding::UTF_8),
+        "null\x00key",
+        "null\x00key".encode(Encoding::UTF_16LE),
+        "null\x00key".encode(Encoding::UTF_16BE),
+      ]
+
+      allow(ApiSecret).to receive(:includes).and_call_original
+
+      invalid_keys.each do |invalid_key|
+        ActiveRecord::Base.connection.unprepared_statement do
+          get "/api/tests/1", headers: { "api-key" => invalid_key }
+        end
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      expect(ApiSecret).not_to have_received(:includes)
     end
   end
 end
