@@ -3,9 +3,175 @@
 //= require lib/xss
 //= require initializePage
 //= require utilities/getImageForLink
-//= require @honeybadger-io/js/dist/browser/honeybadger.js
-//= require i18n
 //= require ahoy.js/dist/ahoy.js
+
+var I18n = window.I18n = {
+  defaultLocale: 'en',
+  locale: (document.body && document.body.dataset.locale) || 'en',
+  translations: {},
+  t: function(term, params) {
+    params = params || {};
+    var activeLocale = this.locale || (document.body && document.body.dataset.locale) || this.defaultLocale || 'en';
+    var segments = String(term).split('.');
+    function lookup(root) {
+      var current = root;
+      for (var i = 0; i < segments.length; i++) {
+        if (current == null || typeof current !== 'object') return undefined;
+        current = current[segments[i]];
+      }
+      return current;
+    }
+    var value = lookup(this.translations[activeLocale]);
+    if (value === undefined && activeLocale !== this.defaultLocale) {
+      value = lookup(this.translations[this.defaultLocale]);
+    }
+    if (value != null && typeof value === 'object' && Object.prototype.hasOwnProperty.call(params, 'count')) {
+      if (params.count === 0 && 'zero' in value) value = value.zero;
+      else if (params.count === 1 && 'one' in value) value = value.one;
+      else value = value.other;
+    }
+    if (typeof value !== 'string') {
+      return '[missing "' + activeLocale + '.' + term + '" translation]';
+    }
+    return value.replace(/%\{(\w+)\}/g, function(match, key) {
+      return Object.prototype.hasOwnProperty.call(params, key) ? params[key] : match;
+    });
+  }
+};
+
+(function() {
+  var hbConfig = {};
+  var hbBeforeNotifyHandlers = [];
+  var hbContext = {};
+  var hbQueue = [];
+  var hbLoadingPromise = null;
+
+  function passesBeforeNotify(err) {
+    var message = typeof err === 'string' ? err : (err && err.message);
+    var notice = { message: message };
+    for (var i = 0; i < hbBeforeNotifyHandlers.length; i++) {
+      try {
+        if (hbBeforeNotifyHandlers[i](notice) === false) {
+          return false;
+        }
+      } catch (_e) {}
+    }
+    return true;
+  }
+
+  function loadHoneybadgerClient() {
+    if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
+      return Promise.resolve(window.Honeybadger);
+    }
+    if (hbLoadingPromise) {
+      return hbLoadingPromise;
+    }
+    var meta = document.querySelector('meta[name="honeybadger-script"]');
+    var scriptSrc = meta && meta.getAttribute('content');
+    if (!scriptSrc) {
+      return Promise.resolve(null);
+    }
+    hbLoadingPromise = new Promise(function(resolve) {
+      var script = document.createElement('script');
+      script.src = scriptSrc;
+      script.defer = true;
+      script.onload = function() {
+        var realHb = window.Honeybadger;
+        if (realHb && !realHb.__isLazyProxy) {
+          if (typeof realHb.configure === 'function') {
+            realHb.configure(hbConfig);
+          }
+          for (var i = 0; i < hbBeforeNotifyHandlers.length; i++) {
+            if (typeof realHb.beforeNotify === 'function') {
+              realHb.beforeNotify(hbBeforeNotifyHandlers[i]);
+            }
+          }
+          if (Object.keys(hbContext).length > 0 && typeof realHb.setContext === 'function') {
+            realHb.setContext(hbContext);
+          }
+          while (hbQueue.length > 0) {
+            var args = hbQueue.shift();
+            if (typeof realHb.notify === 'function') {
+              realHb.notify.apply(realHb, args);
+            }
+          }
+          resolve(realHb);
+        } else {
+          resolve(null);
+        }
+      };
+      script.onerror = function() {
+        hbLoadingPromise = null;
+        resolve(null);
+      };
+      document.head.appendChild(script);
+    });
+    return hbLoadingPromise;
+  }
+
+  var lazyHoneybadger = {
+    __isLazyProxy: true,
+    config: hbConfig,
+    configure: function(opts) {
+      if (opts && typeof opts === 'object') {
+        Object.assign(hbConfig, opts);
+      }
+      return this;
+    },
+    beforeNotify: function(handler) {
+      if (typeof handler === 'function') {
+        hbBeforeNotifyHandlers.push(handler);
+      }
+      return this;
+    },
+    setContext: function(ctx) {
+      if (ctx && typeof ctx === 'object') {
+        Object.assign(hbContext, ctx);
+      }
+      return this;
+    },
+    context: function(ctx) {
+      return this.setContext(ctx);
+    },
+    clear: function() {
+      hbContext = {};
+      return this;
+    },
+    resetContext: function(ctx) {
+      hbContext = ctx && typeof ctx === 'object' ? Object.assign({}, ctx) : {};
+      return this;
+    },
+    notify: function(err, name, extra) {
+      if (!hbConfig.apiKey || !passesBeforeNotify(err)) {
+        return false;
+      }
+      if (window.Honeybadger && !window.Honeybadger.__isLazyProxy) {
+        return window.Honeybadger.notify(err, name, extra);
+      }
+      hbQueue.push([err, name, extra]);
+      loadHoneybadgerClient();
+      return true;
+    }
+  };
+
+  window.Honeybadger = lazyHoneybadger;
+
+  window.addEventListener('error', function(event) {
+    if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
+    var err = (event && event.error) || (event && event.message);
+    if (err) {
+      lazyHoneybadger.notify(err);
+    }
+  });
+
+  window.addEventListener('unhandledrejection', function(event) {
+    if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
+    var reason = event && event.reason;
+    if (reason) {
+      lazyHoneybadger.notify(reason);
+    }
+  });
+})();
 
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;

@@ -1,29 +1,36 @@
-import { h, render, Fragment } from 'preact';
-import { ListNavigation } from '../shared/components/useListNavigation';
-import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { initKeyboardShortcuts } from '../utilities/keyboardShortcuts';
+import { initListNavigation } from '../utilities/listNavigation';
 
-document.addEventListener('DOMContentLoaded', () => {
-  const root = document.getElementById('main-content');
+let cleanupKeyShortcuts = null;
+let cleanupListNav = null;
 
-  render(
-    <Fragment>
-      <KeyboardShortcuts
-        shortcuts={{
-          b: (event) => {
-            const article = event.target?.closest('.crayons-story');
+function setupHomePageFeedShortcuts() {
+  if (!document.getElementById('main-content')) {
+    return;
+  }
 
-            if (!article) return;
+  cleanupKeyShortcuts?.();
+  cleanupListNav?.();
 
-            article.querySelector('button[id^=article-save-button-]')?.click();
-          },
-        }}
-      />
-      <ListNavigation
-        itemSelector=".crayons-story"
-        focusableSelector="a.crayons-story__hidden-navigation-link"
-        waterfallItemContainerSelector="div.paged-stories,div.substories"
-      />
-    </Fragment>,
-    root,
+  cleanupKeyShortcuts = initKeyboardShortcuts({
+    b: (event) => {
+      const article = event.target?.closest('.crayons-story');
+
+      if (!article) return;
+
+      article.querySelector('button[id^=article-save-button-]')?.click();
+    },
+  });
+
+  cleanupListNav = initListNavigation(
+    '.crayons-story',
+    'a.crayons-story__hidden-navigation-link',
+    'div.paged-stories,div.substories',
   );
-});
+}
+
+if (document.readyState !== 'loading') {
+  setupHomePageFeedShortcuts();
+} else {
+  document.addEventListener('DOMContentLoaded', setupHomePageFeedShortcuts);
+}

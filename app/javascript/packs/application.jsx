@@ -9,6 +9,7 @@ import {
   loadMediaPlaybackBundle,
   shouldInitializePodcastPlayback,
 } from '../utilities/mediaPlaybackLoader';
+import { maybeLoadEventSignupButtons } from '../utilities/eventSignupButtonsLoader';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { loadCommentTextAreaBundle } from '@utilities/commentTextAreaLoader';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
@@ -129,6 +130,7 @@ if (document.location.pathname.startsWith('/dashboard')) {
 }
 
 maybeInitializeMediaPlayback();
+maybeLoadEventSignupButtons();
 document.ready.then(() => {
   initializeSlides();
 });
@@ -140,6 +142,7 @@ InstantClick.on('change', () => {
   }
 
   maybeInitializeMediaPlayback();
+  maybeLoadEventSignupButtons();
   initializeSlides();
   trackCreateAccountClicks('sidebar-wrapper-left');
 
