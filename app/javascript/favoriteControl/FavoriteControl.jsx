@@ -293,11 +293,11 @@ export const FavoriteControl = ({
         backdropDismissible={!submitting}
         size="small"
       >
-        <div class="p-6 grid gap-4" data-testid="gem-confirm-modal-content">
-          <p id={descriptionId} class="fs-base color-base-70 m-0">
+        <div class="text-center grid gap-7" data-testid="gem-confirm-modal-content">
+          <p id={descriptionId} class="fs-base fw-bold m-0">
             {confirmBody}
           </p>
-          <div class="flex gap-2">
+          <div class="flex justify-center gap-2">
             <Button
               variant="primary"
               disabled={submitting}
