@@ -9,6 +9,82 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
+  describe ".json_encoded_size (normalized transcript validation)" do
+    let(:validator) { AgentSessionParsers::NormalizedDataValidator }
+
+    # Builds a minimal valid normalized transcript fixture wrapping the given text value.
+    def transcript_with(value)
+      { "messages" => [{ "role" => "user", "content" => [{ "type" => "text", "text" => value }] }] }
+    end
+
+    it "counts exact encoded bytes for scalars, controls, Unicode, HTML, CRLF and nested containers" do
+      values = [nil, true, false, 0, -(2**63), (2**63) - 1, :symbol, [], {}, "", "é 😀 漢字",
+                "<>& \"quoted\" \\ \r\n\t", (0..31).map(&:chr).join, "\u2028\u2029",
+                { "a" => [nil, false, {}, [], { "key" => "&#64; &amp;" }] }]
+      escape_modes = [true, false]
+      values.each do |value|
+        escape_modes.each do |escape_html|
+          expected = ActiveSupport::JSON.encode(value, escape_html_entities: escape_html).bytesize
+          expect(described_class.json_encoded_size(value, escape_html_entities: escape_html)).to eq(expected)
+        end
+      end
+    end
+
+    it "declines values requiring Ruby conversions, custom methods or unsupported encodings" do
+      custom = { "messages" => [] }
+      def custom.to_json(*)
+        '"custom"'
+      end
+      values = [1.25, Float::NAN, Float::INFINITY, 2**70, Time.zone.at(0), Object.new,
+                "safe".html_safe, "binary".b, "é".encode("ISO-8859-1"), "\xFF".force_encoding("UTF-8"),
+                Class.new(Array).new, Class.new(Hash).new, Class.new(String).new("text"),
+                { a: 1 }, { a: 2 }.merge("a" => 1), { nil => "x" }, custom,
+                100.times.reduce([]) { |acc, _elem| [acc] }]
+      values.each { |value| expect(described_class.json_encoded_size(value)).to be_nil }
+      expect(validator.new(custom).__send__(:native_json_size)).to be_nil
+      expect(validator.new(custom).__send__(:legacy_json_size)).to eq(custom.to_json.bytesize)
+    end
+
+    it "preserves fallback results and errors for out-of-domain transcript values" do
+      [1.25, 1e-7, 2**70, "safe".html_safe, "binary".b, { a: 1 }, Time.zone.at(0)].each do |value|
+        data = transcript_with(value)
+        expect(described_class.json_encoded_size(data)).to be_nil
+        instance = validator.new(data)
+        expect(instance.__send__(:validate_size)).to be_empty
+        expect(instance.__send__(:legacy_json_size)).to eq(data.to_json.bytesize)
+      end
+      invalid = transcript_with("\xFF".force_encoding("UTF-8"))
+      expect { validator.validate(invalid) }.to raise_error(JSON::GeneratorError)
+    end
+
+    it "defers cycles to the legacy serializer" do
+      cyclic = []
+      cyclic << cyclic
+      expect(described_class.json_encoded_size(cyclic)).to be_nil
+    end
+
+    it "matches native sizes and end-to-end validation for 1,000 seeded randomized transcripts" do
+      rng = Random.new(424_242)
+      fragments = ["abc", "<>&", "\u2028", "\u2029", "😀", "漢字", "\0", "\r\n", "\\", '\"', "&#64;"]
+      stub_const("AgentSessionParsers::NormalizedDataValidator::MAX_JSON_SIZE", 400)
+      1_000.times do
+        text = Array.new(rng.rand(0..30)) { fragments.sample(random: rng) }.join
+        data = transcript_with(text)
+        data["metadata"] = { "values" => [rng.rand(-(2**63)..((2**63) - 1)), nil, true, false, text] }
+        instance = validator.new(data)
+        expected_size = data.to_json.bytesize
+        expect(described_class.json_encoded_size(data)).to eq(expected_size)
+        # Exercise both accepted and rejected payloads without allocating 10 MB per iteration.
+        expected = if expected_size > validator::MAX_JSON_SIZE
+                     ["Normalized data is too large (#{expected_size} bytes, max #{validator::MAX_JSON_SIZE})"]
+                   else
+                     []
+                   end
+        expect(instance.validate.map(&:message)).to eq(expected)
+      end
+    end
+  end
+
   describe ".postprocess_transcript_html and transcript primitives" do
     let(:legacy_wrap) do
       lambda do |html|

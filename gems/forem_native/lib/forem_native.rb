@@ -855,6 +855,14 @@ module ForemNative
       Native.json_quote(string, escape_html_entities ? true : false)
     end
 
+    # Exact ActiveSupport JSON byte length without allocating the serialized document.
+    # Unsupported values (including non-string object keys) defer to the caller.
+    def json_encoded_size(value, escape_html_entities: true)
+      return unless Native.respond_to?(:json_encoded_size)
+
+      Native.json_encoded_size(value, escape_html_entities ? true : false)
+    end
+
     # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
     # default `JSONGemEncoder`. The fast path covers Hash, Array, String, Symbol, Integer (64-bit),
     # true, false, and nil, with String or Symbol keys. Returns `nil` for anything else (Floats,
