@@ -803,6 +803,63 @@ RSpec.describe Spam::Handler, type: :service do
         expect(personal_article.reload.automod_label).to eq("okay_and_on_topic")
       end
     end
+
+    context "when a low-trust account posts a platform-impersonation phishing or signup lure" do
+      let(:phishing_author) do
+        create(:user, name: "𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢", username: "devteamsupp", badge_achievements_count: 0)
+      end
+      let!(:article) do
+        create(
+          :published_article,
+          user: phishing_author,
+          title: "Mаndаtоry usеr vеrificаtiоn",
+          body_markdown: "𝙈𝙖𝙣𝙙𝙖𝙩𝙤𝙧𝙮 𝙪𝙨𝙚𝙧 𝙫𝙚𝙧𝙞𝙛𝙞𝙘𝙖𝙩𝙞𝙤𝙣\n" \
+                         "Dеar User, we require vеriflcation of your account. Please log in via:\ntr.ee/dev-to",
+        )
+      end
+      let(:labeler_double) do
+        instance_double(Ai::ContentModerationLabeler,
+                        evaluate: { label: "no_moderation_label", compellingness_score: 0.2 })
+      end
+
+      before do
+        stub_const("Ai::Base::DEFAULT_KEY", "present")
+        allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(false)
+        allow(Ai::ContentModerationLabeler).to receive(:new).and_return(labeler_double)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_article_reactions?).and_return(false)
+      end
+
+      it "flags the article and immediately marks the low-trust author as spam on their first post" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(article).and_return(phishing_checker)
+
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: article, category: "vomit", user: mascot_user)).to exist
+        expect(article.reload.automod_label).to eq("clear_and_obvious_spam")
+        expect(phishing_author.reload).to be_spam
+        expect(AuditLog.on_user(phishing_author).find_by(slug: "automatic_spam").data)
+          .to include("reason" => "low_trust_phishing_or_signup", "reactable_type" => "Article")
+      end
+
+      it "works with Jev enabled for :phishing_signup_check without a Gemini key" do
+        stub_const("Ai::Base::DEFAULT_KEY", nil)
+        enable_jev_for(:phishing_signup_check)
+        stub_jev(platform_impersonation: 0.95, phishing_or_verification_lure: 0.95)
+
+        expect(handler).to eq(:spam)
+        expect(phishing_author.reload).to be_spam
+      end
+
+      it "skips the check for established or trusted users (4+ badges)" do
+        phishing_author.update_column(:badge_achievements_count, 4)
+        allow(Ai::PhishingSignupCheck).to receive(:new)
+        allow(Ai::ArticleCheck).to receive(:new)
+
+        expect(handler).to eq(:not_spam)
+        expect(Ai::PhishingSignupCheck).not_to have_received(:new)
+        expect(phishing_author.reload).not_to be_spam
+      end
+    end
   end
 
   describe ".handle_comment!" do
@@ -1206,6 +1263,37 @@ RSpec.describe Spam::Handler, type: :service do
         expect(comment.user).not_to be_spam
       end
     end
+
+    context "when a low-trust puppet account impersonating support comments @-mentions" do
+      let(:puppet_user) do
+        create(:user, name: "𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢", username: "ladiaoksaowo", badge_achievements_count: 0)
+      end
+      let(:mentioned_user) { create(:user) }
+      let!(:comment) do
+        create(:comment, user: puppet_user, body_markdown: "Hello @#{mentioned_user.username}")
+      end
+
+      it "flags the comment, removes mention notifications, and immediately marks the puppet account as spam" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(comment).and_return(phishing_checker)
+        allow(Notifications::RemoveBySpammerWorker).to receive(:perform_async)
+
+        expect(handler).to eq(:spam)
+        expect(Reaction.where(reactable: comment, category: "vomit", user: mascot_user)).to exist
+        expect(puppet_user.reload).to be_spam
+        expect(Notifications::RemoveBySpammerWorker).to have_received(:perform_async).with(puppet_user.id)
+      end
+
+      it "suspends the commenter when they exceed the comment-specific spam reaction threshold" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(comment).and_return(phishing_checker)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
+          .with(user: puppet_user, include_user_profile: false).and_return(true)
+
+        expect(handler).to eq(:spam)
+        expect(puppet_user.reload).to be_suspended
+      end
+    end
   end
 
   # No changes to .handle_user! tests
@@ -1455,6 +1543,12 @@ RSpec.describe Spam::Handler, type: :service do
       expect(described_class.profile_spam_trigger_term_match?("Looking for backlinks and SEO services")).to be(true)
       expect(described_class.profile_spam_trigger_term_match?("Escorts and casinos")).to be(true)
       expect(described_class.profile_spam_trigger_term_match?("prostitution ring")).to be(true)
+    end
+
+    it "matches platform impersonation and Unicode/homoglyph obfuscated support names" do
+      expect(described_class.profile_spam_trigger_term_match?("𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Official account of the Dev support team")).to be(true)
+      expect(described_class.profile_spam_trigger_term_match?("Suрроrt Воt")).to be(true)
     end
 
     it "does not false-trigger on substrings inside words or benign phrases like 'Girls Who Code'" do

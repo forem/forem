@@ -223,6 +223,39 @@ RSpec.describe Comment do
         expect(subject.errors[:base])
           .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a comment!")
       end
+
+      it "restricts untrusted users from mentioning more than mention_antispam_creation other users in a comment" do
+        other_users = create_list(:user, 3)
+        subject.commentable_type = "Article"
+        subject.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+        expect(subject).not_to be_valid
+        expect(subject.errors[:base])
+          .to include("You cannot mention more than #{Settings::RateLimit.mention_antispam_creation} users in a comment!")
+      end
+
+      it "allows trusted users to mention up to mention_creation other users in a comment" do
+        user.add_role(:trusted)
+        other_users = create_list(:user, 5)
+        subject.commentable_type = "Article"
+        subject.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+        expect(subject).to be_valid
+      end
+
+      it "blocks comments that exceed the user's hourly mention rate limit across multiple comments" do
+        other_users = create_list(:user, 5)
+        create(:comment, user: user, commentable: article,
+                         body_markdown: "@#{other_users[0].username} @#{other_users[1].username}")
+        create(:comment, user: user, commentable: article,
+                         body_markdown: "@#{other_users[2].username} @#{other_users[3].username}")
+
+        subject.commentable_type = "Article"
+        subject.body_markdown = "Hello @#{other_users[4].username}"
+
+        expect(subject).not_to be_valid
+        expect(subject.errors[:base]).to include(I18n.t("models.comment.mention_rate_limit_reached"))
+      end
     end
     # rubocop:enable RSpec/NamedSubject
 

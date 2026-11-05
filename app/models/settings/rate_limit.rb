@@ -21,6 +21,9 @@ module Settings
     setting :comment_antispam_creation, type: :integer, default: 1
     # Explicitly defaults to 7 to accommodate DEV Top 7 Posts
     setting :mention_creation, type: :integer, default: 7
+    setting :mention_antispam_creation, type: :integer, default: 2
+    setting :mention_hourly_limit, type: :integer, default: 20
+    setting :mention_antispam_hourly_limit, type: :integer, default: 4
     setting :comment_creation, type: :integer, default: 9
     setting :email_recipient, type: :integer, default: 5
     setting :feedback_message_creation, type: :integer, default: 5

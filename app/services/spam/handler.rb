@@ -28,6 +28,34 @@ module Spam
     HIGH_QUALITY_LABELS = %w[very_good_and_on_topic great_and_on_topic very_good_but_offtopic_for_subforem
                              great_but_off_topic_for_subforem].freeze
     MINIMUM_INDEXED_ARTICLE_LABEL = "okay_and_on_topic".freeze
+    PLATFORM_IMPERSONATION_PATTERN = /\b(?:
+      (?:dev(?:\.to)?|forem)\s+(?:
+        support|team|staff|admin(?:istrator)?s?|security|mod(?:erator)?s?|official|help\s*desk|verif\w*|bot
+      ) |
+      official\s+(?:account|support|team|staff|bot|notice|verification)\b.*?\b(?:dev|forem|platform|community) |
+      (?:support|security|verification)\s+(?:team|bot|staff|desk)\b
+    )/ix
+    PHISHING_OR_SIGNUP_PATTERN = /\b(?:
+      mandatory\s+(?:user\s+|account\s+)?verif\w* |
+      require\s+verif\w*\s+of\s+your\s+account |
+      verif\w*\s+(?:your\s+account|deadline|required|immediately) |
+      failure\s+to\s+verif\w* |
+      restricted\s+access |
+      log\s*in\s+via\s+(?:the\s+)?link |
+      confirm\s+your\s+(?:account|identity|credentials) |
+      sign\s*up\s+(?:
+        now|here|today|via|at|below|link|for\s+free|to\s+(?:claim|get|receive|unlock|verify|continue|access)
+      ) |
+      register\s+(?:now|here|today|via|at|below|your\s+account|to\s+(?:claim|get|receive|unlock|verify)) |
+      create\s+(?:an?\s+)?(?:free\s+)?account\s+(?:now|here|today|via|at|below)
+    )/ix
+    SHORTENER_LINK_PATTERN = %r{
+      \b(?:https?://)?
+      (?:tr\.ee|bit\.ly|tinyurl\.com|t\.co|rb\.gy|is\.gd|cutt\.ly|rebrand\.ly|shorturl\.at)/[A-Za-z0-9_-]+
+    }ix
+    LINKED_SIGNUP_CUE_PATTERN = /\b(?:
+      sign\s*up|signup|register|log\s*in|verif\w*|official|support|claim\s+your|free\s+account
+    )\b/ix
     # @return [TrueClass] if we are going to try to use more rigorous spam handling
     # @return [FalseClass] if we are using less rigorous spam handling
     def self.more_rigorous_user_profile_spam_checking?
@@ -50,11 +78,12 @@ module Spam
       assign_article_automod_label!(article)
       return :not_spam if minimum_indexed_article?(article)
 
+      text = attributes.map { |attr| article.public_send(attr) }.join("\n")
+
       # Handle clear and obvious violations immediately
       if CLEAR_VIOLATION_LABELS.include?(article.automod_label)
         issue_spam_reaction_for!(reactable: article)
-        escalate_flagged_author!(user: article.user)
-
+        escalate_or_mark_phishing_article_author!(article: article, text: text)
         return :spam
       end
 
@@ -63,11 +92,10 @@ module Spam
         return :not_spam
       end
 
+      return :spam if handle_phishing_or_signup_article!(article: article, text: text)
+
       # For likely violations, bypass badge count and other restrictions but still run checks
       bypass_restrictions = %w[likely_spam likely_harmful likely_inciting].include?(article.automod_label)
-
-      # Continue with existing spam detection logic
-      text = attributes.map { |attr| article.public_send(attr) }.join("\n")
 
       # Check if we should trigger spam detection
       should_check = Settings::RateLimit.trigger_spam_for?(text: text) ||
@@ -105,6 +133,13 @@ module Spam
         issue_spam_reaction_for!(reactable: comment)
         escalate_flagged_commenter!(user: comment.user)
         return :spam # Return early as it's confirmed spam.
+      end
+
+      if low_trust_phishing_or_signup_spam?(record: comment, text: comment.body_markdown,
+                                            html: comment.processed_html, parent_content: comment.commentable)
+        issue_spam_reaction_for!(reactable: comment)
+        mark_low_trust_phishing_or_signup_spam!(user: comment.user, reactable: comment)
+        return :spam
       end
 
       rate_limit_spam = Settings::RateLimit.trigger_spam_for?(text: comment.body_markdown)
@@ -154,6 +189,7 @@ module Spam
     def self.handle_profile_update!(user:)
       return :skipped if user.spam_or_suspended?
       return :skipped unless eligible_for_profile_spam_check?(user: user)
+      return :spam if handle_phishing_or_signup_profile!(user: user)
       return :skipped unless Ai::FunctionConfig.available?(:profile_moderation)
 
       label = Ai::ProfileModerationLabeler.new(user).label
@@ -249,6 +285,10 @@ module Spam
                         "#{reaction.errors.full_messages.to_sentence}")
     end
 
+    # Checks whether the mascot has already left an active vomit reaction on the given reactable.
+    #
+    # @param reactable [ActiveRecord::Base]
+    # @return [Boolean]
     def self.active_spam_reaction_for?(reactable:)
       Reaction.valid_or_confirmed.exists?(
         user_id: Settings::General.mascot_user_id,
@@ -531,13 +571,163 @@ module Spam
 
     # NEW/private: Detects trigger terms in profile text.
     def self.profile_spam_trigger_term_match?(text)
-      normalized = text.to_s.downcase
-      return false if normalized.blank?
+      raw = text.to_s
+      return false if raw.blank?
+      return true if Ai::PhishingSignupCheck.unicode_obfuscated?(raw)
+
+      normalized = Ai::PhishingSignupCheck.normalize_obfuscated_text(raw).downcase
+      return true if normalized.match?(PLATFORM_IMPERSONATION_PATTERN)
 
       PROFILE_SPAM_TRIGGER_TERMS.any? do |term|
         pattern = term == "prostitut" ? /\b#{Regexp.escape(term)}\w*\b/ : /\b#{Regexp.escape(term)}s?\b/
         normalized.match?(pattern)
       end
+    end
+
+    # Determines whether a user is a low-trust account eligible for phishing/signup checks.
+    #
+    # @param user [User, nil]
+    # @return [Boolean]
+    def self.low_trust_user?(user)
+      return false unless user
+      return false if exempt_from_auto_block?(user: user)
+      return false if user.trusted? || user.auditable? || user.super_moderator? || user.base_subscriber?
+
+      user.badge_achievements_count.to_i < 4
+    end
+
+    # Determines whether a low-trust user's content or profile has candidate cues for phishing or signup spam.
+    #
+    # @param user [User, nil]
+    # @param text [String, nil]
+    # @param html [String, nil]
+    # @param parent_content [ActiveRecord::Base, nil]
+    # @return [Boolean]
+    def self.phishing_or_signup_candidate?(user:, text: nil, html: nil, parent_content: nil)
+      return false unless low_trust_user?(user)
+
+      author_text = [user.name, user.username, user.profile&.summary, user.profile&.website_url].compact.join("\n")
+      return true if text_has_phishing_or_signup_cues?(author_text)
+      return true if text_has_phishing_or_signup_cues?(text, html: html)
+      return true if parent_content && parent_has_phishing_or_signup_cues?(parent_content)
+
+      false
+    end
+
+    # Checks whether text or HTML contains Unicode obfuscation, platform impersonation,
+    # phishing/verification prompts, URL shorteners, or linked signup cues.
+    #
+    # @param text [String, nil]
+    # @param html [String, nil]
+    # @return [Boolean]
+    def self.text_has_phishing_or_signup_cues?(text, html: nil)
+      raw = text.to_s
+      return false if raw.blank?
+      return true if Ai::PhishingSignupCheck.unicode_obfuscated?(raw)
+
+      normalized = Ai::PhishingSignupCheck.normalize_obfuscated_text(raw)
+      return true if normalized.match?(PLATFORM_IMPERSONATION_PATTERN)
+      return true if normalized.match?(PHISHING_OR_SIGNUP_PATTERN)
+      return true if normalized.match?(SHORTENER_LINK_PATTERN)
+
+      (html.to_s.include?("<a") || normalized.match?(%r{https?://}i)) &&
+        normalized.match?(LINKED_SIGNUP_CUE_PATTERN)
+    end
+
+    # Checks whether a parent post (such as the article a comment replies to) has phishing/signup cues.
+    #
+    # @param parent_content [ActiveRecord::Base, nil]
+    # @return [Boolean]
+    def self.parent_has_phishing_or_signup_cues?(parent_content)
+      parent_text = [
+        parent_content.respond_to?(:title) ? parent_content.title : nil,
+        parent_content.respond_to?(:body_markdown) ? parent_content.body_markdown : nil,
+      ].compact.join("\n")
+      text_has_phishing_or_signup_cues?(parent_text)
+    end
+
+    # Immediately marks a low-trust author as spam if the flagged article is phishing/signup spam;
+    # otherwise uses standard author escalation.
+    def self.escalate_or_mark_phishing_article_author!(article:, text:)
+      if low_trust_phishing_or_signup_spam?(record: article, text: text, html: article.processed_html)
+        mark_low_trust_phishing_or_signup_spam!(user: article.user, reactable: article)
+      else
+        escalate_flagged_author!(user: article.user)
+      end
+    end
+
+    # Runs the low-trust phishing/signup AI check on an article and flags/blocks the author if matched.
+    #
+    # @return [Boolean] true if handled as phishing/signup spam
+    def self.handle_phishing_or_signup_article!(article:, text:)
+      return false unless low_trust_phishing_or_signup_spam?(record: article, text: text, html: article.processed_html)
+
+      article.update_column(:automod_label, "clear_and_obvious_spam")
+      article.automod_label = "clear_and_obvious_spam"
+      issue_spam_reaction_for!(reactable: article)
+      mark_low_trust_phishing_or_signup_spam!(user: article.user, reactable: article)
+      true
+    end
+
+    # Runs the low-trust phishing/signup AI check on a user profile update and flags/blocks the user if matched.
+    #
+    # @return [Boolean] true if handled as phishing/signup spam
+    def self.handle_phishing_or_signup_profile!(user:)
+      profile_text = [user.name, user.username, user.profile&.summary, user.profile&.website_url].compact.join("\n")
+      return false unless low_trust_phishing_or_signup_spam?(record: user, text: profile_text)
+
+      issue_spam_reaction_for!(reactable: user)
+      mark_low_trust_phishing_or_signup_spam!(
+        user: user,
+        reactable: user,
+        name: user.name,
+        summary: user.profile&.summary,
+        website_url: user.profile&.website_url,
+        location: user.profile&.location,
+      )
+      true
+    end
+
+    # Evaluates whether a record from a low-trust user is confirmed phishing/signup spam via AI.
+    #
+    # @return [Boolean]
+    def self.low_trust_phishing_or_signup_spam?(record:, text: nil, html: nil, parent_content: nil)
+      user = record.is_a?(User) ? record : record.user
+      return false unless low_trust_user?(user)
+      return false unless Ai::FunctionConfig.available?(:phishing_signup_check)
+      return false unless phishing_or_signup_candidate?(user: user, text: text, html: html,
+                                                        parent_content: parent_content)
+
+      Ai::PhishingSignupCheck.new(record).spam?
+    end
+
+    # Marks a low-trust user as spam (or suspends them if over the spam reaction threshold)
+    # with an audit log entry and moderator note.
+    def self.mark_low_trust_phishing_or_signup_spam!(user:, reactable:, **details)
+      too_many_reactions = if reactable.is_a?(Comment)
+                             Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
+                               user: user,
+                               include_user_profile: more_rigorous_user_profile_spam_checking?,
+                             )
+                           else
+                             Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+                               user: user,
+                               include_user_profile: more_rigorous_user_profile_spam_checking?,
+                             )
+                           end
+      if too_many_reactions
+        suspend!(user: user)
+        return
+      end
+
+      mark_as_spam!(
+        user: user,
+        reason: "low_trust_phishing_or_signup",
+        note: I18n.t("services.spam.phishing_or_signup.marked_spam"),
+        reactable_type: reactable.class.name,
+        reactable_id: reactable.id,
+        **details,
+      )
     end
 
     # Spam farms publish the same post over and over. The third copy of a title in a day is spam
@@ -616,6 +806,10 @@ module Spam
                          :spam_block!,
                          :recent_auto_flagged_article_count, :mark_as_spam!,
                          :repeat_auto_flagged_commenter?, :recent_auto_flagged_comment_count, :recent_comments,
-                         :new_account_comment_flood_count
+                         :new_account_comment_flood_count,
+                         :low_trust_phishing_or_signup_spam?, :mark_low_trust_phishing_or_signup_spam!,
+                         :text_has_phishing_or_signup_cues?, :parent_has_phishing_or_signup_cues?,
+                         :escalate_or_mark_phishing_article_author!, :handle_phishing_or_signup_article!,
+                         :handle_phishing_or_signup_profile!
   end
 end
