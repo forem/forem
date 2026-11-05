@@ -11,11 +11,14 @@ RSpec.describe "db:seed:analytics", type: :task do
   end
 
   it "seeds analytics data" do
-    create_list(:user, 4)
-    article = create(:article, published: true, user: User.first)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("DAYS").and_return("5")
 
-    expect {
+    create_list(:user, 4)
+    create(:article, published: true, user: User.first)
+
+    expect do
       Rake::Task["db:seed:analytics"].invoke
-    }.to change(PageView, :count).and change(Reaction, :count).and change(Comment, :count)
+    end.to change(PageView, :count).and change(Reaction, :count).and change(Comment, :count)
   end
 end

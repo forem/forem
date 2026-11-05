@@ -135,6 +135,9 @@ function callInitializers() {
 }
 
 function initializePage() {
+  if (document.body) {
+    document.body.setAttribute('data-page-initialized', 'false');
+  }
   initializeLocalStorageRender();
   initializeBodyData();
 
@@ -153,6 +156,7 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
+      document.body.setAttribute('data-page-initialized', 'true');
     }
   }, 1);
 

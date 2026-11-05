@@ -32,7 +32,9 @@ RSpec.describe RateLimitChecker, type: :service do
       .except(:published_article_creation,
               :published_article_antispam_creation,
               :comment_creation,
-              :comment_antispam_creation).each do |action, _options|
+              :comment_antispam_creation,
+              :mention_creation,
+              :mention_antispam_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action), raw: true
@@ -248,6 +250,93 @@ RSpec.describe RateLimitChecker, type: :service do
 
     it "returns false if we are below the message limit for this recipient" do
       expect(described_class.new.limit_by_email_recipient_address(user.email)).to be(false)
+    end
+  end
+
+  describe "trust-tiered mention rate limits" do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before do
+      allow(Rails).to receive(:cache).and_return(cache)
+    end
+
+    it "applies strict per-post and hourly limits to brand-new or 0-badge users" do
+      new_user = create(:user, created_at: 1.hour.ago, badge_achievements_count: 0)
+      checker = described_class.new(new_user)
+
+      expect(checker.untrusted_mentioner?).to be(true)
+      expect(checker.max_mentions_per_post).to eq(Settings::RateLimit.mention_antispam_creation)
+      expect(checker.hourly_mention_limit).to eq(Settings::RateLimit.mention_antispam_hourly_limit)
+    end
+
+    it "applies intermediate per-post and hourly limits to low-trust users (1-3 badges, not new)" do
+      low_trust = create(:user, created_at: 10.days.ago, badge_achievements_count: 2)
+      checker = described_class.new(low_trust)
+
+      expect(checker.low_trust_mentioner?).to be(true)
+      expect(checker.max_mentions_per_post).to eq(3)
+      expect(checker.hourly_mention_limit).to eq(Settings::RateLimit.mention_antispam_hourly_limit * 2)
+    end
+
+    it "applies standard limits to established users (4-6 badges, not new)" do
+      established = create(:user, created_at: 10.days.ago, badge_achievements_count: 4)
+      checker = described_class.new(established)
+
+      expect(checker.established_mentioner?).to be(true)
+      expect(checker.max_mentions_per_post).to eq(Settings::RateLimit.mention_creation)
+      expect(checker.hourly_mention_limit).to eq(Settings::RateLimit.mention_hourly_limit)
+    end
+
+    it "applies generous hourly limits to trusted users" do
+      trusted = create(:user, :trusted, created_at: 10.days.ago)
+      checker = described_class.new(trusted)
+
+      expect(checker.trusted_mentioner?).to be(true)
+      expect(checker.max_mentions_per_post).to eq(Settings::RateLimit.mention_creation)
+      expect(checker.hourly_mention_limit).to eq(Settings::RateLimit.mention_hourly_limit * 3)
+    end
+
+    it "tracks hourly mentions and flags when the user's hourly mention limit is exceeded" do
+      new_user = create(:user, created_at: 1.hour.ago, badge_achievements_count: 0)
+      checker = described_class.new(new_user)
+      allow(ForemStatsClient).to receive(:increment)
+
+      checker.track_mentions(3)
+      expect(checker.mention_rate_limit_reached?(new_mentions_count: 1)).to be(false)
+      expect(checker.mention_rate_limit_reached?(new_mentions_count: 2)).to be(true)
+      expect(ForemStatsClient).to have_received(:increment).with(
+        "rate_limit.limit_reached",
+        tags: ["user:#{new_user.id}", "action:mention_antispam_creation"],
+      )
+    end
+
+    it "preserves cached mentions from other content while excluding only the current persisted record" do
+      new_user = create(:user, created_at: 1.hour.ago, badge_achievements_count: 0)
+      old_article_a = create(:published_article, user: new_user)
+      old_article_b = create(:published_article, user: new_user)
+      old_article_a.update_column(:published_at, 2.days.ago)
+      old_article_b.update_column(:published_at, 3.days.ago)
+      checker = described_class.new(new_user)
+
+      checker.track_mentions(3, notifiable: old_article_a)
+
+      expect(checker.recent_mention_count(exclude_notifiable: old_article_a)).to eq(0)
+      expect(checker.recent_mention_count(exclude_notifiable: old_article_b)).to eq(3)
+      expect(checker.mention_rate_limit_reached?(new_mentions_count: 2, exclude_notifiable: old_article_b)).to be(true)
+      expect(checker.mention_rate_limit_reached?(new_mentions_count: 3, exclude_notifiable: old_article_a)).to be(false)
+    end
+
+    it "atomically reserves mention capacity and releases it when rolled back" do
+      new_user = create(:user, created_at: 1.hour.ago, badge_achievements_count: 0)
+      checker = described_class.new(new_user)
+
+      reservation = checker.reserve_mentions!(new_mentions_count: 3)
+      expect(reservation).to include(delta: 3, count: 3)
+      expect(checker.reserve_mentions!(new_mentions_count: 2)).to be_nil
+
+      checker.release_mentions(reservation)
+      expect(checker.recent_mention_count).to eq(0)
+      expect(checker.reserve_mentions!(new_mentions_count: 2)).to include(delta: 2, count: 2)
     end
   end
 end
