@@ -161,6 +161,14 @@ RSpec.describe "Api::V1::AgentSessions" do
   end
 
   describe "POST /api/agent_sessions/presign" do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+
+    before { allow(Rails).to receive(:cache).and_return(cache) }
+
+    def presign(params = { content_length: 1024 })
+      post presign_api_agent_sessions_path, params: params.to_json, headers: auth_headers
+    end
+
     context "when S3 is enabled" do
       before do
         allow(AgentSessions::S3Storage).to receive_messages(
@@ -170,15 +178,78 @@ RSpec.describe "Api::V1::AgentSessions" do
         )
       end
 
-      it "returns presigned URL and s3_key" do
-        post presign_api_agent_sessions_path,
-             params: {}.to_json,
-             headers: auth_headers
+      it "returns presigned URL, s3_key and the headers to send with the upload" do
+        presign
 
         expect(response).to have_http_status(:ok)
         json = response.parsed_body
         expect(json["s3_key"]).to eq("agent_sessions/1/test.jsonl")
         expect(json["presigned_url"]).to eq("https://s3.example.com/presigned")
+        expect(json["headers"]).to eq(
+          "Content-Type" => "application/x-jsonlines",
+          "Content-Length" => "1024",
+          "x-amz-acl" => "private",
+        )
+      end
+
+      it "signs the URL for the declared content length" do
+        presign
+
+        expect(AgentSessions::S3Storage).to have_received(:presigned_put_url)
+          .with("agent_sessions/1/test.jsonl", content_length: 1024)
+      end
+
+      it "returns 422 when content_length is missing" do
+        presign({})
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to include("content_length")
+        expect(AgentSessions::S3Storage).not_to have_received(:presigned_put_url)
+      end
+
+      it "returns 422 when content_length exceeds the session size limit" do
+        presign({ content_length: AgentSession::MAX_CURATED_DATA_SIZE + 1 })
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(AgentSessions::S3Storage).not_to have_received(:presigned_put_url)
+      end
+
+      it "accepts content_length at the session size limit" do
+        presign({ content_length: AgentSession::MAX_CURATED_DATA_SIZE })
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns 429 with Retry-After once the presign limit is reached, even without session creation" do
+        allow(Settings::RateLimit).to receive_messages(agent_session_presign: 2,
+                                                       agent_session_presign_window_seconds: 600)
+
+        2.times do
+          presign
+          expect(response).to have_http_status(:ok)
+        end
+
+        presign
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["Retry-After"].to_s).to eq("600")
+        expect(AgentSessions::S3Storage).to have_received(:presigned_put_url).twice
+      end
+
+      it "does not count invalid requests against the presign limit" do
+        allow(Settings::RateLimit).to receive(:agent_session_presign).and_return(1)
+
+        presign({ content_length: 0 })
+        presign
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "is disabled when the presign limit is set to 0" do
+        allow(Settings::RateLimit).to receive(:agent_session_presign).and_return(0)
+
+        presign
+
+        expect(response).to have_http_status(:too_many_requests)
       end
     end
 
@@ -188,9 +259,7 @@ RSpec.describe "Api::V1::AgentSessions" do
       end
 
       it "returns 503" do
-        post presign_api_agent_sessions_path,
-             params: {}.to_json,
-             headers: auth_headers
+        presign
         expect(response).to have_http_status(:service_unavailable)
       end
     end

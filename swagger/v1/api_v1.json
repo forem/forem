@@ -38,7 +38,7 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "Upload a new agent session.\n\n### S3 Upload Workflow:\n1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.\n2. Upload the raw transcript to S3.\n3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).",
+        "description": "Upload a new agent session.\n\n### S3 Upload Workflow:\n1. Call the S3 presign endpoint to obtain a direct upload URL for the raw session transcript file.\n2. Upload the raw transcript to S3 with a PUT to `presigned_url`, sending exactly the returned `headers`.\n3. Send a POST request to this endpoint with the S3 key (`s3_key`) and the pre-parsed, curated JSON payload (`curated_data`).",
         "operationId": "createAgentSession",
         "parameters": [
 
@@ -149,8 +149,11 @@
         "tags": [
           "agent_sessions"
         ],
-        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.",
+        "description": "Generate an S3 presigned PUT URL and object key for uploading raw session transcripts directly to S3.\n\n### Upload Rules:\n- Declare the exact size of the file in bytes as `content_length`. The maximum is 10485760 bytes (10MB), the same limit applied to curated session data.\n- PUT the file to `presigned_url` within 15 minutes, sending exactly the returned `headers`. The size is part of the signature, so S3 rejects a body of any other length.\n- Rate limited per user to a configurable number of URLs per configurable window (by default 20 per hour), counted whether or not a session is later created. Exceeding it returns `429` with a `Retry-After` header. Forem admins can change both values, or set the limit to 0 to disable uploads.",
         "operationId": "presignAgentSession",
+        "parameters": [
+
+        ],
         "responses": {
           "200": {
             "description": "successful",
@@ -164,11 +167,32 @@
                     },
                     "presigned_url": {
                       "type": "string"
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "Headers to send with the PUT to presigned_url. Each is part of the signature.",
+                      "properties": {
+                        "Content-Type": {
+                          "type": "string"
+                        },
+                        "Content-Length": {
+                          "type": "string"
+                        },
+                        "x-amz-acl": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "Content-Type",
+                        "Content-Length",
+                        "x-amz-acl"
+                      ]
                     }
                   },
                   "required": [
                     "s3_key",
-                    "presigned_url"
+                    "presigned_url",
+                    "headers"
                   ]
                 }
               }
@@ -177,9 +201,36 @@
           "401": {
             "description": "unauthorized"
           },
+          "422": {
+            "description": "missing or too large content_length"
+          },
+          "429": {
+            "description": "too many requests"
+          },
           "503": {
             "description": "service unavailable"
           }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content_length": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10485760,
+                    "description": "Exact size of the raw transcript in bytes."
+                  }
+                },
+                "required": [
+                  "content_length"
+                ]
+              }
+            }
+          },
+          "description": "Size of the file to upload."
         }
       }
     },
