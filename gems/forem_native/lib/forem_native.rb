@@ -1082,6 +1082,31 @@ module ForemNative
       Native.clean_tag_list(input)
     end
 
+    # Literal transcript substitutions, with no entity decoding or DOM normalization.
+    # Non-UTF-8 strings and subclasses retain their Ruby encoding/gsub semantics.
+    def wrap_untagged_codeblocks(html)
+      return unless Native.respond_to?(:wrap_untagged_codeblocks)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_untagged_codeblocks(html)
+    end
+
+    # Replaces literal `[REDACTED]` markers with `<span class="agent-session-redacted">[REDACTED]</span>`.
+    def style_redaction_markers(html)
+      return unless Native.respond_to?(:style_redaction_markers)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.style_redaction_markers(html)
+    end
+
+    # Fuses code wrapping and marker styling after Rouge in one native call.
+    def postprocess_transcript_html(html, redact: true)
+      return unless Native.respond_to?(:postprocess_transcript_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.postprocess_transcript_html(html, redact)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

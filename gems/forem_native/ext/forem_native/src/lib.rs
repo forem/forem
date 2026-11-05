@@ -1780,6 +1780,47 @@ fn add_control_panel_to_codeblock(ruby: &Ruby, html: RString) -> Option<RString>
     Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
 }
 
+/// Wraps untagged `<pre><code>` blocks in `<pre class="highlight"><code>`, returning `None`
+/// when `html` is not valid UTF-8 or contains an unclosed code block.
+fn wrap_untagged_codeblocks(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: Only pure Rust inspects the borrowed string, and the borrow ends
+    // before any Ruby allocation. Incomplete code blocks defer to the caller.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::transcript::wrap_untagged_codeblocks(text)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+/// Replaces literal `[REDACTED]` markers with `<span class="agent-session-redacted">[REDACTED]</span>`.
+fn style_redaction_markers(ruby: &Ruby, html: RString) -> Option<RString> {
+    // SAFETY: The borrow is confined to pure Rust computation, before Ruby allocation.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::transcript::style_redaction_markers(text) {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
+/// Fuses untagged `<pre><code>` wrapping and optional `[REDACTED]` marker styling in a single pass.
+fn postprocess_transcript_html(ruby: &Ruby, html: RString, redact: bool) -> Option<RString> {
+    // SAFETY: The borrow is confined to pure Rust computation, before Ruby allocation.
+    let updated = {
+        let text = unsafe { html.test_as_str() }?;
+        match forem_core::transcript::postprocess_transcript_html(text, redact)? {
+            Cow::Borrowed(_) => None,
+            Cow::Owned(updated) => Some(updated),
+        }
+    };
+    Some(updated.map_or_else(|| RString::new_shared(html), |s| ruby.str_new(&s)))
+}
+
 fn wrap_all_tables(ruby: &Ruby, html: RString) -> Option<RString> {
     // SAFETY: Same zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
     // borrow ends before we allocate any Ruby objects.
@@ -2862,6 +2903,18 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "add_control_panel_to_codeblock",
         function!(add_control_panel_to_codeblock, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "wrap_untagged_codeblocks",
+        function!(wrap_untagged_codeblocks, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "style_redaction_markers",
+        function!(style_redaction_markers, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "postprocess_transcript_html",
+        function!(postprocess_transcript_html, 2),
     )?;
     native_mod.define_singleton_method("wrap_all_tables", function!(wrap_all_tables, 1))?;
     native_mod.define_singleton_method(

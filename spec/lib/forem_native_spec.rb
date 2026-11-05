@@ -9,6 +9,106 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
+  describe ".postprocess_transcript_html and transcript primitives" do
+    let(:legacy_wrap) do
+      lambda do |html|
+        html.gsub(%r{<pre><code>(.*?)</code></pre>}m) do
+          %(<pre class="highlight"><code>#{Regexp.last_match(1)}</code></pre>)
+        end
+      end
+    end
+
+    let(:legacy_redact) do
+      ->(html) { html.gsub("[REDACTED]", '<span class="agent-session-redacted">[REDACTED]</span>') }
+    end
+
+    let(:renderer) { AgentSessionRenderers::MarkdownRenderer }
+
+    it "preserves exact bytes for empty, Unicode, entity, CRLF, nested and adjacent matches" do
+      inputs = [
+        "", "plain 🚀 日本語\r\n\0", "<pre><code></code></pre>",
+        "<pre><code>a\r\n&amp; &#64; 🚀</code></pre><pre><code>b</code></pre>",
+        "<pre><code><pre><code>nested</code></pre></code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        '<pre><code class="ruby">[REDACTED]</code></pre>',
+        '<a href="[REDACTED]">&#91;REDACTED] [redacted] [REDACTED]</a>',
+        "[REDACTED][REDACTED]<pre><code>[REDACTED]</code></pre>"
+      ]
+
+      inputs.each do |html|
+        wrapped = legacy_wrap.call(html)
+        expect(described_class.wrap_untagged_codeblocks(html)).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        expect(described_class.postprocess_transcript_html(html)).to eq(legacy_redact.call(wrapped))
+        expect(described_class.postprocess_transcript_html(html, redact: false)).to eq(wrapped)
+      end
+    end
+
+    it "returns nil for unsupported types and encodings" do
+      inputs = [nil, [], 42, "binary".b, "[REDACTED]".encode("UTF-16LE"), "\xFF".force_encoding("UTF-8")]
+      inputs << Class.new(String).new("[REDACTED]")
+      inputs << "[REDACTED]".html_safe
+
+      inputs.each do |html|
+        expect(described_class.wrap_untagged_codeblocks(html)).to be_nil
+        expect(described_class.style_redaction_markers(html)).to be_nil
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+      end
+    end
+
+    it "returns fresh mutable strings without copying unchanged buffers or mutating the input" do
+      html = "plain 🚀".freeze
+      result = described_class.postprocess_transcript_html(html)
+
+      expect(result).to eq(html)
+      expect(result).not_to equal(html)
+      expect(result).not_to be_frozen
+      result << "!"
+      expect(html).to eq("plain 🚀")
+      expect(result.encoding).to eq(Encoding::UTF_8)
+    end
+
+    it "defers incomplete blocks and preserves the caller's legacy output" do
+      ["<pre><code>[REDACTED]", "<pre><code>ok</code></pre><pre><code>unclosed"].each do |html|
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(legacy_redact.call(legacy_wrap.call(html)))
+      end
+    end
+
+    it "preserves caller output and encoding when binary or safe strings defer" do
+      ["<pre><code>🚀 [REDACTED]</code></pre>".b, "<pre><code>[REDACTED]</code></pre>".html_safe].each do |html|
+        expected = legacy_redact.call(legacy_wrap.call(html))
+        actual = renderer.highlight_code_blocks(html, redact: true)
+        expect(actual).to eq(expected)
+        expect(actual.encoding).to eq(expected.encoding)
+        expect(actual.class).to eq(expected.class)
+      end
+    end
+
+    it "matches both primitives, the fused kernel and caller across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      parts = [
+        "plain 🚀 日本語", "\r\n", "\0", "&amp; &#64; &#91;REDACTED]", "[REDACTED]",
+        "<pre><code>", "</code></pre>", "<pre><code>x\n[REDACTED]</code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        "[redacted]", "<PRE><code>x</code></PRE>", "<pre> <code>x</code></pre>"
+      ]
+
+      1_000.times do
+        html = Array.new(rng.rand(0..30)) { parts.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        wrapped = legacy_wrap.call(html)
+        expected = legacy_redact.call(wrapped)
+
+        expect(described_class.wrap_untagged_codeblocks(html) || wrapped).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        native = described_class.postprocess_transcript_html(html)
+        expect(native || renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html)).to eq(wrapped)
+      end
+    end
+  end
+
   describe ".available? and Builder.normalized_platform" do
     it "loads the compiled Rust native extension directly" do
       expect(described_class.available?).to be(true)

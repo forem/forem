@@ -23,4 +23,5 @@ pub mod scrubber;
 pub mod svg;
 pub mod text;
 pub mod title;
+pub mod transcript;
 pub mod url;
