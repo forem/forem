@@ -717,6 +717,20 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
         expect(response.body).to include "reaction-button reacted"
       end
+
+      it "links to the internal article path even when the organization has a custom domain", :aggregate_failures do
+        org_with_domain = create(:organization, custom_domain: "blog.mlh.com")
+        FeatureFlag.enable(:org_custom_domain, FeatureFlag::Actor.new(org_with_domain))
+        org_article = create(:article, user_id: user.id, organization: org_with_domain)
+
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_to_mentioned_users_and_followers(org_article)
+        end
+
+        get "/notifications"
+        expect(response.body).to include(%(href="#{org_article.path}"))
+        expect(response.body).not_to include("blog.mlh.com")
+      end
     end
 
     context "when a user has a new co-author notification" do
