@@ -1,0 +1,34 @@
+app/javascript/__tests__/tagFollows.test.js
+  h_f968154a99632d 1-54
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 2,83-90,92-110,113-139,142,144-150,158,162
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 122-131
+app/javascript/packs/asyncUserStatusCheck.js
+  h_f968154a99632d 3-5
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 7-11
+app/javascript/packs/initializers/initializeNotifications.js
+  h_f968154a99632d 5-7,26-28,40-42
+app/javascript/packs/notificationPage.js
+  h_f968154a99632d 6-8,14-16,46-48,122-124,130-139,146-148,193-195,203-205
+app/javascript/packs/tagFollows.jsx
+  h_f968154a99632d 15-18,72-76,95-104,187-193,199-202,240-243,264-271
+app/javascript/utilities/__tests__/debounceAction.test.js
+  h_f968154a99632d 58-72
+app/javascript/utilities/debounceAction.js
+  h_f968154a99632d 76,79-80
+spec/views/users/main_feed_spec.rb
+  h_f968154a99632d 58-63,117-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bb81569205fccc106665dabb22ca209fd66f3f6b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
