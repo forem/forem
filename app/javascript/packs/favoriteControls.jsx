@@ -32,6 +32,10 @@ function initializeFavoriteControls(currentUser) {
       labelFavorite,
       labelFavorited,
       labelFavoritedByYou,
+      confirmTitle,
+      confirmBody,
+      confirmSubmit,
+      confirmCancel,
       modalTitle,
       modalBody,
       modalRemainingZero,
@@ -68,6 +72,10 @@ function initializeFavoriteControls(currentUser) {
         labelFavorite={labelFavorite}
         labelFavorited={labelFavorited}
         labelFavoritedByYou={labelFavoritedByYou}
+        confirmTitle={confirmTitle}
+        confirmBody={confirmBody}
+        confirmSubmit={confirmSubmit}
+        confirmCancel={confirmCancel}
         modalTitle={modalTitle}
         modalBody={modalBody}
         modalRemainingZero={modalRemainingZero}

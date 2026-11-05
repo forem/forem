@@ -244,24 +244,24 @@ document.ready.then(() => {
   hamburgerTrigger.addEventListener('click', getNavigation);
 
 
-  // Dynamically loading the script.js.
-  // We don't currently have dynamic insert working, so using this
-  // method instead.
-  const hoverElement = document.querySelector("#search-input");
-
-  const scriptElement = document.querySelector('meta[name="search-script"]');
-  if (scriptElement) {
-    hoverElement.addEventListener("mouseenter", function() {
-      const scriptPath = scriptElement.getAttribute("content");
-
-      // Check if the script is already added to the head
+  // Dynamically load Search.js on hover or keyboard focus of #search-input.
+  const searchInput = document.querySelector('#search-input');
+  const searchScriptMeta = document.querySelector('meta[name="search-script"]');
+  if (searchInput && searchScriptMeta) {
+    const ensureSearchScriptLoaded = () => {
+      const scriptPath = searchScriptMeta.getAttribute('content');
       if (scriptPath && !document.querySelector(`script[src="${scriptPath}"]`)) {
-        const script = document.createElement("script");
+        const script = document.createElement('script');
         script.src = scriptPath;
-        script.defer = true; // Optional, if you want it to load in deferred mode
+        script.defer = true;
+        script.onerror = () => {
+          script.remove();
+        };
         document.head.appendChild(script);
       }
-    }, { once: true }); // Ensures the hover event only triggers once
+    };
+    searchInput.addEventListener('mouseenter', ensureSearchScriptLoaded);
+    searchInput.addEventListener('focus', ensureSearchScriptLoaded);
   }
 });
 

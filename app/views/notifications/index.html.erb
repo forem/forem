@@ -15,6 +15,8 @@
   <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= t("views.notifications.meta.og.title", community: community_name) %>">
   <meta name="twitter:description" content="<%= t("views.notifications.meta.description", community: community_name) %>">
+
+   <%= javascript_include_tag "notificationPage", defer: true %>
 <% end %>
 
 <script>
@@ -64,7 +66,7 @@
       </div>
     </div>
   </main>
-  <%= javascript_include_tag "notificationPage", "subscribeButton", "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
+  <%= javascript_include_tag "subscribeButton", "CommentTextArea/CommentTextArea", defer: true, onerror: "this.remove()" %>
 <% else %>
   <%= render "devise/registrations/registration_form" %>
 <% end %>
