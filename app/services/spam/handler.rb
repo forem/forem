@@ -285,6 +285,10 @@ module Spam
                         "#{reaction.errors.full_messages.to_sentence}")
     end
 
+    # Checks whether the mascot has already left an active vomit reaction on the given reactable.
+    #
+    # @param reactable [ActiveRecord::Base]
+    # @return [Boolean]
     def self.active_spam_reaction_for?(reactable:)
       Reaction.valid_or_confirmed.exists?(
         user_id: Settings::General.mascot_user_id,
@@ -580,13 +584,25 @@ module Spam
       end
     end
 
+    # Determines whether a user is a low-trust account eligible for phishing/signup checks.
+    #
+    # @param user [User, nil]
+    # @return [Boolean]
     def self.low_trust_user?(user)
       return false unless user
+      return false if exempt_from_auto_block?(user: user)
       return false if user.trusted? || user.auditable? || user.super_moderator? || user.base_subscriber?
 
       user.badge_achievements_count.to_i < 4
     end
 
+    # Determines whether a low-trust user's content or profile has candidate cues for phishing or signup spam.
+    #
+    # @param user [User, nil]
+    # @param text [String, nil]
+    # @param html [String, nil]
+    # @param parent_content [ActiveRecord::Base, nil]
+    # @return [Boolean]
     def self.phishing_or_signup_candidate?(user:, text: nil, html: nil, parent_content: nil)
       return false unless low_trust_user?(user)
 
@@ -598,6 +614,12 @@ module Spam
       false
     end
 
+    # Checks whether text or HTML contains Unicode obfuscation, platform impersonation,
+    # phishing/verification prompts, URL shorteners, or linked signup cues.
+    #
+    # @param text [String, nil]
+    # @param html [String, nil]
+    # @return [Boolean]
     def self.text_has_phishing_or_signup_cues?(text, html: nil)
       raw = text.to_s
       return false if raw.blank?
@@ -612,6 +634,10 @@ module Spam
         normalized.match?(LINKED_SIGNUP_CUE_PATTERN)
     end
 
+    # Checks whether a parent post (such as the article a comment replies to) has phishing/signup cues.
+    #
+    # @param parent_content [ActiveRecord::Base, nil]
+    # @return [Boolean]
     def self.parent_has_phishing_or_signup_cues?(parent_content)
       parent_text = [
         parent_content.respond_to?(:title) ? parent_content.title : nil,
@@ -620,6 +646,8 @@ module Spam
       text_has_phishing_or_signup_cues?(parent_text)
     end
 
+    # Immediately marks a low-trust author as spam if the flagged article is phishing/signup spam;
+    # otherwise uses standard author escalation.
     def self.escalate_or_mark_phishing_article_author!(article:, text:)
       if low_trust_phishing_or_signup_spam?(record: article, text: text, html: article.processed_html)
         mark_low_trust_phishing_or_signup_spam!(user: article.user, reactable: article)
@@ -628,6 +656,9 @@ module Spam
       end
     end
 
+    # Runs the low-trust phishing/signup AI check on an article and flags/blocks the author if matched.
+    #
+    # @return [Boolean] true if handled as phishing/signup spam
     def self.handle_phishing_or_signup_article!(article:, text:)
       return false unless low_trust_phishing_or_signup_spam?(record: article, text: text, html: article.processed_html)
 
@@ -638,6 +669,9 @@ module Spam
       true
     end
 
+    # Runs the low-trust phishing/signup AI check on a user profile update and flags/blocks the user if matched.
+    #
+    # @return [Boolean] true if handled as phishing/signup spam
     def self.handle_phishing_or_signup_profile!(user:)
       profile_text = [user.name, user.username, user.profile&.summary, user.profile&.website_url].compact.join("\n")
       return false unless low_trust_phishing_or_signup_spam?(record: user, text: profile_text)
@@ -654,6 +688,9 @@ module Spam
       true
     end
 
+    # Evaluates whether a record from a low-trust user is confirmed phishing/signup spam via AI.
+    #
+    # @return [Boolean]
     def self.low_trust_phishing_or_signup_spam?(record:, text: nil, html: nil, parent_content: nil)
       user = record.is_a?(User) ? record : record.user
       return false unless low_trust_user?(user)
@@ -664,11 +701,21 @@ module Spam
       Ai::PhishingSignupCheck.new(record).spam?
     end
 
+    # Marks a low-trust user as spam (or suspends them if over the spam reaction threshold)
+    # with an audit log entry and moderator note.
     def self.mark_low_trust_phishing_or_signup_spam!(user:, reactable:, **details)
-      if Reaction.user_has_been_given_too_many_spammy_article_reactions?(
-        user: user,
-        include_user_profile: more_rigorous_user_profile_spam_checking?,
-      )
+      too_many_reactions = if reactable.is_a?(Comment)
+                             Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
+                               user: user,
+                               include_user_profile: more_rigorous_user_profile_spam_checking?,
+                             )
+                           else
+                             Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+                               user: user,
+                               include_user_profile: more_rigorous_user_profile_spam_checking?,
+                             )
+                           end
+      if too_many_reactions
         suspend!(user: user)
         return
       end

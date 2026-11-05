@@ -11,20 +11,41 @@ module Mentions
       @notifiable = notifiable
     end
 
+    # Creates Mention records and notifications for the notifiable, respecting per-post and hourly rate limits.
     def call
       return if notifiable_flagged_or_author_restricted?
 
-      mentioned_users = users_mentioned_in_text_excluding_author
-      if notifiable.user.present?
-        mentioned_users = mentioned_users.first(notifiable.user.rate_limiter.max_mentions_per_post)
-      end
+      with_author_mention_lock do
+        mentioned_users = users_mentioned_in_text_excluding_author
+        if notifiable.user.present?
+          mentioned_users = mentioned_users.first(allowed_mentions_count)
+        end
 
-      delete_mentions_removed_from_notifiable_text(mentioned_users)
-      create_mentions_for(mentioned_users)
+        delete_mentions_removed_from_notifiable_text(mentioned_users)
+        create_mentions_for(mentioned_users)
+      end
     end
 
     private
 
+    # Acquires the author's mention rate limit lock when an author is present.
+    def with_author_mention_lock(&block)
+      return yield if notifiable.user.blank?
+
+      notifiable.user.rate_limiter.with_user_mention_lock(&block)
+    end
+
+    # Calculates the maximum number of mentions allowed for this notifiable under both per-post and hourly limits.
+    def allowed_mentions_count
+      rate_limiter = notifiable.user.rate_limiter
+      remaining_hourly = [
+        rate_limiter.hourly_mention_limit - rate_limiter.recent_mention_count(exclude_notifiable: notifiable),
+        0,
+      ].max
+      [rate_limiter.max_mentions_per_post, remaining_hourly].min
+    end
+
+    # Returns true if the author is spam/suspended or the notifiable has an active mascot spam reaction.
     def notifiable_flagged_or_author_restricted?
       return true if notifiable.user&.spam_or_suspended?
 
@@ -44,12 +65,13 @@ module Mentions
       User.registered.where(username: usernames)
     end
 
+    # Creates mentions for the given users and records the created count in the author's hourly mention cache.
     def create_mentions_for(users)
       created_count = users.count do |user|
         mention = create_mention_for(user)
         mention&.persisted?
       end
-      notifiable.user&.rate_limiter&.track_mentions(created_count) if created_count.positive?
+      notifiable.user&.rate_limiter&.track_mentions(created_count, notifiable: notifiable) if created_count.positive?
     end
 
     def extract_usernames_from_mentions_in_text

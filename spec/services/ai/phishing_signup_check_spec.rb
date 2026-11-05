@@ -44,7 +44,10 @@ RSpec.describe Ai::PhishingSignupCheck, type: :service do
     it "detects mathematical fonts and mixed-script Cyrillic/Latin words" do
       expect(described_class.unicode_obfuscated?("𝘿𝙚𝙫 𝙎𝙪𝙥𝙥𝙤𝙧𝙩 𝙏𝙚𝙖𝙢")).to be(true)
       expect(described_class.unicode_obfuscated?("Dеar User")).to be(true)
+      expect(described_class.unicode_obfuscated?("Suрроrt Воt")).to be(true)
       expect(described_class.unicode_obfuscated?("Normal Developer Text")).to be(false)
+      expect(described_class.unicode_obfuscated?("Docker-контейнер")).to be(false)
+      expect(described_class.unicode_obfuscated?("こんにちは，世界")).to be(false)
     end
   end
 

@@ -1283,6 +1283,16 @@ RSpec.describe Spam::Handler, type: :service do
         expect(puppet_user.reload).to be_spam
         expect(Notifications::RemoveBySpammerWorker).to have_received(:perform_async).with(puppet_user.id)
       end
+
+      it "suspends the commenter when they exceed the comment-specific spam reaction threshold" do
+        phishing_checker = instance_double(Ai::PhishingSignupCheck, spam?: true)
+        allow(Ai::PhishingSignupCheck).to receive(:new).with(comment).and_return(phishing_checker)
+        allow(Reaction).to receive(:user_has_been_given_too_many_spammy_comment_reactions?)
+          .with(user: puppet_user, include_user_profile: false).and_return(true)
+
+        expect(handler).to eq(:spam)
+        expect(puppet_user.reload).to be_suspended
+      end
     end
   end
 

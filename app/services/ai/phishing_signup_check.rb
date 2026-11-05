@@ -32,9 +32,14 @@ module Ai
     }.freeze
     CONFUSABLE_REGEXP = Regexp.union(CONFUSABLE_CHARS.keys).freeze
     ZERO_WIDTH_REGEXP = /[\u200B-\u200D\uFEFF\u00AD\u034F\u2060]/
-    OBFUSCATED_UNICODE_REGEXP = /[\u{1D400}-\u{1D7FF}\uFF01-\uFF5E\u2460-\u24FF]/
-    MIXED_SCRIPT_WORD_REGEXP = /[A-Za-z]\S*[\p{Cyrillic}\p{Greek}]|[\p{Cyrillic}\p{Greek}]\S*[A-Za-z]/
+    OBFUSCATED_UNICODE_REGEXP = /[\u{1D400}-\u{1D7FF}\uFF10-\uFF19\uFF21-\uFF3A\uFF41-\uFF5A\u24B6-\u24E9]/
+    MIXED_SCRIPT_WORD_REGEXP = /[A-Za-z][\p{Cyrillic}\p{Greek}]|[\p{Cyrillic}\p{Greek}][A-Za-z]/
 
+    # Strips zero-width characters, applies NFKC compatibility normalization,
+    # and maps Cyrillic/Greek homoglyphs to ASCII Latin equivalents.
+    #
+    # @param text [String, nil] raw text to normalize
+    # @return [String] normalized text
     def self.normalize_obfuscated_text(text)
       return "" if text.blank?
 
@@ -44,6 +49,11 @@ module Ai
         .gsub(CONFUSABLE_REGEXP, CONFUSABLE_CHARS)
     end
 
+    # Detects whether text uses mathematical/fullwidth/circled alphanumeric characters
+    # or directly adjacent mixed-script Latin and Cyrillic/Greek homoglyphs.
+    #
+    # @param text [String, nil] text to inspect
+    # @return [Boolean]
     def self.unicode_obfuscated?(text)
       return false if text.blank?
 
@@ -80,6 +90,7 @@ module Ai
 
     private
 
+    # Re-evaluates a comment without parent post context when the parent post triggers a safety block.
     def spam_in_isolation?
       parse_response(@ai_client.call(<<~PROMPT))
         Is the following comment or author identity CLEARLY phishing, platform impersonation, or deceptive signup spam? Answer only with YES or NO.
@@ -97,6 +108,7 @@ module Ai
 
     # --- Jev (TypeSafe System One) ---
 
+    # Evaluates the record using TypeSafe Jev structured questions.
     def spam_via_jev?
       affected_content = @record.is_a?(User) ? nil : @record
       client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_user: @user,
@@ -105,6 +117,7 @@ module Ai
       spam_from_jev?(result)
     end
 
+    # Builds the structured application state payload for TypeSafe Jev evaluation.
     def jev_state
       state = {
         community: {
@@ -126,6 +139,7 @@ module Ai
       state
     end
 
+    # Builds the author state hash with both raw and normalized identity fields.
     def jev_author_state
       {
         name: @user&.name.to_s,
@@ -138,6 +152,7 @@ module Ai
       }
     end
 
+    # Builds the article content state hash for Jev.
     def jev_article_state
       {
         title: @record.title.to_s,
@@ -148,6 +163,7 @@ module Ai
       }
     end
 
+    # Builds the comment content state hash for Jev.
     def jev_comment_state
       {
         body: @record.body_markdown.to_s.truncate(4_000),
@@ -156,6 +172,7 @@ module Ai
       }
     end
 
+    # Builds the parent post state hash for a comment check in Jev.
     def jev_parent_post_state
       post = @record.commentable
       title = post.respond_to?(:title) ? post.title.to_s : ""
@@ -168,6 +185,7 @@ module Ai
       }
     end
 
+    # Defines the TypeSafe Jev judgment questions for impersonation, phishing, and signup solicitation.
     def jev_questions
       {
         platform_impersonation: noul(
@@ -219,6 +237,7 @@ module Ai
       }
     end
 
+    # Combines Jev question probabilities into a final boolean spam decision.
     def spam_from_jev?(result)
       impersonation = result.noul(:platform_impersonation)
       phishing = result.noul(:phishing_or_verification_lure)
@@ -235,6 +254,7 @@ module Ai
 
     # --- Gemini ---
 
+    # Builds the Gemini classification prompt including raw and normalized text.
     def build_prompt
       <<~PROMPT
         Analyze the following low-trust account activity for phishing, platform impersonation, or deceptive signup/login solicitation.
@@ -271,6 +291,7 @@ module Ai
       PROMPT
     end
 
+    # Formats the record-specific prompt section for Article, Comment, or User profile.
     def content_prompt_section
       case @record
       when Article
@@ -315,10 +336,12 @@ module Ai
       end
     end
 
+    # Parses the YES/NO response from Gemini.
     def parse_response(response)
       !response.nil? && response.strip.upcase == "YES"
     end
 
+    # Returns the string type label for the record being checked.
     def record_type
       case @record
       when Article then "article"
@@ -327,39 +350,47 @@ module Ai
       end
     end
 
+    # Returns the configured community name or default fallback.
     def community_name
       Settings::Community.community_name.presence || "DEV Community"
     end
 
+    # Returns the subforem/community description for context.
     def community_description
       subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : Subforem.cached_default_id
       Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
         Settings::Community.community_description(subforem_id: subforem_id)
     end
 
+    # Memoized normalized author display name.
     def normalized_author_name
       @normalized_author_name ||= self.class.normalize_obfuscated_text(@user&.name)
     end
 
+    # Memoized normalized author profile summary.
     def normalized_author_summary
       @normalized_author_summary ||= self.class.normalize_obfuscated_text(@user&.profile&.summary)
     end
 
+    # Memoized normalized content title.
     def normalized_title
       @normalized_title ||= self.class.normalize_obfuscated_text(@record.respond_to?(:title) ? @record.title : "")
     end
 
+    # Memoized normalized content body markdown.
     def normalized_body
       @normalized_body ||= self.class.normalize_obfuscated_text(
         @record.respond_to?(:body_markdown) ? @record.body_markdown : "",
       )
     end
 
+    # Returns true if the author's name or profile summary uses Unicode/homoglyph obfuscation.
     def author_obfuscated?
       self.class.unicode_obfuscated?(@user&.name) ||
         self.class.unicode_obfuscated?(@user&.profile&.summary)
     end
 
+    # Returns true if the record's title or body uses Unicode/homoglyph obfuscation.
     def content_obfuscated?
       (@record.respond_to?(:title) && self.class.unicode_obfuscated?(@record.title)) ||
         (@record.respond_to?(:body_markdown) && self.class.unicode_obfuscated?(@record.body_markdown))
