@@ -1,0 +1,50 @@
+app/assets/stylesheets/components/stories.scss
+  h_f968154a99632d 481-614
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 8-9,13,44-64,229-422
+app/javascript/articles/Feed.jsx
+  h_f968154a99632d 54-62,73-80,116-127,153-164,169,172-181
+app/javascript/articles/QuickiesBox.jsx
+  h_f968154a99632d 1-182
+app/javascript/articles/__tests__/Feed.test.jsx
+  h_f968154a99632d 530-663
+app/javascript/articles/__tests__/QuickiesBox.test.jsx
+  h_f968154a99632d 1-80
+app/javascript/articles/index.js
+  h_f968154a99632d 4
+app/javascript/packs/homePageFeed.jsx
+  h_f968154a99632d 3,82,86-89
+app/javascript/packs/storiesList.js
+  h_f968154a99632d 1-3,12-64
+app/models/articles/feeds.rb
+  h_f968154a99632d 65-66,75-77
+app/services/articles/feeds/basic.rb
+  h_f968154a99632d 4-5,10-11,16-20,24,29-30,42-43
+app/services/articles/feeds/curated.rb
+  h_f968154a99632d 4,12-13
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 8-9,15-16,60-61,86,181,237-238
+app/services/articles/feeds/latest.rb
+  h_f968154a99632d 6-7,11,15-18
+app/services/articles/feeds/timeframe.rb
+  h_f968154a99632d 5-6,10,12
+app/services/articles/feeds/variant_query.rb
+  h_f968154a99632d 50-51,58-59,61,67,282-288,292,294
+app/views/stories/_main_stories_feed.html.erb
+  h_f968154a99632d 21,32-34,42,59-62
+config/routes.rb
+  h_f968154a99632d 76-77
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 1114-1218
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8b49125d2aef7ea40364d4a2c4c845203f77506b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
