@@ -316,6 +316,19 @@ module Api
       render json: { error: message, status: 422 }, status: :unprocessable_entity
     end
 
+    # An unrecognized value would otherwise raise ArgumentError from the enum
+    # setter and surface as a 500.
+    def validate_ai_disclosure_level
+      return unless Settings::General.enable_ai_disclosure
+
+      value = params[:article][:ai_disclosure_level]
+      return if value.nil? || value.to_s.strip.empty? || Article.normalize_ai_disclosure_level(value)
+
+      error_unprocessable_entity(
+        "ai_disclosure_level must be one of: #{Article.ai_disclosure_levels.keys.join(', ')}",
+      )
+    end
+
     def convert_labels_param
       labels = params.dig("article", "labels")
       if labels.present?
