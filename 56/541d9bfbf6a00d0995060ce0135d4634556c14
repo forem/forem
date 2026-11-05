@@ -1,0 +1,20 @@
+app/controllers/stories/feeds_controller.rb
+  h_f968154a99632d 255
+app/javascript/articles/QuickiesBox.jsx
+  h_f968154a99632d 170-172
+app/javascript/articles/__tests__/QuickiesBox.test.jsx
+  h_f968154a99632d 152-169
+spec/requests/stories/feeds_spec.rb
+  h_f968154a99632d 1156,1159,1169,1205,1208,1213
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "56541d9bfbf6a00d0995060ce0135d4634556c14",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
