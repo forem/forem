@@ -18,7 +18,7 @@ module Admin
       :baseline_score,
       :co_author_ids_list,
       :published_at,
-      { context_notes_attributes: %i[id body_markdown] }
+      { context_notes_attributes: %i[id body_markdown] },
     ].freeze
 
     def index
@@ -35,6 +35,7 @@ module Admin
 
       @pinned_article = PinnedArticle.get
       @articles = @articles.where.not(id: @pinned_article) if @pinned_article
+      @articles = @articles.without_count
 
       @countable_vomits = {}
       @articles.each do |article|
