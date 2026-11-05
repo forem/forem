@@ -26,6 +26,7 @@ pt:
       mention_too_many:
         one: Você não pode mencionar mais de %{count} usuários em um post!
         other: Você não pode mencionar mais de %{count} usuários em um post!
+      mention_rate_limit_reached: Você atingiu o limite de menções de usuários. Por favor, tente novamente mais tarde.
       ai_disclosure:
         not_disclosed: Não divulgado
         no_ai: Sem IA
@@ -71,6 +72,7 @@ pt:
       mention_too_many:
         one: Você não pode mencionar mais de %{count} usuários em um comentário!
         other: Você não pode mencionar mais de %{count} usuários em um comentário!
+      mention_rate_limit_reached: Você atingiu o limite de menções de usuários. Por favor, tente novamente mais tarde.
     co_author_invitation:
       declined: "@%{username} recusou seu convite para ser coautor desta publicação."
       must_follow_author: "@%{username} precisa seguir você para que você possa convidá-lo como coautor."

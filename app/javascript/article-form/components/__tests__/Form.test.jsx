@@ -117,6 +117,36 @@ describe('<Form />', () => {
       expect(queryByTestId('article-form__title')).not.toBeInTheDocument();
       expect(queryByLabelText('Post Tags')).not.toBeInTheDocument();
     });
+
+    it('renders the markdown toolbar and overflow menu in the v1 form', async () => {
+      const { getByRole } = render(
+        <Form
+          titleDefaultValue="Test Title v1"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue=""
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v1"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+
+      const textArea = getByRole('textbox', { name: /Post Content/ });
+      getByRole('button', { name: 'Bold' }).click();
+      expect(textArea.value).toEqual('****');
+
+      const overflowMenuButton = getByRole('button', { name: 'More options' });
+      overflowMenuButton.click();
+      await waitFor(() =>
+        expect(overflowMenuButton).toHaveAttribute('aria-expanded', 'true'),
+      );
+      expect(getByRole('menuitem', { name: 'Help' })).toBeInTheDocument();
+    });
   });
 
   describe('v2', () => {

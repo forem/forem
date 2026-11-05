@@ -39,14 +39,19 @@ describe('tagFollows mountTagButtons', () => {
     );
     expect(followBtn).toHaveTextContent('Follow');
 
+    followBtn.focus();
+    expect(document.activeElement).toBe(followBtn);
+
     followBtn.click();
     await Promise.resolve();
     await Promise.resolve();
 
     expect(container.querySelector('.tag-card__badge')).toBeInTheDocument();
-    expect(
-      container.querySelector('button[aria-label="Following tag: javascript"]'),
-    ).toHaveTextContent('Following');
+    const updatedFollowBtn = container.querySelector(
+      'button[aria-label="Following tag: javascript"]',
+    );
+    expect(updatedFollowBtn).toHaveTextContent('Following');
+    expect(document.activeElement).toBe(updatedFollowBtn);
     expect(document.getElementById('snack-zone')).toHaveTextContent(
       'You have followed javascript.',
     );

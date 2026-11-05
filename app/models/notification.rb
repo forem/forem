@@ -15,7 +15,8 @@ class Notification < ApplicationRecord
 
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: %w[Published CoAuthor]) }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
-  scope :for_mentions, -> { where(notifiable_type: "Mention") }
+  scope :for_mentions, -> { where(notifiable_type: "Mention", action: nil) }
+  scope :for_comments_and_mentions, -> { where(notifiable_type: %w[Comment Mention], action: nil) }
 
   scope :for_organization, ->(org_id) { where(organization_id: org_id, user_id: nil) }
   scope :for_organization_comments, lambda { |org_id|
@@ -23,7 +24,10 @@ class Notification < ApplicationRecord
     where(organization_id: org_id, notifiable_type: "Comment", action: nil, user_id: nil)
   }
   scope :for_organization_mentions, lambda { |org_id|
-    where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
+    where(organization_id: org_id, notifiable_type: "Mention", action: nil, user_id: nil)
+  }
+  scope :for_organization_comments_and_mentions, lambda { |org_id|
+    where(organization_id: org_id, notifiable_type: %w[Comment Mention], action: nil, user_id: nil)
   }
   scope :unread, -> { where(read: false) }
 

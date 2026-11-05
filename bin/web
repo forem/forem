@@ -1,8 +1,12 @@
 #!/usr/bin/env ruby
 # No Rails boot here: Puma retains responsibility for preloading and forking.
 # Arguments replace the default server command, e.g. the container's rails server.
+require_relative "../lib/local_redis/web_environment"
+
 command = ["bundle", "exec", *(ARGV.empty? ? %w[puma -C config/puma.rb] : ARGV)]
-exec(*command) if ENV.fetch("LOCAL_REDIS_URL", "").empty?
+if ENV.fetch("LOCAL_REDIS_URL", "").empty?
+  exec(LocalRedis::WebEnvironment.build, *command)
+end
 
 require_relative "../lib/local_redis/web"
 exit LocalRedis::Web.new(command: command).run

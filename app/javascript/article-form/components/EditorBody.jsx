@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef } from 'preact/hooks';
 import { locale } from '@utilities/locale';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
-import { handleURLPasted } from './pasteURLHelpers';
+import { handleURLPasted, URL_REGEX } from './pasteURLHelpers';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
@@ -29,6 +29,10 @@ export const EditorBody = ({
   className = 'crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100',
 }) => {
   const textAreaRef = useRef(null);
+  // Tracks whether the current input event originated from a paste. Used to
+  // suppress mention-suggestion lookups when a paste happens to end on an
+  // @handle (e.g. "Hey @john"), without altering the pasted markdown.
+  const isPastingRef = useRef(false);
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
@@ -53,16 +57,62 @@ export const EditorBody = ({
       setElement(textAreaRef.current);
       setPasteElement(textAreaRef.current);
     }
-  });
+  }, [setElement, setPasteElement]);
 
-  // Attach URL paste handler for embed prompt
+  // If it's a URL, offer to embed it. Otherwise let the browser paste the text
+  // normally so body_markdown is saved exactly as the author wrote it. Mentions
+  // are handled server-side by Html::Parser#wrap_mentions_with_links, which
+  // already skips <code>, so pasted @handles in code are never linked/notified.
   useEffect(() => {
+    // Make sure we are in the editor
     const textarea = textAreaRef.current;
     if (!textarea) return;
 
-    const handler = handleURLPasted(textAreaRef);
-    textarea.addEventListener('paste', handler);
-    return () => textarea.removeEventListener('paste', handler);
+    const urlHandler = handleURLPasted(textAreaRef);
+
+    // Handle text that was pasted into the editor
+    const onPaste = (e) => {
+      // If files are present in the clipboard, let the image paste handler deal with it
+      const types = e.clipboardData?.types;
+      if (types && (types.includes?.('Files') || types.contains?.('Files'))) {
+        return;
+      }
+
+      // Get the clipboard data
+      const dt = e.clipboardData || window.clipboardData;
+      const pastedText = dt?.getData?.('text/plain') ?? '';
+
+      if (!pastedText) return; // If no text, do not proceed
+
+      const trimmed = pastedText.trim();
+
+      // If it's a URL, treat it as a URL
+      const isProbablyURL = URL_REGEX.test(trimmed);
+      if (isProbablyURL) {
+        urlHandler(e);
+        return;
+      }
+
+      // For plain text, let the browser handle the paste normally. This keeps
+      // the native undo stack intact and leaves the saved markdown untouched.
+      //
+      // Flag that the upcoming input event came from a paste so the mention
+      // autocomplete can skip its /search/usernames lookup. A paste that ends
+      // on an @handle would otherwise leave the caret right after it and open
+      // the suggestion dropdown. Reset on the next tick in case the paste is
+      // cancelled and no input event fires.
+      isPastingRef.current = true;
+      setTimeout(() => {
+        isPastingRef.current = false;
+        // Exit combobox mode if the paste-triggered input opened it. Clicking
+        // the textarea runs AutocompleteTriggerTextArea's handleTextAreaClicked,
+        // which dispatches exitComboboxMode.
+        textarea.click();
+      }, 0);
+    };
+
+    textarea.addEventListener('paste', onPaste);
+    return () => textarea.removeEventListener('paste', onPaste);
   }, []);
 
   return (
@@ -77,6 +127,13 @@ export const EditorBody = ({
         searchInstructionsMessage="Type to search for a user"
         ref={textAreaRef}
         fetchSuggestions={(username) => {
+          // Don't look up mentions for a token that only appeared because of a
+          // paste. The pasted markdown is kept verbatim; we just avoid opening
+          // the suggestion dropdown and hitting /search/usernames.
+          if (isPastingRef.current) {
+            return Promise.resolve([]);
+          }
+
           const priorityUserIds = gatherPriorityUserIds(textAreaRef.current);
           const params = { username };
 

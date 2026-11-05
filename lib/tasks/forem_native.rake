@@ -1,5 +1,59 @@
 # rubocop:disable Metrics/BlockLength
 namespace :forem_native do
+  desc "Benchmark only transcript HTML highlighting/marker substitutions (throughput and allocations)"
+  task benchmark_transcript: :environment do
+    unless ForemNative::Native.respond_to?(:postprocess_transcript_html)
+      raise "Missing native transcript symbol; rebuild with `bundle exec rake forem_native:compile` before benchmarking"
+    end
+
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    # The original three substitutions, retained as the benchmark oracle.
+    legacy = lambda do |html|
+      html = html.gsub(%r{<pre><code class="(\w+)">(.*?)</code></pre>}m) do
+        lang = Regexp.last_match(1)
+        code = CGI.unescapeHTML(Regexp.last_match(2))
+        begin
+          lexer = Rouge::Lexer.find(lang) || Rouge::Lexers::PlainText.new
+          highlighted = Rouge::Formatters::HTML.new.format(lexer.lex(code))
+          %(<pre class="highlight #{lang}"><code>#{highlighted}</code></pre>)
+        rescue StandardError
+          %(<pre class="highlight"><code>#{CGI.escapeHTML(code)}</code></pre>)
+        end
+      end
+      html = html.gsub(%r{<pre><code>(.*?)</code></pre>}m) do
+        %(<pre class="highlight"><code>#{Regexp.last_match(1)}</code></pre>)
+      end
+      html.gsub("[REDACTED]", '<span class="agent-session-redacted">[REDACTED]</span>')
+    end
+    native = ->(html) { AgentSessionRenderers::MarkdownRenderer.highlight_code_blocks(html, redact: true) }
+    code_output = "command output\n" * 10
+    workloads = {
+      "dense (60 untagged blocks, 120 markers)" =>
+        "<p>Transcript 日本語 🚀 [REDACTED]</p>\n" \
+        "<pre><code>value &amp; data\r\n[REDACTED]\n#{code_output}</code></pre>\n" * 60,
+      "prose (0 blocks, 0 markers)" =>
+        "ordinary transcript prose " * (14_976 / 26)
+    }
+
+    workloads.each do |label, sample|
+      raise "Transcript benchmark parity failure (#{label})" unless native.call(sample) == legacy.call(sample)
+
+      puts "Transcript HTML helper [#{label}]: #{sample.bytesize} bytes"
+      Benchmark.ips do |x|
+        x.config(warmup: 0.5, time: 1.5)
+        x.report("Legacy") { legacy.call(sample) }
+        x.report("ForemNative") { native.call(sample) }
+        x.compare!
+      end
+      { "Legacy" => legacy, "ForemNative" => native }.each do |name, implementation|
+        report = MemoryProfiler.report { 10.times { implementation.call(sample) } }
+        puts "#{name} (10 calls): #{report.total_allocated} objects; #{report.total_allocated_memsize} bytes"
+      end
+    end
+  end
+
   desc "Compile the forem_native Rust extension into gems/forem_native/lib/forem_native"
   task compile: :environment do
     require "forem_native"
@@ -27,7 +81,7 @@ namespace :forem_native do
   end
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
-  task benchmark: :environment do
+  task benchmark: %i[environment benchmark_extractors] do
     require "benchmark/ips"
     require "memory_profiler"
 
@@ -549,6 +603,61 @@ namespace :forem_native do
       x.report("Ruby Legacy (Phase 2 Metal Origin + Referrer + JSON SQL)") { legacy_phase2_pipeline.call }
       x.report("Rust Magnus (Phase 2 Metal Origin + Referrer + JSON SQL)") { native_phase2_pipeline.call }
       x.compare!
+    end
+  end
+
+  desc "Compare Markdown extractors and tag cleanup with their legacy Ruby calculations"
+  task benchmark_extractors: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    markdown = <<~MD * 30
+      A paragraph with [a link](https://example.com/page).
+      {% user synthetic_user %}
+      {% embed https://example.com/post extra %}
+      Inline `https://example.com/ignored` and fenced code:
+      ```ruby
+      {% tag ignored %}
+      ```
+      ![alt](https://example.com/image.png)
+      <img src="https://example.com/photo.jpg">
+    MD
+    excluded = "https://synthetic-bucket.s3.amazonaws.com"
+    tags = "Ruby, Rails, w o r d, Optimización, Καλημέρα, Français"
+    cases = {
+      extract_liquid_embed_tags: [
+        -> { LiquidEmbedExtractor.legacy_extract_tags(markdown) },
+        -> { ForemNative.extract_liquid_embed_tags(markdown) },
+      ],
+      extract_markdown_webpage_urls: [
+        -> { WebpageExtractor.__send__(:legacy_extract, markdown) },
+        -> { ForemNative.extract_markdown_webpage_urls(markdown) },
+      ],
+      extract_markdown_and_html_image_urls: [
+        -> { Articles::EnrichImageAttributes.__send__(:legacy_extract_image_urls, markdown, excluded) },
+        -> { ForemNative.extract_markdown_and_html_image_urls(markdown, excluded) },
+      ],
+      clean_tag_list: [
+        -> { ActsAsTaggableOn::TagParser.new(tags).__send__(:legacy_clean, tags) },
+        -> { ForemNative.clean_tag_list(tags) },
+      ]
+    }
+
+    puts "\n=== Markdown Extractors (#{markdown.bytesize} bytes) and Tag Cleanup ==="
+    cases.each do |name, (legacy, native)|
+      raise "#{name} differs from Ruby" unless legacy.call == native.call
+
+      [[:Ruby, legacy], [:Rust, native]].each do |label, calculation|
+        memory = MemoryProfiler.report { 100.times { calculation.call } }
+        puts "#{name} #{label} allocations (100 runs): " \
+             "#{memory.total_allocated} objects (#{memory.total_allocated_memsize} bytes)"
+      end
+      Benchmark.ips do |x|
+        x.config(time: 2, warmup: 1)
+        x.report("#{name} Ruby", &legacy)
+        x.report("#{name} Rust", &native)
+        x.compare!
+      end
     end
   end
 end

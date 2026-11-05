@@ -9,6 +9,106 @@ RSpec.describe ForemNative do
     ->(content) { (legacy_split_word_count.call(content) / 275.0).ceil }
   end
 
+  describe ".postprocess_transcript_html and transcript primitives" do
+    let(:legacy_wrap) do
+      lambda do |html|
+        html.gsub(%r{<pre><code>(.*?)</code></pre>}m) do
+          %(<pre class="highlight"><code>#{Regexp.last_match(1)}</code></pre>)
+        end
+      end
+    end
+
+    let(:legacy_redact) do
+      ->(html) { html.gsub("[REDACTED]", '<span class="agent-session-redacted">[REDACTED]</span>') }
+    end
+
+    let(:renderer) { AgentSessionRenderers::MarkdownRenderer }
+
+    it "preserves exact bytes for empty, Unicode, entity, CRLF, nested and adjacent matches" do
+      inputs = [
+        "", "plain 🚀 日本語\r\n\0", "<pre><code></code></pre>",
+        "<pre><code>a\r\n&amp; &#64; 🚀</code></pre><pre><code>b</code></pre>",
+        "<pre><code><pre><code>nested</code></pre></code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        '<pre><code class="ruby">[REDACTED]</code></pre>',
+        '<a href="[REDACTED]">&#91;REDACTED] [redacted] [REDACTED]</a>',
+        "[REDACTED][REDACTED]<pre><code>[REDACTED]</code></pre>"
+      ]
+
+      inputs.each do |html|
+        wrapped = legacy_wrap.call(html)
+        expect(described_class.wrap_untagged_codeblocks(html)).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        expect(described_class.postprocess_transcript_html(html)).to eq(legacy_redact.call(wrapped))
+        expect(described_class.postprocess_transcript_html(html, redact: false)).to eq(wrapped)
+      end
+    end
+
+    it "returns nil for unsupported types and encodings" do
+      inputs = [nil, [], 42, "binary".b, "[REDACTED]".encode("UTF-16LE"), "\xFF".force_encoding("UTF-8")]
+      inputs << Class.new(String).new("[REDACTED]")
+      inputs << "[REDACTED]".html_safe
+
+      inputs.each do |html|
+        expect(described_class.wrap_untagged_codeblocks(html)).to be_nil
+        expect(described_class.style_redaction_markers(html)).to be_nil
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+      end
+    end
+
+    it "returns fresh mutable strings without copying unchanged buffers or mutating the input" do
+      html = "plain 🚀".freeze
+      result = described_class.postprocess_transcript_html(html)
+
+      expect(result).to eq(html)
+      expect(result).not_to equal(html)
+      expect(result).not_to be_frozen
+      result << "!"
+      expect(html).to eq("plain 🚀")
+      expect(result.encoding).to eq(Encoding::UTF_8)
+    end
+
+    it "defers incomplete blocks and preserves the caller's legacy output" do
+      ["<pre><code>[REDACTED]", "<pre><code>ok</code></pre><pre><code>unclosed"].each do |html|
+        expect(described_class.postprocess_transcript_html(html)).to be_nil
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(legacy_redact.call(legacy_wrap.call(html)))
+      end
+    end
+
+    it "preserves caller output and encoding when binary or safe strings defer" do
+      ["<pre><code>🚀 [REDACTED]</code></pre>".b, "<pre><code>[REDACTED]</code></pre>".html_safe].each do |html|
+        expected = legacy_redact.call(legacy_wrap.call(html))
+        actual = renderer.highlight_code_blocks(html, redact: true)
+        expect(actual).to eq(expected)
+        expect(actual.encoding).to eq(expected.encoding)
+        expect(actual.class).to eq(expected.class)
+      end
+    end
+
+    it "matches both primitives, the fused kernel and caller across 1,000 randomized inputs" do
+      rng = Random.new(424_242)
+      parts = [
+        "plain 🚀 日本語", "\r\n", "\0", "&amp; &#64; &#91;REDACTED]", "[REDACTED]",
+        "<pre><code>", "</code></pre>", "<pre><code>x\n[REDACTED]</code></pre>",
+        '<pre class="highlight"><code>[REDACTED]</code></pre>',
+        "[redacted]", "<PRE><code>x</code></PRE>", "<pre> <code>x</code></pre>"
+      ]
+
+      1_000.times do
+        html = Array.new(rng.rand(0..30)) { parts.sample(random: rng) }.join.force_encoding(Encoding::UTF_8)
+        wrapped = legacy_wrap.call(html)
+        expected = legacy_redact.call(wrapped)
+
+        expect(described_class.wrap_untagged_codeblocks(html) || wrapped).to eq(wrapped)
+        expect(described_class.style_redaction_markers(html)).to eq(legacy_redact.call(html))
+        native = described_class.postprocess_transcript_html(html)
+        expect(native || renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html, redact: true)).to eq(expected)
+        expect(renderer.highlight_code_blocks(html)).to eq(wrapped)
+      end
+    end
+  end
+
   describe ".available? and Builder.normalized_platform" do
     it "loads the compiled Rust native extension directly" do
       expect(described_class.available?).to be(true)
@@ -4962,6 +5062,510 @@ RSpec.describe ForemNative do
             expect(outcome).to eq([expected_sql || :invalid, bb_id.to_s]), "iteration #{i}: json=#{json}"
           end
         end
+      end
+    end
+  end
+
+  describe ".extract_liquid_embed_tags" do
+    let(:liquid_tag_regex) { /\{%\s*([a-zA-Z0-9_]+)\s+(.*?)\s*%\}/ }
+
+    let(:legacy_extract_liquid_embed_tags) do
+      lambda do |content|
+        stripped = content.to_s.gsub(/```.*?```/m, "").gsub(/`.*?`/, "")
+        stripped.scan(liquid_tag_regex).map do |match|
+          tag_name = match[0].downcase
+          options = match[1].strip
+          url = options.split.first || options
+          [tag_name, url, options]
+        end.uniq
+      end
+    end
+
+    it "extracts deduplicated liquid tags while skipping fenced and inline code" do
+      markdown = <<~MD
+        Hello world!
+        {% YOUTUBE synthetic_video %}
+        {% user synthetic_user %}
+        ```ruby
+        {% youtube ignored_fenced %}
+        ```
+        Inline `{% tag ignored_inline %}` here.
+        {% youtube synthetic_video %}
+        {% embed https://example.com/synthetic_user/post extra_arg %}
+      MD
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_liquid_embed_tags(nil)).to be_nil
+      expect(described_class.extract_liquid_embed_tags(123)).to be_nil
+      invalid = (+"{% user test %}\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_liquid_embed_tags(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order and options when deduplicating many mixed-case tags" do
+      tags = Array.new(4_096) { |i| "{% TAG synthetic#{i} %}" }
+      markdown = (tags + tags.map(&:downcase) + ["{% tag synthetic0 extra %}"]).join("\n")
+
+      expect(described_class.extract_liquid_embed_tags(markdown)).to eq(
+        legacy_extract_liquid_embed_tags.call(markdown),
+      )
+    end
+
+    it "handles long lines of unclosed tags in linear time while preserving nested and multiline matches" do
+      unclosed_line = "{% tag x " * 16_000
+      raw_wrapped = "{% raw %}\n#{unclosed_line}\n{% endraw %}"
+      multiline_after_unclosed = "#{unclosed_line}\n{% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+      nested_multiline = "{% bad unclosed {% user\nsynthetic_user %}\n{% tag opt1 opt2\n  %}"
+
+      [unclosed_line, raw_wrapped, multiline_after_unclosed, nested_multiline].each do |doc|
+        expect(described_class.extract_liquid_embed_tags(doc)).to eq(
+          legacy_extract_liquid_embed_tags.call(doc),
+        )
+      end
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_242)
+      tag_names = %w[youtube USER twitter comment tag podcast organization org_posts embed]
+      urls = %w[synthetic_video synthetic_user https://example.com/synthetic_user/hello test_org ruby]
+      extras = ["", " foo", " bar baz", "   "]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          case rng.rand(6)
+          when 0
+            "Plain text paragraph #{rng.rand(100)} 🚀"
+          when 1
+            "{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)}#{extras.sample(random: rng)} %}"
+          when 2
+            "```ruby\n{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}\n```"
+          when 3
+            "`{% #{tag_names.sample(random: rng)} #{urls.sample(random: rng)} %}`"
+          when 4
+            "{% #{tag_names.sample(random: rng)} \n #{urls.sample(random: rng)} %}"
+          else
+            "Unclosed `backtick or {% broken tag"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_liquid_embed_tags(doc)
+        expected = legacy_extract_liquid_embed_tags.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_webpage_urls" do
+    let(:url_regex) { %r{https?://[^\s<>"{}|\\^`\[\]]+} }
+
+    let(:legacy_extract_webpage_urls) do
+      lambda do |content|
+        stripped = content.to_s
+          .gsub(/```.*?```/m, "")
+          .gsub(/`.*?`/, "")
+          .gsub(/\{%.*?%\}/, "")
+        urls = stripped.scan(url_regex)
+        urls.map! { |u| u.gsub(/[.,:;!?)]+$/, "") }
+        urls.uniq
+      end
+    end
+
+    it "extracts deduplicated URLs outside code and liquid tags and strips trailing punctuation" do
+      markdown = <<~MD
+        Visit [Example](https://example.com/path?a=1&b=2)!
+        Or http://test.org/doc, and https://example.com/path?a=1&b=2.
+        ```
+        https://ignored-fence.com/a
+        ```
+        Inline `https://ignored-inline.com/b` and {% embed https://ignored-liquid.com/c %}.
+      MD
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(
+        legacy_extract_webpage_urls.call(markdown),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_webpage_urls(nil)).to be_nil
+      invalid = (+"https://example.com\xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.extract_markdown_webpage_urls(invalid)).to be_nil
+    end
+
+    it "preserves first occurrence order for many unique and repeated URLs" do
+      urls = Array.new(4_096) { |i| "https://example.com/page#{i}" }
+      markdown = (urls + urls.reverse).join(" ")
+
+      expect(described_class.extract_markdown_webpage_urls(markdown)).to eq(urls)
+    end
+
+    it "matches the Ruby reference across 1,000 randomized Markdown documents" do
+      rng = Random.new(424_243)
+      hosts = %w[https://example.com http://dev.to https://rust-lang.org/learn http://test.io/a/b]
+      puncts = ["", ".", ",", ":", ";", "!", "?", ")", ").", "?!"]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          url = "#{hosts.sample(random: rng)}/#{rng.rand(20)}#{puncts.sample(random: rng)}"
+          case rng.rand(6)
+          when 0
+            "Check out #{url} in text"
+          when 1
+            "[link](#{url})"
+          when 2
+            "```\n#{url}\n```"
+          when 3
+            "`#{url}`"
+          when 4
+            "{% embed #{url} %}"
+          else
+            "Unclosed `#{url} or http:// or https://."
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_webpage_urls(doc)
+        expected = legacy_extract_webpage_urls.call(doc)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".extract_markdown_and_html_image_urls" do
+    let(:legacy_extract_image_urls) do
+      lambda do |markdown_text, stored_image_url|
+        markdown_pattern = /!\[.*?\]\((.*?)\)/
+        html_pattern = /<img.*?src=["'](.*?)["']/
+        all_urls = markdown_text.scan(markdown_pattern).flatten + markdown_text.scan(html_pattern).flatten
+        all_urls.reject { |url| !stored_image_url.empty? && url.include?(stored_image_url) }.uniq
+      end
+    end
+
+    it "extracts markdown and HTML image URLs in order while excluding stored S3 URLs" do
+      s3_prefix = "https://synthetic-bucket.s3.amazonaws.com"
+      md = <<~MD
+        ![alt](https://example.com/a.png)
+        ![stored](#{s3_prefix}/uploads/1.png)
+        <img alt="b" src="https://example.com/b.jpg">
+        <img src='https://example.com/a.png'>
+        <img src="#{s3_prefix}/uploads/2.jpg">
+      MD
+
+      expect(described_class.extract_markdown_and_html_image_urls(md, s3_prefix)).to eq(
+        legacy_extract_image_urls.call(md, s3_prefix),
+      )
+    end
+
+    it "returns nil for non-String or invalid UTF-8 inputs" do
+      expect(described_class.extract_markdown_and_html_image_urls(nil, "")).to be_nil
+      expect(described_class.extract_markdown_and_html_image_urls("![a](b)", nil)).to be_nil
+    end
+
+    it "matches Ruby for long image lines, duplicates, exclusions, and newline boundaries" do
+      images = Array.new(4_096) { |i| "![alt](https://example.com/image#{i}.png)" }.join(" ")
+      html = Array.new(4_096) { |i| "<img src='https://example.com/image#{i}.png'>" }.join(" ")
+      markdown = "#{html}\n![broken\n](ignored) #{images}\n<img src='broken\nignored'>\n" \
+                 "<img src='https://example.com/last.png'>\n#{images}"
+      excluded = "https://example.com/image0.png"
+
+      expect(described_class.extract_markdown_and_html_image_urls(markdown, excluded)).to eq(
+        legacy_extract_image_urls.call(markdown, excluded),
+      )
+    end
+
+    it "matches the Ruby reference across 1,000 randomized inputs" do
+      rng = Random.new(424_244)
+      s3_prefix = "https://my-bucket.s3.amazonaws.com"
+      urls = [
+        "https://example.com/img1.png",
+        "https://example.com/img2.gif",
+        "#{s3_prefix}/uploads/stored.png",
+        "/relative/path.jpg",
+        "",
+      ]
+
+      1_000.times do |i|
+        parts = Array.new(rng.rand(1..8)) do
+          u = urls.sample(random: rng)
+          case rng.rand(5)
+          when 0
+            "![alt #{rng.rand(10)}](#{u})"
+          when 1
+            "<img alt=\"x\" src=\"#{u}\">"
+          when 2
+            "<img data-src=foo src='#{u}' width='100'>"
+          when 3
+            "![unclosed](#{u}"
+          else
+            "<img malformed src=#{u}> plain text"
+          end
+        end
+        doc = parts.join("\n")
+
+        actual = described_class.extract_markdown_and_html_image_urls(doc, s3_prefix)
+        expected = legacy_extract_image_urls.call(doc, s3_prefix)
+        expect(actual).to eq(expected), "iteration #{i}: doc=#{doc.inspect}"
+      end
+    end
+  end
+
+  describe ".clean_tag_list" do
+    let(:legacy_clean_tag_list) do
+      lambda do |string|
+        string = string.to_s
+        next [] if string.blank?
+
+        string.downcase.split(",").map do |t|
+          t.strip.delete(" ").gsub(/[^[:alnum:]]/i, "")
+        end
+      end
+    end
+
+    it "cleans ASCII and supported Unicode tag lists and returns nil for out-of-domain codepoints" do
+      %w[
+        ruby,rails,webdev
+        Optimización,Καλημέρα,Français
+      ].each do |input|
+        expect(described_class.clean_tag_list(input)).to eq(legacy_clean_tag_list.call(input))
+      end
+
+      expect(described_class.clean_tag_list("")).to eq([])
+      expect(described_class.clean_tag_list("   \t\n ")).to eq([])
+      expect(described_class.clean_tag_list(",,,")).to eq([])
+      expect(described_class.clean_tag_list("tag², other")).to be_nil
+      expect(described_class.clean_tag_list("İstanbul")).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized tag list strings" do
+      rng = Random.new(424_245)
+      tokens = [
+        "Ruby", "w o r d", "a-pp-le", "w0rd", "app|3", "&!tes4@#$%^&*",
+        "Optimización", "Καλημέρα", "Français", "", "   ", "tag²", "🚀rust"
+      ]
+
+      1_000.times do |i|
+        input = Array.new(rng.rand(0..6)) { tokens.sample(random: rng) }.join(",")
+        input += "," * rng.rand(0..2)
+
+        actual = described_class.clean_tag_list(input)
+        expected = legacy_clean_tag_list.call(input)
+        if actual.nil?
+          # Verify out-of-domain fallback produces the exact reference result
+          expect(ActsAsTaggableOn::TagParser.new(input).__send__(:clean, input)).to eq(expected)
+        else
+          expect(actual).to eq(expected), "iteration #{i}: input=#{input.inspect}"
+        end
+      end
+    end
+  end
+
+  describe ".match_first_flare_tag" do
+    let(:canonical_flare_tags) do
+      %w[discuss help explainlikeimfive watercooler]
+    end
+
+    let(:legacy_match_first_flare_tag) do
+      lambda do |cached_tag_list, allowed_tags = nil|
+        flare_tags = (allowed_tags || canonical_flare_tags).to_set
+        tags = cached_tag_list.to_s.split(", ")
+        flare_tags.intersection(tags).first
+      end
+    end
+
+    it "matches the first flare tag in cached_tag_list order and returns false when none match" do
+      expect(described_class.match_first_flare_tag("ruby, discuss, watercooler", nil)).to eq("discuss")
+      expect(described_class.match_first_flare_tag("watercooler, discuss", nil)).to eq("watercooler")
+      expect(described_class.match_first_flare_tag("ruby, rails, webdev", nil)).to be(false)
+      expect(described_class.match_first_flare_tag("", nil)).to be(false)
+      expect(described_class.match_first_flare_tag(nil, nil)).to be(false)
+      expect(described_class.match_first_flare_tag("custom, discuss", %w[custom])).to eq("custom")
+    end
+
+    it "returns nil for out-of-domain inputs so callers fall back cleanly" do
+      subclass_str = Class.new(String).new("ruby, discuss")
+      expect(described_class.match_first_flare_tag(subclass_str, nil)).to be_nil
+      expect(described_class.match_first_flare_tag(123, nil)).to be_nil
+      expect(described_class.match_first_flare_tag("ruby, discuss", [123])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized cached_tag_list strings" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails javascript webdev discuss help explainlikeimfive watercooler ai rust go] + ["", " "]
+
+      1_000.times do |i|
+        raw = Array.new(rng.rand(0..6)) { pool.sample(random: rng) }.join(", ")
+        raw += ", " * rng.rand(0..2)
+        allowed = rng.rand(2).zero? ? nil : pool.sample(rng.rand(0..5), random: rng).reject(&:empty?)
+
+        actual = described_class.match_first_flare_tag(raw, allowed)
+        expected = legacy_match_first_flare_tag.call(raw, allowed)
+        expect(actual).to eq(expected || false), "iteration #{i}: raw=#{raw.inspect} allowed=#{allowed.inspect}"
+      end
+    end
+  end
+
+  describe ".match_articles_flare_tags" do
+    let(:canonical_flare_set) do
+      %w[discuss help explainlikeimfive watercooler].to_set
+    end
+
+    let(:legacy_match_articles_flare_tags) do
+      lambda do |pairs|
+        result = Hash.new { |hash, key| hash[key] = [] }
+        pairs.each do |article_id, cached_tag_list|
+          next if cached_tag_list.nil? || cached_tag_list.strip.empty?
+
+          tags = cached_tag_list.split(", ")
+          flare_tag = canonical_flare_set.intersection(tags).first
+          next if flare_tag.blank?
+
+          result[flare_tag] << article_id
+        end
+        result
+      end
+    end
+
+    it "groups article IDs by their first matched flare tag in first-seen tag order" do
+      pairs = [
+        [10, "ruby, watercooler, discuss"],
+        [20, "rails, discuss"],
+        [30, "javascript, webdev"],
+        [40, "help, watercooler"],
+        [50, "discuss, help"],
+        [60, nil],
+        [70, "   "],
+      ]
+
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        "watercooler" => [10],
+        "discuss" => [20, 50],
+        "help" => [40],
+      )
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        legacy_match_articles_flare_tags.call(pairs),
+      )
+    end
+
+    it "returns nil for out-of-domain pair arrays so Homepage::FetchTagFlares falls back cleanly" do
+      expect(described_class.match_articles_flare_tags(nil)).to be_nil
+      expect(described_class.match_articles_flare_tags(["not_a_pair"])).to be_nil
+      expect(described_class.match_articles_flare_tags([[1, 123]])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized article batches" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails webdev discuss help explainlikeimfive watercooler beginners career]
+
+      1_000.times do |i|
+        pairs = Array.new(rng.rand(0..25)) do |idx|
+          tag_list = if rng.rand(6).zero?
+                       [nil, "", "   "].sample(random: rng)
+                     else
+                       Array.new(rng.rand(1..5)) { pool.sample(random: rng) }.join(", ")
+                     end
+          [idx + 1, tag_list]
+        end
+
+        actual = described_class.match_articles_flare_tags(pairs)
+        expected = legacy_match_articles_flare_tags.call(pairs)
+        expect(actual).to eq(expected), "iteration #{i}: pairs=#{pairs.inspect}"
+      end
+    end
+  end
+
+  describe ".build_relevancy_lever_sql and .build_variant_relevancy_score_sql" do
+    let(:lever_struct) do
+      Struct.new(
+        :key,
+        :user_required,
+        :select_fragment,
+        :joins_fragments,
+        :group_by_fragment,
+        :cases,
+        :fallback,
+        :query_parameters,
+        keyword_init: true,
+      )
+    end
+
+    let(:legacy_build_lever_sql) do
+      lambda do |select_fragment, cases, fallback|
+        lines = ["(CASE #{select_fragment}"]
+        cases.each do |value, factor|
+          lines << "WHEN #{value.to_i} THEN #{factor.to_f}"
+        end
+        lines << "ELSE #{fallback.to_f} END)"
+        lines.join("\n")
+      end
+    end
+
+    let(:legacy_build_variant_sql) do
+      lambda do |levers, has_user, minimize_ai|
+        parts = []
+        levers.each do |lever|
+          next if lever.user_required && !has_user
+
+          parts << legacy_build_lever_sql.call(lever.select_fragment, lever.cases, lever.fallback)
+        end
+        if minimize_ai
+          parts << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+                   "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        end
+        parts.join(" * \n")
+      end
+    end
+
+    it "formats single-lever and multi-lever relevancy SQL and returns nil for out-of-domain inputs" do
+      sql = described_class.build_relevancy_lever_sql(
+        "COUNT(reactions.id)",
+        [[0, 0.9], [1, 1.0], [5, 1.25]],
+        1.5,
+      )
+      expect(sql).to eq(
+        "(CASE COUNT(reactions.id)\nWHEN 0 THEN 0.9\nWHEN 1 THEN 1.0\nWHEN 5 THEN 1.25\nELSE 1.5 END)",
+      )
+
+      # Placeholder '?' in select_fragment must defer to ActiveRecord::Sanitization
+      expect(described_class.build_relevancy_lever_sql("COUNT(?)", [[0, 1.0]], 1.0)).to be_nil
+      # Scientific-notation float must defer to Ruby
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, 1e-6]], 1.0)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, Float::NAN]], 1.0)).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized lever configurations" do
+      rng = Random.new(424_242)
+      fragments = [
+        "COUNT(DISTINCT reactions.id)",
+        "articles.public_reactions_count",
+        "DATE_PART('day', :now - articles.published_at)::integer",
+        "COUNT(user_subscriptions.id)",
+      ]
+      factors = [0.0, 0.01, 0.1, 0.25, 0.5, 0.85, 1.0, 1.08, 1.5, 2.0, -15.0, -30.0, 100.25]
+
+      1_000.times do |i|
+        has_user = rng.rand(2).zero?
+        minimize_ai = rng.rand(2).zero?
+        levers = Array.new(rng.rand(1..6)) do |idx|
+          cases = Array.new(rng.rand(0..5)) { [rng.rand(-5..30), factors.sample(random: rng)] }
+          lever_struct.new(
+            key: :"lever_#{idx}",
+            user_required: rng.rand(3).zero?,
+            select_fragment: fragments.sample(random: rng),
+            joins_fragments: [],
+            group_by_fragment: nil,
+            cases: cases,
+            fallback: factors.sample(random: rng),
+            query_parameters: {},
+          )
+        end
+
+        actual = described_class.build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+        expected = legacy_build_variant_sql.call(levers, has_user, minimize_ai)
+        expect(actual).to eq(expected), "iteration #{i}: actual=#{actual.inspect} expected=#{expected.inspect}"
       end
     end
   end

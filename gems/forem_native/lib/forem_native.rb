@@ -1048,6 +1048,105 @@ module ForemNative
       )
     end
 
+    # Extracts deduplicated `[tag_name, url, options]` tuples from Markdown outside fenced and
+    # single-line inline code spans, matching `LiquidEmbedExtractor.extract`.
+    def extract_liquid_embed_tags(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_liquid_embed_tags(content)
+    end
+
+    # Extracts deduplicated `http(s)://` URLs from Markdown outside fenced code blocks, inline
+    # code spans, and single-line Liquid tags with trailing punctuation stripped, matching
+    # `WebpageExtractor.extract`.
+    def extract_markdown_webpage_urls(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_markdown_webpage_urls(content)
+    end
+
+    # Extracts deduplicated Markdown (`!\[.*?\]\((.*?)\)`) and HTML (`<img.*?src=["'](.*?)["']`)
+    # image URLs excluding `excluded_substring`, matching
+    # `Articles::EnrichImageAttributes.store_image_if_appropriate`.
+    def extract_markdown_and_html_image_urls(markdown, excluded_substring = "")
+      return unless markdown.instance_of?(String) && excluded_substring.instance_of?(String)
+
+      Native.extract_markdown_and_html_image_urls(markdown, excluded_substring)
+    end
+
+    # Cleans a comma-delimited tag list string in a single pass, matching
+    # `ActsAsTaggableOn::TagParser#clean`.
+    def clean_tag_list(input)
+      return unless input.instance_of?(String)
+
+      Native.clean_tag_list(input)
+    end
+
+    # Literal transcript substitutions, with no entity decoding or DOM normalization.
+    # Non-UTF-8 strings and subclasses retain their Ruby encoding/gsub semantics.
+    def wrap_untagged_codeblocks(html)
+      return unless Native.respond_to?(:wrap_untagged_codeblocks)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_untagged_codeblocks(html)
+    end
+
+    # Replaces literal `[REDACTED]` markers with `<span class="agent-session-redacted">[REDACTED]</span>`.
+    def style_redaction_markers(html)
+      return unless Native.respond_to?(:style_redaction_markers)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.style_redaction_markers(html)
+    end
+
+    # Fuses code wrapping and marker styling after Rouge in one native call.
+    def postprocess_transcript_html(html, redact: true)
+      return unless Native.respond_to?(:postprocess_transcript_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.postprocess_transcript_html(html, redact)
+    end
+
+    # Scans `cached_tag_list` (`", "`-delimited) in-place and returns the first tag matching
+    # `allowed_tags` (or `Constants::Tags::FLARE_TAG_NAMES` when `allowed_tags` is nil),
+    # `false` when no flare tag matches on valid input, or `nil` for out-of-domain inputs.
+    def match_first_flare_tag(cached_tag_list, allowed_tags = nil)
+      return unless Native.respond_to?(:match_first_flare_tag)
+      return unless cached_tag_list.nil? || cached_tag_list.instance_of?(String)
+      return unless allowed_tags.nil? || allowed_tags.is_a?(Array)
+
+      Native.match_first_flare_tag(cached_tag_list, allowed_tags)
+    end
+
+    # Groups `[[article_id, cached_tag_list], ...]` pairs by their first matching flare tag
+    # in a single native pass (`{ flare_tag => [article_ids] }`), matching
+    # `Homepage::FetchTagFlares.articles_tag_flares`. Returns `nil` for out-of-domain inputs.
+    def match_articles_flare_tags(pairs, allowed_tags = nil)
+      return unless Native.respond_to?(:match_articles_flare_tags)
+      return unless pairs.is_a?(Array) && (allowed_tags.nil? || allowed_tags.is_a?(Array))
+
+      Native.match_articles_flare_tags(pairs, allowed_tags)
+    end
+
+    # Builds a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+    # SQL expression, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+    def build_relevancy_lever_sql(select_fragment, cases, fallback)
+      return unless Native.respond_to?(:build_relevancy_lever_sql)
+      return unless select_fragment.instance_of?(String) && cases.is_a?(Array)
+      return unless fallback.is_a?(Integer) || fallback.is_a?(Float)
+
+      Native.build_relevancy_lever_sql(select_fragment, cases, fallback)
+    end
+
+    # Compiles the joined `relevance_score_components_as_sql` expression for
+    # `Articles::Feeds::VariantQuery` in a single pre-allocated Rust buffer.
+    def build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+      return unless Native.respond_to?(:build_variant_relevancy_score_sql)
+      return unless levers.is_a?(Array)
+
+      Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

@@ -7,11 +7,10 @@ RSpec.shared_examples "#delivers_via_smtp_by_default" do
 end
 
 RSpec.describe NotifyMailer do
-  let(:user)      { create(:user) }
-  let(:user2)     { create(:user) }
-  let(:article)   { create(:article, user_id: user.id) }
+  let(:user)      { create(:user, :without_profile) }
+  let(:user2)     { create(:user, :without_profile) }
+  let(:article)   { create(:article, user_id: user.id, with_tags: false) }
   let(:organization) { create(:organization) }
-  let(:organization_membership) { create(:organization_membership, user: user, organization: organization) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:token) { "secret" }
 
@@ -21,12 +20,9 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
     include_examples "#renders_one_click_unsubscribe_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expected_subject = "#{comment.user.name} replied to your #{comment.parent_type}"
       expect(email.subject).to eq(expected_subject)
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([comment.user.email])
     end
 
@@ -65,11 +61,8 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
     include_examples "#renders_one_click_unsubscribe_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("#{user2.name} just followed you on #{Settings::Community.community_name}")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -163,11 +156,8 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
     include_examples "#renders_one_click_unsubscribe_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("🔥 You have 0 unread notifications on #{Settings::Community.community_name}")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -198,21 +188,21 @@ RSpec.describe NotifyMailer do
     context "with subforem-specific user" do
       let!(:subforem) { create(:subforem, domain: "notify.example.com") }
       let(:subforem_community_name) { "Notify Community" }
-      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:user_with_subforem) { create(:user, :without_profile, onboarding_subforem_id: subforem.id) }
       let(:email) { described_class.with(user: user_with_subforem).unread_notifications_email }
 
       before do
-        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
-        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
-        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
-        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_id_to_domain_hash: { subforem.id => subforem.domain },
+          cached_default_domain: subforem.domain,
+        )
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: subforem.id).and_return(subforem_community_name)
       end
 
-      it "uses subforem's community name in subject" do
+      it "uses subforem's community name in subject and domain in links", :aggregate_failures do
         expect(email.subject).to eq("🔥 You have 0 unread notifications on #{subforem_community_name}")
-      end
-
-      it "uses subforem's domain in links" do
         expect(email.body.encoded).to include(subforem.domain)
       end
     end
@@ -223,11 +213,8 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("Your video upload is complete")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([article.user.email])
     end
 
@@ -254,7 +241,7 @@ RSpec.describe NotifyMailer do
   end
 
   describe "#gem_received_email" do
-    let(:leader) { create(:user, :community_leader_level_1) }
+    let(:leader) { create(:user, :without_profile, :community_leader_level_1) }
     let(:email) { described_class.with(favoritable: article).gem_received_email }
 
     before { article.update_columns(favorited_by_user_id: leader.id, favorited_at: Time.current) }
@@ -263,18 +250,12 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_one_click_unsubscribe_headers"
     include_examples "#delivers_via_smtp_by_default"
 
-    it "renders proper subject and receiver", :aggregate_failures do
+    it "renders proper subject, receiver, gem explanation, and pass-it-on invitation", :aggregate_failures do
       expect(email.subject).to eq("💎 Your post was picked as a gem")
       expect(email.to).to eq([user.email])
-    end
-
-    it "explains the gem and links to the post", :aggregate_failures do
       expect(email.html_part.body).to include("Gems are rare")
       expect(email.html_part.body).to include(CGI.escapeHTML(article.title))
       expect(email.text_part.body).to include(URL.article(article))
-    end
-
-    it "invites a regular member to pass a gem on", :aggregate_failures do
       expect(email.html_part.body).to include("You have a gem to give")
       expect(email.text_part.body).to include("Share the love!")
     end
@@ -362,10 +343,6 @@ RSpec.describe NotifyMailer do
     let(:badge_achievement) { create_badge_achievement(user, badge, user2) }
     let(:email) { described_class.with(badge_achievement: badge_achievement).new_badge_email }
 
-    let(:badge_with_credits) { create(:badge, credits_awarded: 7) }
-    let(:badge_achievement_with_credits) { create_badge_achievement(user, badge_with_credits, user2) }
-    let(:email_with_credits) { described_class.with(badge_achievement: badge_achievement_with_credits).new_badge_email }
-
     def create_badge_achievement(user, badge, rewarder)
       BadgeAchievement.create(
         user: user,
@@ -378,11 +355,8 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
     include_examples "#renders_one_click_unsubscribe_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("You just got a badge")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -413,15 +387,10 @@ RSpec.describe NotifyMailer do
     end
 
     context "when rendering the HTML email for badge w/o credits" do
-      it "includes the user URL" do
+      it "includes the user URL, click tracking parameters, and rewarding_context_message in the email",
+         :aggregate_failures do
         expect(email.html_part.body).to include("/#{user.username}")
-      end
-
-      it "includes the click tracking parameters" do
         expect(email.html_part.body).to include("/hey?ahoy_click=true&t=")
-      end
-
-      it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
         expect(email.html_part.body).to include("/hey")
       end
@@ -442,11 +411,8 @@ RSpec.describe NotifyMailer do
     end
 
     context "when rendering the text email" do
-      it "includes the user URL" do
+      it "includes the user URL and rewarding_context_message in the email", :aggregate_failures do
         expect(email.text_part.body).to include(URL.user(user))
-      end
-
-      it "includes the rewarding_context_message in the email" do
         expect(email.text_part.body).to include("Hello Yoho")
         expect(email.text_part.body).not_to include("/hey")
       end
@@ -526,32 +492,21 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("#{Settings::Community.community_name} Report Status Update")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
-    it "tracks the feedback message ID after delivery" do
+    it "tracks the feedback message ID and email_type as the UTM campaign after delivery", :aggregate_failures do
       user # Instantiate user to pre-generate welcome email
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
       assert_emails 1 do
         email.deliver_now
       end
 
-      expect(user.email_messages.last.feedback_message_id).to eq(feedback_message.id)
-    end
-
-    it "tracks the email_type as the UTM campaign" do
-      user # Instantiate user to pre-generate welcome email
-      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
-      assert_emails 1 do
-        email.deliver_now
-      end
-
-      expect(user.email_messages.last.utm_campaign).to eq("Reporter")
+      last_message = user.email_messages.last
+      expect(last_message.feedback_message_id).to eq(feedback_message.id)
+      expect(last_message.utm_campaign).to eq("Reporter")
     end
 
     include_examples "#delivers_via_smtp_by_default"
@@ -580,15 +535,9 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject, receiver, and body", :aggregate_failures do
       expect(email.subject).to eq("Thanks for your report on #{Settings::Community.community_name}")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "renders proper body" do
       expect(email.html_part.body).to include("Thank you for flagging content")
     end
 
@@ -625,11 +574,8 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("Buddy")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -659,38 +605,34 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject, receiver, and contact email", :aggregate_failures do
       expect(email.subject).to eq("#{Settings::Community.community_name} - Account Deletion Confirmation")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "includes contact email" do
       expect(email.html_part.body).to include(ForemInstance.contact_email)
     end
 
     context "with subforem-specific user" do
       let!(:subforem) { create(:subforem, domain: "deleted.example.com") }
       let(:subforem_community_name) { "Deleted Community" }
-      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
-      let(:email) { described_class.with(name: user_with_subforem.name, email: user_with_subforem.email).account_deleted_email }
+      let(:user_with_subforem) { create(:user, :without_profile, onboarding_subforem_id: subforem.id) }
+      let(:email) do
+        described_class.with(name: user_with_subforem.name, email: user_with_subforem.email).account_deleted_email
+      end
 
       before do
-        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
-        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
-        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_id_to_domain_hash: { subforem.id => subforem.domain },
+          cached_default_domain: subforem.domain,
+        )
         allow(Settings::Community).to receive(:community_name).and_call_original
         allow(Settings::Community).to receive(:community_name).with(no_args).and_return(subforem_community_name)
-        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: subforem.id).and_return(subforem_community_name)
       end
 
-      it "uses subforem's community name in subject" do
+      it "uses subforem's community name in subject and email body", :aggregate_failures do
         expect(email.subject).to eq("#{subforem_community_name} - Account Deletion Confirmation")
-      end
-
-      it "uses subforem's community name in email body" do
         expect(email.body.encoded).to include(subforem_community_name)
       end
     end
@@ -758,15 +700,9 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject, receiver, and contact email", :aggregate_failures do
       expect(email.subject).to eq("#{Settings::Community.community_name} - Organization Deletion Confirmation")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "includes contact email" do
       expect(email.html_part.body).to include(ForemInstance.contact_email)
     end
 
@@ -798,24 +734,12 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "does not render one-click unsubscribe headers on transactional mail", :aggregate_failures do
+    it "renders proper subject, receiver, zip attachment, and no one-click unsubscribe headers", :aggregate_failures do
       expect(email["List-Unsubscribe"]).to be_nil
       expect(email["List-Unsubscribe-Post"]).to be_nil
-    end
-
-    it "renders proper subject" do
       expect(email.subject).to include("export of your content is ready")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
-    end
-
-    it "attaches a zip file" do
       expect(email.attachments[0].content_type).to include("application/zip")
-    end
-
-    it "adds the correct filename" do
       expected_filename = "devto-export-#{Date.current.iso8601}.zip"
       expect(email.attachments[0].filename).to eq(expected_filename)
     end
@@ -832,14 +756,11 @@ RSpec.describe NotifyMailer do
 
       after { FeatureFlag.remove(Deliverable::CUSTOMERIO_FLAG) }
 
-      it "routes through the Customer.io export template", :aggregate_failures do
+      it "routes through the Customer.io export template and attaches the zip file", :aggregate_failures do
         settings = email.message.delivery_method.settings
 
         expect(settings[:transactional_message_id]).to eq("dev_export_email")
         expect(settings[:message_data]["community_name"]).to eq(Settings::Community.community_name)
-      end
-
-      it "still attaches the zip file on the mail object" do
         expect(email.attachments[0].content_type).to include("application/zip")
         expected_filename = "devto-export-#{Date.current.iso8601}.zip"
         expect(email.attachments[0].filename).to eq(expected_filename)
@@ -855,11 +776,8 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("Congrats! You're now a moderator for ##{tag.name}")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -895,11 +813,8 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expect(email.subject).to eq("Congrats! You're now a moderator for #{subforem.domain}")
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
@@ -928,41 +843,37 @@ RSpec.describe NotifyMailer do
   end
 
   describe "#trusted_role_email" do
-    let(:tag) { create(:tag) }
     let(:email) { described_class.with(user: user).trusted_role_email }
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expected_subject = "Congrats! You're now a \"trusted\" user on #{Settings::Community.community_name}!"
       expect(email.subject).to eq(expected_subject)
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
     context "with subforem-specific user" do
       let!(:subforem) { create(:subforem, domain: "trusted.example.com") }
       let(:subforem_community_name) { "Trusted Community" }
-      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:user_with_subforem) { create(:user, :without_profile, onboarding_subforem_id: subforem.id) }
       let(:email) { described_class.with(user: user_with_subforem).trusted_role_email }
 
       before do
-        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
-        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
-        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_id_to_domain_hash: { subforem.id => subforem.domain },
+          cached_default_domain: subforem.domain,
+        )
         allow(Settings::Community).to receive(:community_name).and_call_original
         allow(Settings::Community).to receive(:community_name).with(no_args).and_return(subforem_community_name)
-        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: subforem.id).and_return(subforem_community_name)
       end
 
-      it "uses subforem's community name in subject" do
+      it "uses subforem's community name in subject and domain in links", :aggregate_failures do
         expected_subject = "Congrats! You're now a \"trusted\" user on #{subforem_community_name}!"
         expect(email.subject).to eq(expected_subject)
-      end
-
-      it "uses subforem's domain in links" do
         expect(email.body.encoded).to include(subforem.domain)
       end
     end
@@ -1012,26 +923,26 @@ RSpec.describe NotifyMailer do
 
     include_examples "#renders_proper_email_headers"
 
-    it "renders proper subject" do
+    it "renders proper subject and receiver", :aggregate_failures do
       expected_subject = "Congrats! You're now subscribed to DEV++"
       expect(email.subject).to eq(expected_subject)
-    end
-
-    it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
 
     context "with subforem-specific user" do
       let!(:subforem) { create(:subforem, domain: "subscriber.example.com") }
       let(:subforem_community_name) { "Subscriber Community" }
-      let(:user_with_subforem) { create(:user, onboarding_subforem_id: subforem.id) }
+      let(:user_with_subforem) { create(:user, :without_profile, onboarding_subforem_id: subforem.id) }
       let(:email) { described_class.with(user: user_with_subforem).base_subscriber_role_email }
 
       before do
-        allow(Subforem).to receive(:cached_default_id).and_return(subforem.id)
-        allow(Subforem).to receive(:cached_id_to_domain_hash).and_return({ subforem.id => subforem.domain })
-        allow(Subforem).to receive(:cached_default_domain).and_return(subforem.domain)
-        allow(Settings::Community).to receive(:community_name).with(subforem_id: subforem.id).and_return(subforem_community_name)
+        allow(Subforem).to receive_messages(
+          cached_default_id: subforem.id,
+          cached_id_to_domain_hash: { subforem.id => subforem.domain },
+          cached_default_domain: subforem.domain,
+        )
+        allow(Settings::Community).to receive(:community_name)
+          .with(subforem_id: subforem.id).and_return(subforem_community_name)
       end
 
       it "uses subforem's domain in links" do

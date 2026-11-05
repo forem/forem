@@ -8,17 +8,17 @@ RSpec.describe ArticlePolicy do
   let(:instantiated_users) { {} }
   let(:organization) { instantiated_users[:org_admin]&.organizations&.first }
 
-  let(:org_admin) { instantiated_users[:org_admin] = create(:user, :org_admin) }
-  let(:anyone) { create(:user) }
-  let(:super_admin) { create(:user, :super_admin) }
-  let(:suspended_user) { instantiated_users[:author] = create(:user, :suspended) }
-  let(:admin) { create(:user, :admin) }
-  let(:trusted) { create(:user, :trusted) }
-  let(:other_users) { create(:user) }
+  let(:org_admin) { instantiated_users[:org_admin] = create(:user, :without_profile, :org_admin) }
+  let(:anyone) { create(:user, :without_profile) }
+  let(:super_admin) { create(:user, :without_profile, :super_admin) }
+  let(:suspended_user) { instantiated_users[:author] = create(:user, :without_profile, :suspended) }
+  let(:admin) { create(:user, :without_profile, :admin) }
+  let(:trusted) { create(:user, :without_profile, :trusted) }
+  let(:other_users) { create(:user, :without_profile) }
   let(:users_scope) { User.where(id: [super_admin.id, author.id, suspended_user.id]) }
-  let(:author) { instantiated_users[:author] = create(:user) }
-  let(:moderator) { create(:user, :super_moderator) }
-  let(:tag_mod) { create(:user, :tag_moderator) }
+  let(:author) { instantiated_users[:author] = create(:user, :without_profile) }
+  let(:moderator) { create(:user, :without_profile, :super_moderator) }
+  let(:tag_mod) { create(:user, :without_profile, :tag_moderator) }
   let(:tagmod_tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
   let(:random_tag) { create(:tag, name: "randomtag") }
 
@@ -26,6 +26,14 @@ RSpec.describe ArticlePolicy do
     build(:article, user_id: instantiated_users[:author]&.id || -1, organization: organization, with_tags: false)
   end
   let(:policy) { described_class.new(user, resource) }
+
+  # Builds an ArticlePolicy for the given role symbol and aligns resource ownership/organization.
+  def policy_for_role(role)
+    role_user = role == :suspended_author ? suspended_user : public_send(role)
+    resource.user_id = %i[author suspended_author].include?(role) ? role_user.id : -1
+    resource.organization = role == :org_admin ? role_user.organizations.first : nil
+    described_class.new(role_user, resource)
+  end
 
   describe ".scope_users_authorized_to_action" do
     before do
@@ -115,66 +123,68 @@ RSpec.describe ArticlePolicy do
     it { is_expected.to be_truthy }
   end
 
-  %i[create? new?].each do |method_name|
-    describe "##{method_name}" do
-      let(:policy_method) { method_name }
+  describe "#create? and #new?" do
+    let(:policy_method) { %i[create? new?] }
 
-      it_behaves_like "it requires an authenticated user"
-      it_behaves_like "it requires a user in good standing"
-      it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-      it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
-      it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "it requires a user in good standing"
+    it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
 
-      context "when is_root_subforem? is true" do
-        let(:user) { author }
+    context "when is_root_subforem? is true" do
+      let(:user) { author }
 
-        before do
-          allow(described_class).to receive_messages(
-            is_root_subforem?: true,
-            limit_post_creation_to_admins?: false,
-          )
-        end
+      before do
+        allow(described_class).to receive_messages(
+          is_root_subforem?: true,
+          limit_post_creation_to_admins?: false,
+        )
+      end
 
-        it "returns false regardless of user role" do
-          expect(method_call).to be(false)
+      it "returns false regardless of user role", :aggregate_failures do
+        policy_method.each do |method_name|
+          expect(policy.public_send(method_name)).to be(false)
         end
       end
     end
   end
 
-  %i[preview? has_existing_articles_or_can_create_new_ones?].each do |method_name|
-    describe method_name.to_s do
-      let(:policy_method) { method_name }
+  describe "#preview? and #has_existing_articles_or_can_create_new_ones?" do
+    let(:policy_method) { %i[preview? has_existing_articles_or_can_create_new_ones?] }
+
+    it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
+
+    context "when user has published articles" do
+      before { create(:article, published: true, user: anyone, with_tags: false, with_main_image: false) }
+
+      it "permits anyone regardless of limit_post_creation_to_admins?", :aggregate_failures do
+        [false, true].each do |limit|
+          allow(described_class).to receive(:limit_post_creation_to_admins?).and_return(limit)
+          expect(policy_for_role(:anyone)).to be_preview.and be_has_existing_articles_or_can_create_new_ones
+        end
+      end
+    end
+
+    context "when user has only unpublished articles" do
+      before { create(:article, published: false, user: anyone, with_tags: false, with_main_image: false) }
+
+      it "permits anyone across limit_post_creation_to_admins? and root subforem states", :aggregate_failures do
+        [{ limit_post_creation_to_admins?: false }, { limit_post_creation_to_admins?: true },
+         { is_root_subforem?: true }].each do |stubs|
+          allow(described_class).to receive_messages(**stubs)
+          expect(policy_for_role(:anyone)).to be_preview.and be_has_existing_articles_or_can_create_new_ones
+        end
+      end
+    end
+
+    context "when user has no published articles" do
+      before { user.articles.delete_all }
 
       it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-      it_behaves_like "permitted roles", to: %i[super_admin admin], limit_post_creation_to_admins?: true
       it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
-
-      context "when user has published articles" do
-        before do
-          create(:article, published: true, user: user, with_tags: false)
-        end
-
-        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
-      end
-
-      context "when user has only unpublished articles" do
-        before do
-          create(:article, published: false, user: user, with_tags: false)
-        end
-
-        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: true
-        it_behaves_like "permitted roles", to: %i[anyone], is_root_subforem?: true
-      end
-
-      context "when user has no published articles" do
-        before { user.articles.delete_all }
-
-        it_behaves_like "permitted roles", to: %i[anyone], limit_post_creation_to_admins?: false
-        it_behaves_like "disallowed roles", to: %i[anyone], limit_post_creation_to_admins?: true
-      end
     end
   end
 
@@ -256,15 +266,13 @@ RSpec.describe ArticlePolicy do
     end
   end
 
-  %i[update? edit?].each do |method_name|
-    describe "##{method_name}" do
-      let(:policy_method) { method_name }
+  describe "#update? and #edit?" do
+    let(:policy_method) { %i[update? edit?] }
 
-      it_behaves_like "it requires an authenticated user"
-      it_behaves_like "it requires a user in good standing"
-      it_behaves_like "permitted roles", to: %i[super_admin admin org_admin]
-      it_behaves_like "disallowed roles", to: [:other_users]
-    end
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "it requires a user in good standing"
+    it_behaves_like "permitted roles", to: %i[super_admin admin org_admin]
+    it_behaves_like "disallowed roles", to: [:other_users]
   end
 
   describe "#stats?" do
@@ -283,47 +291,36 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
   end
 
-  %i[
-    admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?
-    can_adjust_any_tag? can_perform_moderator_actions?
-  ].each do |method_name|
-    describe "##{method_name}" do
-      let(:policy_method) { method_name }
+  describe "#revoke_publication? and its moderator action aliases" do
+    let(:policy_method) do
+      %i[
+        admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?
+        can_adjust_any_tag? can_perform_moderator_actions?
+      ]
+    end
 
-      context "when published article" do
-        let(:resource) { super().tap { |article| article.published = true } }
+    context "when published article" do
+      let(:resource) { super().tap { |article| article.published = true } }
 
-        it_behaves_like "it requires an authenticated user"
-        it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
-        it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
-      end
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
+      it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+    end
 
-      context "when unpublished article" do
-        let(:resource) do
-          build(
-            :article,
-            user_id: instantiated_users[:author]&.id || -1,
-            organization: organization,
-            published: false,
-            published_at: nil,
-            with_tags: false,
-          )
-        end
+    context "when unpublished article" do
+      let(:resource) { super().tap { |article| article.assign_attributes(published: false, published_at: nil) } }
 
-        it_behaves_like "it requires an authenticated user"
-        it_behaves_like "permitted roles", to: %i[]
-        it_behaves_like "disallowed roles", to: %i[super_admin admin moderator org_admin author other_users]
-      end
+      it_behaves_like "it requires an authenticated user"
+      it_behaves_like "permitted roles", to: %i[]
+      it_behaves_like "disallowed roles", to: %i[super_admin admin moderator org_admin author other_users]
     end
   end
 
-  %i[destroy? delete_confirm? discussion_lock_confirm? discussion_unlock_confirm?].each do |method_name|
-    describe "##{method_name}" do
-      let(:policy_method) { method_name }
+  describe "#destroy?, #delete_confirm?, #discussion_lock_confirm?, and #discussion_unlock_confirm?" do
+    let(:policy_method) { %i[destroy? delete_confirm? discussion_lock_confirm? discussion_unlock_confirm?] }
 
-      it_behaves_like "it requires an authenticated user"
-      it_behaves_like "permitted roles", to: %i[super_admin admin org_admin suspended_author]
-      it_behaves_like "disallowed roles", to: [:other_users]
-    end
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "permitted roles", to: %i[super_admin admin org_admin suspended_author]
+    it_behaves_like "disallowed roles", to: [:other_users]
   end
 end

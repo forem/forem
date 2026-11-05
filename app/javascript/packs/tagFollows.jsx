@@ -109,9 +109,10 @@ export function mountTagButtons(
   let following = Boolean(isFollowing);
   let hidden = Boolean(isHidden);
 
-  const renderButtons = () => {
+  const renderButtons = (activeAction = null) => {
     const group = document.createElement('div');
     group.className = 'flex gap-2';
+    let nextFollowBtn = null;
 
     if (!hidden) {
       const followButtonLabel = following ? 'Following' : 'Follow';
@@ -134,7 +135,7 @@ export function mountTagButtons(
           if (response.ok) {
             const wasFollowing = following;
             following = updatedFollowState;
-            renderButtons();
+            renderButtons('follow');
             if (typeof browserStoreCache === 'function') {
               browserStoreCache('remove');
             }
@@ -148,6 +149,7 @@ export function mountTagButtons(
       });
 
       group.appendChild(followBtn);
+      nextFollowBtn = followBtn;
     }
 
     const hideButtonLabel = hidden ? 'Unhide' : 'Hide';
@@ -172,7 +174,7 @@ export function mountTagButtons(
           const wasHidden = hidden;
           hidden = updatedHiddenState;
           following = updatedFollowState;
-          renderButtons();
+          renderButtons('hide');
           if (typeof browserStoreCache === 'function') {
             browserStoreCache('remove');
           }
@@ -186,10 +188,18 @@ export function mountTagButtons(
     group.appendChild(hideBtn);
 
     const existingGroup = container.querySelector('.flex.gap-2');
+    const shouldRestoreFocus = Boolean(
+      activeAction && existingGroup?.contains(document.activeElement),
+    );
     if (existingGroup) {
       existingGroup.replaceWith(group);
     } else {
       container.prepend(group);
+    }
+    if (shouldRestoreFocus) {
+      const targetBtn =
+        activeAction === 'follow' ? nextFollowBtn || hideBtn : hideBtn;
+      targetBtn?.focus();
     }
   };
 
