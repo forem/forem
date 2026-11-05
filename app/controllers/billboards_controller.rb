@@ -55,6 +55,7 @@ class BillboardsController < ApplicationController
     params[:placement_area]
   end
 
+  # Selects a billboard for the requested placement area using article, page, and viewer context.
   def contextual_billboard
     if BillboardPlacementAreaConfig.delivery_rate_for(placement_area: placement_area,
                                                       user_signed_in: user_signed_in?) <= 0
@@ -67,7 +68,7 @@ class BillboardsController < ApplicationController
       @article = articles.find_by(path: path) || articles.find_by(slug: params[:slug])
     end
 
-    Billboard.for_display(
+    renderable_billboards.for_display(
       area: placement_area,
       user_signed_in: user_signed_in?,
       user_id: current_user&.id,
@@ -86,7 +87,7 @@ class BillboardsController < ApplicationController
   # location. Signed-in state is still used: Fastly keeps signed-in and signed-out copies of
   # every response apart (X-Loggedin), so it costs no extra cache splitting.
   def fully_cached_billboard
-    Billboard.for_display(
+    renderable_billboards.for_display(
       area: placement_area,
       user_signed_in: session_current_user_id.present?,
       cookies_allowed: cookies_allowed?,
@@ -121,6 +122,11 @@ class BillboardsController < ApplicationController
       BillboardPlacementAreaConfig::RESPONSES_SURROGATE_KEY,
       BillboardPlacementAreaConfig.responses_surrogate_key_for(placement_area),
     ].compact
+  end
+
+  # Delivery renders processed HTML; Markdown source is only needed when editing.
+  def renderable_billboards
+    Billboard.select(Billboard.column_names - %w[body_markdown minimized_body_markdown])
   end
 
   # A fully cached response is shared by every signed-in visitor in a location, so it must never
