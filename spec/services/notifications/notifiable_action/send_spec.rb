@@ -233,5 +233,23 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
         described_class.call(third_article, "Published")
       end.to change(Notification, :count).by(2)
     end
+
+    it "skips the page views limit if the article is from an organization with a positive baseline_score" do
+      organization.update!(baseline_score: 5)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 0)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(
+        :article,
+        :past,
+        user: user,
+        organization: organization,
+        past_published_at: 1.hour.ago,
+        page_views_count: 0,
+      )
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
   end
 end

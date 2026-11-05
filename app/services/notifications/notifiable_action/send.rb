@@ -92,6 +92,8 @@ module Notifications
       attr_reader :notifiable, :action
 
       def follower_send_limit
+        return FOLLOWER_SEND_LIMIT if notifiable.organization&.baseline_score.to_i.positive?
+
         author = notifiable.user
         return FOLLOWER_SEND_LIMIT unless author
 
