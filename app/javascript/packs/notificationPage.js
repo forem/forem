@@ -3,11 +3,17 @@ import { sendHapticMessage } from '../utilities/sendHapticMessage';
 import { showModalAfterError } from '../utilities/showUserAlertModal';
 import { initializeSubscribeButton } from './subscribeButton';
 
+/**
+ * Embeds GitHub gists inside the notifications list container when present.
+ */
 function handleEmbedGists() {
   const targetNode = document.querySelector('#articles-list');
   targetNode && embedGists(targetNode);
 }
 
+/**
+ * Marks visible notifications as read after a short delay on the notifications page.
+ */
 function markNotificationsAsRead() {
   if (navigator.userAgent === 'ForemWebView/1') {
     return;
@@ -37,6 +43,9 @@ function markNotificationsAsRead() {
   }, 450);
 }
 
+/**
+ * Initializes reaction buttons and inline reply form toggles on notification items.
+ */
 function initReactions() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
@@ -110,18 +119,33 @@ function initReactions() {
   }, 180);
 }
 
+/**
+ * Attaches a change listener to the mobile notifications organization filter select.
+ */
 function initFilter() {
   const notificationsFilterSelect = document.getElementById(
     'notifications-filter__select',
   );
   const changeNotifications = (event) => {
-    window.location.href = event.target.value;
+    const value = String(event.target.value || '');
+    const orgMatch = value.match(/^\/notifications\/org\/(\d+)$/);
+    if (orgMatch) {
+      const orgId = parseInt(orgMatch[1], 10);
+      if (Number.isInteger(orgId)) {
+        window.location.href = `/notifications/org/${orgId}`;
+      }
+    } else if (value === '/notifications') {
+      window.location.href = '/notifications';
+    }
   };
   if (notificationsFilterSelect) {
     notificationsFilterSelect.addEventListener('change', changeNotifications);
   }
 }
 
+/**
+ * Fetches the next page of notifications when a paginator element is present.
+ */
 function initPagination() {
   // paginators appear after each block of HTML notifications sent by the server
   const paginators = document.getElementsByClassName('notifications-paginator');
@@ -166,6 +190,9 @@ function initPagination() {
   }
 }
 
+/**
+ * Attaches the click handler to the Load More notifications button.
+ */
 function initLoadMoreButton() {
   const button = document.getElementById('load-more-button');
   if (button) {
@@ -173,6 +200,9 @@ function initLoadMoreButton() {
   }
 }
 
+/**
+ * Initializes all interactive behaviors on the `/notifications` page.
+ */
 export function initializeNotificationsPage() {
   const container = document.getElementById('notifications-container');
   if (!container || container.dataset.notificationsInitialized === 'true') {

@@ -12,6 +12,10 @@ import { getUserDataAndCsrfTokenSafely } from '@utilities/getUserDataAndCsrfToke
 
 let snackTimeoutId = null;
 
+/**
+ * Displays a temporary snackbar toast inside `#snack-zone`.
+ * @param {string} message The message to display in the snackbar.
+ */
 function showTagSnackbar(message) {
   const snackZone = document.getElementById('snack-zone');
   if (!snackZone) {
@@ -65,6 +69,11 @@ function showTagSnackbar(message) {
   snackTimeoutId = setTimeout(dismiss, 2000);
 }
 
+/**
+ * Sends a POST request to `/follows` to update a tag's follow or hide status.
+ * @param {Object} params
+ * @returns {Promise<Response>}
+ */
 function postFollowItem({ id, following, hidden }) {
   return fetch('/follows', {
     method: 'POST',
@@ -83,7 +92,16 @@ function postFollowItem({ id, following, hidden }) {
   });
 }
 
-function mountTagButtons(container, { id, name, isFollowing, isHidden }) {
+/**
+ * Renders and wires up the Follow and Hide button group inside a tag card's action container,
+ * preserving any sibling elements such as a tag badge image.
+ * @param {HTMLElement} container The `#tag-buttons-<id>` element.
+ * @param {Object} options Tag metadata and initial follow/hide state.
+ */
+export function mountTagButtons(
+  container,
+  { id, name, isFollowing, isHidden },
+) {
   if (!container) {
     return;
   }
@@ -92,8 +110,6 @@ function mountTagButtons(container, { id, name, isFollowing, isHidden }) {
   let hidden = Boolean(isHidden);
 
   const renderButtons = () => {
-    container.textContent = '';
-
     const group = document.createElement('div');
     group.className = 'flex gap-2';
 
@@ -168,12 +184,22 @@ function mountTagButtons(container, { id, name, isFollowing, isHidden }) {
     });
 
     group.appendChild(hideBtn);
-    container.appendChild(group);
+
+    const existingGroup = container.querySelector('.flex.gap-2');
+    if (existingGroup) {
+      existingGroup.replaceWith(group);
+    } else {
+      container.prepend(group);
+    }
   };
 
   renderButtons();
 }
 
+/**
+ * Hydrates all `.js-tag-card` elements on the page with the signed-in user's followed/hidden state.
+ * @param {Object} currentUser The signed-in user object.
+ */
 function renderPage(currentUser) {
   try {
     const tagCards = document.getElementsByClassName('js-tag-card');
@@ -211,6 +237,10 @@ function listenForButtonClicks() {
     ?.addEventListener('click', handleButtonClick);
 }
 
+/**
+ * Opens the login modal when a signed-out visitor clicks a follow or hide tag button.
+ * @param {Event} event The delegated click event.
+ */
 function handleButtonClick({ target }) {
   let trigger;
 
@@ -231,6 +261,14 @@ function handleButtonClick({ target }) {
   }
 }
 
+Document.prototype.ready = new Promise((resolve) => {
+  if (document.readyState !== 'loading') {
+    return resolve();
+  }
+  document.addEventListener('DOMContentLoaded', () => resolve());
+  return null;
+});
+
 document.ready.then(() => {
   const userStatus = document.body.getAttribute('data-user-status');
 
@@ -250,12 +288,4 @@ document.ready.then(() => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
     });
-});
-
-Document.prototype.ready = new Promise((resolve) => {
-  if (document.readyState !== 'loading') {
-    return resolve();
-  }
-  document.addEventListener('DOMContentLoaded', () => resolve());
-  return null;
 });

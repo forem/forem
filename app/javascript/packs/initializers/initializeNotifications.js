@@ -2,6 +2,9 @@ import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn';
 // eslint-disable-next-line no-redeclare
 /* global InstantClick, instantClick */
 
+/**
+ * Preloads the notifications page link via InstantClick for signed-in users.
+ */
 function fetchNotificationsCount() {
   if (
     document.getElementById('notifications-container') == null &&
@@ -20,6 +23,9 @@ function fetchNotificationsCount() {
   }
 }
 
+/**
+ * Hides the unread notifications count badge when the notifications bell link is clicked.
+ */
 function listenForNotificationsBellClick() {
   const notificationsLink = document.getElementById('notifications-link');
   if (notificationsLink) {
@@ -31,6 +37,9 @@ function listenForNotificationsBellClick() {
   }
 }
 
+/**
+ * Initializes the navbar notifications bell and delegates to the notifications page initializer if present.
+ */
 export function initializeNotifications() {
   if (!checkUserLoggedIn()) {
     return;

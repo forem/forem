@@ -119,6 +119,16 @@ describe('<FavoriteControl />', () => {
       expect(getByText("You've picked this as a community gem!")).toBeInTheDocument();
       expect(getByText('You have 4 more gems left to give out today.')).toBeInTheDocument();
 
+      const gotItButton = getByText('Got it').closest('button');
+      const closeButton = getByLabelText('Close');
+      expect(document.activeElement).toBe(gotItButton);
+
+      fireEvent.keyDown(window, { key: 'Tab' });
+      expect(document.activeElement).toBe(closeButton);
+
+      fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+      expect(document.activeElement).toBe(gotItButton);
+
       fireEvent.click(getByText('Got it'));
       expect(queryByText('Gem Picked!')).toBeNull();
     });

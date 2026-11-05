@@ -4,6 +4,11 @@ import { checkUserLoggedIn } from '@utilities/checkUserLoggedIn';
 import { globalFeatureFlagEnabled } from '@utilities/featureFlags';
 import { FavoriteControl } from '../favoriteControl/FavoriteControl';
 
+/**
+ * Mounts FavoriteControl instances onto uninitialized `[data-favorite-control]` nodes,
+ * skipping Preact rendering on unfavorited nodes when the viewer cannot favorite them.
+ * @param {Object|null} currentUser The signed-in user object, or null when signed out.
+ */
 function initializeFavoriteControls(currentUser) {
   const nodes = document.querySelectorAll('[data-favorite-control]');
   const userId = currentUser?.id ?? null;

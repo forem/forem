@@ -1,5 +1,5 @@
 import { h, Fragment } from 'preact';
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useLayoutEffect, useRef } from 'preact/hooks';
 import { Icon } from '@crayons/Icons';
 import { ButtonNew as Button } from '@crayons/Buttons';
 import CloseIcon from '@images/x.svg';
@@ -80,16 +80,74 @@ const Tooltip = ({ label }) => (
   </span>
 );
 
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Accessible dialog modal for favorite confirmation and allowance exhaustion states.
+ * Moves focus into the dialog on open, traps Tab/Shift+Tab navigation, handles Escape,
+ * and restores focus to the previously focused element on close.
+ */
 const FavoriteModal = ({ title, onClose, children }) => {
-  useEffect(() => {
+  const dialogRef = useRef(null);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
+
+  useLayoutEffect(() => {
+    const previouslyFocused =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
+    const getFocusableElements = () =>
+      dialogRef.current
+        ? Array.from(dialogRef.current.querySelectorAll(FOCUSABLE_SELECTOR))
+        : [];
+
+    const initialTargets = getFocusableElements();
+    const primaryAction = initialTargets[initialTargets.length - 1];
+    (primaryAction || initialTargets[0] || dialogRef.current)?.focus();
+
     const onKeyDown = (event) => {
       if (event.key === 'Escape') {
-        onClose();
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+
+      if (event.key !== 'Tab') {
+        return;
+      }
+
+      const focusable = getFocusableElements();
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement;
+
+      if (event.shiftKey) {
+        if (active === first || !dialogRef.current?.contains(active)) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !dialogRef.current?.contains(active)) {
+        event.preventDefault();
+        first.focus();
       }
     };
+
     window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [onClose]);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+      if (previouslyFocused && document.contains(previouslyFocused)) {
+        previouslyFocused.focus();
+      }
+    };
+  }, []);
 
   return (
     <div
@@ -97,9 +155,11 @@ const FavoriteModal = ({ title, onClose, children }) => {
       class="crayons-modal crayons-modal--small crayons-modal--bg-dismissible"
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={title || 'modal'}
+        tabIndex={-1}
         class="crayons-modal__box"
       >
         <header class="crayons-modal__box__header">

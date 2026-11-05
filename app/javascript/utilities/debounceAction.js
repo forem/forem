@@ -73,9 +73,11 @@ export function debounceAction(
     if (timeoutId !== null) {
       clearTimeout(timeoutId);
       timeoutId = null;
-      if (lastArgs !== undefined) {
+      if (trailing && lastArgs !== undefined) {
         return invoke();
       }
+      lastArgs = undefined;
+      lastThis = undefined;
     }
     return result;
   };

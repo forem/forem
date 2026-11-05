@@ -55,4 +55,19 @@ describe('debounceAction', () => {
     expect(debounced.flush()).toBe('res:flush-me');
     expect(fn).toHaveBeenCalledTimes(1);
   });
+
+  it('respects trailing: false when flush() is called', () => {
+    const fn = jest.fn((val) => `res:${val}`);
+    const debounced = debounceAction(fn, {
+      time: 100,
+      config: { leading: true, trailing: false },
+    });
+
+    expect(debounced('first')).toBe('res:first');
+    expect(fn).toHaveBeenCalledTimes(1);
+
+    debounced('second');
+    expect(debounced.flush()).toBe('res:first');
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
 });

@@ -1,5 +1,8 @@
 import '@utilities/document_ready';
 
+/**
+ * Fetches user status JSON for a profile header and appends a Suspended or Spam badge when present.
+ */
 export async function asyncUserStatusCheck() {
   if (document.body?.dataset?.userStatus === 'logged-out') {
     return;
