@@ -34,10 +34,9 @@
 
       <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
       <% if controller_name == "articles_search" || Rails.env.test? %>
-        <%= javascript_include_tag "Search", defer: true %>
-      <% else %>
-        <meta name="search-script" content="<%= asset_path 'Search.js' %>">
+        <%= javascript_include_tag "Search", defer: true, onerror: "this.remove()" %>
       <% end %>
+      <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
       <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
       <meta name="emoji-picker-script" content="<%= asset_path 'emojiPicker.js' %>">

@@ -3,7 +3,7 @@ import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn';
 import { showModalAfterError } from '../../utilities/showUserAlertModal';
 import { initializeSubscribeButton } from '../../packs/subscribeButton';
 // eslint-disable-next-line no-redeclare
-/* global InstantClick, instantClick */
+/* global InstantClick, instantClick, getCsrfToken, sendFetch */
 
 function markNotificationsAsRead() {
   if (navigator.userAgent === 'ForemWebView/1') {
@@ -43,10 +43,10 @@ function fetchNotificationsCount() {
     if (instantClick) {
       InstantClick.removeExpiredKeys('force');
       setTimeout(() => {
-        InstantClick.preload(
-          document.getElementById('notifications-link').href,
-          'force',
-        );
+        const notificationsLink = document.getElementById('notifications-link');
+        if (notificationsLink) {
+          InstantClick.preload(notificationsLink.href, 'force');
+        }
       }, 30);
     }
   }
@@ -208,11 +208,23 @@ function initLoadMoreButton() {
   }
 }
 
+/**
+ * Initializes the navbar notifications bell and `/notifications` page interactions for signed-in users.
+ */
 export function initializeNotifications() {
+  if (!checkUserLoggedIn()) {
+    return;
+  }
+
   fetchNotificationsCount();
+  listenForNotificationsBellClick();
+
+  if (!document.getElementById('notifications-container')) {
+    return;
+  }
+
   markNotificationsAsRead();
   initReactions();
-  listenForNotificationsBellClick();
   initFilter();
   initPagination();
   initLoadMoreButton();
