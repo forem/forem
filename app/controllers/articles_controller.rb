@@ -311,7 +311,7 @@ class ArticlesController < ApplicationController
   end
 
   def handle_user_or_organization_feed
-    if (@user = User.find_by(username: params[:username]))
+    if (@user = User.select(:id, :name, :username, :profile_image).find_by(username: params[:username]))
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
       @articles = @articles.where(organization_id: @user.id)
