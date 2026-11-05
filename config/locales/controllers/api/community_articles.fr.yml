@@ -1,0 +1,10 @@
+fr:
+  api:
+    community_articles:
+      invalid_mode: Le mode doit être keyword ou hybrid.
+      invalid_query: "q doit être une chaîne non vide de %{maximum} caractères au maximum"
+      invalid_terms: "q doit contenir entre 1 et %{maximum} recherches séparées par des virgules"
+      invalid_term: "Chaque recherche doit contenir une lettre ou un chiffre"
+      invalid_interval: "end doit être égal ou postérieur à start"
+      invalid_date: "%{parameter} doit être une date valide au format YYYY-MM-DD"
+      invalid_pagination: "%{parameter} doit être un nombre"

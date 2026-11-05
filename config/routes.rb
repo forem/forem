@@ -83,6 +83,8 @@ Rails.application.routes.draw do
 
         get "/users/search", to: "users#search"
 
+        resources :community_articles, only: :index
+
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
