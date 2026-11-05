@@ -7,12 +7,24 @@ RSpec.describe AbExperiment::GoalConversionHandler do
       described_class.new(user: user, goal: goal, experiments: experiments, start_date: start_date)
     end
 
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
+    let(:article) { create(:article, user: user, with_tags: false, with_main_image: false) }
     let(:start_date) { 16.days.ago }
     let(:goal) { "non_sense" }
     let(:experiments) { FieldTest.config["experiments"] }
 
+    def create_page_view(created_at: Time.current)
+      create(:page_view, user: user, article: nil, referrer: nil, created_at: created_at)
+    end
+
+    def call_and_event_names
+      FieldTest::Event.delete_all
+      handler.call
+      FieldTest::Event.pluck(:name)
+    end
+
     context "with no experiments" do
+      let(:user) { build_stubbed(:user) }
       let(:experiments) { nil }
 
       it "gracefully handles a case where there are no tests" do
@@ -31,8 +43,8 @@ RSpec.describe AbExperiment::GoalConversionHandler do
       end
 
       it "registers some events but not others", :aggregate_failures do
-        7.times do |n|
-          create(:comment, user_id: user.id, created_at: n.days.ago)
+        4.times do |n|
+          create(:comment, commentable: article, user: user, created_at: n.days.ago)
         end
         handler.call
         # Only the comment registered; the other one would've registered had the events happened
@@ -44,7 +56,6 @@ RSpec.describe AbExperiment::GoalConversionHandler do
       end
     end
 
-
     context "with user who is part of field test and user_creates_comment goal" do
       let(:goal) { described_class::USER_CREATES_COMMENT_GOAL }
 
@@ -52,16 +63,13 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
       end
 
-      it "records a conversion", :aggregate_failures do
+      it "records a base conversion and records the 4-day conversion once threshold is met", :aggregate_failures do
         handler.call
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq(goal)
-      end
+        expect(FieldTest::Event.pluck(:name)).to eq([goal])
 
-      it "records user_creates_comment_on_at_least_four_different_days_within_a_week field test conversion",
-         :aggregate_failures do
-        7.times do |n|
-          create(:comment, user_id: user.id, created_at: n.days.ago)
+        4.times do |n|
+          create(:comment, commentable: article, user: user, created_at: n.days.ago)
         end
         handler.call
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
@@ -80,179 +88,112 @@ RSpec.describe AbExperiment::GoalConversionHandler do
 
       after { Timecop.return }
 
-      it "records a field test when user views a page", :aggregate_failures do
-        create(:page_view, user_id: user.id)
-        handler.call
+      it "records day-based pageview conversions as multi-day thresholds are reached", :aggregate_failures do
+        create_page_view(created_at: 0.days.ago)
+        expect(call_and_event_names).to eq([goal])
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
-          .to include(goal)
-      end
 
-      it "records user_views_pages_on_at_least_two_different_days_within_a_week field test conversion",
-         :aggregate_failures do
-        3.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.days.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
+        create_page_view(created_at: 1.day.ago)
+        expect(call_and_event_names)
           .to include("user_views_pages_on_at_least_two_different_days_within_a_week")
-      end
+          .and exclude(
+            "user_views_pages_on_at_least_four_different_days_within_a_week",
+            "user_views_pages_on_at_least_nine_different_days_within_two_weeks",
+            "user_views_pages_on_at_least_twelve_different_hours_within_five_days",
+          )
 
-      it "records user_views_pages_on_at_least_four_different_days_within_a_week field test conversion",
-         :aggregate_failures do
-        7.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.days.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
+        (2..3).each { |n| create_page_view(created_at: n.days.ago) }
+        expect(call_and_event_names)
           .to include("user_views_pages_on_at_least_four_different_days_within_a_week")
-      end
+          .and exclude("user_views_pages_on_at_least_nine_different_days_within_two_weeks")
 
-      it "records user_views_pages_on_at_least_nine_different_days_within_two_weeks field test conversionn",
-         :aggregate_failures do
-        10.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.days.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
+        (4..8).each { |n| create_page_view(created_at: n.days.ago) }
+        expect(call_and_event_names)
           .to include("user_views_pages_on_at_least_nine_different_days_within_two_weeks")
       end
 
-      it "records user_views_pages_on_at_least_twelve_different_hours_within_five_days field test conversion",
-         :aggregate_failures do
-        15.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.hours.ago)
-        end
+      it "records hour-based pageview conversions only when hourly thresholds are reached", :aggregate_failures do
+        2.times { |n| create_page_view(created_at: n.hours.ago) }
+        expect(call_and_event_names)
+          .to eq([goal])
+          .and exclude(
+            "user_views_pages_on_at_least_four_different_hours_within_a_day",
+            "user_views_pages_on_at_least_twelve_different_hours_within_five_days",
+          )
 
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
-          .to include("user_views_pages_on_at_least_twelve_different_hours_within_five_days")
-      end
-
-      it "does not record field test conversion if not qualifying" do
-        2.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.days.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.pluck(:name))
-          .not_to include("user_views_pages_on_at_least_twelve_different_hours_within_five_days")
-      end
-
-      it "records user_views_pages_on_at_least_three_different_hours_within_a_day field test conversionn",
-         :aggregate_failures do
-        3.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.hours.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
+        create_page_view(created_at: 2.hours.ago)
+        expect(call_and_event_names)
           .to eq([goal, "user_views_pages_on_at_least_three_different_hours_within_a_day"])
-      end
-
-      it "records user_views_pages_on_at_least_four_different_hours_within_a_day field test conversionn",
-         :aggregate_failures do
-        7.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.hours.ago)
-        end
-        handler.call
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
+
+        create_page_view(created_at: 3.hours.ago)
+        expect(call_and_event_names)
           .to eq([goal, "user_views_pages_on_at_least_three_different_hours_within_a_day",
                   "user_views_pages_on_at_least_four_different_hours_within_a_day"])
-      end
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
 
-      it "does not record user_views_article_four_hours_in_day field test conversion for non-qualifying activity" do
-        2.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.hours.ago)
-        end
-        handler.call
-        expect(FieldTest::Event.pluck(:name))
-          .not_to include("user_views_pages_on_at_least_four_different_hours_within_a_day")
+        (4..11).each { |n| create_page_view(created_at: n.hours.ago) }
+        expect(call_and_event_names)
+          .to include("user_views_pages_on_at_least_twelve_different_hours_within_five_days")
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
       end
     end
 
     context "with user who is part of field test and user_creates_article_reaction goal" do
       let(:goal) { described_class::USER_CREATES_ARTICLE_REACTION_GOAL }
-      let(:user) { create(:user, :trusted) } # Because we want to test handling of privileged reactions
+      let(:user) { create(:user, :trusted, :without_profile, profile_image: nil) }
 
       before do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
       end
 
-      it "records a conversion", :aggregate_failures do
-        create(:reaction, user_id: user.id)
-        handler.call
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.last.name).to eq(goal)
-      end
+      it "records a base conversion and only converts the 4-day goal for 4 public article reactions within a week",
+         :aggregate_failures do
+        create(:reaction, reactable: article, user: user, category: "like", created_at: 25.hours.ago)
+        create(:reaction, reactable: article, user: user, category: "unicorn", created_at: 49.hours.ago)
+        create(:reaction, reactable: article, user: user, category: "exploding_head", created_at: 73.hours.ago)
+        create(:reaction, reactable: article, user: user, category: "raised_hands", created_at: 217.hours.ago)
 
-      it "records a conversion when they react 4 times within a week", :aggregate_failures do
-        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 73.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 97.hours.ago)
-        handler.call
-
+        expect(call_and_event_names).to contain_exactly(goal)
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name).sort)
+
+        comment = create(:comment, commentable: article, user: user)
+        create(:reaction, reactable: article, user: user, category: "vomit", created_at: 97.hours.ago)
+        create(:reaction, reactable: comment, user: user, category: "like", created_at: 121.hours.ago)
+
+        expect(call_and_event_names).to contain_exactly(goal)
+
+        create(:reaction, reactable: article, user: user, category: "fire", created_at: 97.hours.ago)
+
+        expect(call_and_event_names.sort)
           .to match_array([
             goal,
             "user_creates_article_reaction_on_four_different_days_within_a_week",
           ].sort)
-      end
-
-      it "does not record the conversion when they react to non-articles or non-public reactions" do
-        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 73.hours.ago, category: "vomit")
-        create(:reaction, user_id: user.id, created_at: 97.hours.ago, reactable: create(:comment))
-        create(:reaction, user_id: user.id, created_at: 121.hours.ago)
-
-        handler.call
-
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
-          .to contain_exactly(goal)
-      end
-
-      it "does not record the conversion when their 4 reactions are not within a week" do
-        create(:reaction, user_id: user.id, created_at: 25.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 49.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 73.hours.ago)
-        create(:reaction, user_id: user.id, created_at: 217.hours.ago) # 9 days ago
-
-        handler.call
-
-        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.pluck(:name))
-          .to contain_exactly(goal)
       end
     end
 
     context "with user who is not part of field test" do
       let(:goal) { described_class::USER_CREATES_COMMENT_GOAL }
 
-      it "does not register a conversion" do
+      it "does not register a conversion even with qualifying activity", :aggregate_failures do
         handler.call
         expect(FieldTest::Event.all.size).to be(0)
-      end
 
-      it "records user_views_article_four_days_in_week field test conversion" do
-        7.times do |n|
-          create(:page_view, user_id: user.id, created_at: n.days.ago)
-        end
-        handler.call
+        4.times { |n| create_page_view(created_at: n.days.ago) }
+        described_class.call(
+          user: user,
+          goal: described_class::USER_CREATES_PAGEVIEW_GOAL,
+          experiments: experiments,
+          start_date: start_date,
+        )
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
 
     context "with user who is part of field test and user_creates_email_feed_event goal" do
       let(:goal) { described_class::USER_CREATES_EMAIL_FEED_EVENT_GOAL }
-      let(:article) { create(:article, :past, past_published_at: 2.days.ago, user_id: user.id) }
 
       before do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
@@ -264,7 +205,6 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         expect(FieldTest::Event.last.name).to eq(goal)
         expect(FieldTest::Event.all.size).to be(1)
       end
-
     end
   end
 end
