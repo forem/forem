@@ -165,4 +165,73 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.not_to change(Notification, :count)
     end
   end
+
+  context "when publishing multiple articles in a day" do
+    let(:followers) { create_list(:user, 4) }
+
+    before do
+      followers.each { |follower| follower.follow(user) }
+    end
+
+    it "does not limit notifications by page views for the 2nd published non-status article in the past day" do
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 1)
+      second_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(second_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
+
+    it "ignores status posts when counting published articles in the past day" do
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 1)
+      create(
+        :article,
+        :past,
+        user: user,
+        past_published_at: 2.hours.ago,
+        type_of: "status",
+        body_markdown: "",
+        main_image: nil,
+        page_views_count: 0,
+      )
+      second_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(second_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
+
+    it "limits notifications on the 3rd+ published non-status article to the author's past-week article page views" do
+      create(:article, :past, user: user, past_published_at: 2.weeks.ago, page_views_count: 500)
+      create(:article, :past, user: user, past_published_at: 3.days.ago, page_views_count: 1)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 1)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(2)
+    end
+
+    it "sends zero notifications on the 3rd+ published non-status article if past-week article page views are 0" do
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 0)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.not_to change(Notification, :count)
+    end
+
+    it "still caps notifications at FOLLOWER_SEND_LIMIT when past-week page views exceed the cap" do
+      stub_const("Notifications::NotifiableAction::FOLLOWER_SEND_LIMIT", 2)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 500)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 500)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(2)
+    end
+  end
 end

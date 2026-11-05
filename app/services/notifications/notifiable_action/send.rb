@@ -2,6 +2,8 @@
 module Notifications
   module NotifiableAction
     FOLLOWER_SEND_LIMIT = 10_000
+    DAILY_UNTHROTTLED_ARTICLE_LIMIT = 2
+
     class Send
       def self.call(...)
         new(...).call
@@ -18,6 +20,9 @@ module Notifications
 
       def call
         return unless notifiable.is_a?(Article)
+
+        send_limit = follower_send_limit
+        return if send_limit <= 0
 
         json_data = {
           user: user_data(notifiable.user),
@@ -43,7 +48,7 @@ module Notifications
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
           .where.not(id: (user_ids_with_article_mentions + co_author_ids + [notifiable.user]))
-          .recently_active(FOLLOWER_SEND_LIMIT).distinct
+          .recently_active(send_limit).distinct
 
         article_followers.find_each do |follower|
           now = Time.current
@@ -85,6 +90,26 @@ module Notifications
       private
 
       attr_reader :notifiable, :action
+
+      def follower_send_limit
+        author = notifiable.user
+        return FOLLOWER_SEND_LIMIT unless author
+
+        published_non_status_articles_past_day = author.articles
+          .published
+          .where.not(type_of: "status")
+          .where("published_at >= ?", 1.day.ago)
+          .count
+
+        return FOLLOWER_SEND_LIMIT if published_non_status_articles_past_day <= DAILY_UNTHROTTLED_ARTICLE_LIMIT
+
+        past_week_views = author.articles
+          .published
+          .where("published_at >= ?", 1.week.ago)
+          .sum(:page_views_count)
+
+        [past_week_views, FOLLOWER_SEND_LIMIT].min
+      end
 
       def choose_upsert_index(action)
         return :index_notifications_on_user_notifiable_and_action_not_null if action.present?
