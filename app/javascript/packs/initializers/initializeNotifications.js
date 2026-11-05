@@ -126,13 +126,22 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
+  const notificationsNumber = document.getElementById('notifications-number');
+  if (
+    notificationsNumber &&
+    document.getElementById('notifications-container')
+  ) {
+    notificationsNumber.classList.add('hidden');
+  }
+
   const notificationsLink = document.getElementById('notifications-link');
   if (notificationsLink) {
-    setTimeout(() => {
-      notificationsLink.onclick = function () {
-        document.getElementById('notifications-number').classList.add('hidden');
-      };
-    }, 180);
+    notificationsLink.onclick = function () {
+      const badge = document.getElementById('notifications-number');
+      if (badge) {
+        badge.classList.add('hidden');
+      }
+    };
   }
 }
 
