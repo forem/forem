@@ -1,0 +1,18 @@
+app/assets/stylesheets/components/stories.scss
+  h_f968154a99632d 577-589,648-651
+app/javascript/articles/QuickiesBox.jsx
+  h_f968154a99632d 3-7,272-281,286-295,335-342,344-345
+app/javascript/articles/__tests__/QuickiesBox.test.jsx
+  h_f968154a99632d 133-134,143-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f4e7deff219a60249a362c01ffac87f7b1a2c63b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
