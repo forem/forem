@@ -1,0 +1,20 @@
+app/decorators/notification_decorator.rb
+  h_f968154a99632d 163-167,169-170,174
+app/views/notifications/shared/_article_preview.html.erb
+  h_f968154a99632d 2
+spec/decorators/notification_decorator_spec.rb
+  h_f968154a99632d 142,224,313,315-316,322-328,332,337,426,539
+spec/requests/notifications_spec.rb
+  h_f968154a99632d 720-733
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e31ed85d16d0f8c1603dd91cfb5274fc3da64c9d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
