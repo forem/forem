@@ -203,6 +203,8 @@ module Stories
         .per(25)
     end
 
+    # Preloads fragment caches, context notes, top comments, and reaction counts
+    # for uncached feed story records to avoid per-story N+1 queries.
     def preload_feed_associations
       records = @stories.map(&:object)
       if @page <= 2 && perform_caching && records.any?
@@ -237,7 +239,17 @@ module Stories
         ).call
       end
 
-      Article.preload_reaction_counts_for_reactable(records.select { |r| r.public_reactions_count.positive? })
+      preload_reaction_counts(records)
+    end
+
+    # Prefills empty reaction counts for zero-reaction stories and batch-preloads
+    # reaction counts for stories with positive public reaction counts.
+    #
+    # @param records [Array<Article>]
+    def preload_reaction_counts(records)
+      with_reactions, without_reactions = records.partition { |r| r.public_reactions_count.positive? }
+      without_reactions.each { |r| r.instance_variable_set(:@preloaded_reaction_counts_for_reactable, []) }
+      Article.preload_reaction_counts_for_reactable(with_reactions)
     end
 
     def story_cache_key(rec, vc, digest_path)
