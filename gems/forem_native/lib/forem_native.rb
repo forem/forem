@@ -1107,6 +1107,46 @@ module ForemNative
       Native.postprocess_transcript_html(html, redact)
     end
 
+    # Scans `cached_tag_list` (`", "`-delimited) in-place and returns the first tag matching
+    # `allowed_tags` (or `Constants::Tags::FLARE_TAG_NAMES` when `allowed_tags` is nil),
+    # `false` when no flare tag matches on valid input, or `nil` for out-of-domain inputs.
+    def match_first_flare_tag(cached_tag_list, allowed_tags = nil)
+      return unless Native.respond_to?(:match_first_flare_tag)
+      return unless cached_tag_list.nil? || cached_tag_list.instance_of?(String)
+      return unless allowed_tags.nil? || allowed_tags.is_a?(Array)
+
+      Native.match_first_flare_tag(cached_tag_list, allowed_tags)
+    end
+
+    # Groups `[[article_id, cached_tag_list], ...]` pairs by their first matching flare tag
+    # in a single native pass (`{ flare_tag => [article_ids] }`), matching
+    # `Homepage::FetchTagFlares.articles_tag_flares`. Returns `nil` for out-of-domain inputs.
+    def match_articles_flare_tags(pairs, allowed_tags = nil)
+      return unless Native.respond_to?(:match_articles_flare_tags)
+      return unless pairs.is_a?(Array) && (allowed_tags.nil? || allowed_tags.is_a?(Array))
+
+      Native.match_articles_flare_tags(pairs, allowed_tags)
+    end
+
+    # Builds a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+    # SQL expression, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+    def build_relevancy_lever_sql(select_fragment, cases, fallback)
+      return unless Native.respond_to?(:build_relevancy_lever_sql)
+      return unless select_fragment.instance_of?(String) && cases.is_a?(Array)
+      return unless fallback.is_a?(Integer) || fallback.is_a?(Float)
+
+      Native.build_relevancy_lever_sql(select_fragment, cases, fallback)
+    end
+
+    # Compiles the joined `relevance_score_components_as_sql` expression for
+    # `Articles::Feeds::VariantQuery` in a single pre-allocated Rust buffer.
+    def build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+      return unless Native.respond_to?(:build_variant_relevancy_score_sql)
+      return unless levers.is_a?(Array)
+
+      Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

@@ -7,7 +7,7 @@ use magnus::{
     prelude::*,
     r_hash::ForEach,
     value::{Qfalse, Qtrue},
-    Error, Float, Integer, RArray, RHash, RString, Ruby, Symbol, Value,
+    Error, Float, Integer, RArray, RHash, RString, RStruct, Ruby, Symbol, Value,
 };
 
 static RNG_COUNTER: AtomicU64 = AtomicU64::new(1);
@@ -2720,6 +2720,229 @@ fn clean_tag_list(ruby: &Ruby, input: RString) -> Option<RArray> {
     Some(ary)
 }
 
+fn extract_flare_allowed_tags(allowed_tags: Value) -> Option<Option<Vec<String>>> {
+    if allowed_tags.is_nil() {
+        return Some(None);
+    }
+    let arr = RArray::from_value(allowed_tags)?;
+    // SAFETY: `arr.as_slice()` borrows the Ruby Array buffer in-place and copies UTF-8 strings
+    // out before returning.
+    let slice = unsafe { arr.as_slice() };
+    let mut out = Vec::with_capacity(slice.len());
+    for &val in slice {
+        let rstr = RString::from_value(val)?;
+        if !rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let s = unsafe { rstr.test_as_str() }?;
+        out.push(s.to_owned());
+    }
+    Some(Some(out))
+}
+
+fn match_first_flare_tag(ruby: &Ruby, cached_tag_list: Value, allowed_tags: Value) -> Value {
+    let Some(allowed) = extract_flare_allowed_tags(allowed_tags) else {
+        return ruby.qnil().as_value();
+    };
+    if cached_tag_list.is_nil() {
+        return ruby.qfalse().as_value();
+    }
+    let Some(rstr) = RString::from_value(cached_tag_list) else {
+        return ruby.qnil().as_value();
+    };
+    if !rstr.is_utf8_compatible_encoding() {
+        return ruby.qnil().as_value();
+    }
+    // SAFETY: `test_as_str()` borrows the Ruby String buffer in-place during pure Rust scanning
+    // and copies the matched tag slice before any Ruby allocation.
+    let matched = {
+        let Some(text) = (unsafe { rstr.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        forem_core::feed::match_first_flare_tag(text, allowed.as_deref()).map(str::to_owned)
+    };
+    match matched {
+        Some(tag) => ruby.str_new(&tag).as_value(),
+        None => ruby.qfalse().as_value(),
+    }
+}
+
+fn match_articles_flare_tags(ruby: &Ruby, pairs: RArray, allowed_tags: Value) -> Option<RHash> {
+    let allowed = extract_flare_allowed_tags(allowed_tags)?;
+    // SAFETY: We only inspect immediate Integers, nil, and RString byte slices inside this scope,
+    // copying owned group results before allocating the output Ruby Hash/Arrays.
+    let groups: Vec<(String, Vec<i64>)> = {
+        let outer_slice = unsafe { pairs.as_slice() };
+        let mut group_vec: Vec<(String, Vec<i64>)> = Vec::new();
+        for &pair_val in outer_slice {
+            let pair_arr = RArray::from_value(pair_val)?;
+            let pair_slice = unsafe { pair_arr.as_slice() };
+            if pair_slice.len() != 2 {
+                return None;
+            }
+            let article_id = Integer::from_value(pair_slice[0])?.to_i64().ok()?;
+            let tags_val = pair_slice[1];
+            if tags_val.is_nil() {
+                continue;
+            }
+            let rstr = RString::from_value(tags_val)?;
+            if !rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            let text = unsafe { rstr.test_as_str() }?;
+            if let Some(flare_tag) =
+                forem_core::feed::match_first_flare_tag(text, allowed.as_deref())
+            {
+                if let Some(entry) = group_vec.iter_mut().find(|(name, _)| name == flare_tag) {
+                    entry.1.push(article_id);
+                } else {
+                    group_vec.push((flare_tag.to_owned(), vec![article_id]));
+                }
+            }
+        }
+        group_vec
+    };
+
+    let out = ruby.hash_new_capa(groups.len());
+    for (tag_name, ids) in groups {
+        let id_ary = ruby.ary_new_capa(ids.len());
+        for id in ids {
+            id_ary.push(id).ok()?;
+        }
+        out.aset(ruby.str_new(&tag_name), id_ary).ok()?;
+    }
+    Some(out)
+}
+
+#[inline]
+fn extract_lever_case_i64(val: Value) -> Option<i64> {
+    if let Some(int) = Integer::from_value(val) {
+        return int.to_i64().ok();
+    }
+    if let Some(fl) = Float::from_value(val) {
+        let f = fl.to_f64();
+        if f.is_finite() && f.abs() < ((1_i64 << 53) as f64) {
+            return Some(f as i64);
+        }
+    }
+    None
+}
+
+#[inline]
+fn extract_lever_exact_f64(val: Value) -> Option<f64> {
+    if let Some(fl) = Float::from_value(val) {
+        let f = fl.to_f64();
+        return f.is_finite().then_some(f);
+    }
+    if let Some(int) = Integer::from_value(val) {
+        let i = int.to_i64().ok()?;
+        if i.abs() < (1_i64 << 53) {
+            return Some(i as f64);
+        }
+    }
+    None
+}
+
+fn extract_lever_cases(cases_arr: RArray) -> Option<Vec<(i64, f64)>> {
+    // SAFETY: `cases_arr.as_slice()` and each inner `pair_arr.as_slice()` only inspect
+    // immediate Integer/Float values without calling into the Ruby VM.
+    let slice = unsafe { cases_arr.as_slice() };
+    let mut out = Vec::with_capacity(slice.len());
+    for &item in slice {
+        let pair_arr = RArray::from_value(item)?;
+        let pair_slice = unsafe { pair_arr.as_slice() };
+        if pair_slice.len() != 2 {
+            return None;
+        }
+        let v = extract_lever_case_i64(pair_slice[0])?;
+        let factor = extract_lever_exact_f64(pair_slice[1])?;
+        out.push((v, factor));
+    }
+    Some(out)
+}
+
+fn build_relevancy_lever_sql(
+    select_fragment: RString,
+    cases: RArray,
+    fallback: Value,
+) -> Option<String> {
+    if !select_fragment.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let parsed_cases = extract_lever_cases(cases)?;
+    let fallback_f64 = extract_lever_exact_f64(fallback)?;
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let frag_str = unsafe { select_fragment.test_as_str() }?;
+    forem_core::feed::build_relevancy_lever_sql(frag_str, &parsed_cases, fallback_f64)
+}
+
+type ParsedLeverTuple = (bool, String, Vec<(i64, f64)>, f64);
+
+fn build_variant_relevancy_score_sql(
+    levers: RArray,
+    has_user: bool,
+    minimize_ai: bool,
+) -> Option<String> {
+    // Copy Value handles first so `levers.as_slice()` is dropped before any `RStruct::aref` call.
+    let items: Vec<Value> = unsafe { levers.as_slice() }.to_vec();
+    let mut parsed_levers: Vec<ParsedLeverTuple> = Vec::with_capacity(items.len());
+
+    for item in items {
+        let (user_required, frag_val, cases_val, fallback_val) =
+            if let Some(rstruct) = RStruct::from_value(item) {
+                if rstruct.size() != 8 {
+                    return None;
+                }
+                let ur = rstruct.aref::<usize, Value>(1).ok()?.to_bool();
+                if ur && !has_user {
+                    continue;
+                }
+                let fv = rstruct.aref::<usize, Value>(2).ok()?;
+                let cv = rstruct.aref::<usize, Value>(5).ok()?;
+                let fbv = rstruct.aref::<usize, Value>(6).ok()?;
+                (ur, fv, cv, fbv)
+            } else {
+                let arr = RArray::from_value(item)?;
+                let slice = unsafe { arr.as_slice() };
+                match slice.len() {
+                    3 => (false, slice[0], slice[1], slice[2]),
+                    4 => {
+                        let ur = slice[0].to_bool();
+                        if ur && !has_user {
+                            continue;
+                        }
+                        (ur, slice[1], slice[2], slice[3])
+                    }
+                    _ => return None,
+                }
+            };
+
+        let frag_rstr = RString::from_value(frag_val)?;
+        if !frag_rstr.is_utf8_compatible_encoding() {
+            return None;
+        }
+        let frag_owned = unsafe { frag_rstr.test_as_str() }?.to_owned();
+        let cases_arr = RArray::from_value(cases_val)?;
+        let parsed_cases = extract_lever_cases(cases_arr)?;
+        let fallback_f64 = extract_lever_exact_f64(fallback_val)?;
+        parsed_levers.push((user_required, frag_owned, parsed_cases, fallback_f64));
+    }
+
+    let core_inputs: Vec<forem_core::feed::RelevancyLeverInput<'_>> = parsed_levers
+        .iter()
+        .map(
+            |(ur, frag, cases, fb)| forem_core::feed::RelevancyLeverInput {
+                user_required: *ur,
+                select_fragment: frag.as_str(),
+                cases: cases.clone(),
+                fallback: *fb,
+            },
+        )
+        .collect();
+
+    forem_core::feed::build_variant_relevancy_score_sql(&core_inputs, has_user, minimize_ai)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3010,5 +3233,19 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(extract_markdown_and_html_image_urls, 2),
     )?;
     native_mod.define_singleton_method("clean_tag_list", function!(clean_tag_list, 1))?;
+    native_mod
+        .define_singleton_method("match_first_flare_tag", function!(match_first_flare_tag, 2))?;
+    native_mod.define_singleton_method(
+        "match_articles_flare_tags",
+        function!(match_articles_flare_tags, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "build_relevancy_lever_sql",
+        function!(build_relevancy_lever_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_variant_relevancy_score_sql",
+        function!(build_variant_relevancy_score_sql, 3),
+    )?;
     Ok(())
 }
