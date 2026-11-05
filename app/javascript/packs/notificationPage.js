@@ -204,6 +204,16 @@ function initLoadMoreButton() {
  * Initializes all interactive behaviors on the `/notifications` page.
  */
 export function initializeNotificationsPage() {
+  // If the initial page load came from a pre-deploy edge cache whose legacy
+  // baseInitializers.js already runs notifications page logic inline on
+  // InstantClick change, skip running a second time.
+  if (
+    typeof window.showModalAfterError === 'function' &&
+    !window.Forem?.delegatesNotificationsPage
+  ) {
+    return;
+  }
+
   const container = document.getElementById('notifications-container');
   if (!container || container.dataset.notificationsInitialized === 'true') {
     return;
@@ -221,8 +231,11 @@ export function initializeNotificationsPage() {
 window.Forem = window.Forem || {};
 window.Forem.initializeNotificationsPage = initializeNotificationsPage;
 
-window.InstantClick?.on('change', () => {
-  initializeNotificationsPage();
-});
+if (!window.__notificationPageListenerRegistered) {
+  window.__notificationPageListenerRegistered = true;
+  window.InstantClick?.on('change', () => {
+    initializeNotificationsPage();
+  });
+}
 
 initializeNotificationsPage();

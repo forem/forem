@@ -47,6 +47,7 @@
       <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
       <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
       <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
+      <meta name="notification-page-script" content="<%= asset_path 'notificationPage.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>

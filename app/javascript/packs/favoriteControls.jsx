@@ -105,6 +105,9 @@ function mount() {
 
 mount();
 
-window.InstantClick.on('change', () => {
-  mount();
-});
+if (!window.__favoriteControlsListenerRegistered) {
+  window.__favoriteControlsListenerRegistered = true;
+  window.InstantClick?.on('change', () => {
+    mount();
+  });
+}

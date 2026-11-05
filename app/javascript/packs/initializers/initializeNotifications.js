@@ -2,6 +2,32 @@ import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn';
 // eslint-disable-next-line no-redeclare
 /* global InstantClick, instantClick */
 
+window.Forem = window.Forem || {};
+window.Forem.delegatesNotificationsPage = true;
+
+/**
+ * Ensures the notifications page bundle is loaded if navigating via InstantClick
+ * onto a cached or rolling-deploy `/notifications` response missing the script tag.
+ */
+function ensureNotificationPageScriptLoaded() {
+  const scriptSrc = document
+    .querySelector('meta[name="notification-page-script"]')
+    ?.getAttribute('content');
+  if (
+    !scriptSrc ||
+    document.querySelector('script[src*="notificationPage"]')
+  ) {
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = scriptSrc;
+  script.defer = true;
+  script.onload = () => {
+    window.Forem?.initializeNotificationsPage?.();
+  };
+  document.head.appendChild(script);
+}
+
 /**
  * Preloads the notifications page link via InstantClick for signed-in users.
  */
@@ -57,10 +83,11 @@ export function initializeNotifications() {
   fetchNotificationsCount();
   listenForNotificationsBellClick();
 
-  if (
-    document.getElementById('notifications-container') &&
-    typeof window.Forem?.initializeNotificationsPage === 'function'
-  ) {
-    window.Forem.initializeNotificationsPage();
+  if (document.getElementById('notifications-container')) {
+    if (typeof window.Forem?.initializeNotificationsPage === 'function') {
+      window.Forem.initializeNotificationsPage();
+    } else {
+      ensureNotificationPageScriptLoaded();
+    }
   }
 }
