@@ -201,6 +201,11 @@ module Articles
 
       private
 
+      AI_MINIMIZE_SQL =
+        "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+        "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)".freeze
+      private_constant :AI_MINIMIZE_SQL
+
       def configure!
         @relevance_score_components = []
 
@@ -220,28 +225,39 @@ module Articles
               AND user_blocks.blocker_id = :user_id"
         end
 
-        config.levers.each do |lever|
-          # Don't attempt to use this factor if we don't have user.
-          next if lever.user_required? && @user.nil?
+        minimize_ai = @user&.setting&.minimize_ai_feed_ai? ? true : false
+        @relevance_score_sql = ForemNative.build_variant_relevancy_score_sql(
+          config.levers,
+          !@user.nil?,
+          minimize_ai,
+        )
 
-          # This scoring method requires a group by clause.
-          @group_by_fields << lever.group_by_fragment if lever.group_by_fragment.present?
+        config.levers.each { |lever| apply_lever!(lever) }
 
-          @joins += lever.joins_fragments if lever.joins_fragments.present?
+        return unless @relevance_score_sql.nil? && minimize_ai
 
+        @relevance_score_components << AI_MINIMIZE_SQL
+      end
+
+      def apply_lever!(lever)
+        # Don't attempt to use this factor if we don't have user.
+        return if lever.user_required? && @user.nil?
+
+        # This scoring method requires a group by clause.
+        @group_by_fields << lever.group_by_fragment if lever.group_by_fragment.present?
+
+        @joins.merge(lever.joins_fragments) if lever.joins_fragments.present?
+
+        if @relevance_score_sql.nil?
           @relevance_score_components << build_score_element_from(
             select_fragment: lever.select_fragment,
             cases: lever.cases,
             fallback: lever.fallback,
           )
-
-          # As implemented, this is not looking for collisions of named parameters.
-          @query_parameters.merge!(lever.query_parameters)
         end
 
-        if @user&.setting&.minimize_ai_feed_ai?
-          @relevance_score_components << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
-        end
+        # As implemented, this is not looking for collisions of named parameters.
+        @query_parameters.merge!(lever.query_parameters) unless lever.query_parameters.empty?
       end
 
       # Concatenate the required group by clauses.
@@ -280,7 +296,8 @@ module Articles
             AND ((articles.published_at > :oldest_published_at)
             OR (articles.last_comment_at > :conditional_comment_timeframe))"
         elsif @user
-          user_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids + [0] # Adding one that will never be reached so we can have a valid SQL statement
+          # Adding one that will never be reached so we can have a valid SQL statement
+          user_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids + [0]
           where_clauses += " AND articles.user_id IN (#{user_ids.join(',')})"
         end
         if @user&.setting&.hide_fully_autonomous_feed_ai?
@@ -293,6 +310,10 @@ module Articles
       end
 
       def offset_and_limit_clause(offset:, limit:)
+        if offset.is_a?(Integer) && limit.is_a?(Integer)
+          return offset.positive? ? "OFFSET #{offset} LIMIT #{limit}" : "LIMIT #{limit}"
+        end
+
         if offset.to_i.positive?
           Article.sanitize_sql_array(["OFFSET ? LIMIT ?", offset, limit])
         else
@@ -307,7 +328,7 @@ module Articles
 
       # We multiply the relevance score components together.
       def relevance_score_components_as_sql
-        @relevance_score_components.join(" * \n")
+        @relevance_score_sql || @relevance_score_components.join(" * \n")
       end
 
       def default_limit
@@ -358,6 +379,11 @@ module Articles
       # @param cases [Array<Array<#to_i, #to_f>>]
       # @param fallback [#to_f]
       def build_score_element_from(select_fragment:, cases:, fallback:)
+        ForemNative.build_relevancy_lever_sql(select_fragment, cases, fallback) ||
+          legacy_build_score_element_from(select_fragment: select_fragment, cases: cases, fallback: fallback)
+      end
+
+      def legacy_build_score_element_from(select_fragment:, cases:, fallback:)
         values = []
         # I would love to sanitize this, but alas, we must trust this clause.
         text = "(CASE #{select_fragment}"

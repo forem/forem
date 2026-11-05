@@ -5362,4 +5362,211 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".match_first_flare_tag" do
+    let(:canonical_flare_tags) do
+      %w[discuss help explainlikeimfive watercooler]
+    end
+
+    let(:legacy_match_first_flare_tag) do
+      lambda do |cached_tag_list, allowed_tags = nil|
+        flare_tags = (allowed_tags || canonical_flare_tags).to_set
+        tags = cached_tag_list.to_s.split(", ")
+        flare_tags.intersection(tags).first
+      end
+    end
+
+    it "matches the first flare tag in cached_tag_list order and returns false when none match" do
+      expect(described_class.match_first_flare_tag("ruby, discuss, watercooler", nil)).to eq("discuss")
+      expect(described_class.match_first_flare_tag("watercooler, discuss", nil)).to eq("watercooler")
+      expect(described_class.match_first_flare_tag("ruby, rails, webdev", nil)).to be(false)
+      expect(described_class.match_first_flare_tag("", nil)).to be(false)
+      expect(described_class.match_first_flare_tag(nil, nil)).to be(false)
+      expect(described_class.match_first_flare_tag("custom, discuss", %w[custom])).to eq("custom")
+    end
+
+    it "returns nil for out-of-domain inputs so callers fall back cleanly" do
+      subclass_str = Class.new(String).new("ruby, discuss")
+      expect(described_class.match_first_flare_tag(subclass_str, nil)).to be_nil
+      expect(described_class.match_first_flare_tag(123, nil)).to be_nil
+      expect(described_class.match_first_flare_tag("ruby, discuss", [123])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized cached_tag_list strings" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails javascript webdev discuss help explainlikeimfive watercooler ai rust go] + ["", " "]
+
+      1_000.times do |i|
+        raw = Array.new(rng.rand(0..6)) { pool.sample(random: rng) }.join(", ")
+        raw += ", " * rng.rand(0..2)
+        allowed = rng.rand(2).zero? ? nil : pool.sample(rng.rand(0..5), random: rng).reject(&:empty?)
+
+        actual = described_class.match_first_flare_tag(raw, allowed)
+        expected = legacy_match_first_flare_tag.call(raw, allowed)
+        expect(actual).to eq(expected || false), "iteration #{i}: raw=#{raw.inspect} allowed=#{allowed.inspect}"
+      end
+    end
+  end
+
+  describe ".match_articles_flare_tags" do
+    let(:canonical_flare_set) do
+      %w[discuss help explainlikeimfive watercooler].to_set
+    end
+
+    let(:legacy_match_articles_flare_tags) do
+      lambda do |pairs|
+        result = Hash.new { |hash, key| hash[key] = [] }
+        pairs.each do |article_id, cached_tag_list|
+          next if cached_tag_list.nil? || cached_tag_list.strip.empty?
+
+          tags = cached_tag_list.split(", ")
+          flare_tag = canonical_flare_set.intersection(tags).first
+          next if flare_tag.blank?
+
+          result[flare_tag] << article_id
+        end
+        result
+      end
+    end
+
+    it "groups article IDs by their first matched flare tag in first-seen tag order" do
+      pairs = [
+        [10, "ruby, watercooler, discuss"],
+        [20, "rails, discuss"],
+        [30, "javascript, webdev"],
+        [40, "help, watercooler"],
+        [50, "discuss, help"],
+        [60, nil],
+        [70, "   "],
+      ]
+
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        "watercooler" => [10],
+        "discuss" => [20, 50],
+        "help" => [40],
+      )
+      expect(described_class.match_articles_flare_tags(pairs)).to eq(
+        legacy_match_articles_flare_tags.call(pairs),
+      )
+    end
+
+    it "returns nil for out-of-domain pair arrays so Homepage::FetchTagFlares falls back cleanly" do
+      expect(described_class.match_articles_flare_tags(nil)).to be_nil
+      expect(described_class.match_articles_flare_tags(["not_a_pair"])).to be_nil
+      expect(described_class.match_articles_flare_tags([[1, 123]])).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized article batches" do
+      rng = Random.new(424_242)
+      pool = %w[ruby rails webdev discuss help explainlikeimfive watercooler beginners career]
+
+      1_000.times do |i|
+        pairs = Array.new(rng.rand(0..25)) do |idx|
+          tag_list = if rng.rand(6).zero?
+                       [nil, "", "   "].sample(random: rng)
+                     else
+                       Array.new(rng.rand(1..5)) { pool.sample(random: rng) }.join(", ")
+                     end
+          [idx + 1, tag_list]
+        end
+
+        actual = described_class.match_articles_flare_tags(pairs)
+        expected = legacy_match_articles_flare_tags.call(pairs)
+        expect(actual).to eq(expected), "iteration #{i}: pairs=#{pairs.inspect}"
+      end
+    end
+  end
+
+  describe ".build_relevancy_lever_sql and .build_variant_relevancy_score_sql" do
+    let(:lever_struct) do
+      Struct.new(
+        :key,
+        :user_required,
+        :select_fragment,
+        :joins_fragments,
+        :group_by_fragment,
+        :cases,
+        :fallback,
+        :query_parameters,
+        keyword_init: true,
+      )
+    end
+
+    let(:legacy_build_lever_sql) do
+      lambda do |select_fragment, cases, fallback|
+        lines = ["(CASE #{select_fragment}"]
+        cases.each do |value, factor|
+          lines << "WHEN #{value.to_i} THEN #{factor.to_f}"
+        end
+        lines << "ELSE #{fallback.to_f} END)"
+        lines.join("\n")
+      end
+    end
+
+    let(:legacy_build_variant_sql) do
+      lambda do |levers, has_user, minimize_ai|
+        parts = []
+        levers.each do |lever|
+          next if lever.user_required && !has_user
+
+          parts << legacy_build_lever_sql.call(lever.select_fragment, lever.cases, lever.fallback)
+        end
+        if minimize_ai
+          parts << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+                   "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        end
+        parts.join(" * \n")
+      end
+    end
+
+    it "formats single-lever and multi-lever relevancy SQL and returns nil for out-of-domain inputs" do
+      sql = described_class.build_relevancy_lever_sql(
+        "COUNT(reactions.id)",
+        [[0, 0.9], [1, 1.0], [5, 1.25]],
+        1.5,
+      )
+      expect(sql).to eq(
+        "(CASE COUNT(reactions.id)\nWHEN 0 THEN 0.9\nWHEN 1 THEN 1.0\nWHEN 5 THEN 1.25\nELSE 1.5 END)",
+      )
+
+      # Placeholder '?' in select_fragment must defer to ActiveRecord::Sanitization
+      expect(described_class.build_relevancy_lever_sql("COUNT(?)", [[0, 1.0]], 1.0)).to be_nil
+      # Scientific-notation float must defer to Ruby
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, 1e-6]], 1.0)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("COUNT(id)", [[0, Float::NAN]], 1.0)).to be_nil
+    end
+
+    it "matches the Ruby reference across 1,000 randomized lever configurations" do
+      rng = Random.new(424_242)
+      fragments = [
+        "COUNT(DISTINCT reactions.id)",
+        "articles.public_reactions_count",
+        "DATE_PART('day', :now - articles.published_at)::integer",
+        "COUNT(user_subscriptions.id)",
+      ]
+      factors = [0.0, 0.01, 0.1, 0.25, 0.5, 0.85, 1.0, 1.08, 1.5, 2.0, -15.0, -30.0, 100.25]
+
+      1_000.times do |i|
+        has_user = rng.rand(2).zero?
+        minimize_ai = rng.rand(2).zero?
+        levers = Array.new(rng.rand(1..6)) do |idx|
+          cases = Array.new(rng.rand(0..5)) { [rng.rand(-5..30), factors.sample(random: rng)] }
+          lever_struct.new(
+            key: :"lever_#{idx}",
+            user_required: rng.rand(3).zero?,
+            select_fragment: fragments.sample(random: rng),
+            joins_fragments: [],
+            group_by_fragment: nil,
+            cases: cases,
+            fallback: factors.sample(random: rng),
+            query_parameters: {},
+          )
+        end
+
+        actual = described_class.build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+        expected = legacy_build_variant_sql.call(levers, has_user, minimize_ai)
+        expect(actual).to eq(expected), "iteration #{i}: actual=#{actual.inspect} expected=#{expected.inspect}"
+      end
+    end
+  end
 end
