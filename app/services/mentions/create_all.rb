@@ -12,13 +12,24 @@ module Mentions
     end
 
     def call
+      return if notifiable_flagged_or_author_restricted?
+
       mentioned_users = users_mentioned_in_text_excluding_author
+      if notifiable.user.present?
+        mentioned_users = mentioned_users.first(notifiable.user.rate_limiter.max_mentions_per_post)
+      end
 
       delete_mentions_removed_from_notifiable_text(mentioned_users)
       create_mentions_for(mentioned_users)
     end
 
     private
+
+    def notifiable_flagged_or_author_restricted?
+      return true if notifiable.user&.spam_or_suspended?
+
+      Spam::Handler.active_spam_reaction_for?(reactable: notifiable)
+    end
 
     def users_mentioned_in_text_excluding_author
       mentioned_usernames = extract_usernames_from_mentions_in_text
@@ -34,7 +45,11 @@ module Mentions
     end
 
     def create_mentions_for(users)
-      users.each { |user| create_mention_for(user) }
+      created_count = users.count do |user|
+        mention = create_mention_for(user)
+        mention&.persisted?
+      end
+      notifiable.user&.rate_limiter&.track_mentions(created_count) if created_count.positive?
     end
 
     def extract_usernames_from_mentions_in_text

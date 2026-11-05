@@ -2630,6 +2630,23 @@ RSpec.describe Article do
       expect(article.errors[:base])
         .to include("You cannot mention more than #{Settings::RateLimit.mention_creation} users in a post!")
     end
+
+    it "restricts untrusted users from mentioning more than mention_antispam_creation other users in a post" do
+      other_users = create_list(:user, 3)
+      article.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+      expect(article).not_to be_valid
+      expect(article.errors[:base])
+        .to include("You cannot mention more than #{Settings::RateLimit.mention_antispam_creation} users in a post!")
+    end
+
+    it "allows established users to mention up to mention_creation other users in a post" do
+      article.user.update_columns(created_at: 10.days.ago, badge_achievements_count: 5)
+      other_users = create_list(:user, 5)
+      article.body_markdown = other_users.map { |u| "@#{u.username}" }.join(" ")
+
+      expect(article).to be_valid
+    end
   end
 
   describe "#privileged_reaction_counts" do

@@ -1826,10 +1826,33 @@ class Article < ApplicationRecord
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= Settings::RateLimit.mention_creation
+    if mentions_count > Settings::RateLimit.mention_creation
+      errors.add(:base,
+                 I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+      return
+    end
 
-    errors.add(:base,
-               I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+    return unless mentions_count.positive? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    max_for_user = user.rate_limiter.max_mentions_per_post
+    if other_mentioned_usernames.size > max_for_user
+      errors.add(:base, I18n.t("models.article.mention_too_many", count: max_for_user))
+      return
+    end
+
+    return unless published?
+    return unless user.rate_limiter.mention_rate_limit_reached?(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+
+    errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
   end
 
   def create_slug

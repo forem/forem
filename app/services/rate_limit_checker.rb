@@ -16,6 +16,8 @@ class RateLimitChecker
     flag_appeal_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
+    mention_antispam_creation: { retry_after: 3600 },
+    mention_creation: { retry_after: 3600 },
     organization_creation: { retry_after: 300 },
     published_article_creation: { retry_after: 30 },
     published_article_antispam_creation: { retry_after: 300 },
@@ -24,6 +26,23 @@ class RateLimitChecker
     user_subscription_creation: { retry_after: 30 },
     user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
+
+  def self.extract_other_mentioned_usernames(html, author_username: nil)
+    return [] if html.blank? || html.exclude?("mentioned-user")
+
+    usernames = ForemNative.extract_mentioned_usernames(html.to_s) || begin
+      doc = Nokogiri::HTML(html.to_s)
+      non_liquid = doc.css(".mentioned-user").reject do |tag|
+        tag.ancestors(".liquid-comment").any? ||
+          tag.ancestors("[class^=ltag]").any? ||
+          tag.ancestors("[class*=' ltag']").any?
+      end
+      non_liquid.map { |link| link.text.delete("@").downcase }
+    end
+
+    excluded = author_username.to_s.downcase
+    usernames.map { |u| u.to_s.downcase }.uniq.reject { |u| u.blank? || u == excluded }
+  end
 
   def initialize(user = nil)
     @user = user
@@ -87,6 +106,94 @@ class RateLimitChecker
       Settings::RateLimit.email_recipient
   end
 
+  def trusted_mentioner?
+    return false unless user
+
+    user.trusted? ||
+      user.auditable? ||
+      user.super_moderator? ||
+      user.base_subscriber? ||
+      user.badge_achievements_count.to_i > 6
+  end
+
+  def established_mentioner?
+    return false unless user
+    return true if trusted_mentioner?
+
+    !Settings::RateLimit.user_considered_new?(user: user) &&
+      user.badge_achievements_count.to_i >= 4
+  end
+
+  def low_trust_mentioner?
+    return false unless user
+    return false if established_mentioner?
+
+    !Settings::RateLimit.user_considered_new?(user: user) &&
+      user.badge_achievements_count.to_i.between?(1, 3)
+  end
+
+  def untrusted_mentioner?
+    !established_mentioner? && !low_trust_mentioner?
+  end
+
+  def max_mentions_per_post
+    max_cap = Settings::RateLimit.mention_creation
+    return max_cap if established_mentioner?
+
+    antispam_cap = Settings::RateLimit.mention_antispam_creation
+    if low_trust_mentioner?
+      [(antispam_cap * 1.5).ceil, max_cap].min
+    else
+      [antispam_cap, max_cap].min
+    end
+  end
+
+  def hourly_mention_limit
+    if trusted_mentioner?
+      Settings::RateLimit.mention_hourly_limit * 3
+    elsif established_mentioner?
+      Settings::RateLimit.mention_hourly_limit
+    elsif low_trust_mentioner?
+      Settings::RateLimit.mention_antispam_hourly_limit * 2
+    else
+      Settings::RateLimit.mention_antispam_hourly_limit
+    end
+  end
+
+  def mention_rate_limit_reached?(new_mentions_count: 1, exclude_notifiable: nil)
+    return false if ApplicationConfig["E2E"]
+    return false unless user
+
+    limit = hourly_mention_limit
+    reached = (limit <= 0 && new_mentions_count.to_i.positive?) ||
+      (recent_mention_count(exclude_notifiable: exclude_notifiable) + new_mentions_count.to_i) > limit
+
+    if reached
+      @action = established_mentioner? ? :mention_creation : :mention_antispam_creation
+      log_to_datadog
+    end
+    reached
+  end
+
+  def track_mentions(count = 1)
+    return if count.to_i <= 0 || user.blank?
+
+    Rails.cache.increment(limit_cache_key(:mention_hourly_count), count.to_i, expires_in: 1.hour, raw: true)
+  end
+
+  def recent_mention_count(exclude_notifiable: nil)
+    return 0 unless user&.id
+
+    cached_count = if exclude_notifiable&.persisted?
+                     0
+                   else
+                     Rails.cache.read(limit_cache_key(:mention_hourly_count), raw: true).to_i
+                   end
+    db_count = recent_persisted_mention_count(exclude_notifiable: exclude_notifiable)
+    html_count = recent_html_mention_count(exclude_notifiable: exclude_notifiable)
+    [cached_count, db_count, html_count].max
+  end
+
   private
 
   ACTION_LIMITERS.each_key do |action|
@@ -135,6 +242,58 @@ class RateLimitChecker
     # TODO: We should make this time frame configurable.
     user.comments.where(created_at: 5.minutes.ago...).size >
       Settings::RateLimit.comment_antispam_creation
+  end
+
+  def check_mention_creation_limit
+    recent_mention_count >= Settings::RateLimit.mention_hourly_limit
+  end
+
+  def check_mention_antispam_creation_limit
+    recent_mention_count >= Settings::RateLimit.mention_antispam_hourly_limit
+  end
+
+  def recent_persisted_mention_count(exclude_notifiable: nil)
+    comment_scope = user.comments.where("created_at > ?", 1.hour.ago)
+    article_scope = user.articles.published.where("published_at > ?", 1.hour.ago)
+
+    if exclude_notifiable&.persisted?
+      case exclude_notifiable
+      when Comment
+        comment_scope = comment_scope.where.not(id: exclude_notifiable.id)
+      when Article
+        article_scope = article_scope.where.not(id: exclude_notifiable.id)
+      end
+    end
+
+    Mention.where(created_at: 1.hour.ago..)
+      .where(
+        "(mentionable_type = 'Comment' AND mentionable_id IN (?)) OR " \
+        "(mentionable_type = 'Article' AND mentionable_id IN (?))",
+        comment_scope.select(:id),
+        article_scope.select(:id),
+      ).count
+  end
+
+  def recent_html_mention_count(exclude_notifiable: nil)
+    comment_scope = user.comments.where("created_at > ?", 1.hour.ago)
+      .where("processed_html LIKE ?", "%mentioned-user%")
+    article_scope = user.articles.published.where("published_at > ?", 1.hour.ago)
+      .where("processed_html LIKE ?", "%mentioned-user%")
+
+    if exclude_notifiable&.persisted?
+      case exclude_notifiable
+      when Comment
+        comment_scope = comment_scope.where.not(id: exclude_notifiable.id)
+      when Article
+        article_scope = article_scope.where.not(id: exclude_notifiable.id)
+      end
+    end
+
+    htmls = comment_scope.limit(50).pluck(:processed_html) +
+      article_scope.limit(20).pluck(:processed_html)
+    htmls.sum do |html|
+      self.class.extract_other_mentioned_usernames(html, author_username: user.username).size
+    end
   end
 
   def check_follow_account_limit
