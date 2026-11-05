@@ -6,11 +6,26 @@ import { defaultChildrenPropTypes } from '../../common-prop-types';
 import { ButtonNew as Button } from '@crayons/Buttons';
 import CloseIcon from '@images/x.svg';
 
+/**
+ * An accessible modal dialog with a focus trap, a close button and an optional
+ * backdrop.
+ *
+ * @param {object} props
+ * @param {string} props.title Heading of the dialog, also used as its accessible name.
+ * @param {string} [props.describedBy] The id of the element that describes the
+ *   dialog. It is set as `aria-describedby` on the dialog.
+ * @param {boolean} [props.backdropDismissible] Whether a click on the backdrop
+ *   closes the dialog. It also decides whether a click outside deactivates the
+ *   focus trap.
+ * @param {Function} [props.onClose] Called when the dialog is dismissed (close
+ *   button, Escape or, if enabled, a backdrop click).
+ */
 export const Modal = ({
   children,
   size,
   className,
   title,
+  describedBy,
   prompt,
   sheet,
   centered,
@@ -47,6 +62,7 @@ export const Modal = ({
           role="dialog"
           aria-modal="true"
           aria-label={title || 'modal'}
+          aria-describedby={describedBy}
           className="crayons-modal__box"
         >
           {showHeader && (
@@ -84,6 +100,7 @@ Modal.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
   className: PropTypes.string,
   title: PropTypes.string.isRequired,
+  describedBy: PropTypes.string,
   backdrop: PropTypes.bool,
   backdropDismissible: PropTypes.bool,
   prompt: PropTypes.bool,
