@@ -1,0 +1,14 @@
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_a5e25bc086eb00 296-297,300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3d000537e9d07589d561f25e1d810f49184bf04b",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
