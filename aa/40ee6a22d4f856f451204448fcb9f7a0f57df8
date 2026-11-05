@@ -1,0 +1,36 @@
+app/lib/redcarpet/render/html_rouge.rb
+  h_f968154a99632d 106
+app/liquid_tags/legacy_code_tag.rb
+  h_f968154a99632d 1,39
+app/models/article.rb
+  h_f968154a99632d 960,974,977-982
+app/models/podcast_episode.rb
+  h_f968154a99632d 61,69
+app/services/ai/editor_helper_service.rb
+  h_f968154a99632d 36-38
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 13
+gems/forem_native/crates/forem_core/src/sanitize.rs
+  h_f968154a99632d 1-945
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 362-371,438
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 297-307
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1055,1757-1858
+spec/models/article_spec.rb
+  h_f968154a99632d 1115,1119,1142,1146,4609,4615
+spec/models/podcast_episode_spec.rb
+  h_f968154a99632d 53-61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "aa40ee6a22d4f856f451204448fcb9f7a0f57df8",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

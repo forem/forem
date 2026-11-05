@@ -1,0 +1,28 @@
+Gemfile
+  h_f968154a99632d 49
+app/lib/honeycomb/noise_cancelling_sampler.rb
+  h_f968154a99632d 1-2
+config/initializers/honeycomb.rb
+  h_f968154a99632d 1-5,24,49-70
+config/initializers/sidekiq.rb
+  h_f968154a99632d 91
+config/initializers/zeitwerk.rb
+  h_f968154a99632d 22-23
+spec/initializers/honeycomb_spec.rb
+  h_f968154a99632d 1-57
+spec/lib/honeycomb/noise_cancelling_sampler_spec.rb
+  h_f968154a99632d 2
+spec/lib/sidekiq/honeycomb_middleware_spec.rb
+  h_f968154a99632d 24-27,33-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7057c5053c13ef11dc8ec6453facbf218d2c9356",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

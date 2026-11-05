@@ -1,0 +1,64 @@
+app/javascript/packs/favoriteButtons.jsx
+  s_1e049bdc81f15e::t_e86651c78f4753 2-54
+  s_1e049bdc81f15e::t_d1bbd3a1c123e4 1
+  s_1e049bdc81f15e::t_4ab8477d8dae5a 55
+spec/services/community_leaders/add_spec.rb
+  s_1e049bdc81f15e::t_5617c41fa73c4d 47,50-51,57-58,61-63
+  s_1e049bdc81f15e::t_905b99b5997a95 45-46,48-49,52-56,59-60,64
+app/models/async_info.rb
+  s_1e049bdc81f15e::t_3aace8d975b5c2 48
+spec/services/community_leaders/remove_spec.rb
+  s_1e049bdc81f15e::t_c9cc87e156c1ae 28-30,32-33,36-39,41-42,45
+  s_1e049bdc81f15e::t_6d8ec6965e5b3e 31,34-35,40,43-44
+spec/models/async_info_spec.rb
+  s_1e049bdc81f15e::t_51ec622647a44d 26-33
+app/javascript/favoriteButton/FavoriteButton.jsx
+  s_1e049bdc81f15e::t_1a6f3b6c5db359 81
+  s_1e049bdc81f15e::t_18f7740f0ebd39 101-105,123
+  s_1e049bdc81f15e::t_72a22fb79ea2fc 78-80
+  s_1e049bdc81f15e::t_2c23adee25749d 82-84,98-100
+  s_1e049bdc81f15e::t_45aa4248d7523e 106-108,120-122
+  s_1e049bdc81f15e::t_2aded3747f367c 124-126
+app/javascript/favoriteButton/__tests__/FavoriteButton.test.jsx
+  s_1e049bdc81f15e::t_6af288fcd1a407 13-16
+  s_1e049bdc81f15e::t_0dff491aa0ce98 44-56,59,61,63-64,74,80,92,96,105,116,125,135-136,144,148,151,154,157,163,167
+  s_1e049bdc81f15e::t_656333d0776a60 10-12
+  s_1e049bdc81f15e::t_191f746e8041ac 17-19,41-43
+  s_1e049bdc81f15e::t_a63a62c469b11a 57-58
+  s_1e049bdc81f15e::t_f482d6f1ee8720 60
+  s_1e049bdc81f15e::t_1d1075239b33be 62
+  s_1e049bdc81f15e::t_89f354fb265fb4 65-67,71-73
+  s_1e049bdc81f15e::t_6e3681e2450d82 75-79
+  s_1e049bdc81f15e::t_351326d8c142ee 81-83,89-91
+  s_1e049bdc81f15e::t_89af09e3b8db60 93-95
+  s_1e049bdc81f15e::t_318a7db1828479 97-99,102-104
+  s_1e049bdc81f15e::t_96799a3650b830 106-108,113-115
+  s_1e049bdc81f15e::t_cf3b81774a063b 117-119,122-124
+  s_1e049bdc81f15e::t_88ee505dd94d3d 126-128,132-134
+  s_1e049bdc81f15e::t_da319c70459967 137-139,141-143
+  s_1e049bdc81f15e::t_92948e71f50258 145-147
+  s_1e049bdc81f15e::t_1772d65d2d026c 149-150
+  s_1e049bdc81f15e::t_2fc2bdd51c0fcc 152-153
+  s_1e049bdc81f15e::t_1478c38e2f041b 155-156
+  s_1e049bdc81f15e::t_7bea5947343ec3 158-162
+  s_1e049bdc81f15e::t_efa395bc4302fa 164-166
+  s_1e049bdc81f15e::t_f2c14a1c04c067 168-169
+app/services/community_leaders/add.rb
+  s_1e049bdc81f15e::t_0b323e79466693 21-23,29-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.21",
+  "base_commit_sha": "63a453ba334087fdd7728c8c5646566b77f80de3",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

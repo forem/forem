@@ -1,0 +1,28 @@
+config/initializers/devise.rb
+  s_1f0ef0afa958d1::t_31f6f29f24d0b9 81-83
+  s_1f0ef0afa958d1::t_bc5aa975c4479d 71-72
+  s_1f0ef0afa958d1::t_bba2605a5defbb 84
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_1f0ef0afa958d1::t_ba2cc3e3fd3f16 39
+  s_1f0ef0afa958d1::t_4c1fb43f1f1e84 46-47,53,58-63
+  s_1f0ef0afa958d1::t_11b5a1f6936bba 44-45,48-52,54-57
+  s_1f0ef0afa958d1::t_acc348ddeca2c7 6-16
+.env_sample
+  s_1f0ef0afa958d1::t_ee1f0d078b959d 213-216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "55a4660b847d10d68426b392fde4e447d600b776",
+  "prompts": {},
+  "sessions": {
+    "s_1f0ef0afa958d1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "30b0a1d3-2de5-4bfd-abc2-973b13619dd3",
+        "model": "claude-opus-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

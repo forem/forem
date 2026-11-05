@@ -1,0 +1,21 @@
+app/models/article.rb
+  s_a470f0b9d790a5::t_c605749b1aceba 1886
+spec/models/concerns/activity_trackable_spec.rb
+  s_a470f0b9d790a5::t_fcbe637f9061b1 162,216
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c5f1c8c1ee6fd256537b1d7de61a00214a550ae9",
+  "prompts": {},
+  "sessions": {
+    "s_a470f0b9d790a5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a3e9d54e-6fac-4327-a3af-2abdca03355e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+spec/requests/account_switch_interstitial_spec.rb
+  s_e2c0a862c0c53d::t_6aa01f5f9994f8 111-126
+app/controllers/omniauth_callbacks_controller.rb
+  s_e2c0a862c0c53d::t_0ae49a1bc33e06 81-88,98-111
+  s_e2c0a862c0c53d::t_7f7bd96dd1c6a0 70-71,76,147-168
+  s_e2c0a862c0c53d::t_8fd8f2689ff774 112,169
+config/routes.rb
+  s_e2c0a862c0c53d::t_7f7bd96dd1c6a0 19-22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "99996d74067530a46fb672c9a172be0876af7674",
+  "prompts": {},
+  "sessions": {
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

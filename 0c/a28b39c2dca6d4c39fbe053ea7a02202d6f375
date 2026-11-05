@@ -1,0 +1,52 @@
+app/controllers/omniauth_callbacks_controller.rb
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 194-197
+  s_e2c0a862c0c53d::t_0ae49a1bc33e06 81-88,98-111
+  s_e2c0a862c0c53d::t_7f7bd96dd1c6a0 70-71,76,147-168
+  s_e2c0a862c0c53d::t_8fd8f2689ff774 112,169
+db/seeds.rb
+  s_e2c0a862c0c53d::t_68638d15bfbfe7 1321-1357
+app/services/authentication/mlh_core_bridge.rb
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 1-45
+config/initializers/filter_parameter_logging.rb
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 5
+.env_sample
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 200-208
+spec/services/authentication/external_return_spec.rb
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 1-21,33-35,38,40-43,47,50-52,54,58-60,68-69,71,79-82
+  s_e2c0a862c0c53d::t_68638d15bfbfe7 22-32,36-37,39,44-46,48-49,53,55-57,61-67,70,72-78
+app/services/authentication/external_return.rb
+  s_e2c0a862c0c53d::t_6975b5db6af7a5 1,15-17,29-30,34-35,38-40,42-65,68-70
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 2-14,18-28,31-33,36-37,41,66-67
+spec/requests/mlh_oauth_callbacks_spec.rb
+  s_e2c0a862c0c53d::t_c626f48c211c36 104
+  s_e2c0a862c0c53d::t_da0940d135ecd5 119
+  s_e2c0a862c0c53d::t_f1adff43a27e02 69-70,113-114
+  s_e2c0a862c0c53d::t_0de972b903aa36 97-103,105-107
+  s_e2c0a862c0c53d::t_68638d15bfbfe7 4-5,52-68,71-96,108-112,115-118
+spec/initializers/mlh_omniauth_setup_spec.rb
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 11-32
+config/initializers/devise.rb
+  s_e2c0a862c0c53d::t_e0365dfba2b00e 84-86
+spec/requests/account_switch_interstitial_spec.rb
+  s_e2c0a862c0c53d::t_6aa01f5f9994f8 111-126
+config/routes.rb
+  s_e2c0a862c0c53d::t_7f7bd96dd1c6a0 19-22
+Containerfile
+  s_e2c0a862c0c53d::t_9f5382248d1674 6-15
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "0ca28b39c2dca6d4c39fbe053ea7a02202d6f375",
+  "prompts": {},
+  "sessions": {
+    "s_e2c0a862c0c53d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6161b263-7784-4d46-baae-d9ed58dc4c8d",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}

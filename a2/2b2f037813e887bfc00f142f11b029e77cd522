@@ -1,0 +1,34 @@
+app/workers/emails/reengagement_prune_worker.rb
+  s_14fb3b87418d89::t_d9c132b81339a4 1-34
+spec/workers/emails/reengagement_prune_worker_spec.rb
+  s_14fb3b87418d89::t_582556352e872f 23-24
+  s_1c6344aa185087::t_f66130f56f1b30 1-22,25-38
+lib/reengagement.rb
+  s_14fb3b87418d89::t_4f6d03195e00b2 42-49
+lib/tasks/reengagement.rake
+  s_14fb3b87418d89::t_4eb7925fada888 13-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "a22b2f037813e887bfc00f142f11b029e77cd522",
+  "prompts": {},
+  "sessions": {
+    "s_14fb3b87418d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "248ae081-42f9-4561-80cf-a05803a765b5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_1c6344aa185087": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e652274-909a-4fde-8fed-da86ed9dd241",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

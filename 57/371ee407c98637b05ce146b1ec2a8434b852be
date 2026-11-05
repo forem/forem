@@ -1,0 +1,14 @@
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 401
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "57371ee407c98637b05ce146b1ec2a8434b852be",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

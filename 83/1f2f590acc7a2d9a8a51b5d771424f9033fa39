@@ -1,0 +1,190 @@
+config/locales/lib/pt.yml
+  s_1b4cacf506c8d4::t_3642a920a017ea 167-169
+app/javascript/utilities/anonymousVisitor.js
+  s_1b4cacf506c8d4::t_ce5123f29fec62 1-196
+spec/models/geolocation_spec.rb
+  s_1b4cacf506c8d4::t_8d5a1f67fb4dcf 150-178
+config/locales/lib/en.yml
+  s_1b4cacf506c8d4::t_3642a920a017ea 170-172
+app/views/articles/show.html.erb
+  s_1b4cacf506c8d4::t_88c41405c38730 98
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 275-276,285-286,351
+app/views/shared/_billboard.html.erb
+  s_1b4cacf506c8d4::t_5f722f8ae5bdb5 16-17,30,43,72,95,128,148,181
+  s_1b4cacf506c8d4::t_1a0ae6f8c0bc18 18-25
+spec/controllers/admin/billboard_placement_area_configs_controller_spec.rb
+  s_1b4cacf506c8d4::t_4317e4d2652934 98-106,149-156
+config/locales/views/admin/fr.yml
+  s_1b4cacf506c8d4::t_34812deaaef837 760
+  s_1b4cacf506c8d4::t_da0963d0aa6f71 753-755,759
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  s_1b4cacf506c8d4::t_05bc92a7d533de 50
+spec/requests/billboards_spec.rb
+  s_1b4cacf506c8d4::t_2b2063a14b015f 696-698,715-727,729,757,769
+  s_1b4cacf506c8d4::t_d8689348bea877 587-684
+  s_1b4cacf506c8d4::t_4f42058be6fb93 685-695,700-709,710,712-714,728,730-756,758-764,768,770-772,782,784-787,797-807
+  s_1b4cacf506c8d4::t_87392dda9bdbb8 699
+  s_1b4cacf506c8d4::t_71c14e90bd45a5 711
+  s_1b4cacf506c8d4::t_5df350f2cdb944 235-238,765-767,773-781,783,788-796
+app/lib/constants/settings/general.rb
+  s_1b4cacf506c8d4::t_14d7398e1b77e8 119-122
+spec/requests/admin/configs_spec.rb
+  s_1b4cacf506c8d4::t_1e7b902ac169d4 388,391-396,403
+  s_1b4cacf506c8d4::t_2c3ee22e920066 389-390,397-402
+app/models/billboard.rb
+  s_1b4cacf506c8d4::t_82042a39bd1e9b 139,163
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 54-64
+spec/queries/billboards/filtered_ads_query_spec.rb
+  s_1b4cacf506c8d4::t_b062d340eb4974 153-160,162,164-165,167-168
+  s_1b4cacf506c8d4::t_8c8f15e408af51 166
+  s_1b4cacf506c8d4::t_202e3e3d328af3 149-152,161,163,169-178
+config/locales/views/admin/pt.yml
+  s_1b4cacf506c8d4::t_da0963d0aa6f71 658-660,664
+  s_1b4cacf506c8d4::t_34812deaaef837 665
+app/models/billboard_placement_area_config.rb
+  s_1b4cacf506c8d4::t_5cbe40cc45d6b6 107-119
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 36-39,42,120-123,198-201
+  s_1b4cacf506c8d4::t_3ff2682b768687 202-203
+app/helpers/billboard_helper.rb
+  s_1b4cacf506c8d4::t_8c8f15e408af51 41
+  s_1b4cacf506c8d4::t_06b757fb57f8fe 32-40,42-49
+spec/helpers/billboard_helper_spec.rb
+  s_1b4cacf506c8d4::t_f2c7ba6f5e683f 54-86
+config/locales/lib/fr.yml
+  s_1b4cacf506c8d4::t_3642a920a017ea 170-172
+app/javascript/utilities/__tests__/anonymousVisitor.test.js
+  s_1b4cacf506c8d4::t_8d5fb9e26f789a 2-27,33-103,123-179
+  s_1b4cacf506c8d4::t_aa2e28c9135521 1,28-32,104-122
+app/views/pages/show.fr.html.erb
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 44
+config/locales/views/admin/en.yml
+  s_1b4cacf506c8d4::t_da0963d0aa6f71 762-764,768
+  s_1b4cacf506c8d4::t_34812deaaef837 769
+app/views/billboards/show.html.erb
+  s_1b4cacf506c8d4::t_cbf06b873e2f39 3-11
+app/javascript/__tests__/billboard.test.js
+  s_1b4cacf506c8d4::t_5e3f80f2dea613 208-209,215-237,257-276
+  s_1b4cacf506c8d4::t_aa2e28c9135521 1,210-214
+  s_1b4cacf506c8d4::t_7b89c7049646a0 238-256
+db/schema.rb
+  s_1b4cacf506c8d4::t_38ad2e747ea8da 13,337
+app/views/articles/_sticky_nav.html.erb
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 59-60
+app/models/geolocation.rb
+  s_1b4cacf506c8d4::t_5e7c8430c56e9d 48-59
+app/controllers/billboards_controller.rb
+  s_1b4cacf506c8d4::t_ba720e1bc7f9e3 17,33,47-86,91-96,118-128,169,171,187
+  s_1b4cacf506c8d4::t_dd5ae6a8756dc7 152-155
+  s_1b4cacf506c8d4::t_825c9b7b787f17 3,107-117
+  s_1b4cacf506c8d4::t_d30104e47ffa11 20,23-24,129,151,156-168,170,172-186,188
+  s_1b4cacf506c8d4::t_110981eae0edcc 25,130
+  s_1b4cacf506c8d4::t_16b1eb4768d988 35,87-90,97-106
+app/views/pages/show.pt.html.erb
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 44
+app/queries/billboards/filtered_ads_query.rb
+  s_1b4cacf506c8d4::t_82042a39bd1e9b 12-13,17,33,43,198-207
+  s_1b4cacf506c8d4::t_8a6c2d8c3f3602 208-209
+app/views/pages/show.en.html.erb
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 44
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  s_1b4cacf506c8d4::t_2c61c7e7545de7 20,37-41
+  s_1b4cacf506c8d4::t_b492de62e88193 42-43
+app/views/admin/settings/forms/_monetization.html.erb
+  s_1b4cacf506c8d4::t_aef389b2215344 43-53
+app/javascript/packs/billboard.js
+  s_1b4cacf506c8d4::t_8388dc56fcf43b 7,31-34
+  s_1b4cacf506c8d4::t_16b1eb4768d988 141-142,145,147
+app/models/settings/general.rb
+  s_1b4cacf506c8d4::t_c01fab20065f91 98-121
+spec/requests/articles/articles_show_spec.rb
+  s_1b4cacf506c8d4::t_8c8f15e408af51 433-435
+  s_1b4cacf506c8d4::t_27bd56b242fbc9 426-432,439-441
+  s_1b4cacf506c8d4::t_0e3f037c9e45b4 436-438
+  s_1b4cacf506c8d4::t_8d5a1f67fb4dcf 25-29
+db/migrate/20261012120000_add_fully_cached_to_billboard_placement_area_configs.rb
+  s_1b4cacf506c8d4::t_33e768053432c3 1-5
+app/views/admin/billboard_placement_area_configs/edit.html.erb
+  s_1b4cacf506c8d4::t_2c61c7e7545de7 50-57
+spec/models/billboard_placement_area_config_spec.rb
+  s_1b4cacf506c8d4::t_4317e4d2652934 273-289,303-311
+  s_1b4cacf506c8d4::t_2c3ee22e920066 290-302
+app/views/comments/_comment.html.erb
+  s_1b4cacf506c8d4::t_e5a1b2d87a75c1 3
+app/services/settings/general/upsert.rb
+  s_1b4cacf506c8d4::t_8ff24a4845ebc2 17,22-24,28-32
+  s_1b4cacf506c8d4::t_7c705399a8f126 33-34
+app/services/ai/article_image_generator.rb
+  s_2d87ee6f2cb669::t_9bed1d643ba5f6 1-90
+app/services/rate_limit_checker.rb
+  s_2d87ee6f2cb669::t_7744ed412f3286 4-6,10-11,46-61,78,96-100
+  s_2d87ee6f2cb669::t_5232583e074e7f 101-102
+app/controllers/ai_image_generations_controller.rb
+  s_2d87ee6f2cb669::t_206e5555221e77 24,26,29
+app/controllers/api/v1/images_controller.rb
+  s_2d87ee6f2cb669::t_127866e60c936a 1-27,31-56,58-81
+  s_2d87ee6f2cb669::t_689a4f5061e498 28-30
+  s_2d87ee6f2cb669::t_178b8f29011501 57
+spec/requests/api/v1/images_spec.rb
+  s_2d87ee6f2cb669::t_689a4f5061e498 34
+  s_2d87ee6f2cb669::t_659f3c91a2bc5b 1-33,35-199
+config/locales/helpers/fr.yml
+  s_2d87ee6f2cb669::t_2f086ac5e82aaa 598-615
+config/routes.rb
+  s_2d87ee6f2cb669::t_305ef9aaf8a473 117-120
+spec/swagger_helper.rb
+  s_2d87ee6f2cb669::t_fa9f20c024dec0 170-177
+config/locales/controllers/api/en.yml
+  s_2d87ee6f2cb669::t_6c888813030e3f 23-29
+swagger/v1/api_v1.json
+  s_2d87ee6f2cb669::t_3db3f034506866 3244-3279,3291-3293,3295-3369,6255-6267
+  s_2d87ee6f2cb669::t_1ff709ca28f436 569
+  s_2d87ee6f2cb669::t_8a2b7574dd57d0 3280-3290,3294
+spec/requests/api/v1/docs/articles_spec.rb
+  s_2d87ee6f2cb669::t_1ff709ca28f436 38
+config/locales/controllers/api/pt.yml
+  s_2d87ee6f2cb669::t_6c888813030e3f 23-29
+spec/requests/api/v1/docs/images_spec.rb
+  s_2d87ee6f2cb669::t_82cfc20d1f1301 13-16,19-20,83,150,159
+  s_2d87ee6f2cb669::t_09bd372b777b31 17-18,21-23
+  s_2d87ee6f2cb669::t_ff17c08b12a05f 1-12,24-45,53-82,84-149,151-158,160-172
+  s_2d87ee6f2cb669::t_8a2b7574dd57d0 46-52
+spec/services/ai/article_image_generator_spec.rb
+  s_2d87ee6f2cb669::t_6eb986fa57258c 1-69
+config/locales/controllers/api/fr.yml
+  s_2d87ee6f2cb669::t_6c888813030e3f 23-29
+app/models/settings/rate_limit.rb
+  s_2d87ee6f2cb669::t_09bd372b777b31 12-14,17-19
+  s_2d87ee6f2cb669::t_7744ed412f3286 7-11,15-16
+config/locales/helpers/pt.yml
+  s_2d87ee6f2cb669::t_2f086ac5e82aaa 562-579
+spec/services/rate_limit_checker_spec.rb
+  s_2d87ee6f2cb669::t_ca2216be72c26f 164-209
+app/helpers/rate_limit_checker_helper.rb
+  s_2d87ee6f2cb669::t_2f086ac5e82aaa 39-66
+config/locales/helpers/en.yml
+  s_2d87ee6f2cb669::t_2f086ac5e82aaa 556-572
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "831f2f590acc7a2d9a8a51b5d771424f9033fa39",
+  "prompts": {},
+  "sessions": {
+    "s_1b4cacf506c8d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ad87735c-3655-4625-91fd-c994ee041f6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    },
+    "s_2d87ee6f2cb669": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5c50df2b-4b8e-42e3-bf81-263b8d67ba41",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

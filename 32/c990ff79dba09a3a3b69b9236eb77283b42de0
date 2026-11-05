@@ -1,0 +1,19 @@
+app/services/events/billboards/live_stream.rb
+  s_b7a9a2bced08c1::t_8d0499df011acf 420-421,424-425
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "32c990ff79dba09a3a3b69b9236eb77283b42de0",
+  "prompts": {},
+  "sessions": {
+    "s_b7a9a2bced08c1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9afbc1a5-4412-4a3a-8bae-ffc536591bd0",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

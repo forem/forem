@@ -1,0 +1,66 @@
+app/assets/javascripts/initializers/initializeBodyData.js
+  h_f968154a99632d 54-64
+app/assets/stylesheets/scaffolds.scss
+  h_f968154a99632d 116-117
+app/assets/stylesheets/views/article.scss
+  h_f968154a99632d 383-387,399-401,410-412
+app/controllers/dashboards_controller.rb
+  h_f968154a99632d 53-59,213-217
+app/decorators/user_decorator.rb
+  h_f968154a99632d 123-124
+app/javascript/favoriteControl/FavoriteControl.jsx
+  h_f968154a99632d 2,81-139,171-175,181-226,375,378,389,402-403,407,410-417,426-431,433-437
+app/javascript/favoriteControl/__tests__/FavoriteControl.test.jsx
+  h_f968154a99632d 261-363
+app/javascript/packs/favoriteControls.jsx
+  h_f968154a99632d 7-19,23-26,78-82,84-95,97-100,117,121-131,134-138
+app/models/user.rb
+  h_f968154a99632d 729
+app/services/favorites/create.rb
+  h_f968154a99632d 81-82,84-87
+app/services/favorites/remove.rb
+  h_f968154a99632d 18,27-33
+app/views/articles/_actions.html.erb
+  h_f968154a99632d 18-22,32-34,41-43,75,95-97
+app/views/comments/index.html.erb
+  h_f968154a99632d 49,93
+app/views/dashboards/_analytics.html.erb
+  h_f968154a99632d 2,4,19-28
+app/views/dashboards/_dashboard_article_row.html.erb
+  h_f968154a99632d 70-76
+app/views/dashboards/_header_and_action.html.erb
+  h_f968154a99632d 10-39
+app/views/layouts/_user_config.html.erb
+  h_f968154a99632d 66-70
+app/views/podcast_episodes/show.html.erb
+  h_f968154a99632d 101
+config/locales/views/dashboard/en.yml
+  h_f968154a99632d 68,292,296-312
+config/locales/views/dashboard/fr.yml
+  h_f968154a99632d 66,288-289,293-309
+config/locales/views/dashboard/pt.yml
+  h_f968154a99632d 72,237-261
+spec/decorators/user_decorator_spec.rb
+  h_f968154a99632d 144-149
+spec/models/user_spec.rb
+  h_f968154a99632d 2009-2018
+spec/requests/dashboard_spec.rb
+  h_f968154a99632d 95-159
+spec/requests/favorites_spec.rb
+  h_f968154a99632d 134-154
+spec/services/favorites/create_spec.rb
+  h_f968154a99632d 163-170
+spec/services/favorites/remove_spec.rb
+  h_f968154a99632d 25-38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "13c07a78c3217a9c300de6ca8990a9767226524e",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

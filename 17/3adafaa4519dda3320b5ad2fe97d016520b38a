@@ -1,0 +1,18 @@
+gems/forem_native/crates/forem_core/src/sanitize.rs
+  h_f968154a99632d 33-76,82-84,101,109,126,135-156,162-164,168-171,184,197,205,219,227,255,270,297-327,333,335-336,360-506,616,620,1050-1053,1096-1097,1121,1127-1144
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1765,1768-1769,1772-1775,1780-1781,1783-1791,1796,1812-1842,1845-1878,1881,1884,1887,1889-1897,1900-1911,1913,1915-1922,1935,1941,1961-1988
+spec/models/podcast_episode_spec.rb
+  h_f968154a99632d 51-57,67-73
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "173adafaa4519dda3320b5ad2fe97d016520b38a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

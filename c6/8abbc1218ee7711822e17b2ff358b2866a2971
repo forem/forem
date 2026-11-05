@@ -1,0 +1,27 @@
+config/locales/views/admin/pt.yml
+  s_1e049bdc81f15e::t_53ae98fcb0bae8 452-453
+  s_1e049bdc81f15e::t_c67068ed3bbe06 451
+  s_1e049bdc81f15e::t_05474f9786606d 454-456
+  s_1e049bdc81f15e::t_3867d29b566c32 457-460
+config/locales/views/admin/fr.yml
+  s_1e049bdc81f15e::t_0714836cb247c2 555-556
+  s_1e049bdc81f15e::t_63eb7a13cf334c 554
+  s_1e049bdc81f15e::t_9b6f7eb5f8d4fe 557-559
+  s_1e049bdc81f15e::t_c7245d54452845 560-563
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.20",
+  "base_commit_sha": "c68abbc1218ee7711822e17b2ff358b2866a2971",
+  "prompts": {},
+  "sessions": {
+    "s_1e049bdc81f15e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23918fc8-b82e-4edd-9ebf-b02c000c31c4",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

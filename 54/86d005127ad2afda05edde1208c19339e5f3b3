@@ -1,0 +1,18 @@
+.agents/skills/typesafe-ai/LICENSE
+  h_f968154a99632d 1-21
+.agents/skills/typesafe-ai/SKILL.md
+  h_f968154a99632d 1-149
+skills-lock.json
+  h_f968154a99632d 1-11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "5486d005127ad2afda05edde1208c19339e5f3b3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

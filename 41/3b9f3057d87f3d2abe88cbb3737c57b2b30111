@@ -1,0 +1,32 @@
+app/liquid_tags/org_lead_form_tag.rb
+  b172f74f607742a2 3,11-15
+config/locales/liquid_tags/pt.yml
+  b172f74f607742a2 183
+config/locales/liquid_tags/en.yml
+  b172f74f607742a2 183
+config/locales/liquid_tags/fr.yml
+  b172f74f607742a2 183
+spec/liquid_tags/org_lead_form_tag_spec.rb
+  b172f74f607742a2 59-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "413b9f3057d87f3d2abe88cbb3737c57b2b30111",
+  "prompts": {
+    "b172f74f607742a2": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c1a2e06b-87bc-4819-8425-5e24e6858795",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 17,
+      "total_deletions": 0,
+      "accepted_lines": 17,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/216edd39db86b676c946236bb85a8b069d06b1f633270e84d160fff49c44c6d2"
+    }
+  }
+}

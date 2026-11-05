@@ -1,0 +1,26 @@
+app/javascript/orgWizard/OrgWizard.jsx
+  3b300d9ee498e98c 1-191
+app/javascript/orgWizard/components/StepInput.jsx
+  3b300d9ee498e98c 1-109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.9",
+  "base_commit_sha": "2363982a51955e5c1497d4e98e83b06ada636daf",
+  "prompts": {
+    "3b300d9ee498e98c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4faf6d65-e132-4d85-b2c8-b4fb1568fd1a",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Jon Gottfried <jonmarkgo@gmail.com>",
+      "messages": [],
+      "total_additions": 300,
+      "total_deletions": 0,
+      "accepted_lines": 300,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/aba7022735c42b08d9968d287aea20a56049ca26447c6020e743ce87e14458eb"
+    }
+  }
+}

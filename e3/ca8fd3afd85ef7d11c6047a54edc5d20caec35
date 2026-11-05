@@ -1,0 +1,58 @@
+app/assets/javascripts/utilities/buildArticleHTML.js
+  h_a5e25bc086eb00 413
+app/controllers/admin/flag_appeals_controller.rb
+  h_a5e25bc086eb00 25,27-29,32-34,46-50
+app/helpers/comments_helper.rb
+  h_a5e25bc086eb00 97,102,104-108,120
+app/models/flag_appeal.rb
+  h_a5e25bc086eb00 3-4,11
+app/services/ai/appeal_assessor.rb
+  h_a5e25bc086eb00 21-23,60,81-86,89,103-105,115,117,122-124,156-163
+app/services/appeals/resolver.rb
+  h_a5e25bc086eb00 4-6,8-14,19,29,33-36,38,40-41,46,51-78,82-96
+app/views/admin/flag_appeals/_flag_appeal.html.erb
+  h_a5e25bc086eb00 13-17,19-27,34,36-39,45-47,57,62,68,70,76-78,80-81,85,89-90,92,94,96,99,101,103,107,113,115,117-122,130,141,144,150-151,155-156,163-167,169,171,174-175,179
+app/views/admin/flag_appeals/index.html.erb
+  h_a5e25bc086eb00 3,8-10,15-18,34,41,47-48
+app/views/admin/flag_appeals/show.html.erb
+  h_a5e25bc086eb00 3
+app/views/flag_appeals/new.html.erb
+  h_a5e25bc086eb00 13,30
+config/locales/views/admin/flag_appeals/en.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/admin/flag_appeals/fr.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/admin/flag_appeals/pt.yml
+  h_a5e25bc086eb00 1-67
+config/locales/views/flag_appeals/en.yml
+  h_a5e25bc086eb00 17-20
+config/locales/views/flag_appeals/fr.yml
+  h_a5e25bc086eb00 17-20
+config/locales/views/flag_appeals/pt.yml
+  h_a5e25bc086eb00 17-20
+spec/models/flag_appeal_spec.rb
+  h_a5e25bc086eb00 28-40,45-46
+spec/requests/admin/flag_appeals_spec.rb
+  h_a5e25bc086eb00 43-44,48-49,54-99
+spec/requests/api/v0/api_controller_spec.rb
+  h_a5e25bc086eb00 97-101
+spec/requests/flag_appeals_spec.rb
+  h_a5e25bc086eb00 22-40
+spec/services/ai/appeal_assessor_spec.rb
+  h_a5e25bc086eb00 72-122
+spec/services/appeals/resolver_spec.rb
+  h_a5e25bc086eb00 60-149,154,160-176
+spec/workers/appeals/ai_review_worker_spec.rb
+  h_a5e25bc086eb00 68-91
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e3ca8fd3afd85ef7d11c6047a54edc5d20caec35",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+app/javascript/utilities/__tests__/billboardInteractivity.test.js
+  s_0eeff986ca56ab::t_f74d8c29221868 150-174
+app/assets/stylesheets/billboards.scss
+  s_0eeff986ca56ab::t_f74d8c29221868 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "746cf89e05d8fe3cd46f712ec0df182e93216796",
+  "prompts": {},
+  "sessions": {
+    "s_0eeff986ca56ab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "338369d3-2647-4545-91c4-e77226a59168",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

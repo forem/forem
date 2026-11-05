@@ -1,0 +1,87 @@
+app/services/users/delete_articles.rb
+  s_2f1dc4a4626c61::t_810a523ee7bec0 5-10,14-19,21-22,24,31-33,35-51
+spec/services/moderator/merge_user_spec.rb
+  s_2f1dc4a4626c61::t_508b4583b11c5e 26-50,85-88
+spec/workers/articles/bust_deleted_article_cache_worker_spec.rb
+  s_2f1dc4a4626c61::t_afd8730c7f6b2c 1-4,7-59
+  s_2f1dc4a4626c61::t_1134ed27e31d99 5-6
+config/locales/controllers/admin/en.yml
+  s_2f1dc4a4626c61::t_a75addb137ca95 256
+app/workers/users/delete_worker.rb
+  s_2f1dc4a4626c61::t_11e8d8a684492f 29-35
+app/workers/edge_cache/purge_by_key_worker.rb
+  s_2f1dc4a4626c61::t_ee00e7fe837298 1-10
+app/services/users/delete.rb
+  s_2f1dc4a4626c61::t_e8bb6672506462 12-15,21,35
+spec/requests/admin/users_manage_spec.rb
+  s_2f1dc4a4626c61::t_8a580f803b2d86 391-399,401-403
+  s_2f1dc4a4626c61::t_58139a9311b9a4 386
+  s_2f1dc4a4626c61::t_e4bc2abb0c9246 368-372,377-385,387-390
+  s_2f1dc4a4626c61::t_742e764a4e07e2 70-75,373-376
+spec/system/admin/admin_deletes_user_spec.rb
+  s_2f1dc4a4626c61::t_8a580f803b2d86 17-18,30
+app/services/users/delete_podcasts.rb
+  s_2f1dc4a4626c61::t_bf6a8f44985753 27
+spec/services/users/delete_comments_spec.rb
+  s_2f1dc4a4626c61::t_1134ed27e31d99 118
+  s_2f1dc4a4626c61::t_b73e2f9ae58350 14,23-31,33-39,41-85,87-102,110-117,119
+  s_2f1dc4a4626c61::t_9938376b36d30b 40,86
+spec/services/users/delete_articles_spec.rb
+  s_2f1dc4a4626c61::t_1134ed27e31d99 95-96,102,112,123,133
+  s_2f1dc4a4626c61::t_6b6bba5d1f46cf 141-142
+  s_2f1dc4a4626c61::t_cb8a64a03f31c7 55-94,97-101,103-111,113-118,121-122,124-132,134-137,139-140,143-144,149,157-159,161-195
+  s_2f1dc4a4626c61::t_ac1a9cf1e7dfaf 119-120
+config/locales/controllers/admin/fr.yml
+  s_2f1dc4a4626c61::t_a75addb137ca95 256
+config/locales/controllers/admin/pt.yml
+  s_2f1dc4a4626c61::t_a75addb137ca95 218
+spec/requests/api/v1/docs/users_spec.rb
+  s_2f1dc4a4626c61::t_72bffa3ae559b1 441
+spec/workers/users/delete_worker_spec.rb
+  s_2f1dc4a4626c61::t_3ee5e8f5f5107d 105-156
+app/workers/comments/bust_commentable_cache_worker.rb
+  s_2f1dc4a4626c61::t_ee00e7fe837298 1-14
+spec/services/users/delete_activity_spec.rb
+  s_2f1dc4a4626c61::t_42f15b088175d9 30
+  s_2f1dc4a4626c61::t_1134ed27e31d99 17,26,35,49,58
+  s_2f1dc4a4626c61::t_c04165fcb92c76 43
+  s_2f1dc4a4626c61::t_8f7eaae7e227a9 1-16,18-25,27-29,31-34,36-42,44-48,50-57,59-77
+swagger/v1/api_v1.json
+  s_2f1dc4a4626c61::t_72bffa3ae559b1 5695
+app/workers/articles/bust_deleted_article_cache_worker.rb
+  s_2f1dc4a4626c61::t_ee00e7fe837298 1-19
+app/services/moderator/merge_user.rb
+  s_2f1dc4a4626c61::t_e1d1bae983e836 26-27
+spec/workers/comments/bust_commentable_cache_worker_spec.rb
+  s_2f1dc4a4626c61::t_afd8730c7f6b2c 1-41
+spec/requests/api/v1/admin/users_spec.rb
+  s_2f1dc4a4626c61::t_8a580f803b2d86 604-617
+spec/workers/edge_cache/purge_by_key_worker_spec.rb
+  s_2f1dc4a4626c61::t_afd8730c7f6b2c 1-22
+spec/services/users/delete_podcasts_spec.rb
+  s_2f1dc4a4626c61::t_8a580f803b2d86 34-42
+app/services/users/delete_comments.rb
+  s_2f1dc4a4626c61::t_f1c9a09e81c235 5-7,11-28,30
+spec/services/users/delete_spec.rb
+  s_2f1dc4a4626c61::t_e277d0ce18d53a 31-100
+app/services/users/delete_activity.rb
+  s_2f1dc4a4626c61::t_c5579259bc4f33 5-6
+  s_2f1dc4a4626c61::t_bb46bf2803e254 16,34-38,41-42,48-52
+  s_2f1dc4a4626c61::t_207cb7d0dbfeb6 39-40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bdea3a3981f796a68f5263f5f1abde0e93c59171",
+  "prompts": {},
+  "sessions": {
+    "s_2f1dc4a4626c61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ba8f8aac-5004-4acb-afda-1d260c0630e4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

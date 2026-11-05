@@ -1,0 +1,39 @@
+db/migrate/20260707153330_remove_mlh_username_from_users.rb
+  s_2717fea812dfa4::t_a8a262d24ea5a4 1-14
+app/services/authentication/authenticator.rb
+  s_2717fea812dfa4::t_b58912e8e0fa99 181-182
+  s_2717fea812dfa4::t_61056d3042ff1d 126-131
+app/services/authentication/providers/mlh.rb
+  s_2717fea812dfa4::t_97518a55b57f20 37
+  s_2717fea812dfa4::t_beb8ffa1c2e4cb 12-17
+  s_2717fea812dfa4::t_a05251d377b394 32
+spec/services/authentication/providers/mlh_spec.rb
+  s_2717fea812dfa4::t_c0c5bf5e637456 39-44,53-54
+  s_2717fea812dfa4::t_bf0717a4c00dd7 46,48
+app/services/authentication/providers.rb
+  s_2717fea812dfa4::t_85598c62430007 70-72
+app/controllers/users_controller.rb
+  s_2717fea812dfa4::t_a13762a56c541e 153-157
+app/models/user.rb
+  s_2717fea812dfa4::t_5be25e3e3e313a 38-42,51-56,334,919,922-923
+db/schema.rb
+  s_2717fea812dfa4::t_32f4f649225dbc 13
+spec/requests/api/v1/admin/user_identities_spec.rb
+  s_2717fea812dfa4::t_659f34a0cc5bd7 105-113,119-120,142,148-157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "4598d519b390534a1e4a39a98fe824b185a274e1",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

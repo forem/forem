@@ -1,0 +1,21 @@
+Gemfile
+  s_0cd64231ee5515::t_080f519953e35d 31
+Gemfile.lock
+  s_0cd64231ee5515::t_f0fb9dc949ae9b 207-209,1143
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "3f3d900bf279cca0ccf02b91518ac8c4b13bf095",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

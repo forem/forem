@@ -1,0 +1,18 @@
+app/models/feed_config.rb
+  h_f968154a99632d 22-30,175-176
+db/migrate/20261027163000_add_targeting_bucket_to_feed_configs.rb
+  h_f968154a99632d 3
+db/schema.rb
+  h_f968154a99632d 870
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6b1dd594f257ab0f21ae60da04d54f7a127ab814",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

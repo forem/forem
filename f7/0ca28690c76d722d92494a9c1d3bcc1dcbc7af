@@ -1,0 +1,42 @@
+app/controllers/api/v0/articles_controller.rb
+  h_f968154a99632d 12
+app/controllers/api/v1/articles_controller.rb
+  h_f968154a99632d 10
+app/controllers/concerns/api/articles_controller.rb
+  h_f968154a99632d 153-160,162
+app/models/article.rb
+  h_f968154a99632d 449-452,457-495
+app/queries/articles/api_search_query.rb
+  h_f968154a99632d 13-14,22-34,36-37,40
+app/services/search/article.rb
+  h_f968154a99632d 26-38
+config/initializers/rack_attack.rb
+  h_f968154a99632d 7-8,122-139
+config/initializers/timeout.rb
+  h_f968154a99632d 18-40,45-54
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 94-181
+spec/initializers/timeout_spec.rb
+  h_f968154a99632d 32,41-42,55-56,61-80,90,118
+spec/models/article_spec.rb
+  h_f968154a99632d 4637-4671
+spec/queries/articles/api_search_query_spec.rb
+  h_f968154a99632d 32-66
+spec/requests/api/v0/articles_spec.rb
+  h_f968154a99632d 1387-1394
+spec/requests/api/v1/articles_spec.rb
+  h_f968154a99632d 1732-1739
+spec/services/search/article_spec.rb
+  h_f968154a99632d 137-155
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f70ca28690c76d722d92494a9c1d3bcc1dcbc7af",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

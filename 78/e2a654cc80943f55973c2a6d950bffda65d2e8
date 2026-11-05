@@ -1,0 +1,47 @@
+spec/models/email_reengagement_recipient_spec.rb
+  s_14fb3b87418d89::t_5bef24809517bd 14-15,17-18
+spec/lib/tasks/reengagement_cohort_spec.rb
+  s_14fb3b87418d89::t_3f9174e681358d 3,16,24,30,35-36
+spec/workers/emails/reengagement_prune_worker_spec.rb
+  s_1c6344aa185087::t_ee6b0e689c2b69 38-57
+app/mailers/custom_mailer.rb
+  s_c9653b39be326c::t_a157a61098343e 13
+app/views/email_subscriptions/invalid_token.html.erb
+  s_c9653b39be326c::t_f59f923aa501a2 3
+app/workers/emails/reengagement_prune_worker.rb
+  s_c9653b39be326c::t_0a676b68fe3fd0 22-25
+spec/requests/email_subscriptions_spec.rb
+  s_c9653b39be326c::t_eaf5833b83d2c0 55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.13",
+  "base_commit_sha": "78e2a654cc80943f55973c2a6d950bffda65d2e8",
+  "prompts": {},
+  "sessions": {
+    "s_14fb3b87418d89": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "248ae081-42f9-4561-80cf-a05803a765b5",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_1c6344aa185087": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "5e652274-909a-4fde-8fed-da86ed9dd241",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    },
+    "s_c9653b39be326c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "agent-aed313eafaf024a8b",
+        "model": "unknown"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

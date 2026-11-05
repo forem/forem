@@ -1,0 +1,23 @@
+spec/services/favorites/create_spec.rb
+  s_48b37bc22cc999::t_a65743a7b90cf9 60-88,91,93,95-96
+  s_48b37bc22cc999::t_74ced454a75e8b 89-90,92,94
+app/services/favorites/create.rb
+  s_48b37bc22cc999::t_d46a815015a61f 94-107
+  s_48b37bc22cc999::t_fb005af4568c30 22
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d4a3488398ba7bfdf59a593fd8f3cfe220f507d2",
+  "prompts": {},
+  "sessions": {
+    "s_48b37bc22cc999": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "db655bd4-7a5d-4e2f-a712-22695bc0a094",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

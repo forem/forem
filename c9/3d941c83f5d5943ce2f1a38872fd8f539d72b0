@@ -1,0 +1,37 @@
+app/services/spam/handler.rb
+  s_4fd81060a96b33::t_36ecb2c1d62a10 239-241
+spec/services/spam/handler_spec.rb
+  s_4fd81060a96b33::t_ff1e30f22075f9 115,121,127-167
+spec/services/ai/spam_escalation_check_spec.rb
+  s_4fd81060a96b33::t_6937d904d5ab8f 8-9,11-12,14-21,23-53,56-59,61,64-68,70
+app/services/ai/function_registry.rb
+  s_4fd81060a96b33::t_d05d5b01732686 13-15,19,24-27
+  s_4fd81060a96b33::t_b8a6358d30c766 44-45,48-54,132
+spec/services/ai/function_config_spec.rb
+  s_4fd81060a96b33::t_ff1e30f22075f9 80-84,90-98,107
+spec/requests/admin/settings/ai_functions_spec.rb
+  s_4fd81060a96b33::t_62c74845214c95 65
+app/services/ai/function_config.rb
+  s_4fd81060a96b33::t_d05d5b01732686 77
+  s_4fd81060a96b33::t_1916442f6da78a 7-8,82-85,93,95
+app/services/ai/spam_escalation_check.rb
+  s_4fd81060a96b33::t_fb6b2fb4c30f50 3-9,11-12,14-15,20-31,41,43-44,46-49
+app/helpers/admin/settings_helper.rb
+  s_4fd81060a96b33::t_69991cea7cafd5 16-17,22-24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c93d941c83f5d5943ce2f1a38872fd8f539d72b0",
+  "prompts": {},
+  "sessions": {
+    "s_4fd81060a96b33": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "be371a62-1300-43a1-a82d-e6232acde14b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": null
+    }
+  }
+}

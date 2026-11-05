@@ -1,0 +1,66 @@
+app/controllers/admin/audience_segments_controller.rb
+  h_f968154a99632d 1-167
+app/controllers/admin/emails_controller.rb
+  h_f968154a99632d 26,29,33,46,65,84
+app/models/admin_menu.rb
+  h_f968154a99632d 29
+app/models/audience_segment.rb
+  h_f968154a99632d 20,22-24,84-95,97-115
+app/models/email.rb
+  h_f968154a99632d 16-29,145-159
+app/services/segmented_users/user_identifier_parser.rb
+  h_f968154a99632d 1-165
+app/views/admin/audience_segments/_form.html.erb
+  h_f968154a99632d 1-48
+app/views/admin/audience_segments/edit.html.erb
+  h_f968154a99632d 1-10
+app/views/admin/audience_segments/index.html.erb
+  h_f968154a99632d 1-117
+app/views/admin/audience_segments/new.html.erb
+  h_f968154a99632d 1-10
+app/views/admin/audience_segments/show.html.erb
+  h_f968154a99632d 1-137
+app/views/admin/emails/_form.html.erb
+  h_f968154a99632d 2,8-16,22,28,32-35,127,129,131-153,155,157,161-216,219
+app/views/admin/emails/show.html.erb
+  h_f968154a99632d 15-27
+app/workers/emails/enqueue_custom_batch_send_worker.rb
+  h_f968154a99632d 36-37,87-107,115,124
+config/locales/controllers/admin/en.yml
+  h_f968154a99632d 101-111
+config/locales/controllers/admin/fr.yml
+  h_f968154a99632d 101-111
+config/locales/controllers/admin/pt.yml
+  h_f968154a99632d 66-76
+config/routes/admin.rb
+  h_f968154a99632d 138-144
+spec/factories/audience_segment.rb
+  h_f968154a99632d 3
+spec/factories/users.rb
+  h_f968154a99632d 214-215
+spec/models/admin_menu_spec.rb
+  h_f968154a99632d 64-71
+spec/models/audience_segment_spec.rb
+  h_f968154a99632d 45-107
+spec/models/email_spec.rb
+  h_f968154a99632d 305-385
+spec/requests/admin/audience_segments_spec.rb
+  h_f968154a99632d 1-259
+spec/requests/admin/emails_spec.rb
+  h_f968154a99632d 29,44-51,68,136-151
+spec/services/segmented_users/user_identifier_parser_spec.rb
+  h_f968154a99632d 1-73
+spec/workers/emails/enqueue_custom_batch_send_worker_spec.rb
+  h_f968154a99632d 26-29,31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "657278c38f1d3ad9ceea65b00e86dc3d35df0eaa",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+config/locales/en.yml
+  h_b2f6efe2daa9cd 56-57
+config/locales/pt.yml
+  h_b2f6efe2daa9cd 56-57
+app/javascript/analytics/dashboard.js
+  h_b2f6efe2daa9cd 266-276,470-477
+config/locales/fr.yml
+  h_b2f6efe2daa9cd 56-57
+app/javascript/analytics/__tests__/dashboard.test.js
+  h_b2f6efe2daa9cd 450-511
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "045cf3c160cf70a73d0fa5143b373a395a59cf64",
+  "prompts": {},
+  "humans": {
+    "h_b2f6efe2daa9cd": {
+      "author": "Mikey Dorje"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+app/controllers/calendar_controller.rb
+  h_f968154a99632d 3,67,81-84,96-99
+app/controllers/dashboards_controller.rb
+  h_f968154a99632d 99-101,185-188,192-193,199-207
+app/controllers/stories/tagged_articles_controller.rb
+  h_f968154a99632d 6,19
+app/models/article.rb
+  h_f968154a99632d 446-456,467-475,491-492,495,497-504,506
+app/queries/articles/api_search_query.rb
+  h_f968154a99632d 56-64,68,71
+app/services/analytics_service.rb
+  h_f968154a99632d 94,106,158,163
+app/views/calendar/_calendar_widget.html.erb
+  h_f968154a99632d 7-8,12,14,27
+app/views/stories/tagged_articles/_sidebar.html.erb
+  h_f968154a99632d 75,87
+spec/models/article_spec.rb
+  h_f968154a99632d 4785-4795,4799-4818
+spec/queries/articles/api_search_query_spec.rb
+  h_f968154a99632d 44,50-51,61-62
+spec/requests/calendar_spec.rb
+  h_f968154a99632d 406-421
+spec/requests/dashboard_spec.rb
+  h_f968154a99632d 293-294,298-305,308
+spec/requests/stories/tagged_articles_spec.rb
+  h_f968154a99632d 397-419
+spec/services/analytics_service_spec.rb
+  h_f968154a99632d 622-635
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3fb6dbfecf31852f870eb24253802c4fb5306764",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

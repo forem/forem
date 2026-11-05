@@ -1,0 +1,14 @@
+spec/helpers/articles_helper_spec.rb
+  h_a5e25bc086eb00 152-159,181-187
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7b007e997ea6418ef06a2e2a06f1049db3e64f31",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

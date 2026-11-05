@@ -1,0 +1,16 @@
+app/services/email_digest.rb
+  h_f968154a99632d 2-3,13-25,42-45,49
+spec/services/email_digest_spec.rb
+  h_f968154a99632d 29-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fb029a4fb46fac1f1ac8d1b12788ee797920eb83",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
