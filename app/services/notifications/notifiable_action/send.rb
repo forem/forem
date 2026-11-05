@@ -18,11 +18,15 @@ module Notifications
 
       delegate :user_data, :article_data, :organization_data, to: Notifications
 
+      # Sends notifications to followers for a notifiable action and records the ContextNotification.
       def call
         return unless notifiable.is_a?(Article)
 
         send_limit = follower_send_limit
-        return if send_limit <= 0
+        if send_limit <= 0
+          upsert_context_notification
+          return
+        end
 
         json_data = {
           user: user_data(notifiable.user),
@@ -42,7 +46,7 @@ module Notifications
         co_author_ids = Array.wrap(notifiable.co_author_ids).map(&:to_i)
 
         # Only follower ids are used below, so skip hydrating (and DISTINCT-sorting) full user rows
-        article_followers = User.select(:id).joins("INNER JOIN follows ON follows.follower_id = users.id")
+        article_followers = User.select(:id, :updated_at).joins("INNER JOIN follows ON follows.follower_id = users.id")
           .where("(follows.followable_id = ? AND follows.followable_type = ?)
                  OR (follows.followable_id = ? AND follows.followable_type = ?)",
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
@@ -50,7 +54,7 @@ module Notifications
           .where.not(id: (user_ids_with_article_mentions + co_author_ids + [notifiable.user]))
           .recently_active(send_limit).distinct
 
-        article_followers.find_each do |follower|
+        article_followers.each do |follower|
           now = Time.current
           notifications_attributes.push(
             user_id: follower.id,
@@ -69,12 +73,6 @@ module Notifications
 
         upsert_index = choose_upsert_index(action)
 
-        context_notification_attributes = {
-          context_id: notifiable.id,
-          context_type: notifiable.class.name,
-          action: action
-        }
-
         ActiveRecord::Base.transaction do
           Notification.upsert_all(
             notifications_attributes,
@@ -82,8 +80,7 @@ module Notifications
             returning: %i[id],
           )
 
-          ContextNotification.upsert(context_notification_attributes,
-                                     unique_by: :index_context_notification_on_context_and_action)
+          upsert_context_notification
         end
       end
 
@@ -91,16 +88,24 @@ module Notifications
 
       attr_reader :notifiable, :action
 
+      # Computes the maximum number of followers to notify for this article.
+      # For the 3rd+ non-status article published by the author within 24 hours,
+      # caps notifications at the author's past-week article page views (unless published
+      # under an organization with a positive baseline_score).
+      #
+      # @return [Integer]
       def follower_send_limit
         return FOLLOWER_SEND_LIMIT if notifiable.organization&.baseline_score.to_i.positive?
 
         author = notifiable.user
         return FOLLOWER_SEND_LIMIT unless author
 
+        reference_time = notifiable.published_at || Time.current
+
         published_non_status_articles_past_day = author.articles
           .published
           .where.not(type_of: "status")
-          .where("published_at >= ?", 1.day.ago)
+          .where(published_at: (reference_time - 1.day)..reference_time)
           .count
 
         return FOLLOWER_SEND_LIMIT if published_non_status_articles_past_day <= DAILY_UNTHROTTLED_ARTICLE_LIMIT
@@ -113,6 +118,22 @@ module Notifications
         [past_week_views, FOLLOWER_SEND_LIMIT].min
       end
 
+      # Upserts a ContextNotification record marking the notifiable action as processed.
+      def upsert_context_notification
+        ContextNotification.upsert(
+          {
+            context_id: notifiable.id,
+            context_type: notifiable.class.name,
+            action: action
+          },
+          unique_by: :index_context_notification_on_context_and_action,
+        )
+      end
+
+      # Selects the unique index name used for upserting Notification rows.
+      #
+      # @param action [String, nil]
+      # @return [Symbol]
       def choose_upsert_index(action)
         return :index_notifications_on_user_notifiable_and_action_not_null if action.present?
 
