@@ -1,0 +1,64 @@
+app/helpers/rate_limit_checker_helper.rb
+  h_f968154a99632d 123-143
+app/models/article.rb
+  h_f968154a99632d 1829-1853,1855
+app/models/comment.rb
+  h_f968154a99632d 505-529,531
+app/models/settings/rate_limit.rb
+  h_f968154a99632d 24-26
+app/services/ai/function_registry.rb
+  h_f968154a99632d 55-58
+app/services/ai/phishing_signup_check.rb
+  h_f968154a99632d 1-368
+app/services/mentions/create_all.rb
+  h_f968154a99632d 15-16,18-20,28-33,48-52
+app/services/rate_limit_checker.rb
+  h_f968154a99632d 19-20,30-46,109-196,247-298
+app/services/spam/handler.rb
+  h_f968154a99632d 30-57,85-86,90,99-100,143-149,197,521-526,534-636,710-714
+app/workers/mentions/send_email_notification_worker.rb
+  h_f968154a99632d 10-15
+config/locales/helpers/en.yml
+  h_f968154a99632d 411-419,608-616
+config/locales/helpers/fr.yml
+  h_f968154a99632d 426-434,655-663
+config/locales/helpers/pt.yml
+  h_f968154a99632d 417-425,615-623
+config/locales/models/en.yml
+  h_f968154a99632d 30,76
+config/locales/models/fr.yml
+  h_f968154a99632d 29,75
+config/locales/models/pt.yml
+  h_f968154a99632d 29,75
+config/locales/services/en.yml
+  h_f968154a99632d 133-134
+config/locales/services/fr.yml
+  h_f968154a99632d 131-132
+config/locales/services/pt.yml
+  h_f968154a99632d 141-142
+spec/models/article_spec.rb
+  h_f968154a99632d 2633-2649
+spec/models/comment_spec.rb
+  h_f968154a99632d 226-258
+spec/services/ai/phishing_signup_check_spec.rb
+  h_f968154a99632d 1-147
+spec/services/mentions/create_all_spec.rb
+  h_f968154a99632d 185-205
+spec/services/rate_limit_checker_spec.rb
+  h_f968154a99632d 35-37,255-312
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 730-786,1164-1184,1409-1414
+spec/workers/mentions/send_email_notification_worker_spec.rb
+  h_f968154a99632d 51-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "20289117c5ff61e4c98fddd667afb3afd8939b04",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
