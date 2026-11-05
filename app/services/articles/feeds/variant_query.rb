@@ -220,6 +220,8 @@ module Articles
               AND user_blocks.blocker_id = :user_id"
         end
 
+        lever_tuples = []
+
         config.levers.each do |lever|
           # Don't attempt to use this factor if we don't have user.
           next if lever.user_required? && @user.nil?
@@ -229,19 +231,30 @@ module Articles
 
           @joins += lever.joins_fragments if lever.joins_fragments.present?
 
-          @relevance_score_components << build_score_element_from(
-            select_fragment: lever.select_fragment,
-            cases: lever.cases,
-            fallback: lever.fallback,
-          )
+          lever_tuples << [lever.select_fragment, lever.cases, lever.fallback]
 
           # As implemented, this is not looking for collisions of named parameters.
           @query_parameters.merge!(lever.query_parameters)
         end
 
-        if @user&.setting&.minimize_ai_feed_ai?
-          @relevance_score_components << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        minimize_ai = @user&.setting&.minimize_ai_feed_ai? ? true : false
+        @relevance_score_components_sql =
+          ForemNative.build_variant_relevancy_score_sql(lever_tuples, minimize_ai: minimize_ai)
+        return if @relevance_score_components_sql
+
+        lever_tuples.each do |select_fragment, cases, fallback|
+          @relevance_score_components << build_score_element_from(
+            select_fragment: select_fragment,
+            cases: cases,
+            fallback: fallback,
+          )
         end
+
+        return unless minimize_ai
+
+        @relevance_score_components <<
+          "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+          "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
       end
 
       # Concatenate the required group by clauses.
@@ -280,8 +293,15 @@ module Articles
             AND ((articles.published_at > :oldest_published_at)
             OR (articles.last_comment_at > :conditional_comment_timeframe))"
         elsif @user
-          user_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids + [0] # Adding one that will never be reached so we can have a valid SQL statement
-          where_clauses += " AND articles.user_id IN (#{user_ids.join(',')})"
+          following_ids = @user.cached_following_users_ids + @user.cached_following_organizations_ids
+          ids_sql = ForemNative.sql_int_list(following_ids, "")
+          where_clauses += if ids_sql.nil?
+                             " AND articles.user_id IN (#{(following_ids + [0]).join(',')})"
+                           elsif ids_sql.empty?
+                             " AND articles.user_id IN (0)"
+                           else
+                             " AND articles.user_id IN (#{ids_sql},0)"
+                           end
         end
         if @user&.setting&.hide_fully_autonomous_feed_ai?
           where_clauses += " AND articles.ai_disclosure_level != #{Article.ai_disclosure_levels[:fully_autonomous]}"
@@ -307,7 +327,7 @@ module Articles
 
       # We multiply the relevance score components together.
       def relevance_score_components_as_sql
-        @relevance_score_components.join(" * \n")
+        @relevance_score_components_sql || @relevance_score_components.join(" * \n")
       end
 
       def default_limit
@@ -358,6 +378,15 @@ module Articles
       # @param cases [Array<Array<#to_i, #to_f>>]
       # @param fallback [#to_f]
       def build_score_element_from(select_fragment:, cases:, fallback:)
+        ForemNative.build_relevancy_lever_sql(select_fragment, cases, fallback) ||
+          legacy_build_score_element_from(
+            select_fragment: select_fragment,
+            cases: cases,
+            fallback: fallback,
+          )
+      end
+
+      def legacy_build_score_element_from(select_fragment:, cases:, fallback:)
         values = []
         # I would love to sanitize this, but alas, we must trust this clause.
         text = "(CASE #{select_fragment}"

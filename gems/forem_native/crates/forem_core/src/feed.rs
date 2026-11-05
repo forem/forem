@@ -2390,6 +2390,194 @@ pub fn sanitize_feed_error(message: &str) -> String {
     scrubbed
 }
 
+/// Default flare tag names from `Constants::Tags::FLARE_TAG_NAMES`.
+pub const DEFAULT_FLARE_TAG_NAMES: [&str; 13] = [
+    "ama",
+    "anonymous",
+    "challenge",
+    "discuss",
+    "explainlikeimfive",
+    "healthydebate",
+    "help",
+    "jokes",
+    "news",
+    "showdev",
+    "techtalks",
+    "todayilearned",
+    "watercooler",
+];
+
+/// SQL expression appended by `Articles::Feeds::VariantQuery#configure!` when
+/// `@user&.setting&.minimize_ai_feed_ai?` is truthy.
+pub const MINIMIZE_AI_RELEVANCY_SQL: &str =
+    "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)";
+
+/// Configuration for a single relevancy lever in `Articles::Feeds::VariantQuery`.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RelevancyLeverSqlInput<'a> {
+    pub select_fragment: &'a str,
+    pub cases: &'a [(i64, f64)],
+    pub fallback: f64,
+}
+
+/// Fast zero-allocation lookup against [`DEFAULT_FLARE_TAG_NAMES`].
+#[inline]
+pub fn match_default_flare_tag(token: &str) -> Option<&'static str> {
+    match token.as_bytes() {
+        b"ama" => Some("ama"),
+        b"help" => Some("help"),
+        b"news" => Some("news"),
+        b"jokes" => Some("jokes"),
+        b"discuss" => Some("discuss"),
+        b"showdev" => Some("showdev"),
+        b"anonymous" => Some("anonymous"),
+        b"challenge" => Some("challenge"),
+        b"techtalks" => Some("techtalks"),
+        b"watercooler" => Some("watercooler"),
+        b"healthydebate" => Some("healthydebate"),
+        b"todayilearned" => Some("todayilearned"),
+        b"explainlikeimfive" => Some("explainlikeimfive"),
+        _ => None,
+    }
+}
+
+/// Scans `cached_tag_list` on `", "` boundaries in-place (matching `cached_tag_list.split(", ")`
+/// trailing-empty-field semantics) and returns the first tag matching `allowed_tags` (or
+/// [`DEFAULT_FLARE_TAG_NAMES`] when `allowed_tags` is `None`), with zero heap allocations.
+pub fn match_first_flare_tag<'a, S: AsRef<str>>(
+    cached_tag_list: &'a str,
+    allowed_tags: Option<&[S]>,
+) -> Option<&'a str> {
+    let mut rem = cached_tag_list;
+    while let Some(stripped) = rem.strip_suffix(", ") {
+        rem = stripped;
+    }
+    if rem.is_empty() {
+        return None;
+    }
+    match allowed_tags {
+        None => rem
+            .split(", ")
+            .find(|&token| match_default_flare_tag(token).is_some()),
+        Some(allowed) => {
+            if allowed.is_empty() {
+                return None;
+            }
+            rem.split(", ")
+                .find(|&token| allowed.iter().any(|candidate| candidate.as_ref() == token))
+        }
+    }
+}
+
+/// Validates that `tag` is a non-blank ASCII tag name so `cached_tag_list.blank?` and
+/// `flare_tag.blank?` are invariant across all UTF-8 inputs.
+#[inline]
+pub fn is_valid_ascii_flare_tag_name(tag: &str) -> bool {
+    !tag.is_empty() && tag.is_ascii() && !tag.bytes().all(is_ascii_regex_space)
+}
+
+/// Groups article IDs by their first matching flare tag in `cached_tag_list`, preserving
+/// first-seen flare tag insertion order and per-tag article order, matching
+/// `Homepage::FetchTagFlares.articles_tag_flares`.
+///
+/// Returns `None` if `allowed_tags` contains any blank or non-ASCII string so callers can
+/// fall back to Ruby's `String#blank?`.
+pub fn match_articles_flare_tags<'a, Id: Clone, S: AsRef<str>>(
+    pairs: &[(Id, Option<&'a str>)],
+    allowed_tags: Option<&[S]>,
+) -> Option<Vec<(&'a str, Vec<Id>)>> {
+    if let Some(allowed) = allowed_tags {
+        if !allowed
+            .iter()
+            .all(|t| is_valid_ascii_flare_tag_name(t.as_ref()))
+        {
+            return None;
+        }
+    }
+
+    let mut buckets: Vec<(&'a str, Vec<Id>)> = Vec::new();
+    for (article_id, opt_tags) in pairs {
+        let Some(cached_tag_list) = *opt_tags else {
+            continue;
+        };
+        let Some(flare_tag) = match_first_flare_tag(cached_tag_list, allowed_tags) else {
+            continue;
+        };
+        if let Some((_, ids)) = buckets.iter_mut().find(|(tag, _)| *tag == flare_tag) {
+            ids.push(article_id.clone());
+        } else {
+            buckets.push((flare_tag, vec![article_id.clone()]));
+        }
+    }
+    Some(buckets)
+}
+
+/// Appends a single `Articles::Feeds::VariantQuery#build_score_element_from` SQL `CASE`
+/// expression to `out`.
+///
+/// Returns `false` if `select_fragment` contains `'?'` (which `Article.sanitize_sql_array`
+/// treats as a bind placeholder) or if any float falls outside the standard decimal range.
+pub fn write_relevancy_lever_sql(
+    out: &mut String,
+    select_fragment: &str,
+    cases: &[(i64, f64)],
+    fallback: f64,
+) -> bool {
+    if select_fragment.contains('?') {
+        return false;
+    }
+    out.push_str("(CASE ");
+    out.push_str(select_fragment);
+    for &(val, factor) in cases {
+        let _ = write!(out, "\nWHEN {val} THEN ");
+        if !write_ruby_float(out, factor) {
+            return false;
+        }
+    }
+    out.push_str("\nELSE ");
+    if !write_ruby_float(out, fallback) {
+        return false;
+    }
+    out.push_str(" END)");
+    true
+}
+
+/// Builds a single `Articles::Feeds::VariantQuery#build_score_element_from` SQL `CASE`
+/// expression, returning `None` for out-of-domain inputs.
+pub fn build_relevancy_lever_sql(
+    select_fragment: &str,
+    cases: &[(i64, f64)],
+    fallback: f64,
+) -> Option<String> {
+    let mut out = String::with_capacity(select_fragment.len() + cases.len() * 24 + 32);
+    write_relevancy_lever_sql(&mut out, select_fragment, cases, fallback).then_some(out)
+}
+
+/// Builds the complete `Articles::Feeds::VariantQuery#relevance_score_components_as_sql`
+/// expression in a single pass into a pre-allocated buffer.
+pub fn build_variant_relevancy_score_sql(
+    levers: &[RelevancyLeverSqlInput<'_>],
+    minimize_ai: bool,
+) -> Option<String> {
+    let mut out = String::with_capacity(levers.len() * 256 + if minimize_ai { 128 } else { 0 });
+    for (idx, lever) in levers.iter().enumerate() {
+        if idx > 0 {
+            out.push_str(" * \n");
+        }
+        if !write_relevancy_lever_sql(&mut out, lever.select_fragment, lever.cases, lever.fallback)
+        {
+            return None;
+        }
+    }
+    if minimize_ai {
+        if !out.is_empty() {
+            out.push_str(" * \n");
+        }
+        out.push_str(MINIMIZE_AI_RELEVANCY_SQL);
+    }
+    Some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2837,5 +3025,78 @@ mod tests {
         let sanitized_long = sanitize_feed_error(&long_err);
         assert_eq!(sanitized_long.len(), 500);
         assert!(sanitized_long.ends_with("..."));
+    }
+
+    #[test]
+    fn match_flare_tags_and_batch_grouping() {
+        assert_eq!(
+            match_first_flare_tag::<&str>("javascript, discuss, ama", None),
+            Some("discuss")
+        );
+        assert_eq!(
+            match_first_flare_tag::<&str>("watercooler, explainlikeimfive, ", None),
+            Some("watercooler")
+        );
+        assert_eq!(
+            match_first_flare_tag::<&str>("ruby, rails, webdev", None),
+            None
+        );
+        assert_eq!(match_first_flare_tag::<&str>("", None), None);
+        assert_eq!(match_first_flare_tag::<&str>(", , ", None), None);
+
+        let custom = ["explainlikeimfive", "ama"];
+        assert_eq!(
+            match_first_flare_tag("discuss, ama, explainlikeimfive", Some(&custom)),
+            Some("ama")
+        );
+
+        let pairs = [
+            (10_i64, Some("ruby, discuss, ama")),
+            (20_i64, None),
+            (30_i64, Some("")),
+            (40_i64, Some("ama, watercooler")),
+            (50_i64, Some("webdev, discuss")),
+            (60_i64, Some("javascript, rust")),
+        ];
+        let grouped = match_articles_flare_tags::<i64, &str>(&pairs, None).unwrap();
+        assert_eq!(grouped, vec![("discuss", vec![10, 50]), ("ama", vec![40])]);
+
+        // Blank or non-ASCII allowed tags defer to Ruby
+        assert!(match_articles_flare_tags(&pairs, Some(&["  "])).is_none());
+        assert!(match_articles_flare_tags(&pairs, Some(&["café"])).is_none());
+    }
+
+    #[test]
+    fn build_relevancy_lever_and_variant_score_sql() {
+        let cases = [(0_i64, 1.0_f64), (1, 0.99), (-1, 0.2)];
+        let single = build_relevancy_lever_sql("articles.comments_count", &cases, 0.95).unwrap();
+        assert_eq!(
+            single,
+            "(CASE articles.comments_count\nWHEN 0 THEN 1.0\nWHEN 1 THEN 0.99\nWHEN -1 THEN 0.2\nELSE 0.95 END)"
+        );
+
+        // `?` in select_fragment or scientific-notation float defers to Ruby
+        assert!(build_relevancy_lever_sql("articles.score > ?", &cases, 1.0).is_none());
+        assert!(build_relevancy_lever_sql("articles.score", &[(0, 1e-7)], 1.0).is_none());
+
+        let levers = [
+            RelevancyLeverSqlInput {
+                select_fragment: "articles.comments_count",
+                cases: &[(0, 0.8), (1, 1.0)],
+                fallback: 1.0,
+            },
+            RelevancyLeverSqlInput {
+                select_fragment: "(CASE articles.featured WHEN true THEN 1 ELSE 0 END)",
+                cases: &[(1, 1.0)],
+                fallback: 0.85,
+            },
+        ];
+        let combined = build_variant_relevancy_score_sql(&levers, true).unwrap();
+        assert_eq!(
+            combined,
+            "(CASE articles.comments_count\nWHEN 0 THEN 0.8\nWHEN 1 THEN 1.0\nELSE 1.0 END) * \n\
+             (CASE (CASE articles.featured WHEN true THEN 1 ELSE 0 END)\nWHEN 1 THEN 1.0\nELSE 0.85 END) * \n\
+             (CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        );
     }
 }

@@ -2720,6 +2720,224 @@ fn clean_tag_list(ruby: &Ruby, input: RString) -> Option<RArray> {
     Some(ary)
 }
 
+fn extract_optional_allowed_tags(allowed_tags: Value) -> Result<Option<Vec<String>>, ()> {
+    if allowed_tags.is_nil() {
+        return Ok(None);
+    }
+    if let Some(arr) = RArray::from_value(allowed_tags) {
+        let vec = extract_string_vec(arr, 0).ok_or(())?;
+        if !vec
+            .iter()
+            .all(|s| forem_core::feed::is_valid_ascii_flare_tag_name(s))
+        {
+            return Err(());
+        }
+        return Ok(Some(vec));
+    }
+    if let Some(hash) = RHash::from_value(allowed_tags) {
+        let mut keys: Vec<String> = Vec::with_capacity(hash.len());
+        let mut valid = true;
+        hash.foreach(|k: Value, _v: Value| {
+            let Some(rstr) = RString::from_value(k) else {
+                valid = false;
+                return Ok(ForEach::Stop);
+            };
+            if !rstr.is_utf8_compatible_encoding() {
+                valid = false;
+                return Ok(ForEach::Stop);
+            }
+            let Some(s) = (unsafe { rstr.test_as_str() }) else {
+                valid = false;
+                return Ok(ForEach::Stop);
+            };
+            if !forem_core::feed::is_valid_ascii_flare_tag_name(s) {
+                valid = false;
+                return Ok(ForEach::Stop);
+            }
+            keys.push(s.to_owned());
+            Ok(ForEach::Continue)
+        })
+        .map_err(|_| ())?;
+        return if valid { Ok(Some(keys)) } else { Err(()) };
+    }
+    Err(())
+}
+
+fn match_first_flare_tag(ruby: &Ruby, cached_tag_list: RString, allowed_tags: Value) -> Value {
+    if !cached_tag_list.is_utf8_compatible_encoding() {
+        return ruby.qnil().as_value();
+    }
+    let allowed_vec = match extract_optional_allowed_tags(allowed_tags) {
+        Ok(v) => v,
+        Err(()) => return ruby.qnil().as_value(),
+    };
+    let allowed_refs: Option<Vec<&str>> = allowed_vec
+        .as_ref()
+        .map(|v| v.iter().map(String::as_str).collect());
+
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` never calls into Ruby, and the
+    // borrow ends before allocating the result `RString`.
+    let matched: Option<String> = {
+        let Some(text) = (unsafe { cached_tag_list.test_as_str() }) else {
+            return ruby.qnil().as_value();
+        };
+        if text.contains('\0') {
+            return ruby.qnil().as_value();
+        }
+        forem_core::feed::match_first_flare_tag(text, allowed_refs.as_deref()).map(str::to_owned)
+    };
+
+    match matched {
+        Some(tag) => ruby.str_new(&tag).as_value(),
+        None => ruby.qfalse().as_value(),
+    }
+}
+
+fn match_articles_flare_tags(ruby: &Ruby, pairs: RArray, allowed_tags: Value) -> Option<RHash> {
+    let allowed_vec = extract_optional_allowed_tags(allowed_tags).ok()?;
+    let allowed_refs: Option<Vec<&str>> = allowed_vec
+        .as_ref()
+        .map(|v| v.iter().map(String::as_str).collect());
+
+    let (id_values, tag_lists) = {
+        let pairs_slice = unsafe { pairs.as_slice() };
+        let mut ids = Vec::with_capacity(pairs_slice.len());
+        let mut tags = Vec::with_capacity(pairs_slice.len());
+        for &pair_val in pairs_slice {
+            let pair_arr = RArray::from_value(pair_val)?;
+            let pair_items = unsafe { pair_arr.as_slice() };
+            if pair_items.len() != 2 {
+                return None;
+            }
+            let id_val = pair_items[0];
+            let tags_val = pair_items[1];
+            let opt_tags = if tags_val.is_nil() {
+                None
+            } else {
+                let rstr = RString::from_value(tags_val)?;
+                if !rstr.is_utf8_compatible_encoding() {
+                    return None;
+                }
+                let s = unsafe { rstr.test_as_str() }?;
+                if s.contains('\0') {
+                    return None;
+                }
+                Some(s.to_owned())
+            };
+            ids.push(id_val);
+            tags.push(opt_tags);
+        }
+        (ids, tags)
+    };
+
+    let core_pairs: Vec<(usize, Option<&str>)> = tag_lists
+        .iter()
+        .enumerate()
+        .map(|(idx, opt)| (idx, opt.as_deref()))
+        .collect();
+    let grouped =
+        forem_core::feed::match_articles_flare_tags(&core_pairs, allowed_refs.as_deref())?;
+
+    let hash = ruby.hash_new_capa(grouped.len());
+    for (tag_name, indices) in grouped {
+        let ary = ruby.ary_new_capa(indices.len());
+        for idx in indices {
+            ary.push(id_values[idx]).ok()?;
+        }
+        hash.aset(ruby.str_new(tag_name), ary).ok()?;
+    }
+    Some(hash)
+}
+
+#[inline]
+fn extract_i64_trunc_value(value: Value) -> Option<i64> {
+    if let Some(int) = Integer::from_value(value) {
+        return int.to_i64().ok();
+    }
+    if let Some(fl) = Float::from_value(value) {
+        let f = fl.to_f64();
+        if f.is_finite() && f >= (i64::MIN as f64) && f < (i64::MAX as f64) {
+            return Some(f as i64);
+        }
+    }
+    None
+}
+
+fn extract_relevancy_cases(cases: RArray) -> Option<Vec<(i64, f64)>> {
+    let slice = unsafe { cases.as_slice() };
+    let mut out = Vec::with_capacity(slice.len());
+    for &item in slice {
+        let pair = RArray::from_value(item)?;
+        let pair_slice = unsafe { pair.as_slice() };
+        if pair_slice.len() != 2 {
+            return None;
+        }
+        let val = extract_i64_trunc_value(pair_slice[0])?;
+        let factor = extract_f64_value(pair_slice[1])?;
+        out.push((val, factor));
+    }
+    Some(out)
+}
+
+fn build_relevancy_lever_sql(
+    select_fragment: RString,
+    cases: RArray,
+    fallback: Value,
+) -> Option<String> {
+    if !select_fragment.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let parsed_cases = extract_relevancy_cases(cases)?;
+    let fb = extract_f64_value(fallback)?;
+    let fragment = unsafe { select_fragment.test_as_str() }?;
+    if fragment.contains('\0') {
+        return None;
+    }
+    forem_core::feed::build_relevancy_lever_sql(fragment, &parsed_cases, fb)
+}
+
+type OwnedRelevancyLever = (String, Vec<(i64, f64)>, f64);
+
+fn build_variant_relevancy_score_sql(levers: RArray, minimize_ai: bool) -> Option<String> {
+    let owned_levers: Vec<OwnedRelevancyLever> = {
+        let slice = unsafe { levers.as_slice() };
+        let mut v = Vec::with_capacity(slice.len());
+        for &item in slice {
+            let tuple = RArray::from_value(item)?;
+            let tuple_slice = unsafe { tuple.as_slice() };
+            if tuple_slice.len() != 3 {
+                return None;
+            }
+            let frag_rstr = RString::from_value(tuple_slice[0])?;
+            if !frag_rstr.is_utf8_compatible_encoding() {
+                return None;
+            }
+            let frag_str = unsafe { frag_rstr.test_as_str() }?;
+            if frag_str.contains('\0') {
+                return None;
+            }
+            let cases_arr = RArray::from_value(tuple_slice[1])?;
+            let parsed_cases = extract_relevancy_cases(cases_arr)?;
+            let fb = extract_f64_value(tuple_slice[2])?;
+            v.push((frag_str.to_owned(), parsed_cases, fb));
+        }
+        v
+    };
+
+    let core_levers: Vec<forem_core::feed::RelevancyLeverSqlInput<'_>> = owned_levers
+        .iter()
+        .map(
+            |(frag, cases, fb)| forem_core::feed::RelevancyLeverSqlInput {
+                select_fragment: frag.as_str(),
+                cases: cases.as_slice(),
+                fallback: *fb,
+            },
+        )
+        .collect();
+
+    forem_core::feed::build_variant_relevancy_score_sql(&core_levers, minimize_ai)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3010,5 +3228,19 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(extract_markdown_and_html_image_urls, 2),
     )?;
     native_mod.define_singleton_method("clean_tag_list", function!(clean_tag_list, 1))?;
+    native_mod
+        .define_singleton_method("match_first_flare_tag", function!(match_first_flare_tag, 2))?;
+    native_mod.define_singleton_method(
+        "match_articles_flare_tags",
+        function!(match_articles_flare_tags, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "build_relevancy_lever_sql",
+        function!(build_relevancy_lever_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_variant_relevancy_score_sql",
+        function!(build_variant_relevancy_score_sql, 2),
+    )?;
     Ok(())
 }

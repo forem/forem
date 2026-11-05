@@ -1082,6 +1082,44 @@ module ForemNative
       Native.clean_tag_list(input)
     end
 
+    # Scans a `", "`-delimited `cached_tag_list` string for the first tag matching
+    # `allowed_tags` (or the 9 default Forem flare tags when `allowed_tags` is `nil`),
+    # returning the matched tag `String`, `false` when in-domain and no tag matches,
+    # or `nil` when out-of-domain.
+    def match_first_flare_tag(cached_tag_list, allowed_tags = nil)
+      return unless cached_tag_list.instance_of?(String)
+      return unless allowed_tags.nil? || allowed_tags.instance_of?(Array) || allowed_tags.instance_of?(Hash)
+
+      Native.match_first_flare_tag(cached_tag_list, allowed_tags)
+    end
+
+    # Batch-scans `[article_id, cached_tag_list]` pairs and groups `article_id`s by
+    # their first matching flare tag name in insertion order, matching
+    # `Homepage::FetchTagFlares.articles_tag_flares`.
+    def match_articles_flare_tags(pairs, allowed_tags = nil)
+      return unless pairs.instance_of?(Array)
+      return unless allowed_tags.nil? || allowed_tags.instance_of?(Array) || allowed_tags.instance_of?(Hash)
+
+      Native.match_articles_flare_tags(pairs, allowed_tags)
+    end
+
+    # Builds a sanitized SQL `(CASE <select_fragment> WHEN <val> THEN <factor> ... ELSE <fallback> END)`
+    # expression in a single pass, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+    def build_relevancy_lever_sql(select_fragment, cases, fallback)
+      return unless select_fragment.instance_of?(String) && cases.instance_of?(Array)
+
+      Native.build_relevancy_lever_sql(select_fragment, cases, fallback)
+    end
+
+    # Builds the full ` * \n`-joined relevancy score SQL expression across all active
+    # `[select_fragment, cases, fallback]` levers plus optional AI minimization penalty,
+    # matching `Articles::Feeds::VariantQuery#relevance_score_components_as_sql`.
+    def build_variant_relevancy_score_sql(levers, minimize_ai: false)
+      return unless levers.instance_of?(Array)
+
+      Native.build_variant_relevancy_score_sql(levers, minimize_ai ? true : false)
+    end
+
     # Literal transcript substitutions, with no entity decoding or DOM normalization.
     # Non-UTF-8 strings and subclasses retain their Ruby encoding/gsub semantics.
     def wrap_untagged_codeblocks(html)

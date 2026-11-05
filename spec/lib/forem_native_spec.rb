@@ -5362,4 +5362,198 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".match_first_flare_tag and .match_articles_flare_tags" do
+    let(:default_flare_tags) { Constants::Tags::FLARE_TAG_NAMES }
+
+    let(:legacy_match_first_flare_tag) do
+      lambda do |cached_tag_list, allowed = default_flare_tags|
+        allowed_set = allowed.is_a?(Hash) ? allowed.keys.to_set : allowed.to_set
+        tags = (cached_tag_list || "").split(", ")
+        allowed_set.intersection(tags).first
+      end
+    end
+
+    let(:legacy_articles_tag_flares) do
+      lambda do |pairs, allowed = default_flare_tags|
+        flare_tags_for_articles = Hash.new { |hash, key| hash[key] = [] }
+        flare_tag_names = allowed.to_set
+        pairs.each do |article_id, cached_tag_list|
+          next if cached_tag_list.blank?
+
+          tags = cached_tag_list.split(", ")
+          flare_tag = flare_tag_names.intersection(tags).first
+          next if flare_tag.blank?
+
+          flare_tags_for_articles[flare_tag] << article_id
+        end
+        flare_tags_for_articles
+      end
+    end
+
+    it "matches the first flare tag in cached_tag_list order and returns false when none match" do
+      expect(described_class.match_first_flare_tag("ruby, discuss, help")).to eq("discuss")
+      expect(described_class.match_first_flare_tag("explainlikeimfive, ama")).to eq("explainlikeimfive")
+      expect(described_class.match_first_flare_tag("ruby, rails, webdev")).to be(false)
+      expect(described_class.match_first_flare_tag("")).to be(false)
+      expect(described_class.match_first_flare_tag("   ")).to be(false)
+      expect(described_class.match_first_flare_tag("ruby, discuss", { "help" => 1, "discuss" => 2 })).to eq("discuss")
+      expect(described_class.match_first_flare_tag("discuss, ama", { "ama" => 1 })).to eq("ama")
+    end
+
+    it "returns nil for out-of-domain inputs and falls back cleanly in callers", :aggregate_failures do
+      invalid_utf8 = (+"discuss, \xFF").force_encoding(Encoding::UTF_8)
+      expect(described_class.match_first_flare_tag(nil)).to be_nil
+      expect(described_class.match_first_flare_tag(123)).to be_nil
+      expect(described_class.match_first_flare_tag(invalid_utf8)).to be_nil
+      expect(described_class.match_first_flare_tag("discuss", "not_an_array")).to be_nil
+
+      expect(described_class.match_articles_flare_tags(nil)).to be_nil
+      expect(described_class.match_articles_flare_tags([[1, invalid_utf8]])).to be_nil
+      expect(described_class.match_articles_flare_tags([[1]])).to be_nil
+
+      # Verify Homepage::FetchTagFlares and FlareTag fall back cleanly when native returns nil
+      subclass_str = Class.new(String).new("ruby, discuss")
+      expect(described_class.match_first_flare_tag(subclass_str)).to be_nil
+      expect(Homepage::FetchTagFlares.__send__(:legacy_articles_tag_flares, [[42, subclass_str]])).to eq(
+        "discuss" => [42],
+      )
+    end
+
+    it "matches the Ruby reference across 1,000 randomized single-article and batch inputs" do
+      rng = Random.new(424_246)
+      pool = default_flare_tags + %w[ruby javascript webdev beginners ai rust tutorial devops] + ["", " "]
+      custom_subsets = [
+        nil,
+        %w[ama explainlikeimfive],
+        { "discuss" => 10, "help" => 20, "showdev" => 30 },
+      ]
+
+      1_000.times do |i|
+        allowed = custom_subsets.sample(random: rng)
+        allowed_list = case allowed
+                       when nil then default_flare_tags
+                       when Hash then allowed.keys
+                       else allowed
+                       end
+
+        pairs = Array.new(rng.rand(0..15)) do |idx|
+          raw = if rng.rand(10).zero?
+                  nil
+                else
+                  s = Array.new(rng.rand(0..5)) { pool.sample(random: rng) }.join(", ")
+                  s += ", " * rng.rand(0..2)
+                  s
+                end
+          [idx + 1, raw]
+        end
+
+        pairs.each do |(_id, raw)|
+          next if raw.nil?
+
+          native_single = described_class.match_first_flare_tag(raw, allowed)
+          expected_single = legacy_match_first_flare_tag.call(raw, allowed_list)
+          expect(native_single || nil).to eq(expected_single), "single iteration #{i}: raw=#{raw.inspect}"
+        end
+
+        allowed_array_or_nil = allowed.is_a?(Hash) ? allowed.keys : allowed
+        native_batch = described_class.match_articles_flare_tags(pairs, allowed_array_or_nil)
+        expected_batch = legacy_articles_tag_flares.call(pairs, allowed_list)
+        expect(native_batch).to eq(expected_batch), "batch iteration #{i}: pairs=#{pairs.inspect}"
+        expect(native_batch.keys).to eq(expected_batch.keys)
+      end
+    end
+  end
+
+  describe ".build_relevancy_lever_sql and .build_variant_relevancy_score_sql" do
+    let(:legacy_build_lever_sql) do
+      lambda do |select_fragment, cases, fallback|
+        values = []
+        text = "(CASE #{select_fragment}"
+        cases.each do |value, factor|
+          text += "\nWHEN ? THEN ?"
+          values << value.to_i
+          values << factor.to_f
+        end
+        text += "\nELSE ? END)"
+        values << fallback.to_f
+        values.unshift(text)
+        Article.sanitize_sql_array(values)
+      end
+    end
+
+    it "builds single lever and compound variant relevancy score SQL expressions" do
+      frag = "COUNT(reactions.id)"
+      cases = [[0, 1.0], [1, 1.2], [2, 1.5]]
+      fallback = 0.8
+
+      expect(described_class.build_relevancy_lever_sql(frag, cases, fallback)).to eq(
+        legacy_build_lever_sql.call(frag, cases, fallback),
+      )
+
+      levers = [
+        [frag, cases, fallback],
+        ["COUNT(comments.id)", [[0, 0.5], [1, 1.1]], 1.25],
+      ]
+      expected_no_ai = levers.map { |f, c, fb| legacy_build_lever_sql.call(f, c, fb) }.join(" * \n")
+      expect(described_class.build_variant_relevancy_score_sql(levers, minimize_ai: false)).to eq(expected_no_ai)
+
+      ai_sql = "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+               "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+      expect(described_class.build_variant_relevancy_score_sql(levers, minimize_ai: true)).to eq(
+        "#{expected_no_ai} * \n#{ai_sql}",
+      )
+    end
+
+    it "returns nil for out-of-domain inputs (such as '?' in select_fragment or non-finite floats)" do
+      expect(described_class.build_relevancy_lever_sql("col = ?", [[0, 1.0]], 1.0)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("col", [[0, Float::NAN]], 1.0)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("col", [[0, 1.0]], Float::INFINITY)).to be_nil
+      expect(described_class.build_relevancy_lever_sql("col", [["str", 1.0]], 1.0)).to be_nil
+      expect(
+        described_class.build_variant_relevancy_score_sql([["col = ?", [[0, 1.0]], 1.0]], minimize_ai: false),
+      ).to be_nil
+    end
+
+    it "matches Article.sanitize_sql_array across 1,000 randomized lever configurations" do
+      rng = Random.new(424_247)
+      fragments = [
+        "COUNT(reactions.id)",
+        "COUNT(comments.id)",
+        "COUNT(follows.id)",
+        "DATE_PART('day', NOW() - articles.published_at)::integer",
+        "CASE WHEN user_blocks.id IS NOT NULL THEN 1 ELSE 0 END",
+      ]
+      factors = [0.0, 0.01, 0.25, 0.5, 0.8, 0.96, 1.0, 1.05, 1.2, 2.0, -15.0, -30.0, 12.345]
+
+      1_000.times do |i|
+        lever_count = rng.rand(1..5)
+        levers = Array.new(lever_count) do
+          frag = fragments.sample(random: rng)
+          case_count = rng.rand(0..8)
+          cases = Array.new(case_count) do |idx|
+            [idx - rng.rand(0..2), factors.sample(random: rng)]
+          end
+          fb = factors.sample(random: rng)
+
+          single_actual = described_class.build_relevancy_lever_sql(frag, cases, fb)
+          single_expected = legacy_build_lever_sql.call(frag, cases, fb)
+          expect(single_actual).to eq(single_expected), "single iteration #{i}"
+
+          [frag, cases, fb]
+        end
+
+        minimize_ai = rng.rand(2).zero?
+        expected_parts = levers.map { |f, c, fb| legacy_build_lever_sql.call(f, c, fb) }
+        if minimize_ai
+          expected_parts << "(CASE WHEN articles.ai_disclosure_level = 3 THEN -15.0 " \
+                            "WHEN articles.ai_disclosure_level = 5 THEN -30.0 ELSE 0.0 END)"
+        end
+        expected_score_sql = expected_parts.join(" * \n")
+
+        actual_score_sql = described_class.build_variant_relevancy_score_sql(levers, minimize_ai: minimize_ai)
+        expect(actual_score_sql).to eq(expected_score_sql), "compound iteration #{i}"
+      end
+    end
+  end
 end
