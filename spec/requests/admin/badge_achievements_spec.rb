@@ -19,6 +19,53 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     let(:request) { get admin_badges_path }
   end
 
+  describe "GET /admin/content_manager/badge_achievements" do
+    let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
+    let!(:older_achievement) { create(:badge_achievement, user: user, badge: badge) }
+    let!(:newer_achievement) do
+      create(:badge_achievement, user: other_user, badge: create(:badge, title: "Second Badge"))
+    end
+
+    before do
+      sign_in admin
+    end
+
+    it "orders badge achievements by id descending, trims heavy columns, and avoids exact count queries" do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |_name, _start, _finish, _id, payload|
+        next if payload[:name] == "SCHEMA" || payload[:cached]
+
+        queries << payload[:sql]
+      end
+
+      begin
+        get admin_badge_achievements_path
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(response).to have_http_status(:ok)
+      newer_pos = response.body.index(newer_achievement.user.username)
+      older_pos = response.body.index(older_achievement.user.username)
+      expect(newer_pos).to be < older_pos
+
+      badge_achievement_queries = queries.grep(/FROM "badge_achievements"/i)
+      expect(badge_achievement_queries.size).to eq(1)
+      expect(badge_achievement_queries.first).to include('ORDER BY "badge_achievements"."id" DESC')
+      expect(badge_achievement_queries.first).not_to include("rewarding_context_message")
+      expect(badge_achievement_queries).to all(exclude("COUNT("))
+    end
+
+    it "filters badge achievements by user_id_eq" do
+      get admin_badge_achievements_path, params: { q: { user_id_eq: user.id } }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(user.username)
+      expect(response.body).not_to include(other_user.username)
+    end
+  end
+
   describe "POST /admin/content_manager/badge_achievements/award_badges" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
