@@ -6,10 +6,12 @@ module Api
       id username name summary twitter_username github_username website_url
       location created_at profile_image registered
     ].freeze
+    ATTRIBUTES_FOR_SELECT = (SHOW_ATTRIBUTES_FOR_SERIALIZATION + %i[display_email_on_profile email]).freeze
+    private_constant :ATTRIBUTES_FOR_SELECT
 
+    # Renders a registered user by ID or username with joined profile and setting fields hydrated.
     def show
-      attributes_for_select = SHOW_ATTRIBUTES_FOR_SERIALIZATION + %i[display_email_on_profile email]
-      relation = User.joins(:profile).joins(:setting).select(attributes_for_select)
+      relation = serialized_users_relation
 
       @user = if params[:id] == "by_username"
                 relation.find_by!(username: params[:url])
@@ -23,14 +25,16 @@ module Api
 
     def me; end
 
+    # Finds a user by email and renders the show representation with joined associations hydrated.
     def search
       authorize(User, :search_by_email?)
 
       not_found unless params[:email]
 
-      @user = User.find_by(email: params[:email])
+      @user = serialized_users_relation.find_by(email: params[:email])
 
       if @user
+        hydrate_joined_profile_and_setting(@user)
         render :show
       else
         not_found
@@ -54,6 +58,12 @@ module Api
 
     private
 
+    # Builds the relation joining profile and setting columns needed by user show serialization.
+    def serialized_users_relation
+      User.joins(:profile).joins(:setting).select(ATTRIBUTES_FOR_SELECT)
+    end
+
+    # Populates read-only profile and setting association targets from joined attributes on user.
     def hydrate_joined_profile_and_setting(user)
       profile = Profile.instantiate(
         "user_id" => user.id,
