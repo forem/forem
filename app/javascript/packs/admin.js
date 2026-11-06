@@ -1,3 +1,4 @@
+import '../shared/preact/preactRuntime';
 import { Application } from '@hotwired/stimulus';
 import { definitions } from 'stimulus:../admin/controllers'; // eslint-disable-line import/no-unresolved
 import Rails from '@rails/ujs';

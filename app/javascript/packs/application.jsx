@@ -1,3 +1,4 @@
+import '../shared/preact/preactRuntime';
 import 'focus-visible';
 import {
   initializeMobileMenu,

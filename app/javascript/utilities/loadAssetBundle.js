@@ -55,14 +55,22 @@ export function createAssetBundleLoader({
         reject(err);
       };
 
+      const finishLoad = () => {
+        const readyValue = getReadyValue();
+        if (readyValue !== null && readyValue !== undefined) {
+          resolve(readyValue);
+        } else {
+          cleanupFailure(new Error(errorMessage));
+        }
+      };
+
       script.addEventListener(
         'load',
         () => {
-          const readyValue = getReadyValue();
-          if (readyValue !== null && readyValue !== undefined) {
-            resolve(readyValue);
+          if (typeof window !== 'undefined' && window.__foremPreactLoadingPromise) {
+            window.__foremPreactLoadingPromise.then(finishLoad, cleanupFailure);
           } else {
-            cleanupFailure(new Error(errorMessage));
+            finishLoad();
           }
         },
         { once: true },
