@@ -5,7 +5,6 @@
     <ul class="crayons-card grid gap-2 grid-cols-2 p-4 list-disc">
       <li class="ml-4"><%= community_name %> Comment</li>
       <li class="ml-4"><%= community_name %> Link</li>
-      <li class="ml-4"><%= community_name %> Link</li>
       <li class="ml-4"><%= community_name %> Listing</li>
       <li class="ml-4"><%= community_name %> Organization</li>
       <li class="ml-4"><%= community_name %> Podcast Episode</li>
@@ -60,6 +59,10 @@
     <p>Or embed a specific range of messages by index:</p>
     <pre>{% agent_session ID 0..10 %}</pre>
     <p class="fs-s"><a href="/agent_sessions/new">Upload and curate a session</a> to get the ID.</p>
+
+    <h4>Card</h4>
+    <p>You can create a standalone highlight card to emphasize important content. The content inside the card can use Markdown.</p>
+    <pre>{% card %}<br>This is some **important** content inside a card!<br>{% endcard %}</pre>
 
     <h4>Call To Action (CTA)</h4>
     <p><pre>{% cta link %} description {% endcta %}</pre></p>

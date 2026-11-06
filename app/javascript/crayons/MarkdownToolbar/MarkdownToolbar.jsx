@@ -86,7 +86,7 @@ export const MarkdownToolbar = ({
   const [storedCursorPosition, setStoredCursorPosition] = useState({});
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
   const largeScreen = useMediaQuery(
-    `(min-width: ${BREAKPOINTS.Large}px) and (max-width: ${
+    `(min-width: ${BREAKPOINTS.Medium}px) and (max-width: ${
       BREAKPOINTS.ExtraLarge - 1
     }px)`,
   );
