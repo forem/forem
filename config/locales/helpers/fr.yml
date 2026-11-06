@@ -622,6 +622,15 @@ fr:
         title: Fenêtre de génération d'images IA de l'API (secondes)
         description: Durée de la fenêtre, en secondes, pour la limite de génération
           d'images IA via l'API (par ex. 86400 pour un jour).
+      agent_session_presign:
+        title: Limiter le nombre d'URL de téléchargement de sessions d'agent
+        description: Combien d'URL présignées de téléchargement de sessions d'agent peut-on
+          demander pendant la fenêtre de téléchargement des sessions d'agent ? Mettre à 0
+          pour désactiver le téléchargement des transcriptions brutes.
+      agent_session_presign_window:
+        title: Fenêtre de téléchargement des sessions d'agent (secondes)
+        description: Durée de la fenêtre, en secondes, pour la limite d'URL de téléchargement
+          de sessions d'agent (par ex. 3600 pour une heure).
       user:
         title: Limiter le nombre de modifications qu'une personne peut apporter à
           son compte

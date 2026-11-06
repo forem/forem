@@ -586,6 +586,15 @@ pt:
         title: Janela de geração de imagens de IA da API (segundos)
         description: Duração da janela, em segundos, para o limite de geração de imagens
           de IA pela API (por exemplo, 86400 para um dia).
+      agent_session_presign:
+        title: Limitar o número de URLs de envio de sessões de agente
+        description: Quantas URLs pré-assinadas de envio de sessões de agente alguém pode
+          solicitar dentro da janela de envio de sessões de agente? Defina como 0 para desativar
+          o envio de transcrições brutas.
+      agent_session_presign_window:
+        title: Janela de envio de sessões de agente (segundos)
+        description: Duração da janela, em segundos, para o limite de URLs de envio de sessões
+          de agente (por exemplo, 3600 para uma hora).
       user:
         title: Limit number of changes someone can make to their account
         description: How many changes can someone make to their user account within
