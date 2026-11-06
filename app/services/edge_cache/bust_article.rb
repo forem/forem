@@ -54,6 +54,7 @@ module EdgeCache
 
       if article.published && article.published_at > 1.hour.ago
         cache_bust.call("/latest")
+        EdgeCache::PurgeByKey.call(Article.table_key, fallback_paths: "/api/articles/latest")
       end
 
       return unless at_least_as_hot(Article.published, article)
