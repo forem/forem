@@ -86,6 +86,7 @@ class Comment < ApplicationRecord
   after_rollback :release_hourly_mention_reservation
 
   validate :discussion_not_locked, if: :commentable, on: :create
+  validate :parent_not_deleted, if: :parent_id, on: :create
   validate :published_article, if: :commentable
   validate :user_mentions_in_markdown
   validate :body_has_content
@@ -492,6 +493,12 @@ class Comment < ApplicationRecord
     return unless commentable_type == "Article" && commentable.discussion_lock
 
     errors.add(:commentable_id, I18n.t("models.comment.locked"))
+  end
+
+  def parent_not_deleted
+    return unless Comment.exists?(id: parent_id, deleted: true)
+
+    errors.add(:base, I18n.t("models.comment.parent_deleted"))
   end
 
   def published_article
