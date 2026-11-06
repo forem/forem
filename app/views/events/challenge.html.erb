@@ -49,7 +49,7 @@
             <% now = Time.current %>
             <% if @event.start_time > now %>
               <span class="inline-block shrink-0 px-2 py-0.5 rounded text-white font-bold fs-xs bg-base-40" style="background-color: var(--base-40); vertical-align: middle;"><%= t("views.events.challenge.upcoming") %></span>
-              <span class="fs-s color-base-60"><%= t("views.events.challenge.starts_on", date: l(@event.start_time.to_date, format: :long)) %></span>
+              <span class="fs-s color-base-60"><%= t("views.events.challenge.starts_on", date: l(@event.start_time.in_time_zone(@event.time_zone).to_date, format: :long)) %></span>
             <% elsif @event.end_time >= now %>
               <span class="live-indicator inline-block px-2 py-0.5 rounded text-white font-bold fs-xs bg-error" style="background-color: var(--error); vertical-align: middle;">LIVE</span>
             <% else %>
@@ -179,11 +179,11 @@
         <ul class="space-y-3 fs-s color-base-80">
           <li>
             <div class="font-bold">Contest Start</div>
-            <div><%= @event.start_time.in_time_zone.strftime("%B %d, %Y") %></div>
+            <div><%= @event.start_time.in_time_zone(@event.time_zone).strftime("%B %d, %Y") %></div>
           </li>
           <li>
             <div class="font-bold">Submissions Due</div>
-            <div><%= @event.end_time.in_time_zone.strftime("%B %d, %Y") %></div>
+            <div><%= @event.end_time.in_time_zone(@event.time_zone).strftime("%B %d, %Y") %></div>
           </li>
           <% winners_announced = @event.data&.dig('winners_announced_date') %>
           <% if winners_announced.present? %>
