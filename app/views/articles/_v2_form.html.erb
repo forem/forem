@@ -183,7 +183,7 @@
       });
 
       document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
+        if (e.key === 'Escape' && (!e.target || !e.target.closest || !e.target.closest('#overflow-menu'))) {
           const guideSidecar = document.getElementById('editor-guide-sidecar');
           if (guideSidecar && !guideSidecar.classList.contains('hidden')) {
             guideSidecar.classList.add('hidden');

@@ -74,7 +74,6 @@ export const Toolbar = ({ version, textAreaId }) => {
 Toolbar.propTypes = {
   version: PropTypes.string.isRequired,
   textAreaId: PropTypes.string,
-  hasContextualHelp: PropTypes.bool,
 };
 
 Toolbar.displayName = 'Toolbar';

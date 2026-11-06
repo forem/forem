@@ -1,5 +1,5 @@
-<h4>Universal URL Embeds</h4>
-<p>For most supported platforms, you can simply use the <code>{% embed URL %}</code> syntax. The platforms natively supported are:</p>
+<h4>Incorporações de URL universais</h4>
+<p>Para a maioria das plataformas compatíveis, você pode simplesmente usar a sintaxe <code>{% embed URL %}</code>. As plataformas suportadas nativamente são:</p>
 <ul class="grid gap-2 grid-cols-1 s:grid-cols-2 p-4 list-disc bg-base-inverted border border-base-20 radius-auto">
   <li class="ml-4">Asciinema</li>
   <li class="ml-4">Bandcamp</li>
@@ -39,16 +39,15 @@
   <li class="ml-4">Wikipedia</li>
   <li class="ml-4">YouTube</li>
 </ul>
-<p>Example: <code>{% embed https://www.youtube.com/watch?v=12345 %}</code></p>
+<p>Exemplo: <code>{% embed https://www.youtube.com/watch?v=12345 %}</code></p>
 
-<h4 class="mt-4"><%= community_name %> Specific Embeds</h4>
-<p>You can also use explicit tags to embed internal content across the platform:</p>
+<h4 class="mt-4">Incorporações específicas de <%= community_name %></h4>
+<p>Você também pode usar tags explícitas para incorporar conteúdo interno da plataforma:</p>
 <ul class="grid gap-2 grid-cols-1 p-4 list-disc bg-base-inverted border border-base-20 radius-auto">
-  <li class="ml-4"><strong>Article Link:</strong> <code>{% link URL %}</code> (Renders a card for the article)</li>
-  <li class="ml-4"><strong>User Profile:</strong> <code>{% user username %}</code></li>
-  <li class="ml-4"><strong>Tag Profile:</strong> <code>{% tag tagname %}</code></li>
-  <li class="ml-4"><strong>Comment:</strong> <code>{% comment post_slug %}</code></li>
-  <li class="ml-4"><strong>Podcast Episode:</strong> <code>{% podcast URL %}</code></li>
-  <li class="ml-4"><strong>Organization:</strong> <code>{% organization orgname %}</code></li>
-  <li class="ml-4"><strong><%= community_name %> Dev Post:</strong> <code>{% forem URL %}</code></li>
+  <li class="ml-4"><strong>Link de artigo:</strong> <code>{% link URL %}</code> (renderiza um cartão para o artigo)</li>
+  <li class="ml-4"><strong>Perfil de usuário:</strong> <code>{% user username %}</code></li>
+  <li class="ml-4"><strong>Perfil de tag:</strong> <code>{% tag tagname %}</code></li>
+  <li class="ml-4"><strong>Comentário:</strong> <code>{% comment comment_id_code %}</code> (ou use a URL de um comentário)</li>
+  <li class="ml-4"><strong>Episódio de podcast:</strong> <code>{% podcast URL %}</code></li>
+  <li class="ml-4"><strong>Organização:</strong> <code>{% organization orgname %}</code></li>
 </ul>

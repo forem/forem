@@ -61,73 +61,73 @@
     <p class="fs-s"><a href="/agent_sessions/new">Téléchargez et curatez une session</a> pour obtenir l'ID.</p>
 
     <h4>Card</h4>
-    <p>You can create a standalone highlight card to emphasize important content. The content inside the card can use Markdown.</p>
+    <p>Vous pouvez créer une carte de mise en avant autonome pour souligner un contenu important. Le contenu de la carte peut utiliser du Markdown.</p>
     <pre>{% card %}<br>This is some **important** content inside a card!<br>{% endcard %}</pre>
 
     <h4>Call To Action (CTA)</h4>
     <p><pre>{% cta link %} description {% endcta %}</pre></p>
-    <p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>
+    <p>Fournissez un <em>lien</em> vers lequel l'utilisateur sera redirigé. La <em>description</em> contiendra le libellé de l'appel à l'action.</p>
 
     <h4>Details</h4>
-    <p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
+    <p>Vous pouvez intégrer un élément HTML <code>details</code> en utilisant details, spoiler ou collapsible. Le <em>summary</em> sera le titre affiché. Le <em>content</em> sera le texte masqué derrière le menu déroulant.</p>
     <p><code>{% details summary %} content {% enddetails %}</code></p>
     <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
     <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
 
     <h4>KaTex</h4>
-    <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
+    <p>Placez votre expression mathématique dans un bloc Liquid KaTeX, comme suit :</p>
     <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
-    <p>To render KaTeX inline add the "inline" option:</p>
+    <p>Pour afficher KaTeX en ligne, ajoutez l'option « inline » :</p>
     <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
 
     <h4>Feed</h4>
-    <p>Embed an article feed by organization, tag, or multiple tags:</p>
+    <p>Intégrez un flux d'articles par organisation, par tag ou par plusieurs tags :</p>
     <pre>{% feed org=org-slug %}
 {% feed tag=ruby %}
 {% feed tags=ruby,javascript limit=10 sort=reactions %}</pre>
-    <p class="fs-s">Options: <code>limit</code> (1-30), <code>sort</code> (recent/reactions/comments/score), <code>min_reactions</code>, <code>min_comments</code>, <code>since</code> (e.g. 30d or 2025-01-01).</p>
+    <p class="fs-s">Options : <code>limit</code> (1-30), <code>sort</code> (recent/reactions/comments/score), <code>min_reactions</code>, <code>min_comments</code>, <code>since</code> (ex. 30d ou 2025-01-01).</p>
 
     <h4>Layout (Row &amp; Col)</h4>
-    <p>Create responsive grid layouts:</p>
+    <p>Créez des mises en page en grille réactives :</p>
     <pre>{% row %}
   {% col background=default %}Column 1{% endcol %}
   {% col span=2 background=subtle %}Wide column{% endcol %}
 {% endrow %}</pre>
-    <p class="fs-s"><code>span</code> sets column width (1-4, default 1). <code>background</code> accepts <code>default</code> or <code>subtle</code>.</p>
+    <p class="fs-s"><code>span</code> définit la largeur de la colonne (1-4, par défaut 1). <code>background</code> accepte <code>default</code> ou <code>subtle</code>.</p>
 
     <h4>Features</h4>
-    <p>Display a grid of feature cards:</p>
+    <p>Affichez une grille de cartes de fonctionnalités :</p>
     <pre>{% features %}
   {% feature title="Fast" icon="lightning" %}Optimized for speed.{% endfeature %}
   {% feature title="Secure" icon="🔒" %}Built with security in mind.{% endfeature %}
   {% feature title="Simple" %}No icon needed.{% endfeature %}
 {% endfeatures %}</pre>
-    <p class="fs-s"><code>title</code> is required. <code>icon</code> is optional and accepts either an emoji or one of the supported icon names below.</p>
-    <p class="fs-s">Supported icons: <%= safe_join(FeatureTag::ICONS.map { |icon_name| content_tag(:code, icon_name) }, ", ") %>.</p>
+    <p class="fs-s"><code>title</code> est requis. <code>icon</code> est facultatif et accepte soit un emoji, soit l'un des noms d'icônes pris en charge ci-dessous.</p>
+    <p class="fs-s">Icônes prises en charge : <%= safe_join(FeatureTag::ICONS.map { |icon_name| content_tag(:code, icon_name) }, ", ") %>.</p>
 
     <h4>Quote</h4>
-    <p>Display a testimonial or quote:</p>
+    <p>Affichez un témoignage ou une citation :</p>
     <pre>{% quote author="Jane Doe" role="CTO" rating=5 %}Great product!{% endquote %}</pre>
-    <p class="fs-s">Options: <code>author</code> (required), <code>role</code>, <code>image</code>, <code>rating</code> (1-5), <code>source</code>, <code>link</code>.</p>
-    <p>Group several testimonials into responsive columns:</p>
+    <p class="fs-s">Options : <code>author</code> (requis), <code>role</code>, <code>image</code>, <code>rating</code> (1-5), <code>source</code>, <code>link</code>.</p>
+    <p>Regroupez plusieurs témoignages en colonnes réactives :</p>
     <pre>{% quotes %}
   {% quote author="Jane Doe" rating=5 %}Great product!{% endquote %}
   {% quote author="John Smith" %}Easy to recommend.{% endquote %}
 {% endquotes %}</pre>
 
     <h4>Offer</h4>
-    <p>Create a call-to-action box with a button:</p>
+    <p>Créez un encadré d'appel à l'action avec un bouton :</p>
     <pre>{% offer link="https://example.com" button="Sign Up" %}Join us today!{% endoffer %}</pre>
-    <p class="fs-s"><code>link</code> is optional (button is hidden without it). <code>button</code> defaults to "Learn More".</p>
+    <p class="fs-s"><code>link</code> est facultatif (le bouton est masqué sans lui). <code>button</code> vaut « Learn More » par défaut.</p>
 
     <h4>Slides</h4>
-    <p>Create an image/video carousel or gallery:</p>
+    <p>Créez un carrousel ou une galerie d'images/vidéos :</p>
     <pre>{% slides mode="carousel" %}
   {% slide image="https://example.com/photo.jpg" alt="Description" %}
   {% slide video="https://youtube.com/watch?v=abc123" %}
 {% endslides %}</pre>
-    <p class="fs-s">Each slide needs at least one of: <code>image</code>, <code>video</code>, or <code>link</code>. Optional: <code>title</code>, <code>alt</code>.</p>
-    <p class="fs-s"><code>mode="carousel"</code> presents cards in a swipeable, scroll-snapping strip with optional desktop controls.</p>
+    <p class="fs-s">Chaque diapositive nécessite au moins l'un des éléments suivants : <code>image</code>, <code>video</code> ou <code>link</code>. Facultatif : <code>title</code>, <code>alt</code>.</p>
+    <p class="fs-s"><code>mode="carousel"</code> présente les cartes dans un bandeau défilant avec commandes sur ordinateur.</p>
 
     <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
       <h4><%= community_name %> User Subscriptions</h4>

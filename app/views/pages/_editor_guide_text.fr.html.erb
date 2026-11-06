@@ -11,7 +11,7 @@
 </style>
 
 <main class="<%= local_assigns[:is_sidecar] ? '' : 'crayons-layout crayons-layout--limited-l' %>" id="editor-help-guide">
-  <article id="main-content" class="text-styles <%= local_assigns[:is_sidecar] ? 'text-styles--secondary p-4' : 'crayons-card text-padding' %>">
+  <article<%= ' id="main-content"' unless local_assigns[:is_sidecar] %> class="text-styles <%= local_assigns[:is_sidecar] ? 'text-styles--secondary p-4' : 'crayons-card text-padding' %>">
     <% unless local_assigns[:is_sidecar] %>
       <h1 class="fs-4xl fw-heavy mb-6">Editor Guide 🤓</h1>
     <% end %>
