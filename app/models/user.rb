@@ -793,13 +793,11 @@ class User < ApplicationRecord
   end
 
   def admin_organizations
-    org_ids = organization_memberships.admin.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.admin)
   end
 
   def member_organizations
-    org_ids = organization_memberships.member.pluck(:organization_id)
-    organizations.where(id: org_ids)
+    organizations.merge(OrganizationMembership.member)
   end
 
   def org_member?(organization)

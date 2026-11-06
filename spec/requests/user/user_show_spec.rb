@@ -188,20 +188,40 @@ RSpec.describe "UserShow" do
   end
 
   describe "profile query optimizations" do
-    it "queries member_organizations only once when rendering the sidebar" do
+    it "queries member_organizations only once when rendering the sidebar", :aggregate_failures do
       org = create(:organization)
+      admin_org = create(:organization)
+      guest_org = create(:organization)
+      pending_org = create(:organization)
       create(:organization_membership, user: user, organization: org, type_of_user: "member")
+      create(:organization_membership, user: user, organization: admin_org, type_of_user: "admin")
+      create(:organization_membership, user: user, organization: guest_org, type_of_user: "guest")
+      create(:organization_membership, user: user, organization: pending_org, type_of_user: "pending")
       queries = []
       callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
 
+      member_relation = nil
+      admin_relation = nil
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        member_relation = user.member_organizations
+        admin_relation = user.admin_organizations
+      end
+      expect(queries).to be_empty
+      expect(member_relation).to contain_exactly(org, admin_org)
+      expect(admin_relation).to contain_exactly(admin_org)
+
+      queries.clear
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
         get user.path
       end
 
       expect(response).to have_http_status(:ok)
-      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(1)
+      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(0)
       expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
-      expect(Nokogiri::HTML(response.body).at_css("a[href='/#{org.slug}'] h4")&.text).to eq(org.name)
+      doc = Nokogiri::HTML(response.body)
+      expect(doc.css("a[href='/#{org.slug}'] h4, a[href='/#{admin_org.slug}'] h4").map(&:text))
+        .to contain_exactly(org.name, admin_org.name)
+      expect(doc.css("a[href='/#{guest_org.slug}'], a[href='/#{pending_org.slug}']")).to be_empty
     end
   end
 end
