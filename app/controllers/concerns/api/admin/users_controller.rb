@@ -23,19 +23,20 @@ module Api
         users = filtered_users
         page = positive_integer(params[:page], default: 1)
         per_page = [positive_integer(params[:per_page], default: DEFAULT_PER_PAGE), MAX_PER_PAGE].min
+        offset = (page - 1) * per_page
 
-        total = users.count
-        @users = users.includes(:identities, :profile, :roles)
+        @users = users.preload(:identities, :profile, :roles)
           .order(created_at: :desc)
-          .offset((page - 1) * per_page)
+          .offset(offset)
           .limit(per_page)
+          .load
         @page = page
         @per_page = per_page
-        @total = total
+        @total = offset.zero? && @users.size < per_page ? @users.size : users.count
       end
 
       def show
-        @user_record = User.includes(:identities, :profile, :roles).find(params[:id])
+        @user_record = User.preload(:identities, :profile, :roles).find(params[:id])
       end
 
       def update
@@ -85,7 +86,7 @@ module Api
       end
 
       def update_status
-        @user_record = User.find(params[:id])
+        @user_record = User.preload(:roles).find(params[:id])
         status = params.require(:status)
         unless ALLOWED_STATUSES.include?(status)
           raise Api::Admin::ApiError.new(:invalid_status, I18n.t("admin_api.errors.invalid_status"), status: 422)
@@ -112,7 +113,7 @@ module Api
       # local notification settings, which DEV's own senders key off. Writes
       # through the model so callbacks other than CDP event emission still run.
       def update_notification_settings
-        @user_record = User.find(params[:id])
+        @user_record = User.preload(:notification_setting).find(params[:id])
         # Handle the missing wrapper here rather than via params.require, so
         # the caller gets the admin API error_code instead of a generic
         # ParameterMissing 422.
@@ -196,11 +197,12 @@ module Api
         scope = scope.where(email: params[:email]) if params[:email].present?
         scope = scope.where(username: params[:username]) if params[:username].present?
         if params[:identity_provider].present? && params[:identity_uid].present?
-          scope = scope.joins(:identities)
-            .where(identities: {
-                     provider: params[:identity_provider],
-                     uid: params[:identity_uid]
-                   })
+          scope = scope.where(
+            id: Identity.where(
+              provider: params[:identity_provider],
+              uid: params[:identity_uid],
+            ).select(:user_id),
+          )
         end
         scope
       end

@@ -69,7 +69,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_one :notification_setting, class_name: "Users::NotificationSetting", dependent: :delete
+  has_one :notification_setting, class_name: "Users::NotificationSetting",
+                                 dependent: :delete, inverse_of: :user
   has_one :onboarding_checklist, dependent: :delete
   has_one :setting, class_name: "Users::Setting", dependent: :delete
 
@@ -435,6 +436,7 @@ class User < ApplicationRecord
 
     if new_record?
       self.score = calculated_score
+      sync_base_email_eligible!
     else
       update_column(:score, calculated_score)
       sync_base_email_eligible!
@@ -964,20 +966,24 @@ class User < ApplicationRecord
     track_engagement!(last_presence_at)
   end
 
-  def sync_base_email_eligible!
+  def sync_base_email_eligible!(touch: false)
     # User is eligible if they are registered, have an email, are not suspended,
     # not marked as spam, have email_newsletter set to true, and their score is not below zero.
     is_eligible = registered? &&
       email.present? &&
       score.to_i >= 0 &&
-      notification_setting&.email_newsletter? &&
-      !has_role?(:suspended) &&
-      !has_role?(:spam)
+      notification_setting&.email_newsletter? == true &&
+      !spam_or_suspended?
 
-    return unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+    unless has_attribute?(:base_email_eligible) && self[:base_email_eligible] != is_eligible
+      update_columns(updated_at: Time.current) if touch && !new_record?
+      return
+    end
 
     if new_record?
       self.base_email_eligible = is_eligible
+    elsif touch
+      update_columns(base_email_eligible: is_eligible, updated_at: Time.current)
     else
       update_column(:base_email_eligible, is_eligible)
     end
@@ -1313,17 +1319,15 @@ class User < ApplicationRecord
     trusted?
 
     # Check for spam patterns when user gets spam or suspended role
-    if role.name.in?(%w[spam suspended])
-      # The domain scan can hit the statement timeout, so keep it out of this
-      # callback: an error here rolls back the role grant (and aborts a banish).
-      Spam::DomainDetectorWorker.perform_async(id)
-      calculate_score
-      # Article scores include a spam penalty that also governs Algolia indexability,
-      # so rescore on every grant/removal regardless of which code path changed the role.
-      # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
-      articles.published.find_each(&:async_score_calc)
-    end
+    return unless role.name.in?(%w[spam suspended])
 
-    sync_base_email_eligible! if role.name == "suspended" || role.name == "spam"
+    # The domain scan can hit the statement timeout, so keep it out of this
+    # callback: an error here rolls back the role grant (and aborts a banish).
+    Spam::DomainDetectorWorker.perform_async(id)
+    calculate_score
+    # Article scores include a spam penalty that also governs Algolia indexability,
+    # so rescore on every grant/removal regardless of which code path changed the role.
+    # ScoreCalcWorker's :until_executing lock coalesces duplicate enqueues.
+    articles.published.find_each(&:async_score_calc)
   end
 end
