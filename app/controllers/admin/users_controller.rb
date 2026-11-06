@@ -76,9 +76,8 @@ module Admin
       set_collections
       set_follows
       set_blocks
-      @articles = @user.articles.order(created_at: :desc)
-      # Remove the .includes(:commentable)
-      @comments = @user.comments.order(created_at: :desc)
+      set_articles
+      set_comments
       set_user_details
     end
 
@@ -727,13 +726,15 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def set_user_details
-      @organizations = @user.organizations.order(:name)
-      @notes = @user.notes.includes(:author).order(created_at: :desc).limit(10)
-      @organization_memberships = @user.organization_memberships
-        .joins(:organization)
-        .order("organizations.name" => :asc)
-        .includes(:organization)
-      @last_email_verification_date = EmailAuthorization.last_verification_date(@user)
+      if @current_tab == "overview"
+        @organizations = @user.organizations.order(:name)
+        @organization_memberships = @user.organization_memberships
+          .joins(:organization)
+          .order("organizations.name" => :asc)
+          .includes(:organization)
+      elsif @current_tab == "notes"
+        @notes = @user.notes.includes(:author).order(created_at: :desc).limit(10)
+      end
 
       render :show
     end
@@ -753,6 +754,8 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def set_feedback_messages
+      return if action_name == "show" && @current_tab != "reports"
+
       @related_reports = FeedbackMessage.where(id: @user.reporter_feedback_messages.ids)
         .or(FeedbackMessage.where(id: @user.affected_feedback_messages.ids))
         .or(FeedbackMessage.where(id: @user.offender_feedback_messages.ids))
@@ -760,13 +763,17 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def set_related_reactions
+      return if action_name == "show" && @current_tab != "flags"
+
       user_article_ids = @user.articles.ids
       user_comment_ids = @user.comments.ids
       @related_vomit_reactions =
-        Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
-          .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
+        Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids)
+          .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids))
+          .where("reactions.category || '' = ?", "vomit")
           .includes(:user, :reactable)
-          .order(created_at: :desc).limit(15)
+          .order(Arel.sql("(reactions.created_at + interval '0 seconds') DESC"))
+          .limit(15)
 
       @user_vomit_reactions =
         Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit")
@@ -845,8 +852,26 @@ new_email = user_params[:email].to_s.strip.presence
     end
 
     def set_banishable_user
-      @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
-        @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+      @banishable_user = current_user.super_admin? || current_user.support_admin? ||
+        (@user.created_at < 100.days.ago && @user.comments.where("created_at < ?", 100.days.ago).empty?)
+    end
+
+    def set_articles
+      return unless @current_tab == "articles"
+
+      @articles = @user.articles
+        .select(:id, :title, :path, :published_at, :created_at)
+        .order(created_at: :desc)
+        .limit(100)
+    end
+
+    def set_comments
+      return unless @current_tab == "comments"
+
+      @comments = @user.comments
+        .select(:id, :user_id, :body_markdown, :created_at)
+        .order(created_at: :desc)
+        .limit(100)
     end
 
     def set_audit_logs
