@@ -56,7 +56,10 @@ module EdgeCache
         cache_bust.call("/latest")
       end
 
-      cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
+      return unless at_least_as_hot(Article.published, article)
+        .order(hotness_score: :desc).limit(4).ids.include?(article.id)
+
+      cache_bust.call("/")
     end
 
     private_class_method :bust_home_pages
@@ -89,7 +92,7 @@ module EdgeCache
         end
 
         next unless rand(2) == 1 &&
-          Article.published.cached_tagged_with(tag)
+          at_least_as_hot(Article.published.cached_tagged_with(tag), article)
             .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
         bust_once.call("/t/#{tag}")
@@ -108,6 +111,15 @@ module EdgeCache
     end
 
     private_class_method :at_least_as_high_scoring
+
+    def self.at_least_as_hot(scope, article)
+      scope.where(
+        "articles.hotness_score >= (SELECT ranked.hotness_score FROM articles AS ranked WHERE ranked.id = ?)",
+        article.id,
+      )
+    end
+
+    private_class_method :at_least_as_hot
 
     def self.bust_user_profile_pages(article)
       return unless article.user
