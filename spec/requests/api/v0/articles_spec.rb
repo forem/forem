@@ -1371,6 +1371,17 @@ RSpec.describe "Api::V0::Articles" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "returns 422 for an unrecognized ai_disclosure_level when enable_ai_disclosure is true" do
+        allow(Settings::General).to receive(:enable_ai_disclosure).and_return(true)
+        expect do
+          put_article(ai_disclosure_level: "bogus")
+          article.reload
+        end.not_to change(article, :ai_disclosure_level)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"])
+          .to eq("ai_disclosure_level must be one of: not_disclosed, no_ai, some_ai, fully_autonomous")
+      end
+
       it "fails if params are not a Hash" do
         # Not using the nifty put_article helper method because it expects a Hash
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }

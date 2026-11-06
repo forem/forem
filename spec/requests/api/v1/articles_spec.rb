@@ -2349,6 +2349,29 @@ RSpec.describe "Api::V1::Articles" do
         expect(article.reload).to be_no_ai
       end
 
+      it "preserves an existing disclosure when ai_disclosure_level is blank on update" do
+        article = create(:article, user: user, ai_disclosure_level: :some_ai)
+
+        put api_article_path(article.id),
+            params: { article: { title: "An edited title", ai_disclosure_level: "" } }.to_json,
+            headers: auth_headers
+
+        expect(response).to have_http_status(:ok)
+        expect(article.reload).to be_some_ai
+        expect(response.parsed_body["ai_disclosure_level"]).to eq("some_ai")
+        expect(response.parsed_body).not_to have_key("warnings")
+      end
+
+      it "returns 404 before validating ai_disclosure_level when the article is not editable" do
+        other_article = create(:article, user: create(:user), ai_disclosure_level: :no_ai)
+
+        put api_article_path(other_article.id), params: { article: { ai_disclosure_level: "bogus" } }.to_json,
+                                                headers: auth_headers
+
+        expect(response).to have_http_status(:not_found)
+        expect(other_article.reload).to be_no_ai
+      end
+
       it "omits warnings when the article is already disclosed" do
         article = create(:article, user: user, ai_disclosure_level: :some_ai)
 

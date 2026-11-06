@@ -236,9 +236,11 @@ module Api
     # edit the post gets a 404, not a 401, as before: this keeps the existing
     # response and does not reveal that an unpublished draft exists.
     def find_updatable_article
+      return @article if defined?(@article) && @article
+
       article = Article.includes(:user).find(params[:id])
       authorize article, :update?
-      article
+      @article = article
     rescue Pundit::NotAuthorizedError => e
       raise if e.is_a?(ApplicationPolicy::UserSuspendedError)
 
@@ -322,7 +324,11 @@ module Api
       return unless Settings::General.enable_ai_disclosure
 
       value = params[:article][:ai_disclosure_level]
-      return if value.nil? || value.to_s.strip.empty? || Article.normalize_ai_disclosure_level(value)
+      if value.nil? || value.to_s.strip.empty?
+        params[:article].delete(:ai_disclosure_level)
+        return
+      end
+      return if Article.normalize_ai_disclosure_level(value)
 
       error_unprocessable_entity(
         "ai_disclosure_level must be one of: #{Article.ai_disclosure_levels.keys.join(', ')}",
