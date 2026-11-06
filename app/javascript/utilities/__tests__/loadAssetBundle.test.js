@@ -8,6 +8,7 @@ describe('createAssetBundleLoader', () => {
       '<meta name="test-bundle-script" content="/assets/testBundle-123.js">';
     document.body.innerHTML = '';
     delete window.__testBundleApi;
+    delete window.__foremPreactLoadingPromise;
 
     loader = createAssetBundleLoader({
       metaName: 'test-bundle-script',
@@ -78,5 +79,27 @@ describe('createAssetBundleLoader', () => {
       'testBundle loaded without registering __testBundleApi',
     );
     expect(document.querySelector('script[data-test-bundle="true"]')).toBeNull();
+  });
+
+  it('waits for window.__foremPreactLoadingPromise when a mixed-cache Preact runtime fallback is in flight', async () => {
+    const attempt = loader.load();
+    const script = document.querySelector('script[data-test-bundle="true"]');
+
+    let resolveRuntime;
+    window.__foremPreactLoadingPromise = new Promise((resolve) => {
+      resolveRuntime = resolve;
+    });
+
+    const api = { run: jest.fn() };
+    // Simulate a secondary Preact pack queuing its initialization onto __foremPreactLoadingPromise
+    // before the script load event fires.
+    window.__foremPreactLoadingPromise.then(() => {
+      window.__testBundleApi = api;
+    });
+
+    script.dispatchEvent(new Event('load'));
+    resolveRuntime({});
+
+    await expect(attempt).resolves.toBe(api);
   });
 });

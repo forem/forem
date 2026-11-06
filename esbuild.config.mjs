@@ -4,6 +4,7 @@ import * as esbuild from 'esbuild'
 import glob from 'glob'
 import svgr from 'esbuild-plugin-svgr'
 import { stimulusPlugin } from 'esbuild-plugin-stimulus'
+import { ensurePreactRuntime } from './app/javascript/shared/preact/ensurePreactRuntime.js'
 
 const CRAYONS_DIRECT_EXPORT_MAP = {
   Button: 'app/javascript/crayons/Button/Button.jsx',
@@ -175,6 +176,113 @@ function treeShakePlugin() {
   }
 }
 
+const SHARED_PREACT_RUNTIME_PROVIDERS = new Set([
+  'application.js',
+  'admin.js',
+  'preactRuntime.js',
+])
+
+const SHARED_PREACT_SHIMS = {
+  preact: `
+    const p = window.__foremPreact.preact;
+    export const { Component, Fragment, cloneElement, createContext, createElement, createRef, h, hydrate, isValidElement, options, render, toChildArray } = p;
+    export default p;
+  `,
+  'preact/hooks': `
+    const h = window.__foremPreact.hooks;
+    export const { useCallback, useContext, useDebugValue, useEffect, useErrorBoundary, useId, useImperativeHandle, useLayoutEffect, useMemo, useReducer, useRef, useState } = h;
+    export default h;
+  `,
+  'preact/compat': `
+    const c = window.__foremPreact.compat;
+    export const { Children, Component, Fragment, PureComponent, StrictMode, Suspense, SuspenseList, __SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED, cloneElement, createContext, createElement, createFactory, createPortal, createRef, findDOMNode, flushSync, forwardRef, hydrate, isElement, isFragment, isMemo, isValidElement, lazy, memo, render, startTransition, unmountComponentAtNode, unstable_batchedUpdates, useCallback, useContext, useDebugValue, useDeferredValue, useEffect, useErrorBoundary, useId, useImperativeHandle, useInsertionEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, useTransition, version } = c;
+    export default c.default || c;
+  `,
+}
+
+function sharedPreactRuntimePlugin() {
+  const [wrapperPrefix, wrapperSuffix] = esbuild
+    .transformSync(`(${ensurePreactRuntime.toString()})(__FOREM_PACK_BODY__)`, {
+      minify: true,
+      target: ['es2019'],
+    })
+    .code.trim()
+    .split('__FOREM_PACK_BODY__')
+
+  const buildsRoot = path.resolve('app/assets/builds')
+
+  return {
+    name: 'forem-shared-preact-runtime',
+    setup(build) {
+      build.onResolve(
+        { filter: /^(preact(\/hooks|\/compat)?|react(-dom)?)$/ },
+        (args) => {
+          const importer = args.importer.replace(/\\/g, '/')
+          if (
+            importer.endsWith(
+              '/app/javascript/shared/preact/preactRuntime.js',
+            ) ||
+            importer.includes('/node_modules/preact/')
+          ) {
+            return null
+          }
+
+          const target =
+            args.path === 'react' || args.path === 'react-dom'
+              ? 'preact/compat'
+              : args.path
+
+          return {
+            path: target,
+            namespace: 'forem-shared-preact',
+            sideEffects: false,
+          }
+        },
+      )
+
+      build.onLoad(
+        { filter: /.*/, namespace: 'forem-shared-preact' },
+        (args) => ({
+          contents: SHARED_PREACT_SHIMS[args.path],
+          loader: 'js',
+        }),
+      )
+
+      build.onEnd(async (result) => {
+        if (result.errors.length > 0) {
+          return
+        }
+
+        const outputFiles = glob.sync('app/assets/builds/**/*.js')
+        await Promise.all(
+          outputFiles.map(async (filePath) => {
+            const relativeName = path
+              .relative(buildsRoot, path.resolve(filePath))
+              .replace(/\\/g, '/')
+            if (SHARED_PREACT_RUNTIME_PROVIDERS.has(relativeName)) {
+              return
+            }
+
+            const code = await fs.promises.readFile(filePath, 'utf8')
+            if (
+              !code.includes('window.__foremPreact.') ||
+              code.startsWith(wrapperPrefix)
+            ) {
+              return
+            }
+
+            await fs.promises.writeFile(
+              filePath,
+              `${wrapperPrefix}()=>{${code.trim()}}${wrapperSuffix}\n`,
+              'utf8',
+            )
+          }),
+        )
+      })
+    },
+  }
+}
+
 let ctx = {
   loader: {
     '.js': 'jsx',
@@ -199,6 +307,7 @@ let ctx = {
     'react-dom': 'preact/compat',
   },
   plugins: [
+    sharedPreactRuntimePlugin(),
     treeShakePlugin(),
     svgr({jsxRuntime: 'classic-preact' }),
     stimulusPlugin(),

@@ -137,6 +137,15 @@ RSpec.describe "Favorites" do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).not_to include("favoriteControls")
+      expect(response.body).to include('name="preact-runtime-script"')
+      expect(response.body).to include("data-preact-runtime-src=")
+    end
+
+    it "includes data-preact-runtime-src on #page-content during internal InstantClick navigation (?i=i)" do
+      get "#{article.path}?i=i"
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("data-preact-runtime-src=")
     end
 
     it "renders no mount node when the feature flag is disabled" do
