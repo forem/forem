@@ -2,8 +2,22 @@ module Admin
   class FeedConfigsController < Admin::ApplicationController
     layout "admin"
 
+    PER_PAGE = 25
     VALID_STATUS_MODES = %w[active archived all].freeze
+    BEST_CONFIG_TIER_SQL =
+      "CASE " \
+      "WHEN feed_impressions_count >= #{FeedConfig::LOW_IMPRESSION_COUNT.to_i} THEN 0 " \
+      "WHEN feed_impressions_count > 0 THEN 1 " \
+      "ELSE 2 " \
+      "END".freeze
+    BEST_CONFIG_ORDER_SQL = Arel.sql(
+      "#{BEST_CONFIG_TIER_SQL} ASC, feed_success_score DESC NULLS LAST, id ASC",
+    ).freeze
+    BEST_BY_BUCKET_ORDER_SQL = Arel.sql(
+      "targeting_bucket ASC, #{BEST_CONFIG_TIER_SQL} ASC, feed_success_score DESC NULLS LAST, id ASC",
+    ).freeze
 
+    # Renders the feed configurations admin dashboard with bucket stats, pool badges, and paginated records.
     def index
       @selected_bucket = params[:filter] if FeedConfig::TARGETING_BUCKETS.include?(params[:filter])
       @status_mode = VALID_STATUS_MODES.include?(params[:mode]) ? params[:mode] : "active"
@@ -12,15 +26,13 @@ module Admin
       @total_active_count = @bucket_stats.values.sum { |s| s[:active_count] }
       @total_archived_count = @bucket_stats.values.sum { |s| s[:archived_count] }
 
-      active_bucket_scope = if @selected_bucket
-                              FeedConfig.active.for_targeting_bucket(@selected_bucket)
-                            else
-                              FeedConfig.active
-                            end
-      @best_feed_config = best_feed_config(active_bucket_scope)
+      @best_feed_config = if @selected_bucket
+                            @bucket_stats.dig(@selected_bucket, :best_config)
+                          else
+                            select_best_config(@bucket_stats.values.filter_map { |s| s[:best_config] })
+                          end
       @bucket_best_ids = @bucket_stats.values.filter_map { |s| s[:best_config]&.id }
-      @top_pool_ids = compute_pool_ids(:top, @selected_bucket)
-      @new_pool_ids = compute_pool_ids(:new, @selected_bucket)
+      @top_pool_ids, @new_pool_ids = compute_active_pool_ids(@selected_bucket)
 
       base_scope = status_filtered_scope
       base_scope = base_scope.for_targeting_bucket(@selected_bucket) if @selected_bucket
@@ -34,17 +46,27 @@ module Admin
                        { feed_success_score: :desc, created_at: :desc }
                      end
 
-      @feed_configs = base_scope.order(order_clause).page(params[:page]).per(25)
+      @total_pages = (filtered_total_count.to_f / PER_PAGE).ceil
+      @feed_configs = base_scope.order(order_clause).page(params[:page]).per(PER_PAGE)
     end
 
+    # Displays a single feed configuration and its pool membership status within its targeting bucket.
     def show
       @feed_config = FeedConfig.find(params[:id])
+      if @feed_config.archived?
+        @in_top_pool = false
+        @in_new_pool = false
+        return
+      end
+
       bucket_scope = FeedConfig.active.for_targeting_bucket(@feed_config.targeting_bucket)
       @bucket_best_config = best_feed_config(bucket_scope)
-      @in_top_pool = !@feed_config.archived? && top_pool_ids(bucket_scope).include?(@feed_config.id)
-      @in_new_pool = !@feed_config.archived? && new_pool_ids(bucket_scope).include?(@feed_config.id)
+      top_ids, new_ids = compute_active_pool_ids(@feed_config.targeting_bucket)
+      @in_top_pool = top_ids.include?(@feed_config.id)
+      @in_new_pool = new_ids.include?(@feed_config.id)
     end
 
+    # Initializes a new feed configuration pre-populated from a cloned or best-performing config.
     def new
       requested_bucket = if FeedConfig::NON_ALL_TARGETING_BUCKETS.include?(params[:filter])
                            params[:filter]
@@ -57,6 +79,7 @@ module Admin
                       else
                         best_feed_config
                       end
+      @has_source_config = source_config.present?
 
       @feed_config = if source_config
                        source_config.dup.tap do |config|
@@ -112,59 +135,88 @@ module Admin
       end
     end
 
+    # Builds active/archived counts and best-performing config per targeting bucket in two queries.
     def build_bucket_stats
-      active_counts = FeedConfig.active.group(:targeting_bucket).count
-      archived_counts = FeedConfig.archived.group(:targeting_bucket).count
+      counts = FeedConfig.group(:archived, :targeting_bucket).count
+      best_by_bucket = FeedConfig.active
+        .select("DISTINCT ON (targeting_bucket) feed_configs.*")
+        .order(BEST_BY_BUCKET_ORDER_SQL)
+        .index_by(&:targeting_bucket)
 
       FeedConfig::TARGETING_BUCKETS.index_with do |bucket|
-        scope = FeedConfig.active.for_targeting_bucket(bucket)
         {
-          active_count: active_counts[bucket] || 0,
-          archived_count: archived_counts[bucket] || 0,
-          best_config: best_feed_config(scope)
+          active_count: counts[[false, bucket]] || 0,
+          archived_count: counts[[true, bucket]] || 0,
+          best_config: best_by_bucket[bucket]
         }
       end
     end
 
-    def compute_pool_ids(pool_type, selected_bucket)
-      buckets = selected_bucket ? [selected_bucket] : FeedConfig::TARGETING_BUCKETS
-      buckets.flat_map do |bucket|
-        scope = FeedConfig.active.for_targeting_bucket(bucket)
-        pool_type == :top ? top_pool_ids(scope) : new_pool_ids(scope)
+    # Returns the already-computed record count for the active bucket and status filter.
+    def filtered_total_count
+      bucket_stat = @bucket_stats[@selected_bucket]
+      active_count = @selected_bucket ? bucket_stat&.dig(:active_count).to_i : @total_active_count
+      archived_count = @selected_bucket ? bucket_stat&.dig(:archived_count).to_i : @total_archived_count
+      case @status_mode
+      when "archived" then archived_count
+      when "all" then active_count + archived_count
+      else active_count
       end
     end
 
-    def top_pool_ids(scope = FeedConfig.active)
-      ids = scope
-        .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
-        .order(feed_success_score: :desc)
-        .limit(FeedConfig::TOP_POOL_LIMIT)
-        .ids
-      return ids if ids.any?
+    # Computes top-scoring and newest low-impression pool IDs across active buckets in a single window query.
+    def compute_active_pool_ids(selected_bucket = nil)
+      return [[], []] if @status_mode == "archived"
 
-      scope
-        .where("feed_impressions_count > 0")
-        .order(feed_success_score: :desc)
-        .limit(FeedConfig::TOP_POOL_LIMIT)
-        .ids
+      limit = FeedConfig::TOP_POOL_LIMIT.to_i
+      low_impressions = FeedConfig::LOW_IMPRESSION_COUNT.to_i
+      scope = selected_bucket ? FeedConfig.active.for_targeting_bucket(selected_bucket) : FeedConfig.active
+      tier_order = "PARTITION BY targeting_bucket " \
+                   "ORDER BY #{BEST_CONFIG_TIER_SQL} ASC, feed_success_score DESC NULLS LAST, id ASC"
+      new_order = "PARTITION BY targeting_bucket, (feed_impressions_count < #{low_impressions}) " \
+                  "ORDER BY created_at DESC, id DESC"
+
+      ranked_scope = scope.select(
+        :id,
+        :feed_impressions_count,
+        "#{BEST_CONFIG_TIER_SQL} AS tier",
+        "FIRST_VALUE(#{BEST_CONFIG_TIER_SQL}) OVER (#{tier_order}) AS min_tier",
+        "ROW_NUMBER() OVER (#{tier_order}) AS top_rn",
+        "ROW_NUMBER() OVER (#{new_order}) AS new_rn",
+      )
+
+      top_cond = "(tier < 2 AND tier = min_tier AND top_rn <= #{limit})"
+      new_cond = "(feed_impressions_count < #{low_impressions} AND new_rn <= #{limit})"
+
+      top_ids = []
+      new_ids = []
+      FeedConfig.unscoped.from(ranked_scope, :ranked).where("#{top_cond} OR #{new_cond}")
+        .pluck(:id, Arel.sql(top_cond), Arel.sql(new_cond)).each do |id, in_top, in_new|
+          top_ids << id if in_top
+          new_ids << id if in_new
+        end
+      [top_ids, new_ids]
     end
 
-    def new_pool_ids(scope = FeedConfig.active)
-      scope
-        .where("feed_impressions_count < ?", FeedConfig::LOW_IMPRESSION_COUNT)
-        .order(created_at: :desc)
-        .limit(FeedConfig::TOP_POOL_LIMIT)
-        .ids
+    # Selects the highest-priority feed configuration in memory using the same tier and score ordering as SQL.
+    def select_best_config(configs)
+      configs.min_by do |config|
+        impressions = config.feed_impressions_count.to_i
+        tier = if impressions >= FeedConfig::LOW_IMPRESSION_COUNT
+                 0
+               elsif impressions.positive?
+                 1
+               else
+                 2
+               end
+        score_sort = config.feed_success_score.nil? ? [1, 0.0] : [0, -config.feed_success_score.to_f]
+        [tier, score_sort, config.id]
+      end
     end
 
+    # Returns the single best-performing feed configuration from the given scope in one query.
     def best_feed_config(scope = FeedConfig.active)
-      scope
-        .where("feed_impressions_count >= ?", FeedConfig::LOW_IMPRESSION_COUNT)
-        .order("feed_success_score DESC NULLS LAST")
-        .first ||
-        scope.where("feed_impressions_count > 0").order("feed_success_score DESC NULLS LAST").first ||
-        scope.order("feed_success_score DESC NULLS LAST").first ||
-        scope.last
+      scope.order(BEST_CONFIG_ORDER_SQL).first
     end
 
     def feed_config_params
