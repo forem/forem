@@ -23,6 +23,10 @@ module Constants
             description: I18n.t("lib.constants.settings.community.staff.description"),
             placeholder: ""
           },
+          ghost_user_id: {
+            description: I18n.t("lib.constants.settings.community.ghost.description", default: "User ID to be used as the Ghost account for anonymizing content"),
+            placeholder: ""
+          },
           tagline: {
             description: I18n.t("lib.constants.settings.community.tagline.description"),
             placeholder: I18n.t("lib.constants.settings.community.tagline.placeholder")
