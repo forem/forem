@@ -113,11 +113,24 @@ function initReactions() {
           thisButt.classList.add('hidden');
           thisButt.classList.remove('inline-flex');
           setTimeout(() => {
-            document
-              .getElementById(
-                `comment-textarea-for-${thisButt.dataset.reactableId}`,
-              )
-              .focus();
+            const textarea = document.getElementById(
+              `comment-textarea-for-${thisButt.dataset.reactableId}`,
+            );
+            if (!textarea) {
+              return;
+            }
+            textarea.focus();
+            // Mount the rich text toolbar (formatting buttons, image upload,
+            // emoji picker, etc.) on the reply textarea so the notification
+            // reply matches the article comment form. Mirrors the dynamic
+            // reply path in commentsPage.js.
+            if (
+              window.Forem &&
+              typeof window.Forem.initializeEnhancedCommentTextArea ===
+                'function'
+            ) {
+              window.Forem.initializeEnhancedCommentTextArea(textarea);
+            }
           }, 30);
         };
       }
