@@ -30,6 +30,38 @@ RSpec.describe "GaEvents", vcr: vcr_option do
         allow(Ga::TrackingService).to receive(:new).and_return(tracking_service)
       end
 
+      it "rejects a truncated JSON body without enqueuing a page_view", :aggregate_failures do
+        sidekiq_assert_no_enqueued_jobs(only: Ga::TrackEventWorker) do
+          post "/fallback_activity_recorder", params: '{"path":"/example","document_path":"/example'
+        end
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq("")
+        expect(response.cookies["client_id"]).to be_nil
+      end
+
+      it "rejects malformed JSON with JSON headers without enqueuing a page_view", :aggregate_failures do
+        sidekiq_assert_no_enqueued_jobs(only: Ga::TrackEventWorker) do
+          post "/fallback_activity_recorder",
+               params: '{"path":"/example","document_path":"/example',
+               headers: { "CONTENT_TYPE" => "application/json", "ACCEPT" => "application/json" }
+        end
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq("")
+        expect(response.cookies["client_id"]).to be_nil
+      end
+
+      it "rejects an empty body without enqueuing a page_view", :aggregate_failures do
+        sidekiq_assert_no_enqueued_jobs(only: Ga::TrackEventWorker) do
+          post "/fallback_activity_recorder", params: ""
+        end
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq("")
+        expect(response.cookies["client_id"]).to be_nil
+      end
+
       it "sends the page_view from a job instead of during the request", :aggregate_failures do
         sidekiq_assert_enqueued_jobs(1, only: Ga::TrackEventWorker) do
           post "/fallback_activity_recorder", params: { path: "/example", user_language: "en" }.to_json
