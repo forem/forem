@@ -8,6 +8,25 @@ RSpec.describe "Api::V0::Articles" do
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
+  # Checks association state before serialization can lazily load records, then renders the real response.
+  def expect_preloaded_articles_at_render(assignment, include_organization: false)
+    controller = Api::V0::ArticlesController.new
+    allow(Api::V0::ArticlesController).to receive(:new).and_return(controller)
+    allow(controller).to receive(:render).and_wrap_original do |render, *args|
+      articles = Array.wrap(controller.view_assigns.fetch(assignment))
+      expect(articles).not_to be_empty
+      articles.each do |decorated_article|
+        loaded_article = decorated_article.object
+        expect(loaded_article.association(:user)).to be_loaded
+        expect(loaded_article.user.association(:profile)).to be_loaded
+        expect(loaded_article.association(:organization)).to be_loaded if include_organization
+      end
+      render.call(*args)
+    end
+    yield
+    expect(controller).to have_received(:render)
+  end
+
   describe "GET /api/articles" do
     before { article }
 
@@ -583,6 +602,12 @@ RSpec.describe "Api::V0::Articles" do
       expected_key = [article.record_key].to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    it "preloads user and profile before rendering" do
+      expect_preloaded_articles_at_render("article") { get "/api/articles/#{article.username}/#{article.slug}" }
+
+      expect(response).to have_http_status(:ok)
+    end
   end
 
   describe "GET /api/articles/me(/:status)" do
@@ -702,6 +727,17 @@ RSpec.describe "Api::V0::Articles" do
 
         get "/api/articles/me", headers: headers
         expect(response.parsed_body.first["reading_time_minutes"]).to eq(article.reading_time)
+      end
+
+      it "preloads user, profile, and organization before rendering" do
+        user_article = create(:article, user: user)
+        user_article.update_columns(organization_id: organization.id)
+
+        expect_preloaded_articles_at_render("articles", include_organization: true) do
+          get "/api/articles/me", headers: headers
+        end
+
+        expect(response).to have_http_status(:ok)
       end
     end
   end
