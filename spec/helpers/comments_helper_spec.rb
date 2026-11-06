@@ -145,5 +145,54 @@ RSpec.describe CommentsHelper do
 
       expect(helper.any_negative_comments?(article)).to be(false)
     end
+
+    def record_comment_queries(&block)
+      queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql] if payload[:sql].include?('"comments"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record", &block)
+      queries
+    end
+
+    it "reuses the negative-comment check memoized by a decorated article's comment_tree without extra SQL" do
+      root = create(:comment, commentable: article, score: 5)
+      create(:comment, commentable: article, parent: root, score: -3)
+      decorated = article.reload.decorate
+      decorated.comment_tree(limit: 1, order: "top", include_negative: false)
+
+      queries = record_comment_queries do
+        expect(helper.any_negative_comments?(decorated)).to be(true)
+      end
+
+      expect(queries).to be_empty
+    end
+
+    it "memoizes true when a negative root comment falls beyond the limit" do
+      create(:comment, commentable: article, score: 5)
+      create(:comment, commentable: article, score: -3)
+      decorated = article.reload.decorate
+      decorated.comment_tree(limit: 1, order: "top", include_negative: false)
+
+      queries = record_comment_queries do
+        expect(helper.any_negative_comments?(decorated)).to be(true)
+      end
+
+      expect(queries).to be_empty
+    end
+
+    it "memoizes false across a decorated article when comment_tree finds only non-negative comments" do
+      create(:comment, commentable: article, score: 5)
+      decorated = article.reload.decorate
+      decorated.comment_tree(limit: 1, order: "top", include_negative: false)
+
+      queries = record_comment_queries do
+        expect(helper.any_negative_comments?(decorated)).to be(false)
+      end
+
+      expect(queries).to be_empty
+    end
   end
 end

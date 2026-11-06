@@ -7,11 +7,15 @@ module Comments
     UNRENDERED_COLUMNS = %w[semantic_embedding].freeze
 
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false, preload: true)
-      collection = commentable.comments
+      target = commentable.respond_to?(:decorated?) && commentable.decorated? ? commentable.object : commentable
+      arranged = target.comments
         .select(Comment.column_names - UNRENDERED_COLUMNS)
         .arrange(order: build_sort_query(order))
-        .to_a[0..limit - 1]
-        .to_h
+      target.instance_variable_set(
+        :@any_negative_comments,
+        Comment.flatten_arranged_nodes(arranged).any? { |comment| comment.score.to_i.negative? },
+      )
+      collection = arranged.to_a[0..limit - 1].to_h
       collection.reject! { |comment| comment.score.negative? } unless include_negative
       preload_for_tree(collection, commentable: commentable) if preload
 

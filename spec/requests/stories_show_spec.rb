@@ -372,7 +372,7 @@ RSpec.describe "StoriesShow" do
       expect(negative_comment_queries).to be_empty
     end
 
-    it "queries for negative comments only once when rendering the hidden negative comments notice" do
+    it "does not query for negative comments separately when rendering the hidden negative comments notice" do
       create(:comment, commentable: article, score: -5)
       article.reload
 
@@ -389,7 +389,7 @@ RSpec.describe "StoriesShow" do
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Some comments may only be visible to logged-in visitors")
-      expect(negative_comment_queries.size).to eq(1)
+      expect(negative_comment_queries).to be_empty
     end
 
     it "loads the series articles with a single query when rendering the series switcher" do
