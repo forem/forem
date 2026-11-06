@@ -5,13 +5,23 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
 
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    super
+  end
+
+  def create_feed_source(feed_url = link)
+    user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+    create(:feed_source, user: user, feed_url: feed_url)
+  end
+
+  def seed_default_feed_sources
+    [link, nonmedium_link, nonpermanent_link].each { |feed_url| create_feed_source(feed_url) }
+  end
+
   before do
     allow(Feeds::ValidateUrl).to receive(:call).and_return(true)
-
-    [link, nonmedium_link, nonpermanent_link].each do |feed_url|
-      user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
-      create(:feed_source, user: user, feed_url: feed_url)
-    end
   end
 
   describe ".call" do
@@ -31,61 +41,50 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       expect(filtered.pluck(:user_id)).to contain_exactly(recent_article_user.id, recent_present_user.id)
     end
 
-    it "ensures that we only fetch users who can create articles", vcr: { cassette_name: "feeds_import" } do
-      allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
-
-      described_class.call
-
-      expect(ArticlePolicy).to have_received(:scope_users_authorized_to_action).with(users_scope: User, action: :create)
-    end
-
     # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
-    it "fetch only articles from a feed_url", vcr: { cassette_name: "feeds_import" } do
-      num_articles = described_class.call
+    it "imports articles for authorized users, subscribes authors, and queues notifications",
+       :aggregate_failures, vcr: { cassette_name: "feeds_import" } do
+      seed_default_feed_sources
+      allow(ArticlePolicy).to receive(:scope_users_authorized_to_action).and_call_original
+      nonpermanent_user = Feeds::Source.find_by(feed_url: nonpermanent_link).user
 
-      expect(num_articles).to eq(21)
-    end
-
-    it "subscribes the article author to comments", vcr: { cassette_name: "feeds_import" } do
-      expect { described_class.call }
-        .to change { NotificationSubscription.where(notifiable_type: "Article", config: "all_comments").count }
-        .from(0)
-    end
-
-    it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
-      described_class.call
-
-      expect { described_class.call }.not_to change(Article, :count)
-    end
-
-    it "parses correctly", vcr: { cassette_name: "feeds_import" } do
-      expect do
-        described_class.call
-      end.to change(Feeds::Source.find_by(feed_url: nonpermanent_link).user.articles, :count).by(1)
-    end
-
-    it "sets feed_fetched_at to the current time", vcr: { cassette_name: "feeds_import" } do
       Timecop.freeze(Time.current) do
-        described_class.call
+        num_articles = nil
+        expect do
+          num_articles = described_class.call
+        end.to change { NotificationSubscription.where(notifiable_type: "Article", config: "all_comments").count }
+          .from(0)
+          .and change(nonpermanent_user.articles, :count).by(1)
+          .and change(Slack::WorkflowWebhookWorker.jobs, :count).by(3) # 3 users
 
-        user = Feeds::Source.find_by(feed_url: nonpermanent_link).user
-        feed_fetched_at = user.feed_fetched_at
-        expect(feed_fetched_at.to_i).to eq(Time.current.to_i)
+        expect(num_articles).to eq(21)
+        expect(ArticlePolicy).to have_received(:scope_users_authorized_to_action)
+          .with(users_scope: User, action: :create)
+        expect(nonpermanent_user.reload.feed_fetched_at.to_i).to eq(Time.current.to_i)
       end
     end
 
-    it "queues as many slack messages as there are articles", vcr: { cassette_name: "feeds_import" } do
-      expect do
-        described_class.call
-      end.to change(Slack::WorkflowWebhookWorker.jobs, :count).by(3) # 3 users
+    it "does not recreate articles if they already exist", vcr: { cassette_name: "feeds_import_twice" } do
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 1)
+      source = create_feed_source(link)
+      scope = User.where(id: source.user_id)
+
+      expect { described_class.call(users_scope: scope) }.to change(Article, :count).by(1)
+      expect { described_class.call(users_scope: scope) }.not_to change(Article, :count)
     end
 
     context "when handling errors", vcr: { cassette_name: "feeds_import" } do
+      let(:single_user_scope) { User.where(id: create_feed_source(link).user_id) }
+
+      before do
+        stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 1)
+      end
+
       it "reports an notification subscription creation error" do
         allow(NotificationSubscription).to receive(:create!).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
@@ -94,7 +93,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         allow(Article).to receive(:create!).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
@@ -103,7 +102,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         allow(HTTParty).to receive(:get).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
@@ -129,8 +128,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         end
         allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
-        source = Feeds::Source.first
-        described_class.call(users_scope: User.where(id: source.user_id))
+        described_class.call(users_scope: single_user_scope)
 
         expect(call_count).to be >= 2
       end
@@ -140,7 +138,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         allow(Rails.logger).to receive(:error)
         allow_any_instance_of(described_class).to receive(:sleep) # rubocop:disable RSpec/AnyInstance
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
@@ -149,7 +147,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         allow(Feedjira).to receive(:parse).and_raise(StandardError)
         allow(Rails.logger).to receive(:error)
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once)
       end
@@ -158,7 +156,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         allow(Feedjira).to receive(:parse).and_raise("this is an error")
         allow(Rails.logger).to receive(:error)
 
-        described_class.call
+        described_class.call(users_scope: single_user_scope)
 
         expect(Rails.logger).to have_received(:error).at_least(:once).with(/error_message=>"this is an error"/)
       end
@@ -167,6 +165,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
     context "with an explicit set of users", vcr: { cassette_name: "feeds_import" } do
       # TODO: We could probably improve these tests by parsing against the items in the feed rather than hardcoding
       it "accepts a subset of users" do
+        seed_default_feed_sources
         source = Feeds::Source.find_by(feed_url: link)
         num_articles = described_class.call(
           users_scope: User.where(id: source.user_id),
@@ -184,10 +183,15 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   context "when refetching" do
-    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
-      source = Feeds::Source.find_by(feed_url: nonpermanent_link)
-      user = source.user
+    before do
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 1)
+    end
 
+    let(:source) { create_feed_source(link) }
+    let(:user) { source.user }
+    let(:user_scope) { User.where(id: user.id) }
+
+    it "does refetch same user over and over by default", vcr: { cassette_name: "feeds_import_multiple_times" } do
       Timecop.freeze(Time.current) do
         user.update_columns(feed_fetched_at: Time.current)
         source.update_columns(last_fetched_at: Time.current)
@@ -197,7 +201,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
         # travel a few seconds in the future to simulate a new time
         3.times do |i|
           Timecop.travel((i + 5).seconds.from_now) do
-            described_class.call
+            described_class.call(users_scope: user_scope)
           end
         end
 
@@ -205,30 +209,19 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       end
     end
 
-    it "does not refetch recently fetched users if earlier_than is given", vcr: { cassette_name: "feeds_import" } do
-      time = 30.minutes.ago
-
-      Timecop.freeze(time) do
-        described_class.call
+    it "skips recently fetched users and refetches when earlier_than is now",
+       :aggregate_failures, vcr: { cassette_name: "feeds_import_twice" } do
+      Timecop.freeze(30.minutes.ago) do
+        described_class.call(users_scope: user_scope)
       end
 
       # we delete the articles to make sure it won't trigger the duplicate check
       Article.delete_all
 
-      expect { described_class.call(earlier_than: 1.hour.ago) }.not_to change(Article, :count)
-    end
-
-    it "refetches recently fetched users if earlier_than is now", vcr: { cassette_name: "feeds_import_twice" } do
-      time = 30.minutes.ago
-
-      Timecop.freeze(time) do
-        described_class.call
-      end
-
-      # we delete the articles to make sure it won't trigger the duplicate check
-      Article.delete_all
-
-      expect { described_class.call(earlier_than: Time.current) }.to change(Article, :count)
+      expect { described_class.call(users_scope: user_scope, earlier_than: 1.hour.ago) }.not_to change(Article, :count)
+      expect do
+        described_class.call(users_scope: user_scope, earlier_than: Time.current)
+      end.to change(Article, :count).by(1)
     end
   end
 
@@ -276,29 +269,31 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
   end
 
   context "when multiple users fetch from the same feed_url", vcr: { cassette_name: "feeds_import_two_users" } do
+    let(:rss_feed_user1) { create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago) }
+    let(:rss_feed_user2) { create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago) }
+
+    before do
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 2)
+    end
+
     it "fetches the articles in both accounts (if feed_mark_canonical = false)" do
-      source1 = Feeds::Source.find_by(feed_url: link)
-      rss_feed_user1 = source1.user
-      rss_feed_user2 = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: rss_feed_user1, feed_url: link)
       create(:feed_source, user: rss_feed_user2, feed_url: link)
       expect do
-        described_class.call(users_scope: User.where(id: Feeds::Source.where(feed_url: link).select(:user_id)))
+        described_class.call(users_scope: User.where(id: [rss_feed_user1.id, rss_feed_user2.id]))
       end
-        .to change(rss_feed_user1.articles, :count).by(10)
-        .and change(rss_feed_user2.articles, :count).by(10)
+        .to change(rss_feed_user1.articles, :count).by(2)
+        .and change(rss_feed_user2.articles, :count).by(2)
     end
 
     it "fetches the articles in both accounts (if feed_mark_canonical = true)" do
-      source1 = Feeds::Source.find_by(feed_url: link)
-      rss_feed_user1 = source1.user
-      source1.update!(mark_canonical: true)
-      rss_feed_user2 = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
+      create(:feed_source, user: rss_feed_user1, feed_url: link, mark_canonical: true)
       create(:feed_source, user: rss_feed_user2, feed_url: link, mark_canonical: true)
       expect do
-        described_class.call(users_scope: User.where(id: Feeds::Source.where(feed_url: link).select(:user_id)))
+        described_class.call(users_scope: User.where(id: [rss_feed_user1.id, rss_feed_user2.id]))
       end
-        .to change(rss_feed_user1.articles, :count).by(10)
-        .and change(rss_feed_user2.articles, :count).by(10)
+        .to change(rss_feed_user1.articles, :count).by(2)
+        .and change(rss_feed_user2.articles, :count).by(2)
     end
   end
 
@@ -327,11 +322,12 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
     end
 
     it "reparses oldest-first feeds beyond the XML cap, including binary UTF-8 streams" do
-      stub_const("#{described_class}::MAX_XML_ENTRIES", 25)
+      stub_const("#{described_class}::MAX_XML_ENTRIES", 4)
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 3)
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
       source = create(:feed_source, user: user, feed_url: "https://example.com/many-items.xml")
       base_time = Time.utc(2026, 1, 1, 12, 0, 0)
-      items_xml = (1..30).map do |idx|
+      items_xml = (1..6).map do |idx|
         pub_date = (base_time + idx.hours).rfc2822
         "<item><title>Post #{idx} Café</title><link>https://example.com/posts/#{idx}</link>" \
           "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
@@ -355,7 +351,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       imported_count = described_class.call(users_scope: User.where(id: user.id))
       expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
       expect(parsed_xml_arg.encoding).to eq(Encoding::UTF_8)
-      expect(parsed_xml_arg).to include("Post 14 Café", "Post 30 Café")
+      expect(parsed_xml_arg).to include("Post 4 Café", "Post 6 Café")
 
       log = Feeds::ImportLog.where(feed_source: source).last
       expect(log.items_in_feed).to eq(described_class::MAX_ENTRIES_PER_FEED)
@@ -363,10 +359,11 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
     end
 
     it "selects the newest MAX_ENTRIES_PER_FEED items when a feed is ordered oldest-first (ascending)" do
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 3)
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
       create(:feed_source, user: user, feed_url: "https://example.com/ascending.xml")
       base_time = Time.utc(2026, 1, 1, 12, 0, 0)
-      items_xml = (1..30).map do |idx|
+      items_xml = (1..6).map do |idx|
         pub_date = (base_time + idx.hours).rfc2822
         "<item><title>Ascending Post #{idx}</title><link>https://example.com/asc/#{idx}</link>" \
           "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
@@ -381,15 +378,17 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
 
       imported_titles = user.articles.pluck(:title)
-      expect(imported_titles).to include("Ascending Post 30", "Ascending Post 6")
-      expect(imported_titles).not_to include("Ascending Post 1", "Ascending Post 5")
+      expect(imported_titles).to include("Ascending Post 6", "Ascending Post 4")
+      expect(imported_titles).not_to include("Ascending Post 1", "Ascending Post 3")
     end
 
     it "keeps the newest entries from oldest-first feeds larger than MAX_XML_ENTRIES" do
+      stub_const("#{described_class}::MAX_XML_ENTRIES", 4)
+      stub_const("#{described_class}::MAX_ENTRIES_PER_FEED", 3)
       user = create(:user, last_article_at: 1.month.ago, last_presence_at: 1.month.ago)
       create(:feed_source, user: user, feed_url: "https://example.com/large-ascending.xml")
       base_time = Time.utc(2026, 1, 1, 12, 0, 0)
-      items_xml = (1..130).map do |idx|
+      items_xml = (1..8).map do |idx|
         pub_date = (base_time + idx.hours).rfc2822
         "<item><title>Large Ascending Post #{idx}</title><link>https://example.com/large-asc/#{idx}</link>" \
           "<description>Body #{idx}</description><pubDate>#{pub_date}</pubDate></item>"
@@ -403,7 +402,7 @@ RSpec.describe Feeds::Import, :vcr, type: :service do
       imported_count = described_class.call(users_scope: User.where(id: user.id))
 
       expect(imported_count).to eq(described_class::MAX_ENTRIES_PER_FEED)
-      expect(user.articles.pluck(:title)).to match_array((106..130).map { |idx| "Large Ascending Post #{idx}" })
+      expect(user.articles.pluck(:title)).to match_array((6..8).map { |idx| "Large Ascending Post #{idx}" })
     end
 
     it "does not spawn Parallel worker threads when importing a single feed source" do
