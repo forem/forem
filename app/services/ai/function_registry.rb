@@ -52,6 +52,10 @@ module Ai
         description: "Sends articles and comments without links to the spam checks above when they look like " \
                      "spam, such as Telegram or WhatsApp contacts written as text (Ai::SpamEscalationCheck). " \
                      "Off keeps link-only escalation." },
+      { key: :phishing_signup_check, group: :moderation, jev: true,
+        name: "Low-trust signup & impersonation spam check",
+        description: "Decides whether a low-trust account is trying to get people to sign up, log in, or verify " \
+                     "an account, especially while impersonating the platform or staff (Ai::PhishingSignupCheck)." },
       { key: :profile_moderation, group: :moderation, jev: true,
         name: "Profile moderation label",
         description: "Flags clear and obvious spam or abuse in new profiles (Ai::ProfileModerationLabeler)." },

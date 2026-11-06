@@ -6,14 +6,15 @@ the authoritative cache; local data is disposable. This is a separate process,
 shared by Puma workers, rather than Redis embedded in the Ruby heap.
 
 Sessions, Sidekiq, distributed locks and the independent Redis clients retain
-their existing configuration. Cached role names, tag/subforem moderator scopes,
-user-block lists and subscription checks use L1. Trusted-role checks, admin API
-keys, Googlebot rate-limit exemptions, deletion tokens, feedback-email suppression
-and coordination reads explicitly pass `local_cache: false`
-to retain authoritative reads. This bypasses both Redis L1 and Rails request
-memory, including `fetch_multi`. Rails.cache raw reads (including rate-limit
-counters), writes, increments, decrements and NX operations go to hosted Redis.
-The default deployment is unchanged unless `LOCAL_REDIS_URL` is set.
+their existing configuration. Cached role names, trusted-role checks, tag/subforem
+moderator scopes, user-block lists, subscription checks, admin API keys, Googlebot
+rate-limit exemptions and throttled-call suppression markers use L1. Deletion
+tokens, feedback-email suppression and circuit-breaker checks explicitly pass
+`local_cache: false` to retain authoritative reads. This bypasses both Redis L1
+and Rails request memory, including `fetch_multi`. Rails.cache raw reads
+(including rate-limit counters), writes, increments, decrements and NX operations
+go to hosted Redis. The default deployment is unchanged unless `LOCAL_REDIS_URL`
+is set.
 
 ## Requirements
 
@@ -139,9 +140,9 @@ This is **eventually consistent cache acceleration**, not synchronous replicatio
 A read may briefly see the pre-write value until an invalidation arrives; a lost
 connection can leave a previously cached value readable until the lease expires.
 A read concurrent with an update may return the prior value. It does not make
-sessions or distributed coordination safe to move to L1. Role/scope, blocking and
-subscription checks explicitly accept these delayed updates; trusted-role checks
-and admin API-key exemptions remain authoritative.
+sessions or distributed coordination safe to move to L1. Role/scope, trusted-role, blocking, subscription, admin API-key, Googlebot prefix
+and throttled-call checks explicitly accept these delayed updates; account-deletion
+tokens, feedback-email suppression and circuit-breaker checks remain authoritative.
 Anything requiring authoritative reads must use `local_cache: false`, `raw: true` (for raw values), an independent Redis
 client, or retain the standard RedisCacheStore. Rack::Attack has an explicit
 subclass adapter so its raw counter encoding and pattern-reset API are preserved.
@@ -264,11 +265,11 @@ and Rack::Attack's adapter selection. Sessions, Sidekiq, and separate Redis clie
 keep their existing wiring. Their independent regression suites are not replaced
 by the cache integration tests.
 
-Googlebot prefixes govern a Rack::Attack exemption and feedback-response markers
-suppress duplicate emails, so both bypass L1 and request memory. Delegated-access
-JWT keys use their own MemoryStore and are unaffected. Feedback suppression and
-ThrottledCall retain their existing fetch-based behavior; this does not turn them
-into atomic distributed locks.
+Account-deletion tokens, TypeSafe circuit-breaker checks and feedback-response
+markers (which suppress duplicate emails) bypass L1 and request memory.
+Delegated-access JWT keys use their own MemoryStore and are unaffected. Feedback
+suppression and ThrottledCall retain their existing fetch-based behavior; this does
+not turn them into atomic distributed locks.
 
 Existing `MemoryFirstCache`, Flipper memory stores, and Settings/RequestStore
 memoization remain separate layers with their existing invalidation semantics.

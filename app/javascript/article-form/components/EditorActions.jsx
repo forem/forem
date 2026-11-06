@@ -1,7 +1,10 @@
 import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
-import moment from 'moment';
 import PropTypes from 'prop-types';
+import {
+  parseArticleDate,
+  formatScheduleDateTime,
+} from '../dateHelpers';
 import { Options } from './Options';
 import { AiDisclosureModal } from './AiDisclosureModal';
 import { ButtonNew as Button } from '@crayons';
@@ -43,12 +46,14 @@ export const EditorActions = ({
     );
   }
 
-  const now = moment();
+  const now = new Date();
   const publishedAtObj = publishedAtDate
-    ? moment(`${publishedAtDate} ${publishedAtTime || '00:00'}`)
+    ? parseArticleDate(`${publishedAtDate} ${publishedAtTime || '00:00'}`)
     : now;
   const schedule = publishedAtObj > now;
-  const wasScheduled = passedData.publishedAtWas > now;
+  const wasScheduled =
+    Boolean(passedData.publishedAtWas) &&
+    parseArticleDate(passedData.publishedAtWas) > now;
 
   // Extract advanced options for footer display
   const { canonicalUrl = '', series = '', publishedAtDate: scheduleDate = '', publishedAtTime: scheduleTime = '' } = passedData;
@@ -154,7 +159,7 @@ export const EditorActions = ({
               <button
                 type="button"
                 className="article-form-footer-pill cursor-pointer"
-                title={publishedAtObj.format('MMMM D, YYYY [at] h:mm A')}
+                title={formatScheduleDateTime(publishedAtObj)}
                 onClick={reopenOptionsModal}
               >
                 ⏰ Scheduled

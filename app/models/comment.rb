@@ -70,6 +70,7 @@ class Comment < ApplicationRecord
   before_validation :evaluate_markdown, if: -> { body_markdown }
   before_save :set_markdown_character_count, if: :body_markdown
   before_save :synchronous_spam_score_check
+  before_save :reserve_hourly_mention_capacity
   before_create :adjust_comment_parent_based_on_depth
   after_create :after_create_checks
   after_create :notify_slack_channel_about_warned_users
@@ -78,9 +79,11 @@ class Comment < ApplicationRecord
   before_destroy :before_destroy_actions
   after_destroy :after_destroy_actions
 
+  after_save :commit_hourly_mention_reservation
   after_save :create_conditional_autovomits
   after_save :synchronous_bust
   after_save :bust_cache
+  after_rollback :release_hourly_mention_reservation
 
   validate :discussion_not_locked, if: :commentable, on: :create
   validate :published_article, if: :commentable
@@ -497,16 +500,79 @@ class Comment < ApplicationRecord
     errors.add(:commentable_id, I18n.t("models.comment.published_article"))
   end
 
+  # Validates per-comment and hourly @-mention rate limits based on the commenter's trust tier.
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= Settings::RateLimit.mention_creation
+    if mentions_count > Settings::RateLimit.mention_creation
+      errors.add(:base,
+                 I18n.t("models.comment.mention_too_many",
+                        count: Settings::RateLimit.mention_creation))
+      return
+    end
 
-    errors.add(:base,
-               I18n.t("models.comment.mention_too_many",
-                      count: Settings::RateLimit.mention_creation))
+    return unless mentions_count.positive? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    max_for_user = user.rate_limiter.max_mentions_per_post
+    if other_mentioned_usernames.size > max_for_user
+      errors.add(:base, I18n.t("models.comment.mention_too_many", count: max_for_user))
+      return
+    end
+
+    return unless user.rate_limiter.mention_rate_limit_reached?(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+
+    errors.add(:base, I18n.t("models.comment.mention_rate_limit_reached"))
+  end
+
+  # Atomically reserves hourly mention capacity under a user lock before saving.
+  def reserve_hourly_mention_capacity
+    @hourly_mention_reservation = nil
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+    return unless processed_html.present? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    reservation = user.rate_limiter.reserve_mentions!(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+    if reservation.nil?
+      errors.add(:base, I18n.t("models.comment.mention_rate_limit_reached"))
+      throw(:abort)
+    end
+
+    @hourly_mention_reservation = reservation
+  end
+
+  # Records the comment's persisted ID against the hourly mention cache after save.
+  def commit_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.record_notifiable_mentions(self, @hourly_mention_reservation[:count])
+    @hourly_mention_reservation = nil
+  end
+
+  # Releases any reserved hourly mention capacity if the save transaction rolls back.
+  def release_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.release_mentions(@hourly_mention_reservation, notifiable: self)
+    @hourly_mention_reservation = nil
   end
 
   def body_has_content

@@ -27,6 +27,16 @@ class PageView < ApplicationRecord
   def extract_domain_and_path
     return unless referrer
 
+    native = ForemNative.extract_referrer_domain_and_path(referrer)
+    if native
+      self.domain, self.path = native
+      return
+    end
+
+    legacy_extract_domain_and_path
+  end
+
+  def legacy_extract_domain_and_path
     parsed_url = Addressable::URI.parse(referrer)
     self.domain = parsed_url.domain
     self.path = parsed_url.path

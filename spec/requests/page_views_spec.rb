@@ -22,6 +22,7 @@ RSpec.describe "PageViews" do
       it "creates a new page view", :aggregate_failures do
         page_views_post(article_id: article.id)
 
+        expect(request.session_options[:skip]).to be(true)
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(1)
         expect(user.reload.page_views.size).to eq(1)
@@ -178,6 +179,7 @@ RSpec.describe "PageViews" do
 
         put "/page_views/#{article.id}"
 
+        expect(request.session_options[:skip]).to be(true)
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 

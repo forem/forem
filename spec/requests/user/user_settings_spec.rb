@@ -31,16 +31,10 @@ RSpec.describe "UserSettings" do
           .to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "displays content on Profile tab properly" do
+      it "displays Profile tab content and offers profile image removal when present", :aggregate_failures do
         get user_settings_path(:profile)
 
-        expect(response.body).to include("User")
-      end
-
-      it "offers profile image removal when the user has one" do
-        get user_settings_path(:profile)
-
-        expect(response.body).to include("user[remove_profile_image]")
+        expect(response.body).to include("User", "user[profile_image]", "user[remove_profile_image]")
         html = Nokogiri::HTML(response.body)
         checkbox = html.at_css('input[type="checkbox"][id="user[remove_profile_image]"]')
         expect(checkbox["aria-describedby"]).to eq("remove-profile-image-description")
@@ -48,12 +42,13 @@ RSpec.describe "UserSettings" do
         expect(html.css("p#remove-profile-image-description.crayons-field__description")).to be_present
       end
 
-      it "renders the Profile tab without the removal checkbox when there is no profile image" do
+      it "renders the Profile tab without the removal checkbox when there is no profile image", :aggregate_failures do
         sign_in create(:user, profile_image: nil)
 
         get user_settings_path(:profile)
 
         expect(response).to have_http_status(:ok)
+        expect(response.body).to include("user[profile_image]")
         expect(response.body).not_to include("user[remove_profile_image]")
       end
 
@@ -65,10 +60,15 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include(profile_field.profile_field_group.name)
       end
 
-      it "displays content on Customization tab properly" do
+      it "displays content on Customization tab properly", :aggregate_failures do
         get user_settings_path(:customization)
 
-        expect(response.body).to include("Appearance", "Writing", "Content", "Sponsors", "Announcements", "Content Relocation")
+        expect(response.body).to include(
+          "Appearance", "Writing", "Content", "Sponsors", "Announcements", "Content Relocation",
+          "theme-selector--system-theme", "theme-selector--light-theme", "theme-selector--dark-theme",
+          "function applyColorMode", "prefers-color-scheme: dark",
+          "disallow_subforem_reassignment", "Disable automatic relocation of my content to other subforems"
+        )
       end
 
       it "displays content on Notifications tab properly" do
@@ -103,17 +103,10 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include("Join An Organization", "Create An Organization")
       end
 
-      it "displays content on Extensions tab properly" do
+      it "displays Extensions tab content and renders the accessible API key form", :aggregate_failures do
         get user_settings_path(:extensions)
 
-        titles = ["Comment templates", "API Keys"]
-        expect(response.body).to include(*titles)
-        expect(response.body).to include("Manage my RSS feeds")
-      end
-
-      it "renders the API key generation form with description and accessible markup" do
-        get user_settings_path(:extensions)
-
+        expect(response.body).to include("Comment templates", "API Keys", "Manage my RSS feeds")
         html = Nokogiri::HTML(response.body)
         desc = html.at_css("p#api-key-description.crayons-field__description")
         expect(desc).to be_present
@@ -147,7 +140,10 @@ RSpec.describe "UserSettings" do
       let(:remove_oauth_section) { "Remove OAuth Associations" }
       let(:remove_oauth_description) { "You can remove one of your authentication methods" }
       let(:remove_oauth_instructions) { "Please add another authentication method" }
-      let(:user) { create(:user, :with_identity) }
+      let(:user) do
+        create(:user, :without_profile, :with_identity, profile_image: nil,
+                                                        identities: Authentication::Providers.available.first(2))
+      end
 
       before do
         omniauth_mock_providers_payload
@@ -222,19 +218,9 @@ RSpec.describe "UserSettings" do
         expect(response.body).not_to include("Connect GitHub Account")
       end
 
-      it "renders the text for the enabled provider the user has no identity for" do
+      it "renders connect text for enabled missing providers and excludes Apple", :aggregate_failures do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user, :with_identity, identities: [:twitter])
-
-        sign_in user
-        get user_settings_path
-
-        expect(response.body).to include("Connect GitHub Account")
-      end
-
-      it "does not allow to connect an Apple Account to an existing user" do
-        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user, :with_identity, identities: [:twitter])
+        user = create(:user, :with_identity, profile_image: nil, identities: [:twitter])
 
         sign_in user
         get user_settings_path
@@ -245,45 +231,21 @@ RSpec.describe "UserSettings" do
 
       # Identities created through the admin API carry nothing but a uid, so
       # they have no auth payload to read an email from.
-      it "points a uid-only mlh identity at MLH instead of the dead-end relink error", :aggregate_failures do
+      it "points a uid-only mlh identity at MLH, labels it MLH email, and offers relinking", :aggregate_failures do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user)
+        user = create(:user, :without_profile, profile_image: nil)
         Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
 
         sign_in user
         get user_settings_path(tab: "account")
 
-        expect(response.body).to include("https://my.mlh.com/")
-        expect(response.body).to include("Sign in to MLH")
-        expect(response.body).not_to include("Please relink your")
-      end
-
-      it "labels a uid-only mlh row MLH email rather than MyMLH email", :aggregate_failures do
-        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user)
-        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
-
-        sign_in user
-        get user_settings_path(tab: "account")
-
-        expect(response.body).to include("MLH email")
-        expect(response.body).not_to include("MyMLH email")
-      end
-
-      it "offers the provider button so a uid-only mlh identity can be relinked" do
-        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user)
-        Identity.create!(user: user, provider: "mlh", uid: "core-user-id")
-
-        sign_in user
-        get user_settings_path(tab: "account")
-
-        expect(response.body).to include("Reconnect MLH Account")
+        expect(response.body).to include("https://my.mlh.com/", "Sign in to MLH", "MLH email", "Reconnect MLH Account")
+        expect(response.body).not_to include("Please relink your", "MyMLH email")
       end
 
       it "does not offer a relink for an mlh identity that has a payload", :aggregate_failures do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user, :with_identity, identities: [:mlh])
+        user = create(:user, :without_profile, :with_identity, profile_image: nil, identities: [:mlh])
 
         sign_in user
         get user_settings_path(tab: "account")
@@ -295,8 +257,9 @@ RSpec.describe "UserSettings" do
 
     describe "GitHub repositories" do
       it "renders the repositories container if the user has authenticated through GitHub" do
+        omniauth_mock_providers_payload
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
-        user = create(:user, :with_identity, identities: [:github])
+        user = create(:user, :without_profile, :with_identity, profile_image: nil, identities: [:github])
 
         sign_in user
         get user_settings_path(:extensions)
@@ -309,28 +272,6 @@ RSpec.describe "UserSettings" do
         get user_settings_path(:extensions)
 
         expect(response.body).not_to include("github-repos-container")
-      end
-    end
-  end
-
-  describe "GET /settings/profile" do
-    before { sign_in user }
-
-    context "when user has profile image" do
-      it "displays profile image upload input" do
-        get user_settings_path(:profile)
-
-        expect(response.body).to include("user[profile_image]")
-      end
-    end
-
-    context "when user does not have a profile image" do
-      let(:user) { create(:user, profile_image: nil) }
-
-      it "displays profile image upload input" do
-        get user_settings_path(:profile)
-
-        expect(response.body).to include("user[profile_image]")
       end
     end
   end
@@ -354,60 +295,26 @@ RSpec.describe "UserSettings" do
       expect(user.setting.reload.display_announcements).to be(false)
     end
 
-    it "updates the users subforem reassignment preferences" do
+    it "updates the users subforem reassignment preferences and allows re-enabling it", :aggregate_failures do
       expect(user.setting.disallow_subforem_reassignment).to be(false)
 
       expect do
         put users_settings_path(user.setting.id), params: { users_setting: { disallow_subforem_reassignment: 1 } }
       end.to change { user.setting.reload.disallow_subforem_reassignment }.from(false).to(true)
 
-      expect(user.setting.reload.disallow_subforem_reassignment).to be(true)
-    end
-
-    it "allows users to enable subforem reassignment" do
-      user.setting.update!(disallow_subforem_reassignment: true)
-
       expect do
         put users_settings_path(user.setting.id), params: { users_setting: { disallow_subforem_reassignment: 0 } }
       end.to change { user.setting.reload.disallow_subforem_reassignment }.from(true).to(false)
-
-      expect(user.setting.reload.disallow_subforem_reassignment).to be(false)
     end
 
-    it "updates the users theme to follow the operating system color scheme" do
+    it "updates the users theme to system_theme and keeps an explicit theme choice", :aggregate_failures do
       expect do
         put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "system_theme" } }
       end.to change { user.setting.reload.config_theme }.from("light_theme").to("system_theme")
-    end
-
-    it "keeps an explicit theme choice when the user picks one" do
-      user.setting.update!(config_theme: :system_theme)
 
       expect do
         put users_settings_path(user.setting.id), params: { users_setting: { config_theme: "dark_theme" } }
       end.to change { user.setting.reload.config_theme }.from("system_theme").to("dark_theme")
-    end
-
-    it "offers every theme, including the system one, in the customization form" do
-      get user_settings_path(:customization)
-
-      expect(response.body).to include("theme-selector--system-theme")
-      expect(response.body).to include("theme-selector--light-theme")
-      expect(response.body).to include("theme-selector--dark-theme")
-    end
-
-    it "inlines the color mode helper so the theme is resolved before first paint" do
-      get user_settings_path(:customization)
-
-      expect(response.body).to include("function applyColorMode")
-      expect(response.body).to include("prefers-color-scheme: dark")
-    end
-
-    it "displays the subforem reassignment setting in the customization form" do
-      get user_settings_path(:customization)
-
-      expect(response.body).to include("disallow_subforem_reassignment")
-      expect(response.body).to include("Disable automatic relocation of my content to other subforems")
     end
 
     it "shows the correct checkbox state for subforem reassignment setting" do
@@ -440,39 +347,24 @@ RSpec.describe "UserSettings" do
         put user_path(user.id), params: { user: { tab: :account, export_requested: export_requested } }
       end
 
-      it "updates export_requested flag" do
+      it "updates export_requested, sets flash, updates the account page, and sends an email", :aggregate_failures do
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+
         send_request
         expect(user.reload.export_requested).to be(true)
-      end
-
-      it "displays a flash with a reminder for the user to expect an email" do
-        send_request
         expect(flash[:settings_notice]).to include("The export will be emailed to you shortly.")
-      end
 
-      it "hides the checkbox" do
-        send_request
         follow_redirect!
         expect(response.body).not_to include("Request an export of your posts")
-      end
-
-      it "tells the user they recently requested an export" do
-        send_request
-        follow_redirect!
         expect(response.body).to include("You have recently requested an export")
-      end
 
-      it "sends an email" do
-        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
         expect do
-          sidekiq_perform_enqueued_jobs do
-            send_request
-          end
+          sidekiq_perform_enqueued_jobs(only: ExportContentWorker)
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
       it "does not send an email if there was no request" do
-        sidekiq_perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs(only: ExportContentWorker) do
           expect { send_request(export_requested: false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
       end
@@ -481,7 +373,7 @@ RSpec.describe "UserSettings" do
     context "when requesting a fetch of the feed", vcr: { cassette_name: "feeds_import_medium_vaidehi" } do
       let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
       let(:user) do
-        u = create(:user)
+        u = create(:user, :without_profile, profile_image: nil)
         u.setting.update(feed_url: feed_url)
         u
       end
@@ -500,7 +392,10 @@ RSpec.describe "UserSettings" do
     let(:provider) { Authentication::Providers.available.first }
 
     context "when user has multiple identities" do
-      let(:user) { create(:user, :with_identity) }
+      let(:user) do
+        identities = Authentication::Providers.available.first(2) | %i[github twitter]
+        create(:user, :without_profile, :with_identity, profile_image: nil, identities: identities)
+      end
 
       before do
         omniauth_mock_providers_payload
@@ -508,37 +403,19 @@ RSpec.describe "UserSettings" do
         sign_in user
       end
 
-      it "removes the correct identity" do
+      it "removes the identity, clears username, updates timestamp, and redirects with notice", :aggregate_failures do
+        original_profile_updated_at = user.profile_updated_at
+        auth_provider = Authentication::Providers.get!(provider)
+
         expect do
           delete users_remove_identity_path, params: { provider: provider }
         end.to change(user.identities, :count).by(-1)
 
         expect(user.identities.map(&:provider)).not_to include(provider)
-      end
-
-      it "empties their associated username" do
-        delete users_remove_identity_path, params: { provider: provider }
-
-        expect(user.public_send("#{provider}_username")).to be_nil
-      end
-
-      it "updates the profile_updated_at timestamp" do
-        original_profile_updated_at = user.profile_updated_at
-        delete users_remove_identity_path, params: { provider: provider }
+        expect(user.public_send(:"#{provider}_username")).to be_nil
         expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
-      end
-
-      it "redirects successfully to /settings/account" do
-        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
-      end
-
-      it "renders a successful response message" do
-        delete users_remove_identity_path, params: { provider: provider }
-        auth_provider = Authentication::Providers.get!(provider)
-
-        expected_notice = "Your #{auth_provider.official_name} account was successfully removed."
-        expect(flash[:settings_notice]).to eq(expected_notice)
+        expect(flash[:settings_notice]).to eq("Your #{auth_provider.official_name} account was successfully removed.")
       end
 
       it "redirects the user with an error if the corresponding provider has been since disabled" do
@@ -581,28 +458,21 @@ RSpec.describe "UserSettings" do
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      let(:user) { create(:user, :with_identity, identities: [provider]) }
+      let(:user) { create(:user, :without_profile, :with_identity, profile_image: nil, identities: [provider]) }
 
       before do
+        omniauth_mock_providers_payload
         sign_in user
       end
 
-      it "sets the proper flash error message" do
-        delete users_remove_identity_path, params: { provider: provider }
+      it "does not delete any identities and redirects with flash error", :aggregate_failures do
+        expect do
+          delete users_remove_identity_path, params: { provider: provider }
+        end.not_to change(user.identities, :count)
 
         error =
           "An error occurred. Please try again or send an email to: #{ForemInstance.contact_email}"
         expect(flash[:error]).to eq(error)
-      end
-
-      it "does not delete any identities" do
-        expect do
-          delete users_remove_identity_path, params: { provider: provider }
-        end.not_to change(user.identities, :count)
-      end
-
-      it "redirects successfully to the Settings-Account page" do
-        delete users_remove_identity_path, params: { provider: provider }
         expect(response).to redirect_to(user_settings_path(:account))
       end
     end

@@ -1,15 +1,23 @@
-let postscribeImport;
+import { createAssetBundleLoader } from './loadAssetBundle';
 
-async function getPostScribe() {
-  if (postscribeImport) {
-    // Grab the cached import so we're not always fetching it from the network.
-    return postscribeImport;
-  }
+const postscribeBundleLoader = createAssetBundleLoader({
+  metaName: 'postscribe-script',
+  fallbackSrc: '/assets/postscribeLoader.js',
+  dataAttribute: 'postscribeBundle',
+  getReadyValue: () =>
+    typeof window.Forem?.postscribe === 'function'
+      ? window.Forem.postscribe
+      : null,
+  errorMessage:
+    'postscribeLoader bundle loaded without registering window.Forem.postscribe',
+});
 
-  const { default: postscribe } = await import('postscribe');
-  postscribeImport = postscribe;
+export function loadPostScribe() {
+  return postscribeBundleLoader.load();
+}
 
-  return postscribeImport;
+export function resetPostscribeLoaderForTests() {
+  postscribeBundleLoader.reset();
 }
 
 function getGistTags(nodes) {
@@ -31,6 +39,9 @@ function getGistTags(nodes) {
 function loadEmbeddedGists(postscribe, gistTags) {
   for (const gistTag of gistTags) {
     const gistWrapper = gistTag.firstElementChild;
+    if (!gistWrapper) {
+      continue;
+    }
     postscribe(gistTag, gistWrapper.outerHTML, {
       beforeWrite(text) {
         return gistTag.childElementCount > 3 ? '' : text;
@@ -40,13 +51,17 @@ function loadEmbeddedGists(postscribe, gistTags) {
   }
 }
 
-function watchForGistTagInsertion(targetNode, postscribe) {
+function watchForGistTagInsertion(targetNode) {
   const config = { attributes: false, childList: true, subtree: true };
 
-  const callback = function (mutationsList) {
+  const callback = async function (mutationsList) {
     for (const { type, addedNodes } of mutationsList) {
       if (type === 'childList' && addedNodes.length > 0) {
-        loadEmbeddedGists(postscribe, getGistTags(addedNodes));
+        const gistTags = getGistTags(addedNodes);
+        if (gistTags.length > 0) {
+          const postscribe = await loadPostScribe();
+          loadEmbeddedGists(postscribe, gistTags);
+        }
       }
     }
   };
@@ -64,13 +79,14 @@ function watchForGistTagInsertion(targetNode, postscribe) {
 }
 
 export async function embedGists(targetNode) {
-  const postscribe = await getPostScribe();
+  // Only fetch postscribe if gist tags actually exist in the DOM
+  const initialGistTags = document.querySelectorAll('.ltag_gist-liquid-tag');
+  if (initialGistTags.length > 0) {
+    const postscribe = await loadPostScribe();
+    loadEmbeddedGists(postscribe, initialGistTags);
+  }
 
-  // Load gist tags that were rendered server-side
-  loadEmbeddedGists(
-    postscribe,
-    document.querySelectorAll('.ltag_gist-liquid-tag'),
-  );
-
-  watchForGistTagInsertion(targetNode, postscribe);
+  if (targetNode) {
+    watchForGistTagInsertion(targetNode);
+  }
 }

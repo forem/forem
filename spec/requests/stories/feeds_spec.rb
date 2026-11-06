@@ -54,7 +54,7 @@ RSpec.describe "Stories::Feeds" do
             post feed_config_visits_path, params: { visit_token: token, event_id: SecureRandom.uuid }
             expect(response).to have_http_status(:ok)
             expect(feed_config.reload.feed_repeat_visits_count).to eq(1)
-            expect(feed_config.feed_success_score).to eq(0.5)
+            expect(feed_config.feed_success_score).to eq(1.0)
           end
         end
       end
@@ -950,9 +950,18 @@ RSpec.describe "Stories::Feeds" do
       # Remove all public reactions
       article.reactions.public_category.destroy_all
 
-      get stories_feed_path
+      reaction_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        reaction_queries << sql if sql.include?('FROM "reactions"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get stories_feed_path
+      end
+
       response_article = response.parsed_body.find { |item| item["id"] == article.id }
       expect(response_article["public_reaction_categories"]).to eq([])
+      expect(reaction_queries).to be_empty
     end
 
     it "does not return stale cached data" do

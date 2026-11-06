@@ -55,6 +55,12 @@ RSpec.describe "users/show" do
       end
     end
 
+    it "includes signed-in moderation and status check scripts" do
+      render
+      expect(rendered).to include("articleModerationTools")
+      expect(rendered).to include("asyncUserStatusCheck")
+    end
+
     # context "when there are pinned stories" do
     #
     # end
@@ -108,7 +114,8 @@ RSpec.describe "users/show" do
   it "renders without exception" do
     render
     expect(rendered).to have_css(".profile-header")
-    expect(rendered).to include("articleModerationTools")
+    expect(rendered).not_to include("articleModerationTools")
+    expect(rendered).not_to include("asyncUserStatusCheck")
     expect(rendered).not_to have_css(".featured-story-marker")
     expect(rendered).not_to have_css(".crayons-story__body")
     expect(rendered).not_to have_css(".profile-comment-row")

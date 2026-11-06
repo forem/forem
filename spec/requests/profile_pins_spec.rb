@@ -38,4 +38,23 @@ RSpec.describe "ProfilePins" do
       expect(ProfilePin.all.size).to eq(0)
     end
   end
+
+  describe "when the user is spam-flagged or suspended" do
+    %i[spam suspended].each do |role|
+      it "forbids pinning and unpinning for #{role} users", :aggregate_failures do
+        profile_pin = create(:profile_pin, pinnable: article, profile: user)
+        user.add_role(role)
+
+        expect do
+          post "/profile_pins", params: { profile_pin: { pinnable_id: article2.id } }
+        end.not_to change(ProfilePin, :count)
+        expect(response).to have_http_status(:forbidden)
+
+        expect do
+          put "/profile_pins/#{profile_pin.id}"
+        end.not_to change(ProfilePin, :count)
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+  end
 end

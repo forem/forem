@@ -30,6 +30,22 @@ RSpec.describe "/admin/content_manager/organizations" do
       get admin_organization_path(organization.id)
       expect(response.body).to include(CGI.escapeHTML(organization.name))
     end
+
+    it "renders activity counts without hydrating followers", :aggregate_failures do
+      create(:article, organization: organization)
+      follower = create(:user)
+      follower.follow(organization)
+
+      allow(Organization).to receive(:find).with(organization.id.to_s).and_return(organization)
+      allow(organization).to receive(:followers).and_call_original
+
+      get admin_organization_path(organization.id)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("1 articles")
+      expect(response.body).to include("1 followers")
+      expect(organization).not_to have_received(:followers)
+    end
   end
 
   describe "PATCH /admin" do

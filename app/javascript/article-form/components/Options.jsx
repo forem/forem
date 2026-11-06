@@ -1,7 +1,13 @@
 import { h, Fragment } from 'preact';
 import { useState, useCallback, useRef, useEffect } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import moment from 'moment';
+import {
+  parseArticleDate,
+  formatYYYYMMDD,
+  format12HourTime,
+  formatLongDate,
+  formatScheduleDateTime,
+} from '../dateHelpers';
 import { SeriesSelector } from './SeriesSelector';
 import { CoAuthorSelector } from './CoAuthorSelector';
 import { CoAuthorInvitationSelector } from './CoAuthorInvitationSelector';
@@ -73,7 +79,9 @@ export const Options = ({
   let publishedField = '';
   let publishedAtField = '';
 
-  const wasScheduled = publishedAtWas && moment(publishedAtWas) > moment();
+  const now = new Date();
+  const wasScheduled =
+    Boolean(publishedAtWas) && parseArticleDate(publishedAtWas) > now;
   const editablePublishedAt = !publishedAtWas || wasScheduled;
 
   if (published) {
@@ -115,12 +123,14 @@ export const Options = ({
 
   // Always show scheduling (removed feature flag check)
   if (editablePublishedAt) {
-    const currentDate = moment().format('YYYY-MM-DD');
-    const localTime = moment().format('h:mm A');
-    const localDate = moment().format('MMMM D, YYYY');
+    const currentDate = formatYYYYMMDD(now);
+    const localTime = format12HourTime(now);
+    const localDate = formatLongDate(now);
     const hasSchedule = publishedAtDate && publishedAtTime;
-    const scheduleMoment = hasSchedule ? moment(`${publishedAtDate} ${publishedAtTime}`) : null;
-    const isFutureSchedule = scheduleMoment && scheduleMoment > moment();
+    const scheduleDate = hasSchedule
+      ? parseArticleDate(`${publishedAtDate} ${publishedAtTime}`)
+      : null;
+    const isFutureSchedule = scheduleDate && scheduleDate > now;
 
     publishedAtField = (
       <div className={`crayons-field mb-6 ${hasSchedule ? 'post-options-scheduling--active' : ''}`}>
@@ -168,7 +178,7 @@ export const Options = ({
         {hasSchedule && isFutureSchedule && (
           <div className="py-3 rounded-lg border border-accent-brand bg-accent-brand-bg mb-3">
             <p className="crayons-field__description mb-0">
-              <strong>Post will be published:</strong> {scheduleMoment.format('MMMM D, YYYY [at] h:mm A')}
+              <strong>Post will be published:</strong> {formatScheduleDateTime(scheduleDate)}
             </p>
           </div>
         )}

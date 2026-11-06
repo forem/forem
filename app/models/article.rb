@@ -346,6 +346,7 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_save :detect_language
+  before_save :reserve_hourly_mention_capacity
   before_create :create_password
   after_update :remove_uncredited_co_author_invitations, if: :saved_change_to_co_author_ids?
   after_update :withdraw_pending_co_author_invitations, if: lambda {
@@ -356,11 +357,13 @@ class Article < ApplicationRecord
   }
   before_destroy :before_destroy_actions, prepend: true
 
+  after_save :commit_hourly_mention_reservation
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
   after_save :generate_social_image
   after_save :generate_context_notes
+  after_rollback :release_hourly_mention_reservation
 
   after_update_commit :notify_co_author_changes, if: proc { |article|
     article.published? && article.saved_change_to_co_author_ids?
@@ -1821,15 +1824,80 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, I18n.t("models.article.must_not_have_spaces"))
   end
 
+  # Validates per-article and hourly @-mention rate limits based on the author's trust tier.
   def user_mentions_in_markdown
     return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
 
     # The "mentioned-user" css is added by Html::Parser#user_link_if_exists
     mentions_count = Nokogiri::HTML(processed_html).css(".mentioned-user").size
-    return if mentions_count <= Settings::RateLimit.mention_creation
+    if mentions_count > Settings::RateLimit.mention_creation
+      errors.add(:base,
+                 I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+      return
+    end
 
-    errors.add(:base,
-               I18n.t("models.article.mention_too_many", count: Settings::RateLimit.mention_creation))
+    return unless mentions_count.positive? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    max_for_user = user.rate_limiter.max_mentions_per_post
+    if other_mentioned_usernames.size > max_for_user
+      errors.add(:base, I18n.t("models.article.mention_too_many", count: max_for_user))
+      return
+    end
+
+    return unless published?
+    return unless user.rate_limiter.mention_rate_limit_reached?(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+
+    errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+  end
+
+  # Atomically reserves hourly mention capacity under a user lock before saving a published article.
+  def reserve_hourly_mention_capacity
+    @hourly_mention_reservation = nil
+    return unless published?
+    return if created_at.present? && created_at.before?(MAX_USER_MENTION_LIVE_AT)
+    return unless processed_html.present? && user.present?
+
+    other_mentioned_usernames = RateLimitChecker.extract_other_mentioned_usernames(
+      processed_html,
+      author_username: user.username,
+    )
+    return if other_mentioned_usernames.empty?
+
+    reservation = user.rate_limiter.reserve_mentions!(
+      new_mentions_count: other_mentioned_usernames.size,
+      exclude_notifiable: self,
+    )
+    if reservation.nil?
+      errors.add(:base, I18n.t("models.article.mention_rate_limit_reached"))
+      throw(:abort)
+    end
+
+    @hourly_mention_reservation = reservation
+  end
+
+  # Records the article's persisted ID against the hourly mention cache after save.
+  def commit_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.record_notifiable_mentions(self, @hourly_mention_reservation[:count])
+    @hourly_mention_reservation = nil
+  end
+
+  # Releases any reserved hourly mention capacity if the save transaction rolls back.
+  def release_hourly_mention_reservation
+    return unless @hourly_mention_reservation && user.present?
+
+    user.rate_limiter.release_mentions(@hourly_mention_reservation, notifiable: self)
+    @hourly_mention_reservation = nil
   end
 
   def create_slug

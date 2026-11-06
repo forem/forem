@@ -41,6 +41,31 @@ RSpec.describe "ArticlesFeed" do
 
     before { create(:article, user: user, tags: "ruby, rails") }
 
+    [nil, "rss-avatar.png"].each do |profile_image|
+      it "preserves the channel and cache tags with a narrow user lookup (image: #{profile_image.inspect})" do
+        user.update_column(:profile_image, profile_image)
+        user.reload
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('FROM "users"') && !payload[:cached]
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/feed/#{user.username}"
+        end
+
+        channel = Nokogiri::XML(response.body).at_xpath("/rss/channel")
+        expect(response).to have_http_status(:ok)
+        expect(channel.at_xpath("title").text).to eq("#{Settings::Community.community_name}: #{user.name}")
+        expect(channel.at_xpath("description").text).to include("#{user.name} (@#{user.username})")
+        expect(channel.at_xpath("link").text).to end_with(user.path)
+        expect(channel.at_xpath("image/url").text).to end_with(user.profile_image_90)
+        expect(response.headers["Surrogate-Key"].split).to include(*user.profile_identity_cache_keys)
+        expect(queries.size).to eq(1)
+        expect(queries.first).not_to include('"users".*')
+      end
+    end
+
     def article_and_tagging_queries
       queries = []
       callback = lambda do |*, payload|

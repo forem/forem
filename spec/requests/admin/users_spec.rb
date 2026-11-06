@@ -7,6 +7,12 @@ RSpec.describe "/admin/member_manager/users" do
   end
   let(:admin) { create(:user, :super_admin) }
 
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    super
+  end
+
   before do
     sign_in(admin)
   end
@@ -426,17 +432,13 @@ RSpec.describe "/admin/member_manager/users" do
         expect(flash[:danger]).to include("failed")
       end
 
-      it "sends an email", :aggregate_failures do
+      it "sends an email and allows a user to verify email ownership", :aggregate_failures do
         assert_emails(1) do
           post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
         end
 
         expect(response).to redirect_to(admin_user_path)
         expect(flash[:success]).to include("sent")
-      end
-
-      it "allows a user to verify email ownership", :aggregate_failures do
-        post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }
 
         path = verify_email_authorizations_path(
           confirmation_token: user.email_authorizations.first.confirmation_token,
@@ -476,17 +478,13 @@ RSpec.describe "/admin/member_manager/users" do
         expect(response.parsed_body["error"]).to include("failed")
       end
 
-      it "sends an email", :aggregate_failures do
+      it "sends an email and allows a user to verify email ownership", :aggregate_failures do
         assert_emails(1) do
           post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }, xhr: true
         end
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body["result"]).to include("sent")
-      end
-
-      it "allows a user to verify email ownership", :aggregate_failures do
-        post verify_email_ownership_admin_user_path(user), params: { user_id: user.id }, xhr: true
 
         path = verify_email_authorizations_path(
           confirmation_token: user.email_authorizations.first.confirmation_token,
@@ -509,47 +507,39 @@ RSpec.describe "/admin/member_manager/users" do
 
   describe "POST /admin/member_manager/users/:id/unpublish_all_articles" do
     let(:target_user) { create(:user) }
-    let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
-    let!(:target_comments) { create_list(:comment, 3, user: target_user) }
+    let(:target_articles) { create_list(:article, 2, user: target_user, published: true, with_tags: false) }
+    let(:other_article) { create(:article, user: admin, published: true, with_tags: false) }
+    let(:target_comments) do
+      [*target_articles, other_article].map do |article|
+        create(:comment, user: target_user, commentable: article)
+      end
+    end
 
-    it "creates a corresponding note if note content passed" do
+    it "enqueues UnpublishAllArticlesWorker and creates a corresponding note when content is passed",
+       :aggregate_failures do
+      allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
       text = "The articles were not interesting"
+
       expect do
         post unpublish_all_articles_admin_user_path(target_user.id, note: { content: text })
       end.to change(Note, :count).by(1)
+
+      expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(
+        target_user.id, admin.id, "moderator"
+      )
       note = target_user.notes.last
       expect(note.content).to eq(text)
       expect(note.reason).to eq("unpublish_all_articles")
       expect(note.author_id).to eq(admin.id)
     end
 
-    it "unpublishes all articles" do
-      allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
-      post unpublish_all_articles_admin_user_path(target_user.id)
-      expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id, admin.id,
-                                                                                          "moderator")
-    end
-
-    it "unpublishes users comments and posts" do
-      # User's articles are published and comments exist
-      expect(target_articles.map(&:published?)).to contain_exactly(true, true, true)
-      expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
-
-      sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
-        post unpublish_all_articles_admin_user_path(target_user.id)
-      end
-
-      # Ensure article's aren't published and comments deleted
-      # (with boolean attribute so they can be reverted if needed)
-      expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false, false)
-      expect(target_comments.map { |c| c.reload.deleted? }).to contain_exactly(true, true, true)
-    end
-
-    it "creates a log record" do
+    it "unpublishes user's comments and posts and creates an audit log record", :aggregate_failures do
       Audit::Subscribe.listen :moderator
 
-      create(:article, user: target_user, published: false)
-      create(:comment, user: target_user, deleted: true)
+      expect(target_articles.map(&:published?)).to contain_exactly(true, true)
+      expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
+      create(:article, user: target_user, published: false, with_tags: false)
+      create(:comment, user: target_user, commentable: target_articles.first, deleted: true)
 
       expect do
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
@@ -557,15 +547,16 @@ RSpec.describe "/admin/member_manager/users" do
         end
       end.to change(AuditLog, :count).by(1)
 
+      expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false)
+      expect(target_comments.map { |c| c.reload.deleted? }).to contain_exactly(true, true, true)
+
       log = AuditLog.last
       expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
       expect(log.data["action"]).to eq("unpublish_all_articles")
       expect(log.user_id).to eq(admin.id)
-
-      # These ids match the affected articles/comments and not the ones created above
       expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
       expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
-
+    ensure
       Audit::Subscribe.forget :moderator
     end
   end
@@ -671,20 +662,16 @@ RSpec.describe "/admin/member_manager/users" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "confirms the user successfully" do
+      it "confirms the user successfully and creates an audit note", :aggregate_failures do
         expect(unconfirmed_user.confirmed?).to be(false)
 
-        post confirm_email_admin_user_path(unconfirmed_user)
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user)
+        end.to change(Note, :count).by(1)
 
         expect(unconfirmed_user.reload.confirmed?).to be(true)
         expect(response).to redirect_to(admin_user_path(unconfirmed_user))
         expect(flash[:success]).to be_present
-      end
-
-      it "creates an audit note when confirming" do
-        expect do
-          post confirm_email_admin_user_path(unconfirmed_user)
-        end.to change(Note, :count).by(1)
 
         note = unconfirmed_user.notes.last
         expect(note.reason).to eq("email_confirmed")
@@ -708,20 +695,16 @@ RSpec.describe "/admin/member_manager/users" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "confirms the user successfully" do
+      it "confirms the user successfully and creates an audit note via AJAX", :aggregate_failures do
         expect(unconfirmed_user.confirmed?).to be(false)
 
-        post confirm_email_admin_user_path(unconfirmed_user), xhr: true
+        expect do
+          post confirm_email_admin_user_path(unconfirmed_user), xhr: true
+        end.to change(Note, :count).by(1)
 
         expect(unconfirmed_user.reload.confirmed?).to be(true)
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body["result"]).to be_present
-      end
-
-      it "creates an audit note when confirming via AJAX" do
-        expect do
-          post confirm_email_admin_user_path(unconfirmed_user), xhr: true
-        end.to change(Note, :count).by(1)
 
         note = unconfirmed_user.notes.last
         expect(note.reason).to eq("email_confirmed")
@@ -744,8 +727,12 @@ RSpec.describe "/admin/member_manager/users" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "confirms the pending email change successfully" do
-        post confirm_pending_email_admin_user_path(user_with_pending_email)
+      it "confirms the pending email change successfully and creates an audit note", :aggregate_failures do
+        old_email = user_with_pending_email.email
+
+        expect do
+          post confirm_pending_email_admin_user_path(user_with_pending_email)
+        end.to change(Note, :count).by(1)
 
         user_with_pending_email.reload
         expect(user_with_pending_email.email).to eq("newemail@example.com")
@@ -753,6 +740,12 @@ RSpec.describe "/admin/member_manager/users" do
         expect(user_with_pending_email.confirmed_at).to be_present
         expect(response).to redirect_to(admin_user_path(user_with_pending_email))
         expect(flash[:success]).to be_present
+
+        note = user_with_pending_email.notes.last
+        expect(note.reason).to eq("pending_email_confirmed")
+        expect(note.content).to include(old_email)
+        expect(note.content).to include("newemail@example.com")
+        expect(note.author_id).to eq(admin.id)
       end
 
       # update_columns bypasses the Trackable after_commit, so the controller
@@ -772,20 +765,6 @@ RSpec.describe "/admin/member_manager/users" do
                 hash_including("email" => "newemail@example.com"), anything)
       ensure
         FeatureFlag.remove(:dev_core_user_sync)
-      end
-
-      it "creates an audit note recording the email change" do
-        old_email = user_with_pending_email.email
-
-        expect do
-          post confirm_pending_email_admin_user_path(user_with_pending_email)
-        end.to change(Note, :count).by(1)
-
-        note = user_with_pending_email.notes.last
-        expect(note.reason).to eq("pending_email_confirmed")
-        expect(note.content).to include(old_email)
-        expect(note.content).to include("newemail@example.com")
-        expect(note.author_id).to eq(admin.id)
       end
 
       it "fails gracefully when there is no pending email" do
@@ -977,56 +956,31 @@ RSpec.describe "/admin/member_manager/users" do
   end
 
   describe "GET /admin/member_manager/users/:id?tab=audit_log" do
-    it "displays the audit log tab" do
+    it "displays the audit log tab and shows an empty message when no audit logs exist", :aggregate_failures do
       get "#{admin_user_path(user.id)}?tab=audit_log"
       expect(response).to be_successful
       expect(response.body).to include("Audit Log")
+      expect(response.body).to include("No audit log entries found")
     end
 
-    it "defaults to by_user filter showing actions performed by the user" do
+    it "filters audit logs by default (by_user), filter=by_user, and filter=on_user", :aggregate_failures do
       create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
                          slug: "test_actor_action", data: { "action" => "test_actor_action" })
       create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
                          slug: "user_status",
                          data: { "action" => "user_status", "target_user_id" => user.id })
+
       get "#{admin_user_path(user.id)}?tab=audit_log"
       expect(response.body).to include("Test actor action")
       expect(response.body).not_to include("User status")
-    end
 
-    it "shows actions performed by the user with filter=by_user" do
-      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
-                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
       get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
       expect(response.body).to include("Test actor action")
-    end
+      expect(response.body).not_to include("User status")
 
-    it "shows actions taken on the user with filter=on_user" do
-      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
-                         slug: "user_status",
-                         data: { "action" => "user_status", "target_user_id" => user.id })
       get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
       expect(response.body).to include("User status")
-    end
-
-    it "excludes actor-only logs when filter=on_user" do
-      create(:audit_log, user: user, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
-                         slug: "test_actor_action", data: { "action" => "test_actor_action" })
-      get "#{admin_user_path(user.id)}?tab=audit_log&filter=on_user"
       expect(response.body).not_to include("Test actor action")
-    end
-
-    it "excludes target-only logs when filter=by_user" do
-      create(:audit_log, user: admin, category: AuditLog::MODERATOR_AUDIT_LOG_CATEGORY,
-                         slug: "user_status",
-                         data: { "action" => "user_status", "target_user_id" => user.id })
-      get "#{admin_user_path(user.id)}?tab=audit_log&filter=by_user"
-      expect(response.body).not_to include("User status")
-    end
-
-    it "shows an empty message when no audit logs exist" do
-      get "#{admin_user_path(user.id)}?tab=audit_log"
-      expect(response.body).to include("No audit log entries found")
     end
 
     it "paginates audit logs" do
@@ -1040,25 +994,28 @@ RSpec.describe "/admin/member_manager/users" do
   end
 
   describe "GET /admin/member_manager/users/:id?tab=identities" do
-    it "displays the identities tab with user's identities" do
+    it "displays the identities tab with user's identities and an empty message when none exist",
+       :aggregate_failures do
       identity = user.identities.first
       get "#{admin_user_path(user.id)}?tab=identities"
       expect(response).to be_successful
       expect(response.body).to include("Connected Auth Identities")
       expect(response.body).to include(identity.uid)
       expect(response.body).to include("GitHub")
-    end
 
-    it "displays an empty message when user has no identities" do
-      user_without_identities = create(:user)
-      get "#{admin_user_path(user_without_identities.id)}?tab=identities"
+      user.identities.destroy_all
+      get "#{admin_user_path(user.id)}?tab=identities"
       expect(response).to be_successful
       expect(response.body).to include("No auth identities associated with this user.")
     end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=badges" do
-    it "displays the badges tab with user's badge achievements" do
+    it "displays an empty message and renders user's badge achievements when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=badges"
+      expect(response).to be_successful
+      expect(response.body).to include("No badges earned or awarded yet.")
+
       badge = create(:badge, title: "Super Contributor", description: "Awarded for amazing work")
       create(:badge_achievement, user: user, badge: badge, rewarder: admin)
       get "#{admin_user_path(user.id)}?tab=badges"
@@ -1068,17 +1025,15 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Awarded for amazing work")
       expect(response.body).to include(CGI.escapeHTML(admin.name))
     end
-
-    it "displays an empty message when user has no badges" do
-      get "#{admin_user_path(user.id)}?tab=badges"
-      expect(response).to be_successful
-      expect(response.body).to include("No badges earned or awarded yet.")
-    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=reactions" do
-    it "displays the reactions tab with user's reactions" do
-      article = create(:article, title: "Fascinating Post")
+    it "displays an empty message and renders user's reactions when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=reactions"
+      expect(response).to be_successful
+      expect(response.body).to include("No reactions found for this user.")
+
+      article = create(:article, title: "Fascinating Post", with_tags: false)
       create(:reaction, user: user, reactable: article, category: "like", status: "valid")
       get "#{admin_user_path(user.id)}?tab=reactions"
       expect(response).to be_successful
@@ -1086,16 +1041,14 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Like")
       expect(response.body).to include("Fascinating Post")
     end
-
-    it "displays an empty message when user has no reactions" do
-      get "#{admin_user_path(user.id)}?tab=reactions"
-      expect(response).to be_successful
-      expect(response.body).to include("No reactions found for this user.")
-    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=agent_sessions" do
-    it "displays the agent sessions tab with user's agent sessions" do
+    it "displays an empty message and renders user's agent sessions when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=agent_sessions"
+      expect(response).to be_successful
+      expect(response.body).to include("No agent sessions found for this user.")
+
       create(:agent_session, user: user, title: "Refactoring Auth Module", tool_name: "claude_code", published: true)
       get "#{admin_user_path(user.id)}?tab=agent_sessions"
       expect(response).to be_successful
@@ -1104,16 +1057,14 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Claude Code")
       expect(response.body).to include("Published")
     end
-
-    it "displays an empty message when user has no agent sessions" do
-      get "#{admin_user_path(user.id)}?tab=agent_sessions"
-      expect(response).to be_successful
-      expect(response.body).to include("No agent sessions found for this user.")
-    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=collections" do
-    it "displays the collections tab with user's series and collections" do
+    it "displays an empty message and renders user's series and collections when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=collections"
+      expect(response).to be_successful
+      expect(response.body).to include("No series or collections found for this user.")
+
       create(:collection, user: user, title: "Complete Rails Guide", description: "All parts of the guide")
       get "#{admin_user_path(user.id)}?tab=collections"
       expect(response).to be_successful
@@ -1121,18 +1072,16 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("Complete Rails Guide")
       expect(response.body).to include("All parts of the guide")
     end
-
-    it "displays an empty message when user has no collections" do
-      get "#{admin_user_path(user.id)}?tab=collections"
-      expect(response).to be_successful
-      expect(response.body).to include("No series or collections found for this user.")
-    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=follows" do
     let(:other_user) { create(:user, name: "Followed Friend") }
 
-    it "displays the follows tab with followers and following" do
+    it "displays an empty message and renders followers and following when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=follows"
+      expect(response).to be_successful
+      expect(response.body).to include("No follows found.")
+
       create(:follow, follower: other_user, followable: user)
       get "#{admin_user_path(user.id)}?tab=follows"
       expect(response).to be_successful
@@ -1144,18 +1093,16 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response).to be_successful
       expect(response.body).to include("Followed Friend")
     end
-
-    it "displays an empty message when user has no follows" do
-      get "#{admin_user_path(user.id)}?tab=follows"
-      expect(response).to be_successful
-      expect(response.body).to include("No follows found.")
-    end
   end
 
   describe "GET /admin/member_manager/users/:id?tab=blocks" do
     let(:blocked_user) { create(:user, name: "Blocked Spammer") }
 
-    it "displays the blocks tab with user blocks" do
+    it "displays an empty message and renders user blocks when present", :aggregate_failures do
+      get "#{admin_user_path(user.id)}?tab=blocks"
+      expect(response).to be_successful
+      expect(response.body).to include("No user blocks found.")
+
       UserBlock.create!(blocker: user, blocked: blocked_user, config: "default")
       get "#{admin_user_path(user.id)}?tab=blocks"
       expect(response).to be_successful
@@ -1165,12 +1112,6 @@ RSpec.describe "/admin/member_manager/users" do
       get "#{admin_user_path(blocked_user.id)}?tab=blocks&filter=blocked_by"
       expect(response).to be_successful
       expect(response.body).to include(CGI.escapeHTML(user.name))
-    end
-
-    it "displays an empty message when user has no blocks" do
-      get "#{admin_user_path(user.id)}?tab=blocks"
-      expect(response).to be_successful
-      expect(response.body).to include("No user blocks found.")
     end
   end
 end

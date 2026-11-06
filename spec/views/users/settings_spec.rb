@@ -18,19 +18,11 @@ RSpec.describe "users/edit" do
         assign(:organization, Organization.new)
       end
 
-      it "shows the org listing with settings link" do
+      it "shows the org listing with settings link, create section, and join section", :aggregate_failures do
         render
         expect(rendered).to have_text(I18n.t("views.settings.org.list.heading"))
         expect(rendered).to have_link(I18n.t("views.settings.org.list.manage"))
-      end
-
-      it "shows the create organization section" do
-        render
         expect(rendered).to have_text(I18n.t("views.settings.org.create.heading"))
-      end
-
-      it "shows the join organization section" do
-        render
         expect(rendered).to have_text(I18n.t("views.settings.org.join.heading"))
       end
     end

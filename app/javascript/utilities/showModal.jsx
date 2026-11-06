@@ -1,23 +1,10 @@
+import {
+  WINDOW_MODAL_ID,
+  loadWindowModalBundle,
+} from '@utilities/windowModalLoader';
+
 // Unique ID applied to modals created using the showWindowModal function
-export const WINDOW_MODAL_ID = 'window-modal';
-
-// We only import these modules if a user actually triggers a modal. Here we cache them so they are only imported once.
-let preactImport;
-let modalImports;
-
-const getPreactImport = () => {
-  if (!preactImport) {
-    preactImport = import('preact');
-  }
-  return preactImport;
-};
-
-const getModalImports = () => {
-  if (!modalImports) {
-    modalImports = [import('@crayons/Modal'), getPreactImport()];
-  }
-  return Promise.all(modalImports);
-};
+export { WINDOW_MODAL_ID };
 
 /**
  * This helper function presents content inside a Preact modal.
@@ -34,47 +21,11 @@ const getModalImports = () => {
  * @param {Function} args.onOpen A callback function to run when the modal opens. This can be useful, for example, to attach any event listeners to items inside the modal.
  * @param {Object} args.document Allows us to specify which "document" is relevant; e.g. use within iframes.
  */
-export const showWindowModal = async ({
-  modalContent,
-  contentSelector,
-  onOpen,
-  document = window.document,
-  ...modalProps
-}) => {
-  const [{ Modal }, { render, h }] = await getModalImports();
-
-  // Guard against two modals being opened at once
-  let currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
-  if (currentModalContainer) {
-    render(null, currentModalContainer);
-  } else {
-    currentModalContainer = document.createElement('div');
-    currentModalContainer.setAttribute('id', WINDOW_MODAL_ID);
-    document.body.appendChild(currentModalContainer);
+export const showWindowModal = async (options) => {
+  const { renderWindowModal } = await loadWindowModalBundle();
+  if (typeof renderWindowModal === 'function') {
+    renderWindowModal(options);
   }
-
-  render(
-    <Modal
-      onClose={() => {
-        render(null, currentModalContainer);
-      }}
-      focusTrapSelector={`#${WINDOW_MODAL_ID}`}
-      document={document}
-      {...modalProps}
-    >
-      <div
-        className="h-100 w-100"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{
-          __html:
-            modalContent ?? document.querySelector(contentSelector)?.innerHTML,
-        }}
-      />
-    </Modal>,
-    currentModalContainer,
-  );
-
-  onOpen?.();
 };
 
 /**
@@ -82,8 +33,11 @@ export const showWindowModal = async ({
  */
 export const closeWindowModal = async (document = window.document) => {
   const currentModalContainer = document.getElementById(WINDOW_MODAL_ID);
-  if (currentModalContainer) {
-    const { render } = await getPreactImport();
-    render(null, currentModalContainer);
+  if (!currentModalContainer) {
+    return;
+  }
+  const { unmountWindowModal } = await loadWindowModalBundle();
+  if (typeof unmountWindowModal === 'function') {
+    unmountWindowModal(document);
   }
 };

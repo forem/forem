@@ -933,6 +933,220 @@ module ForemNative
       Native.sanitize_feed_error(message)
     end
 
+    # Verifies a Rails `encoded_masked_token` against the session's `encoded_real_token` in
+    # constant time, matching `ActionController::RequestForgeryProtection#valid_authenticity_token?`.
+    # Returns `true` or `false`, or `nil` if `encoded_real_token` is outside the 32-byte token domain.
+    def verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path = nil, request_method = nil)
+      return unless Native.respond_to?(:verify_authenticity_token)
+      return unless encoded_masked_token.instance_of?(String) && encoded_real_token.instance_of?(String)
+      return unless (action_path.nil? || action_path.instance_of?(String)) &&
+        (request_method.nil? || request_method.instance_of?(String))
+
+      Native.verify_authenticity_token(encoded_masked_token, encoded_real_token, action_path, request_method)
+    end
+
+    # Verifies an HS256 JWT token against `secret` and `now_sec` in constant time, returning
+    # the decoded payload Hash for standard flat payloads, `false` when malformed/invalid/expired,
+    # or `nil` when the caller should fall back to `JWT.decode`.
+    def verify_hs256_jwt(token, secret, now_sec = Time.now.to_i)
+      return unless Native.respond_to?(:verify_hs256_jwt)
+      return unless token.instance_of?(String) && secret.instance_of?(String) && now_sec.is_a?(Integer)
+
+      Native.verify_hs256_jwt(token, secret, now_sec)
+    end
+
+    # Builds the single-statement `SET LOCAL synchronous_commit TO OFF; UPDATE "display_ad_events" ...`
+    # SQL query for `BillboardEvent.add_impression_seconds`. Returns `:invalid` when `id` casts to nil,
+    # the SQL String when valid, or `nil` for out-of-domain inputs.
+    def billboard_event_update_sql(id, user_id, seconds, now_time, cutoff_time)
+      return unless Native.respond_to?(:billboard_event_update_sql)
+      return unless (user_id.nil? || user_id.is_a?(Integer)) && seconds.is_a?(Integer) &&
+        now_time.respond_to?(:tv_sec) && cutoff_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      cutoff_utc = cutoff_time.utc? ? cutoff_time : cutoff_time.getutc
+      Native.billboard_event_update_sql(
+        id, user_id, seconds, now_utc.tv_sec, now_utc.usec, cutoff_utc.tv_sec, cutoff_utc.usec
+      )
+    end
+
+    # Validates and builds the single-statement `SET LOCAL synchronous_commit TO OFF; INSERT INTO ...`
+    # SQL query for `BillboardEvent.create_with_async_commit`. Returns the SQL String, `:invalid` when
+    # validation fails, or `nil` when the caller should fall back to `legacy_create_with_async_commit`.
+    def billboard_event_insert_sql(args)
+      return unless Native.respond_to?(:billboard_event_insert_sql) && args.is_a?(Array)
+
+      Native.billboard_event_insert_sql(args)
+    end
+
+    # Checks whether `origin` matches any whitespace-trimmed non-empty entry in `raw_origins`,
+    # matching `raw_origins.to_s.split(",").map(&:strip).reject(&:empty?).include?(origin)`.
+    def origin_in_comma_list(origin, raw_origins)
+      return false if origin.nil? || raw_origins.nil?
+      return unless Native.respond_to?(:origin_in_comma_list)
+      return unless origin.instance_of?(String) && raw_origins.instance_of?(String)
+
+      Native.origin_in_comma_list(origin, raw_origins)
+    end
+
+    # Checks whether `value` matches `Feeds::RecordConfigVisit::UUID_PATTERN`
+    # (`/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i`).
+    def valid_uuid(value)
+      return false unless value.is_a?(String)
+      return unless Native.respond_to?(:valid_uuid) && value.instance_of?(String)
+
+      Native.valid_uuid(value)
+    end
+
+    # Computes `Digest::SHA256.digest("feed_events:#{user_id}").unpack1("q>")` for
+    # `FeedEvents::BulkUpsert#call` on the stack with zero heap allocations.
+    def feed_events_advisory_lock_key(user_id)
+      return unless Native.respond_to?(:feed_events_advisory_lock_key)
+      return unless user_id.is_a?(Integer) && user_id >= -2**63 && user_id < 2**63
+
+      Native.feed_events_advisory_lock_key(user_id)
+    end
+
+    # Evaluates `ValidRequest#valid_request_origin?` without allocating `URI::HTTP` objects or
+    # running `String#gsub` on the heap. Returns `true`, `false`, `:null_origin`, or `nil` when
+    # the caller should fall back to `URI.parse`.
+    def valid_request_origin(referer, origin, base_url, request_host, request_port)
+      return unless Native.respond_to?(:valid_request_origin)
+
+      Native.valid_request_origin(referer, origin, base_url, request_host, request_port)
+    end
+
+    # Extracts `[domain, path]` from a `PageView#referrer` string matching
+    # `parsed_url = Addressable::URI.parse(referrer); [parsed_url.domain, parsed_url.path]`.
+    def extract_referrer_domain_and_path(referrer)
+      return unless Native.respond_to?(:extract_referrer_domain_and_path)
+      return unless referrer.instance_of?(String)
+
+      Native.extract_referrer_domain_and_path(referrer)
+    end
+
+    # Classifies `(method, path)` for `Middlewares::MetalTelemetryFastPath`, returning
+    # `[:billboard_update, id]`, `[:billboard_create, nil]`, `[:page_view_update, id]`,
+    # `[:page_view_create, nil]`, or `nil`.
+    def match_metal_telemetry_route(method, path)
+      return unless Native.respond_to?(:match_metal_telemetry_route)
+      return unless method.instance_of?(String) && path.instance_of?(String)
+
+      Native.match_metal_telemetry_route(method, path)
+    end
+
+    # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
+    # in a single native call without `ActiveSupport::JSON.decode` or `ActionController::Parameters`.
+    def billboard_event_create_from_json_sql(json_body, user_id, geolocation, header_user_agent, is_embed, now_time)
+      return unless Native.respond_to?(:billboard_event_create_from_json_sql)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        now_time.respond_to?(:tv_sec)
+
+      now_utc = now_time.utc? ? now_time : now_time.getutc
+      Native.billboard_event_create_from_json_sql(
+        json_body, user_id, geolocation, header_user_agent, is_embed ? true : false, now_utc.tv_sec, now_utc.usec
+      )
+    end
+
+    # Extracts deduplicated `[tag_name, url, options]` tuples from Markdown outside fenced and
+    # single-line inline code spans, matching `LiquidEmbedExtractor.extract`.
+    def extract_liquid_embed_tags(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_liquid_embed_tags(content)
+    end
+
+    # Extracts deduplicated `http(s)://` URLs from Markdown outside fenced code blocks, inline
+    # code spans, and single-line Liquid tags with trailing punctuation stripped, matching
+    # `WebpageExtractor.extract`.
+    def extract_markdown_webpage_urls(content)
+      return unless content.instance_of?(String)
+
+      Native.extract_markdown_webpage_urls(content)
+    end
+
+    # Extracts deduplicated Markdown (`!\[.*?\]\((.*?)\)`) and HTML (`<img.*?src=["'](.*?)["']`)
+    # image URLs excluding `excluded_substring`, matching
+    # `Articles::EnrichImageAttributes.store_image_if_appropriate`.
+    def extract_markdown_and_html_image_urls(markdown, excluded_substring = "")
+      return unless markdown.instance_of?(String) && excluded_substring.instance_of?(String)
+
+      Native.extract_markdown_and_html_image_urls(markdown, excluded_substring)
+    end
+
+    # Cleans a comma-delimited tag list string in a single pass, matching
+    # `ActsAsTaggableOn::TagParser#clean`.
+    def clean_tag_list(input)
+      return unless input.instance_of?(String)
+
+      Native.clean_tag_list(input)
+    end
+
+    # Literal transcript substitutions, with no entity decoding or DOM normalization.
+    # Non-UTF-8 strings and subclasses retain their Ruby encoding/gsub semantics.
+    def wrap_untagged_codeblocks(html)
+      return unless Native.respond_to?(:wrap_untagged_codeblocks)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.wrap_untagged_codeblocks(html)
+    end
+
+    # Replaces literal `[REDACTED]` markers with `<span class="agent-session-redacted">[REDACTED]</span>`.
+    def style_redaction_markers(html)
+      return unless Native.respond_to?(:style_redaction_markers)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.style_redaction_markers(html)
+    end
+
+    # Fuses code wrapping and marker styling after Rouge in one native call.
+    def postprocess_transcript_html(html, redact: true)
+      return unless Native.respond_to?(:postprocess_transcript_html)
+      return unless html.instance_of?(String) && html.encoding == Encoding::UTF_8
+
+      Native.postprocess_transcript_html(html, redact)
+    end
+
+    # Scans `cached_tag_list` (`", "`-delimited) in-place and returns the first tag matching
+    # `allowed_tags` (or `Constants::Tags::FLARE_TAG_NAMES` when `allowed_tags` is nil),
+    # `false` when no flare tag matches on valid input, or `nil` for out-of-domain inputs.
+    def match_first_flare_tag(cached_tag_list, allowed_tags = nil)
+      return unless Native.respond_to?(:match_first_flare_tag)
+      return unless cached_tag_list.nil? || cached_tag_list.instance_of?(String)
+      return unless allowed_tags.nil? || allowed_tags.is_a?(Array)
+
+      Native.match_first_flare_tag(cached_tag_list, allowed_tags)
+    end
+
+    # Groups `[[article_id, cached_tag_list], ...]` pairs by their first matching flare tag
+    # in a single native pass (`{ flare_tag => [article_ids] }`), matching
+    # `Homepage::FetchTagFlares.articles_tag_flares`. Returns `nil` for out-of-domain inputs.
+    def match_articles_flare_tags(pairs, allowed_tags = nil)
+      return unless Native.respond_to?(:match_articles_flare_tags)
+      return unless pairs.is_a?(Array) && (allowed_tags.nil? || allowed_tags.is_a?(Array))
+
+      Native.match_articles_flare_tags(pairs, allowed_tags)
+    end
+
+    # Builds a single `(CASE <select_fragment>\nWHEN <v> THEN <f>...\nELSE <fallback> END)`
+    # SQL expression, matching `Articles::Feeds::VariantQuery#build_score_element_from`.
+    def build_relevancy_lever_sql(select_fragment, cases, fallback)
+      return unless Native.respond_to?(:build_relevancy_lever_sql)
+      return unless select_fragment.instance_of?(String) && cases.is_a?(Array)
+      return unless fallback.is_a?(Integer) || fallback.is_a?(Float)
+
+      Native.build_relevancy_lever_sql(select_fragment, cases, fallback)
+    end
+
+    # Compiles the joined `relevance_score_components_as_sql` expression for
+    # `Articles::Feeds::VariantQuery` in a single pre-allocated Rust buffer.
+    def build_variant_relevancy_score_sql(levers, has_user, minimize_ai)
+      return unless Native.respond_to?(:build_variant_relevancy_score_sql)
+      return unless levers.is_a?(Array)
+
+      Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

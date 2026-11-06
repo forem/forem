@@ -24,15 +24,28 @@
       <meta name="head-cached-at" content="<%= Time.current.to_i %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", "eventSignupButtons", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "baseTracking", "followButtons", defer: true %>
+      <% if controller_name == "events" %>
+        <%= javascript_include_tag "eventSignupButtons", defer: true, onerror: "this.remove()" %>
+      <% end %>
+      <% if @story_show || %w[comments podcast_episodes notifications].include?(controller_name) %>
+        <%= javascript_include_tag "commentsPage", defer: true, onerror: "this.remove()" %>
+      <% end %>
 
       <%# This Rails.env.test? introduces some test-specific behavior, but that is much easier to verify without the specific loading code. We should ensure search still works as expected manually as well. %>
       <% if controller_name == "articles_search" || Rails.env.test? %>
-        <%= javascript_include_tag "Search", defer: true %>
-      <% else %>
-        <meta name="search-script" content="<%= asset_path 'Search.js' %>">
+        <%= javascript_include_tag "Search", defer: true, onerror: "this.remove()" %>
       <% end %>
+      <meta name="search-script" content="<%= asset_path 'Search.js' %>">
       <meta name="mermaid-script" content="<%= asset_path 'mermaidRenderer.js' %>">
+      <meta name="comment-textarea-script" content="<%= asset_path 'CommentTextArea/CommentTextArea.js' %>">
+      <meta name="emoji-picker-script" content="<%= asset_path 'emojiPicker.js' %>">
+      <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
+      <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
+      <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
+      <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
+      <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -170,7 +183,7 @@
     <% end %>
     <%= yield %>
     <div id="runtime-banner-container"></div>
-    <div id="i18n-translations" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
+    <div id="i18n-translations" data-locale="<%= I18n.locale %>" data-translations="<%= i18n_translations_for_javascript.to_json %>"></div>
   </div>
 </div>
 <% unless internal_navigation? %>

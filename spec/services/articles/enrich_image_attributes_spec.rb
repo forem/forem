@@ -30,6 +30,13 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     it "does not alter the processed HTML" do
       assert_unchanged(article)
     end
+
+    it "skips Nokogiri HTML fragment parsing when the body has no images" do
+      target_article = article
+      allow(Nokogiri::HTML).to receive(:fragment).and_call_original
+      described_class.call(target_article)
+      expect(Nokogiri::HTML).not_to have_received(:fragment)
+    end
   end
 
   context "when the body has a main image" do

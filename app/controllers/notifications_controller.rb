@@ -16,7 +16,7 @@ class NotificationsController < ApplicationController
     # this might not be forever true but it's good enough for now
     if params[:offset]
       num = 30
-      notified_at_offset = Notification.find(params[:offset])&.notified_at
+      notified_at_offset = Notification.select(:notified_at).find(params[:offset])&.notified_at
     else
       num = @initial_page_size
     end
@@ -28,10 +28,19 @@ class NotificationsController < ApplicationController
                      else
                        @user.notifications
                      end
-    @notifications = @notifications.from_subforem.order(notified_at: :desc)
+    # Wrap `notified_at` in an expression so high-volume accounts in `pg_stats.most_common_vals`
+    # use the `user_id`/`organization_id` B-tree indexes + `Sort` rather than an unbounded
+    # backward walk across the 4.76 GB global `index_notifications_on_notified_at` index.
+    @notifications = @notifications.from_subforem.order(
+      Arel.sql("(notifications.notified_at + INTERVAL '0 seconds') DESC"),
+    )
 
     # if offset based pagination is invoked by the frontend code, we filter out all earlier ones
-    @notifications = @notifications.where("notified_at < ?", notified_at_offset) if notified_at_offset
+    if notified_at_offset
+      @notifications = @notifications.where(
+        "(notifications.notified_at + INTERVAL '0 seconds') < ?", notified_at_offset
+      )
+    end
 
     @notifications = @notifications.limit(num)
 
@@ -81,7 +90,7 @@ class NotificationsController < ApplicationController
     if params[:filter].to_s.casecmp("posts").zero?
       @user.notifications.for_published_articles
     elsif params[:filter].to_s.casecmp("comments").zero?
-      @user.notifications.for_comments.or(@user.notifications.for_mentions)
+      @user.notifications.for_comments_and_mentions
     else
       @user.notifications
     end
@@ -91,7 +100,7 @@ class NotificationsController < ApplicationController
     org_id = params[:org_id]
 
     if params[:filter].to_s.casecmp("comments").zero?
-      Notification.for_organization_comments(org_id).or(Notification.for_organization_mentions(org_id))
+      Notification.for_organization_comments_and_mentions(org_id)
     else
       Notification.for_organization(org_id)
     end
