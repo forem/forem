@@ -1,0 +1,90 @@
+app/views/pages/_editor_guide_text.pt.html.erb
+  h_a5e25bc086eb00 13-18,29-30,32-33,35,37-43,46-47,49-50,71,75,86-93,109-110,112-117,133-141,143-144,147,151,157-160
+  h_a5e25bc086eb00 31,34,36,48,62-64,66,142,145-146,148-150,152-156
+app/javascript/crayons/MarkdownToolbar/__tests__/MarkdownToolbar.test.jsx
+  h_a5e25bc086eb00 87
+app/views/pages/_editor_markdown_help.fr.html.erb
+  h_a5e25bc086eb00 23,48
+  h_a5e25bc086eb00 14-16,18
+app/views/pages/_editor_markdown_help.en.html.erb
+  h_a5e25bc086eb00 23,48
+  h_a5e25bc086eb00 14-16,18
+app/views/pages/_supported_nonurl_embeds_list.fr.html.erb
+  h_a5e25bc086eb00 3-11,13-22,29,31,33-67,70,74,78
+  h_a5e25bc086eb00 75
+app/views/pages/_v1_editor_guide_preamble.fr.html.erb
+  h_a5e25bc086eb00 1-7,9-23,25-30,34,37-42
+  h_a5e25bc086eb00 31-33,35-36
+app/views/pages/_v1_editor_guide_preamble.pt.html.erb
+  h_a5e25bc086eb00 1-7,9-23,25-30,32-42
+  h_a5e25bc086eb00 31
+app/views/pages/_editor_liquid_help.en.html.erb
+  h_a5e25bc086eb00 63-65
+  h_a5e25bc086eb00 66
+app/views/pages/_editor_guide_text.en.html.erb
+  h_a5e25bc086eb00 13-14,18,35,37-40,71,75,147
+  h_a5e25bc086eb00 62-64,66
+app/views/pages/_editor_liquid_help.fr.html.erb
+  h_a5e25bc086eb00 63-66,83-130
+  h_a5e25bc086eb00 131
+app/views/pages/markdown_basics.fr.html.erb
+  h_a5e25bc086eb00 26
+app/views/pages/markdown_basics.pt.html.erb
+  h_a5e25bc086eb00 26
+app/views/pages/_supported_nonurl_embeds_list.en.html.erb
+  h_a5e25bc086eb00 4-13,35-67
+  h_a5e25bc086eb00 68
+app/javascript/crayons/MarkdownToolbar/MarkdownToolbar.jsx
+  h_a5e25bc086eb00 89
+app/views/pages/_supported_nonurl_embeds_list.pt.html.erb
+  h_a5e25bc086eb00 3-11,13-22,29,31,33-61,63-67,70,74,78
+  h_a5e25bc086eb00 75
+app/views/pages/_editor_guide_text.fr.html.erb
+  h_a5e25bc086eb00 13-18,29-30,32-33,35,37-43,46-47,49-50,71,75,86-93,109-110,112-117,133-141,143-144,147,151,157-160
+  h_a5e25bc086eb00 31,34,36,48,62-64,66,142,145-146,148-150,152-156
+app/views/pages/_v1_editor_guide_preamble.en.html.erb
+  h_a5e25bc086eb00 1-7,9-23,25-30,32-42
+  h_a5e25bc086eb00 31
+app/javascript/article-form/components/Toolbar.jsx
+  h_a5e25bc086eb00 2,4-5,10-25,28,36-59,67-68,76-77
+  h_a5e25bc086eb00 26-27,29-35
+app/views/pages/_supported_url_embeds_list.pt.html.erb
+  h_a5e25bc086eb00 1-9,13,15,19,22,24,30,34,36,38-39,42-53
+  h_a5e25bc086eb00 54
+app/services/ai/editor_helper_service.rb
+  h_a5e25bc086eb00 25,69-70,73
+app/views/pages/_supported_url_embeds_list.fr.html.erb
+  h_a5e25bc086eb00 1-9,13,15,19,22,24,30,34,36,38-39,42-53
+  h_a5e25bc086eb00 54
+app/views/pages/_editor_markdown_help.pt.html.erb
+  h_a5e25bc086eb00 23,48
+  h_a5e25bc086eb00 14-16,18
+app/views/pages/_editor_liquid_help.pt.html.erb
+  h_a5e25bc086eb00 63-66,83-130
+  h_a5e25bc086eb00 131
+app/views/pages/markdown_basics.en.html.erb
+  h_a5e25bc086eb00 26
+app/javascript/article-form/components/__tests__/Form.test.jsx
+  h_a5e25bc086eb00 122,148-223
+app/javascript/shared/components/useMediaQuery.js
+  h_a5e25bc086eb00 9
+app/views/articles/_v2_form.html.erb
+  h_a5e25bc086eb00 150,160-173,175-176,178-182,185-192,195-206
+app/views/organization_settings/edit.html.erb
+  h_a5e25bc086eb00 830,840-853,855-856,858-862,865-872,875-886
+app/views/pages/_supported_url_embeds_list.en.html.erb
+  h_a5e25bc086eb00 8,15,22,38
+spec/services/ai/editor_helper_service_spec.rb
+  h_a5e25bc086eb00 24-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "266bf81618381752a9a7faf44367836a9a9a7da2",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}
