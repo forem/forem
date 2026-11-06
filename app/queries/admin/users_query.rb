@@ -41,7 +41,7 @@ module Admin
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
-        relation = relation.with_role(role, :any)
+        relation = relation.where(id: User.with_role(role, :any).select(:id))
       elsif roles.presence || statuses.presence
         # "statuses" are a subset of roles, so we can handle these filters together
         relation = filter_roles(relation: relation, roles: [roles, statuses].compact.reduce([], :|))
@@ -60,7 +60,7 @@ module Admin
       relation = filter_ids(relation, ids) if ids.presence
       relation = relation.limit(limit.to_i) if limit.to_i.positive?
 
-      relation.distinct.order(created_at: :desc)
+      relation.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)

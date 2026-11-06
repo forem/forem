@@ -24,18 +24,44 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(username)
     end
 
-    it "does not query roles separately for each user displayed" do
-      create_list(:user, 2)
+    it "does not query roles or organizations separately for each user displayed" do
+      org = create(:organization, name: "Preloaded Org")
+      users = create_list(:user, 2)
+      users.each { |u| create(:organization_membership, user: u, organization: org) }
       scoped_role_queries = []
+      scoped_org_queries = []
       subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
         sql = payload[:sql]
         scoped_role_queries << sql if sql.match?(/FROM "roles".*"users_roles".*"users_roles"\."user_id" =/)
+        scoped_org_queries << sql if sql.match?(/FROM "organizations".*"organization_memberships"\."user_id" =/)
       end
 
       ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { get admin_users_path }
 
       expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Preloaded Org")
       expect(scoped_role_queries).to be_empty
+      expect(scoped_org_queries).to be_empty
+    end
+
+    it "bounds the filter modal organizations query and avoids DISTINCT user counts" do
+      org_select_queries = []
+      distinct_user_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        sql = payload[:sql]
+        if sql.include?('FROM "organizations"') && sql.include?('ORDER BY "organizations"."name" DESC')
+          org_select_queries << sql
+        end
+        distinct_user_queries << sql if sql.match?(/SELECT (?:COUNT\()?DISTINCT.*"users"/i)
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { get admin_users_path }
+
+      expect(response).to have_http_status(:ok)
+      expect(org_select_queries.size).to eq(1)
+      expect(org_select_queries.first).to include('SELECT "organizations"."id", "organizations"."name"')
+      expect(org_select_queries.first).to include("LIMIT")
+      expect(distinct_user_queries).to be_empty
     end
 
     context "when searching" do

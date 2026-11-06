@@ -39,6 +39,8 @@ module Admin
       unpublish_all_articles: :unpublish_all_articles?
     }.freeze
 
+    ORGANIZATION_FILTER_LIMIT = 100
+
     after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
@@ -707,11 +709,20 @@ new_email = user_params[:email].to_s.strip.presence
         joining_end: params[:joining_end],
         date_format: params[:date_format],
         organizations: params[:organizations],
-      ).preload(:roles).page(params[:page]).per(50)
+      ).preload(:roles, :organizations).page(params[:page]).per(50)
 
       @organization_limit = 3
-      @organizations = Organization.order(name: :desc)
-      @earliest_join_date = User.first.registered_at.to_s
+      @organizations = filter_modal_organizations
+      @earliest_join_date = User.order(:id).pick(:registered_at).to_s
+    end
+
+    def filter_modal_organizations
+      scope = Organization.select(:id, :name).order(name: :desc)
+      selected_ids = Array(params[:organizations]).compact_blank
+      return scope.limit(ORGANIZATION_FILTER_LIMIT) if selected_ids.empty?
+
+      top_ids = Organization.select(:id).order(name: :desc).limit(ORGANIZATION_FILTER_LIMIT)
+      scope.where(id: top_ids).or(scope.where(id: selected_ids))
     end
 
     def index_for_json
