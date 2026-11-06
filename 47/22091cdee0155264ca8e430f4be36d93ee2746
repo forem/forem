@@ -1,0 +1,44 @@
+.cursorrules
+  h_f968154a99632d 66-69
+.github/copilot-instructions.md
+  h_f968154a99632d 66-69
+.windsurfrules
+  h_f968154a99632d 66-69
+AGENTS.md
+  h_f968154a99632d 66-69
+app/javascript/packs/admin.js
+  h_f968154a99632d 1
+app/javascript/packs/application.jsx
+  h_f968154a99632d 1
+app/javascript/packs/preactRuntime.js
+  h_f968154a99632d 1
+app/javascript/shared/preact/__tests__/ensurePreactRuntime.test.js
+  h_f968154a99632d 1-152
+app/javascript/shared/preact/ensurePreactRuntime.js
+  h_f968154a99632d 1-71
+app/javascript/shared/preact/preactRuntime.js
+  h_f968154a99632d 1-16
+app/javascript/utilities/__tests__/loadAssetBundle.test.js
+  h_f968154a99632d 11,83-104
+app/javascript/utilities/loadAssetBundle.js
+  h_f968154a99632d 58-66,70-71,73
+app/views/layouts/admin.html.erb
+  h_f968154a99632d 17
+app/views/layouts/application.html.erb
+  h_f968154a99632d 49,165
+esbuild.config.mjs
+  h_f968154a99632d 7,179-285,310
+spec/requests/favorites_spec.rb
+  h_f968154a99632d 140-148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4722091cdee0155264ca8e430f4be36d93ee2746",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
