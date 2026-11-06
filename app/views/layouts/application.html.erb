@@ -46,6 +46,7 @@
       <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
       <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
       <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
+      <meta name="preact-runtime-script" content="<%= asset_path 'preactRuntime.js' %>">
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
       <% end %>
@@ -161,7 +162,7 @@
       <%= render "layouts/top_bar" %>
       <div id="active-broadcast" class="broadcast-wrapper"></div>
   <% end %>
-<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>">
+<div id="page-content" class="wrapper <%= view_class %>" data-current-page="<%= current_page %>" data-preact-runtime-src="<%= asset_path("preactRuntime.js") %>">
   <% if flash[:global_notice] %>
     <div class="crayons-banner" id="setup-banner" aria-live="polite">
       <%== flash[:global_notice] %>

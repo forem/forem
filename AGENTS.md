@@ -63,6 +63,10 @@ If you are modifying these agent instructions, you **MUST** replicate your chang
 - **Lazy Asset Bundle Loading (`createAssetBundleLoader`)**:
   - When deferring on-demand packs (such as `CommentTextArea`, `emojiPicker`, `windowModal`, `mediaPlayback`, or `postscribeLoader`) behind `<meta name="*-script" content="<%= asset_path ... %>">` tags in `application.html.erb`, use `createAssetBundleLoader` from `app/javascript/utilities/loadAssetBundle.js`.
   - Always include `onerror: "this.remove()"` on any eager `javascript_include_tag` that pairs with a lazy loader, and ensure dynamic `<script>` loaders remove failed `<script>` elements on `error` so subsequent InstantClick navigations or interactions can retry cleanly instead of waiting on a failed `<script>` element.
+- **Shared Preact Runtime (`window.__foremPreact` & `ensurePreactRuntime`)**:
+  - Root layout entrypoints (`app/javascript/packs/application.jsx` and `app/javascript/packs/admin.js`, plus the standalone fallback `app/javascript/packs/preactRuntime.js`) initialize `window.__foremPreact = { preact, hooks, compat }` via `app/javascript/shared/preact/preactRuntime.js`.
+  - `esbuild.config.mjs` (`sharedPreactRuntimePlugin`) externalizes `preact`, `preact/hooks`, `preact/compat`, `react`, and `react-dom` across all secondary packs so they share the single `window.__foremPreact` instance and wraps secondary Preact packs with `ensurePreactRuntime` (`app/javascript/shared/preact/ensurePreactRuntime.js`).
+  - `ensurePreactRuntime` executes packs synchronously when `window.__foremPreact` is present, and automatically loads `preactRuntime.js` (via `#page-content[data-preact-runtime-src]` or `meta[name="preact-runtime-script"]`) if a user with a stale pre-deploy `<head>` navigates via InstantClick (`?i=i`) to a post-deploy `#page-content`.
 
 ## Documentation
 - If you find documentation that contradicts the codebase, trust the codebase patterns but note the discrepancy.

@@ -43,7 +43,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
 
     expect(EdgeCache::PurgeByKey).to have_received(:call).with(
       article.user.profile_cache_keys,
-      fallback_paths: article.user.profile_cache_bust_paths
+      fallback_paths: article.user.profile_cache_bust_paths,
     ).once
   end
 
@@ -131,6 +131,24 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
       end
       # Once from bust_home_pages and once (not once per tag) from bust_tag_pages
       expect(cache_bust).to have_received(:call).with("/top/week").twice
+    end
+
+    it "bounds hotness_score checks and ranks by the stored hotness_score" do
+      allow(described_class).to receive(:rand).with(2).and_return(1)
+
+      create_list(:article, 4, :past, tags: "go", hotness_score: 500, published: true, past_published_at: 2.days.ago)
+      low_hot = create(:article, :past, tags: "go", hotness_score: 50, published: true, past_published_at: 2.days.ago)
+      top_hot = create(:article, :past, tags: "go", hotness_score: 900, published: true, past_published_at: 2.days.ago)
+
+      low_hot.hotness_score = 10_000
+      described_class.call(low_hot)
+      expect(cache_bust).not_to have_received(:call).with("/t/go")
+      expect(cache_bust).not_to have_received(:call).with("/")
+
+      top_hot.hotness_score = 0
+      described_class.call(top_hot)
+      expect(cache_bust).to have_received(:call).with("/t/go").once
+      expect(cache_bust).to have_received(:call).with("/").once
     end
   end
 end

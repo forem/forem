@@ -193,6 +193,7 @@ RSpec.describe "/admin/member_manager/users" do
       article = create(:article)
       comment = create(:comment, user: user, commentable: article)
       reaction = create(:reaction, category: "vomit", reactable: comment, user: admin, status: "valid")
+      non_vomit_reaction = create(:reaction, category: "like", reactable: comment, user: create(:user))
 
       get "#{admin_user_path(user.id)}?tab=flags"
 
@@ -200,6 +201,7 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include(CGI.escapeHTML("Comment on \"#{article.title}\""))
       expect(response.body).to include(comment.path)
       expect(response.body).to include(admin_reaction_path(reaction.id))
+      expect(response.body).not_to include(admin_reaction_path(non_vomit_reaction.id))
       expect(response.body).to include("Mark as Invalid")
       # The flag dropdown script is included only once when both flag lists render
       expect(response.body.scan("flagReactionItemDropdownButton").size).to eq(1)
@@ -207,14 +209,17 @@ RSpec.describe "/admin/member_manager/users" do
       expect(response.body).to include("No flags received against this user yet.")
     end
 
-    it "lists a flag left on the user's article in the 'Flags' tab" do
+    it "lists a flag left on the user's article in the 'Flags' tab", :aggregate_failures do
       article = create(:article, user: user)
-      create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
+      vomit_reaction = create(:reaction, category: "vomit", reactable: article, user: admin, status: "valid")
+      non_vomit_reaction = create(:reaction, category: "like", reactable: article, user: create(:user))
 
       get "#{admin_user_path(user.id)}?tab=flags"
 
       expect(response.body).to include(CGI.escapeHTML("Post \"#{article.title}\""))
       expect(response.body).to include(article.path)
+      expect(response.body).to include(admin_reaction_path(vomit_reaction.id))
+      expect(response.body).not_to include(admin_reaction_path(non_vomit_reaction.id))
     end
 
     it "displays a user's current reports and the empty-state message in the 'Reports' tab", :aggregate_failures do
@@ -245,6 +250,78 @@ RSpec.describe "/admin/member_manager/users" do
       get "#{admin_user_path(user.id)}?tab=unpublish_logs"
       expect(response).to be_successful
       expect(response.body).not_to include("Unpublished by")
+    end
+
+    it "does not execute queries for inactive tabs when rendering the overview tab", :aggregate_failures do
+      user.id
+      inactive_tab_queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        if sql.match?(/FROM "(?:feedback_messages|reactions|notes|email_authorizations)"/) ||
+            sql.match?(/SELECT "articles"|SELECT "comments"/)
+          inactive_tab_queries << sql
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        get admin_user_path(user.id)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(inactive_tab_queries).to be_empty
+    end
+
+    it "bounds and trims columns when rendering the 'Articles' and 'Comments' tabs", :aggregate_failures do
+      article = create(:article, user: user, published: true, title: "Scoped Admin Post")
+      comment = create(:comment, user: user, commentable: article, body_markdown: "Scoped Admin Comment")
+
+      article_queries = []
+      ActiveSupport::Notifications.subscribed(
+        lambda { |*, payload|
+          sql = payload[:sql]
+          article_queries << sql if sql.include?('FROM "articles"') && sql.exclude?("COUNT(*)")
+        },
+        "sql.active_record",
+      ) do
+        get "#{admin_user_path(user.id)}?tab=articles"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Scoped Admin Post")
+      expect(article_queries).not_to be_empty
+      expect(article_queries).to all(include("LIMIT"))
+      expected_article_select =
+        'SELECT "articles"."id", "articles"."title", "articles"."path", ' \
+        '"articles"."published_at", "articles"."created_at"'
+      expect(article_queries).to include(a_string_including(expected_article_select))
+      expect(article_queries.join(" ")).not_to include('"articles".*')
+      expect(article_queries.join(" ")).not_to include("body_markdown")
+
+      comment_queries = []
+      ActiveSupport::Notifications.subscribed(
+        lambda { |*, payload|
+          sql = payload[:sql]
+          comment_queries << sql if sql.include?('FROM "comments"') && sql.exclude?("COUNT(*)")
+        },
+        "sql.active_record",
+      ) do
+        get "#{admin_user_path(user.id)}?tab=comments"
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Scoped Admin Comment")
+      expect(response.body).to include(comment.path)
+      expect(comment_queries).not_to be_empty
+      expect(comment_queries).to all(include("LIMIT"))
+      expect(comment_queries).to include(
+        a_string_including(
+          'SELECT "comments"."id", "comments"."user_id", "comments"."body_markdown", "comments"."created_at"',
+        ),
+      )
+      expect(comment_queries.join(" ")).not_to include('"comments".*')
+      expect(comment_queries.join(" ")).not_to include("processed_html")
     end
   end
 
