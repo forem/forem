@@ -17,6 +17,7 @@ module Api
                 relation.find(params[:id])
               end
       not_found unless @user.registered
+      hydrate_joined_profile_and_setting(@user)
       set_surrogate_key_header(*@user.profile_cache_keys)
     end
 
@@ -49,6 +50,26 @@ module Api
                   content: note_content, author: @user)
 
       render status: :no_content
+    end
+
+    private
+
+    def hydrate_joined_profile_and_setting(user)
+      profile = Profile.instantiate(
+        "user_id" => user.id,
+        "summary" => user[:summary],
+        "location" => user[:location],
+        "website_url" => user[:website_url],
+      )
+      profile.readonly!
+      user.association(:profile).target = profile
+
+      setting = Users::Setting.instantiate(
+        "user_id" => user.id,
+        "display_email_on_profile" => user[:display_email_on_profile],
+      )
+      setting.readonly!
+      user.association(:setting).target = setting
     end
   end
 end

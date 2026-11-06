@@ -92,6 +92,23 @@ RSpec.describe "Api::V1::Users" do
       response_user = response.parsed_body
       expect(response_user["badge_ids"]).to eq(badge_ids)
     end
+
+    it "hydrates joined profile and setting attributes without extra queries" do
+      user.setting.update_column(:display_email_on_profile, true)
+      api_secret
+
+      queries = []
+      callback = ->(_name, _start, _finish, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get api_user_path("by_username"), params: { url: user.username }, headers: auth_headers
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["email"]).to eq(user.email)
+      expect(queries.grep(/FROM "profiles"/i)).to be_empty
+      expect(queries.grep(/FROM "users_settings"/i)).to be_empty
+    end
   end
 
   describe "GET /api/users/me" do
