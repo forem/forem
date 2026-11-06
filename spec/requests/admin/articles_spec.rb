@@ -9,6 +9,47 @@ RSpec.describe "/admin/content_manager/articles" do
     let(:request) { get admin_articles_path }
   end
 
+  describe "GET /admin/content_manager/articles" do
+    before { sign_in super_admin }
+
+    { nil => 30, "chronological" => 50, "top-3" => 50 }.each do |state, page_size|
+      it "browses #{state || 'hot'} pages without counting articles", :aggregate_failures do
+        create_list(:article, page_size + 1, user: super_admin, with_tags: false, with_main_image: false)
+        count_queries = []
+        subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+          count_queries << payload[:sql] if payload[:sql].match?(/SELECT COUNT\(.*FROM "articles"/i)
+        end
+
+        ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+          get admin_articles_path, params: { state: state }
+          first_page = Nokogiri::HTML(response.body)
+          expect(response).to have_http_status(:ok)
+          expect(first_page.css(".js-individual-article").size).to eq(page_size)
+          expect(first_page.css('a[rel="prev"]')).to be_empty
+          next_link = first_page.at_css('a[rel="next"]')
+          expect(next_link).to be_present
+
+          get next_link["href"]
+          last_page = Nokogiri::HTML(response.body)
+          expect(response).to have_http_status(:ok)
+          expect(request.params["state"]).to eq(state)
+          expect(last_page.css(".js-individual-article").size).to eq(1)
+          expect(last_page.css('a[rel="prev"]')).to be_present
+          expect(last_page.css('a[rel="next"]')).to be_empty
+
+          get admin_articles_path, params: { state: state, page: 3 }
+          empty_page = Nokogiri::HTML(response.body)
+          expect(response).to have_http_status(:ok)
+          expect(empty_page.css(".js-individual-article")).to be_empty
+          expect(empty_page.at_css('a[rel="prev"]')&.[]("href")).to eq(admin_articles_path(state: state, page: 2))
+          expect(empty_page.css('a[rel="next"]')).to be_empty
+        end
+
+        expect(count_queries.size).to eq(0)
+      end
+    end
+  end
+
   context "when updating an article via /admin/content_manager/articles" do
     before do
       sign_in super_admin
@@ -72,10 +113,13 @@ RSpec.describe "/admin/content_manager/articles" do
     end
 
     it "allows an Admin to update an article's context_notes" do
-      context_note = create(:context_note, article: article, body_markdown: "Original markdown note that is long enough")
-      
+      context_note = create(:context_note, article: article,
+                                           body_markdown: "Original markdown note that is long enough")
+
       expect do
-        patch admin_article_path(article.id), params: { article: { context_notes_attributes: { "0" => { id: context_note.id, body_markdown: "Updated markdown note that is long enough" } } } }
+        patch admin_article_path(article.id), params: { article: { context_notes_attributes: {
+          "0" => { id: context_note.id, body_markdown: "Updated markdown note that is long enough" }
+        } } }
       end.to change { context_note.reload.body_markdown }.to("Updated markdown note that is long enough")
     end
 
