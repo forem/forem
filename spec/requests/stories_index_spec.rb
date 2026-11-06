@@ -1007,7 +1007,7 @@ RSpec.describe "StoriesIndex" do
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(queries.grep(/FROM "organization_memberships" WHERE "organization_memberships"\."user_id"/))
-        .to have_attributes(size: 1)
+        .to be_empty
       expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/))
         .to have_attributes(size: 1)
     end

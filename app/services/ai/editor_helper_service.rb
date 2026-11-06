@@ -22,7 +22,7 @@ module Ai
     private
 
     def prompt
-      final_guide_text = Rails.cache.fetch("ai:editor_helper:guide_with_mechanics_v2", expires_in: 12.hours) do
+      final_guide_text = Rails.cache.fetch("ai:editor_helper:guide_with_mechanics_v3", expires_in: 12.hours) do
         guide_path = Rails.root.join("app/views/pages/_editor_guide_text.en.html.erb")
         url_embeds_path = Rails.root.join("app/views/pages/_supported_url_embeds_list.en.html.erb")
         nonurl_embeds_path = Rails.root.join("app/views/pages/_supported_nonurl_embeds_list.en.html.erb")
@@ -66,8 +66,11 @@ module Ai
 
         platform_mechanics = <<~MECHANICS
           Platform Mechanics Overview:
+          - Editor Versions & Formatting Toolbar: Both Editor versions—Rich + Markdown (v2, with dedicated UI fields for Title, Tags, and Cover Image) and Basic Markdown (v1, using Jekyll-style YAML front matter)—include the Markdown formatting toolbar above the body field with formatting actions, keyboard shortcuts, inline image upload, and Agent Session upload. Users can switch between Rich + Markdown and Basic Markdown in Settings > Customization.
+          - Basic Markdown (v1) Front Matter Fields: Between triple-dashed lines (---), v1 supports title, published (true/false), description, tags (up to 4 comma-separated tags), canonical_url, cover_image, series, and ai_disclosure_level (not_disclosed, no_ai, some_ai, or fully_autonomous).
           - Tags: Tags are the primary organizational mechanism on the platform. Adding relevant tags enables the engine to correctly route the post to users following those specific subjects via their chronological or curated feed algorithms. The limit is four tags per post.
           - Titles & Markdown: Catchy, plain-language titles historically perform better. The platform engine relies strictly on standard Markdown semantics alongside special Liquid embed blocks. Avoiding extremely dense text blocks while leveraging Markdown headers actively assists readability logic.
+          - Feature Liquid Tag Icons: Supported icon names for {% feature title="..." icon="..." %} are: #{FeatureTag::ICONS.join(', ')} (or any emoji).
           - Feed Personalization: Forem utilizes a heavily personalized algorithm where interactions (reads, reactions) actively shape future feed displays. Pushing engaging content inherently improves the likelihood of circulating upward in audience feeds.
           - Organizations: Users can establish or join Organizations which act as unified brands. An author can elect to publish an article under their Organization domain, aggregating followers implicitly toward the organizational brand rather than solely the personal account.
           - Following Accounts: The Follow mechanic serves to anchor a baseline connection. When users publish content, their followers are dramatically more likely to be exposed to it initially on their dashboard, establishing a core audience burst. Activity distributions heavily favor connected follow graphs.

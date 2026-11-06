@@ -21,6 +21,8 @@ RSpec.describe Ai::EditorHelperService do
 
       expect(prompt).to include("insightful technical editor assistant for the #{Settings::Community.community_name} community")
       expect(prompt).to include("Platform Mechanics Overview:")
+      expect(prompt).to include("Editor Versions & Formatting Toolbar:")
+      expect(prompt).to include("Basic Markdown (v1) Front Matter Fields:")
       expect(prompt).to include("Tags are the primary organizational mechanism on the platform.")
       expect(prompt).to include("Catchy, plain-language titles historically perform better.")
       expect(prompt).to include("Forem utilizes a heavily personalized algorithm")

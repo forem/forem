@@ -59,6 +59,7 @@ module Api
 
     def show_by_slug
       @article = Article.published.from_subforem
+        .includes(user: :profile)
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
         .decorate
@@ -101,6 +102,7 @@ module Api
       end
     end
 
+    # Lists the authenticated user's articles by publication status, newest first, with paginated results.
     def me
       per_page = (params[:per_page] || 30).to_i
       num = [per_page, per_page_max].min
@@ -117,7 +119,7 @@ module Api
                   end
 
       @articles = @articles
-        .includes(:organization)
+        .includes({ user: :profile }, :organization)
         .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
         .order(published_at: :desc, created_at: :desc)
         .page(params[:page])

@@ -1,6 +1,10 @@
 class GaEventsController < ApplicationController
   include ApplicationHelper
 
+  rescue_from ActionDispatch::Http::Parameters::ParseError do
+    head :bad_request, content_type: "text/plain"
+  end
+
   # No authorization required for entirely public controller
 
   # This controller is for tracking activity when GA script fails
@@ -15,6 +19,8 @@ class GaEventsController < ApplicationController
       Ga::TrackEventWorker.perform_async(client_id, event_params(json, user_id).stringify_keys)
     end
     render body: nil
+  rescue JSON::ParserError
+    head :bad_request
   end
 
   private

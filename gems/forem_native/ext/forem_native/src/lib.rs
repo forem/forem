@@ -2005,8 +2005,19 @@ fn is_instance_of(value: Value, class: magnus::RClass) -> bool {
     value.class().equal(class).unwrap_or(false)
 }
 
-fn write_json_key(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, key: Value) -> Option<()> {
+/// Writes a supported Ruby hash key into `w`, rejecting non-string keys when `string_keys_only` is true.
+fn write_json_key<W: forem_core::json::JsonOutput>(
+    ruby: &Ruby,
+    w: &mut forem_core::json::JsonWriter<W>,
+    key: Value,
+    string_keys_only: bool,
+) -> Option<()> {
     if let Some(symbol) = Symbol::from_value(key) {
+        // ActiveSupport can collapse symbol/string key collisions during as_json.
+        // The counting fast path accepts JSON object keys only.
+        if string_keys_only {
+            return None;
+        }
         w.key(&symbol.name().ok()?);
     } else if is_instance_of(key, ruby.class_string()) {
         w.key(json_str(&RString::from_value(key)?)?);
@@ -2017,7 +2028,13 @@ fn write_json_key(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, key: Value)
     Some(())
 }
 
-fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Value) -> Option<()> {
+/// Recursively traverses a supported Ruby value and writes or counts its JSON representation in `w`.
+fn write_json_value<W: forem_core::json::JsonOutput>(
+    ruby: &Ruby,
+    w: &mut forem_core::json::JsonWriter<W>,
+    value: Value,
+    string_keys_only: bool,
+) -> Option<()> {
     if value.is_nil() {
         w.null();
     } else if Qtrue::from_value(value).is_some() {
@@ -2044,8 +2061,8 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
             .ok()?;
             w.begin_object();
             for (k, v) in pairs {
-                write_json_key(ruby, w, k)?;
-                write_json_value(ruby, w, v)?;
+                write_json_key(ruby, w, k, string_keys_only)?;
+                write_json_value(ruby, w, v, string_keys_only)?;
             }
             w.end_object();
         } else if is_instance_of(value, ruby.class_array()) {
@@ -2053,7 +2070,7 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
             let items: Vec<Value> = unsafe { RArray::from_value(value)?.as_slice() }.to_vec();
             w.begin_array();
             for item in items {
-                write_json_value(ruby, w, item)?;
+                write_json_value(ruby, w, item, string_keys_only)?;
             }
             w.end_array();
         } else {
@@ -2064,15 +2081,23 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
     Some(())
 }
 
+/// Encodes a supported Ruby value into a JSON `RString` matching ActiveSupport's `JSONGemEncoder`.
 fn encode_json(ruby: &Ruby, value: Value, escape_html: bool) -> Option<RString> {
     // The walk only reads Strings, Symbols, and Integers in place (no Ruby allocations), so
     // nothing can run GC or mutate the tree until the finished buffer is copied out.
     let json = {
         let mut w = forem_core::json::JsonWriter::new(escape_html, 8192);
-        write_json_value(ruby, &mut w, value)?;
+        write_json_value(ruby, &mut w, value, false)?;
         w.finish()
     };
     Some(ruby.str_new(&json))
+}
+
+/// Computes the exact encoded JSON byte size for a supported Ruby value without allocating a JSON buffer.
+fn json_encoded_size(ruby: &Ruby, value: Value, escape_html: bool) -> Option<usize> {
+    let mut w = forem_core::json::JsonWriter::counting(escape_html);
+    write_json_value(ruby, &mut w, value, true)?;
+    Some(w.finish().0)
 }
 
 fn truncate_feed_xml_items(ruby: &Ruby, xml: RString, max_items: usize) -> Option<RString> {
@@ -3170,6 +3195,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod.define_singleton_method("json_quote", function!(json_quote, 2))?;
     native_mod.define_singleton_method("encode_json", function!(encode_json, 2))?;
+    native_mod.define_singleton_method("json_encoded_size", function!(json_encoded_size, 2))?;
     native_mod.define_singleton_method(
         "truncate_feed_xml_items",
         function!(truncate_feed_xml_items, 2),

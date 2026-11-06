@@ -1,25 +1,31 @@
 require "rails_helper"
 
 RSpec.describe "Articles" do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile) }
   let(:tag)  { build_stubbed(:tag) }
 
+  def create_test_article(**attrs)
+    defaults = {
+      user: user,
+      with_main_image: false,
+      with_tags: attrs.key?(:tags)
+    }
+    create(:article, **defaults, **attrs)
+  end
+
   describe "GET /feed(/:username|/:tag_name)" do
-    it "returns rss+xml content" do
-      create(:article, featured: true)
+    it "returns rss+xml content with the full app URL, tag categories, and no image tag", :aggregate_failures do
+      article = create_test_article(featured: true, with_tags: true)
 
       get feed_path
 
       expect(response).to have_http_status(:ok)
       expect(response.media_type).to eq("application/xml")
-    end
-
-    it "contains the full app URL" do
-      create(:article, featured: true)
-
-      get feed_path
-
       expect(response.body).to include("<link>#{URL.url}</link>")
+      expect(response.body).not_to include("<image>")
+
+      rss_feed = Feedjira.parse(response.body)
+      expect(rss_feed.entries.first.categories).to match_array(article.tag_list)
     end
 
     it "returns not found if no articles", :aggregate_failures do
@@ -28,44 +34,31 @@ RSpec.describe "Articles" do
       expect { get tag_feed_path(tag.name) }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "does not contain image tag" do
-      create(:article, featured: true)
-
-      get feed_path
-
-      expect(response.body).not_to include("<image>")
-    end
-
     context "with caching headers" do
-      let!(:article) { create(:article, featured: true) }
+      let!(:article) { create_test_article(featured: true) }
+
       before do
         get feed_path
       end
 
-      it "sets Fastly Cache-Control headers" do
+      it "sets Fastly and Nginx caching headers", :aggregate_failures do
         expected_cache_control_headers = %w[public no-cache]
         expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
-      end
 
-      it "sets Fastly Surrogate-Control headers" do
         expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
         expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
-      end
 
-      it "sets Fastly Surrogate-Key headers" do
         expected_surrogate_key_headers = ["articles/#{article.id}"]
-        expect(response.headers["Surrogate-Key"].split(" ")).to match_array(expected_surrogate_key_headers)
-      end
+        expect(response.headers["Surrogate-Key"].split).to match_array(expected_surrogate_key_headers)
 
-      it "sets Nginx X-Accel-Expires headers" do
         expect(response.headers["X-Accel-Expires"]).to eq("600")
       end
     end
 
     context "when :username param is not given" do
-      let!(:featured_article) { create(:article, featured: true) }
+      let!(:featured_article) { create_test_article(featured: true) }
       let!(:not_featured_article) do
-        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
+        create_test_article(featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
       end
 
       before { get feed_path }
@@ -77,24 +70,22 @@ RSpec.describe "Articles" do
     end
 
     shared_context "when user/organization articles exist" do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, :without_profile) }
       let(:organization) { create(:organization) }
     end
 
     context "when :username param is given and belongs to a user" do
       include_context "when user/organization articles exist"
 
-      let!(:user_article) { create(:article, user: user) }
-      let!(:organization_article) { create(:article, organization: organization) }
+      let(:other_user) { create(:user, :without_profile) }
+      let!(:user_article) { create_test_article(user: user) }
+      let!(:organization_article) { create_test_article(user: other_user, organization: organization) }
 
       before { get user_feed_path(user.username) }
 
-      it "returns only articles for that user", :aggregate_failures do
+      it "returns only articles for that user with name, link, and composite profile image tag", :aggregate_failures do
         expect(response.body).to include(user_article.title)
         expect(response.body).not_to include(organization_article.title)
-      end
-
-      it "contains user's name, link, and composite profile image tag" do
         expect(response.body).to include(
           "<image>",
           "<url>#{app_url(user.profile_image_90)}</url>",
@@ -109,21 +100,15 @@ RSpec.describe "Articles" do
     context "when :username param is given and belongs to an organization" do
       include_context "when user/organization articles exist"
 
-      let!(:user_article) { create(:article, user: user) }
-      let!(:organization_article) { create(:article, organization: organization) }
+      let!(:user_article) { create_test_article(user: user) }
+      let!(:organization_article) { create_test_article(user: user, organization: organization) }
 
       before { get user_feed_path(organization.slug) }
 
-      it "returns only articles for that organization", :aggregate_failures do
+      it "returns only articles for that organization with URL and composite profile image tag", :aggregate_failures do
         expect(response.body).not_to include(user_article.title)
         expect(response.body).to include(organization_article.title)
-      end
-
-      it "contains the full organization URL" do
         expect(response.body).to include("<link>#{URL.organization(organization)}</link>")
-      end
-
-      it "contains an organization composite profile image tag", :aggregate_failures do
         expect(response.body).to include("<image>")
         expect(response.body).to include("<url>#{app_url(organization.profile_image_90)}</url>")
         expect(response.body).to include("<title>#{community_name}: #{organization.name}</title>")
@@ -146,49 +131,39 @@ RSpec.describe "Articles" do
       end
     end
 
-    it "contains tags as categories" do
-      article = create(:article, featured: true)
-
-      get feed_path
-
-      rss_feed = Feedjira.parse(response.body)
-      expect(rss_feed.entries.first.categories).to match_array(article.tag_list)
-    end
-
     context "with scored articles" do
       before do
         allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(10)
       end
 
       it "does not contain non featured articles with a score below Settings::UserExperience.home_feed_minimum_score" do
-        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
+        create_test_article(featured: false, score: Settings::UserExperience.home_feed_minimum_score - 1)
 
         expect { get feed_path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "contains non featured articles with a score equal to Settings::UserExperience.home_feed_minimum_score" do
-        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score)
+      it "contains non featured articles with a score at or above Settings::UserExperience.home_feed_minimum_score",
+         :aggregate_failures do
+        equal_score_article = create_test_article(featured: false,
+                                                  score: Settings::UserExperience.home_feed_minimum_score)
+        above_score_article = create_test_article(featured: false,
+                                                  score: Settings::UserExperience.home_feed_minimum_score + 1)
 
         get feed_path
 
         expect(response).to have_http_status(:ok)
-      end
-
-      it "contains non featured articles with a score above Settings::UserExperience.home_feed_minimum_score" do
-        create(:article, featured: false, score: Settings::UserExperience.home_feed_minimum_score + 1)
-
-        get feed_path
-
-        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(equal_score_article.title, above_score_article.title)
       end
     end
   end
 
   describe "GET /feed/latest" do
-    let!(:last_article) { create(:article, featured: true) }
-    let!(:not_featured_article) { create(:article, featured: false) }
-    let!(:article_with_low_score) { create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE) }
-    let!(:article_with_mid_score) { create(:article, score: Settings::UserExperience.home_feed_minimum_score) }
+    let!(:last_article) { create_test_article(featured: true) }
+    let!(:not_featured_article) { create_test_article(featured: false) }
+    let!(:article_with_low_score) { create_test_article(score: Articles::Feeds::Latest::MINIMUM_SCORE) }
+    let!(:article_with_mid_score) do
+      create_test_article(score: Settings::UserExperience.home_feed_minimum_score)
+    end
 
     before { get "/feed/latest" }
 
@@ -200,47 +175,25 @@ RSpec.describe "Articles" do
 
   describe "GET /feed/tag" do
     context "when :tag param is given and tag exists" do
-      before do
-        create(:article, tags: tag.name)
-      end
-
-      it "returns only articles for that tag" do
-        article = create(:article, tags: ["foobar"])
-        # tag_article = create(:article, tags: tag.name)
+      it "returns only articles for that tag with category, full tag URL, and no image tag", :aggregate_failures do
+        tag_article = create_test_article(tags: tag.name)
+        other_article = create_test_article(tags: ["foobar"])
 
         get tag_feed_path(tag.name)
 
         rss_feed = Feedjira.parse(response.body)
         titles = rss_feed.entries.map(&:title)
 
-        expect(titles).not_to include(article.title)
-
-        tag_article = Article.cached_tagged_with(tag.name).take
+        expect(titles).not_to include(other_article.title)
         expect(titles).to include(tag_article.title)
-      end
-
-      it "contains the tag as a category" do
-        get tag_feed_path(tag.name)
-
-        rss_feed = Feedjira.parse(response.body)
         expect(rss_feed.entries.first.categories).to include(tag.name)
-      end
-
-      it "contains the full tag URL" do
-        get tag_feed_path(tag.name)
-
         expect(response.body).to include("<link>#{tag_url(tag)}</link>")
-      end
-
-      it "does not contain image tag" do
-        get tag_feed_path(tag.name)
-
         expect(response.body).not_to include("<image>")
       end
 
       it "preloads article authors instead of loading each one separately" do
-        authors = create_list(:user, 2)
-        authors.each { |author| create(:article, user: author, tags: tag.name) }
+        authors = create_list(:user, 2, :without_profile)
+        authors.each { |author| create_test_article(user: author, tags: tag.name) }
 
         user_lookups = []
         callback = lambda do |*, payload|
@@ -256,7 +209,7 @@ RSpec.describe "Articles" do
 
     context "when :tag param is given and tag exists and is an alias" do
       before do
-        create(:article, tags: tag.name)
+        create_test_article(tags: tag.name)
         alias_tag = create(:tag, alias_for: tag.name)
         get "/feed/tag/#{alias_tag.name}"
       end
@@ -279,9 +232,17 @@ RSpec.describe "Articles" do
     before { sign_in user }
 
     context "with authorized user" do
-      it "returns a new article" do
-        get "/new"
+      it "returns a new article with canonical url and without querying tags when template param is absent",
+         :aggregate_failures do
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/new" }
+
         expect(response).to have_http_status(:ok)
+        expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
+        expect(tag_queries).to be_empty
       end
     end
 
@@ -299,21 +260,6 @@ RSpec.describe "Articles" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("templatetag")
       end
-
-      it "does not query tags when the template param is absent" do
-        tag_queries = []
-        callback = lambda do |*, payload|
-          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
-        end
-        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get "/new" }
-        expect(response).to have_http_status(:ok)
-        expect(tag_queries).to be_empty
-      end
-    end
-
-    it "sets canonical url with base" do
-      get "/new"
-      expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
     end
 
     it "sets canonical url with prefill" do
@@ -326,7 +272,7 @@ RSpec.describe "Articles" do
     before { sign_in user }
 
     it "shows v1 if article has frontmatter" do
-      article = create(:article, user_id: user.id)
+      article = create_test_article
       get "#{article.path}/edit"
       expect(response.body).to include("crayons-article-form--v1")
     end
@@ -335,41 +281,31 @@ RSpec.describe "Articles" do
   describe "GET /:path/manage" do
     before { sign_in user }
 
-    it "works successfully" do
-      article = create(:article, user: user)
+    it "works successfully, masks page views at or below 25, and shows exact views above 25", :aggregate_failures do
+      article = create_test_article
+      article.update_column(:page_views_count, 25)
       get "#{article.path}/manage"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Manage Your Post")
-    end
-
-    it "masks page views at or below 25, matching the dashboard" do
-      article = create(:article, user: user)
-      article.update_column(:page_views_count, 25)
-      get "#{article.path}/manage"
       expect(response.body).to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
-    end
 
-    it "shows the exact page views count above 25" do
-      article = create(:article, user: user)
       article.update_column(:page_views_count, 1234)
       get "#{article.path}/manage"
       expect(response.body).to include("1,234")
       expect(response.body).not_to include(CGI.escapeHTML(I18n.t("views.dashboard.article.views.lt_25")))
     end
 
-    it "returns unauthorized for a draft" do
-      draft = create(:article, published: false, user: user)
-      expect { get "#{draft.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
-    end
+    it "returns unauthorized for a draft or scheduled article", :aggregate_failures do
+      article = create_test_article(published: false)
+      expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
 
-    it "returns unauthorized for a scheduled article" do
-      scheduled_article = create(:article, published: true, user: user, published_at: 1.day.from_now)
-      expect { get "#{scheduled_article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
+      article.update_columns(published: true, published_at: 1.day.from_now)
+      expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "returns unauthorized if the user is not the author" do
-      second_user = create(:user)
-      article = create(:article, user: second_user)
+      second_user = create(:user, :without_profile)
+      article = create_test_article(user: second_user)
       expect { get "#{article.path}/manage" }.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -378,13 +314,13 @@ RSpec.describe "Articles" do
     before { sign_in user }
 
     it "returns unauthorized if the user is not the author" do
-      second_user = create(:user)
-      article = create(:article, user: second_user)
+      second_user = create(:user, :without_profile)
+      article = create_test_article(user: second_user)
       expect { get "#{article.path}/stats" }.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "works successfully" do
-      article = create(:article, user: user)
+      article = create_test_article
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)
       expect(response.body).to include("Stats for Your Article")

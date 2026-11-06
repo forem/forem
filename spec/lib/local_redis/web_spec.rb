@@ -42,9 +42,14 @@ RSpec.describe LocalRedis::Web do
     end
   end
 
+  def ruby_command(code, *arguments)
+    # These fixture processes use only built-ins; skip inherited Bundler startup.
+    [RbConfig.ruby, "--disable=gems,rubyopt", "-e", code, *arguments]
+  end
+
   it "restarts a failed cache process while keeping the same web process alive, then forwards TERM" do
-    web_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", web_pid_path]
-    cache_command = [RbConfig.ruby, "-e", "File.open(ARGV[0], 'a') { |f| f.puts Process.pid }; exit", cache_pid_path]
+    web_command = ruby_command("File.write(ARGV[0], Process.pid); sleep 30", web_pid_path)
+    cache_command = ruby_command("File.open(ARGV[0], 'a') { |f| f.puts Process.pid }; exit", cache_pid_path)
     launch(web_command, cache_command)
     wait_until { File.exist?(web_pid_path) && File.exist?(cache_pid_path) && File.readlines(cache_pid_path).size >= 2 }
     web_pid = File.read(web_pid_path).to_i
@@ -58,7 +63,7 @@ RSpec.describe LocalRedis::Web do
   end
 
   it "keeps the web process running when a cache auxiliary cannot be spawned" do
-    web_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", web_pid_path]
+    web_command = ruby_command("File.write(ARGV[0], Process.pid); sleep 30", web_pid_path)
     launch(web_command, [File.join(directory, "missing-redis-server")])
     wait_until { File.exist?(web_pid_path) }
     # Wait past the first respawn attempt, which also fails.
@@ -75,8 +80,8 @@ RSpec.describe LocalRedis::Web do
   end
 
   it "returns the web exit status and terminates the auxiliary process" do
-    cache_command = [RbConfig.ruby, "-e", "File.write(ARGV[0], Process.pid); sleep 30", cache_pid_path]
-    launch([RbConfig.ruby, "-e", "sleep 0.3; exit 7"], cache_command)
+    cache_command = ruby_command("File.write(ARGV[0], Process.pid); sleep 30", cache_pid_path)
+    launch(ruby_command("sleep 0.3; exit 7"), cache_command)
     result = nil
     wait_until { result = Process.waitpid2(process_state[:pid], Process::WNOHANG) }
     process_state[:pid] = nil
@@ -89,7 +94,7 @@ RSpec.describe LocalRedis::Web do
     original_marker = ENV.fetch("LOCAL_REDIS_ACTIVE", nil)
     ENV["LOCAL_REDIS_ACTIVE"] = "1"
     code = "File.write(ARGV[0], ENV.fetch('LOCAL_REDIS_ACTIVE', 'absent')); sleep 30"
-    launch([RbConfig.ruby, "-e", code, web_pid_path], [RbConfig.ruby, "-e", code, cache_pid_path])
+    launch(ruby_command(code, web_pid_path), ruby_command(code, cache_pid_path))
     wait_until { File.exist?(web_pid_path) && File.exist?(cache_pid_path) }
     expect(File.read(web_pid_path)).to eq("1")
     expect(File.read(cache_pid_path)).to eq("absent")
@@ -100,9 +105,9 @@ RSpec.describe LocalRedis::Web do
   it "passes web_environment overrides only to the web child and not to cache auxiliaries" do
     probe = "File.write(ARGV[0], ENV.fetch('RUBY_GC_MALLOC_LIMIT', 'absent')); sleep 30"
     supervisor = described_class.new(
-      command: [RbConfig.ruby, "-e", probe, web_pid_path],
+      command: ruby_command(probe, web_pid_path),
       cache_commands: {
-        redis: [RbConfig.ruby, "-e", probe, cache_pid_path]
+        redis: ruby_command(probe, cache_pid_path)
       },
       restart_delay: 0.2,
       web_environment: { "RUBY_GC_MALLOC_LIMIT" => "67108864" },
