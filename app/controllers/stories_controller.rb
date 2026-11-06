@@ -484,6 +484,8 @@ class StoriesController < ApplicationController
 
     if @article.collection
       @collection = @article.collection
+      # Collection#path reads collection.user.username; reuse the already-loaded author when it matches.
+      @collection.association(:user).target = @user if @collection.user_id == @user.id
 
       # we need to make sure that articles that were cross posted after their
       # original publication date appear in the correct order in the collection,
@@ -497,7 +499,6 @@ class StoriesController < ApplicationController
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
     set_article_json_ld unless internal_navigation? || user_signed_in?
-    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
   end
@@ -523,12 +524,6 @@ class StoriesController < ApplicationController
 
   def permission_denied?
     (!@article.published || @article.scheduled?) && params[:preview] != @article.password
-  end
-
-  def assign_co_authors
-    return if @article.co_author_ids.blank?
-
-    @co_author_ids = User.find(@article.co_author_ids)
   end
 
   def assign_user_comments
