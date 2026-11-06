@@ -223,5 +223,32 @@ RSpec.describe "UserShow" do
         .to contain_exactly(org.name, admin_org.name)
       expect(doc.css("a[href='/#{guest_org.slug}'], a[href='/#{pending_org.slug}']")).to be_empty
     end
+
+    it "eager-loads user, profile, and setting in a single joined query on show and preview card",
+       :aggregate_failures do
+      user.setting.update!(display_email_on_profile: true)
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(user.email, user.profile.summary)
+      expect(queries.grep(/FROM "users" LEFT OUTER JOIN "profiles".*LEFT OUTER JOIN "users_settings"/).size).to eq(1)
+      expect(queries.grep(/\ASELECT .* FROM "profiles"/).size).to eq(0)
+      expect(queries.grep(/\ASELECT .* FROM "users_settings"/).size).to eq(0)
+
+      queries.clear
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get profile_preview_card_path(user.id)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/FROM "users" LEFT OUTER JOIN "profiles".*LEFT OUTER JOIN "users_settings"/).size).to eq(1)
+      expect(queries.grep(/\ASELECT .* FROM "profiles"/).size).to eq(0)
+      expect(queries.grep(/\ASELECT .* FROM "users_settings"/).size).to eq(0)
+    end
   end
 end

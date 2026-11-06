@@ -162,7 +162,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    if (@user = User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", "")))
+    if (@user = User.eager_load(:profile, :setting).preload(:roles).find_by(username: params[:username].tr("@", "")))
       handle_user_index
     elsif (@organization = Organization.find_by(slug: params[:username]))
       handle_organization_index
@@ -324,7 +324,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user ||= User.includes(:profile, :setting, :roles).find_by(username: params[:username].tr("@", ""))
+    @user ||= User.eager_load(:profile, :setting).preload(:roles).find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return
