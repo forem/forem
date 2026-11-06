@@ -3,6 +3,15 @@
 // ==========================================================================
 $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *):not(.bluesky-embed *)';
 
+// org_brand_style sets a readable value of the brand color for each theme.
+.org-brand {
+  --accent-brand-text: var(--accent-brand-text-light);
+}
+
+body.dark-theme .org-brand {
+  --accent-brand-text: var(--accent-brand-text-dark);
+}
+
 .org-header-cover ~ #index-container .crayons-article__body {
   font-family: var(--ff-sans-serif, -apple-system, BlinkMacSystemFont, sans-serif);
   color: var(--body-color);
@@ -278,7 +287,7 @@ $exclude-embeds: ':not(.crayons-btn):not([class*="ltag"] *):not(.crayons-story *
 
   code#{$exclude-embeds} {
     background-color: var(--card-secondary-bg);
-    color: var(--accent-brand);
+    color: var(--accent-brand-text, var(--accent-brand));
     padding: 0.2em 0.4em;
     font-size: 85%;
   }
