@@ -129,7 +129,10 @@ const EmojiPickerButton = ({ textAreaId }) => {
 export const CommentTextArea = ({ vanillaTextArea }) => {
   const [templatesVisible, setTemplatesVisible] = useState(false);
   const textAreaRef = useRef(null);
-  const contextData = document.getElementById('comments-container')?.dataset;
+  const contextData = (
+    document.getElementById('comments-container') ||
+    document.getElementById('notifications-container')
+  )?.dataset;
 
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(

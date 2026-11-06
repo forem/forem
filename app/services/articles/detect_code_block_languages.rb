@@ -56,6 +56,16 @@ module Articles
       end
     end
 
+    # Rouge tag => human-readable name for the Jev Choice options, e.g. "ruby" => "Ruby".
+    def self.language_criteria
+      @language_criteria ||= begin
+        titles = Rouge::Lexer.all.each_with_object({}) { |lexer, memo| memo[lexer.tag] ||= lexer.title if lexer.tag }
+        SUPPORTED_LANGUAGE_TAGS.index_with do |tag|
+          tag == "plaintext" ? "Plain text, console output, or no specific language" : titles[tag] || tag
+        end
+      end
+    end
+
     def initialize(article, ai_client: nil)
       @article = article
       @ai_client = ai_client

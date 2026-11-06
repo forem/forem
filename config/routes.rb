@@ -115,6 +115,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :tags, only: :update
+
         resources :agent_sessions, only: %i[index show create] do
           collection do
             post :presign
