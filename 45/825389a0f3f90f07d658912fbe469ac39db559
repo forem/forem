@@ -1,0 +1,116 @@
+app/lib/throttled_call.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 11
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_f831849363d5ae::t_ec6b80aec30fab 15,29,64,67,98,101,111,125,137
+  s_f831849363d5ae::t_93c1d237a69f8a 213,258
+  s_f831849363d5ae::t_230c69e3d52f6c 164-200,212,227-228,232,254,263
+  s_f831849363d5ae::t_03c05fa3f4d260 1-7,10-14,16-28,30-63,65-66,68-91,93-97,99-100,102-110,112-124,126-136,138-162,264
+  s_f831849363d5ae::t_67ca2eaacdcf2d 236-251
+  s_f831849363d5ae::t_cb8802d4319ed6 8-9
+  s_f831849363d5ae::t_c48a23ab472ee5 92
+  s_f831849363d5ae::t_d77ad094ca5047 163,201-211,214-226,229-231,233-235,252-253,255-257,259-262
+bin/redis-local-server
+  s_f831849363d5ae::t_747178b776c7ba 1-4,9,11
+  s_f831849363d5ae::t_2b3078aff43ca2 5-8,10
+config/initializers/rack_attack.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 22
+  s_f831849363d5ae::t_b85114f0ac6ae7 1-5
+Gemfile
+  s_f831849363d5ae::t_1f642da027d824 97
+lib/local_redis/web.rb
+  s_f831849363d5ae::t_cb8802d4319ed6 7-8,10-11,50
+  s_f831849363d5ae::t_747178b776c7ba 1-6,9,12-49,51-80
+spec/lib/active_support/cache/local_redis_cache_store_authorization_spec.rb
+  s_f831849363d5ae::t_a60a13a0e2e1c8 1-47,50-89
+  s_f831849363d5ae::t_38ca1966536d61 48-49
+bin/redis-local-sync
+  s_f831849363d5ae::t_747178b776c7ba 1-7
+.github/workflows/ci.yml
+  s_f831849363d5ae::t_a81de8e18023a1 183-186
+spec/support/local_redis_servers.rb
+  s_f831849363d5ae::t_1b01f8837cedec 1-4,15-27,29-32,37,39-53
+  s_f831849363d5ae::t_71d7aad152231d 28,33-36,38
+  s_f831849363d5ae::t_cb8802d4319ed6 5-14
+bin/web
+  s_f831849363d5ae::t_747178b776c7ba 1-7
+app/policies/authorizer.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 186
+docs/local_redis_cache.md
+  s_f831849363d5ae::t_b1e6f1ba10b4c1 104,121-123
+  s_f831849363d5ae::t_05412531857a3c 1-8,14-100,107-117,120,124-131,134-137,143-157,159-163
+  s_f831849363d5ae::t_0a2a95d748cb6a 9-13,101-103,105-106,118-119,138-142,158,164-196
+  s_f831849363d5ae::t_0797752af092b5 132-133
+app/controllers/users_controller.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 110,349
+lib/active_support/cache/local_redis_cache_store.rb
+  s_f831849363d5ae::t_18ab208b27dd51 128
+  s_f831849363d5ae::t_67ca2eaacdcf2d 13-14,17-18
+  s_f831849363d5ae::t_347b83a990a0d5 39-50,82-84,147-152
+  s_f831849363d5ae::t_c17b3c638096c3 102-105
+  s_f831849363d5ae::t_c0c50f5bb6916e 1,3-12,15-16,27,37-38,51-53,55-61,64-80,85-87,90-92,94-99,107-108,112,117-127,129-146,153-164
+  s_f831849363d5ae::t_2b3078aff43ca2 2
+  s_f831849363d5ae::t_93c1d237a69f8a 19-20
+  s_f831849363d5ae::t_62420eee2f51ca 23-25,81,88-89,109-111,113-116
+  s_f831849363d5ae::t_15b758a1347697 21-22,26,28-36,54,62-63
+  s_f831849363d5ae::t_c48a23ab472ee5 93,100-101,106
+spec/policies/authorizer_spec.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 77
+spec/lib/local_redis/web_launcher_spec.rb
+  s_f831849363d5ae::t_0dee86c7ed8e93 8
+  s_f831849363d5ae::t_34b2eec7097496 1-7,9-67
+spec/lib/local_redis/sync_spec.rb
+  s_f831849363d5ae::t_ec6b80aec30fab 17,23,44,90,93,104
+  s_f831849363d5ae::t_03c05fa3f4d260 1-7,10-16,18-22,24-43,45-86,89,91-92,94-103,105-106
+  s_f831849363d5ae::t_62420eee2f51ca 87
+  s_f831849363d5ae::t_54ead1a0e9ae6b 88
+  s_f831849363d5ae::t_cb8802d4319ed6 8-9
+lib/local_redis/sync.rb
+  s_f831849363d5ae::t_62420eee2f51ca 64
+  s_f831849363d5ae::t_c0c50f5bb6916e 1,3-6,8-10,14,16-22,24-30,40,43-51,63,73-76
+  s_f831849363d5ae::t_3715ad5f78ac1a 53-54,56-57,59-62,65-72
+  s_f831849363d5ae::t_3124b0b2f6a57e 2,7,23,31-39,41-42,52,55,58
+  s_f831849363d5ae::t_15b758a1347697 11-13,15
+Containerfile
+  s_f831849363d5ae::t_747178b776c7ba 142-145,164
+app/services/ai/type_safe/client.rb
+  s_f831849363d5ae::t_15bb3d145f1b45 58
+spec/requests/user/user_destroy_spec.rb
+  s_f831849363d5ae::t_0797752af092b5 95,136
+  s_f831849363d5ae::t_0dee86c7ed8e93 125-126
+spec/lib/local_redis/web_spec.rb
+  s_f831849363d5ae::t_077ceb63b82b19 8,14-16,35-38,48,50-51,60-61
+  s_f831849363d5ae::t_05412531857a3c 1-7,9-13,17-34,39-47,49,52-59,62-66
+Procfile
+  s_f831849363d5ae::t_747178b776c7ba 2
+lib/local_redis/cache.rb
+  s_f831849363d5ae::t_15b758a1347697 5,65-72,74-76,110,115,125
+  s_f831849363d5ae::t_c0c50f5bb6916e 1-4,6-44,46-52,55-64,73,77-97,99-109,111-114,116-124,126-128
+  s_f831849363d5ae::t_c5ead471e64991 54
+  s_f831849363d5ae::t_62420eee2f51ca 98
+  s_f831849363d5ae::t_cb8802d4319ed6 45,53
+config/environments/production.rb
+  s_f831849363d5ae::t_747178b776c7ba 80-81,88
+  s_f831849363d5ae::t_1f642da027d824 82-87
+Aptfile
+  s_f831849363d5ae::t_747178b776c7ba 1-2
+Gemfile.lock
+  s_f831849363d5ae::t_be049738084ad3 833-834,1267
+lib/local_redis/rack_attack_proxy.rb
+  s_f831849363d5ae::t_7fe23de29e410a 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "45825389a0f3f90f07d658912fbe469ac39db559",
+  "prompts": {},
+  "sessions": {
+    "s_f831849363d5ae": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a192a6-177d-7990-ba36-b6154d07ea0b",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
