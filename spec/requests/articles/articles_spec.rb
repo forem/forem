@@ -254,11 +254,36 @@ RSpec.describe "Articles" do
     end
 
     context "with the template param" do
-      it "prefills the editor from the matching tag" do
+      it "prefills the editor from the matching tag without hydrating full tag columns", :aggregate_failures do
         tag = create(:tag, name: "templatetag")
-        get "/new", params: { template: tag.name }
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/new", params: { template: tag.name }
+        end
+
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("templatetag")
+        expect(tag_queries.size).to eq(1)
+        expect(tag_queries.first).to include('"tags"."id", "tags"."name", "tags"."submission_template"')
+        expect(tag_queries.first).not_to include('"tags".*')
+      end
+
+      it "skips querying tags when visitor is signed out", :aggregate_failures do
+        sign_out user
+        tag = create(:tag, name: "templatetag")
+        tag_queries = []
+        callback = lambda do |*, payload|
+          tag_queries << payload[:sql] if payload[:sql].match?(/FROM "tags" WHERE "tags"."name"/)
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/new/#{tag.name}"
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(tag_queries).to be_empty
       end
     end
 
