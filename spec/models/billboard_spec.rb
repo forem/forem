@@ -5,6 +5,15 @@ RSpec.describe Billboard do
   let(:billboard) { build(:billboard, organization: nil) }
   let(:audience_segment) { create(:audience_segment) }
 
+  def create(name, *traits_and_overrides, &block)
+    if name == :billboard
+      overrides = traits_and_overrides.extract_options!
+      overrides[:organization] = nil unless overrides.key?(:organization) || overrides.key?(:organization_id)
+      return super(name, *traits_and_overrides, **overrides, &block)
+    end
+    super
+  end
+
   it_behaves_like "Taggable"
 
   describe "#update_links_with_bb_param" do
@@ -90,7 +99,7 @@ RSpec.describe Billboard do
       billboard.minimized_body_markdown = nil
       expect(billboard).not_to be_valid
       expect(billboard.errors[:minimized_body_markdown]).to include("can't be blank")
-      
+
       billboard.minimized_body_markdown = "minimized content"
       expect(billboard).to be_valid
     end
@@ -218,7 +227,7 @@ RSpec.describe Billboard do
         expect(billboard).to be_valid
       end
 
-      it "prevents setting approved to true when expires_at is in the past" do
+      it "prevents updating approved to true when expires_at is in the past" do
         billboard.expires_at = 1.day.ago
         billboard.approved = false # First set to false to pass validation
         billboard.save!
@@ -260,7 +269,7 @@ RSpec.describe Billboard do
 
     it "renders survey tag" do
       survey = create(:survey)
-      poll = create(:poll, survey: survey)
+      create(:poll, survey: survey)
       admin_user = create(:user, :admin)
 
       survey_billboard = create(:billboard,
@@ -331,7 +340,7 @@ RSpec.describe Billboard do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_comments")
-      options = { http_header: { "User-Agent" => "DEV(local) (http://forem.test)" }, timeout: 10 }
+      options = { http_header: { "User-Agent" => "#{Settings::Community.community_name} (http://forem.test)" }, timeout: 10 }
       expect(FastImage).to have_received(:size).with(image_url, options)
       # width is billboard.prefix_width
       expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
@@ -367,13 +376,14 @@ RSpec.describe Billboard do
     it "processes minimized_body_markdown using the same render_mode" do
       billboard = create(:billboard, render_mode: "forem_markdown", minimized_body_markdown: "Minimized **bold**")
       expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
-      
+
       billboard.update(render_mode: "raw", minimized_body_markdown: "<div>Raw minimized</div>")
       expect(billboard.minimized_processed_html).to eq("<div>Raw minimized</div>")
     end
 
     it "re-processes body_markdown and minimized_body_markdown when render_mode or placement_area changes" do
-      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**", minimized_body_markdown: "Minimized **bold**")
+      billboard = create(:billboard, render_mode: "forem_markdown", body_markdown: "**bold**",
+                                     minimized_body_markdown: "Minimized **bold**")
       expect(billboard.processed_html).to include("<strong>bold</strong>")
       expect(billboard.minimized_processed_html).to include("<strong>bold</strong>")
 
@@ -441,23 +451,11 @@ RSpec.describe Billboard do
       create(:billboard, name: "This is a billboard", body_markdown: "Billboard Body", placement_area: "post_comments")
     end
 
-    it "finds via name" do
+    it "finds ads by name, body, placement_area, or multiple criteria", :aggregate_failures do
       expect(described_class.search_ads("this").ids).to contain_exactly(billboard.id)
-    end
-
-    it "finds via body" do
       expect(described_class.search_ads("body").ids).to contain_exactly(billboard.id)
-    end
-
-    it "finds via placement_area" do
       expect(described_class.search_ads("comment").ids).to contain_exactly(billboard.id)
-    end
-
-    it "finds just one result via multiple criteria" do
       expect(described_class.search_ads("billboard").ids).to contain_exactly(billboard.id)
-    end
-
-    it "returns empty when no match" do
       expect(described_class.search_ads("foo")).to eq([])
     end
   end
@@ -674,77 +672,51 @@ RSpec.describe Billboard do
   describe "#update_exclude_article_ids" do
     let(:article) { create(:article) }
 
-    it "automatically extracts article IDs from relative links in the billboard content" do
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
-
-    it "automatically extracts article IDs from true relative links (host is nil) when render_mode is raw" do
-      billboard = build(:billboard, render_mode: "raw", body_markdown: "<a href=\"#{article.path}\">link</a>")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
-
-    it "automatically extracts article IDs from absolute links matching the app domain" do
-      app_url = URI.parse(URL.url)
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{app_url}#{article.path})")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
-
-    it "automatically extracts article IDs from absolute links matching the app domain with www prefix" do
+    it "extracts article IDs from internal/subforem links and ignores external or invalid paths", :aggregate_failures do
       app_url = URI.parse(URL.url)
       www_url = "#{app_url.scheme}://www.#{app_url.host}"
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](#{www_url}#{article.path})")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
-
-    it "automatically extracts article IDs from absolute links matching Settings::General.app_domain" do
-      allow(Settings::General).to receive(:app_domain).and_return("customdomain.com")
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://customdomain.com#{article.path})")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
-
-    it "automatically extracts article IDs from absolute links matching subforem domains" do
       subforem_domain = "subforem.customdomain.com"
+      allow(Settings::General).to receive(:app_domain).and_return("customdomain.com")
       allow(Subforem).to receive(:cached_domains).and_return([subforem_domain])
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://#{subforem_domain}#{article.path})")
-      
-      expect { billboard.save! }.to change { billboard.exclude_article_ids }.from([]).to([article.id])
-    end
 
-    it "does not parse links from external domains" do
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](https://external-domain.com#{article.path})")
-      
-      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
-    end
-    
-    it "does not add invalid paths" do
-      billboard = build(:billboard, body_markdown: "Check out this great post: [link](/not-a-real-path)")
-      
-      expect { billboard.save! }.not_to change { billboard.exclude_article_ids }
+      [
+        { body_markdown: "Check out this great post: [link](#{article.path})" },
+        { render_mode: "raw", body_markdown: "<a href=\"#{article.path}\">link</a>" },
+        { body_markdown: "Check out this great post: [link](#{app_url}#{article.path})" },
+        { body_markdown: "Check out this great post: [link](#{www_url}#{article.path})" },
+        { body_markdown: "Check out this great post: [link](https://customdomain.com#{article.path})" },
+        { body_markdown: "Check out this great post: [link](https://#{subforem_domain}#{article.path})" },
+      ].each do |attrs|
+        bb = build(:billboard, **attrs)
+        expect { bb.save! }.to change(bb, :exclude_article_ids).from([]).to([article.id])
+      end
+
+      [
+        "Check out this great post: [link](https://external-domain.com#{article.path})",
+        "Check out this great post: [link](/not-a-real-path)",
+      ].each do |markdown|
+        bb = build(:billboard, body_markdown: markdown)
+        expect { bb.save! }.not_to change(bb, :exclude_article_ids)
+      end
     end
 
     it "removes IDs of linked articles if they are removed from the markdown" do
       billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
       expect(billboard.exclude_article_ids).to eq([article.id])
 
-      expect {
+      expect do
         billboard.update!(body_markdown: "Never mind, no links here!")
-      }.to change { billboard.exclude_article_ids }.from([article.id]).to([])
+      end.to change(billboard, :exclude_article_ids).from([article.id]).to([])
     end
 
     it "only runs when the body_markdown is changed" do
       billboard = create(:billboard, body_markdown: "Check out this great post: [link](#{article.path})")
-      
+
       allow(Article).to receive(:where).and_call_original
-      
+
       # Now save without changing markdown
       billboard.update!(name: "A different name")
-      
+
       expect(Article).not_to have_received(:where)
       expect(billboard.exclude_article_ids).to eq([article.id])
     end
@@ -839,28 +811,19 @@ RSpec.describe Billboard do
         bb4 = create(:billboard, weight: 2)
         bb5 = create(:billboard, weight: 1)
 
-        total_weight = 5 + 1 + 1 + 2 + 1 # 10
-        expected_probabilities = {
-          bb1.id => 5.0 / total_weight,
-          bb2.id => 1.0 / total_weight,
-          bb3.id => 1.0 / total_weight,
-          bb4.id => 2.0 / total_weight,
-          bb5.id => 1.0 / total_weight
-        }
-
-        counts = Hash.new(0)
-        num_trials = 5_000
-
-        num_trials.times do
-          id = described_class.weighted_random_selection(described_class.all).id
-          counts[id] += 1
-        end
-
-        counts.each do |id, count|
-          observed_probability = count.to_f / num_trials
-          expected_probability = expected_probabilities[id]
-
-          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        # Cumulative weights (total = 10): bb1 [0..5], bb2 (5..6], bb3 (6..7], bb4 (7..9], bb5 (9..10]
+        expect(described_class.weighted_random_selection(described_class.all)).to be_a(described_class)
+        {
+          [0.0, 0.5] => bb1,
+          [0.501, 0.6] => bb2,
+          [0.601, 0.7] => bb3,
+          [0.701, 0.9] => bb4,
+          [0.901, 0.999] => bb5
+        }.each do |rand_bounds, expected_bb|
+          rand_bounds.each do |r|
+            allow(described_class).to receive(:rand).and_return(r)
+            expect(described_class.weighted_random_selection(described_class.all)).to eq(expected_bb)
+          end
         end
       end
     end
@@ -879,29 +842,20 @@ RSpec.describe Billboard do
         bb4 = create(:billboard, weight: 2, preferred_article_ids: [])
         bb5 = create(:billboard, weight: 1, preferred_article_ids: [])
 
-        # Adjusted total weight accounting for the favored records
-        total_weight = (5 * favored_weight_multiplier) + 1 + (1 * favored_weight_multiplier) + 2 + 1
-        expected_probabilities = {
-          bb1.id => (5.0 * favored_weight_multiplier) / total_weight,
-          bb2.id => 1.0 / total_weight,
-          bb3.id => (1.0 * favored_weight_multiplier) / total_weight,
-          bb4.id => 2.0 / total_weight,
-          bb5.id => 1.0 / total_weight
-        }
-
-        counts = Hash.new(0)
-        num_trials = 5_000
-
-        num_trials.times do
-          id = described_class.weighted_random_selection(described_class.all, target_article_id).id
-          counts[id] += 1
-        end
-
-        counts.each do |id, count|
-          observed_probability = count.to_f / num_trials
-          expected_probability = expected_probabilities[id]
-
-          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        # Adjusted cumulative weights (total = 64): bb1 [0..50], bb2 (50..51], bb3 (51..61], bb4 (61..63], bb5 (63..64]
+        total_weight = (5.0 * favored_weight_multiplier) + 1 + (1.0 * favored_weight_multiplier) + 2 + 1
+        expect(described_class.weighted_random_selection(described_class.all, target_article_id)).to be_present
+        {
+          [0.0, 50.0 / total_weight] => bb1,
+          [50.01 / total_weight, 51.0 / total_weight] => bb2,
+          [51.01 / total_weight, 61.0 / total_weight] => bb3,
+          [61.01 / total_weight, 63.0 / total_weight] => bb4,
+          [63.01 / total_weight, 63.99 / total_weight] => bb5
+        }.each do |rand_bounds, expected_bb|
+          rand_bounds.each do |r|
+            allow(described_class).to receive(:rand).and_return(r)
+            expect(described_class.weighted_random_selection(described_class.all, target_article_id)).to eq(expected_bb)
+          end
         end
       end
     end
@@ -918,8 +872,11 @@ RSpec.describe Billboard do
 
     context "when the prior domain and new domain are both present" do
       it "replaces instances of the prior domain with the new domain" do
-        billboard.processed_html = "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
-        expect(billboard.processed_html_final).to eq("Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.")
+        billboard.processed_html =
+          "Here is an image <img src='#{prior_domain}/image1.jpg'> and another <img src='#{prior_domain}/image2.jpg'>."
+        expect(billboard.processed_html_final).to eq(
+          "Here is an image <img src='#{new_domain}/image1.jpg'> and another <img src='#{new_domain}/image2.jpg'>.",
+        )
       end
 
       it "does not modify text if the prior domain is not present in the processed_html" do
@@ -943,15 +900,6 @@ RSpec.describe Billboard do
 
   describe "#update_event_counts_when_taking_down" do
     let!(:active_billboard) { create(:billboard, published: true, approved: true) }
-    let!(:impression_event) do
-      create(:billboard_event, billboard: active_billboard, category: "impression", counts_for: 2)
-    end
-    let!(:click_event) do
-      create(:billboard_event, billboard: active_billboard, category: "click", counts_for: 1)
-    end
-    let!(:conversion_event) do
-      create(:billboard_event, billboard: active_billboard, category: "conversion", counts_for: 3)
-    end
 
     before do
       # Make sure Sidekiq is in fake mode and clear any existing jobs
@@ -1112,7 +1060,7 @@ RSpec.describe Billboard do
     end
 
     context "when prefer_paired_with_billboard_id is provided" do
-      xit "returns the billboard matching that ID" do
+      it "returns the billboard matching that ID", skip: "paired billboard preference not yet enabled" do
         result = described_class.for_display(
           area: "digest_second",
           user_signed_in: true,
@@ -1124,7 +1072,7 @@ RSpec.describe Billboard do
         expect(result).to eq(paired_bb)
       end
 
-      xit "falls back to normal selection if the paired ID isn't in the available set" do
+      it "falls back to normal selection if the paired ID isn't in the available set", skip: "not yet enabled" do
         # pick some ID that doesn't exist in billboards_for_display
         missing_id = other_bb.id + paired_bb.id + 1
 
@@ -1312,7 +1260,7 @@ RSpec.describe Billboard do
           "new_and_priority" => 20,
           "new_only" => 5,
           "weighted_performance" => 65
-        }
+        },
       )
     end
 
@@ -1346,7 +1294,7 @@ RSpec.describe Billboard do
           "new_and_priority" => 0,
           "new_only" => 0,
           "weighted_performance" => 0
-        }
+        },
       )
 
       relation = described_class.where(id: billboards.map(&:id))
@@ -1358,11 +1306,11 @@ RSpec.describe Billboard do
       config = BillboardPlacementAreaConfig.find_by(placement_area: area)
       # Bypass validation to set negative values for testing
       config.update_column(:selection_weights, {
-        "random_selection" => -10,
-        "new_and_priority" => 20,
-        "new_only" => 5,
-        "weighted_performance" => 65
-      })
+                             "random_selection" => -10,
+                             "new_and_priority" => 20,
+                             "new_only" => 5,
+                             "weighted_performance" => 65
+                           })
 
       relation = described_class.where(id: billboards.map(&:id))
       # Should not raise an error and should select a billboard
@@ -1374,11 +1322,11 @@ RSpec.describe Billboard do
       config = BillboardPlacementAreaConfig.find_by(placement_area: area)
       # Bypass validation to set nil values for testing
       config.update_column(:selection_weights, {
-        "random_selection" => 10,
-        "new_and_priority" => nil,
-        "new_only" => 5,
-        "weighted_performance" => 65
-      })
+                             "random_selection" => 10,
+                             "new_and_priority" => nil,
+                             "new_only" => 5,
+                             "weighted_performance" => 65
+                           })
 
       relation = described_class.where(id: billboards.map(&:id))
       # Should not raise an error and should select a billboard
@@ -1394,7 +1342,7 @@ RSpec.describe Billboard do
 
     it "handles empty selection_weights by using defaults" do
       BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
-        selection_weights: {}
+        selection_weights: {},
       )
 
       relation = described_class.where(id: billboards.map(&:id))
@@ -1404,9 +1352,9 @@ RSpec.describe Billboard do
 
     it "selects from all strategies over multiple calls" do
       relation = described_class.where(id: billboards.map(&:id))
-      
+
       # Run multiple times to ensure randomness works
-      results = 10.times.map do
+      results = Array.new(10) do
         described_class.select_billboard_by_weighted_strategy(relation, area)
       end
 
@@ -1422,7 +1370,7 @@ RSpec.describe Billboard do
           "new_and_priority" => 0,
           "new_only" => 0,
           "weighted_performance" => 100
-        }
+        },
       )
 
       relation = described_class.where(id: billboards.map(&:id))
@@ -1678,12 +1626,12 @@ RSpec.describe Billboard do
   describe "#sync_tags_array" do
     it "syncs tags_array perfectly when tags are updated using tag_list" do
       billboard = create(:billboard, tag_list: "javascript")
-      expect(billboard.tags_array).to match_array(["javascript"])
-      
+      expect(billboard.tags_array).to contain_exactly("javascript")
+
       billboard.update!(tag_list: "javascript, typescript, webdev")
-      expect(billboard.tags_array).to match_array(["javascript", "typescript", "webdev"])
+      expect(billboard.tags_array).to contain_exactly("javascript", "typescript", "webdev")
     end
-    
+
     it "handles empty tags gracefully natively" do
       billboard = create(:billboard, tag_list: "")
       expect(billboard.tags_array).to eq([])
@@ -1693,7 +1641,7 @@ RSpec.describe Billboard do
   describe "database indexes" do
     it "defines a partial composite index on placement_area and success_rate for active billboards" do
       indexes = ActiveRecord::Base.connection.indexes(:display_ads)
-      idx = indexes.find { |i| i.name == "index_display_ads_on_placement_area_and_success_rate" }
+      idx = indexes.detect { |i| i.name == "index_display_ads_on_placement_area_and_success_rate" }
       expect(idx).to have_attributes(
         columns: %w[placement_area success_rate],
         orders: { "success_rate" => :desc },

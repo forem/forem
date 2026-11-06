@@ -307,6 +307,16 @@ class Billboard < ApplicationRecord
     ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s.split(",").map(&:strip).reject(&:empty?)
   end
 
+  def self.embed_origin?(origin)
+    return false if origin.blank?
+
+    raw = ApplicationConfig["BILLBOARD_EMBED_ORIGINS"].to_s
+    return false if raw.blank?
+
+    native = ForemNative.origin_in_comma_list(origin, raw)
+    native.nil? ? embed_origins.include?(origin) : native
+  end
+
   # Temporary ENV configs, to eventually be replaced by permanent configurations
   # once we determine what the appropriate long-term config approach is.
 

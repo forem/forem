@@ -18,6 +18,33 @@ RSpec.describe "Billboards" do
     create(:billboard, **options.reverse_merge(defaults))
   end
 
+  describe "billboard delivery columns" do
+    [false, true].product(%w[random_selection weighted_performance new_and_priority new_only]) do |cached, strategy|
+      it "omits Markdown sources for #{strategy} with fully_cached=#{cached}", :aggregate_failures do
+        area = "post_fixed_bottom"
+        billboard = create_billboard(placement_area: area, special_behavior: :persistent,
+                                     minimized_body_markdown: "Synthetic minimized content")
+        BillboardPlacementAreaConfig.create!(placement_area: area, fully_cached: cached)
+        allow(BillboardPlacementAreaConfig).to receive(:selection_weights_for).with(area)
+          .and_return(strategy => 1)
+        path = if cached
+                 billboard_path(placement_area: area)
+               else
+                 article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+               end
+        queries = []
+        callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?('FROM "display_ads"') }
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get path }
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(billboard.processed_html, billboard.minimized_processed_html)
+        expect(queries).not_to be_empty
+        expect(queries.join("\n")).not_to include('"display_ads".*', '"body_markdown"', '"minimized_body_markdown"')
+      end
+    end
+  end
+
   describe "GET /:username/:slug/billboards/:placement_area with role-based filtering" do
     before do
       allow(user).to receive(:cached_role_names).and_return(%w[editor moderator])

@@ -178,9 +178,17 @@
 </div>
 </main>
 
-<%= javascript_include_tag "storiesList",
-                           "feedPreviewCards",
-                           "profileDropdown", "users/profilePage",
-                           "articleModerationTools",
-                           "localizeArticleDates", "asyncUserStatusCheck",
-                           defer: true %>
+<% if user_signed_in? %>
+  <%= javascript_include_tag "storiesList",
+                             "feedPreviewCards",
+                             "profileDropdown", "users/profilePage",
+                             "articleModerationTools",
+                             "localizeArticleDates", "asyncUserStatusCheck",
+                             defer: true %>
+<% else %>
+  <%= javascript_include_tag "storiesList",
+                             "feedPreviewCards",
+                             "profileDropdown", "users/profilePage",
+                             "localizeArticleDates",
+                             defer: true %>
+<% end %>

@@ -25,7 +25,7 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 
-import ahoy from 'ahoy.js';
+import { ahoy } from './ahoy/client';
 
 export function initializePodcastPlayback() {
   let deviceType = 'web';

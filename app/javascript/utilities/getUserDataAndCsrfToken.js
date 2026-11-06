@@ -119,6 +119,15 @@ const getWaitOnUserDataHandler = ({
       return;
     }
 
+    if (
+      safe &&
+      document?.body?.dataset?.userStatus === 'logged-out' &&
+      csrfToken !== undefined
+    ) {
+      resolve({ currentUser: null, csrfToken });
+      return;
+    }
+
     if (totalTimeWaiting >= maxWaitTime) {
       if (safe) {
         resolve({ currentUser: null, csrfToken });

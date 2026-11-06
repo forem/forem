@@ -130,6 +130,29 @@ RSpec.describe "Assets initializer" do # rubocop:disable RSpec/DescribeClass
       expect(esbuild_config).to include('ignore: ["**/*.test.*", "**/__tests__/**"]')
     end
 
+    it "configures esbuild tree-shaking plugin and avoids DateRangePicker barrel re-export" do
+      esbuild_config = Rails.root.join("esbuild.config.mjs").read
+      form_elements_barrel = Rails.root.join("app/javascript/crayons/formElements/index.js").read
+
+      expect(esbuild_config).to include("treeShakePlugin()")
+      expect(form_elements_barrel).not_to include("DateRangePicker")
+    end
+
+    it "keeps base.js lean by loading honeybadgerClient, commentsPage, and eventSignupButtons on demand" do
+      base_js_erb = Rails.root.join("app/assets/javascripts/base.js.erb").read
+      application_layout = Rails.root.join("app/views/layouts/application.html.erb").read
+
+      expect(base_js_erb).not_to include("@honeybadger-io/js/dist/browser/honeybadger.js")
+      expect(base_js_erb).not_to include("//= require i18n")
+      expect(Rails.root.join("app/assets/javascripts/initializers/initializeCommentsPage.js.erb").exist?).to be(false)
+      expect(Rails.root.join("app/javascript/packs/honeybadgerClient.js").exist?).to be(true)
+      expect(Rails.root.join("app/javascript/packs/commentsPage.js").exist?).to be(true)
+
+      expect(application_layout).to include('meta name="honeybadger-script"')
+      expect(application_layout).to include('meta name="comments-page-script"')
+      expect(application_layout).to include('meta name="event-signup-buttons-script"')
+    end
+
     it "removes javascript:build from assets:precompile in production when app/assets/builds has compiled bundles" do
       Rails.application.load_tasks unless Rake::Task.task_defined?("assets:precompile")
       task = Rake::Task["assets:precompile"]

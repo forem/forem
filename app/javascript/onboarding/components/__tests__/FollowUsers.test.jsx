@@ -53,6 +53,7 @@ describe('FollowUsers', () => {
       name: 'dev.to staff',
       profile_image_url: 'dev.jpg',
       type_identifier: 'user',
+      summary: 'Builders &amp; maintainers &#39;dev.to&#39;',
     },
   ]);
 
@@ -83,6 +84,9 @@ describe('FollowUsers', () => {
     expect(user1).toBeInTheDocument();
     expect(user2).toBeInTheDocument();
     expect(user3).toBeInTheDocument();
+    expect(
+      await findByText("Builders & maintainers 'dev.to'"),
+    ).toBeInTheDocument();
   });
 
   it('should follow all suggested users by default', async () => {

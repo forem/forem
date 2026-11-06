@@ -1,7 +1,12 @@
-<% if current_user&.actively_suspended? && (@user.nil? || @user.id == current_user.id) && params[:which] != "organization" %>
-  <div class="crayons-notice crayons-notice--danger mb-6" role="alert" data-testid="suspended-account-notice">
-    <h3 class="mb-2"><%= t("views.flag_appeals.suspended_notice.heading") %></h3>
-    <p class="mb-2"><%= t("views.flag_appeals.suspended_notice.description") %></p>
+<% if current_user&.actively_spam_or_suspended? && (@user.nil? || @user.id == current_user.id) && params[:which] != "organization" %>
+  <div class="crayons-notice crayons-notice--danger mb-6" role="alert" data-testid="suspended-account-notice" data-account-status="<%= current_user.actively_suspended? ? "suspended" : "spam" %>">
+    <% if current_user.actively_suspended? %>
+      <h3 class="mb-2"><%= t("views.flag_appeals.suspended_notice.heading") %></h3>
+      <p class="mb-2"><%= t("views.flag_appeals.suspended_notice.description") %></p>
+    <% else %>
+      <h3 class="mb-2"><%= t("views.flag_appeals.spam_notice.heading") %></h3>
+      <p class="mb-2"><%= t("views.flag_appeals.spam_notice.description") %></p>
+    <% end %>
     <p class="mb-0">
       <%= t("views.flag_appeals.suspended_notice.contact_or_appeal_html",
             contact: contact_link,

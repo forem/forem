@@ -89,8 +89,14 @@
       <% end %>
     </article>
   <% else %>
-    <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
+    <% if user_signed_in? %>
+      <div id="response-templates-data" class="hidden"></div>
+    <% end %>
+    <% if user_signed_in? && FeatureFlag.enabled?(:community_favorites) %>
+      <%= javascript_include_tag "commentsDisplay", "favoriteControls", defer: true %>
+    <% else %>
+      <%= javascript_include_tag "commentsDisplay", defer: true %>
+    <% end %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary crayons-layout__content s:mx-2 m:mx-4 -mb-1 z-0">
       <% if @commentable %>
         <h1 class="crayons-subtitle-1 mb-4">
@@ -199,4 +205,6 @@
 </script>
 <%== TwitterTimelineTag.script %>
 
-<%= render "comments/hide_comments_modal" %>
+<% if user_signed_in? %>
+  <%= render "comments/hide_comments_modal" %>
+<% end %>

@@ -118,13 +118,16 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end
 
       expect(queries).to be_present
-      expect(queries).to all(include('SELECT DISTINCT "users"."id" FROM "users"'))
+      expect(queries).to all(include('SELECT DISTINCT "users"."id"'))
+      expect(queries).to all(exclude('"users".*'))
     end
 
     it "deduplicates author+org followers and still caps at FOLLOWER_SEND_LIMIT" do
       stub_const("Notifications::NotifiableAction::FOLLOWER_SEND_LIMIT", 2)
       user2.follow(organization)
-      create(:user).follow(user)
+      older_follower = create(:user)
+      older_follower.follow(user)
+      older_follower.update_column(:updated_at, 1.day.ago)
 
       described_class.call(article, "Published")
 
@@ -163,6 +166,114 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       expect do
         described_class.call(article, "Published")
       end.not_to change(Notification, :count)
+    end
+  end
+
+  context "when publishing multiple articles in a day" do
+    let(:followers) { create_list(:user, 4) }
+
+    before do
+      followers.each { |follower| follower.follow(user) }
+    end
+
+    it "does not limit notifications by page views for the 2nd published non-status article in the past day" do
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 1)
+      second_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(second_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
+
+    it "ignores status posts when counting published articles in the past day" do
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 1)
+      create(
+        :article,
+        :past,
+        user: user,
+        past_published_at: 2.hours.ago,
+        type_of: "status",
+        body_markdown: "",
+        main_image: nil,
+        page_views_count: 0,
+      )
+      second_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(second_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
+
+    it "limits notifications on the 3rd+ published non-status article to the author's past-week article page views" do
+      followers[0].update_column(:updated_at, 4.days.ago)
+      followers[1].update_column(:updated_at, 1.hour.ago)
+      followers[2].update_column(:updated_at, 3.days.ago)
+      followers[3].update_column(:updated_at, 30.minutes.ago)
+
+      create(:article, :past, user: user, past_published_at: 2.weeks.ago, page_views_count: 500)
+      create(:article, :past, user: user, past_published_at: 3.days.ago, page_views_count: 1)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 1)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(2)
+
+      notified_user_ids = Notification.where(notifiable: third_article, action: "Published").pluck(:user_id)
+      expect(notified_user_ids).to contain_exactly(followers[1].id, followers[3].id)
+      expect(ContextNotification.where(context: third_article, action: "Published")).to exist
+    end
+
+    it "counts published articles up to the notifiable's published_at so retries are not throttled by later posts" do
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 0)
+      second_article = create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(second_article, "Published")
+      end.to change(Notification, :count).by(4)
+    end
+
+    it "sends zero notifications on the 3rd+ published non-status article if past-week article page views are 0" do
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 0)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to not_change(Notification, :count).and change(ContextNotification, :count).by(1)
+
+      expect(ContextNotification.where(context: third_article, action: "Published")).to exist
+    end
+
+    it "still caps notifications at FOLLOWER_SEND_LIMIT when past-week page views exceed the cap" do
+      stub_const("Notifications::NotifiableAction::FOLLOWER_SEND_LIMIT", 2)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 500)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 500)
+      third_article = create(:article, :past, user: user, past_published_at: 1.hour.ago, page_views_count: 0)
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(2)
+    end
+
+    it "skips the page views limit if the article is from an organization with a positive baseline_score" do
+      organization.update!(baseline_score: 5)
+      create(:article, :past, user: user, past_published_at: 3.hours.ago, page_views_count: 0)
+      create(:article, :past, user: user, past_published_at: 2.hours.ago, page_views_count: 0)
+      third_article = create(
+        :article,
+        :past,
+        user: user,
+        organization: organization,
+        past_published_at: 1.hour.ago,
+        page_views_count: 0,
+      )
+
+      expect do
+        described_class.call(third_article, "Published")
+      end.to change(Notification, :count).by(4)
     end
   end
 end

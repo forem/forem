@@ -50,6 +50,9 @@ fr:
             description: The "Secret" portion of the MyMLH applications portal
           providers:
             description: How can users sign in?
+          captcha_provider:
+            label: Fournisseur de CAPTCHA
+            description: Choisissez le fournisseur pour les inscriptions par e-mail et mot de passe et les signalements d'abus. Seules les clés du fournisseur sélectionné sont utilisées.
           recaptcha_secret:
             description: Add the secret key for Google reCAPTCHA, which is used for reporting abuse
             placeholder: What is the Google reCAPTCHA secret key?
@@ -57,7 +60,24 @@ fr:
             description: Add the site key for Google reCAPTCHA, which is used for reporting abuse
             placeholder: What is the Google reCAPTCHA site key?
           require_recaptcha:
-            description: People will be required to fill out a captcha when they're creating a new account in your community
+            label: Activer le CAPTCHA pour les inscriptions par e-mail et mot de passe
+            description: Exiger un CAPTCHA pour les inscriptions par e-mail et mot de passe. Cette case ne contrôle pas le CAPTCHA des formulaires de signalement d'abus.
+          turnstile_site:
+            label: Clé de site Cloudflare Turnstile
+            description: La clé de site publique de votre widget Cloudflare Turnstile, utilisée pour les inscriptions et les signalements d'abus lorsque Turnstile est sélectionné.
+            placeholder: Quelle est la clé de site Cloudflare Turnstile ?
+          turnstile_secret:
+            label: Clé secrète Cloudflare Turnstile
+            description: La clé secrète privée utilisée pour vérifier les réponses Cloudflare Turnstile sur le serveur.
+            placeholder: Quelle est la clé secrète Cloudflare Turnstile ?
+          hcaptcha_site:
+            label: Clé de site hCaptcha
+            description: La clé de site publique de votre widget hCaptcha visible, utilisée pour les inscriptions et les signalements d'abus lorsque hCaptcha est sélectionné.
+            placeholder: Quelle est la clé de site hCaptcha ?
+          hcaptcha_secret:
+            label: Clé secrète hCaptcha
+            description: La clé secrète privée utilisée pour vérifier les réponses hCaptcha sur le serveur.
+            placeholder: Quelle est la clé secrète hCaptcha ?
           twitter_key:
             description: The "API key" portion of consumer keys in the Twitter developer portal.
           twitter_secret:
@@ -262,7 +282,7 @@ fr:
             description: Pourcentage des chargements du fil d’accueil utilisant la configuration attribuée. Les autres utilisent la sélection habituelle. Saisissez 0 pour désactiver cette attribution.
           feed_config_repeat_visit_minutes:
             label: Intervalle entre les retours au fil d’accueil (minutes)
-            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué. Chaque retour ajoute un demi-clic à son score de réussite ; la première visite visible ne rapporte aucun crédit.
+            description: Délai minimum entre les visites visibles créditées du fil d’accueil attribué (limité à 20 retours par attribution). Chaque retour ajoute 1 clic (1,5 pour les configurations d’utilisateurs très actifs) à son score de réussite ; la première visite visible ne rapporte aucun crédit.
           feed_repeat_visits:
             label: Retours au fil d’accueil
           home_feed:

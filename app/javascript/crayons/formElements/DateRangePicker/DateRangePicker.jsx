@@ -12,7 +12,8 @@ import {
   HORIZONTAL_ORIENTATION,
 } from 'react-dates/constants';
 import { getDateRangeStartAndEndDates, RANGE_LABELS } from './dateRangeUtils';
-import { Icon, ButtonNew as Button } from '@crayons';
+import { Icon } from '@crayons/Icons';
+import { ButtonNew as Button } from '@crayons/Buttons';
 import ChevronLeft from '@images/chevron-left.svg';
 import ChevronRight from '@images/chevron-right.svg';
 import Calendar from '@images/calendar.svg';

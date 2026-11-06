@@ -125,5 +125,51 @@ RSpec.describe LiquidEmbedExtractor do
         { tag_name: "embed", url: "https://example.com/unsupported-embed", options: "https://example.com/unsupported-embed", referenced_type: nil, referenced_id: nil }
       )
     end
+
+    it "batches reference resolution queries by tag type and skips tags inside codeblocks" do
+      user1 = create(:user, username: "alice_embed")
+      user2 = create(:user, username: "bob_embed")
+
+      body = <<~MARKDOWN
+        {% user alice_embed %}
+        {% user bob_embed %}
+        {% user alice_embed %}
+        ```
+        {% user ignored_fenced_user %}
+        ```
+        Inline `{% user ignored_inline_user %}` tag.
+      MARKDOWN
+
+      comment = create(:comment, body_markdown: body)
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if sql.include?('"users"') && !payload[:cached]
+      end
+
+      data = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.extract(comment)
+      end
+
+      expect(data).to eq(
+        [
+          {
+            tag_name: "user",
+            url: "alice_embed",
+            options: "alice_embed",
+            referenced_type: "User",
+            referenced_id: user1.id
+          },
+          {
+            tag_name: "user",
+            url: "bob_embed",
+            options: "bob_embed",
+            referenced_type: "User",
+            referenced_id: user2.id
+          },
+        ],
+      )
+      expect(user_queries.size).to eq(1)
+    end
   end
 end

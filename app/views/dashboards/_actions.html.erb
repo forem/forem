@@ -125,7 +125,7 @@
     </li>
   </ul>
 
-  <% if policy(:video).new? %>
+  <% if !current_user.actively_spam_or_suspended? && policy(:video).new? %>
     <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant><%= t("views.dashboard.actions.upload") %>
     </a>
   <% end %>

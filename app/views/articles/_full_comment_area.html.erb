@@ -70,5 +70,7 @@
     <%= render "articles/comments_actions" %>
   <% end %>
 </section>
-<%= render "comments/hide_comments_modal" %>
+<% if user_signed_in? %>
+  <%= render "comments/hide_comments_modal" %>
+<% end %>
 <% return if @warm_only %>

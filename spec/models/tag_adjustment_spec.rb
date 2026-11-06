@@ -20,6 +20,10 @@ RSpec.describe TagAdjustment do
   it { is_expected.to validate_presence_of(:status) }
   it { is_expected.to have_many(:notifications).dependent(:delete_all) }
 
+  it "indexes article_id to avoid sequential scans during article tag validation and cascade deletes" do
+    expect(ActiveRecord::Base.connection.index_exists?(:tag_adjustments, :article_id)).to be(true)
+  end
+
   describe "privileges" do
     it "allows tag mods to create for their tags" do
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id)

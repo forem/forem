@@ -71,6 +71,30 @@ RSpec.describe LocalRedis::Web do
     expect(status.exitstatus).to eq(23)
   end
 
+  it "applies opt-in WEB_* runtime overrides when executing Puma directly" do
+    shim = File.join(servers.directory, "bundle")
+    File.write(
+      shim,
+      "#!#{RbConfig.ruby}\nrequire 'json'\n" \
+      "payload = { 'argv' => ARGV, 'malloc_limit' => ENV['RUBY_GC_MALLOC_LIMIT'], 'rubyopt' => ENV['RUBYOPT'] }\n" \
+      "puts JSON.generate(payload)\nexit 0\n",
+    )
+    File.chmod(0o700, shim)
+    env = {
+      "LOCAL_REDIS_URL" => "",
+      "RUBYOPT" => "-W0 --yjit-disable --yjit-exec-mem-size=128",
+      "WEB_RUBY_GC_MALLOC_LIMIT" => "67108864",
+      "WEB_YJIT_EXEC_MEM_SIZE" => "256",
+      "PATH" => "#{servers.directory}:#{ENV.fetch('PATH')}"
+    }
+    stdout, _stderr, status = Open3.capture3(env, RbConfig.ruby, "bin/web")
+    payload = JSON.parse(stdout)
+    expect(status).to be_success
+    expect(payload["argv"]).to eq(["exec", "puma", "-C", "config/puma.rb"])
+    expect(payload["malloc_limit"]).to eq("67108864")
+    expect(payload["rubyopt"]).to end_with("-W0 --yjit-disable --yjit-exec-mem-size=256")
+  end
+
   it "rejects a source socket alias before executing redis-server" do
     directory_alias = File.join(servers.directory, "alias")
     File.symlink(servers.directory, directory_alias)
