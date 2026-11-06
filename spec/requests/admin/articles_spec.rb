@@ -48,6 +48,81 @@ RSpec.describe "/admin/content_manager/articles" do
         expect(count_queries.size).to eq(0)
       end
     end
+
+    it "batches reaction counts and preloads associations without per-article N+1 queries", :aggregate_failures do
+      note_author = create(:user, username: "mod_note_author")
+      trusted_user = create(:user, :trusted)
+      articles = Array.new(3) do
+        author = create(:user, :warned)
+        Note.create!(noteable: author, author: note_author, content: "Moderator note on author", reason: "warned")
+        post_record = create(:article, user: author, with_tags: false, with_main_image: false)
+        create(:reaction, reactable: post_record, user: trusted_user, category: "vomit", status: "valid")
+        create(:reaction, reactable: post_record, user: trusted_user, category: "thumbsup")
+        post_record
+      end
+
+      queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        get admin_articles_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Moderator note on author", "mod_note_author")
+      expect(articles.size).to eq(3)
+
+      reaction_queries = queries.select { |sql| sql.include?('FROM "reactions"') }
+      note_queries = queries.select { |sql| sql.include?('FROM "notes"') }
+      context_note_queries = queries.select { |sql| sql.include?('FROM "context_notes"') }
+      warned_role_count_queries = queries.select { |sql| sql.include?('FROM "roles"') && sql.include?("COUNT(*)") }
+
+      expect(reaction_queries.size).to eq(1)
+      expect(note_queries.size).to eq(1)
+      expect(context_note_queries.size).to eq(1)
+      expect(warned_role_count_queries).to be_empty
+    end
+  end
+
+  describe "GET /admin/content_manager/articles/:id" do
+    before { sign_in super_admin }
+
+    it "preloads privileged reactions and author notes without hydrating public reaction users", :aggregate_failures do
+      author = create(:user, :warned)
+      note_author = create(:user, username: "show_note_author")
+      Note.create!(noteable: author, author: note_author, content: "Show page author note", reason: "note")
+      target_article = create(:article, user: author, with_tags: false, with_main_image: false)
+      flagger = create(:user, :trusted, name: "Trusted Flagger")
+      public_liker = create(:user, name: "Public Liker")
+      create(:reaction, reactable: target_article, user: flagger, category: "vomit", status: "valid")
+      create(:reaction, reactable: target_article, user: public_liker, category: "like")
+
+      queries = []
+      subscriber = lambda do |_name, _started, _finished, _unique_id, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        get admin_article_path(target_article.id)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Trusted Flagger", "Show page author note", "show_note_author")
+      expect(response.body).not_to include("Public Liker")
+
+      reaction_queries = queries.select { |sql| sql.include?('FROM "reactions"') }
+      note_queries = queries.select { |sql| sql.include?('FROM "notes"') }
+
+      expect(reaction_queries.size).to eq(1)
+      expect(reaction_queries.first).to include('"reactions"."category" IN')
+      expect(note_queries.size).to eq(1)
+    end
   end
 
   context "when updating an article via /admin/content_manager/articles" do
