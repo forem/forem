@@ -1035,12 +1035,32 @@ module ForemNative
 
     # Classifies `(method, path)` for `Middlewares::MetalTelemetryFastPath`, returning
     # `[:billboard_update, id]`, `[:billboard_create, nil]`, `[:page_view_update, id]`,
-    # `[:page_view_create, nil]`, or `nil`.
+    # `[:page_view_create, nil]`, `[:ga_event_create, nil]`, `[:feed_events_create, nil]`,
+    # `[:feed_config_visits_create, nil]`, or `nil`.
     def match_metal_telemetry_route(method, path)
       return unless Native.respond_to?(:match_metal_telemetry_route)
       return unless method.instance_of?(String) && path.instance_of?(String)
 
       Native.match_metal_telemetry_route(method, path)
+    end
+
+    # Parses a `POST /fallback_activity_recorder` JSON payload into the 11-key stringified Hash
+    # expected by `Ga::TrackEventWorker`, returning `:invalid` on malformed JSON or `nil` when
+    # the caller should fall back to `JSON.parse`.
+    def extract_ga_event_params(json_body, app_url, user_id = nil)
+      return unless Native.respond_to?(:extract_ga_event_params)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        (app_url.nil? || app_url.instance_of?(String))
+
+      Native.extract_ga_event_params(json_body, app_url, user_id)
+    end
+
+    # Validates and normalizes an Array of `FeedEvent` attribute Hashes in a single native pass
+    # without instantiating `FeedEvent` ActiveRecord models, matching `FeedEvents::BulkUpsert#valid_events`.
+    def validate_and_normalize_feed_events(events)
+      return unless Native.respond_to?(:validate_and_normalize_feed_events) && events.is_a?(Array)
+
+      Native.validate_and_normalize_feed_events(events)
     end
 
     # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL

@@ -1,5 +1,7 @@
-class GaEventsController < ApplicationController
+class GaEventsController < ApplicationMetalController
   include ApplicationHelper
+  include ActionController::Head
+  include ActionController::Rescue
 
   rescue_from ActionDispatch::Http::Parameters::ParseError do
     head :bad_request, content_type: "text/plain"
@@ -12,13 +14,26 @@ class GaEventsController < ApplicationController
 
   def create
     if Settings::General.ga_analytics_4_id.present? && Settings::General.ga_api_secret.present?
-      json = JSON.parse(request.raw_post)
-      user_id = user_signed_in? ? current_user.id : nil
+      raw_post = request.raw_post
+      user_id = session_current_user_id
+      base_app_url = app_url
+      event_hash = ForemNative.extract_ga_event_params(raw_post, base_app_url, user_id)
+      if event_hash == :invalid
+        return head :bad_request
+      elsif event_hash.nil?
+        json = JSON.parse(raw_post)
+        return head :bad_request unless json.is_a?(Hash)
+
+        event_hash = event_params(json, user_id).stringify_keys
+      end
+
       client_id = generate_anonymous_client_id
       # The Google Analytics round-trip doesn't affect the (empty) response, so send it from a job.
-      Ga::TrackEventWorker.perform_async(client_id, event_params(json, user_id).stringify_keys)
+      Ga::TrackEventWorker.perform_async(client_id, event_hash)
     end
-    render body: nil
+    self.status = 200
+    self.content_type = "text/plain"
+    self.response_body = ""
   rescue JSON::ParserError
     head :bad_request
   end
