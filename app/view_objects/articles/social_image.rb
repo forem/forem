@@ -29,10 +29,12 @@ module Articles
 
     attr_reader :article, :height, :width
 
+    # A frame from the post's video is a stronger preview than the generated
+    # quote card, so it comes before the generated social_image.
     def user_defined_image
       return article.main_image if article.main_image.present?
-      return article.social_image if article.social_image.present?
       return article.video_thumbnail_url if article.video_thumbnail_url.present?
+      return article.social_image if article.social_image.present?
     end
   end
 end

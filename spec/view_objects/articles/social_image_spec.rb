@@ -50,4 +50,36 @@ RSpec.describe Articles::SocialImage do
       end
     end
   end
+
+  describe "#url" do
+    let(:article) { create(:article, with_main_image: false) }
+    let(:cover) { "https://example.com/cover.png" }
+    let(:video_thumbnail) { "https://image.mux.com/abc123/thumbnail.webp" }
+    let(:generated_card) { "https://example.com/generated.png" }
+
+    before do
+      allow(Images::Optimizer).to receive(:call) { |image, **_options| "optimized:#{image}" }
+    end
+
+    it "prefers the cover image over the video thumbnail and the generated card" do
+      article.update_columns(main_image: cover, video_thumbnail_url: video_thumbnail, social_image: generated_card)
+      expect(described_class.new(article).url).to eq("optimized:#{cover}")
+    end
+
+    it "uses the video thumbnail instead of the generated card" do
+      article.update_columns(main_image: nil, video_thumbnail_url: video_thumbnail, social_image: generated_card)
+      expect(described_class.new(article).url).to eq("optimized:#{video_thumbnail}")
+    end
+
+    it "uses the generated card when there is no cover or video" do
+      article.update_columns(main_image: nil, video_thumbnail_url: nil, social_image: generated_card)
+      expect(described_class.new(article).url).to eq("optimized:#{generated_card}")
+    end
+
+    it "falls back to the community's default social image" do
+      allow(Settings::General).to receive(:main_social_image).and_return("https://example.com/default.png")
+      article.update_columns(main_image: nil, video_thumbnail_url: nil, social_image: nil)
+      expect(described_class.new(article).url).to eq("https://example.com/default.png")
+    end
+  end
 end

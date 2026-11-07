@@ -170,6 +170,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(article.reload.social_image).to eq("https://example.com/og.png")
         expect(EdgeCache::BustUser).to have_received(:call).with(user)
       end
+
+      it "skips articles with a video thumbnail, which is shared instead" do
+        video_article = create(:article, user_id: user.id, with_main_image: false,
+                                         video_thumbnail_url: "https://image.mux.com/abc123/thumbnail.webp")
+        described_class.call(user)
+        expect(generator).not_to have_received(:generate_image).with(video_article, anything)
+      end
     end
 
     context "when resource is a Profile" do
@@ -209,6 +216,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(organization.reload.social_image).to eq("https://example.com/og.png")
         expect(second_article.reload.social_image).to eq("https://example.com/og.png")
         expect(EdgeCache::BustOrganization).to have_received(:call).with(organization, organization.slug)
+      end
+
+      it "skips articles with a video thumbnail, which is shared instead" do
+        video_article = create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false,
+                                         video_thumbnail_url: "https://image.mux.com/abc123/thumbnail.webp")
+        described_class.call(organization)
+        expect(generator).not_to have_received(:generate_image).with(video_article, anything)
       end
     end
 
