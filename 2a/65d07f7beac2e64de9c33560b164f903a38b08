@@ -1,0 +1,28 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 10-12,14,18-19,116-120
+app/controllers/async_info_controller.rb
+  h_f968154a99632d 13,15,18,21-22,24-26,47-48,55-57
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 2,53,64
+app/controllers/concerns/session_current_user.rb
+  h_f968154a99632d 17,21-32
+app/controllers/follows_controller.rb
+  h_f968154a99632d 4,15,44,124
+app/controllers/notifications/counts_controller.rb
+  h_f968154a99632d 6
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 2-5,20,25,38,40,50,54
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 340,343-344,351-366,423-425
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2a65d07f7beac2e64de9c33560b164f903a38b08",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
