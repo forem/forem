@@ -1,0 +1,38 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 11-13,21,105-109
+app/controllers/feed_events_controller.rb
+  h_f968154a99632d 2,14,43-44
+app/controllers/ga_events_controller.rb
+  h_f968154a99632d 1,3-4,17-29,32,34-36
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 7-9,17-23,47-52,70,74-79,245,260-429,445-472,492,497,559-562
+app/services/feed_events/bulk_upsert.rb
+  h_f968154a99632d 32,64,71,89,120-125,142-144,148-150,155,158
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 1336-1338,1381-1383,1770-2019,2281-2292,2296-2398
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2582-2584,2594-2597,2615-2892,3533-3540
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1038-1039,1047-1065
+lib/tasks/forem_native.rake
+  h_f968154a99632d 607-684
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 5050,5065-5076,5080,5083,5155-5261
+spec/requests/feed_config_visits_spec.rb
+  h_f968154a99632d 29
+spec/requests/feed_events_spec.rb
+  h_f968154a99632d 30,34-35
+spec/requests/ga_events_spec.rb
+  h_f968154a99632d 90-111
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6b3de5ea95c9de1fe7f3cb5dee97321e2ecc98ad",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
