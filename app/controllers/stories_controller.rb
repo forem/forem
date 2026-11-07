@@ -17,6 +17,7 @@ class StoriesController < ApplicationController
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
   UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
+  UNRENDERED_COMMENT_COLUMNS = %w[body_markdown semantic_embedding].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -375,10 +376,10 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_user
-    return unless @comments.none? &&
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @comments.none? &&
       @pinned_stories.none? &&
-      @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+      @stories.none?
 
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])
     redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
@@ -387,8 +388,9 @@ class StoriesController < ApplicationController
   def redirect_if_inactive_in_subforem_for_organization
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
-    return unless @pinned_stories.none? && @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @pinned_stories.none? &&
+      @stories.none?
 
     subforem = Subforem.find(RequestStore.store[:default_subforem_id])
     redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
@@ -534,12 +536,20 @@ class StoriesController < ApplicationController
 
     @user_profile_comments = user_profile_comments
     @user_profile_comments_count = @user_profile_comments.count
-    return unless user_signed_in?
+    return unless user_signed_in? && @user_profile_comments_count.positive?
 
+    # Force index_comments_on_user_id instead of a backward scan on index_comments_on_created_at
+    # across the entire comments table when fetching a user's recent profile comments.
     @comments = @user_profile_comments
-      .order(created_at: :desc)
-      .includes(commentable: [:podcast])
+      .select(Comment.column_names - UNRENDERED_COMMENT_COLUMNS)
+      .order(Arel.sql("(comments.created_at + INTERVAL '0 seconds') DESC"))
       .limit(comment_count)
+      .to_a
+    ActiveRecord::Associations::Preloader.new(
+      records: @comments,
+      associations: :commentable,
+      scope: Article.select(:id, :title, :published),
+    ).call
   end
 
   def user_profile_comments
