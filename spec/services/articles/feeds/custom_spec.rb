@@ -567,14 +567,28 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
     before { [high_score_article, medium_score_article, low_score_article, old_article] }
 
     it "defers comments, limits columns, avoids reaction N+1s, and weighted-shuffles", :aggregate_failures do
+      feed_config.shuffle_weight = 0.0
       comment_queries = []
-      callback = ->(*, payload) { comment_queries << payload[:sql] if payload[:sql].include?('FROM "comments"') }
+      context_note_queries = []
+      article_queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        sql = payload[:sql]
+        comment_queries << sql if sql.include?('FROM "comments"')
+        context_note_queries << sql if sql.include?('FROM "context_notes"')
+        article_queries << sql if sql.include?('FROM "articles"')
+      end
       result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
         feed.default_home_feed(comments_variant: "more_inclusive_recent_good_comments").to_a
       end
       first_article = result.first
       expect(first_article.association(:more_inclusive_recent_good_comments)).not_to be_loaded
+      expect(first_article.association(:context_notes)).not_to be_loaded
       expect(comment_queries).to be_empty
+      expect(context_note_queries).to be_empty
+      expect(article_queries.size).to eq(1)
+      expect(article_queries.first).not_to include("SELECT 1 AS one")
       expect(first_article.has_attribute?(:title)).to be true
       expect(first_article.has_attribute?(:body_markdown)).to be false
       expect(first_article.has_attribute?(:semantic_embedding)).to be false

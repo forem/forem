@@ -101,15 +101,14 @@ module Articles
                                score_sql_method
                              end
 
-        # Preview comments are loaded after ranking and fragment-cache lookup by
-        # Stories::FeedsController, at most three per uncached article.
+        # Preview comments and context notes are loaded after ranking and fragment-cache
+        # lookup by Stories::FeedsController, only for uncached articles.
         base_query
           .limited_column_select
           .select("(#{computed_score_sql}) as computed_score")
           .order(Arel.sql(order_clause))
           .limit(@number_of_articles)
           .offset(outer_offset)
-          .includes(:context_notes)
       end
 
       def two_stage_semantic_scoring?
@@ -291,6 +290,7 @@ module Articles
       end
 
       def shuffle_top_five_if_recent(articles)
+        articles = articles.to_a unless articles.is_a?(Array)
         return articles if articles.empty?
         
         # Check if all articles are published within the last week
