@@ -17,7 +17,6 @@ class AuthPassController < ApplicationController
 
   # Skip CSRF protection and unrelated page-navigation callbacks for auth_pass endpoints
   skip_before_action :verify_authenticity_token,
-                     :verify_private_forem,
                      :remember_cookie_sync,
                      :forward_to_app_config_domain,
                      :redirect_custom_domain_non_profile_pages,
@@ -45,7 +44,7 @@ class AuthPassController < ApplicationController
       @token = generate_auth_token(current_user)
     elsif session[:user_id]
       # User is authenticated via the iframe session cookie
-      user = User.select(:id).find_by(id: session[:user_id])
+      user = find_active_iframe_user(session[:user_id])
       if user
         @token = generate_auth_token(user)
       else
@@ -55,7 +54,7 @@ class AuthPassController < ApplicationController
       end
     elsif (main_session_user_id = request.cookie_jar.signed[:user_id])
       # Attempt to refresh the iframe session by checking main session
-      user = User.select(:id).find_by(id: main_session_user_id)
+      user = find_active_iframe_user(main_session_user_id)
       if user
         session[:user_id] = user.id
         @token = generate_auth_token(user)
@@ -190,6 +189,11 @@ class AuthPassController < ApplicationController
     host = (uri&.host || origin_host).downcase
     port_suffix = uri&.port && [80, 443].exclude?(uri.port) ? ":#{uri.port}" : ""
     [origin_host, "#{scheme}://#{host}#{port_suffix}"]
+  end
+
+  def find_active_iframe_user(user_id)
+    user = User.select(:id, :current_sign_in_at, :last_sign_in_at).find_by(id: user_id)
+    user if user && user_not_signed_out?(user)
   end
 
   def user_not_signed_out?(user)

@@ -57,9 +57,9 @@ RSpec.describe "Reactions" do
       it "does not hydrate the full users row on GET /reactions?article_id=" do
         get reactions_path(article_id: article.id)
 
-        user_queries = []
+        full_user_queries = []
         callback = lambda do |*, payload|
-          user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+          full_user_queries << payload[:sql] if payload[:sql].include?('SELECT "users".*')
         end
 
         ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -67,7 +67,37 @@ RSpec.describe "Reactions" do
         end
 
         expect(response).to have_http_status(:ok)
-        expect(user_queries).to be_empty
+        expect(full_user_queries).to be_empty
+      end
+
+      it "ignores a retained session after the user's password changes" do
+        get reactions_path(article_id: article.id)
+        expect(response.parsed_body["current_user"]).to eq("id" => user.id)
+
+        User.where(id: user.id).update_all(
+          encrypted_password: "$2a$10$newpasswordsaltandhashvalue1234567890123456789012",
+        )
+
+        get reactions_path(article_id: article.id)
+        expect(response.parsed_body["current_user"]).to eq("id" => nil)
+        expect(response.parsed_body["reactions"]).to be_empty
+      end
+    end
+
+    context "when authenticated only via remember_user_token cookie" do
+      it "restores the user, omits edge cache headers, and preserves session persistence" do
+        user.remember_me!
+        cookie_val = User.serialize_into_cookie(user)
+        signed_cookie = Rails.application.message_verifier("signed cookie").generate(cookie_val)
+
+        get reactions_path(article_id: article.id),
+            headers: { "Cookie" => "remember_user_token=#{CGI.escape(signed_cookie)}" }
+
+        result = response.parsed_body
+        expect(result["current_user"]).to eq("id" => user.id)
+        expect(result["reactions"]).not_to be_empty
+        expect(response.headers["Surrogate-Key"]).to be_nil
+        expect(request.env["rack.session.options"][:skip]).not_to be(true)
       end
     end
 

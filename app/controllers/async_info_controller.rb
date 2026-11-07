@@ -52,7 +52,13 @@ class AsyncInfoController < ApplicationController
   end
 
   def user_is_a_creator
-    return current_user.cached_role_names.include?("creator") if current_user.instance_of?(User)
+    if current_user.instance_of?(User)
+      return false unless current_user.cached_role_names.include?("creator")
+      return true if @user.creator?
+
+      Rails.cache.delete("user-#{current_user.id}/role_names")
+      return false
+    end
 
     @user.creator?
   end

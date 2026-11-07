@@ -9,11 +9,13 @@ class FollowsController < ApplicationController
                      only: %i[show bulk_show]
   after_action :verify_authorized
 
+  MAX_BULK_FOLLOW_IDS = 500
+
   def show
     skip_authorization
-    request.session_options[:skip] = true
-    user_id = session_or_remembered_user_id
-    viewer = User.select(:id, :updated_at).find_by(id: user_id) if user_id
+    user_id = session_or_remembered_user_id(validate_salt: false)
+    request.session_options[:skip] = true unless @remembered_user_restored
+    viewer = load_show_viewer(user_id)
     render(plain: "not-logged-in") && return unless viewer
 
     if viewer.id == params[:id].to_i && params[:followable_type] == "User"
@@ -40,11 +42,11 @@ class FollowsController < ApplicationController
 
   def bulk_show
     skip_authorization
-    request.session_options[:skip] = true
-    user_id = session_or_remembered_user_id
+    user_id = session_or_remembered_user_id(validate_salt: false)
+    request.session_options[:skip] = true unless @remembered_user_restored
     render(plain: "not-logged-in") && return unless user_id
 
-    ids = params.require(:ids).map(&:to_i)
+    ids = params.require(:ids).first(MAX_BULK_FOLLOW_IDS).map(&:to_i)
     is_user_type = params[:followable_type] == "User"
     viewer, users_by_id = load_bulk_show_users(user_id, ids, is_user_type)
     render(plain: "not-logged-in") && return unless viewer
@@ -134,14 +136,25 @@ class FollowsController < ApplicationController
     I18n.t("follows_controller.unfollowed")
   end
 
+  def load_show_viewer(user_id)
+    return unless user_id
+
+    viewer = User.select(:id, :updated_at, :encrypted_password).find_by(id: user_id)
+    viewer if valid_session_viewer?(viewer)
+  end
+
   def load_bulk_show_users(user_id, ids, is_user_type)
     # Follows::CheckCached only needs the follower's id and updated_at (for its cache key),
-    # so load the viewer and every followed-back candidate in one narrow query.
+    # plus encrypted_password to validate the viewer's session authenticatable_salt.
     if is_user_type && ids.any?
-      users_by_id = User.where(id: (ids + [user_id]).uniq).select(:id, :updated_at).index_by(&:id)
-      [users_by_id[user_id], users_by_id]
+      users_by_id = User.where(id: (ids + [user_id]).uniq)
+        .select(:id, :updated_at, :encrypted_password)
+        .index_by(&:id)
+      viewer = users_by_id[user_id]
+      [valid_session_viewer?(viewer) ? viewer : nil, users_by_id]
     else
-      [User.select(:id, :updated_at).find_by(id: user_id), {}]
+      viewer = load_show_viewer(user_id)
+      [viewer, {}]
     end
   end
 

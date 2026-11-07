@@ -16,35 +16,14 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
-    request.session_options[:skip] = true
     user_id = session_or_remembered_user_id
+    request.session_options[:skip] = true unless @remembered_user_restored
 
-    if params[:article_id]
-      id = params[:article_id]
-
-      reactions = reactions_by_user_id(user_id) if user_id
-      reactions ||= Reaction.none
-
-      result = { article_reaction_counts: Reaction.count_for_article(id) }
-    else
-      comment_rows = Comment
-        .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
-        .pluck(:id, :public_reactions_count)
-
-      reaction_counts = comment_rows.map do |cid, count|
-        { id: cid, count: count }
-      end
-
-      reactions = if user_id && comment_rows.any?
-                    comment_ids = comment_rows.map(&:first)
-                    viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: user_id)
-                    viewer ? cached_user_public_comment_reactions(viewer, comment_ids) : Reaction.none
-                  else
-                    Reaction.none
-                  end
-
-      result = { public_reaction_counts: reaction_counts }
-    end
+    reactions, result = if params[:article_id]
+                          article_reactions_payload(params[:article_id], user_id)
+                        else
+                          comment_reactions_payload(user_id)
+                        end
 
     render json: {
       current_user: { id: user_id },
@@ -85,13 +64,32 @@ class ReactionsController < ApplicationController
 
   private
 
+  def article_reactions_payload(article_id, user_id)
+    reactions = user_id ? reactions_by_user_id(user_id) : Reaction.none
+    [reactions, { article_reaction_counts: Reaction.count_for_article(article_id) }]
+  end
+
+  def comment_reactions_payload(user_id)
+    comment_rows = Comment
+      .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
+      .pluck(:id, :public_reactions_count)
+    reaction_counts = comment_rows.map { |cid, count| { id: cid, count: count } }
+    reactions = if user_id && comment_rows.any?
+                  viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: user_id)
+                  viewer ? cached_user_public_comment_reactions(viewer, comment_rows.map(&:first)) : Reaction.none
+                else
+                  Reaction.none
+                end
+    [reactions, { public_reaction_counts: reaction_counts }]
+  end
+
   def reactions_surrogate_key
     if params[:article_id]
       article_id = Article.where(id: params[:article_id]).pick(:id)
-      return Reaction.surrogate_key_for_article(article_id) if article_id
+      Reaction.surrogate_key_for_article(article_id) if article_id
     else
       commentable = commentable_for_reactions
-      return Reaction.surrogate_key_for_commentable(commentable) if commentable
+      Reaction.surrogate_key_for_commentable(commentable) if commentable
     end
   end
 

@@ -70,4 +70,16 @@ RSpec.describe "Follows #show" do
     expect(user_queries).to include(a_string_starting_with('SELECT "users"."id", "users"."updated_at" FROM "users"'))
     expect(user_queries).not_to include(a_string_starting_with('SELECT "users".* FROM "users"'))
   end
+
+  it "rejects a retained session after the user's password changes" do
+    get "/follows/#{user.id}", params: { followable_type: "User" }
+    expect(response.body).to eq("false")
+
+    User.where(id: current_user.id).update_all(
+      encrypted_password: "$2a$10$newpasswordsaltandhashvalue1234567890123456789012",
+    )
+
+    get "/follows/#{user.id}", params: { followable_type: "User" }
+    expect(response.body).to eq("not-logged-in")
+  end
 end
