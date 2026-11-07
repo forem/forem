@@ -17,7 +17,7 @@ class ReactionsController < ApplicationController
   def index
     skip_authorization
     user_id = session_or_remembered_user_id
-    request.session_options[:skip] = true unless @remembered_user_restored
+    request.session_options[:skip] = true unless remembered_user_restored?
 
     reactions, result = if params[:article_id]
                           article_reactions_payload(params[:article_id], user_id)

@@ -43,11 +43,17 @@ module SessionCurrentUser
     viewer.authenticatable_salt.to_s == key[1].to_s
   end
 
+  def remembered_user_restored?
+    @remembered_user_restored == true || request.session_options[:renew] == true
+  end
+
   private
 
   def resolve_warden_session_key_id(key, validate_salt:)
     user_id = key.first&.first
     return unless user_id
+
+    request.session_options[:skip] = false if request.session_options[:renew]
     return user_id unless validate_salt
 
     @validated_session_user_id = session_salt_valid?(user_id, key[1]) ? user_id : nil
@@ -56,9 +62,11 @@ module SessionCurrentUser
   def restore_remembered_user_id
     return if cookies[:remember_user_token].blank?
 
-    request.session_options[:skip] = false
     user = request.env["warden"]&.authenticate(scope: :user)
-    @remembered_user_restored = true if user
+    if user
+      @remembered_user_restored = true
+      request.session_options[:skip] = false
+    end
     @validated_session_user_id = user&.id
   end
 

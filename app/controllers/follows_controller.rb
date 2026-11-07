@@ -14,7 +14,7 @@ class FollowsController < ApplicationController
   def show
     skip_authorization
     user_id = session_or_remembered_user_id(validate_salt: false)
-    request.session_options[:skip] = true unless @remembered_user_restored
+    request.session_options[:skip] = true unless remembered_user_restored?
     viewer = load_show_viewer(user_id)
     render(plain: "not-logged-in") && return unless viewer
 
@@ -43,7 +43,7 @@ class FollowsController < ApplicationController
   def bulk_show
     skip_authorization
     user_id = session_or_remembered_user_id(validate_salt: false)
-    request.session_options[:skip] = true unless @remembered_user_restored
+    request.session_options[:skip] = true unless remembered_user_restored?
     render(plain: "not-logged-in") && return unless user_id
 
     ids = params.require(:ids).first(MAX_BULK_FOLLOW_IDS).map(&:to_i)
