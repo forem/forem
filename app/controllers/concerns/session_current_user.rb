@@ -14,7 +14,20 @@ module SessionCurrentUser
   def session_current_user_id
     return @current_user.id if @token_authenticated && @current_user
     return unless (key = session["warden.user.user.key"])
+
     # the value is in the format [[1], "..."] where 1 is the ID
     key.first.first
+  end
+
+  # Returns the current user's ID from the session in O(1) without querying the DB,
+  # falling back to Warden's remember_user_token strategy only when the session has
+  # no user key but a remember_user_token cookie is present.
+  def session_or_remembered_user_id
+    user_id = session_current_user_id
+    return user_id if user_id
+    return if cookies[:remember_user_token].blank?
+
+    request.session_options[:skip] = false
+    request.env["warden"]&.user(:user)&.id
   end
 end

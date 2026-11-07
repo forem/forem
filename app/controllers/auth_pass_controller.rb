@@ -1,5 +1,5 @@
 class AuthPassController < ApplicationController
-  EMPTY_IFRAME_HTML = "<html><body></body></html>".html_safe
+  EMPTY_IFRAME_HTML = "<html><body></body></html>".freeze
   AUTHENTICATED_IFRAME_HTML = <<~HTML.chomp.freeze
     <!-- In app/views/auth/iframe.html.erb -->
     <script>
@@ -50,7 +50,7 @@ class AuthPassController < ApplicationController
         @token = generate_auth_token(user)
       else
         session.delete(:user_id)
-        render html: EMPTY_IFRAME_HTML, status: :ok, layout: false
+        render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
         return
       end
     elsif (main_session_user_id = request.cookie_jar.signed[:user_id])
@@ -61,7 +61,7 @@ class AuthPassController < ApplicationController
         @token = generate_auth_token(user)
       else
         request.session_options[:skip] = true
-        render html: EMPTY_IFRAME_HTML, status: :ok, layout: false
+        render body: EMPTY_IFRAME_HTML, content_type: "text/html", status: :ok
         return
       end
     else

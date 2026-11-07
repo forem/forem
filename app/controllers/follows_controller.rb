@@ -1,8 +1,7 @@
 class FollowsController < ApplicationController
   before_action :current_user_by_token, only: [:create]
   skip_before_action :verify_authenticity_token, if: :token_authenticated?
-  skip_before_action :verify_private_forem,
-                     :remember_cookie_sync,
+  skip_before_action :remember_cookie_sync,
                      :forward_to_app_config_domain,
                      :redirect_custom_domain_non_profile_pages,
                      :determine_locale,
@@ -13,7 +12,7 @@ class FollowsController < ApplicationController
   def show
     skip_authorization
     request.session_options[:skip] = true
-    user_id = session_current_user_id
+    user_id = session_or_remembered_user_id
     viewer = User.select(:id, :updated_at).find_by(id: user_id) if user_id
     render(plain: "not-logged-in") && return unless viewer
 
@@ -42,7 +41,7 @@ class FollowsController < ApplicationController
   def bulk_show
     skip_authorization
     request.session_options[:skip] = true
-    user_id = session_current_user_id
+    user_id = session_or_remembered_user_id
     render(plain: "not-logged-in") && return unless user_id
 
     ids = params.require(:ids).map(&:to_i)
@@ -122,6 +121,7 @@ class FollowsController < ApplicationController
     Rails.cache.delete("#{current_user.cache_key}-#{current_user.formatted_last_followed_at}/followed_tags")
     # Clear the async_info cache, which contains the list of tags the user is currently following
     Rails.cache.delete("#{current_user.cache_key_with_version}/user-info")
+    Rails.cache.delete("#{current_user.cache_key_with_version}/user-info-json-#{RequestStore.store[:subforem_id]}")
   end
 
   def unfollow(followable, followable_type, need_notification: false)

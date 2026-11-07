@@ -1,7 +1,8 @@
 class ReactionsController < ApplicationController
-  before_action :set_cache_control_headers, only: [:index], unless: -> { session_current_user_id }
-  skip_before_action :verify_private_forem,
-                     :remember_cookie_sync,
+  before_action :set_cache_control_headers,
+                only: [:index],
+                unless: -> { session_or_remembered_user_id || cookies[:remember_user_token].present? }
+  skip_before_action :remember_cookie_sync,
                      :forward_to_app_config_domain,
                      :redirect_custom_domain_non_profile_pages,
                      :determine_locale,
@@ -16,11 +17,12 @@ class ReactionsController < ApplicationController
   def index
     skip_authorization
     request.session_options[:skip] = true
+    user_id = session_or_remembered_user_id
 
     if params[:article_id]
       id = params[:article_id]
 
-      reactions = reactions_by_user_id(session_current_user_id) if session_current_user_id
+      reactions = reactions_by_user_id(user_id) if user_id
       reactions ||= Reaction.none
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
@@ -33,9 +35,9 @@ class ReactionsController < ApplicationController
         { id: cid, count: count }
       end
 
-      reactions = if session_current_user_id && comment_rows.any?
+      reactions = if user_id && comment_rows.any?
                     comment_ids = comment_rows.map(&:first)
-                    viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: session_current_user_id)
+                    viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: user_id)
                     viewer ? cached_user_public_comment_reactions(viewer, comment_ids) : Reaction.none
                   else
                     Reaction.none
@@ -45,11 +47,11 @@ class ReactionsController < ApplicationController
     end
 
     render json: {
-      current_user: { id: session_current_user_id },
+      current_user: { id: user_id },
       reactions: reactions
     }.merge(result).to_json
 
-    return if session_current_user_id
+    return if user_id || cookies[:remember_user_token].present?
 
     surrogate_key = reactions_surrogate_key
     set_surrogate_key_header(surrogate_key) if surrogate_key

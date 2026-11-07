@@ -337,29 +337,39 @@ module Middlewares
 
       skip_session_commit!(env)
       current_user_id = token_user_id || resolve_user_id(env, FeedEventsController)
-      return head_response(200) unless current_user_id
-      return head_response(200) if FeatureFlag.enabled?(:disable_browser_feed_events)
+      return head_response(200) if !current_user_id || FeatureFlag.enabled?(:disable_browser_feed_events)
 
       raw_events = raw_params["feed_events"]
-      return head_response(400) unless raw_events.is_a?(Array)
-      return head_response(413) if raw_events.size > FeedEventsController::MAX_BATCH_SIZE
-      return head_response(400) unless raw_events.all? { |ev| ev.is_a?(Hash) || ev.is_a?(ActionController::Parameters) }
+      status = validate_feed_events_batch_status(raw_events)
+      return head_response(status) if status
 
       if Rack::Attack.cache.count("feed_events/user/#{current_user_id}", 60) >
           FeedEventsController::REQUESTS_PER_MINUTE
         return [429, { "Content-Type" => "text/html", "Retry-After" => "60" }, []]
       end
 
-      events_params = raw_events.map do |event|
+      FeedEvents::BulkUpsert.call(slice_feed_events_params(raw_events, current_user_id))
+      head_response(200)
+    rescue ActionDispatch::Http::Parameters::ParseError
+      skip_session_commit!(env)
+      head_response(400)
+    end
+
+    def validate_feed_events_batch_status(raw_events)
+      return 400 unless raw_events.is_a?(Array)
+      return 413 if raw_events.size > FeedEventsController::MAX_BATCH_SIZE
+
+      400 unless raw_events.all? { |ev| ev.is_a?(Hash) || ev.is_a?(ActionController::Parameters) }
+    end
+
+    def slice_feed_events_params(raw_events, current_user_id)
+      raw_events.map do |event|
         raw = event.is_a?(ActionController::Parameters) ? event.to_unsafe_h : event
         raw.slice(
           *FeedEventsController::FEED_EVENT_ALLOWED_STRING_PARAMS,
           *FeedEventsController::FEED_EVENT_ALLOWED_PARAMS,
         ).merge(user_id: current_user_id)
       end
-
-      FeedEvents::BulkUpsert.call(events_params)
-      head_response(200)
     end
 
     def handle_feed_config_visit_create(env)
@@ -410,6 +420,9 @@ module Middlewares
         },
         [],
       ]
+    rescue ActionDispatch::Http::Parameters::ParseError
+      skip_session_commit!(env)
+      [400, { "Content-Type" => "text/html", "Cache-Control" => "private, no-store" }, []]
     end
 
     def ensure_subforem_context!(req)

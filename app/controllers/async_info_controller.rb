@@ -10,17 +10,20 @@ class AsyncInfoController < ApplicationController
                      only: %i[base_data]
 
   def base_data
+    had_session_user = session_current_user_id.present?
     skip_session = can_skip_base_data_session_commit?
-    token_str = fast_form_authenticity_token
+    RequestStore.store[:custom_domain_org] = request.env["forem.custom_domain_org"]
 
     if authenticated_for_base_data?
+      RequestStore.store[:user_signed_in] = true
       current_user.update_presence!
       @user = current_user.decorate
-      request.session_options[:skip] = true if skip_session
-      render_authenticated_base_data(token_str)
+      request.session_options[:skip] = true if skip_session && had_session_user
+      render_authenticated_base_data(fast_form_authenticity_token)
     else
-      request.session_options[:skip] = true if skip_session && !session_current_user_id
-      render_anonymous_base_data(token_str)
+      RequestStore.store[:user_signed_in] = false
+      request.session_options[:skip] = true if skip_session && !had_session_user
+      render_anonymous_base_data(fast_form_authenticity_token)
     end
   end
 
@@ -41,18 +44,17 @@ class AsyncInfoController < ApplicationController
   #       decorated version of the user.  It would be nice if we were using the same "variable" for
   #       the cache key and for that which we cache.
   def user_data
-    cached = Rails.cache.fetch("#{current_user.cache_key_with_version}/user-info-#{RequestStore.store[:subforem_id]}",
-                               expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
+    cache_key = "#{current_user.cache_key_with_version}/user-info-json-#{RequestStore.store[:subforem_id]}"
+    cached = Rails.cache.fetch(cache_key, expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
       AsyncInfo.to_hash(user: @user, context: self).to_json
     end
     cached.is_a?(String) ? cached : cached.to_json
   end
 
   def user_is_a_creator
-    Rails.cache.fetch("#{current_user.cache_key_with_version}/user-is-creator",
-                      expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
-      @user.creator?
-    end
+    return current_user.cached_role_names.include?("creator") if current_user.instance_of?(User)
+
+    @user.creator?
   end
 
   def navigation_links

@@ -3,7 +3,7 @@ module Notifications
     before_action :current_user_by_token, only: [:index]
 
     def index
-      user_id = session_current_user_id
+      user_id = session_or_remembered_user_id
       notifications = user_id ? Notification.where(user_id: user_id).from_subforem : Notification.none
       count = user_id ? notifications.unread.count : 0
 
