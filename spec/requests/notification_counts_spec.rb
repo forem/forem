@@ -5,12 +5,49 @@ RSpec.describe "NotificationCounts" do
   let(:following_user) { create(:user) }
 
   describe "GET /notifications/counts" do
-    it "returns count if signed in" do
+    it "returns count if signed in without hydrating the full users row" do
       sign_in user
       follow_instance = following_user.follow(user)
       Notification.send_new_follower_notification_without_delay(follow_instance)
+      get "/notifications/counts"
+
+      full_user_queries = []
+      callback = lambda do |*, payload|
+        full_user_queries << payload[:sql] if payload[:sql].include?('SELECT "users".*')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/notifications/counts"
+      end
+
+      expect(response.body).to eq("1")
+      expect(full_user_queries).to be_empty
+    end
+
+    it "rejects a retained session after the user's password changes" do
+      sign_in user
+      follow_instance = following_user.follow(user)
+      Notification.send_new_follower_notification_without_delay(follow_instance)
+      get "/notifications/counts"
+      expect(response.body).to eq("1")
+
+      # Simulate password change in another session, which rotates encrypted_password / authenticatable_salt in DB
+      User.where(id: user.id).update_all(
+        encrypted_password: "$2a$10$newpasswordsaltandhashvalue1234567890123456789012",
+      )
 
       get "/notifications/counts"
+      expect(response.body).to eq("0")
+    end
+
+    it "restores the user from remember_user_token when no session user key is present" do
+      user.remember_me!
+      cookie_val = User.serialize_into_cookie(user)
+      signed_cookie = Rails.application.message_verifier("signed cookie").generate(cookie_val)
+      follow_instance = following_user.follow(user)
+      Notification.send_new_follower_notification_without_delay(follow_instance)
+
+      get "/notifications/counts", headers: { "Cookie" => "remember_user_token=#{CGI.escape(signed_cookie)}" }
       expect(response.body).to eq("1")
     end
 

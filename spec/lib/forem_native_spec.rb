@@ -5264,6 +5264,123 @@ RSpec.describe ForemNative do
           expect(actual).to eq(expected), "iteration #{i}: batch=#{batch.inspect}"
         end
       end
+
+      it "encodes HS256 JWTs matching JWT.encode across 1,000 randomized payloads" do
+        rng = Random.new(20_261_113)
+        secrets = [
+          Rails.application.secret_key_base,
+          "short_secret",
+          "a" * 128,
+        ]
+        1_000.times do |i|
+          user_id = rng.rand(1..10_000_000)
+          exp = rng.rand(1_700_000_000..1_900_000_000)
+          secret = secrets.sample(random: rng)
+
+          actual = described_class.encode_hs256_jwt(user_id, exp, secret)
+          expected = JWT.encode({ user_id: user_id, exp: exp }, secret)
+          expect(actual).to eq(expected), "iteration #{i}: user_id=#{user_id} exp=#{exp}"
+        end
+      end
+
+      it "masks CSRF tokens matching Rails global CSRF token masking across 1,000 iterations" do
+        rng = Random.new(20_261_114)
+        1_000.times do |i|
+          raw_real = rng.bytes(32)
+          encoded_real = Base64.urlsafe_encode64(raw_real, padding: false)
+          pad = rng.bytes(32)
+
+          actual = described_class.mask_authenticity_token(encoded_real, pad)
+          global_token = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), raw_real, "!real_csrf_token")
+          xored = pad.bytes.zip(global_token.bytes).map { |a, b| (a ^ b).chr }.join
+          expected = Base64.urlsafe_encode64(pad + xored, padding: false)
+
+          expect(actual).to eq(expected), "iteration #{i}"
+          expect(described_class.verify_authenticity_token(actual, encoded_real)).to be(true)
+        end
+      end
+
+      it "parses AuthPass origins and CSP strings matching AuthPassController across 1,000 inputs" do
+        auth_pass_controller = AuthPassController.new
+        rng = Random.new(20_261_115)
+        schemes = ["https://", "http://", "HTTPS://", "HTTP://", ""]
+        hosts = ["forem.com", "Blog.MyOrg.com", "sub-1.dev.to", "the-other-domain.com"]
+        ports = ["", ":80", ":443", ":3000", ":8443"]
+        paths = ["", "/", "/auth_pass/iframe?passed_domain=test", "/some/path#frag"]
+
+        1_000.times do |i|
+          scheme = schemes.sample(random: rng)
+          host = hosts.sample(random: rng)
+          port = scheme.empty? ? "" : ports.sample(random: rng)
+          path = scheme.empty? ? "" : paths.sample(random: rng)
+          raw = "#{scheme}#{host}#{port}#{path}"
+
+          actual = described_class.parse_auth_pass_origin(raw)
+          expected = auth_pass_controller.__send__(:legacy_parse_origin_host_and_csp, raw)
+          expect(actual).to eq(expected), "iteration #{i}: raw=#{raw}"
+        end
+      end
+
+      it "builds base_data JSON and bulk follow JSON matching ActiveSupport::JSON.encode across 1,000 iterations" do
+        follows_controller = FollowsController.new
+        rng = Random.new(20_261_116)
+        geos = [nil, "US-NY", "CA-ON", "DE"]
+
+        1_000.times do |i|
+          bcast = rng.rand < 0.5 ? nil : { title: "Hello <world> & #{i}", html: "<p>Test</p>" }.to_json
+          token = Base64.urlsafe_encode64(rng.bytes(64), padding: false)
+
+          if rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token
+            }.to_json
+          else
+            u_json = { id: i + 1, name: "User <#{i}> & Co", trusted: rng.rand < 0.5 }.to_json
+            geo = geos.sample(random: rng)
+            optin = rng.rand < 0.5
+            creator = rng.rand < 0.5
+            actual_base = described_class.build_base_data_json(
+              broadcast: bcast,
+              param: "authenticity_token",
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator,
+            )
+            expected_base = {
+              broadcast: bcast,
+              param: :authenticity_token,
+              token: token,
+              user: u_json,
+              client_geolocation: geo,
+              default_email_optin_allowed: optin,
+              creator: creator
+            }.to_json
+          end
+          expect(actual_base).to eq(expected_base), "base_data iteration #{i}"
+
+          viewer_id = rng.rand(1..50)
+          is_user = rng.rand < 0.7
+          len = rng.rand(1..12)
+          ids = Array.new(len) { rng.rand(1..60) }
+          fwd = Array.new(len) { rng.rand < 0.5 }
+          rev = is_user ? Array.new(len) { rng.rand < 0.5 } : []
+
+          actual_follow = described_class.resolve_bulk_follow_json(viewer_id, is_user, ids, fwd, rev)
+          expected_follow = follows_controller.__send__(
+            :legacy_resolve_bulk_follow, viewer_id, is_user, ids, fwd, rev
+          ).to_json
+          expect(actual_follow).to eq(expected_follow), "bulk_follow iteration #{i}"
+        end
+      end
     end
   end
 

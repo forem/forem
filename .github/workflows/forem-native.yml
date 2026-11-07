@@ -7,10 +7,16 @@ on:
     paths:
       - "gems/forem_native/**"
       - "app/controllers/application_metal_controller.rb"
+      - "app/controllers/application_controller.rb"
+      - "app/controllers/async_info_controller.rb"
+      - "app/controllers/auth_pass_controller.rb"
       - "app/controllers/billboard_events_controller.rb"
+      - "app/controllers/follows_controller.rb"
       - "app/controllers/ga_events_controller.rb"
       - "app/controllers/feed_events_controller.rb"
       - "app/controllers/feed_config_visits_controller.rb"
+      - "app/controllers/notifications/counts_controller.rb"
+      - "app/controllers/reactions_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
       - "app/models/billboard_event.rb"
@@ -107,5 +113,10 @@ jobs:
             raise "Unexpected feed_config_visits_create route!" unless ForemNative.match_metal_telemetry_route("POST", "/feed_config_visits") == [:feed_config_visits_create, nil]
             raise "Unexpected extract_ga_event_params!" unless ForemNative.extract_ga_event_params("{\"path\":\"/x\"}", "https://dev.to", 7)["page_path"] == "/x"
             raise "Unexpected validate_and_normalize_feed_events!" unless ForemNative.validate_and_normalize_feed_events([{ article_id: 1, article_position: 1, category: "click", context_type: "home", user_id: 2 }]).size == 1
+            raise "Unexpected encode_hs256_jwt!" unless ForemNative.encode_hs256_jwt(42, 1_900_000_000, "secret").count(".") == 2
+            raise "Unexpected mask_authenticity_token!" unless ForemNative.mask_authenticity_token("ERERERERERERERERERERERERERERERERERERERERERE", "a" * 32).bytesize == 86
+            raise "Unexpected parse_auth_pass_origin!" unless ForemNative.parse_auth_pass_origin("https://Blog.MyOrg.com:8443/x") == ["blog.myorg.com", "https://blog.myorg.com:8443"]
+            raise "Unexpected build_base_data_json!" unless ForemNative.build_base_data_json(broadcast: nil, param: "authenticity_token", token: "tok") == "{\"broadcast\":null,\"param\":\"authenticity_token\",\"token\":\"tok\"}"
+            raise "Unexpected resolve_bulk_follow_json!" unless ForemNative.resolve_bulk_follow_json(10, true, [10, 20], [false, true], [false, true]) == "{\"10\":\"self\",\"20\":\"mutual\"}"
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '

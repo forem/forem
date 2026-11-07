@@ -107,7 +107,7 @@ class ApplicationController < ActionController::Base
   def verify_private_forem
     return if controller_name.in?(PUBLIC_CONTROLLERS)
     return if self.class.module_parent.to_s == "Admin"
-    return if user_signed_in? || Settings::UserExperience.public
+    return if Settings::UserExperience.public || user_signed_in?
 
     if api_action?
       authenticate!
@@ -413,8 +413,8 @@ class ApplicationController < ActionController::Base
 
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
-    if user_signed_in? &&
-        cookies[:remember_user_token].blank?
+    if cookies[:remember_user_token].blank? &&
+        user_signed_in?
       current_user.remember_me = true
       current_user.remember_me!
       remember_me(current_user)
@@ -434,7 +434,7 @@ class ApplicationController < ActionController::Base
     auth_header = request.headers["Authorization"]
     return unless auth_header.present? && auth_header.start_with?("Bearer ")
 
-    token = auth_header.split(" ").last
+    token = auth_header.split.last
     payload = decode_auth_token(token)
     return unless payload && payload["user_id"]
 
@@ -450,11 +450,11 @@ class ApplicationController < ActionController::Base
   end
 
   def decode_auth_token(token)
-    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
-  rescue JWT::ExpiredSignature
-    nil
-  rescue StandardError
-    nil
+    native = ForemNative.verify_hs256_jwt(token, Rails.application.secret_key_base, Time.now.to_i)
+    return if native == false
+    return native if native
+
+    legacy_decode_auth_token(token)
   end
 
   def client_geolocation
@@ -591,6 +591,7 @@ class ApplicationController < ActionController::Base
   def set_unauthenticated_session_expiry
     # If the user is unauthenticated, expire their session quickly to save Redis memory.
     # Authenticated users use the default `expire_after` defined in config/initializers/session_store.rb
+    return if request.session_options[:skip]
     return if user_signed_in?
 
     configured_ttl = ApplicationConfig["ANONYMOUS_SESSION_EXPIRY_SECONDS"]
@@ -601,6 +602,14 @@ class ApplicationController < ActionController::Base
                   end
 
     request.session_options[:expire_after] = ttl_seconds
+  end
+
+  def legacy_decode_auth_token(token)
+    JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+  rescue JWT::ExpiredSignature
+    nil
+  rescue StandardError
+    nil
   end
 
   def set_session_domain

@@ -682,6 +682,84 @@ namespace :forem_native do
       x.report("Rust Magnus (GA4 JSON + 20x FeedEvent batch kernel)") { native_tier1_pipeline.call }
       x.compare!
     end
+
+    puts "\n=== Tier 2 AuthPass + AsyncInfo + BulkFollow Pipeline Benchmark ==="
+    jwt_secret = Rails.application.secret_key_base
+    jwt_exp = 1_793_727_000
+    encoded_real_csrf = Base64.urlsafe_encode64("R" * 32, padding: false)
+    csrf_pad = "P" * 32
+    sample_origin = "https://Blog.MyOrg.com:8443/auth_pass/iframe?passed_domain=test"
+    sample_user_json = {
+      id: 42,
+      name: "Ben Halpern",
+      username: "ben",
+      trusted: true,
+      admin: true
+    }.to_json
+    follow_ids = (1..25).to_a
+    follow_fwd = Array.new(25, &:even?)
+    follow_rev = Array.new(25) { |idx| (idx % 3).zero? }
+    auth_pass_ctrl = AuthPassController.new
+    follows_ctrl = FollowsController.new
+
+    legacy_tier2_pipeline = lambda do
+      t = JWT.encode({ user_id: 42, exp: jwt_exp }, jwt_secret)
+      raw_real = Base64.urlsafe_decode64(encoded_real_csrf)
+      global_tok = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), raw_real, "!real_csrf_token")
+      xored = csrf_pad.bytes.zip(global_tok.bytes).map { |a, b| (a ^ b).chr }.join
+      masked = Base64.urlsafe_encode64(csrf_pad + xored, padding: false)
+      orig = auth_pass_ctrl.__send__(:legacy_parse_origin_host_and_csp, sample_origin)
+      base_json = {
+        broadcast: nil,
+        param: :authenticity_token,
+        token: masked,
+        user: sample_user_json,
+        client_geolocation: "US-NY",
+        default_email_optin_allowed: true,
+        creator: true
+      }.to_json
+      follow_json = follows_ctrl
+        .__send__(:legacy_resolve_bulk_follow, 1, true, follow_ids, follow_fwd, follow_rev)
+        .to_json
+      [t, orig, base_json, follow_json]
+    end
+
+    native_tier2_pipeline = lambda do
+      t = ForemNative.encode_hs256_jwt(42, jwt_exp, jwt_secret)
+      masked = ForemNative.mask_authenticity_token(encoded_real_csrf, csrf_pad)
+      orig = ForemNative.parse_auth_pass_origin(sample_origin)
+      base_json = ForemNative.build_base_data_json(
+        broadcast: nil,
+        param: "authenticity_token",
+        token: masked,
+        user: sample_user_json,
+        client_geolocation: "US-NY",
+        default_email_optin_allowed: true,
+        creator: true,
+      )
+      follow_json = ForemNative.resolve_bulk_follow_json(1, true, follow_ids, follow_fwd, follow_rev)
+      [t, orig, base_json, follow_json]
+    end
+
+    raise "Tier 2 pipeline output mismatch!" unless legacy_tier2_pipeline.call == native_tier2_pipeline.call
+
+    tier2_ruby_mem = MemoryProfiler.report { 100.times { legacy_tier2_pipeline.call } }
+    tier2_rust_mem = MemoryProfiler.report { 100.times { native_tier2_pipeline.call } }
+    puts "Tier 2 Pipeline Ruby allocations (100 runs): #{tier2_ruby_mem.total_allocated} objects " \
+         "(#{tier2_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 2 Pipeline Rust allocations (100 runs): #{tier2_rust_mem.total_allocated} objects " \
+         "(#{tier2_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (JWT.encode + CSRF mask + URI.parse + BaseData + 25x BulkFollow)") do
+        legacy_tier2_pipeline.call
+      end
+      x.report("Rust Magnus (JWT.encode + CSRF mask + Origin + BaseData + 25x BulkFollow)") do
+        native_tier2_pipeline.call
+      end
+      x.compare!
+    end
   end
 
   desc "Compare Markdown extractors and tag cleanup with their legacy Ruby calculations"

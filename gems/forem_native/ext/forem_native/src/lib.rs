@@ -2945,6 +2945,101 @@ fn billboard_event_create_from_json_sql(
     }
 }
 
+fn encode_hs256_jwt(ruby: &Ruby, user_id: i64, exp: i64, secret: RString) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, secret) {
+        return None;
+    }
+    // SAFETY: `secret` is not mutated during `encode_hs256_jwt`.
+    Some(unsafe { forem_core::metal::encode_hs256_jwt(user_id, exp, secret.as_slice()) })
+}
+
+fn mask_authenticity_token(
+    ruby: &Ruby,
+    encoded_real_token: RString,
+    one_time_pad: RString,
+) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, encoded_real_token) {
+        return None;
+    }
+    // SAFETY: Both Ruby Strings are borrowed read-only during pure Rust calculation.
+    unsafe {
+        forem_core::metal::mask_authenticity_token(
+            encoded_real_token.as_slice(),
+            one_time_pad.as_slice(),
+        )
+    }
+}
+
+fn parse_auth_pass_origin(ruby: &Ruby, raw_origin: RString) -> Option<RArray> {
+    if !is_ascii_compatible_host(ruby, raw_origin) {
+        return None;
+    }
+    // SAFETY: `raw_origin` is borrowed read-only and owned Strings are returned before Ruby allocations.
+    let (host, csp_origin) =
+        unsafe { forem_core::metal::parse_auth_pass_origin(raw_origin.as_slice()) }?;
+    let ary = ruby.ary_new_capa(2);
+    ary.push(ruby.str_new(&host)).ok()?;
+    ary.push(ruby.str_new(&csp_origin)).ok()?;
+    Some(ary)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_base_data_json(
+    ruby: &Ruby,
+    broadcast_val: Value,
+    param: RString,
+    token: RString,
+    user_val: Value,
+    geo_val: Value,
+    optin_allowed: bool,
+    creator: bool,
+) -> Option<String> {
+    if !param.is_utf8_compatible_encoding() || !token.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let broadcast = extract_optional_header_utf8_string(ruby, broadcast_val)?;
+    let user_json = extract_optional_header_utf8_string(ruby, user_val)?;
+    let client_geo = extract_optional_header_utf8_string(ruby, geo_val)?;
+
+    // SAFETY: `param` and `token` are borrowed read-only during pure Rust formatting.
+    let param_str = unsafe { param.test_as_str() }?;
+    let token_str = unsafe { token.test_as_str() }?;
+
+    let signed_in = user_json
+        .as_deref()
+        .map(|u| (u, client_geo.as_deref(), optin_allowed, creator));
+
+    Some(forem_core::metal::build_base_data_json(
+        broadcast.as_deref(),
+        param_str,
+        token_str,
+        signed_in,
+    ))
+}
+
+fn resolve_bulk_follow_json(
+    viewer_id: i64,
+    is_user_type: bool,
+    ids_arr: RArray,
+    forward_arr: RArray,
+    reverse_arr: RArray,
+) -> Option<String> {
+    // SAFETY: Only immediate integers and booleans are inspected before calling pure Rust.
+    let (ids, fwd, rev) = unsafe {
+        let id_slice = ids_arr.as_slice();
+        let fwd_slice = forward_arr.as_slice();
+        let rev_slice = reverse_arr.as_slice();
+        let mut ids_vec = Vec::with_capacity(id_slice.len());
+        for &v in id_slice {
+            ids_vec.push(Integer::from_value(v)?.to_i64().ok()?);
+        }
+        let fwd_vec: Vec<bool> = fwd_slice.iter().map(|v| v.to_bool()).collect();
+        let rev_vec: Vec<bool> = rev_slice.iter().map(|v| v.to_bool()).collect();
+        (ids_vec, fwd_vec, rev_vec)
+    };
+    forem_core::metal::resolve_bulk_follow_json(viewer_id, is_user_type, &ids, &fwd, &rev)
+}
+
 fn extract_liquid_embed_tags(ruby: &Ruby, content: RString) -> Option<RArray> {
     if !content.is_utf8_compatible_encoding() {
         return None;
@@ -3531,6 +3626,21 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "validate_and_normalize_feed_events",
         function!(validate_and_normalize_feed_events, 1),
+    )?;
+    native_mod.define_singleton_method("encode_hs256_jwt", function!(encode_hs256_jwt, 3))?;
+    native_mod.define_singleton_method(
+        "mask_authenticity_token",
+        function!(mask_authenticity_token, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "parse_auth_pass_origin",
+        function!(parse_auth_pass_origin, 1),
+    )?;
+    native_mod
+        .define_singleton_method("build_base_data_json", function!(build_base_data_json, 7))?;
+    native_mod.define_singleton_method(
+        "resolve_bulk_follow_json",
+        function!(resolve_bulk_follow_json, 5),
     )?;
     native_mod.define_singleton_method(
         "extract_liquid_embed_tags",

@@ -1175,6 +1175,59 @@ module ForemNative
       Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
     end
 
+    # Encodes an HS256 JWT with payload `{"user_id":<user_id>,"exp":<exp>}` signed with `secret`,
+    # matching `JWT.encode({ user_id: user_id, exp: exp }, secret)` byte-for-byte.
+    def encode_hs256_jwt(user_id, exp, secret)
+      return unless Native.respond_to?(:encode_hs256_jwt)
+      return unless user_id.is_a?(Integer) && exp.is_a?(Integer) && secret.instance_of?(String)
+
+      Native.encode_hs256_jwt(user_id, exp, secret)
+    end
+
+    # Masks a 32-byte base64-encoded real CSRF token with a 32-byte `one_time_pad` using Rails 8's
+    # global CSRF token HMAC (`!real_csrf_token`), matching `form_authenticity_token`.
+    def mask_authenticity_token(encoded_real_token, one_time_pad)
+      return unless Native.respond_to?(:mask_authenticity_token)
+      return unless encoded_real_token.instance_of?(String) && one_time_pad.instance_of?(String)
+
+      Native.mask_authenticity_token(encoded_real_token, one_time_pad)
+    end
+
+    # Parses an `Origin`, `Referer`, or `passed_domain` header/param value for `AuthPassController`
+    # into `[origin_host, normalized_csp_origin]`, or `nil` for non-standard inputs.
+    def parse_auth_pass_origin(raw_origin)
+      return unless Native.respond_to?(:parse_auth_pass_origin)
+      return unless raw_origin.instance_of?(String) && !raw_origin.empty?
+
+      Native.parse_auth_pass_origin(raw_origin)
+    end
+
+    # Builds the JSON response body for `AsyncInfoController#base_data` in a single allocation.
+    def build_base_data_json(broadcast:, param:, token:, user: nil, client_geolocation: nil,
+                             default_email_optin_allowed: false, creator: false)
+      return unless Native.respond_to?(:build_base_data_json)
+      return unless param.instance_of?(String) && token.instance_of?(String)
+
+      Native.build_base_data_json(
+        broadcast,
+        param,
+        token,
+        user,
+        client_geolocation,
+        default_email_optin_allowed ? true : false,
+        creator ? true : false,
+      )
+    end
+
+    # Resolves the JSON response body for `FollowsController#bulk_show` in a single pass.
+    def resolve_bulk_follow_json(viewer_id, is_user_type, ids, forward_flags, reverse_flags)
+      return unless Native.respond_to?(:resolve_bulk_follow_json)
+      return unless viewer_id.is_a?(Integer) && ids.is_a?(Array) &&
+        forward_flags.is_a?(Array) && reverse_flags.is_a?(Array)
+
+      Native.resolve_bulk_follow_json(viewer_id, is_user_type ? true : false, ids, forward_flags, reverse_flags)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
