@@ -5047,7 +5047,7 @@ RSpec.describe ForemNative do
     end
 
     describe ".match_metal_telemetry_route and .billboard_event_create_from_json_sql" do
-      it "classifies metal telemetry routes and rejects non-matching paths or methods" do
+      it "classifies metal telemetry routes and rejects non-matching paths or methods", :aggregate_failures do
         expect(described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42"))
           .to eq([:billboard_update, "42"])
         expect(described_class.match_metal_telemetry_route("POST", "/bb_tabulations"))
@@ -5062,12 +5062,25 @@ RSpec.describe ForemNative do
           .to eq([:page_view_update, "12345"])
         expect(described_class.match_metal_telemetry_route("POST", "/page_views"))
           .to eq([:page_view_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/fallback_activity_recorder/"))
+          .to eq([:ga_event_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_events/"))
+          .to eq([:feed_events_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits"))
+          .to eq([:feed_config_visits_create, nil])
+        expect(described_class.match_metal_telemetry_route("POST", "/feed_config_visits/"))
+          .to eq([:feed_config_visits_create, nil])
         expect(
           [
             described_class.match_metal_telemetry_route("GET", "/bb_tabulations"),
+            described_class.match_metal_telemetry_route("GET", "/feed_events"),
             described_class.match_metal_telemetry_route("PATCH", "/bb_tabulations/42/extra"),
           ],
-        ).to eq([nil, nil])
+        ).to eq([nil, nil, nil])
       end
 
       it "matches BillboardEvent.build_create_with_async_commit_sql across 1,000 randomized JSON payloads" do
@@ -5137,6 +5150,118 @@ RSpec.describe ForemNative do
             )
             expect(outcome).to eq([expected_sql || :invalid, bb_id.to_s]), "iteration #{i}: json=#{json}"
           end
+        end
+      end
+
+      it "extracts GA4 fallback page_view params and matches GaEventsController across 1,000 randomized payloads" do
+        expect(described_class.extract_ga_event_params("", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params("{bad", "https://dev.to", nil)).to eq(:invalid)
+        expect(described_class.extract_ga_event_params('{"document_title":"\\u0041"}', "https://dev.to", 1)).to be_nil
+
+        rng = Random.new(20_261_111)
+        titles = [nil, "Hello World", "Forem \"Rust\" & Rails", "Path\\to\\doc\nline2", "日本語 🚀"]
+        paths = [nil, "/", "/ben", "/ben/post-1?foo=bar"]
+        langs = [nil, "en", "en-US", "fr-FR"]
+        referrers = [nil, "https://dev.to/feed", "https://google.com/search?q=rust", "https://example.org/"]
+        uas = [nil, "Mozilla/5.0 (Macintosh; Intel Mac OS X)", "Custom\"Agent\\1.0"]
+        viewports = [nil, "900x1440", "800x600"]
+        resolutions = [nil, "1080x1920", "1440x2560"]
+        encodings = [nil, "UTF-8", "ISO-8859-1"]
+
+        1_000.times do |i|
+          app_url = rng.rand < 0.5 ? "https://dev.to" : "https://forem.test"
+          user_id = rng.rand < 0.5 ? nil : rng.rand(1..500_000)
+          payload = {
+            "document_title" => titles.sample(random: rng),
+            "document_path" => paths.sample(random: rng),
+            "path" => paths.sample(random: rng),
+            "user_language" => langs.sample(random: rng),
+            "referrer" => referrers.sample(random: rng),
+            "user_agent" => uas.sample(random: rng),
+            "viewport_size" => viewports.sample(random: rng),
+            "screen_resolution" => resolutions.sample(random: rng),
+            "document_encoding" => encodings.sample(random: rng)
+          }.compact
+
+          json_body = JSON.generate(payload)
+          actual = described_class.extract_ga_event_params(json_body, app_url, user_id)
+
+          ref = payload["referrer"]
+          expected = {
+            "page_title" => payload["document_title"],
+            "page_location" => payload["document_path"],
+            "page_path" => payload["path"],
+            "user_id" => user_id,
+            "user_language" => payload["user_language"],
+            "referrer" => ref && !ref.start_with?(app_url) ? ref : nil,
+            "user_agent" => payload["user_agent"],
+            "viewport_size" => payload["viewport_size"],
+            "screen_resolution" => payload["screen_resolution"],
+            "document_encoding" => payload["document_encoding"],
+            "data_source" => "web"
+          }
+
+          expect(actual).to eq(expected), "iteration #{i}: json=#{json_body}"
+        end
+      end
+
+      it "validates and normalizes FeedEvent batches and matches BulkUpsert#legacy_valid_events across 1,000 batches" do
+        upsert_instance = FeedEvents::BulkUpsert.new([])
+        rng = Random.new(20_261_112)
+        categories = [
+          :impression, :click, :reaction, :comment, :extended_pageview,
+          "impression", "click", "extended_pageview",
+          0, 1, 2, 3, 4, 5, "0", "1", :not_a_real_category, "", nil
+        ]
+        contexts = [
+          FeedEvent::CONTEXT_TYPE_HOME,
+          FeedEvent::CONTEXT_TYPE_TAG,
+          FeedEvent::CONTEXT_TYPE_EMAIL,
+          FeedEvent::CONTEXT_TYPE_SIDEBAR,
+          "search",
+          "invalid_ctx",
+          "",
+          nil,
+        ]
+        positions = [1, 4, 20, "7", 0, -3, "", nil]
+        article_ids = [100, "205", 0, -1, nil]
+        user_ids = [42, nil, 0, -5]
+        feed_config_ids = [nil, 9, "12"]
+
+        1_000.times do |i|
+          batch = Array.new(rng.rand(1..8)) do
+            ev_id = case rng.rand(4)
+                    when 0 then SecureRandom.uuid
+                    when 1 then SecureRandom.uuid.upcase
+                    when 2 then "invalid-uuid"
+                    end
+            raw = {
+              article_id: article_ids.sample(random: rng),
+              article_position: positions.sample(random: rng),
+              category: categories.sample(random: rng),
+              context_type: contexts.sample(random: rng),
+              user_id: user_ids.sample(random: rng),
+              feed_config_id: feed_config_ids.sample(random: rng),
+              event_id: ev_id
+            }
+            rng.rand < 0.5 ? raw.stringify_keys : raw
+          end
+
+          actual = described_class.validate_and_normalize_feed_events(batch)
+          expected_models = upsert_instance.__send__(:legacy_valid_events, batch)
+          expected = expected_models.map do |m|
+            {
+              article_position: m.article_position,
+              category: m.category,
+              context_type: m.context_type,
+              article_id: m.article_id,
+              user_id: m.user_id,
+              feed_config_id: m.feed_config_id,
+              event_id: m.event_id
+            }
+          end
+
+          expect(actual).to eq(expected), "iteration #{i}: batch=#{batch.inspect}"
         end
       end
     end

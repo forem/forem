@@ -87,6 +87,28 @@ RSpec.describe "GaEvents", vcr: vcr_option do
         }.stringify_keys
         expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
       end
+
+      it "extracts signed-in user_id from session and skips session commit without loading User", :aggregate_failures do
+        user = create(:user)
+        sign_in user
+        allow(User).to receive(:find_by).and_call_original
+
+        sidekiq_perform_enqueued_jobs do
+          post "/fallback_activity_recorder", params: {
+            document_title: "Feed", path: "/", user_language: "en", referrer: URL.url("/internal")
+          }.to_json
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(request.session_options[:skip]).to be(true)
+        expect(User).not_to have_received(:find_by)
+        expected_params = {
+          page_title: "Feed", page_location: nil, page_path: "/", user_id: user.id,
+          user_language: "en", referrer: nil, user_agent: nil, viewport_size: nil,
+          screen_resolution: nil, document_encoding: nil, data_source: "web"
+        }.stringify_keys
+        expect(tracking_service).to have_received(:track_event).with("page_view", expected_params)
+      end
     end
   end
 end

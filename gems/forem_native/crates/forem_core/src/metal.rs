@@ -1333,6 +1333,9 @@ pub enum MetalTelemetryRoute<'a> {
     BillboardCreate,
     PageViewUpdate(&'a str),
     PageViewCreate,
+    GaEventCreate,
+    FeedEventsCreate,
+    FeedConfigVisitsCreate,
 }
 
 #[inline]
@@ -1375,6 +1378,9 @@ pub fn match_metal_telemetry_route<'a>(
                 Some(MetalTelemetryRoute::BillboardCreate)
             }
             b"/page_views" => Some(MetalTelemetryRoute::PageViewCreate),
+            b"/fallback_activity_recorder" => Some(MetalTelemetryRoute::GaEventCreate),
+            b"/feed_events" => Some(MetalTelemetryRoute::FeedEventsCreate),
+            b"/feed_config_visits" => Some(MetalTelemetryRoute::FeedConfigVisitsCreate),
             _ => None,
         },
         _ => None,
@@ -1761,6 +1767,256 @@ pub fn billboard_event_create_from_json_sql(
     }
 }
 
+/// Extracted GA4 fallback page_view fields for `GaEventsController#create`.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct GaEventFields {
+    pub page_title: Option<String>,
+    pub page_location: Option<String>,
+    pub page_path: Option<String>,
+    pub user_language: Option<String>,
+    pub referrer: Option<String>,
+    pub user_agent: Option<String>,
+    pub viewport_size: Option<String>,
+    pub screen_resolution: Option<String>,
+    pub document_encoding: Option<String>,
+}
+
+/// Outcome of parsing a `POST /fallback_activity_recorder` JSON body.
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum GaEventParseOutcome {
+    Parsed(GaEventFields),
+    InvalidJson,
+    DeferToRuby,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum GaScalarOutcome {
+    Str(String),
+    Null,
+    InvalidJson,
+    DeferToRuby,
+}
+
+impl<'a> JsonScanner<'a> {
+    fn parse_ga_string_or_null(&mut self) -> GaScalarOutcome {
+        self.skip_ws();
+        match self.peek() {
+            None => GaScalarOutcome::InvalidJson,
+            Some(b'n') => {
+                if self.bytes[self.pos..].starts_with(b"null") {
+                    self.pos += 4;
+                    GaScalarOutcome::Null
+                } else {
+                    GaScalarOutcome::InvalidJson
+                }
+            }
+            Some(b'"') => {
+                self.pos += 1;
+                let start = self.pos;
+                let mut has_escape = false;
+                while self.pos < self.bytes.len() {
+                    let b = self.bytes[self.pos];
+                    if b == b'"' {
+                        let raw = &self.bytes[start..self.pos];
+                        self.pos += 1;
+                        if !has_escape {
+                            return match std::str::from_utf8(raw) {
+                                Ok(s) => GaScalarOutcome::Str(s.to_owned()),
+                                Err(_) => GaScalarOutcome::InvalidJson,
+                            };
+                        }
+                        return match Self::unescape_simple(raw) {
+                            Some(s) => GaScalarOutcome::Str(s),
+                            None => GaScalarOutcome::DeferToRuby,
+                        };
+                    }
+                    if b == b'\\' {
+                        has_escape = true;
+                        self.pos += 1;
+                        if self.pos >= self.bytes.len() {
+                            return GaScalarOutcome::InvalidJson;
+                        }
+                    } else if b < 0x20 {
+                        return GaScalarOutcome::InvalidJson;
+                    }
+                    self.pos += 1;
+                }
+                GaScalarOutcome::InvalidJson
+            }
+            Some(b't' | b'f' | b'-' | b'0'..=b'9' | b'[' | b'{') => GaScalarOutcome::DeferToRuby,
+            Some(_) => GaScalarOutcome::InvalidJson,
+        }
+    }
+}
+
+/// Parses a `POST /fallback_activity_recorder` JSON body and filters `referrer` against `app_url`.
+pub fn parse_ga_event_json(json_body: &[u8], app_url: Option<&str>) -> GaEventParseOutcome {
+    let mut scanner = JsonScanner::new(json_body);
+    scanner.skip_ws();
+    match scanner.peek() {
+        None => return GaEventParseOutcome::InvalidJson,
+        Some(b'{') => {
+            scanner.pos += 1;
+        }
+        Some(b'[' | b'"' | b't' | b'f' | b'n' | b'-' | b'0'..=b'9') => {
+            return GaEventParseOutcome::DeferToRuby
+        }
+        Some(_) => return GaEventParseOutcome::InvalidJson,
+    }
+
+    let mut fields = GaEventFields::default();
+    if !scanner.consume_byte(b'}') {
+        loop {
+            let key = match scanner.parse_ga_string_or_null() {
+                GaScalarOutcome::Str(k) => k,
+                GaScalarOutcome::Null => return GaEventParseOutcome::InvalidJson,
+                GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+            };
+            if !scanner.consume_byte(b':') {
+                return GaEventParseOutcome::InvalidJson;
+            }
+            match key.as_str() {
+                "document_title" | "document_path" | "path" | "user_language" | "referrer"
+                | "user_agent" | "viewport_size" | "screen_resolution" | "document_encoding" => {
+                    let val = match scanner.parse_ga_string_or_null() {
+                        GaScalarOutcome::Str(s) => Some(s),
+                        GaScalarOutcome::Null => None,
+                        GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                        GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+                    };
+                    match key.as_str() {
+                        "document_title" => fields.page_title = val,
+                        "document_path" => fields.page_location = val,
+                        "path" => fields.page_path = val,
+                        "user_language" => fields.user_language = val,
+                        "referrer" => fields.referrer = val,
+                        "user_agent" => fields.user_agent = val,
+                        "viewport_size" => fields.viewport_size = val,
+                        "screen_resolution" => fields.screen_resolution = val,
+                        "document_encoding" => fields.document_encoding = val,
+                        _ => unreachable!(),
+                    }
+                }
+                _ => match scanner.parse_ga_string_or_null() {
+                    GaScalarOutcome::Str(_) | GaScalarOutcome::Null => {}
+                    GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                    GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+                },
+            }
+            if scanner.consume_byte(b',') {
+                scanner.skip_ws();
+                if scanner.peek() == Some(b'}') || scanner.peek().is_none() {
+                    return GaEventParseOutcome::InvalidJson;
+                }
+                continue;
+            }
+            if scanner.consume_byte(b'}') {
+                break;
+            }
+            return GaEventParseOutcome::InvalidJson;
+        }
+    }
+    scanner.skip_ws();
+    if scanner.pos != scanner.bytes.len() {
+        return GaEventParseOutcome::InvalidJson;
+    }
+
+    if let (Some(ref r), Some(prefix)) = (&fields.referrer, app_url) {
+        if r.starts_with(prefix) {
+            fields.referrer = None;
+        }
+    }
+
+    GaEventParseOutcome::Parsed(fields)
+}
+
+/// Validated and normalized `FeedEvent` attributes for `FeedEvents::BulkUpsert`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ValidatedFeedEvent {
+    pub article_id: i64,
+    pub user_id: Option<i64>,
+    pub article_position: i32,
+    pub category: &'static str,
+    pub context_type: &'static str,
+    pub feed_config_id: Option<i64>,
+    pub event_id: Option<String>,
+}
+
+/// Parses an integer string strictly matching Rails `NumericalityValidator` (`/\A[+-]?\d+\z/`).
+#[inline]
+pub fn parse_strict_integer_i64(bytes: &[u8]) -> Option<i64> {
+    if bytes.is_empty() {
+        return None;
+    }
+    let s = std::str::from_utf8(bytes).ok()?;
+    let rest = s
+        .strip_prefix('+')
+        .or_else(|| s.strip_prefix('-'))
+        .unwrap_or(s);
+    if rest.is_empty() || !rest.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    s.parse::<i64>().ok()
+}
+
+/// Validates and normalizes a single `FeedEvent` entry matching `FeedEvent.new(event_data).valid?`.
+pub fn validate_feed_event_fields(
+    article_id: Option<i64>,
+    user_id: Option<i64>,
+    article_position: Option<i64>,
+    category: Option<&[u8]>,
+    context_type: Option<&[u8]>,
+    feed_config_id: Option<i64>,
+    event_id: Option<&[u8]>,
+) -> Option<ValidatedFeedEvent> {
+    let article_id = article_id?;
+    let pos_i64 = article_position?;
+    if pos_i64 <= 0 {
+        return None;
+    }
+    let article_position = i32::try_from(pos_i64).ok()?;
+
+    let category = match category? {
+        b"impression" => "impression",
+        b"click" => "click",
+        b"reaction" => "reaction",
+        b"comment" => "comment",
+        b"extended_pageview" => "extended_pageview",
+        _ => return None,
+    };
+
+    let context_type = match context_type? {
+        b"home" => "home",
+        b"search" => "search",
+        b"tag" => "tag",
+        b"email" => "email",
+        b"sidebar" => "sidebar",
+        _ => return None,
+    };
+
+    let event_id = match event_id {
+        None => None,
+        Some(bytes) => {
+            if !is_valid_uuid(bytes) {
+                return None;
+            }
+            Some(std::str::from_utf8(bytes).ok()?.to_ascii_lowercase())
+        }
+    };
+
+    Some(ValidatedFeedEvent {
+        article_id,
+        user_id,
+        article_position,
+        category,
+        context_type,
+        feed_config_id,
+        event_id,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2022,7 +2278,122 @@ mod tests {
             match_metal_telemetry_route(b"POST", b"/page_views"),
             Some(MetalTelemetryRoute::PageViewCreate)
         );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/fallback_activity_recorder"),
+            Some(MetalTelemetryRoute::GaEventCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/feed_events"),
+            Some(MetalTelemetryRoute::FeedEventsCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/feed_config_visits"),
+            Some(MetalTelemetryRoute::FeedConfigVisitsCreate)
+        );
         assert_eq!(match_metal_telemetry_route(b"GET", b"/articles"), None);
+    }
+
+    #[test]
+    fn test_parse_ga_event_json() {
+        let valid_json = br#"{"document_title":"Hello","path":"/ben","user_language":"en","referrer":"https://google.com/"}"#;
+        assert_eq!(
+            parse_ga_event_json(valid_json, Some("https://dev.to")),
+            GaEventParseOutcome::Parsed(GaEventFields {
+                page_title: Some("Hello".to_owned()),
+                page_location: None,
+                page_path: Some("/ben".to_owned()),
+                user_language: Some("en".to_owned()),
+                referrer: Some("https://google.com/".to_owned()),
+                user_agent: None,
+                viewport_size: None,
+                screen_resolution: None,
+                document_encoding: None,
+            })
+        );
+
+        let same_host_json = br#"{"path":"/ben","referrer":"https://dev.to/other"}"#;
+        assert_eq!(
+            parse_ga_event_json(same_host_json, Some("https://dev.to")),
+            GaEventParseOutcome::Parsed(GaEventFields {
+                page_path: Some("/ben".to_owned()),
+                referrer: None,
+                ..GaEventFields::default()
+            })
+        );
+
+        assert_eq!(
+            parse_ga_event_json(b"", Some("https://dev.to")),
+            GaEventParseOutcome::InvalidJson
+        );
+        assert_eq!(
+            parse_ga_event_json(
+                br#"{"path":"/example","document_path":"/example"#,
+                Some("https://dev.to")
+            ),
+            GaEventParseOutcome::InvalidJson
+        );
+    }
+
+    #[test]
+    fn test_validate_feed_event_fields() {
+        let valid = validate_feed_event_fields(
+            Some(42),
+            Some(7),
+            Some(3),
+            Some(b"click"),
+            Some(b"home"),
+            Some(99),
+            Some(b"550e8400-e29b-41d4-a716-446655440000"),
+        );
+        assert_eq!(
+            valid,
+            Some(ValidatedFeedEvent {
+                article_id: 42,
+                user_id: Some(7),
+                article_position: 3,
+                category: "click",
+                context_type: "home",
+                feed_config_id: Some(99),
+                event_id: Some("550e8400-e29b-41d4-a716-446655440000".to_owned()),
+            })
+        );
+
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(0),
+                Some(b"click"),
+                Some(b"home"),
+                None,
+                None
+            ),
+            None
+        );
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(1),
+                Some(b"invalid"),
+                Some(b"home"),
+                None,
+                None
+            ),
+            None
+        );
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(1),
+                Some(b"click"),
+                Some(b"home"),
+                None,
+                Some(b"not-a-uuid")
+            ),
+            None
+        );
     }
 
     #[test]

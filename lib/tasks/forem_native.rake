@@ -604,6 +604,84 @@ namespace :forem_native do
       x.report("Rust Magnus (Phase 2 Metal Origin + Referrer + JSON SQL)") { native_phase2_pipeline.call }
       x.compare!
     end
+
+    puts "\n=== Tier 1 Metal FastPath: GA4 Fallback JSON + FeedEvents Batch Validation Benchmark ==="
+    ga_json_body = JSON.generate(
+      {
+        "path" => "/ben/rewriting-rails-hot-paths-in-rust-42",
+        "user_language" => "en-US",
+        "referrer" => "https://www.google.com/search?q=forem+rust+magnus",
+        "user_agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        "viewport_size" => "900x1440",
+        "screen_resolution" => "1080x1920",
+        "document_title" => "Rewriting Rails Hot Paths in Rust - DEV Community",
+        "document_encoding" => "UTF-8",
+        "document_path" => "/ben/rewriting-rails-hot-paths-in-rust-42"
+      },
+    )
+    feed_batch = Array.new(20) do |idx|
+      {
+        "article_id" => 10_000 + idx,
+        "article_position" => idx + 1,
+        "category" => idx.even? ? "impression" : "click",
+        "context_type" => "home",
+        "user_id" => 42,
+        "feed_config_id" => 7,
+        "event_id" => format("550e8400-e29b-41d4-a716-44665544%04x", idx)
+      }
+    end
+    bulk_upsert_bench = FeedEvents::BulkUpsert.new(feed_batch)
+
+    legacy_tier1_pipeline = lambda do
+      parsed = JSON.parse(ga_json_body)
+      ref = parsed["referrer"]
+      {
+        "page_title" => parsed["document_title"],
+        "page_location" => parsed["document_path"],
+        "page_path" => parsed["path"],
+        "user_id" => 42,
+        "user_language" => parsed["user_language"],
+        "referrer" => ref && !ref.start_with?("https://dev.to") ? ref : nil,
+        "user_agent" => parsed["user_agent"],
+        "viewport_size" => parsed["viewport_size"],
+        "screen_resolution" => parsed["screen_resolution"],
+        "document_encoding" => parsed["document_encoding"],
+        "data_source" => "web"
+      }
+      bulk_upsert_bench.__send__(:legacy_valid_events, feed_batch).map do |event|
+        {
+          article_position: event[:article_position],
+          category: event[:category],
+          context_type: event[:context_type],
+          article_id: event[:article_id],
+          user_id: event[:user_id],
+          feed_config_id: event[:feed_config_id],
+          counts_for: event[:counts_for],
+          event_id: event[:event_id]
+        }
+      end
+    end
+
+    native_tier1_pipeline = lambda do
+      ForemNative.match_metal_telemetry_route("POST", "/fallback_activity_recorder")
+      ForemNative.match_metal_telemetry_route("POST", "/feed_events")
+      ForemNative.match_metal_telemetry_route("POST", "/feed_config_visits")
+      ForemNative.extract_ga_event_params(ga_json_body, "https://dev.to", 42)
+      ForemNative.validate_and_normalize_feed_events(feed_batch)
+    end
+
+    tier1_ruby_mem = MemoryProfiler.report { 10.times { legacy_tier1_pipeline.call } }
+    tier1_rust_mem = MemoryProfiler.report { 10.times { native_tier1_pipeline.call } }
+    puts "Tier 1 Metal FastPath Ruby Legacy allocations (10 runs): " \
+         "#{tier1_ruby_mem.total_allocated} objects (#{tier1_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 1 Metal FastPath Rust Magnus allocations (10 runs): " \
+         "#{tier1_rust_mem.total_allocated} objects (#{tier1_rust_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (GA4 JSON + 20x FeedEvent.new.valid?)") { legacy_tier1_pipeline.call }
+      x.report("Rust Magnus (GA4 JSON + 20x FeedEvent batch kernel)") { native_tier1_pipeline.call }
+      x.compare!
+    end
   end
 
   desc "Compare Markdown extractors and tag cleanup with their legacy Ruby calculations"

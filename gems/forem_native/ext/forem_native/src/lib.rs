@@ -2579,6 +2579,9 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 MetalTelemetryRoute::BillboardCreate => (1u8, None),
                 MetalTelemetryRoute::PageViewUpdate(id) => (2u8, Some(id.to_owned())),
                 MetalTelemetryRoute::PageViewCreate => (3u8, None),
+                MetalTelemetryRoute::GaEventCreate => (4u8, None),
+                MetalTelemetryRoute::FeedEventsCreate => (5u8, None),
+                MetalTelemetryRoute::FeedConfigVisitsCreate => (6u8, None),
             },
         )
     };
@@ -2588,7 +2591,10 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 0 => "billboard_update",
                 1 => "billboard_create",
                 2 => "page_view_update",
-                _ => "page_view_create",
+                3 => "page_view_create",
+                4 => "ga_event_create",
+                5 => "feed_events_create",
+                _ => "feed_config_visits_create",
             };
             let arr = ruby.ary_new_capa(2);
             let _ = arr.push(ruby.to_symbol(sym_name));
@@ -2604,6 +2610,278 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
         }
         None => ruby.qnil().as_value(),
     }
+}
+
+fn extract_ga_event_params(
+    ruby: &Ruby,
+    json_body: RString,
+    app_url_val: Value,
+    user_id_val: Value,
+) -> Value {
+    use forem_core::metal::GaEventParseOutcome;
+
+    if !is_ascii_compatible_host(ruby, json_body) {
+        return ruby.qnil().as_value();
+    }
+    let Some(user_id) = extract_optional_i64(user_id_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(app_url) = extract_optional_header_utf8_string(ruby, app_url_val) else {
+        return ruby.qnil().as_value();
+    };
+
+    // SAFETY: `json_body` is not mutated during `parse_ga_event_json`.
+    let outcome =
+        unsafe { forem_core::metal::parse_ga_event_json(json_body.as_slice(), app_url.as_deref()) };
+
+    match outcome {
+        GaEventParseOutcome::Parsed(fields) => {
+            let hash = ruby.hash_new_capa(11);
+            let set_opt_str = |k: &str, opt: Option<String>| {
+                let v = match opt {
+                    Some(s) => ruby.str_new(&s).as_value(),
+                    None => ruby.qnil().as_value(),
+                };
+                let _ = hash.aset(ruby.str_new(k), v);
+            };
+            set_opt_str("page_title", fields.page_title);
+            set_opt_str("page_location", fields.page_location);
+            set_opt_str("page_path", fields.page_path);
+            let uid_val = match user_id {
+                Some(id) => ruby.into_value(id),
+                None => ruby.qnil().as_value(),
+            };
+            let _ = hash.aset(ruby.str_new("user_id"), uid_val);
+            set_opt_str("user_language", fields.user_language);
+            set_opt_str("referrer", fields.referrer);
+            set_opt_str("user_agent", fields.user_agent);
+            set_opt_str("viewport_size", fields.viewport_size);
+            set_opt_str("screen_resolution", fields.screen_resolution);
+            set_opt_str("document_encoding", fields.document_encoding);
+            let _ = hash.aset(ruby.str_new("data_source"), ruby.str_new("web"));
+            hash.as_value()
+        }
+        GaEventParseOutcome::InvalidJson => ruby.to_symbol("invalid").as_value(),
+        GaEventParseOutcome::DeferToRuby => ruby.qnil().as_value(),
+    }
+}
+
+#[derive(Default)]
+struct RawFeedEventEntry {
+    article_id: Option<i64>,
+    user_id: Option<i64>,
+    article_position: Option<i64>,
+    category: Option<Vec<u8>>,
+    context_type: Option<Vec<u8>>,
+    feed_config_id: Option<i64>,
+    event_id: Option<Vec<u8>>,
+    invalid: bool,
+    defer: bool,
+}
+
+fn extract_hash_key_name(ruby: &Ruby, key: Value) -> Option<Vec<u8>> {
+    if let Some(rstr) = RString::from_value(key) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return None;
+        }
+        return Some(unsafe { rstr.as_slice().to_vec() });
+    }
+    if let Some(sym) = Symbol::from_value(key) {
+        let name = sym.name().ok()?;
+        return Some(name.as_bytes().to_vec());
+    }
+    None
+}
+
+fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return int.to_i64().map(Some).map_err(|_| true);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(true);
+        }
+        let parsed = unsafe { forem_core::metal::parse_strict_integer_i64(rstr.as_slice()) };
+        return parsed.map(Some).ok_or(false);
+    }
+    if Float::from_value(val).is_some() {
+        return Err(false);
+    }
+    Err(true)
+}
+
+fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(());
+        }
+        return Ok(Some(unsafe { rstr.as_slice().to_vec() }));
+    }
+    if allow_symbol {
+        if let Some(sym) = Symbol::from_value(val) {
+            let name = sym.name().map_err(|_| ())?;
+            return Ok(Some(name.as_bytes().to_vec()));
+        }
+    }
+    Err(())
+}
+
+fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option<RArray> {
+    use forem_core::metal::{validate_feed_event_fields, ValidatedFeedEvent};
+    use magnus::r_hash::ForEach;
+
+    let items: Vec<Value> = unsafe { events_arr.as_slice() }.to_vec();
+    let mut validated: Vec<ValidatedFeedEvent> = Vec::with_capacity(items.len());
+
+    for item in items {
+        let hash = RHash::from_value(item)?;
+        let mut entry = RawFeedEventEntry::default();
+        hash.foreach(|k: Value, v: Value| -> Result<ForEach, Error> {
+            let Some(key_bytes) = extract_hash_key_name(ruby, k) else {
+                entry.defer = true;
+                return Ok(ForEach::Stop);
+            };
+            match key_bytes.as_slice() {
+                b"article" | b"user" | b"feed_config" => {
+                    entry.defer = true;
+                    return Ok(ForEach::Stop);
+                }
+                b"article_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_id = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_id = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"user_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.user_id = opt,
+                    Err(false) => entry.invalid = true,
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"article_position" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_position = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_position = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"feed_config_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.feed_config_id = opt,
+                    Err(_) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"category" => {
+                    if let Some(int) = Integer::from_value(v) {
+                        match int.to_i64() {
+                            Ok(0) => entry.category = Some(b"impression".to_vec()),
+                            Ok(1) => entry.category = Some(b"click".to_vec()),
+                            Ok(2) => entry.category = Some(b"reaction".to_vec()),
+                            Ok(3) => entry.category = Some(b"comment".to_vec()),
+                            Ok(4) => entry.category = Some(b"extended_pageview".to_vec()),
+                            _ => {
+                                entry.category = None;
+                                entry.invalid = true;
+                            }
+                        }
+                    } else {
+                        match extract_name_bytes(ruby, v, true) {
+                            Ok(b) => entry.category = b,
+                            Err(()) => {
+                                entry.defer = true;
+                                return Ok(ForEach::Stop);
+                            }
+                        }
+                    }
+                }
+                b"context_type" => match extract_name_bytes(ruby, v, true) {
+                    Ok(b) => entry.context_type = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"event_id" => match extract_name_bytes(ruby, v, false) {
+                    Ok(b) => entry.event_id = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                _ => {}
+            }
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+
+        if entry.defer {
+            return None;
+        }
+        if entry.invalid {
+            continue;
+        }
+        if let Some(v) = validate_feed_event_fields(
+            entry.article_id,
+            entry.user_id,
+            entry.article_position,
+            entry.category.as_deref(),
+            entry.context_type.as_deref(),
+            entry.feed_config_id,
+            entry.event_id.as_deref(),
+        ) {
+            validated.push(v);
+        }
+    }
+
+    let sym_article_id = ruby.to_symbol("article_id");
+    let sym_user_id = ruby.to_symbol("user_id");
+    let sym_article_position = ruby.to_symbol("article_position");
+    let sym_category = ruby.to_symbol("category");
+    let sym_context_type = ruby.to_symbol("context_type");
+    let sym_feed_config_id = ruby.to_symbol("feed_config_id");
+    let sym_event_id = ruby.to_symbol("event_id");
+
+    let out = ruby.ary_new_capa(validated.len());
+    for ev in validated {
+        let h = ruby.hash_new_capa(7);
+        h.aset(sym_article_id, ev.article_id).ok()?;
+        match ev.user_id {
+            Some(uid) => h.aset(sym_user_id, uid).ok()?,
+            None => h.aset(sym_user_id, ruby.qnil()).ok()?,
+        }
+        h.aset(sym_article_position, ev.article_position).ok()?;
+        h.aset(sym_category, ruby.str_new(ev.category)).ok()?;
+        h.aset(sym_context_type, ruby.str_new(ev.context_type))
+            .ok()?;
+        match ev.feed_config_id {
+            Some(fcid) => h.aset(sym_feed_config_id, fcid).ok()?,
+            None => h.aset(sym_feed_config_id, ruby.qnil()).ok()?,
+        }
+        match ev.event_id {
+            Some(ref eid) => h.aset(sym_event_id, ruby.str_new(eid)).ok()?,
+            None => h.aset(sym_event_id, ruby.qnil()).ok()?,
+        }
+        out.push(h).ok()?;
+    }
+    Some(out)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -3245,6 +3523,14 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "billboard_event_create_from_json_sql",
         function!(billboard_event_create_from_json_sql, 7),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_ga_event_params",
+        function!(extract_ga_event_params, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "validate_and_normalize_feed_events",
+        function!(validate_and_normalize_feed_events, 1),
     )?;
     native_mod.define_singleton_method(
         "extract_liquid_embed_tags",

@@ -4,6 +4,9 @@ module Middlewares
   # - POST /bb_tabulations, /billboard_events, /display_ad_events (BillboardEventsController#create)
   # - PUT/PATCH /page_views/:id (PageViewsController#update)
   # - POST /page_views (PageViewsController#create)
+  # - POST /fallback_activity_recorder (GaEventsController#create)
+  # - POST /feed_events (FeedEventsController#create)
+  # - POST /feed_config_visits (FeedConfigVisitsController#create)
   #
   # Runs after Rack::Attack and Warden::Manager, and before Middlewares::SetSubforem,
   # Middlewares::SetCookieDomain, OmniAuth strategies, ActionDispatch::Journey routing,
@@ -11,6 +14,13 @@ module Middlewares
   class MetalTelemetryFastPath
     SKIP_METHODS = %w[GET HEAD OPTIONS].freeze
     CREATE_BILLBOARD_PATHS = Set.new(["/bb_tabulations", "/billboard_events", "/display_ad_events"]).freeze
+    POST_STATIC_ROUTES = {
+      "/page_views" => [:page_view_create, nil].freeze,
+      "/fallback_activity_recorder" => [:ga_event_create, nil].freeze,
+      "/feed_events" => [:feed_events_create, nil].freeze,
+      "/feed_config_visits" => [:feed_config_visits_create, nil].freeze
+    }.freeze
+    NO_STORE_HEADERS = { "Cache-Control" => "private, no-store" }.freeze
 
     def initialize(app)
       @app = app
@@ -34,6 +44,12 @@ module Middlewares
         handle_page_view_update(env, id_str)
       when :page_view_create
         handle_page_view_create(env)
+      when :ga_event_create
+        handle_ga_event_create(env)
+      when :feed_events_create
+        handle_feed_events_create(env)
+      when :feed_config_visits_create
+        handle_feed_config_visit_create(env)
       else
         @app.call(env)
       end
@@ -51,10 +67,14 @@ module Middlewares
       when "PUT"
         extract_prefix_id(norm_path, "/page_views/", :page_view_update)
       when "POST"
-        return [:billboard_create, nil] if CREATE_BILLBOARD_PATHS.include?(norm_path)
-
-        [:page_view_create, nil] if norm_path == "/page_views"
+        legacy_match_post_route(norm_path)
       end
+    end
+
+    def legacy_match_post_route(norm_path)
+      return [:billboard_create, nil] if CREATE_BILLBOARD_PATHS.include?(norm_path)
+
+      POST_STATIC_ROUTES[norm_path]
     end
 
     def legacy_match_patch_route(norm_path)
@@ -222,15 +242,7 @@ module Middlewares
       article_id = raw_params["article_id"]
       return unless article_id.present? && current_user_id
 
-      passed_domain = req.GET["passed_domain"]
-      raw_domain = if passed_domain.is_a?(String) && passed_domain.valid_encoding? && passed_domain.present?
-                     passed_domain
-                   else
-                     req.host
-                   end
-      domain = ForemNative.subforem_request_domain(raw_domain) || legacy_subforem_request_domain(raw_domain)
-      RequestStore.store[:default_subforem_id] ||= Subforem.cached_default_id
-      RequestStore.store[:subforem_id] ||= Subforem.cached_id_by_domain(domain)
+      ensure_subforem_context!(req)
       return unless Settings::General.algolia_application_id.present? && Settings::General.algolia_api_key.present?
 
       AlgoliaInsightsService.new.track_event(
@@ -243,6 +255,176 @@ module Middlewares
         nil,
         nil,
       )
+    end
+
+    def handle_ga_event_create(env)
+      return @app.call(env) if verify_csrf!(env, GaEventsController) == :defer
+
+      skip_session_commit!(env)
+      req = ActionDispatch::Request.new(env)
+      ensure_subforem_context!(req)
+      if Settings::General.ga_analytics_4_id.present? && Settings::General.ga_api_secret.present?
+        raw_post = req.raw_post
+        user_id = resolve_user_id(env, GaEventsController)
+        base_app_url = resolve_app_url(env)
+        event_hash = parse_ga_event_payload(raw_post, base_app_url, user_id)
+        return head_response(400) if event_hash == :invalid
+
+        client_id = generate_anonymous_client_id(req)
+        Ga::TrackEventWorker.perform_async(client_id, event_hash)
+      end
+
+      [200, { "Content-Type" => "text/plain; charset=utf-8" }, [""]]
+    end
+
+    def parse_ga_event_payload(raw_post, base_app_url, user_id)
+      event_hash = ForemNative.extract_ga_event_params(raw_post, base_app_url, user_id)
+      return event_hash unless event_hash.nil?
+
+      json = JSON.parse(raw_post)
+      return :invalid unless json.is_a?(Hash)
+
+      referrer = json["referrer"]
+      {
+        "page_title" => json["document_title"],
+        "page_location" => json["document_path"],
+        "page_path" => json["path"],
+        "user_id" => user_id,
+        "user_language" => json["user_language"],
+        "referrer" => referrer && !referrer.start_with?(base_app_url) ? referrer : nil,
+        "user_agent" => json["user_agent"],
+        "viewport_size" => json["viewport_size"],
+        "screen_resolution" => json["screen_resolution"],
+        "document_encoding" => json["document_encoding"],
+        "data_source" => "web"
+      }
+    rescue JSON::ParserError
+      :invalid
+    end
+
+    def resolve_app_url(env)
+      custom_org = env["forem.custom_domain_org"]
+      domain = custom_org ? custom_org.custom_domain : RequestStore.store[:subforem_domain]
+      URL.url(nil, domain)
+    rescue StandardError
+      URL.url(nil, RequestStore.store[:subforem_domain])
+    end
+
+    def generate_anonymous_client_id(req)
+      cookies = req.cookie_jar
+      client_id = cookies[:client_id] || "#{scrambled_ip(req)[0..12]}.#{SecureRandom.uuid}"
+      cookies[:client_id] = { value: client_id, expires: 1.year.from_now }
+      client_id
+    end
+
+    def scrambled_ip(req)
+      daily_key = Rails.cache.fetch("daily_random_key", expires_in: 48.hours) { SecureRandom.random_bytes(32) }
+      crypt = ActiveSupport::MessageEncryptor.new(daily_key)
+      crypt.encrypt_and_sign(req.env["HTTP_FASTLY_CLIENT_IP"] || req.remote_ip)
+    end
+
+    def handle_feed_events_create(env)
+      req = ActionDispatch::Request.new(env)
+      raw_params = req.parameters
+      token_user_id = resolve_token_user_id(env, raw_params)
+      csrf_status = verify_csrf!(
+        env,
+        FeedEventsController,
+        skip: !token_user_id.nil?,
+        fallback_token: raw_params["authenticity_token"],
+      )
+      return @app.call(env) if csrf_status == :defer
+
+      skip_session_commit!(env)
+      current_user_id = token_user_id || resolve_user_id(env, FeedEventsController)
+      return head_response(200) unless current_user_id
+      return head_response(200) if FeatureFlag.enabled?(:disable_browser_feed_events)
+
+      raw_events = raw_params["feed_events"]
+      return head_response(400) unless raw_events.is_a?(Array)
+      return head_response(413) if raw_events.size > FeedEventsController::MAX_BATCH_SIZE
+      return head_response(400) unless raw_events.all? { |ev| ev.is_a?(Hash) || ev.is_a?(ActionController::Parameters) }
+
+      if Rack::Attack.cache.count("feed_events/user/#{current_user_id}", 60) >
+          FeedEventsController::REQUESTS_PER_MINUTE
+        return [429, { "Content-Type" => "text/html", "Retry-After" => "60" }, []]
+      end
+
+      events_params = raw_events.map do |event|
+        raw = event.is_a?(ActionController::Parameters) ? event.to_unsafe_h : event
+        raw.slice(
+          *FeedEventsController::FEED_EVENT_ALLOWED_STRING_PARAMS,
+          *FeedEventsController::FEED_EVENT_ALLOWED_PARAMS,
+        ).merge(user_id: current_user_id)
+      end
+
+      FeedEvents::BulkUpsert.call(events_params)
+      head_response(200)
+    end
+
+    def handle_feed_config_visit_create(env)
+      req = ActionDispatch::Request.new(env)
+      raw_params = req.parameters
+      token_user_id = resolve_token_user_id(env, raw_params)
+      csrf_status = verify_csrf!(
+        env,
+        FeedConfigVisitsController,
+        skip: !token_user_id.nil?,
+        fallback_token: raw_params["authenticity_token"],
+      )
+      return @app.call(env) if csrf_status == :defer
+
+      skip_session_commit!(env)
+      current_user_id = token_user_id || resolve_user_id(env, FeedConfigVisitsController)
+      return no_content_no_store_response unless current_user_id
+      return no_content_no_store_response if FeatureFlag.enabled?(:disable_browser_feed_events)
+
+      if Rack::Attack.cache.count("feed_config_visits/user/#{current_user_id}", 60) >
+          FeedConfigVisitsController::REQUESTS_PER_MINUTE
+        return [
+          429,
+          { "Content-Type" => "text/html", "Cache-Control" => "private, no-store", "Retry-After" => "60" },
+          [],
+        ]
+      end
+
+      visit_token = raw_params["visit_token"]
+      event_id = raw_params["event_id"]
+      unless visit_token.is_a?(String) && visit_token.bytesize <= 4096 && Feeds::RecordConfigVisit.valid_uuid?(event_id)
+        return [400, { "Content-Type" => "text/html", "Cache-Control" => "private, no-store" }, []]
+      end
+
+      ensure_subforem_context!(req)
+      next_visit_at = Feeds::RecordConfigVisit.call(
+        token: visit_token, event_id: event_id, user_id: current_user_id, host: req.host,
+      )
+      return no_content_no_store_response unless next_visit_at
+
+      wait_seconds = [next_visit_at - Time.current, 0].max.ceil.to_s
+      [
+        200,
+        {
+          "Content-Type" => "text/html",
+          "Cache-Control" => "private, no-store",
+          "X-Feed-Visit-Wait" => wait_seconds
+        },
+        [],
+      ]
+    end
+
+    def ensure_subforem_context!(req)
+      passed_domain = req.GET["passed_domain"]
+      raw_domain = if passed_domain.is_a?(String) && passed_domain.valid_encoding? && passed_domain.present?
+                     passed_domain
+                   else
+                     req.host
+                   end
+      domain = ForemNative.subforem_request_domain(raw_domain) || legacy_subforem_request_domain(raw_domain)
+      default_id = Subforem.cached_default_id
+      subforem_id = Subforem.cached_id_by_domain(domain)
+      RequestStore.store[:default_subforem_id] = default_id
+      RequestStore.store[:subforem_id] = subforem_id
+      RequestStore.store[:subforem_domain] = subforem_id.present? ? Subforem.cached_id_to_domain_hash[subforem_id] : nil
     end
 
     def legacy_subforem_request_domain(raw_domain)
@@ -258,6 +440,34 @@ module Middlewares
     def skip_session_commit!(env)
       session_opts = env[Rack::RACK_SESSION_OPTIONS]
       session_opts[:skip] = true if session_opts
+    end
+
+    def resolve_token_user_id(env, raw_params)
+      auth_header = env["HTTP_AUTHORIZATION"]
+      jwt_param = raw_params&.[]("jwt")
+      return unless auth_header || jwt_param
+
+      token = if auth_header.present? && auth_header.start_with?("Bearer ")
+                auth_header.split.last
+              elsif jwt_param.present?
+                jwt_param
+              end
+      return unless token.is_a?(String)
+
+      payload = decode_auth_token(token)
+      return unless payload && payload["user_id"]
+
+      User.where(id: payload["user_id"]).pick(:id)
+    end
+
+    def decode_auth_token(token)
+      native = ForemNative.verify_hs256_jwt(token, Rails.application.secret_key_base, Time.now.to_i)
+      return if native == false
+      return native if native
+
+      JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
+    rescue StandardError
+      nil
     end
 
     def resolve_user_id(env, controller_class)
@@ -279,12 +489,12 @@ module Middlewares
       user_id ? env["HTTP_X_CLIENT_GEO"] : env["HTTP_X_CACHEABLE_CLIENT_GEO"]
     end
 
-    def verify_csrf!(env, controller_class, skip: false)
+    def verify_csrf!(env, controller_class, skip: false, fallback_token: nil)
       return :ok if skip || !forgery_protection_enabled?(controller_class)
       return :defer if controller_class.per_form_csrf_tokens
       return :defer if check_request_origin!(env) == :defer
 
-      x_csrf_token = env["HTTP_X_CSRF_TOKEN"]
+      x_csrf_token = env["HTTP_X_CSRF_TOKEN"].presence || fallback_token
       encoded_real_token = extract_encoded_real_csrf_token(env)
       return :defer if !x_csrf_token.is_a?(String) || x_csrf_token.empty? || !encoded_real_token.is_a?(String)
 
@@ -345,6 +555,10 @@ module Middlewares
 
     def head_response(status)
       [status, { "Content-Type" => "text/html" }, []]
+    end
+
+    def no_content_no_store_response
+      [204, NO_STORE_HEADERS.dup, []]
     end
   end
 end
