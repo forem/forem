@@ -3701,6 +3701,97 @@
         }
       }
     },
+    "/api/organizations/{organization_id}/article_analytics": {
+      "get": {
+        "summary": "Export article analytics for an organization",
+        "tags": [
+          "analytics"
+        ],
+        "operationId": "getOrganizationArticleAnalytics",
+        "description": "Requires the org_article_analytics organization feature and active membership. Members and admins can export published organization posts with stored lifetime counters. This includes article identifiers, URLs, page views, public reactions and comments. Counters are eventual lifetime totals, not date-range analytics. updated_at describes the article and is not a cursor for metric changes. Results use the current subforem and ID order. Page size is capped at 100 and page depth at 1000. Independent posts that mention the organization are excluded. Responses are never cached.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Organization article metrics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "id",
+                      "title",
+                      "url",
+                      "page_views_count",
+                      "public_reactions_count",
+                      "comments_count"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "page_views_count": {
+                        "type": "integer"
+                      },
+                      "public_reactions_count": {
+                        "type": "integer"
+                      },
+                      "comments_count": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Organization membership or feature access required"
+          },
+          "404": {
+            "description": "Organization not found"
+          }
+        }
+      }
+    },
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization (by username)",
