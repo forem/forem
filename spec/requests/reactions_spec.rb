@@ -53,6 +53,22 @@ RSpec.describe "Reactions" do
         expect(categories).to contain_exactly("like", "unicorn", "readinglist")
         expect(categories.last).to eq("readinglist")
       end
+
+      it "does not hydrate the full users row on GET /reactions?article_id=" do
+        get reactions_path(article_id: article.id)
+
+        user_queries = []
+        callback = lambda do |*, payload|
+          user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get reactions_path(article_id: article.id)
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(user_queries).to be_empty
+      end
     end
 
     context "when signed out" do

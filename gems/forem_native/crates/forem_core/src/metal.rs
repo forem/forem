@@ -2017,6 +2017,270 @@ pub fn validate_feed_event_fields(
     })
 }
 
+const B64URL_ENCODE_TABLE: &[u8; 64] =
+    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+/// Appends unpadded RFC 4648 URL-safe Base64 encoding of `input` to `out`.
+pub fn urlsafe_encode64_unpadded(input: &[u8], out: &mut String) {
+    let mut i = 0;
+    while i + 3 <= input.len() {
+        let b0 = input[i];
+        let b1 = input[i + 1];
+        let b2 = input[i + 2];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b1 & 0x0f) << 2) | (b2 >> 6)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(b2 & 0x3f) as usize] as char);
+        i += 3;
+    }
+    let rem = input.len() - i;
+    if rem == 1 {
+        let b0 = input[i];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[((b0 & 0x03) << 4) as usize] as char);
+    } else if rem == 2 {
+        let b0 = input[i];
+        let b1 = input[i + 1];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[((b1 & 0x0f) << 2) as usize] as char);
+    }
+}
+
+/// Encodes an HS256 JWT with payload `{"user_id":<user_id>,"exp":<exp>}` signed with `secret`,
+/// matching `JWT.encode({ user_id: user_id, exp: exp }, secret)` byte-for-byte.
+pub fn encode_hs256_jwt(user_id: i64, exp: i64, secret: &[u8]) -> String {
+    // base64url({"alg":"HS256"}) == "eyJhbGciOiJIUzI1NiJ9"
+    const HEADER_B64: &str = "eyJhbGciOiJIUzI1NiJ9";
+    let mut payload_buf = String::with_capacity(48);
+    let _ = write!(&mut payload_buf, r#"{{"user_id":{user_id},"exp":{exp}}}"#);
+
+    let mut token = String::with_capacity(120);
+    token.push_str(HEADER_B64);
+    token.push('.');
+    urlsafe_encode64_unpadded(payload_buf.as_bytes(), &mut token);
+
+    let sig = hmac_sha256(secret, token.as_bytes());
+    token.push('.');
+    urlsafe_encode64_unpadded(&sig, &mut token);
+    token
+}
+
+/// Masks a real CSRF token (`encoded_real_token`, 32 raw bytes base64-encoded) with a 32-byte
+/// `one_time_pad` using Rails 8's global CSRF token HMAC (`!real_csrf_token`), returning the
+/// 86-character unpadded URL-safe Base64 token matching `form_authenticity_token`.
+pub fn mask_authenticity_token(encoded_real_token: &[u8], one_time_pad: &[u8]) -> Option<String> {
+    if one_time_pad.len() != AUTHENTICITY_TOKEN_LENGTH {
+        return None;
+    }
+    let mut real_buf = [0u8; 64];
+    let real_len = urlsafe_decode64_into(encoded_real_token, &mut real_buf)?;
+    if real_len != AUTHENTICITY_TOKEN_LENGTH {
+        return None;
+    }
+    let global_token = hmac_sha256(
+        &real_buf[..AUTHENTICITY_TOKEN_LENGTH],
+        GLOBAL_CSRF_TOKEN_IDENTIFIER,
+    );
+    let mut masked = [0u8; AUTHENTICITY_TOKEN_LENGTH * 2];
+    masked[..AUTHENTICITY_TOKEN_LENGTH].copy_from_slice(one_time_pad);
+    for i in 0..AUTHENTICITY_TOKEN_LENGTH {
+        masked[AUTHENTICITY_TOKEN_LENGTH + i] = one_time_pad[i] ^ global_token[i];
+    }
+    let mut out = String::with_capacity(86);
+    urlsafe_encode64_unpadded(&masked, &mut out);
+    Some(out)
+}
+
+/// Parses an `Origin`, `Referer`, or `passed_domain` header/param value for `AuthPassController`
+/// into `(origin_host, normalized_csp_origin)`.
+/// Returns `None` for non-standard inputs so the caller can fall back to `URI.parse`.
+pub fn parse_auth_pass_origin(raw: &[u8]) -> Option<(String, String)> {
+    if raw.is_empty() {
+        return None;
+    }
+    let s = std::str::from_utf8(raw).ok()?;
+    if s.bytes().any(|b| b <= b' ' || b >= 0x7f) {
+        return None;
+    }
+
+    if let Some((scheme, rest)) = s.split_once("://") {
+        let scheme_lower = if scheme.eq_ignore_ascii_case("http") {
+            "http"
+        } else if scheme.eq_ignore_ascii_case("https") {
+            "https"
+        } else {
+            return None;
+        };
+
+        let authority_end = rest.find(['/', '?', '#']).unwrap_or(rest.len());
+        let authority = &rest[..authority_end];
+        if authority.is_empty() || authority.contains(['@', '[', ']']) {
+            return None;
+        }
+
+        let (host_str, port_opt) = match authority.split_once(':') {
+            None => (authority, None),
+            Some((h, p)) => {
+                if p.is_empty() || !p.bytes().all(|b| b.is_ascii_digit()) {
+                    return None;
+                }
+                let port_num = p.parse::<u16>().ok()?;
+                if port_num == 0 {
+                    return None;
+                }
+                (h, Some(port_num))
+            }
+        };
+
+        if host_str.is_empty()
+            || !host_str
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+        {
+            return None;
+        }
+
+        let origin_host = host_str.to_ascii_lowercase();
+        let normalized_csp_origin = match port_opt {
+            Some(p) if p != 80 && p != 443 => format!("{scheme_lower}://{origin_host}:{p}"),
+            _ => format!("{scheme_lower}://{origin_host}"),
+        };
+        return Some((origin_host, normalized_csp_origin));
+    }
+
+    // Bare domain name without scheme, port, path, query, or fragment.
+    if s.bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+    {
+        let origin_host = s.to_ascii_lowercase();
+        let normalized_csp_origin = format!("https://{origin_host}");
+        return Some((origin_host, normalized_csp_origin));
+    }
+
+    None
+}
+
+/// Writes a JSON string literal matching Rails `ActiveSupport::JSON.encode` (including HTML-safe
+/// escaping of `<`, `>`, `&`, U+2028, and U+2029).
+pub fn write_rails_json_escaped_str(out: &mut String, s: &str) {
+    out.push('"');
+    for ch in s.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\x08' => out.push_str("\\b"),
+            '\x09' => out.push_str("\\t"),
+            '\x0A' => out.push_str("\\n"),
+            '\x0C' => out.push_str("\\f"),
+            '\x0D' => out.push_str("\\r"),
+            '<' => out.push_str("\\u003c"),
+            '>' => out.push_str("\\u003e"),
+            '&' => out.push_str("\\u0026"),
+            '\u{2028}' => out.push_str("\\u2028"),
+            '\u{2029}' => out.push_str("\\u2029"),
+            c if (c as u32) < 0x20 => {
+                let _ = write!(out, "\\u{:04x}", c as u32);
+            }
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+}
+
+/// Builds the JSON response body for `AsyncInfoController#base_data` in a single allocation,
+/// matching `ActiveSupport::JSON.encode` byte-for-byte.
+pub fn build_base_data_json(
+    broadcast: Option<&str>,
+    param: &str,
+    token: &str,
+    signed_in_fields: Option<(&str, Option<&str>, bool, bool)>,
+) -> String {
+    let cap = 128
+        + broadcast.map_or(4, |b| b.len() + 16)
+        + signed_in_fields.map_or(0, |(u, _, _, _)| u.len() + 128);
+    let mut out = String::with_capacity(cap);
+    out.push_str("{\"broadcast\":");
+    match broadcast {
+        Some(b) => write_rails_json_escaped_str(&mut out, b),
+        None => out.push_str("null"),
+    }
+    out.push_str(",\"param\":");
+    write_rails_json_escaped_str(&mut out, param);
+    out.push_str(",\"token\":");
+    write_rails_json_escaped_str(&mut out, token);
+
+    if let Some((user_json, client_geo, optin_allowed, creator)) = signed_in_fields {
+        out.push_str(",\"user\":");
+        write_rails_json_escaped_str(&mut out, user_json);
+        out.push_str(",\"client_geolocation\":");
+        match client_geo {
+            Some(geo) => write_rails_json_escaped_str(&mut out, geo),
+            None => out.push_str("null"),
+        }
+        out.push_str(",\"default_email_optin_allowed\":");
+        out.push_str(if optin_allowed { "true" } else { "false" });
+        out.push_str(",\"creator\":");
+        out.push_str(if creator { "true" } else { "false" });
+    }
+
+    out.push('}');
+    out
+}
+
+/// Resolves the JSON response body for `FollowsController#bulk_show` in a single pass.
+pub fn resolve_bulk_follow_json(
+    viewer_id: i64,
+    is_user_type: bool,
+    ids: &[i64],
+    forward_flags: &[bool],
+    reverse_flags: &[bool],
+) -> Option<String> {
+    if ids.len() != forward_flags.len() || (is_user_type && ids.len() != reverse_flags.len()) {
+        return None;
+    }
+
+    // Preserve Ruby `ids.index_with` semantics: unique keys in first-seen order, value from last occurrence.
+    let mut unique_indices: Vec<(i64, usize)> = Vec::with_capacity(ids.len());
+    for (idx, &id) in ids.iter().enumerate() {
+        if let Some(existing) = unique_indices.iter_mut().find(|(k, _)| *k == id) {
+            existing.1 = idx;
+        } else {
+            unique_indices.push((id, idx));
+        }
+    }
+
+    let mut out = String::with_capacity(unique_indices.len() * 20 + 2);
+    out.push('{');
+    for (pos, &(id, idx)) in unique_indices.iter().enumerate() {
+        if pos > 0 {
+            out.push(',');
+        }
+        let state = if is_user_type && id == viewer_id {
+            "self"
+        } else if is_user_type {
+            let fwd = forward_flags[idx];
+            let rev = reverse_flags[idx];
+            if fwd && rev {
+                "mutual"
+            } else if rev {
+                "follow-back"
+            } else if fwd {
+                "true"
+            } else {
+                "false"
+            }
+        } else if forward_flags[idx] {
+            "true"
+        } else {
+            "false"
+        };
+        let _ = write!(&mut out, "\"{id}\":\"{state}\"");
+    }
+    out.push('}');
+    Some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2434,6 +2698,78 @@ mod tests {
                 0
             ),
             Some(BillboardJsonCreateOutcome::BlankId)
+        );
+    }
+
+    #[test]
+    fn test_encode_and_verify_hs256_jwt_roundtrip() {
+        let token = encode_hs256_jwt(42, 1_700_000_000, b"test_secret");
+        assert_eq!(token.matches('.').count(), 2);
+        assert_eq!(
+            verify_hs256_jwt(token.as_bytes(), b"test_secret", 1_699_999_000),
+            JwtVerifyOutcome::Valid(vec![
+                ("user_id".to_owned(), JwtClaimValue::Int(42)),
+                ("exp".to_owned(), JwtClaimValue::Int(1_700_000_000)),
+            ])
+        );
+    }
+
+    #[test]
+    fn test_mask_and_verify_authenticity_token_roundtrip() {
+        let encoded_real = b"ERERERERERERERERERERERERERERERERERERERERERE";
+        let pad = [0x5Au8; 32];
+        let masked = mask_authenticity_token(encoded_real, &pad).unwrap();
+        assert_eq!(masked.len(), 86);
+        assert_eq!(
+            verify_authenticity_token(masked.as_bytes(), encoded_real, None, None),
+            Some(true)
+        );
+    }
+
+    #[test]
+    fn test_parse_auth_pass_origin() {
+        assert_eq!(
+            parse_auth_pass_origin(b"https://Blog.MyOrg.com:8443/some/path?x=1"),
+            Some((
+                "blog.myorg.com".to_owned(),
+                "https://blog.myorg.com:8443".to_owned()
+            ))
+        );
+        assert_eq!(
+            parse_auth_pass_origin(b"https://Blog.MyOrg.com:443"),
+            Some((
+                "blog.myorg.com".to_owned(),
+                "https://blog.myorg.com".to_owned()
+            ))
+        );
+        assert_eq!(
+            parse_auth_pass_origin(b"the-other-domain.com"),
+            Some((
+                "the-other-domain.com".to_owned(),
+                "https://the-other-domain.com".to_owned()
+            ))
+        );
+    }
+
+    #[test]
+    fn test_build_base_data_json_and_resolve_bulk_follow_json() {
+        let anon_json = build_base_data_json(None, "authenticity_token", "tok123", None);
+        assert_eq!(
+            anon_json,
+            r#"{"broadcast":null,"param":"authenticity_token","token":"tok123"}"#
+        );
+
+        let follow_json = resolve_bulk_follow_json(
+            10,
+            true,
+            &[10, 20, 30, 40, 50],
+            &[false, true, false, false, true],
+            &[false, false, false, true, true],
+        )
+        .unwrap();
+        assert_eq!(
+            follow_json,
+            r#"{"10":"self","20":"true","30":"false","40":"follow-back","50":"mutual"}"#
         );
     }
 }

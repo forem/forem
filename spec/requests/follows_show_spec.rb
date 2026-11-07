@@ -68,5 +68,6 @@ RSpec.describe "Follows #show" do
     end
 
     expect(user_queries).to include(a_string_starting_with('SELECT "users"."id", "users"."updated_at" FROM "users"'))
+    expect(user_queries).not_to include(a_string_starting_with('SELECT "users".* FROM "users"'))
   end
 end

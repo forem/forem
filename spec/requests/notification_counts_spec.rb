@@ -5,13 +5,23 @@ RSpec.describe "NotificationCounts" do
   let(:following_user) { create(:user) }
 
   describe "GET /notifications/counts" do
-    it "returns count if signed in" do
+    it "returns count if signed in without querying the users table" do
       sign_in user
       follow_instance = following_user.follow(user)
       Notification.send_new_follower_notification_without_delay(follow_instance)
-
       get "/notifications/counts"
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        user_queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/notifications/counts"
+      end
+
       expect(response.body).to eq("1")
+      expect(user_queries).to be_empty
     end
 
     context "when mode=detailed parameter is passed" do

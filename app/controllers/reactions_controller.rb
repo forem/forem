@@ -1,5 +1,12 @@
 class ReactionsController < ApplicationController
-  before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  before_action :set_cache_control_headers, only: [:index], unless: -> { session_current_user_id }
+  skip_before_action :verify_private_forem,
+                     :remember_cookie_sync,
+                     :forward_to_app_config_domain,
+                     :redirect_custom_domain_non_profile_pages,
+                     :determine_locale,
+                     :set_request_signed_in_context,
+                     only: [:index]
   before_action :authorize_for_reaction, :check_limit, only: [:create]
   after_action :verify_authorized
 
@@ -8,6 +15,7 @@ class ReactionsController < ApplicationController
 
   def index
     skip_authorization
+    request.session_options[:skip] = true
 
     if params[:article_id]
       id = params[:article_id]
@@ -17,17 +25,18 @@ class ReactionsController < ApplicationController
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
-      comments = Comment
+      comment_rows = Comment
         .where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type])
-        .select(%i[id public_reactions_count])
+        .pluck(:id, :public_reactions_count)
 
-      reaction_counts = comments.map do |comment|
-        { id: comment.id, count: comment.public_reactions_count }
+      reaction_counts = comment_rows.map do |cid, count|
+        { id: cid, count: count }
       end
 
-      reactions = if session_current_user_id
-                    comment_ids = reaction_counts.pluck(:id) # rubocop:disable Rails/PluckId
-                    cached_user_public_comment_reactions(current_user, comment_ids)
+      reactions = if session_current_user_id && comment_rows.any?
+                    comment_ids = comment_rows.map(&:first)
+                    viewer = User.select(:id, :updated_at, :public_reactions_count).find_by(id: session_current_user_id)
+                    viewer ? cached_user_public_comment_reactions(viewer, comment_ids) : Reaction.none
                   else
                     Reaction.none
                   end
@@ -40,11 +49,11 @@ class ReactionsController < ApplicationController
       reactions: reactions
     }.merge(result).to_json
 
-    if !session_current_user_id
-      surrogate_key = reactions_surrogate_key
-      set_surrogate_key_header(surrogate_key) if surrogate_key
-      set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
-    end
+    return if session_current_user_id
+
+    surrogate_key = reactions_surrogate_key
+    set_surrogate_key_header(surrogate_key) if surrogate_key
+    set_cache_control_headers(2.weeks.to_i, stale_if_error: 1.day.to_i)
   end
 
   # @todo Extract this method into a service class (or classes)

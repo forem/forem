@@ -61,6 +61,7 @@ RSpec.describe "Follows #bulk_show" do
       end
 
       expect(user_queries.size).to eq(1)
+      expect(user_queries.first).not_to include('SELECT "users".*')
     end
 
     it "computes uncached follow checks in a single follows query" do
