@@ -1,0 +1,44 @@
+app/controllers/application_controller.rb
+  h_f968154a99632d 110,416-417,437,453-457,594,607-614
+app/controllers/async_info_controller.rb
+  h_f968154a99632d 5-10,13-16,19-20,22-23,44-48,52-55,66,70-143
+app/controllers/auth_pass_controller.rb
+  h_f968154a99632d 2-26,29,36,41-42,48,53,56,58-61,63-64,67-71,76,120,124-126,129,132-135,137,152-154,161,164-173,175-183,185-192
+app/controllers/follows_controller.rb
+  h_f968154a99632d 4-10,15-18,20,25,31,44-46,49-51,53-55,136-187
+app/controllers/notifications/counts_controller.rb
+  h_f968154a99632d 2,6-8,11-19,24,26-28
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 2-9,18,28,30,32-33,36-39,52-56
+app/services/follows/check_cached.rb
+  h_f968154a99632d 60-61,68-79
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 2020-2283,2703-2774
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2948-3042,3630-3644
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1178-1230
+lib/tasks/forem_native.rake
+  h_f968154a99632d 685-762
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 5267-5383
+spec/requests/follows_bulk_show_spec.rb
+  h_f968154a99632d 64
+spec/requests/follows_show_spec.rb
+  h_f968154a99632d 71
+spec/requests/notification_counts_spec.rb
+  h_f968154a99632d 8,13-22,24
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 56-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "195bb9172d2547b2565c3f2a94e5022b30a1dbac",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
