@@ -5208,11 +5208,16 @@ RSpec.describe ForemNative do
       it "validates and normalizes FeedEvent batches and matches BulkUpsert#legacy_valid_events across 1,000 batches" do
         upsert_instance = FeedEvents::BulkUpsert.new([])
         rng = Random.new(20_261_112)
-        categories = [:impression, :click, :reaction, :comment, "impression", "click", :not_a_real_category, "", nil]
+        categories = [
+          :impression, :click, :reaction, :comment, :extended_pageview,
+          "impression", "click", "extended_pageview",
+          0, 1, 2, 3, 4, 5, "0", "1", :not_a_real_category, "", nil
+        ]
         contexts = [
           FeedEvent::CONTEXT_TYPE_HOME,
           FeedEvent::CONTEXT_TYPE_TAG,
           FeedEvent::CONTEXT_TYPE_EMAIL,
+          FeedEvent::CONTEXT_TYPE_SIDEBAR,
           "search",
           "invalid_ctx",
           "",

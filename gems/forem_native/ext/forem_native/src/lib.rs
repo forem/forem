@@ -2713,6 +2713,25 @@ fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool
     Err(true)
 }
 
+fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(());
+        }
+        return Ok(Some(unsafe { rstr.as_slice().to_vec() }));
+    }
+    if allow_symbol {
+        if let Some(sym) = Symbol::from_value(val) {
+            let name = sym.name().map_err(|_| ())?;
+            return Ok(Some(name.as_bytes().to_vec()));
+        }
+    }
+    Err(())
+}
+
 fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option<RArray> {
     use forem_core::metal::{validate_feed_event_fields, ValidatedFeedEvent};
     use magnus::r_hash::ForEach;
@@ -2771,67 +2790,42 @@ fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option
                     }
                 },
                 b"category" => {
-                    if v.is_nil() {
-                        entry.category = None;
-                    } else if let Some(rstr) = RString::from_value(v) {
-                        if !is_ascii_compatible_host(ruby, rstr) {
-                            entry.defer = true;
-                            return Ok(ForEach::Stop);
-                        }
-                        entry.category = Some(unsafe { rstr.as_slice().to_vec() });
-                    } else if let Some(sym) = Symbol::from_value(v) {
-                        if let Ok(name) = sym.name() {
-                            entry.category = Some(name.as_bytes().to_vec());
-                        } else {
-                            entry.defer = true;
-                            return Ok(ForEach::Stop);
-                        }
-                    } else if let Some(int) = Integer::from_value(v) {
-                        if let Ok(n) = int.to_i64() {
-                            entry.category = Some(n.to_string().into_bytes());
-                        } else {
-                            entry.invalid = true;
+                    if let Some(int) = Integer::from_value(v) {
+                        match int.to_i64() {
+                            Ok(0) => entry.category = Some(b"impression".to_vec()),
+                            Ok(1) => entry.category = Some(b"click".to_vec()),
+                            Ok(2) => entry.category = Some(b"reaction".to_vec()),
+                            Ok(3) => entry.category = Some(b"comment".to_vec()),
+                            Ok(4) => entry.category = Some(b"extended_pageview".to_vec()),
+                            _ => {
+                                entry.category = None;
+                                entry.invalid = true;
+                            }
                         }
                     } else {
+                        match extract_name_bytes(ruby, v, true) {
+                            Ok(b) => entry.category = b,
+                            Err(()) => {
+                                entry.defer = true;
+                                return Ok(ForEach::Stop);
+                            }
+                        }
+                    }
+                }
+                b"context_type" => match extract_name_bytes(ruby, v, true) {
+                    Ok(b) => entry.context_type = b,
+                    Err(()) => {
                         entry.defer = true;
                         return Ok(ForEach::Stop);
                     }
-                }
-                b"context_type" => {
-                    if v.is_nil() {
-                        entry.context_type = None;
-                    } else if let Some(rstr) = RString::from_value(v) {
-                        if !is_ascii_compatible_host(ruby, rstr) {
-                            entry.defer = true;
-                            return Ok(ForEach::Stop);
-                        }
-                        entry.context_type = Some(unsafe { rstr.as_slice().to_vec() });
-                    } else if let Some(sym) = Symbol::from_value(v) {
-                        if let Ok(name) = sym.name() {
-                            entry.context_type = Some(name.as_bytes().to_vec());
-                        } else {
-                            entry.defer = true;
-                            return Ok(ForEach::Stop);
-                        }
-                    } else {
+                },
+                b"event_id" => match extract_name_bytes(ruby, v, false) {
+                    Ok(b) => entry.event_id = b,
+                    Err(()) => {
                         entry.defer = true;
                         return Ok(ForEach::Stop);
                     }
-                }
-                b"event_id" => {
-                    if v.is_nil() {
-                        entry.event_id = None;
-                    } else if let Some(rstr) = RString::from_value(v) {
-                        if !is_ascii_compatible_host(ruby, rstr) {
-                            entry.defer = true;
-                            return Ok(ForEach::Stop);
-                        }
-                        entry.event_id = Some(unsafe { rstr.as_slice().to_vec() });
-                    } else {
-                        entry.defer = true;
-                        return Ok(ForEach::Stop);
-                    }
-                }
+                },
                 _ => {}
             }
             Ok(ForEach::Continue)

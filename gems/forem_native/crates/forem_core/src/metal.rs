@@ -1979,11 +1979,11 @@ pub fn validate_feed_event_fields(
     let article_position = i32::try_from(pos_i64).ok()?;
 
     let category = match category? {
-        b"impression" | b"0" => "impression",
-        b"click" | b"1" => "click",
-        b"reaction" | b"2" => "reaction",
-        b"comment" | b"3" => "comment",
-        b"extended_pageview" | b"4" => "extended_pageview",
+        b"impression" => "impression",
+        b"click" => "click",
+        b"reaction" => "reaction",
+        b"comment" => "comment",
+        b"extended_pageview" => "extended_pageview",
         _ => return None,
     };
 
