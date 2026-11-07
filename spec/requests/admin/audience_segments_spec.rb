@@ -41,6 +41,34 @@ RSpec.describe "/admin/audience_segments" do
         expect(response.body).to include("Alpha Testers")
         expect(response.body).not_to include("Beta Testers")
       end
+
+      it "batches email counts and caches system segment user counts without N+1 queries" do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+        second_manual = create(:audience_segment, name: "Beta Testers")
+        create(:email, status: "draft", audience_segment: manual_segment)
+        create(:email, status: "draft", audience_segment: second_manual)
+
+        queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql].to_s
+          next if payload[:name] == "SCHEMA" || sql.match?(/\A(?:BEGIN|COMMIT|ROLLBACK|SAVEPOINT|RELEASE)/i)
+
+          queries << sql
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get admin_audience_segments_path
+        end
+
+        email_count_queries = queries.grep(/FROM "emails"/i)
+        left_join_segmented_users_queries = queries.grep(/LEFT OUTER JOIN "segmented_users"/i)
+        expect(email_count_queries.size).to eq(1)
+        expect(left_join_segmented_users_queries).to be_empty
+        expect(Rails.cache.read(AudienceSegment::SYSTEM_USER_COUNTS_CACHE_KEY)).to be_a(Hash)
+
+        system_segment.touch
+        expect(Rails.cache.read(AudienceSegment::SYSTEM_USER_COUNTS_CACHE_KEY)).to be_nil
+      end
     end
 
     describe "GET /admin/audience_segments/new" do
@@ -139,6 +167,27 @@ RSpec.describe "/admin/audience_segments" do
         get admin_audience_segment_path(manual_segment), params: { search: "member1" }
         expect(response.body).to include("member1")
         expect(response.body).not_to include("other_member")
+      end
+
+      it "avoids duplicate segmented_users or emails COUNT(*) queries and unused profile preloads" do
+        create(:email, status: "draft", subject: "Segment Newsletter", audience_segment: manual_segment)
+
+        queries = []
+        callback = lambda do |*, payload|
+          sql = payload[:sql].to_s
+          next if payload[:name] == "SCHEMA" || sql.match?(/\A(?:BEGIN|COMMIT|ROLLBACK|SAVEPOINT|RELEASE)/i)
+
+          queries << sql
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get admin_audience_segment_path(manual_segment)
+        end
+
+        expect(response.body).to include("Segment Newsletter")
+        expect(queries.grep(/SELECT COUNT\(\*\) FROM "segmented_users"/i).size).to be <= 1
+        expect(queries.grep(/SELECT COUNT\(\*\) FROM "emails"/i)).to be_empty
+        expect(queries.grep(/FROM "profiles"/i)).to be_empty
       end
     end
 
