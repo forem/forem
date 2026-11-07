@@ -32,4 +32,8 @@ class OrganizationPolicy < ApplicationPolicy
   # The analytics? policy method is also on the UserPolicy.  This exists specifically to allow for
   # "duck-typing" on the tests.
   alias analytics? part_of_org?
+
+  def community_discovery?
+    analytics? && FeatureFlag.enabled?(:org_community_discovery, FeatureFlag::Actor[record])
+  end
 end
