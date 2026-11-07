@@ -1,0 +1,18 @@
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 1982-1986
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2716-2734,2793-2803,2806-2812,2815-2817,2821-2824,2828
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 5211-5215,5220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1e0b4e01e72be7a51459f63e2b6d29e966deebdb",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
