@@ -6,9 +6,20 @@ module CommentsHelper
 
   def any_negative_comments?(commentable)
     return false if no_comments_on?(commentable)
+
+    if commentable.instance_variable_defined?(:@any_negative_comments)
+      return commentable.instance_variable_get(:@any_negative_comments)
+    end
+
+    target = commentable.respond_to?(:object) ? commentable.object : commentable
+    if target.instance_variable_defined?(:@any_negative_comments)
+      return target.instance_variable_get(:@any_negative_comments)
+    end
     return commentable.comments.any? { |comment| comment.score.to_i.negative? } if commentable.comments.loaded?
 
-    commentable.comments.where("score < 0").any?
+    has_negative = commentable.comments.where("score < 0").any?
+    target.instance_variable_set(:@any_negative_comments, has_negative) unless target.frozen?
+    has_negative
   end
 
   def any_hidden_negative_comments?(commentable)

@@ -8,13 +8,23 @@ RSpec.describe Users::BustProfileIdentityCacheWorker, type: :worker do
     allow(EdgeCache::Bust).to receive(:call)
   end
 
-  it "busts the profile identity cache key" do
-    described_class.new.perform(user.id)
+  it "busts the profile identity cache key without hydrating the full user row" do
+    user
+    full_user_queries = []
+    callback = lambda do |*, payload|
+      full_user_queries << payload[:sql] if payload[:sql].include?('SELECT "users".*')
+    end
+
+    ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+      described_class.new.perform(user.id)
+    end
+
     expect(EdgeCache::PurgeByKey).to have_received(:call).with(
       user.profile_identity_record_key,
       fallback_paths: user.profile_cache_bust_paths,
     )
     expect(EdgeCache::Bust).not_to have_received(:call)
+    expect(full_user_queries).to be_empty
   end
 
   it "explicitly busts current and previous username paths when old_username is present" do

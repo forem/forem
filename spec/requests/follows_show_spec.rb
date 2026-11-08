@@ -57,10 +57,13 @@ RSpec.describe "Follows #show" do
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it "loads the followed-back candidate with only the columns needed for the cache key" do
+  it "loads the followed-back candidate once with only cache-key columns and batches follows misses" do
     user_queries = []
+    follow_queries = []
     callback = lambda do |*, payload|
-      user_queries << payload[:sql] if payload[:sql].match?(/FROM "users" WHERE "users"."id" = /)
+      sql = payload[:sql]
+      user_queries << sql if sql.match?(/FROM "users" WHERE "users"."id" = /)
+      follow_queries << sql if sql.include?('FROM "follows"')
     end
 
     ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -69,6 +72,8 @@ RSpec.describe "Follows #show" do
 
     expect(user_queries).to include(a_string_starting_with('SELECT "users"."id", "users"."updated_at" FROM "users"'))
     expect(user_queries).not_to include(a_string_starting_with('SELECT "users".* FROM "users"'))
+    expect(user_queries).not_to include(a_string_starting_with('SELECT "users"."id" FROM "users"'))
+    expect(follow_queries.size).to eq(1)
   end
 
   it "rejects a retained session after the user's password changes" do

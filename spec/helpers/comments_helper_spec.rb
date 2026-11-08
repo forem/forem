@@ -132,7 +132,27 @@ RSpec.describe CommentsHelper do
       expect(queries).to be_empty
     end
 
-    it "queries the database and returns true when an unloaded comment has a negative score" do
+    it "reuses the negative comment check recorded by Comments::Tree.for_commentable without querying the database" do
+      create(:comment, commentable: article, score: -5)
+      article.reload
+      Comments::Tree.for_commentable(article, include_negative: false)
+
+      queries = []
+      callback = lambda do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql] if payload[:sql].include?('"comments"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        expect(helper.any_negative_comments?(article)).to be(true)
+        expect(helper.any_negative_comments?(article.decorate)).to be(true)
+      end
+
+      expect(queries).to be_empty
+    end
+
+    it "queries the database once and memoizes when an unloaded comment has a negative score" do
       create(:comment, commentable: article, score: -5)
       article.reload
 
