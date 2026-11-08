@@ -334,9 +334,10 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(false)
 
       # Calibrated quality tiers: >= 2.35 is very_good, >= 3.3 is great
-      expect(evaluate_with(quality: 2.4)[:label]).to eq("very_good_and_on_topic")
-      expect(evaluate_with(quality: 3.2)[:label]).to eq("very_good_and_on_topic")
-      expect(evaluate_with(quality: 3.35)[:label]).to eq("great_and_on_topic")
+      expect(evaluate_with(quality: 2.34)[:label]).to eq("okay_and_on_topic")
+      expect(evaluate_with(quality: 2.35)[:label]).to eq("very_good_and_on_topic")
+      expect(evaluate_with(quality: 3.29)[:label]).to eq("very_good_and_on_topic")
+      expect(evaluate_with(quality: 3.3)[:label]).to eq("great_and_on_topic")
       expect(evaluate_with(quality: 3.8)[:label]).to eq("great_and_on_topic")
       expect(evaluate_with(quality: 1.0)[:label]).to eq("likely_low_quality")
       expect(evaluate_with(quality: 0.2)[:label]).to eq("clear_and_obvious_low_quality")
@@ -346,11 +347,14 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
       allow(Subforem).to receive(:multiple_subforems_enabled?).and_return(false)
 
       # Single-subforem on-topic threshold (0.30): developer career/lifestyle posts (0.30-0.50) are on-topic
+      expect(evaluate_with(quality: 2.0, on_topic: 0.30)[:label]).to eq("okay_and_on_topic")
       expect(evaluate_with(quality: 2.0, on_topic: 0.35)[:label]).to eq("okay_and_on_topic")
       expect(evaluate_with(quality: 3.8, on_topic: 0.35)[:label]).to eq("great_and_on_topic")
 
       # Off-topic content in single-subforem mode is mapped to low-quality tiers
+      expect(evaluate_with(quality: 2.0, on_topic: 0.29)[:label]).to eq("likely_low_quality")
       expect(evaluate_with(quality: 3.8, on_topic: 0.2)[:label]).to eq("likely_low_quality")
+      expect(evaluate_with(quality: 2.0, on_topic: 0.15)[:label]).to eq("clear_and_obvious_low_quality")
       expect(evaluate_with(quality: 2.0, on_topic: 0.1)[:label]).to eq("clear_and_obvious_low_quality")
     end
 
@@ -459,6 +463,19 @@ RSpec.describe Ai::ContentModerationLabeler, type: :service do
 
         result = described_class.new(article).evaluate
         expect(result).to eq(label: "very_good_and_on_topic", compellingness_score: 0.8)
+        expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_MODEL))
+        expect(ai_client).to have_received(:call)
+      end
+
+      it "uses the lite Gemini model when falling back for a negatively scored article" do
+        stub_const("Ai::Base::DEFAULT_KEY", "dummy_gemini_key")
+        allow(article).to receive(:score).and_return(-5)
+        allow(ai_client).to receive(:call)
+          .and_return('{"moderation_label": "okay_and_on_topic", "compellingness_score": 0.5}')
+
+        result = described_class.new(article).evaluate
+        expect(result).to eq(label: "okay_and_on_topic", compellingness_score: 0.5)
+        expect(Ai::Base).to have_received(:new).with(hash_including(model: Ai::Base::DEFAULT_LITE_MODEL))
         expect(ai_client).to have_received(:call)
       end
 

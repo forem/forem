@@ -70,9 +70,7 @@ module Ai
       @selection = Ai::FunctionConfig.selection_for(FUNCTION_KEY)
       return if @selection.jev?
 
-      builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
-      @gemini_client = Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
-                                    affected_content: article, affected_user: article.user)
+      gemini_client
     end
 
     ##
@@ -97,7 +95,12 @@ module Ai
 
     # --- Jev (TypeSafe System One) ---
 
+    ##
+    # Evaluates the article using TypeSafe Jev in a single batched request.
+    # Falls back to Gemini when a Gemini API key is configured, or to the safe default otherwise.
     # The client already retries transient failures (429/529/5xx) with backoff.
+    #
+    # @return [Hash] Hash with :label and :compellingness_score.
     def evaluate_via_jev
       client = Ai::TypeSafe::Client.new(model: @selection.model, wrapper: self, affected_content: @article,
                                         affected_user: @article.user, **Ai::TypeSafe::Client::FAIL_FAST)
@@ -106,7 +109,7 @@ module Ai
     rescue StandardError => e
       Rails.logger.error("Content Moderation Labeling via Jev failed: #{e}")
       if Ai::Base::DEFAULT_KEY.present?
-        Rails.logger.info("Falling back to Gemini for Content Moderation Labeling")
+        Rails.logger.warn("Falling back to Gemini for Content Moderation Labeling")
         evaluate_via_gemini
       else
         JEV_FALLBACK.dup
@@ -162,6 +165,11 @@ module Ai
       }
     end
 
+    ##
+    # Builds the decomposed TypeSafe Jev questions for safety, spam, quality, relevance,
+    # and compellingness dimensions.
+    #
+    # @return [Hash{Symbol => Hash}]
     def jev_questions
       questions = {
         harmful: noul(
@@ -384,6 +392,13 @@ module Ai
       result.key?(:violates_tag_rules) && result.noul(:violates_tag_rules) >= CLEAR
     end
 
+    ##
+    # Resolves the final moderation label for a positive quality tier based on on-topic probability
+    # and whether multiple subforems are enabled.
+    #
+    # @param tier [Symbol] Symbolic quality tier (:okay, :very_good, or :great).
+    # @param on_topic_probability [Float] Jev probability (0.0–1.0) that the article is on-topic.
+    # @return [String]
     def relevance_label(tier, on_topic_probability:)
       on_topic_threshold = multiple_subforems_enabled? ? SUPPORTING : SINGLE_SUBFOREM_ON_TOPIC_THRESHOLD
       on_topic = on_topic_probability >= on_topic_threshold
@@ -492,6 +507,11 @@ module Ai
 
     # --- Gemini ---
 
+    ##
+    # Evaluates the article via the Gemini API with up to 2 retries on transient errors.
+    # Re-raises ProhibitedContentError so callers can handle blocked content explicitly.
+    #
+    # @return [Hash] Hash with :label and :compellingness_score.
     def evaluate_via_gemini
       attempt = 0
       max_retries = 2
@@ -524,10 +544,17 @@ module Ai
       end
     end
 
+    ##
+    # Lazily initializes the Gemini API client using the appropriate model for the article's score
+    # and function configuration. When falling back from a Jev selection, uses the built-in Gemini
+    # model rather than the Jev model identifier.
+    #
+    # @return [Ai::Base]
     def gemini_client
       @gemini_client ||= begin
         builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
-        Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
+        model = @selection.jev? ? builtin_model : @selection.gemini_model(builtin_model)
+        Ai::Base.new(model: model, wrapper: self,
                      affected_content: @article, affected_user: @article.user)
       end
     end
