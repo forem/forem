@@ -3702,7 +3702,12 @@
                     "required": [
                       "id",
                       "title",
+                      "path",
                       "url",
+                      "user_id",
+                      "organization_id",
+                      "published_at",
+                      "updated_at",
                       "page_views_count",
                       "public_reactions_count",
                       "comments_count"
@@ -3714,8 +3719,25 @@
                       "title": {
                         "type": "string"
                       },
+                      "path": {
+                        "type": "string"
+                      },
                       "url": {
                         "type": "string"
+                      },
+                      "user_id": {
+                        "type": "integer"
+                      },
+                      "organization_id": {
+                        "type": "integer"
+                      },
+                      "published_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
                       },
                       "page_views_count": {
                         "type": "integer"

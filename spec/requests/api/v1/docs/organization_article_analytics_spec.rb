@@ -30,14 +30,19 @@ RSpec.describe "Api::V1::Docs::OrganizationArticleAnalytics" do
       response "200", "Organization article metrics" do
         before do
           create(:organization_membership, organization: organization, user: user)
+          create(:article, organization: organization)
           FeatureFlag.enable(:org_article_analytics, FeatureFlag::Actor[organization])
         end
 
         schema type: :array, items: {
           type: :object,
-          required: %w[id title url page_views_count public_reactions_count comments_count],
+          required: %w[id title path url user_id organization_id published_at updated_at
+                       page_views_count public_reactions_count comments_count],
           properties: {
-            id: { type: :integer }, title: { type: :string }, url: { type: :string },
+            id: { type: :integer }, title: { type: :string }, path: { type: :string },
+            url: { type: :string }, user_id: { type: :integer }, organization_id: { type: :integer },
+            published_at: { type: :string, format: :"date-time" },
+            updated_at: { type: :string, format: :"date-time" },
             page_views_count: { type: :integer }, public_reactions_count: { type: :integer },
             comments_count: { type: :integer }
           }
