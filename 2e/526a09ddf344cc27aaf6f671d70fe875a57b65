@@ -1,0 +1,56 @@
+app/controllers/application_controller.rb
+  h_f968154a99632d 262-263,272
+app/controllers/concerns/api/tags_controller.rb
+  h_f968154a99632d 36-37
+app/controllers/events_controller.rb
+  h_f968154a99632d 42-44
+app/controllers/stories_controller.rb
+  h_f968154a99632d 379-380,386-389,393-394,401-404
+app/decorators/user_decorator.rb
+  h_f968154a99632d 105-109,144
+app/helpers/application_helper.rb
+  h_f968154a99632d 350-351,357,371-372
+app/lib/middlewares/set_subforem.rb
+  h_f968154a99632d 43-49
+app/models/article.rb
+  h_f968154a99632d 550,553-556,559-560
+app/models/navigation_link.rb
+  h_f968154a99632d 51,54
+app/models/notification.rb
+  h_f968154a99632d 35,38-41,44-46
+app/models/page.rb
+  h_f968154a99632d 36,39
+app/models/subforem.rb
+  h_f968154a99632d 19,41,45-47,54,59-60,62,67-68,77-78,89-90,92-93,97-98,101-107,111-112,131-133,136,143-145,148,157-158,160,165-166,197-200,204,207-208
+app/models/tag.rb
+  h_f968154a99632d 93
+app/models/user.rb
+  h_f968154a99632d 794-806
+app/policies/article_policy.rb
+  h_f968154a99632d 9-11
+app/views/layouts/application.html.erb
+  h_f968154a99632d 155,157,195
+spec/decorators/user_decorator_spec.rb
+  h_f968154a99632d 280-297
+spec/helpers/application_helper_spec.rb
+  h_f968154a99632d 870-878
+spec/models/article_spec.rb
+  h_f968154a99632d 466-491
+spec/models/navigation_link_spec.rb
+  h_f968154a99632d 56-67
+spec/models/page_spec.rb
+  h_f968154a99632d 53-64
+spec/models/subforem_spec.rb
+  h_f968154a99632d 183-280
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e526a09ddf344cc27aaf6f671d70fe875a57b65",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
