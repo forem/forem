@@ -2,6 +2,8 @@ class MagicLinksController < ApplicationController
   def show
     user = User.find_by(sign_in_token: params[:id])
     if user && user.sign_in_token_sent_at > 20.minutes.ago
+      # Codes are single use, so a leaked or logged one can't be replayed.
+      user.update_columns(sign_in_token: nil, sign_in_token_sent_at: nil)
       if user.confirmed_at.blank?
         user.update_column(:confirmed_at, Time.current)
         # update_column bypasses the Trackable after_commit, so tell the
@@ -26,6 +28,11 @@ class MagicLinksController < ApplicationController
 
   def create
     not_found if params[:email].blank?
+
+    unless captcha_verified?
+      flash[:notice] = I18n.t("registrations_controller.error.#{Captcha.provider.error_key}")
+      redirect_to new_magic_link_path(email: params[:email]) and return
+    end
 
     @user = User.find_by(email: params[:email])
     if @user
@@ -65,5 +72,13 @@ class MagicLinksController < ApplicationController
         redirect_to new_user_session_path and return
       end
     end
+  end
+
+  private
+
+  def captcha_verified?
+    return true unless Captcha::CheckRegistrationEnabled.call
+
+    Captcha.provider.verify(context: self, action: "magic_link")
   end
 end

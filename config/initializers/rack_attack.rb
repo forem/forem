@@ -11,6 +11,8 @@ module Rack
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
     API_SEARCH_PATH_REGEX =
       %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
+    MAGIC_LINK_CREATE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links(?:\.\w+)?/?\z}
+    MAGIC_LINK_SHOW_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links/(?!new(?:\.\w+)?/?\z)[^/]+/?\z}
 
     # Method that checks API Key from the request and returns true if it
     # belongs to an admin, false otherwise
@@ -143,6 +145,33 @@ module Rack
       if request.path == "/lead_submissions" && request.post?
         request.track_and_return_ip
       end
+    end
+
+    throttle("magic_links_create_throttle", limit: 5, period: 1.minute) do |request|
+      if request.post? && request.path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("magic_links_create_throttle_per_hour", limit: 20, period: 1.hour) do |request|
+      if request.post? && request.path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
+        request.track_and_return_ip
+      end
+    end
+
+    throttle("magic_links_email_throttle", limit: 3, period: 10.minutes) do |request|
+      if request.post? && request.path.match?(MAGIC_LINK_CREATE_PATH_REGEX)
+        request.params["email"].to_s.strip.downcase.presence
+      end
+    end
+
+    # No method check: Rails also routes HEAD to #show, so a GET-only rule could be sidestepped.
+    throttle("magic_links_show_throttle", limit: 10, period: 1.minute) do |request|
+      request.track_and_return_ip if request.path.match?(MAGIC_LINK_SHOW_PATH_REGEX)
+    end
+
+    throttle("magic_links_show_throttle_per_hour", limit: 30, period: 1.hour) do |request|
+      request.track_and_return_ip if request.path.match?(MAGIC_LINK_SHOW_PATH_REGEX)
     end
 
     throttle("sitemap_throttle", limit: 10, period: 1.minute) do |request|

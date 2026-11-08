@@ -23,8 +23,43 @@ RSpec.describe "MagicLinks", type: :request do
     let!(:subforem) { create(:subforem, domain: "example.com") }
 
     before do
+      allow(Devise).to receive(:friendly_token).and_call_original
       allow(Devise).to receive(:friendly_token).with(20).and_return("dummy_password")
       allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
+    end
+
+    context "when captcha is required" do
+      before do
+        allow(Captcha::CheckRegistrationEnabled).to receive(:call).and_return(true)
+        allow(Settings::Authentication).to receive_messages(recaptcha_site_key: "site", recaptcha_secret_key: "secret")
+      end
+
+      it "renders the captcha on the form" do
+        get "/magic_links/new"
+
+        expect(response.body).to include("recaptcha-tag-container")
+      end
+
+      it "blocks the send and account creation when verification fails" do
+        allow(Captcha.provider).to receive(:verify).and_return(false)
+
+        expect { post "/magic_links", params: { email: email } }.not_to change(User, :count)
+
+        expect(response).to redirect_to(new_magic_link_path(email: email))
+        follow_redirect!
+        expect(response.body).to include(I18n.t("registrations_controller.error.recaptcha"))
+      end
+
+      it "sends the code when verification passes, bound to the magic_link action" do
+        allow(Captcha.provider).to receive(:verify).and_return(true)
+        allow(ForemInstance).to receive(:invitation_only?).and_return(false)
+        allow(Settings::Authentication).to receive(:acceptable_domain?).and_return(true)
+
+        expect { post "/magic_links", params: { email: email } }.to change(User, :count).by(1)
+
+        expect(response.body).to include("Check your email")
+        expect(Captcha.provider).to have_received(:verify).with(hash_including(action: "magic_link"))
+      end
     end
 
     context "when the email matches an existing user" do
@@ -76,7 +111,7 @@ RSpec.describe "MagicLinks", type: :request do
           expect(new_user.registered_at).to  eq(Time.current)
           expect(new_user.confirmed_at).to   be_nil
           expect(response.body).to include("Check your email")
-          expect(new_user.sign_in_token).not_to be_nil
+          expect(new_user.sign_in_token).to match(/\A\d{12}\z/)
         end
       end
 
@@ -198,6 +233,18 @@ RSpec.describe "MagicLinks", type: :request do
     end
 
     context "when the token matches a user and is not expired" do
+      it "only works once" do
+        user = create(:user, sign_in_token: token, sign_in_token_sent_at: 10.minutes.ago)
+
+        get "/magic_links/#{token}"
+        expect(response).to redirect_to(root_path)
+        expect(user.reload.sign_in_token).to be_nil
+
+        delete destroy_user_session_path
+        get "/magic_links/#{token}"
+        expect(response).to redirect_to(new_user_session_path)
+      end
+
       it "confirms the user and redirects to root_path" do
         freeze_time do
           user = create(
