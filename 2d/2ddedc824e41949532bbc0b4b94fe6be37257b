@@ -1,0 +1,44 @@
+app/controllers/follows_controller.rb
+  h_f968154a99632d 26-29,32-39
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 22-26,35,69-71,85,88,90-91,94,99,103-107,109-114
+app/helpers/comments_helper.rb
+  h_f968154a99632d 9-17,20-22
+app/queries/comments/tree.rb
+  h_f968154a99632d 10,13-14,86-101
+app/workers/reactions/bust_reactable_cache_worker.rb
+  h_f968154a99632d 9,13,15-33,35-39,41-65
+app/workers/users/bust_profile_details_cache_worker.rb
+  h_f968154a99632d 3-4,6
+app/workers/users/bust_profile_identity_cache_worker.rb
+  h_f968154a99632d 3-4,6
+app/workers/users/bust_profile_image_cache_worker.rb
+  h_f968154a99632d 3-4,6
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 135-155
+spec/requests/follows_show_spec.rb
+  h_f968154a99632d 60,62,64-66,75-76
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 131-147,160-167,211-223
+spec/requests/stories_show_spec.rb
+  h_f968154a99632d 375,392
+spec/workers/reactions/bust_reactable_cache_worker_spec.rb
+  h_f968154a99632d 36,38-51,53,56-71,80
+spec/workers/users/bust_profile_details_cache_worker_spec.rb
+  h_f968154a99632d 10-20,25
+spec/workers/users/bust_profile_identity_cache_worker_spec.rb
+  h_f968154a99632d 11-21,27
+spec/workers/users/bust_profile_image_cache_worker_spec.rb
+  h_f968154a99632d 10-20,25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2d2ddedc824e41949532bbc0b4b94fe6be37257b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
