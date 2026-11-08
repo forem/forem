@@ -266,13 +266,16 @@ export class ArticleForm extends Component {
 
   componentDidMount() {
     window.addEventListener('beforeunload', this.localStoreContent);
+    this.syncEditorStateForAssistant();
   }
 
   componentWillUnmount() {
     window.removeEventListener('beforeunload', this.localStoreContent);
+    delete window.__foremEditorState;
   }
 
   componentDidUpdate() {
+    this.syncEditorStateForAssistant();
     const { previewResponse } = this.state;
 
     if (previewResponse?.processed_html) {
@@ -281,6 +284,29 @@ export class ArticleForm extends Component {
       this.constructor.handleAgentSessionPreview();
     }
   }
+
+  syncEditorStateForAssistant = () => {
+    const currentState = { ...this.state };
+    window.__foremEditorState = {
+      id: currentState.id,
+      version: currentState.version,
+      title: currentState.title,
+      tags: currentState.tagList,
+      body: currentState.bodyMarkdown,
+      published: currentState.published,
+      published_at_date: currentState.publishedAtDate,
+      published_at_time: currentState.publishedAtTime,
+      canonical_url: currentState.canonicalUrl,
+      series: currentState.series,
+      main_image: currentState.mainImage,
+      video_source_url: currentState.videoSourceUrl,
+      organization_id: currentState.organizationId,
+      ai_disclosure_level: currentState.aiDisclosureLevel,
+      preview_showing: currentState.previewShowing,
+      errors: currentState.errors,
+      markdown_lint_errors: currentState.markdownLintErrors,
+    };
+  };
 
   localStoreContent = () => {
     if (sessionStorage.getItem('isSigningOut') === 'true') {
