@@ -110,7 +110,7 @@
 
   <% org_actor = FeatureFlag::Actor[@organization] %>
   <%# Read flags uncached so the buttons show the value just saved on any web worker. %>
-  <% org_flags = FeatureFlag.uncached %>
+  <% org_flags = @org_flags || FeatureFlag.uncached %>
 
   <div class="mb-6">
     <div class="flex items-center justify-between mb-2">
