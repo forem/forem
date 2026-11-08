@@ -1,0 +1,34 @@
+app/controllers/insights_controller.rb
+  h_f968154a99632d 13,24,33
+app/controllers/page_views_controller.rb
+  h_f968154a99632d 24-25,60,65,73-74
+app/controllers/reactions_controller.rb
+  h_f968154a99632d 163,171-172
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 248,257
+app/services/algolia_insights_service.rb
+  h_f968154a99632d 5-13,19-22,25-26,30-36,52-54,56
+app/workers/algolia_insights/track_event_worker.rb
+  h_f968154a99632d 1-31
+spec/requests/insights_spec.rb
+  h_f968154a99632d 3,22,30,32-34,38-41,59-61,81,84
+spec/requests/page_views_spec.rb
+  h_f968154a99632d 58,65-70,80,84,92-94
+spec/requests/reactions_spec.rb
+  h_f968154a99632d 286,292-299
+spec/services/algolia_insights_service_spec.rb
+  h_f968154a99632d 19-36,38-51,54,56-58
+spec/workers/algolia_insights/track_event_worker_spec.rb
+  h_f968154a99632d 1-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe6ed0c88405a42f9322ba2646d8ede716c7c43c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
