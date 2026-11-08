@@ -28,6 +28,11 @@ RSpec.describe "MagicLinks", type: :request do
       allow(Images::ProfileImageGenerator).to receive(:call).and_return("avatar_url")
     end
 
+    it "rejects non-string emails, which would dodge the per-email throttle" do
+      expect { post "/magic_links", params: { email: ["a@example.com", "b@example.com"] } }
+        .to raise_error(ActiveRecord::RecordNotFound)
+    end
+
     context "when captcha is required" do
       before do
         allow(Captcha::CheckRegistrationEnabled).to receive(:call).and_return(true)
@@ -233,6 +238,20 @@ RSpec.describe "MagicLinks", type: :request do
     end
 
     context "when the token matches a user and is not expired" do
+      it "rejects a request that loses the race and keeps the newer code" do
+        user = create(:user, sign_in_token: token, sign_in_token_sent_at: 10.minutes.ago)
+        allow(User).to receive(:find_by).and_wrap_original do |find_by, *args, **kwargs|
+          find_by.call(*args, **kwargs).tap do
+            User.where(id: user.id).update_all(sign_in_token: "newer-code", sign_in_token_sent_at: Time.current)
+          end
+        end
+
+        get "/magic_links/#{token}"
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(user.reload.sign_in_token).to eq("newer-code")
+      end
+
       it "only works once" do
         user = create(:user, sign_in_token: token, sign_in_token_sent_at: 10.minutes.ago)
 
