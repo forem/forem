@@ -760,6 +760,67 @@ namespace :forem_native do
       end
       x.compare!
     end
+
+    puts "\n=== Tier 3 Billboards (FilteredAdsQuery + Weighted Selection + Geolocation) Benchmark ==="
+    sample_ua = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/125.0 Mobile Safari/537.36"
+    sample_geos = %w[US CA-ON CA-QC GB DE FR]
+    sample_tags = %w[javascript webdev beginners programming tutorial react python ai]
+    sample_roles = %w[trusted tag_moderator base_subscriber]
+    sample_base_sql = 'SELECT "display_ads".* FROM "display_ads" WHERE "display_ads"."approved" = TRUE'
+
+    legacy_tier3_pipeline = lambda do
+      geo_cov = Geolocation.__send__(:legacy_code_covered_by?, "ca-on", sample_geos)
+      country = "US-NY".split("-").first
+      country = nil unless country&.match?(/\A[A-Z]{2}\z/)
+      rel_sql = Billboards::FilteredAdsQuery.new(
+        area: "feed_first",
+        user_signed_in: true,
+        user_id: 42,
+        user_tags: sample_tags,
+        role_names: sample_roles,
+        user_agent: sample_ua,
+        cookies_allowed: true,
+        subforem_id: 1,
+      ).__send__(:legacy_call).to_sql
+      weighted_sql = ActiveRecord::Base.sanitize_sql_array(
+        [
+          "WITH base AS (#{sample_base_sql}), weighted AS (SELECT id FROM base) SELECT * FROM base WHERE 1 >= ?",
+          0.42,
+        ],
+      )
+      [geo_cov, country, rel_sql, weighted_sql]
+    end
+
+    native_tier3_pipeline = lambda do
+      geo_cov = ForemNative.geolocation_code_covered_by?("ca-on", sample_geos)
+      country = ForemNative.extract_viewer_country("US-NY")
+      rel_sql = Billboards::FilteredAdsQuery.new(
+        area: "feed_first",
+        user_signed_in: true,
+        user_id: 42,
+        user_tags: sample_tags,
+        role_names: sample_roles,
+        user_agent: sample_ua,
+        cookies_allowed: true,
+        subforem_id: 1,
+      ).call.to_sql
+      weighted_sql = ForemNative.build_billboard_weighted_random_sql(sample_base_sql, 99, 1000, 0.42)
+      [geo_cov, country, rel_sql, weighted_sql]
+    end
+
+    tier3_ruby_mem = MemoryProfiler.report { 100.times { legacy_tier3_pipeline.call } }
+    tier3_rust_mem = MemoryProfiler.report { 100.times { native_tier3_pipeline.call } }
+    puts "Tier 3 Pipeline Ruby allocations (100 runs): #{tier3_ruby_mem.total_allocated} objects " \
+         "(#{tier3_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 3 Pipeline Rust allocations (100 runs): #{tier3_rust_mem.total_allocated} objects " \
+         "(#{tier3_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (18x Relation#where/#or + Geolocation + UA regex)") { legacy_tier3_pipeline.call }
+      x.report("Rust Magnus (Single-pass FilteredAdsQuery + Geolocation + UA)") { native_tier3_pipeline.call }
+      x.compare!
+    end
   end
 
   desc "Compare Markdown extractors and tag cleanup with their legacy Ruby calculations"

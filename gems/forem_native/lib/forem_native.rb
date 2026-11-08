@@ -1228,6 +1228,82 @@ module ForemNative
       Native.resolve_bulk_follow_json(viewer_id, is_user_type ? true : false, ids, forward_flags, reverse_flags)
     end
 
+    # Classifies a `User-Agent` header into `:mobile_in_app`, `:mobile_web`, `:desktop`, or `:unknown`
+    # in a single pass, matching `Billboards::FilteredAdsQuery#browser_context_ads`.
+    def classify_billboard_browser_context(user_agent)
+      return unless Native.respond_to?(:classify_billboard_browser_context)
+      return unless user_agent.instance_of?(String)
+
+      Native.classify_billboard_browser_context(user_agent)
+    end
+
+    # Checks whether an ISO 3166 code (e.g. `"US-CA"`) falls within any of `geo_codes`,
+    # matching `Geolocation.code_covered_by?(code, geo_codes)` with zero allocations.
+    # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
+    def geolocation_code_covered_by?(code, geo_codes)
+      return unless Native.respond_to?(:geolocation_code_covered_by)
+      return unless (code.nil? || code.instance_of?(String)) && geo_codes.is_a?(Array)
+
+      Native.geolocation_code_covered_by(code, geo_codes)
+    end
+    # rubocop:enable Style/ReturnNilInPredicateMethodDefinition
+
+    # Extracts the 2-letter uppercase ISO 3166-1 alpha-2 country code from a geolocation header,
+    # matching `BillboardsController#viewer_country`. Returns `false` when no country code matches.
+    def extract_viewer_country(geo)
+      return unless Native.respond_to?(:extract_viewer_country)
+      return unless geo.nil? || geo.instance_of?(String)
+
+      Native.extract_viewer_country(geo)
+    end
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery` tag matching in a single pass.
+    # rubocop:disable Style/OptionalBooleanParameter
+    def build_billboard_tag_clause_sql(tags, include_untagged = true, optimized_taggable = false)
+      return unless Native.respond_to?(:build_billboard_tag_clause_sql)
+      return unless tags.is_a?(Array)
+
+      Native.build_billboard_tag_clause_sql(tags, include_untagged ? true : false, optimized_taggable ? true : false)
+    end
+    # rubocop:enable Style/OptionalBooleanParameter
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery#role_filtered_ads` in a single pass.
+    def build_billboard_role_filter_sql(role_names)
+      return unless Native.respond_to?(:build_billboard_role_filter_sql)
+      return unless role_names.is_a?(Array)
+
+      Native.build_billboard_role_filter_sql(role_names)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.weighted_random_selection` in a single allocation.
+    def build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, random_val)
+      return unless Native.respond_to?(:build_billboard_weighted_random_sql)
+      return unless base_query.instance_of?(String) &&
+        (target_article_id.nil? || target_article_id.is_a?(Integer)) &&
+        (low_impressions.nil? || low_impressions.is_a?(Integer))
+
+      native_random = native_float(random_val)
+      return unless native_random
+
+      Native.build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, native_random)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.new_only_random_selection` in a single allocation.
+    def build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+      return unless Native.respond_to?(:build_billboard_new_only_sql)
+      return unless base_query.instance_of?(String) &&
+        low_impressions.is_a?(Integer) && fallback_limit.is_a?(Integer)
+
+      Native.build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+    end
+
+    # Compiles the combined SQL `WHERE` predicate for `Billboards::FilteredAdsQuery#call`.
+    def build_filtered_ads_where_sql(params_array)
+      return unless Native.respond_to?(:build_filtered_ads_where_sql) && params_array.is_a?(Array)
+
+      Native.build_filtered_ads_where_sql(params_array)
+    end
+
     private
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.

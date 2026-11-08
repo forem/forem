@@ -11,6 +11,7 @@ on:
       - "app/controllers/async_info_controller.rb"
       - "app/controllers/auth_pass_controller.rb"
       - "app/controllers/billboard_events_controller.rb"
+      - "app/controllers/billboards_controller.rb"
       - "app/controllers/follows_controller.rb"
       - "app/controllers/ga_events_controller.rb"
       - "app/controllers/feed_events_controller.rb"
@@ -19,16 +20,24 @@ on:
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
+      - "app/models/billboard.rb"
       - "app/models/billboard_event.rb"
+      - "app/models/geolocation.rb"
       - "app/models/page_view.rb"
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
+      - "app/queries/billboards/filtered_ads_query.rb"
       - "app/services/articles/feeds/custom.rb"
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
+      - "lib/ISO3166/country.rb"
       - "spec/lib/forem_native_spec.rb"
+      - "spec/models/billboard_spec.rb"
+      - "spec/models/geolocation_spec.rb"
       - "spec/models/feed_config_spec.rb"
+      - "spec/queries/billboards/filtered_ads_query_spec.rb"
+      - "spec/requests/billboards_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
@@ -118,5 +127,13 @@ jobs:
             raise "Unexpected parse_auth_pass_origin!" unless ForemNative.parse_auth_pass_origin("https://Blog.MyOrg.com:8443/x") == ["blog.myorg.com", "https://blog.myorg.com:8443"]
             raise "Unexpected build_base_data_json!" unless ForemNative.build_base_data_json(broadcast: nil, param: "authenticity_token", token: "tok") == "{\"broadcast\":null,\"param\":\"authenticity_token\",\"token\":\"tok\"}"
             raise "Unexpected resolve_bulk_follow_json!" unless ForemNative.resolve_bulk_follow_json(10, true, [10, 20], [false, true], [false, true]) == "{\"10\":\"self\",\"20\":\"mutual\"}"
+            raise "Unexpected classify_billboard_browser_context!" unless ForemNative.classify_billboard_browser_context("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0)") == :mobile_web
+            raise "Unexpected geolocation_code_covered_by?!" unless ForemNative.geolocation_code_covered_by?("US-NY", ["US", "CA-ON"]) == true
+            raise "Unexpected extract_viewer_country!" unless ForemNative.extract_viewer_country("US-NY") == "US"
+            raise "Unexpected build_billboard_tag_clause_sql!" unless ForemNative.build_billboard_tag_clause_sql(["ruby"], true, true).include?("cached_tag_list")
+            raise "Unexpected build_billboard_role_filter_sql!" unless ForemNative.build_billboard_role_filter_sql(["admin"]).include?("target_role_names")
+            raise "Unexpected build_billboard_weighted_random_sql!" unless ForemNative.build_billboard_weighted_random_sql("SELECT * FROM billboards", 10, 5000, 0.5).include?("WITH")
+            raise "Unexpected build_billboard_new_only_sql!" unless ForemNative.build_billboard_new_only_sql("SELECT * FROM billboards", 5000, 15).include?("preferred")
+            raise "Unexpected build_filtered_ads_where_sql!" unless ForemNative.build_filtered_ads_where_sql(["feed_first", 1_700_000_000, 0, [], 1, false, "Mozilla/5.0 (iPhone)", nil, true, nil, [], ["ruby"], true, true, true, 42, ["admin"], true, "ARRAY['US']::varchar[]", true, true, [10], false]).include?("placement_area")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
