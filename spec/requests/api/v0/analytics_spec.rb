@@ -8,24 +8,18 @@ RSpec.describe "Api::V0::Analytics" do
   describe "GET /api/analytics/historical" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "historical", "&start=2019-03-29"
 
-    context "when the start parameter is not included" do
-      before { get "/api/analytics/historical", headers: { "api-key" => api_token.secret } }
+    it "fails with 422 when start is missing or has an incorrect format", :aggregate_failures do
+      headers = { "api-key" => api_token.secret }
 
-      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
-        expect(response).to have_http_status(:unprocessable_entity)
-        error_message = "Required 'start' parameter is missing"
-        expect(response.parsed_body["error"]).to eq(error_message)
-      end
-    end
+      get "/api/analytics/historical", headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("Required 'start' parameter is missing")
 
-    context "when the start parameter has the incorrect format" do
-      before { get "/api/analytics/historical?start=2019/2/2", headers: { "api-key" => api_token.secret } }
-
-      it "fails with an unprocessable entity HTTP error and renders the error message", :aggregate_failures do
-        expect(response).to have_http_status(:unprocessable_entity)
-        error_message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
-        expect(response.parsed_body["error"]).to eq(error_message)
-      end
+      get "/api/analytics/historical?start=2019/2/2", headers: headers
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq(
+        "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'",
+      )
     end
   end
 
