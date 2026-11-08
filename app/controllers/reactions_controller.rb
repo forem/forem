@@ -160,7 +160,7 @@ class ReactionsController < ApplicationController
       Settings::General.algolia_application_id.present? &&
       Settings::General.algolia_api_key.present?
 
-    AlgoliaInsightsService.new.track_event(
+    AlgoliaInsights::TrackEventWorker.perform_async(
       "conversion",
       "Reaction Created",
       session_current_user_id,
@@ -168,7 +168,8 @@ class ReactionsController < ApplicationController
       "Article_#{Rails.env}",
       Time.current.to_i * 1000,
       nil,
-      nil
+      nil,
+      RequestStore.store[:subforem_id],
     )
   end
 end
