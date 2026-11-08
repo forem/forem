@@ -2281,6 +2281,519 @@ pub fn resolve_bulk_follow_json(
     Some(out)
 }
 
+/// Classifies a `User-Agent` string into `"mobile_in_app"`, `"mobile_web"`, `"desktop"`, or `None`
+/// (`:unknown`), matching `Billboards::FilteredAdsQuery#browser_context_ads` in a single pass.
+pub fn classify_billboard_browser_context(user_agent: &[u8]) -> Option<&'static str> {
+    let len = user_agent.len();
+    if len < 5 {
+        return None;
+    }
+
+    let mut saw_mobile_web = false;
+    let mut saw_desktop = false;
+
+    for i in 0..len {
+        let rem = len - i;
+        match user_agent[i] {
+            b'D' if rem >= 14 => {
+                if &user_agent[i..i + 14] == b"DEV-Native-ios"
+                    || (rem >= 18 && &user_agent[i..i + 18] == b"DEV-Native-android")
+                {
+                    return Some("mobile_in_app");
+                }
+            }
+            b'F' if rem >= 12 && &user_agent[i..i + 12] == b"ForemWebView" => {
+                return Some("mobile_in_app");
+            }
+            b'M' => {
+                if !saw_mobile_web && rem >= 6 && &user_agent[i..i + 6] == b"Mobile" {
+                    saw_mobile_web = true;
+                } else if !saw_mobile_web
+                    && !saw_desktop
+                    && ((rem >= 9 && &user_agent[i..i + 9] == b"Macintosh")
+                        || (rem >= 8 && &user_agent[i..i + 8] == b"Mac OS X"))
+                {
+                    saw_desktop = true;
+                }
+            }
+            b'i' if !saw_mobile_web && rem >= 6 && &user_agent[i..i + 6] == b"iPhone" => {
+                saw_mobile_web = true;
+            }
+            b'A' if !saw_mobile_web && rem >= 7 && &user_agent[i..i + 7] == b"Android" => {
+                saw_mobile_web = true;
+            }
+            b'W' if !saw_mobile_web
+                && !saw_desktop
+                && rem >= 7
+                && &user_agent[i..i + 7] == b"Windows" =>
+            {
+                saw_desktop = true;
+            }
+            b'L' if !saw_mobile_web
+                && !saw_desktop
+                && rem >= 5
+                && &user_agent[i..i + 5] == b"Linux" =>
+            {
+                saw_desktop = true;
+            }
+            _ => {}
+        }
+    }
+
+    if saw_mobile_web {
+        Some("mobile_web")
+    } else if saw_desktop {
+        Some("desktop")
+    } else {
+        None
+    }
+}
+
+#[inline]
+fn trim_ruby_ascii_ws(bytes: &[u8]) -> &[u8] {
+    let mut start = 0usize;
+    let mut end = bytes.len();
+    while start < end && is_ruby_strip_ascii_ws(bytes[start]) {
+        start += 1;
+    }
+    while end > start && is_ruby_strip_ascii_ws(bytes[end - 1]) {
+        end -= 1;
+    }
+    &bytes[start..end]
+}
+
+/// Checks whether an ISO 3166 code (e.g. `"US-CA"`) falls within any of `geo_codes`, matching
+/// `Geolocation.code_covered_by?(code, geo_codes)` with zero heap allocations.
+/// Returns `None` if any inspected byte is non-ASCII (`>= 0x80`).
+pub fn geolocation_code_covered_by(code: &[u8], geo_codes: &[Option<&[u8]>]) -> Option<bool> {
+    if code.iter().any(|&b| b >= 0x80) {
+        return None;
+    }
+    let trimmed_code = trim_ruby_ascii_ws(code);
+    if trimmed_code.is_empty() {
+        return Some(false);
+    }
+
+    for entry_opt in geo_codes {
+        let Some(entry) = entry_opt else {
+            continue;
+        };
+        if entry.iter().any(|&b| b >= 0x80) {
+            return None;
+        }
+        let prefix = trim_ruby_ascii_ws(entry);
+        if prefix.is_empty() {
+            continue;
+        }
+        if trimmed_code.len() == prefix.len() && trimmed_code.eq_ignore_ascii_case(prefix) {
+            return Some(true);
+        }
+        if trimmed_code.len() > prefix.len()
+            && trimmed_code[prefix.len()] == b'-'
+            && trimmed_code[..prefix.len()].eq_ignore_ascii_case(prefix)
+        {
+            return Some(true);
+        }
+    }
+
+    Some(false)
+}
+
+/// Extracts the 2-letter uppercase ISO 3166-1 alpha-2 country code from a geolocation header,
+/// matching `country = geo.to_s.split("-").first; country if country&.match?(/\A[A-Z]{2}\z/)`.
+#[inline]
+pub fn extract_viewer_country(geo: &[u8]) -> Option<&str> {
+    let head = match geo.iter().position(|&b| b == b'-') {
+        Some(idx) => &geo[..idx],
+        None => geo,
+    };
+    if head.len() == 2 && head[0].is_ascii_uppercase() && head[1].is_ascii_uppercase() {
+        std::str::from_utf8(head).ok()
+    } else {
+        None
+    }
+}
+
+/// Compiles the SQL predicate for `Billboards::FilteredAdsQuery` tag matching
+/// (`tagged_ads(tags).or(untagged_ads)` or `tagged_ads(tags)`) in a single pre-allocated buffer.
+pub fn build_billboard_tag_clause_sql(
+    tags: &[&str],
+    include_untagged: bool,
+    optimized_taggable: bool,
+) -> Option<String> {
+    if tags.is_empty() {
+        return if include_untagged {
+            Some("\"display_ads\".\"cached_tag_list\" = ''".to_owned())
+        } else {
+            None
+        };
+    }
+
+    for &tag in tags {
+        if tag.as_bytes().contains(&0) {
+            return None;
+        }
+    }
+
+    if optimized_taggable {
+        let mut out = String::with_capacity(tags.len() * 16 + 80);
+        if include_untagged {
+            out.push('(');
+        }
+        out.push_str("(tags_array && ARRAY[");
+        for (i, &tag) in tags.iter().enumerate() {
+            if i > 0 {
+                out.push(',');
+            }
+            push_quoted_nullable_sql_str(&mut out, Some(tag))?;
+        }
+        out.push_str("]::text[])");
+        if include_untagged {
+            out.push_str(" OR \"display_ads\".\"cached_tag_list\" = '')");
+        }
+        return Some(out);
+    }
+
+    let mut out = String::with_capacity(tags.len() * 48 + 48);
+    let wrap_outer = tags.len() > 1 || include_untagged;
+    if wrap_outer {
+        out.push('(');
+    }
+    for (i, &tag) in tags.iter().enumerate() {
+        if i > 0 {
+            out.push_str(" OR ");
+        }
+        out.push_str("(cached_tag_list ~ '[[:<:]]");
+        for &b in tag.as_bytes() {
+            if b == b'\'' {
+                out.push_str("''");
+            } else {
+                out.push(b as char);
+            }
+        }
+        out.push_str("[[:>:]]')");
+    }
+    if include_untagged {
+        out.push_str(" OR \"display_ads\".\"cached_tag_list\" = ''");
+    }
+    if wrap_outer {
+        out.push(')');
+    }
+    Some(out)
+}
+
+/// Compiles the SQL predicate for `Billboards::FilteredAdsQuery#role_filtered_ads`.
+pub fn build_billboard_role_filter_sql(role_names: &[&str]) -> Option<String> {
+    if role_names.is_empty() {
+        return Some("target_role_names IS NULL OR cardinality(target_role_names) = 0".to_owned());
+    }
+
+    let mut array_items = String::with_capacity(role_names.len() * 18);
+    for (i, &role) in role_names.iter().enumerate() {
+        if i > 0 {
+            array_items.push(',');
+        }
+        push_quoted_nullable_sql_str(&mut array_items, Some(role))?;
+    }
+
+    let mut out = String::with_capacity(array_items.len() * 2 + 190);
+    out.push_str(
+        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[",
+    );
+    out.push_str(&array_items);
+    out.push_str(
+        "]::varchar[]) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[",
+    );
+    out.push_str(&array_items);
+    out.push_str("]::varchar[])");
+    Some(out)
+}
+
+#[inline]
+fn is_blank_ascii(s: &str) -> bool {
+    s.as_bytes().iter().all(|&b| is_ruby_strip_ascii_ws(b))
+}
+
+/// Compiles the CTE SQL query for `Billboard.weighted_random_selection` in a single allocation.
+pub fn build_billboard_weighted_random_sql(
+    base_query: &str,
+    target_article_id: Option<i64>,
+    low_impressions: Option<i64>,
+    random_val: f64,
+) -> Option<String> {
+    if is_blank_ascii(base_query) || !random_val.is_finite() {
+        return None;
+    }
+
+    let mut out = String::with_capacity(base_query.len() + 520);
+    out.push_str("WITH base AS (");
+    out.push_str(base_query);
+    out.push_str("),\nweighted AS (\n  SELECT id,\n    SUM(");
+    if let Some(aid) = target_article_id {
+        let _ = write!(
+            &mut out,
+            "CASE WHEN {aid} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+        );
+    } else {
+        out.push_str("weight");
+    }
+    out.push_str(") OVER () AS total_weight,\n    SUM(");
+    if let Some(aid) = target_article_id {
+        let _ = write!(
+            &mut out,
+            "CASE WHEN {aid} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+        );
+    } else {
+        out.push_str("weight");
+    }
+    out.push_str(
+        ") OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight\n  FROM base\n  ",
+    );
+    if let Some(low_imp) = low_impressions {
+        let _ = write!(
+            &mut out,
+            "WHERE impressions_count < {low_imp} OR priority = TRUE"
+        );
+    }
+    out.push_str("\n),\npreferred AS (\n  SELECT id FROM weighted\n  WHERE running_weight >= ");
+    if random_val.fract() == 0.0 && random_val.abs() < 1e15 {
+        let _ = write!(&mut out, "{random_val:.1}");
+    } else {
+        let _ = write!(&mut out, "{random_val}");
+    }
+    out.push_str(
+        " * total_weight\n  ORDER BY running_weight ASC\n  LIMIT 1\n)\nSELECT * FROM base\nWHERE id = (SELECT id FROM preferred)\n",
+    );
+    if low_impressions.is_some() {
+        out.push_str(
+            "UNION ALL (SELECT * FROM base WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)",
+        );
+    }
+    out.push_str("\nLIMIT 1\n");
+    Some(out)
+}
+
+/// Compiles the CTE SQL query for `Billboard.new_only_random_selection` in a single allocation.
+pub fn build_billboard_new_only_sql(
+    base_query: &str,
+    low_impressions: i64,
+    fallback_limit: i64,
+) -> Option<String> {
+    if is_blank_ascii(base_query) {
+        return None;
+    }
+
+    let mut out = String::with_capacity(base_query.len() + 260);
+    out.push_str("WITH base AS (");
+    out.push_str(base_query);
+    let _ = write!(
+        &mut out,
+        "),\npreferred AS (SELECT * FROM base WHERE impressions_count < {low_impressions} ORDER BY RANDOM() LIMIT 1)\nSELECT * FROM preferred\nUNION ALL\n(SELECT * FROM (SELECT * FROM base LIMIT {fallback_limit}) fallback\n WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)\nLIMIT 1\n"
+    );
+    Some(out)
+}
+
+/// Parameters for `build_filtered_ads_where_sql`.
+#[derive(Debug, Clone)]
+pub struct FilteredAdsWhereParams<'a> {
+    pub area: &'a str,
+    pub now_sec: i64,
+    pub now_usec: u32,
+    pub verified_event_ids: &'a [i64],
+    pub subforem_id: Option<i64>,
+    pub fully_cached: bool,
+    pub user_agent: Option<&'a [u8]>,
+    pub page_id: Option<i64>,
+    pub cookies_allowed: bool,
+    pub article_id: Option<i64>,
+    pub article_tags: &'a [&'a str],
+    pub user_tags: &'a [&'a str],
+    pub has_user_tags: bool,
+    pub optimized_taggable: bool,
+    pub user_signed_in: bool,
+    pub user_id: Option<i64>,
+    pub role_names: &'a [&'a str],
+    pub location_targeting_enabled: bool,
+    pub location_sql_clause: Option<&'a str>,
+    pub include_post_type_of: bool,
+    pub permit_adjacent_sponsors: bool,
+    pub paused_org_ids: &'a [i64],
+    pub skip_survey_filtering: bool,
+}
+
+#[inline]
+fn is_feed_targeted_tag_placement(area: &str) -> bool {
+    matches!(area, "feed_first" | "feed_second" | "feed_third")
+}
+
+/// Compiles the combined SQL `WHERE` predicate for `Billboards::FilteredAdsQuery#call`
+/// in a single pre-allocated buffer, avoiding 15-45 `ActiveRecord::Relation` clones.
+pub fn build_filtered_ads_where_sql(params: &FilteredAdsWhereParams<'_>) -> Option<String> {
+    if params.area.as_bytes().contains(&0) {
+        return None;
+    }
+    if let Some(loc) = params.location_sql_clause {
+        if loc.as_bytes().contains(&0) {
+            return None;
+        }
+    }
+
+    let mut out = String::with_capacity(1024);
+    out.push_str(
+        "\"display_ads\".\"approved\" = TRUE AND \"display_ads\".\"published\" = TRUE AND (expires_at IS NULL OR expires_at > ",
+    );
+    push_quoted_utc_timestamp(&mut out, params.now_sec, params.now_usec)?;
+    out.push_str(") AND \"display_ads\".\"placement_area\" = ");
+    push_quoted_nullable_sql_str(&mut out, Some(params.area))?;
+
+    if params.verified_event_ids.is_empty() {
+        out.push_str(" AND \"display_ads\".\"event_id\" IS NULL");
+    } else if params.verified_event_ids.len() == 1 {
+        let _ = write!(
+            &mut out,
+            " AND \"display_ads\".\"event_id\" = {}",
+            params.verified_event_ids[0]
+        );
+    } else {
+        out.push_str(" AND \"display_ads\".\"event_id\" IN (");
+        for (i, &eid) in params.verified_event_ids.iter().enumerate() {
+            if i > 0 {
+                out.push_str(", ");
+            }
+            let _ = write!(&mut out, "{eid}");
+        }
+        out.push(')');
+    }
+
+    out.push_str(" AND (include_subforem_ids IS NULL OR cardinality(include_subforem_ids) = 0 OR ");
+    match params.subforem_id {
+        Some(sfid) => {
+            let _ = write!(&mut out, "{sfid}");
+        }
+        None => out.push_str("NULL"),
+    }
+    out.push_str(" = ANY(include_subforem_ids))");
+
+    if params.fully_cached {
+        out.push_str(
+            " AND (\"display_ads\".\"cached_tag_list\" IS NULL OR \"display_ads\".\"cached_tag_list\" = '') AND \"display_ads\".\"audience_segment_id\" IS NULL AND \"display_ads\".\"page_id\" IS NULL AND \"display_ads\".\"exclude_survey_completions\" = FALSE AND \"display_ads\".\"browser_context\" = 0 AND (exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0) AND (target_role_names IS NULL OR cardinality(target_role_names) = 0) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0)",
+        );
+    }
+
+    if let Some(ua) = params.user_agent {
+        if !ua.is_empty() && !ua.iter().all(|&b| is_ruby_strip_ascii_ws(b)) {
+            match classify_billboard_browser_context(ua) {
+                Some("mobile_in_app") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 3)");
+                }
+                Some("mobile_web") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 2)");
+                }
+                Some("desktop") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 1)");
+                }
+                _ => {}
+            }
+        }
+    }
+
+    if let Some(pid) = params.page_id {
+        let _ = write!(&mut out, " AND \"display_ads\".\"page_id\" = {pid}");
+    }
+
+    if !params.cookies_allowed {
+        out.push_str(" AND \"display_ads\".\"requires_cookies\" = FALSE");
+    }
+
+    if let Some(aid) = params.article_id {
+        if !params.article_tags.is_empty() {
+            let tag_sql = build_billboard_tag_clause_sql(
+                params.article_tags,
+                true,
+                params.optimized_taggable,
+            )?;
+            out.push_str(" AND ");
+            out.push_str(&tag_sql);
+        } else {
+            out.push_str(" AND \"display_ads\".\"cached_tag_list\" = ''");
+        }
+        let _ = write!(
+            &mut out,
+            " AND (exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0 OR NOT ({aid} = ANY(exclude_article_ids)))"
+        );
+    }
+
+    if params.has_user_tags && !params.user_tags.is_empty() {
+        let tag_sql =
+            build_billboard_tag_clause_sql(params.user_tags, true, params.optimized_taggable)?;
+        out.push_str(" AND ");
+        out.push_str(&tag_sql);
+    }
+
+    if !params.has_user_tags && is_feed_targeted_tag_placement(params.area) {
+        out.push_str(" AND \"display_ads\".\"cached_tag_list\" = ''");
+    }
+
+    if let Some(uid) = params.user_id {
+        let _ = write!(
+            &mut out,
+            " AND (audience_segment_id IS NULL OR audience_segment_id IN (SELECT \"segmented_users\".\"audience_segment_id\" FROM \"segmented_users\" WHERE \"segmented_users\".\"user_id\" = {uid}))"
+        );
+    } else {
+        out.push_str(" AND \"display_ads\".\"audience_segment_id\" IS NULL");
+    }
+
+    if params.user_signed_in {
+        let role_sql = build_billboard_role_filter_sql(params.role_names)?;
+        out.push_str(" AND (");
+        out.push_str(&role_sql);
+        out.push(')');
+        out.push_str(" AND \"display_ads\".\"display_to\" IN (0, 1)");
+    } else {
+        out.push_str(" AND \"display_ads\".\"display_to\" IN (0, 2)");
+    }
+
+    if params.location_targeting_enabled {
+        out.push_str(" AND (target_geolocations IS NULL OR cardinality(target_geolocations) = 0");
+        if let Some(clause) = params.location_sql_clause {
+            out.push_str(" OR (");
+            out.push_str(clause);
+            out.push(')');
+        }
+        out.push(')');
+    }
+
+    if params.include_post_type_of {
+        if params.permit_adjacent_sponsors {
+            out.push_str(" AND \"display_ads\".\"type_of\" IN (0, 2)");
+        } else {
+            out.push_str(" AND \"display_ads\".\"type_of\" = 0");
+        }
+
+        if !params.paused_org_ids.is_empty() {
+            out.push_str(" AND (organization_id IS NULL OR organization_id NOT IN (");
+            for (i, &oid) in params.paused_org_ids.iter().enumerate() {
+                if i > 0 {
+                    out.push_str(", ");
+                }
+                let _ = write!(&mut out, "{oid}");
+            }
+            out.push_str("))");
+        }
+
+        if params.user_signed_in && !params.skip_survey_filtering {
+            if let Some(uid) = params.user_id {
+                let _ = write!(
+                    &mut out,
+                    " AND (exclude_survey_completions = FALSE OR NOT EXISTS (SELECT 1 FROM survey_completions WHERE survey_completions.user_id = {uid} AND survey_completions.survey_id = ANY(display_ads.exclude_survey_ids)))"
+                );
+            }
+        }
+    }
+
+    Some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2770,6 +3283,69 @@ mod tests {
         assert_eq!(
             follow_json,
             r#"{"10":"self","20":"true","30":"false","40":"follow-back","50":"mutual"}"#
+        );
+    }
+
+    #[test]
+    fn test_billboard_tier3_helpers() {
+        assert_eq!(
+            classify_billboard_browser_context(
+                b"Mozilla/5.0 (Linux; Android 14) Mobile DEV-Native-android"
+            ),
+            Some("mobile_in_app")
+        );
+        assert_eq!(
+            classify_billboard_browser_context(b"Mozilla/5.0 (Linux; Android 14) Chrome/120"),
+            Some("mobile_web")
+        );
+        assert_eq!(
+            classify_billboard_browser_context(b"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"),
+            Some("desktop")
+        );
+        assert_eq!(classify_billboard_browser_context(b"curl/8.4.0"), None);
+
+        assert_eq!(
+            geolocation_code_covered_by(b" us-ca ", &[Some(b" us "), None, Some(b"")]),
+            Some(true)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"USA", &[Some(b"US")]),
+            Some(false)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"US", &[Some(b"US-CA")]),
+            Some(false)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"", &[Some(b"US")]),
+            Some(false)
+        );
+
+        assert_eq!(extract_viewer_country(b"US-CA"), Some("US"));
+        assert_eq!(extract_viewer_country(b"CA"), Some("CA"));
+        assert_eq!(extract_viewer_country(b"us-ca"), None);
+        assert_eq!(extract_viewer_country(b""), None);
+
+        assert_eq!(
+            build_billboard_tag_clause_sql(&["ruby", "rust"], true, false),
+            Some(
+                "((cached_tag_list ~ '[[:<:]]ruby[[:>:]]') OR (cached_tag_list ~ '[[:<:]]rust[[:>:]]') OR \"display_ads\".\"cached_tag_list\" = '')"
+                    .to_owned()
+            )
+        );
+        assert_eq!(
+            build_billboard_tag_clause_sql(&["ruby", "rust"], true, true),
+            Some(
+                "((tags_array && ARRAY['ruby','rust']::text[]) OR \"display_ads\".\"cached_tag_list\" = '')"
+                    .to_owned()
+            )
+        );
+        assert_eq!(
+            build_billboard_role_filter_sql(&["editor", "admin"]),
+            Some(
+                "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY['editor','admin']::varchar[]) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY['editor','admin']::varchar[])"
+                    .to_owned()
+            )
         );
     }
 }

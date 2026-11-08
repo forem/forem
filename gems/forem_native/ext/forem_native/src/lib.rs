@@ -3341,6 +3341,220 @@ fn build_variant_relevancy_score_sql(
     forem_core::feed::build_variant_relevancy_score_sql(&core_inputs, has_user, minimize_ai)
 }
 
+fn classify_billboard_browser_context(ruby: &Ruby, user_agent: RString) -> Option<Symbol> {
+    if !user_agent.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `user_agent.as_slice()` is only read within pure-Rust `classify_billboard_browser_context`.
+    let ctx =
+        forem_core::metal::classify_billboard_browser_context(unsafe { user_agent.as_slice() })
+            .unwrap_or("unknown");
+    Some(ruby.to_symbol(ctx))
+}
+
+fn geolocation_code_covered_by(code: Value, geo_codes: RArray) -> Option<bool> {
+    let code_rstr = if code.is_nil() {
+        None
+    } else {
+        let s = RString::from_value(code)?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(s)
+    };
+
+    let items: Vec<Option<RString>> = {
+        // SAFETY: Only inspects immediate `Value` handles and `RString` headers without Ruby VM calls.
+        let slice = unsafe { geo_codes.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            if val.is_nil() {
+                out.push(None);
+            } else {
+                let s = RString::from_value(val)?;
+                if !s.is_utf8_compatible_encoding() {
+                    return None;
+                }
+                out.push(Some(s));
+            }
+        }
+        out
+    };
+
+    // SAFETY: `code_rstr` and `items` are borrowed in-place while pure-Rust `geolocation_code_covered_by` runs.
+    let code_bytes: &[u8] = match &code_rstr {
+        Some(s) => unsafe { s.as_slice() },
+        None => b"",
+    };
+    let entry_slices: Vec<Option<&[u8]>> = items
+        .iter()
+        .map(|opt| opt.as_ref().map(|s| unsafe { s.as_slice() }))
+        .collect();
+
+    forem_core::metal::geolocation_code_covered_by(code_bytes, &entry_slices)
+}
+
+fn extract_viewer_country(ruby: &Ruby, geo: Value) -> Option<Value> {
+    if geo.is_nil() {
+        return Some(ruby.qfalse().as_value());
+    }
+    let rstr = RString::from_value(geo)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `rstr.as_slice()` is only read inside pure-Rust `extract_viewer_country`.
+    let matched = forem_core::metal::extract_viewer_country(unsafe { rstr.as_slice() })
+        .map(|s| s.as_bytes().to_vec());
+    match matched {
+        Some(bytes) => {
+            let s = std::str::from_utf8(&bytes).ok()?;
+            Some(ruby.str_new(s).as_value())
+        }
+        None => Some(ruby.qfalse().as_value()),
+    }
+}
+
+fn build_billboard_tag_clause_sql(
+    tags: RArray,
+    include_untagged: bool,
+    optimized_taggable: bool,
+) -> Option<String> {
+    let owned_tags = extract_utf8_string_vec(tags)?;
+    let refs: Vec<&str> = owned_tags.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_tag_clause_sql(&refs, include_untagged, optimized_taggable)
+}
+
+fn build_billboard_role_filter_sql(role_names: RArray) -> Option<String> {
+    let owned_roles = extract_utf8_string_vec(role_names)?;
+    let refs: Vec<&str> = owned_roles.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_role_filter_sql(&refs)
+}
+
+fn build_billboard_weighted_random_sql(
+    base_query: RString,
+    target_article_id: Value,
+    low_impressions: Value,
+    random_val: f64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let aid = extract_optional_i64(target_article_id)?;
+    let low_imp = extract_optional_i64(low_impressions)?;
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_weighted_random_sql(base_str, aid, low_imp, random_val)
+}
+
+fn build_billboard_new_only_sql(
+    base_query: RString,
+    low_impressions: i64,
+    fallback_limit: i64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_new_only_sql(base_str, low_impressions, fallback_limit)
+}
+
+fn build_filtered_ads_where_sql(params_arr: RArray) -> Option<String> {
+    // SAFETY: `params_arr.as_slice()` is copied into local handles/primitives without calling into Ruby.
+    let ps: Vec<Value> = unsafe { params_arr.as_slice() }.to_vec();
+    if ps.len() < 23 {
+        return None;
+    }
+
+    let area_rstr = RString::from_value(ps[0])?;
+    if !area_rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let area = unsafe { area_rstr.test_as_str() }?.to_owned();
+    let now_sec = Integer::from_value(ps[1])?.to_i64().ok()?;
+    let now_usec = Integer::from_value(ps[2])?.to_u32().ok()?;
+    let verified_event_ids = if ps[3].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[3])?)?
+    };
+    let subforem_id = extract_optional_i64(ps[4])?;
+    let fully_cached = ps[5].to_bool();
+    let user_agent_rstr = if ps[6].is_nil() {
+        None
+    } else {
+        let s = RString::from_value(ps[6])?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(unsafe { s.as_slice() }.to_vec())
+    };
+    let page_id = extract_optional_i64(ps[7])?;
+    let cookies_allowed = ps[8].to_bool();
+    let article_id = extract_optional_i64(ps[9])?;
+    let article_tags = if ps[10].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[10])?)?
+    };
+    let user_tags = if ps[11].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[11])?)?
+    };
+    let has_user_tags = ps[12].to_bool();
+    let optimized_taggable = ps[13].to_bool();
+    let user_signed_in = ps[14].to_bool();
+    let user_id = extract_optional_i64(ps[15])?;
+    let role_names = if ps[16].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[16])?)?
+    };
+    let location_targeting_enabled = ps[17].to_bool();
+    let location_sql_clause = extract_optional_utf8_string(ps[18])?;
+    let include_post_type_of = ps[19].to_bool();
+    let permit_adjacent_sponsors = ps[20].to_bool();
+    let paused_org_ids = if ps[21].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[21])?)?
+    };
+    let skip_survey_filtering = ps[22].to_bool();
+
+    let article_tag_refs: Vec<&str> = article_tags.iter().map(String::as_str).collect();
+    let user_tag_refs: Vec<&str> = user_tags.iter().map(String::as_str).collect();
+    let role_refs: Vec<&str> = role_names.iter().map(String::as_str).collect();
+
+    let core_params = forem_core::metal::FilteredAdsWhereParams {
+        area: &area,
+        now_sec,
+        now_usec,
+        verified_event_ids: &verified_event_ids,
+        subforem_id,
+        fully_cached,
+        user_agent: user_agent_rstr.as_deref(),
+        page_id,
+        cookies_allowed,
+        article_id,
+        article_tags: &article_tag_refs,
+        user_tags: &user_tag_refs,
+        has_user_tags,
+        optimized_taggable,
+        user_signed_in,
+        user_id,
+        role_names: &role_refs,
+        location_targeting_enabled,
+        location_sql_clause: location_sql_clause.as_deref(),
+        include_post_type_of,
+        permit_adjacent_sponsors,
+        paused_org_ids: &paused_org_ids,
+        skip_survey_filtering,
+    };
+
+    forem_core::metal::build_filtered_ads_where_sql(&core_params)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3668,6 +3882,38 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "build_variant_relevancy_score_sql",
         function!(build_variant_relevancy_score_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "classify_billboard_browser_context",
+        function!(classify_billboard_browser_context, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "geolocation_code_covered_by",
+        function!(geolocation_code_covered_by, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_viewer_country",
+        function!(extract_viewer_country, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_tag_clause_sql",
+        function!(build_billboard_tag_clause_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_role_filter_sql",
+        function!(build_billboard_role_filter_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_weighted_random_sql",
+        function!(build_billboard_weighted_random_sql, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_new_only_sql",
+        function!(build_billboard_new_only_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_filtered_ads_where_sql",
+        function!(build_filtered_ads_where_sql, 1),
     )?;
     Ok(())
 }

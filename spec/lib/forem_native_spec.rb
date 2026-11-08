@@ -5887,4 +5887,153 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe "Tier 3 Billboard & Geolocation Rust Kernels" do
+    let(:legacy_classify_browser_context) do
+      lambda do |ua|
+        case ua
+        when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+          :mobile_in_app
+        when /Mobile|iPhone|Android/
+          :mobile_web
+        when /Windows|Macintosh|Mac OS X|Linux/
+          :desktop
+        else
+          :unknown
+        end
+      end
+    end
+
+    let(:legacy_extract_viewer_country) do
+      lambda do |geo|
+        country = geo.to_s.split(Geolocation::ISO3166_SEPARATOR).first
+        country if country&.match?(/\A[A-Z]{2}\z/)
+      end
+    end
+
+    it "matches browser_context_ads classification across 1,000 randomized User-Agent strings" do
+      rng = Random.new(20_261_108)
+      tokens = [
+        "DEV-Native-ios", "DEV-Native-android", "ForemWebView",
+        "Mobile", "iPhone", "Android",
+        "Windows", "Macintosh", "Mac OS X", "Linux",
+        "Mozilla/5.0", "AppleWebKit/537.36", "Chrome/125.0", "Safari/537.36", "curl/8.4.0", ""
+      ]
+
+      1_000.times do |i|
+        ua = Array.new(rng.rand(0..5)) { tokens.sample(random: rng) }.join(" ")
+        expected = legacy_classify_browser_context.call(ua)
+        actual = described_class.classify_billboard_browser_context(ua)
+        expect(actual).to eq(expected), "iteration #{i}: ua=#{ua.inspect}"
+      end
+
+      expect(described_class.classify_billboard_browser_context(nil)).to be_nil
+      expect(described_class.classify_billboard_browser_context(123)).to be_nil
+    end
+
+    it "matches Geolocation.legacy_code_covered_by? and viewer_country across 1,000 randomized inputs" do
+      rng = Random.new(20_261_109)
+      code_pool = [
+        "US", "US-CA", "US-NY", "CA", "CA-ON", "CA-QC", "USA", "U",
+        " us-ca ", " ca ", "", "   ", "us-ny", "-US", "US-", "US\n", nil
+      ]
+      entry_pool = ["US", "US-CA", "CA", "CA-ON", " us ", " ca-qc ", "U", "", "  ", nil]
+
+      1_000.times do |i|
+        code = code_pool.sample(random: rng)
+        geo_codes = Array.new(rng.rand(0..5)) { entry_pool.sample(random: rng) }
+
+        expected_cov = Geolocation.__send__(:legacy_code_covered_by?, code, geo_codes)
+        actual_cov = described_class.geolocation_code_covered_by?(code, geo_codes)
+        expect(actual_cov).to eq(expected_cov), "iteration #{i}: code=#{code.inspect} geos=#{geo_codes.inspect}"
+        expect(Geolocation.code_covered_by?(code, geo_codes)).to eq(expected_cov)
+
+        expected_country = legacy_extract_viewer_country.call(code)
+        raw_country = described_class.extract_viewer_country(code)
+        actual_country = raw_country == false ? nil : raw_country
+        expect(actual_country).to eq(expected_country), "iteration #{i}: code=#{code.inspect}"
+      end
+    end
+
+    it "matches tag clause, role filter, weighted random, and new_only SQL builders across 1,000 inputs",
+       :aggregate_failures do
+      rng = Random.new(20_261_110)
+      tag_pool = %w[ruby rails rust javascript webdev discuss ai o'brien]
+      role_pool = %w[admin super_admin trusted tag_moderator base_subscriber]
+      base_sql = 'SELECT "display_ads".* FROM "display_ads" WHERE "display_ads"."approved" = TRUE'
+
+      1_000.times do |i|
+        tags = tag_pool.sample(rng.rand(1..6), random: rng)
+        inc_untagged = rng.rand(2).zero?
+        opt = rng.rand(2).zero?
+        tag_sql = described_class.build_billboard_tag_clause_sql(tags, inc_untagged, opt)
+        expect(tag_sql).to be_a(String)
+        if opt
+          expect(tag_sql).to include("tags_array && ARRAY[")
+        else
+          expect(tag_sql).to include("cached_tag_list ~ '[[:<:]]")
+        end
+        expect(tag_sql.include?('"display_ads"."cached_tag_list" = \'\'')).to eq(inc_untagged), "iteration #{i}"
+
+        roles = role_pool.sample(rng.rand(0..4), random: rng)
+        role_sql = described_class.build_billboard_role_filter_sql(roles)
+        if roles.empty?
+          expect(role_sql).to eq("target_role_names IS NULL OR cardinality(target_role_names) = 0")
+        else
+          expect(role_sql).to include("target_role_names && ARRAY[")
+          expect(role_sql).to include("NOT exclude_role_names && ARRAY[")
+        end
+
+        aid = rng.rand(2).zero? ? nil : rng.rand(1..10_000)
+        low_imp = rng.rand(2).zero? ? nil : rng.rand(100..5_000)
+        rval = rng.rand.round(6)
+        weighted_sql = described_class.build_billboard_weighted_random_sql(base_sql, aid, low_imp, rval)
+        expect(weighted_sql).to include("WITH base AS (#{base_sql})")
+        expect(weighted_sql).to include("WHERE running_weight >= #{rval} * total_weight")
+
+        new_only_sql = described_class.build_billboard_new_only_sql(base_sql, 1000, rng.rand(1..15))
+        expect(new_only_sql).to include("WHERE impressions_count < 1000 ORDER BY RANDOM() LIMIT 1")
+      end
+    end
+
+    it "produces identical results between Billboards::FilteredAdsQuery native call and legacy_call" do
+      bb_untagged = create(:billboard, placement_area: "feed_first", approved: true, published: true)
+      bb_tagged = create(:billboard, placement_area: "feed_first", approved: true, published: true, tag_list: "ruby")
+      bb_desktop = create(
+        :billboard,
+        placement_area: "feed_first",
+        approved: true,
+        published: true,
+        browser_context: :desktop,
+      )
+
+      scenarios = [
+        { area: "feed_first", user_signed_in: false, fully_cached: true },
+        {
+          area: "feed_first",
+          user_signed_in: true,
+          user_id: 42,
+          user_tags: %w[ruby rails],
+          role_names: %w[trusted],
+          user_agent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          cookies_allowed: true
+        },
+        {
+          area: "feed_first",
+          user_signed_in: false,
+          article_id: 99,
+          article_tags: %w[ruby],
+          user_agent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Mobile"
+        },
+      ]
+
+      scenarios.each do |opts|
+        native_ids = Billboards::FilteredAdsQuery.new(**opts).call.ids
+        legacy_ids = Billboards::FilteredAdsQuery.new(**opts).__send__(:legacy_call).ids
+        expect(native_ids).to eq(legacy_ids)
+      end
+
+      expect([bb_untagged.id, bb_tagged.id, bb_desktop.id]).not_to be_empty
+    end
+  end
 end

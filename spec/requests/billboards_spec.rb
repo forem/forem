@@ -883,4 +883,61 @@ RSpec.describe "Billboards" do
       expect(response.body).not_to include(external_billboard.processed_html)
     end
   end
+
+  describe "narrow session viewer resolution and zero SELECT \"users\".* hydration" do
+    let!(:cached_area_bb) { create_billboard(placement_area: "post_comments", display_to: :logged_in) }
+    let!(:feed_bb) { create_billboard(placement_area: "feed_first", display_to: :logged_in) }
+
+    it "serves fully cached billboards to signed-in session users with zero users queries and skips session writes",
+       :aggregate_failures do
+      sign_in user
+      # Establish the session cookie on an initial request so the next request authenticates from session
+      get billboard_path(placement_area: "post_comments")
+      Warden::Manager._on_request.clear
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if sql.include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get billboard_path(placement_area: "post_comments")
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(cached_area_bb.processed_html)
+      expect(user_queries).to be_empty
+      expect(request.session_options[:skip]).to be(true)
+    end
+
+    it "loads only narrow viewer columns on contextual signed-in requests and rejects stale session salts",
+       :aggregate_failures do
+      sign_in user
+      get billboard_path(placement_area: "feed_first")
+      Warden::Manager._on_request.clear
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if sql.include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get billboard_path(placement_area: "feed_first")
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(feed_bb.processed_html)
+      expect(user_queries.size).to eq(1)
+      expect(user_queries.first).not_to include('"users".*')
+      expect(user_queries.first).to include('"users"."id"', '"users"."encrypted_password"')
+      expect(request.session_options[:skip]).to be(true)
+
+      # Invalidating the user's password salt must treat the session as signed out
+      user.update_column(:encrypted_password, "invalidated_password_hash_00000000000000000")
+      get billboard_path(placement_area: "feed_first")
+      expect(response.body).not_to include(feed_bb.processed_html)
+    end
+  end
 end
