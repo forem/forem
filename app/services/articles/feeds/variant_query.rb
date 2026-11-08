@@ -139,7 +139,6 @@ module Articles
         scope = Article.joins(join_fragment)
           .from_subforem
           .minimal_feed_column_select
-          .includes(:context_notes)
           .order(config.order_by.to_sql)
 
         if @user.present? && (hidden_tags = @user.cached_antifollowed_tag_names).any?

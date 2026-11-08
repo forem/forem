@@ -1053,6 +1053,26 @@ RSpec.describe "StoriesIndex" do
       PinnedArticle.remove
     end
 
+    it "preloads context notes in a single query on latest and timeframe feeds", :aggregate_failures do
+      article = create(:article, user: user, published: true, score: 25, hotness_score: 100)
+      create(:context_note, article: article, content: "first timeframe note")
+      create(:context_note, article: article, content: "second timeframe note")
+
+      ["/latest", "/top/week"].each do |path|
+        context_note_queries = 0
+        callback = lambda do |*, payload|
+          context_note_queries += 1 if payload[:sql].include?('FROM "context_notes"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get path }
+
+        expect(response).to have_http_status(:ok)
+        expect(context_note_queries).to eq(1)
+        expect(response.body).to include("first timeframe note")
+        expect(response.body).not_to include("second timeframe note")
+      end
+    end
+
     it "batches organization lookups for signed-out home feed renders", :aggregate_failures do
       org = create(:organization)
       count_org_queries = lambda do
