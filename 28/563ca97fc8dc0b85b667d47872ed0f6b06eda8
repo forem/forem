@@ -1,0 +1,16 @@
+spec/requests/api/v1/docs/organization_article_analytics_spec.rb
+  h_f968154a99632d 33,39-40,42-45
+swagger/v1/api_v1.json
+  h_f968154a99632d 3705,3707-3710,3722-3724,3728-3741
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "28563ca97fc8dc0b85b667d47872ed0f6b06eda8",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
