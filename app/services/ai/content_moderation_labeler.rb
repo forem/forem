@@ -28,13 +28,17 @@ module Ai
     CLEAR = 0.85
     LIKELY = 0.6
     SUPPORTING = 0.5
+    SINGLE_SUBFOREM_ON_TOPIC_THRESHOLD = 0.30
 
     # Upper bounds on the quality Score position (0-4) for each quality tier.
+    # Calibrated for Jev expected-value probability distributions so posts with strong positive
+    # signals (e.g. mean quality 2.35–2.49 or 3.3–3.49) can attain :very_good and :great without
+    # compressing into :okay or :very_good.
     QUALITY_TIERS = [
       [0.75, :clear_low],
       [1.5, :likely_low],
-      [2.5, :okay],
-      [3.5, :very_good],
+      [2.35, :okay],
+      [3.3, :very_good],
       [Float::INFINITY, :great],
     ].freeze
 
@@ -67,8 +71,8 @@ module Ai
       return if @selection.jev?
 
       builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
-      @ai_client = Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
-                                affected_content: article, affected_user: article.user)
+      @gemini_client = Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
+                                    affected_content: article, affected_user: article.user)
     end
 
     ##
@@ -86,31 +90,7 @@ module Ai
     def evaluate
       return evaluate_via_jev if @selection.jev?
 
-      attempt = 0
-      max_retries = 2
-
-      begin
-        attempt += 1
-        prompt = build_prompt
-        # Pass json format request if the wrapper supports it, though explicit instructions might suffice.
-        response = @ai_client.call(prompt, retry_count: attempt - 1, response_mime_type: "application/json")
-        parse_response(response)
-      rescue Ai::Base::ProhibitedContentError
-        raise
-      rescue StandardError => e
-        Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
-
-        if attempt <= max_retries
-          sleep_duration = attempt * 2
-          Rails.logger.info("Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1}) after #{sleep_duration}s")
-          sleep(sleep_duration) unless Rails.env.test?
-          retry
-        else
-          Rails.logger.error("Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default")
-          # Fallback to a safe default after all retries exhausted
-          { label: "no_moderation_label", compellingness_score: 0.0 }
-        end
-      end
+      evaluate_via_gemini
     end
 
     private
@@ -124,8 +104,13 @@ module Ai
       result = client.evaluate(state: jev_state, questions: jev_questions)
       { label: label_from_jev(result), compellingness_score: compellingness_from_jev(result) }
     rescue StandardError => e
-      Rails.logger.error("Content Moderation Labeling via Jev failed, falling back to default: #{e}")
-      JEV_FALLBACK.dup
+      Rails.logger.error("Content Moderation Labeling via Jev failed: #{e}")
+      if Ai::Base::DEFAULT_KEY.present?
+        Rails.logger.info("Falling back to Gemini for Content Moderation Labeling")
+        evaluate_via_gemini
+      else
+        JEV_FALLBACK.dup
+      end
     end
 
     # Builds the structured state payload passed to Jev for content moderation and scoring.
@@ -211,8 +196,16 @@ module Ai
           {
             question: "Does the subject of `article` fit the purpose described in `community.description` " \
                       "(and `community.content_advisement` if present)?",
-            includes: "Topics described in `community.description`, relevant career/learning or watercooler " \
-                      "discussions, honest project launches, and legitimate community challenge or hackathon entries."
+            includes: "Software engineering, web and app development, programming languages, system architecture, " \
+                      "open source, DevOps, developer tooling, AI/ML engineering, developer career/job search, " \
+                      "workplace culture, engineering management, developer productivity, mental models, " \
+                      "tech history, retrocomputing/gaming tech, honest project showcases, watercooler discussions, " \
+                      "and community hackathon or challenge entries."
+          },
+          no: {
+            includes: "Content completely unrelated to software, technology, or developer life (e.g. local home " \
+                      "services, academic essay writing mills, general commercial sales, partisan politics, or " \
+                      "celebrity gossip)."
           },
         ),
         originality: originality_question,
@@ -392,7 +385,8 @@ module Ai
     end
 
     def relevance_label(tier, on_topic_probability:)
-      on_topic = on_topic_probability >= SUPPORTING
+      on_topic_threshold = multiple_subforems_enabled? ? SUPPORTING : SINGLE_SUBFOREM_ON_TOPIC_THRESHOLD
+      on_topic = on_topic_probability >= on_topic_threshold
       unless on_topic || multiple_subforems_enabled?
         return on_topic_probability <= (1.0 - CLEAR) ? "clear_and_obvious_low_quality" : "likely_low_quality"
       end
@@ -497,6 +491,46 @@ module Ai
     end
 
     # --- Gemini ---
+
+    def evaluate_via_gemini
+      attempt = 0
+      max_retries = 2
+
+      begin
+        attempt += 1
+        prompt = build_prompt
+        # Pass json format request if the wrapper supports it, though explicit instructions might suffice.
+        response = gemini_client.call(prompt, retry_count: attempt - 1, response_mime_type: "application/json")
+        parse_response(response)
+      rescue Ai::Base::ProhibitedContentError
+        raise
+      rescue StandardError => e
+        Rails.logger.error("Content Moderation Labeling failed (attempt #{attempt}/#{max_retries + 1}): #{e}")
+
+        if attempt <= max_retries
+          sleep_duration = attempt * 2
+          Rails.logger.info(
+            "Retrying content moderation labeling (attempt #{attempt + 1}/#{max_retries + 1}) after #{sleep_duration}s",
+          )
+          sleep(sleep_duration) unless Rails.env.test?
+          retry
+        else
+          Rails.logger.error(
+            "Content Moderation Labeling failed after #{max_retries + 1} attempts, falling back to default",
+          )
+          # Fallback to a safe default after all retries exhausted
+          { label: "no_moderation_label", compellingness_score: 0.0 }
+        end
+      end
+    end
+
+    def gemini_client
+      @gemini_client ||= begin
+        builtin_model = @is_negative ? Ai::Base::DEFAULT_LITE_MODEL : Ai::Base::DEFAULT_MODEL
+        Ai::Base.new(model: @selection.gemini_model(builtin_model), wrapper: self,
+                     affected_content: @article, affected_user: @article.user)
+      end
+    end
 
     ##
     # Builds a detailed prompt for the AI to assess article content.
