@@ -347,12 +347,14 @@ module ApplicationHelper
   end
 
   def root_unless_default_subforem
+    return if Subforem.disabled_by_env?
+
     if RequestStore.store[:subforem_id].present? && (RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id])
       # Domain string instead of a record to avoid an uncached query on every logged-out render;
       # URL.url accepts either.
       Subforem.cached_default_domain
     elsif RequestStore.store[:subforem_id].present?
-      Subforem.where(root: true).first
+      Subforem.cached_root_domain
     end
   end
 
@@ -366,7 +368,8 @@ module ApplicationHelper
   end
 
   def is_root_subforem?
-    RequestStore.store[:subforem_id].present? &&
+    !Subforem.disabled_by_env? &&
+      RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
   end
 

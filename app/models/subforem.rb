@@ -16,6 +16,7 @@ class Subforem < ApplicationRecord
   attr_accessor :name, :brain_dump, :logo_url, :bg_image_url, :default_locale
 
   before_validation :downcase_domain
+  after_destroy :bust_caches
   after_save :bust_caches
 
   def self.create_from_scratch!(domain:, brain_dump:, name:, logo_url:, bg_image_url: nil, default_locale: "en")
@@ -37,27 +38,34 @@ class Subforem < ApplicationRecord
   def self.cached_id_by_domain(passed_domain)
     # A domain containing a null byte can never match a subforem, and Postgres rejects it.
     return if passed_domain.to_s.include?("\0")
+    return if cached_default_id.nil?
 
     # Unknown domains cache "" (read back as nil by return_type: :integer) because
     # MemoryFirstCache treats a cached nil as a miss and would hit the DB every request.
-    MemoryFirstCache.fetch("subforem_id_by_domain_#{passed_domain}", redis_expires_in: 12.hours, return_type: :integer) do
+    MemoryFirstCache.fetch("subforem_id_by_domain_#{passed_domain}",
+                           redis_expires_in: 12.hours,
+                           return_type: :integer) do
       Subforem.find_by(domain: passed_domain)&.id || ""
     end
   end
 
   def self.cached_default_id
     MemoryFirstCache.fetch("subforem_default_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.first&.id
+      Subforem.first&.id || ""
     end
   end
 
   def self.cached_root_id
+    return if cached_default_id.nil?
+
     MemoryFirstCache.fetch("subforem_root_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.find_by(root: true)&.id
+      Subforem.find_by(root: true)&.id || ""
     end
   end
 
   def self.cached_domains
+    return [] if cached_default_id.nil?
+
     result = MemoryFirstCache.fetch("subforem_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
@@ -66,6 +74,8 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_id_to_domain_hash
+    return {} if cached_default_id.nil?
+
     result = MemoryFirstCache.fetch("subforem_id_to_domain_hash", redis_expires_in: 12.hours) do
       Subforem.all.each_with_object({}) do |subforem, hash|
         hash[subforem.id] = subforem.domain
@@ -76,22 +86,30 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_default_domain
+    return if cached_default_id.nil?
+
     MemoryFirstCache.fetch("subforem_default_domain", redis_expires_in: 12.hours, return_type: :string) do
-      Subforem.first&.domain
-    end
+      Subforem.first&.domain || ""
+    end.presence
   end
 
   def self.cached_root_domain
+    return if cached_default_id.nil?
+
     MemoryFirstCache.fetch("subforem_root_domain", redis_expires_in: 12.hours, return_type: :string) do
       domain = Subforem.find_by(root: true)&.domain
-      return unless domain
-
-      domain += ":#{URL.dev_port}" if Rails.env.development? && !domain.include?(":#{URL.dev_port}")
-      domain
-    end
+      if domain
+        domain += ":#{URL.dev_port}" if Rails.env.development? && domain.exclude?(":#{URL.dev_port}")
+        domain
+      else
+        ""
+      end
+    end.presence
   end
 
   def self.cached_all_domains
+    return [] if cached_default_id.nil?
+
     result = MemoryFirstCache.fetch("subforem_all_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)
     end
@@ -110,23 +128,24 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_discoverable_ids
-    return Array(cached_default_id) if disabled_by_env?
+    default_id = cached_default_id
+    return [] if default_id.nil?
+    return [default_id] if disabled_by_env?
 
     result = MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours) do
-      Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
+      Subforem.where(discoverable: true).order("hotness_score desc").ids
     end
     # Ensure we always return an array (cache may serialize to string in some environments)
     result.is_a?(Array) ? result : []
   end
 
   def self.cached_postable_array
-    if disabled_by_env?
-      default_id = cached_default_id
-      return default_id ? [[default_id, Settings::Community.community_name(subforem_id: default_id)]] : []
-    end
+    default_id = cached_default_id
+    return [] if default_id.nil?
+    return [[default_id, Settings::Community.community_name(subforem_id: default_id)]] if disabled_by_env?
 
     result = MemoryFirstCache.fetch("subforem_postable_array", redis_expires_in: 12.hours) do
-      Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id).map do |id|
+      Subforem.where(discoverable: true).order("hotness_score desc").ids.map do |id|
         [id, Settings::Community.community_name(subforem_id: id)]
       end
     end
@@ -135,12 +154,16 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_misc_subforem_id
+    return if disabled_by_env? || cached_default_id.nil?
+
     MemoryFirstCache.fetch("subforem_misc_id", redis_expires_in: 12.hours, return_type: :integer) do
-      Subforem.find_by(misc: true)&.id
+      Subforem.find_by(misc: true)&.id || ""
     end
   end
 
   def self.misc_subforem
+    return if disabled_by_env? || cached_misc_subforem_id.nil?
+
     Rails.cache.fetch("subforem_misc_object", expires_in: 12.hours) do
       Subforem.find_by(misc: true)
     end
@@ -171,16 +194,18 @@ class Subforem < ApplicationRecord
 
   def bust_caches
     Rails.cache.delete("cached_domains")
-    Rails.cache.delete("subforem_id_to_domain_hash")
-    Rails.cache.delete("subforem_postable_array")
-    Rails.cache.delete("subforem_discoverable_ids")
+    MemoryFirstCache.delete("subforem_domains")
+    MemoryFirstCache.delete("subforem_id_to_domain_hash")
+    MemoryFirstCache.delete("subforem_postable_array")
+    MemoryFirstCache.delete("subforem_discoverable_ids")
     MemoryFirstCache.delete("subforem_root_id")
     MemoryFirstCache.delete("subforem_default_domain")
     MemoryFirstCache.delete("subforem_root_domain")
-    Rails.cache.delete("subforem_all_domains")
+    MemoryFirstCache.delete("subforem_all_domains")
     MemoryFirstCache.delete("subforem_default_id")
     MemoryFirstCache.delete("subforem_id_by_domain_#{domain}")
-    Rails.cache.delete("subforem_misc_id")
+    MemoryFirstCache.delete("subforem_id_by_domain_#{domain_before_last_save}") if domain_before_last_save.present?
+    MemoryFirstCache.delete("subforem_misc_id")
     Rails.cache.delete("subforem_misc_object")
   end
 

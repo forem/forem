@@ -277,6 +277,24 @@ RSpec.describe UserDecorator, type: :decorator do
         expect(decorated_user.ordered_subforems).to eq([])
       end
     end
+
+    context "when Subforem.disabled_by_env? is true" do
+      it "returns an empty array without loading user_activity" do
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+        expect(decorated_user.ordered_subforems).to eq([])
+        expect(decorated_user).not_to have_received(:user_activity)
+      end
+    end
+
+    context "when no discoverable subforems exist" do
+      it "returns an empty array without loading user_activity" do
+        allow(Subforem).to receive(:cached_discoverable_ids).and_return([])
+
+        expect(decorated_user.ordered_subforems).to eq([])
+        expect(decorated_user).not_to have_received(:user_activity)
+      end
+    end
   end
   # END: Added tests
 end

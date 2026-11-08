@@ -40,11 +40,13 @@ module Middlewares
 
           if subdomain
             # Remove your session cookie (or any other cookie) from subdomain
-            Rack::Utils.delete_cookie_header!(
-              headers,
-              ApplicationConfig["SESSION_KEY"],
-              domain: request.host
-            )
+            if ApplicationConfig["SESSION_KEY"].present?
+              Rack::Utils.delete_cookie_header!(
+                headers,
+                ApplicationConfig["SESSION_KEY"],
+                domain: request.host,
+              )
+            end
 
             # Also remove 'remember_user_token' or other cookies if needed
             Rack::Utils.delete_cookie_header!(

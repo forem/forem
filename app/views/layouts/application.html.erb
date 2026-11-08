@@ -152,11 +152,9 @@
       <div id="audiocontent" data-podcast="">
         <%= yield(:audio) %>
       </div>
-      <% unless ENV["DISABLE_MAIN_SIDE_BAR"] == "yes" %>
+      <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
         <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
-          <% if Subforem.cached_discoverable_ids.any? %>
-            <%= render "layouts/main_side_bar" %>
-          <% end %>
+          <%= render "layouts/main_side_bar" %>
         <% end %>
       <% end %>
       <%= render "layouts/top_bar" %>
@@ -194,7 +192,7 @@
     <div id="cookie-consent"></div>
   <% end %>
   <%= render "articles/reaction_category_resources" %>
-  <% if RequestStore.store[:subforem_id].present? || request.env["forem.custom_domain_org"].present? %>
+  <% if (!Subforem.disabled_by_env? && RequestStore.store[:subforem_id].present?) || request.env["forem.custom_domain_org"].present? %>
     <%= render "layouts/bottom_scripts"  %>
   <% end %>
   <%= Settings::UserExperience.bottom_of_body_content.html_safe %>

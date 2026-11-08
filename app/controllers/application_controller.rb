@@ -259,6 +259,8 @@ class ApplicationController < ActionController::Base
   end
 
   def should_redirect_to_subforem?(article)
+    return false if Subforem.disabled_by_env?
+
     subforem_not_same = article.subforem_id.present? && article.subforem_id != RequestStore.store[:subforem_id]
     subforem_not_default_and_no_subforem_id = article.subforem_id.blank? &&
       RequestStore.store[:subforem_id].present? &&
@@ -267,6 +269,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_page_if_different_subforem
+    return if Subforem.disabled_by_env?
     return unless @page.subforem_id.present? &&
       RequestStore.store[:subforem_id].present? &&
       @page.subforem_id != RequestStore.store[:subforem_id]

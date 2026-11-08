@@ -180,5 +180,103 @@ RSpec.describe Subforem do
       expect(described_class.multiple_subforems_enabled?).to be(false)
       expect(described_class.cached_discoverable_ids).to eq([default_subforem.id])
     end
+
+    it "skips misc subforem queries when disabled_by_env? is true" do
+      create(:subforem, misc: true, domain: "misc.dev.to")
+      MemoryFirstCache.delete("subforem_misc_id")
+      Rails.cache.delete("subforem_misc_object")
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("SKIP_SUBFOREM_REASSIGNMENT").and_return("yes")
+      allow(described_class).to receive(:find_by).and_call_original
+
+      expect(described_class.cached_misc_subforem_id).to be_nil
+      expect(described_class.misc_subforem).to be_nil
+      expect(described_class).not_to have_received(:find_by)
+    end
+  end
+
+  describe "when no subforems exist" do
+    before do
+      described_class.destroy_all
+      MemoryFirstCache.reset_memory_store!
+    end
+
+    it "negative-caches cached_default_id and short-circuits all other cached_* lookups without extra SQL queries",
+       :aggregate_failures do
+      expect(described_class.cached_default_id).to be_nil
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems") && payload[:name] != "SCHEMA"
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        2.times do
+          expect(described_class.cached_default_id).to be_nil
+          expect(described_class.cached_id_by_domain("dev.to")).to be_nil
+          expect(described_class.cached_root_id).to be_nil
+          expect(described_class.cached_default_domain).to be_nil
+          expect(described_class.cached_root_domain).to be_nil
+          expect(described_class.cached_domains).to eq([])
+          expect(described_class.cached_all_domains).to eq([])
+          expect(described_class.cached_id_to_domain_hash).to eq({})
+          expect(described_class.cached_discoverable_ids).to eq([])
+          expect(described_class.cached_postable_array).to eq([])
+          expect(described_class.cached_misc_subforem_id).to be_nil
+          expect(described_class.misc_subforem).to be_nil
+        end
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
+    it "invalidates negative caches when a subforem is created and again when destroyed", :aggregate_failures do
+      expect(described_class.cached_default_id).to be_nil
+      expect(described_class.cached_default_domain).to be_nil
+
+      created = create(:subforem, domain: "fresh.example.com", root: true, discoverable: true)
+
+      expect(described_class.cached_default_id).to eq(created.id)
+      expect(described_class.cached_default_domain).to eq("fresh.example.com")
+      expect(described_class.cached_root_id).to eq(created.id)
+      expect(described_class.cached_root_domain).to eq("fresh.example.com")
+      expect(described_class.cached_discoverable_ids).to eq([created.id])
+
+      created.destroy!
+
+      expect(described_class.cached_default_id).to be_nil
+      expect(described_class.cached_default_domain).to be_nil
+      expect(described_class.cached_root_id).to be_nil
+      expect(described_class.cached_root_domain).to be_nil
+      expect(described_class.cached_discoverable_ids).to eq([])
+    end
+  end
+
+  describe "negative caching when root or misc subforem does not exist" do
+    before do
+      create(:subforem, domain: "default.example.com", root: false, misc: false)
+    end
+
+    it "caches the absence of root and misc subforems so subsequent calls do not query the database",
+       :aggregate_failures do
+      expect(described_class.cached_root_id).to be_nil
+      expect(described_class.cached_root_domain).to be_nil
+      expect(described_class.cached_misc_subforem_id).to be_nil
+      expect(described_class.misc_subforem).to be_nil
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems") && payload[:name] != "SCHEMA"
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        expect(described_class.cached_root_id).to be_nil
+        expect(described_class.cached_root_domain).to be_nil
+        expect(described_class.cached_misc_subforem_id).to be_nil
+        expect(described_class.misc_subforem).to be_nil
+      end
+
+      expect(subforem_queries).to be_empty
+    end
   end
 end
