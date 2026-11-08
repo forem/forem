@@ -29,21 +29,24 @@
           </section>
         <% end %>
       <% end %>
-      <% if user_signed_in? && @moderators.present? %>
-        <section class="crayons-card crayons-card--secondary crayons-layout__content org-sidebar-widget mb-4">
-          <header class="crayons-card__header">
-            <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.mods") %></h3>
-          </header>
-          <div class="org-sidebar-widget-body">
-            <% @moderators.each do |user| %>
-              <div class="org-sidebar-widget-user-pic">
-                <a href="/<%= user.username %>" title="<%= user.username %>">
-                  <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
-                </a>
-              </div>
-            <% end %>
-          </div>
-        </section>
+      <% if user_signed_in? %>
+        <% @moderators ||= @tag.tag_moderators.order(badge_achievements_count: :desc).select(:username, :profile_image, :id) %>
+        <% if @moderators.present? %>
+          <section class="crayons-card crayons-card--secondary crayons-layout__content org-sidebar-widget mb-4">
+            <header class="crayons-card__header">
+              <h3 class="crayons-subtitle-3"><%= t("views.tags.sidebar.mods") %></h3>
+            </header>
+            <div class="org-sidebar-widget-body">
+              <% @moderators.each do |user| %>
+                <div class="org-sidebar-widget-user-pic">
+                  <a href="/<%= user.username %>" title="<%= user.username %>">
+                    <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
+                  </a>
+                </div>
+              <% end %>
+            </div>
+          </section>
+        <% end %>
       <% end %>
       <div class="sidebar-data">
         <% if user_signed_in? %>

@@ -18,12 +18,6 @@ module Stories
       @page = (params[:page] || 1).to_i
       not_found if @page < 1 || @page > MAX_PAGE
 
-      if user_signed_in?
-        @moderators = User.with_role(:tag_moderator, @tag)
-          .order(badge_achievements_count: :desc)
-          .select(:username, :profile_image, :id)
-      end
-
       set_number_of_articles(tag: @tag)
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
