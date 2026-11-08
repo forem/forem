@@ -574,7 +574,7 @@ class Article < ApplicationRecord
   }
 
   def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
-    effective_subforem_id = subforem_id unless Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
@@ -588,7 +588,7 @@ class Article < ApplicationRecord
   end
 
   def self.bust_cached_admin_published_with(tag_name, subforem_id: nil)
-    effective_subforem_id = subforem_id unless Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
@@ -2182,7 +2182,9 @@ class Article < ApplicationRecord
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless admin_published_user?
 
-    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    if subforem_id.present? && !Subforem.disabled_by_env?
+      self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    end
     self.class.bust_cached_admin_published_with("welcome")
   end
 
