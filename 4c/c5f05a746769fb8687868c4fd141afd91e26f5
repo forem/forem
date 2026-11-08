@@ -1,0 +1,18 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 45,63,81,139
+.github/workflows/create-cache.yml
+  h_f968154a99632d 30,47
+spec/lib/ci_knapsack_pro_skip_shallow_fetch_spec.rb
+  h_f968154a99632d 14-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4cc5f05a746769fb8687868c4fd141afd91e26f5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

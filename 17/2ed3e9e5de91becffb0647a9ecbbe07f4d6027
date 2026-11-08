@@ -1,0 +1,26 @@
+app/controllers/concerns/api/analytics_controller.rb
+  h_f968154a99632d 70-73,78,82
+app/models/article_activity.rb
+  h_f968154a99632d 141,302,306,309,313-314,316-318
+app/services/analytics_service.rb
+  h_f968154a99632d 12,15-17,22-25,27-28,32-35,37,39-40,90,92-93,118,127,155,157,159-161,172-176,188-190,194-195,198,203,205-209,219-247,250,270,272,398,424,426,428-430,446,468,480,487,489,494-499,504,511,514-519,528,535,538-543,548,553,572,577-578,588,593-594
+db/migrate/20261028120000_add_analytics_index_to_follows.rb
+  h_f968154a99632d 1-59
+db/schema.rb
+  h_f968154a99632d 13,1036
+spec/models/article_activity_spec.rb
+  h_f968154a99632d 108,122,124,127,143,145,149
+spec/requests/api/v1/analytics_spec.rb
+  h_f968154a99632d 158-196
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "172ed3e9e5de91becffb0647a9ecbbe07f4d6027",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

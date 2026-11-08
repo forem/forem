@@ -1,0 +1,40 @@
+app/controllers/stories_controller.rb
+  h_f968154a99632d 478,608,666-668,711
+app/decorators/article_decorator.rb
+  h_f968154a99632d 117-118,121,130-131
+app/helpers/articles_helper.rb
+  h_f968154a99632d 20,25,87-104
+app/helpers/billboard_helper.rb
+  h_f968154a99632d 40,42
+app/helpers/comments_helper.rb
+  h_f968154a99632d 20-28
+app/models/article.rb
+  h_f968154a99632d 38,950-953
+app/models/billboard_placement_area_config.rb
+  h_f968154a99632d 73-77,80-83,88
+spec/decorators/article_decorator_spec.rb
+  h_f968154a99632d 290-300
+spec/helpers/articles_helper_spec.rb
+  h_f968154a99632d 103-138
+spec/helpers/billboard_helper_spec.rb
+  h_f968154a99632d 85-95
+spec/helpers/comments_helper_spec.rb
+  h_f968154a99632d 68-94
+spec/models/article_spec.rb
+  h_f968154a99632d 4466-4490
+spec/models/billboard_placement_area_config_spec.rb
+  h_f968154a99632d 199-215
+spec/requests/articles/articles_show_spec.rb
+  h_f968154a99632d 139,143,147,487-488,492-497
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "887f62a8afb124ac2f0090aa5122dd9b51ddccc6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

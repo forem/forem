@@ -1,0 +1,24 @@
+Gemfile
+  h_f968154a99632d 32,35
+app/services/instrumentation.rb
+  h_f968154a99632d 4-15,17-22,25,28
+config/initializers/datadog.rb
+  h_f968154a99632d 1-19,21-32,34-41
+lib/betterstack/stats_client.rb
+  h_f968154a99632d 5-7,10-15,46
+spec/initializers/datadog_spec.rb
+  h_f968154a99632d 1-82
+spec/services/instrumentation_spec.rb
+  h_f968154a99632d 15-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fca4a98b80826a44a9b0ac57e76690364a9dc433",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

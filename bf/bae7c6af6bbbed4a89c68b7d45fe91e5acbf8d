@@ -1,0 +1,21 @@
+docker-compose.yml
+  s_3223610ba46580::t_4b3efc3a3e15d2 32-33
+  s_3223610ba46580::t_0c8a6088480bae 34-39
+  s_3223610ba46580::t_59311dcc984148 89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.15",
+  "base_commit_sha": "bfbae7c6af6bbbed4a89c68b7d45fe91e5acbf8d",
+  "prompts": {},
+  "sessions": {
+    "s_3223610ba46580": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4acefd37-7cc6-4fa4-be67-60436bd5f673",
+        "model": "unknown"
+      },
+      "human_author": "Paolo Veñegas <pvenegas@gmail.com>"
+    }
+  }
+}

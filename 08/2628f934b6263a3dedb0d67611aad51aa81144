@@ -1,0 +1,32 @@
+spec/mailers/notify_mailer_spec.rb
+  s_0cd64231ee5515::t_f5a771ac6178ff 247-268
+  s_0cd64231ee5515::t_f432d37df51404 105-106
+  s_0cd64231ee5515::t_4e9f3c82553460 31-54
+  s_0cd64231ee5515::t_ea7d7db741001c 71-91
+  s_0cd64231ee5515::t_1122adb0eb2973 120-143
+  s_0cd64231ee5515::t_dbbd7a9624c53d 3-8
+  s_0cd64231ee5515::t_946c35a63ae370 159-181
+app/mailers/notify_mailer.rb
+  s_0cd64231ee5515::t_b1dd51c76828db 78-87
+  s_0cd64231ee5515::t_012afd7f001790 28-39
+  s_0cd64231ee5515::t_667e5aa332122b 55-63
+  s_0cd64231ee5515::t_a4779325312617 2-3
+  s_0cd64231ee5515::t_63aafde7200718 98,100-111
+  s_0cd64231ee5515::t_1ce6dc86ddaa12 126-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "082628f934b6263a3dedb0d67611aad51aa81144",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

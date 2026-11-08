@@ -1,0 +1,30 @@
+app/controllers/concerns/api/analytics_controller.rb
+  s_f0eae6a24f98aa::t_369d971e7229b7 66-72
+  s_f0eae6a24f98aa::t_aedd5f32d79dc9 74-87
+app/services/analytics_service.rb
+  h_a5e25bc086eb00 44-48
+spec/requests/api/v1/analytics_spec.rb
+  s_f0eae6a24f98aa::t_6b5ac934e6ee80 124,130,132-136
+  s_f0eae6a24f98aa::t_3a4fabcb23132f 118,121
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "0a7fdb00524e720883557014147808d596e4f87c",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_f0eae6a24f98aa": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "1cf3fa66-39f0-41f7-a491-21096486f371",
+        "model": "unknown"
+      },
+      "human_author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

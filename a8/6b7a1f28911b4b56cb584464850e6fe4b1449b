@@ -1,0 +1,20 @@
+app/views/dashboards/_actions.html.erb
+  h_a5e25bc086eb00 128
+app/views/dashboards/_actions_mobile.html.erb
+  h_a5e25bc086eb00 25
+app/views/dashboards/_header_and_action.html.erb
+  h_a5e25bc086eb00 83,85,89,91
+spec/requests/dashboard_spec.rb
+  h_a5e25bc086eb00 298-313
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a86b7a1f28911b4b56cb584464850e6fe4b1449b",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

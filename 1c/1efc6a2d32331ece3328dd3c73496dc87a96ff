@@ -1,0 +1,26 @@
+app/controllers/poll_skips_controller.rb
+  h_f968154a99632d 21,48-65
+app/controllers/poll_text_responses_controller.rb
+  h_f968154a99632d 14,38-74
+app/controllers/poll_votes_controller.rb
+  h_f968154a99632d 17-18,23,26,36,38,63,65,67-77,79-81,83,85-86,89
+app/liquid_tags/survey_tag.rb
+  h_f968154a99632d 192-198,249-250,257,265
+spec/requests/poll_skips_spec.rb
+  h_f968154a99632d 42-53
+spec/requests/poll_text_responses_controller_spec.rb
+  h_f968154a99632d 73-93
+spec/requests/poll_votes_controller_spec.rb
+  h_f968154a99632d 131,149,163-165,192,196,198-207,209-210,213,217-218,222,264,274-281
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1c1efc6a2d32331ece3328dd3c73496dc87a96ff",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

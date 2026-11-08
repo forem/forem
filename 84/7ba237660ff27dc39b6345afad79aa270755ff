@@ -1,0 +1,65 @@
+app/services/users/delete.rb
+  s_2f1dc4a4626c61::t_8059ce63d24424 3-4
+  s_2f1dc4a4626c61::t_9a9ea6f2d3d8b0 11-14,28-33,43-44,46-50,52
+  s_2f1dc4a4626c61::t_ee0369f0f5b7e1 45,51
+  s_2f1dc4a4626c61::t_103fb7cfcf0399 53
+spec/services/users/delete_articles_spec.rb
+  s_2f1dc4a4626c61::t_a7353ab7c13e12 88-120,216-222
+  s_2f1dc4a4626c61::t_790f8b4d8d72b9 223
+spec/services/moderator/merge_user_spec.rb
+  s_2f1dc4a4626c61::t_a8a148a877badb 51-75,77-88,91-111
+  s_2f1dc4a4626c61::t_89556eeea3bcda 76,89-90
+app/services/users/delete_comments.rb
+  s_2f1dc4a4626c61::t_8e8756207ec8f9 8-10,15-18,20-31,34-35,37
+app/services/users/delete_podcasts.rb
+  s_2f1dc4a4626c61::t_8e8756207ec8f9 7-10,12-14,16-17,19-20,22-27
+app/workers/users/delete_worker.rb
+  s_2f1dc4a4626c61::t_5670d49e81fb1e 14-17,23-26,28-33
+  s_2f1dc4a4626c61::t_48dd79a2fa7f67 18-22
+spec/services/users/delete_spec.rb
+  s_2f1dc4a4626c61::t_770953c441f22b 32-47
+  s_2f1dc4a4626c61::t_8059ce63d24424 79
+  s_2f1dc4a4626c61::t_d343b7d7eb186f 57-71,73-74,76,80-113
+  s_2f1dc4a4626c61::t_96a9d67ccf885d 23
+app/services/moderator/merge_user.rb
+  s_2f1dc4a4626c61::t_b0c855739b077e 19,38-48
+  s_2f1dc4a4626c61::t_b7762bf3f161d6 49
+app/services/users/delete_articles.rb
+  s_2f1dc4a4626c61::t_6ebfc6b0a46dc6 32-34
+  s_2f1dc4a4626c61::t_8e8756207ec8f9 7,12-14,24,27-28,30-31,35-36,38-49,51-54,57-58,69,71
+  s_2f1dc4a4626c61::t_213b45b436d8ce 16-19,26
+  s_2f1dc4a4626c61::t_5e52f91bc5a43b 25
+app/workers/users/send_account_deleted_email_worker.rb
+  s_2f1dc4a4626c61::t_5670d49e81fb1e 1-13
+spec/services/users/delete_podcasts_spec.rb
+  s_2f1dc4a4626c61::t_a7353ab7c13e12 35-48
+spec/workers/users/delete_worker_spec.rb
+  s_2f1dc4a4626c61::t_b71b84cdd68fa2 48,54,58-71,77,84-92,176-202,204,206-222
+  s_2f1dc4a4626c61::t_94ba8f7d4eaaa1 203,205
+  s_2f1dc4a4626c61::t_37b458be752df9 223-224
+spec/system/admin/admin_deletes_user_spec.rb
+  s_2f1dc4a4626c61::t_96a9d67ccf885d 14,27
+app/workers/bust_cache_base_worker.rb
+  s_2f1dc4a4626c61::t_8e8756207ec8f9 4-8
+spec/workers/users/send_account_deleted_email_worker_spec.rb
+  s_2f1dc4a4626c61::t_b71b84cdd68fa2 1-17
+spec/services/users/delete_comments_spec.rb
+  s_2f1dc4a4626c61::t_a7353ab7c13e12 97-123,125-129
+  s_2f1dc4a4626c61::t_8059ce63d24424 124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "847ba237660ff27dc39b6345afad79aa270755ff",
+  "prompts": {},
+  "sessions": {
+    "s_2f1dc4a4626c61": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ba8f8aac-5004-4acb-afda-1d260c0630e4",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

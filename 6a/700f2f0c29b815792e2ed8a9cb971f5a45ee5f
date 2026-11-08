@@ -1,0 +1,14 @@
+.github/workflows/cd.yml
+  h_f968154a99632d 4,8-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6a700f2f0c29b815792e2ed8a9cb971f5a45ee5f",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

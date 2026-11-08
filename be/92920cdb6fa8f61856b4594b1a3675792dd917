@@ -1,0 +1,9 @@
+app/views/articles/show.html.erb
+  ai_agent 17,19-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "be92920cdb6fa8f61856b4594b1a3675792dd917",
+  "prompts": {}
+}

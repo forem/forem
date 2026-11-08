@@ -1,0 +1,35 @@
+config/initializers/betterstack.rb
+  s_f87acf2c327fab::t_3601990bf04c44 38-39
+  s_f87acf2c327fab::t_6006426c347876 31-36,42-47
+  s_f87acf2c327fab::t_2680ec9fe7a02b 2,13-15,19-24,26-30
+  s_f87acf2c327fab::t_f1ee764ff758f7 16-18,25
+  s_f87acf2c327fab::t_3642d87279bfe6 40-41
+  s_f87acf2c327fab::t_ae3c2f96f58745 37
+spec/initializers/betterstack_spec.rb
+  s_f87acf2c327fab::t_81b2b4311b5271 54,56,60-65,67-69
+  s_f87acf2c327fab::t_fadca987a67dce 57-59,66
+  s_f87acf2c327fab::t_8b932782ead801 2,45-53
+  s_f87acf2c327fab::t_35bedd41e4706f 55
+Gemfile
+  s_f87acf2c327fab::t_c3bcc95bd4ac63 67
+config/application.rb
+  s_f87acf2c327fab::t_9103770a2d4417 22-25
+Gemfile.lock
+  s_f87acf2c327fab::t_aac2b27d8294d5 559-567,1209
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "cb3cd88b771aac1fe3c89c10f5dd2eb8d4d8b8e0",
+  "prompts": {},
+  "sessions": {
+    "s_f87acf2c327fab": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bf9fb0a8-fe46-4a1d-a775-84fde1733cdb",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

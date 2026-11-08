@@ -1,0 +1,20 @@
+app/decorators/notification_decorator.rb
+  h_a5e25bc086eb00 134-141
+app/lib/url.rb
+  h_a5e25bc086eb00 48,54-61
+spec/decorators/notification_decorator_spec.rb
+  h_a5e25bc086eb00 334-350
+spec/lib/url_spec.rb
+  h_a5e25bc086eb00 132-137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "9417b6b828526134e0a4f401a05abef220861c56",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

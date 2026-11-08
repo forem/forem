@@ -1,0 +1,15 @@
+app/assets/stylesheets/base/typography.scss
+  h_a5e25bc086eb00 364
+  h_a5e25bc086eb00 365-367
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "faa896eec1e208d5648aa8f0636d7ea27a2fcf78",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

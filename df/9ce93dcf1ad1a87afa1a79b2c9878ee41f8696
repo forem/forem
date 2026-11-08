@@ -1,0 +1,16 @@
+lib/betterstack/stats_client.rb
+  h_f968154a99632d 9-11
+spec/initializers/datadog_spec.rb
+  h_f968154a99632d 33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "df9ce93dcf1ad1a87afa1a79b2c9878ee41f8696",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

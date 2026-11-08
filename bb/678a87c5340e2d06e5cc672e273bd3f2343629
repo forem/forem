@@ -1,0 +1,18 @@
+app/models/user.rb
+  h_f968154a99632d 497-498,502
+spec/models/user_activity_spec.rb
+  h_f968154a99632d 249-268
+spec/models/user_spec.rb
+  h_f968154a99632d 1222-1229
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "bb678a87c5340e2d06e5cc672e273bd3f2343629",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

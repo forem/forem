@@ -1,0 +1,18 @@
+app/services/badges/award_contributor_from_github.rb
+  h_a5e25bc086eb00 78,99,102,108-109,160-163,168,216-219,238-239,256-257,317-318,334,337,344
+lib/tasks/badges.rake
+  h_a5e25bc086eb00 24-28
+spec/services/badges/award_contributor_from_github_spec.rb
+  h_a5e25bc086eb00 139,159,161-162,165,167-168,225,227-228,237,249,257-269,274,277,281-285,289-290,298-311
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "875c7bd61c042a1e3a7a686cebb86e7d75399854",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

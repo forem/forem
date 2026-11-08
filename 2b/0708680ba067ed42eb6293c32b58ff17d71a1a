@@ -1,0 +1,24 @@
+app/models/article.rb
+  h_f968154a99632d 1829,1831-1832,1837
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 125-128,138-139,161-163,201,220,244,255,259-261,276,280,302,306,312-324,331,333-335,400,413,417,420
+app/services/images/social_image_quote.rb
+  h_f968154a99632d 31
+spec/models/article_spec.rb
+  h_f968154a99632d 3540-3541,3544
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 219-226,242,245-251,273-280,307-311
+spec/services/images/social_image_quote_spec.rb
+  h_f968154a99632d 70-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2b0708680ba067ed42eb6293c32b58ff17d71a1a",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

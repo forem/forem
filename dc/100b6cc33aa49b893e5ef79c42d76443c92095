@@ -1,0 +1,22 @@
+app/controllers/omniauth_callbacks_controller.rb
+  h_f968154a99632d 226-235
+app/workers/emails/send_user_digest_worker.rb
+  h_f968154a99632d 109
+app/workers/organizations/delete_worker.rb
+  h_f968154a99632d 30
+lib/data_update_scripts/20220105112823_migrate_logo_svg_data.rb
+  h_f968154a99632d 31-38
+spec/workers/emails/send_user_digest_worker_spec.rb
+  h_f968154a99632d 141-144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dc100b6cc33aa49b893e5ef79c42d76443c92095",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

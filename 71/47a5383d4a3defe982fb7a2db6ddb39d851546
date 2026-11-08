@@ -1,0 +1,14 @@
+app/services/notifications/co_author/send.rb
+  h_a5e25bc086eb00 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "7147a5383d4a3defe982fb7a2db6ddb39d851546",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

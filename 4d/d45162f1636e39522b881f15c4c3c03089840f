@@ -1,0 +1,33 @@
+spec/requests/dashboard_spec.rb
+  h_a5e25bc086eb00 216-327
+app/views/dashboards/show.html.erb
+  h_a5e25bc086eb00 65
+app/controllers/articles_controller.rb
+  h_a5e25bc086eb00 9
+app/views/flag_appeals/_suspended_notice.html.erb
+  h_a5e25bc086eb00 1-3,5-9
+  h_a5e25bc086eb00 4
+app/controllers/profile_pins_controller.rb
+  h_a5e25bc086eb00 3
+app/views/dashboards/_dashboard_article_row.html.erb
+  h_a5e25bc086eb00 1,37,39,82-85,160
+config/locales/views/flag_appeals/en.yml
+  h_a5e25bc086eb00 23-25
+config/locales/views/flag_appeals/fr.yml
+  h_a5e25bc086eb00 23-25
+config/locales/views/flag_appeals/pt.yml
+  h_a5e25bc086eb00 23-25
+spec/requests/profile_pins_spec.rb
+  h_a5e25bc086eb00 41-59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4dd45162f1636e39522b881f15c4c3c03089840f",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

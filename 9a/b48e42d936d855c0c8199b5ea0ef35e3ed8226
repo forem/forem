@@ -1,0 +1,28 @@
+app/controllers/admin/users_controller.rb
+  h_f968154a99632d 42,489,491-492,494-509,512-513,515-517,519-534,536-537
+app/mailers/devise_mailer.rb
+  h_f968154a99632d 89-90
+app/models/user.rb
+  h_f968154a99632d 1015-1022
+app/views/admin/users/show/security/_password.html.erb
+  h_f968154a99632d 4-14
+config/locales/devise.fr.yml
+  h_f968154a99632d 2
+spec/mailers/devise_mailer_spec.rb
+  h_f968154a99632d 42-55,291,299
+spec/requests/admin/users_manage_spec.rb
+  h_f968154a99632d 15,223-232,235-237,244,248-260
+spec/requests/admin/users_spec.rb
+  h_f968154a99632d 954-984
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "9ab48e42d936d855c0c8199b5ea0ef35e3ed8226",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

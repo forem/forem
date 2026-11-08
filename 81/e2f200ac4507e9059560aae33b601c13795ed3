@@ -1,0 +1,16 @@
+app/models/feed_event.rb
+  h_f968154a99632d 38-42,126,140-195
+spec/models/feed_event_spec.rb
+  h_f968154a99632d 269-310,318,321,326,328,330,332,336,338-339,344,368,373-417,458,552
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "81e2f200ac4507e9059560aae33b601c13795ed3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

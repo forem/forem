@@ -1,0 +1,37 @@
+spec/services/spam/handler_spec.rb
+  s_b6a086b7be60e3::t_698de9438af3f3 992
+  s_b6a086b7be60e3::t_278087b0a84015 950-952
+  s_b6a086b7be60e3::t_2fe49471154692 943-949,953-991,993-1015
+app/views/admin/settings/forms/_ai_functions.html.erb
+  s_b6a086b7be60e3::t_98612b2adb2bd0 54-56
+app/services/ai/spam_escalation_check.rb
+  s_b6a086b7be60e3::t_f7097132f03c1c 11,35-40
+config/locales/services/en.yml
+  s_b6a086b7be60e3::t_f7097132f03c1c 120-122
+spec/services/ai/spam_escalation_check_spec.rb
+  s_b6a086b7be60e3::t_f7097132f03c1c 42-47,82
+config/locales/services/pt.yml
+  s_b6a086b7be60e3::t_f7097132f03c1c 128-130
+config/locales/services/fr.yml
+  s_b6a086b7be60e3::t_f7097132f03c1c 118-120
+app/services/spam/handler.rb
+  s_b6a086b7be60e3::t_698de9438af3f3 105
+  s_b6a086b7be60e3::t_b3bedf01cf110e 106
+  s_b6a086b7be60e3::t_0aa593dcb47ceb 104,107-109,113,126,254-256,283-324,326-327,331,337,521,528-530
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e0ba628c2180cf393ce4fb30b0a0fe8051d54906",
+  "prompts": {},
+  "sessions": {
+    "s_b6a086b7be60e3": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "74d9d4be-1feb-4a56-b1aa-a17ef4ae05ef",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

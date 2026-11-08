@@ -1,0 +1,26 @@
+app/workers/users/delete_worker.rb
+  s_2717fea812dfa4::t_b4cccc4a08d7f2 7-10,15-21
+app/services/moderator/merge_user.rb
+  s_2717fea812dfa4::t_ad6bbe9eb6f861 28
+  s_2717fea812dfa4::t_0ea989191cc617 24-26
+spec/services/moderator/merge_user_spec.rb
+  s_2717fea812dfa4::t_022b03f2bab387 35-65
+spec/workers/users/delete_worker_spec.rb
+  s_2717fea812dfa4::t_1f3e7dcff72dd1 75-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "fe0f210d6b2c0c7b14d0c6d66cb0dbcdad7451b5",
+  "prompts": {},
+  "sessions": {
+    "s_2717fea812dfa4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a25794fd-067b-433e-9f08-fef975147a12",
+        "model": "claude-fable-5"
+      },
+      "human_author": null
+    }
+  }
+}

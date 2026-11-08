@@ -1,0 +1,16 @@
+app/services/html/parser.rb
+  h_a5e25bc086eb00 17-19
+spec/services/html/parser_alerts_spec.rb
+  h_a5e25bc086eb00 51-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ddd86d7d48440410f09ff55bdbd488c27bfd6a65",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

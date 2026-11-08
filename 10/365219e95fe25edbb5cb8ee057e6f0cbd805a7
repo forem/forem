@@ -1,0 +1,21 @@
+app/assets/javascripts/initializers/initializeBaseUserData.js
+  s_6d90ed72f10959::t_306f6dcd8dcc60 104-105,107-123,125-128,153
+app/views/users/show.html.erb
+  s_6d90ed72f10959::t_306f6dcd8dcc60 61
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "10365219e95fe25edbb5cb8ee057e6f0cbd805a7",
+  "prompts": {},
+  "sessions": {
+    "s_6d90ed72f10959": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2716733-a560-4851-b8b7-e8d6a2c1d223",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

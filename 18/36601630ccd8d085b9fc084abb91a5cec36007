@@ -1,0 +1,35 @@
+lib/local_redis/cache.rb
+  s_6bdb1cf245afbe::t_8060355f413fd6 6,13,17-19,21-22,25-26,28-30,35-36,38-47,50,53,55-58,61-62,64-65,68,107,113,121,123-126,129-130,133-134,136,144,154,169-177
+lib/local_redis/web.rb
+  s_6bdb1cf245afbe::t_3439285789cb64 22-23,25,38-43
+lib/active_support/cache/local_redis_cache_store.rb
+  s_6bdb1cf245afbe::t_14653b5d5fdbfc 84,89,115
+  s_6bdb1cf245afbe::t_8578886278d767 141-142
+spec/lib/active_support/cache/local_redis_cache_store_spec.rb
+  s_6bdb1cf245afbe::t_5ff7357ce215c5 90,102
+  s_6bdb1cf245afbe::t_24f4220d81b475 4,84-89,91-101,103-122
+  s_6bdb1cf245afbe::t_6ee9820f5674c5 123
+spec/lib/local_redis/web_spec.rb
+  s_6bdb1cf245afbe::t_3439285789cb64 56-69
+spec/lib/local_redis/sync_spec.rb
+  s_6bdb1cf245afbe::t_24f4220d81b475 3,48-72,74-77
+  s_6bdb1cf245afbe::t_95eaef50b03900 73,78-79
+docs/local_redis_cache.md
+  s_6bdb1cf245afbe::t_3da16e751bf2a0 87-96,102-105,110,163-164,170
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1836601630ccd8d085b9fc084abb91a5cec36007",
+  "prompts": {},
+  "sessions": {
+    "s_6bdb1cf245afbe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "73cacafc-e50a-40eb-9030-295370cd818b",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

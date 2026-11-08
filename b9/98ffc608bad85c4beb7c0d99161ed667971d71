@@ -1,0 +1,99 @@
+db/schema.rb
+  s_26a269fa3c3c7f::t_4564fdbe4f1fec 13,337
+app/assets/javascripts/initializers/initializeBillboardVisibility.js
+  s_26a269fa3c3c7f::t_c1d57d2a4950f0 168-169
+app/assets/stylesheets/billboards.scss
+  s_26a269fa3c3c7f::t_3ba40366590d00 5-11,14-16
+app/controllers/admin/billboard_placement_area_configs_controller.rb
+  s_26a269fa3c3c7f::t_4005154d0621ba 49
+app/javascript/__tests__/billboardPlacementVisibility.test.js
+  s_26a269fa3c3c7f::t_5838d6caf1206e 1-167
+app/javascript/article-form/articleForm.jsx
+  s_26a269fa3c3c7f::t_dd580e391f289e 88-107
+app/javascript/onboarding/components/ProfileForm/ProfileImage.jsx
+  s_26a269fa3c3c7f::t_0656d59e385ebd 69
+app/javascript/onboarding/components/__tests__/ProfileImage.test.jsx
+  s_26a269fa3c3c7f::t_422674390c4870 10-16,18-20,143-193
+app/javascript/onboarding/components/actions.js
+  s_26a269fa3c3c7f::t_0c090f4adf414d 1-2,26-43,47-49,52-63
+app/javascript/packs/__tests__/mermaidRenderer.test.js
+  s_26a269fa3c3c7f::t_9b6079fa68d565 69-81
+app/javascript/packs/application.jsx
+  s_26a269fa3c3c7f::t_60181cf4d43f75 14,24-28,71,75-76
+app/javascript/packs/billboard.js
+  s_26a269fa3c3c7f::t_ced3a1999b9c9f 56-58
+app/javascript/packs/billboardAfterRenderActions.js
+  s_26a269fa3c3c7f::t_383dd57ca42e24 58-125,132-135,156-161,163
+app/javascript/packs/mermaidRenderer.js
+  s_26a269fa3c3c7f::t_31fc174a8319a3 48-54,73
+app/liquid_tags/agent_session_tag.rb
+  s_26a269fa3c3c7f::t_6bc66112759c99 39-58
+app/models/billboard_placement_area_config.rb
+  s_26a269fa3c3c7f::t_eda67373d64970 91-101
+app/services/agent_session_renderers/heading_anchors.rb
+  s_26a269fa3c3c7f::t_0d77363dffa0c8 1-46
+app/services/agent_session_renderers/markdown_renderer.rb
+  s_26a269fa3c3c7f::t_8158472b95d55e 4-6,8-21,24,28,38-40
+app/services/events/billboards/live_stream.rb
+  s_26a269fa3c3c7f::t_76d7edc5cce8de 420-421,424-425
+app/views/admin/billboard_placement_area_configs/edit.html.erb
+  s_26a269fa3c3c7f::t_fc5bafb47a64fa 40-51
+app/views/admin/billboard_placement_area_configs/index.html.erb
+  s_26a269fa3c3c7f::t_4b289a93bcccca 19,29-35
+app/views/billboards/show.html.erb
+  s_26a269fa3c3c7f::t_72854c373d7e6b 2-4
+app/views/layouts/application.html.erb
+  s_26a269fa3c3c7f::t_79be159174ef74 105-110
+app/views/liquids/_agent_session.html.erb
+  s_26a269fa3c3c7f::t_67cd9132df219b 53,67,73
+app/views/shared/_billboard.html.erb
+  s_26a269fa3c3c7f::t_4b3efbd00c6a93 15-16,21,34,63,86,119,139,172
+app/views/users/show.html.erb
+  s_26a269fa3c3c7f::t_30c5ed0c4872a6 71-74
+config/locales/en.yml
+  s_26a269fa3c3c7f::t_d08506e5972de1 35
+config/locales/fr.yml
+  s_26a269fa3c3c7f::t_137eb780c1f38f 35
+config/locales/pt.yml
+  s_26a269fa3c3c7f::t_b015234c424671 35
+config/locales/views/admin/en.yml
+  s_26a269fa3c3c7f::t_a3a040a7ce55a8 757-764
+config/locales/views/admin/fr.yml
+  s_26a269fa3c3c7f::t_88ed075483c78f 748-755
+config/locales/views/admin/pt.yml
+  s_26a269fa3c3c7f::t_e0e158a42a68dd 653-660
+db/migrate/20261009120000_add_hidden_by_default_to_billboard_placement_area_configs.rb
+  s_26a269fa3c3c7f::t_733208015f6410 1-5
+spec/controllers/admin/billboard_placement_area_configs_controller_spec.rb
+  s_26a269fa3c3c7f::t_4cb695b560daf3 84-98,132-139
+spec/liquid_tags/agent_session_tag_spec.rb
+  s_26a269fa3c3c7f::t_590c7bb86d1b3a 215-269
+spec/models/billboard_placement_area_config_spec.rb
+  s_26a269fa3c3c7f::t_cf6115a716324e 240-272
+spec/requests/billboards_spec.rb
+  s_26a269fa3c3c7f::t_1b2bb92e116ecf 310-392
+spec/requests/stories_index_spec.rb
+  s_26a269fa3c3c7f::t_3e1b9de8a7710c 245-262
+spec/requests/user/user_show_spec.rb
+  s_26a269fa3c3c7f::t_c5bf3a25194da9 66-95
+spec/services/agent_session_renderers/heading_anchors_spec.rb
+  s_26a269fa3c3c7f::t_983bcf903a6ccf 1-72
+spec/services/agent_session_renderers/markdown_renderer_spec.rb
+  s_26a269fa3c3c7f::t_6e15d5d91c3da9 1-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b998ffc608bad85c4beb7c0d99161ed667971d71",
+  "prompts": {},
+  "sessions": {
+    "s_26a269fa3c3c7f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "dfcc172c-be47-4522-8b6b-2640432c2419",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

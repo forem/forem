@@ -1,0 +1,16 @@
+app/liquid_tags/feature_tag.rb
+  h_a5e25bc086eb00 40-42
+spec/liquid_tags/feature_tag_spec.rb
+  h_a5e25bc086eb00 124-135
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2e80124c245051ce74e23378930f4dec2ea4fa6f",
+  "prompts": {},
+  "humans": {
+    "h_a5e25bc086eb00": {
+      "author": "Mikey Dorje <mikeydorje@gmail.com>"
+    }
+  }
+}

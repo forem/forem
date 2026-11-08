@@ -1,0 +1,16 @@
+spec/initializers/carrierwave_spec.rb
+  h_f968154a99632d 35,42
+spec/uploaders/profile_image_uploader_spec.rb
+  h_f968154a99632d 129
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f043f6704a15c735f8bb05ca30c46ae38a8d4f54",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

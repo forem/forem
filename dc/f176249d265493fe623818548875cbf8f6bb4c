@@ -1,0 +1,14 @@
+config/initializers/sidekiq.rb
+  h_f968154a99632d 89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "dcf176249d265493fe623818548875cbf8f6bb4c",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

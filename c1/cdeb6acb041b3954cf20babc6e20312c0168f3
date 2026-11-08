@@ -1,0 +1,40 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 9-11,15-16,56-57
+app/models/article.rb
+  h_f968154a99632d 969-973,984
+app/models/feed_config.rb
+  h_f968154a99632d 81-93,103,207-415,418-424,426,430-434,445,451,457-459,464-468,470,472-473,479-480,482,487-489,493-499,502-505,509-512,521,532-533,543-546,568-570,590-591,602-604,609,613-614
+app/services/articles/feeds/custom.rb
+  h_f968154a99632d 130-135,139-140,172-174,176-199
+docs/rust_native_extensions.md
+  h_f968154a99632d 96-123
+gems/forem_native/README.md
+  h_f968154a99632d 15-17
+gems/forem_native/crates/forem_core/src/feed.rs
+  h_f968154a99632d 1-1281
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 12
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 2-3,5-7,534-1037,1130-1151
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 451-564
+lib/tasks/forem_native.rake
+  h_f968154a99632d 77-198
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 2794-3137
+spec/models/feed_config_spec.rb
+  h_f968154a99632d 900-965,967
+spec/services/articles/feeds/custom_spec.rb
+  h_f968154a99632d 713-722,725
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c1cdeb6acb041b3954cf20babc6e20312c0168f3",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}

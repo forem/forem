@@ -1,0 +1,21 @@
+spec/models/forem_instance_spec.rb
+  s_0cd64231ee5515::t_583e7d3b79d2b7 98-111
+app/models/forem_instance.rb
+  s_0cd64231ee5515::t_11a383117ecf1a 52-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.14",
+  "base_commit_sha": "743df89b83937200d0d509e335ce90bd788d5f77",
+  "prompts": {},
+  "sessions": {
+    "s_0cd64231ee5515": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b2d035f1-b022-48fc-b793-32eaadb3e1ad",
+        "model": "claude-fable-5"
+      },
+      "human_author": "Jonathan Gottfried <jonmarkgo@gmail.com>"
+    }
+  }
+}

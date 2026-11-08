@@ -1,0 +1,78 @@
+.cursorrules
+  h_f968154a99632d 69-81
+.github/copilot-instructions.md
+  h_f968154a99632d 69-81
+.github/workflows/forem-native.yml
+  h_f968154a99632d 1-45
+.gitignore
+  h_f968154a99632d 134-141
+.windsurfrules
+  h_f968154a99632d 69-81
+AGENTS.md
+  h_f968154a99632d 68-81
+Containerfile
+  h_f968154a99632d 75
+Gemfile
+  h_f968154a99632d 194
+Gemfile.lock
+  h_f968154a99632d 9-13,1195
+app/services/markdown_processor/parser.rb
+  h_f968154a99632d 148
+app/services/markdown_processor/reading_time.rb
+  h_f968154a99632d 1-30
+docs/README.md
+  h_f968154a99632d 26
+docs/rust_native_extensions.md
+  h_f968154a99632d 1-94
+gems/forem_native/.cargo/config.toml
+  h_f968154a99632d 1-2
+gems/forem_native/Cargo.lock
+  h_f968154a99632d 1-286
+gems/forem_native/Cargo.toml
+  h_f968154a99632d 1-11
+gems/forem_native/README.md
+  h_f968154a99632d 1-54
+gems/forem_native/Rakefile
+  h_f968154a99632d 1-30
+gems/forem_native/crates/forem_core/Cargo.toml
+  h_f968154a99632d 1-11
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 1-9
+gems/forem_native/crates/forem_core/src/markdown.rs
+  h_f968154a99632d 1-124
+gems/forem_native/ext/forem_native/Cargo.toml
+  h_f968154a99632d 1-15
+gems/forem_native/ext/forem_native/extconf.rb
+  h_f968154a99632d 1-48
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 1-28
+gems/forem_native/forem_native.gemspec
+  h_f968154a99632d 1-32
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1-85
+gems/forem_native/lib/forem_native/builder.rb
+  h_f968154a99632d 1-62
+gems/forem_native/lib/forem_native/ruby_fallback.rb
+  h_f968154a99632d 1-18
+gems/forem_native/lib/forem_native/version.rb
+  h_f968154a99632d 1-3
+lib/tasks/forem_native.rake
+  h_f968154a99632d 1-75
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 1-98
+spec/services/markdown_processor/parser_spec.rb
+  h_f968154a99632d 970-985
+spec/services/markdown_processor/reading_time_spec.rb
+  h_f968154a99632d 1-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6919d45136796f3b8b7966b21a94eb04fdedc3b2",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
