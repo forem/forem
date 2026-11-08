@@ -126,8 +126,8 @@ module Images
     rescue OpenURI::HTTPError, Timeout::Error => e
       # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
       Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
-    rescue MiniMagick::Error => e
-      # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
+    rescue MiniMagick::Error, MiniMagick::Invalid => e
+      # Status 15 or nil is SIGTERM (often from Sidekiq memory killers or dyno shutdown). No need to alert Honeybadger.
       if sigterm_error?(e)
         Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
       else
@@ -458,6 +458,8 @@ module Images
     end
 
     def add_profile_image(result)
+      return result unless @author_image
+
       x = WINDOW_X + 40
       y = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
 
@@ -487,13 +489,15 @@ module Images
     rescue StandardError => e
       raise if sigterm_error?(e)
 
-      Rails.error.report(e)
-      # If processing the profile picture triggers a mogrify lockup,
-      # gracefully fall back to returning the social image without their avatar.
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image processing failed: #{e.message}")
+      # If processing the profile picture triggers a mogrify lockup or fails on a
+      # corrupt/truncated upload, gracefully fall back to returning the social image without their avatar.
       result
     end
 
     def add_profile_card_avatar(result)
+      return result unless @author_image
+
       x = WINDOW_X + 44
       y = WINDOW_Y + WINDOW_BAR_HEIGHT + 18
       radius = PROFILE_AVATAR_SIZE / 2
@@ -533,7 +537,7 @@ module Images
     rescue StandardError => e
       raise if sigterm_error?(e)
 
-      Rails.error.report(e)
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image processing failed: #{e.message}")
       result
     ensure
       destroy_image(circular_avatar) unless circular_avatar.equal?(@author_image)
@@ -617,7 +621,8 @@ module Images
     end
 
     def sigterm_error?(error)
-      error.is_a?(MiniMagick::Error) && error.message.include?("status: 15")
+      (error.is_a?(MiniMagick::Error) || error.is_a?(MiniMagick::Invalid)) &&
+        error.message.match?(/status: (?:15|nil)\b/)
     end
 
     def escape_text(text)
@@ -809,8 +814,17 @@ module Images
 
       # Always create fresh image objects since MiniMagick modifies them in place
       @logo_image = @cached_logo_url.present? ? MiniMagick::Image.open(@cached_logo_url) : nil
-      @author_image = MiniMagick::Image.open(@cached_author_image_url)
+      @author_image = open_author_image
       @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
+    end
+
+    def open_author_image
+      MiniMagick::Image.open(@cached_author_image_url)
+    rescue MiniMagick::Error, MiniMagick::Invalid => e
+      raise if sigterm_error?(e)
+
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image open failed: #{e.message}")
+      nil
     end
   end
 end
