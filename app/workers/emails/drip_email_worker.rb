@@ -32,7 +32,7 @@ module Emails
                               .exists?
 
           # pick template based on user's onboarding_subforem_id
-          email_template = if default_onboarding_ids.include?(user.onboarding_subforem_id)
+          email_template = if Subforem.disabled_by_env? || default_onboarding_ids.include?(user.onboarding_subforem_id)
                              Email.where(
                                type_of: "onboarding_drip",
                                drip_day: drip_day,

@@ -574,23 +574,25 @@ class Article < ApplicationRecord
   }
 
   def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
     cache_key = [
       "admin-published-with",
       tag_name,
-      subforem_id || "all",
+      effective_subforem_id || "all",
     ].join(":")
 
     Rails.cache.fetch(cache_key, expires_in: expires_in) do
-      scope = subforem_id ? from_subforem(subforem_id) : all
+      scope = effective_subforem_id ? from_subforem(effective_subforem_id) : all
       scope.admin_published_with(tag_name).first
     end
   end
 
   def self.bust_cached_admin_published_with(tag_name, subforem_id: nil)
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
     cache_key = [
       "admin-published-with",
       tag_name,
-      subforem_id || "all",
+      effective_subforem_id || "all",
     ].join(":")
     Rails.cache.delete(cache_key)
   end

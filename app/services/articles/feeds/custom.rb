@@ -227,7 +227,9 @@ module Articles
 
       def apply_subforem_filters(articles)
         # Apply subforem-specific filters
-        if RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
+        if !Subforem.disabled_by_env? &&
+            RequestStore.store[:subforem_id].present? &&
+            RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
           articles = articles.where(type_of: :full_post)
         end
         

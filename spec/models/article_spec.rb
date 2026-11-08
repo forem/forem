@@ -472,8 +472,9 @@ RSpec.describe Article do
         it "returns an unfiltered scope with an empty where_clause" do
           relation = described_class.from_subforem(subforem.id)
           expect(relation.where_clause).to be_empty
-          expect(relation)
-            .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
+          expect(relation).to include(
+            article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem
+          )
         end
       end
 

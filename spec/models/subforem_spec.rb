@@ -181,6 +181,30 @@ RSpec.describe Subforem do
       expect(described_class.cached_discoverable_ids).to eq([default_subforem.id])
     end
 
+    it "returns only default subforem in domain caches when disabled by env",
+       :aggregate_failures do
+      expect(described_class.cached_default_id).to eq(default_subforem.id)
+      expect(described_class.cached_default_domain).to eq("dev.to")
+      MemoryFirstCache.delete("subforem_domains")
+      MemoryFirstCache.delete("subforem_all_domains")
+      MemoryFirstCache.delete("subforem_id_to_domain_hash")
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("REDIRECT_ALL_SUBFOREMS_TO_DEFAULT").and_return("true")
+
+      subforem_queries = []
+      subscriber = lambda do |*, payload|
+        subforem_queries << payload[:sql] if payload[:sql].include?("subforems") && payload[:name] != "SCHEMA"
+      end
+
+      ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") do
+        expect(described_class.cached_domains).to eq(["dev.to"])
+        expect(described_class.cached_all_domains).to eq(["dev.to"])
+        expect(described_class.cached_id_to_domain_hash).to eq({ default_subforem.id => "dev.to" })
+      end
+
+      expect(subforem_queries).to be_empty
+    end
+
     it "skips misc subforem queries when disabled_by_env? is true" do
       create(:subforem, misc: true, domain: "misc.dev.to")
       MemoryFirstCache.delete("subforem_misc_id")

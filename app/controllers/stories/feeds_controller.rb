@@ -266,7 +266,7 @@ module Stories
       current_subforem_id = RequestStore.store[:subforem_id]
       root_subforem_id = RequestStore.store[:root_subforem_id]
 
-      if current_subforem_id == root_subforem_id
+      if !Subforem.disabled_by_env? && current_subforem_id.present? && current_subforem_id == root_subforem_id
         # We're in root subforem - need to handle multiple subforems dynamically
         # We'll cache settings for the most common subforems to avoid repeated queries
         @cached_subforem_logos = {}

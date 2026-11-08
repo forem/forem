@@ -65,6 +65,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_domains
     return [] if cached_default_id.nil?
+    return [cached_default_domain].compact if disabled_by_env?
 
     result = MemoryFirstCache.fetch("subforem_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)
@@ -74,7 +75,13 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_id_to_domain_hash
-    return {} if cached_default_id.nil?
+    default_id = cached_default_id
+    return {} if default_id.nil?
+
+    if disabled_by_env?
+      default_domain = cached_default_domain
+      return default_domain ? { default_id => default_domain } : {}
+    end
 
     result = MemoryFirstCache.fetch("subforem_id_to_domain_hash", redis_expires_in: 12.hours) do
       Subforem.all.each_with_object({}) do |subforem, hash|
@@ -109,6 +116,7 @@ class Subforem < ApplicationRecord
 
   def self.cached_all_domains
     return [] if cached_default_id.nil?
+    return [cached_default_domain].compact if disabled_by_env?
 
     result = MemoryFirstCache.fetch("subforem_all_domains", redis_expires_in: 12.hours) do
       Subforem.pluck(:domain)

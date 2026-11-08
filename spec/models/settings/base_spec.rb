@@ -337,6 +337,26 @@ RSpec.describe Settings::Base do
 
         expect(memory_cache.read(cache_key)).to be_nil
       end
+
+      it "only clears default subforem cache key without querying Subforem.ids when disabled by env" do
+        default_subforem = create(:subforem, domain: "dev.to")
+        create(:subforem, domain: "other.dev.to")
+        MemoryFirstCache.delete("subforem_default_id")
+        expect(Subforem.cached_default_id).to eq(default_subforem.id)
+
+        memory_cache = ActiveSupport::Cache::MemoryStore.new
+        allow(Rails).to receive(:cache).and_return(memory_cache)
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+        allow(Subforem).to receive(:ids).and_call_original
+
+        cache_key = "test_setting-#{default_subforem.id}"
+        memory_cache.write(cache_key, { "host" => "http://cached.example.com" })
+
+        TestSetting.clear_cache
+
+        expect(Subforem).not_to have_received(:ids)
+        expect(memory_cache.read(cache_key)).to be_nil
+      end
     end
   end
 end

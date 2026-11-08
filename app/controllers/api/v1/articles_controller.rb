@@ -137,7 +137,9 @@ module Api
         search_params[:optionalWords] = cleaned_words if cleaned_words.size > 1
 
         subforem_id = RequestStore.store[:subforem_id]
-        search_params[:facetFilters] << "subforem_id:#{subforem_id}" if subforem_id.present?
+        if subforem_id.present? && !Subforem.disabled_by_env?
+          search_params[:facetFilters] << "subforem_id:#{subforem_id}"
+        end
         search_params
       end
 

@@ -52,7 +52,9 @@ class StoriesController < ApplicationController
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
-      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      if @article.subforem_id.present? && !Subforem.disabled_by_env?
+        RequestStore.store[:subforem_id] = @article.subforem_id
+      end
       begin
         handle_article_show
       ensure

@@ -97,6 +97,15 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(articles.any? { |a| a.subforem_id == followed_subforem.id }).to be true
         expect(articles.any? { |a| a.subforem_id == default_subforem.id }).to be true
       end
+
+      it "skips subforem filtering and does not load user_activity when Subforem.disabled_by_env? is true" do
+        allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+        create_list(:article, 3, public_reactions_count: 40, score: 40, subforem: other_subforem, featured: true,
+                                 user: other_user)
+
+        articles = described_class.new(user).articles_to_send
+        expect(articles.length).to eq(3)
+      end
     end
 
     context "when user follows multiple subforems" do

@@ -429,9 +429,11 @@ module ApplicationHelper
   end
 
   def constructed_full_url(path, subforem_id)
-    return path unless subforem_id.present?
+    return path if Subforem.disabled_by_env? || subforem_id.blank?
 
     domain = Subforem.cached_id_to_domain_hash[subforem_id]
+    return path if domain.blank?
+
     "#{URL.protocol}#{domain}#{path}"
   end
 

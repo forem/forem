@@ -18,7 +18,12 @@ module Middlewares
       
       # Cache the current subforem's domain for URL generation
       if RequestStore.store[:subforem_id].present?
-        RequestStore.store[:subforem_domain] = Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+        RequestStore.store[:subforem_domain] =
+          if RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id] || Subforem.disabled_by_env?
+            RequestStore.store[:default_subforem_domain]
+          else
+            Subforem.cached_id_to_domain_hash[RequestStore.store[:subforem_id]]
+          end
       end
 
       # Call Rails (or next middleware) to get the response
