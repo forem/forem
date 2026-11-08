@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Rack::Attack Magic Links Throttling" do
   include ActiveSupport::Testing::TimeHelpers
 
-  let(:headers) { { "REMOTE_ADDR" => "5.6.7.8" } }
+  let(:headers) { { "REMOTE_ADDR" => "192.0.2.1" } }
 
   around do |example|
     previous_store = Rack::Attack.cache.store
@@ -36,23 +36,23 @@ RSpec.describe "Rack::Attack Magic Links Throttling" do
 
   it "throttles POST /magic_links to 3 per 10 minutes per email across IPs and casing" do
     3.times do |i|
-      post "/magic_links", params: { email: "target@example.com" }, headers: { "REMOTE_ADDR" => "1.1.1.#{i}" }
+      post "/magic_links", params: { email: "target@example.com" }, headers: { "REMOTE_ADDR" => "192.0.2.1#{i}" }
       expect(response).not_to have_http_status(:too_many_requests)
     end
 
-    post "/magic_links", params: { email: " TARGET@example.com" }, headers: { "REMOTE_ADDR" => "1.1.1.9" }
+    post "/magic_links", params: { email: " TARGET@example.com" }, headers: { "REMOTE_ADDR" => "192.0.2.19" }
     expect(response).to have_http_status(:too_many_requests)
   end
 
   it "keys the email throttle on the query email Rails uses when the body conflicts" do
     3.times do |i|
       post "/magic_links?email=target@example.com", params: { email: "decoy#{i}@example.com" },
-                                                    headers: { "REMOTE_ADDR" => "1.1.2.#{i}" }
+                                                    headers: { "REMOTE_ADDR" => "192.0.2.2#{i}" }
       expect(response).not_to have_http_status(:too_many_requests)
     end
 
     post "/magic_links?email=target@example.com", params: { email: "decoy9@example.com" },
-                                                  headers: { "REMOTE_ADDR" => "1.1.2.9" }
+                                                  headers: { "REMOTE_ADDR" => "192.0.2.29" }
     expect(response).to have_http_status(:too_many_requests)
   end
 
@@ -62,10 +62,10 @@ RSpec.describe "Rack::Attack Magic Links Throttling" do
                            headers: { "CONTENT_TYPE" => "application/json", "REMOTE_ADDR" => ip }
     end
 
-    3.times { |i| json_post.call("1.1.3.#{i}") }
+    3.times { |i| json_post.call("192.0.2.3#{i}") }
     expect(response).not_to have_http_status(:too_many_requests)
 
-    json_post.call("1.1.3.9")
+    json_post.call("192.0.2.39")
     expect(response).to have_http_status(:too_many_requests)
   end
 

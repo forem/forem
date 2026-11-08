@@ -1,7 +1,10 @@
 class MagicLinksController < ApplicationController
+  SIGN_IN_TOKEN_TTL = 15.minutes
+
   def show
-    user = User.find_by(sign_in_token: params[:id])
-    if user && user.sign_in_token_sent_at > 20.minutes.ago && claim_sign_in_token?(user)
+    user = User.where("sign_in_token_sent_at > ?", SIGN_IN_TOKEN_TTL.ago)
+      .find_by(sign_in_token: params[:id])
+    if user && claim_sign_in_token?(user)
       if user.confirmed_at.blank?
         user.update_column(:confirmed_at, Time.current)
         # update_column bypasses the Trackable after_commit, so tell the
@@ -78,6 +81,7 @@ class MagicLinksController < ApplicationController
   # both redeem one, and a stale request can't wipe a newly issued code.
   def claim_sign_in_token?(user)
     User.where(id: user.id, sign_in_token: params[:id])
+      .where("sign_in_token_sent_at > ?", SIGN_IN_TOKEN_TTL.ago)
       .update_all(sign_in_token: nil, sign_in_token_sent_at: nil) == 1
   end
 

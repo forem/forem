@@ -116,7 +116,7 @@ RSpec.describe "MagicLinks", type: :request do
           expect(new_user.registered_at).to  eq(Time.current)
           expect(new_user.confirmed_at).to   be_nil
           expect(response.body).to include("Check your email")
-          expect(new_user.sign_in_token).to match(/\A\d{12}\z/)
+          expect(new_user.sign_in_token).to match(/\A\d{10}\z/)
         end
       end
 
@@ -237,12 +237,39 @@ RSpec.describe "MagicLinks", type: :request do
       FeatureFlag.remove(:dev_core_user_sync)
     end
 
+    context "when the token is expired" do
+      it "redirects to the sign-in page when the token is older than 15 minutes" do
+        user = create(:user, sign_in_token: token, sign_in_token_sent_at: 16.minutes.ago)
+
+        get "/magic_links/#{token}"
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(flash[:alert]).to eq("Invalid or expired link")
+        expect(user.reload.sign_in_token).to eq(token)
+      end
+    end
+
     context "when the token matches a user and is not expired" do
+      it "ignores an expired colliding token on another user and signs in the active user" do
+        expired_user = create(:user, sign_in_token: token, sign_in_token_sent_at: 20.minutes.ago)
+        active_user = create(:user, sign_in_token: token, sign_in_token_sent_at: 10.minutes.ago)
+
+        get "/magic_links/#{token}"
+
+        expect(response).to redirect_to(root_path)
+        expect(controller.current_user).to eq(active_user)
+        expect(active_user.reload.sign_in_token).to be_nil
+        expect(expired_user.reload.sign_in_token).to eq(token)
+      end
+
       it "rejects a request that loses the race and keeps the newer code" do
         user = create(:user, sign_in_token: token, sign_in_token_sent_at: 10.minutes.ago)
-        allow(User).to receive(:find_by).and_wrap_original do |find_by, *args, **kwargs|
-          find_by.call(*args, **kwargs).tap do
-            User.where(id: user.id).update_all(sign_in_token: "newer-code", sign_in_token_sent_at: Time.current)
+        allow(User).to receive(:where).and_wrap_original do |where, *args, **kwargs|
+          where.call(*args, **kwargs).tap do
+            if kwargs[:id] == user.id
+              User.unscoped.where(id: user.id)
+                .update_all(sign_in_token: "newer-code", sign_in_token_sent_at: Time.current)
+            end
           end
         end
 
