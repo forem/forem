@@ -1,0 +1,16 @@
+app/services/ai/content_moderation_labeler.rb
+  h_f968154a99632d 73,98-100,102-103,112,168-172,395-401,510-514,547-552,556-557
+spec/services/ai/content_moderation_labeler_spec.rb
+  h_f968154a99632d 337-340,350,355,357,466-478
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f06190faed2e62753eaf788bd74c054bd88b60be",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
