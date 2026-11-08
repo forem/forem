@@ -1,0 +1,36 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 14,23,25,29,34,36-37,39-40,130-137
+app/controllers/billboards_controller.rb
+  h_f968154a99632d 2-7,12-14,29-30,41,69-108,112,122,125-126,133,144,188,197,206-213,221,225-226,254-259,273
+app/models/billboard.rb
+  h_f968154a99632d 254-264,269-270,302-306,316
+app/models/geolocation.rb
+  h_f968154a99632d 51-57,66
+app/queries/billboards/filtered_ads_query.rb
+  h_f968154a99632d 39-48,60-61,63-64,66-68,73-77,80,82,85-86,97,99-110,114-117,119-222,224-228,230-232,235-245,252,260,262,264-268,281-287,304-316,328,333-334,336-337,374-378,393-394
+gems/forem_native/crates/forem_core/src/metal.rs
+  h_f968154a99632d 2284-2796,3288-3350
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 3344-3557,3886-3917
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1231-1306
+lib/ISO3166/country.rb
+  h_f968154a99632d 6-7,13-18
+lib/tasks/forem_native.rake
+  h_f968154a99632d 763-823
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 5890-6038
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 886-942
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "83b94b6f6cbe77e153f8f06abf60554ad51c1800",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
