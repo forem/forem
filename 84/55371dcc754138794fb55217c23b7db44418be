@@ -1,0 +1,65 @@
+app/services/ai/community_context.rb
+  h_f968154a99632d 1-65
+spec/models/settings/base_spec.rb
+  h_f968154a99632d 270-280
+app/services/ai/article_quality_assessor.rb
+  h_f968154a99632d 14,17,89-91,93,172-178,199-208,215
+spec/workers/articles/quality_reaction_worker_spec.rb
+  h_f968154a99632d 251-275
+app/services/ai/comment_check.rb
+  h_f968154a99632d 12,15,81,146-149,160-171,185
+spec/workers/articles/handle_spam_worker_spec.rb
+  h_f968154a99632d 83,103,109-127
+app/workers/articles/quality_reaction_worker.rb
+  h_f968154a99632d 19-20,23
+app/services/ai/profile_moderation_labeler.rb
+  h_f968154a99632d 9,179,206
+app/models/subforem.rb
+  h_f968154a99632d 102-111,113-114,123-127
+app/workers/articles/handle_spam_worker.rb
+  h_f968154a99632d 5,51-52,61-62
+app/services/ai/article_check.rb
+  h_f968154a99632d 13,16,74-77,79,106-111,114-115,118-125,146,150,152-154,156-157,168-174,200-204,214,217,224
+app/services/spam/handler.rb
+  h_f968154a99632d 540,750,752,763-782,825-826
+spec/services/ai/article_quality_assessor_spec.rb
+  h_f968154a99632d 114,118,122
+spec/services/ai/spam_escalation_check_spec.rb
+  h_f968154a99632d 76-77,82-83
+app/services/ai/article_enhancer.rb
+  h_f968154a99632d 13,224
+app/services/ai/editor_helper_service.rb
+  h_f968154a99632d 3-4
+  h_f968154a99632d 87,90,93,399
+app/models/settings/base.rb
+  h_f968154a99632d 179-180,182,188-190,195-196,198,200,204-206,210-233
+spec/services/ai/content_moderation_labeler_spec.rb
+  h_f968154a99632d 11,48,53-54,131-168,329-331,334-335,340-347,361,364-365
+app/services/ai/content_moderation_labeler.rb
+  h_f968154a99632d 14,17,20-25,161-168,194-198,200-201,211-216,262-266,270-276,379,394-399,419-426,514-523,530-532,539-558,563,598,617,621-626,723,731-732,737-742
+app/services/ai/spam_escalation_check.rb
+  h_f968154a99632d 11-13,72-75
+spec/services/ai/article_check_spec.rb
+  h_f968154a99632d 52-68,104,110-118
+spec/services/spam/handler_spec.rb
+  h_f968154a99632d 329-375
+app/models/article.rb
+  h_f968154a99632d 37,2005,2007-2012
+app/services/ai/appeal_assessor.rb
+  h_f968154a99632d 6-8,49,56,104-118
+spec/models/subforem_spec.rb
+  h_f968154a99632d 160-183
+app/services/ai/phishing_signup_check.rb
+  h_f968154a99632d 13,356-357,362-363
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8455371dcc754138794fb55217c23b7db44418be",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
