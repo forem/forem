@@ -2,19 +2,31 @@ module Admin
   class BillboardsController < Admin::ApplicationController
     layout "admin"
 
+    INDEX_COLUMNS = %i[
+      id name placement_area display_to type_of published approved success_rate
+    ].freeze
+    EVENT_COLUMNS = %i[id display_ad_id user_id category created_at].freeze
+    RECENT_EVENTS_WINDOW = 30.days
+
     def index
-      @billboards = Billboard.order(id: :desc)
-        .page(params[:page]).per(50)
-
-      return if params[:search].blank?
-
-      @billboards = @billboards.search_ads(params[:search])
+      billboards = Billboard.select(*INDEX_COLUMNS).order(id: :desc)
+      billboards = billboards.search_ads(params[:search]) if params[:search].present?
+      @billboards = billboards.page(params[:page]).per(50).without_count
     end
 
     def show
       @billboard = Billboard.find(params[:id])
-      @events = @billboard.billboard_events.order("created_at DESC").where.not(user_id: nil)
-        .where.not(category: "impression").includes(:user).limit(25)
+      @events = @billboard.billboard_events
+        .select(*EVENT_COLUMNS)
+        .where("created_at >= ?", RECENT_EVENTS_WINDOW.ago)
+        .where.not(user_id: nil)
+        .where.not(category: "impression")
+        .order(created_at: :desc)
+        .limit(25)
+        .to_a
+      ActiveRecord::Associations::Preloader.new(
+        records: @events, associations: :user, scope: User.select(:id, :username),
+      ).call
     end
 
     def new
