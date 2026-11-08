@@ -225,10 +225,16 @@ class EmailDigestArticleCollector
   end
 
   def set_subforem_context
+    default_subforem_id = Subforem.cached_default_id
+    if Subforem.disabled_by_env? || default_subforem_id.nil?
+      @subforem_ids = []
+      @skip_subforem_filtering = true
+      return
+    end
+
     # Get user's followed subforems from UserActivity
     user_activity = @user.user_activity
     followed_subforem_ids = user_activity&.alltime_subforems || []
-    default_subforem_id = Subforem.cached_default_id
 
     # Check if user has a custom onboarding subforem (not nil and not default)
     has_custom_onboarding = @user.onboarding_subforem_id.present? &&

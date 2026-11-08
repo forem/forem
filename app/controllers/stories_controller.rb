@@ -52,7 +52,9 @@ class StoriesController < ApplicationController
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
-      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      if @article.subforem_id.present? && !Subforem.disabled_by_env?
+        RequestStore.store[:subforem_id] = @article.subforem_id
+      end
       begin
         handle_article_show
       ensure
@@ -376,24 +378,32 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_user
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
     return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
       @comments.none? &&
       @pinned_stories.none? &&
       @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@user.username, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
     return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
       @pinned_stories.none? &&
       @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@organization.slug, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_appropriate

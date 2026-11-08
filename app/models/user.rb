@@ -791,6 +791,19 @@ class User < ApplicationRecord
   #
   # @return [Array<String>] an array of subforem domains
   def moderator_for_subforems_not_cached
+    return [] if Subforem.disabled_by_env? || Subforem.cached_default_id.nil?
+
+    if association(:roles).loaded?
+      subforem_roles = roles.select { |role| role.name == "subforem_moderator" && role.resource_type == "Subforem" }
+      return [] if subforem_roles.empty?
+
+      subforem_ids = subforem_roles.map(&:resource_id)
+      return Subforem.with_role(:subforem_moderator, self).pluck(:domain) if subforem_ids.include?(nil)
+
+      domains_by_id = Subforem.cached_id_to_domain_hash
+      return subforem_ids.filter_map { |id| domains_by_id[id] }
+    end
+
     Subforem.with_role(:subforem_moderator, self).pluck(:domain)
   end
 

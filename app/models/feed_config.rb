@@ -450,7 +450,8 @@ class FeedConfig < ApplicationRecord
                            end
 
     store = RequestStore.store
-    is_root_subforem = store[:subforem_id].present? &&
+    is_root_subforem = !Subforem.disabled_by_env? &&
+      store[:subforem_id].present? &&
       store[:root_subforem_id].present? &&
       store[:subforem_id] == store[:root_subforem_id]
 
@@ -620,6 +621,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if subforem_follow_weight.positive? &&
+        !Subforem.disabled_by_env? &&
         RequestStore.store[:subforem_id].present? &&
         RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]
       subforem_ids = subforem_follow_ids.compact_blank
@@ -689,6 +691,7 @@ class FeedConfig < ApplicationRecord
     end
 
     if recent_subforem_weight.positive? &&
+        !Subforem.disabled_by_env? &&
         activity_store&.recent_subforems&.any? &&
         RequestStore.store[:root_subforem_id].present? &&
         RequestStore.store[:subforem_id] == RequestStore.store[:root_subforem_id]

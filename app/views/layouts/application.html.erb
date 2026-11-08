@@ -152,11 +152,9 @@
       <div id="audiocontent" data-podcast="">
         <%= yield(:audio) %>
       </div>
-      <% unless ENV["DISABLE_MAIN_SIDE_BAR"] == "yes" %>
+      <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
         <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
-          <% if Subforem.cached_discoverable_ids.any? %>
-            <%= render "layouts/main_side_bar" %>
-          <% end %>
+          <%= render "layouts/main_side_bar" %>
         <% end %>
       <% end %>
       <%= render "layouts/top_bar" %>

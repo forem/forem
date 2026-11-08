@@ -31,7 +31,7 @@ module Users
     TOKEN_TTL = 31.days
 
     def call(user)
-      subforem_id = user.onboarding_subforem_id
+      subforem_id = Subforem.disabled_by_env? ? Subforem.cached_default_id : user.onboarding_subforem_id
       host = Subforem.cached_id_to_domain_hash[subforem_id]
 
       {
