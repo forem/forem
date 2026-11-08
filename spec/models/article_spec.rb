@@ -2056,6 +2056,18 @@ RSpec.describe Article do
       expect(cached).to eq(article)
       expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
     end
+
+    it "coalesces subforem-scoped lookups onto the 'all' cache key when Subforem.disabled_by_env? is true" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
+    end
   end
 
   describe "admin welcome cache busting" do

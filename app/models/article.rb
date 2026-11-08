@@ -588,11 +588,10 @@ class Article < ApplicationRecord
   end
 
   def self.bust_cached_admin_published_with(tag_name, subforem_id: nil)
-    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
-      effective_subforem_id || "all",
+      subforem_id || "all",
     ].join(":")
     Rails.cache.delete(cache_key)
   end
@@ -2182,7 +2181,7 @@ class Article < ApplicationRecord
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless admin_published_user?
 
-    if subforem_id.present? && !Subforem.disabled_by_env?
+    if subforem_id.present?
       self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
     end
     self.class.bust_cached_admin_published_with("welcome")

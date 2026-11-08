@@ -538,7 +538,8 @@ class ApplicationController < ActionController::Base
       new_host = host.sub(/^www\./i, "")
       redirect_to("#{request.protocol}#{new_host}#{request.fullpath}", allow_other_host: true,
                                                                        status: :moved_permanently)
-    elsif host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
+    elsif RequestStore.store[:root_subforem_domain].present? &&
+        host.end_with?(".#{RequestStore.store[:root_subforem_domain]}") &&
         RequestStore.store[:subforem_id].blank?
       # Check memory-first cache to avoid redirecting custom organization domains
       cache_key = "org_custom_domain_id:#{host}"
@@ -575,7 +576,8 @@ class ApplicationController < ActionController::Base
     is_custom_org_domain = org_id.present? && org_id != "not_found"
     return if is_custom_org_domain
 
-    is_subforem_subdomain = host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
+    is_subforem_subdomain = RequestStore.store[:root_subforem_domain].present? &&
+      host.end_with?(".#{RequestStore.store[:root_subforem_domain]}")
     is_registered_subforem = RequestStore.store[:subforem_id].present? &&
       RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
 

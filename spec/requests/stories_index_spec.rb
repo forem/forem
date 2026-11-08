@@ -122,6 +122,20 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response).not_to redirect_to("http://default.example.com/")
       end
+
+      it "keeps jwt login without emitting a cross-domain auth_pass/iframe for signed-out default domain visitors" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        get "http://default.example.com"
+        expect(response.body).to include("authenticateUser(paramToken)")
+        expect(response.body).not_to include("/auth_pass/iframe")
+      end
+
+      it "emits same-origin auth_pass/iframe for signed-in visitors on the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        sign_in create(:user)
+        get "http://default.example.com"
+        expect(response.body).to include("iframe.src = '/auth_pass/iframe?passed_domain=")
+      end
     end
 
     context "when General settings has a resized logo" do

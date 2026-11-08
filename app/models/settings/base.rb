@@ -25,12 +25,6 @@ module Settings
         return if Rails.cache.is_a?(ActiveSupport::Cache::NullStore)
 
         # Clear any subforem-specific caches in Rails.cache
-        if Subforem.disabled_by_env?
-          default_id = Subforem.cached_default_id
-          Rails.cache.delete("#{cache_key}-#{default_id}") if default_id
-          return
-        end
-
         Subforem.ids.each do |subforem_id|
           Rails.cache.delete("#{cache_key}-#{subforem_id}")
         end
