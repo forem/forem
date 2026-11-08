@@ -1,0 +1,16 @@
+app/services/images/generate_social_image_magickally.rb
+  h_f968154a99632d 129-130,461-462,492-494,499-500,540,624-625,817,820-828
+spec/services/images/generate_social_image_magickally_spec.rb
+  h_f968154a99632d 136-148,549-556,558,562-580,614-620,634,637,641-642,773-799
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a8f338bfcf455616d6d923b3e783de0fe59a49e7",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
