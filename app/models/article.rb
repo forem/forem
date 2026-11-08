@@ -34,7 +34,7 @@ class Article < ApplicationRecord
   # admin_update was added as a hack to bypass published_at validation when admin is updating
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
-  attr_accessor :publish_under_org, :admin_update
+  attr_accessor :publish_under_org, :admin_update, :skip_autovomits
   attr_writer :series, :labels
   attr_accessor :body_url
 
@@ -2002,11 +2002,14 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    return if skip_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? ||
-                  saved_change_to_title? ||
-                  saved_change_to_published? ||
-                  published_at > 1.minute.ago
+    content_or_initial_publish_changed =
+      saved_change_to_body_markdown? ||
+      saved_change_to_title? ||
+      saved_change_to_published? ||
+      (published_at.present? && published_at > 1.minute.ago && !scheduled? && no_moderation_label?)
+    return unless content_or_initial_publish_changed
 
     # Enqueue after commit so the worker sees the saved article (and its published state).
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }

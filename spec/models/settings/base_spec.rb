@@ -267,6 +267,17 @@ RSpec.describe Settings::Base do
         RequestStore.store[:subforem_id] = "fresh_subforem"
         expect(TestSetting.host).to eq("http://global.example.com")
       end
+
+      it "falls back to default_subforem_id before global setting when specified subforem has no record" do
+        RequestStore.store[:subforem_id] = nil
+        TestSetting.host = "http://global.example.com"
+
+        TestSetting.set_host("http://default-subforem.example.com", subforem_id: "default_subforem")
+        RequestStore.store[:default_subforem_id] = "default_subforem"
+        RequestStore.store[:subforem_id] = "other_subforem"
+
+        expect(TestSetting.host).to eq("http://default-subforem.example.com")
+      end
     end
 
     context "when testing cache invalidation for subforem-specific settings" do

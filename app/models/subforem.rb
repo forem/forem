@@ -99,7 +99,19 @@ class Subforem < ApplicationRecord
     result.is_a?(Array) ? result : []
   end
 
+  def self.disabled_by_env?
+    ENV["SKIP_SUBFOREM_REASSIGNMENT"] == "yes" ||
+      ENV["REDIRECT_ALL_SUBFOREMS_TO_DEFAULT"] == "true" ||
+      ENV["NO_SUBFOREM_FILTER"] == "true"
+  end
+
+  def self.multiple_subforems_enabled?
+    !disabled_by_env? && cached_discoverable_ids.size > 1
+  end
+
   def self.cached_discoverable_ids
+    return Array(cached_default_id) if disabled_by_env?
+
     result = MemoryFirstCache.fetch("subforem_discoverable_ids", redis_expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id)
     end
@@ -108,6 +120,11 @@ class Subforem < ApplicationRecord
   end
 
   def self.cached_postable_array
+    if disabled_by_env?
+      default_id = cached_default_id
+      return default_id ? [[default_id, Settings::Community.community_name(subforem_id: default_id)]] : []
+    end
+
     result = MemoryFirstCache.fetch("subforem_postable_array", redis_expires_in: 12.hours) do
       Subforem.where(discoverable: true).order("hotness_score desc").pluck(:id).map do |id|
         [id, Settings::Community.community_name(subforem_id: id)]
