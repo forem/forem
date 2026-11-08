@@ -245,7 +245,7 @@ module Middlewares
       ensure_subforem_context!(req)
       return unless Settings::General.algolia_application_id.present? && Settings::General.algolia_api_key.present?
 
-      AlgoliaInsightsService.new.track_event(
+      AlgoliaInsights::TrackEventWorker.perform_async(
         "view",
         "Article Viewed",
         current_user_id,
@@ -254,6 +254,7 @@ module Middlewares
         Time.current.to_i * 1000,
         nil,
         nil,
+        RequestStore.store[:subforem_id],
       )
     end
 

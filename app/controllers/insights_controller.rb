@@ -10,7 +10,7 @@ class InsightsController < ApplicationController
     )
 
     # Ensure all required parameters are present
-    required_fields = [:event_type, :event_name, :object_id, :index_name]
+    required_fields = %i[event_type event_name object_id index_name]
     missing_fields = required_fields - insights_params.keys.map(&:to_sym)
     unless missing_fields.empty?
       render json: { error: "Missing required parameters: #{missing_fields.join(', ')}" }, status: :unprocessable_entity
@@ -21,8 +21,7 @@ class InsightsController < ApplicationController
     user_id = current_user&.id&.to_s
     timestamp = Time.current.to_i * 1000
 
-    algolia_service = AlgoliaInsightsService.new
-    algolia_service.track_event(
+    AlgoliaInsights::TrackEventWorker.perform_async(
       insights_params[:event_type],
       insights_params[:event_name],
       user_id,
@@ -31,6 +30,7 @@ class InsightsController < ApplicationController
       timestamp,
       insights_params[:query_id],
       [(insights_params[:position] || 1).to_i],
+      RequestStore.store[:subforem_id],
     )
 
     render json: { message: "Insight processed" }, status: :ok

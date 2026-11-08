@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Insights", type: :request do
+RSpec.describe "Insights" do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:user) { create(:user) }
@@ -19,7 +19,7 @@ RSpec.describe "Insights", type: :request do
           event_name: "Result Clicked",
           object_id: "12345",
           index_name: "Article_production",
-          query_id: "abcdef123456",
+          query_id: "abcdef123456"
         }
       }
     end
@@ -27,12 +27,18 @@ RSpec.describe "Insights", type: :request do
     context "when user is signed in" do
       before { sign_in user }
 
-      it "processes the insight and tracks the event", :aggregate_failures do
+      it "processes the insight and tracks the event asynchronously", :aggregate_failures do
         freeze_time do
-          post "/insights", params: valid_params
+          sidekiq_assert_enqueued_jobs(1, only: AlgoliaInsights::TrackEventWorker) do
+            post "/insights", params: valid_params
+          end
 
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("Insight processed")
+          expect(algolia_service_instance).not_to have_received(:track_event)
+
+          sidekiq_perform_enqueued_jobs(only: AlgoliaInsights::TrackEventWorker)
+
           expect(algolia_service_instance).to have_received(:track_event).with(
             "click",
             "Result Clicked",
@@ -50,7 +56,9 @@ RSpec.describe "Insights", type: :request do
     context "when user is not signed in" do
       it "processes the insight without a user ID", :aggregate_failures do
         freeze_time do
-          post "/insights", params: valid_params
+          sidekiq_perform_enqueued_jobs(only: AlgoliaInsights::TrackEventWorker) do
+            post "/insights", params: valid_params
+          end
 
           expect(response).to have_http_status(:ok)
           expect(response.body).to include("Insight processed")
@@ -70,10 +78,10 @@ RSpec.describe "Insights", type: :request do
 
     context "when required parameters are missing" do
       let(:invalid_params) { { insight: { event_type: "click" } } }
-    
+
       it "returns an error", :aggregate_failures do
         post "/insights", params: invalid_params
-    
+
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.body).to include("Missing required parameters: event_name, object_id, index_name")
         expect(algolia_service_instance).not_to have_received(:track_event)
