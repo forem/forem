@@ -128,7 +128,23 @@ RSpec.describe "Reactions" do
       end
     end
 
-    it "looks up only the article id, once, for the signed-out surrogate key" do
+    it "skips querying the articles table for the signed-out surrogate key when reaction counts are already present" do
+      queries = []
+      callback = lambda do |*, payload|
+        queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+      end
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get reactions_path(article_id: article.id)
+      end
+
+      expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
+      expect(queries).to be_empty
+    end
+
+    it "looks up only the article id, once, for the signed-out surrogate key when the article has no reactions yet" do
+      Reaction.where(reactable: article).delete_all
+      Rails.cache.delete("reaction_counts_for_reactable-Article-#{article.id}")
+
       queries = []
       callback = lambda do |*, payload|
         queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
@@ -140,6 +156,14 @@ RSpec.describe "Reactions" do
       expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_article(article.id))
       expect(queries.size).to eq(1)
       expect(queries.first).to start_with('SELECT "articles"."id" FROM "articles"')
+    end
+
+    it "omits the signed-out surrogate key when the article id does not exist" do
+      missing_id = Article.maximum(:id).to_i + 1
+      get reactions_path(article_id: missing_id)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Surrogate-Key"]).to be_nil
     end
   end
 
@@ -183,6 +207,19 @@ RSpec.describe "Reactions" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
+      end
+
+      it "skips querying the commentable table when comments are already present" do
+        queries = []
+        callback = lambda do |*, payload|
+          queries << payload[:sql] if payload[:sql].include?('FROM "articles"')
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get reactions_path(commentable_id: article.id, commentable_type: "Article")
+        end
+
+        expect(response.headers["Surrogate-Key"]).to eq(Reaction.surrogate_key_for_commentable(article))
+        expect(queries).to be_empty
       end
     end
   end

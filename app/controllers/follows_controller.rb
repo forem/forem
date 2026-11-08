@@ -23,13 +23,20 @@ class FollowsController < ApplicationController
       return
     end
 
-    following_them_check = Follows::CheckCached.call(viewer, params[:followable_type], params[:id])
-
-    return render plain: following_them_check unless params[:followable_type] == "User"
+    unless params[:followable_type] == "User"
+      render plain: Follows::CheckCached.call(viewer, params[:followable_type], params[:id])
+      return
+    end
 
     # Follows::CheckCached only needs the follower's id and updated_at (for its cache key).
-    followed_back_user = User.select(:id, :updated_at).find_by(id: params[:id])
-    following_you_check = Follows::CheckCached.call(followed_back_user, params[:followable_type], viewer.id)
+    # Load the target user once and batch both directional checks so cache misses don't
+    # re-query User.select(:id).find(...) for either user or run two follows queries.
+    followed_back_user = User.select(:id, :updated_at).find(params[:id])
+    checks = [[viewer, "User", followed_back_user.id], [followed_back_user, "User", viewer.id]]
+    cached = Follows::CheckCached.read_multi(checks)
+    cached = Follows::CheckCached.fill_user_misses(checks, cached, [viewer.id, followed_back_user.id])
+    following_them_check = Follows::CheckCached.call(viewer, "User", followed_back_user.id, cached)
+    following_you_check = Follows::CheckCached.call(followed_back_user, "User", viewer.id, cached)
 
     if following_them_check && following_you_check
       render plain: "mutual"

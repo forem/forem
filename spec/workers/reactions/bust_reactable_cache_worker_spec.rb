@@ -33,14 +33,42 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
       expect(EdgeCache::BustArticle).to have_received(:call)
     end
 
-    it "does not bust the article if there were previously one reactions" do
+    it "does not bust the article or hydrate the full article row if there were previously multiple reactions" do
       create(:reaction, reactable: article, user: create(:user))
-      worker.perform(reaction.id)
+      reaction
+
+      full_row_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        if sql.include?('SELECT "articles".*') || sql.include?('SELECT "users".*')
+          full_row_queries << sql
+        end
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        worker.perform(reaction.id)
+      end
+
       expect(EdgeCache::BustArticle).not_to have_received(:call)
+      expect(full_row_queries).to be_empty
     end
 
-    it "busts the reactable comment cache" do
-      worker.perform(comment_reaction.id)
+    it "busts the reactable comment cache without hydrating full comment, article, or user rows" do
+      comment_reaction
+
+      full_row_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        full_row = sql.include?('SELECT "comments".*') ||
+          sql.include?('SELECT "articles".*') ||
+          sql.include?('SELECT "users".*')
+        full_row_queries << sql if full_row
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        worker.perform(comment_reaction.id)
+      end
+
       expect(EdgeCache::PurgeByKey).to have_received(:call).with(
         user.profile_identity_record_key,
         fallback_paths: [user.path],
@@ -49,6 +77,7 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
         Reaction.surrogate_key_for_commentable(article),
         fallback_paths: "/reactions?commentable_id=#{article.id}&commentable_type=Article",
       )
+      expect(full_row_queries).to be_empty
     end
 
     it "doesn't fail if a reaction doesn't exist" do
