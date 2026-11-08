@@ -55,6 +55,30 @@ RSpec.describe "Api::V1::ReadingList" do
         get api_readinglist_index_path, headers: headers
         expect(response.parsed_body.length).to eq(3)
       end
+
+      it "hydrates joined author profile website_url without N+1 profile queries" do
+        authors = Array.new(3) do |i|
+          author = create(:user)
+          author.profile.update!(website_url: "https://author-#{i}.example.com")
+          article = create(:article, user: author)
+          create(:reading_reaction, user: user, reactable: article)
+          author
+        end
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get api_readinglist_index_path, headers: headers
+        end
+
+        expect(response).to have_http_status(:ok)
+        expect(queries.grep(/FROM "profiles"/i)).to be_empty
+        expect(response.parsed_body.map { |item| item.dig("article", "user", "website_url") })
+          .to match_array(authors.map(&:processed_website_url))
+      end
     end
   end
 end
