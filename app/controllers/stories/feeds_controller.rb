@@ -102,7 +102,7 @@ module Stories
                  span_type: "db",
                  resource: "#{self.class}.#{__method__}",
                  tags: { feed_class: feed.class.to_s.dasherize }) do
-        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant).to_a
       end
     end
 

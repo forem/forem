@@ -253,6 +253,34 @@ RSpec.describe Articles::Feeds::Custom, type: :service do
           # We can't easily test the shuffling since it's random, but we can verify
           # that all articles are present and recent
         end
+
+        it "materializes the feed in one articles query without an empty? existence check when shuffle_weight is 0",
+           :aggregate_failures do
+          feed_config.shuffle_weight = 0.0
+          zero_shuffle_feed = described_class.new(
+            user: user,
+            number_of_articles: 10,
+            page: 1,
+            feed_config: feed_config,
+          )
+
+          queries = []
+          callback = lambda do |_name, _start, _finish, _id, payload|
+            next if payload[:name] == "SCHEMA"
+
+            queries << payload[:sql]
+          end
+
+          result = ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+            zero_shuffle_feed.default_home_feed.to_a
+          end
+
+          article_queries = queries.grep(/FROM "articles"/)
+          expect(result).to include(high_score_article, medium_score_article, low_score_article)
+          expect(article_queries.size).to eq(1)
+          expect(queries.grep(/SELECT 1 AS one FROM "articles"/)).to be_empty
+          expect(queries.grep(/FROM "context_notes"/)).to be_empty
+        end
       end
     end
   end

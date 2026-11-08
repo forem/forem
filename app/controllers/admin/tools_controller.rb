@@ -48,6 +48,9 @@ module Admin
           tag: nil,
         )
         @articles = @feed.more_comments_minimal_weight_randomized.to_a
+        ActiveRecord::Associations::Preloader.new(
+          records: @articles, associations: :context_notes, scope: ContextNote.order(:id),
+        ).call
       rescue KeyError, JSON::ParserError, ActiveRecord::StatementInvalid => e
         flash[:danger] = e.message
       end
