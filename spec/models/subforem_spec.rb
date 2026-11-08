@@ -157,4 +157,28 @@ RSpec.describe Subforem do
       expect(result.domain).to eq(domain)
     end
   end
+
+  describe ".disabled_by_env? and .multiple_subforems_enabled?" do
+    let!(:default_subforem) { create(:subforem, domain: "dev.to", discoverable: true) }
+    let!(:other_subforem) { create(:subforem, domain: "other.dev.to", discoverable: true) }
+
+    before do
+      MemoryFirstCache.delete("subforem_default_id")
+      MemoryFirstCache.delete("subforem_discoverable_ids")
+    end
+
+    it "returns true for multiple_subforems_enabled? when > 1 discoverable subforem exists and env flags are off" do
+      expect(described_class.disabled_by_env?).to be(false)
+      expect(described_class.multiple_subforems_enabled?).to be(true)
+    end
+
+    it "returns false for multiple_subforems_enabled? and limits cached_discoverable_ids to default when disabled by env" do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("SKIP_SUBFOREM_REASSIGNMENT").and_return("yes")
+
+      expect(described_class.disabled_by_env?).to be(true)
+      expect(described_class.multiple_subforems_enabled?).to be(false)
+      expect(described_class.cached_discoverable_ids).to eq([default_subforem.id])
+    end
+  end
 end

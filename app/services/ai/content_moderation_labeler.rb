@@ -11,10 +11,17 @@ module Ai
   # #compellingness_from_jev, using the same precedence as the prompt: safety, then spam,
   # then quality, then relevance.
   class ContentModerationLabeler
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
-    VERSION = "1.2".freeze
+    VERSION = "1.3".freeze
     FUNCTION_KEY = :content_moderation
+
+    OFFTOPIC_SUBFOREM_LABELS = %w[
+      ok_but_offtopic_for_subforem
+      very_good_but_offtopic_for_subforem
+      great_but_off_topic_for_subforem
+    ].freeze
 
     # Jev policy thresholds. "clear_and_obvious" labels require a high probability; "likely"
     # labels cover the uncertain band. Validate against moderator decisions before tuning.
@@ -151,8 +158,14 @@ module Ai
         end
       end
 
-      state = {
-        community: { description: community_description.presence || "No specific community description provided." },
+      community_state = {
+        description: community_description.presence || "No specific community description provided."
+      }
+      community_state[:content_advisement] = content_advisement_spec if content_advisement_spec.present?
+      community_state[:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
+
+      {
+        community: community_state,
         author: {
           member_since: user.created_at.strftime("%B %Y"),
           badge_achievements: user.badge_achievements_count,
@@ -162,8 +175,6 @@ module Ai
         },
         article: article_state
       }
-      state[:community][:tag_moderation_instructions] = tag_instructions if tag_instructions.any?
-      state
     end
 
     def jev_questions
@@ -180,10 +191,14 @@ module Ai
         ),
         promotional_spam: noul(
           {
-            question: "Is `article` spam whose main purpose is to promote a product, service, or link?",
-            rules: "Apply `community.tag_moderation_instructions` where they are relevant."
+            question: "Is `article` spam whose main purpose is to promote a product, service, " \
+                      "external business, or link?",
+            includes: "Off-topic SEO marketing, affiliate/referral link funnels, or 'teaser/summary' posts that " \
+                      "summarize a topic primarily to funnel readers to an external blog, newsletter, or product URL.",
+            rules: "Apply `community.tag_moderation_instructions` and `community.content_advisement` where relevant."
           },
-          no: { includes: "An honest launch announcement or a tutorial that uses a product the author mentions." },
+          no: { includes: "An honest launch announcement, open-source showcase, or substantive tutorial that teaches " \
+                          "a concept on-platform while mentioning a product or canonical blog." },
         ),
         malicious: noul(
           "Does `article` contain phishing, scams, or malicious links?",
@@ -193,7 +208,12 @@ module Ai
         ),
         quality: quality_question,
         on_topic: noul(
-          "Does the subject of `article` fit the purpose described in `community.description`?",
+          {
+            question: "Does the subject of `article` fit the purpose described in `community.description` " \
+                      "(and `community.content_advisement` if present)?",
+            includes: "Topics described in `community.description`, relevant career/learning or watercooler " \
+                      "discussions, honest project launches, and legitimate community challenge or hackathon entries."
+          },
         ),
         originality: originality_question,
         personal_voice: personal_voice_question,
@@ -239,14 +259,21 @@ module Ai
             question: "How good is `article` as a contribution to this community?",
             status_posts: "If `article.format` is a status post, judge it as a short, casual update, " \
                           "not against long-form articles.",
+            calibration: "Apply `community.content_advisement` if present. Reward authentic human voice, lived " \
+                         "experience, concrete examples/tradeoffs, and concise 'bite-sized brilliance' (a sharp, " \
+                         "useful short post can be 'Very good' or 'Exceptional' without being long). Do NOT award " \
+                         "'Very good' or 'Exceptional' to generic, textbook-style AI-generated listicles or " \
+                         "boilerplate tutorials lacking original insight, real-world results, or personal voice.",
             rules: "Apply `community.tag_moderation_instructions` where they are relevant."
           },
           [
-            "Low-effort or uninformative: careless, unreadable, or says nothing of substance.",
-            "Weak: some substance, but generic, thin, disorganized, or padded with filler.",
-            "Acceptable: a readable, reasonable contribution with modest depth.",
-            "Very good: clear, well-structured and informative, with real insight or experience.",
-            "Exceptional: original and deep; the kind of post members share and cite.",
+            "Low-effort or uninformative: careless, unreadable, teaser/link-drop funnel, or says nothing of substance.",
+            "Weak: some substance, but generic AI-style boilerplate, thin surface-level summary, " \
+            "disorganized, or padded with filler.",
+            "Acceptable: a readable, reasonable contribution or standard tutorial with modest depth.",
+            "Very good: clear, well-structured and informative, with real insight, lived experience, " \
+            "or a sharp original angle (regardless of length).",
+            "Exceptional: original and deep; the kind of post members bookmark, share, and cite.",
           ],
         )
       end
@@ -345,12 +372,11 @@ module Ai
     def quality_label(result)
       tier = quality_tier(result.score(:quality).score)
       tier = :likely_low if tag_rule_violation?(result) && %i[okay very_good great].include?(tier)
-      tier = :okay if @is_negative && %i[very_good great].include?(tier)
 
       return "clear_and_obvious_low_quality" if tier == :clear_low
       return "likely_low_quality" if tier == :likely_low
 
-      relevance_label(tier, on_topic: result.noul(:on_topic) >= SUPPORTING)
+      relevance_label(tier, on_topic_probability: result.noul(:on_topic))
     end
 
     # Maps a raw Jev quality score position to a symbolic quality tier.
@@ -365,7 +391,12 @@ module Ai
       result.key?(:violates_tag_rules) && result.noul(:violates_tag_rules) >= CLEAR
     end
 
-    def relevance_label(tier, on_topic:)
+    def relevance_label(tier, on_topic_probability:)
+      on_topic = on_topic_probability >= SUPPORTING
+      unless on_topic || multiple_subforems_enabled?
+        return on_topic_probability <= (1.0 - CLEAR) ? "clear_and_obvious_low_quality" : "likely_low_quality"
+      end
+
       case tier
       when :okay then on_topic ? "okay_and_on_topic" : "ok_but_offtopic_for_subforem"
       when :very_good then on_topic ? "very_good_and_on_topic" : "very_good_but_offtopic_for_subforem"
@@ -385,20 +416,14 @@ module Ai
     # without its own content specification.
     # @return [String, nil]
     def community_description
-      default_subforem_id = RequestStore.store[:default_subforem_id] || Subforem.cached_default_id
-      subforem_id = @article.subforem_id || default_subforem_id
-      description = if subforem_id
-                      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-                        Settings::Community.community_description(subforem_id: subforem_id).presence
-                    end
-      if description.blank? && default_subforem_id && default_subforem_id != subforem_id
-        description =
-          Settings::RateLimit.internal_content_description_spec(subforem_id: default_subforem_id).presence ||
-          Settings::Community.community_description(subforem_id: default_subforem_id).presence
-      end
-      description ||
-        Settings::RateLimit.internal_content_description_spec.presence ||
-        Settings::Community.community_description
+      @community_description ||= resolve_community_description(@article.subforem_id)
+    end
+
+    # Resolves the expanded content advisement playbook for the article's subforem, falling
+    # back to the default subforem and global settings.
+    # @return [String, nil]
+    def content_advisement_spec
+      @content_advisement_spec ||= resolve_content_advisement_spec(@article.subforem_id)
     end
 
     def tag_instructions
@@ -486,32 +511,56 @@ module Ai
       # Gather custom tag moderation instructions
       tag_instructions_context = build_tag_instructions_context
 
+      advisement_context = if content_advisement_spec.present?
+                             <<~ADVISEMENT
+
+                               **Community Content Advisement & Quality Playbook:**
+                               #{content_advisement_spec}
+                             ADVISEMENT
+                           else
+                             ""
+                           end
+
       quickie_context = if @article.status?
-                          positive_quickie_tiers = if @is_negative
-                                                     ""
-                                                   else
-                                                     <<~POSITIVE_QUICKIE_TIERS
-                                                       - **Assign `great_and_on_topic` (and `compellingness_score` 0.80–1.0)** when the status post is a sharp, insightful, clever, or memorable developer thought/observation, a great discussion prompt, or a compelling takeaway that highlights something genuinely interesting or surprising about a linked article or project.
-                                                       - **Assign `very_good_and_on_topic` (and `compellingness_score` 0.65–0.85)** when the status post would make an insightful or genuinely interesting developer tweet/update, asks a worthwhile community question, shares a concrete tip, or points out something specific, useful, or interesting about a linked article or resource (rather than just dropping a bare link).
-                                                     POSITIVE_QUICKIE_TIERS
-                                                   end
                           <<~QUICKIE
 
                             **Important Context — Status Post ("Quickie") Calibration:**
                             Note: This article is a "status" post (a short, tweet-length update, thought, question, or commentary on a linked article/resource). In status posts, the `Title` field contains the entire text of the post, and `Body` is either empty or contains an `{% embed ... %}` link.
                             Do NOT judge a status post against long-form blog post criteria (do not require multiple paragraphs, section headers, or long-form depth). Instead, calibrate quality labels and `compellingness_score` against what makes a genuinely good developer tweet or link commentary:
-                            #{positive_quickie_tiers}- **Assign `okay_and_on_topic` (and `compellingness_score` 0.35–0.60)** when the status post is a plain, routine on-topic update, a generic announcement, or a link share with brief, generic commentary that lacks a standout insight or hook.
+                            - **Assign `great_and_on_topic` (and `compellingness_score` 0.80–1.0)** when the status post is a sharp, insightful, clever, or memorable developer thought/observation, a great discussion prompt, or a compelling takeaway that highlights something genuinely interesting or surprising about a linked article or project.
+                            - **Assign `very_good_and_on_topic` (and `compellingness_score` 0.65–0.85)** when the status post would make an insightful or genuinely interesting developer tweet/update, asks a worthwhile community question, shares a concrete tip, or points out something specific, useful, or interesting about a linked article or resource (rather than just dropping a bare link).
+                            - **Assign `okay_and_on_topic` (and `compellingness_score` 0.35–0.60)** when the status post is a plain, routine on-topic update, a generic announcement, or a link share with brief, generic commentary that lacks a standout insight or hook.
                             - **Maintain strict quality & spam standards (`likely_low_quality`, `clear_and_obvious_low_quality`, `likely_spam`, `clear_and_obvious_spam`)**: Do NOT reward low-effort noise (e.g., bare greetings like "hi" or "first time here", test posts, "up up", single keywords, bare `[Boost]` or link drops with no added commentary, engagement bait with no substance, or spam/off-topic promotional links). Real quality and genuine insight or interest are still strictly required.
                           QUICKIE
                         else
                           ""
                         end
 
+      relevance_labels_section = if multiple_subforems_enabled?
+                                   <<~RELEVANCE_LABELS
+                                     **Relevance Labels:**
+                                     - `ok_but_offtopic_for_subforem`: Decent content but not relevant to this community
+                                     - `okay_and_on_topic`: Acceptable content that fits the community
+                                     - `very_good_but_offtopic_for_subforem`: High-quality content but not relevant to this community
+                                     - `very_good_and_on_topic`: High-quality content that fits the community well
+                                     - `great_and_on_topic`: Exceptional content that perfectly fits the community
+                                     - `great_but_off_topic_for_subforem`: Exceptional content but not relevant to this community
+                                   RELEVANCE_LABELS
+                                 else
+                                   <<~RELEVANCE_LABELS
+                                     **Relevance & Positive Quality Labels:**
+                                     - `okay_and_on_topic`: Acceptable content that fits the community
+                                     - `very_good_and_on_topic`: High-quality content that fits the community well
+                                     - `great_and_on_topic`: Exceptional content that perfectly fits the community
+                                     (Note: Off-topic content unrelated to this community's purpose—excluding valid community challenge entries, meta/community discussions, or developer career/watercooler reflections—must be labeled `likely_low_quality` or `clear_and_obvious_low_quality`, or `likely_spam` / `clear_and_obvious_spam` if promotional/SEO.)
+                                   RELEVANCE_LABELS
+                                 end
+
       <<~PROMPT
         Analyze the following article and assign it a content moderation label based on quality, relevance, and community standards.
 
         **Community Context:**
-        #{community_description.presence || 'No specific community description provided.'}
+        #{community_description.presence || 'No specific community description provided.'}#{advisement_context}
         #{tag_instructions_context}
 
         **User Context:**
@@ -546,16 +595,7 @@ module Ai
         - `clear_and_obvious_low_quality`: Poorly written, uninformative, or clearly low-effort content
         - `likely_low_quality`: Content that appears low quality but not definitively so
 
-        **Relevance Labels:**
-        - `ok_but_offtopic_for_subforem`: Decent content but not relevant to this community
-        - `okay_and_on_topic`: Acceptable content that fits the community
-        #{ @is_negative ? "" : <<~EXTRA_LABELS
-        - `very_good_but_offtopic_for_subforem`: High-quality content but not relevant to this community
-        - `very_good_and_on_topic`: High-quality content that fits the community well
-        - `great_and_on_topic`: Exceptional content that perfectly fits the community
-        - `great_but_off_topic_for_subforem`: Exceptional content but not relevant to this community
-        EXTRA_LABELS
-        }
+        #{relevance_labels_section.chomp}
 
         **Compellingness Score Requirements:**
         In addition to the moderation label, assess the "compellingness" of the article on a scale from 0.0 to 1.0. 
@@ -574,14 +614,16 @@ module Ai
         **Spam Indicators:**
         - Excessive promotional language or links
         - Generic, impersonal content that could be AI-generated
+        - Teaser/summary link-drop funnels designed primarily to drive readers to an external URL or newsletter
         - Content that doesn't engage with the community
         - Suspicious patterns or automated behavior
 
-        **Quality Indicators:**
-        - Well-structured, thoughtful content
-        - Personal experiences and genuine insights
-        - Proper formatting and readability
-        - Evidence of research or expertise
+        **Quality Indicators & Tier Calibration:**
+        - Well-structured, thoughtful content with personal experiences and genuine insights
+        - Proper formatting, readability, and evidence of real-world engineering experience or expertise
+        - **Reserve `very_good_and_on_topic` and `great_and_on_topic` for authentic insight or utility**: Do NOT assign `very_good_and_on_topic` or `great_and_on_topic` to generic, textbook-style AI-generated listicles or boilerplate tutorials that lack original perspective, concrete benchmarks, or personal voice—assign those `okay_and_on_topic` (or `likely_low_quality` if thin/filler).
+        - **Reward "Bite-Sized Brilliance"**: Do NOT penalize brevity. A concise 1–2 minute post sharing a sharp debugging fix, a clever TIL, a concrete benchmark, or an authentic reflection should receive `very_good_and_on_topic` or `great_and_on_topic` on its merits.
+        - **Protect Community Challenges & Honest Launches**: Legitimate community challenge entries and honest, substantive project launches ("Show DEV") are valued on-topic contributions.
 
         **Relevance Indicators:**
         - Content that addresses community interests
@@ -678,7 +720,7 @@ module Ai
         label = data["moderation_label"].to_s.strip.downcase.gsub(/[^a-z_]/, "")
         score = data["compellingness_score"].to_f
 
-        final_label = valid_labels.include?(label) ? label : "no_moderation_label"
+        final_label = valid_labels.include?(label) ? normalize_offtopic_label(label) : "no_moderation_label"
         final_score = score.clamp(0.0, 1.0)
         
         { label: final_label, compellingness_score: final_score }
@@ -686,10 +728,17 @@ module Ai
         Rails.logger.error("Content Moderation JSON Parsing Error: #{e}. Response was: #{response}")
         
         # Fallback to legacy string parsing / scanning
-        final_label = valid_labels.sort_by(&:length).reverse.find { |l| response.downcase.include?(l) } || "no_moderation_label"
+        matched_label = valid_labels.sort_by(&:length).reverse.find { |l| response.downcase.include?(l) }
+        final_label = matched_label ? normalize_offtopic_label(matched_label) : "no_moderation_label"
         
         { label: final_label, compellingness_score: 0.0 }
       end
+    end
+
+    def normalize_offtopic_label(label)
+      return label if multiple_subforems_enabled?
+
+      OFFTOPIC_SUBFOREM_LABELS.include?(label) ? "likely_low_quality" : label
     end
   end
 end

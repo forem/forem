@@ -1,5 +1,7 @@
 module Ai
   class EditorHelperService
+    include Ai::CommunityContext
+
     VERSION = "2.0".freeze
 
     GUIDE_CACHE_KEY = "ai:editor_helper:guide_with_mechanics_v4".freeze
@@ -82,12 +84,13 @@ module Ai
       final_guide_text = cached_guide_with_mechanics
       advisement_context = build_advisement_context
       article_context = build_article_context
+      community_name = resolve_community_name(subforem_id: RequestStore.store[:subforem_id])
 
       <<~PROMPT
-        You are an insightful technical editor assistant for the #{Settings::Community.community_name} community.
+        You are an insightful technical editor assistant for the #{community_name} community.
         Your goal is to help the user format, write, troubleshoot, and structure their article with complete accuracy.
 
-        Here is the official #{Settings::Community.community_name} Editor Guide and Platform Reference:
+        Here is the official #{community_name} Editor Guide and Platform Reference:
         #{final_guide_text}
 
         #{advisement_context}#{article_context}Current Conversation History:
@@ -393,7 +396,7 @@ module Ai
     end
 
     def build_advisement_context
-      expanded_spec = Settings::RateLimit.expanded_content_advisement_spec
+      expanded_spec = resolve_content_advisement_spec(subforem_id: RequestStore.store[:subforem_id])
       return "" if expanded_spec.blank?
 
       <<~ADVISEMENT
