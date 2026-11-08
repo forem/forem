@@ -244,8 +244,17 @@ class Tag < ActsAsTaggableOn::Tag
     submission_template&.gsub("PARAM_0", param_0)
   end
 
+  def tag_moderators
+    role_ids = Role.where(name: "tag_moderator", resource_type: "Tag", resource_id: [nil, id])
+      .or(Role.where(name: "tag_moderator", resource_type: nil, resource_id: nil))
+      .ids
+    return User.none if role_ids.empty?
+
+    User.where(id: UserRole.where(role_id: role_ids).select(:user_id))
+  end
+
   def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order(id: :asc).ids
+    tag_moderators.order(id: :asc).ids
   end
 
   def validate_name
