@@ -226,6 +226,17 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             get "/t/#{tag.name}"
             expect(response.body).not_to include(mod_user.username)
           end
+
+          it "loads tag moderators via role_ids without a rolify users_roles join", :aggregate_failures do
+            queries = []
+            callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+            ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+              get "/t/#{tag.name}"
+            end
+
+            expect(response.body).to include(mod_user.username)
+            expect(queries.grep(/INNER JOIN "users_roles".*INNER JOIN "roles"/)).to be_empty
+          end
         end
 
         context "with user signed in" do
@@ -234,8 +245,13 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           it "shows tags and renders properly", :aggregate_failures do
-            get "/t/#{tag.name}"
+            queries = []
+            callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+            ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+              get "/t/#{tag.name}"
+            end
             expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
+            expect(queries.grep(/FROM "users_roles"/)).to be_empty
             has_mod_action_button
             does_not_paginate
             sets_remember_token
