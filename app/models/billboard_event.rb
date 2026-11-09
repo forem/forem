@@ -93,6 +93,8 @@ class BillboardEvent < ApplicationRecord
     type_for_attribute(primary_key).cast(row.first) if row
   end
 
+  # Yields to execute a database query, reconnecting and retrying once if a
+  # pooled connection fails with ActiveRecord::ConnectionFailed.
   def self.with_connection_retry
     retried = false
     begin
@@ -105,7 +107,6 @@ class BillboardEvent < ApplicationRecord
       retry
     end
   end
-  private_class_method :with_connection_retry
 
   def self.build_create_with_async_commit_sql(attributes, now: Time.current)
     attrs = attributes.respond_to?(:to_unsafe_h) ? attributes.to_unsafe_h : attributes.to_h

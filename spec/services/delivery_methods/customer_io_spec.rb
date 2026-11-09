@@ -202,6 +202,10 @@ RSpec.describe DeliveryMethods::CustomerIo do
   end
 
   describe "transient error retries" do
+    let(:delivery_method) { described_class.new({}) }
+
+    before { allow(delivery_method).to receive(:sleep) }
+
     it "retries on transient 502 Customerio::InvalidResponse and succeeds" do
       calls = 0
       allow(api_client).to receive(:send_email) do
@@ -211,8 +215,43 @@ RSpec.describe DeliveryMethods::CustomerIo do
         { "delivery_id" => "dev-123" }
       end
 
-      expect { described_class.new({}).deliver!(mail) }.not_to raise_error
+      expect { delivery_method.deliver!(mail) }.not_to raise_error
       expect(calls).to eq(2)
+    end
+
+    it "retries on Net::OpenTimeout and succeeds" do
+      calls = 0
+      allow(api_client).to receive(:send_email) do
+        calls += 1
+        raise Net::OpenTimeout if calls == 1
+
+        { "delivery_id" => "dev-123" }
+      end
+
+      expect { delivery_method.deliver!(mail) }.not_to raise_error
+      expect(calls).to eq(2)
+    end
+
+    it "re-raises the error after exhausting MAX_RETRIES" do
+      calls = 0
+      allow(api_client).to receive(:send_email) do
+        calls += 1
+        raise Customerio::InvalidResponse.new(503, "Service Unavailable")
+      end
+
+      expect { delivery_method.deliver!(mail) }.to raise_error(Customerio::InvalidResponse)
+      expect(calls).to eq(described_class::MAX_RETRIES + 1)
+    end
+
+    it "does not retry a non-retryable 400 status" do
+      calls = 0
+      allow(api_client).to receive(:send_email) do
+        calls += 1
+        raise Customerio::InvalidResponse.new(400, "Bad Request")
+      end
+
+      expect { delivery_method.deliver!(mail) }.to raise_error(Customerio::InvalidResponse)
+      expect(calls).to eq(1)
     end
   end
 end

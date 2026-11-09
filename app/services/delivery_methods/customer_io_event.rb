@@ -26,6 +26,11 @@ module DeliveryMethods
       self.settings = delivery_method_options
     end
 
+    # Emits a campaign-triggering person event to the Customer.io Track `/v2/batch`
+    # API, retrying connect timeouts (`Net::OpenTimeout`) and retryable upstream
+    # status codes (`429`, `502`, `503`, `504`). `Net::ReadTimeout` is
+    # intentionally not retried because `/v2/batch` is not idempotent and the
+    # event may already have been ingested before the read timed out.
     def deliver!(mail)
       # The gem does not wrap POST /v2/entity, but /v2/batch takes the same
       # entity objects and Customerio::Client#batch verifies the response, so a
@@ -35,7 +40,7 @@ module DeliveryMethods
       attempts = 0
       begin
         CUSTOMERIO_TRACK_API.batch(payload)
-      rescue Net::OpenTimeout, Net::ReadTimeout => e
+      rescue Net::OpenTimeout => e
         attempts += 1
         raise e if attempts > MAX_RETRIES
 

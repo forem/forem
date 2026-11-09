@@ -8,6 +8,8 @@ class MediaStore < ApplicationRecord
 
   private
 
+  # Uploads original_url via ArticleImageUploader and assigns output_url before
+  # validation when output_url is not yet populated.
   def set_output_url_if_needed
     return if output_url.present? || original_url.blank?
 

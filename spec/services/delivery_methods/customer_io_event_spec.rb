@@ -92,17 +92,60 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
       .to raise_error(Customerio::InvalidResponse)
   end
 
-  it "retries on Net::ReadTimeout and succeeds when the retry completes" do
-    calls = 0
-    allow(track_client).to receive(:batch) do
-      calls += 1
-      raise Net::ReadTimeout if calls == 1
+  describe "transient error retries" do
+    let(:delivery_method) { described_class.new(customerio_event_name: "digest_ready") }
 
-      nil
+    before { allow(delivery_method).to receive(:sleep) }
+
+    it "retries on Net::OpenTimeout and succeeds when the retry completes" do
+      calls = 0
+      allow(track_client).to receive(:batch) do
+        calls += 1
+        raise Net::OpenTimeout if calls == 1
+
+        nil
+      end
+
+      expect { delivery_method.deliver!(mail) }.not_to raise_error
+      expect(calls).to eq(2)
     end
 
-    expect { described_class.new(customerio_event_name: "digest_ready").deliver!(mail) }.not_to raise_error
-    expect(calls).to eq(2)
+    [429, 502, 503, 504].each do |status_code|
+      it "retries on Customerio::InvalidResponse with status #{status_code} and succeeds" do
+        calls = 0
+        allow(track_client).to receive(:batch) do
+          calls += 1
+          raise Customerio::InvalidResponse.new(status_code, "upstream error") if calls == 1
+
+          nil
+        end
+
+        expect { delivery_method.deliver!(mail) }.not_to raise_error
+        expect(calls).to eq(2)
+      end
+    end
+
+    it "re-raises after exhausting MAX_RETRIES" do
+      calls = 0
+      allow(track_client).to receive(:batch) do
+        calls += 1
+        raise Customerio::InvalidResponse.new(502, "Bad Gateway")
+      end
+
+      expect { delivery_method.deliver!(mail) }.to raise_error(Customerio::InvalidResponse)
+      expect(calls).to eq(described_class::MAX_RETRIES + 1)
+    end
+
+    it "does not retry on Net::ReadTimeout to avoid duplicate campaign triggers" do
+      calls = 0
+      allow(track_client).to receive(:batch) do
+        calls += 1
+        raise Net::ReadTimeout
+      end
+
+      expect { delivery_method.deliver!(mail) }.to raise_error(Net::ReadTimeout)
+      expect(calls).to eq(1)
+    end
   end
 
   # Customer.io renders from the event payload, so Ahoy's rewriting of the

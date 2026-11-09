@@ -49,8 +49,23 @@ RSpec.describe "RatingVotes" do
     it "recovers from a concurrent ActiveRecord::RecordNotUnique race by updating the existing vote" do
       existing_vote = create(:rating_vote, user: user, article: article, context: "explicit", rating: 2.0)
       raced_new_vote = RatingVote.new(user: user, article: article, context: "explicit")
-      allow(RatingVote).to receive(:find_or_initialize_by).and_return(raced_new_vote)
+      allow(RatingVote).to receive(:find_or_initialize_by).and_return(raced_new_vote, existing_vote)
       allow(raced_new_vote).to receive(:save).and_raise(ActiveRecord::RecordNotUnique, "duplicate key value")
+
+      post "/rating_votes", params: {
+        rating_vote: {
+          article_id: article.id, group: "experience_level", rating: 9.0
+        }
+      }, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(existing_vote.reload.rating).to eq(9.0)
+    end
+
+    it "recovers when a concurrent insert causes uniqueness validation (:taken) to fail on a new vote" do
+      existing_vote = create(:rating_vote, user: user, article: article, context: "explicit", rating: 2.0)
+      raced_new_vote = RatingVote.new(user: user, article: article, context: "explicit")
+      allow(RatingVote).to receive(:find_or_initialize_by).and_return(raced_new_vote, existing_vote)
 
       post "/rating_votes", params: {
         rating_vote: {

@@ -64,6 +64,8 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
       conn.instance_variable_set(:@last_activity, nil)
     end
 
+    # Locates the ActiveRecord connection currently checked out by request_thread
+    # across Rails 7 (@thread_cached_conns) and Rails 8 (@leases / @connections).
     def self.connection_for_thread(pool, request_thread)
       tcc = pool.instance_variable_get(:@thread_cached_conns)
       return tcc[request_thread] if tcc
@@ -101,6 +103,7 @@ end
 # within `verify_timeout` automatically reconnect and retry.
 if defined?(ActiveRecord::StatementCache)
   module ActiveRecordStatementCacheRetryable
+    # Executes the cached read-only SELECT statement with allow_retry: true by default.
     def execute(params, connection, allow_retry: true, async: false, &block)
       super
     end

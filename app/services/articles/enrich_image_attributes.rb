@@ -15,6 +15,8 @@ module Articles
       ".podcastliquidtag img", # PodcastTag
     ].join(", ").freeze
 
+    # Enriches <img> tags in article.processed_html with width, height, and
+    # data-animated attributes and computes article.main_image_height.
     def self.call(article)
       fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
       store_image_if_appropriate(article)
@@ -106,6 +108,8 @@ module Articles
     end
     private_class_method :default_image_height
 
+    # Extracts external images from article.body_markdown, stores them in
+    # MediaStore, and re-renders the article's processed_html when new images are stored.
     def self.store_image_if_appropriate(article)
       bucket = ApplicationConfig["AWS_BUCKET_NAME"]
       return if bucket.blank?
@@ -116,7 +120,7 @@ module Articles
       stored_image_url = "https://#{bucket}.s3.amazonaws.com"
       raw_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
         legacy_extract_image_urls(markdown_text, stored_image_url)
-      filtered_urls = normalize_external_image_urls(raw_urls, bucket)
+      filtered_urls = ArticleImageUploader.normalize_external_image_urls(raw_urls, bucket)
       return if filtered_urls.empty?
 
       images_converted = []
@@ -132,18 +136,6 @@ module Articles
       Rails.logger.error("Error storing images: #{e.message}")
     end
     private_class_method :store_image_if_appropriate
-
-    def self.normalize_external_image_urls(urls, bucket)
-      bucket_host_pattern = /\A#{Regexp.escape(bucket)}\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com\z/i
-      Array(urls).filter_map do |raw_url|
-        normalized = ArticleImageUploader.normalize_source_url(raw_url)
-        next unless normalized
-
-        host = URI.parse(normalized).host
-        normalized unless host&.match?(bucket_host_pattern)
-      end.uniq
-    end
-    private_class_method :normalize_external_image_urls
 
     def self.legacy_extract_image_urls(markdown_text, stored_image_url)
       markdown_pattern = /!\[.*?\]\((.*?)\)/

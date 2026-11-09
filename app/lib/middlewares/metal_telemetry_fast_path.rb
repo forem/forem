@@ -145,19 +145,14 @@ module Middlewares
       billboard_create_response(billboard_event_id)
     end
 
+    # Executes a prebuilt BillboardEvent INSERT SQL string with single-reconnect
+    # retry on ActiveRecord::ConnectionFailed, returning the new primary key.
     def execute_billboard_insert(sql_or_invalid)
       return unless sql_or_invalid.is_a?(String)
 
-      retried = false
-      row = begin
-        BillboardEvent.connection.exec_query(sql_or_invalid, "BillboardEvent Create").rows.first
-      rescue ActiveRecord::ConnectionFailed
-        raise if retried
-
-        retried = true
-        BillboardEvent.connection.reconnect!
-        retry
-      end
+      row = BillboardEvent.with_connection_retry do
+        BillboardEvent.connection.exec_query(sql_or_invalid, "BillboardEvent Create")
+      end.rows.first
       BillboardEvent.type_for_attribute(BillboardEvent.primary_key).cast(row.first) if row
     end
 

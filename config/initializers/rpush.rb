@@ -8,6 +8,8 @@ if defined?(NetHttp2::Client)
   module NetHttp2NilSocketGuard
     private
 
+    # Builds the underlying HTTP2::Client and guards frame writes against a nil
+    # @socket when the background socket thread closes a disconnected stream.
     def h2
       @h2 ||= HTTP2::Client.new.tap do |h2|
         h2.on(:frame) do |bytes|
@@ -43,6 +45,8 @@ if defined?(Rpush::Daemon::Apns2::Delivery)
       OpenSSL::SSL::SSLError,
     ].freeze
 
+    # Sends all notifications in @batch over the HTTP/2 client, marking the
+    # batch retryable and closing the client on transient transport disconnects.
     def perform
       @batch.each_notification do |notification|
         prepare_async_post(notification)

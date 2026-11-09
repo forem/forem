@@ -7,6 +7,8 @@ ActsAsTaggableOn.strict_case_match = true
 # concurrent saves with overlapping tags in different user-specified orders
 # would otherwise lock `tags` rows in opposite orders and deadlock.
 module ActsAsTaggableOnOrderedTagLocks
+  # Persists taggings for all tagging contexts while pre-locking affected tags
+  # in ascending ID order to prevent counter-cache deadlocks.
   def save_tags
     tagging_contexts.each do |context|
       next unless tag_list_cache_set_on(context)
@@ -34,6 +36,8 @@ module ActsAsTaggableOnOrderedTagLocks
 
   private
 
+  # Computes [old_tags, new_tags] to remove and add for the current context,
+  # accounting for tag ordering when preserve_tag_order? is enabled.
   def resolve_tag_changes(current_tags, tags)
     old_tags = current_tags - tags
     new_tags = tags - current_tags
@@ -56,6 +60,8 @@ module ActsAsTaggableOnOrderedTagLocks
     [old_tags, new_tags]
   end
 
+  # Pre-acquires FOR NO KEY UPDATE locks on all affected tags in ascending ID
+  # order when two or more tags will have their taggings_count updated.
   def lock_affected_tags_in_order(old_tags, new_tags)
     return unless ActsAsTaggableOn.tags_counter
 

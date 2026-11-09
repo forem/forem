@@ -21,6 +21,8 @@ module DeliveryMethods
       self.settings = DEFAULTS.merge(delivery_method_options)
     end
 
+    # Delivers the given Mail::Message through the Customer.io App API after
+    # validating the recipient address and attaching any files.
     def deliver!(mail)
       recipient = Array(mail.to).join(",")
       unless mail.to.is_a?(Array) && recipient.present? && EmailValidator.valid?(recipient, mode: :strict)
@@ -41,6 +43,11 @@ module DeliveryMethods
 
     private
 
+    # Sends the transactional email request with bounded retries for connect
+    # timeouts (`Net::OpenTimeout`) and upstream rate-limit/gateway responses
+    # (`429`, `502`, `503`, `504`). `Net::ReadTimeout` is intentionally not
+    # retried because the HTTP request was already transmitted and Customer.io's
+    # `/v1/send/email` endpoint may have already accepted the message.
     def send_with_retry(request)
       attempts = 0
       begin
