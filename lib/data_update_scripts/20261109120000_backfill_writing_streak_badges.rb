@@ -2,28 +2,18 @@ module DataUpdateScripts
   # One-time backfill of the 4/8/16 week writing streak badges for every user
   # whose publishing history contains a qualifying streak.
   #
-  # Thresholds whose badge does not exist yet are skipped, and the script then
-  # raises so DataUpdateWorker marks it as failed (with the missing slugs in the
-  # error) instead of succeeded. A succeeded script never runs again, which would
-  # silently lose the backfill for badges registered later. Once the missing
-  # badges are created, re-run the script from Admin > Data Update Scripts
-  # ("Force Run"). Re-running is safe: users who already hold a badge are skipped.
+  # Streak badges are optional, so thresholds without a badge are skipped and
+  # logged and the script still succeeds. Admins who create streak badges later
+  # can backfill at any time with `rake award_streak_badges_backfill`.
+  #
+  # If individual awards error (e.g. a transient DB/Redis outage), the service
+  # raises Badges::AwardStreak::IncompleteError after attempting everyone, so
+  # this script is marked failed instead of succeeded and can be re-run with
+  # Force Run or the rake task. Re-running only awards users still missing the
+  # badge.
   class BackfillWritingStreakBadges
-    WEEKS = [4, 8, 16].freeze
-
-    class MissingBadgesError < StandardError; end
-
     def run
-      missing_slugs = WEEKS.filter_map do |weeks|
-        service = Badges::AwardStreak.new(weeks: weeks, historical: true)
-        service.badge_slug unless service.call
-      end
-
-      return if missing_slugs.empty?
-
-      raise MissingBadgesError,
-            "Streak badges not found: #{missing_slugs.join(', ')}. " \
-            "Create them, then force-run this script to finish the backfill."
+      Badges::AwardStreak.backfill
     end
   end
 end
