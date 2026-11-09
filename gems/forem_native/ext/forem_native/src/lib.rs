@@ -3555,6 +3555,77 @@ fn build_filtered_ads_where_sql(params_arr: RArray) -> Option<String> {
     forem_core::metal::build_filtered_ads_where_sql(&core_params)
 }
 
+fn syntax_supported_language_tags(ruby: &Ruby) -> Option<RArray> {
+    let tags = forem_core::syntax::supported_language_tags();
+    let ary = ruby.ary_new_capa(tags.len());
+    for &tag in tags {
+        ary.push(ruby.str_new(tag)).ok()?;
+    }
+    Some(ary)
+}
+
+fn syntax_language_criteria(ruby: &Ruby) -> Option<RHash> {
+    let hash = ruby.hash_new_capa(forem_core::syntax::supported_language_tags().len());
+    for (tag, desc) in forem_core::syntax::language_criteria_entries() {
+        hash.aset(ruby.str_new(tag), ruby.str_new(desc)).ok()?;
+    }
+    Some(hash)
+}
+
+fn syntax_lexer_tag(name: RString) -> Option<&'static str> {
+    if !name.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { name.test_as_str() }?;
+    forem_core::syntax::find_lexer_tag(s)
+}
+
+fn syntax_normalize_language(language: RString) -> Option<&'static str> {
+    if !language.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { language.test_as_str() }?;
+    Some(forem_core::syntax::normalize_language_tag(s))
+}
+
+fn syntax_find_fancy_tag(lang: Value, code: Value, rescue_ambiguous: bool) -> Option<&'static str> {
+    let lang_str = extract_optional_utf8_string(lang)?;
+    let code_str = extract_optional_utf8_string(code)?;
+    forem_core::syntax::find_fancy_tag(lang_str.as_deref(), code_str.as_deref(), rescue_ambiguous)
+}
+
+fn syntax_language_from_path(path: RString) -> Option<&'static str> {
+    if !path.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { path.test_as_str() }?;
+    forem_core::syntax::language_from_path(s)
+}
+
+fn syntax_highlight_html(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_html(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
+fn syntax_highlight_code_block(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_code_block(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3914,6 +3985,31 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "build_filtered_ads_where_sql",
         function!(build_filtered_ads_where_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_supported_language_tags",
+        function!(syntax_supported_language_tags, 0),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_language_criteria",
+        function!(syntax_language_criteria, 0),
+    )?;
+    native_mod.define_singleton_method("syntax_lexer_tag", function!(syntax_lexer_tag, 1))?;
+    native_mod.define_singleton_method(
+        "syntax_normalize_language",
+        function!(syntax_normalize_language, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_find_fancy_tag", function!(syntax_find_fancy_tag, 3))?;
+    native_mod.define_singleton_method(
+        "syntax_language_from_path",
+        function!(syntax_language_from_path, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_highlight_html", function!(syntax_highlight_html, 2))?;
+    native_mod.define_singleton_method(
+        "syntax_highlight_code_block",
+        function!(syntax_highlight_code_block, 2),
     )?;
     Ok(())
 }

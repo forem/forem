@@ -6036,4 +6036,145 @@ RSpec.describe ForemNative do
       expect([bb_untagged.id, bb_tagged.id, bb_desktop.id]).not_to be_empty
     end
   end
+
+  describe "syntax highlighting and Rouge registry replacement" do
+    it "exposes all 228 canonical Rouge tags and human-readable titles", :aggregate_failures do
+      tags = described_class.syntax_supported_language_tags
+      criteria = described_class.syntax_language_criteria
+
+      expect(tags.size).to eq(228)
+      expect(tags).to eq(tags.uniq.sort)
+      expect(criteria.size).to eq(228)
+      expect(criteria.keys).to eq(tags)
+
+      tags.each do |tag|
+        expect(described_class.syntax_lexer_tag(tag)).to eq(tag)
+        expect(described_class.syntax_normalize_language(tag)).to eq(tag)
+        expect(criteria[tag]).to be_a(String).and be_present
+      end
+    end
+
+    it "resolves aliases, CGI options, and guess heuristics across the language registry", :aggregate_failures do
+      alias_expectations = {
+        "js" => "javascript",
+        "ts" => "typescript",
+        "py" => "python",
+        "rb" => "ruby",
+        "rs" => "rust",
+        "c++" => "cpp",
+        "sh" => "shell",
+        "bash" => "shell",
+        "zsh" => "shell",
+        "yml" => "yaml",
+        "md" => "markdown",
+        "golang" => "go",
+        "objc" => "objective_c",
+        "text" => "plaintext",
+        "plain" => "plaintext"
+      }
+
+      alias_expectations.each do |alias_name, canonical|
+        expect(described_class.syntax_lexer_tag(alias_name)).to eq(canonical)
+        expect(described_class.syntax_normalize_language("```#{alias_name}\n")).to eq(canonical)
+      end
+
+      expect(described_class.syntax_lexer_tag("nonexistent_lang")).to be_nil
+      expect(described_class.syntax_normalize_language("nonexistent_lang")).to eq("plaintext")
+      expect(described_class.syntax_normalize_language(nil)).to eq("plaintext")
+
+      expect(described_class.syntax_find_fancy_tag("ruby?start_inline=1", "puts 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("?mimetype=text/x-ruby", "puts 1")).to be_nil
+      expect(described_class.syntax_find_fancy_tag("guess?mimetype=application/json", "{}")).to eq("json")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/usr/bin/env ruby\nputs 1")).to eq("ruby")
+      expect(described_class.syntax_find_fancy_tag("guess", "#!/bin/sh\necho 1")).to eq("shell")
+      expect(described_class.syntax_find_fancy_tag("guess", "<!DOCTYPE html><html></html>")).to eq("html")
+      expect(described_class.syntax_find_fancy_tag("guess", "<?xml version=\"1.0\"?><root/>")).to eq("xml")
+      expect(described_class.syntax_find_fancy_tag("guess", "# vim: set ft=python:")).to eq("python")
+      expect(described_class.syntax_find_fancy_tag("guess", "# -*- mode: elixir -*-")).to eq("elixir")
+    end
+
+    it "matches Ruby File.extname semantics for syntax_language_from_path across 1,000 randomized paths",
+       :aggregate_failures do
+      rng = Random.new(20_261_111)
+      ext_pool = %w[rb py js ts tsx jsx rs go c cpp h java kt swift php sh sql html css scss json yml toml md diff ex]
+      dir_pool = ["", "app/models/", "src/components/", "  /usr/local/src/", "./a/b.c/"]
+      suffix_pool = ["", "///", "  extra_arg", "\t--flag"]
+
+      legacy_extname = lambda do |path|
+        token = path.to_s.strip.split.first.to_s
+        return if token.empty? || token.include?("\0")
+
+        ext = File.extname(token).delete_prefix(".")
+        return if ext.empty?
+
+        described_class.syntax_lexer_tag(ext)
+      end
+
+      1_000.times do |i|
+        dir = dir_pool.sample(random: rng)
+        ext = ext_pool.sample(random: rng)
+        sfx = suffix_pool.sample(random: rng)
+        path = case rng.rand(6)
+               when 0
+                 "#{dir}file_#{i}.#{ext}#{sfx}"
+               when 1
+                 "#{dir}.dotfile_#{ext}"
+               when 2
+                 "#{dir}..#{ext}"
+               when 3
+                 "#{dir}...#{ext}"
+               when 4
+                 "#{dir}no_extension_#{i}"
+               else
+                 "bad\0path.rb"
+               end
+
+        expect(described_class.syntax_language_from_path(path)).to eq(legacy_extname.call(path)),
+                                                                   "mismatch at #{i} for path=#{path.inspect}"
+      end
+    end
+
+    it "highlights code blocks across all 228 languages and 1,000 randomized inputs without unescaped HTML",
+       :aggregate_failures do
+      rng = Random.new(20_261_112)
+      tags = described_class.syntax_supported_language_tags
+      snippets = [
+        "def greet(name = \"<script>&</script>\")\n  @count ||= 42\n  puts :hello\nend",
+        "import React from 'react';\nexport const App = () => <div title=\"a&b\">{42}</div>;",
+        "import UiList from 'app';\n<template><UiList @x={{1}} /></template>",
+        "pub fn main<'a>(x: &'a str) -> Result<u64, String> { println!(\"{}\", x); Ok(0x2a) }",
+        "SELECT u.id, COUNT(*) FROM users u WHERE u.name = 'O''Brien & <co>' -- comment\nGROUP BY u.id;",
+        "--- a/app.rb\n+++ b/app.rb\n@@ -1,2 +1,2 @@\n-old <tag>\n+new & improved",
+        "{\"key\": \"<value>&more\", \"count\": -12.34e5, \"active\": true, \"nil_val\": null}",
+        "all:\n    echo \"hello <world> & $USER\"\n# comment",
+        "{----% raw %----}\n{{ liquid_var }}\n{----% endraw %----}",
+        "日本語 🚀 /* multi\nline */ // single <img src=x onerror=alert(1)>",
+      ]
+
+      1_000.times do |i|
+        code = Array.new(rng.rand(1..3)) { snippets.sample(random: rng) }.join("\n")
+        lang = rng.rand(5).zero? ? nil : tags.sample(random: rng)
+
+        html = described_class.syntax_highlight_html(code, lang)
+        block = described_class.syntax_highlight_code_block(code, lang)
+
+        expect(html).to be_a(String), "nil html at #{i}"
+        expect(html).not_to include("<script>"), "unescaped <script> at #{i} (lang=#{lang})"
+        expect(html).not_to include("<img"), "unescaped <img at #{i} (lang=#{lang})"
+
+        expected_tag = lang || "plaintext"
+        expect(block).to start_with(%(<div class="highlight"><pre class="highlight #{expected_tag}"><code>))
+        expect(block).to end_with("</code></pre></div>")
+
+        if code.include?("{----% raw %----}")
+          unescaped = described_class.unescape_raw_tag_in_codeblocks(block)
+          expect(unescaped).not_to include("----"), "raw tag unescape failed at #{i} for lang=#{lang}"
+        end
+      end
+
+      invalid_utf8 = (+"\xFF\xFE").force_encoding(Encoding::UTF_8)
+      expect(described_class.syntax_highlight_html(invalid_utf8, "ruby")).to be_nil
+      expect(described_class.syntax_highlight_code_block(invalid_utf8, "ruby")).to be_nil
+    end
+  end
 end

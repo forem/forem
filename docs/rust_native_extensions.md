@@ -131,12 +131,15 @@ Several Ruby gems have been fully removed from `Gemfile` (or mirrored in `forem_
 | **`gemoji`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`EMOJI_BLOB`, `EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream [`github/gemoji`](https://github.com/github/gemoji) (`db/emoji.json`) is a static JSON mapping of `:shortcode:` aliases to UTF-8 emoji sequences. Only changes when adopting a new Unicode Emoji release or adding custom shortcodes. |
 | **`emoji_regex`** | **Removed** | `crates/forem_core/src/emoji.rs` & `emoji_data.rs` (`RGI_EMOJI_BLOB`, `RGI_EMOJI_ENTRIES`) | **Occasionally (Unicode releases)** — Upstream `emoji_regex` is a static list of Unicode `RGI_Emoji` sequences derived from Unicode's [`emoji-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-sequences.txt) and [`emoji-zwj-sequences.txt`](https://unicode.org/Public/emoji/latest/emoji-zwj-sequences.txt). Only changes when adopting a new Unicode Emoji release. |
 | **`public_suffix`** | Transitive dep of `addressable` | `crates/forem_core/src/url.rs` & `psl_data.rs` (`PSL_BLOB`, `PSL_ENTRIES`) | **When `public_suffix` is bumped** — Mirrors the Mozilla Public Suffix List (`data/list.txt` inside the `public_suffix` gem). Regenerate `psl_data.rs` whenever `bundle update public_suffix` updates `Gemfile.lock`. |
+| **`rouge`** | **Removed** | `crates/forem_core/src/syntax.rs` & `syntax_data.rs` (`LEXER_TAGS`, `LEXER_TITLES`, `LEXER_FAMILIES`, `REGISTRY_ENTRIES`, `MIMETYPE_ENTRIES`) | **Only when adding a new syntax language** — Embeds Rouge 4.7.0's 228 canonical lexer tags, human titles, 392 tag/alias/filename/extension entries, 296 MIME type mappings, and 34 pure-Rust Pygments/Rouge-token lexer families. |
 
-### How to Refresh `emoji_data.rs` or `psl_data.rs`
+### How to Refresh `emoji_data.rs`, `psl_data.rs`, or `syntax_data.rs`
 1. **Updating `emoji_data.rs` (Unicode Emoji / Gemoji)**:
    - `EMOJI_BLOB` and `EMOJI_ENTRIES` store all sorted `(alias, raw_utf8)` pairs from GitHub's `db/emoji.json` (`https://raw.githubusercontent.com/github/gemoji/master/db/emoji.json`), where each `u32` entry packs `(offset << 11) | (alias_len << 5) | raw_len`.
    - `RGI_EMOJI_BLOB` and `RGI_EMOJI_ENTRIES` store all unique UTF-8 `RGI_Emoji` sequences sorted by `(first_char_utf8_bytes, Reverse(byte_len), full_utf8_bytes)`, where each `u32` entry packs `(offset << 8) | (byte_len << 2) | (first_char_utf8_len - 1)`.
 2. **Updating `psl_data.rs` (Mozilla Public Suffix List)**:
    - `PSL_BLOB` and `PSL_ENTRIES` store all ASCII rules from `PublicSuffix::List.default` (`Gem.loaded_specs["public_suffix"].full_gem_path + "/data/list.txt"`), sorted by rule label bytes with each `u32` entry packing `(offset << 10) | (len << 2) | kind`.
-3. **Rebuilding Precompiled Binaries**:
+3. **Updating `syntax_data.rs` (Syntax Highlighting Language Registry)**:
+   - `LEXER_TAGS`, `LEXER_TITLES`, and `LEXER_FAMILIES` store sorted canonical language tags, display titles, and `LexerFamily` mappings; `REGISTRY_ENTRIES` and `MIMETYPE_ENTRIES` store sorted `(key, tag_idx)` pairs for `O(log N)` binary search across tags, aliases, filenames, extensions, and MIME types.
+4. **Rebuilding Precompiled Binaries**:
    - After updating any `.rs` data file in `crates/forem_core/src/`, run `bundle exec rake forem_native:rust_test` and recompile the committed platform binaries (`arm64-darwin/forem_native.bundle`, `x86_64-darwin/forem_native.bundle`, and `x86_64-linux/forem_native.so`).

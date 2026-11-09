@@ -15,8 +15,9 @@ namespace :forem_native do
         lang = Regexp.last_match(1)
         code = CGI.unescapeHTML(Regexp.last_match(2))
         begin
-          lexer = Rouge::Lexer.find(lang) || Rouge::Lexers::PlainText.new
-          highlighted = Rouge::Formatters::HTML.new.format(lexer.lex(code))
+          highlighted = ForemNative.syntax_highlight_html(code, lang)
+          raise StandardError, "syntax highlight unavailable" if highlighted.nil?
+
           %(<pre class="highlight #{lang}"><code>#{highlighted}</code></pre>)
         rescue StandardError
           %(<pre class="highlight"><code>#{CGI.escapeHTML(code)}</code></pre>)
