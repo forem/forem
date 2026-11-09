@@ -33,9 +33,27 @@ module Users
     # admin API (Api::Admin::UsersController#update_notification_settings).
     CORE_SYNCED_EMAIL_SETTINGS = (EMAIL_CONSENT_EVENTS.keys - ROLE_DRIVEN_NEWSLETTER_SETTINGS).freeze
 
+    BOOLEAN_ATTRIBUTES = %i[
+      email_badge_notifications
+      email_comment_notifications
+      email_community_mod_newsletter
+      email_digest_periodic
+      email_follower_notifications
+      email_membership_newsletter
+      email_mention_notifications
+      email_newsletter
+      email_tag_mod_newsletter
+      email_unread_notifications
+      mobile_comment_notifications
+      mobile_mention_notifications
+      mod_roundrobin_notifications
+      reaction_notifications
+      welcome_notifications
+    ].freeze
+
     belongs_to :user, inverse_of: :notification_setting
 
-    validates :email_digest_periodic, inclusion: { in: [true, false] }
+    validates(*BOOLEAN_ATTRIBUTES, inclusion: { in: [true, false] })
 
     alias_attribute :subscribed_to_welcome_notifications, :welcome_notifications
     alias_attribute :subscribed_to_email_follower_notifications, :email_follower_notifications
