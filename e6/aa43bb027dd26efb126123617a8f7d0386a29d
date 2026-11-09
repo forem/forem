@@ -1,0 +1,38 @@
+app/liquid_tags/unified_embed/tag.rb
+  h_f968154a99632d 7-9,82-86,131-142
+app/models/concerns/activity_trackable.rb
+  h_f968154a99632d 85,93
+app/models/concerns/purgeable.rb
+  h_f968154a99632d 6-21,30-31,38-39,54-55,57,74-75,82-83
+app/models/reaction.rb
+  h_f968154a99632d 63-64,66,70-72,269
+app/services/articles/destroyer.rb
+  h_f968154a99632d 19-25
+app/services/open_graph.rb
+  h_f968154a99632d 14-15,111,133-144
+config/initializers/carrierwave.rb
+  h_f968154a99632d 88-97,101,113-116,123-124,132,139-140
+spec/initializers/carrierwave_spec.rb
+  h_f968154a99632d 9,33,39,42-45,50,53-56
+spec/liquid_tags/unified_embed/tag_spec.rb
+  h_f968154a99632d 362-375
+spec/models/concerns/purgeable_spec.rb
+  h_f968154a99632d 102-138
+spec/models/reaction_spec.rb
+  h_f968154a99632d 549-555
+spec/services/articles/destroyer_spec.rb
+  h_f968154a99632d 26-40
+spec/services/open_graph_spec.rb
+  h_f968154a99632d 285-308
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "e6aa43bb027dd26efb126123617a8f7d0386a29d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
