@@ -1,0 +1,84 @@
+app/controllers/api/v0/api_controller.rb
+  h_f968154a99632d 37
+app/controllers/api/v1/api_controller.rb
+  h_f968154a99632d 36
+app/controllers/application_controller.rb
+  h_f968154a99632d 375
+app/controllers/concerns/caching_headers.rb
+  h_f968154a99632d 43,46-47,56,59-60,64-66
+app/controllers/ga_events_controller.rb
+  h_f968154a99632d 51
+app/controllers/page_views_controller.rb
+  h_f968154a99632d 32-35
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 226
+app/models/concerns/purgeable.rb
+  h_f968154a99632d 4-5,11-15,19-23,37-42,60-64,68-72
+app/models/organization.rb
+  h_f968154a99632d 391,397,402
+app/services/cloudflare_config/update.rb
+  h_f968154a99632d 1-80
+app/services/cloudflare_tls/client.rb
+  h_f968154a99632d 1-119
+app/services/edge_cache/bust.rb
+  h_f968154a99632d 30,40-43
+app/services/edge_cache/bust/cloudflare.rb
+  h_f968154a99632d 1-103
+app/services/edge_cache/purge_by_key.rb
+  h_f968154a99632d 3-4,10,12,15,17-18,20,36-88
+app/workers/organizations/delete_custom_domain_worker.rb
+  h_f968154a99632d 8-10,13,16,21-29
+app/workers/organizations/provision_custom_domain_worker.rb
+  h_f968154a99632d 9-10,20,30-38
+app/workers/organizations/verify_custom_domain_worker.rb
+  h_f968154a99632d 9-10,16,40-48
+config/cloudflare/README.md
+  h_f968154a99632d 1-22
+config/cloudflare/worker.js
+  h_f968154a99632d 1-675
+config/cloudflare/wrangler.toml
+  h_f968154a99632d 1-13
+config/environments/production.rb
+  h_f968154a99632d 58
+config/initializers/devise.rb
+  h_f968154a99632d 416
+config/initializers/rack_attack.rb
+  h_f968154a99632d 51,54-55
+lib/betterstack/request_context.rb
+  h_f968154a99632d 84-85
+lib/tasks/cloudflare.rake
+  h_f968154a99632d 1-21
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 34-54
+spec/models/concerns/purgeable_spec.rb
+  h_f968154a99632d 103-133
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 196-198,203
+spec/services/cloudflare_config/update_spec.rb
+  h_f968154a99632d 1-242
+spec/services/cloudflare_tls/client_spec.rb
+  h_f968154a99632d 1-109
+spec/services/edge_cache/bust_spec.rb
+  h_f968154a99632d 40,154-277,282,285,322-326,337-342
+spec/services/edge_cache/purge_by_key_spec.rb
+  h_f968154a99632d 7,10-11,40-79
+spec/tasks/cloudflare_spec.rb
+  h_f968154a99632d 1-36
+spec/workers/organizations/delete_custom_domain_worker_spec.rb
+  h_f968154a99632d 26-41
+spec/workers/organizations/provision_custom_domain_worker_spec.rb
+  h_f968154a99632d 9-10,41-61
+spec/workers/organizations/verify_custom_domain_worker_spec.rb
+  h_f968154a99632d 36-51
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0ef2d7eadbd422fed3dcfd2a3aa832d08e468bf6",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
