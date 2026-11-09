@@ -363,4 +363,20 @@ description:\ntags: heytag\n---\n\nHey this is the article"
       expect(checklist_user).not_to have_received(:onboarding_checklist)
     end
   end
+
+  describe "deadlock retry on update" do
+    it "retries updating the article when ActiveRecord::Deadlocked is raised" do
+      attempts = 0
+      allow(article).to receive(:update).and_wrap_original do |original, *args|
+        attempts += 1
+        raise ActiveRecord::Deadlocked, "PG::TRDeadlockDetected" if attempts == 1
+
+        original.call(*args)
+      end
+
+      result = described_class.call(user, article, attributes)
+      expect(result.success).to be(true)
+      expect(attempts).to eq(2)
+    end
+  end
 end

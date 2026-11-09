@@ -176,4 +176,41 @@ RSpec.describe Articles::Creator, type: :service do
       described_class.call(checklist_user, attributes_for(:article, published: true))
     end
   end
+
+  describe "tag lock ordering and deadlock retry" do
+    it "acquires FOR NO KEY UPDATE row locks on affected tags in ascending ID order" do
+      tag_a = create(:tag, name: "alpha")
+      tag_b = create(:tag, name: "beta")
+      lock_queries = []
+      callback = lambda do |*, payload|
+        lock_queries << payload[:sql] if payload[:sql].include?("FOR NO KEY UPDATE")
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        described_class.call(user, attributes_for(:article, tag_list: "#{tag_b.name}, #{tag_a.name}"))
+      end
+
+      expect(lock_queries).to contain_exactly(
+        a_string_including('FROM "tags"', "ORDER BY \"tags\".\"id\" ASC FOR NO KEY UPDATE"),
+      )
+    end
+
+    it "retries saving the article when ActiveRecord::Deadlocked is raised" do
+      attempts = 0
+      allow(Article).to receive(:new).and_wrap_original do |new_method, *new_args, &new_block|
+        instance = new_method.call(*new_args, &new_block)
+        allow(instance).to receive(:save).and_wrap_original do |save_method, *save_args|
+          attempts += 1
+          raise ActiveRecord::Deadlocked, "PG::TRDeadlockDetected" if attempts == 1
+
+          save_method.call(*save_args)
+        end
+        instance
+      end
+
+      article = described_class.call(user, attributes_for(:article))
+      expect(article).to be_persisted
+      expect(attempts).to eq(2)
+    end
+  end
 end

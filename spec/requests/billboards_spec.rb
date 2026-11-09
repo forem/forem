@@ -506,6 +506,16 @@ RSpec.describe "Billboards" do
       expect(queries.join("\n")).not_to include('"articles".*', "processed_html", "body_markdown")
     end
 
+    it "compiles the article targeting lookup with allow_retry enabled" do
+      relation = Article.select(
+        *BillboardsController::ARTICLE_TARGETING_COLUMNS,
+        BillboardsController::ADJACENT_SPONSORS_PERMITTED,
+      ).where(path: article.path)
+
+      _sql, _binds, _preparable, allow_retry = Article.connection.__send__(:to_sql_and_binds, relation.arel)
+      expect(allow_retry).to be(true)
+    end
+
     it "targets billboards by the article's tags" do
       ruby_billboard = create_billboard(placement_area: "post_comments", tag_list: "ruby")
 
