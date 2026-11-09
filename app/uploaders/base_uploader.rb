@@ -33,6 +33,14 @@ class BaseUploader < CarrierWave::Uploader::Base
     1..(25.megabytes)
   end
 
+  # Only move cached files in-place when storing to local File storage.
+  # Fog#store! uploads the cached file without unlinking it from disk, so
+  # returning false when _storage is Fog ensures CarrierWave::Uploader::Store#store!
+  # deletes the temporary cached file from local disk after uploading to S3.
+  def move_to_store
+    super && _storage == CarrierWave::Storage::File
+  end
+
   # Avoid triggering a synchronous S3 HEAD request when checking `#blank?` / `#present?`
   # (e.g. inside ActiveModel::EachValidator#validate or view/controller presence checks).
   def blank?
