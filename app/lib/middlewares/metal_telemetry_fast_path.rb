@@ -97,8 +97,8 @@ module Middlewares
       is_embed = Billboard.embed_origin?(env["HTTP_ORIGIN"])
       return @app.call(env) if verify_csrf!(env, BillboardEventsController, skip: is_embed) == :defer
 
-      skip_session_commit!(env)
       current_user_id = resolve_user_id(env, BillboardEventsController)
+      skip_session_commit!(env)
       rows_updated = BillboardEvent.add_impression_seconds(id: id_str, user_id: current_user_id)
       return head_response(200) if rows_updated.positive?
 
@@ -114,8 +114,8 @@ module Middlewares
       is_embed = Billboard.embed_origin?(env["HTTP_ORIGIN"])
       return @app.call(env) if verify_csrf!(env, BillboardEventsController, skip: is_embed) == :defer
 
-      skip_session_commit!(env)
       user_id = is_embed ? nil : resolve_user_id(env, BillboardEventsController)
+      skip_session_commit!(env)
       geolocation = resolve_geolocation(env, user_id, BillboardEventsController)
 
       if env[Rack::QUERY_STRING].blank? &&
@@ -195,8 +195,8 @@ module Middlewares
     def handle_page_view_update(env, id_str)
       return @app.call(env) if verify_csrf!(env, PageViewsController) == :defer
 
-      skip_session_commit!(env)
       current_user_id = resolve_user_id(env, PageViewsController)
+      skip_session_commit!(env)
       Articles::PageViewUpdater.call(article_id: id_str, user_id: current_user_id) if current_user_id
       head_response(200)
     end
@@ -204,7 +204,6 @@ module Middlewares
     def handle_page_view_create(env)
       return @app.call(env) if verify_csrf!(env, PageViewsController) == :defer
 
-      skip_session_commit!(env)
       req = ActionDispatch::Request.new(env)
       raw_params = req.parameters
       page_view_params = raw_params.slice(
@@ -222,6 +221,7 @@ module Middlewares
       end
 
       current_user_id = resolve_user_id(env, PageViewsController)
+      skip_session_commit!(env)
       geo_region = env["HTTP_FASTLY_CLIENT_GEO_REGION"].presence ||
         resolve_geolocation(env, current_user_id, PageViewsController)
       page_view_params[:region] = geo_region
@@ -261,18 +261,20 @@ module Middlewares
     def handle_ga_event_create(env)
       return @app.call(env) if verify_csrf!(env, GaEventsController) == :defer
 
-      skip_session_commit!(env)
       req = ActionDispatch::Request.new(env)
       ensure_subforem_context!(req)
       if Settings::General.ga_analytics_4_id.present? && Settings::General.ga_api_secret.present?
         raw_post = req.raw_post
         user_id = resolve_user_id(env, GaEventsController)
+        skip_session_commit!(env)
         base_app_url = resolve_app_url(env)
         event_hash = parse_ga_event_payload(raw_post, base_app_url, user_id)
         return head_response(400) if event_hash == :invalid
 
         client_id = generate_anonymous_client_id(req)
         Ga::TrackEventWorker.perform_async(client_id, event_hash)
+      else
+        skip_session_commit!(env)
       end
 
       [200, { "Content-Type" => "text/plain; charset=utf-8" }, [""]]
@@ -336,8 +338,8 @@ module Middlewares
       )
       return @app.call(env) if csrf_status == :defer
 
-      skip_session_commit!(env)
       current_user_id = token_user_id || resolve_user_id(env, FeedEventsController)
+      skip_session_commit!(env)
       return head_response(200) if !current_user_id || FeatureFlag.enabled?(:disable_browser_feed_events)
 
       raw_events = raw_params["feed_events"]
@@ -385,8 +387,8 @@ module Middlewares
       )
       return @app.call(env) if csrf_status == :defer
 
-      skip_session_commit!(env)
       current_user_id = token_user_id || resolve_user_id(env, FeedConfigVisitsController)
+      skip_session_commit!(env)
       return no_content_no_store_response unless current_user_id
       return no_content_no_store_response if FeatureFlag.enabled?(:disable_browser_feed_events)
 

@@ -13,7 +13,7 @@ module SessionCurrentUser
   #   to all other signed-in users.
   def session_current_user_id
     return @current_user.id if @token_authenticated && @current_user
-    return unless (key = session["warden.user.user.key"])
+    return unless (key = warden_session_key)
 
     # the value is in the format [[1], "..."] where 1 is the ID
     key.first.first
@@ -27,7 +27,7 @@ module SessionCurrentUser
     return @current_user.id if @token_authenticated && @current_user
     return @validated_session_user_id if defined?(@validated_session_user_id) && validate_salt
 
-    if (key = session["warden.user.user.key"])
+    if (key = warden_session_key)
       return resolve_warden_session_key_id(key, validate_salt: validate_salt)
     end
 
@@ -38,7 +38,7 @@ module SessionCurrentUser
   def valid_session_viewer?(viewer)
     return false unless viewer
     return true if @token_authenticated || @remembered_user_restored
-    return false unless (key = session["warden.user.user.key"])
+    return false unless (key = warden_session_key)
 
     viewer.authenticatable_salt.to_s == key[1].to_s
   end
@@ -48,6 +48,21 @@ module SessionCurrentUser
   end
 
   private
+
+  # Rack::Session::Redis#find_session returns an empty hash without reading Redis
+  # if options[:skip] is already true when an unloaded session is first read.
+  def warden_session_key
+    if session.respond_to?(:loaded?) && !session.loaded? && request.session_options[:skip]
+      begin
+        request.session_options[:skip] = false
+        session["warden.user.user.key"]
+      ensure
+        request.session_options[:skip] = true
+      end
+    else
+      session["warden.user.user.key"]
+    end
+  end
 
   def resolve_warden_session_key_id(key, validate_salt:)
     user_id = key.first&.first
