@@ -12,6 +12,7 @@ module DataUpdateScripts
   # Force Run or the rake task. Re-running only awards users still missing the
   # badge.
   class BackfillWritingStreakBadges
+    # Entry point called by DataUpdateWorker.
     def run
       Badges::AwardStreak.backfill
     end

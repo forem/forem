@@ -33,6 +33,11 @@ module Badges
     # is not recorded as complete while writers are still unrewarded.
     class IncompleteError < StandardError; end
 
+    # Raised (and reported) when an achievement fails validation and the user
+    # does not already hold the badge, e.g. the badge was deleted mid-run.
+    class AwardNotSavedError < StandardError; end
+
+    # Awards the badge for one threshold. See #call for the return value.
     def self.call(weeks:, historical: false)
       new(weeks: weeks, historical: historical).call
     end
@@ -67,6 +72,9 @@ module Badges
       missing
     end
 
+    # @param weeks [Integer] streak length the badge is awarded for (4, 8, 16)
+    # @param historical [Boolean] reward streaks anywhere in a user's history
+    #   instead of only streaks that include the current or previous week
     def initialize(weeks:, historical: false)
       @weeks = weeks
       @historical = historical
@@ -89,10 +97,7 @@ module Badges
         eligible_users(user_ids).each do |user|
           next if user.banished?
 
-          user.badge_achievements.create(
-            badge_id: badge_id,
-            rewarding_context_message_markdown: message,
-          )
+          award(user, badge_id, message)
         rescue StandardError => e
           failed_user_ids << user.id
           Rails.error.report(e, context: { badge_id: badge_id, user_id: user.id })
@@ -108,6 +113,7 @@ module Badges
       true
     end
 
+    # Slugs this threshold's badge may be registered under, in lookup order.
     def candidate_slugs
       SLUG_FORMATS.map { |pattern| format(pattern, weeks: weeks) }
     end
@@ -116,6 +122,23 @@ module Badges
 
     attr_reader :weeks, :historical
 
+    # Creates the achievement, raising AwardNotSavedError if it was not saved.
+    # An unsaved record still counts as awarded when the user already holds this
+    # exact badge (another run awarded it concurrently and the uniqueness
+    # validation rejected the duplicate). It does not count if the badge was
+    # deleted or replaced, because then no achievement for badge_id exists.
+    def award(user, badge_id, message)
+      achievement = user.badge_achievements.create(
+        badge_id: badge_id,
+        rewarding_context_message_markdown: message,
+      )
+      return if achievement.persisted?
+      return if BadgeAchievement.exists?(user_id: user.id, badge_id: badge_id)
+
+      raise AwardNotSavedError, achievement.errors.full_messages.to_sentence.presence || "not saved"
+    end
+
+    # Id of the first existing badge among candidate_slugs, or nil.
     def find_badge_id
       candidate_slugs.each do |slug|
         badge_id = Badge.id_for_slug(slug)
@@ -133,6 +156,8 @@ module Badges
         .where.not(id: User.with_role(:spam).or(User.with_role(:suspended)))
     end
 
+    # Sorted ids of users with a qualifying streak who lack the badge.
+    # Historical scans run under HISTORICAL_STATEMENT_TIMEOUT.
     def qualifying_user_ids(badge_id)
       sql = qualifying_user_ids_sql(badge_id)
       connection = ApplicationRecord.connection
@@ -224,6 +249,7 @@ module Badges
       SQL
     end
 
+    # Localized achievement message pointing at the next streak badge.
     def generate_message
       return I18n.t("services.badges.award_streak.longest") if weeks == LONGEST_STREAK_WEEKS
 

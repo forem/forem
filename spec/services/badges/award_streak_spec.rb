@@ -8,10 +8,12 @@ RSpec.describe Badges::AwardStreak, type: :service do
 
   around { |example| Timecop.freeze(now) { example.run } }
 
+  # Creates a published article for author backdated to at.
   def publish(author, at, **attrs)
     create(:article, :past, user: author, published: true, past_published_at: at, **attrs)
   end
 
+  # Publishes one article in each of the four most recent 7 day windows.
   def publish_rolling_streak(author, **attrs)
     [26, 19, 12, 5].each { |days| publish(author, days.days.ago, **attrs) }
   end
@@ -170,12 +172,38 @@ RSpec.describe Badges::AwardStreak, type: :service do
     let!(:badge) { create(:badge, title: "4 Week Streak", slug: "4-week-streak", credits_awarded: 5) }
     let(:failing_user) { create(:user) }
 
+    # Makes awarding raise for target only, simulating a transient outage.
     def fail_awards_for(target)
       allow(Credit).to receive(:add_to).and_wrap_original do |original, recipient, amount|
         raise ActiveRecord::ConnectionTimeoutError, "simulated outage" if recipient.id == target.id
 
         original.call(recipient, amount)
       end
+    end
+
+    it "treats a concurrent duplicate award as success when the achievement exists" do
+      allow(Rails.error).to receive(:report)
+      # Another run awarded the badge after this run computed its candidates.
+      create(:badge_achievement, user: user, badge: badge)
+      service = described_class.new(weeks: 4, historical: true)
+      allow(service).to receive(:qualifying_user_ids).and_return([user.id])
+
+      expect(service.call).to be(true)
+      expect(user.reload.badge_achievements.where(badge: badge).count).to eq(1)
+      expect(Rails.error).not_to have_received(:report)
+    end
+
+    it "reports an unsaved award when the badge was replaced mid-run" do
+      allow(Rails.error).to receive(:report)
+      stale_badge_id = badge.id
+      badge.destroy!
+      service = described_class.new(weeks: 4, historical: true)
+      allow(service).to receive_messages(find_badge_id: stale_badge_id, qualifying_user_ids: [user.id])
+
+      expect { service.call }.to raise_error(described_class::IncompleteError, /1 award\(s\) failed/)
+      expect(user.reload.badge_achievements).to be_empty
+      expect(Rails.error).to have_received(:report)
+        .with(an_instance_of(described_class::AwardNotSavedError), context: hash_including(user_id: user.id))
     end
 
     it "awards every qualifying user across multiple ID batches" do
