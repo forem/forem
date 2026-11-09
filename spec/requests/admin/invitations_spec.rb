@@ -15,6 +15,59 @@ RSpec.describe "/admin/member_manager/invitations" do
       get admin_invitations_path
       expect(response.body).to include(user.username)
     end
+
+    it "selects only required columns without DISTINCT on users" do
+      invited = create(:user, registered: false)
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql]
+        next if payload[:name] == "SCHEMA" || sql.exclude?('"registered"')
+
+        user_queries << sql
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get admin_invitations_path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(invited.username, invited.email)
+      expect(user_queries).not_to include(a_string_matching(/DISTINCT/i))
+      expect(user_queries).not_to include(a_string_matching(/SELECT "users"\.\*/i))
+      expected_select = 'SELECT "users"."id", "users"."username", "users"."name", ' \
+                        '"users"."email", "users"."profile_image", "users"."created_at"'
+      expect(user_queries).to include(a_string_including(expected_select))
+    end
+
+    it "filters invited users by search query and excludes registered users" do
+      matching_invited = create(:user, registered: false, username: "pending_invite_match")
+      other_invited = create(:user, registered: false, username: "unrelated_invite_member")
+      registered_match = create(:user, registered: true, username: "pending_invite_registered")
+
+      get admin_invitations_path, params: { search: "pending_invite" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(matching_invited.username)
+      expect(response.body).not_to include(other_invited.username)
+      expect(response.body).not_to include(registered_match.username)
+    end
+
+    it "filters invited users by role subquery without duplicating multi-resource role holders" do
+      tag_a = create(:tag, name: "invitetaga")
+      tag_b = create(:tag, name: "invitetagb")
+      mod_invited = create(:user, registered: false, username: "mod_invited_member")
+      mod_invited.add_role(:tag_moderator, tag_a)
+      mod_invited.add_role(:tag_moderator, tag_b)
+      plain_invited = create(:user, registered: false, username: "plain_invited_member")
+      plain_invited.add_role(:trusted)
+
+      get admin_invitations_path, params: { role: "tag_moderator", roles: ["Trusted"] }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(mod_invited.username)
+      expect(response.body).not_to include(plain_invited.username)
+      expect(response.body.scan("id=\"#{mod_invited.id}-action-dropdown-btn-large\"").size).to eq(1)
+    end
   end
 
   describe "GET /admin/member_manager/invitations/new" do
