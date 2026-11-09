@@ -49,12 +49,37 @@ RSpec.describe "NotificationCounts" do
 
       get "/notifications/counts", headers: { "Cookie" => "remember_user_token=#{CGI.escape(signed_cookie)}" }
       expect(response.body).to eq("1")
+      expect(request.session_options[:skip]).not_to be(true)
+    end
+
+    it "loads the session from RedisStore when authenticating via session cookie and skips post-request commit" do
+      sign_in user
+      follow_instance = following_user.follow(user)
+      Notification.send_new_follower_notification_without_delay(follow_instance)
+      # Establish the session cookie in RedisStore, then clear the test on_request hook
+      # and remove remember_user_token so the next request authenticates strictly from the stored Redis session.
+      get "/notifications/counts"
+      Warden::Manager._on_request.clear
+      cookies.delete("remember_user_token")
+
+      full_user_queries = []
+      callback = lambda do |*, payload|
+        full_user_queries << payload[:sql] if payload[:sql].include?('SELECT "users".*') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/notifications/counts"
+      end
+
+      expect(response.body).to eq("1")
+      expect(full_user_queries).to be_empty
+      expect(request.session_options[:skip]).to be(true)
     end
 
     context "when mode=detailed parameter is passed" do
       it "returns count and extended metadata in JSON" do
         sign_in user
-        
+
         # Read notification (older)
         old_time = 2.days.ago
         create(:notification, user: user, action: "Reaction", read: true, read_at: old_time, notified_at: 3.days.ago)
@@ -63,8 +88,8 @@ RSpec.describe "NotificationCounts" do
         new_notification = create(:notification, user: user, action: "New Follower", notified_at: 1.day.ago)
 
         get "/notifications/counts", params: { mode: "detailed" }
-        json_response = JSON.parse(response.body)
-        
+        json_response = response.parsed_body
+
         expect(json_response["count"]).to eq(1)
         expect(json_response["last_notification_id"]).to eq(new_notification.id)
         expect(json_response["read_at"]).to be_nil # because newest is unread
@@ -74,8 +99,8 @@ RSpec.describe "NotificationCounts" do
 
       it "returns count 0 and nil metadata if no user" do
         get "/notifications/counts", params: { mode: "detailed" }
-        json_response = JSON.parse(response.body)
-        
+        json_response = response.parsed_body
+
         expect(json_response["count"]).to eq(0)
         expect(json_response["last_notification_id"]).to be_nil
         expect(json_response["read_at"]).to be_nil
@@ -95,7 +120,7 @@ RSpec.describe "NotificationCounts" do
           exp: 5.minutes.from_now.to_i
         }
         token = JWT.encode(payload, Rails.application.secret_key_base)
-        
+
         follow_instance = following_user.follow(user)
         Notification.send_new_follower_notification_without_delay(follow_instance)
 
@@ -113,8 +138,8 @@ RSpec.describe "NotificationCounts" do
         new_notification = create(:notification, user: user, action: "New Follower", notified_at: 1.day.ago)
 
         get "/notifications/counts", params: { mode: "detailed" }, headers: { "Authorization" => "Bearer #{token}" }
-        json_response = JSON.parse(response.body)
-        
+        json_response = response.parsed_body
+
         expect(json_response["count"]).to eq(1)
         expect(json_response["last_notification_id"]).to eq(new_notification.id)
         expect(json_response["action"]).to eq("New Follower")
@@ -122,4 +147,3 @@ RSpec.describe "NotificationCounts" do
     end
   end
 end
-

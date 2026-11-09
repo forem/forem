@@ -8,7 +8,7 @@ class ApplicationMetalController < ActionController::Metal
   # the specific controller.
 
   protect_from_forgery with: :exception, prepend: true unless Rails.env.test?
-  prepend_before_action :skip_session_commit
+  after_action :skip_session_commit
 
   include SessionCurrentUser
   include ValidRequest
@@ -31,7 +31,7 @@ class ApplicationMetalController < ActionController::Metal
     return unless auth_header || params[:jwt]
 
     if auth_header.present? && auth_header.start_with?("Bearer ")
-      token = auth_header.split(" ").last
+      token = auth_header.split.last
       payload = decode_auth_token(token)
     elsif params[:jwt].present?
       token = params[:jwt]
@@ -40,10 +40,10 @@ class ApplicationMetalController < ActionController::Metal
     return unless payload && payload["user_id"]
 
     user = User.find_by(id: payload["user_id"])
-    if user
-      @current_user = user
-      @token_authenticated = true
-    end
+    return unless user
+
+    @current_user = user
+    @token_authenticated = true
   end
 
   def token_authenticated?
@@ -97,7 +97,10 @@ class ApplicationMetalController < ActionController::Metal
   # Metal controllers are read-only consumers of the session (CSRF verification
   # and session_current_user_id). Skipping Rack's post-request session commit
   # avoids a redundant Redis SETEX and Set-Cookie on every telemetry ping.
+  # Must run as an after_action (not before_action): Rack::Session::Redis#find_session
+  # returns an empty hash without reading Redis if options[:skip] is already true
+  # when the session is first loaded.
   def skip_session_commit
-    request.session_options[:skip] = true
+    request.session_options[:skip] = true unless remembered_user_restored?
   end
 end
