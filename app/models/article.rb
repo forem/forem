@@ -694,7 +694,7 @@ class Article < ApplicationRecord
 
   scope :with_video, lambda {
                        published
-                         .where.not(video: [nil, ""])
+                         .where("articles.video > ''")
                          .where("score > ?", -4)
                      }
 
