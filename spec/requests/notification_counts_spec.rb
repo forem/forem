@@ -76,6 +76,56 @@ RSpec.describe "NotificationCounts" do
       expect(request.session_options[:skip]).to be(true)
     end
 
+    it "returns the unread count when the Redis session is valid but remember_user_token is stale or rotated" do
+      sign_in user
+      follow_instance = following_user.follow(user)
+      Notification.send_new_follower_notification_without_delay(follow_instance)
+      get "/notifications/counts"
+      Warden::Manager._on_request.clear
+
+      # Simulate remember_created_at / remember_token rotation on another device while Redis session stays active
+      User.where(id: user.id).update_all(
+        remember_token: "rotated_token_on_other_device",
+        remember_created_at: 1.minute.from_now,
+      )
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if (sql.include?('SELECT "users".*') || sql.include?('UPDATE "users"')) && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/notifications/counts"
+      end
+
+      expect(response.body).to eq("1")
+      expect(user_queries).to be_empty
+      expect(request.session_options[:skip]).to be(true)
+    end
+
+    it "does not fall through to Devise Rememberable sign-in or UPDATE users when Redis session is present" do
+      sign_in user
+      follow_instance = following_user.follow(user)
+      Notification.send_new_follower_notification_without_delay(follow_instance)
+      get "/notifications/counts"
+      Warden::Manager._on_request.clear
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if (sql.include?('SELECT "users".*') || sql.include?('UPDATE "users"')) && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get "/notifications/counts"
+      end
+
+      expect(response.body).to eq("1")
+      expect(user_queries).to be_empty
+      expect(request.session_options[:skip]).to be(true)
+    end
+
     context "when mode=detailed parameter is passed" do
       it "returns count and extended metadata in JSON" do
         sign_in user

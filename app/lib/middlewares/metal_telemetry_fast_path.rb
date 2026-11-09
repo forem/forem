@@ -491,10 +491,7 @@ module Middlewares
         return controller_class.allocate.session_current_user_id
       end
 
-      session = env[Rack::RACK_SESSION]
-      return unless session
-
-      session["warden.user.user.key"]&.first&.first
+      read_session_key(env, "warden.user.user.key")&.first&.first
     end
 
     def resolve_geolocation(env, user_id, controller_class)
@@ -534,9 +531,26 @@ module Middlewares
       token = env[ActionController::RequestForgeryProtection::CSRF_TOKEN]
       return token if token
 
-      token = env[Rack::RACK_SESSION]&.[]("_csrf_token")
+      token = read_session_key(env, "_csrf_token")
       env[ActionController::RequestForgeryProtection::CSRF_TOKEN] = token if token
       token
+    end
+
+    def read_session_key(env, key)
+      session = env[Rack::RACK_SESSION]
+      return unless session
+
+      session_opts = env[Rack::RACK_SESSION_OPTIONS]
+      if session.respond_to?(:loaded?) && !session.loaded? && session_opts&.[](:skip)
+        begin
+          session_opts[:skip] = false
+          session[key]
+        ensure
+          session_opts[:skip] = true
+        end
+      else
+        session[key]
+      end
     end
 
     def check_request_origin!(env)
