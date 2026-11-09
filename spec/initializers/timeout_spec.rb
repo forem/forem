@@ -149,6 +149,26 @@ RSpec.describe Rack::Timeout, type: :initializer do
         expect(mock_connection).not_to have_received(:disconnect!)
         expect(pool).not_to have_received(:release_connection)
       end
+
+      it "locates the tracked thread's connection via Rails 8 @leases and marks the adapter unverified" do
+        pool = ActiveRecord::Base.connection_pool
+        mock_connection = instance_double(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
+        mock_raw_connection = instance_double(PG::Connection, cancel: nil, close: nil)
+        lease_class = Struct.new(:connection)
+        mock_leases = { mock_thread => lease_class.new(mock_connection) }
+
+        allow(pool).to receive(:instance_variable_get).with(:@thread_cached_conns).and_return(nil)
+        allow(pool).to receive(:instance_variable_get).with(:@leases).and_return(mock_leases)
+        allow(mock_connection).to receive(:raw_connection).and_return(mock_raw_connection)
+
+        observers = described_class.instance_variable_get(:@state_change_observers)
+        observers[:clear_db_connections_on_timeout].call(env)
+
+        expect(mock_raw_connection).to have_received(:cancel).ordered
+        expect(mock_raw_connection).to have_received(:close).ordered
+        expect(mock_connection.instance_variable_get(:@verified)).to be(false)
+        expect(mock_connection.instance_variable_get(:@last_activity)).to be_nil
+      end
     end
 
     context "when state is other than timed_out" do
@@ -168,6 +188,19 @@ RSpec.describe Rack::Timeout, type: :initializer do
         expect(pool).not_to have_received(:instance_variable_get)
         expect(pool).not_to have_received(:release_connection)
       end
+    end
+  end
+
+  describe "ActiveRecord::StatementCache retryability" do
+    it "defaults allow_retry to true when executing cached association statements" do
+      article = create(:article)
+      create(:discussion_lock, article: article)
+      article.reload
+      allow(DiscussionLock).to receive(:find_by_sql).and_call_original
+
+      expect(article.discussion_lock).to be_present
+      expect(DiscussionLock).to have_received(:find_by_sql)
+        .with(anything, anything, hash_including(preparable: true, allow_retry: true))
     end
   end
 end
