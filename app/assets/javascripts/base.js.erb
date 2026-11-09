@@ -46,7 +46,29 @@ var I18n = window.I18n = {
   var hbQueue = [];
   var hbLoadingPromise = null;
   var hbLoadFailed = false;
+  var hbListenersAttached = false;
   var HB_MAX_QUEUE = 20;
+
+  function attachHoneybadgerWindowListeners() {
+    if (hbListenersAttached || !hbConfig.apiKey) return;
+    hbListenersAttached = true;
+
+    window.addEventListener('error', function(event) {
+      if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
+      var err = (event && event.error) || (event && event.message);
+      if (err) {
+        lazyHoneybadger.notify(err);
+      }
+    });
+
+    window.addEventListener('unhandledrejection', function(event) {
+      if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
+      var reason = event && event.reason;
+      if (reason) {
+        lazyHoneybadger.notify(reason);
+      }
+    });
+  }
 
   function passesBeforeNotify(err) {
     var message = typeof err === 'string' ? err : (err && err.message);
@@ -125,6 +147,9 @@ var I18n = window.I18n = {
     configure: function(opts) {
       if (opts && typeof opts === 'object') {
         Object.assign(hbConfig, opts);
+        if (hbConfig.apiKey) {
+          attachHoneybadgerWindowListeners();
+        }
       }
       return this;
     },
@@ -167,22 +192,6 @@ var I18n = window.I18n = {
   };
 
   window.Honeybadger = lazyHoneybadger;
-
-  window.addEventListener('error', function(event) {
-    if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
-    var err = (event && event.error) || (event && event.message);
-    if (err) {
-      lazyHoneybadger.notify(err);
-    }
-  });
-
-  window.addEventListener('unhandledrejection', function(event) {
-    if (!window.Honeybadger || !window.Honeybadger.__isLazyProxy) return;
-    var reason = event && event.reason;
-    if (reason) {
-      lazyHoneybadger.notify(reason);
-    }
-  });
 })();
 
 I18n.defaultLocale = 'en';
@@ -1005,17 +1014,19 @@ var instantClick
 
 // INITIALIZE/ERROR HANDLING
 
-  Honeybadger.configure({
-    apiKey: document.body.dataset.honeybadgerKey,
-    environment: "<%= Rails.env %>",
-    revision: document.body.dataset.releaseFootprint,
-  });
+  if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+    Honeybadger.configure({
+      apiKey: document.body.dataset.honeybadgerKey,
+      environment: "<%= Rails.env %>",
+      revision: document.body.dataset.releaseFootprint,
+    });
 
-  Honeybadger.beforeNotify(function(notice) {
-    if (!notice || typeof notice.message !== 'string') return true
-    const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
-    return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
-  });
+    Honeybadger.beforeNotify(function(notice) {
+      if (!notice || typeof notice.message !== 'string') return true
+      const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
+      return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
+    });
+  }
 
 // INITIALIZE AHOY TRACKING
 // Setting cookies to false matches what we do in ahoy's initializer.

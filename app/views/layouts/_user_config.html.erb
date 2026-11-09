@@ -61,8 +61,10 @@
       }
     }
   } catch (e) {
-    setTimeout(function () {
-      Honeybadger.notify(e);
-    }, 1000)
+    if (document.body && document.body.dataset && document.body.dataset.honeybadgerKey) {
+      setTimeout(function () {
+        if (window.Honeybadger) Honeybadger.notify(e);
+      }, 1000);
+    }
   }
 </script>
