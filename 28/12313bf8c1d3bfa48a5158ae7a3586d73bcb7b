@@ -1,0 +1,68 @@
+app/controllers/billboards_controller.rb
+  h_f968154a99632d 20-22
+app/controllers/rating_votes_controller.rb
+  h_f968154a99632d 9-10,27-49
+app/lib/middlewares/metal_telemetry_fast_path.rb
+  h_f968154a99632d 151-160
+app/models/billboard_event.rb
+  h_f968154a99632d 56,92,96-109
+app/models/media_store.rb
+  h_f968154a99632d 7-8,12
+app/services/articles/creator.rb
+  h_f968154a99632d 3-4,106-108,114-126
+app/services/articles/enrich_image_attributes.rb
+  h_f968154a99632d 27,29-35,110-111,116-117,119,125,136-147
+app/services/articles/updater.rb
+  h_f968154a99632d 3,45,50,56-68
+app/services/content_renderer.rb
+  h_f968154a99632d 34-45
+app/services/delivery_methods/customer_io.rb
+  h_f968154a99632d 17-18,39,44-62
+app/services/delivery_methods/customer_io_event.rb
+  h_f968154a99632d 22-24,34-50
+app/uploaders/article_image_uploader.rb
+  h_f968154a99632d 3-14,24-26,28
+app/workers/push_notifications/deliver_worker.rb
+  h_f968154a99632d 5-11,15,20-22
+config/initializers/acts_as_taggable_on.rb
+  h_f968154a99632d 3-69
+config/initializers/rpush.rb
+  h_f968154a99632d 2-65,140-152
+config/initializers/timeout.rb
+  h_f968154a99632d 62-78,90,95-109
+spec/initializers/timeout_spec.rb
+  h_f968154a99632d 152-171,193-205
+spec/models/billboard_event_spec.rb
+  h_f968154a99632d 104-118
+spec/models/media_store_spec.rb
+  h_f968154a99632d 32-40
+spec/requests/billboard_events_spec.rb
+  h_f968154a99632d 327-352
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 509-518
+spec/requests/rating_votes_spec.rb
+  h_f968154a99632d 32-63
+spec/services/articles/creator_spec.rb
+  h_f968154a99632d 179-215
+spec/services/articles/enrich_image_attributes_spec.rb
+  h_f968154a99632d 309-341
+spec/services/articles/updater_spec.rb
+  h_f968154a99632d 366-381
+spec/services/delivery_methods/customer_io_event_spec.rb
+  h_f968154a99632d 95-107
+spec/services/delivery_methods/customer_io_spec.rb
+  h_f968154a99632d 203-217
+spec/workers/push_notifications/deliver_worker_spec.rb
+  h_f968154a99632d 23-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2812313bf8c1d3bfa48a5158ae7a3586d73bcb7b",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
