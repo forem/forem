@@ -12,12 +12,16 @@ module Feeds
       percentage = Settings::UserExperience.feed_config_sticky_percentage(subforem_id: @subforem_id)
       return select_random_config unless hours.positive? && rand(100) < percentage
 
+      @assignment = FeedConfigAssignment.find_by(user: @user, subforem_id: @subforem_id)
+      @config = active_assigned_config(Time.current)
+      return @config if @config
+
       FeedConfigAssignment.transaction(requires_new: true) do
         lock_assignment_scope
         @assignment = FeedConfigAssignment.lock.find_by(user: @user, subforem_id: @subforem_id)
         now = Time.current
-        @config = FeedConfig.active.find_by(id: @assignment&.feed_config_id)
-        if @config.nil? || @assignment&.expires_at.nil? || @assignment.expires_at <= now
+        @config = active_assigned_config(now)
+        if @config.nil?
           @config = select_active_config
           expires_at = Time.current + hours.hours
           if @assignment
@@ -47,6 +51,12 @@ module Feeds
     end
 
     private
+
+    def active_assigned_config(now)
+      return unless @assignment&.feed_config_id && @assignment&.expires_at && @assignment.expires_at > now
+
+      FeedConfig.active.find_by(id: @assignment.feed_config_id)
+    end
 
     def lock_assignment_scope
       key = Digest::SHA256.digest("feed_config_assignment:#{@user.id}:#{@subforem_id}").unpack1("q>")
