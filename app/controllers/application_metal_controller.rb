@@ -63,7 +63,7 @@ class ApplicationMetalController < ActionController::Metal
 
     encoded_real_token = request.env[CSRF_TOKEN]
     if encoded_real_token.nil?
-      fetched = csrf_token_storage_strategy.fetch(request)
+      fetched = fetch_csrf_token_from_storage(session)
       encoded_real_token = request.env[CSRF_TOKEN] = fetched if fetched
     end
 
@@ -85,6 +85,19 @@ class ApplicationMetalController < ActionController::Metal
   end
 
   private
+
+  def fetch_csrf_token_from_storage(session)
+    if session.respond_to?(:loaded?) && !session.loaded? && request.session_options[:skip]
+      begin
+        request.session_options[:skip] = false
+        csrf_token_storage_strategy.fetch(request)
+      ensure
+        request.session_options[:skip] = true
+      end
+    else
+      csrf_token_storage_strategy.fetch(request)
+    end
+  end
 
   def legacy_decode_auth_token(token)
     JWT.decode(token, Rails.application.secret_key_base, true, algorithm: "HS256")[0]
