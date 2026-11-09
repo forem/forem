@@ -73,6 +73,15 @@ RSpec.describe ActivityTrackable do
       expect(result.first[:user_ids]).to eq([user.id])
       expect(user.id).not_to eq(article.user_id)
     end
+
+    it "short-circuits before loading trackable_actor when trackable events are skipped" do
+      reaction = build(:reaction, user: user, reactable: article, category: "like", skip_trackable_events: true)
+      allow(reaction).to receive(:trackable_actor)
+
+      reaction.save!
+
+      expect(reaction).not_to have_received(:trackable_actor)
+    end
   end
 
   describe "Article" do
