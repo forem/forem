@@ -5,11 +5,15 @@ class BaseUploader < CarrierWave::Uploader::Base
   EXTENSION_ALLOWLIST = %w[jpg jpeg jpe gif png ico bmp dng webp].freeze
   FRAME_MAX = 500
   FRAME_STRIP_MAX = 150
+  SINGLE_FRAME_TYPES = %i[jpeg bmp].freeze
+  ANIMATABLE_TYPES = %i[png gif webp].freeze
 
   # JPEG markers to strip (APP1..APP13, APP15, and COM), preserving APP0 (JFIF) and APP14 (Adobe).
   JPEG_METADATA_MARKERS = ((0xE1..0xED).to_a + [0xEF, 0xFE]).freeze
   JPEG_STANDALONE_MARKERS = ([0x01] + (0xD0..0xD8).to_a).freeze
   JPEG_SCAN_TERMINATORS = [0xDA, 0xD9].freeze
+  JPEG_EOI_MARKER = "\xFF\xD9".b.freeze
+  JPEG_SOI_MARKER = "\xFF\xD8".b.freeze
   PNG_SIGNATURE = "\x89PNG\r\n\x1A\n".b.freeze
   PNG_METADATA_CHUNKS = %w[tEXt zTXt iTXt tIME].map(&:b).freeze
   PNG_DELEGATED_CHUNKS = %w[eXIf acTL].map(&:b).freeze
@@ -79,17 +83,27 @@ class BaseUploader < CarrierWave::Uploader::Base
 
   private
 
+  # Returns the memoized frame count for the target image file, avoiding
+  # spawning ImageMagick `identify` for formats known to have a single frame.
   def frame_count(image = nil)
     target_path = image ? image.path : file.path
     @frame_counts ||= {}
     return @frame_counts[target_path] if @frame_counts.key?(target_path)
 
     image ||= MiniMagick::Image.new(target_path)
-    @frame_counts[target_path] = if FastImage.animated?(target_path)
-                                   image.identify(&:ping).lines.count
-                                 else
+    @frame_counts[target_path] = if single_frame_image?(target_path)
                                    1
+                                 else
+                                   image.identify(&:ping).lines.count
                                  end
+  end
+
+  # Returns true only when FastImage positively identifies the file as a
+  # single-frame format (JPEG, BMP, or non-animated PNG/GIF/WebP).
+  def single_frame_image?(target_path)
+    type = FastImage.type(target_path)
+    SINGLE_FRAME_TYPES.include?(type) ||
+      (ANIMATABLE_TYPES.include?(type) && !FastImage.animated?(target_path))
   end
 
   # Strips metadata at the container byte level for non-rotated JPEGs and standard PNGs,
@@ -110,6 +124,8 @@ class BaseUploader < CarrierWave::Uploader::Base
     false
   end
 
+  # Strips APP1..APP13, APP15, and COM segments from a JPEG file in place
+  # without decoding or re-encoding the entropy-coded scan stream.
   def strip_jpeg_metadata_in_place(path)
     result = File.open(path, "rb") { |io| parse_jpeg_segments(io) }
     return false unless result
@@ -123,11 +139,14 @@ class BaseUploader < CarrierWave::Uploader::Base
     true
   end
 
+  # Parses JPEG segments up to the first SOS/EOI marker, dropping metadata markers.
+  # Returns :unchanged if no metadata segments were present, [header_out, scan_data]
+  # if metadata segments were removed, or nil to fall back to MiniMagick.
   def parse_jpeg_segments(io)
     file_size = io.size
-    return unless file_size >= 4 && io.read(2) == "\xFF\xD8".b
+    return unless file_size >= 4 && io.read(2) == JPEG_SOI_MARKER
 
-    header_out = "\xFF\xD8".b
+    header_out = String.new(JPEG_SOI_MARKER)
     dropped = false
 
     while io.pos < file_size
@@ -135,10 +154,12 @@ class BaseUploader < CarrierWave::Uploader::Base
       return unless marker
 
       if JPEG_SCAN_TERMINATORS.include?(marker)
+        scan_data = io.read
+        return unless clean_jpeg_scan_data?(marker, scan_data)
         return :unchanged unless dropped
 
         header_out << "\xFF".b << marker.chr
-        return [header_out, io.read]
+        return [header_out, scan_data]
       end
 
       if JPEG_STANDALONE_MARKERS.include?(marker)
@@ -154,6 +175,17 @@ class BaseUploader < CarrierWave::Uploader::Base
     nil
   end
 
+  # Ensures the JPEG ends cleanly at its first EOI marker with no trailing bytes
+  # or secondary embedded JPEG stream (e.g. MPO or Motion Photo trailer).
+  def clean_jpeg_scan_data?(marker, scan_data)
+    return scan_data.empty? if marker == 0xD9
+
+    scan_data.end_with?(JPEG_EOI_MARKER) &&
+      scan_data.index(JPEG_EOI_MARKER) == scan_data.bytesize - 2 &&
+      scan_data.exclude?(JPEG_SOI_MARKER)
+  end
+
+  # Reads the next 0xFF-prefixed marker byte from the JPEG stream.
   def next_jpeg_marker(io, file_size)
     b = io.getbyte
     return unless b == 0xFF
@@ -162,6 +194,7 @@ class BaseUploader < CarrierWave::Uploader::Base
     b unless b.nil? || b == 0xFF
   end
 
+  # Reads or skips a length-prefixed JPEG segment, appending preserved segments to header_out.
   def process_jpeg_segment(io, file_size, marker, header_out)
     len_bytes = io.read(2)
     return unless len_bytes&.bytesize == 2
@@ -181,6 +214,7 @@ class BaseUploader < CarrierWave::Uploader::Base
     end
   end
 
+  # Strips ancillary textual and timestamp chunks (tEXt, zTXt, iTXt, tIME) from a PNG in place.
   def strip_png_metadata_in_place(path)
     File.open(path, "rb") do |io|
       chunks_to_keep, dropped = scan_png_chunks(io)
@@ -197,6 +231,7 @@ class BaseUploader < CarrierWave::Uploader::Base
     true
   end
 
+  # Scans PNG chunk headers without decompressing IDAT payloads.
   def scan_png_chunks(io)
     file_size = io.size
     return unless file_size >= 8 && io.read(8) == PNG_SIGNATURE

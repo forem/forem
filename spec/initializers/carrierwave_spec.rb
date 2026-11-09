@@ -132,7 +132,7 @@ describe CarrierWaveInitializer do
         expect(Open3).not_to have_received(:popen3)
       end
 
-      it "terminates the child process in ensure if an asynchronous exception interrupts execution" do
+      it "terminates the child process in ensure and escalates to KILL if TERM does not stop it" do
         in_r, in_w = IO.pipe
         out_r, out_w = IO.pipe
         err_r, err_w = IO.pipe
@@ -140,17 +140,17 @@ describe CarrierWaveInitializer do
         err_w.close
 
         wait_thr = instance_double(Process::Waiter, pid: 99_999, alive?: true)
-        allow(wait_thr).to receive(:join).and_raise(Rack::Timeout::RequestTimeoutException.new({}))
+        allow(wait_thr).to receive(:join).with(anything).and_raise(Rack::Timeout::RequestTimeoutException.new({}))
+        allow(wait_thr).to receive(:join).with(MiniMagickShellTimeoutGuard::CHILD_TERM_GRACE_SECONDS).and_return(nil)
         allow(Open3).to receive(:popen3).and_yield(in_w, out_r, err_r, wait_thr)
         allow(Process).to receive(:kill)
-        allow(Process).to receive(:waitpid)
 
         expect do
           shell.__send__(:execute_open3, ["mogrify", "test.jpg"])
         end.to raise_error(Rack::Timeout::RequestTimeoutException)
 
-        expect(Process).to have_received(:kill).with("TERM", 99_999)
-        expect(Process).to have_received(:waitpid).with(99_999)
+        expect(Process).to have_received(:kill).with("TERM", 99_999).ordered
+        expect(Process).to have_received(:kill).with("KILL", 99_999).ordered
       ensure
         [in_r, in_w, out_r, err_r].each { |io| io.close unless io.closed? }
       end

@@ -84,6 +84,14 @@ describe ArticleImageUploader, type: :uploader do
       uploader.store!(image_jpg)
       expect(Open3).not_to have_received(:popen3)
     end
+
+    it "delegates frame counting to identify -ping for container types not checked by FastImage.animated?" do
+      image = instance_double(MiniMagick::Image, path: image_jpg.path, identify: "frame1\nframe2\n")
+      allow(FastImage).to receive(:type).with(image_jpg.path).and_return(:ico)
+
+      expect(uploader.__send__(:frame_count, image)).to eq(2)
+      expect(image).to have_received(:identify)
+    end
   end
 
   describe "exif removal" do
@@ -101,6 +109,21 @@ describe ArticleImageUploader, type: :uploader do
       expect(Open3).not_to have_received(:popen3)
       expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
       expect(FastImage.size(uploader.file.path)).to eq(FastImage.size(image_with_gps.path))
+    end
+
+    it "falls back to MiniMagick and removes trailing bytes when a JPEG has data appended after EOI" do
+      Tempfile.create(["trailing", ".jpg"]) do |tmp|
+        raw = File.binread(image_with_gps.path)
+        File.binwrite(tmp.path, raw + "TrailingMotionPhotoMetadataPayload".b)
+        allow(Open3).to receive(:popen3).and_call_original
+
+        uploaded = Rack::Test::UploadedFile.new(tmp.path, "image/jpeg")
+        uploader.store!(uploaded)
+
+        expect(Open3).to have_received(:popen3)
+        expect(EXIFR::JPEG.new(uploader.file.path).exif?).to be(false)
+        expect(File.binread(uploader.file.path)).not_to include("TrailingMotionPhotoMetadataPayload".b)
+      end
     end
 
     it "auto-orients and strips EXIF via MiniMagick when a JPEG has non-default EXIF orientation" do
