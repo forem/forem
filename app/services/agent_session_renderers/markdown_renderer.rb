@@ -56,11 +56,11 @@ module AgentSessionRenderers
         legacy_postprocess_transcript_html(html, redact: redact)
     end
 
-    # Highlights language-tagged `<pre><code class="LANG">` blocks via Rouge,
+    # Highlights language-tagged `<pre><code class="LANG">` blocks via ForemNative,
     # skipping regexp allocation when no tagged code opener is present.
     def self.highlight_tagged_code_blocks(html)
       # Ordinary prose and untagged fences need neither a regexp match object
-      # nor a copy of the whole rendered message for the Rouge pass.
+      # nor a copy of the whole rendered message for the highlighting pass.
       return html if html.instance_of?(String) && html.encoding == Encoding::UTF_8 &&
         html.exclude?('<pre><code class="')
 
@@ -68,9 +68,9 @@ module AgentSessionRenderers
         lang = Regexp.last_match(1)
         code = CGI.unescapeHTML(Regexp.last_match(2))
         begin
-          lexer = Rouge::Lexer.find(lang) || Rouge::Lexers::PlainText.new
-          formatter = Rouge::Formatters::HTML.new
-          highlighted = formatter.format(lexer.lex(code))
+          highlighted = ForemNative.syntax_highlight_html(code, lang)
+          raise StandardError, "syntax highlight unavailable" if highlighted.nil?
+
           %(<pre class="highlight #{lang}"><code>#{highlighted}</code></pre>)
         rescue StandardError
           %(<pre class="highlight"><code>#{CGI.escapeHTML(code)}</code></pre>)

@@ -21,6 +21,8 @@ pub(crate) mod psl_data;
 pub mod sanitize;
 pub mod scrubber;
 pub mod svg;
+pub mod syntax;
+pub(crate) mod syntax_data;
 pub mod text;
 pub mod title;
 pub mod transcript;
