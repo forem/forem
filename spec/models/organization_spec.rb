@@ -1,33 +1,10 @@
 require "rails_helper"
 
-# rubocop:disable RSpec/NestedGroups, Rails/DynamicFindBy
 RSpec.describe Organization do
   let(:organization) { create(:organization) }
-  let(:user) { create(:user) }
-
-  def create(name, *traits, **options)
-    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
-
-    if name == :article
-      options[:user] ||= user
-      options[:with_tags] = false unless options.key?(:with_tags)
-      options[:with_main_image] = false unless options.key?(:with_main_image)
-    end
-    super
-  end
-
-  def create_list(name, amount, *traits, **options)
-    return Array.new(amount) { create(name, *traits, **options) } if name == :article
-
-    super
-  end
 
   describe "validations" do
-    let(:organization) { build(:organization) }
-
     describe "builtin validations" do
-      subject { organization }
-
       it { is_expected.to have_many(:articles).dependent(:nullify) }
       it { is_expected.to have_many(:collections).dependent(:nullify) }
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
@@ -63,8 +40,11 @@ RSpec.describe Organization do
       it { is_expected.to validate_presence_of(:slug) }
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:unspent_credits_count) }
-      it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
-      it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
+
+      it "validates uniqueness of secret and slug", :aggregate_failures do
+        expect(organization).to validate_uniqueness_of(:secret).allow_nil
+        expect(organization).to validate_uniqueness_of(:slug).case_insensitive
+      end
 
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
@@ -81,7 +61,10 @@ RSpec.describe Organization do
       it { is_expected.not_to allow_value("1234").for(:slug) }
     end
 
+    # rubocop:disable RSpec/NestedGroups
     describe "custom validations" do
+      let(:organization) { build_stubbed(:organization) }
+
       describe "#validate_header_cta" do
         it "allows valid HTTP and HTTPS urls" do
           organization.header_cta = { "text" => "Click Here", "url" => "https://example.com" }
@@ -95,8 +78,10 @@ RSpec.describe Organization do
         end
 
         it "rejects javascript pseudo-protocols in dropdown links to prevent Stored XSS" do
-          links = [{ "text" => "Malicious", "url" => "javascript:alert(1)//" }]
-          organization.header_cta = { "text" => "Dropdown", "links" => links }
+          organization.header_cta = {
+            "text" => "Dropdown",
+            "links" => [{ "text" => "Malicious", "url" => "javascript:alert(1)//" }]
+          }
           expect(organization).not_to be_valid
           expect(organization.errors[:header_cta]).to include("Link must be a valid HTTP, HTTPS, or Mailto URL")
         end
@@ -126,16 +111,15 @@ RSpec.describe Organization do
         end
       end
     end
+    # rubocop:enable RSpec/NestedGroups
   end
 
   context "when callbacks are triggered before save" do
-    it "generates a secret if set to empty string" do
+    it "generates a secret if set to empty string or nil", :aggregate_failures do
       organization.secret = ""
       organization.save
       expect(organization.reload.secret).not_to eq("")
-    end
 
-    it "generates a secret if set to nil" do
       organization.secret = nil
       organization.save
       expect(organization.reload.secret).not_to be_nil
@@ -143,7 +127,7 @@ RSpec.describe Organization do
   end
 
   describe "#name" do
-    let(:organization) { build(:organization) }
+    let(:organization) { build_stubbed(:organization) }
 
     it "rejects names with over 50 characters" do
       organization.name = "x" * 51
@@ -157,7 +141,7 @@ RSpec.describe Organization do
   end
 
   describe "#summary" do
-    let(:organization) { build(:organization) }
+    let(:organization) { build_stubbed(:organization) }
 
     it "rejects summaries with over 250 characters" do
       organization.summary = "x" * 251
@@ -171,7 +155,7 @@ RSpec.describe Organization do
   end
 
   describe "#text_color_hex" do
-    let(:organization) { build(:organization) }
+    let(:organization) { build_stubbed(:organization) }
 
     it "accepts hex color codes" do
       organization.text_color_hex = Faker::Color.hex_color
@@ -230,7 +214,7 @@ RSpec.describe Organization do
     end
 
     it "takes organization slug into account" do
-      create(:user, username: "lightalloy")
+      create(:user, :without_profile, username: "lightalloy", profile_image: nil)
       organization = build(:organization, slug: "lightalloy")
       expect(organization).not_to be_valid
       expect(organization.errors[:slug].to_s.include?("taken")).to be true
@@ -257,6 +241,8 @@ RSpec.describe Organization do
     end
 
     context "when callbacks are triggered after save" do
+      let(:organization) { build(:organization) }
+
       before do
         allow(Organizations::BustCacheWorker).to receive(:perform_async)
       end
@@ -269,7 +255,7 @@ RSpec.describe Organization do
   end
 
   describe "#url" do
-    let(:organization) { build(:organization) }
+    let(:organization) { build_stubbed(:organization) }
 
     it "accepts valid http url" do
       organization.url = "http://ben.com"
@@ -288,20 +274,28 @@ RSpec.describe Organization do
   end
 
   describe "#check_for_slug_change" do
-    it "updates slug, old_slug, and old_old_slug across successive slug changes", :aggregate_failures do
+    let(:user) { create(:user, :without_profile, profile_image: nil) }
+
+    it "updates slug, old_slug, and old_old_slug across successive changes", :aggregate_failures do
       original_slug = organization.slug
-      organization.update(slug: "something_else")
-      expect(organization.slug).to eq("something_else")
+      first_slug = "slug_#{rand(10_000)}"
+      organization.update(slug: first_slug)
+      expect(organization.slug).to eq(first_slug)
       expect(organization.old_slug).to eq(original_slug)
 
       organization.update(slug: "another_slug")
       expect(organization.slug).to eq("another_slug")
-      expect(organization.old_slug).to eq("something_else")
+      expect(organization.old_slug).to eq(first_slug)
       expect(organization.old_old_slug).to eq(original_slug)
     end
 
     context "when dealing with organization articles" do
-      let!(:article) { create(:article, organization: organization, user: user) }
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+        article = create(:article, organization: organization, user: user, with_tags: false, with_main_image: false)
+        organization.articles << article
+        organization.save
+      end
 
       it "updates the paths and cached_organizations of the organization's articles", :aggregate_failures do
         new_slug = "slug_#{rand(10_000)}"
@@ -310,61 +304,52 @@ RSpec.describe Organization do
           organization.update(slug: new_slug)
         end
 
-        article.reload
+        article = Article.find_by(organization_id: organization.id)
         expect(article.path).to include(new_slug)
         expect(article.cached_organization.slug).to eq(new_slug)
       end
 
       it "updates article's cached_organization profile image", :aggregate_failures do
-        # What is going on with this spec? Follow the comments.
-        #
         # tl;dr - verifying fix for https://github.com/forem/forem/issues/17041
-
-        # Create an organization and article, verify the article has cached the initial profile
-        # image of the organization.
+        article = Article.find_by(organization_id: organization.id)
         expect(article.cached_organization.profile_image_url).to eq(organization.profile_image_url)
 
-        # For good measure let's have two of these articles
-        create(:article, organization: organization)
+        create(:article, organization: organization, user: user, with_tags: false, with_main_image: false)
 
         # A foible of CarrierWave is that I can't re-upload for the same model in memory.  I need to
-        # refind the record.  #reload does not work either.  (I lost sleep on this portion of the
-        # test)
-        organization = described_class.find(self.organization.id)
+        # refind the record.  #reload does not work either.
+        reloaded_org = described_class.find(organization.id)
 
-        # Verify that the organization's image changes.  See the above CarrierWave foible
         expect do
-          organization.profile_image = File.open(Rails.root.join("app/assets/images/2.png"))
-          organization.save!
-        end.to change { organization.reload.profile_image_url }
+          reloaded_org.profile_image = File.open(Rails.root.join("app/assets/images/2.png"))
+          reloaded_org.save!
+        end.to change { reloaded_org.reload.profile_image_url }
 
-        sidekiq_perform_enqueued_jobs(only: Organizations::SaveArticleWorker)
+        sidekiq_perform_enqueued_jobs
 
-        # I want to collect reloaded versions of the organization's articles so I can see their
-        # cached organization profile image
-        articles_profile_image_urls = organization.articles
+        articles_profile_image_urls = reloaded_org.articles
           .map { |art| art.reload.cached_organization.profile_image_url }.uniq
 
-        # Because of the change `{ organization.reload... }` the organization's profile_image_url is
-        # the most recent change.
-        expect(articles_profile_image_urls).to eq([organization.profile_image_url])
+        expect(articles_profile_image_urls).to eq([reloaded_org.profile_image_url])
       end
 
       # these tests rely on `Organization.update_articles_cached_organization` callback,
       # which will eventually invoke the trigger
+      # rubocop:disable RSpec/NestedGroups
       context "when callbacks eventually invoke the trigger on Article.reading_list_document" do
-        it "updates the articles .reading_list_document when updating the name but not company_size",
-           :aggregate_failures do
-          old_reading_list_document = article.reload.reading_list_document
+        it "updates reading_list_document when updating name but not company_size", :aggregate_failures do
+          article = Article.find_by(organization_id: organization.id)
+          old_reading_list_document = article.reading_list_document
 
           organization.update(company_size: "200")
           expect(article.reload.reading_list_document).to eq(old_reading_list_document)
 
           organization.update(name: "ACME Org")
-          sidekiq_perform_enqueued_jobs(only: Organizations::SaveArticleWorker)
+          sidekiq_perform_enqueued_jobs
           expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
         end
       end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 
@@ -374,10 +359,12 @@ RSpec.describe Organization do
       organization.update(slug: "second_slug")
       organization.update(slug: "third_slug")
 
+      # rubocop:disable Rails/DynamicFindBy
       expect(described_class.find_by_slug_or_legacy("third_slug")).to eq(organization)
       expect(described_class.find_by_slug_or_legacy("second_slug")).to eq(organization)
       expect(described_class.find_by_slug_or_legacy(original_slug)).to eq(organization)
       expect(described_class.find_by_slug_or_legacy("missing_slug")).to be_nil
+      # rubocop:enable Rails/DynamicFindBy
     end
 
     it "uses indexes on the legacy slug columns" do
@@ -403,11 +390,14 @@ RSpec.describe Organization do
   end
 
   describe "#public_articles_count" do
-    it "returns 0 when only unpublished articles exist and counts published articles", :aggregate_failures do
-      create(:article, organization: organization, published: false)
+    it "returns 0 when no articles are published and counts only published articles", :aggregate_failures do
+      user = create(:user, :without_profile, profile_image: nil)
+      create(:article, organization: organization, user: user, published: false,
+                       with_tags: false, with_main_image: false)
       expect(organization.public_articles_count).to eq(0)
 
-      published_articles = create_list(:article, 2, organization: organization, published: true)
+      published_articles = create_list(:article, 2, organization: organization, user: user, published: true,
+                                                    with_tags: false, with_main_image: false)
       expect(organization.public_articles_count).to eq(published_articles.count)
     end
   end
@@ -420,13 +410,29 @@ RSpec.describe Organization do
     end
 
     it "finds them by simple ilike match and returns all orgs on empty query", :aggregate_failures do
-      expect(described_class.simple_name_match("boo").pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
-      expect(described_class.simple_name_match("book").pluck(:name)).to eq(["For Fans of Books"])
-      expect(described_class.simple_name_match("  BOOK  ").pluck(:name)).to eq(["For Fans of Books"])
+      query = "boo"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
 
-      [nil, "", "        "].each do |empty_query|
-        expect(described_class.simple_name_match(empty_query.dup).size).to eq(3)
-      end
+      query = "book"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+
+      query = "  BOOK  "
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+
+      query = nil
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = ""
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = "        "
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
     end
   end
 
@@ -436,29 +442,21 @@ RSpec.describe Organization do
       allow(Images::SocialImageWorker).to receive(:perform_async)
     end
 
-    context "when a displayed primary detail changes" do
-      it "calls SocialImageWorker.perform_async when name changes even without articles" do
-        organization.update!(name: "New name for this org!")
-        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
-      end
+    it "enqueues SocialImageWorker only when displayed primary details change", :aggregate_failures do
+      organization.update!(story: "Our long story", company_size: "50", twitter_username: "orgtwitter")
+      expect(Images::SocialImageWorker).not_to have_received(:perform_async)
 
-      it "calls SocialImageWorker.perform_async when summary, location, url, slug, or bg_color_hex changes" do
-        organization.update!(summary: "Updated org summary")
-        expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization")
-      end
-    end
+      organization.update!(name: "New name for this org!")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization").once
 
-    context "when non-displayed attributes change" do
-      it "does not call SocialImageWorker.perform_async" do
-        organization.update!(story: "Our long story", company_size: "50", twitter_username: "orgtwitter")
-        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
-      end
+      organization.update!(summary: "Updated org summary")
+      expect(Images::SocialImageWorker).to have_received(:perform_async).with(organization.id, "Organization").twice
     end
   end
 
   describe "#bust_cache" do
     context "when a new user is added to the organization" do
-      let(:user) { create(:user) }
+      let(:user) { create(:user, :without_profile, profile_image: nil) }
 
       it "calls BustCachePathWorker after creating an organization membership" do
         org_membership = OrganizationMembership.create(user: user, organization: organization, type_of_user: "admin")
@@ -510,21 +508,23 @@ RSpec.describe Organization do
   end
 
   describe "#fully_trusted?" do
-    let(:organization) { build(:organization) }
+    let(:organization) { build_stubbed(:organization) }
 
-    it "returns true when fully_trusted is true and false when false", :aggregate_failures do
+    it "returns true when fully_trusted is true" do
       organization.fully_trusted = true
       expect(organization.fully_trusted?).to be true
+    end
 
+    it "returns false when fully_trusted is false" do
       organization.fully_trusted = false
       expect(organization.fully_trusted?).to be false
     end
   end
 
   describe "#active_users" do
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:user3) { create(:user) }
+    let(:user1) { create(:user, :without_profile, profile_image: nil) }
+    let(:user2) { create(:user, :without_profile, profile_image: nil) }
+    let(:user3) { create(:user, :without_profile, profile_image: nil) }
 
     before do
       create(:organization_membership, organization: organization, user: user1, type_of_user: "admin")
@@ -549,12 +549,16 @@ RSpec.describe Organization do
       allow(FeatureFlag).to receive(:enabled?).with(:org_readme, anything).and_return(true)
     end
 
-    it "enqueues recompilation only when name, slug, or summary changes", :aggregate_failures do
+    it "enqueues recompilation when name, slug, or summary changes, but not other attributes", :aggregate_failures do
       organization.update!(company_size: "50")
       expect(Organizations::RecompilePagesWorker).not_to have_received(:perform_async)
 
       organization.update!(name: "New Name")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).once
+
       organization.update!(slug: "new-slug")
+      expect(Organizations::RecompilePagesWorker).to have_received(:perform_async).with(organization.id).twice
+
       organization.update!(summary: "New Summary")
       expect(Organizations::RecompilePagesWorker)
         .to have_received(:perform_async).with(organization.id).exactly(3).times
@@ -583,4 +587,3 @@ RSpec.describe Organization do
     end
   end
 end
-# rubocop:enable RSpec/NestedGroups, Rails/DynamicFindBy
