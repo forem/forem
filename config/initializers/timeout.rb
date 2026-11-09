@@ -13,7 +13,29 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
   module RackTimeoutThreadTracker
     def call(env)
       env["rack-timeout.request_thread"] = Thread.current
+      previous_env = Thread.current[:rack_timeout_env]
+      previous_started_at = Thread.current[:rack_timeout_started_at]
+      Thread.current[:rack_timeout_env] = env
+      Thread.current[:rack_timeout_started_at] = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       super
+    ensure
+      Thread.current[:rack_timeout_env] = previous_env
+      Thread.current[:rack_timeout_started_at] = previous_started_at
+    end
+
+    # Returns the remaining Rack::Timeout budget (in seconds) for the current
+    # request thread, or nil when not running inside a timed Rack request.
+    def self.remaining_timeout
+      env = Thread.current[:rack_timeout_env]
+      started_at = Thread.current[:rack_timeout_started_at]
+      return unless env && started_at
+
+      info = env[Rack::Timeout::ENV_INFO_KEY]
+      timeout = info&.timeout
+      return unless timeout.is_a?(Numeric) && timeout.positive?
+
+      elapsed = Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at
+      [timeout - elapsed, 0.0].max
     end
 
     # Send a PostgreSQL CancelRequest before closing the socket so connection poolers
