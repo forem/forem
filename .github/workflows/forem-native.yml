@@ -19,7 +19,9 @@ on:
       - "app/controllers/notifications/counts_controller.rb"
       - "app/controllers/reactions_controller.rb"
       - "app/controllers/concerns/valid_request.rb"
+      - "app/helpers/agent_sessions_helper.rb"
       - "app/lib/middlewares/metal_telemetry_fast_path.rb"
+      - "app/lib/redcarpet/render/html_rouge.rb"
       - "app/models/billboard.rb"
       - "app/models/billboard_event.rb"
       - "app/models/geolocation.rb"
@@ -27,17 +29,23 @@ on:
       - "app/models/feed_config.rb"
       - "app/models/article.rb"
       - "app/queries/billboards/filtered_ads_query.rb"
+      - "app/services/agent_session_renderers/markdown_renderer.rb"
+      - "app/services/articles/detect_code_block_languages.rb"
       - "app/services/articles/feeds/custom.rb"
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
       - "lib/ISO3166/country.rb"
+      - "spec/helpers/agent_sessions_helper_spec.rb"
       - "spec/lib/forem_native_spec.rb"
+      - "spec/lib/redcarpet/render/html_rouge_spec.rb"
       - "spec/models/billboard_spec.rb"
       - "spec/models/geolocation_spec.rb"
       - "spec/models/feed_config_spec.rb"
       - "spec/queries/billboards/filtered_ads_query_spec.rb"
       - "spec/requests/billboards_spec.rb"
+      - "spec/services/agent_session_renderers/markdown_renderer_spec.rb"
+      - "spec/services/articles/detect_code_block_languages_spec.rb"
       - "spec/services/articles/feeds/custom_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
@@ -135,5 +143,6 @@ jobs:
             raise "Unexpected build_billboard_weighted_random_sql!" unless ForemNative.build_billboard_weighted_random_sql("SELECT * FROM billboards", 10, 5000, 0.5).include?("WITH")
             raise "Unexpected build_billboard_new_only_sql!" unless ForemNative.build_billboard_new_only_sql("SELECT * FROM billboards", 5000, 15).include?("preferred")
             raise "Unexpected build_filtered_ads_where_sql!" unless ForemNative.build_filtered_ads_where_sql(["feed_first", 1_700_000_000, 0, [], 1, false, "Mozilla/5.0 (iPhone)", nil, true, nil, [], ["ruby"], true, true, true, 42, ["admin"], true, "ARRAY['US']::varchar[]", true, true, [10], false]).include?("placement_area")
+            raise "Unexpected syntax_highlight_code_block!" unless ForemNative.syntax_highlight_code_block("puts 1", "ruby").include?("highlight ruby")
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '

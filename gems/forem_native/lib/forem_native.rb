@@ -1304,7 +1304,106 @@ module ForemNative
       Native.build_filtered_ads_where_sql(params_array)
     end
 
+    # Returns the sorted Array of all 228 canonical syntax highlighting language tags,
+    # matching `Articles::DetectCodeBlockLanguages::SUPPORTED_LANGUAGE_TAGS`.
+    def syntax_supported_language_tags
+      return unless Native.respond_to?(:syntax_supported_language_tags)
+
+      Native.syntax_supported_language_tags
+    end
+
+    # Returns the `tag => title_or_criteria` Hash for all 228 supported language tags,
+    # matching `Articles::DetectCodeBlockLanguages.language_criteria`.
+    def syntax_language_criteria
+      return unless Native.respond_to?(:syntax_language_criteria)
+
+      Native.syntax_language_criteria
+    end
+
+    # Resolves a lexer name or alias to its canonical tag (e.g. `"js"` => `"javascript"`),
+    # matching `Rouge::Lexer.find(name)&.tag`.
+    def syntax_lexer_tag(name)
+      return if name.nil?
+      return unless Native.respond_to?(:syntax_lexer_tag)
+
+      str = name.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return unless str.valid_encoding?
+
+      Native.syntax_lexer_tag(str)
+    end
+
+    # Normalizes an arbitrary language hint to a supported canonical tag or `"plaintext"`,
+    # matching `Articles::DetectCodeBlockLanguages#normalize_language`.
+    def syntax_normalize_language(language)
+      return "plaintext" unless Native.respond_to?(:syntax_normalize_language)
+
+      str = language.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return "plaintext" unless str.valid_encoding?
+
+      Native.syntax_normalize_language(str) || "plaintext"
+    end
+
+    # Resolves a lexer tag with CGI query options (`?mimetype=...`) and `"guess"` source/shebang
+    # detection, matching `Rouge::Lexer.find_fancy(lang, code)&.tag`.
+    def syntax_find_fancy_tag(lang, code = nil, rescue_ambiguous: true)
+      return unless Native.respond_to?(:syntax_find_fancy_tag)
+
+      lang_str = coerce_optional_utf8_string(lang)
+      return if !lang.nil? && lang_str.nil?
+
+      code_str = coerce_optional_utf8_string(code)
+      Native.syntax_find_fancy_tag(lang_str, code_str, rescue_ambiguous ? true : false)
+    end
+
+    # Extracts the file extension from `path` and resolves its canonical lexer tag,
+    # matching `AgentSessionsHelper#language_from_path`.
+    def syntax_language_from_path(path)
+      return if path.nil?
+      return unless Native.respond_to?(:syntax_language_from_path)
+
+      str = coerce_optional_utf8_string(path)
+      return unless str
+
+      Native.syntax_language_from_path(str)
+    end
+
+    # Highlights `code` for `lang` and returns the inner `<span class="...">` HTML stream,
+    # matching `Rouge::Formatters::HTML.new.format(lexer.lex(code))`.
+    def syntax_highlight_html(code, lang = nil)
+      return "" if code.nil?
+      return unless Native.respond_to?(:syntax_highlight_html)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_html(code_str, lang_str)
+    end
+
+    # Highlights a fenced Markdown code block and wraps it in
+    # `<div class="highlight"><pre class="highlight {tag}"><code>...</code></pre></div>`,
+    # matching `Redcarpet::Render::HTMLRouge#block_code`.
+    def syntax_highlight_code_block(code, lang = nil)
+      return unless Native.respond_to?(:syntax_highlight_code_block)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_code_block(code_str, lang_str)
+    end
+
     private
+
+    def coerce_optional_utf8_string(value)
+      return if value.nil?
+
+      str = value.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      str if str.valid_encoding?
+    end
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
     def native_float(amount)
