@@ -1,5 +1,17 @@
 require "open-uri"
 class ArticleImageUploader < BaseUploader
+  def self.normalize_source_url(raw_url)
+    return if raw_url.blank?
+
+    candidate = raw_url.to_s.strip.split(/\s+/, 2).first.to_s.delete_prefix("<").delete_suffix(">")
+    return if candidate.blank?
+
+    uri = URI.parse(candidate)
+    candidate if uri.is_a?(URI::HTTP) && uri.host.present?
+  rescue URI::InvalidURIError
+    nil
+  end
+
   def store_dir
     "uploads/articles/"
   end
@@ -9,8 +21,11 @@ class ArticleImageUploader < BaseUploader
   end
 
   def upload_from_url(url)
+    normalized_url = self.class.normalize_source_url(url)
+    return unless normalized_url
+
     # Open the URL and create a temporary file
-    file = URI.open(url) # rubocop:disable Security/Open
+    file = URI.open(normalized_url) # rubocop:disable Security/Open
     temp_file = Tempfile.new(["upload", File.extname(file.base_uri.path)])
     temp_file.binmode
     temp_file.write(file.read)

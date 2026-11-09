@@ -1,4 +1,68 @@
 # rubocop:disable Metrics/BlockLength
+require "rpush/daemon"
+
+# Guard NetHttp2::Client against writing to a nil @socket when the background
+# @socket_thread closes a disconnected APNs HTTP/2 socket mid-request, raising
+# a retryable SocketError instead of `NoMethodError: undefined method 'write' for nil`.
+if defined?(NetHttp2::Client)
+  module NetHttp2NilSocketGuard
+    private
+
+    def h2
+      @h2 ||= HTTP2::Client.new.tap do |h2|
+        h2.on(:frame) do |bytes|
+          @mutex.synchronize do
+            raise SocketError, "Socket was remotely closed" if @socket.nil?
+
+            @socket.write(bytes)
+            @socket.flush
+
+            @first_data_sent = true
+          end
+        end
+      end
+    end
+  end
+  NetHttp2::Client.prepend(NetHttp2NilSocketGuard)
+end
+
+# Treat transient APNs HTTP/2 socket disconnects (EPIPE / Broken pipe,
+# ECONNRESET, ETIMEDOUT, IOError, EOFError, OpenSSL::SSL::SSLError) as retryable
+# batch errors and reset the HTTP/2 client instead of permanently failing every
+# notification in the batch.
+if defined?(Rpush::Daemon::Apns2::Delivery)
+  module RpushApns2TransientSocketRetry
+    TRANSIENT_TRANSPORT_ERRORS = [
+      Errno::ECONNREFUSED,
+      Errno::ECONNRESET,
+      Errno::EPIPE,
+      Errno::ETIMEDOUT,
+      SocketError,
+      IOError,
+      EOFError,
+      OpenSSL::SSL::SSLError,
+    ].freeze
+
+    def perform
+      @batch.each_notification do |notification|
+        prepare_async_post(notification)
+      end
+
+      @client.join(timeout: self.class::CLIENT_JOIN_TIMEOUT)
+    rescue NetHttp2::AsyncRequestTimeout, *TRANSIENT_TRANSPORT_ERRORS => e
+      mark_batch_retryable(10.seconds.from_now, e)
+      @client.close
+      raise
+    rescue StandardError => e
+      mark_batch_failed(e)
+      raise
+    ensure
+      @batch.all_processed
+    end
+  end
+  Rpush::Daemon::Apns2::Delivery.prepend(RpushApns2TransientSocketRetry)
+end
+
 Rpush.configure do |config|
   # Supported clients are :active_record and :redis
   config.client = :redis
@@ -73,9 +137,19 @@ Rpush.reflect do |on|
       Device.ios.where(token: notification.device_token).destroy_all
     end
 
-    Rails.error.report(
-      StandardError.new("error_description: #{notification.error_description}, error_code: #{notification.error_code}"),
-    )
+    transient_transport_failure = notification.error_code.nil? &&
+      notification.error_description.to_s.match?(
+        /Broken pipe|Connection reset|Socket was remotely closed|undefined method ['`]write' for nil/i,
+      )
+
+    if transient_transport_failure
+      Rails.logger.warn(
+        "[Rpush] Transient transport failure for notification #{notification.id}: #{notification.error_description}",
+      )
+    else
+      msg = "error_description: #{notification.error_description}, error_code: #{notification.error_code}"
+      Rails.error.report(StandardError.new(msg))
+    end
 
     ForemStatsClient.increment(
       "push_notifications.errors",

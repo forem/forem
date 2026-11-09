@@ -306,5 +306,38 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       expect(article.processed_html).to include('width="350"')
       expect(article.processed_html).to include('height="150"')
     end
+
+    it "strips markdown image title suffixes and skips regional S3 bucket URLs when storing images" do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return("dev-to-uploads")
+
+      stored_file = instance_double(CarrierWave::SanitizedFile, exists?: false)
+      uploader = instance_double(
+        ArticleImageUploader,
+        upload_from_url: "https://dev-to-uploads.s3.amazonaws.com/out.png",
+        retrieve_from_store!: nil,
+        file: stored_file,
+      )
+      allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+      allow(FastImage).to receive(:new).and_return(instance_double(FastImage, size: [100, 100], type: :png))
+
+      article.update(
+        body_markdown: <<~MD,
+          ![arch](https://example.com/diagram.png "Architecture Overview")
+          ![already](https://dev-to-uploads.s3.us-east-2.amazonaws.com/uploads/articles/existing.png)
+          ![relative](./local-diagram.png)
+        MD
+      )
+
+      described_class.call(article)
+
+      expect(MediaStore.pluck(:original_url)).to eq(["https://example.com/diagram.png"])
+    end
+
+    it "skips malformed img src attributes without raising URI::InvalidURIError" do
+      article.update_column(:processed_html, '<p><img src="http://example.com/bad uri with spaces.png"></p>')
+
+      expect { described_class.call(article) }.not_to raise_error
+    end
   end
 end

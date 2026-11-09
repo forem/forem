@@ -1,5 +1,6 @@
 module Articles
   class Updater
+    MAX_DEADLOCK_RETRIES = 2
     Result = Struct.new(:success, :article, keyword_init: true)
 
     def self.call(...)
@@ -41,15 +42,28 @@ module Articles
     attr_reader :user, :article, :article_params, :co_author_invitee_ids
 
     def save_article
-      return article.update(article_params) if co_author_invitations.nil?
+      return with_deadlock_retry { article.update(article_params) } if co_author_invitations.nil?
 
       # Assign first so the invitations are checked against the post as it will be saved
       # (e.g. its organization).
       article.assign_attributes(article_params)
-      return article.save if co_author_invitations.prepare
+      return with_deadlock_retry { article.save } if co_author_invitations.prepare
 
       co_author_invitations.errors.each { |message| article.errors.add(:base, message) }
       false
+    end
+
+    def with_deadlock_retry
+      attempts = 0
+      begin
+        yield
+      rescue ActiveRecord::Deadlocked
+        attempts += 1
+        raise if attempts > MAX_DEADLOCK_RETRIES
+
+        sleep(0.05 * attempts)
+        retry
+      end
     end
 
     def co_author_invitations

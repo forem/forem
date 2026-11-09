@@ -6,13 +6,8 @@ class RatingVotesController < ApplicationController
 
   def create
     authorize RatingVote
-    rating_vote = RatingVote.where(user_id: current_user.id,
-                                   article_id: rating_vote_params[:article_id]).first || RatingVote.new
-    rating_vote.user_id = current_user.id
-    rating_vote.article_id = rating_vote_params[:article_id]
-    rating_vote.rating = rating_vote_params[:rating].to_f
-    rating_vote.group = rating_vote_params[:group]
-    if rating_vote.save
+    rating_vote, saved = upsert_explicit_rating_vote
+    if saved
       respond_to do |format|
         format.json { render json: { result: "Success" } }
         format.html { redirect_back(fallback_location: "/mod") }
@@ -28,6 +23,29 @@ class RatingVotesController < ApplicationController
   end
 
   private
+
+  def upsert_explicit_rating_vote
+    vote = RatingVote.find_or_initialize_by(
+      user_id: current_user.id,
+      article_id: rating_vote_params[:article_id],
+      context: "explicit",
+    )
+    assign_rating_vote_attributes(vote)
+    [vote, vote.save]
+  rescue ActiveRecord::RecordNotUnique
+    vote = RatingVote.find_by!(
+      user_id: current_user.id,
+      article_id: rating_vote_params[:article_id],
+      context: "explicit",
+    )
+    assign_rating_vote_attributes(vote)
+    [vote, vote.save]
+  end
+
+  def assign_rating_vote_attributes(rating_vote)
+    rating_vote.rating = rating_vote_params[:rating].to_f
+    rating_vote.group = rating_vote_params[:group]
+  end
 
   def rating_vote_params
     params.require(:rating_vote).permit(policy(RatingVote).permitted_attributes)

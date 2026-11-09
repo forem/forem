@@ -92,6 +92,19 @@ RSpec.describe DeliveryMethods::CustomerIoEvent do
       .to raise_error(Customerio::InvalidResponse)
   end
 
+  it "retries on Net::ReadTimeout and succeeds when the retry completes" do
+    calls = 0
+    allow(track_client).to receive(:batch) do
+      calls += 1
+      raise Net::ReadTimeout if calls == 1
+
+      nil
+    end
+
+    expect { described_class.new(customerio_event_name: "digest_ready").deliver!(mail) }.not_to raise_error
+    expect(calls).to eq(2)
+  end
+
   # Customer.io renders from the event payload, so Ahoy's rewriting of the
   # ActionMailer body never reaches the recipient.
   describe "click tracking in the payload" do

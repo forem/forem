@@ -1,5 +1,7 @@
 module Articles
   class Creator
+    MAX_DEADLOCK_RETRIES = 2
+
     def self.call(...)
       new(...).call
     end
@@ -101,10 +103,25 @@ module Articles
     end
 
     def save_article
-      return @article.save if co_author_invitations.nil? || co_author_invitations.prepare
+      if co_author_invitations.nil? || co_author_invitations.prepare
+        return with_deadlock_retry { @article.save }
+      end
 
       co_author_invitations.errors.each { |message| @article.errors.add(:base, message) }
       false
+    end
+
+    def with_deadlock_retry
+      attempts = 0
+      begin
+        yield
+      rescue ActiveRecord::Deadlocked
+        attempts += 1
+        raise if attempts > MAX_DEADLOCK_RETRIES
+
+        sleep(0.05 * attempts)
+        retry
+      end
     end
 
     def co_author_invitations

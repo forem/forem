@@ -24,9 +24,15 @@ module Articles
 
       images.each do |img|
         src = img.attr("src")
-        next unless src
+        next if src.blank?
 
-        image = if URI.parse(src).relative?
+        begin
+          parsed_src = URI.parse(src)
+        rescue URI::InvalidURIError
+          next
+        end
+
+        image = if parsed_src.relative?
                   retrieve_image_from_uploader_store(src)
                 else
                   src
@@ -101,20 +107,22 @@ module Articles
     private_class_method :default_image_height
 
     def self.store_image_if_appropriate(article)
-      return if ApplicationConfig["AWS_BUCKET_NAME"].blank?
+      bucket = ApplicationConfig["AWS_BUCKET_NAME"]
+      return if bucket.blank?
 
       markdown_text = article.body_markdown.to_s
       return if markdown_text.blank?
 
-      stored_image_url = "https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com"
-      filtered_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
+      stored_image_url = "https://#{bucket}.s3.amazonaws.com"
+      raw_urls = ForemNative.extract_markdown_and_html_image_urls(markdown_text, stored_image_url) ||
         legacy_extract_image_urls(markdown_text, stored_image_url)
+      filtered_urls = normalize_external_image_urls(raw_urls, bucket)
       return if filtered_urls.empty?
 
       images_converted = []
       filtered_urls.each do |url|
         store = MediaStore.where(original_url: url).first_or_create
-        images_converted << store.output_url if store&.created_at&.> 1.minute.ago
+        images_converted << store.output_url if store&.persisted? && store.created_at&.after?(1.minute.ago)
       rescue StandardError => e
         Rails.logger.error("Error storing images: #{e.message}")
       end
@@ -124,6 +132,18 @@ module Articles
       Rails.logger.error("Error storing images: #{e.message}")
     end
     private_class_method :store_image_if_appropriate
+
+    def self.normalize_external_image_urls(urls, bucket)
+      bucket_host_pattern = /\A#{Regexp.escape(bucket)}\.s3(?:\.[a-z0-9-]+)?\.amazonaws\.com\z/i
+      Array(urls).filter_map do |raw_url|
+        normalized = ArticleImageUploader.normalize_source_url(raw_url)
+        next unless normalized
+
+        host = URI.parse(normalized).host
+        normalized unless host&.match?(bucket_host_pattern)
+      end.uniq
+    end
+    private_class_method :normalize_external_image_urls
 
     def self.legacy_extract_image_urls(markdown_text, stored_image_url)
       markdown_pattern = /!\[.*?\]\((.*?)\)/

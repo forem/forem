@@ -19,6 +19,9 @@ module DeliveryMethods
   class CustomerIoEvent
     attr_accessor :settings
 
+    MAX_RETRIES = 2
+    RETRYABLE_STATUS_CODES = [429, 502, 503, 504].freeze
+
     def initialize(delivery_method_options = {})
       self.settings = delivery_method_options
     end
@@ -28,7 +31,23 @@ module DeliveryMethods
       # entity objects and Customerio::Client#batch verifies the response, so a
       # rejected event raises here rather than being silently dropped -- which
       # is what keeps Ahoy from recording a row for a send that never happened.
-      CUSTOMERIO_TRACK_API.batch([entity(mail)])
+      payload = [entity(mail)]
+      attempts = 0
+      begin
+        CUSTOMERIO_TRACK_API.batch(payload)
+      rescue Net::OpenTimeout, Net::ReadTimeout => e
+        attempts += 1
+        raise e if attempts > MAX_RETRIES
+
+        sleep(0.1 * attempts)
+        retry
+      rescue Customerio::InvalidResponse => e
+        attempts += 1
+        raise e if attempts > MAX_RETRIES || RETRYABLE_STATUS_CODES.exclude?(e.code.to_i)
+
+        sleep(0.1 * attempts)
+        retry
+      end
     end
 
     private

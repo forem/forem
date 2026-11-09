@@ -148,7 +148,16 @@ module Middlewares
     def execute_billboard_insert(sql_or_invalid)
       return unless sql_or_invalid.is_a?(String)
 
-      row = BillboardEvent.connection.exec_query(sql_or_invalid, "BillboardEvent Create").rows.first
+      retried = false
+      row = begin
+        BillboardEvent.connection.exec_query(sql_or_invalid, "BillboardEvent Create").rows.first
+      rescue ActiveRecord::ConnectionFailed
+        raise if retried
+
+        retried = true
+        BillboardEvent.connection.reconnect!
+        retry
+      end
       BillboardEvent.type_for_attribute(BillboardEvent.primary_key).cast(row.first) if row
     end
 

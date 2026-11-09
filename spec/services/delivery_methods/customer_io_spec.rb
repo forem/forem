@@ -200,4 +200,19 @@ RSpec.describe DeliveryMethods::CustomerIo do
       expect(api_client).not_to have_received(:send_email)
     end
   end
+
+  describe "transient error retries" do
+    it "retries on transient 502 Customerio::InvalidResponse and succeeds" do
+      calls = 0
+      allow(api_client).to receive(:send_email) do
+        calls += 1
+        raise Customerio::InvalidResponse.new(502, "Bad Gateway") if calls == 1
+
+        { "delivery_id" => "dev-123" }
+      end
+
+      expect { described_class.new({}).deliver!(mail) }.not_to raise_error
+      expect(calls).to eq(2)
+    end
+  end
 end

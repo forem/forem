@@ -59,6 +59,23 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
       end
     rescue StandardError => e
       Rails.logger.warn "Rack::Timeout: failed to close raw database connection: #{e.class}: #{e.message}"
+    ensure
+      conn.instance_variable_set(:@verified, false)
+      conn.instance_variable_set(:@last_activity, nil)
+    end
+
+    def self.connection_for_thread(pool, request_thread)
+      tcc = pool.instance_variable_get(:@thread_cached_conns)
+      return tcc[request_thread] if tcc
+
+      leases = pool.instance_variable_get(:@leases)
+      if leases
+        lease = leases[request_thread]
+        return lease.connection if lease.respond_to?(:connection) && lease.connection
+      end
+
+      conns = pool.instance_variable_get(:@connections)
+      conns&.detect { |c| c.owner == request_thread }
     end
   end
   Rack::Timeout.prepend(RackTimeoutThreadTracker)
@@ -70,10 +87,23 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
     next unless request_thread
 
     ActiveRecord::Base.connection_handler.connection_pool_list.each do |pool|
-      # Safely retrieve the connection cached for the request thread
-      tcc = pool.instance_variable_get(:@thread_cached_conns)
-      conn = tcc[request_thread] if tcc
+      conn = RackTimeoutThreadTracker.connection_for_thread(pool, request_thread)
       RackTimeoutThreadTracker.cancel_and_close_raw_connection(conn) if conn
     end
   end
+end
+
+# Rails 8.0's ActiveRecord::Associations::Association#find_target executes cached
+# association SELECT queries through StatementCache#execute without passing
+# `allow_retry: true` (unlike Core#find / Core#find_by). Because StatementCache
+# only ever executes read-only SELECT queries via find_by_sql, default
+# `allow_retry: true` so pooled connections closed upstream by PgBouncer/Postgres
+# within `verify_timeout` automatically reconnect and retry.
+if defined?(ActiveRecord::StatementCache)
+  module ActiveRecordStatementCacheRetryable
+    def execute(params, connection, allow_retry: true, async: false, &block)
+      super
+    end
+  end
+  ActiveRecord::StatementCache.prepend(ActiveRecordStatementCacheRetryable)
 end
