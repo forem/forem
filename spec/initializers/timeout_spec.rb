@@ -11,6 +11,22 @@ RSpec.describe Rack::Timeout, type: :initializer do
       middleware.call(env)
       expect(env["rack-timeout.request_thread"]).to eq(Thread.current)
     end
+
+    it "exposes remaining_timeout during the request and cleans up thread locals afterward" do
+      observed_remaining = nil
+      inner_app = lambda do |request_env|
+        request_env[described_class::ENV_INFO_KEY].timeout = 4.5
+        observed_remaining = RackTimeoutThreadTracker.remaining_timeout
+        [200, {}, ["OK"]]
+      end
+
+      described_class.new(inner_app).call(env)
+
+      expect(observed_remaining).to be_within(0.5).of(4.5)
+      expect(RackTimeoutThreadTracker.remaining_timeout).to be_nil
+      expect(Thread.current[:rack_timeout_env]).to be_nil
+      expect(Thread.current[:rack_timeout_started_at]).to be_nil
+    end
   end
 
   describe "clear_db_connections_on_timeout state change observer" do

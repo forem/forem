@@ -6,6 +6,79 @@ MiniMagick.configure do |config|
   config.timeout = 10
 end
 
+module MiniMagickShellTimeoutGuard
+  # Leave headroom before Rack::Timeout raises RequestTimeoutException (an Exception
+  # subclass) so MiniMagick raises Timeout::Error (a StandardError subclass that
+  # uploaders can rescue gracefully) and cleans up the child process first.
+  RACK_TIMEOUT_HEADROOM_SECONDS = 1.0
+
+  def self.effective_timeout
+    configured = MiniMagick.timeout
+    return configured unless defined?(RackTimeoutThreadTracker)
+
+    remaining = RackTimeoutThreadTracker.remaining_timeout
+    return configured unless remaining
+
+    budget = remaining - RACK_TIMEOUT_HEADROOM_SECONDS
+    return budget if configured.nil?
+
+    [configured.to_f, budget].min
+  end
+
+  private
+
+  # Matches MiniMagick::Shell#execute_open3(command, options = {}) signature.
+  def execute_open3(command, options = {}) # rubocop:disable Style/OptionHash
+    timeout = MiniMagickShellTimeoutGuard.effective_timeout
+    if timeout && timeout <= 0
+      raise Timeout::Error, "MiniMagick command timed out before execution (insufficient request budget): #{command}"
+    end
+
+    require "open3"
+
+    Open3.popen3(*command) do |in_w, out_r, err_r, thread|
+      [in_w, out_r, err_r].each(&:binmode)
+      stdout_reader = Thread.new { out_r.read }
+      stderr_reader = Thread.new { err_r.read }
+      begin
+        in_w.write options[:stdin].to_s
+      rescue Errno::EPIPE
+        nil
+      end
+      in_w.close
+
+      unless thread.join(timeout)
+        terminate_child_process(thread.pid)
+        raise Timeout::Error, "MiniMagick command timed out: #{command}"
+      end
+
+      [stdout_reader.value, stderr_reader.value, thread.value]
+    ensure
+      terminate_child_process(thread.pid) if thread&.alive?
+      stdout_reader.kill if stdout_reader&.alive?
+      stderr_reader.kill if stderr_reader&.alive?
+    end
+  end
+
+  def terminate_child_process(pid)
+    return unless pid
+
+    begin
+      Process.kill("TERM", pid)
+    rescue Errno::ESRCH, Errno::EPERM
+      return
+    end
+
+    begin
+      Process.waitpid(pid)
+    rescue Errno::ECHILD
+      nil
+    end
+  end
+end
+
+MiniMagick::Shell.prepend(MiniMagickShellTimeoutGuard)
+
 module CarrierWaveInitializer
   def self.local_storage_config
     CarrierWave.configure do |config|
