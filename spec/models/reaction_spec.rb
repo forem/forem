@@ -566,11 +566,44 @@ RSpec.describe Reaction do
       expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
     end
 
+    it "does not enqueue the worker when a non-readinglist reaction is destroyed" do
+      like_reaction = create(:reaction, reactable: article, user: user, category: "like")
+      allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
+      like_reaction.destroy
+      expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
+    end
+
     it "does not enqueue the worker for non-article reactables" do
       comment = create(:comment, commentable: article, user: user)
       allow(Users::UpdateUserReadingListActivityWorker).to receive(:perform_async)
       create(:reaction, reactable: comment, user: user, category: "readinglist")
       expect(Users::UpdateUserReadingListActivityWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  describe "when destroyed via reactable association" do
+    let(:reactor) { create(:user) }
+
+    before do
+      create(:reaction, reactable: article, user: reactor, category: "like")
+    end
+
+    it "skips reactable cache busting and article activity workers" do
+      allow(Reactions::BustReactableCacheWorker).to receive(:new)
+      allow(Reactions::BustHomepageCacheWorker).to receive(:perform_async)
+      allow(Articles::UpdateArticleActivityWorker).to receive(:perform_async)
+
+      article.destroy!
+
+      expect(Reactions::BustReactableCacheWorker).not_to have_received(:new)
+      expect(Reactions::BustHomepageCacheWorker).not_to have_received(:perform_async)
+      expect(Articles::UpdateArticleActivityWorker).not_to have_received(:perform_async)
+    end
+
+    it "decrements the reactor user reactions_count without failing on drifted article public_reactions_count" do
+      article.update_columns(public_reactions_count: 0)
+
+      expect { article.destroy! }.to change { reactor.reload.reactions_count }.by(-1)
     end
   end
 end

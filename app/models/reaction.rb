@@ -9,7 +9,9 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    unless model.destroyed_by_reactable_association?
+                      ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    end
                   }
   counter_culture :user
 
@@ -60,14 +62,15 @@ class Reaction < ApplicationRecord
 
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
-  before_destroy :bust_reactable_cache_without_delay
-  before_destroy :bust_reaction_counts_cache
+  before_destroy :bust_reactable_cache_without_delay, unless: :destroyed_by_reactable_association?
+  before_destroy :bust_reaction_counts_cache, unless: :destroyed_by_reactable_association?
   before_destroy :update_reactable, unless: :destroyed_by_association
-  after_commit :async_bust
+  after_commit :async_bust, unless: :destroyed_by_reactable_association?
   after_commit :bust_reactable_cache, :update_reactable, :bust_reaction_counts_cache, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
   after_commit :check_for_reaction_ring, on: :create
-  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?
+  after_commit :enqueue_article_activity_update, on: %i[create destroy], if: :reactable_is_article?,
+                                                 unless: :destroyed_by_reactable_association?
   after_commit :enqueue_update_user_interest_embedding, on: :create, if: :reactable_is_article_and_public?
   after_commit :enqueue_user_reading_list_activity_update,
                on: %i[create destroy update], if: :reading_list_article_reaction?
@@ -202,6 +205,10 @@ class Reaction < ApplicationRecord
     ReactionCategory[category.to_sym]
   end
 
+  def destroyed_by_reactable_association?
+    destroyed_by_association&.options&.dig(:as) == :reactable
+  end
+
   def readable_date
     if created_at.year == Time.current.year
       I18n.l(created_at, format: :short)
@@ -264,7 +271,7 @@ class Reaction < ApplicationRecord
 
   def reading_list_article_reaction?
     return false unless reactable_is_article?
-    return true if destroyed?
+    return category == "readinglist" if destroyed?
     return true if saved_change_to_category?(to: "readinglist") || saved_change_to_category?(from: "readinglist")
 
     category == "readinglist" && saved_change_to_status?
