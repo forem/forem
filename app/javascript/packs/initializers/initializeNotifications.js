@@ -34,7 +34,57 @@ function markNotificationsAsRead() {
   }, 450);
 }
 
+function updateNotificationsBadge(rawCount) {
+  const badge = document.getElementById('notifications-number');
+  if (!badge) {
+    return;
+  }
+  const count = parseInt(rawCount, 10);
+  if (Number.isNaN(count) || count <= 0) {
+    badge.classList.add('hidden');
+    return;
+  }
+  badge.textContent = count > 50 ? '50+' : String(count);
+  badge.classList.remove('hidden');
+}
+
+function refreshNotificationsBadge() {
+  // The notifications page marks everything as read, so keep the badge hidden.
+  if (
+    !checkUserLoggedIn() ||
+    document.getElementById('notifications-container') ||
+    window.location.pathname.startsWith('/notifications')
+  ) {
+    return;
+  }
+  window
+    .fetch('/notifications/counts', { credentials: 'same-origin' })
+    .then((response) => (response.ok ? response.text() : null))
+    .then((text) => {
+      if (text !== null) {
+        updateNotificationsBadge(text);
+      }
+    })
+    .catch(() => {});
+}
+
+// Refresh the badge when a long-lived tab becomes visible again.
+function listenForTabVisibility() {
+  if (window.__notificationsVisibilityListenerAttached) {
+    return;
+  }
+  window.__notificationsVisibilityListenerAttached = true;
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      refreshNotificationsBadge();
+    }
+  });
+}
+
 function fetchNotificationsCount() {
+  refreshNotificationsBadge();
+  listenForTabVisibility();
+
   if (
     document.getElementById('notifications-container') == null &&
     checkUserLoggedIn()
