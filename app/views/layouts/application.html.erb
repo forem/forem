@@ -43,7 +43,9 @@
       <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
       <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
       <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
-      <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% end %>
       <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
       <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
       <meta name="preact-runtime-script" content="<%= asset_path 'preactRuntime.js' %>">
@@ -96,7 +98,9 @@
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
       data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
-      data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% end %>
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
       data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
       data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"

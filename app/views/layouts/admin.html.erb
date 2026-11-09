@@ -20,7 +20,9 @@
 
 </head>
 <body class="admin default-header"
-  data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+    data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+  <% end %>
   data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
   data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
   data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
