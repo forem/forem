@@ -17,6 +17,23 @@ RSpec.describe Badges::AwardStreak, type: :service do
     end.to change { user.reload.badges.size }.by(1)
   end
 
+  it "does not award a streak that ended long ago unless historical" do
+    other = create(:user)
+    [100, 93, 86, 79].each do |days|
+      create(:article, :past, user: other, published: true, past_published_at: days.days.ago)
+    end
+
+    expect { described_class.call(weeks: 4) }.not_to change { other.reload.badges.size }
+    expect { described_class.call(weeks: 4, historical: true) }.to change { other.reload.badges.size }.by(1)
+  end
+
+  it "does not award the badge twice" do
+    create(:article, :past, user: user, published: true, past_published_at: 12.days.ago)
+    described_class.call(weeks: 4)
+
+    expect { described_class.call(weeks: 4) }.not_to change { user.reload.badges.size }
+  end
+
   it "does not award the badge to not qualified users" do
     expect do
       described_class.call(weeks: 4)
