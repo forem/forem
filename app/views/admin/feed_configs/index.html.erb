@@ -181,7 +181,7 @@
 
   <% if @feed_configs.respond_to?(:total_pages) %>
     <div class="flex justify-center mt-4">
-      <%= paginate @feed_configs %>
+      <%= paginate @feed_configs, total_pages: @total_pages %>
     </div>
   <% end %>
 </div>

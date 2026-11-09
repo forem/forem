@@ -5,14 +5,21 @@ module Admin
 
     before_action :set_badge
     before_action :set_automation, only: %i[edit update destroy toggle_enabled]
-    before_action :set_organizations
+    before_action :set_organizations, only: %i[new]
 
     def index
       @automations = ScheduledAutomation
-                      .where(action: ["award_first_org_post_badge", "award_article_content_badge"])
-                      .where("action_config->>'badge_slug' = ?", @badge.slug)
-                      .includes(:user)
-                      .order(created_at: :desc)
+        .where(action: %w[award_first_org_post_badge award_article_content_badge])
+        .where("action_config->>'badge_slug' = ?", @badge.slug)
+        .includes(:user)
+        .order(created_at: :desc)
+        .to_a
+      org_ids = @automations.filter_map { |a| a.action_config&.dig("organization_id").presence }.uniq
+      @organization_names_by_id = if org_ids.any?
+                                    Organization.where(id: org_ids).pluck(:id, :name).to_h.transform_keys(&:to_s)
+                                  else
+                                    {}
+                                  end
     end
 
     def new
@@ -27,6 +34,10 @@ module Admin
         frequency_config: { "hour" => 9, "minute" => 0 },
         enabled: true
       )
+    end
+
+    def edit
+      set_organizations if @automation.action == "award_first_org_post_badge"
     end
 
     def create
@@ -60,47 +71,37 @@ module Admin
       @automation.user = current_user # Automatically assign to current admin user
 
       if @automation.errors.empty? && @automation.valid?
-        @automation.set_next_run_time!
-        @automation.save!
-        flash[:success] = "Badge automation created successfully!"
+        @automation.next_run_at = @automation.calculate_next_run_time
+        @automation.save!(validate: false)
+        flash[:success] = "Badge automation created successfully!" # rubocop:disable Rails/I18nLocaleTexts
         redirect_to admin_badge_badge_automations_path(@badge)
       else
+        set_organizations
         flash.now[:error] = @automation.errors.full_messages.join(", ")
         render :new
       end
     end
 
-    def edit
-      # Edit form for automation
-    end
-
     def update
-      frequency_changed = automation_params[:frequency] != @automation.frequency
-      config_changed = automation_params[:frequency_config] != @automation.frequency_config
-
-      # Remove user_id from params if present (we don't allow changing the user)
       update_params = automation_params.except(:user_id)
+      frequency_changed = update_params[:frequency] != @automation.frequency
+      config_changed = update_params[:frequency_config] != @automation.frequency_config
 
-      if @automation.update(update_params)
-        # Ensure badge_slug stays in action_config
-        @automation.action_config ||= {}
-        @automation.action_config["badge_slug"] = @badge.slug
-        
-        # Update organization_id if provided (for first_org_post_badge)
-        if @automation.action == "award_first_org_post_badge" && params[:organization_id].present?
-          @automation.action_config["organization_id"] = params[:organization_id]
-        end
-        
-        @automation.save!
+      @automation.assign_attributes(update_params)
+      @automation.action_config ||= {}
+      @automation.action_config["badge_slug"] = @badge.slug
+      if @automation.action == "award_first_org_post_badge" && params[:organization_id].present?
+        @automation.action_config["organization_id"] = params[:organization_id]
+      end
 
-        # Recalculate next run time if scheduling changed
-        if frequency_changed || config_changed
-          @automation.update!(next_run_at: @automation.calculate_next_run_time)
-        end
+      if @automation.valid?
+        @automation.next_run_at = @automation.calculate_next_run_time if frequency_changed || config_changed
+        @automation.save!(validate: false)
 
-        flash[:success] = "Badge automation updated successfully!"
+        flash[:success] = "Badge automation updated successfully!" # rubocop:disable Rails/I18nLocaleTexts
         redirect_to admin_badge_badge_automations_path(@badge)
       else
+        set_organizations if @automation.action == "award_first_org_post_badge"
         flash.now[:error] = @automation.errors.full_messages.join(", ")
         render :edit
       end
@@ -143,7 +144,7 @@ module Admin
     end
 
     def set_organizations
-      @organizations = Organization.order(name: :asc)
+      @organizations = Organization.select(:id, :name).order(name: :asc)
     end
 
     def automation_params

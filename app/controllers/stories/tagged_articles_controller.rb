@@ -18,12 +18,6 @@ module Stories
       @page = (params[:page] || 1).to_i
       not_found if @page < 1 || @page > MAX_PAGE
 
-      if user_signed_in?
-        @moderators = User.with_role(:tag_moderator, @tag)
-          .order(badge_achievements_count: :desc)
-          .select(:username, :profile_image, :id)
-      end
-
       set_number_of_articles(tag: @tag)
 
       set_stories(number_of_articles: @number_of_articles, tag: @tag, page: @page)
@@ -76,8 +70,12 @@ module Stories
       # filters), so the separate existence query only runs when the page came back empty.
       not_found if @stories.empty? && !established?(stories: unfiltered_stories, tag: tag)
 
-      # articles/_single_story reads public_reaction_categories for every story with
-      # reactions; fetch those cached counts in one round-trip instead of one per story.
+      # articles/_single_story calls `story.context_notes.first` and reads
+      # public_reaction_categories for every story with reactions; batch-preload
+      # both in single round-trips instead of one query/cache.get per story.
+      ActiveRecord::Associations::Preloader.new(
+        records: @stories.map(&:object), associations: :context_notes, scope: ContextNote.order(:id),
+      ).call
       Article.preload_reaction_counts_for_reactable(
         @stories.map(&:object).select { |story| story.public_reactions_count.positive? },
       )

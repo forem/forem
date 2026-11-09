@@ -17,6 +17,7 @@ class StoriesController < ApplicationController
   SIGNED_OUT_RECORD_COUNT = 60
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
   UNRENDERED_ARTICLE_COLUMNS = %w[semantic_embedding reading_list_document].freeze
+  UNRENDERED_COMMENT_COLUMNS = %w[body_markdown semantic_embedding].freeze
 
   before_action :authenticate_user!, except: %i[index show custom_domain_index custom_domain_show]
   before_action :set_cache_control_headers, only: %i[index show custom_domain_index custom_domain_show]
@@ -51,7 +52,9 @@ class StoriesController < ApplicationController
       .find_by(slug: params[:slug], organization_id: @organization.id)&.decorate
     if @article
       previous_subforem_id = RequestStore.store[:subforem_id]
-      RequestStore.store[:subforem_id] = @article.subforem_id if @article.subforem_id.present?
+      if @article.subforem_id.present? && !Subforem.disabled_by_env?
+        RequestStore.store[:subforem_id] = @article.subforem_id
+      end
       begin
         handle_article_show
       ensure
@@ -375,23 +378,32 @@ class StoriesController < ApplicationController
   end
 
   def redirect_if_inactive_in_subforem_for_user
-    return unless @comments.none? &&
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @comments.none? &&
       @pinned_stories.none? &&
-      @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+      @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@user.username, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@user.username, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_inactive_in_subforem_for_organization
+    return if Subforem.disabled_by_env?
+    return if RequestStore.store[:default_subforem_id].blank?
     return if @org_page.present?
     return if request.env["forem.custom_domain_org"].present?
-    return unless @pinned_stories.none? && @stories.none? &&
-      RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id]
+    return unless RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
+      @pinned_stories.none? &&
+      @stories.none?
 
-    subforem = Subforem.find(RequestStore.store[:default_subforem_id])
-    redirect_to URL.url(@organization.slug, subforem), allow_other_host: true, status: :moved_permanently
+    default_domain = RequestStore.store[:default_subforem_domain] || Subforem.cached_default_domain
+    return if default_domain.blank?
+
+    redirect_to URL.url(@organization.slug, default_domain), allow_other_host: true, status: :moved_permanently
   end
 
   def redirect_if_appropriate
@@ -484,6 +496,8 @@ class StoriesController < ApplicationController
 
     if @article.collection
       @collection = @article.collection
+      # Collection#path reads collection.user.username; reuse the already-loaded author when it matches.
+      @collection.association(:user).target = @user if @collection.user_id == @user.id
 
       # we need to make sure that articles that were cross posted after their
       # original publication date appear in the correct order in the collection,
@@ -497,7 +511,6 @@ class StoriesController < ApplicationController
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     @comments_to_show_count = 10 unless user_signed_in?
     set_article_json_ld unless internal_navigation? || user_signed_in?
-    assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
     @context_note = @article.context_notes.first
   end
@@ -525,12 +538,6 @@ class StoriesController < ApplicationController
     (!@article.published || @article.scheduled?) && params[:preview] != @article.password
   end
 
-  def assign_co_authors
-    return if @article.co_author_ids.blank?
-
-    @co_author_ids = User.find(@article.co_author_ids)
-  end
-
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
     @comments = []
@@ -539,12 +546,20 @@ class StoriesController < ApplicationController
 
     @user_profile_comments = user_profile_comments
     @user_profile_comments_count = @user_profile_comments.count
-    return unless user_signed_in?
+    return unless user_signed_in? && @user_profile_comments_count.positive?
 
+    # Force index_comments_on_user_id instead of a backward scan on index_comments_on_created_at
+    # across the entire comments table when fetching a user's recent profile comments.
     @comments = @user_profile_comments
-      .order(created_at: :desc)
-      .includes(commentable: [:podcast])
+      .select(Comment.column_names - UNRENDERED_COMMENT_COLUMNS)
+      .order(Arel.sql("(comments.created_at + INTERVAL '0 seconds') DESC"))
       .limit(comment_count)
+      .to_a
+    ActiveRecord::Associations::Preloader.new(
+      records: @comments,
+      associations: :commentable,
+      scope: Article.select(:id, :title, :published),
+    ).call
   end
 
   def user_profile_comments

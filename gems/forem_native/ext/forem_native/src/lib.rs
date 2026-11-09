@@ -2579,6 +2579,9 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 MetalTelemetryRoute::BillboardCreate => (1u8, None),
                 MetalTelemetryRoute::PageViewUpdate(id) => (2u8, Some(id.to_owned())),
                 MetalTelemetryRoute::PageViewCreate => (3u8, None),
+                MetalTelemetryRoute::GaEventCreate => (4u8, None),
+                MetalTelemetryRoute::FeedEventsCreate => (5u8, None),
+                MetalTelemetryRoute::FeedConfigVisitsCreate => (6u8, None),
             },
         )
     };
@@ -2588,7 +2591,10 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 0 => "billboard_update",
                 1 => "billboard_create",
                 2 => "page_view_update",
-                _ => "page_view_create",
+                3 => "page_view_create",
+                4 => "ga_event_create",
+                5 => "feed_events_create",
+                _ => "feed_config_visits_create",
             };
             let arr = ruby.ary_new_capa(2);
             let _ = arr.push(ruby.to_symbol(sym_name));
@@ -2604,6 +2610,278 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
         }
         None => ruby.qnil().as_value(),
     }
+}
+
+fn extract_ga_event_params(
+    ruby: &Ruby,
+    json_body: RString,
+    app_url_val: Value,
+    user_id_val: Value,
+) -> Value {
+    use forem_core::metal::GaEventParseOutcome;
+
+    if !is_ascii_compatible_host(ruby, json_body) {
+        return ruby.qnil().as_value();
+    }
+    let Some(user_id) = extract_optional_i64(user_id_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(app_url) = extract_optional_header_utf8_string(ruby, app_url_val) else {
+        return ruby.qnil().as_value();
+    };
+
+    // SAFETY: `json_body` is not mutated during `parse_ga_event_json`.
+    let outcome =
+        unsafe { forem_core::metal::parse_ga_event_json(json_body.as_slice(), app_url.as_deref()) };
+
+    match outcome {
+        GaEventParseOutcome::Parsed(fields) => {
+            let hash = ruby.hash_new_capa(11);
+            let set_opt_str = |k: &str, opt: Option<String>| {
+                let v = match opt {
+                    Some(s) => ruby.str_new(&s).as_value(),
+                    None => ruby.qnil().as_value(),
+                };
+                let _ = hash.aset(ruby.str_new(k), v);
+            };
+            set_opt_str("page_title", fields.page_title);
+            set_opt_str("page_location", fields.page_location);
+            set_opt_str("page_path", fields.page_path);
+            let uid_val = match user_id {
+                Some(id) => ruby.into_value(id),
+                None => ruby.qnil().as_value(),
+            };
+            let _ = hash.aset(ruby.str_new("user_id"), uid_val);
+            set_opt_str("user_language", fields.user_language);
+            set_opt_str("referrer", fields.referrer);
+            set_opt_str("user_agent", fields.user_agent);
+            set_opt_str("viewport_size", fields.viewport_size);
+            set_opt_str("screen_resolution", fields.screen_resolution);
+            set_opt_str("document_encoding", fields.document_encoding);
+            let _ = hash.aset(ruby.str_new("data_source"), ruby.str_new("web"));
+            hash.as_value()
+        }
+        GaEventParseOutcome::InvalidJson => ruby.to_symbol("invalid").as_value(),
+        GaEventParseOutcome::DeferToRuby => ruby.qnil().as_value(),
+    }
+}
+
+#[derive(Default)]
+struct RawFeedEventEntry {
+    article_id: Option<i64>,
+    user_id: Option<i64>,
+    article_position: Option<i64>,
+    category: Option<Vec<u8>>,
+    context_type: Option<Vec<u8>>,
+    feed_config_id: Option<i64>,
+    event_id: Option<Vec<u8>>,
+    invalid: bool,
+    defer: bool,
+}
+
+fn extract_hash_key_name(ruby: &Ruby, key: Value) -> Option<Vec<u8>> {
+    if let Some(rstr) = RString::from_value(key) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return None;
+        }
+        return Some(unsafe { rstr.as_slice().to_vec() });
+    }
+    if let Some(sym) = Symbol::from_value(key) {
+        let name = sym.name().ok()?;
+        return Some(name.as_bytes().to_vec());
+    }
+    None
+}
+
+fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return int.to_i64().map(Some).map_err(|_| true);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(true);
+        }
+        let parsed = unsafe { forem_core::metal::parse_strict_integer_i64(rstr.as_slice()) };
+        return parsed.map(Some).ok_or(false);
+    }
+    if Float::from_value(val).is_some() {
+        return Err(false);
+    }
+    Err(true)
+}
+
+fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(());
+        }
+        return Ok(Some(unsafe { rstr.as_slice().to_vec() }));
+    }
+    if allow_symbol {
+        if let Some(sym) = Symbol::from_value(val) {
+            let name = sym.name().map_err(|_| ())?;
+            return Ok(Some(name.as_bytes().to_vec()));
+        }
+    }
+    Err(())
+}
+
+fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option<RArray> {
+    use forem_core::metal::{validate_feed_event_fields, ValidatedFeedEvent};
+    use magnus::r_hash::ForEach;
+
+    let items: Vec<Value> = unsafe { events_arr.as_slice() }.to_vec();
+    let mut validated: Vec<ValidatedFeedEvent> = Vec::with_capacity(items.len());
+
+    for item in items {
+        let hash = RHash::from_value(item)?;
+        let mut entry = RawFeedEventEntry::default();
+        hash.foreach(|k: Value, v: Value| -> Result<ForEach, Error> {
+            let Some(key_bytes) = extract_hash_key_name(ruby, k) else {
+                entry.defer = true;
+                return Ok(ForEach::Stop);
+            };
+            match key_bytes.as_slice() {
+                b"article" | b"user" | b"feed_config" => {
+                    entry.defer = true;
+                    return Ok(ForEach::Stop);
+                }
+                b"article_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_id = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_id = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"user_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.user_id = opt,
+                    Err(false) => entry.invalid = true,
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"article_position" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_position = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_position = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"feed_config_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.feed_config_id = opt,
+                    Err(_) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"category" => {
+                    if let Some(int) = Integer::from_value(v) {
+                        match int.to_i64() {
+                            Ok(0) => entry.category = Some(b"impression".to_vec()),
+                            Ok(1) => entry.category = Some(b"click".to_vec()),
+                            Ok(2) => entry.category = Some(b"reaction".to_vec()),
+                            Ok(3) => entry.category = Some(b"comment".to_vec()),
+                            Ok(4) => entry.category = Some(b"extended_pageview".to_vec()),
+                            _ => {
+                                entry.category = None;
+                                entry.invalid = true;
+                            }
+                        }
+                    } else {
+                        match extract_name_bytes(ruby, v, true) {
+                            Ok(b) => entry.category = b,
+                            Err(()) => {
+                                entry.defer = true;
+                                return Ok(ForEach::Stop);
+                            }
+                        }
+                    }
+                }
+                b"context_type" => match extract_name_bytes(ruby, v, true) {
+                    Ok(b) => entry.context_type = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"event_id" => match extract_name_bytes(ruby, v, false) {
+                    Ok(b) => entry.event_id = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                _ => {}
+            }
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+
+        if entry.defer {
+            return None;
+        }
+        if entry.invalid {
+            continue;
+        }
+        if let Some(v) = validate_feed_event_fields(
+            entry.article_id,
+            entry.user_id,
+            entry.article_position,
+            entry.category.as_deref(),
+            entry.context_type.as_deref(),
+            entry.feed_config_id,
+            entry.event_id.as_deref(),
+        ) {
+            validated.push(v);
+        }
+    }
+
+    let sym_article_id = ruby.to_symbol("article_id");
+    let sym_user_id = ruby.to_symbol("user_id");
+    let sym_article_position = ruby.to_symbol("article_position");
+    let sym_category = ruby.to_symbol("category");
+    let sym_context_type = ruby.to_symbol("context_type");
+    let sym_feed_config_id = ruby.to_symbol("feed_config_id");
+    let sym_event_id = ruby.to_symbol("event_id");
+
+    let out = ruby.ary_new_capa(validated.len());
+    for ev in validated {
+        let h = ruby.hash_new_capa(7);
+        h.aset(sym_article_id, ev.article_id).ok()?;
+        match ev.user_id {
+            Some(uid) => h.aset(sym_user_id, uid).ok()?,
+            None => h.aset(sym_user_id, ruby.qnil()).ok()?,
+        }
+        h.aset(sym_article_position, ev.article_position).ok()?;
+        h.aset(sym_category, ruby.str_new(ev.category)).ok()?;
+        h.aset(sym_context_type, ruby.str_new(ev.context_type))
+            .ok()?;
+        match ev.feed_config_id {
+            Some(fcid) => h.aset(sym_feed_config_id, fcid).ok()?,
+            None => h.aset(sym_feed_config_id, ruby.qnil()).ok()?,
+        }
+        match ev.event_id {
+            Some(ref eid) => h.aset(sym_event_id, ruby.str_new(eid)).ok()?,
+            None => h.aset(sym_event_id, ruby.qnil()).ok()?,
+        }
+        out.push(h).ok()?;
+    }
+    Some(out)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -2665,6 +2943,101 @@ fn billboard_event_create_from_json_sql(
         }
         None => ruby.qnil().as_value(),
     }
+}
+
+fn encode_hs256_jwt(ruby: &Ruby, user_id: i64, exp: i64, secret: RString) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, secret) {
+        return None;
+    }
+    // SAFETY: `secret` is not mutated during `encode_hs256_jwt`.
+    Some(unsafe { forem_core::metal::encode_hs256_jwt(user_id, exp, secret.as_slice()) })
+}
+
+fn mask_authenticity_token(
+    ruby: &Ruby,
+    encoded_real_token: RString,
+    one_time_pad: RString,
+) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, encoded_real_token) {
+        return None;
+    }
+    // SAFETY: Both Ruby Strings are borrowed read-only during pure Rust calculation.
+    unsafe {
+        forem_core::metal::mask_authenticity_token(
+            encoded_real_token.as_slice(),
+            one_time_pad.as_slice(),
+        )
+    }
+}
+
+fn parse_auth_pass_origin(ruby: &Ruby, raw_origin: RString) -> Option<RArray> {
+    if !is_ascii_compatible_host(ruby, raw_origin) {
+        return None;
+    }
+    // SAFETY: `raw_origin` is borrowed read-only and owned Strings are returned before Ruby allocations.
+    let (host, csp_origin) =
+        unsafe { forem_core::metal::parse_auth_pass_origin(raw_origin.as_slice()) }?;
+    let ary = ruby.ary_new_capa(2);
+    ary.push(ruby.str_new(&host)).ok()?;
+    ary.push(ruby.str_new(&csp_origin)).ok()?;
+    Some(ary)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_base_data_json(
+    ruby: &Ruby,
+    broadcast_val: Value,
+    param: RString,
+    token: RString,
+    user_val: Value,
+    geo_val: Value,
+    optin_allowed: bool,
+    creator: bool,
+) -> Option<String> {
+    if !param.is_utf8_compatible_encoding() || !token.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let broadcast = extract_optional_header_utf8_string(ruby, broadcast_val)?;
+    let user_json = extract_optional_header_utf8_string(ruby, user_val)?;
+    let client_geo = extract_optional_header_utf8_string(ruby, geo_val)?;
+
+    // SAFETY: `param` and `token` are borrowed read-only during pure Rust formatting.
+    let param_str = unsafe { param.test_as_str() }?;
+    let token_str = unsafe { token.test_as_str() }?;
+
+    let signed_in = user_json
+        .as_deref()
+        .map(|u| (u, client_geo.as_deref(), optin_allowed, creator));
+
+    Some(forem_core::metal::build_base_data_json(
+        broadcast.as_deref(),
+        param_str,
+        token_str,
+        signed_in,
+    ))
+}
+
+fn resolve_bulk_follow_json(
+    viewer_id: i64,
+    is_user_type: bool,
+    ids_arr: RArray,
+    forward_arr: RArray,
+    reverse_arr: RArray,
+) -> Option<String> {
+    // SAFETY: Only immediate integers and booleans are inspected before calling pure Rust.
+    let (ids, fwd, rev) = unsafe {
+        let id_slice = ids_arr.as_slice();
+        let fwd_slice = forward_arr.as_slice();
+        let rev_slice = reverse_arr.as_slice();
+        let mut ids_vec = Vec::with_capacity(id_slice.len());
+        for &v in id_slice {
+            ids_vec.push(Integer::from_value(v)?.to_i64().ok()?);
+        }
+        let fwd_vec: Vec<bool> = fwd_slice.iter().map(|v| v.to_bool()).collect();
+        let rev_vec: Vec<bool> = rev_slice.iter().map(|v| v.to_bool()).collect();
+        (ids_vec, fwd_vec, rev_vec)
+    };
+    forem_core::metal::resolve_bulk_follow_json(viewer_id, is_user_type, &ids, &fwd, &rev)
 }
 
 fn extract_liquid_embed_tags(ruby: &Ruby, content: RString) -> Option<RArray> {
@@ -2968,6 +3341,291 @@ fn build_variant_relevancy_score_sql(
     forem_core::feed::build_variant_relevancy_score_sql(&core_inputs, has_user, minimize_ai)
 }
 
+fn classify_billboard_browser_context(ruby: &Ruby, user_agent: RString) -> Option<Symbol> {
+    if !user_agent.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `user_agent.as_slice()` is only read within pure-Rust `classify_billboard_browser_context`.
+    let ctx =
+        forem_core::metal::classify_billboard_browser_context(unsafe { user_agent.as_slice() })
+            .unwrap_or("unknown");
+    Some(ruby.to_symbol(ctx))
+}
+
+fn geolocation_code_covered_by(code: Value, geo_codes: RArray) -> Option<bool> {
+    let code_rstr = if code.is_nil() {
+        None
+    } else {
+        let s = RString::from_value(code)?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(s)
+    };
+
+    let items: Vec<Option<RString>> = {
+        // SAFETY: Only inspects immediate `Value` handles and `RString` headers without Ruby VM calls.
+        let slice = unsafe { geo_codes.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            if val.is_nil() {
+                out.push(None);
+            } else {
+                let s = RString::from_value(val)?;
+                if !s.is_utf8_compatible_encoding() {
+                    return None;
+                }
+                out.push(Some(s));
+            }
+        }
+        out
+    };
+
+    // SAFETY: `code_rstr` and `items` are borrowed in-place while pure-Rust `geolocation_code_covered_by` runs.
+    let code_bytes: &[u8] = match &code_rstr {
+        Some(s) => unsafe { s.as_slice() },
+        None => b"",
+    };
+    let entry_slices: Vec<Option<&[u8]>> = items
+        .iter()
+        .map(|opt| opt.as_ref().map(|s| unsafe { s.as_slice() }))
+        .collect();
+
+    forem_core::metal::geolocation_code_covered_by(code_bytes, &entry_slices)
+}
+
+fn extract_viewer_country(ruby: &Ruby, geo: Value) -> Option<Value> {
+    if geo.is_nil() {
+        return Some(ruby.qfalse().as_value());
+    }
+    let rstr = RString::from_value(geo)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `rstr.as_slice()` is only read inside pure-Rust `extract_viewer_country`.
+    let matched = forem_core::metal::extract_viewer_country(unsafe { rstr.as_slice() })
+        .map(|s| s.as_bytes().to_vec());
+    match matched {
+        Some(bytes) => {
+            let s = std::str::from_utf8(&bytes).ok()?;
+            Some(ruby.str_new(s).as_value())
+        }
+        None => Some(ruby.qfalse().as_value()),
+    }
+}
+
+fn build_billboard_tag_clause_sql(
+    tags: RArray,
+    include_untagged: bool,
+    optimized_taggable: bool,
+) -> Option<String> {
+    let owned_tags = extract_utf8_string_vec(tags)?;
+    let refs: Vec<&str> = owned_tags.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_tag_clause_sql(&refs, include_untagged, optimized_taggable)
+}
+
+fn build_billboard_role_filter_sql(role_names: RArray) -> Option<String> {
+    let owned_roles = extract_utf8_string_vec(role_names)?;
+    let refs: Vec<&str> = owned_roles.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_role_filter_sql(&refs)
+}
+
+fn build_billboard_weighted_random_sql(
+    base_query: RString,
+    target_article_id: Value,
+    low_impressions: Value,
+    random_val: f64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let aid = extract_optional_i64(target_article_id)?;
+    let low_imp = extract_optional_i64(low_impressions)?;
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_weighted_random_sql(base_str, aid, low_imp, random_val)
+}
+
+fn build_billboard_new_only_sql(
+    base_query: RString,
+    low_impressions: i64,
+    fallback_limit: i64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_new_only_sql(base_str, low_impressions, fallback_limit)
+}
+
+fn build_filtered_ads_where_sql(params_arr: RArray) -> Option<String> {
+    // SAFETY: `params_arr.as_slice()` is copied into local handles/primitives without calling into Ruby.
+    let ps: Vec<Value> = unsafe { params_arr.as_slice() }.to_vec();
+    if ps.len() < 23 {
+        return None;
+    }
+
+    let area_rstr = RString::from_value(ps[0])?;
+    if !area_rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let area = unsafe { area_rstr.test_as_str() }?.to_owned();
+    let now_sec = Integer::from_value(ps[1])?.to_i64().ok()?;
+    let now_usec = Integer::from_value(ps[2])?.to_u32().ok()?;
+    let verified_event_ids = if ps[3].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[3])?)?
+    };
+    let subforem_id = extract_optional_i64(ps[4])?;
+    let fully_cached = ps[5].to_bool();
+    let user_agent_rstr = if ps[6].is_nil() {
+        None
+    } else {
+        let s = RString::from_value(ps[6])?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(unsafe { s.as_slice() }.to_vec())
+    };
+    let page_id = extract_optional_i64(ps[7])?;
+    let cookies_allowed = ps[8].to_bool();
+    let article_id = extract_optional_i64(ps[9])?;
+    let article_tags = if ps[10].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[10])?)?
+    };
+    let user_tags = if ps[11].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[11])?)?
+    };
+    let has_user_tags = ps[12].to_bool();
+    let optimized_taggable = ps[13].to_bool();
+    let user_signed_in = ps[14].to_bool();
+    let user_id = extract_optional_i64(ps[15])?;
+    let role_names = if ps[16].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[16])?)?
+    };
+    let location_targeting_enabled = ps[17].to_bool();
+    let location_sql_clause = extract_optional_utf8_string(ps[18])?;
+    let include_post_type_of = ps[19].to_bool();
+    let permit_adjacent_sponsors = ps[20].to_bool();
+    let paused_org_ids = if ps[21].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[21])?)?
+    };
+    let skip_survey_filtering = ps[22].to_bool();
+
+    let article_tag_refs: Vec<&str> = article_tags.iter().map(String::as_str).collect();
+    let user_tag_refs: Vec<&str> = user_tags.iter().map(String::as_str).collect();
+    let role_refs: Vec<&str> = role_names.iter().map(String::as_str).collect();
+
+    let core_params = forem_core::metal::FilteredAdsWhereParams {
+        area: &area,
+        now_sec,
+        now_usec,
+        verified_event_ids: &verified_event_ids,
+        subforem_id,
+        fully_cached,
+        user_agent: user_agent_rstr.as_deref(),
+        page_id,
+        cookies_allowed,
+        article_id,
+        article_tags: &article_tag_refs,
+        user_tags: &user_tag_refs,
+        has_user_tags,
+        optimized_taggable,
+        user_signed_in,
+        user_id,
+        role_names: &role_refs,
+        location_targeting_enabled,
+        location_sql_clause: location_sql_clause.as_deref(),
+        include_post_type_of,
+        permit_adjacent_sponsors,
+        paused_org_ids: &paused_org_ids,
+        skip_survey_filtering,
+    };
+
+    forem_core::metal::build_filtered_ads_where_sql(&core_params)
+}
+
+fn syntax_supported_language_tags(ruby: &Ruby) -> Option<RArray> {
+    let tags = forem_core::syntax::supported_language_tags();
+    let ary = ruby.ary_new_capa(tags.len());
+    for &tag in tags {
+        ary.push(ruby.str_new(tag)).ok()?;
+    }
+    Some(ary)
+}
+
+fn syntax_language_criteria(ruby: &Ruby) -> Option<RHash> {
+    let hash = ruby.hash_new_capa(forem_core::syntax::supported_language_tags().len());
+    for (tag, desc) in forem_core::syntax::language_criteria_entries() {
+        hash.aset(ruby.str_new(tag), ruby.str_new(desc)).ok()?;
+    }
+    Some(hash)
+}
+
+fn syntax_lexer_tag(name: RString) -> Option<&'static str> {
+    if !name.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { name.test_as_str() }?;
+    forem_core::syntax::find_lexer_tag(s)
+}
+
+fn syntax_normalize_language(language: RString) -> Option<&'static str> {
+    if !language.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { language.test_as_str() }?;
+    Some(forem_core::syntax::normalize_language_tag(s))
+}
+
+fn syntax_find_fancy_tag(lang: Value, code: Value, rescue_ambiguous: bool) -> Option<&'static str> {
+    let lang_str = extract_optional_utf8_string(lang)?;
+    let code_str = extract_optional_utf8_string(code)?;
+    forem_core::syntax::find_fancy_tag(lang_str.as_deref(), code_str.as_deref(), rescue_ambiguous)
+}
+
+fn syntax_language_from_path(path: RString) -> Option<&'static str> {
+    if !path.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { path.test_as_str() }?;
+    forem_core::syntax::language_from_path(s)
+}
+
+fn syntax_highlight_html(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_html(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
+fn syntax_highlight_code_block(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_code_block(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3247,6 +3905,29 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(billboard_event_create_from_json_sql, 7),
     )?;
     native_mod.define_singleton_method(
+        "extract_ga_event_params",
+        function!(extract_ga_event_params, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "validate_and_normalize_feed_events",
+        function!(validate_and_normalize_feed_events, 1),
+    )?;
+    native_mod.define_singleton_method("encode_hs256_jwt", function!(encode_hs256_jwt, 3))?;
+    native_mod.define_singleton_method(
+        "mask_authenticity_token",
+        function!(mask_authenticity_token, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "parse_auth_pass_origin",
+        function!(parse_auth_pass_origin, 1),
+    )?;
+    native_mod
+        .define_singleton_method("build_base_data_json", function!(build_base_data_json, 7))?;
+    native_mod.define_singleton_method(
+        "resolve_bulk_follow_json",
+        function!(resolve_bulk_follow_json, 5),
+    )?;
+    native_mod.define_singleton_method(
         "extract_liquid_embed_tags",
         function!(extract_liquid_embed_tags, 1),
     )?;
@@ -3272,6 +3953,63 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "build_variant_relevancy_score_sql",
         function!(build_variant_relevancy_score_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "classify_billboard_browser_context",
+        function!(classify_billboard_browser_context, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "geolocation_code_covered_by",
+        function!(geolocation_code_covered_by, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_viewer_country",
+        function!(extract_viewer_country, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_tag_clause_sql",
+        function!(build_billboard_tag_clause_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_role_filter_sql",
+        function!(build_billboard_role_filter_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_weighted_random_sql",
+        function!(build_billboard_weighted_random_sql, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_new_only_sql",
+        function!(build_billboard_new_only_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_filtered_ads_where_sql",
+        function!(build_filtered_ads_where_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_supported_language_tags",
+        function!(syntax_supported_language_tags, 0),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_language_criteria",
+        function!(syntax_language_criteria, 0),
+    )?;
+    native_mod.define_singleton_method("syntax_lexer_tag", function!(syntax_lexer_tag, 1))?;
+    native_mod.define_singleton_method(
+        "syntax_normalize_language",
+        function!(syntax_normalize_language, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_find_fancy_tag", function!(syntax_find_fancy_tag, 3))?;
+    native_mod.define_singleton_method(
+        "syntax_language_from_path",
+        function!(syntax_language_from_path, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_highlight_html", function!(syntax_highlight_html, 2))?;
+    native_mod.define_singleton_method(
+        "syntax_highlight_code_block",
+        function!(syntax_highlight_code_block, 2),
     )?;
     Ok(())
 }

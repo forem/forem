@@ -133,6 +133,19 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
           expect(Rails.error).not_to have_received(:report)
         end
 
+        it "logs a warning and does not alert Honeybadger if identify is signal-killed with status nil" do
+          allow(generator).to receive(:generate_image).and_raise(
+            MiniMagick::Invalid.new("`identify /tmp/mini_magick.png` failed with status: nil and error:"),
+          )
+          allow(Rails.logger).to receive(:warn)
+          allow(Rails.error).to receive(:report)
+
+          described_class.call(article)
+
+          expect(Rails.logger).to have_received(:warn).with(/SIGTERM/)
+          expect(Rails.error).not_to have_received(:report)
+        end
+
         it "alerts Honeybadger for other MiniMagick errors" do
           error = MiniMagick::Error.new("`convert` failed with status: 1")
           allow(generator).to receive(:generate_image).and_raise(error)
@@ -533,12 +546,38 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(result_image).to have_received(:composite).twice
     end
 
-    it "gracefully rescues a Timeout::Error, reports it, and returns the image without an avatar" do
+    it "returns the image unchanged when there is no author image" do
+      generator.instance_variable_set(:@author_image, nil)
+
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(result_image).not_to have_received(:composite)
+    end
+
+    it "gracefully rescues a Timeout::Error, logs a warning without reporting, and returns the image without an avatar" do
       allow(author_image).to receive(:collapse!).and_raise(Timeout::Error)
+      allow(Rails.logger).to receive(:warn)
       allow(Rails.error).to receive(:report)
 
       expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
-      expect(Rails.error).to have_received(:report).with(instance_of(Timeout::Error))
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed/)
+      expect(Rails.error).not_to have_received(:report)
+      expect(author_image).not_to have_received(:resize)
+      expect(result_image).not_to have_received(:composite)
+    end
+
+    it "gracefully rescues a corrupt PNG MiniMagick::Error, logs a warning without reporting, and returns the image without an avatar" do
+      error = MiniMagick::Error.new(
+        "`mogrify -quality 100 /tmp/mini_magick.png[0]` failed with status: 1 and error:\n" \
+        "mogrify-im6.q16: Expected 4096 bytes; found 2685 bytes `/tmp/mini_magick.png' @ warning/png.c/MagickPNGWarningHandler/1669.\n" \
+        "mogrify-im6.q16: Read Exception `/tmp/mini_magick.png' @ error/png.c/MagickPNGErrorHandler/1643.",
+      )
+      allow(author_image).to receive(:collapse!).and_raise(error)
+      allow(Rails.logger).to receive(:warn)
+      allow(Rails.error).to receive(:report)
+
+      expect(generator.send(:add_profile_image, result_image)).to eq(result_image)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed:.*Read Exception/m)
+      expect(Rails.error).not_to have_received(:report)
       expect(author_image).not_to have_received(:resize)
       expect(result_image).not_to have_received(:composite)
     end
@@ -572,6 +611,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       generator.instance_variable_set(:@rounded_mask, rounded_mask)
     end
 
+    it "returns the image unchanged when there is no author image" do
+      generator.instance_variable_set(:@author_image, nil)
+
+      expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
+      expect(result_image).not_to have_received(:composite)
+    end
+
     it "re-raises status 15 SIGTERM MiniMagick errors without reporting them and cleans up the circular avatar" do
       sigterm_error = MiniMagick::Error.new(
         "`mogrify -fill white -stroke none -draw circle 203,200 203,138 /tmp/mini_magick.miff` failed with status: 15 and error:",
@@ -585,13 +631,15 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       expect(circular_avatar).to have_received(:destroy!)
     end
 
-    it "reports non-SIGTERM errors, cleans up the circular avatar, and returns the image without an avatar" do
+    it "logs a warning for non-SIGTERM errors without reporting, cleans up the circular avatar, and returns the image without an avatar" do
       error = MiniMagick::Error.new("`mogrify` failed with status: 1 and error:")
       allow(author_image).to receive(:collapse!).and_raise(error)
+      allow(Rails.logger).to receive(:warn)
       allow(Rails.error).to receive(:report)
 
       expect(generator.send(:add_profile_card_avatar, result_image)).to eq(result_image)
-      expect(Rails.error).to have_received(:report).with(error)
+      expect(Rails.logger).to have_received(:warn).with(/Profile image processing failed/)
+      expect(Rails.error).not_to have_received(:report)
     end
   end
 
@@ -720,6 +768,33 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         instance.send(:read_files, article)
 
         expect(instance.instance_variable_get(:@logo_image)).not_to equal(first_logo)
+      end
+    end
+
+    context "when the author profile image cannot be opened by MiniMagick" do
+      before do
+        allow(article.user).to receive(:profile_image_90).and_return("https://example.com/corrupt_avatar.png")
+      end
+
+      it "logs a warning, sets @author_image to nil, and does not report an error" do
+        allow(MiniMagick::Image).to receive(:open).with("https://example.com/corrupt_avatar.png").and_raise(
+          MiniMagick::Invalid.new("`identify /tmp/mini_magick.png` failed with status: 1 and error: improper image header"),
+        )
+        allow(Rails.logger).to receive(:warn)
+        allow(Rails.error).to receive(:report)
+
+        instance.send(:read_files, article)
+
+        expect(instance.instance_variable_get(:@author_image)).to be_nil
+        expect(Rails.logger).to have_received(:warn).with(/Profile image open failed/)
+        expect(Rails.error).not_to have_received(:report)
+      end
+
+      it "re-raises signal-killed MiniMagick::Invalid errors" do
+        sigterm_invalid = MiniMagick::Invalid.new("`identify /tmp/mini_magick.png` failed with status: nil and error:")
+        allow(MiniMagick::Image).to receive(:open).with("https://example.com/corrupt_avatar.png").and_raise(sigterm_invalid)
+
+        expect { instance.send(:read_files, article) }.to raise_error(sigterm_invalid)
       end
     end
   end

@@ -23,8 +23,13 @@ class AudienceSegment < ApplicationRecord
   validates :name, uniqueness: { case_sensitive: false }, allow_nil: true, if: -> { name.present? }
   validate :name_cannot_be_cleared, if: -> { manual? && persisted? && name_was.present? }
 
+  SYSTEM_USER_COUNTS_CACHE_KEY = "audience_segments/system_user_counts".freeze
+
+  attr_writer :user_count
+
   after_validation :persist_recently_active_users, unless: :manual?
   before_destroy :ensure_not_in_use_and_destroyable
+  after_commit :expire_system_user_counts_cache, unless: :manual?
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
@@ -63,9 +68,22 @@ class AudienceSegment < ApplicationRecord
   end
 
   def self.including_user_counts
-    left_joins(:segmented_users)
-      .select("audience_segments.*, COUNT(segmented_users.id) AS user_count")
-      .group("audience_segments.id")
+    select(
+      "audience_segments.*, " \
+      "(SELECT COUNT(*) FROM segmented_users " \
+      "WHERE segmented_users.audience_segment_id = audience_segments.id) AS user_count",
+    )
+  end
+
+  def self.system_segments_with_cached_counts
+    segments = not_manual.order(:type_of).to_a
+    return segments if segments.empty?
+
+    segment_ids = segments.map(&:id)
+    counts = Rails.cache.fetch(SYSTEM_USER_COUNTS_CACHE_KEY, expires_in: 15.minutes) do
+      SegmentedUser.where(audience_segment_id: segment_ids).group(:audience_segment_id).count
+    end
+    segments.each { |segment| segment.user_count = counts[segment.id].to_i }
   end
 
   def persist_recently_active_users
@@ -88,7 +106,9 @@ class AudienceSegment < ApplicationRecord
   end
 
   def user_count
-    has_attribute?(:user_count) ? self[:user_count].to_i : segmented_users.count
+    return @user_count if defined?(@user_count)
+
+    @user_count = has_attribute?(:user_count) ? self[:user_count].to_i : segmented_users.count
   end
 
   def email_eligible_users
@@ -118,5 +138,9 @@ class AudienceSegment < ApplicationRecord
 
   def name_cannot_be_cleared
     errors.add(:name, :blank) if name.blank?
+  end
+
+  def expire_system_user_counts_cache
+    Rails.cache.delete(SYSTEM_USER_COUNTS_CACHE_KEY)
   end
 end

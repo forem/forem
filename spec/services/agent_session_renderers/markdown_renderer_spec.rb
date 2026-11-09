@@ -102,8 +102,8 @@ RSpec.describe AgentSessionRenderers::MarkdownRenderer do
       )
     end
 
-    it "preserves Rouge error recovery before styling markers" do
-      allow(Rouge::Lexer).to receive(:find).with("ruby").and_raise(StandardError)
+    it "preserves syntax highlight error recovery before styling markers" do
+      allow(ForemNative).to receive(:syntax_highlight_html).with("<tag> [REDACTED]", "ruby").and_raise(StandardError)
       html = '<pre><code class="ruby">&lt;tag&gt; [REDACTED]</code></pre>'
 
       expect(described_class.highlight_code_blocks(html, redact: true)).to eq(

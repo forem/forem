@@ -109,7 +109,7 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end.not_to raise_error
     end
 
-    it "loads only follower ids instead of full user rows" do
+    it "loads only follower ids and orders by an updated_at expression to avoid a bare updated_at index scan" do
       article
       queries = []
       callback = ->(*, payload) { queries << payload[:sql] if payload[:sql].include?("JOIN follows") }
@@ -118,7 +118,10 @@ RSpec.describe Notifications::NotifiableAction::Send, type: :service do
       end
 
       expect(queries).to be_present
-      expect(queries).to all(include('SELECT DISTINCT "users"."id"'))
+      expect(queries).to all(
+        include('SELECT DISTINCT "users"."id", (users.updated_at + INTERVAL \'0 seconds\') AS updated_at'),
+      )
+      expect(queries).to all(include("ORDER BY (users.updated_at + INTERVAL '0 seconds') DESC"))
       expect(queries).to all(exclude('"users".*'))
     end
 

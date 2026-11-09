@@ -4,8 +4,29 @@ RSpec.describe Users::NotificationSetting do
   let!(:user) { create(:user) }
   let(:notification_setting) { user.notification_setting.reload }
 
+  describe "validations" do
+    it "covers every boolean column on users_notification_settings" do
+      boolean_columns = described_class.columns.filter_map { |col| col.name.to_sym if col.type == :boolean }
+      expect(described_class::BOOLEAN_ATTRIBUTES).to match_array(boolean_columns)
+    end
+
+    described_class::BOOLEAN_ATTRIBUTES.each do |attribute|
+      it "rejects nil and blank string for #{attribute} instead of hitting PG::NotNullViolation" do
+        expect(notification_setting.update(attribute => "")).to be(false)
+        expect(notification_setting.errors[attribute]).to be_present
+
+        expect(notification_setting.update(attribute => nil)).to be(false)
+        expect(notification_setting.errors[attribute]).to be_present
+      end
+    end
+  end
+
   context "when callbacks are triggered after commit" do
     describe "subscribing to mailchimp newsletter" do
+      before do
+        allow(Settings::General).to receive(:mailchimp_api_key).and_return("api-key")
+      end
+
       it "enqueues SubscribeToMailchimpNewsletterWorker when updating email_newsletter to true" do
         sidekiq_assert_enqueued_with(job: Users::SubscribeToMailchimpNewsletterWorker, args: [user.id]) do
           notification_setting.update(email_newsletter: true)

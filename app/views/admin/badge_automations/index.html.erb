@@ -43,9 +43,8 @@
                 <div><strong>Created By:</strong> <%= automation.user.name %> (@<%= automation.user.username %>)</div>
                 <% if automation.action == "award_first_org_post_badge" %>
                   <div><strong>Organization:</strong> 
-                    <% if automation.action_config&.dig("organization_id") %>
-                      <% org = Organization.find_by(id: automation.action_config["organization_id"]) %>
-                      <%= org ? org.name : "Unknown (ID: #{automation.action_config['organization_id']})" %>
+                    <% if (org_id = automation.action_config&.dig("organization_id")).present? %>
+                      <%= @organization_names_by_id&.dig(org_id.to_s) || "Unknown (ID: #{org_id})" %>
                     <% else %>
                       Not set
                     <% end %>

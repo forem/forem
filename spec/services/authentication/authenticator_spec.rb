@@ -20,7 +20,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
   end
 
   shared_examples "preserves existing user roles" do
-    it "does not make any changes to roles if the user already exists" do
+    it "does not make any changes to roles if the user already exists", :aggregate_failures do
       existing_user = create(:user, :trusted)
       auth_payload.info.email = existing_user.email
 
@@ -29,17 +29,28 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user).to eq(existing_user)
         expect(user).to be_trusted
         expect(user).not_to be_limited
+        allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+        expect(described_class.call(auth_payload)).to eq(existing_user).and be_trusted
+        expect(existing_user.reload).not_to be_limited
       end.not_to change(existing_user.roles, :count)
     end
   end
 
   shared_examples "appropriate new user status" do
-    it "registers a user in good standing by default" do
-      user = service.call
+    it "registers a user in good standing by default", :aggregate_failures do
+      user = nil
+      expect { user = service.call }.to change(User, :count).by(1).and change(Identity, :count).by(1)
 
       expect(user.registered).to be(true)
       expect(user.registered_at).not_to be_nil
       expect(user).not_to be_limited
+      expect(user.password).to be_present
+      expect(user.signup_cta_variant).to be_nil
+      expect(user.saw_onboarding).to be(false)
+      expect(user.setting.editor_version).to eq("v2")
+      expect(user.remember_me).to be(true)
+      expect(user.remember_token).to be_present
+      expect(user.remember_created_at).to be_present
     end
 
     include_examples "preserves existing user roles"
@@ -49,15 +60,14 @@ RSpec.describe Authentication::Authenticator, type: :service do
         allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
       end
 
-      it "registers the user as limited" do
-        user = service.call
+      it "registers the user as limited and applies cta_variant", :aggregate_failures do
+        user = described_class.call(auth_payload, cta_variant: "awesome")
 
         expect(user.registered).to be(true)
         expect(user.registered_at).not_to be_nil
         expect(user).to be_limited
+        expect(user.signup_cta_variant).to eq("awesome")
       end
-
-      include_examples "preserves existing user roles"
     end
   end
 
@@ -79,18 +89,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     include_context "appropriate new user status"
 
     describe "new user" do
-      it "creates a new user" do
-        expect do
-          service.call
-        end.to change(User, :count).by(1)
-      end
-
-      it "creates a new identity" do
-        expect do
-          service.call
-        end.to change(Identity, :count).by(1)
-      end
-
       it "extracts the proper data from the auth payload" do
         user = service.call
 
@@ -100,29 +98,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq("#{info.first_name} #{info.last_name}")
         expect(user.profile_image).not_to be_nil
         expect(user.apple_username).to match(/#{info.first_name.downcase}_\w+/)
-      end
-
-      it "sets default fields" do
-        user = service.call
-
-        expect(user.password).to be_present
-        expect(user.signup_cta_variant).to be_nil
-        expect(user.saw_onboarding).to be(false)
-        expect(user.setting.editor_version).to eq("v2")
-      end
-
-      it "sets the correct sign up cta variant" do
-        user = described_class.call(auth_payload, cta_variant: "awesome")
-
-        expect(user.signup_cta_variant).to eq("awesome")
-      end
-
-      it "sets remember_me for the new user" do
-        user = service.call
-
-        expect(user.remember_me).to be(true)
-        expect(user.remember_token).to be_present
-        expect(user.remember_created_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -173,9 +148,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "creates a new identity if the user doesn't have one" do
-        user = create(:user)
-        auth_payload.info.email = user.email
-        auth_payload.uid = "#{user.email}-#{rand(10_000)}"
+        user.identities.delete_all
 
         expect do
           described_class.call(auth_payload)
@@ -292,18 +265,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     include_context "appropriate new user status"
 
     describe "new user" do
-      it "creates a new user" do
-        expect do
-          service.call
-        end.to change(User, :count).by(1)
-      end
-
-      it "creates a new identity" do
-        expect do
-          service.call
-        end.to change(Identity, :count).by(1)
-      end
-
       it "extracts the proper data from the auth payload" do
         user = service.call
 
@@ -314,29 +275,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image)
         expect(user.github_username).to eq(info.nickname)
-      end
-
-      it "sets default fields" do
-        user = service.call
-
-        expect(user.password).to be_present
-        expect(user.signup_cta_variant).to be_nil
-        expect(user.saw_onboarding).to be(false)
-        expect(user.setting.editor_version).to eq("v2")
-      end
-
-      it "sets the correct sign up cta variant" do
-        user = described_class.call(auth_payload, cta_variant: "awesome")
-
-        expect(user.signup_cta_variant).to eq("awesome")
-      end
-
-      it "sets remember_me for the new user" do
-        user = service.call
-
-        expect(user.remember_me).to be(true)
-        expect(user.remember_token).to be_present
-        expect(user.remember_created_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -400,9 +338,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "creates a new identity if the user doesn't have one" do
-        user = create(:user)
-        auth_payload.info.email = user.email
-        auth_payload.uid = "#{user.email}-#{rand(10_000)}"
+        user.identities.delete_all
 
         expect do
           described_class.call(auth_payload)
@@ -504,18 +440,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     include_context "appropriate new user status"
 
     describe "new user" do
-      it "creates a new user" do
-        expect do
-          service.call
-        end.to change(User, :count).by(1)
-      end
-
-      it "creates a new identity" do
-        expect do
-          service.call
-        end.to change(Identity, :count).by(1)
-      end
-
       it "extracts the proper data from the auth payload" do
         user = service.call
 
@@ -526,29 +450,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image)
         expect(user.facebook_username).to match(/#{info.name.sub(' ', '_')}_\S*\z/)
-      end
-
-      it "sets default fields" do
-        user = service.call
-
-        expect(user.password).to be_present
-        expect(user.signup_cta_variant).to be_nil
-        expect(user.saw_onboarding).to be(false)
-        expect(user.setting.editor_version).to eq("v2")
-      end
-
-      it "sets the correct sign up cta variant" do
-        user = described_class.call(auth_payload, cta_variant: "awesome")
-
-        expect(user.signup_cta_variant).to eq("awesome")
-      end
-
-      it "sets remember_me for the new user" do
-        user = service.call
-
-        expect(user.remember_me).to be(true)
-        expect(user.remember_token).to be_present
-        expect(user.remember_created_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -591,18 +492,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     include_context "appropriate new user status"
 
     describe "new user" do
-      it "creates a new user" do
-        expect do
-          service.call
-        end.to change(User, :count).by(1)
-      end
-
-      it "creates a new identity" do
-        expect do
-          service.call
-        end.to change(Identity, :count).by(1)
-      end
-
       it "extracts the proper data from the auth payload" do
         user = service.call
 
@@ -613,29 +502,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image.to_s.gsub("_normal", ""))
         expect(user.twitter_username).to eq(info.nickname)
-      end
-
-      it "sets default fields" do
-        user = service.call
-
-        expect(user.password).to be_present
-        expect(user.signup_cta_variant).to be_nil
-        expect(user.saw_onboarding).to be(false)
-        expect(user.setting.editor_version).to eq("v2")
-      end
-
-      it "sets the correct sign up cta variant" do
-        user = described_class.call(auth_payload, cta_variant: "awesome")
-
-        expect(user.signup_cta_variant).to eq("awesome")
-      end
-
-      it "sets remember_me for the new user" do
-        user = service.call
-
-        expect(user.remember_me).to be(true)
-        expect(user.remember_token).to be_present
-        expect(user.remember_created_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -670,9 +536,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "creates a new identity if the user doesn't have one" do
-        user = create(:user)
-        auth_payload.info.email = user.email
-        auth_payload.uid = "#{user.email}-#{rand(10_000)}"
+        user.identities.delete_all
 
         expect do
           described_class.call(auth_payload)
@@ -771,18 +635,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
     include_context "appropriate new user status"
 
     describe "new user" do
-      it "creates a new user" do
-        expect do
-          service.call
-        end.to change(User, :count).by(1)
-      end
-
-      it "creates a new identity" do
-        expect do
-          service.call
-        end.to change(Identity, :count).by(1)
-      end
-
       it "persists the user as confirmed when SMTP isn't enabled" do
         allow(ForemInstance).to receive(:smtp_enabled?).and_return(false)
         user = service.call
@@ -805,29 +657,6 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(user.name).to eq(raw_info.name)
         expect(user.remote_profile_image_url).to eq(info.image)
         expect(user.forem_username).to eq(info.user_nickname)
-      end
-
-      it "sets default fields", :aggregate_failures do
-        user = service.call
-
-        expect(user.password).to be_present
-        expect(user.signup_cta_variant).to be_nil
-        expect(user.saw_onboarding).to be(false)
-        expect(user.setting.editor_version).to eq("v2")
-      end
-
-      it "sets the correct sign up cta variant" do
-        user = described_class.call(auth_payload, cta_variant: "awesome")
-
-        expect(user.signup_cta_variant).to eq("awesome")
-      end
-
-      it "sets remember_me for the new user", :aggregate_failures do
-        user = service.call
-
-        expect(user.remember_me).to be(true)
-        expect(user.remember_token).to be_present
-        expect(user.remember_created_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
@@ -874,9 +703,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       end
 
       it "creates a new identity if the user doesn't have one" do
-        user = create(:user)
-        auth_payload.info.email = user.email
-        auth_payload.uid = "#{user.email}-#{rand(10_000)}"
+        user.identities.delete_all
 
         expect do
           described_class.call(auth_payload)
@@ -1001,39 +828,26 @@ RSpec.describe Authentication::Authenticator, type: :service do
     # The mlh identity carries the Core user id (uid), which rides along in
     # User#trackable_payload — so linking it must surface a user_updated to the
     # DEV → Core sync, which keys off profile_updated_at.
-    it "touches profile_updated_at when linking a new mlh identity to an existing account" do
+    it "touches profile_updated_at when linking a new mlh identity to an existing account", :aggregate_failures do
       user = create(:user, email: auth_payload.info.email, profile_updated_at: 2.years.ago)
-
-      described_class.call(auth_payload, current_user: user)
-
-      expect(user.reload.profile_updated_at).to be_within(5.seconds).of(Time.current)
-    end
-
-    it "does not touch profile_updated_at when the mlh identity already exists" do
-      user = create(:user, email: auth_payload.info.email)
-      described_class.call(auth_payload, current_user: user)
-      user.update_column(:profile_updated_at, 2.years.ago)
-
-      described_class.call(auth_payload, current_user: user)
-
-      expect(user.reload.profile_updated_at).to be < 1.year.ago
-    end
-
-    it "enqueues the profile prefill when a new mlh identity is linked" do
-      user = create(:user, email: auth_payload.info.email)
 
       expect do
         described_class.call(auth_payload, current_user: user)
       end.to change(Users::PrefillMlhProfileWorker.jobs, :size).by(1)
+
+      expect(user.reload.profile_updated_at).to be_within(5.seconds).of(Time.current)
     end
 
-    it "does not enqueue the profile prefill when the mlh identity already exists" do
+    it "does not touch profile_updated_at when the mlh identity already exists", :aggregate_failures do
       user = create(:user, email: auth_payload.info.email)
       described_class.call(auth_payload, current_user: user)
+      user.update_column(:profile_updated_at, 2.years.ago)
 
       expect do
         described_class.call(auth_payload, current_user: user)
       end.not_to change(Users::PrefillMlhProfileWorker.jobs, :size)
+
+      expect(user.reload.profile_updated_at).to be < 1.year.ago
     end
 
     # Identities created through the admin API carry only a uid: no token, no
@@ -1111,10 +925,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
         identity.reload
         expect(identity.uid).to eq("a-placeholder-id")
-expect(ForemStatsClient).to have_received(:increment).with(
-  "identity.errors",
-  tags: match_array(["error:ActiveRecord::RecordNotUnique", "provider:mlh"]),
-)
+        expect(ForemStatsClient).to have_received(:increment)
+          .with("identity.errors", tags: contain_exactly("error:ActiveRecord::RecordNotUnique", "provider:mlh"))
       end
 
       it "does not repoint a link the user established themselves" do
@@ -1165,6 +977,152 @@ expect(ForemStatsClient).to have_received(:increment).with(
         expect(identity.uid).to eq(auth_payload.uid)
         expect(identity.auth_data_dump.info.email).to eq(auth_payload.info.email)
       end
+    end
+  end
+
+  describe "concurrent signup and email normalization" do
+    let(:auth_payload) { OmniAuth.config.mock_auth[:github].deep_dup }
+
+    it "matches an existing user when the provider returns an uppercase or padded email", :aggregate_failures do
+      existing_user = create(:user, email: "mixedcase@example.com")
+      auth_payload.info.email = "  MixedCase@Example.com "
+
+      authenticated_user = nil
+      expect do
+        authenticated_user = described_class.call(auth_payload)
+      end.to not_change(User, :count).and change(Identity, :count).by(1)
+
+      expect(authenticated_user).to eq(existing_user)
+      expect(Identity.find_by(provider: "github", uid: auth_payload.uid)&.user).to eq(existing_user)
+    end
+
+    it "recovers when a concurrent callback inserts the user and raises RecordNotUnique", :aggregate_failures do
+      allow(ForemStatsClient).to receive(:increment)
+      concurrent_user = create(:user, email: auth_payload.info.email, github_username: auth_payload.info.nickname)
+      create(:identity, user: concurrent_user, provider: "github", uid: auth_payload.uid)
+
+      unpersisted_identity = Identity.new(
+        provider: auth_payload.provider,
+        uid: auth_payload.uid,
+        token: auth_payload.credentials.token,
+        secret: auth_payload.credentials.secret,
+        auth_data_dump: auth_payload,
+      )
+      first_lookup = true
+      allow(Identity).to receive(:build_from_omniauth).and_wrap_original do |original, *args|
+        if first_lookup
+          first_lookup = false
+          unpersisted_identity
+        else
+          original.call(*args)
+        end
+      end
+
+      service = described_class.new(auth_payload)
+      first_proper_user = true
+      allow(service).to receive(:proper_user).and_wrap_original do |original, *args|
+        if first_proper_user
+          first_proper_user = false
+          nil
+        else
+          original.call(*args)
+        end
+      end
+
+      first_find = true
+      allow(User).to receive(:find_by).and_wrap_original do |original, *args|
+        if first_find && args.first == { github_username: auth_payload.info.nickname }
+          first_find = false
+          nil
+        else
+          original.call(*args)
+        end
+      end
+
+      first_save = true
+      allow(User).to receive(:new).and_wrap_original do |original, *args|
+        user_instance = original.call(*args)
+        if first_save
+          first_save = false
+          allow(user_instance).to receive(:save!).and_raise(
+            ActiveRecord::RecordNotUnique,
+            'PG::UniqueViolation: ERROR: duplicate key value violates unique constraint "index_users_on_email"',
+          )
+        end
+        user_instance
+      end
+
+      authenticated_user = service.call
+
+      expect(authenticated_user).to eq(concurrent_user)
+      expect(User.where(email: auth_payload.info.email).count).to eq(1)
+      expect(Identity.where(provider: "github", uid: auth_payload.uid).count).to eq(1)
+      expect(ForemStatsClient).not_to have_received(:increment).with("identity.errors", anything)
+    end
+
+    it "recovers when a concurrent callback commits the user before validation runs", :aggregate_failures do
+      allow(ForemStatsClient).to receive(:increment)
+      concurrent_user = create(:user, email: auth_payload.info.email, github_username: auth_payload.info.nickname)
+      create(:identity, user: concurrent_user, provider: "github", uid: auth_payload.uid)
+
+      unpersisted_identity = Identity.new(
+        provider: auth_payload.provider,
+        uid: auth_payload.uid,
+        token: auth_payload.credentials.token,
+        secret: auth_payload.credentials.secret,
+        auth_data_dump: auth_payload,
+      )
+      first_lookup = true
+      allow(Identity).to receive(:build_from_omniauth).and_wrap_original do |original, *args|
+        if first_lookup
+          first_lookup = false
+          unpersisted_identity
+        else
+          original.call(*args)
+        end
+      end
+
+      service = described_class.new(auth_payload)
+      first_proper_user = true
+      allow(service).to receive(:proper_user).and_wrap_original do |original, *args|
+        if first_proper_user
+          first_proper_user = false
+          nil
+        else
+          original.call(*args)
+        end
+      end
+
+      first_find = true
+      allow(User).to receive(:find_by).and_wrap_original do |original, *args|
+        if first_find && args.first == { github_username: auth_payload.info.nickname }
+          first_find = false
+          nil
+        else
+          original.call(*args)
+        end
+      end
+
+      authenticated_user = service.call
+
+      expect(authenticated_user).to eq(concurrent_user)
+      expect(User.where(email: auth_payload.info.email).count).to eq(1)
+      expect(Identity.where(provider: "github", uid: auth_payload.uid).count).to eq(1)
+      expect(ForemStatsClient).not_to have_received(:increment).with("identity.errors", anything)
+    end
+
+    it "re-raises RecordNotUnique and records identity.errors if the conflict persists", :aggregate_failures do
+      allow(ForemStatsClient).to receive(:increment)
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(User).to receive(:save!).and_raise(ActiveRecord::RecordNotUnique, "duplicate key")
+      # rubocop:enable RSpec/AnyInstance
+
+      expect do
+        described_class.call(auth_payload)
+      end.to raise_error(ActiveRecord::RecordNotUnique)
+
+      tags = hash_including(tags: array_including("error:ActiveRecord::RecordNotUnique"))
+      expect(ForemStatsClient).to have_received(:increment).with("identity.errors", tags).once
     end
   end
 end

@@ -60,6 +60,16 @@ RSpec.describe "AsyncInfo" do
 
         expect { get "/async_info/base_data" }.to change { user.reload.last_presence_at }
       end
+
+      it "immediately reflects creator role removal without serving stale cached state" do
+        user = create(:user, :creator)
+        sign_in user
+        Users::RemoveRole.call(user: user, role: "creator", resource_type: nil)
+        user.reload
+
+        get "/async_info/base_data"
+        expect(response.parsed_body["creator"]).to be(false)
+      end
     end
   end
 

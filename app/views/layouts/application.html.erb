@@ -43,7 +43,9 @@
       <meta name="window-modal-script" content="<%= asset_path 'windowModal.js' %>">
       <meta name="postscribe-script" content="<%= asset_path 'postscribeLoader.js' %>">
       <meta name="media-playback-script" content="<%= asset_path 'mediaPlayback.js' %>">
-      <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        <meta name="honeybadger-script" content="<%= asset_path 'honeybadgerClient.js' %>">
+      <% end %>
       <meta name="comments-page-script" content="<%= asset_path 'commentsPage.js' %>">
       <meta name="event-signup-buttons-script" content="<%= asset_path 'eventSignupButtons.js' %>">
       <meta name="preact-runtime-script" content="<%= asset_path 'preactRuntime.js' %>">
@@ -96,7 +98,9 @@
       data-subscription-icon="<%= asset_path("subscription-icon.png") %>"
       data-community-leader-icon="<%= asset_path("community-leader-icon.svg") %>"
       data-locale="<%= j(I18n.locale) %>"
-      data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% if ApplicationConfig["HONEYBADGER_JS_API_KEY"].present? %>
+        data-honeybadger-key="<%= j(ApplicationConfig["HONEYBADGER_JS_API_KEY"]) %>"
+      <% end %>
       data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
       data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
       data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
@@ -152,11 +156,9 @@
       <div id="audiocontent" data-podcast="">
         <%= yield(:audio) %>
       </div>
-      <% unless ENV["DISABLE_MAIN_SIDE_BAR"] == "yes" %>
+      <% if ENV["DISABLE_MAIN_SIDE_BAR"] != "yes" && !Subforem.disabled_by_env? && Subforem.cached_discoverable_ids.any? %>
         <% cache("main-side-bar-#{user_signed_in?}-#{RequestStore.store[:subforem_id]}", expires_in: 10.minutes) do %>
-          <% if Subforem.cached_discoverable_ids.any? %>
-            <%= render "layouts/main_side_bar" %>
-          <% end %>
+          <%= render "layouts/main_side_bar" %>
         <% end %>
       <% end %>
       <%= render "layouts/top_bar" %>

@@ -44,6 +44,37 @@ RSpec.describe "/admin/customization/billboards" do
         get_resource
         expect(response).to have_http_status(:ok)
       end
+
+      it "uses without_count pagination and selects only summary columns", :aggregate_failures do
+        create(:billboard, name: "Target Billboard", body_markdown: "Heavy markdown payload", organization: nil)
+
+        queries = []
+        subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          queries << payload[:sql]
+        end
+        get admin_billboards_path, params: { search: "Target" }
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Target Billboard")
+        count_queries = queries.grep(/SELECT COUNT\(\*\) FROM "display_ads"/i)
+        expect(count_queries).to be_empty
+
+        select_query = queries.detect { |sql| sql.include?('FROM "display_ads"') }
+        expect(select_query).to be_present
+        expect(select_query).not_to include("body_markdown")
+        expect(select_query).not_to include('"display_ads"."processed_html"')
+      end
+
+      it "renders previous link on subsequent pages", :aggregate_failures do
+        create_list(:billboard, 2, organization: nil)
+
+        get admin_billboards_path, params: { page: 2, search: "Ad" }
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include('rel="prev"')
+      end
     end
 
     describe "GET /admin/customization/billboards/:id/edit" do
@@ -61,6 +92,32 @@ RSpec.describe "/admin/customization/billboards" do
       it "allows the request" do
         get admin_billboard_path(billboard.id)
         expect(response).to have_http_status(:ok)
+      end
+
+      it "bounds billboard events to the recent 30-day window and preloads event users", :aggregate_failures do
+        recent_user_one = create(:user, :without_profile, profile_image: nil)
+        recent_user_two = create(:user, :without_profile, profile_image: nil)
+        stale_user = create(:user, :without_profile, profile_image: nil)
+        create(:billboard_event, billboard: billboard, user: recent_user_one, category: "click", created_at: 2.days.ago)
+        create(:billboard_event, billboard: billboard, user: recent_user_two, category: "click", created_at: 3.days.ago)
+        create(:billboard_event, billboard: billboard, user: stale_user, category: "click", created_at: 45.days.ago)
+
+        preload_queries = []
+        subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          if payload[:sql].include?('SELECT "users"."id", "users"."username" FROM "users"')
+            preload_queries << payload[:sql]
+          end
+        end
+        get admin_billboard_path(billboard.id)
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("@#{recent_user_one.username}")
+        expect(response.body).to include("@#{recent_user_two.username}")
+        expect(response.body).not_to include("@#{stale_user.username}")
+        expect(preload_queries.size).to eq(1)
       end
     end
 

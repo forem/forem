@@ -2,12 +2,17 @@
 <% # Could be moved to a separate file with some re-factoring %>
 <% custom_org = request.env["forem.custom_domain_org"] %>
 <% custom_domain_redirect_url = custom_domain_main_app_url(custom_org) if custom_org.present? %>
+<% target_subforem_domain = if Subforem.disabled_by_env?
+                              nil
+                            elsif RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
+                              RequestStore.store[:root_subforem_domain]
+                            else
+                              RequestStore.store[:default_subforem_domain]
+                            end %>
 <% default_url_component = if custom_org.present?
                              URL.url(nil)
-                           elsif RequestStore.store[:subforem_id] == RequestStore.store[:default_subforem_id]
-                             "#{URL.protocol}#{RequestStore.store[:root_subforem_domain]}"
-                           else
-                             "#{URL.protocol}#{RequestStore.store[:default_subforem_domain]}"
+                           elsif target_subforem_domain.present?
+                             "#{URL.protocol}#{target_subforem_domain}"
                            end %>
 <script>
   var userSignedIn = <%= user_signed_in? %>;
@@ -50,6 +55,7 @@
 
       if (paramToken && !userSignedIn) {
         authenticateUser(paramToken);
+      <% if user_signed_in? || default_url_component.present? %>
       } else {
         var iframe = document.createElement('iframe');
         iframe.style.display = 'none';
@@ -73,6 +79,7 @@
             }));
           }
         });
+      <% end %>
       }
 
       function authenticateUser(token) {

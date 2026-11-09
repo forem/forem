@@ -10,14 +10,15 @@ module Admin
     ].freeze
 
     before_action :set_default_options, only: %i[index]
-    before_action :badges_for_options, only: %i[new create edit update]
+    before_action :badges_for_options, only: %i[new edit]
     after_action only: [:update] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
     def index
       @q = Tag.ransack(params[:q])
-      @tags = @q.result.page(params[:page]).per(50)
+      @tags = @q.result.select(:id, :name, :alias_for, :taggings_count).page(params[:page]).per(50).load
+      @moderated_tag_ids = moderated_tag_ids(@tags.map(&:id))
     end
 
     def new
@@ -25,10 +26,10 @@ module Admin
     end
 
     def edit
-      @subforems = Subforem.all
+      @subforems = Subforem.select(:id, :domain).load
       @tag = Tag.find(params[:id])
-      @existing_relationship_ids = @tag.subforem_relationships.pluck(:subforem_id)
-      @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
+      @existing_relationship_ids = @tag.subforem_relationships.pluck(:subforem_id).to_set
+      @tag_moderators = @tag.tag_moderators.select(:id, :username).load
     end
 
     def create
@@ -39,6 +40,7 @@ module Admin
         flash[:success] = I18n.t("admin.tags_controller.created", tag_name: @tag.name)
         redirect_to edit_admin_tag_path(@tag)
       else
+        badges_for_options
         flash[:danger] = @tag.errors_as_sentence
         render :new
       end
@@ -51,11 +53,7 @@ module Admin
         flash[:success] = I18n.t("admin.tags_controller.updated", tag_name: @tag.name)
 
         if tag_params[:subforem_ids].present? && tag_params[:subforem_ids].any?
-          tag_params[:subforem_ids].each do |subforem_id|
-            @tag.subforem_relationships.find_or_create_by(subforem_id: subforem_id.to_i)
-          end
-          # Remove subforem relationships that are not in the params
-          @tag.subforem_relationships.where.not(subforem_id: tag_params[:subforem_ids].map(&:to_i)).destroy_all
+          sync_subforem_relationships(tag_params[:subforem_ids].map(&:to_i).uniq)
         end
       else
         flash[:error] =
@@ -73,6 +71,26 @@ module Admin
 
     def badges_for_options
       @badges_for_options = Badge.pluck(:title, :id)
+    end
+
+    def moderated_tag_ids(tag_ids)
+      return Set.new if tag_ids.empty?
+
+      resource_ids = Role.where(name: "tag_moderator", resource_type: "Tag", resource_id: [nil, *tag_ids])
+        .or(Role.where(name: "tag_moderator", resource_type: nil, resource_id: nil))
+        .where("EXISTS (SELECT 1 FROM users_roles WHERE users_roles.role_id = roles.id)")
+        .pluck(:resource_id)
+      return tag_ids.to_set if resource_ids.include?(nil)
+
+      resource_ids.to_set
+    end
+
+    def sync_subforem_relationships(desired_subforem_ids)
+      existing_subforem_ids = @tag.subforem_relationships.pluck(:subforem_id)
+      (desired_subforem_ids - existing_subforem_ids).each do |subforem_id|
+        @tag.subforem_relationships.create(subforem_id: subforem_id)
+      end
+      @tag.subforem_relationships.where.not(subforem_id: desired_subforem_ids).destroy_all
     end
 
     def tag_params

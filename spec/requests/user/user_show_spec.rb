@@ -253,5 +253,53 @@ RSpec.describe "UserShow" do
         .to contain_exactly(org.name, admin_org.name)
       expect(doc.css("a[href='/#{guest_org.slug}'], a[href='/#{pending_org.slug}']")).to be_empty
     end
+
+    it "loads signed-in profile comments via user_id index without heavy columns", :aggregate_failures do
+      article = create(:article, user: user, with_tags: false)
+      comment = create(:comment, user: user, commentable: article)
+      sign_in user
+
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(article.title)
+      expect(queries.grep(/SELECT 1 AS one FROM "comments"/i)).to be_empty
+
+      comment_select_queries = queries.grep(/SELECT "comments"\."id".*FROM "comments" INNER JOIN articles/i)
+      expect(comment_select_queries.size).to eq(1)
+      expect(comment_select_queries.first).to include("(comments.created_at + INTERVAL '0 seconds') DESC")
+      expect(comment_select_queries.first).not_to include('"body_markdown"')
+      expect(comment_select_queries.first).not_to include('"semantic_embedding"')
+
+      loaded_comment = controller.instance_variable_get(:@comments).first
+      expect(loaded_comment.id).to eq(comment.id)
+      expect(loaded_comment.has_attribute?(:body_markdown)).to be(false)
+      expect(loaded_comment.association(:commentable)).to be_loaded
+      expect(loaded_comment.commentable.has_attribute?(:body_markdown)).to be(false)
+      expect(loaded_comment.commentable.has_attribute?(:processed_html)).to be(false)
+    end
+
+    it "skips the profile comments fetch query when user_profile_comments_count is zero", :aggregate_failures do
+      article = create(:article, user: user, with_tags: false)
+      create(:comment, user: user, commentable: article)
+      article.update_column(:published, false)
+      sign_in user
+
+      queries = []
+      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get user.path
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(queries.grep(/SELECT COUNT\(\*\) FROM "comments"/i).size).to eq(1)
+      expect(queries.grep(/SELECT "comments"\..*FROM "comments"/i)).to be_empty
+    end
   end
 end

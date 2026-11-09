@@ -136,10 +136,19 @@ RSpec.describe "/api/admin/users" do
         omniauth_mock_mlh_payload
         create(:identity, user: older, provider: "mlh", uid: "core-12345")
 
-        get "/api/admin/users",
-            params: { identity_provider: "mlh", identity_uid: "core-12345" },
-            headers: headers
+        sql_queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          sql_queries << payload[:sql] unless payload[:name] == "SCHEMA"
+        end
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get "/api/admin/users",
+              params: { identity_provider: "mlh", identity_uid: "core-12345" },
+              headers: headers
+        end
+
         expect(response.parsed_body["users"].pluck("id")).to eq([older.id])
+        expect(response.parsed_body["total"]).to eq(1)
+        expect(sql_queries.grep(/SELECT DISTINCT|SELECT COUNT/i)).to be_empty
       end
     end
   end
@@ -428,6 +437,27 @@ RSpec.describe "/api/admin/users" do
 
       put_settings({ notification_setting: { email_newsletter: false } }, id: 999_999)
       expect(response).to have_http_status(:not_found)
+    end
+
+    it "coalesces base_email_eligible and updated_at into a single user UPDATE when email_newsletter changes",
+       :aggregate_failures do
+      target.notification_setting.update!(email_newsletter: false)
+      target.update_columns(base_email_eligible: false, updated_at: 1.day.ago)
+      headers # warm up super_admin caller before recording queries
+
+      user_updates = []
+      callback = lambda do |_name, _start, _finish, _id, payload|
+        user_updates << payload[:sql] if payload[:sql]&.start_with?('UPDATE "users"')
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        put_settings({ notification_setting: { email_newsletter: true } })
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(user_updates.size).to eq(1)
+      expect(target.reload.base_email_eligible).to be(true)
+      expect(target.updated_at).to be > 1.minute.ago
     end
   end
 

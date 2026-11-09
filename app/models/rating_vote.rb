@@ -12,8 +12,14 @@ class RatingVote < ApplicationRecord
 
   after_create_commit :assign_article_rating
 
-  counter_culture :article
+  counter_culture :article,
+                  column_name: proc { |model| "rating_votes_count" unless model.destroyed_by_article_association? },
+                  column_names: { nil => :rating_votes_count }
   counter_culture :user
+
+  def destroyed_by_article_association?
+    destroyed_by_association&.active_record == Article
+  end
 
   private
 

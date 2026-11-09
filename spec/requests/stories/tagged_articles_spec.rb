@@ -129,6 +129,8 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         it "skips the existence query for unsupported tags when the page has stories", :aggregate_failures do
           tagged_article = create(:article, user: user, published: true, approved: true, tags: unsupported_tag,
                                             score: 5)
+          create(:context_note, article: tagged_article, content: "first tag note")
+          create(:context_note, article: tagged_article, content: "second tag note")
           queries = []
           callback = ->(*, payload) { queries << payload[:sql] }
           ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
@@ -136,8 +138,11 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           expect(response).to have_http_status(:ok)
-          expect(response.body).to include(CGI.escapeHTML(tagged_article.title))
+          expect(response.body).to include(CGI.escapeHTML(tagged_article.title), "first tag note")
+          expect(response.body).not_to include("second tag note")
           expect(queries.grep(/SELECT 1 AS one FROM "articles"/)).to be_empty
+          expect(queries.grep(/FROM "context_notes"/).size).to eq(1)
+          expect(queries.grep(/FROM "context_notes"/).first).to include('ORDER BY "context_notes"."id" ASC')
         end
 
         it "renders normal page if no articles but tag is supported" do
@@ -221,6 +226,17 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
             get "/t/#{tag.name}"
             expect(response.body).not_to include(mod_user.username)
           end
+
+          it "loads tag moderators via role_ids without a rolify users_roles join", :aggregate_failures do
+            queries = []
+            callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+            ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+              get "/t/#{tag.name}"
+            end
+
+            expect(response.body).to include(mod_user.username)
+            expect(queries.grep(/INNER JOIN "users_roles".*INNER JOIN "roles"/)).to be_empty
+          end
         end
 
         context "with user signed in" do
@@ -229,8 +245,13 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           it "shows tags and renders properly", :aggregate_failures do
-            get "/t/#{tag.name}"
+            queries = []
+            callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+            ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+              get "/t/#{tag.name}"
+            end
             expect(response.body).to include("crayons-navigation__item crayons-navigation__item--current")
+            expect(queries.grep(/FROM "users_roles"/)).to be_empty
             has_mod_action_button
             does_not_paginate
             sets_remember_token

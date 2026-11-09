@@ -15,8 +15,9 @@ namespace :forem_native do
         lang = Regexp.last_match(1)
         code = CGI.unescapeHTML(Regexp.last_match(2))
         begin
-          lexer = Rouge::Lexer.find(lang) || Rouge::Lexers::PlainText.new
-          highlighted = Rouge::Formatters::HTML.new.format(lexer.lex(code))
+          highlighted = ForemNative.syntax_highlight_html(code, lang)
+          raise StandardError, "syntax highlight unavailable" if highlighted.nil?
+
           %(<pre class="highlight #{lang}"><code>#{highlighted}</code></pre>)
         rescue StandardError
           %(<pre class="highlight"><code>#{CGI.escapeHTML(code)}</code></pre>)
@@ -602,6 +603,223 @@ namespace :forem_native do
       x.config(time: 2, warmup: 1)
       x.report("Ruby Legacy (Phase 2 Metal Origin + Referrer + JSON SQL)") { legacy_phase2_pipeline.call }
       x.report("Rust Magnus (Phase 2 Metal Origin + Referrer + JSON SQL)") { native_phase2_pipeline.call }
+      x.compare!
+    end
+
+    puts "\n=== Tier 1 Metal FastPath: GA4 Fallback JSON + FeedEvents Batch Validation Benchmark ==="
+    ga_json_body = JSON.generate(
+      {
+        "path" => "/ben/rewriting-rails-hot-paths-in-rust-42",
+        "user_language" => "en-US",
+        "referrer" => "https://www.google.com/search?q=forem+rust+magnus",
+        "user_agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+        "viewport_size" => "900x1440",
+        "screen_resolution" => "1080x1920",
+        "document_title" => "Rewriting Rails Hot Paths in Rust - DEV Community",
+        "document_encoding" => "UTF-8",
+        "document_path" => "/ben/rewriting-rails-hot-paths-in-rust-42"
+      },
+    )
+    feed_batch = Array.new(20) do |idx|
+      {
+        "article_id" => 10_000 + idx,
+        "article_position" => idx + 1,
+        "category" => idx.even? ? "impression" : "click",
+        "context_type" => "home",
+        "user_id" => 42,
+        "feed_config_id" => 7,
+        "event_id" => format("550e8400-e29b-41d4-a716-44665544%04x", idx)
+      }
+    end
+    bulk_upsert_bench = FeedEvents::BulkUpsert.new(feed_batch)
+
+    legacy_tier1_pipeline = lambda do
+      parsed = JSON.parse(ga_json_body)
+      ref = parsed["referrer"]
+      {
+        "page_title" => parsed["document_title"],
+        "page_location" => parsed["document_path"],
+        "page_path" => parsed["path"],
+        "user_id" => 42,
+        "user_language" => parsed["user_language"],
+        "referrer" => ref && !ref.start_with?("https://dev.to") ? ref : nil,
+        "user_agent" => parsed["user_agent"],
+        "viewport_size" => parsed["viewport_size"],
+        "screen_resolution" => parsed["screen_resolution"],
+        "document_encoding" => parsed["document_encoding"],
+        "data_source" => "web"
+      }
+      bulk_upsert_bench.__send__(:legacy_valid_events, feed_batch).map do |event|
+        {
+          article_position: event[:article_position],
+          category: event[:category],
+          context_type: event[:context_type],
+          article_id: event[:article_id],
+          user_id: event[:user_id],
+          feed_config_id: event[:feed_config_id],
+          counts_for: event[:counts_for],
+          event_id: event[:event_id]
+        }
+      end
+    end
+
+    native_tier1_pipeline = lambda do
+      ForemNative.match_metal_telemetry_route("POST", "/fallback_activity_recorder")
+      ForemNative.match_metal_telemetry_route("POST", "/feed_events")
+      ForemNative.match_metal_telemetry_route("POST", "/feed_config_visits")
+      ForemNative.extract_ga_event_params(ga_json_body, "https://dev.to", 42)
+      ForemNative.validate_and_normalize_feed_events(feed_batch)
+    end
+
+    tier1_ruby_mem = MemoryProfiler.report { 10.times { legacy_tier1_pipeline.call } }
+    tier1_rust_mem = MemoryProfiler.report { 10.times { native_tier1_pipeline.call } }
+    puts "Tier 1 Metal FastPath Ruby Legacy allocations (10 runs): " \
+         "#{tier1_ruby_mem.total_allocated} objects (#{tier1_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 1 Metal FastPath Rust Magnus allocations (10 runs): " \
+         "#{tier1_rust_mem.total_allocated} objects (#{tier1_rust_mem.total_allocated_memsize} bytes)"
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (GA4 JSON + 20x FeedEvent.new.valid?)") { legacy_tier1_pipeline.call }
+      x.report("Rust Magnus (GA4 JSON + 20x FeedEvent batch kernel)") { native_tier1_pipeline.call }
+      x.compare!
+    end
+
+    puts "\n=== Tier 2 AuthPass + AsyncInfo + BulkFollow Pipeline Benchmark ==="
+    jwt_secret = Rails.application.secret_key_base
+    jwt_exp = 1_793_727_000
+    encoded_real_csrf = Base64.urlsafe_encode64("R" * 32, padding: false)
+    csrf_pad = "P" * 32
+    sample_origin = "https://Blog.MyOrg.com:8443/auth_pass/iframe?passed_domain=test"
+    sample_user_json = {
+      id: 42,
+      name: "Ben Halpern",
+      username: "ben",
+      trusted: true,
+      admin: true
+    }.to_json
+    follow_ids = (1..25).to_a
+    follow_fwd = Array.new(25, &:even?)
+    follow_rev = Array.new(25) { |idx| (idx % 3).zero? }
+    auth_pass_ctrl = AuthPassController.new
+    follows_ctrl = FollowsController.new
+
+    legacy_tier2_pipeline = lambda do
+      t = JWT.encode({ user_id: 42, exp: jwt_exp }, jwt_secret)
+      raw_real = Base64.urlsafe_decode64(encoded_real_csrf)
+      global_tok = OpenSSL::HMAC.digest(OpenSSL::Digest.new("SHA256"), raw_real, "!real_csrf_token")
+      xored = csrf_pad.bytes.zip(global_tok.bytes).map { |a, b| (a ^ b).chr }.join
+      masked = Base64.urlsafe_encode64(csrf_pad + xored, padding: false)
+      orig = auth_pass_ctrl.__send__(:legacy_parse_origin_host_and_csp, sample_origin)
+      base_json = {
+        broadcast: nil,
+        param: :authenticity_token,
+        token: masked,
+        user: sample_user_json,
+        client_geolocation: "US-NY",
+        default_email_optin_allowed: true,
+        creator: true
+      }.to_json
+      follow_json = follows_ctrl
+        .__send__(:legacy_resolve_bulk_follow, 1, true, follow_ids, follow_fwd, follow_rev)
+        .to_json
+      [t, orig, base_json, follow_json]
+    end
+
+    native_tier2_pipeline = lambda do
+      t = ForemNative.encode_hs256_jwt(42, jwt_exp, jwt_secret)
+      masked = ForemNative.mask_authenticity_token(encoded_real_csrf, csrf_pad)
+      orig = ForemNative.parse_auth_pass_origin(sample_origin)
+      base_json = ForemNative.build_base_data_json(
+        broadcast: nil,
+        param: "authenticity_token",
+        token: masked,
+        user: sample_user_json,
+        client_geolocation: "US-NY",
+        default_email_optin_allowed: true,
+        creator: true,
+      )
+      follow_json = ForemNative.resolve_bulk_follow_json(1, true, follow_ids, follow_fwd, follow_rev)
+      [t, orig, base_json, follow_json]
+    end
+
+    raise "Tier 2 pipeline output mismatch!" unless legacy_tier2_pipeline.call == native_tier2_pipeline.call
+
+    tier2_ruby_mem = MemoryProfiler.report { 100.times { legacy_tier2_pipeline.call } }
+    tier2_rust_mem = MemoryProfiler.report { 100.times { native_tier2_pipeline.call } }
+    puts "Tier 2 Pipeline Ruby allocations (100 runs): #{tier2_ruby_mem.total_allocated} objects " \
+         "(#{tier2_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 2 Pipeline Rust allocations (100 runs): #{tier2_rust_mem.total_allocated} objects " \
+         "(#{tier2_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (JWT.encode + CSRF mask + URI.parse + BaseData + 25x BulkFollow)") do
+        legacy_tier2_pipeline.call
+      end
+      x.report("Rust Magnus (JWT.encode + CSRF mask + Origin + BaseData + 25x BulkFollow)") do
+        native_tier2_pipeline.call
+      end
+      x.compare!
+    end
+
+    puts "\n=== Tier 3 Billboards (FilteredAdsQuery + Weighted Selection + Geolocation) Benchmark ==="
+    sample_ua = "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 Chrome/125.0 Mobile Safari/537.36"
+    sample_geos = %w[US CA-ON CA-QC GB DE FR]
+    sample_tags = %w[javascript webdev beginners programming tutorial react python ai]
+    sample_roles = %w[trusted tag_moderator base_subscriber]
+    sample_base_sql = 'SELECT "display_ads".* FROM "display_ads" WHERE "display_ads"."approved" = TRUE'
+
+    legacy_tier3_pipeline = lambda do
+      geo_cov = Geolocation.__send__(:legacy_code_covered_by?, "ca-on", sample_geos)
+      country = "US-NY".split("-").first
+      country = nil unless country&.match?(/\A[A-Z]{2}\z/)
+      rel_sql = Billboards::FilteredAdsQuery.new(
+        area: "feed_first",
+        user_signed_in: true,
+        user_id: 42,
+        user_tags: sample_tags,
+        role_names: sample_roles,
+        user_agent: sample_ua,
+        cookies_allowed: true,
+        subforem_id: 1,
+      ).__send__(:legacy_call).to_sql
+      weighted_sql = ActiveRecord::Base.sanitize_sql_array(
+        [
+          "WITH base AS (#{sample_base_sql}), weighted AS (SELECT id FROM base) SELECT * FROM base WHERE 1 >= ?",
+          0.42,
+        ],
+      )
+      [geo_cov, country, rel_sql, weighted_sql]
+    end
+
+    native_tier3_pipeline = lambda do
+      geo_cov = ForemNative.geolocation_code_covered_by?("ca-on", sample_geos)
+      country = ForemNative.extract_viewer_country("US-NY")
+      rel_sql = Billboards::FilteredAdsQuery.new(
+        area: "feed_first",
+        user_signed_in: true,
+        user_id: 42,
+        user_tags: sample_tags,
+        role_names: sample_roles,
+        user_agent: sample_ua,
+        cookies_allowed: true,
+        subforem_id: 1,
+      ).call.to_sql
+      weighted_sql = ForemNative.build_billboard_weighted_random_sql(sample_base_sql, 99, 1000, 0.42)
+      [geo_cov, country, rel_sql, weighted_sql]
+    end
+
+    tier3_ruby_mem = MemoryProfiler.report { 100.times { legacy_tier3_pipeline.call } }
+    tier3_rust_mem = MemoryProfiler.report { 100.times { native_tier3_pipeline.call } }
+    puts "Tier 3 Pipeline Ruby allocations (100 runs): #{tier3_ruby_mem.total_allocated} objects " \
+         "(#{tier3_ruby_mem.total_allocated_memsize} bytes)"
+    puts "Tier 3 Pipeline Rust allocations (100 runs): #{tier3_rust_mem.total_allocated} objects " \
+         "(#{tier3_rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (18x Relation#where/#or + Geolocation + UA regex)") { legacy_tier3_pipeline.call }
+      x.report("Rust Magnus (Single-pass FilteredAdsQuery + Geolocation + UA)") { native_tier3_pipeline.call }
       x.compare!
     end
   end

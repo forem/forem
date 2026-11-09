@@ -111,13 +111,15 @@ RSpec.describe Ai::ArticleQualityAssessor, type: :service do
       context "when internal_content_description_spec is available" do
         before do
           allow(Settings::RateLimit).to receive(:internal_content_description_spec).and_return("A specialized community for Ruby developers")
+          allow(Settings::RateLimit).to receive(:expanded_content_advisement_spec).and_return("The DEV Content Playbook: value authentic voice.")
           allow(ai_client).to receive(:call).and_return("1,2")
         end
 
-        it "uses the internal content description in the prompt" do
+        it "uses the internal content description and expanded advisement in the prompt" do
           expect(ai_client).to receive(:call) do |prompt|
             expect(prompt).to include("Community Context:")
             expect(prompt).to include("A specialized community for Ruby developers")
+            expect(prompt).to include("The DEV Content Playbook: value authentic voice.")
             expect(prompt).not_to include("A community for developers to share knowledge and experiences.")
             "1,2"
           end

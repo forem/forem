@@ -82,4 +82,20 @@ RSpec.describe RatingVote do
       expect(rating).to be_valid
     end
   end
+
+  describe "counter_culture on destroy" do
+    it "decrements article and user counts when destroyed directly" do
+      vote = create(:rating_vote, article: article, user: user2, rating: 5.0)
+
+      expect { vote.destroy! }
+        .to change { article.reload.rating_votes_count }.by(-1)
+        .and change { user2.reload.rating_votes_count }.by(-1)
+    end
+
+    it "skips updating the article counter when destroyed via article association" do
+      create(:rating_vote, article: article, user: user2, rating: 5.0)
+
+      expect { article.destroy! }.to change { user2.reload.rating_votes_count }.by(-1)
+    end
+  end
 end

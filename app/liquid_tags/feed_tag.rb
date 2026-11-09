@@ -117,9 +117,7 @@ class FeedTag < LiquidTagBase
 
     articles = articles.cached_tagged_with_any(@tag_names) if @tag_names.any?
 
-    articles
-      .includes(:subforem)
-      .limited_column_select
+    articles.limited_column_select
   end
 
   def apply_filters(articles)

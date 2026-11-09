@@ -463,6 +463,33 @@ RSpec.describe Article do
             .to include(article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem)
         end
       end
+
+      context "when Subforem.disabled_by_env? is true via SKIP_SUBFOREM_REASSIGNMENT" do
+        before do
+          allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+        end
+
+        it "returns an unfiltered scope with an empty where_clause" do
+          relation = described_class.from_subforem(subforem.id)
+          expect(relation.where_clause).to be_empty
+          expect(relation).to include(
+            article_in_subforem, article_in_second_subforem, article_in_null_subforem, article_in_other_subforem
+          )
+        end
+      end
+
+      context "when no subforems exist in the database" do
+        before do
+          RequestStore.store[:subforem_id] = nil
+          RequestStore.store[:default_subforem_id] = nil
+          allow(Subforem).to receive(:cached_default_id).and_return(nil)
+        end
+
+        it "returns an unfiltered scope without appending a redundant subforem_id WHERE clause" do
+          relation = described_class.from_subforem
+          expect(relation.where_clause).to be_empty
+        end
+      end
     end
 
     describe "#body_markdown" do
@@ -2028,6 +2055,18 @@ RSpec.describe Article do
 
       expect(cached).to eq(article)
       expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}").id).to eq(article.id)
+    end
+
+    it "coalesces subforem-scoped lookups onto the 'all' cache key when Subforem.disabled_by_env? is true" do
+      subforem = create(:subforem)
+      article = create(:article, user: admin, tags: "welcome", subforem_id: subforem.id)
+      allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+      cached = described_class.cached_admin_published_with("welcome", subforem_id: subforem.id)
+
+      expect(cached).to eq(article)
+      expect(Rails.cache.read("admin-published-with:welcome:all").id).to eq(article.id)
+      expect(Rails.cache.read("admin-published-with:welcome:#{subforem.id}")).to be_nil
     end
   end
 

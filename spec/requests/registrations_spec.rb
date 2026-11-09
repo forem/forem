@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "Registrations" do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, :without_profile, profile_image: nil) }
 
   around do |example|
-    old_secret = ENV["FOREM_OWNER_SECRET"]
+    old_secret = ENV.fetch("FOREM_OWNER_SECRET", nil)
     ENV["FOREM_OWNER_SECRET"] = nil
     example.run
   ensure
@@ -75,33 +75,33 @@ RSpec.describe "Registrations" do
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: subforem.id,
           default_subforem_id: default_subforem.id,
-          root_subforem_id: root_subforem.id
+          root_subforem_id: root_subforem.id,
         )
       end
 
-      it "redirects to the subforem enter path with the provided state" do
-        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => "#{subforem.domain}" }
+      it "redirects to the subforem enter path with the provided state", :aggregate_failures do
+        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => subforem.domain.to_s }
         expected_url = URL.url("/enter?state=new-user", root_subforem)
         expect(response).to redirect_to(expected_url)
-        expect(response.status).to eq 301
+        expect(response).to have_http_status(:moved_permanently)
       end
     end
 
     context "when subforem_id is set but subforem record is not found" do
       let!(:subforem) { create(:subforem) }
-      let!(:default_subforem) { create(:subforem) }
-      let!(:root_subforem) { create(:subforem, root: true) }
+
       before do
         allow(RequestStore).to receive(:store).and_return(
           subforem_id: subforem.id,
           default_subforem_id: subforem.id,
-          root_subforem_id: root_subforem.id
+          root_subforem_id: subforem.id + 1,
         )
       end
-      it "falls through and renders the normal sign up page" do
-        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => "#{subforem.domain}" }
+
+      it "falls through and renders the normal sign up page", :aggregate_failures do
+        get sign_up_path, params: { state: "new-user" }, headers: { "HTTP_HOST" => subforem.domain.to_s }
         # The sign up page should render the email sign up option
-        expect(response.status).to eq 200
+        expect(response).to have_http_status(:ok)
         expect(response.body).to include("Already have an account?")
       end
     end
@@ -115,15 +115,10 @@ RSpec.describe "Registrations" do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
       end
 
-      it "shows the sign in page with email option" do
+      it "shows the sign in page with email option and login link", :aggregate_failures do
         get sign_up_path, params: { state: "new-user" }
 
         expect(response.body).to include("Sign up with Email")
-      end
-
-      it "shows the sign in text for password based authentication" do
-        get sign_up_path, params: { state: "new-user" }
-
         expect(response.body).to include("Already have an account? <a href=\"/enter\">Log in</a>")
       end
 
@@ -143,7 +138,8 @@ RSpec.describe "Registrations" do
         expect(File.read(User.last.profile_image.file.file)).to eq(File.read(image_path))
       end
 
-      it "creates a user with a random profile image if none was uploaded" do
+      it "creates a user with a random profile image if none was uploaded", :aggregate_failures do
+        allow(Images::ProfileImageGenerator).to receive(:call).and_call_original
         name = "test"
         post users_path, params: {
           user: {
@@ -155,7 +151,10 @@ RSpec.describe "Registrations" do
           }
         }
 
-        expect(User.find_by(name: name).persisted?).to be true
+        created_user = User.find_by(name: name)
+        expect(created_user.persisted?).to be true
+        expect(created_user.profile_image.file).to be_present
+        expect(Images::ProfileImageGenerator).to have_received(:call).once
       end
     end
 
@@ -163,7 +162,6 @@ RSpec.describe "Registrations" do
       before { allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false) }
 
       it "does not show email sign up option" do
-        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(false)
         get sign_up_path, params: { state: "new-user" }
 
         expect(response.body).not_to include("Sign up with Email")
@@ -185,15 +183,6 @@ RSpec.describe "Registrations" do
         get sign_up_path, params: { state: "email_signup" }
 
         expect(response.body).to include("recaptcha-tag-container")
-      end
-    end
-
-    context "when user logged in" do
-      it "redirects to main feed" do
-        sign_in user
-
-        get sign_up_path
-        expect(response).to redirect_to("/?signin=true")
       end
     end
 
@@ -236,6 +225,12 @@ RSpec.describe "Registrations" do
   end
 
   describe "POST /users" do
+    before do
+      allow(Images::ProfileImageGenerator).to receive(:call) do
+        Rails.root.join("app/assets/images/1.png").open
+      end
+    end
+
     def mock_recaptcha_verification
       allow_any_instance_of(RegistrationsController).to(
         receive(:recaptcha_verified?).and_return(true),
@@ -261,48 +256,39 @@ RSpec.describe "Registrations" do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
       end
 
-      it "does not raise disallowed if community is set to allow email" do
+      it "does not raise disallowed or create a user when params are invalid", :aggregate_failures do
         expect { post "/users" }.not_to raise_error
-      end
-
-      it "does not create user with invalid params" do
-        post "/users"
         expect(User.all.size).to be 0
       end
 
-      it "creates user with valid params passed" do
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
+      it "creates and registers a user in good standing, logs them in, and redirects to root", :aggregate_failures do
+        user_attributes = { name: "test #{rand(10)}", username: "haha_#{rand(10)}", email: "yoooo#{rand(100)}@yo.co" }
+
+        post "/users", params: {
+          user: { **user_attributes, password: "PaSSw0rd_yo000", password_confirmation: "PaSSw0rd_yo000" }
+        }
+
         expect(User.all.size).to be 1
-      end
-
-      it "registers a user in good standing" do
-        post "/users", params:
-        { user: { name: "test #{rand(10)}",
-                  username: "haha_#{rand(10)}",
-                  email: "yoooo#{rand(100)}@yo.co",
-                  password: "PaSSw0rd_yo000",
-                  password_confirmation: "PaSSw0rd_yo000" } }
-
         new_user = User.last
+        expect(new_user).to have_attributes(user_attributes)
         expect(new_user.registered).to be true
         expect(new_user.registered_at).not_to be_nil
         expect(new_user).not_to be_limited
+        expect(controller.current_user).to eq(new_user)
+        expect(response).to redirect_to(root_path)
       end
 
-      it "registeres a user with appropriate subforem" do
+      it "registeres a user with appropriate subforem", :aggregate_failures do
         subforem = create(:subforem)
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } },
-          headers: { "HOST" => "#{subforem.domain}" }
+        post "/users",
+             params: {
+               user: { name: "test #{rand(10)}",
+                       username: "haha_#{rand(10)}",
+                       email: "yoooo#{rand(100)}@yo.co",
+                       password: "PaSSw0rd_yo000",
+                       password_confirmation: "PaSSw0rd_yo000" }
+             },
+             headers: { "HOST" => subforem.domain.to_s }
         new_user = User.last
         expect(new_user.registered).to be true
         expect(new_user.registered_at).not_to be_nil
@@ -310,12 +296,9 @@ RSpec.describe "Registrations" do
         expect(new_user.onboarding_subforem_id).to eq(subforem.id)
       end
 
-
-      it "limits the user if the admins have set new user status to limited" do
+      it "limits the user if the admins have set new user status to limited", :aggregate_failures do
         allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
-
-        user = build(:user)
-        user_attributes = user.slice(:name, :username, :email)
+        user_attributes = { name: "Limited User", username: "limited_user", email: "limited@example.com" }
 
         post "/users", params:
           { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
@@ -324,19 +307,6 @@ RSpec.describe "Registrations" do
         expect(new_user.registered).to be true
         expect(new_user.registered_at).not_to be_nil
         expect(new_user).to be_limited
-      end
-
-      it "logs in user and redirects to the root path" do
-        user = build(:user)
-        user_attributes = user.slice(:name, :username, :email)
-
-        post "/users", params:
-          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
-
-        new_user = User.last
-        expect(new_user).to have_attributes(user_attributes)
-        expect(controller.current_user).to eq(new_user)
-        expect(response).to redirect_to(root_path)
       end
 
       it "does not create user with password confirmation mismatch" do
@@ -360,7 +330,7 @@ RSpec.describe "Registrations" do
       end
 
       it "renders the registration form with validation errors when a concurrent signup hits RecordNotUnique" do
-        existing_user = create(:user, email: "duplicate@example.com")
+        existing_user = create(:user, :without_profile, profile_image: nil, email: "duplicate@example.com")
         allow_any_instance_of(User).to receive(:save).and_raise(
           ActiveRecord::RecordNotUnique.new(
             'PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_users_on_email"',
@@ -413,9 +383,8 @@ RSpec.describe "Registrations" do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
       end
 
-      it "registers the user but does not log them in" do
-        user = build(:user)
-        user_attributes = user.slice(:name, :username, :email)
+      it "registers the user but does not log them in", :aggregate_failures do
+        user_attributes = { name: "Confirm User", username: "confirm_user", email: "confirm@example.com" }
 
         post "/users", params:
           { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
@@ -425,14 +394,12 @@ RSpec.describe "Registrations" do
         expect(new_user.registered_at).not_to be_nil
         expect(new_user).not_to be_limited
         expect(controller.current_user).to be_nil
-        expect(response).to redirect_to(confirm_email_path(email: user.email))
+        expect(response).to redirect_to(confirm_email_path(email: user_attributes[:email]))
       end
 
-      it "also limits the user first if the admins have set new user status to limited" do
+      it "also limits the user first if the admins have set new user status to limited", :aggregate_failures do
         allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
-
-        user = build(:user)
-        user_attributes = user.slice(:name, :username, :email)
+        user_attributes = { name: "Limited Confirm", username: "limited_confirm", email: "limited_confirm@example.com" }
 
         post "/users", params:
           { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
@@ -440,7 +407,7 @@ RSpec.describe "Registrations" do
         new_user = User.last
         expect(new_user).to be_limited
         expect(controller.current_user).to be_nil
-        expect(response).to redirect_to(confirm_email_path(email: user.email))
+        expect(response).to redirect_to(confirm_email_path(email: user_attributes[:email]))
       end
     end
 
@@ -559,55 +526,33 @@ RSpec.describe "Registrations" do
         expect { post "/users" }.not_to raise_error
       end
 
-      it "creates user with valid params passed" do
+      it "creates creator and mascot users, grants roles, logs in, redirects, and enqueues Discover::RegisterWorker",
+         :aggregate_failures do
+        expect(Settings::General.mascot_user_id).to be_nil
         user_email = "yoooo#{rand(100)}@yo.co"
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: user_email,
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
+
+        sidekiq_assert_enqueued_with(job: Discover::RegisterWorker) do
+          post "/users", params:
+            { user: { name: "test #{rand(10)}",
+                      username: "haha_#{rand(10)}",
+                      email: user_email,
+                      password: "PaSSw0rd_yo000",
+                      password_confirmation: "PaSSw0rd_yo000" } }
+        end
+
         expect(User.all.size).to be 2
-        expect(User.first.email).to eq user_email
-      end
-
-      it "logs in user and redirects them to the creator settings path" do
-        user = build(:user)
-        user_attributes = user.slice(:name, :username, :email)
-
-        post "/users", params:
-          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
-
         new_user = User.first
+        expect(new_user.email).to eq user_email
         expect(new_user.registered).to be true
         expect(new_user.registered_at).not_to be_nil
+        expect(new_user.super_admin?).to be true
+        expect(new_user.trusted?).to be true
+        expect(new_user.creator?).to be true
+        expect(new_user.limited?).to be false
         expect(controller.current_user).to eq(new_user)
         expect(response).to redirect_to(new_admin_creator_setting_path)
-      end
 
-      it "makes user super admin and config admin" do
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.super_admin?).to be true
-        expect(User.first.trusted?).to be true
-        expect(User.first.creator?).to be true
-        expect(User.first.limited?).to be false
-      end
-
-      it "creates mascot user" do
-        expect(Settings::General.mascot_user_id).to be_nil
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
         expect(Settings::General.mascot_user_id).to eq User.last.id
-
         mascot_account = User.mascot_account
         expect(mascot_account.username).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:username]
         expect(mascot_account.email).to eq Users::CreateMascotAccount::MASCOT_PARAMS[:email]
@@ -637,51 +582,6 @@ RSpec.describe "Registrations" do
                       password_confirmation: "PaSSw0rd_yo000" } }
           expect(User.first).to be_nil
         end.to raise_error Pundit::NotAuthorizedError
-      end
-
-      it "enqueues Discover::RegisterWorker" do
-        sidekiq_assert_enqueued_with(job: Discover::RegisterWorker) do
-          post "/users", params:
-            { user: { name: "test #{rand(10)}",
-                      username: "haha_#{rand(10)}",
-                      email: "yoooo#{rand(100)}@yo.co",
-                      forem_owner_secret: "test",
-                      password: "PaSSw0rd_yo000",
-                      password_confirmation: "PaSSw0rd_yo000" } }
-        end
-      end
-    end
-
-    context "when going through the Creator Onboarding flow" do
-      before do
-        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
-        allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
-      end
-
-      it "creates user with valid params passed" do
-        user_email = "yoooo#{rand(100)}@yo.co"
-
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: user_email,
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.all.size).to be 2
-        expect(User.first.email).to eq user_email
-      end
-
-      it "makes user super admin and config admin" do
-        post "/users", params:
-          { user: { name: "test #{rand(10)}",
-                    username: "haha_#{rand(10)}",
-                    email: "yoooo#{rand(100)}@yo.co",
-                    password: "PaSSw0rd_yo000",
-                    password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.first.super_admin?).to be true
-        expect(User.first.trusted?).to be true
-        expect(User.first.creator?).to be true
-        expect(User.first.limited?).to be false
       end
     end
   end

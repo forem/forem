@@ -122,6 +122,20 @@ RSpec.describe "StoriesIndex" do
         expect(response).to have_http_status(:ok)
         expect(response).not_to redirect_to("http://default.example.com/")
       end
+
+      it "keeps jwt login without emitting a cross-domain auth_pass/iframe for signed-out default domain visitors" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        get "http://default.example.com"
+        expect(response.body).to include("authenticateUser(paramToken)")
+        expect(response.body).not_to include("/auth_pass/iframe")
+      end
+
+      it "emits same-origin auth_pass/iframe for signed-in visitors on the default domain" do
+        allow(Subforem).to receive(:cached_id_by_domain).with("default.example.com").and_return(3)
+        sign_in create(:user)
+        get "http://default.example.com"
+        expect(response.body).to include("iframe.src = '/auth_pass/iframe?passed_domain=")
+      end
     end
 
     context "when General settings has a resized logo" do
@@ -1051,6 +1065,26 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include("second home note")
     ensure
       PinnedArticle.remove
+    end
+
+    it "preloads context notes in a single query on latest and timeframe feeds", :aggregate_failures do
+      article = create(:article, user: user, published: true, score: 25, hotness_score: 100)
+      create(:context_note, article: article, content: "first timeframe note")
+      create(:context_note, article: article, content: "second timeframe note")
+
+      ["/latest", "/top/week"].each do |path|
+        context_note_queries = 0
+        callback = lambda do |*, payload|
+          context_note_queries += 1 if payload[:sql].include?('FROM "context_notes"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") { get path }
+
+        expect(response).to have_http_status(:ok)
+        expect(context_note_queries).to eq(1)
+        expect(response.body).to include("first timeframe note")
+        expect(response.body).not_to include("second timeframe note")
+      end
     end
 
     it "batches organization lookups for signed-out home feed renders", :aggregate_failures do
