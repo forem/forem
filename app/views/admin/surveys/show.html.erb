@@ -91,7 +91,7 @@
   </section>
 
   <section class="crayons-card p-4">
-    <h2 class="fs-2xl fw-bold mb-4">Poll Results (<%= @survey.polls.count %>)</h2>
+    <h2 class="fs-2xl fw-bold mb-4">Poll Results (<%= @survey_stats[:polls_count] %>)</h2>
     
     <% if @poll_data.any? %>
       <div class="flex flex-col gap-6">
