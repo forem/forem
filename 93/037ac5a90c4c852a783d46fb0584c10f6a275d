@@ -1,0 +1,46 @@
+.github/workflows/forem-native.yml
+  h_f968154a99632d 22,24,32-33,39,41,47-48,146
+app/helpers/agent_sessions_helper.rb
+  h_f968154a99632d 117,126
+app/lib/redcarpet/render/html_rouge.rb
+  h_f968154a99632d 15
+app/services/agent_session_renderers/markdown_renderer.rb
+  h_f968154a99632d 59,63,71-73
+app/services/articles/detect_code_block_languages.rb
+  h_f968154a99632d 29,51,187
+docs/rust_native_extensions.md
+  h_f968154a99632d 134,136,142-144
+gems/forem_native/crates/forem_core/src/lib.rs
+  h_f968154a99632d 24-25
+gems/forem_native/crates/forem_core/src/syntax.rs
+  h_f968154a99632d 1-4312
+gems/forem_native/crates/forem_core/src/syntax_data.rs
+  h_f968154a99632d 1-1434
+gems/forem_native/ext/forem_native/src/lib.rs
+  h_f968154a99632d 3558-3628,3989-4013
+gems/forem_native/lib/forem_native.rb
+  h_f968154a99632d 1307-1397,1400-1407
+lib/tasks/forem_native.rake
+  h_f968154a99632d 18-20
+spec/helpers/agent_sessions_helper_spec.rb
+  h_f968154a99632d 1-143
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6039-6179
+spec/lib/redcarpet/render/html_rouge_spec.rb
+  h_f968154a99632d 113-152
+spec/services/agent_session_renderers/markdown_renderer_spec.rb
+  h_f968154a99632d 105-106
+spec/services/articles/detect_code_block_languages_spec.rb
+  h_f968154a99632d 134-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "93037ac5a90c4c852a783d46fb0584c10f6a275d",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
