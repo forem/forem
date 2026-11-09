@@ -324,5 +324,31 @@ RSpec.describe "BillboardEvents", type: :request do
       expect { middleware.call(env) }.to raise_error(ActionController::InvalidAuthenticityToken)
       expect(session_opts[:skip]).to be(true)
     end
+
+    it "reconnects and retries once when exec_query raises ActiveRecord::ConnectionFailed in the fast path" do
+      calls = 0
+      allow(BillboardEvent.connection).to receive(:reconnect!)
+      allow(BillboardEvent.connection).to receive(:exec_query).and_wrap_original do |original, *args|
+        calls += 1
+        raise ActiveRecord::ConnectionFailed, "PG::ConnectionBad" if calls == 1
+
+        original.call(*args)
+      end
+
+      post "/bb_tabulations",
+           params: {
+             billboard_event: {
+               billboard_id: billboard.id,
+               category: "impression",
+               context_type: "article"
+             }
+           }.to_json,
+           headers: { "CONTENT_TYPE" => "application/json" }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["id"]).to be_present
+      expect(BillboardEvent.connection).to have_received(:reconnect!).once
+      expect(calls).to eq(2)
+    end
   end
 end

@@ -101,6 +101,21 @@ RSpec.describe BillboardEvent do
         expect(queries.size).to eq(1)
         expect(queries.first).to start_with("SET LOCAL synchronous_commit TO OFF; UPDATE")
       end
+
+      it "reconnects and retries once on ActiveRecord::ConnectionFailed" do
+        calls = 0
+        allow(described_class.connection).to receive(:reconnect!)
+        allow(described_class.connection).to receive(:exec_update).and_wrap_original do |original, *args|
+          calls += 1
+          raise ActiveRecord::ConnectionFailed, "PG::ConnectionBad" if calls == 1
+
+          original.call(*args)
+        end
+
+        expect(described_class.add_impression_seconds(id: event.id, user_id: user.id, now: now)).to eq(1)
+        expect(described_class.connection).to have_received(:reconnect!).once
+        expect(calls).to eq(2)
+      end
     end
 
     context "when not inside a transaction" do
