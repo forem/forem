@@ -45,14 +45,19 @@ module Notifications
         # same reason mentions are excluded: one notification per person per post.
         co_author_ids = Array.wrap(notifiable.co_author_ids).map(&:to_i)
 
-        # Only follower ids are used below, so skip hydrating (and DISTINCT-sorting) full user rows
-        article_followers = User.select(:id, :updated_at).joins("INNER JOIN follows ON follows.follower_id = users.id")
+        # Only follower ids are used below, so skip hydrating (and DISTINCT-sorting) full user rows.
+        # Order by expression so PostgreSQL drives the join from fk_followables on follows instead of
+        # scanning tmp_index_users_on_updated_at backwards across all users when send_limit is small.
+        article_followers = User.select(:id, Arel.sql("(users.updated_at + INTERVAL '0 seconds') AS updated_at"))
+          .joins("INNER JOIN follows ON follows.follower_id = users.id")
           .where("(follows.followable_id = ? AND follows.followable_type = ?)
                  OR (follows.followable_id = ? AND follows.followable_type = ?)",
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
           .where.not(id: (user_ids_with_article_mentions + co_author_ids + [notifiable.user]))
-          .recently_active(send_limit).distinct
+          .recently_active(send_limit)
+          .reorder(Arel.sql("(users.updated_at + INTERVAL '0 seconds') DESC"))
+          .distinct
 
         article_followers.each do |follower|
           now = Time.current
