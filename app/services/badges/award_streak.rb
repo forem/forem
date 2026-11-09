@@ -23,9 +23,10 @@ module Badges
       @historical = historical
     end
 
+    # Returns false when the badge for this threshold does not exist (nothing
+    # was awarded), true once the awarding pass has run.
     def call
-      badge_slug = "#{weeks}-week-streak"
-      return unless (badge_id = Badge.id_for_slug(badge_slug))
+      return false unless (badge_id = Badge.id_for_slug(badge_slug))
 
       message = generate_message
 
@@ -38,6 +39,12 @@ module Badges
         # One bad user must not stop everybody after them from being rewarded.
         Rails.error.report(e)
       end
+
+      true
+    end
+
+    def badge_slug
+      "#{weeks}-week-streak"
     end
 
     private
