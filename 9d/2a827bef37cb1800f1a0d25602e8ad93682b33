@@ -1,0 +1,24 @@
+app/uploaders/base_uploader.rb
+  h_f968154a99632d 9-16,44-49,51-57,59-63,71,79-229
+config/initializers/carrierwave.rb
+  h_f968154a99632d 9-81
+config/initializers/timeout.rb
+  h_f968154a99632d 16-19,21-38
+spec/initializers/carrierwave_spec.rb
+  h_f968154a99632d 103-158
+spec/initializers/timeout_spec.rb
+  h_f968154a99632d 14-29
+spec/uploaders/article_image_uploader_spec.rb
+  h_f968154a99632d 81-86,98-145,149,151
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9d2a827bef37cb1800f1a0d25602e8ad93682b33",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
