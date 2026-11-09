@@ -193,10 +193,14 @@ RSpec.describe "Billboards" do
         expect(response.headers["Surrogate-Key"].split).to eq(
           ["display_ads/#{billboard.id}", "billboard_responses", "billboard_responses/post_comments"],
         )
+        expect(response.headers["Cache-Tag"]).to eq(
+          "display_ads/#{billboard.id},billboard_responses,billboard_responses/post_comments",
+        )
         expect(response.headers["X-Accel-Expires"]).to eq(max_age.to_s)
         expect(response.headers.to_hash).to include(
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
+          "CDN-Cache-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
       end
     end

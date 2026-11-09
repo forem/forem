@@ -1,22 +1,26 @@
 # Copied from the deprecated fastly-rails gem
 # https://github.com/fastly/fastly-rails/blob/master/lib/fastly-rails/active_record/surrogate_key.rb
 #
-# This concern handles purge and purge_all calls to purge Fastly's edge cache.
-# If Fastly has not been configured, these methods will short circuit and not be invoked.
+# This concern handles purge and purge_all calls to purge Fastly or Cloudflare edge cache.
+# If neither CDN has been configured, these methods will short circuit and not be invoked.
 module Purgeable
   extend ActiveSupport::Concern
 
   module ClassMethods
     def purge_all
-      return unless fastly
-
-      service.purge_by_key(table_key)
+      if fastly
+        service.purge_by_key(table_key)
+      elsif cloudflare_configured?
+        EdgeCache::PurgeByKey.call(table_key)
+      end
     end
 
     def soft_purge_all
-      return unless fastly
-
-      service.purge_by_key(table_key, true)
+      if fastly
+        service.purge_by_key(table_key, true)
+      elsif cloudflare_configured?
+        EdgeCache::PurgeByKey.call(table_key, soft: true)
+      end
     end
 
     def table_key
@@ -28,6 +32,12 @@ module Purgeable
       return false if ApplicationConfig["FASTLY_API_KEY"].blank? || ApplicationConfig["FASTLY_SERVICE_ID"].blank?
 
       Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
+    end
+
+    def cloudflare_configured?
+      return false if Rails.env.development?
+
+      ApplicationConfig["CLOUDFLARE_API_TOKEN"].present? && ApplicationConfig["CLOUDFLARE_ZONE_ID"].present?
     end
 
     def service
@@ -47,15 +57,19 @@ module Purgeable
   end
 
   def purge
-    return unless fastly
-
-    service.purge_by_key(record_key)
+    if fastly
+      service.purge_by_key(record_key)
+    elsif self.class.cloudflare_configured?
+      EdgeCache::PurgeByKey.call(record_key)
+    end
   end
 
   def soft_purge
-    return unless fastly
-
-    service.purge_by_key(record_key, true)
+    if fastly
+      service.purge_by_key(record_key, true)
+    elsif self.class.cloudflare_configured?
+      EdgeCache::PurgeByKey.call(record_key, soft: true)
+    end
   end
 
   def purge_all

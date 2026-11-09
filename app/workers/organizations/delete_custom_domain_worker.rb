@@ -5,16 +5,27 @@ module Organizations
 
     def perform(tls_subscription_id)
       return if tls_subscription_id.blank?
-      return unless ApplicationConfig["FASTLY_API_KEY"].present?
+
+      client = tls_client
+      return unless client
 
       begin
-        FastlyTls::Client.delete_subscription(tls_subscription_id)
+        client.delete_subscription(tls_subscription_id)
       rescue StandardError => e
         Rails.logger.error(
-          "Failed to delete Fastly TLS subscription #{tls_subscription_id} in background worker: #{e.class} #{e.message}"
+          "Failed to delete TLS subscription #{tls_subscription_id} in background worker: #{e.class} #{e.message}"
         )
         raise
       end
+    end
+
+    private
+
+    def tls_client
+      return FastlyTls::Client if ApplicationConfig["FASTLY_API_KEY"].present?
+      return CloudflareTls::Client if CloudflareTls::Client.configured?
+
+      nil
     end
   end
 end

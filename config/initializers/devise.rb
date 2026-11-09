@@ -413,7 +413,7 @@ end
 module DeviseTrackableWithFastlyIp
   def update_tracked_fields!(request)
     # Use the custom IP logic
-    custom_ip = (request.env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip).to_s
+    custom_ip = (request.env["HTTP_FASTLY_CLIENT_IP"] || request.env["HTTP_CF_CONNECTING_IP"] || request.remote_ip).to_s
 
     # Update the fields using the custom IP
     self.last_sign_in_at = Time.current

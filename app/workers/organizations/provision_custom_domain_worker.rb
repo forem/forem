@@ -6,7 +6,8 @@ module Organizations
     sidekiq_options lock: :until_executing, on_conflict: :replace
 
     def perform(organization_id)
-      return if ApplicationConfig["FASTLY_API_KEY"].blank?
+      client = tls_client
+      return unless client
 
       organization = Organization.find_by(id: organization_id)
       return unless organization
@@ -16,7 +17,7 @@ module Organizations
       # Changes to custom_domain should clear tls_subscription_id in the model.
       return if organization.tls_subscription_id.present?
 
-      subscription_id = FastlyTls::Client.create_subscription(organization.custom_domain)
+      subscription_id = client.create_subscription(organization.custom_domain)
       
       organization.update_columns(
         tls_subscription_id: subscription_id,
@@ -25,6 +26,15 @@ module Organizations
 
       # Start verification polling
       Organizations::VerifyCustomDomainWorker.perform_in(30.seconds, organization.id)
+    end
+
+    private
+
+    def tls_client
+      return FastlyTls::Client if ApplicationConfig["FASTLY_API_KEY"].present?
+      return CloudflareTls::Client if CloudflareTls::Client.configured?
+
+      nil
     end
   end
 end

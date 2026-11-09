@@ -27,6 +27,7 @@ module EdgeCache
 
     def determine_provider_class
       return self.class::Fastly if fastly_enabled?
+      return self.class::Cloudflare if cloudflare_enabled?
       return self.class::Nginx if nginx_enabled_and_available?
 
       nil
@@ -34,6 +35,10 @@ module EdgeCache
 
     def fastly_enabled?
       ApplicationConfig["FASTLY_API_KEY"].present? && ApplicationConfig["FASTLY_SERVICE_ID"].present?
+    end
+
+    def cloudflare_enabled?
+      ApplicationConfig["CLOUDFLARE_API_TOKEN"].present? && ApplicationConfig["CLOUDFLARE_ZONE_ID"].present?
     end
 
     def nginx_enabled_and_available?

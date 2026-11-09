@@ -1,0 +1,13 @@
+name = "forem-edge"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+# Comma-separated list of primary application domains (do not vary on X-Req-Host).
+PRIMARY_HOSTS = "dev.to,www.dev.to"
+
+# Upstream origin hostname used when rewriting custom domain Host headers.
+ORIGIN_HOST = "practicaldev.herokuapp.com"
+
+# Set `CLOUDFLARE_SECRET` via `wrangler secret put CLOUDFLARE_SECRET` when
+# validating `X-Forem-Edge-Secret` from upstream SaaS workers.

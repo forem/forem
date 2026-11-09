@@ -40,9 +40,11 @@ module CachingHeaders
 
     response.headers["Cache-Control"] = "public, no-cache" # Used only by Fastly.
     response.headers["X-Accel-Expires"] = max_age.to_s # Used only by Nginx.
-    response.headers["Surrogate-Control"] = surrogate_control.presence || build_surrogate_control(
+    edge_control = surrogate_control.presence || build_surrogate_control(
       max_age, stale_while_revalidate: stale_while_revalidate, stale_if_error: stale_if_error
     )
+    response.headers["Surrogate-Control"] = edge_control
+    response.headers["CDN-Cache-Control"] = edge_control
   end
 
   def unset_cache_control_headers
@@ -51,14 +53,17 @@ module CachingHeaders
     response.headers["Cache-Control"] = nil
     response.headers["X-Accel-Expires"] = nil
     response.headers["Surrogate-Control"] = nil
+    response.headers["CDN-Cache-Control"] = nil
   end
 
-  # Sets Surrogate-Key HTTP header with one or more keys strips session data
-  # from the request.
+  # Sets Surrogate-Key and Cache-Tag HTTP headers with one or more keys and strips
+  # session data from the request.
   def set_surrogate_key_header(*surrogate_keys)
     # No Set-Cookie, unless this response has been explicitly opted out of edge caching.
     request.session_options[:skip] = true unless RequestStore.store[:edge_caching_in_place] == false
-    response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
+    normalized_keys = surrogate_keys.flatten.compact
+    response.headers["Surrogate-Key"] = normalized_keys.join(" ")
+    response.headers["Cache-Tag"] = normalized_keys.join(",")
   end
 
   def add_vary_header(*vary_keys)

@@ -33,4 +33,20 @@ RSpec.describe Organizations::VerifyCustomDomainWorker, type: :worker do
     expect(organization.tls_status).to eq("failed")
     expect(organization.tls_subscription_id).to be_nil
   end
+
+  context "when Cloudflare is configured instead of Fastly" do
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_API_TOKEN").and_return("cf_token")
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_ZONE_ID").and_return("cf_zone")
+    end
+
+    it "verifies custom domain TLS via CloudflareTls::Client" do
+      allow(CloudflareTls::Client).to receive(:get_subscription).and_return({ "attributes" => { "state" => "issued" } })
+
+      described_class.new.perform(organization.id)
+      expect(organization.reload.tls_status).to eq("issued")
+      expect(CloudflareTls::Client).to have_received(:get_subscription).with("subs_123")
+    end
+  end
 end

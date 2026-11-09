@@ -31,6 +31,27 @@ describe Rack, ".attack", throttle: true, type: :request do
       end
     end
 
+    it "throttles based on HTTP_CF_CONNECTING_IP when CLOUDFLARE_API_TOKEN is configured" do
+      ENV["FASTLY_API_KEY"] = nil
+      ENV["CLOUDFLARE_API_TOKEN"] = "cf_token_123"
+
+      Timecop.freeze do
+        allow(Search::Username).to receive(:search_documents).and_return({})
+
+        valid_responses = Array.new(4).map do
+          get "/search/usernames", headers: { "HTTP_CF_CONNECTING_IP" => "192.0.2.10" }
+        end
+        throttled_response = get "/search/usernames", headers: { "HTTP_CF_CONNECTING_IP" => "192.0.2.10" }
+        new_ip_response = get "/search/usernames", headers: { "HTTP_CF_CONNECTING_IP" => "192.0.2.11" }
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(throttled_response).to eq(429)
+        expect(new_ip_response).not_to eq(429)
+      end
+    ensure
+      ENV["CLOUDFLARE_API_TOKEN"] = nil
+    end
+
     it "allows up to 20 requests per second for signed-in users on /search endpoints", :aggregate_failures do
       sign_in create(:user)
 

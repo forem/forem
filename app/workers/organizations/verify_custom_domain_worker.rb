@@ -6,13 +6,14 @@ module Organizations
     sidekiq_options lock: :until_executing, on_conflict: :replace
 
     def perform(organization_id)
-      return if ApplicationConfig["FASTLY_API_KEY"].blank?
+      client = tls_client
+      return unless client
 
       organization = Organization.find_by(id: organization_id)
       return unless organization
       return if organization.tls_subscription_id.blank?
 
-      subscription_data = FastlyTls::Client.get_subscription(organization.tls_subscription_id)
+      subscription_data = client.get_subscription(organization.tls_subscription_id)
       
       if subscription_data.nil?
         # Subscription was deleted on Fastly, so clear the stale upstream reference
@@ -35,6 +36,15 @@ module Organizations
         # If it failed or was destroyed upstream, mark it as failed
         organization.update_columns(tls_status: Organization.tls_statuses[:failed])
       end
+    end
+
+    private
+
+    def tls_client
+      return FastlyTls::Client if ApplicationConfig["FASTLY_API_KEY"].present?
+      return CloudflareTls::Client if CloudflareTls::Client.configured?
+
+      nil
     end
   end
 end
