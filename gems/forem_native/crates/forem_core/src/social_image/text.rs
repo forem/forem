@@ -943,10 +943,10 @@ pub fn draw_text_northwest(
 ) {
     let (metrics, glyphs) = layout_line(font, text, pointsize, true);
     let offset_x = x;
-    // In `AnnotateImage` (`magick/annotate.c`), `NorthWestGravity` sets:
-    // `offset.y = (metrics.bounds.y2 - metrics.ascent) + translate.y + metrics.ascent`
-    // which simplifies to `translate.y + metrics.bounds.y2`.
-    let offset_y = y + metrics.bounds_y2;
+    // Matches Debian/Ubuntu ImageMagick 6 (`6.9.10` / Heroku production) `NorthWestGravity`
+    // baseline offset (`translate.y + metrics.ascent`), placing the opening quote mark (`body_top - 30`)
+    // cleanly inside the window body (`y = 149..185`) below the `bar_y = 126` title bar.
+    let offset_y = y + metrics.ascent;
     for g in &glyphs {
         rasterize_glyph_onto(canvas, g, offset_x, offset_y, color);
     }
