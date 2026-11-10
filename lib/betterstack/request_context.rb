@@ -81,8 +81,8 @@ module Betterstack
         host: request.host,
         method: request.request_method,
         path: request.path,
-        # Same client IP as the rest of Forem: Fastly's header, else Rails' remote_ip.
-        remote_addr: (env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip).to_s,
+        # Same client IP as the rest of Forem: Fastly or Cloudflare's header, else Rails' remote_ip.
+        remote_addr: (env["HTTP_FASTLY_CLIENT_IP"] || env["HTTP_CF_CONNECTING_IP"] || request.remote_ip).to_s,
         request_id: request.request_id,
       )
       previous_env = Thread.current[ENV_THREAD_KEY]

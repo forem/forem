@@ -227,6 +227,7 @@ module Middlewares
       current_user_id = resolve_user_id(env, PageViewsController)
       skip_session_commit!(env)
       geo_region = env["HTTP_FASTLY_CLIENT_GEO_REGION"].presence ||
+        env["HTTP_CF_REGION_CODE"].presence ||
         resolve_geolocation(env, current_user_id, PageViewsController)
       page_view_params[:region] = geo_region
 

@@ -388,18 +388,18 @@ class Organization < ApplicationRecord
     return unless saved_change_to_custom_domain?
 
     old_domain, new_domain = saved_change_to_custom_domain
-    fastly_api_key_present = ApplicationConfig["FASTLY_API_KEY"].present?
+    tls_provider_present = ApplicationConfig["FASTLY_API_KEY"].present? || CloudflareTls::Client.configured?
 
     if old_domain.present? && tls_subscription_id.present?
       previous_tls_subscription_id = tls_subscription_id
       update_columns(tls_subscription_id: nil, tls_status: Organization.tls_statuses[:not_started])
       
-      if fastly_api_key_present
+      if tls_provider_present
         Organizations::DeleteCustomDomainWorker.perform_async(previous_tls_subscription_id)
       end
     end
 
-    if new_domain.present? && fastly_api_key_present && tls_subscription_id.blank? && tls_status == "not_started"
+    if new_domain.present? && tls_provider_present && tls_subscription_id.blank? && tls_status == "not_started"
       Organizations::ProvisionCustomDomainWorker.perform_async(id)
     end
   end

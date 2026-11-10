@@ -372,7 +372,7 @@ class ApplicationController < ActionController::Base
   end
 
   def anonymous_user
-    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip)
+    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"] || request.env["HTTP_CF_CONNECTING_IP"] || request.remote_ip)
   end
 
   def initialize_stripe

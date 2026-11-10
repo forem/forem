@@ -100,4 +100,35 @@ RSpec.describe Purgeable do
       expect(model_class).to have_received(:service)
     end
   end
+
+  describe "when Cloudflare is configured instead of Fastly" do
+    before do
+      allow(ApplicationConfig).to receive(:[]).and_call_original
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_API_TOKEN").and_return("fake-cf-token")
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_ZONE_ID").and_return("fake-zone-id")
+      allow(EdgeCache::PurgeByKey).to receive(:call)
+    end
+
+    it "delegates .purge_all to EdgeCache::PurgeByKey" do
+      model_class.purge_all
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables")
+    end
+
+    it "delegates .soft_purge_all to EdgeCache::PurgeByKey with soft: true" do
+      model_class.soft_purge_all
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables", soft: true)
+    end
+
+    it "delegates #purge to EdgeCache::PurgeByKey" do
+      purgeable_model.purge
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables/1")
+    end
+
+    it "delegates #soft_purge to EdgeCache::PurgeByKey with soft: true" do
+      purgeable_model.soft_purge
+      expect(EdgeCache::PurgeByKey).to have_received(:call).with("purgeables/1", soft: true)
+    end
+  end
 end

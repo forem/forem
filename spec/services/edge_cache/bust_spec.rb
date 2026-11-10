@@ -37,6 +37,7 @@ RSpec.describe EdgeCache::Bust, type: :service do
     context "when fastly is not configured" do
       before do
         stub_fastly
+        stub_cloudflare
         stub_nginx
       end
 
@@ -150,13 +151,138 @@ RSpec.describe EdgeCache::Bust, type: :service do
     end
   end
 
+  describe "#bust_cloudflare_cache" do
+    let(:cloudflare_provider_class) { EdgeCache::Bust::Cloudflare }
+
+    before do
+      stub_fastly
+      stub_nginx
+    end
+
+    context "when cloudflare is not configured" do
+      before do
+        stub_cloudflare
+      end
+
+      it "does not bust a cloudflare cache" do
+        allow(cloudflare_provider_class).to receive(:call)
+
+        described_class.call(path)
+        expect(cloudflare_provider_class).not_to have_received(:call)
+      end
+    end
+
+    context "when cloudflare is configured" do
+      before do
+        configure_cloudflare
+      end
+
+      it "can bust a cloudflare cache" do
+        allow(cloudflare_provider_class).to receive(:call)
+
+        described_class.call(path)
+        expect(cloudflare_provider_class).to have_received(:call).with(path)
+      end
+
+      it "sends canonical and internal-nav URLs to Cloudflare purge_cache endpoint" do
+        accepted = instance_double(HTTParty::Response, success?: true, parsed_response: { "success" => true })
+        allow(HTTParty).to receive(:post).and_return(accepted)
+
+        cloudflare_provider_class.call(path)
+
+        expect(HTTParty).to have_received(:post).with(
+          "https://api.cloudflare.com/client/v4/zones/fake-zone-id/purge_cache",
+          headers: hash_including(
+            "Authorization" => "Bearer fake-cf-token",
+            "Content-Type" => "application/json",
+          ),
+          body: { files: [URL.url(path), URL.url("#{path}?i=i")] }.to_json,
+        )
+      end
+
+      it "preserves custom domain in absolute URLs" do
+        accepted = instance_double(HTTParty::Response, success?: true, parsed_response: { "success" => true })
+        allow(HTTParty).to receive(:post).and_return(accepted)
+
+        cloudflare_provider_class.call("https://blog.example.com/custom-post")
+
+        expect(HTTParty).to have_received(:post).with(
+          "https://api.cloudflare.com/client/v4/zones/fake-zone-id/purge_cache",
+          headers: hash_including("Authorization" => "Bearer fake-cf-token"),
+          body: {
+            files: [
+              "https://blog.example.com/custom-post",
+              "https://blog.example.com/custom-post?i=i",
+            ]
+          }.to_json,
+        )
+      end
+
+      it "records stats and logs a structured warning when Cloudflare rejects a purge" do
+        body = '{"success":false,"errors":[{"code":10000,"message":"Authentication error"}]}'
+        rejected = instance_double(
+          HTTParty::Response,
+          success?: false,
+          code: 403,
+          body: body,
+          parsed_response: { "success" => false },
+        )
+        allow(HTTParty).to receive(:post).and_return(rejected)
+        allow(ForemStatsClient).to receive(:increment)
+        allow(Rails.logger).to receive(:warn)
+
+        cloudflare_provider_class.call("https://blog.example.com/")
+
+        expect(ForemStatsClient).to have_received(:increment).with(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:EdgeCache::Bust::Cloudflare", "status:403"],
+        )
+        expect(Rails.logger).to have_received(:warn).with(
+          hash_including(
+            message: "EdgeCache::Bust::Cloudflare purge was rejected",
+            url: "https://blog.example.com/",
+            status: 403,
+          ),
+        )
+      end
+
+      it "gracefully ignores malformed URLs without raising an error or calling HTTParty" do
+        allow(HTTParty).to receive(:post)
+
+        expect { cloudflare_provider_class.call("https://") }.not_to raise_error
+        expect(HTTParty).not_to have_received(:post)
+      end
+
+      it "rescues network timeouts, records stats, and logs a structured warning" do
+        allow(HTTParty).to receive(:post).and_raise(Net::OpenTimeout, "execution expired")
+        allow(ForemStatsClient).to receive(:increment)
+        allow(Rails.logger).to receive(:warn)
+
+        expect { cloudflare_provider_class.call(path) }.not_to raise_error
+
+        expect(ForemStatsClient).to have_received(:increment).with(
+          "edgecache_bust.provider_error",
+          tags: ["provider_class:EdgeCache::Bust::Cloudflare", "error_class:Net::OpenTimeout"],
+        )
+        expect(Rails.logger).to have_received(:warn).with(
+          hash_including(
+            message: "EdgeCache::Bust::Cloudflare failed to purge",
+            error_class: "Net::OpenTimeout",
+            error_message: "execution expired",
+          ),
+        )
+      end
+    end
+  end
+
   describe "#bust_nginx_cache" do
     let(:nginx_provider_class) { EdgeCache::Bust::Nginx }
 
     before do
-      # Explicitly stub Fastly since we check if Fastly has
+      # Explicitly stub Fastly and Cloudflare since we check if they have
       # been configured before we try to use Nginx.
       stub_fastly
+      stub_cloudflare
     end
 
     context "when OpenResty is not configured" do
@@ -193,6 +319,11 @@ RSpec.describe EdgeCache::Bust, type: :service do
     allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return(nil)
   end
 
+  def stub_cloudflare
+    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_API_TOKEN").and_return(nil)
+    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_ZONE_ID").and_return(nil)
+  end
+
   def stub_nginx
     allow(ApplicationConfig).to receive(:[]).with("OPENRESTY_URL").and_return(nil)
   end
@@ -201,6 +332,12 @@ RSpec.describe EdgeCache::Bust, type: :service do
     allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-domain")
     allow(ApplicationConfig).to receive(:[]).with("FASTLY_API_KEY").and_return("fake-key")
     allow(ApplicationConfig).to receive(:[]).with("FASTLY_SERVICE_ID").and_return("fake-service-id")
+  end
+
+  def configure_cloudflare
+    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("fake-domain")
+    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_API_TOKEN").and_return("fake-cf-token")
+    allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_ZONE_ID").and_return("fake-zone-id")
   end
 
   def configure_nginx

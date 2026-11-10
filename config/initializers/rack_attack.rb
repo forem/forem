@@ -48,8 +48,11 @@ module Rack
     class Request < ::Rack::Request
       def track_and_return_ip
         fastly_ip = env["HTTP_FASTLY_CLIENT_IP"]
+        cloudflare_ip = env["HTTP_CF_CONNECTING_IP"]
         if ApplicationConfig["FASTLY_API_KEY"].present? && fastly_ip.present?
           fastly_ip
+        elsif ApplicationConfig["CLOUDFLARE_API_TOKEN"].present? && cloudflare_ip.present?
+          cloudflare_ip
         else
           ActionDispatch::Request.new(env).remote_ip
         end

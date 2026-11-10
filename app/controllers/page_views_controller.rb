@@ -29,7 +29,10 @@ class PageViewsController < ApplicationMetalController
       page_view_create_params[:viewable_id] = page_view_create_params[:viewable_id].to_i
     end
 
-    page_view_create_params[:region] = request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence || client_geolocation
+    page_view_create_params[:region] =
+      request.headers["HTTP_FASTLY_CLIENT_GEO_REGION"].presence ||
+      request.headers["HTTP_CF_REGION_CODE"].presence ||
+      client_geolocation
 
     if session_current_user_id
       page_view_create_params[:user_id] = session_current_user_id

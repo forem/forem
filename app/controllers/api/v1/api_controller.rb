@@ -33,6 +33,7 @@ module Api
       def error_unauthorized
         response.headers["Cache-Control"] = "no-store"
         response.headers["Surrogate-Control"] = "no-store"
+        response.headers["CDN-Cache-Control"] = "no-store"
         render json: { error: "unauthorized", status: 401 }, status: :unauthorized
       end
 
