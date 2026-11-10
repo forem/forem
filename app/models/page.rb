@@ -20,6 +20,7 @@ class Page < ApplicationRecord
   validate :validate_template_data
   validate :validate_redirect_to_url
 
+  validates :show_in_navigation, inclusion: { in: [true, false] }
   validate :validate_show_in_navigation
   validate :validate_slug_uniqueness
 
@@ -103,13 +104,21 @@ class Page < ApplicationRecord
   private
 
   def validate_show_in_navigation
-    return if show_in_navigation?
+    return unless show_in_navigation == false
 
     if organization_id.blank?
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
-    elsif organization.main_page.nil? || organization.main_page.id == id
+    elsif will_save_change_to_show_in_navigation? && showcase_or_first_page?
+      # Checked only when the flag is being turned off: a page that is promoted to Showcase
+      # while hidden (after a delete or a reorder) must still save. The header always renders
+      # the Showcase tab, so the stored flag has no effect on it.
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
     end
+  end
+
+  def showcase_or_first_page?
+    main_page = organization.main_page
+    main_page.nil? || main_page.id == id
   end
 
   def evaluate_markdown

@@ -154,6 +154,15 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(response.body).to include(I18n.t("views.organization_settings.pages.hidden_from_tabs"))
     end
 
+    it "shows the checkbox on a non-Showcase page whose slug ends in readme" do
+      readme_page.update!(slug: "#{organization.slug}/home")
+      custom_page.update!(slug: "#{organization.slug}/readme", position: 1, show_in_navigation: false)
+
+      get edit_organization_page_path(organization.slug, custom_page)
+
+      expect(Nokogiri::HTML(response.body).at_css("#page_show_in_navigation")).to be_present
+    end
+
     it "marks hidden pages in the organization settings summary" do
       custom_page.update!(show_in_navigation: false)
 

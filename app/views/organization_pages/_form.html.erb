@@ -91,7 +91,7 @@
       <%= f.text_field :description, class: "crayons-textfield", placeholder: t("views.organization_settings.pages.description_placeholder") %>
     </div>
 
-    <% if @organization.main_page.present? && @page != @organization.main_page && !@page.slug.to_s.end_with?("/readme") %>
+    <% if @organization.main_page.present? && @page != @organization.main_page %>
       <div class="crayons-field crayons-field--checkbox">
         <%= f.check_box :show_in_navigation, class: "crayons-checkbox", aria: { describedby: "page-navigation-hint" } %>
         <div>

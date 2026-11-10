@@ -13,6 +13,13 @@ RSpec.describe Page do
       expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
     end
 
+    it "rejects a null value with a validation error instead of a database error" do
+      page = build(:page, organization: create(:organization), position: 2, show_in_navigation: nil)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to be_present
+    end
+
     it "rejects a hidden subforem page" do
       page = build(:page, subforem: create(:subforem), show_in_navigation: false)
 
@@ -46,6 +53,25 @@ RSpec.describe Page do
         page.save!
         expect(page.reload).to have_attributes(show_in_navigation: false, position: 2)
         expect(page).to be_valid
+      end
+
+      it "keeps a hidden page editable after the Showcase is deleted and it becomes the Showcase" do
+        showcase = create(:page, organization: organization, position: 0)
+        hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+        showcase.destroy!
+
+        expect(organization.reload.main_page).to eq(hidden)
+        expect(hidden.reload.update(title: "Renamed")).to be(true)
+      end
+
+      it "keeps a hidden page editable when it is moved to the first position" do
+        create(:page, organization: organization, position: 0)
+        hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+        expect(hidden.update(position: -1)).to be(true)
+        expect(organization.reload.main_page).to eq(hidden)
+        expect(hidden.update(title: "Renamed")).to be(true)
       end
     end
   end
