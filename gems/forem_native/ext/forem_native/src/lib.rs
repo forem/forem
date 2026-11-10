@@ -4196,6 +4196,16 @@ fn extract_opt_i64_val(val: Value) -> Option<Option<i64>> {
     extract_i64_val(val).map(Some)
 }
 
+#[inline]
+fn exact_stride_chunks<T>(slice: &[T], stride: usize) -> Option<std::slice::ChunksExact<'_, T>> {
+    let chunks = slice.chunks_exact(stride);
+    if chunks.remainder().is_empty() {
+        Some(chunks)
+    } else {
+        None
+    }
+}
+
 fn render_comment_tree(
     ruby: &Ruby,
     static_ctx_arr: RArray,
@@ -4310,21 +4320,13 @@ fn render_comment_tree(
             shown_billboard: v[17].to_bool(),
         };
 
-        let a_slice = authors_arr.as_slice();
-        let a_chunks = a_slice.chunks_exact(COMMENT_AUTHOR_STRIDE);
-        if !a_chunks.remainder().is_empty() {
-            return None;
-        }
+        let a_chunks = exact_stride_chunks(authors_arr.as_slice(), COMMENT_AUTHOR_STRIDE)?;
         let mut authors = Vec::with_capacity(a_chunks.len());
         for chunk in a_chunks {
             let mut header_fields = Vec::new();
             if !chunk[16].is_nil() {
                 let hf_arr = RArray::from_value(chunk[16])?;
-                let hf_slice = hf_arr.as_slice();
-                let hf_chunks = hf_slice.chunks_exact(2);
-                if !hf_chunks.remainder().is_empty() {
-                    return None;
-                }
+                let hf_chunks = exact_stride_chunks(hf_arr.as_slice(), 2)?;
                 header_fields.reserve(hf_chunks.len());
                 for pair in hf_chunks {
                     header_fields.push((borrow_utf8_rstr(pair[0])?, borrow_utf8_rstr(pair[1])?));
@@ -4356,11 +4358,7 @@ fn render_comment_tree(
             });
         }
 
-        let n_slice = nodes_flat_arr.as_slice();
-        let n_chunks = n_slice.chunks_exact(COMMENT_NODE_STRIDE);
-        if !n_chunks.remainder().is_empty() {
-            return None;
-        }
+        let n_chunks = exact_stride_chunks(nodes_flat_arr.as_slice(), COMMENT_NODE_STRIDE)?;
         let mut nodes = Vec::with_capacity(n_chunks.len());
         for chunk in n_chunks {
             let ancestry = borrow_opt_utf8_rstr(chunk[2])?;
