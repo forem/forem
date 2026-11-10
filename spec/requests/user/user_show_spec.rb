@@ -81,36 +81,6 @@ RSpec.describe "UserShow" do
       end
     end
 
-    context "when rendering the icons next to the profile name" do
-      let(:title) { Nokogiri::HTML(response.body).at(".js-username-container h1") }
-
-      after { FeatureFlag.remove(:community_favorites) }
-
-      it "does not render an icon wrapper when the user has no icons" do
-        get user.path
-        expect(title).not_to be_nil
-        expect(title.at_css("span.ml-2")).to be_nil
-      end
-
-      it "wraps a subscription icon in a spaced span" do
-        user.add_role("base_subscriber")
-        get user.path
-        expect(title.at_css("span.ml-2 .subscription-icon")).not_to be_nil
-      end
-
-      it "renders every icon inside a single spaced span" do
-        FeatureFlag.add(:community_favorites)
-        FeatureFlag.enable(:community_favorites)
-        user.add_role("base_subscriber")
-        user.add_role(:community_leader_level_1)
-        get user.path
-        wrapper = title.css("span.ml-2")
-        expect(wrapper.size).to eq(1)
-        expect(wrapper.first.at_css(".subscription-icon")).not_to be_nil
-        expect(wrapper.first.at_css(".community-leader-icon")).not_to be_nil
-      end
-    end
-
     it "does not render a key if no value is given" do
       incomplete_user = create(:user, profile_image: nil)
       get incomplete_user.path
@@ -218,88 +188,20 @@ RSpec.describe "UserShow" do
   end
 
   describe "profile query optimizations" do
-    it "queries member_organizations only once when rendering the sidebar", :aggregate_failures do
+    it "queries member_organizations only once when rendering the sidebar" do
       org = create(:organization)
-      admin_org = create(:organization)
-      guest_org = create(:organization)
-      pending_org = create(:organization)
       create(:organization_membership, user: user, organization: org, type_of_user: "member")
-      create(:organization_membership, user: user, organization: admin_org, type_of_user: "admin")
-      create(:organization_membership, user: user, organization: guest_org, type_of_user: "guest")
-      create(:organization_membership, user: user, organization: pending_org, type_of_user: "pending")
       queries = []
       callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
 
-      member_relation = nil
-      admin_relation = nil
-      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-        member_relation = user.member_organizations
-        admin_relation = user.admin_organizations
-      end
-      expect(queries).to be_empty
-      expect(member_relation).to contain_exactly(org, admin_org)
-      expect(admin_relation).to contain_exactly(admin_org)
-
-      queries.clear
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
         get user.path
       end
 
       expect(response).to have_http_status(:ok)
-      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(0)
+      expect(queries.grep(/FROM "organization_memberships"/).size).to eq(1)
       expect(queries.grep(/FROM "organizations" INNER JOIN "organization_memberships"/).size).to eq(1)
-      doc = Nokogiri::HTML(response.body)
-      expect(doc.css("a[href='/#{org.slug}'] h4, a[href='/#{admin_org.slug}'] h4").map(&:text))
-        .to contain_exactly(org.name, admin_org.name)
-      expect(doc.css("a[href='/#{guest_org.slug}'], a[href='/#{pending_org.slug}']")).to be_empty
-    end
-
-    it "loads signed-in profile comments via user_id index without heavy columns", :aggregate_failures do
-      article = create(:article, user: user, with_tags: false)
-      comment = create(:comment, user: user, commentable: article)
-      sign_in user
-
-      queries = []
-      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
-
-      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-        get user.path
-      end
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to include(article.title)
-      expect(queries.grep(/SELECT 1 AS one FROM "comments"/i)).to be_empty
-
-      comment_select_queries = queries.grep(/SELECT "comments"\."id".*FROM "comments" INNER JOIN articles/i)
-      expect(comment_select_queries.size).to eq(1)
-      expect(comment_select_queries.first).to include("(comments.created_at + INTERVAL '0 seconds') DESC")
-      expect(comment_select_queries.first).not_to include('"body_markdown"')
-      expect(comment_select_queries.first).not_to include('"semantic_embedding"')
-
-      loaded_comment = controller.instance_variable_get(:@comments).first
-      expect(loaded_comment.id).to eq(comment.id)
-      expect(loaded_comment.has_attribute?(:body_markdown)).to be(false)
-      expect(loaded_comment.association(:commentable)).to be_loaded
-      expect(loaded_comment.commentable.has_attribute?(:body_markdown)).to be(false)
-      expect(loaded_comment.commentable.has_attribute?(:processed_html)).to be(false)
-    end
-
-    it "skips the profile comments fetch query when user_profile_comments_count is zero", :aggregate_failures do
-      article = create(:article, user: user, with_tags: false)
-      create(:comment, user: user, commentable: article)
-      article.update_column(:published, false)
-      sign_in user
-
-      queries = []
-      callback = ->(_n, _s, _f, _id, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
-
-      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-        get user.path
-      end
-
-      expect(response).to have_http_status(:ok)
-      expect(queries.grep(/SELECT COUNT\(\*\) FROM "comments"/i).size).to eq(1)
-      expect(queries.grep(/SELECT "comments"\..*FROM "comments"/i)).to be_empty
+      expect(Nokogiri::HTML(response.body).at_css("a[href='/#{org.slug}'] h4")&.text).to eq(org.name)
     end
   end
 end

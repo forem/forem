@@ -59,12 +59,19 @@ function handleCommentPreview(event) {
 }
 
 export function initializeCommentPreview() {
+  // Always expose the handler so server-rendered inline `onclick` attributes
+  // (e.g. comment notifications loaded later via pagination) can call it.
+  window.handleCommentPreview = handleCommentPreview;
+
   const previewButton = document.getElementsByClassName('preview-toggle')[0];
 
   if (!previewButton) {
     return;
   }
 
-  window.handleCommentPreview = handleCommentPreview;
-  previewButton.addEventListener('click', handleCommentPreview);
+  // Buttons with an inline onclick already invoke the handler; attaching a
+  // listener too would fire it twice per click and toggle the preview back off.
+  if (!previewButton.getAttribute('onclick')) {
+    previewButton.addEventListener('click', handleCommentPreview);
+  }
 }
