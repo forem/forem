@@ -1,0 +1,18 @@
+.github/workflows/ci.yml
+  h_f968154a99632d 28,114
+.github/workflows/create-cache.yml
+  h_f968154a99632d 10
+.github/workflows/forem-native.yml
+  h_f968154a99632d 69,90,93,100
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2f86ec2f8e0e4a10792b5d6684a1bd360006ffca",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
