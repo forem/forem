@@ -93,6 +93,16 @@ RSpec.describe VerificationMailer do
       expect(settings[:message_data]["magic_link_url"]).to include("valid_token")
       expect(settings[:message_data]["community_name"]).to eq(community_name)
     end
+
+    it "stops customerio_link_hold retries when sign_in_token was already consumed or expired" do
+      unlinked_user = create(:user, sign_in_token: nil, sign_in_token_sent_at: nil)
+      FeatureFlag.enable(Deliverable::CUSTOMERIO_FLAG, FeatureFlag::Actor[unlinked_user])
+
+      expect do
+        email = described_class.with(user_id: unlinked_user.id, customerio_link_hold: 8).magic_link
+        expect(email.message).to be_a(ActionMailer::Base::NullMail)
+      end.not_to have_enqueued_mail(described_class, :magic_link)
+    end
   end
 
   describe "#magic_link" do
@@ -121,6 +131,16 @@ RSpec.describe VerificationMailer do
 
     it "skips sending when sign_in_token has already been consumed" do
       user.update_columns(sign_in_token: nil, sign_in_token_sent_at: nil)
+      email = described_class.with(user_id: user.id).magic_link
+
+      expect(email.message).to be_a(ActionMailer::Base::NullMail)
+    end
+
+    it "skips sending when sign_in_token has expired" do
+      user.update_columns(
+        sign_in_token: "expired_token",
+        sign_in_token_sent_at: (MagicLinksController::SIGN_IN_TOKEN_TTL + 1.minute).ago,
+      )
       email = described_class.with(user_id: user.id).magic_link
 
       expect(email.message).to be_a(ActionMailer::Base::NullMail)

@@ -35,8 +35,8 @@ class VerificationMailer < ApplicationMailer
   end
 
   def magic_link
-    @user = User.find_by(id: params[:user_id])
-    return if @user&.sign_in_token.blank?
+    @user = User.find(params[:user_id])
+    return unless active_sign_in_token?
 
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
@@ -54,7 +54,15 @@ class VerificationMailer < ApplicationMailer
       to: @user.email,
       subject: "Sign in to #{community_name} with a magic code",
       from: "#{community_name} <#{ForemInstance.from_email_address}>",
-      reply_to: ForemInstance.reply_to_email_address
+      reply_to: ForemInstance.reply_to_email_address,
     )
+  end
+
+  private
+
+  def active_sign_in_token?
+    @user.sign_in_token.present? &&
+      @user.sign_in_token_sent_at.present? &&
+      @user.sign_in_token_sent_at > MagicLinksController::SIGN_IN_TOKEN_TTL.ago
   end
 end
