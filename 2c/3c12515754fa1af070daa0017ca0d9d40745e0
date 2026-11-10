@@ -1,0 +1,28 @@
+app/queries/articles/related_discovery.rb
+  h_f968154a99632d 4,47-50,52-59,64-78,83-84
+app/queries/articles/related_query.rb
+  h_f968154a99632d 34-36,90
+config/initializers/rack_attack.rb
+  h_f968154a99632d 12-15
+spec/initializers/rack_attack_spec.rb
+  h_f968154a99632d 234-262
+spec/queries/articles/related_query_spec.rb
+  h_f968154a99632d 24-36
+spec/requests/api/v1/docs/related_articles_spec.rb
+  h_f968154a99632d 14,52-56,67-72
+spec/requests/api/v1/related_articles_spec.rb
+  h_f968154a99632d 63,70-74,80-82,184-185
+swagger/v1/api_v1.json
+  h_f968154a99632d 4819-4821,4844-4846
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2c3c12515754fa1af070daa0017ca0d9d40745e0",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
