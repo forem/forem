@@ -148,6 +148,8 @@ jobs:
             raise "Unexpected build_billboard_new_only_sql!" unless ForemNative.build_billboard_new_only_sql("SELECT * FROM billboards", 5000, 15).include?("preferred")
             raise "Unexpected build_filtered_ads_where_sql!" unless ForemNative.build_filtered_ads_where_sql(["feed_first", 1_700_000_000, 0, [], 1, false, "Mozilla/5.0 (iPhone)", nil, true, nil, [], ["ruby"], true, true, true, 42, ["admin"], true, "ARRAY['US']::varchar[]", true, true, [10], false]).include?("placement_area")
             raise "Unexpected syntax_highlight_code_block!" unless ForemNative.syntax_highlight_code_block("puts 1", "ruby").include?("highlight ruby")
+            raise "Unexpected shell prompt highlight!" unless ForemNative.syntax_highlight_code_block("$ npm install\necho $", "shell").include?("npm install")
+            raise "Unexpected single-brace attr highlight!" unless ForemNative.syntax_highlight_code_block("<div class={cls} />", "html").include?("highlight html")
             raise "Unexpected social_image_draw_background!" unless ForemNative.social_image_draw_background("#3333ff", []).width == 1200
             raise "Unexpected render_comment_tree!" unless ForemNative::Native.respond_to?(:render_comment_tree) && ForemNative.render_comment_tree([], [], [], [], 0).nil?
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
