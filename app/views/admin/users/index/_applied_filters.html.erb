@@ -23,7 +23,8 @@
         </button>
     <% end %>
     <% params[:organizations]&.each do |org_id| %>
-        <% org = @organizations.find_by(id: org_id) %>
+        <% org = @organizations_by_id ? @organizations_by_id[org_id.to_s] : @organizations.find { |o| o.id.to_s == org_id.to_s } %>
+        <% next unless org %>
         <button
             data-filter-key="organizations[]"
             data-filter-value="<%= org_id %>"
