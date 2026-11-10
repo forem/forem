@@ -110,7 +110,7 @@ RSpec.describe "Views an article" do
     )
   end
 
-  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :aggregate_failures do
+  it "renders CSS pseudo-element depth indicators on nested comments but not root comments", :aggregate_failures, :js do
     depth2_comment = create(:comment, parent: child_comment, commentable: article)
     depth3_comment = create(:comment, parent: depth2_comment, commentable: article)
     depth4_comment = create(:comment, parent: depth3_comment, commentable: article)

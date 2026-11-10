@@ -184,20 +184,6 @@ module Feeds
       host == "medium.com" || host.to_s.end_with?(".medium.com")
     end
 
-    def medium_host?(url)
-      return false if url.blank?
-
-      uri = begin
-        URI.parse(url)
-      rescue URI::InvalidURIError
-        nil
-      end
-      return false unless uri&.scheme.in?(%w[http https])
-
-      host = uri.host&.downcase
-      host == "medium.com" || host.to_s.end_with?(".medium.com")
-    end
-
     def parse_and_translate_gist_iframe!(html_doc)
       html_doc.css("iframe").each do |iframe|
         a_tag = iframe.css("a")

@@ -126,7 +126,7 @@
             
             <div class="comment-form__preview text-styles text-styles--secondary"></div>
             
-            <div class="comment-form__buttons mb-4 flex items-center">
+            <div class="comment-form__buttons mb-4 flex items-center flex-wrap gap-2">
               <button type="submit" class="crayons-btn mr-2 js-btn-enable comment-action-button" onclick="validateField(event)" data-tracking-name="comment_reply_submit_button" disabled><%= t("views.comments.write.submit") %></button>
               <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview mr-2 js-btn-enable" data-tracking-name="comment_reply_preview_button" onclick="handleCommentPreview(event)" disabled><%= t("views.comments.write.preview") %></button>
               <button type="button" class="crayons-btn crayons-btn--ghost ml-auto js-notification-reply-dismiss" data-tracking-name="comment_reply_dismiss_button" data-reactable-id="<%= notification.comment_id %>"><%= t("views.comments.write.cancel") %></button>
