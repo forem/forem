@@ -1395,7 +1395,154 @@ module ForemNative
       Native.syntax_highlight_code_block(code_str, lang_str)
     end
 
+    # Decodes a PNG, JPEG, GIF (first frame), or WebP binary String into an in-memory
+    # `ForemNative::SocialCanvas`.
+    def social_image_decode(bytes)
+      Native.social_image_decode(bytes.to_s)
+    end
+
+    # Loads and caches a static mask image (such as `app/assets/images/rounded_mask.png`)
+    # in Rust memory, returning a fresh `ForemNative::SocialCanvas` clone.
+    def social_image_open_cached_mask(path)
+      Native.social_image_open_cached_mask(path.to_s)
+    end
+
+    # Opens a local file path, URI, or IO-like object and decodes it into an in-memory
+    # `ForemNative::SocialCanvas` (using the in-memory Rust cache for static mask paths).
+    def social_image_open(path_or_url)
+      return social_image_open_cached_mask(path_or_url) if path_or_url == "app/assets/images/rounded_mask.png"
+
+      bytes = if path_or_url.respond_to?(:open)
+                path_or_url.open(&:read)
+              elsif path_or_url.to_s.match?(%r{\A[A-Za-z][A-Za-z0-9+\-.]*://}) &&
+                  (uri = URI.parse(path_or_url.to_s)).respond_to?(:open)
+                uri.open(&:read)
+              else
+                File.binread(path_or_url.to_s)
+              end
+      social_image_decode(bytes)
+    end
+
+    # Draws the 400x209 ellipse mesh on `base_color`, applies `-blur 0x48`, and resizes to
+    # `1200x627!` with `-filter Gaussian`, returning a `ForemNative::SocialCanvas`.
+    def social_image_draw_background(base_color, blobs)
+      Native.social_image_draw_background(base_color.to_s, blobs)
+    end
+
+    # Draws the article browser-window frame onto `canvas` in place and returns `canvas`.
+    def social_image_draw_window(canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_window(target)
+      target
+    end
+
+    # Draws the profile browser-window frame with `brand_color` onto `canvas` in place and returns `canvas`.
+    def social_image_draw_profile_window(canvas, brand_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_profile_window(target, brand_color.to_s)
+      target
+    end
+
+    # Renders a `label:` or `caption:` text image in memory using the cached TrueType font at `font_path`.
+    def social_image_render_text(kind, text, font_path, pointsize, color, width: nil)
+      Native.social_image_render_text(
+        kind.to_s,
+        text.to_s,
+        font_path.to_s,
+        pointsize.to_f,
+        color.to_s,
+        width&.to_i,
+      )
+    end
+
+    # Resizes `logo_canvas` to `x30` and composites it onto the window title bar of `canvas`.
+    def social_image_add_logo(canvas, logo_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_logo(target, coerce_social_canvas(logo_canvas))
+      target
+    end
+
+    # Draws the opening quote mark in `accent_color` and composites `quote_canvas` onto `canvas`.
+    def social_image_add_quote(canvas, quote_canvas, font_path, accent_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_quote(
+        target,
+        coerce_social_canvas(quote_canvas),
+        font_path.to_s,
+        accent_color.to_s,
+      )
+      target
+    end
+
+    # Resizes `author_canvas` and `mask_canvas` to `64x64`, composites them onto `canvas`,
+    # and draws the 3px circular border.
+    def social_image_add_profile_image(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_image(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Resizes and `DstOut`-masks `author_canvas` to `112x112`, draws the white halo ring,
+    # composites the circular avatar, and draws the 3px black border onto `canvas`.
+    def social_image_add_profile_card_avatar(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_card_avatar(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Composites the profile name, `@handle`, and Follow button label onto `canvas`.
+    def social_image_add_profile_header(canvas, name_canvas, handle_canvas, follow_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_header(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(handle_canvas),
+        coerce_social_canvas(follow_canvas),
+      )
+      target
+    end
+
+    # Composites the profile bio onto `canvas`.
+    def social_image_add_profile_bio(canvas, bio_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_bio(target, coerce_social_canvas(bio_canvas))
+      target
+    end
+
+    # Composites the profile footer metadata line onto `canvas`.
+    def social_image_add_profile_meta(canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_meta(target, coerce_social_canvas(meta_canvas))
+      target
+    end
+
+    # Composites the article author name and metadata line onto `canvas`.
+    def social_image_add_byline(canvas, name_canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_byline(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(meta_canvas),
+      )
+      target
+    end
+
     private
+
+    def coerce_social_canvas(image)
+      return image if defined?(SocialCanvas) && image.is_a?(SocialCanvas)
+      return social_image_decode(File.binread(image.path)) if image.respond_to?(:path) && image.path
+
+      social_image_decode(image.to_s)
+    end
 
     def coerce_optional_utf8_string(value)
       return if value.nil?

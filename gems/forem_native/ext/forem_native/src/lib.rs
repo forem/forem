@@ -1,9 +1,12 @@
 use std::borrow::Cow;
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use magnus::{
-    function,
+    function, method,
     prelude::*,
     r_hash::ForEach,
     value::{Qfalse, Qtrue},
@@ -3626,6 +3629,534 @@ fn syntax_highlight_code_block(code: RString, lang: Value) -> Option<String> {
     ))
 }
 
+static SOCIAL_FONT_CACHE: OnceLock<Mutex<HashMap<String, Arc<Vec<u8>>>>> = OnceLock::new();
+static SOCIAL_MASK_CACHE: OnceLock<Mutex<HashMap<String, Arc<forem_core::social_image::Canvas>>>> =
+    OnceLock::new();
+
+fn load_cached_font_bytes(ruby: &Ruby, path: &str) -> Result<Arc<Vec<u8>>, Error> {
+    let cache = SOCIAL_FONT_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    if let Ok(guard) = cache.lock() {
+        if let Some(bytes) = guard.get(path) {
+            return Ok(Arc::clone(bytes));
+        }
+    }
+    let data = std::fs::read(path).map_err(|e| {
+        Error::new(
+            ruby.exception_arg_error(),
+            format!("failed to read font '{path}': {e}"),
+        )
+    })?;
+    forem_core::social_image::Font::from_bytes(&data)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let arc = Arc::new(data);
+    if let Ok(mut guard) = cache.lock() {
+        guard.insert(path.to_owned(), Arc::clone(&arc));
+    }
+    Ok(arc)
+}
+
+#[derive(magnus::TypedData)]
+#[magnus(class = "ForemNative::SocialCanvas", free_immediately, size)]
+struct RubySocialCanvas(RefCell<Option<forem_core::social_image::Canvas>>);
+
+impl magnus::DataTypeFunctions for RubySocialCanvas {
+    fn size(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.0.borrow().as_ref().map_or(0, |c| {
+                c.pixels.capacity() * std::mem::size_of::<forem_core::social_image::Rgba>()
+            })
+    }
+}
+
+impl RubySocialCanvas {
+    fn new(canvas: forem_core::social_image::Canvas) -> Self {
+        RubySocialCanvas(RefCell::new(Some(canvas)))
+    }
+
+    fn width(&self) -> usize {
+        self.0.borrow().as_ref().map_or(0, |c| c.width)
+    }
+
+    fn height(&self) -> usize {
+        self.0.borrow().as_ref().map_or(0, |c| c.height)
+    }
+
+    fn is_destroyed(&self) -> bool {
+        self.0.borrow().is_none()
+    }
+
+    fn destroy(&self) {
+        *self.0.borrow_mut() = None;
+    }
+
+    fn to_png(ruby: &Ruby, rb_self: &Self) -> Result<RString, Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let png_bytes = forem_core::social_image::encode_png(canvas)
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        Ok(ruby.str_from_slice(&png_bytes))
+    }
+
+    fn to_rgb8(ruby: &Ruby, rb_self: &Self) -> Result<RString, Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let rgb = canvas.to_rgb8();
+        Ok(ruby.str_from_slice(&rgb))
+    }
+
+    fn write(ruby: &Ruby, rb_self: &Self, path: RString) -> Result<(), Error> {
+        let path_str = {
+            if !path.is_utf8_compatible_encoding() {
+                return Err(Error::new(
+                    ruby.exception_arg_error(),
+                    "invalid path encoding",
+                ));
+            }
+            unsafe { path.test_as_str() }
+                .ok_or_else(|| Error::new(ruby.exception_arg_error(), "invalid UTF-8 path"))?
+                .to_owned()
+        };
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let png_bytes = forem_core::social_image::encode_png(canvas)
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        std::fs::write(&path_str, &png_bytes).map_err(|e| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                format!("failed to write PNG '{path_str}': {e}"),
+            )
+        })?;
+        Ok(())
+    }
+
+    fn pixel_rgba8(
+        ruby: &Ruby,
+        rb_self: &Self,
+        x: usize,
+        y: usize,
+    ) -> Result<(u8, u8, u8, u8), Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        if x >= canvas.width || y >= canvas.height {
+            return Err(Error::new(
+                ruby.exception_index_error(),
+                format!(
+                    "pixel ({x}, {y}) out of bounds for {}x{}",
+                    canvas.width, canvas.height
+                ),
+            ));
+        }
+        let p = canvas.get(x, y);
+        use forem_core::social_image::canvas::quantize8;
+        Ok((
+            quantize8(p.r),
+            quantize8(p.g),
+            quantize8(p.b),
+            quantize8(p.a),
+        ))
+    }
+}
+
+fn parse_rgba_arg(ruby: &Ruby, color: RString) -> Result<forem_core::social_image::Rgba, Error> {
+    let s = std::str::from_utf8(unsafe { color.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid color encoding"))?;
+    forem_core::social_image::Rgba::parse(s)
+        .ok_or_else(|| Error::new(ruby.exception_arg_error(), format!("invalid color: {s}")))
+}
+
+fn social_image_decode(ruby: &Ruby, bytes: RString) -> Result<RubySocialCanvas, Error> {
+    let canvas = {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::social_image::decode_image(slice)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
+    };
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_open_cached_mask(ruby: &Ruby, path: RString) -> Result<RubySocialCanvas, Error> {
+    let path_str = std::str::from_utf8(unsafe { path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid path encoding"))?
+        .to_owned();
+    let cache = SOCIAL_MASK_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    if let Ok(guard) = cache.lock() {
+        if let Some(cached) = guard.get(&path_str) {
+            return Ok(RubySocialCanvas::new((**cached).clone()));
+        }
+    }
+    let bytes = std::fs::read(&path_str).map_err(|e| {
+        Error::new(
+            ruby.exception_arg_error(),
+            format!("failed to read mask '{path_str}': {e}"),
+        )
+    })?;
+    let decoded = forem_core::social_image::decode_image(&bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let arc = Arc::new(decoded.clone());
+    if let Ok(mut guard) = cache.lock() {
+        guard.insert(path_str, arc);
+    }
+    Ok(RubySocialCanvas::new(decoded))
+}
+
+fn social_image_draw_background(
+    ruby: &Ruby,
+    base_color: RString,
+    blobs: RArray,
+) -> Result<RubySocialCanvas, Error> {
+    let base_rgba = parse_rgba_arg(ruby, base_color)?;
+    let items: Vec<Value> = unsafe { blobs.as_slice() }.to_vec();
+    let mut blob_vec = Vec::with_capacity(items.len());
+    for item in items {
+        let tuple = RArray::from_value(item)
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob must be an Array"))?;
+        let elems: Vec<Value> = unsafe { tuple.as_slice() }.to_vec();
+        if elems.len() < 5 {
+            return Err(Error::new(
+                ruby.exception_arg_error(),
+                "blob tuple must have 5 elements [x, y, rx, ry, color]",
+            ));
+        }
+        let x = Integer::from_value(elems[0])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob x must be Integer"))?;
+        let y = Integer::from_value(elems[1])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob y must be Integer"))?;
+        let rx = Integer::from_value(elems[2])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob rx must be Integer"))?;
+        let ry = Integer::from_value(elems[3])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob ry must be Integer"))?;
+        let color_str = RString::from_value(elems[4])
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob color must be String"))?;
+        let color = parse_rgba_arg(ruby, color_str)?;
+        blob_vec.push(forem_core::social_image::card::BackgroundBlob {
+            x,
+            y,
+            rx,
+            ry,
+            color,
+        });
+    }
+    let canvas = forem_core::social_image::card::draw_background(base_rgba, &blob_vec);
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_draw_window(ruby: &Ruby, canvas: &RubySocialCanvas) -> Result<(), Error> {
+    let mut borrow = canvas.0.borrow_mut();
+    let dst = borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::draw_window(dst);
+    Ok(())
+}
+
+fn social_image_draw_profile_window(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    brand_color: RString,
+) -> Result<(), Error> {
+    let brand = parse_rgba_arg(ruby, brand_color)?;
+    let mut borrow = canvas.0.borrow_mut();
+    let dst = borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::draw_profile_window(dst, brand);
+    Ok(())
+}
+
+fn social_image_render_text(
+    ruby: &Ruby,
+    kind: RString,
+    text: RString,
+    font_path: RString,
+    pointsize: f64,
+    color: RString,
+    width: Option<usize>,
+) -> Result<RubySocialCanvas, Error> {
+    let kind_str = std::str::from_utf8(unsafe { kind.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid kind encoding"))?
+        .to_owned();
+    let text_str = std::str::from_utf8(unsafe { text.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid text encoding"))?
+        .to_owned();
+    let font_path_str = std::str::from_utf8(unsafe { font_path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    let rgba = parse_rgba_arg(ruby, color)?;
+    let font_bytes = load_cached_font_bytes(ruby, &font_path_str)?;
+    let font = forem_core::social_image::Font::from_bytes(&font_bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+
+    let canvas = match (kind_str.as_str(), width) {
+        ("caption", Some(w)) => forem_core::social_image::text::render_caption(
+            &font, &text_str, pointsize, rgba, w, -4.0,
+        ),
+        _ => forem_core::social_image::text::render_label(&font, &text_str, pointsize, rgba),
+    };
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_add_logo(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    logo: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let logo_borrow = logo.0.borrow();
+    let logo_c = logo_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "logo SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_logo(dst_c, logo_c);
+    Ok(())
+}
+
+fn social_image_add_quote(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    quote_image: &RubySocialCanvas,
+    font_path: RString,
+    accent_color: RString,
+) -> Result<(), Error> {
+    let font_path_str = std::str::from_utf8(unsafe { font_path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    let accent = parse_rgba_arg(ruby, accent_color)?;
+    let font_bytes = load_cached_font_bytes(ruby, &font_path_str)?;
+    let font = forem_core::social_image::Font::from_bytes(&font_bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let quote_borrow = quote_image.0.borrow();
+    let quote_c = quote_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "quote SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_quote(dst_c, quote_c, &font, accent);
+    Ok(())
+}
+
+fn social_image_add_profile_image(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    author_image: &RubySocialCanvas,
+    rounded_mask: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let author_borrow = author_image.0.borrow();
+    let author_c = author_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "author SocialCanvas has been destroyed",
+        )
+    })?;
+    let mask_borrow = rounded_mask.0.borrow();
+    let mask_c = mask_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "mask SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_image(dst_c, author_c, mask_c);
+    Ok(())
+}
+
+fn social_image_add_profile_card_avatar(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    author_image: &RubySocialCanvas,
+    rounded_mask: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let author_borrow = author_image.0.borrow();
+    let author_c = author_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "author SocialCanvas has been destroyed",
+        )
+    })?;
+    let mask_borrow = rounded_mask.0.borrow();
+    let mask_c = mask_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "mask SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_card_avatar(dst_c, author_c, mask_c);
+    Ok(())
+}
+
+fn social_image_add_profile_header(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    name_image: &RubySocialCanvas,
+    handle_image: &RubySocialCanvas,
+    follow_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let name_borrow = name_image.0.borrow();
+    let name_c = name_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "name SocialCanvas has been destroyed",
+        )
+    })?;
+    let handle_borrow = handle_image.0.borrow();
+    let handle_c = handle_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "handle SocialCanvas has been destroyed",
+        )
+    })?;
+    let follow_borrow = follow_image.0.borrow();
+    let follow_c = follow_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "follow SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_header(dst_c, name_c, handle_c, follow_c);
+    Ok(())
+}
+
+fn social_image_add_profile_bio(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    bio_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let bio_borrow = bio_image.0.borrow();
+    let bio_c = bio_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "bio SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_bio(dst_c, bio_c);
+    Ok(())
+}
+
+fn social_image_add_profile_meta(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    meta_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let meta_borrow = meta_image.0.borrow();
+    let meta_c = meta_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "meta SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_meta(dst_c, meta_c);
+    Ok(())
+}
+
+fn social_image_add_byline(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    name_image: &RubySocialCanvas,
+    meta_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let name_borrow = name_image.0.borrow();
+    let name_c = name_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "name SocialCanvas has been destroyed",
+        )
+    })?;
+    let meta_borrow = meta_image.0.borrow();
+    let meta_c = meta_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "meta SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_byline(dst_c, name_c, meta_c);
+    Ok(())
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -4010,6 +4541,66 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     native_mod.define_singleton_method(
         "syntax_highlight_code_block",
         function!(syntax_highlight_code_block, 2),
+    )?;
+    let canvas_class = forem_native.define_class("SocialCanvas", ruby.class_object())?;
+    canvas_class.define_method("width", method!(RubySocialCanvas::width, 0))?;
+    canvas_class.define_method("height", method!(RubySocialCanvas::height, 0))?;
+    canvas_class.define_method("destroyed?", method!(RubySocialCanvas::is_destroyed, 0))?;
+    canvas_class.define_method("destroy!", method!(RubySocialCanvas::destroy, 0))?;
+    canvas_class.define_method("to_png", method!(RubySocialCanvas::to_png, 0))?;
+    canvas_class.define_method("to_rgb8", method!(RubySocialCanvas::to_rgb8, 0))?;
+    canvas_class.define_method("write", method!(RubySocialCanvas::write, 1))?;
+    canvas_class.define_method("pixel_rgba8", method!(RubySocialCanvas::pixel_rgba8, 2))?;
+    native_mod.define_singleton_method("social_image_decode", function!(social_image_decode, 1))?;
+    native_mod.define_singleton_method(
+        "social_image_open_cached_mask",
+        function!(social_image_open_cached_mask, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_background",
+        function!(social_image_draw_background, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_window",
+        function!(social_image_draw_window, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_profile_window",
+        function!(social_image_draw_profile_window, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_render_text",
+        function!(social_image_render_text, 6),
+    )?;
+    native_mod
+        .define_singleton_method("social_image_add_logo", function!(social_image_add_logo, 2))?;
+    native_mod.define_singleton_method(
+        "social_image_add_quote",
+        function!(social_image_add_quote, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_image",
+        function!(social_image_add_profile_image, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_card_avatar",
+        function!(social_image_add_profile_card_avatar, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_header",
+        function!(social_image_add_profile_header, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_bio",
+        function!(social_image_add_profile_bio, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_meta",
+        function!(social_image_add_profile_meta, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_byline",
+        function!(social_image_add_byline, 3),
     )?;
     Ok(())
 }
