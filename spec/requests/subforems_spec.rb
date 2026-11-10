@@ -293,19 +293,26 @@ RSpec.describe "Subforems" do
   end
 
   describe "POST /subforems/:id/add_tag" do
-    let(:subforem) { create(:subforem) }
     let(:tag) { create(:tag) }
 
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "adds a tag to supported tags" do
+      it "adds a tag, rejects already-supported tags, and returns 404 for non-existent tags", :aggregate_failures do
         expect do
           post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
         end.to change { subforem.tag_relationships.where(supported: true).count }.by(1)
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include("success" => true)
+
+        post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(JSON.parse(response.body)).to include("success" => false)
+
+        post add_tag_subforem_path(subforem), params: { tag_id: 99_999 }
+        expect(response).to have_http_status(:not_found)
+        expect(JSON.parse(response.body)).to include("success" => false)
       end
 
       it "updates existing unsupported relationship to supported" do
@@ -319,22 +326,6 @@ RSpec.describe "Subforems" do
         expect(relationship.reload.supported).to be true
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include("success" => true)
-      end
-
-      it "returns error for already supported tag" do
-        subforem.tag_relationships.create!(tag: tag, supported: true)
-
-        post add_tag_subforem_path(subforem), params: { tag_id: tag.id }
-
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)).to include("success" => false)
-      end
-
-      it "returns error for non-existent tag" do
-        post add_tag_subforem_path(subforem), params: { tag_id: 99_999 }
-
-        expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)).to include("success" => false)
       end
     end
 
@@ -387,7 +378,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "image upload functionality" do
-    let(:subforem) { create(:subforem) }
     let(:image_file) { fixture_file_upload("800x600.png", "image/png") }
 
     before do
@@ -450,7 +440,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "DELETE /subforems/:id/remove_tag" do
-    let(:subforem) { create(:subforem) }
     let(:tag) { create(:tag) }
 
     context "when user is admin" do
@@ -459,19 +448,15 @@ RSpec.describe "Subforems" do
         subforem.tag_relationships.create!(tag: tag, supported: true)
       end
 
-      it "removes a tag from supported tags" do
+      it "removes a supported tag and returns an error when the tag is not supported", :aggregate_failures do
         expect do
           delete remove_tag_subforem_path(subforem), params: { tag_id: tag.id }
         end.to change { subforem.tag_relationships.where(supported: true).count }.by(-1)
 
         expect(response).to have_http_status(:ok)
         expect(JSON.parse(response.body)).to include("success" => true)
-      end
 
-      it "returns error for tag that is not supported" do
-        unsupported_tag = create(:tag)
-
-        delete remove_tag_subforem_path(subforem), params: { tag_id: unsupported_tag.id }
+        delete remove_tag_subforem_path(subforem), params: { tag_id: tag.id }
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(JSON.parse(response.body)).to include("success" => false)
@@ -506,7 +491,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "POST /subforems/:id/create_navigation_link" do
-    let(:subforem) { create(:subforem) }
     let(:valid_params) do
       {
         navigation_link: {
@@ -523,7 +507,7 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "creates a navigation link and busts navigation links cache" do
+      it "creates a navigation link and busts navigation caches", :aggregate_failures do
         allow(EdgeCache::Bust).to receive(:call)
 
         expect do
@@ -532,12 +516,12 @@ RSpec.describe "Subforems" do
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.created"))
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
-
+        
         link = NavigationLink.last
         expect(link.subforem_id).to eq(subforem.id)
         expect(link.name).to eq("Test Link")
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
 
       it "handles validation errors" do
@@ -632,7 +616,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "PATCH /subforems/:id/update_navigation_link" do
-    let(:subforem) { create(:subforem) }
     let(:navigation_link) do
       NavigationLink.create!(
         subforem: subforem,
@@ -646,18 +629,17 @@ RSpec.describe "Subforems" do
     end
 
     context "route structure" do
-      it "uses positional path parameter for navigation_link_id" do
-        generated_path = update_navigation_link_subforem_path(1, 2)
-
-        expect(generated_path).to eq("/subforems/1/update_navigation_link/2")
-        expect(generated_path).not_to include("navigation_link_id=")
+      it "uses positional path parameter for navigation_link_id", :aggregate_failures do
+        path = update_navigation_link_subforem_path(1, 42)
+        expect(path).to eq("/subforems/1/update_navigation_link/42")
+        expect(path).not_to include("navigation_link_id=")
       end
     end
 
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "updates a navigation link and busts navigation links cache" do
+      it "updates a navigation link and busts navigation caches", :aggregate_failures do
         allow(EdgeCache::Bust).to receive(:call)
 
         patch update_navigation_link_subforem_path(subforem, navigation_link.id),
@@ -665,12 +647,12 @@ RSpec.describe "Subforems" do
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
-
+        
         navigation_link.reload
         expect(navigation_link.name).to eq("Updated Link")
         expect(navigation_link.url).to eq("/updated")
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
 
       it "prevents updating navigation link from different subforem" do
@@ -747,7 +729,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "DELETE /subforems/:id/destroy_navigation_link" do
-    let(:subforem) { create(:subforem) }
     let(:navigation_link) do
       NavigationLink.create!(
         subforem: subforem,
@@ -763,7 +744,7 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "deletes a navigation link and busts navigation links cache" do
+      it "deletes a navigation link and busts navigation caches", :aggregate_failures do
         allow(EdgeCache::Bust).to receive(:call)
         link_id = navigation_link.id
 
@@ -825,8 +806,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "GET /subforems/:id/new_page" do
-    let(:subforem) { create(:subforem) }
-
     context "when user is admin" do
       before { sign_in admin_user }
 
@@ -865,7 +844,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "POST /subforems/:id/create_page" do
-    let(:subforem) { create(:subforem) }
     let(:valid_page_params) do
       {
         page: {
@@ -880,7 +858,8 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "creates a page while enforcing markdown-only and contained non-top-level settings" do
+      it "creates a page while enforcing markdown-only content and contained non-top-level settings",
+         :aggregate_failures do
         expect do
           post create_page_subforem_path(subforem), params: {
             page: valid_page_params[:page].merge(
@@ -946,7 +925,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "GET /subforems/:id/edit_page/:page_id" do
-    let(:subforem) { create(:subforem) }
     let(:subforem_page) do
       create(:page, subforem: subforem, title: "Subforem Page", slug: "subforem-page",
                     description: "Test", body_markdown: "# Test", is_top_level_path: false)
@@ -959,7 +937,7 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "returns a successful response for regular and top-level subforem pages" do
+      it "returns a successful response for regular and top-level subforem pages", :aggregate_failures do
         get edit_page_subforem_path(subforem, page_id: subforem_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{subforem_page.title}")
@@ -973,7 +951,8 @@ RSpec.describe "Subforems" do
     context "when user is subforem moderator" do
       before { sign_in moderator_user }
 
-      it "returns a successful response for regular and top-level pages belonging to their subforem" do
+      it "returns a successful response for regular and top-level pages belonging to their subforem",
+         :aggregate_failures do
         get edit_page_subforem_path(subforem, page_id: subforem_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{subforem_page.title}")
@@ -997,7 +976,7 @@ RSpec.describe "Subforems" do
 
       before { sign_in moderator_user }
 
-      it "blocks editing regular and top-level pages from other subforems" do
+      it "blocks editing regular and top-level pages from other subforems", :aggregate_failures do
         get edit_page_subforem_path(subforem, page_id: other_regular_page.id)
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
@@ -1019,7 +998,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "PATCH /subforems/:id/update_page/:page_id" do
-    let(:subforem) { create(:subforem) }
     let(:subforem_page) do
       create(:page, subforem: subforem, title: "Original Title", slug: "original-slug",
                     description: "Original description", body_markdown: "# Original", is_top_level_path: false)
@@ -1064,7 +1042,7 @@ RSpec.describe "Subforems" do
     context "when user is subforem moderator" do
       before { sign_in moderator_user }
 
-      it "updates a subforem page" do
+      it "updates regular and top-level subforem pages with allowed fields", :aggregate_failures do
         patch update_page_subforem_path(subforem, page_id: subforem_page.id), params: {
           page: {
             title: "Mod Updated",
@@ -1075,12 +1053,9 @@ RSpec.describe "Subforems" do
         subforem_page.reload
         expect(response).to redirect_to("/page/#{subforem_page.slug}")
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.updated"))
-
         expect(subforem_page.title).to eq("Mod Updated")
         expect(subforem_page.body_markdown).to eq("# Mod Content")
-      end
 
-      it "can only update limited fields for top-level pages" do
         patch update_page_subforem_path(subforem, page_id: top_level_page.id), params: {
           page: {
             title: "Mod Updated Top",
@@ -1107,7 +1082,7 @@ RSpec.describe "Subforems" do
 
       before { sign_in moderator_user }
 
-      it "prevents updating regular and top-level pages from other subforems" do
+      it "prevents updating regular and top-level pages from other subforems", :aggregate_failures do
         patch update_page_subforem_path(subforem, page_id: other_regular_page.id), params: {
           page: { title: "Hacked" }
         }
@@ -1140,7 +1115,6 @@ RSpec.describe "Subforems" do
   end
 
   describe "DELETE /subforems/:id/destroy_page/:page_id" do
-    let(:subforem) { create(:subforem) }
     let(:subforem_page) do
       create(:page, subforem: subforem, title: "To Delete", slug: "to-delete",
                     description: "Test", body_markdown: "# Test", is_top_level_path: false)
@@ -1153,20 +1127,19 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "deletes a subforem page" do
-        page_id = subforem_page.id
+      it "deletes a subforem page and prevents deleting top-level pages", :aggregate_failures do
+        subforem_page_id = subforem_page.id
+        top_level_page_id = top_level_page.id
+
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: subforem_page_id)
         end.to change { Page.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.deleted"))
-      end
 
-      it "prevents deleting top-level pages" do
-        page_id = top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: top_level_page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1177,20 +1150,19 @@ RSpec.describe "Subforems" do
     context "when user is subforem moderator" do
       before { sign_in moderator_user }
 
-      it "deletes a subforem page" do
-        page_id = subforem_page.id
+      it "deletes a subforem page and prevents deleting top-level pages", :aggregate_failures do
+        subforem_page_id = subforem_page.id
+        top_level_page_id = top_level_page.id
+
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: subforem_page_id)
         end.to change { Page.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.pages.deleted"))
-      end
 
-      it "prevents deleting top-level pages" do
-        page_id = top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: top_level_page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1211,20 +1183,19 @@ RSpec.describe "Subforems" do
 
       before { sign_in moderator_user }
 
-      it "prevents deleting regular pages from other subforems" do
-        page_id = other_regular_page.id
+      it "prevents deleting regular and top-level pages from other subforems", :aggregate_failures do
+        regular_id = other_regular_page.id
+        top_level_id = other_top_level_page.id
+
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: regular_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.cannot_delete"))
-      end
 
-      it "prevents deleting top-level pages from other subforems" do
-        page_id = other_top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: page_id)
+          delete destroy_page_subforem_path(subforem, page_id: top_level_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
