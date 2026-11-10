@@ -1,0 +1,22 @@
+app/assets/stylesheets/base/layout.scss
+  h_f968154a99632d 43,49,104-114
+app/assets/stylesheets/billboards.scss
+  h_f968154a99632d 12-57
+app/views/shared/_billboard.html.erb
+  h_f968154a99632d 13-30,46
+spec/models/billboard_spec.rb
+  h_f968154a99632d 303-311
+spec/requests/billboards_spec.rb
+  h_f968154a99632d 328-329,334-340,769,775-804
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "718793cce011c7f17e57ea5dff5407015f3186a5",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
