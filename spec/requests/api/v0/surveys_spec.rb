@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Surveys" do
-  let(:api_secret) { create(:api_secret) }
+  let(:api_secret) { create(:api_secret, user: create(:user, :without_profile, profile_image: nil)) }
   let(:user) { api_secret.user }
   let(:auth_headers) { { "api-key" => api_secret.secret } }
 
@@ -21,50 +21,29 @@ RSpec.describe "Api::V0::Surveys" do
     end
 
     context "when authenticated" do
-      before do
-        user.add_role(:admin)
+      before { user.add_role(:admin) }
+
+      it "returns surveys with expected fields, filters by active status, and paginates", :aggregate_failures do
         create(:survey, active: true, title: "Active Survey")
         create(:survey, active: false, title: "Inactive Survey")
-      end
 
-      it "returns both active and inactive surveys" do
         get api_surveys_path, headers: auth_headers
         expect(response).to have_http_status(:ok)
 
         json_response = response.parsed_body
         expect(json_response.size).to eq(2)
-      end
 
-      it "filters by active status when param provided" do
         get api_surveys_path, params: { active: true }, headers: auth_headers
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck("title")).to eq(["Active Survey"])
 
-        json_response = response.parsed_body
-        expect(json_response.size).to eq(1)
-        expect(json_response.first["title"]).to eq("Active Survey")
-      end
-
-      it "filters by inactive status when param provided" do
         get api_surveys_path, params: { active: false }, headers: auth_headers
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck("title")).to eq(["Inactive Survey"])
 
-        json_response = response.parsed_body
-        expect(json_response.size).to eq(1)
-        expect(json_response.first["title"]).to eq("Inactive Survey")
-      end
-
-      it "paginates results" do
-        create_list(:survey, 10)
-        get api_surveys_path, params: { per_page: 8 }, headers: auth_headers
+        get api_surveys_path, params: { per_page: 1 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response.size).to eq(8)
-      end
-
-      it "returns expected fields" do
-        get api_surveys_path, headers: auth_headers
-        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.size).to eq(1)
 
         survey_json = response.parsed_body.first
         expect(survey_json).to include(
@@ -75,7 +54,6 @@ RSpec.describe "Api::V0::Surveys" do
       end
 
       it "returns empty array when no surveys exist" do
-        Survey.destroy_all
         get api_surveys_path, headers: auth_headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq([])
@@ -105,12 +83,42 @@ RSpec.describe "Api::V0::Surveys" do
     context "when authenticated" do
       before { user.add_role(:admin) }
 
-      let!(:survey) { create(:survey, title: "Test Survey") }
-      let!(:poll) do
+      let(:survey) { create(:survey, title: "Test Survey") }
+      let(:poll) do
         create(:poll, survey: survey, article: nil, prompt_markdown: "What do you think?")
       end
 
-      it "returns survey by id with nested polls and options", :aggregate_failures do
+      it "returns survey by slug, old_slug, and when inactive", :aggregate_failures do
+        get api_survey_path(survey.slug), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+
+        json_response = response.parsed_body
+        expect(json_response["id"]).to eq(survey.id)
+
+        old_slug = survey.slug
+        survey.update!(slug: "new-slug-#{SecureRandom.hex(4)}")
+
+        get api_survey_path(old_slug), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["id"]).to eq(survey.id)
+
+        survey.update!(active: false)
+
+        get api_survey_path(survey.id), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+
+        json_response = response.parsed_body
+        expect(json_response["id"]).to eq(survey.id)
+        expect(json_response["active"]).to be(false)
+      end
+
+      it "returns 404 for nonexistent survey" do
+        get api_survey_path("nonexistent"), headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns survey by id with nested polls and options and expected fields", :aggregate_failures do
+        poll
         get api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
 
@@ -120,61 +128,17 @@ RSpec.describe "Api::V0::Surveys" do
         expect(json_response["polls"]).to be_an(Array)
         expect(json_response["polls"].size).to eq(1)
 
-        poll_json = json_response["polls"].first
-        expect(poll_json["id"]).to eq(poll.id)
-        expect(poll_json["prompt_markdown"]).to eq("What do you think?")
-        expect(poll_json["poll_options"]).to be_an(Array)
-        expect(poll_json["poll_options"].size).to eq(poll.poll_options.count)
-      end
-
-      it "returns survey by slug" do
-        get api_survey_path(survey.slug), headers: auth_headers
-        expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response["id"]).to eq(survey.id)
-      end
-
-      it "returns survey by old_slug" do
-        old_slug = survey.slug
-        survey.update!(slug: "new-slug-#{SecureRandom.hex(4)}")
-        survey.reload
-
-        get api_survey_path(old_slug), headers: auth_headers
-        expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response["id"]).to eq(survey.id)
-      end
-
-      it "returns inactive surveys" do
-        survey.update!(active: false)
-        get api_survey_path(survey.id), headers: auth_headers
-        expect(response).to have_http_status(:ok)
-
-        json_response = response.parsed_body
-        expect(json_response["active"]).to be(false)
-      end
-
-      it "returns 404 for nonexistent survey" do
-        get api_survey_path("nonexistent"), headers: auth_headers
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "returns poll options with expected fields" do
-        get api_survey_path(survey.id), headers: auth_headers
-
         option_json = response.parsed_body.dig("polls", 0, "poll_options", 0)
         expect(option_json).to include(
           "id", "markdown", "processed_html", "position",
           "poll_votes_count", "supplementary_text"
         )
-      end
-
-      it "returns polls with expected fields" do
-        get api_survey_path(survey.id), headers: auth_headers
 
         poll_json = response.parsed_body["polls"].first
+        expect(poll_json["id"]).to eq(poll.id)
+        expect(poll_json["prompt_markdown"]).to eq("What do you think?")
+        expect(poll_json["poll_options"]).to be_an(Array)
+        expect(poll_json["poll_options"].size).to eq(poll.poll_options.count)
         expect(poll_json).to include(
           "id", "prompt_markdown", "prompt_html", "type_of",
           "position", "poll_votes_count", "poll_skips_count",
@@ -205,26 +169,23 @@ RSpec.describe "Api::V0::Surveys" do
     end
 
     context "when authenticated" do
-      let!(:survey) { create(:survey) }
-      let!(:poll) { create(:poll, survey: survey, article: nil) }
-      let(:voter) { create(:user) }
+      let(:survey) { create(:survey) }
+      let(:poll) { create(:poll, survey: survey, article: nil) }
+      let(:voter) { create(:user, :without_profile, profile_image: nil) }
 
-      before do
-        user.add_role(:admin)
-        create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: voter)
-      end
+      before { user.add_role(:admin) }
 
-      it "returns poll votes" do
+      it "returns poll votes with expected fields, paginates, and filters by after", :aggregate_failures do
+        first_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: voter)
+        other_voter = create(:user, :without_profile, profile_image: nil)
+        second_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: other_voter)
+
         get poll_votes_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
 
         json_response = response.parsed_body
         expect(json_response).to be_an(Array)
-        expect(json_response.size).to eq(1)
-      end
-
-      it "returns expected fields for poll votes" do
-        get poll_votes_api_survey_path(survey.id), headers: auth_headers
+        expect(json_response.size).to eq(2)
 
         vote_json = response.parsed_body.first
         expect(vote_json).to include(
@@ -233,24 +194,20 @@ RSpec.describe "Api::V0::Surveys" do
         )
         expect(vote_json["poll_id"]).to eq(poll.id)
         expect(vote_json["user_id"]).to eq(voter.id)
-      end
 
-      it "paginates results" do
-        other_users = create_list(:user, 5)
-        other_users.each do |u|
-          create(:poll_vote, poll: poll, poll_option: poll.poll_options.first, user: u)
-        end
-
-        get poll_votes_api_survey_path(survey.id), params: { per_page: 2 }, headers: auth_headers
+        get poll_votes_api_survey_path(survey.id), params: { per_page: 1 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.size).to eq(2)
+        expect(response.parsed_body.size).to eq(1)
+        expect(response.parsed_body.pluck("id")).to eq([first_vote.id])
+
+        get poll_votes_api_survey_path(survey.id), params: { after: first_vote.id }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck("id")).to eq([second_vote.id])
       end
 
       it "returns empty array for survey with no votes" do
-        empty_survey = create(:survey)
-        create(:poll, survey: empty_survey, article: nil)
-
-        get poll_votes_api_survey_path(empty_survey.id), headers: auth_headers
+        poll
+        get poll_votes_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq([])
       end
@@ -258,27 +215,6 @@ RSpec.describe "Api::V0::Surveys" do
       it "returns 404 for nonexistent survey" do
         get poll_votes_api_survey_path("nonexistent"), headers: auth_headers
         expect(response).to have_http_status(:not_found)
-      end
-
-      it "returns only votes after the given ID" do
-        first_vote = PollVote.order(:id).first
-        second_vote = create(:poll_vote, poll: poll, poll_option: poll.poll_options.first,
-                                         user: create(:user))
-
-        get poll_votes_api_survey_path(survey.id),
-            params: { after: first_vote.id },
-            headers: auth_headers
-        expect(response).to have_http_status(:ok)
-
-        returned_ids = response.parsed_body.pluck("id")
-        expect(returned_ids).to include(second_vote.id)
-        expect(returned_ids).not_to include(first_vote.id)
-      end
-
-      it "returns all votes when after param is omitted" do
-        get poll_votes_api_survey_path(survey.id), headers: auth_headers
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.size).to eq(1)
       end
     end
   end
@@ -303,26 +239,23 @@ RSpec.describe "Api::V0::Surveys" do
     end
 
     context "when authenticated" do
-      let!(:survey) { create(:survey) }
-      let!(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
-      let(:voter) { create(:user) }
+      let(:survey) { create(:survey) }
+      let(:text_poll) { create(:poll, :text_input, survey: survey, article: nil) }
+      let(:voter) { create(:user, :without_profile, profile_image: nil) }
 
-      before do
-        user.add_role(:admin)
-        create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
-      end
+      before { user.add_role(:admin) }
 
-      it "returns text responses" do
+      it "returns text responses with expected fields, paginates, and filters by after", :aggregate_failures do
+        first_response = create(:poll_text_response, poll: text_poll, user: voter, text_content: "Great survey!")
+        other_voter = create(:user, :without_profile, profile_image: nil)
+        second_response = create(:poll_text_response, poll: text_poll, user: other_voter, text_content: "Another")
+
         get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
 
         json_response = response.parsed_body
         expect(json_response).to be_an(Array)
-        expect(json_response.size).to eq(1)
-      end
-
-      it "returns expected fields for text responses" do
-        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
+        expect(json_response.size).to eq(2)
 
         text_json = response.parsed_body.first
         expect(text_json).to include(
@@ -330,24 +263,20 @@ RSpec.describe "Api::V0::Surveys" do
           "user_email", "session_start", "created_at"
         )
         expect(text_json["text_content"]).to eq("Great survey!")
-      end
 
-      it "paginates results" do
-        other_users = create_list(:user, 5)
-        other_users.each do |u|
-          create(:poll_text_response, poll: text_poll, user: u, text_content: "Response")
-        end
-
-        get poll_text_responses_api_survey_path(survey.id), params: { per_page: 2 }, headers: auth_headers
+        get poll_text_responses_api_survey_path(survey.id), params: { per_page: 1 }, headers: auth_headers
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.size).to eq(2)
+        expect(response.parsed_body.size).to eq(1)
+        expect(response.parsed_body.pluck("id")).to eq([first_response.id])
+
+        get poll_text_responses_api_survey_path(survey.id), params: { after: first_response.id }, headers: auth_headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.pluck("id")).to eq([second_response.id])
       end
 
       it "returns empty array for survey with no text responses" do
-        empty_survey = create(:survey)
-        create(:poll, :text_input, survey: empty_survey, article: nil)
-
-        get poll_text_responses_api_survey_path(empty_survey.id), headers: auth_headers
+        text_poll
+        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq([])
       end
@@ -355,27 +284,6 @@ RSpec.describe "Api::V0::Surveys" do
       it "returns 404 for nonexistent survey" do
         get poll_text_responses_api_survey_path("nonexistent"), headers: auth_headers
         expect(response).to have_http_status(:not_found)
-      end
-
-      it "returns only text responses after the given ID" do
-        first_response = PollTextResponse.order(:id).first
-        second_response = create(:poll_text_response, poll: text_poll,
-                                                      user: create(:user), text_content: "Another")
-
-        get poll_text_responses_api_survey_path(survey.id),
-            params: { after: first_response.id },
-            headers: auth_headers
-        expect(response).to have_http_status(:ok)
-
-        returned_ids = response.parsed_body.pluck("id")
-        expect(returned_ids).to include(second_response.id)
-        expect(returned_ids).not_to include(first_response.id)
-      end
-
-      it "returns all text responses when after param is omitted" do
-        get poll_text_responses_api_survey_path(survey.id), headers: auth_headers
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.size).to eq(1)
       end
     end
   end
@@ -418,20 +326,20 @@ RSpec.describe "Api::V0::Surveys" do
                 poll_type_of: "single_choice",
                 poll_options: [
                   { markdown: "Vim" },
-                  { markdown: "VS Code" }
+                  { markdown: "VS Code" },
                 ]
-              }
+              },
             ]
           }
         }
-        expect {
+        expect do
           post api_surveys_path, params: params, headers: auth_headers, as: :json
-        }.to change(Survey, :count).by(1).and change(Poll, :count).by(1).and change(PollOption, :count).by(2)
+        end.to change(Survey, :count).by(1).and change(Poll, :count).by(1).and change(PollOption, :count).by(2)
 
         expect(response).to have_http_status(:created)
         json = response.parsed_body
         expect(json["polls"].size).to eq(1)
-        expect(json["polls"].first["poll_options"].map { |o| o["markdown"] }).to eq(["Vim", "VS Code"])
+        expect(json["polls"].first["poll_options"].pluck("markdown")).to eq(["Vim", "VS Code"])
       end
 
       it "returns unprocessable entity for invalid parameters" do
@@ -443,7 +351,7 @@ RSpec.describe "Api::V0::Surveys" do
   end
 
   describe "PATCH /api/surveys/:id_or_slug" do
-    let!(:survey) { create(:survey, title: "Original Survey") }
+    let(:survey) { create(:survey, title: "Original Survey") }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -471,7 +379,8 @@ RSpec.describe "Api::V0::Surveys" do
       end
 
       it "updates nested polls and options" do
-        poll = create(:poll, survey: survey, prompt_markdown: "Old prompt", poll_options_input_array: ["Option A", "Option B"])
+        poll = create(:poll, survey: survey, article: nil, prompt_markdown: "Old prompt",
+                             poll_options_input_array: ["Option A", "Option B"])
         option = poll.poll_options.first
         other_option = poll.poll_options.second
 
@@ -484,9 +393,9 @@ RSpec.describe "Api::V0::Surveys" do
                 poll_options: [
                   { id: option.id, markdown: "New option" },
                   { id: other_option.id, _destroy: true },
-                  { markdown: "Added option" }
+                  { markdown: "Added option" },
                 ]
-              }
+              },
             ]
           }
         }
@@ -499,11 +408,11 @@ RSpec.describe "Api::V0::Surveys" do
       end
 
       it "destroys a poll when _destroy is passed" do
-        poll = create(:poll, survey: survey)
+        poll = create(:poll, survey: survey, article: nil)
         params = {
           survey: {
             polls: [
-              { id: poll.id, _destroy: true }
+              { id: poll.id, _destroy: true },
             ]
           }
         }
@@ -520,7 +429,7 @@ RSpec.describe "Api::V0::Surveys" do
   end
 
   describe "DELETE /api/surveys/:id_or_slug" do
-    let!(:survey) { create(:survey) }
+    let(:survey) { create(:survey) }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -542,9 +451,10 @@ RSpec.describe "Api::V0::Surveys" do
       end
 
       it "destroys the survey" do
-        expect {
+        survey
+        expect do
           delete api_survey_path(survey.id), headers: auth_headers
-        }.to change(Survey, :count).by(-1)
+        end.to change(Survey, :count).by(-1)
         expect(response).to have_http_status(:no_content)
       end
 
