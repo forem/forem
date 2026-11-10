@@ -104,14 +104,14 @@ class Page < ApplicationRecord
   private
 
   def validate_show_in_navigation
-    return unless show_in_navigation == false
+    return unless show_in_navigation == false && will_save_change_to_show_in_navigation?
 
+    # Checked only when the flag is being turned off, so a page whose organization was
+    # deleted (pages are nullified) or that was promoted to Showcase while hidden still saves.
     if organization_id.blank?
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
-    elsif will_save_change_to_show_in_navigation? && showcase_or_first_page?
-      # Checked only when the flag is being turned off: a page that is promoted to Showcase
-      # while hidden (after a delete or a reorder) must still save. The header always renders
-      # the Showcase tab, so the stored flag has no effect on it.
+    elsif showcase_or_first_page?
+      # The header always renders the Showcase tab, so a stored flag has no effect on it.
       errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
     end
   end

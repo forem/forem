@@ -27,6 +27,17 @@ RSpec.describe Page do
       expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
     end
 
+    it "keeps a hidden page editable after its organization is deleted" do
+      organization = create(:organization)
+      create(:page, organization: organization, position: 0)
+      hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+      organization.destroy!
+
+      expect(hidden.reload.organization_id).to be_nil
+      expect(hidden.update(title: "Renamed")).to be(true)
+    end
+
     it "rejects a hidden subforem page" do
       page = build(:page, subforem: create(:subforem), show_in_navigation: false)
 
