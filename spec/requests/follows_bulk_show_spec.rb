@@ -79,6 +79,33 @@ RSpec.describe "Follows #bulk_show" do
       expect(follow_queries.grep(/COUNT/)).to be_empty
       expect(response.parsed_body.values).to eq(%w[true false follow-back mutual])
     end
+
+    it "batches non-User followable checks into one target query and one follows query" do
+      followed_subforem = create(:subforem)
+      unfollowed_subforem = create(:subforem)
+      current_user.follow(followed_subforem)
+      ids = [followed_subforem.id, unfollowed_subforem.id]
+      queries = []
+      callback = ->(*, payload) { queries << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get bulk_show_follows_path, params: { ids: ids, followable_type: "Subforem" }
+      end
+
+      expect(queries.grep(/SELECT "subforems"\."id" FROM "subforems"/)).to contain_exactly(
+        a_string_including('WHERE "subforems"."id" IN'),
+      )
+      expect(queries.grep(/FROM "follows"/)).to contain_exactly(a_string_including('AND "follows"."followable_id" IN'))
+      expect(queries.grep(/COUNT/)).to be_empty
+      expect(response.parsed_body).to eq(followed_subforem.id.to_s => "true", unfollowed_subforem.id.to_s => "false")
+    end
+
+    it "raises RecordNotFound for nonexistent non-User followable ids" do
+      missing_id = Subforem.maximum(:id).to_i + 1
+      expect do
+        get bulk_show_follows_path, params: { ids: [missing_id], followable_type: "Subforem" }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 
   it "without ids raises a missing param error" do
