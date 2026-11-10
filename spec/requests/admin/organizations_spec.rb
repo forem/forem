@@ -23,12 +23,71 @@ RSpec.describe "/admin/content_manager/organizations" do
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
     end
+
+    it "paginates without COUNT(*) queries and omits heavy columns", :aggregate_failures do
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      begin
+        get admin_organizations_path, params: { search: organization.name }
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      org_queries = queries.select { |sql| sql.include?('FROM "organizations"') && sql.exclude?("custom_domain") }
+      expect(org_queries.size).to eq(1)
+      expect(org_queries.first).not_to include("COUNT(")
+      expect(org_queries.first).to include('"organizations"."id"', '"organizations"."name"')
+      expect(org_queries.first).not_to include('"secret"', '"cta_body_markdown"', '"story"')
+    end
   end
 
   describe "GET /admin/organizations/:id" do
     it "renders the correct organization" do
       get admin_organization_path(organization.id)
       expect(response.body).to include(CGI.escapeHTML(organization.name))
+    end
+
+    it "renders activity counts and batches feature flags without extra COUNT or gate queries", :aggregate_failures do
+      create(:article, organization: organization)
+      follower = create(:user)
+      follower.follow(organization)
+      organization.reload
+
+      raw_adapter = FeatureFlag.uncached.adapter
+      allow(Organization).to receive(:find).with(organization.id.to_s).and_return(organization)
+      allow(organization).to receive(:followers).and_call_original
+      allow(organization).to receive(:articles).and_call_original
+      allow(raw_adapter).to receive(:get_multi).and_call_original
+      allow(raw_adapter).to receive(:get).and_call_original
+
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql]
+      end
+
+      begin
+        get admin_organization_path(organization.id)
+      ensure
+        ActiveSupport::Notifications.unsubscribe(subscriber)
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("1 articles")
+      expect(response.body).to include("1 followers")
+      expect(organization).not_to have_received(:followers)
+      expect(organization).not_to have_received(:articles)
+      expect(queries.none? { |sql| sql.include?('FROM "articles"') && sql.include?("COUNT(") }).to be(true)
+      expect(raw_adapter).to have_received(:get_multi).once
+      Admin::OrganizationsController::ORG_FEATURES.each do |flag|
+        expect(raw_adapter).not_to have_received(:get).with(have_attributes(key: flag))
+      end
     end
   end
 

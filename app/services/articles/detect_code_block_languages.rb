@@ -26,7 +26,7 @@ module Articles
       (?=\n|\z)
     /mx.freeze
     MAX_BLOCK_CHARS = 2_000
-    SUPPORTED_LANGUAGE_TAGS = (Rouge::Lexer.all.filter_map(&:tag) + ["plaintext"]).uniq.sort.freeze
+    SUPPORTED_LANGUAGE_TAGS = ForemNative.syntax_supported_language_tags.freeze
 
     def self.call(article)
       new(article).call
@@ -48,12 +48,7 @@ module Articles
 
     # Rouge tag => human-readable name for the Jev Choice options, e.g. "ruby" => "Ruby".
     def self.language_criteria
-      @language_criteria ||= begin
-        titles = Rouge::Lexer.all.each_with_object({}) { |lexer, memo| memo[lexer.tag] ||= lexer.title if lexer.tag }
-        SUPPORTED_LANGUAGE_TAGS.index_with do |tag|
-          tag == "plaintext" ? "Plain text, console output, or no specific language" : titles[tag] || tag
-        end
-      end
+      @language_criteria ||= ForemNative.syntax_language_criteria.freeze
     end
 
     def initialize(article, ai_client: nil)
@@ -189,14 +184,7 @@ module Articles
     end
 
     def normalize_language(language)
-      lexer = Rouge::Lexer.find(language.to_s.strip.downcase)
-      normalized_language = lexer&.tag
-
-      if normalized_language.present? && SUPPORTED_LANGUAGE_TAGS.include?(normalized_language)
-        normalized_language
-      else
-        "plaintext"
-      end
+      ForemNative.syntax_normalize_language(language)
     end
 
     def apply_languages(detected_languages)

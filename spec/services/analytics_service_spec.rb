@@ -118,9 +118,15 @@ RSpec.describe AnalyticsService, type: :service do
   describe "#totals" do
     let(:analytics_service) { described_class.new(user) }
 
-    it "returns totals stats for comments, reactions, follows and page views" do
+    it "returns the stats structure and zero totals when there is no activity", :aggregate_failures do
       totals = analytics_service.totals
       expect(totals.keys.to_set).to eq(%i[comments reactions follows page_views].to_set)
+      expect(totals[:comments].keys).to eq(%i[total])
+      expect(totals[:comments]).to eq(total: 0)
+      expect(totals[:follows].keys).to eq(%i[total])
+      expect(totals[:follows]).to eq(total: 0)
+      expect(totals[:page_views].keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
+      expect(totals[:page_views]).to eq(total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0)
     end
 
     it "returns totals stats for an org" do
@@ -129,11 +135,6 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "comments stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:comments]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of comments" do
         create(:comment, commentable: article, user: user, score: 1)
         expected_stats = { total: 1 }
@@ -190,37 +191,18 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "follows stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:follows]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of follows" do
         create(:follow, followable: user)
         expected_stats = { total: 1 }
         expect(analytics_service.totals[:follows]).to eq(expected_stats)
       end
-
-      it "returns zero as total if there are no follows" do
-        expected_stats = { total: 0 }
-        expect(analytics_service.totals[:follows]).to eq(expected_stats)
-      end
     end
 
     describe "page views stats" do
-      it "returns stats" do
-        stats = analytics_service.totals[:page_views]
-        expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
-      end
-
       it "returns the total number of page views from ArticleActivity" do
         create(:page_view, user: user, article: article, counts_for_number_of_views: 1)
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         expect(analytics_service.totals[:page_views][:total]).to eq(1)
-      end
-
-      it "returns zero as total if there are no page views" do
-        expect(analytics_service.totals[:page_views][:total]).to eq(0)
       end
 
       it "returns the average read time in seconds" do
@@ -229,20 +211,12 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.totals[:page_views][:average_read_time_in_seconds]).to eq(30)
       end
 
-      it "returns zero as the average read time in seconds without views" do
-        expect(analytics_service.totals[:page_views][:average_read_time_in_seconds]).to eq(0)
-      end
-
       it "returns the total read time in seconds" do
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 15, counts_for_number_of_views: 1)
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 45, counts_for_number_of_views: 1)
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         # average read time * total_views = 30 * 2 = 60
         expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(60)
-      end
-
-      it "returns zero as the total read time in seconds with no page views" do
-        expect(analytics_service.totals[:page_views][:total_read_time_in_seconds]).to eq(0)
       end
     end
   end
@@ -270,16 +244,23 @@ RSpec.describe AnalyticsService, type: :service do
   end
 
   describe "#grouped_by_day" do
-    it "returns stats grouped by day" do
+    it "returns the daily stats structure and zero totals when there is no activity", :aggregate_failures do
       stats = described_class.new(
         user, start_date: "2019-04-01", end_date: "2019-04-04"
       ).grouped_by_day
       expect(stats.keys).to eq(%w[2019-04-01 2019-04-02 2019-04-03 2019-04-04])
-    end
+      stats.each_value do |day|
+        expect(day.keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
+        expect(day[:comments].keys).to eq(%i[total])
+        expect(day[:comments]).to eq(total: 0)
+        expect(day[:follows].keys).to eq(%i[total])
+        expect(day[:follows]).to eq(total: 0)
+      end
 
-    it "returns stats for comments, reactions, follows and page views for a specific day" do
       stats = described_class.new(user, start_date: "2019-04-01").grouped_by_day
       expect(stats["2019-04-01"].keys.to_set).to eq(%i[comments reactions page_views follows].to_set)
+      expect(stats["2019-04-01"][:follows].keys).to eq(%i[total])
+      expect(stats["2019-04-01"][:follows]).to eq(total: 0)
     end
 
     it "returns stats for an org" do
@@ -291,12 +272,6 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "comments stats on a specific day" do
-      it "returns stats" do
-        analytics_service = described_class.new(user, start_date: "2019-04-01", end_date: "2019-04-04")
-        stats = analytics_service.grouped_by_day["2019-04-01"][:comments]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of comments" do
         comment = create(:comment, commentable: article, user: user, score: 1)
         expected_stats = { total: 1 }
@@ -358,24 +333,11 @@ RSpec.describe AnalyticsService, type: :service do
     end
 
     describe "follows stats for a specific day" do
-      it "returns stats" do
-        analytics_service = described_class.new(user, start_date: "2019-04-01")
-        stats = analytics_service.grouped_by_day["2019-04-01"][:follows]
-        expect(stats.keys).to eq(%i[total])
-      end
-
       it "returns the total number of follows" do
         follow = create(:follow, followable: user)
         date = format_date(follow.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expected_stats = { total: 1 }
-        expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
-      end
-
-      it "returns zero as total if there are no follows" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expected_stats = { total: 0 }
         expect(analytics_service.grouped_by_day[date][:follows]).to eq(expected_stats)
       end
 
@@ -404,10 +366,11 @@ RSpec.describe AnalyticsService, type: :service do
     describe "page views stats for a specific day" do
       before { PageView.where(article: article).delete_all }
 
-      it "returns stats" do
+      it "returns the page view stats structure and zero totals when there are no views", :aggregate_failures do
         analytics_service = described_class.new(user, start_date: "2019-04-01")
         stats = analytics_service.grouped_by_day["2019-04-01"][:page_views]
         expect(stats.keys).to eq(%i[total average_read_time_in_seconds total_read_time_in_seconds])
+        expect(stats).to eq(total: 0, average_read_time_in_seconds: 0, total_read_time_in_seconds: 0)
       end
 
       it "returns the total number of page views from counts_for_number_of_views" do
@@ -416,12 +379,6 @@ RSpec.describe AnalyticsService, type: :service do
         ArticleActivity.find_or_create_by!(article_id: article.id).recompute_all!
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(5)
-      end
-
-      it "returns zero as total if there are no page views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][:page_views][:total]).to eq(0)
       end
 
       it "returns the average read time in seconds" do
@@ -433,13 +390,6 @@ RSpec.describe AnalyticsService, type: :service do
           :page_views][:average_read_time_in_seconds]).to eq(30)
       end
 
-      it "returns zero as the average read time in seconds without views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][
-          :page_views][:average_read_time_in_seconds]).to eq(0)
-      end
-
       it "returns the total read time in seconds" do
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 15)
         create(:page_view, user: user, article: article, time_tracked_in_seconds: 45)
@@ -448,13 +398,6 @@ RSpec.describe AnalyticsService, type: :service do
         # average read time (30) * total_views (2)
         expect(analytics_service.grouped_by_day[date][
           :page_views][:total_read_time_in_seconds]).to eq(60)
-      end
-
-      it "returns zero as the total read time in seconds with no page views" do
-        date = format_date(Time.current)
-        analytics_service = described_class.new(user, start_date: date)
-        expect(analytics_service.grouped_by_day[date][
-          :page_views][:total_read_time_in_seconds]).to eq(0)
       end
 
       it "works correctly if the page views contain nil in time_tracked_in_seconds" do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin::LinkedDomains", type: :request do
+RSpec.describe "Admin::LinkedDomains" do
   let(:admin) { create(:user, :admin) }
   let(:user) { create(:user) }
   let!(:linked_domain) { LinkedDomain.create!(host: "example.com", net_score: 500) }
@@ -19,6 +19,51 @@ RSpec.describe "Admin::LinkedDomains", type: :request do
       it "displays the linked domains" do
         expect(response.body).to include("example.com")
         expect(response.body).to include("500")
+      end
+
+      it "orders by reverse id, avoids unindexed total COUNT(*), and caches threshold counts", :aggregate_failures do
+        allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+        newer_domain = LinkedDomain.create!(host: "newer-example.org", net_score: -3000)
+
+        queries = []
+        callback = lambda do |_name, _start, _finish, _id, payload|
+          sql = payload[:sql].to_s
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          queries << sql if sql.include?('"linked_domains"')
+        end
+
+        ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+          get admin_linked_domains_path
+        end
+
+        expect(response).to have_http_status(:success)
+        expect(response.body.index("newer-example.org")).to be < response.body.index("example.com")
+        expect(queries.grep(/ORDER BY "linked_domains"\."id" DESC/i).size).to eq(1)
+        expect(queries.grep(/ORDER BY "linked_domains"\."created_at"/i)).to be_empty
+        expect(queries.grep(/\ASELECT COUNT\(\*\) FROM "linked_domains"\z/i)).to be_empty
+        expect(queries.grep(/SELECT COUNT\(\*\) FROM "linked_domains" WHERE/i).size).to eq(1)
+
+        repeat_queries = []
+        repeat_callback = lambda do |_name, _start, _finish, _id, payload|
+          sql = payload[:sql].to_s
+          next if payload[:name] == "SCHEMA" || payload[:cached]
+
+          repeat_queries << sql if sql.include?('"linked_domains"')
+        end
+
+        ActiveSupport::Notifications.subscribed(repeat_callback, "sql.active_record") do
+          get admin_linked_domains_path
+        end
+
+        expect(repeat_queries.grep(/SELECT COUNT\(\*\) FROM "linked_domains"/i)).to be_empty
+        expect(response.body).to include("1 domain</strong> currently at or below")
+
+        patch admin_linked_domain_path(newer_domain), params: {
+          linked_domain: { manual_setting: "ignored" }
+        }
+        get admin_linked_domains_path
+        expect(response.body).to include("0 domains</strong> currently at or below")
       end
     end
 
@@ -73,11 +118,11 @@ RSpec.describe "Admin::LinkedDomains", type: :request do
       end
 
       it "raises NotAuthorizedError and does not update" do
-        expect {
+        expect do
           patch admin_linked_domain_path(linked_domain), params: {
             linked_domain: { manual_setting: "ignored" }
           }
-        }.to raise_error(Pundit::NotAuthorizedError)
+        end.to raise_error(Pundit::NotAuthorizedError)
 
         expect(linked_domain.reload.not_set?).to be true
       end

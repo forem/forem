@@ -56,7 +56,7 @@
                 <%= segment.created_at.strftime("%Y-%m-%d %H:%M") %>
               </td>
               <td>
-                <%= segment.emails.count %>
+                <%= (@email_counts || {})[segment.id].to_i %>
               </td>
               <td>
                 <div class="flex gap-2">

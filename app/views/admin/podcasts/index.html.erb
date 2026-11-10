@@ -33,7 +33,7 @@
         <td><%= podcast.published %></td>
         <td><%= podcast.status_notice %></td>
         <td>
-          <% podcast.owners.select(:username).each do |user| %>
+          <% podcast.owners.each do |user| %>
 +            <p><%= link_to "@#{user.username}", user_url(user), target: "_blank", rel: :noopener %></p>
           <% end %>
         </td>

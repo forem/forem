@@ -39,7 +39,9 @@ class EventsController < ApplicationController
 
   def check_for_page_fallback
     slug = "events/#{params[:event_name_slug]}/#{params[:event_variation_slug]}"
-    @page = Page.from_subforem.find_by(slug: slug) || Page.find_by(slug: slug)
+    subforem_pages = Page.from_subforem
+    @page = subforem_pages.find_by(slug: slug)
+    @page ||= Page.find_by(slug: slug) unless subforem_pages.where_clause.empty?
 
     if @page && FeatureFlag.accessible?(@page.feature_flag_name, current_user)
       if @page.redirect_to_url.present?

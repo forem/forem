@@ -11,6 +11,13 @@ fr:
     favorite: Choisir comme pépite
     favorited: Choisi comme pépite
     favorited_by_you: Choisi comme pépite par vous
+    confirm:
+      title_article: Donner une pépite à cette publication ?
+      title_comment: Donner une pépite à ce commentaire ?
+      body_article: Voulez-vous vraiment donner une pépite à cette publication ?
+      body_comment: Voulez-vous vraiment donner une pépite à ce commentaire ?
+      submit: Donner la pépite
+      cancel: Annuler
     modal:
       title: Pépite sélectionnée !
       body: Vous avez sélectionné ceci comme pépite de la communauté !

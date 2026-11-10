@@ -32,4 +32,14 @@ RSpec.describe Articles::Suggest, type: :service do
     article = create(:article, featured: true, tags: ["discuss"])
     expect(described_class.call(article)).to be_empty
   end
+
+  it "includes articles across subforems when Subforem.disabled_by_env? is true" do
+    subforem_a = create(:subforem, domain: "a.example.com")
+    subforem_b = create(:subforem, domain: "b.example.com")
+    candidate = create(:article, featured: true, tags: ["discuss"], score: 10, subforem_id: subforem_b.id)
+    article = create(:article, featured: true, tags: ["discuss"], score: 10, subforem_id: subforem_a.id)
+    allow(Subforem).to receive(:disabled_by_env?).and_return(true)
+
+    expect(described_class.call(article, max: 1).map(&:id)).to eq([candidate.id])
+  end
 end

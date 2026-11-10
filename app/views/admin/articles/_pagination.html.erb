@@ -1,0 +1,6 @@
+<nav class="admin-pagination flex gap-2 fs-s items-center">
+  <% if @articles.current_page > 1 %>
+    <%= link_to t("views.pagination.aria_previous"), admin_articles_path(state: params[:state], page: (@articles.current_page - 1 if @articles.current_page > 2)), rel: "prev", class: "c-link c-link--block" %>
+  <% end %>
+  <%= link_to_next_page @articles, t("views.pagination.aria_next"), class: "c-link c-link--block" %>
+</nav>

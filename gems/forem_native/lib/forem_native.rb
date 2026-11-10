@@ -855,6 +855,14 @@ module ForemNative
       Native.json_quote(string, escape_html_entities ? true : false)
     end
 
+    # Exact ActiveSupport JSON byte length without allocating the serialized document.
+    # Unsupported values (including non-string object keys) defer to the caller.
+    def json_encoded_size(value, escape_html_entities: true)
+      return unless Native.respond_to?(:json_encoded_size)
+
+      Native.json_encoded_size(value, escape_html_entities ? true : false)
+    end
+
     # Encodes plain data in one pass, byte-for-byte equal to `value.to_json` with ActiveSupport's
     # default `JSONGemEncoder`. The fast path covers Hash, Array, String, Symbol, Integer (64-bit),
     # true, false, and nil, with String or Symbol keys. Returns `nil` for anything else (Floats,
@@ -1027,12 +1035,32 @@ module ForemNative
 
     # Classifies `(method, path)` for `Middlewares::MetalTelemetryFastPath`, returning
     # `[:billboard_update, id]`, `[:billboard_create, nil]`, `[:page_view_update, id]`,
-    # `[:page_view_create, nil]`, or `nil`.
+    # `[:page_view_create, nil]`, `[:ga_event_create, nil]`, `[:feed_events_create, nil]`,
+    # `[:feed_config_visits_create, nil]`, or `nil`.
     def match_metal_telemetry_route(method, path)
       return unless Native.respond_to?(:match_metal_telemetry_route)
       return unless method.instance_of?(String) && path.instance_of?(String)
 
       Native.match_metal_telemetry_route(method, path)
+    end
+
+    # Parses a `POST /fallback_activity_recorder` JSON payload into the 11-key stringified Hash
+    # expected by `Ga::TrackEventWorker`, returning `:invalid` on malformed JSON or `nil` when
+    # the caller should fall back to `JSON.parse`.
+    def extract_ga_event_params(json_body, app_url, user_id = nil)
+      return unless Native.respond_to?(:extract_ga_event_params)
+      return unless json_body.instance_of?(String) && (user_id.nil? || user_id.is_a?(Integer)) &&
+        (app_url.nil? || app_url.instance_of?(String))
+
+      Native.extract_ga_event_params(json_body, app_url, user_id)
+    end
+
+    # Validates and normalizes an Array of `FeedEvent` attribute Hashes in a single native pass
+    # without instantiating `FeedEvent` ActiveRecord models, matching `FeedEvents::BulkUpsert#valid_events`.
+    def validate_and_normalize_feed_events(events)
+      return unless Native.respond_to?(:validate_and_normalize_feed_events) && events.is_a?(Array)
+
+      Native.validate_and_normalize_feed_events(events)
     end
 
     # Parses a `POST /bb_tabulations` JSON payload and builds the `BillboardEvent` `INSERT` SQL
@@ -1147,7 +1175,394 @@ module ForemNative
       Native.build_variant_relevancy_score_sql(levers, has_user ? true : false, minimize_ai ? true : false)
     end
 
+    # Encodes an HS256 JWT with payload `{"user_id":<user_id>,"exp":<exp>}` signed with `secret`,
+    # matching `JWT.encode({ user_id: user_id, exp: exp }, secret)` byte-for-byte.
+    def encode_hs256_jwt(user_id, exp, secret)
+      return unless Native.respond_to?(:encode_hs256_jwt)
+      return unless user_id.is_a?(Integer) && exp.is_a?(Integer) && secret.instance_of?(String)
+
+      Native.encode_hs256_jwt(user_id, exp, secret)
+    end
+
+    # Masks a 32-byte base64-encoded real CSRF token with a 32-byte `one_time_pad` using Rails 8's
+    # global CSRF token HMAC (`!real_csrf_token`), matching `form_authenticity_token`.
+    def mask_authenticity_token(encoded_real_token, one_time_pad)
+      return unless Native.respond_to?(:mask_authenticity_token)
+      return unless encoded_real_token.instance_of?(String) && one_time_pad.instance_of?(String)
+
+      Native.mask_authenticity_token(encoded_real_token, one_time_pad)
+    end
+
+    # Parses an `Origin`, `Referer`, or `passed_domain` header/param value for `AuthPassController`
+    # into `[origin_host, normalized_csp_origin]`, or `nil` for non-standard inputs.
+    def parse_auth_pass_origin(raw_origin)
+      return unless Native.respond_to?(:parse_auth_pass_origin)
+      return unless raw_origin.instance_of?(String) && !raw_origin.empty?
+
+      Native.parse_auth_pass_origin(raw_origin)
+    end
+
+    # Builds the JSON response body for `AsyncInfoController#base_data` in a single allocation.
+    def build_base_data_json(broadcast:, param:, token:, user: nil, client_geolocation: nil,
+                             default_email_optin_allowed: false, creator: false)
+      return unless Native.respond_to?(:build_base_data_json)
+      return unless param.instance_of?(String) && token.instance_of?(String)
+
+      Native.build_base_data_json(
+        broadcast,
+        param,
+        token,
+        user,
+        client_geolocation,
+        default_email_optin_allowed ? true : false,
+        creator ? true : false,
+      )
+    end
+
+    # Resolves the JSON response body for `FollowsController#bulk_show` in a single pass.
+    def resolve_bulk_follow_json(viewer_id, is_user_type, ids, forward_flags, reverse_flags)
+      return unless Native.respond_to?(:resolve_bulk_follow_json)
+      return unless viewer_id.is_a?(Integer) && ids.is_a?(Array) &&
+        forward_flags.is_a?(Array) && reverse_flags.is_a?(Array)
+
+      Native.resolve_bulk_follow_json(viewer_id, is_user_type ? true : false, ids, forward_flags, reverse_flags)
+    end
+
+    # Classifies a `User-Agent` header into `:mobile_in_app`, `:mobile_web`, `:desktop`, or `:unknown`
+    # in a single pass, matching `Billboards::FilteredAdsQuery#browser_context_ads`.
+    def classify_billboard_browser_context(user_agent)
+      return unless Native.respond_to?(:classify_billboard_browser_context)
+      return unless user_agent.instance_of?(String)
+
+      Native.classify_billboard_browser_context(user_agent)
+    end
+
+    # Checks whether an ISO 3166 code (e.g. `"US-CA"`) falls within any of `geo_codes`,
+    # matching `Geolocation.code_covered_by?(code, geo_codes)` with zero allocations.
+    # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
+    def geolocation_code_covered_by?(code, geo_codes)
+      return unless Native.respond_to?(:geolocation_code_covered_by)
+      return unless (code.nil? || code.instance_of?(String)) && geo_codes.is_a?(Array)
+
+      Native.geolocation_code_covered_by(code, geo_codes)
+    end
+    # rubocop:enable Style/ReturnNilInPredicateMethodDefinition
+
+    # Extracts the 2-letter uppercase ISO 3166-1 alpha-2 country code from a geolocation header,
+    # matching `BillboardsController#viewer_country`. Returns `false` when no country code matches.
+    def extract_viewer_country(geo)
+      return unless Native.respond_to?(:extract_viewer_country)
+      return unless geo.nil? || geo.instance_of?(String)
+
+      Native.extract_viewer_country(geo)
+    end
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery` tag matching in a single pass.
+    # rubocop:disable Style/OptionalBooleanParameter
+    def build_billboard_tag_clause_sql(tags, include_untagged = true, optimized_taggable = false)
+      return unless Native.respond_to?(:build_billboard_tag_clause_sql)
+      return unless tags.is_a?(Array)
+
+      Native.build_billboard_tag_clause_sql(tags, include_untagged ? true : false, optimized_taggable ? true : false)
+    end
+    # rubocop:enable Style/OptionalBooleanParameter
+
+    # Compiles the SQL predicate for `Billboards::FilteredAdsQuery#role_filtered_ads` in a single pass.
+    def build_billboard_role_filter_sql(role_names)
+      return unless Native.respond_to?(:build_billboard_role_filter_sql)
+      return unless role_names.is_a?(Array)
+
+      Native.build_billboard_role_filter_sql(role_names)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.weighted_random_selection` in a single allocation.
+    def build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, random_val)
+      return unless Native.respond_to?(:build_billboard_weighted_random_sql)
+      return unless base_query.instance_of?(String) &&
+        (target_article_id.nil? || target_article_id.is_a?(Integer)) &&
+        (low_impressions.nil? || low_impressions.is_a?(Integer))
+
+      native_random = native_float(random_val)
+      return unless native_random
+
+      Native.build_billboard_weighted_random_sql(base_query, target_article_id, low_impressions, native_random)
+    end
+
+    # Compiles the CTE SQL query for `Billboard.new_only_random_selection` in a single allocation.
+    def build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+      return unless Native.respond_to?(:build_billboard_new_only_sql)
+      return unless base_query.instance_of?(String) &&
+        low_impressions.is_a?(Integer) && fallback_limit.is_a?(Integer)
+
+      Native.build_billboard_new_only_sql(base_query, low_impressions, fallback_limit)
+    end
+
+    # Compiles the combined SQL `WHERE` predicate for `Billboards::FilteredAdsQuery#call`.
+    def build_filtered_ads_where_sql(params_array)
+      return unless Native.respond_to?(:build_filtered_ads_where_sql) && params_array.is_a?(Array)
+
+      Native.build_filtered_ads_where_sql(params_array)
+    end
+
+    # Returns the sorted Array of all 228 canonical syntax highlighting language tags,
+    # matching `Articles::DetectCodeBlockLanguages::SUPPORTED_LANGUAGE_TAGS`.
+    def syntax_supported_language_tags
+      return unless Native.respond_to?(:syntax_supported_language_tags)
+
+      Native.syntax_supported_language_tags
+    end
+
+    # Returns the `tag => title_or_criteria` Hash for all 228 supported language tags,
+    # matching `Articles::DetectCodeBlockLanguages.language_criteria`.
+    def syntax_language_criteria
+      return unless Native.respond_to?(:syntax_language_criteria)
+
+      Native.syntax_language_criteria
+    end
+
+    # Resolves a lexer name or alias to its canonical tag (e.g. `"js"` => `"javascript"`),
+    # matching `Rouge::Lexer.find(name)&.tag`.
+    def syntax_lexer_tag(name)
+      return if name.nil?
+      return unless Native.respond_to?(:syntax_lexer_tag)
+
+      str = name.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return unless str.valid_encoding?
+
+      Native.syntax_lexer_tag(str)
+    end
+
+    # Normalizes an arbitrary language hint to a supported canonical tag or `"plaintext"`,
+    # matching `Articles::DetectCodeBlockLanguages#normalize_language`.
+    def syntax_normalize_language(language)
+      return "plaintext" unless Native.respond_to?(:syntax_normalize_language)
+
+      str = language.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      return "plaintext" unless str.valid_encoding?
+
+      Native.syntax_normalize_language(str) || "plaintext"
+    end
+
+    # Resolves a lexer tag with CGI query options (`?mimetype=...`) and `"guess"` source/shebang
+    # detection, matching `Rouge::Lexer.find_fancy(lang, code)&.tag`.
+    def syntax_find_fancy_tag(lang, code = nil, rescue_ambiguous: true)
+      return unless Native.respond_to?(:syntax_find_fancy_tag)
+
+      lang_str = coerce_optional_utf8_string(lang)
+      return if !lang.nil? && lang_str.nil?
+
+      code_str = coerce_optional_utf8_string(code)
+      Native.syntax_find_fancy_tag(lang_str, code_str, rescue_ambiguous ? true : false)
+    end
+
+    # Extracts the file extension from `path` and resolves its canonical lexer tag,
+    # matching `AgentSessionsHelper#language_from_path`.
+    def syntax_language_from_path(path)
+      return if path.nil?
+      return unless Native.respond_to?(:syntax_language_from_path)
+
+      str = coerce_optional_utf8_string(path)
+      return unless str
+
+      Native.syntax_language_from_path(str)
+    end
+
+    # Highlights `code` for `lang` and returns the inner `<span class="...">` HTML stream,
+    # matching `Rouge::Formatters::HTML.new.format(lexer.lex(code))`.
+    def syntax_highlight_html(code, lang = nil)
+      return "" if code.nil?
+      return unless Native.respond_to?(:syntax_highlight_html)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_html(code_str, lang_str)
+    end
+
+    # Highlights a fenced Markdown code block and wraps it in
+    # `<div class="highlight"><pre class="highlight {tag}"><code>...</code></pre></div>`,
+    # matching `Redcarpet::Render::HTMLRouge#block_code`.
+    def syntax_highlight_code_block(code, lang = nil)
+      return unless Native.respond_to?(:syntax_highlight_code_block)
+
+      code_str = coerce_optional_utf8_string(code)
+      return unless code_str
+
+      lang_str = coerce_optional_utf8_string(lang)
+      Native.syntax_highlight_code_block(code_str, lang_str)
+    end
+
+    # Decodes a PNG, JPEG, GIF (first frame), or WebP binary String into an in-memory
+    # `ForemNative::SocialCanvas`.
+    def social_image_decode(bytes)
+      Native.social_image_decode(bytes.to_s)
+    end
+
+    # Loads and caches a static mask image (such as `app/assets/images/rounded_mask.png`)
+    # in Rust memory, returning a fresh `ForemNative::SocialCanvas` clone.
+    def social_image_open_cached_mask(path)
+      Native.social_image_open_cached_mask(path.to_s)
+    end
+
+    # Opens a local file path, URI, or IO-like object and decodes it into an in-memory
+    # `ForemNative::SocialCanvas` (using the in-memory Rust cache for static mask paths).
+    def social_image_open(path_or_url)
+      return social_image_open_cached_mask(path_or_url) if path_or_url == "app/assets/images/rounded_mask.png"
+
+      bytes = if path_or_url.respond_to?(:open)
+                path_or_url.open(&:read)
+              elsif path_or_url.to_s.match?(%r{\A[A-Za-z][A-Za-z0-9+\-.]*://}) &&
+                  (uri = URI.parse(path_or_url.to_s)).respond_to?(:open)
+                uri.open(&:read)
+              else
+                File.binread(path_or_url.to_s)
+              end
+      social_image_decode(bytes)
+    end
+
+    # Draws the 400x209 ellipse mesh on `base_color`, applies `-blur 0x48`, and resizes to
+    # `1200x627!` with `-filter Gaussian`, returning a `ForemNative::SocialCanvas`.
+    def social_image_draw_background(base_color, blobs)
+      Native.social_image_draw_background(base_color.to_s, blobs)
+    end
+
+    # Draws the article browser-window frame onto `canvas` in place and returns `canvas`.
+    def social_image_draw_window(canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_window(target)
+      target
+    end
+
+    # Draws the profile browser-window frame with `brand_color` onto `canvas` in place and returns `canvas`.
+    def social_image_draw_profile_window(canvas, brand_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_draw_profile_window(target, brand_color.to_s)
+      target
+    end
+
+    # Renders a `label:` or `caption:` text image in memory using the cached TrueType font at `font_path`.
+    def social_image_render_text(kind, text, font_path, pointsize, color, width: nil)
+      Native.social_image_render_text(
+        kind.to_s,
+        text.to_s,
+        font_path.to_s,
+        pointsize.to_f,
+        color.to_s,
+        width&.to_i,
+      )
+    end
+
+    # Resizes `logo_canvas` to `x30` and composites it onto the window title bar of `canvas`.
+    def social_image_add_logo(canvas, logo_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_logo(target, coerce_social_canvas(logo_canvas))
+      target
+    end
+
+    # Draws the opening quote mark in `accent_color` and composites `quote_canvas` onto `canvas`.
+    def social_image_add_quote(canvas, quote_canvas, font_path, accent_color)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_quote(
+        target,
+        coerce_social_canvas(quote_canvas),
+        font_path.to_s,
+        accent_color.to_s,
+      )
+      target
+    end
+
+    # Resizes `author_canvas` and `mask_canvas` to `64x64`, composites them onto `canvas`,
+    # and draws the 3px circular border.
+    def social_image_add_profile_image(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_image(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Resizes and `DstOut`-masks `author_canvas` to `112x112`, draws the white halo ring,
+    # composites the circular avatar, and draws the 3px black border onto `canvas`.
+    def social_image_add_profile_card_avatar(canvas, author_canvas, mask_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_card_avatar(
+        target,
+        coerce_social_canvas(author_canvas),
+        coerce_social_canvas(mask_canvas),
+      )
+      target
+    end
+
+    # Composites the profile name, `@handle`, and Follow button label onto `canvas`.
+    def social_image_add_profile_header(canvas, name_canvas, handle_canvas, follow_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_header(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(handle_canvas),
+        coerce_social_canvas(follow_canvas),
+      )
+      target
+    end
+
+    # Composites the profile bio onto `canvas`.
+    def social_image_add_profile_bio(canvas, bio_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_bio(target, coerce_social_canvas(bio_canvas))
+      target
+    end
+
+    # Composites the profile footer metadata line onto `canvas`.
+    def social_image_add_profile_meta(canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_profile_meta(target, coerce_social_canvas(meta_canvas))
+      target
+    end
+
+    # Composites the article author name and metadata line onto `canvas`.
+    def social_image_add_byline(canvas, name_canvas, meta_canvas)
+      target = coerce_social_canvas(canvas)
+      Native.social_image_add_byline(
+        target,
+        coerce_social_canvas(name_canvas),
+        coerce_social_canvas(meta_canvas),
+      )
+      target
+    end
+
+    # Renders a nested comment tree (`CommentsHelper#nested_comments`) and its full partial
+    # hierarchy in a single native pass, returning `[html, current_comment_index, shown_billboard]`
+    # or `nil` when any input falls outside the native domain.
+    def render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+      return unless Native.respond_to?(:render_comment_tree)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && nodes_flat.is_a?(Array)
+      return unless root_count.is_a?(Integer) && root_count >= 0
+
+      Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+    end
+
     private
+
+    def coerce_social_canvas(image)
+      return image if defined?(SocialCanvas) && image.is_a?(SocialCanvas)
+      return social_image_decode(File.binread(image.path)) if image.respond_to?(:path) && image.path
+
+      social_image_decode(image.to_s)
+    end
+
+    def coerce_optional_utf8_string(value)
+      return if value.nil?
+
+      str = value.to_s
+      str = str.encode(Encoding::UTF_8, invalid: :replace, undef: :replace) unless str.encoding == Encoding::UTF_8
+      str if str.valid_encoding?
+    end
 
     # Integer * Integer stays exact in Ruby; below 2**31 the f64 product is exact too.
     def native_float(amount)

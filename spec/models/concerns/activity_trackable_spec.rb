@@ -2,7 +2,38 @@ require "rails_helper"
 
 RSpec.describe ActivityTrackable do
   let(:user) { create(:user) }
+  let(:author) { create(:user) }
   let(:events) { [] }
+
+  # ActivityTrackable never inspects User profiles, CarrierWave image uploads, or
+  # random default Article tags; strip those heavy factory defaults for both `create`
+  # and `build_stubbed` so persisted and stubbed records share the same defaults.
+  def create(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+    return super(:article, *traits, **lightweight_article_options(options)) if name == :article
+
+    super
+  end
+
+  # Apply the same lightweight user/article defaults when building stubbed records in memory.
+  def build_stubbed(name, *traits, **options)
+    return super(:user, :without_profile, *traits, profile_image: nil, **options) if name == :user
+
+    if name == :article
+      options[:user] ||= build_stubbed(:user) unless options.key?(:user_id)
+      return super(:article, *traits, **lightweight_article_options(options))
+    end
+
+    super
+  end
+
+  # Reuse the shared author and skip unused default tags and main_image generation unless requested.
+  def lightweight_article_options(options)
+    options[:user] ||= author unless options.key?(:user_id)
+    options[:with_tags] = false unless options.key?(:tag_list) || options.key?(:tags) || options.key?(:with_tags)
+    options[:with_main_image] = false unless options.key?(:with_main_image)
+    options
+  end
 
   before do
     allow(Trackable::Registry).to receive(:active_names).and_return([:any])
@@ -28,135 +59,88 @@ RSpec.describe ActivityTrackable do
   describe "the shared gate" do
     let!(:article) { create(:article) }
 
-    it "emits when the master switch is on" do
+    it "emits when the master switch is on and keys events to the actor rather than the content author",
+       :aggregate_failures do
       result = emitted { create(:comment, user: user, commentable: article) }
 
       expect(names(result)).to eq(["comment_created"])
-    end
-
-    it "stays silent when customerio_cdp_enabled is off" do
-      article
-      Settings::General.customerio_cdp_enabled = false
-
-      result = emitted { create(:comment, user: user, commentable: article) }
-
-      expect(result).to be_empty
-    end
-
-    it "stays silent for bot actors" do
-      bot = create(:user, type_of: :community_bot)
-
-      result = emitted { create(:comment, user: bot, commentable: article) }
-
-      expect(result).to be_empty
-    end
-
-    it "stays silent for spam accounts" do
-      user.add_role(:spam)
-
-      result = emitted { create(:comment, user: user, commentable: article) }
-
-      expect(result).to be_empty
-    end
-
-    it "stays silent for suspended accounts" do
-      user.add_role(:suspended)
-
-      result = emitted { create(:comment, user: user, commentable: article) }
-
-      expect(result).to be_empty
-    end
-
-    it "keys events to the actor rather than the content author" do
-      result = emitted { create(:comment, user: user, commentable: article) }
-
       expect(result.first[:user_ids]).to eq([user.id])
       expect(user.id).not_to eq(article.user_id)
+    end
+
+    it "stays silent when customerio_cdp_enabled is off or the actor is a bot, spam, or suspended",
+       :aggregate_failures do
+      Settings::General.customerio_cdp_enabled = false
+      expect(emitted { create(:comment, user: user, commentable: article) }).to be_empty
+
+      Settings::General.customerio_cdp_enabled = true
+      bot = create(:user, type_of: :community_bot)
+      expect(emitted { create(:comment, user: bot, commentable: article) }).to be_empty
+
+      user.add_role(:spam)
+      expect(emitted { create(:comment, user: user, commentable: article) }).to be_empty
+      user.remove_role(:spam)
+
+      user.add_role(:suspended)
+      expect(emitted { create(:comment, user: user, commentable: article) }).to be_empty
+    end
+
+    it "short-circuits before loading trackable_actor when trackable events are skipped" do
+      reaction = build(:reaction, user: user, reactable: article, category: "like", skip_trackable_events: true)
+      allow(reaction).to receive(:trackable_actor)
+
+      reaction.save!
+
+      expect(reaction).not_to have_received(:trackable_actor)
     end
   end
 
   describe "Article" do
-    it "emits article_published when a published article is created" do
-      result = emitted { create(:article, user: user) }
-
+    it "tracks published creation, title updates, non-trackable churn, and deletion",
+       :aggregate_failures do
+      article = nil
+      result = emitted { article = create(:article, user: user) }
       expect(names(result)).to eq(["article_published"])
-    end
-
-    it "stays silent while an article is only a draft" do
-      result = emitted { create(:article, user: user, published: false) }
-
-      expect(result).to be_empty
-    end
-
-    # published and title come from the front matter, which before_validation
-    # re-parses, so assigning them directly is silently reverted.
-    it "emits article_published when a draft goes live" do
-      article = create(:article, user: user, published: false)
-
-      result = emitted do
-        article.update!(body_markdown: article.body_markdown.sub("published: false", "published: true"))
-      end
-
-      expect(names(result)).to eq(["article_published"])
-    end
-
-    it "emits article_updated when a published article's title changes" do
-      article = create(:article, user: user)
 
       result = emitted do
         article.update!(body_markdown: article.body_markdown.sub(article.title, "A brand new title"))
       end
-
       expect(names(result)).to eq(["article_updated"])
+
+      expect(emitted { article.update!(score: 50) }).to be_empty
+
+      result = emitted { article.destroy }
+      expect(names(result)).to eq(["article_deleted"])
     end
 
-    it "ignores churn outside TRACKABLE_UPDATE_KEYS" do
-      article = create(:article, user: user)
-
-      result = emitted { article.update!(score: 50) }
-
-      expect(result).to be_empty
-    end
-
-    it "stays silent when a draft is edited" do
-      article = create(:article, user: user, published: false)
+    # published and title come from the front matter, which before_validation
+    # re-parses, so assigning them directly is silently reverted.
+    # The CDP was never told the draft existed, so its edits and removal are noise.
+    it "stays silent for draft creation, edits, and deletion, and emits when going live or unpublishing",
+       :aggregate_failures do
+      article = nil
+      expect(emitted { article = create(:article, user: user, published: false) }).to be_empty
 
       result = emitted do
         article.update!(body_markdown: article.body_markdown.sub(article.title, "Still a draft"))
       end
-
       expect(result).to be_empty
-    end
 
-    it "emits article_unpublished when an article goes back to draft" do
-      article = create(:article, user: user)
+      result = emitted do
+        article.update!(body_markdown: article.body_markdown.sub("published: false", "published: true"))
+      end
+      expect(names(result)).to eq(["article_published"])
 
       result = emitted do
         article.update!(body_markdown: article.body_markdown.sub("published: true", "published: false"))
       end
-
       expect(names(result)).to eq(["article_unpublished"])
-    end
 
-    it "emits article_deleted when a published article is destroyed" do
-      article = create(:article, user: user)
-
-      result = emitted { article.destroy }
-
-      expect(names(result)).to eq(["article_deleted"])
-    end
-
-    # The CDP was never told the draft existed, so its removal is noise.
-    it "stays silent when a draft is destroyed" do
-      article = create(:article, user: user, published: false)
-
-      result = emitted { article.destroy }
-
-      expect(result).to be_empty
+      expect(emitted { article.destroy }).to be_empty
     end
 
     it "ships a curated payload rather than the full row" do
-      article = create(:article, user: user)
+      article = build_stubbed(:article, user: build_stubbed(:user))
 
       expect(article.trackable_payload.keys).to contain_exactly(
         "id", "title", "description", "path", "type_of", "published_at", "tag_list",
@@ -278,87 +262,63 @@ RSpec.describe ActivityTrackable do
   describe "Comment" do
     let!(:article) { create(:article) }
 
-    it "emits comment_created on creation" do
-      result = emitted { create(:comment, user: user, commentable: article) }
-
-      expect(names(result)).to eq(["comment_created"])
-    end
-
-    it "emits comment_updated when the body changes" do
-      comment = create(:comment, user: user, commentable: article)
-
-      result = emitted { comment.update!(body_markdown: "Rewritten entirely") }
-
-      expect(names(result)).to eq(["comment_updated"])
-    end
-
-    it "ignores reaction counter churn" do
-      comment = create(:comment, user: user, commentable: article)
-
-      result = emitted { comment.update!(score: 42) }
-
-      expect(result).to be_empty
-    end
-
     # The controller soft deletes a comment with replies, hard destroys one without.
-    it "emits comment_deleted when a comment is soft deleted" do
-      comment = create(:comment, user: user, commentable: article)
-
-      result = emitted { comment.update!(deleted: true) }
-
-      expect(names(result)).to eq(["comment_deleted"])
-    end
-
-    it "emits comment_deleted when a comment is destroyed" do
-      comment = create(:comment, user: user, commentable: article)
-
-      result = emitted { comment.destroy }
-
-      expect(names(result)).to eq(["comment_deleted"])
-    end
-
-    it "stays silent when a soft deleted comment is restored" do
-      comment = create(:comment, user: user, commentable: article)
-      comment.update!(deleted: true)
-
-      result = emitted { comment.update!(deleted: false) }
-
-      expect(result).to be_empty
-    end
-
-    it "carries the commented-on article and its author in the payload" do
-      comment = create(:comment, user: user, commentable: article)
-
+    it "tracks creation, payload, body edits, soft deletion, restoration, and destruction while ignoring score churn",
+       :aggregate_failures do
+      comment = nil
+      result = emitted { comment = create(:comment, user: user, commentable: article) }
+      expect(names(result)).to eq(["comment_created"])
       expect(comment.trackable_payload).to include(
         "commentable_type" => "Article",
         "commentable_id" => article.id,
         "commentable_user_id" => article.user_id,
         "user_id" => user.id,
       )
+
+      result = emitted { comment.update!(body_markdown: "Rewritten entirely") }
+      expect(names(result)).to eq(["comment_updated"])
+
+      expect(emitted { comment.update!(score: 42) }).to be_empty
+
+      result = emitted { comment.update!(deleted: true) }
+      expect(names(result)).to eq(["comment_deleted"])
+
+      expect(emitted { comment.update!(deleted: false) }).to be_empty
+
+      result = emitted { comment.destroy }
+      expect(names(result)).to eq(["comment_deleted"])
     end
   end
 
   describe "Reaction" do
     let!(:article) { create(:article) }
 
-    it "emits article_reacted for a public reaction on an article" do
-      result = emitted { create(:reaction, user: user, reactable: article, category: "like") }
-
+    it "tracks public article reactions, readinglist saves, and their removals", :aggregate_failures do
+      reaction = nil
+      result = emitted { reaction = create(:reaction, user: user, reactable: article, category: "like") }
       expect(names(result)).to eq(["article_reacted"])
-    end
 
-    it "emits article_saved for a readinglist reaction" do
-      result = emitted { create(:reading_reaction, user: user, reactable: article) }
+      result = emitted { reaction.destroy }
+      expect(names(result)).to eq(["article_unreacted"])
 
+      reading = nil
+      result = emitted { reading = create(:reading_reaction, user: user, reactable: article) }
       expect(names(result)).to eq(["article_saved"])
+
+      result = emitted { reading.destroy }
+      expect(names(result)).to eq(["article_unsaved"])
     end
 
-    it "emits comment_reacted for a reaction on a comment" do
-      comment = create(:comment, commentable: article)
+    it "emits comment_reacted and comment_unreacted when reacting to and unreacting from a comment",
+       :aggregate_failures do
+      comment = create(:comment, user: author, commentable: article)
+      reaction = nil
 
-      result = emitted { create(:reaction, user: user, reactable: comment, category: "like") }
-
+      result = emitted { reaction = create(:reaction, user: user, reactable: comment, category: "like") }
       expect(names(result)).to eq(["comment_reacted"])
+
+      result = emitted { reaction.destroy }
+      expect(names(result)).to eq(["comment_unreacted"])
     end
 
     # vomit alone outnumbers every public reaction combined on a typical day.
@@ -371,31 +331,6 @@ RSpec.describe ActivityTrackable do
       end
 
       expect(result).to be_empty
-    end
-
-    it "emits article_unreacted when a reaction is toggled off" do
-      reaction = create(:reaction, user: user, reactable: article, category: "like")
-
-      result = emitted { reaction.destroy }
-
-      expect(names(result)).to eq(["article_unreacted"])
-    end
-
-    it "emits article_unsaved when a readinglist reaction is removed" do
-      reaction = create(:reading_reaction, user: user, reactable: article)
-
-      result = emitted { reaction.destroy }
-
-      expect(names(result)).to eq(["article_unsaved"])
-    end
-
-    it "emits comment_unreacted when a comment reaction is removed" do
-      comment = create(:comment, commentable: article)
-      reaction = create(:reaction, user: user, reactable: comment, category: "like")
-
-      result = emitted { reaction.destroy }
-
-      expect(names(result)).to eq(["comment_unreacted"])
     end
 
     # Retired categories (published: false in reactions.yml, last created in
@@ -438,14 +373,14 @@ RSpec.describe ActivityTrackable do
     end
 
     it "carries the reacted-on record and its author in the payload" do
-      reaction = create(:reaction, user: user, reactable: article, category: "unicorn")
+      reaction = build_stubbed(:reaction, user: build_stubbed(:user), reactable: article, category: "unicorn")
 
       expect(reaction.trackable_payload).to include(
         "category" => "unicorn",
         "reactable_type" => "Article",
         "reactable_id" => article.id,
         "reactable_user_id" => article.user_id,
-        "user_id" => user.id,
+        "user_id" => reaction.user_id,
       )
     end
   end

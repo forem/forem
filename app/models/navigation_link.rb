@@ -48,10 +48,10 @@ class NavigationLink < ApplicationRecord
   scope :ordered, -> { order(position: :asc, name: :asc) }
 
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    where(subforem_id: [subforem_id, nil])
+    where(subforem_id: subforem_id ? [subforem_id, nil] : nil)
   }
 
 

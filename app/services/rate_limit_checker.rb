@@ -6,6 +6,7 @@ class RateLimitChecker
   # window from instead, so admins can configure it.
   ACTION_LIMITERS = {
     agent_session_creation: { retry_after: 60 },
+    agent_session_presign: { retry_after_setting: :agent_session_presign_window_seconds },
     ai_image_generation: { retry_after: 60 },
     api_ai_image_generation: { retry_after_setting: :api_ai_image_generation_window_seconds },
     api_image_upload: { retry_after_setting: :api_image_upload_window_seconds },

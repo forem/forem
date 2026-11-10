@@ -49,7 +49,7 @@
         <td><%= tag.id %></td>
         <td><%= tag.alias_for %></td>
         <td><%= tag.taggings_count %></td>
-        <td><%= tag.tag_moderator_ids.any? %></td>
+        <td><%= @moderated_tag_ids ? @moderated_tag_ids.include?(tag.id) : tag.tag_moderator_ids.any? %></td>
       </tr>
     <% end %>
   </tbody>

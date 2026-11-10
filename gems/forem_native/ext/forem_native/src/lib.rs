@@ -1,9 +1,12 @@
 use std::borrow::Cow;
+use std::cell::RefCell;
+use std::collections::HashMap;
 use std::sync::atomic::{AtomicU64, Ordering};
+use std::sync::{Arc, Mutex, OnceLock};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use magnus::{
-    function,
+    function, method,
     prelude::*,
     r_hash::ForEach,
     value::{Qfalse, Qtrue},
@@ -2005,8 +2008,19 @@ fn is_instance_of(value: Value, class: magnus::RClass) -> bool {
     value.class().equal(class).unwrap_or(false)
 }
 
-fn write_json_key(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, key: Value) -> Option<()> {
+/// Writes a supported Ruby hash key into `w`, rejecting non-string keys when `string_keys_only` is true.
+fn write_json_key<W: forem_core::json::JsonOutput>(
+    ruby: &Ruby,
+    w: &mut forem_core::json::JsonWriter<W>,
+    key: Value,
+    string_keys_only: bool,
+) -> Option<()> {
     if let Some(symbol) = Symbol::from_value(key) {
+        // ActiveSupport can collapse symbol/string key collisions during as_json.
+        // The counting fast path accepts JSON object keys only.
+        if string_keys_only {
+            return None;
+        }
         w.key(&symbol.name().ok()?);
     } else if is_instance_of(key, ruby.class_string()) {
         w.key(json_str(&RString::from_value(key)?)?);
@@ -2017,7 +2031,13 @@ fn write_json_key(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, key: Value)
     Some(())
 }
 
-fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Value) -> Option<()> {
+/// Recursively traverses a supported Ruby value and writes or counts its JSON representation in `w`.
+fn write_json_value<W: forem_core::json::JsonOutput>(
+    ruby: &Ruby,
+    w: &mut forem_core::json::JsonWriter<W>,
+    value: Value,
+    string_keys_only: bool,
+) -> Option<()> {
     if value.is_nil() {
         w.null();
     } else if Qtrue::from_value(value).is_some() {
@@ -2044,8 +2064,8 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
             .ok()?;
             w.begin_object();
             for (k, v) in pairs {
-                write_json_key(ruby, w, k)?;
-                write_json_value(ruby, w, v)?;
+                write_json_key(ruby, w, k, string_keys_only)?;
+                write_json_value(ruby, w, v, string_keys_only)?;
             }
             w.end_object();
         } else if is_instance_of(value, ruby.class_array()) {
@@ -2053,7 +2073,7 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
             let items: Vec<Value> = unsafe { RArray::from_value(value)?.as_slice() }.to_vec();
             w.begin_array();
             for item in items {
-                write_json_value(ruby, w, item)?;
+                write_json_value(ruby, w, item, string_keys_only)?;
             }
             w.end_array();
         } else {
@@ -2064,15 +2084,23 @@ fn write_json_value(ruby: &Ruby, w: &mut forem_core::json::JsonWriter, value: Va
     Some(())
 }
 
+/// Encodes a supported Ruby value into a JSON `RString` matching ActiveSupport's `JSONGemEncoder`.
 fn encode_json(ruby: &Ruby, value: Value, escape_html: bool) -> Option<RString> {
     // The walk only reads Strings, Symbols, and Integers in place (no Ruby allocations), so
     // nothing can run GC or mutate the tree until the finished buffer is copied out.
     let json = {
         let mut w = forem_core::json::JsonWriter::new(escape_html, 8192);
-        write_json_value(ruby, &mut w, value)?;
+        write_json_value(ruby, &mut w, value, false)?;
         w.finish()
     };
     Some(ruby.str_new(&json))
+}
+
+/// Computes the exact encoded JSON byte size for a supported Ruby value without allocating a JSON buffer.
+fn json_encoded_size(ruby: &Ruby, value: Value, escape_html: bool) -> Option<usize> {
+    let mut w = forem_core::json::JsonWriter::counting(escape_html);
+    write_json_value(ruby, &mut w, value, true)?;
+    Some(w.finish().0)
 }
 
 fn truncate_feed_xml_items(ruby: &Ruby, xml: RString, max_items: usize) -> Option<RString> {
@@ -2554,6 +2582,9 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 MetalTelemetryRoute::BillboardCreate => (1u8, None),
                 MetalTelemetryRoute::PageViewUpdate(id) => (2u8, Some(id.to_owned())),
                 MetalTelemetryRoute::PageViewCreate => (3u8, None),
+                MetalTelemetryRoute::GaEventCreate => (4u8, None),
+                MetalTelemetryRoute::FeedEventsCreate => (5u8, None),
+                MetalTelemetryRoute::FeedConfigVisitsCreate => (6u8, None),
             },
         )
     };
@@ -2563,7 +2594,10 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
                 0 => "billboard_update",
                 1 => "billboard_create",
                 2 => "page_view_update",
-                _ => "page_view_create",
+                3 => "page_view_create",
+                4 => "ga_event_create",
+                5 => "feed_events_create",
+                _ => "feed_config_visits_create",
             };
             let arr = ruby.ary_new_capa(2);
             let _ = arr.push(ruby.to_symbol(sym_name));
@@ -2579,6 +2613,278 @@ fn match_metal_telemetry_route(ruby: &Ruby, method: RString, path: RString) -> V
         }
         None => ruby.qnil().as_value(),
     }
+}
+
+fn extract_ga_event_params(
+    ruby: &Ruby,
+    json_body: RString,
+    app_url_val: Value,
+    user_id_val: Value,
+) -> Value {
+    use forem_core::metal::GaEventParseOutcome;
+
+    if !is_ascii_compatible_host(ruby, json_body) {
+        return ruby.qnil().as_value();
+    }
+    let Some(user_id) = extract_optional_i64(user_id_val) else {
+        return ruby.qnil().as_value();
+    };
+    let Some(app_url) = extract_optional_header_utf8_string(ruby, app_url_val) else {
+        return ruby.qnil().as_value();
+    };
+
+    // SAFETY: `json_body` is not mutated during `parse_ga_event_json`.
+    let outcome =
+        unsafe { forem_core::metal::parse_ga_event_json(json_body.as_slice(), app_url.as_deref()) };
+
+    match outcome {
+        GaEventParseOutcome::Parsed(fields) => {
+            let hash = ruby.hash_new_capa(11);
+            let set_opt_str = |k: &str, opt: Option<String>| {
+                let v = match opt {
+                    Some(s) => ruby.str_new(&s).as_value(),
+                    None => ruby.qnil().as_value(),
+                };
+                let _ = hash.aset(ruby.str_new(k), v);
+            };
+            set_opt_str("page_title", fields.page_title);
+            set_opt_str("page_location", fields.page_location);
+            set_opt_str("page_path", fields.page_path);
+            let uid_val = match user_id {
+                Some(id) => ruby.into_value(id),
+                None => ruby.qnil().as_value(),
+            };
+            let _ = hash.aset(ruby.str_new("user_id"), uid_val);
+            set_opt_str("user_language", fields.user_language);
+            set_opt_str("referrer", fields.referrer);
+            set_opt_str("user_agent", fields.user_agent);
+            set_opt_str("viewport_size", fields.viewport_size);
+            set_opt_str("screen_resolution", fields.screen_resolution);
+            set_opt_str("document_encoding", fields.document_encoding);
+            let _ = hash.aset(ruby.str_new("data_source"), ruby.str_new("web"));
+            hash.as_value()
+        }
+        GaEventParseOutcome::InvalidJson => ruby.to_symbol("invalid").as_value(),
+        GaEventParseOutcome::DeferToRuby => ruby.qnil().as_value(),
+    }
+}
+
+#[derive(Default)]
+struct RawFeedEventEntry {
+    article_id: Option<i64>,
+    user_id: Option<i64>,
+    article_position: Option<i64>,
+    category: Option<Vec<u8>>,
+    context_type: Option<Vec<u8>>,
+    feed_config_id: Option<i64>,
+    event_id: Option<Vec<u8>>,
+    invalid: bool,
+    defer: bool,
+}
+
+fn extract_hash_key_name(ruby: &Ruby, key: Value) -> Option<Vec<u8>> {
+    if let Some(rstr) = RString::from_value(key) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return None;
+        }
+        return Some(unsafe { rstr.as_slice().to_vec() });
+    }
+    if let Some(sym) = Symbol::from_value(key) {
+        let name = sym.name().ok()?;
+        return Some(name.as_bytes().to_vec());
+    }
+    None
+}
+
+fn extract_strict_i64_field(ruby: &Ruby, val: Value) -> Result<Option<i64>, bool> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(int) = Integer::from_value(val) {
+        return int.to_i64().map(Some).map_err(|_| true);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(true);
+        }
+        let parsed = unsafe { forem_core::metal::parse_strict_integer_i64(rstr.as_slice()) };
+        return parsed.map(Some).ok_or(false);
+    }
+    if Float::from_value(val).is_some() {
+        return Err(false);
+    }
+    Err(true)
+}
+
+fn extract_name_bytes(ruby: &Ruby, val: Value, allow_symbol: bool) -> Result<Option<Vec<u8>>, ()> {
+    if val.is_nil() {
+        return Ok(None);
+    }
+    if let Some(rstr) = RString::from_value(val) {
+        if !is_ascii_compatible_host(ruby, rstr) {
+            return Err(());
+        }
+        return Ok(Some(unsafe { rstr.as_slice().to_vec() }));
+    }
+    if allow_symbol {
+        if let Some(sym) = Symbol::from_value(val) {
+            let name = sym.name().map_err(|_| ())?;
+            return Ok(Some(name.as_bytes().to_vec()));
+        }
+    }
+    Err(())
+}
+
+fn validate_and_normalize_feed_events(ruby: &Ruby, events_arr: RArray) -> Option<RArray> {
+    use forem_core::metal::{validate_feed_event_fields, ValidatedFeedEvent};
+    use magnus::r_hash::ForEach;
+
+    let items: Vec<Value> = unsafe { events_arr.as_slice() }.to_vec();
+    let mut validated: Vec<ValidatedFeedEvent> = Vec::with_capacity(items.len());
+
+    for item in items {
+        let hash = RHash::from_value(item)?;
+        let mut entry = RawFeedEventEntry::default();
+        hash.foreach(|k: Value, v: Value| -> Result<ForEach, Error> {
+            let Some(key_bytes) = extract_hash_key_name(ruby, k) else {
+                entry.defer = true;
+                return Ok(ForEach::Stop);
+            };
+            match key_bytes.as_slice() {
+                b"article" | b"user" | b"feed_config" => {
+                    entry.defer = true;
+                    return Ok(ForEach::Stop);
+                }
+                b"article_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_id = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_id = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"user_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.user_id = opt,
+                    Err(false) => entry.invalid = true,
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"article_position" => match extract_strict_i64_field(ruby, v) {
+                    Ok(Some(n)) => entry.article_position = Some(n),
+                    Ok(None) | Err(false) => {
+                        entry.article_position = None;
+                        entry.invalid = true;
+                    }
+                    Err(true) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"feed_config_id" => match extract_strict_i64_field(ruby, v) {
+                    Ok(opt) => entry.feed_config_id = opt,
+                    Err(_) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"category" => {
+                    if let Some(int) = Integer::from_value(v) {
+                        match int.to_i64() {
+                            Ok(0) => entry.category = Some(b"impression".to_vec()),
+                            Ok(1) => entry.category = Some(b"click".to_vec()),
+                            Ok(2) => entry.category = Some(b"reaction".to_vec()),
+                            Ok(3) => entry.category = Some(b"comment".to_vec()),
+                            Ok(4) => entry.category = Some(b"extended_pageview".to_vec()),
+                            _ => {
+                                entry.category = None;
+                                entry.invalid = true;
+                            }
+                        }
+                    } else {
+                        match extract_name_bytes(ruby, v, true) {
+                            Ok(b) => entry.category = b,
+                            Err(()) => {
+                                entry.defer = true;
+                                return Ok(ForEach::Stop);
+                            }
+                        }
+                    }
+                }
+                b"context_type" => match extract_name_bytes(ruby, v, true) {
+                    Ok(b) => entry.context_type = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                b"event_id" => match extract_name_bytes(ruby, v, false) {
+                    Ok(b) => entry.event_id = b,
+                    Err(()) => {
+                        entry.defer = true;
+                        return Ok(ForEach::Stop);
+                    }
+                },
+                _ => {}
+            }
+            Ok(ForEach::Continue)
+        })
+        .ok()?;
+
+        if entry.defer {
+            return None;
+        }
+        if entry.invalid {
+            continue;
+        }
+        if let Some(v) = validate_feed_event_fields(
+            entry.article_id,
+            entry.user_id,
+            entry.article_position,
+            entry.category.as_deref(),
+            entry.context_type.as_deref(),
+            entry.feed_config_id,
+            entry.event_id.as_deref(),
+        ) {
+            validated.push(v);
+        }
+    }
+
+    let sym_article_id = ruby.to_symbol("article_id");
+    let sym_user_id = ruby.to_symbol("user_id");
+    let sym_article_position = ruby.to_symbol("article_position");
+    let sym_category = ruby.to_symbol("category");
+    let sym_context_type = ruby.to_symbol("context_type");
+    let sym_feed_config_id = ruby.to_symbol("feed_config_id");
+    let sym_event_id = ruby.to_symbol("event_id");
+
+    let out = ruby.ary_new_capa(validated.len());
+    for ev in validated {
+        let h = ruby.hash_new_capa(7);
+        h.aset(sym_article_id, ev.article_id).ok()?;
+        match ev.user_id {
+            Some(uid) => h.aset(sym_user_id, uid).ok()?,
+            None => h.aset(sym_user_id, ruby.qnil()).ok()?,
+        }
+        h.aset(sym_article_position, ev.article_position).ok()?;
+        h.aset(sym_category, ruby.str_new(ev.category)).ok()?;
+        h.aset(sym_context_type, ruby.str_new(ev.context_type))
+            .ok()?;
+        match ev.feed_config_id {
+            Some(fcid) => h.aset(sym_feed_config_id, fcid).ok()?,
+            None => h.aset(sym_feed_config_id, ruby.qnil()).ok()?,
+        }
+        match ev.event_id {
+            Some(ref eid) => h.aset(sym_event_id, ruby.str_new(eid)).ok()?,
+            None => h.aset(sym_event_id, ruby.qnil()).ok()?,
+        }
+        out.push(h).ok()?;
+    }
+    Some(out)
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -2640,6 +2946,101 @@ fn billboard_event_create_from_json_sql(
         }
         None => ruby.qnil().as_value(),
     }
+}
+
+fn encode_hs256_jwt(ruby: &Ruby, user_id: i64, exp: i64, secret: RString) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, secret) {
+        return None;
+    }
+    // SAFETY: `secret` is not mutated during `encode_hs256_jwt`.
+    Some(unsafe { forem_core::metal::encode_hs256_jwt(user_id, exp, secret.as_slice()) })
+}
+
+fn mask_authenticity_token(
+    ruby: &Ruby,
+    encoded_real_token: RString,
+    one_time_pad: RString,
+) -> Option<String> {
+    if !is_ascii_compatible_host(ruby, encoded_real_token) {
+        return None;
+    }
+    // SAFETY: Both Ruby Strings are borrowed read-only during pure Rust calculation.
+    unsafe {
+        forem_core::metal::mask_authenticity_token(
+            encoded_real_token.as_slice(),
+            one_time_pad.as_slice(),
+        )
+    }
+}
+
+fn parse_auth_pass_origin(ruby: &Ruby, raw_origin: RString) -> Option<RArray> {
+    if !is_ascii_compatible_host(ruby, raw_origin) {
+        return None;
+    }
+    // SAFETY: `raw_origin` is borrowed read-only and owned Strings are returned before Ruby allocations.
+    let (host, csp_origin) =
+        unsafe { forem_core::metal::parse_auth_pass_origin(raw_origin.as_slice()) }?;
+    let ary = ruby.ary_new_capa(2);
+    ary.push(ruby.str_new(&host)).ok()?;
+    ary.push(ruby.str_new(&csp_origin)).ok()?;
+    Some(ary)
+}
+
+#[allow(clippy::too_many_arguments)]
+fn build_base_data_json(
+    ruby: &Ruby,
+    broadcast_val: Value,
+    param: RString,
+    token: RString,
+    user_val: Value,
+    geo_val: Value,
+    optin_allowed: bool,
+    creator: bool,
+) -> Option<String> {
+    if !param.is_utf8_compatible_encoding() || !token.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let broadcast = extract_optional_header_utf8_string(ruby, broadcast_val)?;
+    let user_json = extract_optional_header_utf8_string(ruby, user_val)?;
+    let client_geo = extract_optional_header_utf8_string(ruby, geo_val)?;
+
+    // SAFETY: `param` and `token` are borrowed read-only during pure Rust formatting.
+    let param_str = unsafe { param.test_as_str() }?;
+    let token_str = unsafe { token.test_as_str() }?;
+
+    let signed_in = user_json
+        .as_deref()
+        .map(|u| (u, client_geo.as_deref(), optin_allowed, creator));
+
+    Some(forem_core::metal::build_base_data_json(
+        broadcast.as_deref(),
+        param_str,
+        token_str,
+        signed_in,
+    ))
+}
+
+fn resolve_bulk_follow_json(
+    viewer_id: i64,
+    is_user_type: bool,
+    ids_arr: RArray,
+    forward_arr: RArray,
+    reverse_arr: RArray,
+) -> Option<String> {
+    // SAFETY: Only immediate integers and booleans are inspected before calling pure Rust.
+    let (ids, fwd, rev) = unsafe {
+        let id_slice = ids_arr.as_slice();
+        let fwd_slice = forward_arr.as_slice();
+        let rev_slice = reverse_arr.as_slice();
+        let mut ids_vec = Vec::with_capacity(id_slice.len());
+        for &v in id_slice {
+            ids_vec.push(Integer::from_value(v)?.to_i64().ok()?);
+        }
+        let fwd_vec: Vec<bool> = fwd_slice.iter().map(|v| v.to_bool()).collect();
+        let rev_vec: Vec<bool> = rev_slice.iter().map(|v| v.to_bool()).collect();
+        (ids_vec, fwd_vec, rev_vec)
+    };
+    forem_core::metal::resolve_bulk_follow_json(viewer_id, is_user_type, &ids, &fwd, &rev)
 }
 
 fn extract_liquid_embed_tags(ruby: &Ruby, content: RString) -> Option<RArray> {
@@ -2943,6 +3344,1079 @@ fn build_variant_relevancy_score_sql(
     forem_core::feed::build_variant_relevancy_score_sql(&core_inputs, has_user, minimize_ai)
 }
 
+fn classify_billboard_browser_context(ruby: &Ruby, user_agent: RString) -> Option<Symbol> {
+    if !user_agent.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `user_agent.as_slice()` is only read within pure-Rust `classify_billboard_browser_context`.
+    let ctx =
+        forem_core::metal::classify_billboard_browser_context(unsafe { user_agent.as_slice() })
+            .unwrap_or("unknown");
+    Some(ruby.to_symbol(ctx))
+}
+
+fn geolocation_code_covered_by(code: Value, geo_codes: RArray) -> Option<bool> {
+    let code_rstr = if code.is_nil() {
+        None
+    } else {
+        let s = RString::from_value(code)?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(s)
+    };
+
+    let items: Vec<Option<RString>> = {
+        // SAFETY: Only inspects immediate `Value` handles and `RString` headers without Ruby VM calls.
+        let slice = unsafe { geo_codes.as_slice() };
+        let mut out = Vec::with_capacity(slice.len());
+        for &val in slice {
+            if val.is_nil() {
+                out.push(None);
+            } else {
+                let s = RString::from_value(val)?;
+                if !s.is_utf8_compatible_encoding() {
+                    return None;
+                }
+                out.push(Some(s));
+            }
+        }
+        out
+    };
+
+    // SAFETY: `code_rstr` and `items` are borrowed in-place while pure-Rust `geolocation_code_covered_by` runs.
+    let code_bytes: &[u8] = match &code_rstr {
+        Some(s) => unsafe { s.as_slice() },
+        None => b"",
+    };
+    let entry_slices: Vec<Option<&[u8]>> = items
+        .iter()
+        .map(|opt| opt.as_ref().map(|s| unsafe { s.as_slice() }))
+        .collect();
+
+    forem_core::metal::geolocation_code_covered_by(code_bytes, &entry_slices)
+}
+
+fn extract_viewer_country(ruby: &Ruby, geo: Value) -> Option<Value> {
+    if geo.is_nil() {
+        return Some(ruby.qfalse().as_value());
+    }
+    let rstr = RString::from_value(geo)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: `rstr.as_slice()` is only read inside pure-Rust `extract_viewer_country`.
+    let matched = forem_core::metal::extract_viewer_country(unsafe { rstr.as_slice() })
+        .map(|s| s.as_bytes().to_vec());
+    match matched {
+        Some(bytes) => {
+            let s = std::str::from_utf8(&bytes).ok()?;
+            Some(ruby.str_new(s).as_value())
+        }
+        None => Some(ruby.qfalse().as_value()),
+    }
+}
+
+fn build_billboard_tag_clause_sql(
+    tags: RArray,
+    include_untagged: bool,
+    optimized_taggable: bool,
+) -> Option<String> {
+    let owned_tags = extract_utf8_string_vec(tags)?;
+    let refs: Vec<&str> = owned_tags.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_tag_clause_sql(&refs, include_untagged, optimized_taggable)
+}
+
+fn build_billboard_role_filter_sql(role_names: RArray) -> Option<String> {
+    let owned_roles = extract_utf8_string_vec(role_names)?;
+    let refs: Vec<&str> = owned_roles.iter().map(String::as_str).collect();
+    forem_core::metal::build_billboard_role_filter_sql(&refs)
+}
+
+fn build_billboard_weighted_random_sql(
+    base_query: RString,
+    target_article_id: Value,
+    low_impressions: Value,
+    random_val: f64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let aid = extract_optional_i64(target_article_id)?;
+    let low_imp = extract_optional_i64(low_impressions)?;
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_weighted_random_sql(base_str, aid, low_imp, random_val)
+}
+
+fn build_billboard_new_only_sql(
+    base_query: RString,
+    low_impressions: i64,
+    fallback_limit: i64,
+) -> Option<String> {
+    if !base_query.is_utf8_compatible_encoding() {
+        return None;
+    }
+    // SAFETY: Zero-copy `RString` borrow; `forem_core` is pure Rust.
+    let base_str = unsafe { base_query.test_as_str() }?;
+    forem_core::metal::build_billboard_new_only_sql(base_str, low_impressions, fallback_limit)
+}
+
+fn build_filtered_ads_where_sql(params_arr: RArray) -> Option<String> {
+    // SAFETY: `params_arr.as_slice()` is copied into local handles/primitives without calling into Ruby.
+    let ps: Vec<Value> = unsafe { params_arr.as_slice() }.to_vec();
+    if ps.len() < 23 {
+        return None;
+    }
+
+    let area_rstr = RString::from_value(ps[0])?;
+    if !area_rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let area = unsafe { area_rstr.test_as_str() }?.to_owned();
+    let now_sec = Integer::from_value(ps[1])?.to_i64().ok()?;
+    let now_usec = Integer::from_value(ps[2])?.to_u32().ok()?;
+    let verified_event_ids = if ps[3].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[3])?)?
+    };
+    let subforem_id = extract_optional_i64(ps[4])?;
+    let fully_cached = ps[5].to_bool();
+    let user_agent_rstr = if ps[6].is_nil() {
+        None
+    } else {
+        let s = RString::from_value(ps[6])?;
+        if !s.is_utf8_compatible_encoding() {
+            return None;
+        }
+        Some(unsafe { s.as_slice() }.to_vec())
+    };
+    let page_id = extract_optional_i64(ps[7])?;
+    let cookies_allowed = ps[8].to_bool();
+    let article_id = extract_optional_i64(ps[9])?;
+    let article_tags = if ps[10].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[10])?)?
+    };
+    let user_tags = if ps[11].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[11])?)?
+    };
+    let has_user_tags = ps[12].to_bool();
+    let optimized_taggable = ps[13].to_bool();
+    let user_signed_in = ps[14].to_bool();
+    let user_id = extract_optional_i64(ps[15])?;
+    let role_names = if ps[16].is_nil() {
+        Vec::new()
+    } else {
+        extract_utf8_string_vec(RArray::from_value(ps[16])?)?
+    };
+    let location_targeting_enabled = ps[17].to_bool();
+    let location_sql_clause = extract_optional_utf8_string(ps[18])?;
+    let include_post_type_of = ps[19].to_bool();
+    let permit_adjacent_sponsors = ps[20].to_bool();
+    let paused_org_ids = if ps[21].is_nil() {
+        Vec::new()
+    } else {
+        extract_strict_i64_vec(RArray::from_value(ps[21])?)?
+    };
+    let skip_survey_filtering = ps[22].to_bool();
+
+    let article_tag_refs: Vec<&str> = article_tags.iter().map(String::as_str).collect();
+    let user_tag_refs: Vec<&str> = user_tags.iter().map(String::as_str).collect();
+    let role_refs: Vec<&str> = role_names.iter().map(String::as_str).collect();
+
+    let core_params = forem_core::metal::FilteredAdsWhereParams {
+        area: &area,
+        now_sec,
+        now_usec,
+        verified_event_ids: &verified_event_ids,
+        subforem_id,
+        fully_cached,
+        user_agent: user_agent_rstr.as_deref(),
+        page_id,
+        cookies_allowed,
+        article_id,
+        article_tags: &article_tag_refs,
+        user_tags: &user_tag_refs,
+        has_user_tags,
+        optimized_taggable,
+        user_signed_in,
+        user_id,
+        role_names: &role_refs,
+        location_targeting_enabled,
+        location_sql_clause: location_sql_clause.as_deref(),
+        include_post_type_of,
+        permit_adjacent_sponsors,
+        paused_org_ids: &paused_org_ids,
+        skip_survey_filtering,
+    };
+
+    forem_core::metal::build_filtered_ads_where_sql(&core_params)
+}
+
+fn syntax_supported_language_tags(ruby: &Ruby) -> Option<RArray> {
+    let tags = forem_core::syntax::supported_language_tags();
+    let ary = ruby.ary_new_capa(tags.len());
+    for &tag in tags {
+        ary.push(ruby.str_new(tag)).ok()?;
+    }
+    Some(ary)
+}
+
+fn syntax_language_criteria(ruby: &Ruby) -> Option<RHash> {
+    let hash = ruby.hash_new_capa(forem_core::syntax::supported_language_tags().len());
+    for (tag, desc) in forem_core::syntax::language_criteria_entries() {
+        hash.aset(ruby.str_new(tag), ruby.str_new(desc)).ok()?;
+    }
+    Some(hash)
+}
+
+fn syntax_lexer_tag(name: RString) -> Option<&'static str> {
+    if !name.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { name.test_as_str() }?;
+    forem_core::syntax::find_lexer_tag(s)
+}
+
+fn syntax_normalize_language(language: RString) -> Option<&'static str> {
+    if !language.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { language.test_as_str() }?;
+    Some(forem_core::syntax::normalize_language_tag(s))
+}
+
+fn syntax_find_fancy_tag(lang: Value, code: Value, rescue_ambiguous: bool) -> Option<&'static str> {
+    let lang_str = extract_optional_utf8_string(lang)?;
+    let code_str = extract_optional_utf8_string(code)?;
+    forem_core::syntax::find_fancy_tag(lang_str.as_deref(), code_str.as_deref(), rescue_ambiguous)
+}
+
+fn syntax_language_from_path(path: RString) -> Option<&'static str> {
+    if !path.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = unsafe { path.test_as_str() }?;
+    forem_core::syntax::language_from_path(s)
+}
+
+fn syntax_highlight_html(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_html(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
+fn syntax_highlight_code_block(code: RString, lang: Value) -> Option<String> {
+    if !code.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let code_str = unsafe { code.test_as_str() }?;
+    let lang_str = extract_optional_utf8_string(lang)?;
+    Some(forem_core::syntax::highlight_code_block(
+        code_str,
+        lang_str.as_deref(),
+    ))
+}
+
+static SOCIAL_FONT_CACHE: OnceLock<Mutex<HashMap<String, Arc<Vec<u8>>>>> = OnceLock::new();
+static SOCIAL_MASK_CACHE: OnceLock<Mutex<HashMap<String, Arc<forem_core::social_image::Canvas>>>> =
+    OnceLock::new();
+
+fn load_cached_font_bytes(ruby: &Ruby, path: &str) -> Result<Arc<Vec<u8>>, Error> {
+    let cache = SOCIAL_FONT_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    if let Ok(guard) = cache.lock() {
+        if let Some(bytes) = guard.get(path) {
+            return Ok(Arc::clone(bytes));
+        }
+    }
+    let data = std::fs::read(path).map_err(|e| {
+        Error::new(
+            ruby.exception_arg_error(),
+            format!("failed to read font '{path}': {e}"),
+        )
+    })?;
+    forem_core::social_image::Font::from_bytes(&data)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let arc = Arc::new(data);
+    if let Ok(mut guard) = cache.lock() {
+        guard.insert(path.to_owned(), Arc::clone(&arc));
+    }
+    Ok(arc)
+}
+
+#[derive(magnus::TypedData)]
+#[magnus(class = "ForemNative::SocialCanvas", free_immediately, size)]
+struct RubySocialCanvas(RefCell<Option<forem_core::social_image::Canvas>>);
+
+impl magnus::DataTypeFunctions for RubySocialCanvas {
+    fn size(&self) -> usize {
+        std::mem::size_of::<Self>()
+            + self.0.borrow().as_ref().map_or(0, |c| {
+                c.pixels.capacity() * std::mem::size_of::<forem_core::social_image::Rgba>()
+            })
+    }
+}
+
+impl RubySocialCanvas {
+    fn new(canvas: forem_core::social_image::Canvas) -> Self {
+        RubySocialCanvas(RefCell::new(Some(canvas)))
+    }
+
+    fn width(&self) -> usize {
+        self.0.borrow().as_ref().map_or(0, |c| c.width)
+    }
+
+    fn height(&self) -> usize {
+        self.0.borrow().as_ref().map_or(0, |c| c.height)
+    }
+
+    fn is_destroyed(&self) -> bool {
+        self.0.borrow().is_none()
+    }
+
+    fn destroy(&self) {
+        *self.0.borrow_mut() = None;
+    }
+
+    fn to_png(ruby: &Ruby, rb_self: &Self) -> Result<RString, Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let png_bytes = forem_core::social_image::encode_png(canvas)
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        Ok(ruby.str_from_slice(&png_bytes))
+    }
+
+    fn to_rgb8(ruby: &Ruby, rb_self: &Self) -> Result<RString, Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let rgb = canvas.to_rgb8();
+        Ok(ruby.str_from_slice(&rgb))
+    }
+
+    fn write(ruby: &Ruby, rb_self: &Self, path: RString) -> Result<(), Error> {
+        let path_str = {
+            if !path.is_utf8_compatible_encoding() {
+                return Err(Error::new(
+                    ruby.exception_arg_error(),
+                    "invalid path encoding",
+                ));
+            }
+            unsafe { path.test_as_str() }
+                .ok_or_else(|| Error::new(ruby.exception_arg_error(), "invalid UTF-8 path"))?
+                .to_owned()
+        };
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        let png_bytes = forem_core::social_image::encode_png(canvas)
+            .map_err(|e| Error::new(ruby.exception_runtime_error(), e.to_string()))?;
+        std::fs::write(&path_str, &png_bytes).map_err(|e| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                format!("failed to write PNG '{path_str}': {e}"),
+            )
+        })?;
+        Ok(())
+    }
+
+    fn pixel_rgba8(
+        ruby: &Ruby,
+        rb_self: &Self,
+        x: usize,
+        y: usize,
+    ) -> Result<(u8, u8, u8, u8), Error> {
+        let borrow = rb_self.0.borrow();
+        let canvas = borrow.as_ref().ok_or_else(|| {
+            Error::new(
+                ruby.exception_runtime_error(),
+                "SocialCanvas has been destroyed",
+            )
+        })?;
+        if x >= canvas.width || y >= canvas.height {
+            return Err(Error::new(
+                ruby.exception_index_error(),
+                format!(
+                    "pixel ({x}, {y}) out of bounds for {}x{}",
+                    canvas.width, canvas.height
+                ),
+            ));
+        }
+        let p = canvas.get(x, y);
+        use forem_core::social_image::canvas::quantize8;
+        Ok((
+            quantize8(p.r),
+            quantize8(p.g),
+            quantize8(p.b),
+            quantize8(p.a),
+        ))
+    }
+}
+
+fn parse_rgba_arg(ruby: &Ruby, color: RString) -> Result<forem_core::social_image::Rgba, Error> {
+    let s = std::str::from_utf8(unsafe { color.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid color encoding"))?;
+    forem_core::social_image::Rgba::parse(s)
+        .ok_or_else(|| Error::new(ruby.exception_arg_error(), format!("invalid color: {s}")))
+}
+
+fn social_image_decode(ruby: &Ruby, bytes: RString) -> Result<RubySocialCanvas, Error> {
+    let canvas = {
+        let slice = unsafe { bytes.as_slice() };
+        forem_core::social_image::decode_image(slice)
+            .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?
+    };
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_open_cached_mask(ruby: &Ruby, path: RString) -> Result<RubySocialCanvas, Error> {
+    let path_str = std::str::from_utf8(unsafe { path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid path encoding"))?
+        .to_owned();
+    let cache = SOCIAL_MASK_CACHE.get_or_init(|| Mutex::new(HashMap::new()));
+    if let Ok(guard) = cache.lock() {
+        if let Some(cached) = guard.get(&path_str) {
+            return Ok(RubySocialCanvas::new((**cached).clone()));
+        }
+    }
+    let bytes = std::fs::read(&path_str).map_err(|e| {
+        Error::new(
+            ruby.exception_arg_error(),
+            format!("failed to read mask '{path_str}': {e}"),
+        )
+    })?;
+    let decoded = forem_core::social_image::decode_image(&bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let arc = Arc::new(decoded.clone());
+    if let Ok(mut guard) = cache.lock() {
+        guard.insert(path_str, arc);
+    }
+    Ok(RubySocialCanvas::new(decoded))
+}
+
+fn social_image_draw_background(
+    ruby: &Ruby,
+    base_color: RString,
+    blobs: RArray,
+) -> Result<RubySocialCanvas, Error> {
+    let base_rgba = parse_rgba_arg(ruby, base_color)?;
+    let items: Vec<Value> = unsafe { blobs.as_slice() }.to_vec();
+    let mut blob_vec = Vec::with_capacity(items.len());
+    for item in items {
+        let tuple = RArray::from_value(item)
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob must be an Array"))?;
+        let elems: Vec<Value> = unsafe { tuple.as_slice() }.to_vec();
+        if elems.len() < 5 {
+            return Err(Error::new(
+                ruby.exception_arg_error(),
+                "blob tuple must have 5 elements [x, y, rx, ry, color]",
+            ));
+        }
+        let x = Integer::from_value(elems[0])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob x must be Integer"))?;
+        let y = Integer::from_value(elems[1])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob y must be Integer"))?;
+        let rx = Integer::from_value(elems[2])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob rx must be Integer"))?;
+        let ry = Integer::from_value(elems[3])
+            .and_then(|v| v.to_i64().ok())
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob ry must be Integer"))?;
+        let color_str = RString::from_value(elems[4])
+            .ok_or_else(|| Error::new(ruby.exception_arg_error(), "blob color must be String"))?;
+        let color = parse_rgba_arg(ruby, color_str)?;
+        blob_vec.push(forem_core::social_image::card::BackgroundBlob {
+            x,
+            y,
+            rx,
+            ry,
+            color,
+        });
+    }
+    let canvas = forem_core::social_image::card::draw_background(base_rgba, &blob_vec);
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_draw_window(ruby: &Ruby, canvas: &RubySocialCanvas) -> Result<(), Error> {
+    let mut borrow = canvas.0.borrow_mut();
+    let dst = borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::draw_window(dst);
+    Ok(())
+}
+
+fn social_image_draw_profile_window(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    brand_color: RString,
+) -> Result<(), Error> {
+    let brand = parse_rgba_arg(ruby, brand_color)?;
+    let mut borrow = canvas.0.borrow_mut();
+    let dst = borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::draw_profile_window(dst, brand);
+    Ok(())
+}
+
+fn social_image_render_text(
+    ruby: &Ruby,
+    kind: RString,
+    text: RString,
+    font_path: RString,
+    pointsize: f64,
+    color: RString,
+    width: Option<usize>,
+) -> Result<RubySocialCanvas, Error> {
+    let kind_str = std::str::from_utf8(unsafe { kind.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid kind encoding"))?
+        .to_owned();
+    let text_str = std::str::from_utf8(unsafe { text.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid text encoding"))?
+        .to_owned();
+    let font_path_str = std::str::from_utf8(unsafe { font_path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    let rgba = parse_rgba_arg(ruby, color)?;
+    let font_bytes = load_cached_font_bytes(ruby, &font_path_str)?;
+    let font = forem_core::social_image::Font::from_bytes(&font_bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+
+    let canvas = match (kind_str.as_str(), width) {
+        ("caption", Some(w)) => forem_core::social_image::text::render_caption(
+            &font, &text_str, pointsize, rgba, w, -4.0,
+        ),
+        _ => forem_core::social_image::text::render_label(&font, &text_str, pointsize, rgba),
+    };
+    Ok(RubySocialCanvas::new(canvas))
+}
+
+fn social_image_add_logo(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    logo: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let logo_borrow = logo.0.borrow();
+    let logo_c = logo_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "logo SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_logo(dst_c, logo_c);
+    Ok(())
+}
+
+fn social_image_add_quote(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    quote_image: &RubySocialCanvas,
+    font_path: RString,
+    accent_color: RString,
+) -> Result<(), Error> {
+    let font_path_str = std::str::from_utf8(unsafe { font_path.as_slice() })
+        .map_err(|_| Error::new(ruby.exception_arg_error(), "invalid font path encoding"))?
+        .to_owned();
+    let accent = parse_rgba_arg(ruby, accent_color)?;
+    let font_bytes = load_cached_font_bytes(ruby, &font_path_str)?;
+    let font = forem_core::social_image::Font::from_bytes(&font_bytes)
+        .map_err(|e| Error::new(ruby.exception_arg_error(), e.to_string()))?;
+    let quote_borrow = quote_image.0.borrow();
+    let quote_c = quote_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "quote SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_quote(dst_c, quote_c, &font, accent);
+    Ok(())
+}
+
+fn social_image_add_profile_image(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    author_image: &RubySocialCanvas,
+    rounded_mask: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let author_borrow = author_image.0.borrow();
+    let author_c = author_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "author SocialCanvas has been destroyed",
+        )
+    })?;
+    let mask_borrow = rounded_mask.0.borrow();
+    let mask_c = mask_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "mask SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_image(dst_c, author_c, mask_c);
+    Ok(())
+}
+
+fn social_image_add_profile_card_avatar(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    author_image: &RubySocialCanvas,
+    rounded_mask: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let author_borrow = author_image.0.borrow();
+    let author_c = author_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "author SocialCanvas has been destroyed",
+        )
+    })?;
+    let mask_borrow = rounded_mask.0.borrow();
+    let mask_c = mask_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "mask SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_card_avatar(dst_c, author_c, mask_c);
+    Ok(())
+}
+
+fn social_image_add_profile_header(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    name_image: &RubySocialCanvas,
+    handle_image: &RubySocialCanvas,
+    follow_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let name_borrow = name_image.0.borrow();
+    let name_c = name_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "name SocialCanvas has been destroyed",
+        )
+    })?;
+    let handle_borrow = handle_image.0.borrow();
+    let handle_c = handle_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "handle SocialCanvas has been destroyed",
+        )
+    })?;
+    let follow_borrow = follow_image.0.borrow();
+    let follow_c = follow_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "follow SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_header(dst_c, name_c, handle_c, follow_c);
+    Ok(())
+}
+
+fn social_image_add_profile_bio(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    bio_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let bio_borrow = bio_image.0.borrow();
+    let bio_c = bio_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "bio SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_bio(dst_c, bio_c);
+    Ok(())
+}
+
+fn social_image_add_profile_meta(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    meta_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let meta_borrow = meta_image.0.borrow();
+    let meta_c = meta_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "meta SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_profile_meta(dst_c, meta_c);
+    Ok(())
+}
+
+fn social_image_add_byline(
+    ruby: &Ruby,
+    canvas: &RubySocialCanvas,
+    name_image: &RubySocialCanvas,
+    meta_image: &RubySocialCanvas,
+) -> Result<(), Error> {
+    let name_borrow = name_image.0.borrow();
+    let name_c = name_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "name SocialCanvas has been destroyed",
+        )
+    })?;
+    let meta_borrow = meta_image.0.borrow();
+    let meta_c = meta_borrow.as_ref().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "meta SocialCanvas has been destroyed",
+        )
+    })?;
+    let mut dst_borrow = canvas.0.borrow_mut();
+    let dst_c = dst_borrow.as_mut().ok_or_else(|| {
+        Error::new(
+            ruby.exception_runtime_error(),
+            "SocialCanvas has been destroyed",
+        )
+    })?;
+    forem_core::social_image::card::add_byline(dst_c, name_c, meta_c);
+    Ok(())
+}
+
+const COMMENT_STATIC_CTX_LEN: usize = 59;
+const COMMENT_VIEW_CTX_LEN: usize = 18;
+const COMMENT_AUTHOR_STRIDE: usize = 19;
+const COMMENT_NODE_STRIDE: usize = 19;
+
+#[inline]
+unsafe fn borrow_utf8_rstr<'a>(val: Value) -> Option<&'a str> {
+    let rstr = RString::from_value(val)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = rstr.test_as_str()?;
+    Some(std::str::from_utf8_unchecked(std::slice::from_raw_parts(
+        s.as_ptr(),
+        s.len(),
+    )))
+}
+
+#[inline]
+unsafe fn borrow_opt_utf8_rstr<'a>(val: Value) -> Option<Option<&'a str>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    borrow_utf8_rstr(val).map(Some)
+}
+
+#[inline]
+fn extract_i64_val(val: Value) -> Option<i64> {
+    Integer::from_value(val)?.to_i64().ok()
+}
+
+#[inline]
+fn extract_opt_i64_val(val: Value) -> Option<Option<i64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    extract_i64_val(val).map(Some)
+}
+
+#[inline]
+fn exact_stride_chunks<T>(slice: &[T], stride: usize) -> Option<std::slice::ChunksExact<'_, T>> {
+    let chunks = slice.chunks_exact(stride);
+    if chunks.remainder().is_empty() {
+        Some(chunks)
+    } else {
+        None
+    }
+}
+
+fn render_comment_tree(
+    ruby: &Ruby,
+    static_ctx_arr: RArray,
+    view_ctx_arr: RArray,
+    authors_arr: RArray,
+    nodes_flat_arr: RArray,
+    root_count: usize,
+) -> Option<RArray> {
+    // SAFETY: All `RArray::as_slice` and `RString::test_as_str` borrows below are held only
+    // within this inner block while pure-Rust `forem_core::comment_tree::render_comment_tree`
+    // runs. No Ruby VM calls or object allocations occur until the block ends and all borrows
+    // are dropped.
+    let output = unsafe {
+        let s = static_ctx_arr.as_slice();
+        if s.len() != COMMENT_STATIC_CTX_LEN {
+            return None;
+        }
+        let months_arr = RArray::from_value(s[56])?;
+        let months_slice = months_arr.as_slice();
+        if months_slice.len() != 12 {
+            return None;
+        }
+        let mut abbr_month_names = [""; 12];
+        for (idx, &m_val) in months_slice.iter().enumerate() {
+            abbr_month_names[idx] = borrow_utf8_rstr(m_val)?;
+        }
+
+        let static_ctx = forem_core::comment_tree::CommentStaticContext {
+            icon_collapse: borrow_utf8_rstr(s[0])?,
+            icon_expand: borrow_utf8_rstr(s[1])?,
+            icon_info: borrow_utf8_rstr(s[2])?,
+            icon_small_medal: borrow_utf8_rstr(s[3])?,
+            icon_small_overflow_horizontal: borrow_utf8_rstr(s[4])?,
+            icon_small_heart: borrow_utf8_rstr(s[5])?,
+            icon_small_heart_filled: borrow_utf8_rstr(s[6])?,
+            icon_small_comment: borrow_utf8_rstr(s[7])?,
+            icon_small_thread: borrow_utf8_rstr(s[8])?,
+            subscription_icon_html: borrow_utf8_rstr(s[9])?,
+            subscription_icon_no_link_html: borrow_utf8_rstr(s[10])?,
+            community_leader_icon_html: borrow_utf8_rstr(s[11])?,
+            favorites_enabled: s[12].to_bool(),
+            favorite_static_data_attrs: borrow_utf8_rstr(s[13])?,
+            favorite_favorited_inner_html: borrow_utf8_rstr(s[14])?,
+            t_comment_deleted: borrow_utf8_rstr(s[15])?,
+            t_comment_hidden: borrow_utf8_rstr(s[16])?,
+            t_quality_low: borrow_utf8_rstr(s[17])?,
+            t_quality_conduct: borrow_utf8_rstr(s[18])?,
+            t_quality_superlow: borrow_utf8_rstr(s[19])?,
+            t_quality_hidden_visible: borrow_utf8_rstr(s[20])?,
+            t_quality_hidden_accessible: borrow_utf8_rstr(s[21])?,
+            t_users_details_template: borrow_utf8_rstr(s[22])?,
+            t_edited_text_html_template: borrow_utf8_rstr(s[23])?,
+            t_edited_short_html: borrow_utf8_rstr(s[24])?,
+            t_ai_some_description: borrow_utf8_rstr(s[25])?,
+            t_ai_some_label: borrow_utf8_rstr(s[26])?,
+            t_ai_auto_description: borrow_utf8_rstr(s[27])?,
+            t_ai_auto_label: borrow_utf8_rstr(s[28])?,
+            t_menu_aria_label: borrow_utf8_rstr(s[29])?,
+            t_menu_copy_aria_template: borrow_utf8_rstr(s[30])?,
+            t_menu_copy_text: borrow_utf8_rstr(s[31])?,
+            t_menu_settings_aria_template: borrow_utf8_rstr(s[32])?,
+            t_menu_unhide_aria_template: borrow_utf8_rstr(s[33])?,
+            t_menu_unhide_text: borrow_utf8_rstr(s[34])?,
+            t_menu_hide_aria_template: borrow_utf8_rstr(s[35])?,
+            t_menu_hide_text: borrow_utf8_rstr(s[36])?,
+            t_menu_admin_profile_text: borrow_utf8_rstr(s[37])?,
+            t_menu_admin_profile_aria_template: borrow_utf8_rstr(s[38])?,
+            t_menu_moderate_aria_template: borrow_utf8_rstr(s[39])?,
+            t_menu_report_aria_template: borrow_utf8_rstr(s[40])?,
+            t_heart_aria_label: borrow_utf8_rstr(s[41])?,
+            t_heart_count_html_template: borrow_utf8_rstr(s[42])?,
+            t_nbsp_likes_one_template: borrow_utf8_rstr(s[43])?,
+            t_nbsp_likes_other_template: borrow_utf8_rstr(s[44])?,
+            t_heart_title: borrow_utf8_rstr(s[45])?,
+            t_reply_text: borrow_utf8_rstr(s[46])?,
+            t_thread_text: borrow_utf8_rstr(s[47])?,
+            t_follow_user_text: borrow_utf8_rstr(s[48])?,
+            t_follow_user_aria_template: borrow_utf8_rstr(s[49])?,
+            t_sticky_email: borrow_utf8_rstr(s[50])?,
+            t_sticky_location: borrow_utf8_rstr(s[51])?,
+            t_sticky_joined: borrow_utf8_rstr(s[52])?,
+            time_format_short: borrow_utf8_rstr(s[53])?,
+            time_format_short_with_yy: borrow_utf8_rstr(s[54])?,
+            time_format_short_with_year: borrow_utf8_rstr(s[55])?,
+            abbr_month_names,
+            prior_cloudflare_domain: borrow_opt_utf8_rstr(s[57])?,
+            current_cloudflare_domain: borrow_opt_utf8_rstr(s[58])?,
+        };
+
+        let v = view_ctx_arr.as_slice();
+        if v.len() != COMMENT_VIEW_CTX_LEN {
+            return None;
+        }
+        let view_ctx = forem_core::comment_tree::CommentViewContext {
+            has_commentable: v[0].to_bool(),
+            commentable_path: borrow_utf8_rstr(v[1])?,
+            commentable_user_id_str: borrow_utf8_rstr(v[2])?,
+            ama_or_op_banner: borrow_utf8_rstr(v[3])?,
+            app_base_url: borrow_utf8_rstr(v[4])?,
+            comment_base_url: borrow_utf8_rstr(v[5])?,
+            contextual_use_permalink: v[6].to_bool(),
+            article_path: borrow_opt_utf8_rstr(v[7])?,
+            mascot_image_tag_html: borrow_utf8_rstr(v[8])?,
+            billboard_async_url: borrow_utf8_rstr(v[9])?,
+            has_root_comment: v[10].to_bool(),
+            root_comment_hidden: v[11].to_bool(),
+            discussion_lock: v[12].to_bool(),
+            is_admin: v[13].to_bool(),
+            is_view_root: v[14].to_bool(),
+            current_year: i32::try_from(extract_i64_val(v[15])?).ok()?,
+            current_comment_index: extract_opt_i64_val(v[16])?,
+            shown_billboard: v[17].to_bool(),
+        };
+
+        let a_chunks = exact_stride_chunks(authors_arr.as_slice(), COMMENT_AUTHOR_STRIDE)?;
+        let mut authors = Vec::with_capacity(a_chunks.len());
+        for chunk in a_chunks {
+            let mut header_fields = Vec::new();
+            if !chunk[16].is_nil() {
+                let hf_arr = RArray::from_value(chunk[16])?;
+                let hf_chunks = exact_stride_chunks(hf_arr.as_slice(), 2)?;
+                header_fields.reserve(hf_chunks.len());
+                for pair in hf_chunks {
+                    header_fields.push((borrow_utf8_rstr(pair[0])?, borrow_utf8_rstr(pair[1])?));
+                }
+            }
+            let created_at = match extract_opt_i64_val(chunk[17])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[18])?)),
+                None => None,
+            };
+            authors.push(forem_core::comment_tree::CommentAuthorInput {
+                user_id: extract_i64_val(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                username: borrow_utf8_rstr(chunk[2])?,
+                user_url: borrow_utf8_rstr(chunk[3])?,
+                profile_image_50: borrow_utf8_rstr(chunk[4])?,
+                profile_image_90: borrow_utf8_rstr(chunk[5])?,
+                org_name: borrow_opt_utf8_rstr(chunk[6])?,
+                is_op: chunk[7].to_bool(),
+                by_staff_account: chunk[8].to_bool(),
+                is_subscriber: chunk[9].to_bool(),
+                is_community_leader: chunk[10].to_bool(),
+                smallest_color_hex: borrow_utf8_rstr(chunk[11])?,
+                card_color_fallback: borrow_opt_utf8_rstr(chunk[12])?,
+                tag_line: borrow_opt_utf8_rstr(chunk[13])?,
+                displayed_email: borrow_opt_utf8_rstr(chunk[14])?,
+                location: borrow_opt_utf8_rstr(chunk[15])?,
+                header_fields,
+                created_at,
+            });
+        }
+
+        let n_chunks = exact_stride_chunks(nodes_flat_arr.as_slice(), COMMENT_NODE_STRIDE)?;
+        let mut nodes = Vec::with_capacity(n_chunks.len());
+        for chunk in n_chunks {
+            let ancestry = borrow_opt_utf8_rstr(chunk[2])?;
+            let (depth, is_root) = match extract_opt_i64_val(chunk[3])? {
+                Some(explicit_depth) => (usize::try_from(explicit_depth).ok()?, chunk[4].to_bool()),
+                None => forem_core::comment_tree::depth_and_root_from_ancestry(ancestry),
+            };
+            let created_at = match extract_opt_i64_val(chunk[14])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[15])?)),
+                None => None,
+            };
+            let edited_at = match extract_opt_i64_val(chunk[16])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[17])?)),
+                None => None,
+            };
+            nodes.push(forem_core::comment_tree::CommentNodeInput {
+                id: extract_i64_val(chunk[0])?,
+                author_idx: usize::try_from(extract_i64_val(chunk[1])?).ok()?,
+                depth,
+                is_root,
+                score: extract_i64_val(chunk[5])?,
+                deleted: chunk[6].to_bool(),
+                hidden_by_commentable_user: chunk[7].to_bool(),
+                is_root_comment: chunk[8].to_bool(),
+                public_reactions_count: extract_i64_val(chunk[9])?,
+                favorited_by_user_id: extract_opt_i64_val(chunk[10])?,
+                id_code: borrow_utf8_rstr(chunk[11])?,
+                processed_html: borrow_utf8_rstr(chunk[12])?,
+                ai_disclosure_level: u8::try_from(extract_i64_val(chunk[13])?).ok()?,
+                created_at,
+                edited_at,
+                child_count: usize::try_from(extract_i64_val(chunk[18])?).ok()?,
+            });
+        }
+
+        forem_core::comment_tree::render_comment_tree(
+            &static_ctx,
+            &view_ctx,
+            &authors,
+            &nodes,
+            root_count,
+        )
+    }?;
+
+    let out_ary = ruby.ary_new_capa(3);
+    out_ary.push(ruby.str_new(&output.html)).ok()?;
+    match output.current_comment_index {
+        Some(idx) => out_ary.push(ruby.integer_from_i64(idx)).ok()?,
+        None => out_ary.push(ruby.qnil()).ok()?,
+    }
+    if output.shown_billboard {
+        out_ary.push(ruby.qtrue()).ok()?;
+    } else {
+        out_ary.push(ruby.qfalse()).ok()?;
+    }
+    Some(out_ary)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -3170,6 +4644,7 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
     )?;
     native_mod.define_singleton_method("json_quote", function!(json_quote, 2))?;
     native_mod.define_singleton_method("encode_json", function!(encode_json, 2))?;
+    native_mod.define_singleton_method("json_encoded_size", function!(json_encoded_size, 2))?;
     native_mod.define_singleton_method(
         "truncate_feed_xml_items",
         function!(truncate_feed_xml_items, 2),
@@ -3221,6 +4696,29 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         function!(billboard_event_create_from_json_sql, 7),
     )?;
     native_mod.define_singleton_method(
+        "extract_ga_event_params",
+        function!(extract_ga_event_params, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "validate_and_normalize_feed_events",
+        function!(validate_and_normalize_feed_events, 1),
+    )?;
+    native_mod.define_singleton_method("encode_hs256_jwt", function!(encode_hs256_jwt, 3))?;
+    native_mod.define_singleton_method(
+        "mask_authenticity_token",
+        function!(mask_authenticity_token, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "parse_auth_pass_origin",
+        function!(parse_auth_pass_origin, 1),
+    )?;
+    native_mod
+        .define_singleton_method("build_base_data_json", function!(build_base_data_json, 7))?;
+    native_mod.define_singleton_method(
+        "resolve_bulk_follow_json",
+        function!(resolve_bulk_follow_json, 5),
+    )?;
+    native_mod.define_singleton_method(
         "extract_liquid_embed_tags",
         function!(extract_liquid_embed_tags, 1),
     )?;
@@ -3247,5 +4745,123 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "build_variant_relevancy_score_sql",
         function!(build_variant_relevancy_score_sql, 3),
     )?;
+    native_mod.define_singleton_method(
+        "classify_billboard_browser_context",
+        function!(classify_billboard_browser_context, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "geolocation_code_covered_by",
+        function!(geolocation_code_covered_by, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "extract_viewer_country",
+        function!(extract_viewer_country, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_tag_clause_sql",
+        function!(build_billboard_tag_clause_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_role_filter_sql",
+        function!(build_billboard_role_filter_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_weighted_random_sql",
+        function!(build_billboard_weighted_random_sql, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "build_billboard_new_only_sql",
+        function!(build_billboard_new_only_sql, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "build_filtered_ads_where_sql",
+        function!(build_filtered_ads_where_sql, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_supported_language_tags",
+        function!(syntax_supported_language_tags, 0),
+    )?;
+    native_mod.define_singleton_method(
+        "syntax_language_criteria",
+        function!(syntax_language_criteria, 0),
+    )?;
+    native_mod.define_singleton_method("syntax_lexer_tag", function!(syntax_lexer_tag, 1))?;
+    native_mod.define_singleton_method(
+        "syntax_normalize_language",
+        function!(syntax_normalize_language, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_find_fancy_tag", function!(syntax_find_fancy_tag, 3))?;
+    native_mod.define_singleton_method(
+        "syntax_language_from_path",
+        function!(syntax_language_from_path, 1),
+    )?;
+    native_mod
+        .define_singleton_method("syntax_highlight_html", function!(syntax_highlight_html, 2))?;
+    native_mod.define_singleton_method(
+        "syntax_highlight_code_block",
+        function!(syntax_highlight_code_block, 2),
+    )?;
+    let canvas_class = forem_native.define_class("SocialCanvas", ruby.class_object())?;
+    canvas_class.define_method("width", method!(RubySocialCanvas::width, 0))?;
+    canvas_class.define_method("height", method!(RubySocialCanvas::height, 0))?;
+    canvas_class.define_method("destroyed?", method!(RubySocialCanvas::is_destroyed, 0))?;
+    canvas_class.define_method("destroy!", method!(RubySocialCanvas::destroy, 0))?;
+    canvas_class.define_method("to_png", method!(RubySocialCanvas::to_png, 0))?;
+    canvas_class.define_method("to_rgb8", method!(RubySocialCanvas::to_rgb8, 0))?;
+    canvas_class.define_method("write", method!(RubySocialCanvas::write, 1))?;
+    canvas_class.define_method("pixel_rgba8", method!(RubySocialCanvas::pixel_rgba8, 2))?;
+    native_mod.define_singleton_method("social_image_decode", function!(social_image_decode, 1))?;
+    native_mod.define_singleton_method(
+        "social_image_open_cached_mask",
+        function!(social_image_open_cached_mask, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_background",
+        function!(social_image_draw_background, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_window",
+        function!(social_image_draw_window, 1),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_draw_profile_window",
+        function!(social_image_draw_profile_window, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_render_text",
+        function!(social_image_render_text, 6),
+    )?;
+    native_mod
+        .define_singleton_method("social_image_add_logo", function!(social_image_add_logo, 2))?;
+    native_mod.define_singleton_method(
+        "social_image_add_quote",
+        function!(social_image_add_quote, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_image",
+        function!(social_image_add_profile_image, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_card_avatar",
+        function!(social_image_add_profile_card_avatar, 3),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_header",
+        function!(social_image_add_profile_header, 4),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_bio",
+        function!(social_image_add_profile_bio, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_profile_meta",
+        function!(social_image_add_profile_meta, 2),
+    )?;
+    native_mod.define_singleton_method(
+        "social_image_add_byline",
+        function!(social_image_add_byline, 3),
+    )?;
+    native_mod.define_singleton_method("render_comment_tree", function!(render_comment_tree, 5))?;
     Ok(())
 }

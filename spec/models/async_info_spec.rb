@@ -79,7 +79,7 @@ RSpec.describe AsyncInfo do
       ActiveSupport::Notifications.subscribed(subscriber, "sql.active_record") { payload = async_info }
 
       expect(payload[:admin]).to be(true)
-      expect(role_queries.size).to eq(3)
+      expect(role_queries.size).to eq(2)
     end
 
     it "sets apple_auth to true for both @privaterelay.appleid.com and @private.icloud.com addresses" do

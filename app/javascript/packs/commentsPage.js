@@ -284,97 +284,106 @@ var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox=
  */
 function initializeCommentsPage() {
   var commentableType;
-  if (document.getElementById('comments-container')) {
+  var commentsContainer = document.getElementById('comments-container');
+  if (commentsContainer) {
     toggleCodeOfConduct();
     var userStatus = document.body.getAttribute('data-user-status');
-    var commentableId =
-      document.getElementById('comments-container').dataset.commentableId;
-    commentableType =
-      document.getElementById('comments-container').dataset.commentableType;
+    var commentableId = commentsContainer.dataset.commentableId;
+    commentableType = commentsContainer.dataset.commentableType;
     var hasRecentCommentActivity =
-      document.getElementById('comments-container').dataset
-        .hasRecentCommentActivity;
+      commentsContainer.dataset.hasRecentCommentActivity;
     var commentableIdList = (commentableId || '').split(',');
 
     if (userStatus === 'logged-in' || hasRecentCommentActivity !== 'false') {
+      var pendingRequests = commentableIdList.length;
+      if (pendingRequests === 0) {
+        commentsContainer.dataset.commentsInitialized = 'true';
+      }
       (function () {
         for (var i = 0; i < commentableIdList.length; i++) {
           (function (idx) {
             var ajaxReq = new XMLHttpRequest();
             ajaxReq.onreadystatechange = function () {
               if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-                var responseObj = JSON.parse(ajaxReq.response);
-                var reactions = responseObj.reactions;
-                var allNodes = document.getElementsByClassName(
-                  'single-comment-node',
-                );
-                var publicReactionCounts = responseObj.public_reaction_counts;
-                for (var j = 0; j < reactions.length; j++) {
-                  var buttForComment = document.getElementById(
-                    'button-for-comment-' + reactions[j].reactable_id,
+                try {
+                  var responseObj = JSON.parse(ajaxReq.response);
+                  var reactions = responseObj.reactions;
+                  var allNodes = document.getElementsByClassName(
+                    'single-comment-node',
                   );
-                  if (buttForComment) {
-                    buttForComment.classList.add('reacted');
-                    buttForComment.setAttribute('aria-pressed', 'true');
+                  var publicReactionCounts = responseObj.public_reaction_counts;
+                  for (var j = 0; j < reactions.length; j++) {
+                    var buttForComment = document.getElementById(
+                      'button-for-comment-' + reactions[j].reactable_id,
+                    );
+                    if (buttForComment) {
+                      buttForComment.classList.add('reacted');
+                      buttForComment.setAttribute('aria-pressed', 'true');
+                    }
                   }
-                }
-                for (var k = 0; k < publicReactionCounts.length; k++) {
-                  var countButt = document.getElementById(
-                    'button-for-comment-' + publicReactionCounts[k].id,
-                  );
-                  if (countButt) {
-                    var reactionsCountWrapper =
-                      countButt.querySelector('.reactions-count');
-                    var reactionsLabelWrapper =
-                      countButt.querySelector('.reactions-label');
-                    if (
-                      publicReactionCounts[k].count > 0 &&
-                      reactionsLabelWrapper
-                    ) {
-                      if (publicReactionCounts[k].count > 1) {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t(
-                          'core.like',
-                        ).toLowerCase()}s`;
+                  for (var k = 0; k < publicReactionCounts.length; k++) {
+                    var countButt = document.getElementById(
+                      'button-for-comment-' + publicReactionCounts[k].id,
+                    );
+                    if (countButt) {
+                      var reactionsCountWrapper =
+                        countButt.querySelector('.reactions-count');
+                      var reactionsLabelWrapper =
+                        countButt.querySelector('.reactions-label');
+                      if (
+                        publicReactionCounts[k].count > 0 &&
+                        reactionsLabelWrapper
+                      ) {
+                        if (publicReactionCounts[k].count > 1) {
+                          reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t(
+                            'core.like',
+                          ).toLowerCase()}s`;
+                        } else {
+                          reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t(
+                            'core.like',
+                          ).toLowerCase()}`;
+                        }
+
+                        reactionsCountWrapper.id =
+                          'reactions-count-' + publicReactionCounts[k].id;
+                        reactionsCountWrapper.innerHTML =
+                          publicReactionCounts[k].count;
+                        reactionsCountWrapper.classList.remove('hidden');
                       } else {
-                        reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t(
-                          'core.like',
-                        ).toLowerCase()}`;
+                        reactionsCountWrapper.classList.add('hidden');
+                        reactionsCountWrapper.innerHTML = '0';
                       }
 
-                      reactionsCountWrapper.id =
-                        'reactions-count-' + publicReactionCounts[k].id;
-                      reactionsCountWrapper.innerHTML =
-                        publicReactionCounts[k].count;
-                      reactionsCountWrapper.classList.remove('hidden');
-                    } else {
-                      reactionsCountWrapper.classList.add('hidden');
-                      reactionsCountWrapper.innerHTML = '0';
-                    }
-
-                    if (!countButt.classList.contains('reacted')) {
-                      countButt.setAttribute('aria-pressed', 'false');
+                      if (!countButt.classList.contains('reacted')) {
+                        countButt.setAttribute('aria-pressed', 'false');
+                      }
                     }
                   }
-                }
 
-                for (var m = 0; m < allNodes.length; m++) {
-                  if (
-                    allNodes[m].dataset.commentAuthorId ==
-                    responseObj.current_user.id
-                  ) {
-                    allNodes[m].dataset.currentUserComment = 'true';
-                    var path = allNodes[m].dataset.path;
-                    var userActionsEl = allNodes[m].querySelector(
-                      '.current-user-actions',
-                    );
-                    var buttEl = document.getElementById(
-                      'button-for-comment-' + allNodes[m].dataset.commentId,
-                    );
-                    if (userActionsEl && buttEl) {
-                      userActionsEl.innerHTML = `<li><a href="${path}/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
-                                                <li><a data-no-instant href="${path}/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`;
-                      userActionsEl.classList.remove('hidden');
+                  for (var m = 0; m < allNodes.length; m++) {
+                    if (
+                      allNodes[m].dataset.commentAuthorId ==
+                      responseObj.current_user.id
+                    ) {
+                      allNodes[m].dataset.currentUserComment = 'true';
+                      var path = allNodes[m].dataset.path;
+                      var userActionsEl = allNodes[m].querySelector(
+                        '.current-user-actions',
+                      );
+                      var buttEl = document.getElementById(
+                        'button-for-comment-' + allNodes[m].dataset.commentId,
+                      );
+                      if (userActionsEl && buttEl) {
+                        userActionsEl.innerHTML = `<li><a href="${path}/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
+                                                  <li><a data-no-instant href="${path}/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`;
+                        userActionsEl.classList.remove('hidden');
+                      }
                     }
+                  }
+                } finally {
+                  pendingRequests -= 1;
+                  if (pendingRequests <= 0) {
+                    commentsContainer.dataset.commentsInitialized = 'true';
                   }
                 }
               }
@@ -392,6 +401,8 @@ function initializeCommentsPage() {
           })(i);
         }
       })();
+    } else {
+      commentsContainer.dataset.commentsInitialized = 'true';
     }
 
     var butts = document.getElementsByClassName('reaction-button');
@@ -488,7 +499,17 @@ function initializeCommentsPage() {
             initializeCommentsPage();
 
             setTimeout(function () {
-              commentWrapper.getElementsByTagName('textarea')[0].focus();
+              var textarea = commentWrapper.getElementsByTagName('textarea')[0];
+              if (textarea) {
+                textarea.focus();
+                if (
+                  window.Forem &&
+                  typeof window.Forem.initializeEnhancedCommentTextArea ===
+                    'function'
+                ) {
+                  window.Forem.initializeEnhancedCommentTextArea(textarea);
+                }
+              }
             }, 30);
           }
         }, 1);

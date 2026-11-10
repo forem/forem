@@ -6,7 +6,8 @@ class RegistrationsController < Devise::RegistrationsController
 
     store_referer_location_if_safe
 
-    if RequestStore.store[:subforem_id] &&
+    if !Subforem.disabled_by_env? &&
+        RequestStore.store[:subforem_id] &&
         RequestStore.store[:root_subforem_id] &&
         RequestStore.store[:subforem_id] != RequestStore.store[:default_subforem_id] &&
         RequestStore.store[:subforem_id] != RequestStore.store[:root_subforem_id]

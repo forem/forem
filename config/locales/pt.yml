@@ -11,6 +11,13 @@ pt:
     favorite: Escolher como joia
     favorited: Escolhido como joia
     favorited_by_you: Escolhido como joia por você
+    confirm:
+      title_article: Dar uma joia a esta publicação?
+      title_comment: Dar uma joia a este comentário?
+      body_article: Tem certeza de que deseja dar uma joia a esta publicação?
+      body_comment: Tem certeza de que deseja dar uma joia a este comentário?
+      submit: Dar joia
+      cancel: Cancelar
     modal:
       title: Joia Escolhida!
       body: Você escolheu isto como uma joia da comunidade!

@@ -59,6 +59,7 @@ module Api
 
     def show_by_slug
       @article = Article.published.from_subforem
+        .includes(user: :profile)
         .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
         .find_by!(path: "/#{params[:username]}/#{params[:slug]}")
         .decorate
@@ -101,6 +102,7 @@ module Api
       end
     end
 
+    # Lists the authenticated user's articles by publication status, newest first, with paginated results.
     def me
       per_page = (params[:per_page] || 30).to_i
       num = [per_page, per_page_max].min
@@ -117,7 +119,7 @@ module Api
                   end
 
       @articles = @articles
-        .includes(:organization)
+        .includes({ user: :profile }, :organization)
         .select(ME_ATTRIBUTES_FOR_SERIALIZATION)
         .order(published_at: :desc, created_at: :desc)
         .page(params[:page])
@@ -236,9 +238,11 @@ module Api
     # edit the post gets a 404, not a 401, as before: this keeps the existing
     # response and does not reveal that an unpublished draft exists.
     def find_updatable_article
+      return @article if defined?(@article) && @article
+
       article = Article.includes(:user).find(params[:id])
       authorize article, :update?
-      article
+      @article = article
     rescue Pundit::NotAuthorizedError => e
       raise if e.is_a?(ApplicationPolicy::UserSuspendedError)
 
@@ -314,6 +318,23 @@ module Api
 
       message = I18n.t("api.v0.articles_controller.must_be_json", type: params[:article].class.name)
       render json: { error: message, status: 422 }, status: :unprocessable_entity
+    end
+
+    # An unrecognized value would otherwise raise ArgumentError from the enum
+    # setter and surface as a 500.
+    def validate_ai_disclosure_level
+      return unless Settings::General.enable_ai_disclosure
+
+      value = params[:article][:ai_disclosure_level]
+      if value.nil? || value.to_s.strip.empty?
+        params[:article].delete(:ai_disclosure_level)
+        return
+      end
+      return if Article.normalize_ai_disclosure_level(value)
+
+      error_unprocessable_entity(
+        "ai_disclosure_level must be one of: #{Article.ai_disclosure_levels.keys.join(', ')}",
+      )
     end
 
     def convert_labels_param

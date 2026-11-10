@@ -1333,6 +1333,9 @@ pub enum MetalTelemetryRoute<'a> {
     BillboardCreate,
     PageViewUpdate(&'a str),
     PageViewCreate,
+    GaEventCreate,
+    FeedEventsCreate,
+    FeedConfigVisitsCreate,
 }
 
 #[inline]
@@ -1375,6 +1378,9 @@ pub fn match_metal_telemetry_route<'a>(
                 Some(MetalTelemetryRoute::BillboardCreate)
             }
             b"/page_views" => Some(MetalTelemetryRoute::PageViewCreate),
+            b"/fallback_activity_recorder" => Some(MetalTelemetryRoute::GaEventCreate),
+            b"/feed_events" => Some(MetalTelemetryRoute::FeedEventsCreate),
+            b"/feed_config_visits" => Some(MetalTelemetryRoute::FeedConfigVisitsCreate),
             _ => None,
         },
         _ => None,
@@ -1761,6 +1767,1033 @@ pub fn billboard_event_create_from_json_sql(
     }
 }
 
+/// Extracted GA4 fallback page_view fields for `GaEventsController#create`.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct GaEventFields {
+    pub page_title: Option<String>,
+    pub page_location: Option<String>,
+    pub page_path: Option<String>,
+    pub user_language: Option<String>,
+    pub referrer: Option<String>,
+    pub user_agent: Option<String>,
+    pub viewport_size: Option<String>,
+    pub screen_resolution: Option<String>,
+    pub document_encoding: Option<String>,
+}
+
+/// Outcome of parsing a `POST /fallback_activity_recorder` JSON body.
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum GaEventParseOutcome {
+    Parsed(GaEventFields),
+    InvalidJson,
+    DeferToRuby,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum GaScalarOutcome {
+    Str(String),
+    Null,
+    InvalidJson,
+    DeferToRuby,
+}
+
+impl<'a> JsonScanner<'a> {
+    fn parse_ga_string_or_null(&mut self) -> GaScalarOutcome {
+        self.skip_ws();
+        match self.peek() {
+            None => GaScalarOutcome::InvalidJson,
+            Some(b'n') => {
+                if self.bytes[self.pos..].starts_with(b"null") {
+                    self.pos += 4;
+                    GaScalarOutcome::Null
+                } else {
+                    GaScalarOutcome::InvalidJson
+                }
+            }
+            Some(b'"') => {
+                self.pos += 1;
+                let start = self.pos;
+                let mut has_escape = false;
+                while self.pos < self.bytes.len() {
+                    let b = self.bytes[self.pos];
+                    if b == b'"' {
+                        let raw = &self.bytes[start..self.pos];
+                        self.pos += 1;
+                        if !has_escape {
+                            return match std::str::from_utf8(raw) {
+                                Ok(s) => GaScalarOutcome::Str(s.to_owned()),
+                                Err(_) => GaScalarOutcome::InvalidJson,
+                            };
+                        }
+                        return match Self::unescape_simple(raw) {
+                            Some(s) => GaScalarOutcome::Str(s),
+                            None => GaScalarOutcome::DeferToRuby,
+                        };
+                    }
+                    if b == b'\\' {
+                        has_escape = true;
+                        self.pos += 1;
+                        if self.pos >= self.bytes.len() {
+                            return GaScalarOutcome::InvalidJson;
+                        }
+                    } else if b < 0x20 {
+                        return GaScalarOutcome::InvalidJson;
+                    }
+                    self.pos += 1;
+                }
+                GaScalarOutcome::InvalidJson
+            }
+            Some(b't' | b'f' | b'-' | b'0'..=b'9' | b'[' | b'{') => GaScalarOutcome::DeferToRuby,
+            Some(_) => GaScalarOutcome::InvalidJson,
+        }
+    }
+}
+
+/// Parses a `POST /fallback_activity_recorder` JSON body and filters `referrer` against `app_url`.
+pub fn parse_ga_event_json(json_body: &[u8], app_url: Option<&str>) -> GaEventParseOutcome {
+    let mut scanner = JsonScanner::new(json_body);
+    scanner.skip_ws();
+    match scanner.peek() {
+        None => return GaEventParseOutcome::InvalidJson,
+        Some(b'{') => {
+            scanner.pos += 1;
+        }
+        Some(b'[' | b'"' | b't' | b'f' | b'n' | b'-' | b'0'..=b'9') => {
+            return GaEventParseOutcome::DeferToRuby
+        }
+        Some(_) => return GaEventParseOutcome::InvalidJson,
+    }
+
+    let mut fields = GaEventFields::default();
+    if !scanner.consume_byte(b'}') {
+        loop {
+            let key = match scanner.parse_ga_string_or_null() {
+                GaScalarOutcome::Str(k) => k,
+                GaScalarOutcome::Null => return GaEventParseOutcome::InvalidJson,
+                GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+            };
+            if !scanner.consume_byte(b':') {
+                return GaEventParseOutcome::InvalidJson;
+            }
+            match key.as_str() {
+                "document_title" | "document_path" | "path" | "user_language" | "referrer"
+                | "user_agent" | "viewport_size" | "screen_resolution" | "document_encoding" => {
+                    let val = match scanner.parse_ga_string_or_null() {
+                        GaScalarOutcome::Str(s) => Some(s),
+                        GaScalarOutcome::Null => None,
+                        GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                        GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+                    };
+                    match key.as_str() {
+                        "document_title" => fields.page_title = val,
+                        "document_path" => fields.page_location = val,
+                        "path" => fields.page_path = val,
+                        "user_language" => fields.user_language = val,
+                        "referrer" => fields.referrer = val,
+                        "user_agent" => fields.user_agent = val,
+                        "viewport_size" => fields.viewport_size = val,
+                        "screen_resolution" => fields.screen_resolution = val,
+                        "document_encoding" => fields.document_encoding = val,
+                        _ => unreachable!(),
+                    }
+                }
+                _ => match scanner.parse_ga_string_or_null() {
+                    GaScalarOutcome::Str(_) | GaScalarOutcome::Null => {}
+                    GaScalarOutcome::InvalidJson => return GaEventParseOutcome::InvalidJson,
+                    GaScalarOutcome::DeferToRuby => return GaEventParseOutcome::DeferToRuby,
+                },
+            }
+            if scanner.consume_byte(b',') {
+                scanner.skip_ws();
+                if scanner.peek() == Some(b'}') || scanner.peek().is_none() {
+                    return GaEventParseOutcome::InvalidJson;
+                }
+                continue;
+            }
+            if scanner.consume_byte(b'}') {
+                break;
+            }
+            return GaEventParseOutcome::InvalidJson;
+        }
+    }
+    scanner.skip_ws();
+    if scanner.pos != scanner.bytes.len() {
+        return GaEventParseOutcome::InvalidJson;
+    }
+
+    if let (Some(ref r), Some(prefix)) = (&fields.referrer, app_url) {
+        if r.starts_with(prefix) {
+            fields.referrer = None;
+        }
+    }
+
+    GaEventParseOutcome::Parsed(fields)
+}
+
+/// Validated and normalized `FeedEvent` attributes for `FeedEvents::BulkUpsert`.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ValidatedFeedEvent {
+    pub article_id: i64,
+    pub user_id: Option<i64>,
+    pub article_position: i32,
+    pub category: &'static str,
+    pub context_type: &'static str,
+    pub feed_config_id: Option<i64>,
+    pub event_id: Option<String>,
+}
+
+/// Parses an integer string strictly matching Rails `NumericalityValidator` (`/\A[+-]?\d+\z/`).
+#[inline]
+pub fn parse_strict_integer_i64(bytes: &[u8]) -> Option<i64> {
+    if bytes.is_empty() {
+        return None;
+    }
+    let s = std::str::from_utf8(bytes).ok()?;
+    let rest = s
+        .strip_prefix('+')
+        .or_else(|| s.strip_prefix('-'))
+        .unwrap_or(s);
+    if rest.is_empty() || !rest.bytes().all(|b| b.is_ascii_digit()) {
+        return None;
+    }
+    s.parse::<i64>().ok()
+}
+
+/// Validates and normalizes a single `FeedEvent` entry matching `FeedEvent.new(event_data).valid?`.
+pub fn validate_feed_event_fields(
+    article_id: Option<i64>,
+    user_id: Option<i64>,
+    article_position: Option<i64>,
+    category: Option<&[u8]>,
+    context_type: Option<&[u8]>,
+    feed_config_id: Option<i64>,
+    event_id: Option<&[u8]>,
+) -> Option<ValidatedFeedEvent> {
+    let article_id = article_id?;
+    let pos_i64 = article_position?;
+    if pos_i64 <= 0 {
+        return None;
+    }
+    let article_position = i32::try_from(pos_i64).ok()?;
+
+    let category = match category? {
+        b"impression" => "impression",
+        b"click" => "click",
+        b"reaction" => "reaction",
+        b"comment" => "comment",
+        b"extended_pageview" => "extended_pageview",
+        _ => return None,
+    };
+
+    let context_type = match context_type? {
+        b"home" => "home",
+        b"search" => "search",
+        b"tag" => "tag",
+        b"email" => "email",
+        b"sidebar" => "sidebar",
+        _ => return None,
+    };
+
+    let event_id = match event_id {
+        None => None,
+        Some(bytes) => {
+            if !is_valid_uuid(bytes) {
+                return None;
+            }
+            Some(std::str::from_utf8(bytes).ok()?.to_ascii_lowercase())
+        }
+    };
+
+    Some(ValidatedFeedEvent {
+        article_id,
+        user_id,
+        article_position,
+        category,
+        context_type,
+        feed_config_id,
+        event_id,
+    })
+}
+
+const B64URL_ENCODE_TABLE: &[u8; 64] =
+    b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+/// Appends unpadded RFC 4648 URL-safe Base64 encoding of `input` to `out`.
+pub fn urlsafe_encode64_unpadded(input: &[u8], out: &mut String) {
+    let mut i = 0;
+    while i + 3 <= input.len() {
+        let b0 = input[i];
+        let b1 = input[i + 1];
+        let b2 = input[i + 2];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b1 & 0x0f) << 2) | (b2 >> 6)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(b2 & 0x3f) as usize] as char);
+        i += 3;
+    }
+    let rem = input.len() - i;
+    if rem == 1 {
+        let b0 = input[i];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[((b0 & 0x03) << 4) as usize] as char);
+    } else if rem == 2 {
+        let b0 = input[i];
+        let b1 = input[i + 1];
+        out.push(B64URL_ENCODE_TABLE[(b0 >> 2) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[(((b0 & 0x03) << 4) | (b1 >> 4)) as usize] as char);
+        out.push(B64URL_ENCODE_TABLE[((b1 & 0x0f) << 2) as usize] as char);
+    }
+}
+
+/// Encodes an HS256 JWT with payload `{"user_id":<user_id>,"exp":<exp>}` signed with `secret`,
+/// matching `JWT.encode({ user_id: user_id, exp: exp }, secret)` byte-for-byte.
+pub fn encode_hs256_jwt(user_id: i64, exp: i64, secret: &[u8]) -> String {
+    // base64url({"alg":"HS256"}) == "eyJhbGciOiJIUzI1NiJ9"
+    const HEADER_B64: &str = "eyJhbGciOiJIUzI1NiJ9";
+    let mut payload_buf = String::with_capacity(48);
+    let _ = write!(&mut payload_buf, r#"{{"user_id":{user_id},"exp":{exp}}}"#);
+
+    let mut token = String::with_capacity(120);
+    token.push_str(HEADER_B64);
+    token.push('.');
+    urlsafe_encode64_unpadded(payload_buf.as_bytes(), &mut token);
+
+    let sig = hmac_sha256(secret, token.as_bytes());
+    token.push('.');
+    urlsafe_encode64_unpadded(&sig, &mut token);
+    token
+}
+
+/// Masks a real CSRF token (`encoded_real_token`, 32 raw bytes base64-encoded) with a 32-byte
+/// `one_time_pad` using Rails 8's global CSRF token HMAC (`!real_csrf_token`), returning the
+/// 86-character unpadded URL-safe Base64 token matching `form_authenticity_token`.
+pub fn mask_authenticity_token(encoded_real_token: &[u8], one_time_pad: &[u8]) -> Option<String> {
+    if one_time_pad.len() != AUTHENTICITY_TOKEN_LENGTH {
+        return None;
+    }
+    let mut real_buf = [0u8; 64];
+    let real_len = urlsafe_decode64_into(encoded_real_token, &mut real_buf)?;
+    if real_len != AUTHENTICITY_TOKEN_LENGTH {
+        return None;
+    }
+    let global_token = hmac_sha256(
+        &real_buf[..AUTHENTICITY_TOKEN_LENGTH],
+        GLOBAL_CSRF_TOKEN_IDENTIFIER,
+    );
+    let mut masked = [0u8; AUTHENTICITY_TOKEN_LENGTH * 2];
+    masked[..AUTHENTICITY_TOKEN_LENGTH].copy_from_slice(one_time_pad);
+    for i in 0..AUTHENTICITY_TOKEN_LENGTH {
+        masked[AUTHENTICITY_TOKEN_LENGTH + i] = one_time_pad[i] ^ global_token[i];
+    }
+    let mut out = String::with_capacity(86);
+    urlsafe_encode64_unpadded(&masked, &mut out);
+    Some(out)
+}
+
+/// Parses an `Origin`, `Referer`, or `passed_domain` header/param value for `AuthPassController`
+/// into `(origin_host, normalized_csp_origin)`.
+/// Returns `None` for non-standard inputs so the caller can fall back to `URI.parse`.
+pub fn parse_auth_pass_origin(raw: &[u8]) -> Option<(String, String)> {
+    if raw.is_empty() {
+        return None;
+    }
+    let s = std::str::from_utf8(raw).ok()?;
+    if s.bytes().any(|b| b <= b' ' || b >= 0x7f) {
+        return None;
+    }
+
+    if let Some((scheme, rest)) = s.split_once("://") {
+        let scheme_lower = if scheme.eq_ignore_ascii_case("http") {
+            "http"
+        } else if scheme.eq_ignore_ascii_case("https") {
+            "https"
+        } else {
+            return None;
+        };
+
+        let authority_end = rest.find(['/', '?', '#']).unwrap_or(rest.len());
+        let authority = &rest[..authority_end];
+        if authority.is_empty() || authority.contains(['@', '[', ']']) {
+            return None;
+        }
+
+        let (host_str, port_opt) = match authority.split_once(':') {
+            None => (authority, None),
+            Some((h, p)) => {
+                if p.is_empty() || !p.bytes().all(|b| b.is_ascii_digit()) {
+                    return None;
+                }
+                let port_num = p.parse::<u16>().ok()?;
+                if port_num == 0 {
+                    return None;
+                }
+                (h, Some(port_num))
+            }
+        };
+
+        if host_str.is_empty()
+            || !host_str
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+        {
+            return None;
+        }
+
+        let origin_host = host_str.to_ascii_lowercase();
+        let normalized_csp_origin = match port_opt {
+            Some(p) if p != 80 && p != 443 => format!("{scheme_lower}://{origin_host}:{p}"),
+            _ => format!("{scheme_lower}://{origin_host}"),
+        };
+        return Some((origin_host, normalized_csp_origin));
+    }
+
+    // Bare domain name without scheme, port, path, query, or fragment.
+    if s.bytes()
+        .all(|b| b.is_ascii_alphanumeric() || b == b'.' || b == b'-')
+    {
+        let origin_host = s.to_ascii_lowercase();
+        let normalized_csp_origin = format!("https://{origin_host}");
+        return Some((origin_host, normalized_csp_origin));
+    }
+
+    None
+}
+
+/// Writes a JSON string literal matching Rails `ActiveSupport::JSON.encode` (including HTML-safe
+/// escaping of `<`, `>`, `&`, U+2028, and U+2029).
+pub fn write_rails_json_escaped_str(out: &mut String, s: &str) {
+    out.push('"');
+    for ch in s.chars() {
+        match ch {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\x08' => out.push_str("\\b"),
+            '\x09' => out.push_str("\\t"),
+            '\x0A' => out.push_str("\\n"),
+            '\x0C' => out.push_str("\\f"),
+            '\x0D' => out.push_str("\\r"),
+            '<' => out.push_str("\\u003c"),
+            '>' => out.push_str("\\u003e"),
+            '&' => out.push_str("\\u0026"),
+            '\u{2028}' => out.push_str("\\u2028"),
+            '\u{2029}' => out.push_str("\\u2029"),
+            c if (c as u32) < 0x20 => {
+                let _ = write!(out, "\\u{:04x}", c as u32);
+            }
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+}
+
+/// Builds the JSON response body for `AsyncInfoController#base_data` in a single allocation,
+/// matching `ActiveSupport::JSON.encode` byte-for-byte.
+pub fn build_base_data_json(
+    broadcast: Option<&str>,
+    param: &str,
+    token: &str,
+    signed_in_fields: Option<(&str, Option<&str>, bool, bool)>,
+) -> String {
+    let cap = 128
+        + broadcast.map_or(4, |b| b.len() + 16)
+        + signed_in_fields.map_or(0, |(u, _, _, _)| u.len() + 128);
+    let mut out = String::with_capacity(cap);
+    out.push_str("{\"broadcast\":");
+    match broadcast {
+        Some(b) => write_rails_json_escaped_str(&mut out, b),
+        None => out.push_str("null"),
+    }
+    out.push_str(",\"param\":");
+    write_rails_json_escaped_str(&mut out, param);
+    out.push_str(",\"token\":");
+    write_rails_json_escaped_str(&mut out, token);
+
+    if let Some((user_json, client_geo, optin_allowed, creator)) = signed_in_fields {
+        out.push_str(",\"user\":");
+        write_rails_json_escaped_str(&mut out, user_json);
+        out.push_str(",\"client_geolocation\":");
+        match client_geo {
+            Some(geo) => write_rails_json_escaped_str(&mut out, geo),
+            None => out.push_str("null"),
+        }
+        out.push_str(",\"default_email_optin_allowed\":");
+        out.push_str(if optin_allowed { "true" } else { "false" });
+        out.push_str(",\"creator\":");
+        out.push_str(if creator { "true" } else { "false" });
+    }
+
+    out.push('}');
+    out
+}
+
+/// Resolves the JSON response body for `FollowsController#bulk_show` in a single pass.
+pub fn resolve_bulk_follow_json(
+    viewer_id: i64,
+    is_user_type: bool,
+    ids: &[i64],
+    forward_flags: &[bool],
+    reverse_flags: &[bool],
+) -> Option<String> {
+    if ids.len() != forward_flags.len() || (is_user_type && ids.len() != reverse_flags.len()) {
+        return None;
+    }
+
+    // Preserve Ruby `ids.index_with` semantics: unique keys in first-seen order, value from last occurrence.
+    let mut unique_indices: Vec<(i64, usize)> = Vec::with_capacity(ids.len());
+    for (idx, &id) in ids.iter().enumerate() {
+        if let Some(existing) = unique_indices.iter_mut().find(|(k, _)| *k == id) {
+            existing.1 = idx;
+        } else {
+            unique_indices.push((id, idx));
+        }
+    }
+
+    let mut out = String::with_capacity(unique_indices.len() * 20 + 2);
+    out.push('{');
+    for (pos, &(id, idx)) in unique_indices.iter().enumerate() {
+        if pos > 0 {
+            out.push(',');
+        }
+        let state = if is_user_type && id == viewer_id {
+            "self"
+        } else if is_user_type {
+            let fwd = forward_flags[idx];
+            let rev = reverse_flags[idx];
+            if fwd && rev {
+                "mutual"
+            } else if rev {
+                "follow-back"
+            } else if fwd {
+                "true"
+            } else {
+                "false"
+            }
+        } else if forward_flags[idx] {
+            "true"
+        } else {
+            "false"
+        };
+        let _ = write!(&mut out, "\"{id}\":\"{state}\"");
+    }
+    out.push('}');
+    Some(out)
+}
+
+/// Classifies a `User-Agent` string into `"mobile_in_app"`, `"mobile_web"`, `"desktop"`, or `None`
+/// (`:unknown`), matching `Billboards::FilteredAdsQuery#browser_context_ads` in a single pass.
+pub fn classify_billboard_browser_context(user_agent: &[u8]) -> Option<&'static str> {
+    let len = user_agent.len();
+    if len < 5 {
+        return None;
+    }
+
+    let mut saw_mobile_web = false;
+    let mut saw_desktop = false;
+
+    for i in 0..len {
+        let rem = len - i;
+        match user_agent[i] {
+            b'D' if rem >= 14 => {
+                if &user_agent[i..i + 14] == b"DEV-Native-ios"
+                    || (rem >= 18 && &user_agent[i..i + 18] == b"DEV-Native-android")
+                {
+                    return Some("mobile_in_app");
+                }
+            }
+            b'F' if rem >= 12 && &user_agent[i..i + 12] == b"ForemWebView" => {
+                return Some("mobile_in_app");
+            }
+            b'M' => {
+                if !saw_mobile_web && rem >= 6 && &user_agent[i..i + 6] == b"Mobile" {
+                    saw_mobile_web = true;
+                } else if !saw_mobile_web
+                    && !saw_desktop
+                    && ((rem >= 9 && &user_agent[i..i + 9] == b"Macintosh")
+                        || (rem >= 8 && &user_agent[i..i + 8] == b"Mac OS X"))
+                {
+                    saw_desktop = true;
+                }
+            }
+            b'i' if !saw_mobile_web && rem >= 6 && &user_agent[i..i + 6] == b"iPhone" => {
+                saw_mobile_web = true;
+            }
+            b'A' if !saw_mobile_web && rem >= 7 && &user_agent[i..i + 7] == b"Android" => {
+                saw_mobile_web = true;
+            }
+            b'W' if !saw_mobile_web
+                && !saw_desktop
+                && rem >= 7
+                && &user_agent[i..i + 7] == b"Windows" =>
+            {
+                saw_desktop = true;
+            }
+            b'L' if !saw_mobile_web
+                && !saw_desktop
+                && rem >= 5
+                && &user_agent[i..i + 5] == b"Linux" =>
+            {
+                saw_desktop = true;
+            }
+            _ => {}
+        }
+    }
+
+    if saw_mobile_web {
+        Some("mobile_web")
+    } else if saw_desktop {
+        Some("desktop")
+    } else {
+        None
+    }
+}
+
+#[inline]
+fn trim_ruby_ascii_ws(bytes: &[u8]) -> &[u8] {
+    let mut start = 0usize;
+    let mut end = bytes.len();
+    while start < end && is_ruby_strip_ascii_ws(bytes[start]) {
+        start += 1;
+    }
+    while end > start && is_ruby_strip_ascii_ws(bytes[end - 1]) {
+        end -= 1;
+    }
+    &bytes[start..end]
+}
+
+/// Checks whether an ISO 3166 code (e.g. `"US-CA"`) falls within any of `geo_codes`, matching
+/// `Geolocation.code_covered_by?(code, geo_codes)` with zero heap allocations.
+/// Returns `None` if any inspected byte is non-ASCII (`>= 0x80`).
+pub fn geolocation_code_covered_by(code: &[u8], geo_codes: &[Option<&[u8]>]) -> Option<bool> {
+    if code.iter().any(|&b| b >= 0x80) {
+        return None;
+    }
+    let trimmed_code = trim_ruby_ascii_ws(code);
+    if trimmed_code.is_empty() {
+        return Some(false);
+    }
+
+    for entry_opt in geo_codes {
+        let Some(entry) = entry_opt else {
+            continue;
+        };
+        if entry.iter().any(|&b| b >= 0x80) {
+            return None;
+        }
+        let prefix = trim_ruby_ascii_ws(entry);
+        if prefix.is_empty() {
+            continue;
+        }
+        if trimmed_code.len() == prefix.len() && trimmed_code.eq_ignore_ascii_case(prefix) {
+            return Some(true);
+        }
+        if trimmed_code.len() > prefix.len()
+            && trimmed_code[prefix.len()] == b'-'
+            && trimmed_code[..prefix.len()].eq_ignore_ascii_case(prefix)
+        {
+            return Some(true);
+        }
+    }
+
+    Some(false)
+}
+
+/// Extracts the 2-letter uppercase ISO 3166-1 alpha-2 country code from a geolocation header,
+/// matching `country = geo.to_s.split("-").first; country if country&.match?(/\A[A-Z]{2}\z/)`.
+#[inline]
+pub fn extract_viewer_country(geo: &[u8]) -> Option<&str> {
+    let head = match geo.iter().position(|&b| b == b'-') {
+        Some(idx) => &geo[..idx],
+        None => geo,
+    };
+    if head.len() == 2 && head[0].is_ascii_uppercase() && head[1].is_ascii_uppercase() {
+        std::str::from_utf8(head).ok()
+    } else {
+        None
+    }
+}
+
+/// Compiles the SQL predicate for `Billboards::FilteredAdsQuery` tag matching
+/// (`tagged_ads(tags).or(untagged_ads)` or `tagged_ads(tags)`) in a single pre-allocated buffer.
+pub fn build_billboard_tag_clause_sql(
+    tags: &[&str],
+    include_untagged: bool,
+    optimized_taggable: bool,
+) -> Option<String> {
+    if tags.is_empty() {
+        return if include_untagged {
+            Some("\"display_ads\".\"cached_tag_list\" = ''".to_owned())
+        } else {
+            None
+        };
+    }
+
+    for &tag in tags {
+        if tag.as_bytes().contains(&0) {
+            return None;
+        }
+    }
+
+    if optimized_taggable {
+        let mut out = String::with_capacity(tags.len() * 16 + 80);
+        if include_untagged {
+            out.push('(');
+        }
+        out.push_str("(tags_array && ARRAY[");
+        for (i, &tag) in tags.iter().enumerate() {
+            if i > 0 {
+                out.push(',');
+            }
+            push_quoted_nullable_sql_str(&mut out, Some(tag))?;
+        }
+        out.push_str("]::text[])");
+        if include_untagged {
+            out.push_str(" OR \"display_ads\".\"cached_tag_list\" = '')");
+        }
+        return Some(out);
+    }
+
+    let mut out = String::with_capacity(tags.len() * 48 + 48);
+    let wrap_outer = tags.len() > 1 || include_untagged;
+    if wrap_outer {
+        out.push('(');
+    }
+    for (i, &tag) in tags.iter().enumerate() {
+        if i > 0 {
+            out.push_str(" OR ");
+        }
+        out.push_str("(cached_tag_list ~ '[[:<:]]");
+        for &b in tag.as_bytes() {
+            if b == b'\'' {
+                out.push_str("''");
+            } else {
+                out.push(b as char);
+            }
+        }
+        out.push_str("[[:>:]]')");
+    }
+    if include_untagged {
+        out.push_str(" OR \"display_ads\".\"cached_tag_list\" = ''");
+    }
+    if wrap_outer {
+        out.push(')');
+    }
+    Some(out)
+}
+
+/// Compiles the SQL predicate for `Billboards::FilteredAdsQuery#role_filtered_ads`.
+pub fn build_billboard_role_filter_sql(role_names: &[&str]) -> Option<String> {
+    if role_names.is_empty() {
+        return Some("target_role_names IS NULL OR cardinality(target_role_names) = 0".to_owned());
+    }
+
+    let mut array_items = String::with_capacity(role_names.len() * 18);
+    for (i, &role) in role_names.iter().enumerate() {
+        if i > 0 {
+            array_items.push(',');
+        }
+        push_quoted_nullable_sql_str(&mut array_items, Some(role))?;
+    }
+
+    let mut out = String::with_capacity(array_items.len() * 2 + 190);
+    out.push_str(
+        "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY[",
+    );
+    out.push_str(&array_items);
+    out.push_str(
+        "]::varchar[]) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY[",
+    );
+    out.push_str(&array_items);
+    out.push_str("]::varchar[])");
+    Some(out)
+}
+
+#[inline]
+fn is_blank_ascii(s: &str) -> bool {
+    s.as_bytes().iter().all(|&b| is_ruby_strip_ascii_ws(b))
+}
+
+/// Compiles the CTE SQL query for `Billboard.weighted_random_selection` in a single allocation.
+pub fn build_billboard_weighted_random_sql(
+    base_query: &str,
+    target_article_id: Option<i64>,
+    low_impressions: Option<i64>,
+    random_val: f64,
+) -> Option<String> {
+    if is_blank_ascii(base_query) || !random_val.is_finite() {
+        return None;
+    }
+
+    let mut out = String::with_capacity(base_query.len() + 520);
+    out.push_str("WITH base AS (");
+    out.push_str(base_query);
+    out.push_str("),\nweighted AS (\n  SELECT id,\n    SUM(");
+    if let Some(aid) = target_article_id {
+        let _ = write!(
+            &mut out,
+            "CASE WHEN {aid} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+        );
+    } else {
+        out.push_str("weight");
+    }
+    out.push_str(") OVER () AS total_weight,\n    SUM(");
+    if let Some(aid) = target_article_id {
+        let _ = write!(
+            &mut out,
+            "CASE WHEN {aid} = ANY(preferred_article_ids) THEN weight * 10 ELSE weight END"
+        );
+    } else {
+        out.push_str("weight");
+    }
+    out.push_str(
+        ") OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight\n  FROM base\n  ",
+    );
+    if let Some(low_imp) = low_impressions {
+        let _ = write!(
+            &mut out,
+            "WHERE impressions_count < {low_imp} OR priority = TRUE"
+        );
+    }
+    out.push_str("\n),\npreferred AS (\n  SELECT id FROM weighted\n  WHERE running_weight >= ");
+    if random_val.fract() == 0.0 && random_val.abs() < 1e15 {
+        let _ = write!(&mut out, "{random_val:.1}");
+    } else {
+        let _ = write!(&mut out, "{random_val}");
+    }
+    out.push_str(
+        " * total_weight\n  ORDER BY running_weight ASC\n  LIMIT 1\n)\nSELECT * FROM base\nWHERE id = (SELECT id FROM preferred)\n",
+    );
+    if low_impressions.is_some() {
+        out.push_str(
+            "UNION ALL (SELECT * FROM base WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)",
+        );
+    }
+    out.push_str("\nLIMIT 1\n");
+    Some(out)
+}
+
+/// Compiles the CTE SQL query for `Billboard.new_only_random_selection` in a single allocation.
+pub fn build_billboard_new_only_sql(
+    base_query: &str,
+    low_impressions: i64,
+    fallback_limit: i64,
+) -> Option<String> {
+    if is_blank_ascii(base_query) {
+        return None;
+    }
+
+    let mut out = String::with_capacity(base_query.len() + 260);
+    out.push_str("WITH base AS (");
+    out.push_str(base_query);
+    let _ = write!(
+        &mut out,
+        "),\npreferred AS (SELECT * FROM base WHERE impressions_count < {low_impressions} ORDER BY RANDOM() LIMIT 1)\nSELECT * FROM preferred\nUNION ALL\n(SELECT * FROM (SELECT * FROM base LIMIT {fallback_limit}) fallback\n WHERE NOT EXISTS (SELECT 1 FROM preferred) ORDER BY RANDOM() LIMIT 1)\nLIMIT 1\n"
+    );
+    Some(out)
+}
+
+/// Parameters for `build_filtered_ads_where_sql`.
+#[derive(Debug, Clone)]
+pub struct FilteredAdsWhereParams<'a> {
+    pub area: &'a str,
+    pub now_sec: i64,
+    pub now_usec: u32,
+    pub verified_event_ids: &'a [i64],
+    pub subforem_id: Option<i64>,
+    pub fully_cached: bool,
+    pub user_agent: Option<&'a [u8]>,
+    pub page_id: Option<i64>,
+    pub cookies_allowed: bool,
+    pub article_id: Option<i64>,
+    pub article_tags: &'a [&'a str],
+    pub user_tags: &'a [&'a str],
+    pub has_user_tags: bool,
+    pub optimized_taggable: bool,
+    pub user_signed_in: bool,
+    pub user_id: Option<i64>,
+    pub role_names: &'a [&'a str],
+    pub location_targeting_enabled: bool,
+    pub location_sql_clause: Option<&'a str>,
+    pub include_post_type_of: bool,
+    pub permit_adjacent_sponsors: bool,
+    pub paused_org_ids: &'a [i64],
+    pub skip_survey_filtering: bool,
+}
+
+#[inline]
+fn is_feed_targeted_tag_placement(area: &str) -> bool {
+    matches!(area, "feed_first" | "feed_second" | "feed_third")
+}
+
+/// Compiles the combined SQL `WHERE` predicate for `Billboards::FilteredAdsQuery#call`
+/// in a single pre-allocated buffer, avoiding 15-45 `ActiveRecord::Relation` clones.
+pub fn build_filtered_ads_where_sql(params: &FilteredAdsWhereParams<'_>) -> Option<String> {
+    if params.area.as_bytes().contains(&0) {
+        return None;
+    }
+    if let Some(loc) = params.location_sql_clause {
+        if loc.as_bytes().contains(&0) {
+            return None;
+        }
+    }
+
+    let mut out = String::with_capacity(1024);
+    out.push_str(
+        "\"display_ads\".\"approved\" = TRUE AND \"display_ads\".\"published\" = TRUE AND (expires_at IS NULL OR expires_at > ",
+    );
+    push_quoted_utc_timestamp(&mut out, params.now_sec, params.now_usec)?;
+    out.push_str(") AND \"display_ads\".\"placement_area\" = ");
+    push_quoted_nullable_sql_str(&mut out, Some(params.area))?;
+
+    if params.verified_event_ids.is_empty() {
+        out.push_str(" AND \"display_ads\".\"event_id\" IS NULL");
+    } else if params.verified_event_ids.len() == 1 {
+        let _ = write!(
+            &mut out,
+            " AND \"display_ads\".\"event_id\" = {}",
+            params.verified_event_ids[0]
+        );
+    } else {
+        out.push_str(" AND \"display_ads\".\"event_id\" IN (");
+        for (i, &eid) in params.verified_event_ids.iter().enumerate() {
+            if i > 0 {
+                out.push_str(", ");
+            }
+            let _ = write!(&mut out, "{eid}");
+        }
+        out.push(')');
+    }
+
+    out.push_str(" AND (include_subforem_ids IS NULL OR cardinality(include_subforem_ids) = 0 OR ");
+    match params.subforem_id {
+        Some(sfid) => {
+            let _ = write!(&mut out, "{sfid}");
+        }
+        None => out.push_str("NULL"),
+    }
+    out.push_str(" = ANY(include_subforem_ids))");
+
+    if params.fully_cached {
+        out.push_str(
+            " AND (\"display_ads\".\"cached_tag_list\" IS NULL OR \"display_ads\".\"cached_tag_list\" = '') AND \"display_ads\".\"audience_segment_id\" IS NULL AND \"display_ads\".\"page_id\" IS NULL AND \"display_ads\".\"exclude_survey_completions\" = FALSE AND \"display_ads\".\"browser_context\" = 0 AND (exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0) AND (target_role_names IS NULL OR cardinality(target_role_names) = 0) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0)",
+        );
+    }
+
+    if let Some(ua) = params.user_agent {
+        if !ua.is_empty() && !ua.iter().all(|&b| is_ruby_strip_ascii_ws(b)) {
+            match classify_billboard_browser_context(ua) {
+                Some("mobile_in_app") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 3)");
+                }
+                Some("mobile_web") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 2)");
+                }
+                Some("desktop") => {
+                    out.push_str(" AND \"display_ads\".\"browser_context\" IN (0, 1)");
+                }
+                _ => {}
+            }
+        }
+    }
+
+    if let Some(pid) = params.page_id {
+        let _ = write!(&mut out, " AND \"display_ads\".\"page_id\" = {pid}");
+    }
+
+    if !params.cookies_allowed {
+        out.push_str(" AND \"display_ads\".\"requires_cookies\" = FALSE");
+    }
+
+    if let Some(aid) = params.article_id {
+        if !params.article_tags.is_empty() {
+            let tag_sql = build_billboard_tag_clause_sql(
+                params.article_tags,
+                true,
+                params.optimized_taggable,
+            )?;
+            out.push_str(" AND ");
+            out.push_str(&tag_sql);
+        } else {
+            out.push_str(" AND \"display_ads\".\"cached_tag_list\" = ''");
+        }
+        let _ = write!(
+            &mut out,
+            " AND (exclude_article_ids IS NULL OR cardinality(exclude_article_ids) = 0 OR NOT ({aid} = ANY(exclude_article_ids)))"
+        );
+    }
+
+    if params.has_user_tags && !params.user_tags.is_empty() {
+        let tag_sql =
+            build_billboard_tag_clause_sql(params.user_tags, true, params.optimized_taggable)?;
+        out.push_str(" AND ");
+        out.push_str(&tag_sql);
+    }
+
+    if !params.has_user_tags && is_feed_targeted_tag_placement(params.area) {
+        out.push_str(" AND \"display_ads\".\"cached_tag_list\" = ''");
+    }
+
+    if let Some(uid) = params.user_id {
+        let _ = write!(
+            &mut out,
+            " AND (audience_segment_id IS NULL OR audience_segment_id IN (SELECT \"segmented_users\".\"audience_segment_id\" FROM \"segmented_users\" WHERE \"segmented_users\".\"user_id\" = {uid}))"
+        );
+    } else {
+        out.push_str(" AND \"display_ads\".\"audience_segment_id\" IS NULL");
+    }
+
+    if params.user_signed_in {
+        let role_sql = build_billboard_role_filter_sql(params.role_names)?;
+        out.push_str(" AND (");
+        out.push_str(&role_sql);
+        out.push(')');
+        out.push_str(" AND \"display_ads\".\"display_to\" IN (0, 1)");
+    } else {
+        out.push_str(" AND \"display_ads\".\"display_to\" IN (0, 2)");
+    }
+
+    if params.location_targeting_enabled {
+        out.push_str(" AND (target_geolocations IS NULL OR cardinality(target_geolocations) = 0");
+        if let Some(clause) = params.location_sql_clause {
+            out.push_str(" OR (");
+            out.push_str(clause);
+            out.push(')');
+        }
+        out.push(')');
+    }
+
+    if params.include_post_type_of {
+        if params.permit_adjacent_sponsors {
+            out.push_str(" AND \"display_ads\".\"type_of\" IN (0, 2)");
+        } else {
+            out.push_str(" AND \"display_ads\".\"type_of\" = 0");
+        }
+
+        if !params.paused_org_ids.is_empty() {
+            out.push_str(" AND (organization_id IS NULL OR organization_id NOT IN (");
+            for (i, &oid) in params.paused_org_ids.iter().enumerate() {
+                if i > 0 {
+                    out.push_str(", ");
+                }
+                let _ = write!(&mut out, "{oid}");
+            }
+            out.push_str("))");
+        }
+
+        if params.user_signed_in && !params.skip_survey_filtering {
+            if let Some(uid) = params.user_id {
+                let _ = write!(
+                    &mut out,
+                    " AND (exclude_survey_completions = FALSE OR NOT EXISTS (SELECT 1 FROM survey_completions WHERE survey_completions.user_id = {uid} AND survey_completions.survey_id = ANY(display_ads.exclude_survey_ids)))"
+                );
+            }
+        }
+    }
+
+    Some(out)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2022,7 +3055,122 @@ mod tests {
             match_metal_telemetry_route(b"POST", b"/page_views"),
             Some(MetalTelemetryRoute::PageViewCreate)
         );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/fallback_activity_recorder"),
+            Some(MetalTelemetryRoute::GaEventCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/feed_events"),
+            Some(MetalTelemetryRoute::FeedEventsCreate)
+        );
+        assert_eq!(
+            match_metal_telemetry_route(b"POST", b"/feed_config_visits"),
+            Some(MetalTelemetryRoute::FeedConfigVisitsCreate)
+        );
         assert_eq!(match_metal_telemetry_route(b"GET", b"/articles"), None);
+    }
+
+    #[test]
+    fn test_parse_ga_event_json() {
+        let valid_json = br#"{"document_title":"Hello","path":"/ben","user_language":"en","referrer":"https://google.com/"}"#;
+        assert_eq!(
+            parse_ga_event_json(valid_json, Some("https://dev.to")),
+            GaEventParseOutcome::Parsed(GaEventFields {
+                page_title: Some("Hello".to_owned()),
+                page_location: None,
+                page_path: Some("/ben".to_owned()),
+                user_language: Some("en".to_owned()),
+                referrer: Some("https://google.com/".to_owned()),
+                user_agent: None,
+                viewport_size: None,
+                screen_resolution: None,
+                document_encoding: None,
+            })
+        );
+
+        let same_host_json = br#"{"path":"/ben","referrer":"https://dev.to/other"}"#;
+        assert_eq!(
+            parse_ga_event_json(same_host_json, Some("https://dev.to")),
+            GaEventParseOutcome::Parsed(GaEventFields {
+                page_path: Some("/ben".to_owned()),
+                referrer: None,
+                ..GaEventFields::default()
+            })
+        );
+
+        assert_eq!(
+            parse_ga_event_json(b"", Some("https://dev.to")),
+            GaEventParseOutcome::InvalidJson
+        );
+        assert_eq!(
+            parse_ga_event_json(
+                br#"{"path":"/example","document_path":"/example"#,
+                Some("https://dev.to")
+            ),
+            GaEventParseOutcome::InvalidJson
+        );
+    }
+
+    #[test]
+    fn test_validate_feed_event_fields() {
+        let valid = validate_feed_event_fields(
+            Some(42),
+            Some(7),
+            Some(3),
+            Some(b"click"),
+            Some(b"home"),
+            Some(99),
+            Some(b"550e8400-e29b-41d4-a716-446655440000"),
+        );
+        assert_eq!(
+            valid,
+            Some(ValidatedFeedEvent {
+                article_id: 42,
+                user_id: Some(7),
+                article_position: 3,
+                category: "click",
+                context_type: "home",
+                feed_config_id: Some(99),
+                event_id: Some("550e8400-e29b-41d4-a716-446655440000".to_owned()),
+            })
+        );
+
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(0),
+                Some(b"click"),
+                Some(b"home"),
+                None,
+                None
+            ),
+            None
+        );
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(1),
+                Some(b"invalid"),
+                Some(b"home"),
+                None,
+                None
+            ),
+            None
+        );
+        assert_eq!(
+            validate_feed_event_fields(
+                Some(42),
+                Some(7),
+                Some(1),
+                Some(b"click"),
+                Some(b"home"),
+                None,
+                Some(b"not-a-uuid")
+            ),
+            None
+        );
     }
 
     #[test]
@@ -2063,6 +3211,141 @@ mod tests {
                 0
             ),
             Some(BillboardJsonCreateOutcome::BlankId)
+        );
+    }
+
+    #[test]
+    fn test_encode_and_verify_hs256_jwt_roundtrip() {
+        let token = encode_hs256_jwt(42, 1_700_000_000, b"test_secret");
+        assert_eq!(token.matches('.').count(), 2);
+        assert_eq!(
+            verify_hs256_jwt(token.as_bytes(), b"test_secret", 1_699_999_000),
+            JwtVerifyOutcome::Valid(vec![
+                ("user_id".to_owned(), JwtClaimValue::Int(42)),
+                ("exp".to_owned(), JwtClaimValue::Int(1_700_000_000)),
+            ])
+        );
+    }
+
+    #[test]
+    fn test_mask_and_verify_authenticity_token_roundtrip() {
+        let encoded_real = b"ERERERERERERERERERERERERERERERERERERERERERE";
+        let pad = [0x5Au8; 32];
+        let masked = mask_authenticity_token(encoded_real, &pad).unwrap();
+        assert_eq!(masked.len(), 86);
+        assert_eq!(
+            verify_authenticity_token(masked.as_bytes(), encoded_real, None, None),
+            Some(true)
+        );
+    }
+
+    #[test]
+    fn test_parse_auth_pass_origin() {
+        assert_eq!(
+            parse_auth_pass_origin(b"https://Blog.MyOrg.com:8443/some/path?x=1"),
+            Some((
+                "blog.myorg.com".to_owned(),
+                "https://blog.myorg.com:8443".to_owned()
+            ))
+        );
+        assert_eq!(
+            parse_auth_pass_origin(b"https://Blog.MyOrg.com:443"),
+            Some((
+                "blog.myorg.com".to_owned(),
+                "https://blog.myorg.com".to_owned()
+            ))
+        );
+        assert_eq!(
+            parse_auth_pass_origin(b"the-other-domain.com"),
+            Some((
+                "the-other-domain.com".to_owned(),
+                "https://the-other-domain.com".to_owned()
+            ))
+        );
+    }
+
+    #[test]
+    fn test_build_base_data_json_and_resolve_bulk_follow_json() {
+        let anon_json = build_base_data_json(None, "authenticity_token", "tok123", None);
+        assert_eq!(
+            anon_json,
+            r#"{"broadcast":null,"param":"authenticity_token","token":"tok123"}"#
+        );
+
+        let follow_json = resolve_bulk_follow_json(
+            10,
+            true,
+            &[10, 20, 30, 40, 50],
+            &[false, true, false, false, true],
+            &[false, false, false, true, true],
+        )
+        .unwrap();
+        assert_eq!(
+            follow_json,
+            r#"{"10":"self","20":"true","30":"false","40":"follow-back","50":"mutual"}"#
+        );
+    }
+
+    #[test]
+    fn test_billboard_tier3_helpers() {
+        assert_eq!(
+            classify_billboard_browser_context(
+                b"Mozilla/5.0 (Linux; Android 14) Mobile DEV-Native-android"
+            ),
+            Some("mobile_in_app")
+        );
+        assert_eq!(
+            classify_billboard_browser_context(b"Mozilla/5.0 (Linux; Android 14) Chrome/120"),
+            Some("mobile_web")
+        );
+        assert_eq!(
+            classify_billboard_browser_context(b"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"),
+            Some("desktop")
+        );
+        assert_eq!(classify_billboard_browser_context(b"curl/8.4.0"), None);
+
+        assert_eq!(
+            geolocation_code_covered_by(b" us-ca ", &[Some(b" us "), None, Some(b"")]),
+            Some(true)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"USA", &[Some(b"US")]),
+            Some(false)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"US", &[Some(b"US-CA")]),
+            Some(false)
+        );
+        assert_eq!(
+            geolocation_code_covered_by(b"", &[Some(b"US")]),
+            Some(false)
+        );
+
+        assert_eq!(extract_viewer_country(b"US-CA"), Some("US"));
+        assert_eq!(extract_viewer_country(b"CA"), Some("CA"));
+        assert_eq!(extract_viewer_country(b"us-ca"), None);
+        assert_eq!(extract_viewer_country(b""), None);
+
+        assert_eq!(
+            build_billboard_tag_clause_sql(&["ruby", "rust"], true, false),
+            Some(
+                "((cached_tag_list ~ '[[:<:]]ruby[[:>:]]') OR (cached_tag_list ~ '[[:<:]]rust[[:>:]]') OR \"display_ads\".\"cached_tag_list\" = '')"
+                    .to_owned()
+            )
+        );
+        assert_eq!(
+            build_billboard_tag_clause_sql(&["ruby", "rust"], true, true),
+            Some(
+                "((tags_array && ARRAY['ruby','rust']::text[]) OR \"display_ads\".\"cached_tag_list\" = '')"
+                    .to_owned()
+            )
+        );
+        assert_eq!(
+            build_billboard_role_filter_sql(&["editor", "admin"]),
+            Some(
+                "(target_role_names IS NULL OR cardinality(target_role_names) = 0 OR target_role_names && ARRAY['editor','admin']::varchar[]) AND (exclude_role_names IS NULL OR cardinality(exclude_role_names) = 0 OR NOT exclude_role_names && ARRAY['editor','admin']::varchar[])"
+                    .to_owned()
+            )
         );
     }
 }

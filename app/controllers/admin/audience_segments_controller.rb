@@ -13,11 +13,17 @@ module Admin
       end
 
       @audience_segments = @audience_segments.page(params[:page] || 1).per(20)
-      @system_segments = AudienceSegment.not_manual.including_user_counts.order(:type_of)
+      segment_ids = @audience_segments.map(&:id)
+      @email_counts = if segment_ids.any?
+                        Email.where(audience_segment_id: segment_ids).group(:audience_segment_id).count
+                      else
+                        {}
+                      end
+      @system_segments = AudienceSegment.system_segments_with_cached_counts
     end
 
     def show
-      @segmented_users_scope = @audience_segment.segmented_users.includes(user: :profile)
+      @segmented_users_scope = @audience_segment.segmented_users.preload(:user)
 
       if params[:search].present?
         search_term = "%#{params[:search].strip.downcase}%"
@@ -30,13 +36,17 @@ module Admin
       @segmented_users = @segmented_users_scope.order("segmented_users.created_at DESC")
         .page(params[:page] || 1)
         .per(25)
-      @active_user_queries = UserQuery.active.order(:name)
-      @linked_emails = @audience_segment.emails.order(id: :desc)
+      @audience_segment.user_count = @segmented_users.total_count if params[:search].blank?
+      @active_user_queries = active_user_queries_options
+      @linked_emails = @audience_segment.emails
+        .select(:id, :subject, :status, :type_of, :audience_segment_id)
+        .order(id: :desc)
+        .load
     end
 
     def new
       @audience_segment = AudienceSegment.new(type_of: :manual)
-      @active_user_queries = UserQuery.active.order(:name)
+      @active_user_queries = active_user_queries_options
     end
 
     def edit; end
@@ -46,7 +56,7 @@ module Admin
       @audience_segment.type_of = :manual
 
       if @audience_segment.name.blank?
-        @active_user_queries = UserQuery.active.order(:name)
+        @active_user_queries = active_user_queries_options
         @audience_segment.errors.add(:name, :blank)
         flash.now[:danger] = @audience_segment.errors_as_sentence
         return render :new, status: :unprocessable_entity
@@ -57,7 +67,7 @@ module Admin
         flash[:success] = flash[:success].presence || I18n.t("admin.audience_segments_controller.created")
         redirect_to admin_audience_segment_path(@audience_segment)
       else
-        @active_user_queries = UserQuery.active.order(:name)
+        @active_user_queries = active_user_queries_options
         flash.now[:danger] = @audience_segment.errors_as_sentence
         render :new, status: :unprocessable_entity
       end
@@ -175,6 +185,10 @@ module Admin
 
     def audience_segment_params
       params.require(:audience_segment).permit(:name)
+    end
+
+    def active_user_queries_options
+      UserQuery.active.select(:id, :name).order(:name)
     end
 
     def process_initial_users

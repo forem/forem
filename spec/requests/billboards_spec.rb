@@ -19,12 +19,14 @@ RSpec.describe "Billboards" do
   end
 
   describe "billboard delivery columns" do
-    [false, true].product(%w[random_selection weighted_performance new_and_priority new_only]) do |cached, strategy|
-      it "omits Markdown sources for #{strategy} with fully_cached=#{cached}", :aggregate_failures do
-        area = "post_fixed_bottom"
-        billboard = create_billboard(placement_area: area, special_behavior: :persistent,
-                                     minimized_body_markdown: "Synthetic minimized content")
-        BillboardPlacementAreaConfig.create!(placement_area: area, fully_cached: cached)
+    it "omits Markdown sources across selection strategies and caching modes", :aggregate_failures do
+      area = "post_fixed_bottom"
+      billboard = create_billboard(placement_area: area, special_behavior: :persistent,
+                                   minimized_body_markdown: "Synthetic minimized content")
+      config = BillboardPlacementAreaConfig.create!(placement_area: area, fully_cached: false)
+
+      [false, true].product(%w[random_selection weighted_performance new_and_priority new_only]) do |cached, strategy|
+        config.update!(fully_cached: cached)
         allow(BillboardPlacementAreaConfig).to receive(:selection_weights_for).with(area)
           .and_return(strategy => 1)
         path = if cached
@@ -51,97 +53,52 @@ RSpec.describe "Billboards" do
       sign_in user
     end
 
-    context "when target_role_names includes user's role" do
-      let!(:targeted_billboard) { create_billboard(placement_area: "post_comments", target_role_names: ["editor"]) }
+    it "filters billboards by target_role_names and exclude_role_names", :aggregate_failures do
+      billboard = create_billboard(placement_area: "post_comments", target_role_names: ["editor"])
+      path = article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
-      it "includes billboards that target user's role" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(billboard.processed_html)
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(targeted_billboard.processed_html)
-      end
-    end
+      billboard.update_columns(target_role_names: [], exclude_role_names: ["moderator"])
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include(billboard.processed_html)
 
-    context "when exclude_role_names includes user's role" do
-      let!(:excluded_billboard) { create_billboard(placement_area: "post_comments", exclude_role_names: ["moderator"]) }
+      billboard.update_columns(target_role_names: ["admin"], exclude_role_names: [])
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include(billboard.processed_html)
 
-      it "excludes billboards that should not be shown to user's role" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+      billboard.update_columns(target_role_names: [], exclude_role_names: ["admin"])
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(billboard.processed_html)
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include(excluded_billboard.processed_html)
-      end
-    end
-
-    context "when target_role_names does not include user's role" do
-      let!(:non_targeted_billboard) do
-        create_billboard(placement_area: "post_comments", target_role_names: ["admin"],
-                         body_markdown: rand(10_000).to_s)
-      end
-
-      it "excludes billboards that do not target user's role" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include(non_targeted_billboard.processed_html)
-      end
-    end
-
-    context "when exclude_role_names does not include user's role" do
-      let!(:non_excluded_billboard) { create_billboard(placement_area: "post_comments", exclude_role_names: ["admin"]) }
-
-      it "includes billboards that are not excluded for user's role" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(non_excluded_billboard.processed_html)
-      end
-    end
-
-    context "when both target_role_names and exclude_role_names are empty" do
-      let!(:open_billboard) { create_billboard(placement_area: "post_comments") }
-
-      it "includes billboards that have no role restrictions" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(open_billboard.processed_html)
-      end
+      billboard.update_columns(target_role_names: [], exclude_role_names: [])
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(billboard.processed_html)
     end
   end
 
   describe "GET /:username/:slug/billboards/:color" do
-    context "when placement_area includes 'fixed_'" do
-      let!(:billboard) { create_billboard(placement_area: "post_fixed_bottom") }
+    it "includes the appropriate border style for fixed, non-fixed, and blank-color billboards", :aggregate_failures do
+      billboard = create_billboard(placement_area: "post_fixed_bottom")
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("border: 1px solid #{billboard.color}; border-bottom: none")
 
-      it "includes the correct style string" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+      billboard.update_columns(placement_area: "post_comments")
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("border: 1px solid #{billboard.color}")
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 1px solid #{billboard.color}; border-bottom: none")
-      end
-    end
-
-    context "when placement_area does not include 'fixed_'" do
-      let!(:billboard) { create_billboard(placement_area: "post_comments") }
-
-      it "includes the correct style string" do
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include("border: 1px solid #{billboard.color}")
-      end
-    end
-
-    context "when color is blank" do
-      it "returns an empty style string" do
-        create_billboard(placement_area: "post_comments", color: "")
-        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid")
-        expect(response.body).not_to include("border: 1px solid")
-      end
+      billboard.update_columns(color: "")
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+      expect(response).to have_http_status(:ok)
+      expect(response.body).not_to include("border-top: calc(9px + 0.5vw) solid", "border: 1px solid")
     end
   end
 
@@ -181,9 +138,7 @@ RSpec.describe "Billboards" do
           expect(response.body).to include(canada_billboard.processed_html)
           expect(response.body).not_to include(california_billboard.processed_html)
           expect(response.headers["Vary"]).not_to include("X-Client-Geo", "X-Cacheable-Client-Geo")
-        end
 
-        it "is accurate for more precise locations" do
           get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
               headers: client_in_california_usa
 
@@ -203,9 +158,7 @@ RSpec.describe "Billboards" do
           expect(response.body).to be_empty
           expect(response.headers["Vary"]).not_to include("X-Client-Geo")
           expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
-        end
 
-        it "is accurate for more precise locations" do
           get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
               headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US-CA" }
 
@@ -260,46 +213,32 @@ RSpec.describe "Billboards" do
         )
       end
 
-      it "uses the configured cache expiry in x-accel-expires and surrogate control headers", :aggregate_failures do
+      it "applies configured, area-specific, zero, and default cache expiry headers", :aggregate_failures do
         billboard
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
         expect(response.headers["X-Accel-Expires"]).to eq(custom_cache_expiry.to_s)
         expect(response.headers["Surrogate-Control"]).to eq(
           "max-age=#{custom_cache_expiry}, stale-if-error=#{stale_if_error}",
         )
-      end
 
-      it "uses different cache expiry for different placement areas" do
         create_billboard(placement_area: "sidebar_left")
         BillboardPlacementAreaConfig.create!(
           placement_area: "sidebar_left",
           signed_in_rate: 100,
           signed_out_rate: 100,
-          cache_expiry_seconds: 120, # 2 minutes
+          cache_expiry_seconds: 120,
         )
-
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left")
-
         expect(response.headers["X-Accel-Expires"]).to eq("120")
         expect(response.headers["Surrogate-Control"]).to eq("max-age=120, stale-if-error=#{stale_if_error}")
-      end
 
-      it "uses zero cache expiry when configured" do
-        billboard
         BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(cache_expiry_seconds: 0)
-
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
         expect(response.headers["X-Accel-Expires"]).to eq("0")
         expect(response.headers["Surrogate-Control"]).to eq("max-age=0, stale-if-error=#{stale_if_error}")
-      end
 
-      it "uses default cache expiry for placement areas without config" do
         create_billboard(placement_area: "post_sidebar")
-
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
-
         default_expiry = BillboardPlacementAreaConfig::DEFAULT_BILLBOARD_CACHE_EXPIRY_SECONDS
         expect(response.headers["X-Accel-Expires"]).to eq(default_expiry.to_s)
         expect(response.headers["Surrogate-Control"]).to eq(
@@ -324,45 +263,31 @@ RSpec.describe "Billboards" do
         BillboardPlacementAreaConfig.create!(placement_area: "post_comments", hidden_by_default: true)
       end
 
-      it "still delivers the billboard, rendered hidden and tagged with its placement area" do
+      it "renders data-placement-hidden across default, plain, persistent minimized, and area-specific templates",
+         :aggregate_failures do
         billboard
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include(
+          billboard.processed_html, 'data-placement-area="post_comments"', 'data-placement-hidden="true"'
+        )
 
-        expect(response.body).to include(billboard.processed_html)
-        expect(response.body).to include('data-placement-area="post_comments"')
-        expect(response.body).to include('data-placement-hidden="true"')
-      end
-
-      it "hides the plain template" do
         billboard.update_column(:template, "plain")
-
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-
         expect(response.body).to include('data-placement-hidden="true"')
-      end
 
-      it "hides the minimized version of a persistent billboard too" do
+        %w[feed_first post_fixed_bottom post_body_bottom post_sidebar].each do |area|
+          bb = create_billboard(placement_area: area)
+          BillboardPlacementAreaConfig.create!(placement_area: area, hidden_by_default: true)
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
+          expect(response.body).to include("data-placement-area=\"#{area}\"", 'data-placement-hidden="true"')
+          bb.destroy! if area == "post_fixed_bottom"
+        end
+
         create_billboard(placement_area: "post_fixed_bottom", special_behavior: "persistent",
                          minimized_body_markdown: "Minimized content")
-        BillboardPlacementAreaConfig.create!(placement_area: "post_fixed_bottom", hidden_by_default: true)
-
-        get article_billboard_path(username: article.username, slug: article.slug,
-                                   placement_area: "post_fixed_bottom")
-
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
         expect(response.body).to include("js-minimized-template")
         expect(response.body.scan('data-placement-hidden="true"').size).to eq(2)
-      end
-
-      %w[feed_first post_fixed_bottom post_body_bottom post_sidebar].each do |area|
-        it "hides the #{area} template" do
-          create_billboard(placement_area: area)
-          BillboardPlacementAreaConfig.create!(placement_area: area, hidden_by_default: true)
-
-          get article_billboard_path(username: article.username, slug: article.slug, placement_area: area)
-
-          expect(response.body).to include("data-placement-area=\"#{area}\"")
-          expect(response.body).to include('data-placement-hidden="true"')
-        end
       end
 
       context "with fragment caching enabled" do
@@ -394,21 +319,14 @@ RSpec.describe "Billboards" do
     end
     # rubocop:enable RSpec/NestedGroups
 
-    context "when billboard template is authorship_box" do
-      it "includes authorship box html and custom_display_label if set", :aggregate_failures do
+    context "when billboard template is authorship_box or plain" do
+      it "includes authorship box html and custom_display_label only for authorship_box", :aggregate_failures do
         billboard.update_columns(template: "authorship_box", custom_display_label: "My great custom label")
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).to include("crayons-bb__header relative")
         expect(response.body).to include("My great custom label")
-      end
-    end
 
-    context "when billboard template is plain" do
-      before do
         billboard.update_column(:template, "plain")
-      end
-
-      it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).not_to include "crayons-bb__header relative"
       end
@@ -423,14 +341,12 @@ RSpec.describe "Billboards" do
     end
 
     context "when the placement area is post_body_bottom" do
-      it "contains read more button when body is long" do
-        create_billboard(placement_area: "post_body_bottom", body_markdown: "a " * 800)
+      it "contains read more button only when body is long", :aggregate_failures do
+        bb = create_billboard(placement_area: "post_body_bottom", body_markdown: "a " * 800)
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_body_bottom")
         expect(response.body).to include "text-styles--billboard long-bb-body"
-      end
 
-      it "does not contain read more button when body is short" do
-        create_billboard(placement_area: "post_body_bottom", body_markdown: "a " * 100)
+        bb.update!(body_markdown: "a " * 100)
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_body_bottom")
         expect(response.body).not_to include "text-styles--billboard long-bb-body"
       end
@@ -499,7 +415,8 @@ RSpec.describe "Billboards" do
         sign_in admin
       end
 
-      it "returns the test billboard when proper parameters are provided" do
+      it "returns unapproved test billboards only to admins with proper params while allowing live billboards",
+         :aggregate_failures do
         get article_billboard_path(
           username: article.username,
           slug: article.slug,
@@ -510,9 +427,7 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(test_billboard.processed_html)
-      end
 
-      it "does not return the test billboard when parameters are missing" do
         get article_billboard_path(
           username: article.username,
           slug: article.slug,
@@ -522,9 +437,7 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include(test_billboard.processed_html)
-      end
 
-      it "does return live billboards for non-admin contexts" do
         create_billboard(placement_area: "post_sidebar")
         get article_billboard_path(
           username: article.username,
@@ -536,9 +449,7 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).to include(billboard.processed_html)
-      end
 
-      it "does not return the test billboard for non-admin users" do
         sign_out admin
         sign_in user
 
@@ -593,6 +504,16 @@ RSpec.describe "Billboards" do
 
       expect(queries).not_to be_empty
       expect(queries.join("\n")).not_to include('"articles".*', "processed_html", "body_markdown")
+    end
+
+    it "compiles the article targeting lookup with allow_retry enabled" do
+      relation = Article.select(
+        *BillboardsController::ARTICLE_TARGETING_COLUMNS,
+        BillboardsController::ADJACENT_SPONSORS_PERMITTED,
+      ).where(path: article.path)
+
+      _sql, _binds, _preparable, allow_retry = Article.connection.__send__(:to_sql_and_binds, relation.arel)
+      expect(allow_retry).to be(true)
     end
 
     it "targets billboards by the article's tags" do
@@ -751,16 +672,14 @@ RSpec.describe "Billboards" do
         expect(response.body).to include(billboard.processed_html)
       end
 
-      it "does not serve billboards that target something about the individual request" do
+      it "does not serve billboards that target something about the individual request", :aggregate_failures do
         billboard.update!(tag_list: "ruby")
 
         get billboard_path(placement_area: "post_comments")
 
         expect(response.body).to be_empty
-      end
 
-      it "still respects whether the visitor is signed in" do
-        billboard.update!(display_to: :logged_out)
+        billboard.update!(tag_list: "", display_to: :logged_out)
 
         get billboard_path(placement_area: "post_comments")
 
@@ -779,16 +698,14 @@ RSpec.describe "Billboards" do
         expect(billboard_element["data-anonymous-tracking-allowed"]).to be_nil
       end
 
-      it "serves requests that carry article context as before, uncached" do
+      it "serves requests that carry article context as before, uncached", :aggregate_failures do
         billboard.update!(tag_list: "ruby")
 
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
 
         expect(response.headers["Surrogate-Control"]).to be_nil
         expect(response.body).to be_empty # article isn't tagged ruby, so the article context applied
-      end
 
-      it "keeps serving article areas requested without an article as shared once no longer fully cached" do
         # Such requests come from pages rendered while the area was fully cached, which can
         # outlive the switch. They have no article, so article-targeted billboards must stay out.
         BillboardPlacementAreaConfig.find_by(placement_area: "post_comments").update!(fully_cached: false)
@@ -798,9 +715,7 @@ RSpec.describe "Billboards" do
 
         expect(response.headers["Surrogate-Control"]).to eq("max-age=#{max_age}, stale-if-error=#{stale_if_error}")
         expect(response.body).to be_empty
-      end
 
-      it "serves other placement areas requested without context as before when not fully cached" do
         sidebar_billboard = create_billboard(placement_area: "sidebar_left", tag_list: "ruby")
 
         get billboard_path(placement_area: "sidebar_left")
@@ -811,16 +726,16 @@ RSpec.describe "Billboards" do
     end
 
     context "when signed out" do
-      it "tags even an empty response so the placement area's cached responses can be purged" do
+      it "tags even an empty response so the placement area's cached responses can be purged", :aggregate_failures do
         billboard.update!(tag_list: "ruby")
 
         get billboard_path(placement_area: "post_comments")
 
         expect(response.body).to be_empty
         expect(response.headers["Surrogate-Key"].split).to eq(%w[billboard_responses billboard_responses/post_comments])
-      end
 
-      it "caches the response without varying on location when nothing depends on it" do
+        billboard.update!(tag_list: "")
+
         get billboard_path(placement_area: "post_comments"),
             headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US" }
 
@@ -854,7 +769,7 @@ RSpec.describe "Billboards" do
       get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
     end
 
-    it "shows external billboards when permitted and answers the preference without a separate users_settings query",
+    it "shows external billboards when permitted without a users_settings query and hides on opt-out",
        :aggregate_failures do
       article
       queries = []
@@ -863,17 +778,14 @@ RSpec.describe "Billboards" do
 
       expect(queries.grep(/FROM "users_settings"/)).to be_empty
       expect(response.body).to include(external_billboard.processed_html)
-    end
 
-    it "hides external billboards when the author opts out" do
       user.setting.update_column(:permit_adjacent_sponsors, false)
 
       get_contextual_billboard
 
       expect(response.body).not_to include(external_billboard.processed_html)
-    end
 
-    it "hides external billboards when a co-author's setting is nil" do
+      user.setting.update_column(:permit_adjacent_sponsors, true)
       co_author = create(:user, :without_profile, profile_image: nil)
       co_author.setting.update_column(:permit_adjacent_sponsors, nil)
       article.update_column(:co_author_ids, [co_author.id])
@@ -881,6 +793,63 @@ RSpec.describe "Billboards" do
       get_contextual_billboard
 
       expect(response.body).not_to include(external_billboard.processed_html)
+    end
+  end
+
+  describe "narrow session viewer resolution and zero SELECT \"users\".* hydration" do
+    let!(:cached_area_bb) { create_billboard(placement_area: "post_comments", display_to: :logged_in) }
+    let!(:feed_bb) { create_billboard(placement_area: "feed_first", display_to: :logged_in) }
+
+    it "serves fully cached billboards to signed-in session users with zero users queries and skips session writes",
+       :aggregate_failures do
+      sign_in user
+      # Establish the session cookie on an initial request so the next request authenticates from session
+      get billboard_path(placement_area: "post_comments")
+      Warden::Manager._on_request.clear
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if sql.include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get billboard_path(placement_area: "post_comments")
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(cached_area_bb.processed_html)
+      expect(user_queries).to be_empty
+      expect(request.session_options[:skip]).to be(true)
+    end
+
+    it "loads only narrow viewer columns on contextual signed-in requests and rejects stale session salts",
+       :aggregate_failures do
+      sign_in user
+      get billboard_path(placement_area: "feed_first")
+      Warden::Manager._on_request.clear
+
+      user_queries = []
+      callback = lambda do |*, payload|
+        sql = payload[:sql].to_s
+        user_queries << sql if sql.include?('FROM "users"') && !payload[:cached]
+      end
+
+      ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
+        get billboard_path(placement_area: "feed_first")
+      end
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(feed_bb.processed_html)
+      expect(user_queries.size).to eq(1)
+      expect(user_queries.first).not_to include('"users".*')
+      expect(user_queries.first).to include('"users"."id"', '"users"."encrypted_password"')
+      expect(request.session_options[:skip]).to be(true)
+
+      # Invalidating the user's password salt must treat the session as signed out
+      user.update_column(:encrypted_password, "invalidated_password_hash_00000000000000000")
+      get billboard_path(placement_area: "feed_first")
+      expect(response.body).not_to include(feed_bb.processed_html)
     end
   end
 end

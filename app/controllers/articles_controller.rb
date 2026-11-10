@@ -304,8 +304,11 @@ class ArticlesController < ApplicationController
     @user = current_user
     @version = @user.setting.editor_version if @user
     @organizations = @user&.member_organizations
-    # Tag names are required, so a blank template can never match; skip the lookup.
-    @tag = Tag.find_by(name: params[:template]) if params[:template].present?
+    # Signed-out GET /new(:template) renders only the sign-in prompt, and Articles::Builder
+    # only reads name and submission_template when building a tag-prefilled draft for a user.
+    if @user && params[:template].present?
+      @tag = Tag.select(:id, :name, :submission_template).find_by(name: params[:template])
+    end
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
   end

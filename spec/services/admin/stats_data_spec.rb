@@ -79,5 +79,23 @@ RSpec.describe Admin::StatsData do
 
       expect(stats[:public_reactions]).to eq(2)
     end
+
+    it "bounds new_users lookup by created_at to leverage index_users_on_created_at", :aggregate_failures do
+      create(:user, created_at: 10.days.ago, registered_at: 10.days.ago)
+      create(:user, created_at: 2.days.ago, registered_at: 2.days.ago)
+
+      queries = []
+      subscriber = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        next if payload[:name] == "SCHEMA"
+
+        queries << payload[:sql] if payload[:sql].include?('FROM "users"')
+      end
+
+      stats = described_class.new(7).call
+      ActiveSupport::Notifications.unsubscribe(subscriber)
+
+      expect(stats[:new_users]).to eq(1)
+      expect(queries.last).to include("created_at >=")
+    end
   end
 end

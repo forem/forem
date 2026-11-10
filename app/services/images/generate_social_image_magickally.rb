@@ -126,8 +126,8 @@ module Images
     rescue OpenURI::HTTPError, Timeout::Error => e
       # Ignore external asset fetch failures (including HTTP and timeout errors), but log a warning.
       Rails.logger.warn("[GenerateSocialImageMagickally] Image fetch failed: #{e.message}")
-    rescue MiniMagick::Error => e
-      # Status 15 is SIGTERM (often from Sidekiq memory killers). No need to alert Honeybadger.
+    rescue MiniMagick::Error, MiniMagick::Invalid => e
+      # Status 15 or nil is SIGTERM (often from Sidekiq memory killers or dyno shutdown). No need to alert Honeybadger.
       if sigterm_error?(e)
         Rails.logger.warn("[GenerateSocialImageMagickally] MiniMagick terminated by SIGTERM")
       else
@@ -251,146 +251,31 @@ module Images
 
     def draw_background(palette, seed)
       random = Random.new(seed.to_i)
-      # MIFF is uncompressed, so the intermediate steps skip PNG encoding (the slow part).
-      tempfile = Tempfile.new(["social_background", ".miff"])
-      MiniMagick::Tool::Convert.new do |convert|
-        convert.size "#{MESH_WIDTH}x#{MESH_HEIGHT}"
-        convert << "xc:#{palette.first}"
-        MESH_BLOBS.times do |i|
-          x = random.rand(-30..(MESH_WIDTH + 30))
-          y = random.rand(-30..(MESH_HEIGHT + 30))
-          convert.fill palette[(i % (palette.size - 1)) + 1]
-          convert.draw "ellipse #{x},#{y} #{random.rand(70..180)},#{random.rand(50..130)} 0,360"
-        end
-        convert.blur MESH_BLUR
-        convert.filter "Gaussian"
-        convert.resize "#{WIDTH}x#{HEIGHT}!"
-        convert << tempfile.path
+      blobs = Array.new(MESH_BLOBS) do |i|
+        x = random.rand(-30..(MESH_WIDTH + 30))
+        y = random.rand(-30..(MESH_HEIGHT + 30))
+        color = palette[(i % (palette.size - 1)) + 1]
+        [x, y, random.rand(70..180), random.rand(50..130), color]
       end
-      MiniMagick::Image.new(tempfile.path, tempfile)
-    rescue StandardError
-      tempfile&.close!
-      raise
+      ForemNative.social_image_draw_background(palette.first, blobs)
     end
 
     def draw_window(result)
-      x0 = WINDOW_X
-      x1 = WINDOW_X + WINDOW_WIDTH
-      y1 = WINDOW_Y + WINDOW_HEIGHT
-      bar_y = WINDOW_Y + WINDOW_BAR_HEIGHT
-      dot_y = WINDOW_Y + (WINDOW_BAR_HEIGHT / 2)
-
-      result.combine_options do |c|
-        c.fill "white"
-        c.stroke TEXT_COLOR
-        c.strokewidth WINDOW_STROKE.to_s
-        WINDOW_STACK_DEPTH.downto(1) do |depth|
-          offset = depth * WINDOW_STACK_OFFSET
-          c.draw "roundrectangle #{x0 + offset},#{WINDOW_Y + offset} #{x1 + offset},#{y1 + offset} " \
-                 "#{WINDOW_RADIUS},#{WINDOW_RADIUS}"
-        end
-        c.draw "roundrectangle #{x0},#{WINDOW_Y} #{x1},#{y1} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
-        c.draw "line #{x0},#{bar_y} #{x1},#{bar_y}"
-        c.stroke "none"
-        c.fill TEXT_COLOR
-        3.times do |i|
-          dot_x = x1 - 34 - (i * 22)
-          c.draw "circle #{dot_x},#{dot_y} #{dot_x + 6},#{dot_y}"
-        end
-        divider_y = y1 - BYLINE_HEIGHT - 14
-        c.stroke DIVIDER_COLOR
-        c.strokewidth "2"
-        c.draw "line #{x0 + 40},#{divider_y} #{x1 - 40},#{divider_y}"
-      end
+      ForemNative.social_image_draw_window(result)
     end
 
     def draw_profile_window(result, brand_color)
-      x0 = WINDOW_X
-      x1 = WINDOW_X + WINDOW_WIDTH
-      y1 = WINDOW_Y + WINDOW_HEIGHT
-      bar_y = WINDOW_Y + WINDOW_BAR_HEIGHT
-      strip_y = bar_y + PROFILE_STRIP_HEIGHT
-      btn_x1 = x1 - 44
-      btn_x0 = btn_x1 - PROFILE_FOLLOW_WIDTH
-      btn_y0 = strip_y + 18
-      btn_y1 = btn_y0 + PROFILE_FOLLOW_HEIGHT
-
-      result.combine_options do |c|
-        draw_window_stack(c, x0, x1, y1)
-        c.stroke "none"
-        c.fill brand_color
-        c.draw "rectangle #{x0 + 2},#{bar_y} #{x1 - 2},#{strip_y}"
-        draw_profile_window_borders(c, x0, x1, y1, bar_y, strip_y)
-        draw_window_dots(c, x1, WINDOW_Y + (WINDOW_BAR_HEIGHT / 2))
-        c.draw "roundrectangle #{btn_x0 + 3},#{btn_y0 + 3} #{btn_x1 + 3},#{btn_y1 + 3} 10,10"
-        c.fill brand_color
-        c.stroke TEXT_COLOR
-        c.strokewidth "3"
-        c.draw "roundrectangle #{btn_x0},#{btn_y0} #{btn_x1},#{btn_y1} 10,10"
-        c.stroke DIVIDER_COLOR
-        c.strokewidth "2"
-        c.draw "line #{x0 + 44},#{y1 - PROFILE_FOOTER_HEIGHT} #{x1 - 44},#{y1 - PROFILE_FOOTER_HEIGHT}"
-      end
-    end
-
-    def draw_window_stack(cmd, left_x, right_x, bottom_y)
-      cmd.fill "white"
-      cmd.stroke TEXT_COLOR
-      cmd.strokewidth WINDOW_STROKE.to_s
-      WINDOW_STACK_DEPTH.downto(1) do |depth|
-        offset = depth * WINDOW_STACK_OFFSET
-        cmd.draw "roundrectangle #{left_x + offset},#{WINDOW_Y + offset} #{right_x + offset},#{bottom_y + offset} " \
-                 "#{WINDOW_RADIUS},#{WINDOW_RADIUS}"
-      end
-      cmd.draw "roundrectangle #{left_x},#{WINDOW_Y} #{right_x},#{bottom_y} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
-    end
-
-    def draw_profile_window_borders(cmd, left_x, right_x, bottom_y, bar_y, strip_y)
-      cmd.fill "none"
-      cmd.stroke TEXT_COLOR
-      cmd.strokewidth WINDOW_STROKE.to_s
-      cmd.draw "roundrectangle #{left_x},#{WINDOW_Y} #{right_x},#{bottom_y} #{WINDOW_RADIUS},#{WINDOW_RADIUS}"
-      cmd.draw "line #{left_x},#{bar_y} #{right_x},#{bar_y}"
-      cmd.strokewidth "3"
-      cmd.draw "line #{left_x},#{strip_y} #{right_x},#{strip_y}"
-    end
-
-    def draw_window_dots(cmd, right_x, dot_y)
-      cmd.stroke "none"
-      cmd.fill TEXT_COLOR
-      3.times do |i|
-        dot_x = right_x - 34 - (i * 22)
-        cmd.draw "circle #{dot_x},#{dot_y} #{dot_x + 6},#{dot_y}"
-      end
+      ForemNative.social_image_draw_profile_window(result, brand_color)
     end
 
     def add_logo(result)
       return result unless @logo_image
 
-      @logo_image.resize "x#{LOGO_HEIGHT}"
-      composite_onto(result, @logo_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{WINDOW_X + 18}+#{WINDOW_Y + ((WINDOW_BAR_HEIGHT - LOGO_HEIGHT) / 2)}"
-      end
+      ForemNative.social_image_add_logo(result, @logo_image)
     end
 
-    # ImageMagick applies settings in order, so font/fill/pointsize must come
-    # before each draw or the text renders in the default font.
     def add_quote(result, quote_image, accent)
-      body_top = WINDOW_Y + WINDOW_BAR_HEIGHT
-      result.combine_options do |c|
-        c.gravity "NorthWest"
-        c.font BOLD_FONT_PATH.to_s
-        c.fill accent
-        c.pointsize QUOTE_MARK_POINTSIZE.to_s
-        c.draw "text #{WINDOW_X + 26},#{body_top - 30} \"\u201C\""
-      end
-
-      quote_y = body_top + 24 + [(QUOTE_MAX_HEIGHT + 16 - quote_image.height) / 2, 0].max
-      composite_onto(result, quote_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{WINDOW_X + QUOTE_LEFT}+#{quote_y}"
-      end
+      ForemNative.social_image_add_quote(result, quote_image, BOLD_FONT_PATH, accent)
     end
 
     # caption: wraps on real glyph widths; step the size down until the quote fits.
@@ -432,192 +317,63 @@ module Images
       end
     end
 
-    # All user-provided text goes through label:/caption: (never -draw) so it is
-    # escaped the same way on ImageMagick 6 and 7. Unescaped, a leading "@" makes
-    # ImageMagick read a file and "%" sequences expand to image properties.
+    # Renders label: or caption: text in-process via ForemNative's TrueType rasterizer.
     def render_text(kind, text, font, pointsize, color, width: nil)
-      tempfile = Tempfile.new(["social_text", ".png"])
-      content = text.to_s.strip.empty? ? "\u00A0" : escape_text(text)
-      MiniMagick::Tool::Convert.new do |convert|
-        convert.background "none"
-        convert.fill color
-        convert.font font.to_s
-        convert.pointsize pointsize.to_s
-        if width
-          convert.interline_spacing "-4"
-          convert.size "#{width}x"
-          convert.gravity "West"
-        end
-        convert << "#{kind}:#{content}"
-        convert << tempfile.path
-      end
-      MiniMagick::Image.new(tempfile.path, tempfile)
-    rescue StandardError
-      tempfile&.close!
-      raise
+      content = text.to_s.strip.empty? ? "\u00A0" : text.to_s
+      ForemNative.social_image_render_text(kind, content, font, pointsize, color, width: width)
     end
 
     def add_profile_image(result)
-      x = WINDOW_X + 40
-      y = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
+      return result unless @author_image
 
-      # Flatten animated GIFs to a single frame and convert to PNG immediately to prevent
-      # mogrify from attempting to resize hundreds of frames, sparking Timeout::Errors.
-      @author_image.collapse!
-      @author_image.format("png")
-      @author_image.resize "#{AVATAR_SIZE}x#{AVATAR_SIZE}!"
-      @rounded_mask.resize "#{AVATAR_SIZE}x#{AVATAR_SIZE}"
-
-      # The mask paints white corners, which blend into the white window.
-      result = composite_onto(result, @author_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{x}+#{y}"
-      end
-      result = composite_onto(result, @rounded_mask) do |c|
-        c.compose "Over"
-        c.geometry "+#{x}+#{y}"
-      end
-      radius = AVATAR_SIZE / 2
-      result.combine_options do |c|
-        c.fill "none"
-        c.stroke TEXT_COLOR
-        c.strokewidth "3"
-        c.draw "circle #{x + radius},#{y + radius} #{x + radius},#{y - 1}"
-      end
+      ForemNative.social_image_add_profile_image(result, @author_image, @rounded_mask)
     rescue StandardError => e
       raise if sigterm_error?(e)
 
-      Rails.error.report(e)
-      # If processing the profile picture triggers a mogrify lockup,
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image processing failed: #{e.message}")
+      # If processing the profile picture fails on a corrupt/truncated upload,
       # gracefully fall back to returning the social image without their avatar.
       result
     end
 
     def add_profile_card_avatar(result)
-      x = WINDOW_X + 44
-      y = WINDOW_Y + WINDOW_BAR_HEIGHT + 18
-      radius = PROFILE_AVATAR_SIZE / 2
-      cx = x + radius
-      cy = y + radius
+      return result unless @author_image
 
-      @author_image.collapse!
-      @author_image.format("png")
-      @author_image.resize "#{PROFILE_AVATAR_SIZE}x#{PROFILE_AVATAR_SIZE}!"
-      @rounded_mask.resize "#{PROFILE_AVATAR_SIZE}x#{PROFILE_AVATAR_SIZE}!"
-
-      # Cut transparent corners using the circular mask so the avatar can overlap the brand strip cleanly.
-      circular_avatar = @author_image.composite(@rounded_mask) do |c|
-        c.alpha "Set"
-        c.compose "DstOut"
-        c.define "png:color-type=6"
-      end
-
-      # White halo ring behind the avatar separates it from the brand strip.
-      result.combine_options do |c|
-        c.fill "white"
-        c.stroke "none"
-        c.draw "circle #{cx},#{cy} #{cx},#{cy - radius - 6}"
-      end
-
-      result = composite_onto(result, circular_avatar) do |c|
-        c.compose "Over"
-        c.geometry "+#{x}+#{y}"
-      end
-
-      result.combine_options do |c|
-        c.fill "none"
-        c.stroke TEXT_COLOR
-        c.strokewidth "3"
-        c.draw "circle #{cx},#{cy} #{cx},#{cy - radius}"
-      end
+      ForemNative.social_image_add_profile_card_avatar(result, @author_image, @rounded_mask)
     rescue StandardError => e
       raise if sigterm_error?(e)
 
-      Rails.error.report(e)
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image processing failed: #{e.message}")
       result
-    ensure
-      destroy_image(circular_avatar) unless circular_avatar.equal?(@author_image)
     end
 
     def add_profile_header(result, name_image, handle_image, follow_image)
-      strip_y = WINDOW_Y + WINDOW_BAR_HEIGHT + PROFILE_STRIP_HEIGHT
-      text_x = WINDOW_X + 44 + PROFILE_AVATAR_SIZE + 22
-      name_y = strip_y + 10
-      handle_y = name_y + (name_image.respond_to?(:height) ? [name_image.height - 4, 38].max : 42)
-
-      result = composite_onto(result, name_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{text_x}+#{name_y}"
-      end
-      result = composite_onto(result, handle_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{text_x}+#{handle_y}"
-      end
-
-      btn_x0 = WINDOW_X + WINDOW_WIDTH - 44 - PROFILE_FOLLOW_WIDTH
-      btn_y0 = strip_y + 18
-      follow_w = follow_image.respond_to?(:width) ? follow_image.width : 70
-      follow_h = follow_image.respond_to?(:height) ? follow_image.height : 26
-      follow_x = btn_x0 + [(PROFILE_FOLLOW_WIDTH - follow_w) / 2, 8].max
-      follow_y = btn_y0 + [(PROFILE_FOLLOW_HEIGHT - follow_h) / 2, 4].max
-
-      composite_onto(result, follow_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{follow_x}+#{follow_y}"
-      end
+      ForemNative.social_image_add_profile_header(result, name_image, handle_image, follow_image)
     end
 
     def add_profile_bio(result, bio_image)
-      bio_top = WINDOW_Y + WINDOW_BAR_HEIGHT + PROFILE_STRIP_HEIGHT + 98
-      bio_h = bio_image.respond_to?(:height) ? bio_image.height : 40
-      bio_y = bio_top + [(PROFILE_BIO_MAX_HEIGHT - bio_h) / 2, 0].max
-
-      composite_onto(result, bio_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{WINDOW_X + 44}+#{bio_y}"
-      end
+      ForemNative.social_image_add_profile_bio(result, bio_image)
     end
 
     def add_profile_meta(result, meta_image)
-      footer_top = WINDOW_Y + WINDOW_HEIGHT - PROFILE_FOOTER_HEIGHT
-      meta_h = meta_image.respond_to?(:height) ? meta_image.height : 28
-      meta_y = footer_top + [(PROFILE_FOOTER_HEIGHT - meta_h) / 2, 8].max
-
-      composite_onto(result, meta_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{WINDOW_X + 44}+#{meta_y}"
-      end
+      ForemNative.social_image_add_profile_meta(result, meta_image)
     end
 
     def add_byline(result, name_image, meta_image)
-      text_x = WINDOW_X + 40 + AVATAR_SIZE + 20
-      top = WINDOW_Y + WINDOW_HEIGHT - BYLINE_HEIGHT
-
-      result = composite_onto(result, name_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{text_x}+#{top - 2}"
-      end
-      composite_onto(result, meta_image) do |c|
-        c.compose "Over"
-        c.geometry "+#{text_x}+#{top + 36}"
-      end
-    end
-
-    def composite_onto(base, overlay, &block)
-      composed = base.composite(overlay, &block)
-      destroy_image(base) unless composed.equal?(base)
-      composed
+      ForemNative.social_image_add_byline(result, name_image, meta_image)
     end
 
     def destroy_image(image)
       return unless image.respond_to?(:destroy!)
+      return if image.respond_to?(:destroyed?) && image.destroyed?
       return if image.respond_to?(:tempfile) && image.tempfile && image.tempfile.path.nil?
 
       image.destroy!
     end
 
     def sigterm_error?(error)
-      error.is_a?(MiniMagick::Error) && error.message.include?("status: 15")
+      (error.is_a?(MiniMagick::Error) || error.is_a?(MiniMagick::Invalid)) &&
+        error.message.match?(/status: (?:15|nil)\b/)
     end
 
     def escape_text(text)
@@ -690,11 +446,6 @@ module Images
     end
 
     def upload_result(result)
-      result.combine_options do |c|
-        c.alpha "off"
-        c.depth "8"
-      end
-      result.format("png")
       tempfile = Tempfile.new(["output", ".png"])
       result.write tempfile.path
       image_uploader = ArticleImageUploader.new.tap do |uploader|
@@ -807,10 +558,22 @@ module Images
         @cached_user_id = user_id
       end
 
-      # Always create fresh image objects since MiniMagick modifies them in place
-      @logo_image = @cached_logo_url.present? ? MiniMagick::Image.open(@cached_logo_url) : nil
-      @author_image = MiniMagick::Image.open(@cached_author_image_url)
-      @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
+      @logo_image = @cached_logo_url.present? ? open_image(@cached_logo_url) : nil
+      @author_image = open_author_image
+      @rounded_mask = open_image(ROUNDED_MASK_PATH)
+    end
+
+    def open_author_image
+      open_image(@cached_author_image_url)
+    rescue ArgumentError, MiniMagick::Error, MiniMagick::Invalid => e
+      raise if sigterm_error?(e)
+
+      Rails.logger.warn("[GenerateSocialImageMagickally] Profile image open failed: #{e.message}")
+      nil
+    end
+
+    def open_image(path_or_url)
+      ForemNative.social_image_open(path_or_url)
     end
   end
 end

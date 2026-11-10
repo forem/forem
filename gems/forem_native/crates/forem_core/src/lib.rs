@@ -8,6 +8,7 @@
 
 pub mod calendar;
 pub mod color;
+pub mod comment_tree;
 pub mod emoji;
 pub(crate) mod emoji_data;
 pub mod feed;
@@ -20,7 +21,10 @@ pub mod metal;
 pub(crate) mod psl_data;
 pub mod sanitize;
 pub mod scrubber;
+pub mod social_image;
 pub mod svg;
+pub mod syntax;
+pub(crate) mod syntax_data;
 pub mod text;
 pub mod title;
 pub mod transcript;

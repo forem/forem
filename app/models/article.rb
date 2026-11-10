@@ -34,7 +34,7 @@ class Article < ApplicationRecord
   # admin_update was added as a hack to bypass published_at validation when admin is updating
   # TODO: [@lightalloy] remove published_at validation from the model and
   # move it to the services where the create/update takes place to avoid using hacks
-  attr_accessor :publish_under_org, :admin_update
+  attr_accessor :publish_under_org, :admin_update, :skip_autovomits
   attr_writer :series, :labels
   attr_accessor :body_url
 
@@ -547,14 +547,17 @@ class Article < ApplicationRecord
   end
 
   scope :from_subforem, lambda { |subforem_id = nil|
-    return where(nil) if ENV["NO_SUBFOREM_FILTER"] == "true"
+    return where(nil) if Subforem.disabled_by_env?
 
     subforem_id ||= RequestStore.store[:subforem_id]
-    if subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
+    default_subforem_id = RequestStore.store[:default_subforem_id]
+    if subforem_id.nil? && default_subforem_id.nil? && Subforem.cached_default_id.nil?
+      where(nil)
+    elsif subforem_id.present? && subforem_id == RequestStore.store[:root_subforem_id]
       # Includes articles with no subforem or subforem_id in Subforem.cached_discoverable_ids
       where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil] + Subforem.cached_discoverable_ids)
-    elsif [0, RequestStore.store[:default_subforem_id]].include?(subforem_id.to_i)
-      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, RequestStore.store[:default_subforem_id].to_i])
+    elsif [0, default_subforem_id].include?(subforem_id.to_i)
+      where("articles.subforem_id IN (?) OR articles.subforem_id IS NULL", [nil, subforem_id, default_subforem_id.to_i])
     else
       # where(subforem_id: subforem_id)
       where("articles.subforem_id = ?", subforem_id)
@@ -571,14 +574,15 @@ class Article < ApplicationRecord
   }
 
   def self.cached_admin_published_with(tag_name, subforem_id: nil, expires_in: 1.hour)
+    effective_subforem_id = subforem_id unless Subforem.disabled_by_env?
     cache_key = [
       "admin-published-with",
       tag_name,
-      subforem_id || "all",
+      effective_subforem_id || "all",
     ].join(":")
 
     Rails.cache.fetch(cache_key, expires_in: expires_in) do
-      scope = subforem_id ? from_subforem(subforem_id) : all
+      scope = effective_subforem_id ? from_subforem(effective_subforem_id) : all
       scope.admin_published_with(tag_name).first
     end
   end
@@ -690,7 +694,7 @@ class Article < ApplicationRecord
 
   scope :with_video, lambda {
                        published
-                         .where.not(video: [nil, ""])
+                         .where("articles.video > ''")
                          .where("score > ?", -4)
                      }
 
@@ -2002,11 +2006,14 @@ class Article < ApplicationRecord
   end
 
   def create_conditional_autovomits
+    return if skip_autovomits
     return unless published
-    return unless saved_change_to_body_markdown? ||
-                  saved_change_to_title? ||
-                  saved_change_to_published? ||
-                  published_at > 1.minute.ago
+    content_or_initial_publish_changed =
+      saved_change_to_body_markdown? ||
+      saved_change_to_title? ||
+      saved_change_to_published? ||
+      (published_at.present? && published_at > 1.minute.ago && !scheduled? && no_moderation_label?)
+    return unless content_or_initial_publish_changed
 
     # Enqueue after commit so the worker sees the saved article (and its published state).
     ActiveRecord.after_all_transactions_commit { Articles::HandleSpamWorker.perform_async(id) }
@@ -2174,7 +2181,9 @@ class Article < ApplicationRecord
     return unless cached_tag_list.to_s.match?(/(?:^|,)\s*welcome(?:\s*,|$)/)
     return unless admin_published_user?
 
-    self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    if subforem_id.present?
+      self.class.bust_cached_admin_published_with("welcome", subforem_id: subforem_id)
+    end
     self.class.bust_cached_admin_published_with("welcome")
   end
 

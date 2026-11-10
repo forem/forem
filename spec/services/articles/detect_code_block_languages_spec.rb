@@ -131,4 +131,29 @@ RSpec.describe Articles::DetectCodeBlockLanguages, type: :service do
       expect(service.call).to be(true)
     end
   end
+
+  describe ".language_criteria and language normalization" do
+    let(:markdown) { "```\nputs 1\n```" }
+
+    it "exposes all 228 canonical Rouge tags and human-readable titles", :aggregate_failures do
+      expect(described_class::SUPPORTED_LANGUAGE_TAGS.size).to eq(228)
+      expect(described_class::SUPPORTED_LANGUAGE_TAGS).to eq(described_class::SUPPORTED_LANGUAGE_TAGS.uniq.sort)
+      expect(described_class.language_criteria["ruby"]).to eq("Ruby")
+      expect(described_class.language_criteria["javascript"]).to eq("JavaScript")
+      expect(described_class.language_criteria["cpp"]).to eq("C++")
+      expect(described_class.language_criteria["plaintext"]).to eq(
+        "Plain text, console output, or no specific language",
+      )
+    end
+
+    it "normalizes fence info strings, markdown fences, aliases, and unknown hints", :aggregate_failures do
+      instance = described_class.new(article, ai_client: ai_client)
+      expect(instance.__send__(:normalize_language, "```ts\n")).to eq("typescript")
+      expect(instance.__send__(:normalize_language, "  Py  ")).to eq("python")
+      expect(instance.__send__(:normalize_language, "sh extra_arg")).to eq("shell")
+      expect(instance.__send__(:normalize_language, "unknown_lang")).to eq("plaintext")
+      expect(instance.__send__(:normalize_language, nil)).to eq("plaintext")
+      expect(instance.__send__(:normalize_language, "")).to eq("plaintext")
+    end
+  end
 end

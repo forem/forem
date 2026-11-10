@@ -139,14 +139,24 @@ describe ProfileImageUploader, type: :uploader do
       expect(reloaded_user.profile_image.present?).to be(false)
     end
 
-    it "stores a new upload without issuing any S3 HEAD requests during copy_to" do
+    it "stores a new upload in a single S3 PUT without temporary S3 objects, HEAD requests, or leaked cache files" do
       connection = CarrierWave::Storage::Fog.new(user.profile_image).connection
+      allow(connection).to receive(:put_object).and_call_original
+      allow(connection).to receive(:copy_object).and_call_original
+      allow(connection).to receive(:delete_object).and_call_original
       allow(connection).to receive(:head_object).and_call_original
 
       user.profile_image = image_jpg
+      cached_path = user.profile_image.file.path
+
       user.save!
 
+      expect(connection).to have_received(:put_object).once
+      expect(connection).not_to have_received(:copy_object)
+      expect(connection).not_to have_received(:delete_object)
       expect(connection).not_to have_received(:head_object)
+      expect(File.exist?(cached_path)).to be(false)
+      expect(File.exist?(File.dirname(cached_path))).to be(false)
       expect(user.profile_image.file.path).to start_with("uploads/user/profile_image/#{user.id}/")
       expect(user.profile_image.file.path).to end_with(".jpg")
     end

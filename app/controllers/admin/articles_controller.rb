@@ -6,6 +6,11 @@ module Admin
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
+    ARTICLE_ITEM_INCLUDES = [
+      :favorited_by_user,
+      { context_notes: :tag, user: [:roles, { notes: :author }] },
+    ].freeze
+
     ARTICLES_ALLOWED_PARAMS = [
       :featured,
       :social_image,
@@ -18,7 +23,7 @@ module Admin
       :baseline_score,
       :co_author_ids_list,
       :published_at,
-      { context_notes_attributes: %i[id body_markdown] }
+      { context_notes_attributes: %i[id body_markdown] },
     ].freeze
 
     def index
@@ -34,18 +39,32 @@ module Admin
       end
 
       @pinned_article = PinnedArticle.get
-      @articles = @articles.where.not(id: @pinned_article) if @pinned_article
-
-      @countable_vomits = {}
-      @articles.each do |article|
-        @countable_vomits[article.id] = calculate_flags_for_single_article(article)
+      if @pinned_article
+        ActiveRecord::Associations::Preloader.new(
+          records: [@pinned_article],
+          associations: ARTICLE_ITEM_INCLUDES,
+        ).call
+        @articles = @articles.where.not(id: @pinned_article)
       end
+      @articles = @articles.without_count
+
+      article_ids = @articles.map(&:id)
+      article_ids.concat(@featured_articles.map(&:id)) if @featured_articles
+      article_ids << @pinned_article.id if @pinned_article
+      preload_privileged_reaction_counts(article_ids.uniq)
     end
 
     def show
-      @article = Article.includes(reactions: :user).find(params[:id])
-      @countable_vomits = {}
-      @countable_vomits[@article.id] = calculate_flags_for_single_article(@article)
+      @article = Article.includes(*ARTICLE_ITEM_INCLUDES).find(params[:id])
+      @privileged_reactions = @article.reactions.privileged_category.includes(:user).to_a
+      @countable_vomits = { @article.id => 0 }
+      @privileged_reaction_counts = { @article.id => {} }
+
+      @privileged_reactions.each do |reaction|
+        @privileged_reaction_counts[@article.id][reaction.category] =
+          @privileged_reaction_counts[@article.id].fetch(reaction.category, 0) + 1
+        @countable_vomits[@article.id] += 1 if reaction.category == "vomit" && reaction.status != "invalid"
+      end
     end
 
     def update
@@ -106,7 +125,7 @@ module Admin
     def articles_top(months_ago)
       Article.published.from_subforem
         .where("published_at > ?", months_ago)
-        .includes(user: [:notes])
+        .includes(*ARTICLE_ITEM_INCLUDES)
         .limited_columns_internal_select
         .order(public_reactions_count: :desc)
         .page(params[:page])
@@ -115,7 +134,7 @@ module Admin
 
     def articles_chronological
       Article.published.from_subforem
-        .includes(user: [:notes])
+        .includes(*ARTICLE_ITEM_INCLUDES)
         .limited_columns_internal_select
         .order(published_at: :desc)
         .page(params[:page])
@@ -124,7 +143,7 @@ module Admin
 
     def articles_mixed
       Article.published.from_subforem
-        .includes(user: [:notes])
+        .includes(*ARTICLE_ITEM_INCLUDES)
         .limited_columns_internal_select
         .order(hotness_score: :desc)
         .page(params[:page])
@@ -135,7 +154,7 @@ module Admin
       Article.published.or(Article.where(published_from_feed: true))
         .featured.from_subforem
         .where("published_at > ?", Time.current)
-        .includes(:user)
+        .includes(*ARTICLE_ITEM_INCLUDES)
         .limited_columns_internal_select
         .order(published_at: :desc)
     end
@@ -148,20 +167,20 @@ module Admin
       authorize Article, :access?, policy_class: InternalPolicy
     end
 
-    def calculate_flags_for_single_article(article)
-      privileged_article_reactions = article.reactions.privileged_category.select do |reaction|
-        reaction.reactable_type == "Article"
-      end
-      vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }
-      vomit_count = 0
+    def preload_privileged_reaction_counts(article_ids)
+      @countable_vomits = Hash.new(0)
+      @privileged_reaction_counts = Hash.new { |h, k| h[k] = {} }
+      return if article_ids.empty?
 
-      if vomit_article_reactions.present?
-        vomit_article_reactions.each do |vomit_reaction|
-          vomit_count += 1 if vomit_reaction.status != "invalid"
+      Reaction.privileged_category
+        .where(reactable_type: "Article", reactable_id: article_ids)
+        .group(:reactable_id, :category, :status)
+        .count
+        .each do |(article_id, category, status), count|
+          @privileged_reaction_counts[article_id][category] =
+            @privileged_reaction_counts[article_id].fetch(category, 0) + count
+          @countable_vomits[article_id] += count if category == "vomit" && status != "invalid"
         end
-      end
-
-      vomit_count
     end
   end
 end

@@ -10,6 +10,7 @@ module Ai
   #
   # Supports both Gemini and TypeSafe Jev via Ai::FunctionConfig (:phishing_signup_check).
   class PhishingSignupCheck
+    include Ai::CommunityContext
     include Ai::TypeSafe::Questions
 
     VERSION = "1.0".freeze
@@ -352,14 +353,14 @@ module Ai
 
     # Returns the configured community name or default fallback.
     def community_name
-      Settings::Community.community_name.presence || "DEV Community"
+      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : nil
+      resolve_community_name(subforem_id).presence || "DEV Community"
     end
 
     # Returns the subforem/community description for context.
     def community_description
-      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : Subforem.cached_default_id
-      Settings::RateLimit.internal_content_description_spec(subforem_id: subforem_id).presence ||
-        Settings::Community.community_description(subforem_id: subforem_id)
+      subforem_id = @record.respond_to?(:subforem_id) ? @record.subforem_id : nil
+      resolve_community_description(subforem_id)
     end
 
     # Memoized normalized author display name.

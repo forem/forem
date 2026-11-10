@@ -326,6 +326,53 @@ RSpec.describe Spam::Handler, type: :service do
         end
       end
 
+      context "when user is not a low-trust user or has proven prior content" do
+        before do
+          article.user.update!(score: 0)
+          linked_domain.update!(net_score: -100_000)
+        end
+
+        it "skips the check when user has 4 or more badges" do
+          article.user.update_column(:badge_achievements_count, 4)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user is trusted" do
+          article.user.add_role(:trusted)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has a prior high-quality published article" do
+          prior = create(:article, user: article.user)
+          prior.update_column(:automod_label, "very_good_and_on_topic")
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has a prior published article meeting index_minimum_score" do
+          prior = create(:article, user: article.user)
+          prior.update_column(:score, Settings::UserExperience.index_minimum_score)
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "skips the check when user has at least 2 prior okay_and_on_topic articles with positive score" do
+          create_list(:article, 2, user: article.user).each do |prior|
+            prior.update_columns(automod_label: "okay_and_on_topic", score: 5)
+          end
+          expect(handler).to eq(:not_spam)
+        end
+
+        it "uses badge_achievements_count * 10 as minimum effective author score when user.score is 0" do
+          article.user.update_column(:badge_achievements_count, 2)
+          linked_domain.update!(net_score: -5999)
+          expect(described_class.handle_article!(article: article)).to eq(:not_spam)
+
+          linked_domain.update!(net_score: -6000)
+          expect do
+            described_class.handle_article!(article: article)
+          end.to change { Reaction.where(reactable: article, category: "vomit").count }.by(1)
+        end
+      end
+
       context "when user score is 20" do
         before { article.user.update!(score: 20) }
 
