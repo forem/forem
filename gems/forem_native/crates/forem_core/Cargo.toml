@@ -9,3 +9,12 @@ publish = false
 [lib]
 name = "forem_core"
 path = "src/lib.rs"
+
+[dependencies]
+# Social image rendering (`social_image`): all pure Rust, so the crate stays portable to
+# `wasm32` and standalone services.
+gif = { version = "0.14", default-features = false, features = ["std"] }
+image-webp = "0.2"
+png = "0.18"
+skrifa = "0.49"
+zune-jpeg = { version = "0.5", default-features = false, features = ["std"] }
