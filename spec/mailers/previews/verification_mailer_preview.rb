@@ -6,7 +6,9 @@ class VerificationMailerPreview < ActionMailer::Preview
 
   def magic_link
     @user = User.last
-    @user.update_column(:sign_in_token, "098738") if @user.sign_in_token.blank?
+    if @user.sign_in_token.blank? || @user.sign_in_token_sent_at.blank?
+      @user.update_columns(sign_in_token: "098738", sign_in_token_sent_at: Time.current)
+    end
     VerificationMailer.with(user_id: @user.id).magic_link
   end
 end
