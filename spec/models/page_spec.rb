@@ -20,6 +20,13 @@ RSpec.describe Page do
       expect(page.errors[:show_in_navigation]).to be_present
     end
 
+    it "adds an error instead of raising when the organization no longer exists" do
+      page = build(:page, organization_id: 0, show_in_navigation: false)
+
+      expect { page.valid? }.not_to raise_error
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+    end
+
     it "rejects a hidden subforem page" do
       page = build(:page, subforem: create(:subforem), show_in_navigation: false)
 

@@ -117,7 +117,7 @@ class Page < ApplicationRecord
   end
 
   def showcase_or_first_page?
-    main_page = organization.main_page
+    main_page = organization&.main_page
     main_page.nil? || main_page.id == id
   end
 
