@@ -10,6 +10,24 @@
     position:relative;
     z-index: 5;
   }
+  :where([data-display-unit]) {
+    min-width: 0;
+    overflow-wrap: break-word;
+  }
+  :where(.crayons-bb--plain, .text-styles--billboard) {
+    display: flow-root;
+    position: relative;
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  :where([data-display-unit]) :where(img, video, canvas, iframe) {
+    max-width: 100%;
+  }
+  :where([data-display-unit]) :where(img, video) {
+    height: auto;
+  }
 </style>
 
 <% hidden_by_default = local_assigns.fetch(:hidden_by_default) { BillboardPlacementAreaConfig.hidden_by_default_for(billboard.placement_area) } %>
@@ -25,6 +43,7 @@
    ) %>
 <% if billboard.template == "plain" || Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>
   <div
+    <% unless Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>class="crayons-bb--plain"<% end %>
     style="<%= billboard.style_string %>"
     data-display-unit data-id="<%= billboard.id %>"
     <%= billboard_attributes %>

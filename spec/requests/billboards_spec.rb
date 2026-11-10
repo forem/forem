@@ -325,10 +325,19 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).to include("crayons-bb__header relative")
         expect(response.body).to include("My great custom label")
+        authorship_unit = Nokogiri::HTML.fragment(response.body).at_css("[data-display-unit]")
+        expect(authorship_unit["class"]).not_to include("crayons-bb--plain")
 
         billboard.update_column(:template, "plain")
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).not_to include "crayons-bb__header relative"
+        plain_unit = Nokogiri::HTML.fragment(response.body).at_css("[data-display-unit]")
+        expect(plain_unit.at_css(".text-styles--billboard")).to be_nil
+        expect(plain_unit["class"]).to eq("crayons-bb--plain")
+        expect(response.body).to include(
+          ":where(.crayons-bb--plain, .text-styles--billboard)",
+          ":where([data-display-unit]) :where(img, video, canvas, iframe)",
+        )
       end
     end
 
@@ -757,8 +766,39 @@ RSpec.describe "Billboards" do
 
       expect(response.body).to include(billboard.processed_html)
       expect(response.body).not_to include("crayons-bb__header")
+      expect(billboard_element["class"]).to be_nil
       expect(billboard_element["data-context-type"]).to eq(BillboardEvent::CONTEXT_TYPE_EMBED)
       expect(response.headers["Access-Control-Allow-Origin"]).to eq("*")
+    end
+  end
+
+  describe "billboard and CSS Grid layout containment guardrails" do
+    it "compiles zero-specificity billboard containment and sidebar min-width guardrails into CSS bundles",
+       :aggregate_failures do
+      minimal_css = Rails.application.assets.find_asset("minimal.css").source
+      crayons_css = Rails.application.assets.find_asset("crayons.css").source
+
+      expect(minimal_css).to match(/:where\(\s*\.bb-shuffle-group,\s*\.crayons-article-sticky/)
+      expect(minimal_css).to match(
+        /:where\(\.crayons-bb--plain,\s*\.text-styles--billboard\)\s*\{[^}]*overflow-x:\s*clip\b/m,
+      )
+      expect(minimal_css).to match(
+        /:where\(\[data-display-unit\]\)\s*:where\(img,\s*video,\s*canvas,\s*iframe\)\s*\{[^}]*max-width:\s*100%/m,
+      )
+      expect(minimal_css).to match(
+        /:where\(\[data-display-unit\]\)\s*:where\(img,\s*video\)\s*\{[^}]*height:\s*auto\b/m,
+      )
+
+      expect(crayons_css).to match(/\.crayons-layout__sidebar-left\s*\{[^}]*min-width:\s*0\b/m)
+      expect(crayons_css).to match(/\.crayons-layout__sidebar-right\s*\{[^}]*min-width:\s*0\b/m)
+      expect(crayons_css).to match(/\.crayons-layout__content\s*\{[^}]*min-width:\s*0\b/m)
+      layout_children_pattern = Regexp.new(
+        ':where\(\s*\.crayons-layout__content,\s*\.crayons-layout__sidebar-left,\s*' \
+        '\.crayons-layout__sidebar-right,\s*\.sidebar-sticky-container\s*\)\s*>\s*' \
+        ':where\(\*\)\s*\{[^}]*min-width:\s*0\b',
+        Regexp::MULTILINE,
+      )
+      expect(crayons_css).to match(layout_children_pattern)
     end
   end
 
