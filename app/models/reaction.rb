@@ -202,7 +202,7 @@ class Reaction < ApplicationRecord
   delegate :negative?, :positive?, :visible_to_public?, to: :reaction_category, allow_nil: true
 
   def reaction_category
-    ReactionCategory[category.to_sym]
+    ReactionCategory[category.to_sym] if category
   end
 
   def destroyed_by_reactable_association?
@@ -327,9 +327,10 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return false if user&.any_admin? || user&.id == Settings::General.mascot_user_id
+    return false unless negative? && user
+    return false if user.id == Settings::General.mascot_user_id || user.any_admin?
 
-    negative? && !user.trusted?
+    !user.trusted?
   end
 
   def notify_slack_channel_about_vomit_reaction
