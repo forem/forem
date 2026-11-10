@@ -1,0 +1,16 @@
+config/initializers/timeout.rb
+  h_f968154a99632d 14-15,48-49,64-65,97-108,144-152,154-167,170-208
+spec/initializers/timeout_spec.rb
+  h_f968154a99632d 233,238-244,247,255-308
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1f5e5228bd3b3428de3aca71fb97912e586bd753",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
