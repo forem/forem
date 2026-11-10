@@ -10,24 +10,42 @@
     position:relative;
     z-index: 5;
   }
-  :where([data-display-unit]) {
+<% unless Billboard::EMBEDDED_PLACEMENTS.include?(billboard.placement_area) %>
+  :where(.crayons-layout__sidebar-left, .crayons-layout__sidebar-right),
+  :where(.crayons-layout__content, .crayons-layout__sidebar-left, .crayons-layout__sidebar-right, .sidebar-sticky-container) > :where(*) {
+    min-width: 0;
+  }
+  :where(.bb-shuffle-group, .crayons-article-sticky, .crayons-layout__comments-billboard, .js-bb-c, .js-billboard-container, .new-bb-container, .sidebar-bb, .below-post-bb, .feed-bb-c),
+  :where(.bb-shuffle-group, .crayons-article-sticky, .crayons-layout__comments-billboard, .js-bb-c, .js-billboard-container, .new-bb-container, .sidebar-bb, .below-post-bb, .feed-bb-c) > :where(*) {
+    min-width: 0;
+    max-width: 100%;
+  }
+  :where([data-display-unit]:not([data-context-type='embed'])) {
     min-width: 0;
     overflow-wrap: break-word;
   }
-  :where(.crayons-bb--plain, .text-styles--billboard) {
+  :where(.crayons-bb--plain) {
     display: flow-root;
     position: relative;
     box-sizing: border-box;
     min-width: 0;
     max-width: 100%;
-    overflow-x: clip;
   }
-  :where([data-display-unit]) :where(img, video, canvas, iframe) {
+  :where(.text-styles--billboard) {
+    min-width: 0;
     max-width: 100%;
   }
-  :where([data-display-unit]) :where(img, video) {
+  :where(.crayons-bb--plain, .text-styles--billboard:not(.popover-billboard__content)) {
+    overflow-x: clip;
+    overflow-clip-margin: 4px;
+  }
+  :where([data-display-unit]:not([data-context-type='embed'])) :where(img, video, canvas, iframe) {
+    max-width: 100%;
+  }
+  :where([data-display-unit]:not([data-context-type='embed'])) :where(img[width]:not([width='']), video[width]:not([width='']), img:not([height]), video:not([height]), img[height=''], video[height='']) {
     height: auto;
   }
+<% end %>
 </style>
 
 <% hidden_by_default = local_assigns.fetch(:hidden_by_default) { BillboardPlacementAreaConfig.hidden_by_default_for(billboard.placement_area) } %>

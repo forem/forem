@@ -9,10 +9,11 @@
   display: none !important;
 }
 
-// Contain billboard slots, plain-template billboards, and billboard media at
-// zero specificity (:where) so intrinsic HTML width/height attributes, wide
-// raw markup, floats, or positioned elements cannot blow out CSS Grid columns
-// or paint outside their slot, while yielding to any explicit class or inline style.
+// Contain on-site billboard slots, plain-template billboards, and billboard
+// media at zero specificity (:where) so intrinsic HTML width/height attributes,
+// wide raw markup, floats, or positioned elements cannot blow out CSS Grid
+// columns or paint outside their slot, while yielding to any explicit class or
+// inline style and leaving embedded placements untouched.
 :where(
   .bb-shuffle-group,
   .crayons-article-sticky,
@@ -33,25 +34,50 @@
   }
 }
 
-:where([data-display-unit]) {
+:where([data-display-unit]:not([data-context-type='embed'])) {
   min-width: 0;
   overflow-wrap: break-word;
 }
 
-:where(.crayons-bb--plain, .text-styles--billboard) {
+:where(.crayons-bb--plain) {
   display: flow-root;
   position: relative;
   box-sizing: border-box;
   min-width: 0;
   max-width: 100%;
-  overflow-x: clip;
 }
 
-:where([data-display-unit]) :where(img, video, canvas, iframe) {
+:where(.text-styles--billboard) {
+  min-width: 0;
   max-width: 100%;
 }
 
-:where([data-display-unit]) :where(img, video) {
+:where(
+  .crayons-bb--plain,
+  .text-styles--billboard:not(.popover-billboard__content)
+) {
+  overflow-x: clip;
+  overflow-clip-margin: 4px;
+}
+
+:where([data-display-unit]:not([data-context-type='embed']))
+  :where(img, video, canvas, iframe) {
+  max-width: 100%;
+}
+
+// Only reset height when a non-empty width attribute provides an aspect ratio
+// (such as FastImage dimensions from prefix_all_images) or when no height
+// attribute was set, preserving height-only badges (e.g. badge.svg height="20")
+// and height-only <video> tags.
+:where([data-display-unit]:not([data-context-type='embed']))
+  :where(
+    img[width]:not([width='']),
+    video[width]:not([width='']),
+    img:not([height]),
+    video:not([height]),
+    img[height=''],
+    video[height='']
+  ) {
   height: auto;
 }
 
