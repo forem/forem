@@ -1535,6 +1535,18 @@ module ForemNative
       target
     end
 
+    # Renders a nested comment tree (`CommentsHelper#nested_comments`) and its full partial
+    # hierarchy in a single native pass, returning `[html, current_comment_index, shown_billboard]`
+    # or `nil` when any input falls outside the native domain.
+    def render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+      return unless Native.respond_to?(:render_comment_tree)
+      return unless static_ctx.is_a?(Array) && view_ctx.is_a?(Array)
+      return unless authors_flat.is_a?(Array) && nodes_flat.is_a?(Array)
+      return unless root_count.is_a?(Integer) && root_count >= 0
+
+      Native.render_comment_tree(static_ctx, view_ctx, authors_flat, nodes_flat, root_count)
+    end
+
     private
 
     def coerce_social_canvas(image)

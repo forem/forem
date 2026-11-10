@@ -82,7 +82,7 @@ namespace :forem_native do
   end
 
   desc "Run throughput (benchmark-ips) and allocation (memory_profiler) benchmarks for forem_native"
-  task benchmark: %i[environment benchmark_extractors] do
+  task benchmark: %i[environment benchmark_extractors benchmark_comment_tree] do
     require "benchmark/ips"
     require "memory_profiler"
 
@@ -876,6 +876,152 @@ namespace :forem_native do
         x.report("#{name} Rust", &native)
         x.compare!
       end
+    end
+  end
+
+  desc "Benchmark Comment-Tree HTML Renderer (50-comment nested discussion tree)"
+  task benchmark_comment_tree: :environment do
+    require "benchmark/ips"
+    require "memory_profiler"
+
+    URL.define_singleton_method(:protocol) { "https://" }
+    URL.define_singleton_method(:domain) { |*| "dev.to" }
+    URL.define_singleton_method(:dev_port) { nil }
+    InlineSvg::IdGenerator::Randomness.define_singleton_method(:call) { "fixed" }
+
+    controller = ArticlesController.new
+    controller.request = ActionDispatch::TestRequest.create
+    controller.response = ActionDispatch::TestResponse.new
+    view = controller.view_context
+    view.define_singleton_method(:user_signed_in?) { false }
+
+    now = Time.current
+    users = Array.new(8) do |i|
+      u = User.new(
+        id: 100 + i,
+        name: "Developer #{i} & Co",
+        username: "dev_user_#{i}",
+        email: "dev#{i}@example.com",
+        created_at: now - (i + 1).years,
+      )
+      u.setting = Users::Setting.new(
+        brand_color1: i.even? ? "#234567" : "",
+        display_email_on_profile: i.zero?,
+      )
+      u.profile = Profile.new(
+        summary: "Building high-throughput systems with Ruby & Rust (##{i})",
+        location: i.even? ? "New York, NY" : "",
+        data: {},
+      )
+      u.define_singleton_method(:cached_base_subscriber?) { i == 1 }
+      u.define_singleton_method(:cached_community_leader?) { i == 2 }
+      u.define_singleton_method(:profile_image_url_for) do |length: 50|
+        "https://dev.to/uploads/user/#{id}_#{length}.png"
+      end
+      u
+    end
+
+    article = Article.new(
+      id: 5000,
+      user_id: users.first.id,
+      slug: "rust-comment-tree-renderer-5000",
+      path: "/dev_user_0/rust-comment-tree-renderer-5000",
+      cached_tag_list: "rust, ruby, performance",
+    )
+    article.user = users.first
+    article.association(:organization).loaded!
+
+    build_comment = lambda do |id, user, ancestry, score: 5, reactions: 2, edited: false, ai: :not_disclosed|
+      c = Comment.new(
+        id: id,
+        user_id: user.id,
+        commentable_id: article.id,
+        commentable_type: "Article",
+        ancestry: ancestry,
+        id_code: id.to_s(26).tr("0-9a-p", "0-9a-p"),
+        processed_html: "<p>This is comment ##{id} discussing <code>ForemNative.render_comment_tree</code> " \
+                        "and zero-copy Magnus slices.</p>",
+        score: score,
+        public_reactions_count: reactions,
+        created_at: now - id.minutes,
+        edited_at: edited ? (now - 1.minute) : nil,
+        ai_disclosure_level: ai,
+      )
+      c.user = user
+      c.association(:commentable).target = article
+      c
+    end
+
+    tree = {}
+    comment_id = 1000
+    10.times do |root_idx|
+      root = build_comment.call(
+        comment_id += 1,
+        users[root_idx % users.size],
+        nil,
+        score: 15,
+        reactions: root_idx % 4,
+        ai: (root_idx.zero? ? :some_ai : :not_disclosed),
+      )
+      c1_map = {}
+      tree[root] = c1_map
+
+      2.times do |c1_idx|
+        c1 = build_comment.call(
+          comment_id += 1,
+          users[(root_idx + c1_idx + 1) % users.size],
+          root.id.to_s,
+          edited: c1_idx.odd?,
+        )
+        c2_map = {}
+        c1_map[c1] = c2_map
+
+        c2 = build_comment.call(
+          comment_id += 1,
+          users[(root_idx + c1_idx + 2) % users.size],
+          "#{root.id}/#{c1.id}",
+        )
+        c2_map[c2] = {}
+      end
+    end
+
+    view.instance_variable_set(:@article, article)
+    view.instance_variable_set(:@discussion_lock, false)
+    view.instance_variable_set(:@root_comment, nil)
+    view.instance_variable_set(:@comments_to_show_count, 50)
+
+    legacy_run = lambda do
+      view.instance_variable_set(:@current_comment_index, 0)
+      view.instance_variable_set(:@shown_billboard, false)
+      view.__send__(:legacy_nested_comments, tree: tree, commentable: article, is_view_root: true, is_admin: false)
+    end
+
+    native_run = lambda do
+      view.instance_variable_set(:@current_comment_index, 0)
+      view.instance_variable_set(:@shown_billboard, false)
+      view.__send__(:native_nested_comments, tree: tree, commentable: article, is_view_root: true, is_admin: false)
+    end
+
+    # Warm up static icon/translation context and verify parity before profiling
+    legacy_sample = legacy_run.call
+    native_sample = native_run.call
+    raise "Comment tree benchmark parity failure (native returned nil)" if native_sample.nil?
+    raise "Comment tree benchmark parity failure (HTML mismatch)" unless native_sample == legacy_sample
+
+    puts "\n=== Comment-Tree HTML Renderer (50 nested comments across 10 threads, #{native_sample.bytesize} bytes) ==="
+
+    ruby_mem = MemoryProfiler.report { legacy_run.call }
+    rust_mem = MemoryProfiler.report { native_run.call }
+    puts "nested_comments (50 comments) Ruby Legacy allocations (1 render): " \
+         "#{ruby_mem.total_allocated} objects (#{ruby_mem.total_allocated_memsize} bytes)"
+    puts "nested_comments (50 comments) Rust Magnus allocations (1 render): " \
+         "#{rust_mem.total_allocated} objects (#{rust_mem.total_allocated_memsize} bytes)"
+
+    Benchmark.ips do |x|
+      x.config(time: 2, warmup: 1)
+      x.report("Ruby Legacy (50-comment ERB partial tree)") { legacy_run.call }
+      x.report("Rust Magnus (ForemNative.render_comment_tree)") { native_run.call }
+      x.compare!
     end
   end
 end
