@@ -38,30 +38,25 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
       [timeout - elapsed, 0.0].max
     end
 
-    # Send a PostgreSQL CancelRequest before closing the socket so connection poolers
-    # (e.g. PgBouncer) and PostgreSQL backends abort the in-flight query immediately,
-    # then close the raw connection socket to wake up any blocking C extension call
-    # without acquiring the connection's lock (which is held by the request thread).
-    def self.cancel_and_close_raw_connection(conn)
-      raw_conn = conn.raw_connection
-      return unless raw_conn
-
-      begin
-        raw_conn.cancel if raw_conn.respond_to?(:cancel)
-      rescue StandardError => e
-        Rails.logger.warn "Rack::Timeout: failed to cancel database query: #{e.class}: #{e.message}"
-      end
-
-      if raw_conn.respond_to?(:close)
-        raw_conn.close
-      elsif raw_conn.respond_to?(:finish)
-        raw_conn.finish
-      end
-    rescue StandardError => e
-      Rails.logger.warn "Rack::Timeout: failed to close raw database connection: #{e.class}: #{e.message}"
-    ensure
+    # Sends a thread-safe PostgreSQL CancelRequest (PQcancel) to abort any in-flight
+    # query on the timed-out request thread without acquiring the adapter lock or
+    # closing the PG::Connection cross-thread. Closing raw_conn from the monitor thread
+    # races with the still-executing request thread (causing IOError / NilClass errors)
+    # and leaves a finished PG::Connection assigned to @raw_connection in the pool.
+    # Instead, taint the adapter so it disconnects cleanly on checkin once the request
+    # thread finishes unwinding.
+    def self.cancel_and_taint_connection(conn)
+      conn.instance_variable_set(:@rack_timeout_tainted, true)
       conn.instance_variable_set(:@verified, false)
       conn.instance_variable_set(:@last_activity, nil)
+
+      raw_conn = conn.instance_variable_get(:@raw_connection)
+      return unless raw_conn
+      return if raw_conn.respond_to?(:finished?) && raw_conn.finished?
+
+      raw_conn.cancel if raw_conn.respond_to?(:cancel)
+    rescue StandardError => e
+      Rails.logger.warn "Rack::Timeout: failed to cancel database query: #{e.class}: #{e.message}"
     end
 
     # Locates the ActiveRecord connection currently checked out by request_thread
@@ -90,9 +85,60 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
 
     ActiveRecord::Base.connection_handler.connection_pool_list.each do |pool|
       conn = RackTimeoutThreadTracker.connection_for_thread(pool, request_thread)
-      RackTimeoutThreadTracker.cancel_and_close_raw_connection(conn) if conn
+      RackTimeoutThreadTracker.cancel_and_taint_connection(conn) if conn
     end
   end
+
+  module RackTimeoutTaintedConnectionCleanup
+    private
+
+    # Disconnects adapters tainted by a Rack::Timeout (or left with a closed raw
+    # driver connection) on the owning thread when checked back into the pool,
+    # ensuring @raw_connection is nil so the next checkout cleanly reconnects.
+    def disconnect_tainted_rack_timeout_connection
+      raw_closed = @raw_connection.respond_to?(:finished?) && @raw_connection.finished?
+      return unless @rack_timeout_tainted || raw_closed
+
+      @rack_timeout_tainted = false
+      disconnect!
+    rescue StandardError => e
+      @raw_connection = nil
+      @verified = false
+      @last_activity = nil
+      Rails.logger.warn "Rack::Timeout: failed to disconnect tainted database connection: #{e.class}: #{e.message}"
+    end
+  end
+
+  ActiveSupport.on_load(:active_record) do
+    ActiveRecord::ConnectionAdapters::AbstractAdapter.prepend(RackTimeoutTaintedConnectionCleanup)
+    ActiveRecord::ConnectionAdapters::AbstractAdapter.set_callback(
+      :checkin,
+      :after,
+      :disconnect_tainted_rack_timeout_connection,
+    )
+  end
+end
+
+# Rails 8.0's PostgreSQLAdapter#retryable_query_error? calls
+# `@raw_connection&.transaction_status` inside `with_raw_connection`'s rescue block
+# before reaching `retryable_connection_error?` -> `reconnect!`. If `@raw_connection`
+# has been closed (`finished? == true`), `#transaction_status` itself raises an
+# unhandled `PG::ConnectionBad: connection is closed`, aborting auto-reconnect and
+# leaving the closed connection in the pool for subsequent read queries to hit.
+module PostgreSQLAdapterClosedConnectionReconnect
+  private
+
+  def retryable_query_error?(exception)
+    return false if @raw_connection.nil? || @raw_connection.finished?
+
+    super
+  rescue PG::Error
+    false
+  end
+end
+
+ActiveSupport.on_load(:active_record_postgresqladapter) do
+  prepend(PostgreSQLAdapterClosedConnectionReconnect)
 end
 
 # Rails 8.0's ActiveRecord::Associations::Association#find_target executes cached
