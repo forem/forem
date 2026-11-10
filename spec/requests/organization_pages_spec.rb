@@ -163,6 +163,18 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
       expect(Nokogiri::HTML(response.body).at_css("#page_show_in_navigation")).to be_present
     end
 
+    it "does not mark a hidden page as hidden from tabs once it becomes the Showcase" do
+      custom_page.update!(position: 1, show_in_navigation: false)
+      readme_page.destroy!
+
+      get organization_pages_path(organization.slug)
+      expect(response.body).not_to include(I18n.t("views.organization_settings.pages.hidden_from_tabs"))
+
+      get organization_settings_path(organization.slug)
+      summary = Nokogiri::HTML(response.body).at_css("#section-pages-list")
+      expect(summary.text).not_to include(I18n.t("views.organization_settings.pages.hidden_from_tabs"))
+    end
+
     it "marks hidden pages in the organization settings summary" do
       custom_page.update!(show_in_navigation: false)
 
