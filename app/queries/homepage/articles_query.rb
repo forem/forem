@@ -1,6 +1,7 @@
 module Homepage
   class ArticlesQuery
     ATTRIBUTES = %i[
+      ai_disclosure_level
       cached_tag_list
       comments_count
       crossposted_at
