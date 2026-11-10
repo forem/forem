@@ -6140,13 +6140,15 @@ RSpec.describe ForemNative do
       tags = described_class.syntax_supported_language_tags
       snippets = [
         "def greet(name = \"<script>&</script>\")\n  @count ||= 42\n  puts :hello\nend",
-        "import React from 'react';\nexport const App = () => <div title=\"a&b\">{42}</div>;",
-        "import UiList from 'app';\n<template><UiList @x={{1}} /></template>",
+        "import React from 'react';\nexport const App = () => <div title=\"a&b\" class={cls} {...props}>{42}</div>;",
+        "import UiList from 'app';\n<template foo={bar}><UiList @x={{1}} @y={2} /></template>",
         "pub fn main<'a>(x: &'a str) -> Result<u64, String> { println!(\"{}\", x); Ok(0x2a) }",
         "SELECT u.id, COUNT(*) FROM users u WHERE u.name = 'O''Brien & <co>' -- comment\nGROUP BY u.id;",
         "--- a/app.rb\n+++ b/app.rb\n@@ -1,2 +1,2 @@\n-old <tag>\n+new & improved",
         "{\"key\": \"<value>&more\", \"count\": -12.34e5, \"active\": true, \"nil_val\": null}",
-        "all:\n    echo \"hello <world> & $USER\"\n# comment",
+        "all:\n    echo \"hello <world> & $USER\" && echo $ $$ $-\n$ npm install\n# comment",
+        "$ curl -s https://example.com | grep 'foo$' && printf $'\\n' $\"done\" $",
+        "<div class={cls} data-empty={} broken={><span title='<img src=x>'>{x}</span></div>",
         "{----% raw %----}\n{{ liquid_var }}\n{----% endraw %----}",
         "日本語 🚀 /* multi\nline */ // single <img src=x onerror=alert(1)>",
       ]
@@ -6175,6 +6177,34 @@ RSpec.describe ForemNative do
       invalid_utf8 = (+"\xFF\xFE").force_encoding(Encoding::UTF_8)
       expect(described_class.syntax_highlight_html(invalid_utf8, "ruby")).to be_nil
       expect(described_class.syntax_highlight_code_block(invalid_utf8, "ruby")).to be_nil
+    end
+
+    it "terminates cleanly on bare shell `$` prompts and single-brace `{...}` markup attributes",
+       :aggregate_failures do
+      shell_prompt = "$ npm install\n$ echo $ && echo $$ $- $\"ok\" $'\\n'\ngrep 'end$' file.txt\n"
+      %w[shell bash sh zsh console make].each do |lang|
+        html = described_class.syntax_highlight_code_block(shell_prompt, lang)
+        expect(html).to include("npm install")
+        expect(html).to include('<span class="nv">$$</span>')
+        expect(html).to include('<span class="nv">$-</span>')
+      end
+
+      single_brace_markup = "<div class={cls} {...props} empty={} unclosed={>\n  <a href={url}>{text}</a>\n</div>\n"
+      %w[html xml erb liquid vue svelte handlebars].each do |lang|
+        html = described_class.syntax_highlight_code_block(single_brace_markup, lang)
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+        expect(html).to include('<span class="p">}</span>')
+      end
+
+      ember_markup = "<template foo={cls} {...attrs}>\n#{single_brace_markup}</template>\n"
+      %w[gjs gts].each do |lang|
+        html = described_class.syntax_highlight_code_block(ember_markup, lang)
+        expect(html).to include('<span class="k">template</span>')
+        expect(html).to include('<span class="na">foo</span>')
+        expect(html).to include('<span class="na">class</span>')
+        expect(html).to include('<span class="p">{</span>')
+      end
     end
   end
 
