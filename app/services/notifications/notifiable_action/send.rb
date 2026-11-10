@@ -36,13 +36,11 @@ module Notifications
 
         notifications_attributes = []
 
-        # If a user was mentioned in the article, they will have already received a mention.
-        # We explicitly need to exclude them from the article_followers array if they already
-        # have a mention in order to avoid sending a user multiple notifications for one article.
-        user_ids_with_article_mentions = notifiable.mentions&.pluck(:user_id)
+        # Mentioned followers intentionally still receive the "new post" notification in addition to
+        # their Mention notification, so they know the author both published and mentioned them.
 
-        # Co-authors receive their own notification, so exclude them here for the
-        # same reason mentions are excluded: one notification per person per post.
+        # Co-authors receive their own notification, so exclude them here:
+        # one "new post" style notification per person per post.
         co_author_ids = Array.wrap(notifiable.co_author_ids).map(&:to_i)
 
         # Only follower ids are used below, so skip hydrating (and DISTINCT-sorting) full user rows.
@@ -54,7 +52,7 @@ module Notifications
                  OR (follows.followable_id = ? AND follows.followable_type = ?)",
                  notifiable&.user&.id, "User", notifiable&.organization&.id, "Organization")
           .where(follows: { subscription_status: "all_articles" })
-          .where.not(id: (user_ids_with_article_mentions + co_author_ids + [notifiable.user]))
+          .where.not(id: (co_author_ids + [notifiable.user]))
           .recently_active(send_limit)
           .reorder(Arel.sql("(users.updated_at + INTERVAL '0 seconds') DESC"))
           .distinct
