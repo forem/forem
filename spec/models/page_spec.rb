@@ -38,6 +38,15 @@ RSpec.describe Page do
       expect(hidden.update(title: "Renamed")).to be(true)
     end
 
+    it "rejects moving a hidden organization page out of its organization" do
+      organization = create(:organization)
+      create(:page, organization: organization, position: 0)
+      hidden = create(:page, organization: organization, position: 1, show_in_navigation: false)
+
+      expect(hidden.update(organization_id: nil)).to be(false)
+      expect(hidden.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
     it "rejects a hidden subforem page" do
       page = build(:page, subforem: create(:subforem), show_in_navigation: false)
 
