@@ -5,6 +5,7 @@ import {
   implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 import { syncAnonymousVisitor } from '../utilities/anonymousVisitor';
+import { isEmbeddedBrowserContext } from '../utilities/runtime';
 
 // Primary and secondary placements share a group (e.g. post_sidebar and
 // post_sidebar_secondary). Randomize their order so neither is always on top.
@@ -95,14 +96,13 @@ async function generateBillboard(element) {
 
   if (asyncUrl) {
     try {
-      // When context is digest we don't show this billboard
+      // When context is digest or an embedded/wrapped app browser we don't show this billboard
       // This is a hardcoded feature which should become more dynamic later.
       const contentElement = document.getElementById('page-content-inner');
       const isInternalNav = contentElement && contentElement.dataset.internalNav === 'true';
-      const isNativeUserAgent = navigator.userAgent.includes('Forem');
       if (
         asyncUrl?.includes('post_fixed_bottom') &&
-        (currentParams?.includes('context=digest') || isNativeUserAgent)
+        (currentParams?.includes('context=digest') || isEmbeddedBrowserContext())
       ) {
         return;
       }
