@@ -439,6 +439,24 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe "#org_brand_style" do
+    def style_for(hex)
+      helper.org_brand_style(create(:organization, bg_color_hex: hex))
+    end
+
+    it "gives a light brand color readable buttons and valid colors", :aggregate_failures do
+      style = style_for("#f5ff80")
+
+      expect(style).to include("--button-primary-bg: #f5ff80;", "--button-primary-color: #000000;")
+      expect(style).to include("--accent-brand-lighter: #ffffad;", "--accent-brand-lighter-rgb: 255, 255, 173;")
+      expect(style).to include("--accent-brand-text-dark: #f5ff80;")
+    end
+
+    it "keeps white buttons on a dark brand color" do
+      expect(style_for("#3b49df")).to include("--button-primary-color: #ffffff;")
+    end
+  end
+
   describe "#tag_colors" do
     context "when given a Tag object with color attributes" do
       let(:tag) { create(:tag, bg_color_hex: "#ff0000", text_color_hex: "#ffffff") }
