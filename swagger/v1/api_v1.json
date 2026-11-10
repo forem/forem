@@ -4718,6 +4718,132 @@
         }
       }
     },
+    "/api/related_articles": {
+      "get": {
+        "summary": "Discover public community articles",
+        "tags": [
+          "articles"
+        ],
+        "operationId": "getRelatedArticles",
+        "description": "Requires active membership and the org_related_articles feature for organization_id. Query supports up to five comma-separated alternative names and date bounds. Page size is capped at 100, page at 1000. Keyword mode sorts newest first. Hybrid mode fuses at most 100 keyword and 100 semantic candidates using reciprocal rank fusion; it is not an exhaustive export. Semantic candidates require cosine distance <= 0.4. Query embeddings are cached for one hour. Missing vectors remain eligible for keyword matches; provider failures fall back to keyword. X-Discovery-Mode reports the effective mode; hybrid also returns X-Discovery-Candidate-Limit: 200 and X-Discovery-Exhaustive: false. discovery_match identifies keyword/semantic sources. Visibility, community, score and publication-date filters apply before candidate limits. Keyword matches include author/org metadata and are not literal body-mention counts.",
+        "parameters": [
+          {
+            "name": "organization_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Organization granting discovery access; caller must be an active member."
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "keyword",
+                "hybrid"
+              ],
+              "default": "keyword"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "maxLength": 500
+            },
+            "description": "Technology names, for example PostgreSQL,Postgres. Up to five searches."
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Inclusive publication date (YYYY-MM-DD)."
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Inclusive publication date (YYYY-MM-DD)."
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 30
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Public articles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "allOf": [
+                      {
+                        "$ref": "#/components/schemas/ArticleIndex"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "discovery_match": {
+                            "type": "array",
+                            "items": {
+                              "type": "string",
+                              "enum": [
+                                "keyword",
+                                "semantic"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "422": {
+            "description": "Invalid query or date interval"
+          }
+        }
+      }
+    },
     "/api/admin/request_redirects": {
       "get": {
         "summary": "Retrieve all request redirects (Admin)",
