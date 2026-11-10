@@ -8,6 +8,7 @@
 
 pub mod calendar;
 pub mod color;
+pub mod comment_tree;
 pub mod emoji;
 pub(crate) mod emoji_data;
 pub mod feed;

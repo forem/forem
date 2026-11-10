@@ -6303,4 +6303,159 @@ RSpec.describe ForemNative do
       end
     end
   end
+
+  describe ".render_comment_tree" do
+    let(:view) do
+      controller = ArticlesController.new
+      controller.request = ActionDispatch::TestRequest.create
+      controller.response = ActionDispatch::TestResponse.new
+      ctx = controller.view_context
+      ctx.define_singleton_method(:user_signed_in?) { false }
+      ctx
+    end
+
+    let(:organization) { create(:organization, name: "Forem & <Org>") }
+    let(:author_a) { create(:user, name: "Alice \"OP\" & Co") }
+    let(:author_b) { create(:user, name: "Bob <Dev> O'Connor") }
+    let(:article) { create(:article, user: author_a, organization: organization, tags: "ruby, rust") }
+
+    before do
+      allow(InlineSvg::IdGenerator::Randomness).to receive(:call).and_return("fixed")
+
+      author_a.setting.update_columns(brand_color1: "#234567", display_email_on_profile: true)
+      Profile.find_or_create_by!(user: author_a).update_columns(
+        summary: "Building native extensions & tools " * 8,
+        location: "New York, NY",
+      )
+      author_a.reload
+
+      author_b.setting.update_columns(brand_color1: "", display_email_on_profile: false)
+      Profile.find_or_create_by!(user: author_b).update_columns(
+        summary: "Short bio <script>",
+        location: "",
+      )
+      create(:organization_membership, user: author_b, organization: organization, type_of_user: "member")
+      author_b.add_role(:base_subscriber)
+      author_b.reload
+    end
+
+    it "matches CommentsHelper#legacy_nested_comments across 1,000 randomized comment trees" do
+      pool = [
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Root A with [link](https://example.com) & code",
+          score: 25,
+          public_reactions_count: 4,
+          ai_disclosure_level: :some_ai,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Comment B edited",
+          score: 3,
+          public_reactions_count: 1,
+          edited_at: 2.hours.ago,
+          favorited_by_user_id: author_a.id,
+          ai_disclosure_level: :fully_autonomous,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Low quality comment",
+          score: -120,
+          public_reactions_count: 0,
+          created_at: 2.years.ago,
+        ),
+        create(
+          :comment,
+          user: author_a,
+          commentable: article,
+          body_markdown: "Hidden comment",
+          hidden_by_commentable_user: true,
+          score: 0,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Deleted comment",
+          deleted: true,
+        ),
+        create(
+          :comment,
+          user: author_b,
+          commentable: article,
+          body_markdown: "Super low quality <a href='http://spam.test'>spam</a>",
+          score: -100,
+        ),
+      ]
+
+      rng = Random.new(202_611)
+      ancestry_for = lambda do |ancestors|
+        ancestors.empty? ? nil : ancestors.map(&:id).join("/")
+      end
+
+      1_000.times do |iter|
+        chosen = pool.sample(rng.rand(1..5), random: rng)
+        tree = {}
+        # Build a random tree structure and sync each comment's in-memory `ancestry`
+        cursor_hashes = [[tree, []]]
+        chosen.each do |comment|
+          parent_map, ancestors = cursor_hashes.sample(random: rng)
+          comment.ancestry = ancestry_for.call(ancestors)
+          child_map = {}
+          parent_map[comment] = child_map
+          cursor_hashes << [child_map, ancestors + [comment]] if ancestors.length < 4
+        end
+
+        is_admin = rng.rand(2).zero?
+        is_view_root = rng.rand(2).zero?
+        discussion_lock = rng.rand(2).zero?
+        start_idx = [nil, 0, 5, 7].sample(random: rng)
+        start_bb = rng.rand(2).zero?
+
+        view.instance_variable_set(:@article, article)
+        view.instance_variable_set(:@discussion_lock, discussion_lock)
+        view.instance_variable_set(:@root_comment, nil)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        native_html = view.__send__(
+          :native_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        native_idx = view.instance_variable_get(:@current_comment_index)
+        native_bb = view.instance_variable_get(:@shown_billboard)
+
+        view.instance_variable_set(:@current_comment_index, start_idx)
+        view.instance_variable_set(:@shown_billboard, start_bb)
+        legacy_html = view.__send__(
+          :legacy_nested_comments,
+          tree: tree,
+          commentable: article,
+          is_view_root: is_view_root,
+          is_admin: is_admin,
+        )
+        legacy_idx = view.instance_variable_get(:@current_comment_index)
+        legacy_bb = view.instance_variable_get(:@shown_billboard)
+
+        expect(native_html).not_to be_nil, "iteration #{iter} returned nil"
+        expect(native_html).to eq(legacy_html), "iteration #{iter} HTML mismatch"
+        expect(native_idx).to eq(legacy_idx), "iteration #{iter} @current_comment_index mismatch"
+        expect(native_bb).to eq(legacy_bb), "iteration #{iter} @shown_billboard mismatch"
+      end
+    end
+
+    it "returns nil for malformed flat buffers so Ruby falls back safely" do
+      static_ctx = view.__send__(:comment_tree_static_context)
+      expect(described_class.render_comment_tree(static_ctx, [], [], [], 0)).to be_nil
+    end
+  end
 end
