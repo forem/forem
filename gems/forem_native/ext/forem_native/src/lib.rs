@@ -4157,6 +4157,266 @@ fn social_image_add_byline(
     Ok(())
 }
 
+const COMMENT_STATIC_CTX_LEN: usize = 59;
+const COMMENT_VIEW_CTX_LEN: usize = 18;
+const COMMENT_AUTHOR_STRIDE: usize = 19;
+const COMMENT_NODE_STRIDE: usize = 19;
+
+#[inline]
+unsafe fn borrow_utf8_rstr<'a>(val: Value) -> Option<&'a str> {
+    let rstr = RString::from_value(val)?;
+    if !rstr.is_utf8_compatible_encoding() {
+        return None;
+    }
+    let s = rstr.test_as_str()?;
+    Some(std::str::from_utf8_unchecked(std::slice::from_raw_parts(
+        s.as_ptr(),
+        s.len(),
+    )))
+}
+
+#[inline]
+unsafe fn borrow_opt_utf8_rstr<'a>(val: Value) -> Option<Option<&'a str>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    borrow_utf8_rstr(val).map(Some)
+}
+
+#[inline]
+fn extract_i64_val(val: Value) -> Option<i64> {
+    Integer::from_value(val)?.to_i64().ok()
+}
+
+#[inline]
+fn extract_opt_i64_val(val: Value) -> Option<Option<i64>> {
+    if val.is_nil() {
+        return Some(None);
+    }
+    extract_i64_val(val).map(Some)
+}
+
+#[inline]
+fn exact_stride_chunks<T>(slice: &[T], stride: usize) -> Option<std::slice::ChunksExact<'_, T>> {
+    let chunks = slice.chunks_exact(stride);
+    if chunks.remainder().is_empty() {
+        Some(chunks)
+    } else {
+        None
+    }
+}
+
+fn render_comment_tree(
+    ruby: &Ruby,
+    static_ctx_arr: RArray,
+    view_ctx_arr: RArray,
+    authors_arr: RArray,
+    nodes_flat_arr: RArray,
+    root_count: usize,
+) -> Option<RArray> {
+    // SAFETY: All `RArray::as_slice` and `RString::test_as_str` borrows below are held only
+    // within this inner block while pure-Rust `forem_core::comment_tree::render_comment_tree`
+    // runs. No Ruby VM calls or object allocations occur until the block ends and all borrows
+    // are dropped.
+    let output = unsafe {
+        let s = static_ctx_arr.as_slice();
+        if s.len() != COMMENT_STATIC_CTX_LEN {
+            return None;
+        }
+        let months_arr = RArray::from_value(s[56])?;
+        let months_slice = months_arr.as_slice();
+        if months_slice.len() != 12 {
+            return None;
+        }
+        let mut abbr_month_names = [""; 12];
+        for (idx, &m_val) in months_slice.iter().enumerate() {
+            abbr_month_names[idx] = borrow_utf8_rstr(m_val)?;
+        }
+
+        let static_ctx = forem_core::comment_tree::CommentStaticContext {
+            icon_collapse: borrow_utf8_rstr(s[0])?,
+            icon_expand: borrow_utf8_rstr(s[1])?,
+            icon_info: borrow_utf8_rstr(s[2])?,
+            icon_small_medal: borrow_utf8_rstr(s[3])?,
+            icon_small_overflow_horizontal: borrow_utf8_rstr(s[4])?,
+            icon_small_heart: borrow_utf8_rstr(s[5])?,
+            icon_small_heart_filled: borrow_utf8_rstr(s[6])?,
+            icon_small_comment: borrow_utf8_rstr(s[7])?,
+            icon_small_thread: borrow_utf8_rstr(s[8])?,
+            subscription_icon_html: borrow_utf8_rstr(s[9])?,
+            subscription_icon_no_link_html: borrow_utf8_rstr(s[10])?,
+            community_leader_icon_html: borrow_utf8_rstr(s[11])?,
+            favorites_enabled: s[12].to_bool(),
+            favorite_static_data_attrs: borrow_utf8_rstr(s[13])?,
+            favorite_favorited_inner_html: borrow_utf8_rstr(s[14])?,
+            t_comment_deleted: borrow_utf8_rstr(s[15])?,
+            t_comment_hidden: borrow_utf8_rstr(s[16])?,
+            t_quality_low: borrow_utf8_rstr(s[17])?,
+            t_quality_conduct: borrow_utf8_rstr(s[18])?,
+            t_quality_superlow: borrow_utf8_rstr(s[19])?,
+            t_quality_hidden_visible: borrow_utf8_rstr(s[20])?,
+            t_quality_hidden_accessible: borrow_utf8_rstr(s[21])?,
+            t_users_details_template: borrow_utf8_rstr(s[22])?,
+            t_edited_text_html_template: borrow_utf8_rstr(s[23])?,
+            t_edited_short_html: borrow_utf8_rstr(s[24])?,
+            t_ai_some_description: borrow_utf8_rstr(s[25])?,
+            t_ai_some_label: borrow_utf8_rstr(s[26])?,
+            t_ai_auto_description: borrow_utf8_rstr(s[27])?,
+            t_ai_auto_label: borrow_utf8_rstr(s[28])?,
+            t_menu_aria_label: borrow_utf8_rstr(s[29])?,
+            t_menu_copy_aria_template: borrow_utf8_rstr(s[30])?,
+            t_menu_copy_text: borrow_utf8_rstr(s[31])?,
+            t_menu_settings_aria_template: borrow_utf8_rstr(s[32])?,
+            t_menu_unhide_aria_template: borrow_utf8_rstr(s[33])?,
+            t_menu_unhide_text: borrow_utf8_rstr(s[34])?,
+            t_menu_hide_aria_template: borrow_utf8_rstr(s[35])?,
+            t_menu_hide_text: borrow_utf8_rstr(s[36])?,
+            t_menu_admin_profile_text: borrow_utf8_rstr(s[37])?,
+            t_menu_admin_profile_aria_template: borrow_utf8_rstr(s[38])?,
+            t_menu_moderate_aria_template: borrow_utf8_rstr(s[39])?,
+            t_menu_report_aria_template: borrow_utf8_rstr(s[40])?,
+            t_heart_aria_label: borrow_utf8_rstr(s[41])?,
+            t_heart_count_html_template: borrow_utf8_rstr(s[42])?,
+            t_nbsp_likes_one_template: borrow_utf8_rstr(s[43])?,
+            t_nbsp_likes_other_template: borrow_utf8_rstr(s[44])?,
+            t_heart_title: borrow_utf8_rstr(s[45])?,
+            t_reply_text: borrow_utf8_rstr(s[46])?,
+            t_thread_text: borrow_utf8_rstr(s[47])?,
+            t_follow_user_text: borrow_utf8_rstr(s[48])?,
+            t_follow_user_aria_template: borrow_utf8_rstr(s[49])?,
+            t_sticky_email: borrow_utf8_rstr(s[50])?,
+            t_sticky_location: borrow_utf8_rstr(s[51])?,
+            t_sticky_joined: borrow_utf8_rstr(s[52])?,
+            time_format_short: borrow_utf8_rstr(s[53])?,
+            time_format_short_with_yy: borrow_utf8_rstr(s[54])?,
+            time_format_short_with_year: borrow_utf8_rstr(s[55])?,
+            abbr_month_names,
+            prior_cloudflare_domain: borrow_opt_utf8_rstr(s[57])?,
+            current_cloudflare_domain: borrow_opt_utf8_rstr(s[58])?,
+        };
+
+        let v = view_ctx_arr.as_slice();
+        if v.len() != COMMENT_VIEW_CTX_LEN {
+            return None;
+        }
+        let view_ctx = forem_core::comment_tree::CommentViewContext {
+            has_commentable: v[0].to_bool(),
+            commentable_path: borrow_utf8_rstr(v[1])?,
+            commentable_user_id_str: borrow_utf8_rstr(v[2])?,
+            ama_or_op_banner: borrow_utf8_rstr(v[3])?,
+            app_base_url: borrow_utf8_rstr(v[4])?,
+            comment_base_url: borrow_utf8_rstr(v[5])?,
+            contextual_use_permalink: v[6].to_bool(),
+            article_path: borrow_opt_utf8_rstr(v[7])?,
+            mascot_image_tag_html: borrow_utf8_rstr(v[8])?,
+            billboard_async_url: borrow_utf8_rstr(v[9])?,
+            has_root_comment: v[10].to_bool(),
+            root_comment_hidden: v[11].to_bool(),
+            discussion_lock: v[12].to_bool(),
+            is_admin: v[13].to_bool(),
+            is_view_root: v[14].to_bool(),
+            current_year: i32::try_from(extract_i64_val(v[15])?).ok()?,
+            current_comment_index: extract_opt_i64_val(v[16])?,
+            shown_billboard: v[17].to_bool(),
+        };
+
+        let a_chunks = exact_stride_chunks(authors_arr.as_slice(), COMMENT_AUTHOR_STRIDE)?;
+        let mut authors = Vec::with_capacity(a_chunks.len());
+        for chunk in a_chunks {
+            let mut header_fields = Vec::new();
+            if !chunk[16].is_nil() {
+                let hf_arr = RArray::from_value(chunk[16])?;
+                let hf_chunks = exact_stride_chunks(hf_arr.as_slice(), 2)?;
+                header_fields.reserve(hf_chunks.len());
+                for pair in hf_chunks {
+                    header_fields.push((borrow_utf8_rstr(pair[0])?, borrow_utf8_rstr(pair[1])?));
+                }
+            }
+            let created_at = match extract_opt_i64_val(chunk[17])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[18])?)),
+                None => None,
+            };
+            authors.push(forem_core::comment_tree::CommentAuthorInput {
+                user_id: extract_i64_val(chunk[0])?,
+                name: borrow_utf8_rstr(chunk[1])?,
+                username: borrow_utf8_rstr(chunk[2])?,
+                user_url: borrow_utf8_rstr(chunk[3])?,
+                profile_image_50: borrow_utf8_rstr(chunk[4])?,
+                profile_image_90: borrow_utf8_rstr(chunk[5])?,
+                org_name: borrow_opt_utf8_rstr(chunk[6])?,
+                is_op: chunk[7].to_bool(),
+                by_staff_account: chunk[8].to_bool(),
+                is_subscriber: chunk[9].to_bool(),
+                is_community_leader: chunk[10].to_bool(),
+                smallest_color_hex: borrow_utf8_rstr(chunk[11])?,
+                card_color_fallback: borrow_opt_utf8_rstr(chunk[12])?,
+                tag_line: borrow_opt_utf8_rstr(chunk[13])?,
+                displayed_email: borrow_opt_utf8_rstr(chunk[14])?,
+                location: borrow_opt_utf8_rstr(chunk[15])?,
+                header_fields,
+                created_at,
+            });
+        }
+
+        let n_chunks = exact_stride_chunks(nodes_flat_arr.as_slice(), COMMENT_NODE_STRIDE)?;
+        let mut nodes = Vec::with_capacity(n_chunks.len());
+        for chunk in n_chunks {
+            let ancestry = borrow_opt_utf8_rstr(chunk[2])?;
+            let (depth, is_root) = match extract_opt_i64_val(chunk[3])? {
+                Some(explicit_depth) => (usize::try_from(explicit_depth).ok()?, chunk[4].to_bool()),
+                None => forem_core::comment_tree::depth_and_root_from_ancestry(ancestry),
+            };
+            let created_at = match extract_opt_i64_val(chunk[14])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[15])?)),
+                None => None,
+            };
+            let edited_at = match extract_opt_i64_val(chunk[16])? {
+                Some(tv_sec) => Some((tv_sec, extract_i64_val(chunk[17])?)),
+                None => None,
+            };
+            nodes.push(forem_core::comment_tree::CommentNodeInput {
+                id: extract_i64_val(chunk[0])?,
+                author_idx: usize::try_from(extract_i64_val(chunk[1])?).ok()?,
+                depth,
+                is_root,
+                score: extract_i64_val(chunk[5])?,
+                deleted: chunk[6].to_bool(),
+                hidden_by_commentable_user: chunk[7].to_bool(),
+                is_root_comment: chunk[8].to_bool(),
+                public_reactions_count: extract_i64_val(chunk[9])?,
+                favorited_by_user_id: extract_opt_i64_val(chunk[10])?,
+                id_code: borrow_utf8_rstr(chunk[11])?,
+                processed_html: borrow_utf8_rstr(chunk[12])?,
+                ai_disclosure_level: u8::try_from(extract_i64_val(chunk[13])?).ok()?,
+                created_at,
+                edited_at,
+                child_count: usize::try_from(extract_i64_val(chunk[18])?).ok()?,
+            });
+        }
+
+        forem_core::comment_tree::render_comment_tree(
+            &static_ctx,
+            &view_ctx,
+            &authors,
+            &nodes,
+            root_count,
+        )
+    }?;
+
+    let out_ary = ruby.ary_new_capa(3);
+    out_ary.push(ruby.str_new(&output.html)).ok()?;
+    match output.current_comment_index {
+        Some(idx) => out_ary.push(ruby.integer_from_i64(idx)).ok()?,
+        None => out_ary.push(ruby.qnil()).ok()?,
+    }
+    if output.shown_billboard {
+        out_ary.push(ruby.qtrue()).ok()?;
+    } else {
+        out_ary.push(ruby.qfalse()).ok()?;
+    }
+    Some(out_ary)
+}
+
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let forem_native = ruby.define_module("ForemNative")?;
@@ -4602,5 +4862,6 @@ fn init(ruby: &Ruby) -> Result<(), Error> {
         "social_image_add_byline",
         function!(social_image_add_byline, 3),
     )?;
+    native_mod.define_singleton_method("render_comment_tree", function!(render_comment_tree, 5))?;
     Ok(())
 }
