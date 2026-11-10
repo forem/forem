@@ -17,11 +17,12 @@ class BillboardsController < ApplicationController
   ARTICLE_TARGETING_COLUMNS = %i[id user_id co_author_ids organization_id cached_tag_list].freeze
   # Answers ArticleDecorator#permit_adjacent_sponsors? in the article lookup itself, saving a
   # separate users_settings query per request. permit_adjacent_sponsors is nullable; nil opts out.
-  ADJACENT_SPONSORS_PERMITTED = Arel.sql(<<~SQL.squish)
+  # Wrap in `.as(...)` (an Arel::Nodes::As node) with `retryable: true` so Relation#arel_column
+  # preserves retryability instead of stringifying the SqlLiteral and setting allow_retry: false.
+  ADJACENT_SPONSORS_PERMITTED = Arel.sql(<<~SQL.squish, retryable: true).as("adjacent_sponsors_permitted")
     NOT EXISTS (SELECT 1 FROM users_settings
       WHERE users_settings.user_id = ANY(array_prepend(articles.user_id, articles.co_author_ids))
       AND (users_settings.permit_adjacent_sponsors = FALSE OR users_settings.permit_adjacent_sponsors IS NULL))
-    AS adjacent_sponsors_permitted
   SQL
 
   def show

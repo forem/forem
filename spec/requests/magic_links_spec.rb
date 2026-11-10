@@ -87,6 +87,7 @@ RSpec.describe "MagicLinks", type: :request do
 
     context "when the email does not match any user" do
       before do
+        allow(User).to receive(:find_by).and_call_original
         allow(User).to receive(:find_by).with(email: email).and_return(nil)
       end
 

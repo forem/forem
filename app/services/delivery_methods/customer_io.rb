@@ -14,11 +14,15 @@ module DeliveryMethods
     # are not carried over unless we forward them explicitly. RFC 8058
     # one-click unsubscribe only works if these reach the recipient.
     FORWARDED_HEADERS = %w[List-Unsubscribe List-Unsubscribe-Post].freeze
+    MAX_RETRIES = 2
+    RETRYABLE_STATUS_CODES = [429, 502, 503, 504].freeze
 
     def initialize(delivery_method_options = {})
       self.settings = DEFAULTS.merge(delivery_method_options)
     end
 
+    # Delivers the given Mail::Message through the Customer.io App API after
+    # validating the recipient address and attaching any files.
     def deliver!(mail)
       recipient = Array(mail.to).join(",")
       unless mail.to.is_a?(Array) && recipient.present? && EmailValidator.valid?(recipient, mode: :strict)
@@ -34,10 +38,34 @@ module DeliveryMethods
         request.attach(attachment.filename, attachment.body.to_s)
       end
 
-      CUSTOMERIO_API.send_email(request)
+      send_with_retry(request)
     end
 
     private
+
+    # Sends the transactional email request with bounded retries for connect
+    # timeouts (`Net::OpenTimeout`) and upstream rate-limit/gateway responses
+    # (`429`, `502`, `503`, `504`). `Net::ReadTimeout` is intentionally not
+    # retried because the HTTP request was already transmitted and Customer.io's
+    # `/v1/send/email` endpoint may have already accepted the message.
+    def send_with_retry(request)
+      attempts = 0
+      begin
+        CUSTOMERIO_API.send_email(request)
+      rescue Net::OpenTimeout => e
+        attempts += 1
+        raise e if attempts > MAX_RETRIES
+
+        sleep(0.1 * attempts)
+        retry
+      rescue Customerio::InvalidResponse => e
+        attempts += 1
+        raise e if attempts > MAX_RETRIES || RETRYABLE_STATUS_CODES.exclude?(e.code.to_i)
+
+        sleep(0.1 * attempts)
+        retry
+      end
+    end
 
     def build_message(mail)
       {}.tap do |message|

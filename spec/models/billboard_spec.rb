@@ -9,8 +9,15 @@ RSpec.describe Billboard do
     if name == :billboard
       overrides = traits_and_overrides.extract_options!
       overrides[:organization] = nil unless overrides.key?(:organization) || overrides.key?(:organization_id)
+      overrides[:name] = "Billboard" unless overrides.key?(:name)
       return super(name, *traits_and_overrides, **overrides, &block)
     end
+    super
+  end
+
+  def create_list(name, amount, *traits_and_overrides)
+    return Array.new(amount) { create(name, *traits_and_overrides) } if name == :billboard
+
     super
   end
 
@@ -759,45 +766,28 @@ RSpec.describe Billboard do
 
     before { create(:billboard, priority: true, impressions_count: low_impression_count + 1) }
 
-    it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
+    it "includes ads below the default, global, or area-specific LOW_IMPRESSION_COUNT or marked priority",
+       :aggregate_failures do
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
-    end
+      expect(described_class.seldom_seen("sidebar_left")).not_to include(high_impression_ad)
+      expect(described_class.seldom_seen("sidebar_left").size).to be 2
 
-    it "does not include ads with impression count more than env area override of LOW_IMPRESSION_COUNT" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("990")
       expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
-    end
 
-    it "includes ads with impression count less than than env area override of LOW_IMPRESSION_COUNT" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("1010")
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
-    end
 
-    it "does not include ads with impression count more than env GLOBAL override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("990")
-      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
       expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
-    end
 
-    it "includes ads with impression count less than than env GLOBAL override of LOW_IMPRESSION_COUNT" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("1010")
-      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
-    end
 
-    it "ignores override of LOW_IMPRESSION_COUNT to a different location" do
-      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_POST_COMMENTS").and_return("990")
-      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_POST_COMMENTS").and_return("990")
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
-    end
-
-    it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
-      expect(described_class.seldom_seen("sidebar_left")).not_to include(high_impression_ad)
-    end
-
-    it "includes both priority to be proper size when two qualifying ads exist" do
-      expect(described_class.seldom_seen("sidebar_left").size).to be 2
     end
   end
 
@@ -1139,16 +1129,9 @@ RSpec.describe Billboard do
       let!(:expired_billboard) { create(:billboard, approved: false, published: true, expires_at: 1.day.ago) }
       let!(:future_expiry_billboard) { create(:billboard, approved: true, published: true, expires_at: 1.day.from_now) }
 
-      it "includes billboards with no expiration" do
-        expect(described_class.approved_and_published).to include(active_billboard)
-      end
-
-      it "excludes expired billboards" do
+      it "includes billboards with no expiration or future expiration and excludes expired ones", :aggregate_failures do
+        expect(described_class.approved_and_published).to include(active_billboard, future_expiry_billboard)
         expect(described_class.approved_and_published).not_to include(expired_billboard)
-      end
-
-      it "includes billboards with future expiration" do
-        expect(described_class.approved_and_published).to include(future_expiry_billboard)
       end
     end
   end
@@ -1264,139 +1247,58 @@ RSpec.describe Billboard do
       )
     end
 
-    it "returns nil when billboards_for_display is nil" do
-      result = described_class.select_billboard_by_weighted_strategy(nil, area)
-      expect(result).to be_nil
-    end
+    it "returns nil for nil or empty inputs without querying when already loaded", :aggregate_failures do
+      expect(described_class.select_billboard_by_weighted_strategy(nil, area)).to be_nil
+      expect(described_class.select_billboard_by_weighted_strategy([], area)).to be_nil
+      expect(described_class.select_billboard_by_weighted_strategy(described_class.none, area)).to be_nil
 
-    it "returns nil when billboards_for_display is empty array" do
-      result = described_class.select_billboard_by_weighted_strategy([], area)
-      expect(result).to be_nil
-    end
+      unloaded_empty = described_class.where(placement_area: "nonexistent_placement_area")
+      expect(described_class.select_billboard_by_weighted_strategy(unloaded_empty, area)).to be_nil
 
-    it "returns nil when billboards_for_display is empty relation" do
-      empty_relation = described_class.none
-      result = described_class.select_billboard_by_weighted_strategy(empty_relation, area)
-      expect(result).to be_nil
-    end
-
-    it "returns a billboard when billboards_for_display has items" do
-      relation = described_class.where(id: billboards.map(&:id))
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-      expect(billboards.map(&:id)).to include(result.id)
-    end
-
-    it "handles all zero weights by falling back to random selection" do
-      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
-        selection_weights: {
-          "random_selection" => 0,
-          "new_and_priority" => 0,
-          "new_only" => 0,
-          "weighted_performance" => 0
-        },
-      )
-
-      relation = described_class.where(id: billboards.map(&:id))
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-    end
-
-    it "handles negative weights by treating them as zero" do
-      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
-      # Bypass validation to set negative values for testing
-      config.update_column(:selection_weights, {
-                             "random_selection" => -10,
-                             "new_and_priority" => 20,
-                             "new_only" => 5,
-                             "weighted_performance" => 65
-                           })
-
-      relation = described_class.where(id: billboards.map(&:id))
-      # Should not raise an error and should select a billboard
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-    end
-
-    it "handles nil weights in selection_weights" do
-      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
-      # Bypass validation to set nil values for testing
-      config.update_column(:selection_weights, {
-                             "random_selection" => 10,
-                             "new_and_priority" => nil,
-                             "new_only" => 5,
-                             "weighted_performance" => 65
-                           })
-
-      relation = described_class.where(id: billboards.map(&:id))
-      # Should not raise an error and should select a billboard
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-    end
-
-    it "handles non-existent placement area by using defaults" do
-      relation = described_class.where(id: billboards.map(&:id))
-      result = described_class.select_billboard_by_weighted_strategy(relation, "nonexistent_area")
-      expect(result).to be_a(described_class)
-    end
-
-    it "handles empty selection_weights by using defaults" do
-      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
-        selection_weights: {},
-      )
-
-      relation = described_class.where(id: billboards.map(&:id))
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-    end
-
-    it "selects from all strategies over multiple calls" do
-      relation = described_class.where(id: billboards.map(&:id))
-
-      # Run multiple times to ensure randomness works
-      results = Array.new(10) do
-        described_class.select_billboard_by_weighted_strategy(relation, area)
-      end
-
-      # All results should be valid billboards
-      expect(results).to all(be_a(described_class))
-      expect(results.map(&:id)).to all(be_in(billboards.map(&:id)))
-    end
-
-    it "handles single weight being non-zero" do
-      BillboardPlacementAreaConfig.find_by(placement_area: area).update!(
-        selection_weights: {
-          "random_selection" => 0,
-          "new_and_priority" => 0,
-          "new_only" => 0,
-          "weighted_performance" => 100
-        },
-      )
-
-      relation = described_class.where(id: billboards.map(&:id))
-      result = described_class.select_billboard_by_weighted_strategy(relation, area)
-      expect(result).to be_a(described_class)
-    end
-
-    it "returns nil when billboards_for_display is an unloaded relation matching no records" do
-      unloaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area")
-      result = described_class.select_billboard_by_weighted_strategy(unloaded_empty_relation, area)
-      expect(result).to be_nil
-    end
-
-    it "returns nil without querying when billboards_for_display is an already-loaded empty relation" do
-      loaded_empty_relation = described_class.where(placement_area: "nonexistent_placement_area").load
+      loaded_empty = unloaded_empty.load
       display_ad_queries = []
       callback = lambda do |*, payload|
         sql = payload[:sql].to_s
         display_ad_queries << sql if sql.include?('"display_ads"') && !payload[:cached]
       end
-
       ActiveSupport::Notifications.subscribed(callback, "sql.active_record") do
-        expect(described_class.select_billboard_by_weighted_strategy(loaded_empty_relation, area)).to be_nil
+        expect(described_class.select_billboard_by_weighted_strategy(loaded_empty, area)).to be_nil
+      end
+      expect(display_ad_queries).to be_empty
+    end
+
+    it "selects a valid billboard across weight configurations and fallback cases", :aggregate_failures do
+      relation = described_class.where(id: billboards.map(&:id))
+      config = BillboardPlacementAreaConfig.find_by(placement_area: area)
+
+      result = described_class.select_billboard_by_weighted_strategy(relation, area)
+      expect(result).to be_a(described_class)
+      expect(billboards.map(&:id)).to include(result.id)
+
+      results = Array.new(10) { described_class.select_billboard_by_weighted_strategy(relation, area) }
+      expect(results).to all(be_a(described_class))
+      expect(results.map(&:id)).to all(be_in(billboards.map(&:id)))
+
+      expect(
+        described_class.select_billboard_by_weighted_strategy(relation, "nonexistent_area"),
+      ).to be_a(described_class)
+
+      [
+        { "random_selection" => 0, "new_and_priority" => 0, "new_only" => 0, "weighted_performance" => 0 },
+        { "random_selection" => 0, "new_and_priority" => 0, "new_only" => 0, "weighted_performance" => 100 },
+        {},
+      ].each do |weights|
+        config.update!(selection_weights: weights)
+        expect(described_class.select_billboard_by_weighted_strategy(relation, area)).to be_a(described_class)
       end
 
-      expect(display_ad_queries).to be_empty
+      [
+        { "random_selection" => -10, "new_and_priority" => 20, "new_only" => 5, "weighted_performance" => 65 },
+        { "random_selection" => 10, "new_and_priority" => nil, "new_only" => 5, "weighted_performance" => 65 },
+      ].each do |weights|
+        config.update_column(:selection_weights, weights)
+        expect(described_class.select_billboard_by_weighted_strategy(relation, area)).to be_a(described_class)
+      end
     end
 
     it "executes only one display_ads query for weighted_performance instead of loading the relation upfront" do

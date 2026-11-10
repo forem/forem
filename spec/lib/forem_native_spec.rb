@@ -6177,4 +6177,130 @@ RSpec.describe ForemNative do
       expect(described_class.syntax_highlight_code_block(invalid_utf8, "ruby")).to be_nil
     end
   end
+
+  describe "social image generation pipeline (Images::GenerateSocialImageMagickally)" do
+    before { Images::GenerateSocialImageMagickally }
+
+    let(:bold_font) { Images::BOLD_FONT_PATH }
+    let(:medium_font) { Images::MEDIUM_FONT_PATH }
+    let(:logo_path) { Rails.root.join("spec/fixtures/files/podcast.png").to_s }
+    let(:avatar_path) { Rails.root.join("spec/fixtures/files/800x600.png").to_s }
+    let(:mask_path) { Images::ROUNDED_MASK_PATH }
+
+    it "decodes PNG, JPEG, GIF, and cached mask assets and rejects corrupt bytes", :aggregate_failures do
+      logo = described_class.social_image_open(logo_path)
+      expect(logo).to be_a(ForemNative::SocialCanvas)
+      expect(logo.width).to be > 0
+      expect(logo.height).to be > 0
+      expect(logo.destroyed?).to be(false)
+
+      mask1 = described_class.social_image_open(mask_path)
+      mask2 = described_class.social_image_open(mask_path)
+      expect([mask1.width, mask1.height]).to eq([mask2.width, mask2.height])
+      mask1.destroy!
+      expect(mask1.destroyed?).to be(true)
+      expect(mask2.destroyed?).to be(false)
+      expect { mask1.to_png }.to raise_error(RuntimeError, /destroyed/)
+
+      expect { described_class.social_image_decode("not-an-image") }
+        .to raise_error(ArgumentError, /invalid image/)
+    ensure
+      logo&.destroy!
+      mask2&.destroy!
+    end
+
+    it "renders label and caption text with word-wrapping and empty-string handling", :aggregate_failures do
+      label = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      expect(label.width).to be_between(120, 145)
+      expect(label.height).to be_between(35, 45)
+
+      blank = described_class.social_image_render_text("label", "\u00A0", bold_font, 28, "black")
+      expect(blank.width).to be >= 1
+      expect(blank.height).to be >= 1
+
+      caption = described_class.social_image_render_text(
+        "caption",
+        "Rust native social card generation eliminates ImageMagick CLI process spawns in Sidekiq.",
+        bold_font,
+        42,
+        "#000000",
+        width: 806,
+      )
+      expect(caption.width).to eq(806)
+      expect(caption.height).to be > 80
+    ensure
+      label&.destroy!
+      blank&.destroy!
+      caption&.destroy!
+    end
+
+    it "renders complete 1200x627 article and profile social cards end-to-end and encodes 8-bit RGB PNGs",
+       :aggregate_failures do
+      blobs = [
+        [20, 30, 120, 80, "#12004a"],
+        [180, 90, 140, 100, "#ff4545"],
+        [310, 150, 110, 75, "#6aa9ff"],
+      ]
+      bg = described_class.social_image_draw_background("#3333ff", blobs)
+      expect([bg.width, bg.height]).to eq([1200, 627])
+
+      described_class.social_image_draw_window(bg)
+      logo = described_class.social_image_open(logo_path)
+      avatar = described_class.social_image_open(avatar_path)
+      mask = described_class.social_image_open(mask_path)
+      quote = described_class.social_image_render_text(
+        "caption", "Fast, deterministic social card rendering in Rust.", bold_font, 48, "black", width: 806
+      )
+      name = described_class.social_image_render_text("label", "Jane Doe", bold_font, 28, "black")
+      meta = described_class.social_image_render_text("label", "Nov 9  \u00B7  4 min read", medium_font, 22, "#525252")
+
+      described_class.social_image_add_logo(bg, logo)
+      described_class.social_image_add_quote(bg, quote, bold_font, "#0033ff")
+      # Verify the opening quote mark renders inside the window body (y = 149..185),
+      # never overlapping the title bar (y <= 126).
+      title_bar_accent_pixels = (80..126).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      body_quote_mark_pixels = (145..190).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      expect(title_bar_accent_pixels).to eq(0)
+      expect(body_quote_mark_pixels).to be > 1_000
+      described_class.social_image_add_profile_image(bg, avatar, mask)
+      described_class.social_image_add_byline(bg, name, meta)
+
+      png_bytes = bg.to_png
+      expect(png_bytes.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b)
+      decoded = described_class.social_image_decode(png_bytes)
+      expect([decoded.width, decoded.height]).to eq([1200, 627])
+
+      profile_bg = described_class.social_image_draw_background("#0f766e", blobs)
+      described_class.social_image_draw_profile_window(profile_bg, "#0f766e")
+      handle = described_class.social_image_render_text("label", "@janedoe", medium_font, 22, "#525252")
+      follow = described_class.social_image_render_text("label", "Follow", bold_font, 21, "white")
+      bio = described_class.social_image_render_text(
+        "caption", "Distributed systems & Rust.", medium_font, 30, "black", width: 878
+      )
+      described_class.social_image_add_logo(profile_bg, logo)
+      described_class.social_image_add_profile_header(profile_bg, name, handle, follow)
+      described_class.social_image_add_profile_bio(profile_bg, bio)
+      described_class.social_image_add_profile_card_avatar(profile_bg, avatar, mask)
+      described_class.social_image_add_profile_meta(profile_bg, meta)
+
+      Tempfile.create(["social_card", ".png"]) do |tmp|
+        profile_bg.write(tmp.path)
+        expect(File.size(tmp.path)).to be > 10_000
+      end
+    ensure
+      [bg, decoded, profile_bg, logo, avatar, mask, quote, name, meta, handle, follow, bio].each do |img|
+        img&.destroy!
+      end
+    end
+  end
 end
