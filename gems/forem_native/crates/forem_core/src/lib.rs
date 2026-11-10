@@ -20,6 +20,7 @@ pub mod metal;
 pub(crate) mod psl_data;
 pub mod sanitize;
 pub mod scrubber;
+pub mod social_image;
 pub mod svg;
 pub mod syntax;
 pub(crate) mod syntax_data;

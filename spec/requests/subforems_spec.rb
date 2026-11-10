@@ -186,12 +186,16 @@ RSpec.describe "Subforems" do
       before { sign_in moderator_user }
 
       it "updates allowed community, user experience, rate limit, and sidebar tag settings" do
+        subforem.update!(discoverable: false)
+        original_domain = subforem.domain
+        original_name = Settings::Community.community_name(subforem_id: subforem.id)
         allow(Settings::Community).to receive(:community_description).and_call_original
         allow(Settings::Community).to receive(:tagline).and_call_original
         allow(Settings::Community).to receive(:member_label).and_call_original
 
         patch subforem_path(subforem), params: {
-          subforem: { discoverable: true },
+          subforem: { domain: "newdomain.com", discoverable: true },
+          community_name: "Hacked Community Name",
           community_description: "New description",
           tagline: "New tagline",
           member_label: "user",
@@ -205,6 +209,10 @@ RSpec.describe "Subforems" do
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
 
+        subforem.reload
+        expect(subforem.domain).to eq(original_domain)
+        expect(subforem.discoverable).to be false
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
         expect(Settings::Community.community_description(subforem_id: subforem.id)).to eq("New description")
         expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
         expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("user")
@@ -214,23 +222,6 @@ RSpec.describe "Subforems" do
         expect(Settings::RateLimit.internal_content_description_spec(subforem_id: subforem.id)).to eq("New spec for moderators")
         expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded advice guidelines")
         expect(Settings::General.sidebar_tags(subforem_id: subforem.id)).to eq(%w[ruby rails javascript])
-      end
-
-      it "cannot update restricted admin-only fields (domain, discoverable, community_name)" do
-        subforem.update!(discoverable: false)
-        original_domain = subforem.domain
-        original_name = Settings::Community.community_name(subforem_id: subforem.id)
-
-        patch subforem_path(subforem), params: {
-          subforem: { domain: "newdomain.com", discoverable: true },
-          community_name: "Hacked Community Name"
-        }
-        expect(response).to redirect_to(manage_subforem_path)
-
-        subforem.reload
-        expect(subforem.domain).to eq(original_domain)
-        expect(subforem.discoverable).to be false
-        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
       end
     end
 
@@ -262,6 +253,9 @@ RSpec.describe "Subforems" do
       before { sign_in super_moderator_user }
 
       it "can update community settings and user experience settings and redirects" do
+        original_domain = subforem.domain
+        original_discoverable = subforem.discoverable
+        original_name = Settings::Community.community_name(subforem_id: subforem.id)
         allow(Settings::Community).to receive(:community_description).and_call_original
         allow(Settings::Community).to receive(:tagline).and_call_original
         allow(Settings::Community).to receive(:member_label).and_call_original
@@ -270,7 +264,8 @@ RSpec.describe "Subforems" do
         allow(Settings::UserExperience).to receive(:primary_brand_color_hex).and_call_original
 
         patch subforem_path(subforem), params: {
-          subforem: { logo_url: "https://example.com/logo.png", bg_image_url: "https://example.com/new-bg.jpg" },
+          subforem: { domain: "newdomain.com", discoverable: false, logo_url: "https://example.com/logo.png", bg_image_url: "https://example.com/new-bg.jpg" },
+          community_name: "Super Moderator Hack Attempt",
           community_description: "New description",
           tagline: "New tagline",
           member_label: "contributor",
@@ -282,6 +277,10 @@ RSpec.describe "Subforems" do
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.messages.updated"))
 
+        subforem.reload
+        expect(subforem.domain).to eq(original_domain)
+        expect(subforem.discoverable).to eq(original_discoverable)
+        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
         expect(Settings::Community.community_description(subforem_id: subforem.id)).to eq("New description")
         expect(Settings::Community.tagline(subforem_id: subforem.id)).to eq("New tagline")
         expect(Settings::Community.member_label(subforem_id: subforem.id)).to eq("contributor")
@@ -289,23 +288,6 @@ RSpec.describe "Subforems" do
         expect(Settings::RateLimit.expanded_content_advisement_spec(subforem_id: subforem.id)).to eq("New expanded ad spec")
         expect(Settings::UserExperience.feed_style(subforem_id: subforem.id)).to eq("basic")
         expect(Settings::UserExperience.primary_brand_color_hex(subforem_id: subforem.id)).to eq("#0a0a0a")
-      end
-
-      it "cannot update domain, name, discoverable, or community_name" do
-        original_domain = subforem.domain
-        original_discoverable = subforem.discoverable
-        original_name = Settings::Community.community_name(subforem_id: subforem.id)
-
-        patch subforem_path(subforem), params: {
-          subforem: { domain: "newdomain.com", discoverable: false },
-          community_name: "Super Moderator Hack Attempt"
-        }
-        expect(response).to redirect_to(manage_subforem_path)
-
-        subforem.reload
-        expect(subforem.domain).to eq(original_domain)
-        expect(subforem.discoverable).to eq(original_discoverable)
-        expect(Settings::Community.community_name(subforem_id: subforem.id)).to eq(original_name)
       end
     end
   end
@@ -409,8 +391,11 @@ RSpec.describe "Subforems" do
     let(:image_file) { fixture_file_upload("800x600.png", "image/png") }
 
     before do
-      # Stub FastImage to avoid HTTP requests in tests
+      # Stub FastImage and MiniMagick operations to avoid external process overhead in tests
       allow(FastImage).to receive(:size).and_return([100, 100])
+      allow_any_instance_of(SubforemImageUploader).to receive(:validate_frame_count)
+      allow_any_instance_of(SubforemImageUploader).to receive(:strip_exif)
+      allow_any_instance_of(SubforemImageUploader).to receive(:resize_to_fill)
     end
 
     context "when user is admin" do
@@ -538,14 +523,18 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "creates a navigation link" do
+      it "creates a navigation link and busts navigation links cache" do
+        allow(EdgeCache::Bust).to receive(:call)
+
         expect do
           post create_navigation_link_subforem_path(subforem), params: valid_params
         end.to change { NavigationLink.count }.by(1)
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.created"))
-        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+
         link = NavigationLink.last
         expect(link.subforem_id).to eq(subforem.id)
         expect(link.name).to eq("Test Link")
@@ -640,24 +629,11 @@ RSpec.describe "Subforems" do
         expect(link.icon).to eq(NavigationLink.default_icon_svg)
       end
     end
-
-    context "cache busting" do
-      before { sign_in admin_user }
-
-      it "busts navigation links cache on create" do
-        allow(EdgeCache::Bust).to receive(:call)
-        
-        post create_navigation_link_subforem_path(subforem), params: valid_params
-        
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
-      end
-    end
   end
 
   describe "PATCH /subforems/:id/update_navigation_link" do
     let(:subforem) { create(:subforem) }
-    let!(:navigation_link) do
+    let(:navigation_link) do
       NavigationLink.create!(
         subforem: subforem,
         name: "Original Link",
@@ -670,32 +646,28 @@ RSpec.describe "Subforems" do
     end
 
     context "route structure" do
-      it "uses path parameter for navigation_link_id" do
-        # Verify the route includes navigation_link_id as a path parameter, not query parameter
-        expected_path = "/subforems/#{subforem.id}/update_navigation_link/#{navigation_link.id}"
-        generated_path = update_navigation_link_subforem_path(subforem, navigation_link.id)
-        
-        expect(generated_path).to eq(expected_path)
-      end
+      it "uses positional path parameter for navigation_link_id" do
+        generated_path = update_navigation_link_subforem_path(1, 2)
 
-      it "accepts positional argument for navigation_link_id" do
-        # This confirms the fix for the 404 issue - path parameter instead of query parameter
-        path = update_navigation_link_subforem_path(subforem, navigation_link.id)
-        expect(path).to include("/update_navigation_link/#{navigation_link.id}")
-        expect(path).not_to include("navigation_link_id=")
+        expect(generated_path).to eq("/subforems/1/update_navigation_link/2")
+        expect(generated_path).not_to include("navigation_link_id=")
       end
     end
 
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "updates a navigation link" do
+      it "updates a navigation link and busts navigation links cache" do
+        allow(EdgeCache::Bust).to receive(:call)
+
         patch update_navigation_link_subforem_path(subforem, navigation_link.id),
               params: { navigation_link: { name: "Updated Link", url: "/updated" } }
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.updated"))
-        
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
+
         navigation_link.reload
         expect(navigation_link.name).to eq("Updated Link")
         expect(navigation_link.url).to eq("/updated")
@@ -750,20 +722,6 @@ RSpec.describe "Subforems" do
       end
     end
 
-    context "cache busting" do
-      before { sign_in admin_user }
-
-      it "busts navigation links cache on update" do
-        allow(EdgeCache::Bust).to receive(:call)
-        
-        patch update_navigation_link_subforem_path(subforem, navigation_link.id),
-              params: { navigation_link: { name: "Updated Link" } }
-        
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
-      end
-    end
-
     context "with image upload" do
       before do
         sign_in admin_user
@@ -790,7 +748,7 @@ RSpec.describe "Subforems" do
 
   describe "DELETE /subforems/:id/destroy_navigation_link" do
     let(:subforem) { create(:subforem) }
-    let!(:navigation_link) do
+    let(:navigation_link) do
       NavigationLink.create!(
         subforem: subforem,
         name: "Link to Delete",
@@ -805,13 +763,18 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "deletes a navigation link" do
+      it "deletes a navigation link and busts navigation links cache" do
+        allow(EdgeCache::Bust).to receive(:call)
+        link_id = navigation_link.id
+
         expect do
-          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: link_id)
         end.to change { NavigationLink.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:success]).to eq(I18n.t("views.subforems.edit.navigation_links.messages.deleted"))
+        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
+        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
 
       it "prevents deleting navigation link from different subforem" do
@@ -839,8 +802,10 @@ RSpec.describe "Subforems" do
       before { sign_in moderator_user }
 
       it "deletes a navigation link" do
+        link_id = navigation_link.id
+
         expect do
-          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
+          delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: link_id)
         end.to change { NavigationLink.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -855,19 +820,6 @@ RSpec.describe "Subforems" do
         delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
 
         expect(response).to have_http_status(:forbidden)
-      end
-    end
-
-    context "cache busting" do
-      before { sign_in admin_user }
-
-      it "busts navigation links cache on delete" do
-        allow(EdgeCache::Bust).to receive(:call)
-        
-        delete destroy_navigation_link_subforem_path(subforem, navigation_link_id: navigation_link.id)
-        
-        expect(EdgeCache::Bust).to have_received(:call).with("/async_info/navigation_links")
-        expect(EdgeCache::Bust).to have_received(:call).with(["/onboarding/tags", "/onboarding", "/"])
       end
     end
   end
@@ -928,9 +880,16 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "creates a page" do
+      it "creates a page while enforcing markdown-only and contained non-top-level settings" do
         expect do
-          post create_page_subforem_path(subforem), params: valid_page_params
+          post create_page_subforem_path(subforem), params: {
+            page: valid_page_params[:page].merge(
+              body_html: "<div>Should be ignored</div>",
+              body_json: { test: "Should be ignored" }.to_json,
+              template: "full_within_layout",
+              is_top_level_path: true
+            )
+          }
         end.to change { Page.count }.by(1)
 
         page = Page.last
@@ -942,45 +901,10 @@ RSpec.describe "Subforems" do
         expect(page.slug).to eq("test-page")
         expect(page.template).to eq("contained")
         expect(page.is_top_level_path).to be false
-        expect(page.body_markdown).to be_present
+        expect(page.body_markdown).to eq("# Welcome\n\nThis is test content.")
         expect(page.body_html).to be_nil
         expect(page.body_json).to be_nil
         expect(page.body_css).to be_nil
-      end
-
-      it "forces markdown-only content" do
-        post create_page_subforem_path(subforem), params: {
-          page: {
-            title: "HTML Test",
-            slug: "html-test",
-            description: "Test",
-            body_markdown: "# Test",
-            body_html: "<div>Should be ignored</div>",
-            body_json: { test: "Should be ignored" }.to_json
-          }
-        }
-
-        page = Page.last
-        expect(page.body_markdown).to eq("# Test")
-        expect(page.body_html).to be_nil
-        expect(page.body_json).to be_nil
-      end
-
-      it "forces contained template and non-top-level path" do
-        post create_page_subforem_path(subforem), params: {
-          page: {
-            title: "Template Test",
-            slug: "template-test",
-            description: "Test",
-            body_markdown: "# Test",
-            template: "full_within_layout",
-            is_top_level_path: true
-          }
-        }
-
-        page = Page.last
-        expect(page.template).to eq("contained")
-        expect(page.is_top_level_path).to be false
       end
 
       it "handles validation errors" do
@@ -1035,13 +959,11 @@ RSpec.describe "Subforems" do
     context "when user is admin" do
       before { sign_in admin_user }
 
-      it "returns a successful response for subforem page" do
+      it "returns a successful response for regular and top-level subforem pages" do
         get edit_page_subforem_path(subforem, page_id: subforem_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{subforem_page.title}")
-      end
 
-      it "returns a successful response for top-level page that belongs to subforem" do
         get edit_page_subforem_path(subforem, page_id: top_level_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{top_level_page.title}")
@@ -1051,13 +973,11 @@ RSpec.describe "Subforems" do
     context "when user is subforem moderator" do
       before { sign_in moderator_user }
 
-      it "returns a successful response for regular page" do
+      it "returns a successful response for regular and top-level pages belonging to their subforem" do
         get edit_page_subforem_path(subforem, page_id: subforem_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{subforem_page.title}")
-      end
 
-      it "can edit top-level pages that belong to their subforem" do
         get edit_page_subforem_path(subforem, page_id: top_level_page.id)
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Edit #{top_level_page.title}")
@@ -1077,13 +997,11 @@ RSpec.describe "Subforems" do
 
       before { sign_in moderator_user }
 
-      it "blocks editing regular pages from other subforems" do
+      it "blocks editing regular and top-level pages from other subforems" do
         get edit_page_subforem_path(subforem, page_id: other_regular_page.id)
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
-      end
 
-      it "blocks editing top-level pages from other subforems" do
         get edit_page_subforem_path(subforem, page_id: other_top_level_page.id)
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
@@ -1189,28 +1107,22 @@ RSpec.describe "Subforems" do
 
       before { sign_in moderator_user }
 
-      it "prevents updating regular pages from other subforems" do
+      it "prevents updating regular and top-level pages from other subforems" do
         patch update_page_subforem_path(subforem, page_id: other_regular_page.id), params: {
           page: { title: "Hacked" }
         }
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
+        expect(other_regular_page.reload.title).to eq("Other")
 
-        other_regular_page.reload
-        expect(other_regular_page.title).to eq("Other")
-      end
-
-      it "prevents updating top-level pages from other subforems" do
         patch update_page_subforem_path(subforem, page_id: other_top_level_page.id), params: {
           page: { title: "Hacked Top Level" }
         }
 
         expect(response).to redirect_to(manage_subforem_path)
         expect(flash[:error]).to eq(I18n.t("views.subforems.pages.not_found"))
-
-        other_top_level_page.reload
-        expect(other_top_level_page.title).to eq("Other Top")
+        expect(other_top_level_page.reload.title).to eq("Other Top")
       end
     end
 
@@ -1229,11 +1141,11 @@ RSpec.describe "Subforems" do
 
   describe "DELETE /subforems/:id/destroy_page/:page_id" do
     let(:subforem) { create(:subforem) }
-    let!(:subforem_page) do
+    let(:subforem_page) do
       create(:page, subforem: subforem, title: "To Delete", slug: "to-delete",
                     description: "Test", body_markdown: "# Test", is_top_level_path: false)
     end
-    let!(:top_level_page) do
+    let(:top_level_page) do
       create(:page, subforem: subforem, title: "Top Level", slug: "top-level",
                     description: "Test", body_markdown: "# Test", is_top_level_path: true)
     end
@@ -1242,8 +1154,9 @@ RSpec.describe "Subforems" do
       before { sign_in admin_user }
 
       it "deletes a subforem page" do
+        page_id = subforem_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: subforem_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.to change { Page.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1251,8 +1164,9 @@ RSpec.describe "Subforems" do
       end
 
       it "prevents deleting top-level pages" do
+        page_id = top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: top_level_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1264,8 +1178,9 @@ RSpec.describe "Subforems" do
       before { sign_in moderator_user }
 
       it "deletes a subforem page" do
+        page_id = subforem_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: subforem_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.to change { Page.count }.by(-1)
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1273,8 +1188,9 @@ RSpec.describe "Subforems" do
       end
 
       it "prevents deleting top-level pages" do
+        page_id = top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: top_level_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1284,11 +1200,11 @@ RSpec.describe "Subforems" do
 
     context "when page belongs to different subforem" do
       let(:other_subforem) { create(:subforem, domain: "other.com") }
-      let!(:other_regular_page) do
+      let(:other_regular_page) do
         create(:page, subforem: other_subforem, title: "Other", slug: "other",
                       description: "Test", body_markdown: "# Test", is_top_level_path: false)
       end
-      let!(:other_top_level_page) do
+      let(:other_top_level_page) do
         create(:page, subforem: other_subforem, title: "Other Top", slug: "other-top",
                       description: "Test", body_markdown: "# Test", is_top_level_path: true)
       end
@@ -1296,8 +1212,9 @@ RSpec.describe "Subforems" do
       before { sign_in moderator_user }
 
       it "prevents deleting regular pages from other subforems" do
+        page_id = other_regular_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: other_regular_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)
@@ -1305,8 +1222,9 @@ RSpec.describe "Subforems" do
       end
 
       it "prevents deleting top-level pages from other subforems" do
+        page_id = other_top_level_page.id
         expect do
-          delete destroy_page_subforem_path(subforem, page_id: other_top_level_page.id)
+          delete destroy_page_subforem_path(subforem, page_id: page_id)
         end.not_to change { Page.count }
 
         expect(response).to redirect_to(manage_subforem_path)

@@ -35,6 +35,7 @@ on:
       - "app/services/feed_events/bulk_upsert.rb"
       - "app/services/markdown_processor/reading_time.rb"
       - "app/services/color/compare_hex.rb"
+      - "app/services/images/generate_social_image_magickally.rb"
       - "lib/ISO3166/country.rb"
       - "spec/helpers/agent_sessions_helper_spec.rb"
       - "spec/lib/forem_native_spec.rb"
@@ -49,6 +50,7 @@ on:
       - "spec/services/articles/feeds/custom_spec.rb"
       - "spec/services/markdown_processor/reading_time_spec.rb"
       - "spec/services/color/compare_hex_spec.rb"
+      - "spec/services/images/generate_social_image_magickally_spec.rb"
       - ".github/workflows/forem-native.yml"
   push:
     branches:
@@ -144,5 +146,6 @@ jobs:
             raise "Unexpected build_billboard_new_only_sql!" unless ForemNative.build_billboard_new_only_sql("SELECT * FROM billboards", 5000, 15).include?("preferred")
             raise "Unexpected build_filtered_ads_where_sql!" unless ForemNative.build_filtered_ads_where_sql(["feed_first", 1_700_000_000, 0, [], 1, false, "Mozilla/5.0 (iPhone)", nil, true, nil, [], ["ruby"], true, true, true, 42, ["admin"], true, "ARRAY['US']::varchar[]", true, true, [10], false]).include?("placement_area")
             raise "Unexpected syntax_highlight_code_block!" unless ForemNative.syntax_highlight_code_block("puts 1", "ruby").include?("highlight ruby")
+            raise "Unexpected social_image_draw_background!" unless ForemNative.social_image_draw_background("#3333ff", []).width == 1200
             puts "Successfully loaded precompiled #{RUBY_PLATFORM} (normalized: #{ForemNative::Builder.normalized_platform}) binary!"
           '
