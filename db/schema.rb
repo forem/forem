@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
+ActiveRecord::Schema[8.0].define(version: 2026_11_09_234700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -2174,6 +2174,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_11_08_160000) do
     t.index ["base_email_eligible"], name: "index_users_on_base_email_eligible", where: "(base_email_eligible = true)"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
+    t.index ["created_at"], name: "index_users_on_created_at_where_unregistered", order: :desc, where: "(registered = false)"
     t.index ["current_subscriber_status"], name: "index_users_on_current_subscriber_status"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["facebook_username"], name: "index_users_on_facebook_username"

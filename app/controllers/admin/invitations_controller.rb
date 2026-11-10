@@ -2,13 +2,24 @@ module Admin
   class InvitationsController < Admin::ApplicationController
     layout "admin"
 
+    INVITATION_INDEX_COLUMNS = %i[id username name email profile_image created_at].freeze
+
+    # Lists pending invited (unregistered) users with optional search and role filtering,
+    # projecting only the columns rendered on the invitations index table.
     def index
+      relation = User.invited
+      if params[:role].present?
+        relation = relation.where(id: User.with_role(params[:role], :any).select(:id))
+        roles = nil
+      else
+        roles = params[:roles]
+      end
+
       @invitations = Admin::UsersQuery.call(
-        relation: User.invited,
+        relation: relation,
         search: params[:search],
-        role: params[:role],
-        roles: params[:roles],
-      ).page(params[:page]).per(50)
+        roles: roles,
+      ).except(:distinct).select(*INVITATION_INDEX_COLUMNS).page(params[:page]).per(50)
     end
 
     def new; end
