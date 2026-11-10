@@ -60,10 +60,16 @@ RSpec.describe "Api::V1::RelatedArticles" do
 
   it "rejects invalid or unbounded input" do
     [{}, { q: "!!!" }, { q: ["database"] }, { q: "a,b,c,d,e,f" }, { q: "x" * 501 },
+     { q: "database", page: "abc" }, { q: "database", per_page: "xyz" },
      { q: "database", start: "2026-02-30" }, { q: "database", start: "2026-11-04", end: "2026-11-03" }].each do |params|
       get "/api/related_articles", params: params.merge(organization_id: organization.id), headers: headers
       expect(response).to have_http_status(:unprocessable_entity)
     end
+  end
+
+  it "returns 404 when the requested organization does not exist" do
+    get "/api/related_articles", params: { organization_id: 0, q: "database" }, headers: headers
+    expect(response).to have_http_status(:not_found)
   end
 
   it "requires organization entitlement, active membership, and explicit organization context" do
@@ -71,6 +77,9 @@ RSpec.describe "Api::V1::RelatedArticles" do
     get "/api/related_articles", params: { q: "database", mode: "hybrid" }, headers: headers
     expect(response).to have_http_status(:unprocessable_entity)
     params = { organization_id: organization.id, q: "database", mode: "hybrid" }
+    FeatureFlag.remove(:org_related_articles)
+    get "/api/related_articles", params: params, headers: headers
+    expect(response).to have_http_status(:unauthorized)
     FeatureFlag.disable(:org_related_articles, FeatureFlag::Actor[organization])
     get "/api/related_articles", params: params, headers: headers
     expect(response).to have_http_status(:unauthorized)
@@ -172,5 +181,7 @@ RSpec.describe "Api::V1::RelatedArticles" do
         params: { organization_id: organization.id, q: "database", mode: "hybrid" }, headers: headers
     expect(response.parsed_body.pluck("id")).to contain_exactly(latest.id, semantic.id)
     expect(response.headers["X-Discovery-Candidate-Limit"]).to eq("2")
+    expect(Article.connection.select_value("SHOW hnsw.iterative_scan")).to eq("off")
+    expect(Article.connection.select_value("SHOW hnsw.ef_search")).to eq("40")
   end
 end

@@ -4816,6 +4816,9 @@
                       },
                       {
                         "type": "object",
+                        "required": [
+                          "discovery_match"
+                        ],
                         "properties": {
                           "discovery_match": {
                             "type": "array",
@@ -4837,6 +4840,9 @@
           },
           "401": {
             "description": "Authentication required"
+          },
+          "404": {
+            "description": "Organization not found"
           },
           "422": {
             "description": "Invalid query or date interval"

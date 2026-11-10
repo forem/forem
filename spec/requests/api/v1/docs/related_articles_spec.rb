@@ -11,6 +11,7 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
 
   before do
     create(:organization_membership, organization: organization, user: user)
+    create(:article, title: "PostgreSQL guide")
     FeatureFlag.enable(:org_related_articles, FeatureFlag::Actor[organization])
   end
 
@@ -48,9 +49,11 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
         let(:q) { "PostgreSQL,Postgres" }
         schema type: :array, items: {
           allOf: [{ "$ref": "#/components/schemas/ArticleIndex" },
-                  { type: :object, properties: { discovery_match: { type: :array,
-                                                                    items: { type: :string,
-                                                                             enum: %w[keyword semantic] } } } }]
+                  { type: :object,
+                    required: %w[discovery_match],
+                    properties: { discovery_match: { type: :array,
+                                                     items: { type: :string,
+                                                              enum: %w[keyword semantic] } } } }]
         }
         run_test!
       end
@@ -58,6 +61,12 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
       response "401", "Authentication required" do
         let(:q) { "PostgreSQL" }
         let(:"api-key") { "invalid" }
+        run_test!
+      end
+
+      response "404", "Organization not found" do
+        let(:organization_id) { 0 }
+        let(:q) { "PostgreSQL" }
         run_test!
       end
 

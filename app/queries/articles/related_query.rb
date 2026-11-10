@@ -31,13 +31,9 @@ module Articles
 
     def filtered_scope
       scope = Article.published.from_subforem(@subforem_id)
-        .where("(articles.score + 0) >= ?", Settings::UserExperience.index_minimum_score)
-      if start_date
-        scope = scope.where("(articles.published_at + INTERVAL '0 seconds') >= ?", start_date.beginning_of_day)
-      end
-      if end_date
-        scope = scope.where("(articles.published_at + INTERVAL '0 seconds') < ?", (end_date + 1.day).beginning_of_day)
-      end
+        .where("articles.score >= ?", Settings::UserExperience.index_minimum_score)
+      scope = scope.where("articles.published_at >= ?", start_date.beginning_of_day) if start_date
+      scope = scope.where("articles.published_at < ?", (end_date + 1.day).beginning_of_day) if end_date
       scope
     end
 
@@ -91,7 +87,7 @@ module Articles
       value = @params[key]
       return default if value.blank?
 
-      unless value.is_a?(String) || value.is_a?(Integer)
+      unless value.is_a?(Integer) || (value.is_a?(String) && value.match?(/\A-?\d+\z/))
         raise InvalidRequest, I18n.t("api.related_articles.invalid_pagination", parameter: key)
       end
 

@@ -21,4 +21,17 @@ RSpec.describe Articles::RelatedQuery, type: :query do
     expect(relation.limit_value).to eq(100)
     expect(relation.ids).to eq([second.id, first.id])
   end
+
+  it "keeps filtered_scope predicates sargable so date and score indexes remain usable" do
+    sql = described_class.new({ q: "TimescaleDB", start: "2026-11-01", end: "2026-11-10" }).filtered_scope.to_sql
+    expect(sql).not_to include("INTERVAL '0 seconds'")
+    expect(sql).not_to include("articles.score + 0")
+  end
+
+  it "rejects non-numeric pagination strings" do
+    expect { described_class.call({ q: "TimescaleDB", page: "abc" }) }
+      .to raise_error(Articles::RelatedQuery::InvalidRequest, /page/)
+    expect { described_class.call({ q: "TimescaleDB", per_page: "xyz" }) }
+      .to raise_error(Articles::RelatedQuery::InvalidRequest, /per_page/)
+  end
 end

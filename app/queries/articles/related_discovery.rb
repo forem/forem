@@ -1,6 +1,7 @@
 module Articles
   class RelatedDiscovery
     CANDIDATES_PER_SOURCE = 100
+    HNSW_MAX_SCAN_TUPLES = 5_000
     MAX_COSINE_DISTANCE = 0.4
     attr_reader :effective_mode, :matches
 
@@ -43,26 +44,44 @@ module Articles
 
     private
 
-    # Order the bounded shortlist on cosine distance alone, so PostgreSQL can answer it
-    # from the HNSW index on semantic_embedding, then break ties by descending ID over
-    # those rows only.  A secondary sort key in SQL would make the index unusable and
-    # sort distances across every eligible article instead.
+    # Order the bounded shortlist on cosine distance alone so PostgreSQL can answer it
+    # from the HNSW index on semantic_embedding, using strict iterative scans so post-index
+    # visibility, subforem, score, and date filters do not starve the 100-row shortlist,
+    # then enforce the cosine cutoff and tie-break by descending ID over those rows in Ruby.
     def semantic_shortlist(distance)
-      @query.filtered_scope.where.not(semantic_embedding: nil)
-        .where("#{distance} <= ?", MAX_COSINE_DISTANCE)
-        .reorder(Arel.sql("#{distance} ASC"))
-        .limit(CANDIDATES_PER_SOURCE)
-        .pluck(:id, Arel.sql(distance))
+      rows = with_hnsw_search_config do
+        @query.filtered_scope.where.not(semantic_embedding: nil)
+          .reorder(Arel.sql("#{distance} ASC"))
+          .limit(CANDIDATES_PER_SOURCE)
+          .pluck(:id, Arel.sql(distance))
+      end
+
+      rows.select { |_id, cosine_distance| cosine_distance <= MAX_COSINE_DISTANCE }
         .sort_by { |id, cosine_distance| [cosine_distance, -id] }
         .map(&:first)
+    end
+
+    def with_hnsw_search_config
+      conn = Article.connection
+      ef_search = CANDIDATES_PER_SOURCE.clamp(40, 1_000)
+      conn.execute(
+        "SET hnsw.ef_search = #{ef_search}; " \
+        "SET hnsw.iterative_scan = strict_order; " \
+        "SET hnsw.max_scan_tuples = #{HNSW_MAX_SCAN_TUPLES}",
+      )
+      yield
+    ensure
+      if conn&.active? && conn.raw_connection.transaction_status != PG::PQTRANS_INERROR
+        conn.execute("RESET hnsw.ef_search; RESET hnsw.iterative_scan; RESET hnsw.max_scan_tuples")
+      end
     end
 
     def query_vector
       digest = Digest::SHA256.hexdigest(@params[:q])
       key = "related_articles/#{Ai::Embedding::DEFAULT_EMBEDDING_MODEL}/#{digest}"
       Rails.cache.fetch(key, expires_in: 1.hour) do
-        value = Ai::Embedding.new(timeout: 3).call(@params[:q], task_type: "RETRIEVAL_QUERY",
-                                                                output_dimensionality: 768)
+        value = Ai::Embedding.new(wrapper: self, timeout: 3).call(@params[:q], task_type: "RETRIEVAL_QUERY",
+                                                                               output_dimensionality: 768)
         unless value.is_a?(Array) && value.length == 768 && value.all? { |n| n.is_a?(Numeric) && n.real? && n.finite? }
           raise "Invalid query embedding"
         end

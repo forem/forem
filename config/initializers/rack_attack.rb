@@ -9,8 +9,10 @@ module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
-    API_SEARCH_PATH_REGEX =
-      %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
+    API_SEARCH_PATH_REGEX = %r{
+      \A(?:/locale/[^/]+)?/api/(?:v\d+/)?
+      (?:(?:articles|users|concepts)/(?:semantic_)?search|related_articles)(?:\.json)?\z
+    }x
 
     # Method that checks API Key from the request and returns true if it
     # belongs to an admin, false otherwise
