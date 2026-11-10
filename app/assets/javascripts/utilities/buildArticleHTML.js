@@ -345,6 +345,18 @@ function buildArticleHTML(article, currentUserId = null) {
       </div>
     `;
 
+    // Mirrors the AI disclosure indicator in app/javascript/articles/components/Meta.jsx
+    var aiDisclosureHTML = '';
+    var aiLevel = article.ai_disclosure_level;
+    var isFullyAi = aiLevel === 'fully_autonomous' || aiLevel === 5;
+    var isSomeAi = aiLevel === 'some_ai' || aiLevel === 3;
+    if (article.type_of !== 'status' && (isFullyAi || isSomeAi)) {
+      var aiLabel = isFullyAi
+        ? 'Disclosed as fully AI-generated'
+        : 'Disclosed as AI-assisted';
+      aiDisclosureHTML = `<span class="crayons-hover-tooltip inline-flex items-center ml-2 color-base-60 cursor-help" data-tooltip="${aiLabel}" aria-label="${aiLabel}"><svg width="14" height="14" viewBox="0 0 24 24" class="crayons-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2a2 2 0 100 4 2 2 0 000-4zm-1 3.5h2v3.5h-2V5.5zM6 9h12a3 3 0 013 3v6a3 3 0 01-3 3H6a3 3 0 01-3-3v-6a3 3 0 013-3zm0 2a1 1 0 00-1 1v6a1 1 0 001 1h12a1 1 0 001-1v-6a1 1 0 00-1-1H6zm2.5 2.25a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zm7 0a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5z"/></svg></span>`;
+    }
+
     var meta = `
       <div class="crayons-story__meta">
         <div class="crayons-story__author-pic">
@@ -365,9 +377,12 @@ function buildArticleHTML(article, currentUserId = null) {
     }
             ${forOrganization}
           </div>
-          <a href="${
-            article.path
-          }" class="crayons-story__tertiary fs-xs">${publishDate}</a>
+          <div class="flex items-center">
+            <a href="${
+              article.path
+            }" class="crayons-story__tertiary fs-xs">${publishDate}</a>
+            ${aiDisclosureHTML}
+          </div>
         </div>
       </div>
     `;
