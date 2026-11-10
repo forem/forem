@@ -6255,7 +6255,23 @@ RSpec.describe ForemNative do
       meta = described_class.social_image_render_text("label", "Nov 9  \u00B7  4 min read", medium_font, 22, "#525252")
 
       described_class.social_image_add_logo(bg, logo)
-      described_class.social_image_add_quote(bg, quote, bold_font, "#12004a")
+      described_class.social_image_add_quote(bg, quote, bold_font, "#0033ff")
+      # Verify the opening quote mark renders inside the window body (y = 149..185),
+      # never overlapping the title bar (y <= 126).
+      title_bar_accent_pixels = (80..126).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      body_quote_mark_pixels = (145..190).sum do |y|
+        (125..200).count do |x|
+          r, g, b, = bg.pixel_rgba8(x, y)
+          b > 200 && r < 50 && g < 80
+        end
+      end
+      expect(title_bar_accent_pixels).to eq(0)
+      expect(body_quote_mark_pixels).to be > 1_000
       described_class.social_image_add_profile_image(bg, avatar, mask)
       described_class.social_image_add_byline(bg, name, meta)
 

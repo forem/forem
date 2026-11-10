@@ -9,7 +9,8 @@ use std::io::Cursor;
 use super::canvas::{Canvas, Rgba};
 use super::SocialImageError;
 
-const MAX_DIMENSION: u32 = 16_384;
+// Matches `BaseUploader` (`CarrierWave::BombShelter`) 4096x4096 pixel-dimension cap.
+const MAX_DIMENSION: u32 = 4_096;
 
 /// Decodes a PNG, JPEG, GIF (first frame), or WebP byte slice into a straight-alpha [`Canvas`].
 pub fn decode_image(bytes: &[u8]) -> Result<Canvas, SocialImageError> {

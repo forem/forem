@@ -449,6 +449,47 @@ mod tests {
     }
 
     #[test]
+    fn opening_quote_mark_renders_below_window_title_bar() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../..");
+        let bold_bytes = std::fs::read(root.join("app/assets/fonts/NotoSans-Bold.ttf")).unwrap();
+        let bold = Font::from_bytes(&bold_bytes).unwrap();
+
+        let mut card = Canvas::new(WIDTH, HEIGHT, Rgba::WHITE);
+        let empty_quote = Canvas::new(QUOTE_WIDTH, 80, Rgba::TRANSPARENT);
+        let accent = Rgba::new(0.0, 0.0, 1.0, 1.0);
+        add_quote(&mut card, &empty_quote, &bold, accent);
+
+        let mut min_x = usize::MAX;
+        let mut max_x = 0usize;
+        let mut min_y = usize::MAX;
+        let mut max_y = 0usize;
+        for y in 0..HEIGHT {
+            for x in 0..WIDTH {
+                let p = card.get(x, y);
+                if p.r < 0.5 && p.b > 0.8 {
+                    min_x = min_x.min(x);
+                    max_x = max_x.max(x);
+                    min_y = min_y.min(y);
+                    max_y = max_y.max(y);
+                }
+            }
+        }
+        let bar_bottom = (WINDOW_Y + WINDOW_BAR_HEIGHT) as usize;
+        assert!(
+            min_y > bar_bottom,
+            "quote mark y=[{min_y}, {max_y}] must sit strictly below title bar (y={bar_bottom})"
+        );
+        assert!(
+            (130..=132).contains(&min_x) && (192..=194).contains(&max_x),
+            "unexpected quote mark x=[{min_x}, {max_x}]"
+        );
+        assert!(
+            (148..=150).contains(&min_y) && (184..=186).contains(&max_y),
+            "unexpected quote mark y=[{min_y}, {max_y}]"
+        );
+    }
+
+    #[test]
     fn verify_pixel_parity_against_local_im6_oracle() {
         let convert = "/opt/homebrew/opt/imagemagick@6/bin/convert";
         if !std::path::Path::new(convert).exists() {
