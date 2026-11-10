@@ -42,6 +42,45 @@ fn validate_dimensions(width: u32, height: u32) -> Result<(usize, usize), Social
     Ok((width as usize, height as usize))
 }
 
+#[inline]
+fn push_rgb_pixels(data: &[u8], max_pixels: usize, pixels: &mut Vec<Rgba>) {
+    let mut idx = 0usize;
+    while idx + 3 <= data.len() && pixels.len() < max_pixels {
+        pixels.push(Rgba::new(
+            f32::from(data[idx]) / 255.0,
+            f32::from(data[idx + 1]) / 255.0,
+            f32::from(data[idx + 2]) / 255.0,
+            1.0,
+        ));
+        idx += 3;
+    }
+}
+
+#[inline]
+fn push_rgba_pixels(data: &[u8], max_pixels: usize, pixels: &mut Vec<Rgba>) {
+    let mut idx = 0usize;
+    while idx + 4 <= data.len() && pixels.len() < max_pixels {
+        pixels.push(Rgba::new(
+            f32::from(data[idx]) / 255.0,
+            f32::from(data[idx + 1]) / 255.0,
+            f32::from(data[idx + 2]) / 255.0,
+            f32::from(data[idx + 3]) / 255.0,
+        ));
+        idx += 4;
+    }
+}
+
+#[inline]
+fn push_luma_alpha_pixels(data: &[u8], max_pixels: usize, pixels: &mut Vec<Rgba>) {
+    let mut idx = 0usize;
+    while idx + 2 <= data.len() && pixels.len() < max_pixels {
+        let v = f32::from(data[idx]) / 255.0;
+        let a = f32::from(data[idx + 1]) / 255.0;
+        pixels.push(Rgba::new(v, v, v, a));
+        idx += 2;
+    }
+}
+
 fn decode_png(bytes: &[u8]) -> Result<Canvas, SocialImageError> {
     let mut decoder = png::Decoder::new(Cursor::new(bytes));
     // Expand palette/sub-byte depths to 8-bit and strip 16-bit down to 8-bit channels.
@@ -75,39 +114,15 @@ fn decode_png(bytes: &[u8]) -> Result<Canvas, SocialImageError> {
 
     let mut pixels = Vec::with_capacity(w * h);
     match out_info.color_type {
-        png::ColorType::Rgb => {
-            for chunk in data.chunks_exact(3) {
-                pixels.push(Rgba::new(
-                    f32::from(chunk[0]) / 255.0,
-                    f32::from(chunk[1]) / 255.0,
-                    f32::from(chunk[2]) / 255.0,
-                    1.0,
-                ));
-            }
-        }
-        png::ColorType::Rgba => {
-            for chunk in data.chunks_exact(4) {
-                pixels.push(Rgba::new(
-                    f32::from(chunk[0]) / 255.0,
-                    f32::from(chunk[1]) / 255.0,
-                    f32::from(chunk[2]) / 255.0,
-                    f32::from(chunk[3]) / 255.0,
-                ));
-            }
-        }
+        png::ColorType::Rgb => push_rgb_pixels(data, w * h, &mut pixels),
+        png::ColorType::Rgba => push_rgba_pixels(data, w * h, &mut pixels),
         png::ColorType::Grayscale => {
             for &g in data.iter().take(w * h) {
                 let v = f32::from(g) / 255.0;
                 pixels.push(Rgba::new(v, v, v, 1.0));
             }
         }
-        png::ColorType::GrayscaleAlpha => {
-            for chunk in data.chunks_exact(2) {
-                let v = f32::from(chunk[0]) / 255.0;
-                let a = f32::from(chunk[1]) / 255.0;
-                pixels.push(Rgba::new(v, v, v, a));
-            }
-        }
+        png::ColorType::GrayscaleAlpha => push_luma_alpha_pixels(data, w * h, &mut pixels),
         other => {
             return Err(SocialImageError::InvalidImage(format!(
                 "unexpected expanded PNG color type: {other:?}"
@@ -144,14 +159,7 @@ fn decode_jpeg(bytes: &[u8]) -> Result<Canvas, SocialImageError> {
     let mut pixels = Vec::with_capacity(w * h);
     let mut is_pseudo = false;
     if data.len() == w * h * 3 {
-        for chunk in data.chunks_exact(3) {
-            pixels.push(Rgba::new(
-                f32::from(chunk[0]) / 255.0,
-                f32::from(chunk[1]) / 255.0,
-                f32::from(chunk[2]) / 255.0,
-                1.0,
-            ));
-        }
+        push_rgb_pixels(&data, w * h, &mut pixels);
     } else if data.len() == w * h {
         is_pseudo = true;
         for &g in &data {
@@ -159,14 +167,7 @@ fn decode_jpeg(bytes: &[u8]) -> Result<Canvas, SocialImageError> {
             pixels.push(Rgba::new(v, v, v, 1.0));
         }
     } else if data.len() == w * h * 4 {
-        for chunk in data.chunks_exact(4) {
-            pixels.push(Rgba::new(
-                f32::from(chunk[0]) / 255.0,
-                f32::from(chunk[1]) / 255.0,
-                f32::from(chunk[2]) / 255.0,
-                f32::from(chunk[3]) / 255.0,
-            ));
-        }
+        push_rgba_pixels(&data, w * h, &mut pixels);
     } else {
         return Err(SocialImageError::InvalidImage(
             "unexpected JPEG channel layout".to_owned(),
@@ -247,23 +248,9 @@ fn decode_webp(bytes: &[u8]) -> Result<Canvas, SocialImageError> {
 
     let mut pixels = Vec::with_capacity(w * h);
     if has_alpha {
-        for chunk in buf.chunks_exact(4).take(w * h) {
-            pixels.push(Rgba::new(
-                f32::from(chunk[0]) / 255.0,
-                f32::from(chunk[1]) / 255.0,
-                f32::from(chunk[2]) / 255.0,
-                f32::from(chunk[3]) / 255.0,
-            ));
-        }
+        push_rgba_pixels(&buf, w * h, &mut pixels);
     } else {
-        for chunk in buf.chunks_exact(3).take(w * h) {
-            pixels.push(Rgba::new(
-                f32::from(chunk[0]) / 255.0,
-                f32::from(chunk[1]) / 255.0,
-                f32::from(chunk[2]) / 255.0,
-                1.0,
-            ));
-        }
+        push_rgb_pixels(&buf, w * h, &mut pixels);
     }
     if pixels.len() != w * h {
         return Err(SocialImageError::InvalidImage(
