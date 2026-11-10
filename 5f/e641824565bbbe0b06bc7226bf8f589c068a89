@@ -1,0 +1,20 @@
+gems/forem_native/crates/forem_core/src/social_image/card.rs
+  h_f968154a99632d 451-491
+gems/forem_native/crates/forem_core/src/social_image/decode.rs
+  h_f968154a99632d 12-13
+gems/forem_native/crates/forem_core/src/social_image/text.rs
+  h_f968154a99632d 946-949
+spec/lib/forem_native_spec.rb
+  h_f968154a99632d 6258-6274
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5fe641824565bbbe0b06bc7226bf8f589c068a89",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
