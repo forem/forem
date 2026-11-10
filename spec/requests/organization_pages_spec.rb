@@ -49,6 +49,16 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
         expect(page.title).to eq("Welcome")
       end
 
+      it "rejects creating the first page hidden and omits the checkbox from its form" do
+        post organization_pages_path(organization.slug), params: {
+          page: { title: "Welcome", body_markdown: "# Welcome", show_in_navigation: false }
+        }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(organization.pages).to be_empty
+        expect(Nokogiri::HTML(response.body).at_css("#page_show_in_navigation")).to be_nil
+      end
+
       it "defaults a blank first-page title to Showcase" do
         post organization_pages_path(organization.slug), params: {
           page: { title: " ", body_markdown: "# Hello showcase" }
@@ -108,6 +118,51 @@ RSpec.describe "Organization Pages Controller Backend Protection" do
 
     let!(:readme_page) { create(:page, organization: organization, slug: "#{organization.slug}/readme", template: "full_within_layout") }
     let!(:custom_page) { create(:page, organization: organization, slug: "#{organization.slug}/about", template: "full_within_layout") }
+
+    it "toggles custom page visibility without changing its position" do
+      [false, true].each do |visible|
+        patch update_organization_page_path(organization.slug, custom_page), params: {
+          page: { slug_suffix: "about", show_in_navigation: visible }
+        }
+
+        expect(response).to redirect_to(organization_pages_path(organization.slug))
+        expect(custom_page.reload).to have_attributes(show_in_navigation: visible, position: 0)
+      end
+    end
+
+    it "rejects hiding the Showcase and displays the validation error" do
+      patch update_organization_page_path(organization.slug, readme_page), params: {
+        page: { show_in_navigation: false }
+      }
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(readme_page.reload.show_in_navigation?).to be(true)
+      expect(response.body).to include(I18n.t("models.page.navigation_showcase_required"))
+      expect(Nokogiri::HTML(response.body).at_css("#page_show_in_navigation")).to be_nil
+    end
+
+    it "shows the checkbox on custom pages and marks hidden pages in the list" do
+      custom_page.update!(show_in_navigation: false)
+
+      get edit_organization_page_path(organization.slug, custom_page)
+      checkbox = Nokogiri::HTML(response.body).at_css("#page_show_in_navigation")
+      expect(checkbox).to be_present
+      expect(checkbox["checked"]).to be_nil
+      expect(response.body).to include(I18n.t("views.organization_settings.pages.navigation_hint"))
+
+      get organization_pages_path(organization.slug)
+      expect(response.body).to include(I18n.t("views.organization_settings.pages.hidden_from_tabs"))
+    end
+
+    it "marks hidden pages in the organization settings summary" do
+      custom_page.update!(show_in_navigation: false)
+
+      get organization_settings_path(organization.slug)
+
+      expect(response).to have_http_status(:ok)
+      summary = Nokogiri::HTML(response.body).at_css("#section-pages-list")
+      expect(summary.text).to include(I18n.t("views.organization_settings.pages.hidden_from_tabs"))
+    end
 
     it "updates details and prevents readme slug suffix change" do
       patch update_organization_page_path(organization.slug, readme_page), params: {

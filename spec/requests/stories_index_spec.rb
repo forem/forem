@@ -801,6 +801,12 @@ RSpec.describe "StoriesIndex" do
     end
 
     context "when organization has a readme page and org_readme flag is enabled" do
+      let(:hidden_page) do
+        create(:page, organization: organization, slug: "#{organization.slug}/talk", position: 2,
+                      title: "Conference Talk", body_markdown: "**Hidden talk content**",
+                      template: "full_within_layout", show_in_navigation: false)
+      end
+
       before do
         create(:page, organization: organization, body_markdown: "**Welcome to our org!**",
                title: "Showcase", description: "desc", slug: "#{organization.slug}-page",
@@ -869,6 +875,30 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to include("About Us")
       end
 
+      it "omits the hidden tab and keeps the visible tab on the Showcase and All Posts views" do
+        hidden_page
+        create(:page, organization: organization, slug: "#{organization.slug}/docs", position: 1)
+
+        [nil, "all-posts"].each do |mode|
+          get "/#{organization.slug}", params: { mode: mode }
+          nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+          expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+          expect(nav.at_css("a[href='/#{organization.slug}/p/docs']")).to be_present
+          expect(nav.at_css(".org-tab-all-posts")["style"]).to include("margin-left: auto")
+        end
+      end
+
+      it "keeps the hidden page public at its permalink without its tab" do
+        hidden_page
+        get "/#{organization.slug}/p/talk"
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("<strong>Hidden talk content</strong>")
+        nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+        expect(nav.at_css("a[href='/#{organization.slug}/p/talk']")).to be_nil
+        expect(nav.at_css(".org-tab-all-posts")["style"]).not_to include("margin-left: auto")
+      end
+
       it "returns 404 for nonexistent custom page permalink" do
         expect {
           get "/#{organization.slug}/p/nonexistent"
@@ -888,6 +918,18 @@ RSpec.describe "StoriesIndex" do
 
         after do
           FeatureFlag.disable(:org_custom_domain)
+        end
+
+        it "keeps a hidden page public at the custom-domain permalink without its tab" do
+          organization.pages.find_by!(slug: "#{organization.slug}/about").update!(show_in_navigation: false)
+
+          get "http://custom.example.com/p/about"
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include("<strong>Custom About Us</strong>")
+          nav = Nokogiri::HTML(response.body).at_css("#org-tab-nav")
+          expect(nav.at_css("a[href='/p/about']")).to be_nil
+          expect(nav.at_css("a[href='/']")).to be_present
         end
 
         it "renders the custom page via /about permalink" do

@@ -20,6 +20,7 @@ class Page < ApplicationRecord
   validate :validate_template_data
   validate :validate_redirect_to_url
 
+  validate :validate_show_in_navigation
   validate :validate_slug_uniqueness
 
   before_validation :set_default_template
@@ -79,7 +80,7 @@ class Page < ApplicationRecord
     super(...).slice(*%w[id title slug description is_top_level_path landing_page
                          body_html body_json body_markdown processed_html
                          social_image template subforem_id page_template_id template_data redirect_to_url
-                         organization_id position])
+                         organization_id position show_in_navigation])
   end
 
   def uses_page_template?
@@ -100,6 +101,16 @@ class Page < ApplicationRecord
   end
 
   private
+
+  def validate_show_in_navigation
+    return if show_in_navigation?
+
+    if organization_id.blank?
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_organization_only"))
+    elsif organization.main_page.nil? || organization.main_page.id == id
+      errors.add(:show_in_navigation, I18n.t("models.page.navigation_showcase_required"))
+    end
+  end
 
   def evaluate_markdown
     if body_markdown.present?

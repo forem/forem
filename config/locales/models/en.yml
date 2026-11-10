@@ -113,6 +113,8 @@ en:
     lead_submission:
       already_submitted: You have already submitted this form.
     page:
+      navigation_organization_only: "can only be turned off for organization pages"
+      navigation_showcase_required: "must stay on for the Showcase page"
       body_must_exist: must exist if body_html or body_json doesn't exist.
       redirect_to_url_invalid: must be a full URL (starting with http:// or https://) or an app path (starting with /).
       redirect_to_url_invalid_path: is not a recognized path in this application.

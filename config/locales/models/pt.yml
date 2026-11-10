@@ -112,6 +112,8 @@ pt:
     lead_submission:
       already_submitted: Você já enviou este formulário.
     page:
+      navigation_organization_only: "só pode ser desativado para páginas de organizações"
+      navigation_showcase_required: "deve permanecer ativado para a página Showcase"
       body_must_exist: deve existir se body_html ou body_json não existir.
       redirect_to_url_invalid: deve ser uma URL completa (começando com http:// ou https://) ou um caminho do aplicativo (começando com /).
       redirect_to_url_invalid_path: não é um caminho reconhecido nesta aplicação.

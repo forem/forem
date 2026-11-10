@@ -1,6 +1,55 @@
 require "rails_helper"
 
 RSpec.describe Page do
+  describe "organization tab visibility" do
+    it "defaults to visible" do
+      expect(build(:page).show_in_navigation?).to be(true)
+    end
+
+    it "rejects a hidden site page" do
+      page = build(:page, show_in_navigation: false)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
+    it "rejects a hidden subforem page" do
+      page = build(:page, subforem: create(:subforem), show_in_navigation: false)
+
+      expect(page).not_to be_valid
+      expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_organization_only"))
+    end
+
+    context "with an organization" do
+      let(:organization) { create(:organization) }
+
+      it "rejects a hidden first page" do
+        page = build(:page, organization: organization, show_in_navigation: false)
+
+        expect(page).not_to be_valid
+        expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+      end
+
+      it "rejects hiding the Showcase by id, even without the readme slug" do
+        page = create(:page, organization: organization, position: 0)
+        page.show_in_navigation = false
+
+        expect(page).not_to be_valid
+        expect(page.errors[:show_in_navigation]).to include(I18n.t("models.page.navigation_showcase_required"))
+      end
+
+      it "allows a new or existing custom page to be hidden without changing its position" do
+        create(:page, organization: organization, position: 0)
+        page = build(:page, organization: organization, position: 2, show_in_navigation: false)
+
+        expect(page).to be_valid
+        page.save!
+        expect(page.reload).to have_attributes(show_in_navigation: false, position: 2)
+        expect(page).to be_valid
+      end
+    end
+  end
+
   describe ".from_subforem" do
     let!(:page_subforem_1) { create(:page, subforem_id: 1) }
     let!(:page_subforem_2) { create(:page, subforem_id: 2) }

@@ -101,7 +101,7 @@ class OrganizationPagesController < ApplicationController
   end
 
   def page_params
-    params.require(:page).permit(:title, :body_markdown, :description)
+    params.require(:page).permit(:title, :body_markdown, :description, :show_in_navigation)
   end
 
   def showcase_page?(page)
