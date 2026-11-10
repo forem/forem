@@ -66,7 +66,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-24.04, macos-latest]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -87,17 +87,17 @@ jobs:
           key: ${{ runner.os }}-cargo-forem-native-${{ hashFiles('gems/forem_native/Cargo.lock') }}
           restore-keys: ${{ runner.os }}-cargo-forem-native-
       - name: Check formatting
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-24.04'
         run: cargo fmt --all -- --check
       - name: Run Clippy
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-24.04'
         run: cargo clippy --workspace --all-targets -- -D warnings
       - name: Run Rust unit tests (forem_core)
         run: cargo test -p forem_core
       - name: Build release native library
         run: cargo build --release
       - name: Upload x86_64-linux native binary artifact
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-24.04'
         uses: actions/upload-artifact@v4
         with:
           name: forem-native-x86_64-linux
