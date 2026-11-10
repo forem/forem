@@ -119,6 +119,13 @@ RSpec.describe VerificationMailer do
       expect(email.body.encoded).not_to include("Not signed-in on this device?")
     end
 
+    it "skips sending when sign_in_token has already been consumed" do
+      user.update_columns(sign_in_token: nil, sign_in_token_sent_at: nil)
+      email = described_class.with(user_id: user.id).magic_link
+
+      expect(email.message).to be_a(ActionMailer::Base::NullMail)
+    end
+
     context "with subforem-specific branding" do
       let!(:subforem) { create(:subforem, domain: "magic.example.com") }
       let(:subforem_community_name) { "Magic Community" }

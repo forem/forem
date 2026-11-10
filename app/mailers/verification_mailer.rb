@@ -35,7 +35,9 @@ class VerificationMailer < ApplicationMailer
   end
 
   def magic_link
-    @user = User.find(params[:user_id])
+    @user = User.find_by(id: params[:user_id])
+    return if @user&.sign_in_token.blank?
+
     community_name = Settings::Community.community_name(subforem_id: @subforem_id)
 
     customerio_delivery_options(
