@@ -11,6 +11,8 @@ end
 if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
   # Prepend a tracker to record the request thread so the background monitor thread can clean it up
   module RackTimeoutThreadTracker
+    # Records the current request thread and monotonic start time in the Rack env
+    # and thread-local storage for timeout tracking, restoring previous values afterward.
     def call(env)
       env["rack-timeout.request_thread"] = Thread.current
       previous_env = Thread.current[:rack_timeout_env]
@@ -43,8 +45,8 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
     # closing the PG::Connection cross-thread. Closing raw_conn from the monitor thread
     # races with the still-executing request thread (causing IOError / NilClass errors)
     # and leaves a finished PG::Connection assigned to @raw_connection in the pool.
-    # Instead, taint the adapter so it disconnects cleanly on checkin once the request
-    # thread finishes unwinding.
+    # Instead, taint the adapter so it disconnects cleanly on the owning thread during
+    # transaction rollback or pool checkin once the request thread finishes unwinding.
     def self.cancel_and_taint_connection(conn)
       conn.instance_variable_set(:@rack_timeout_tainted, true)
       conn.instance_variable_set(:@verified, false)
@@ -58,6 +60,8 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
     rescue StandardError => e
       Rails.logger.warn "Rack::Timeout: failed to cancel database query: #{e.class}: #{e.message}"
     end
+
+    singleton_class.alias_method :cancel_and_close_raw_connection, :cancel_and_taint_connection
 
     # Locates the ActiveRecord connection currently checked out by request_thread
     # across Rails 7 (@thread_cached_conns) and Rails 8 (@leases / @connections).
@@ -90,6 +94,18 @@ if defined?(Rack::Timeout) && defined?(ActiveRecord::Base)
   end
 
   module RackTimeoutTaintedConnectionCleanup
+    # Clears the Rack::Timeout taint flag when the adapter disconnects.
+    def disconnect!
+      @rack_timeout_tainted = false
+      super
+    end
+
+    # Clears the Rack::Timeout taint flag when the adapter reconnects.
+    def reconnect!(...)
+      @rack_timeout_tainted = false
+      super
+    end
+
     private
 
     # Disconnects adapters tainted by a Rack::Timeout (or left with a closed raw
@@ -125,9 +141,71 @@ end
 # has been closed (`finished? == true`), `#transaction_status` itself raises an
 # unhandled `PG::ConnectionBad: connection is closed`, aborting auto-reconnect and
 # leaving the closed connection in the pool for subsequent read queries to hit.
+#
+# In addition, when a request times out inside `ActiveRecord::Base.transaction`
+# (`@rack_timeout_tainted == true`), `TransactionManager#within_new_transaction`
+# rescues `Rack::Timeout::RequestTimeoutException` and calls `rollback_transaction`.
+# Default `PostgreSQLAdapter#exec_rollback_db_transaction` calls `@raw_connection.block`
+# (without a timeout) and sends `ROLLBACK`, which can hang the unwinding request
+# thread if `PQcancel` did not abort the in-flight query or the socket is unresponsive.
+# Closing `@raw_connection` on the owning request thread instead aborts the server-side
+# transaction immediately without blocking.
 module PostgreSQLAdapterClosedConnectionReconnect
+  # Reports tainted connections as inactive so SavepointTransaction#rollback skips
+  # issuing queries over a timed-out socket and verify! triggers a full reconnect.
+  def active?
+    return false if @rack_timeout_tainted
+
+    super
+  end
+
+  # Clears the Rack::Timeout taint flag when the PostgreSQL adapter disconnects.
+  def disconnect!
+    @rack_timeout_tainted = false
+    super
+  end
+
   private
 
+  # Closes the raw PG::Connection on the owning request thread instead of blocking
+  # on `@raw_connection.block` and `ROLLBACK` when unwinding a timed-out transaction.
+  def exec_rollback_db_transaction
+    return close_tainted_raw_connection if @rack_timeout_tainted
+
+    super
+  end
+
+  # Closes the raw PG::Connection on the owning request thread instead of blocking
+  # on `@raw_connection.block` and `ROLLBACK AND CHAIN` when a timed-out transaction restarts.
+  def exec_restart_db_transaction
+    return close_tainted_raw_connection if @rack_timeout_tainted
+
+    super
+  end
+
+  # Closes the raw PG::Connection on the owning request thread instead of issuing
+  # `ROLLBACK TO SAVEPOINT` over a timed-out connection.
+  def exec_rollback_to_savepoint(_name = nil)
+    return close_tainted_raw_connection if @rack_timeout_tainted
+
+    super
+  end
+
+  # Closes and clears `@raw_connection` on the owning thread without raising.
+  def close_tainted_raw_connection
+    begin
+      @raw_connection&.close
+    rescue StandardError
+      nil
+    end
+    @raw_connection = nil
+    @verified = false
+    @last_activity = nil
+  end
+
+  # Returns false when `@raw_connection` is nil or already closed so
+  # `AbstractAdapter#with_raw_connection` proceeds to `retryable_connection_error?`
+  # and `reconnect!` instead of raising a nested `PG::ConnectionBad` from `#transaction_status`.
   def retryable_query_error?(exception)
     return false if @raw_connection.nil? || @raw_connection.finished?
 

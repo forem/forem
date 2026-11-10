@@ -230,21 +230,80 @@ RSpec.describe Rack::Timeout, type: :initializer do
           ready << conn
           conn.execute("SELECT pg_sleep(5)")
         end
-      rescue Rack::Timeout::RequestTimeoutException, ActiveRecord::QueryCanceled => e
+      rescue ActiveRecord::QueryCanceled => e
         e
       end
 
       timed_out_conn = ready.pop
-      sleep 0.05
+      raw_conn = timed_out_conn.instance_variable_get(:@raw_connection)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 2.0
+      while raw_conn.transaction_status != PG::PQTRANS_ACTIVE &&
+          Process.clock_gettime(Process::CLOCK_MONOTONIC) < deadline
+        Thread.pass
+      end
+
       RackTimeoutThreadTracker.cancel_and_taint_connection(timed_out_conn)
-      request_thread.raise(Rack::Timeout::RequestTimeoutException.new({}), "timed out") if request_thread.alive?
       expect(request_thread.join(2)).to eq(request_thread)
-      expect(request_thread.value).to be_a(Rack::Timeout::RequestTimeoutException).or(be_a(ActiveRecord::QueryCanceled))
+      expect(request_thread.value).to be_a(ActiveRecord::QueryCanceled)
 
       isolated_pool.with_connection do |conn|
         expect(conn).to equal(timed_out_conn)
         result = conn.select_all(Article.where(path: "/nonexistent/concurrent-timeout-slug").arel, "Article Load")
         expect(result.to_a).to eq([])
+      end
+    end
+
+    it "unwinds timed-out transactions and savepoints without blocking on ROLLBACK when cancel is ignored" do
+      ready = Queue.new
+      started_at = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+      request_thread = Thread.new do
+        isolated_pool.with_connection do |conn|
+          conn.transaction do
+            conn.execute("SELECT 1")
+            conn.transaction(requires_new: true) do
+              conn.execute("SELECT 1")
+              raw = conn.instance_variable_get(:@raw_connection)
+              allow(raw).to receive(:cancel).and_return(nil)
+              ready << conn
+              conn.execute("SELECT pg_sleep(5)")
+            end
+          end
+        end
+      rescue Rack::Timeout::RequestTimeoutException => e
+        e
+      end
+
+      timed_out_conn = ready.pop
+      raw_conn = timed_out_conn.instance_variable_get(:@raw_connection)
+      deadline = Process.clock_gettime(Process::CLOCK_MONOTONIC) + 2.0
+      while raw_conn.transaction_status != PG::PQTRANS_ACTIVE &&
+          Process.clock_gettime(Process::CLOCK_MONOTONIC) < deadline
+        Thread.pass
+      end
+
+      RackTimeoutThreadTracker.cancel_and_taint_connection(timed_out_conn)
+      request_thread.raise(Rack::Timeout::RequestTimeoutException.new({}), "timed out")
+      expect(request_thread.join(1.5)).to eq(request_thread)
+      expect(request_thread.value).to be_a(Rack::Timeout::RequestTimeoutException)
+      expect(Process.clock_gettime(Process::CLOCK_MONOTONIC) - started_at).to be < 1.5
+
+      isolated_pool.with_connection do |conn|
+        expect(conn).to equal(timed_out_conn)
+        expect(conn.open_transactions).to eq(0)
+        expect(conn.select_value("SELECT 1")).to eq(1)
+      end
+    end
+
+    it "clears the taint flag if the adapter reconnects before checkin" do
+      isolated_pool.with_connection do |conn|
+        conn.execute("SELECT 1")
+        RackTimeoutThreadTracker.cancel_and_taint_connection(conn)
+        expect(conn.active?).to be(false)
+
+        expect(conn.select_value("SELECT 1")).to eq(1)
+        expect(conn.instance_variable_get(:@rack_timeout_tainted)).to be(false)
+        expect(conn.active?).to be(true)
       end
     end
   end
