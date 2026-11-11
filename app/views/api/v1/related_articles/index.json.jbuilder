@@ -10,6 +10,7 @@ json.array! @articles do |article|
   json.tag_list article.cached_tag_list_array
   json.tags article.cached_tag_list
   json.discovery_match @discovery.matches.fetch(article.id, ["keyword"])
+  json.discovery_rank @discovery.relevance_for(article)
 
   json.partial! "api/v0/shared/user", user: article.user
 

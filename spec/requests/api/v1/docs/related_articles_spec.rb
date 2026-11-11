@@ -23,7 +23,9 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
                   "Query supports up to five comma-separated alternative names and date bounds. In keyword " \
                   "matching, a name of several words matches those words next to each other; hybrid semantic " \
                   "candidates are not phrase-filtered and need not contain the phrase. Page size is " \
-                  "capped at 100, page at 1000. Keyword mode sorts newest first. Hybrid mode fuses at most 100 " \
+                  "capped at 100, page at 1000. Keyword mode sorts newest first unless sort=relevance. " \
+                  "Each result carries discovery_rank, a relevance score comparable within one " \
+                  "response but not across responses. Hybrid mode fuses at most 100 " \
                   "keyword and 100 semantic candidates using reciprocal rank fusion; it is not an exhaustive export. " \
                   "Semantic candidates require cosine distance <= 0.4. Query embeddings are cached for one hour. " \
                   "Missing vectors remain eligible for keyword matches; provider failures fall back to keyword. " \
@@ -42,6 +44,11 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
                              "words matches those words next to each other, so Tiger Data matches " \
                              "that phrase rather than mentions of tiger and data separately; hybrid " \
                              "semantic candidates are not phrase-filtered and need not contain the phrase."
+      parameter name: :sort, in: :query, required: false,
+                schema: { type: :string, enum: %w[recent relevance], default: "recent" },
+                description: "recent returns newest first. relevance ranks by match strength, " \
+                             "which accounts for how often a term occurs and whether it appears " \
+                             "in the title rather than the body."
       parameter name: :start, in: :query, required: false, schema: { type: :string, format: :date },
                 description: "Inclusive publication date (YYYY-MM-DD)."
       parameter name: :end, in: :query, required: false, schema: { type: :string, format: :date },
@@ -59,7 +66,10 @@ RSpec.describe "Api::V1::Docs::RelatedArticles" do
                     required: %w[discovery_match],
                     properties: { discovery_match: { type: :array,
                                                      items: { type: :string,
-                                                              enum: %w[keyword semantic] } } } }]
+                                                              enum: %w[keyword semantic] } },
+                                  discovery_rank: { type: :number,
+                                                    description: "Relevance score, comparable " \
+                                                                 "within one response only." } } }]
         }
         run_test!
       end

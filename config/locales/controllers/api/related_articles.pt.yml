@@ -8,3 +8,4 @@ pt:
       invalid_interval: "end deve ser igual ou posterior a start"
       invalid_date: "%{parameter} deve ser uma data válida no formato YYYY-MM-DD"
       invalid_pagination: "%{parameter} deve ser um número"
+      invalid_sort: "sort deve ser recent ou relevance"
