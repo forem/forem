@@ -1,0 +1,52 @@
+app/models/article.rb
+  h_f968154a99632d 85-91,404,1346-1347,2290-2300,2302-2323
+app/models/billboard.rb
+  h_f968154a99632d 2,124,484-497,504-508,521,524-525,527-528,530-558,569-572,614-620,625-626,628,747-760
+app/models/comment.rb
+  h_f968154a99632d 113-115,332-345
+app/models/concerns/liquid_embeddable.rb
+  h_f968154a99632d 7,9,14-66,68-69,72-74,78-80,82-83,85-89
+app/models/liquid_embed_reference.rb
+  h_f968154a99632d 2-6,18-132
+app/models/reaction.rb
+  h_f968154a99632d 75-77,291-294,318
+app/services/liquid_embed_extractor.rb
+  h_f968154a99632d 6-15,18-19,27-55,70-71,73-74,76-78,82,86-193,195-207,210,212-217,229-309,314,322-361,363,366,368-370,372-373,375-467,469-470,472,474
+app/workers/articles/update_dependent_embeds_worker.rb
+  h_f968154a99632d 4-7,9-13,15-106,108-137,139,141,143-146,148-194,198-341
+app/workers/reactions/bust_reactable_cache_worker.rb
+  h_f968154a99632d 7,13,25,41-44
+app/workers/sync_liquid_embed_references_worker.rb
+  h_f968154a99632d 3,17-30,36-50,52-53,55-56
+lib/data_update_scripts/20261111120000_backfill_billboard_and_unresolved_embed_references.rb
+  h_f968154a99632d 1-63
+spec/lib/data_update_scripts/backfill_billboard_and_unresolved_embed_references_spec.rb
+  h_f968154a99632d 1-42
+spec/models/article_spec.rb
+  h_f968154a99632d 3950-3999
+spec/models/billboard_spec.rb
+  h_f968154a99632d 1565-1606
+spec/models/comment_spec.rb
+  h_f968154a99632d 884-904
+spec/services/liquid_embed_extractor_spec.rb
+  h_f968154a99632d 17,24,38-39,46,55-56,62,73-76,80,83,88-89,99-100,106,115-116,122-126,136-137,186-369
+spec/workers/articles/update_dependent_embeds_worker_spec.rb
+  h_f968154a99632d 6-11,14-15,17-18,21-37,40-56,58-139,141-154,157-165,167-182,185-212,214-271,273-275,277-297,302,312-313,315
+spec/workers/comments/bust_cache_worker_spec.rb
+  h_f968154a99632d 15-19,43,46-47
+spec/workers/reactions/bust_reactable_cache_worker_spec.rb
+  h_f968154a99632d 15,18,28-48
+spec/workers/sync_liquid_embed_references_worker_spec.rb
+  h_f968154a99632d 91-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4eedd2c4e150c9644542d84958b9d327b1b2f775",
+  "prompts": {},
+  "humans": {
+    "h_f968154a99632d": {
+      "author": "Ben Halpern <bendhalpern@gmail.com>"
+    }
+  }
+}
