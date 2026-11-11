@@ -157,9 +157,11 @@ RSpec.describe PageTag, type: :liquid_tag do
       user = create(:user, username: "fallbackuser")
       org = create(:organization, slug: "fallbackorg")
       tag = create(:tag, name: "fallbacktag")
+      org_url = "#{URL.url}/#{org.slug}"
+      allow(UnifiedEmbed::Tag).to receive(:validate_link).with(input: org_url).and_return(org_url)
 
       expect(Liquid::Template.parse("{% embed /#{user.username} %}").render).to include("ltag__user")
-      expect(Liquid::Template.parse("{% embed #{URL.url}/#{org.slug} %}").render).to include(org.name)
+      expect(Liquid::Template.parse("{% embed #{org_url} %}").render).to include(org.name)
       expect(Liquid::Template.parse("{% embed /t/#{tag.name} %}").render).to include("ltag__tag")
       expect(ForemTag.determine_klass("#{URL.url}/about")).to eq(described_class)
     end

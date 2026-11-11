@@ -50,4 +50,4 @@ module ForemTag
   end
 end
 
-UnifiedEmbed.register(ForemTag, regexp: ForemTag::REGISTRY_REGEXP, skip_validation: true)
+UnifiedEmbed.register(ForemTag, regexp: ForemTag::REGISTRY_REGEXP)
