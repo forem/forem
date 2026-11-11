@@ -1,4 +1,5 @@
 require "rails_helper"
+require "exifr/jpeg"
 
 RSpec.describe ForemNative do
   let(:legacy_split_word_count) do
@@ -6730,6 +6731,235 @@ RSpec.describe ForemNative do
       static_ctx = view.__send__(:story_card_static_context)
       expect(described_class.render_story_cards(static_ctx, [], [], [], [])).to be_nil
       expect(view.__send__(:native_render_story_cards, ["not-an-article"])).to be_nil
+    end
+  end
+
+  describe "Pure-Rust Image Manipulation & Avatar Rendering (MiniMagick Replacement)" do
+    let(:fixture_jpg_path) { Rails.root.join("spec/fixtures/files/800x600.jpg").to_s }
+    let(:fixture_png_path) { Rails.root.join("spec/fixtures/files/800x600.png").to_s }
+    let(:fixture_webp_path) { Rails.root.join("spec/fixtures/files/800x600.webp").to_s }
+    let(:fixture_gif_path) { Rails.root.join("spec/fixtures/files/high_frame_count.gif").to_s }
+    let(:fixture_gps_jpg_path) { Rails.root.join("spec/fixtures/files/image_gps_data.jpg").to_s }
+    let(:fixture_svg_path) { Rails.root.join("spec/fixtures/files/300x100.svg").to_s }
+    let(:fixture_gradient_svg_path) { Rails.root.join("spec/fixtures/files/unicorn.svg").to_s }
+    let(:default_svg_font_path) { BaseUploader::DEFAULT_SVG_FONT_PATH }
+
+    describe ".render_profile_image_png (Images::ProfileImageGenerator)" do
+      it "renders deterministic 400x400 8-bit RGB PNGs across 1,000 randomized trait combinations",
+         :aggregate_failures do
+        rng = Random.new(20_261_111)
+
+        1_000.times do |iteration|
+          palette = Images::ProfileImageGenerator::PALETTES.sample(random: rng)
+          traits = {
+            palette: rng.rand(2).zero? ? palette : palette.transform_keys(&:to_s),
+            backdrop: Images::ProfileImageGenerator::BACKDROP_STYLES.sample(random: rng),
+            outfit: Images::ProfileImageGenerator::OUTFIT_STYLES.sample(random: rng),
+            arm: Images::ProfileImageGenerator::ARM_STYLES.sample(random: rng),
+            head: Images::ProfileImageGenerator::HEAD_STYLES.sample(random: rng),
+            topper: Images::ProfileImageGenerator::TOPPER_STYLES.sample(random: rng),
+            eyes: Images::ProfileImageGenerator::EYE_STYLES.sample(random: rng),
+            accessory: Images::ProfileImageGenerator::ACCESSORY_STYLES.sample(random: rng),
+            cheeks: Images::ProfileImageGenerator::CHEEK_STYLES.sample(random: rng),
+            mouth: Images::ProfileImageGenerator::MOUTH_STYLES.sample(random: rng)
+          }
+          traits = traits.transform_keys(&:to_s) if rng.rand(3).zero?
+
+          png = described_class.render_profile_image_png(traits)
+          expect(png.byteslice(0, 8)).to eq("\x89PNG\r\n\x1A\n".b), "iteration #{iteration} invalid PNG magic"
+          # Width=400, Height=400, BitDepth=8, ColorType=2 (RGB)
+          expect(png.byteslice(16, 10).unpack("NNC2")).to eq([400, 400, 8, 2]),
+                                                          "iteration #{iteration} invalid IHDR"
+          if (iteration % 50).zero?
+            expect(described_class.render_profile_image_png(traits)).to eq(png)
+          end
+        end
+      end
+
+      it "validates trait hash inputs and unknown trait variants", :aggregate_failures do
+        expect { described_class.render_profile_image_png(nil) }.to raise_error(ArgumentError)
+        expect { described_class.render_profile_image_png({ palette: nil }) }.to raise_error(ArgumentError)
+
+        invalid_traits = Images::ProfileImageGenerator.__send__(:select_traits, Random.new(1))
+          .merge(mouth: :unknown_mouth)
+        expect { described_class.render_profile_image_png(invalid_traits) }.to raise_error(ArgumentError)
+      end
+    end
+
+    describe ".image_inspect, .image_inspect_file, and .image_frame_count" do
+      it "matches FastImage dimensions and format across real repository fixtures", :aggregate_failures do
+        [
+          [fixture_jpg_path, "jpeg", 1],
+          [fixture_png_path, "png", 1],
+          [fixture_webp_path, "webp", 1],
+          [fixture_svg_path, "svg", 1],
+          [fixture_gps_jpg_path, "jpeg", 1],
+        ].each do |path, expected_format, expected_frames|
+          info = described_class.image_inspect_file(path)
+          expect(info[:format]).to eq(expected_format)
+          expect([info[:width], info[:height]]).to eq(FastImage.size(path))
+          expect(info[:frame_count]).to eq(expected_frames)
+        end
+
+        gif_info = described_class.image_inspect_file(fixture_gif_path)
+        expect(gif_info[:format]).to eq("gif")
+        expect([gif_info[:width], gif_info[:height]]).to eq(FastImage.size(fixture_gif_path))
+        expect(gif_info[:frame_count]).to be > 20
+        expect(described_class.image_frame_count(fixture_gif_path)).to eq(gif_info[:frame_count])
+      end
+
+      it "matches FastImage across 1,000 randomized PNG, GIF, BMP, and SVG headers", :aggregate_failures do
+        rng = Random.new(99_887_766)
+
+        1_000.times do |iteration|
+          w = rng.rand(1..4096)
+          h = rng.rand(1..4096)
+
+          case iteration % 4
+          when 0
+            ihdr = [w, h, 8, 6, 0, 0, 0].pack("NNC5")
+            crc = [Zlib.crc32("IHDR".b + ihdr)].pack("N")
+            bytes = "\x89PNG\r\n\x1A\n".b + [13].pack("N") + "IHDR".b + ihdr + crc +
+              [0].pack("N") + "IEND".b + [Zlib.crc32("IEND".b)].pack("N")
+            expected_fmt = "png"
+            expected_frames = 1
+          when 1
+            frames = rng.rand(1..12)
+            # Minimal GIF89a header + N minimal image descriptors (',' + 9 header bytes + LZW min=2 + 0x00)
+            frame_block = [",".b, [0, 0, 1, 1, 0].pack("v4C"), "\x02\x00".b].join * frames
+            bytes = "GIF89a".b + [w, h, 0x80, 0, 0].pack("vvCCC") + ("\x00" * 6).b + frame_block + ";".b
+            expected_fmt = "gif"
+            expected_frames = frames
+          when 2
+            # Minimal 24-bit BMP header (BITMAPINFOHEADER = 40 bytes)
+            file_header = "BM".b + [54, 0, 0, 54].pack("VvvV")
+            dib_header = [40, w, h, 1, 24, 0, 0, 0, 0, 0, 0].pack("Vl<l<vvVVl<l<VV")
+            bytes = file_header + dib_header
+            expected_fmt = "bmp"
+            expected_frames = 1
+          when 3
+            bytes = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{w}" height="#{h}"></svg>).b
+            expected_fmt = "svg"
+            expected_frames = 1
+          end
+
+          info = described_class.image_inspect(bytes)
+          expect(info[:format]).to eq(expected_fmt), "iteration #{iteration}"
+          expect([info[:width], info[:height]]).to eq([w, h]), "iteration #{iteration}"
+          expect(info[:frame_count]).to eq(expected_frames), "iteration #{iteration}"
+          expect(FastImage.size(StringIO.new(bytes))).to eq([w, h]), "iteration #{iteration} FastImage parity"
+        end
+      end
+
+      it "raises ArgumentError on empty, truncated, or unrecognized binary inputs", :aggregate_failures do
+        ["", "not an image", "\x89PNG\r\n\x1A\n\x00\x00", "\xFF\xD8\xFF", "RIFF\x04\x00\x00\x00WEBP"].each do |bad|
+          expect { described_class.image_inspect(bad.b) }.to raise_error(ArgumentError)
+        end
+      end
+    end
+
+    describe ".image_strip_and_auto_orient" do
+      it "handles all 8 EXIF orientations (lossless strip on 1, pixel orientation + dimension swap on 2..8)",
+         :aggregate_failures do
+        raw_jpg = File.binread(fixture_jpg_path)
+
+        (1..8).each do |orientation|
+          exif_app1 =
+            "\xFF\xE1\x00\x22Exif\x00\x00MM\x00\x2A\x00\x00\x00\x08" \
+            "\x00\x01\x01\x12\x00\x03\x00\x00\x00\x01".b +
+            [orientation].pack("n") + "\x00\x00\x00\x00\x00\x00".b
+          tagged = "\xFF\xD8".b + exif_app1 + raw_jpg.byteslice(2..)
+
+          expect(described_class.image_inspect(tagged)[:exif_orientation]).to eq(orientation)
+
+          stripped = described_class.image_strip_and_auto_orient(tagged)
+          expect(stripped).not_to be_nil
+
+          info = described_class.image_inspect(stripped)
+          expect(info[:exif_orientation]).to eq(1), "orientation #{orientation} not reset"
+          expected_dims = orientation >= 5 ? [600, 800] : [800, 600]
+          expect([info[:width], info[:height]]).to eq(expected_dims), "orientation #{orientation} dims mismatch"
+          expect(EXIFR::JPEG.new(StringIO.new(stripped)).exif?).to be(false)
+        end
+      end
+    end
+
+    describe ".image_resize_to_fill, .image_resize_to_limit, and .image_convert_to_png" do
+      let(:legacy_resize_to_limit_dims) do
+        lambda do |src_w, src_h, max_w, max_h|
+          return [src_w, src_h] if max_w.nil? && max_h.nil?
+
+          scale_w = max_w ? max_w.to_f / src_w : Float::INFINITY
+          scale_h = max_h ? max_h.to_f / src_h : Float::INFINITY
+          scale = [scale_w, scale_h].min
+          return [src_w, src_h] if scale >= 1.0
+
+          [(src_w * scale).round.clamp(1, src_w), (src_h * scale).round.clamp(1, src_h)]
+        end
+      end
+
+      it "matches CarrierWave/MiniMagick dimension math across 1,000 randomized resize operations",
+         :aggregate_failures do
+        rng = Random.new(424_242)
+        gravities = %w[Center North South East West NorthWest NorthEast SouthWest SouthEast]
+
+        # Build a compact pool of distinct synthetic RGB/RGBA PNGs of varied aspect ratios
+        sample_sources = [[48, 32], [32, 48], [64, 64], [90, 30], [25, 75], [120, 80]].map do |sw, sh|
+          svg = %(<svg xmlns="http://www.w3.org/2000/svg" width="#{sw}" height="#{sh}">) +
+            %(<rect width="#{sw}" height="#{sh}" fill="#3b49df"/>) +
+            %(<circle cx="#{sw / 2}" cy="#{sh / 2}" r="#{[sw, sh].min / 3}" fill="#ffffff"/></svg>)
+          [sw, sh, described_class.image_convert_to_png(svg)]
+        end
+
+        1_000.times do |iteration|
+          sw, sh, src_png = sample_sources.sample(random: rng)
+
+          if iteration.even?
+            tw = rng.rand(4..96)
+            th = rng.rand(4..96)
+            gravity = gravities.sample(random: rng)
+            resized_bytes, fmt = described_class.image_resize_to_fill(src_png, tw, th, gravity)
+            info = described_class.image_inspect(resized_bytes)
+            expect([fmt, info[:format], info[:width], info[:height]]).to eq(["png", "png", tw, th]),
+                                                                         "fill iter #{iteration}"
+          else
+            max_w = rng.rand(4).zero? ? nil : rng.rand(8..140)
+            max_h = max_w.nil? || rng.rand(4) != 0 ? rng.rand(8..140) : nil
+            resized_bytes, fmt = described_class.image_resize_to_limit(src_png, max_w, max_h)
+            info = described_class.image_inspect(resized_bytes)
+            expected_w, expected_h = legacy_resize_to_limit_dims.call(sw, sh, max_w, max_h)
+            expect([fmt, info[:format]]).to eq(%w[png png]), "limit fmt iter #{iteration}"
+            expect(info[:width]).to be_within(1).of(expected_w), "limit width iter #{iteration}"
+            expect(info[:height]).to be_within(1).of(expected_h), "limit height iter #{iteration}"
+            expect(info[:width]).to be <= max_w if max_w
+            expect(info[:height]).to be <= max_h if max_h
+          end
+        end
+      end
+
+      it "converts text and gradient SVGs and composites Subforem social images in-process",
+         :aggregate_failures do
+        svg_png = described_class.image_convert_to_png(
+          File.binread(fixture_svg_path),
+          font_path: default_svg_font_path,
+        )
+        expect(described_class.image_inspect(svg_png)).to include(format: "png", width: 300, height: 100)
+
+        gradient_png = described_class.image_convert_to_png(
+          File.binread(fixture_gradient_svg_path),
+          font_path: default_svg_font_path,
+        )
+        expect(described_class.image_inspect(gradient_png)[:format]).to eq("png")
+
+        logo_bytes = File.binread(fixture_png_path)
+        template_bytes = Rails.root.join("app/assets/images/social_template.png").binread
+        social_png = described_class.subforem_social_image_png(
+          logo_bytes,
+          template_bytes,
+          custom_background: true,
+        )
+        expect(described_class.image_inspect(social_png)).to include(format: "png", width: 1000, height: 500)
+      end
     end
   end
 end

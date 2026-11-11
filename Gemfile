@@ -63,7 +63,6 @@ gem "katex", "~> 0.9.0" # This rubygem enables you to render TeX math to HTML us
 gem "liquid", "~> 5.4" # A secure, non-evaling end user template engine with aesthetic markup
 gem "logtail-rails", "~> 0.2.12", require: false # Ships Rails logs to Better Stack when BETTERSTACK_SOURCE_TOKEN is set (see lib/betterstack/log_device.rb and config/initializers/betterstack.rb before upgrading)
 gem "metainspector", "~> 5.12" # To get and parse website metadata for Open Graph rich objects
-gem "mini_magick", "~> 4.13" # Manipulate images with minimal use of memory via ImageMagick / GraphicsMagick
 gem "nokogiri", "~> 1.18" # HTML, XML, SAX, and Reader parser
 gem "octokit", "~> 10.0" # Simple wrapper for the GitHub API
 gem "oj", "~> 3.13" # JSON parser and object serializer
