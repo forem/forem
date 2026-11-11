@@ -9,8 +9,10 @@ module Rack
   class Attack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
-    API_SEARCH_PATH_REGEX =
-      %r{\A(?:/locale/[^/]+)?/api/(?:v\d+/)?(?:articles|users|concepts)/(?:semantic_)?search(?:\.json)?\z}
+    API_SEARCH_PATH_REGEX = %r{
+      \A(?:/locale/[^/]+)?/api/(?:v\d+/)?
+      (?:(?:articles|users|concepts)/(?:semantic_)?search|related_articles)(?:\.json)?\z
+    }x
     MAGIC_LINK_CREATE_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links(?:\.[^/.?]+)?\z}
     MAGIC_LINK_SHOW_PATH_REGEX = %r{\A(?:/locale/[^/]+)?/magic_links/(?!new(?:\.[^/.?]+)?\z)[^/]+\z}
 
