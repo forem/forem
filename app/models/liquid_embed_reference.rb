@@ -1,8 +1,29 @@
 class LiquidEmbedReference < ApplicationRecord
   FEED_TAG_NAMES = %w[org_posts feed].freeze
-  FEED_TARGETS_CACHE_KEY = "liquid_embed_references:feed_targets:v1".freeze
+  FEED_TARGETS_CACHE_KEY = "liquid_embed_references:feed_targets:v2".freeze
   FEED_TARGETS_CACHE_TTL = 15.minutes
   INLINE_SVG_RANDOM_ID_REGEX = /\b(aria-labelledby|id)="a[0-9a-z]{25,35}"/
+
+  BILLBOARD_ENGAGEMENT_INTERVAL = 15.seconds
+  ENGAGEMENT_BACKOFF_BASE = 60
+  PAGE_MAX_ENGAGEMENT_BACKOFF = 5.minutes
+  COOLDOWN_GATE_THRESHOLD = 1.hour
+  MAX_ENGAGEMENT_BACKOFF = 72.hours
+  AGE_BACKOFF_MILESTONES = [
+    30.minutes,
+    1.hour,
+    3.hours,
+    6.hours,
+    12.hours,
+    1.day,
+    3.days,
+    7.days,
+    14.days,
+    30.days,
+    90.days,
+    180.days,
+    365.days,
+  ].freeze
 
   belongs_to :record, polymorphic: true
   belongs_to :referenced, polymorphic: true, optional: true
@@ -34,6 +55,30 @@ class LiquidEmbedReference < ApplicationRecord
       html_b.gsub(INLINE_SVG_RANDOM_ID_REGEX, '\1="svg-id"')
   end
 
+  # Doubles the engagement refresh interval across age milestones (60s -> 2m -> 4m -> ... -> 72h)
+  # so older content backs off exponentially without flooding Sidekiq.
+  def self.engagement_backoff_interval(age_seconds)
+    age = [age_seconds.to_f, 0.0].max
+    step = AGE_BACKOFF_MILESTONES.count { |milestone| age >= milestone.to_f }
+    [(ENGAGEMENT_BACKOFF_BASE * (2**step)).seconds, MAX_ENGAGEMENT_BACKOFF].min
+  end
+
+  def self.record_engagement_backoff(record, now: Time.current)
+    return BILLBOARD_ENGAGEMENT_INTERVAL if defined?(Billboard) && record.is_a?(Billboard)
+
+    timestamp = record_published_at(record) || now
+    interval = engagement_backoff_interval(now - timestamp)
+    return [interval, PAGE_MAX_ENGAGEMENT_BACKOFF].min if defined?(Page) && record.is_a?(Page)
+
+    interval
+  end
+
+  def self.record_published_at(record)
+    pub_at = record.published_at if record.respond_to?(:published_at)
+    pub_at || (record.created_at if record.respond_to?(:created_at)) ||
+      (record.updated_at if record.respond_to?(:updated_at))
+  end
+
   def self.bust_feed_targets_cache!
     Rails.cache.delete(FEED_TARGETS_CACHE_KEY)
   end
@@ -47,80 +92,160 @@ class LiquidEmbedReference < ApplicationRecord
   def self.build_feed_targets
     rows = where(tag_name: FEED_TAG_NAMES)
       .where.not(referenced_id: nil)
-      .pluck(:referenced_type, :referenced_id, :record_type, :published)
+      .pluck(:referenced_type, :referenced_id, :record_type, :published, :published_at, :created_at)
 
-    org_ids = []
-    billboard_org_ids = []
-    tag_billboard_by_id = {}
+    orgs = {}
+    tag_entries_by_id = {}
 
-    rows.each do |ref_type, ref_id, rec_type, is_pub|
-      is_live_billboard = rec_type == "Billboard" && is_pub
+    rows.each do |ref_type, ref_id, rec_type, is_pub, pub_at, created_at|
+      raw_time = pub_at || created_at
+      entry_time = raw_time ? raw_time.to_i : 0
       case ref_type
       when "Organization"
-        org_ids << ref_id
-        billboard_org_ids << ref_id if is_live_billboard
+        accumulate_feed_target!(orgs, ref_id, rec_type, is_pub, entry_time)
       when "Tag"
-        tag_billboard_by_id[ref_id] = tag_billboard_by_id.fetch(ref_id, false) || is_live_billboard
+        accumulate_feed_target!(tag_entries_by_id, ref_id, rec_type, is_pub, entry_time)
       end
     end
 
     {
-      org_ids: org_ids.uniq,
-      billboard_org_ids: billboard_org_ids.uniq,
-      tags: resolve_tracked_tag_names(tag_billboard_by_id)
+      orgs: orgs,
+      tags: resolve_tracked_tag_targets(tag_entries_by_id)
     }
   end
   private_class_method :build_feed_targets
 
-  def self.resolve_tracked_tag_names(tag_billboard_by_id)
-    return {} if tag_billboard_by_id.empty?
+  def self.accumulate_feed_target!(map, key, rec_type, is_pub, entry_time)
+    slot = (map[key] ||= { any: true, published: false, billboard: false, page: false, newest_at: 0 })
+    return unless is_pub
 
-    Tag.where(id: tag_billboard_by_id.keys).pluck(:id, :name).to_h do |id, name|
-      [name.to_s.downcase, tag_billboard_by_id[id]]
+    slot[:published] = true
+    slot[:billboard] = true if rec_type == "Billboard"
+    slot[:page] = true if rec_type == "Page"
+    slot[:newest_at] = entry_time if entry_time > slot[:newest_at]
+  end
+  private_class_method :accumulate_feed_target!
+
+  def self.resolve_tracked_tag_targets(tag_entries_by_id)
+    return {} if tag_entries_by_id.empty?
+
+    Tag.where(id: tag_entries_by_id.keys).pluck(:id, :name).to_h do |id, name|
+      [name.to_s.downcase, tag_entries_by_id[id]]
     end
   end
-  private_class_method :resolve_tracked_tag_names
+  private_class_method :resolve_tracked_tag_targets
 
-  def self.dependency_status_for_article(article_id, organization_ids: nil, tag_names: nil)
-    return { any: false, billboard: false } if article_id.blank?
+  def self.dependency_status_for_article(article_id, organization_ids: nil, tag_names: nil, published_only: false)
+    if article_id.blank?
+      return { any: false, billboard: false, refresh_interval: MAX_ENGAGEMENT_BACKOFF }
+    end
 
-    direct_rows = where(referenced_type: "Article", referenced_id: article_id).pluck(:record_type, :published)
-    return { any: true, billboard: true } if direct_rows.any? { |rec_type, is_pub| rec_type == "Billboard" && is_pub }
+    now = Time.current
+    direct_status = direct_dependency_status(article_id, published_only: published_only, now: now)
+    if direct_status[:billboard]
+      return { any: true, billboard: true, refresh_interval: BILLBOARD_ENGAGEMENT_INTERVAL }
+    end
 
-    feed_status = feed_dependency_status(article_id, organization_ids: organization_ids, tag_names: tag_names)
-    {
-      any: direct_rows.any? || feed_status[:any],
-      billboard: feed_status[:billboard]
-    }
-  end
-
-  def self.feed_dependency_status(article_id, organization_ids:, tag_names:)
-    targets = cached_feed_targets
-    return { any: false, billboard: false } if targets[:org_ids].empty? && targets[:tags].empty?
-
-    org_ids, parsed_tags = resolve_article_feed_context(
+    feed_status = feed_dependency_status(
       article_id,
       organization_ids: organization_ids,
       tag_names: tag_names,
+      published_only: published_only,
+      now: now,
     )
-    return { any: true, billboard: true } if org_ids.intersect?(targets[:billboard_org_ids])
+    any_match = direct_status[:any] || feed_status[:any]
+    is_billboard = feed_status[:billboard]
+    interval = if is_billboard
+                 BILLBOARD_ENGAGEMENT_INTERVAL
+               else
+                 [direct_status[:refresh_interval], feed_status[:refresh_interval]].min
+               end
 
-    matching_tags = parsed_tags.select { |tag_name| targets[:tags].key?(tag_name) }
-    {
-      any: org_ids.intersect?(targets[:org_ids]) || matching_tags.any?,
-      billboard: matching_tags.any? { |tag_name| targets[:tags][tag_name] }
-    }
+    { any: any_match, billboard: is_billboard, refresh_interval: interval }
+  end
+
+  def self.direct_dependency_status(article_id, published_only:, now:)
+    scope = where(referenced_type: "Article", referenced_id: article_id)
+    scope = scope.where(published: true) if published_only
+    rows = scope.pluck(:record_type, :published, :published_at, :created_at)
+    return { any: false, billboard: false, refresh_interval: MAX_ENGAGEMENT_BACKOFF } if rows.empty?
+
+    has_live_billboard = false
+    min_interval = MAX_ENGAGEMENT_BACKOFF
+
+    rows.each do |rec_type, is_pub, pub_at, created_at|
+      if rec_type == "Billboard" && is_pub
+        has_live_billboard = true
+        break
+      end
+      next if published_only && !is_pub
+
+      age = now.to_f - (pub_at || created_at || now).to_f
+      row_interval = engagement_backoff_interval(age)
+      row_interval = [row_interval, PAGE_MAX_ENGAGEMENT_BACKOFF].min if rec_type == "Page"
+      min_interval = row_interval if row_interval < min_interval
+    end
+
+    { any: true, billboard: has_live_billboard, refresh_interval: min_interval }
+  end
+  private_class_method :direct_dependency_status
+
+  def self.feed_dependency_status(article_id, organization_ids:, tag_names:, published_only:, now:)
+    targets = cached_feed_targets
+    if targets[:orgs].empty? && targets[:tags].empty?
+      return { any: false, billboard: false, refresh_interval: MAX_ENGAGEMENT_BACKOFF }
+    end
+
+    org_ids, parsed_tags, source_age = resolve_article_feed_context(
+      article_id,
+      organization_ids: organization_ids,
+      tag_names: tag_names,
+      now: now,
+    )
+
+    matched_slots = collect_matching_feed_slots(targets, org_ids, parsed_tags, published_only: published_only)
+    return { any: false, billboard: false, refresh_interval: MAX_ENGAGEMENT_BACKOFF } if matched_slots.empty?
+
+    if matched_slots.any? { |slot| slot[:billboard] }
+      return { any: true, billboard: true, refresh_interval: BILLBOARD_ENGAGEMENT_INTERVAL }
+    end
+
+    min_interval = matched_slots.map { |slot| feed_slot_interval(slot, source_age, now) }.min
+    { any: true, billboard: false, refresh_interval: min_interval }
   end
   private_class_method :feed_dependency_status
 
-  def self.resolve_article_feed_context(article_id, organization_ids:, tag_names:)
+  def self.collect_matching_feed_slots(targets, org_ids, parsed_tags, published_only:)
+    slots = org_ids.filter_map { |org_id| targets[:orgs][org_id] }
+    parsed_tags.each do |tag_name|
+      slot = targets[:tags][tag_name]
+      slots << slot if slot
+    end
+    published_only ? slots.select { |slot| slot[:published] } : slots
+  end
+  private_class_method :collect_matching_feed_slots
+
+  def self.feed_slot_interval(slot, source_age, now)
+    if slot[:page]
+      [engagement_backoff_interval(source_age), PAGE_MAX_ENGAGEMENT_BACKOFF].min
+    else
+      holder_age = slot[:newest_at].positive? ? (now.to_f - slot[:newest_at]) : 0.0
+      engagement_backoff_interval([holder_age, source_age].max)
+    end
+  end
+  private_class_method :feed_slot_interval
+
+  def self.resolve_article_feed_context(article_id, organization_ids:, tag_names:, now:)
     if organization_ids.nil? && tag_names.nil?
-      org_id, raw_tag_list = Article.where(id: article_id).pick(:organization_id, :cached_tag_list)
-      [org_id ? [org_id] : [], parse_tag_list(raw_tag_list)]
+      org_id, raw_tag_list, pub_at, created_at = Article
+        .where(id: article_id)
+        .pick(:organization_id, :cached_tag_list, :published_at, :created_at)
+      source_age = now.to_f - (pub_at || created_at || now).to_f
+      [org_id ? [org_id] : [], parse_tag_list(raw_tag_list), [source_age, 0.0].max]
     else
       org_ids = Array(organization_ids).compact.map(&:to_i).uniq
       tags = Array(tag_names).flat_map { |entry| parse_tag_list(entry) }.uniq
-      [org_ids, tags]
+      [org_ids, tags, 0.0]
     end
   end
   private_class_method :resolve_article_feed_context

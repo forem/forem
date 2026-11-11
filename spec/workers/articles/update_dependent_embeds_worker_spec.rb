@@ -55,6 +55,46 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
         .with(described_class::DEFAULT_ENGAGEMENT_DEBOUNCE, target.id)
         .twice
     end
+
+    it "scales debounce exponentially by embedder age for < 24h content" do
+      target = create(:article)
+      holder = create(:published_article, title: "Two Hour Holder", body_markdown: "{% link #{target.path} %}")
+      holder.update_columns(published_at: 2.hours.ago, created_at: 2.hours.ago)
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", holder.id)
+
+      expect(described_class.schedule_for_engagement(target.id)).to be(true)
+      expect(described_class).to have_received(:perform_in).with(4.minutes, target.id).once
+    end
+
+    it "applies an exponential post-refresh cooldown on older content to avoid sending to Sidekiq at all" do
+      target = create(:article)
+      target.update_columns(published_at: 200.days.ago, created_at: 200.days.ago)
+      holder = create(:published_article, title: "Archive Holder", body_markdown: "{% link #{target.path} %}")
+      holder.update_columns(published_at: 200.days.ago, created_at: 200.days.ago)
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", holder.id)
+
+      # Cold start coalesces over COLD_COALESCE_WINDOW (2 minutes) rather than holding a 72h Sidekiq job
+      expect(described_class.schedule_for_engagement(target.id)).to be(true)
+      expect(described_class).to have_received(:perform_in)
+        .with(described_class::COLD_COALESCE_WINDOW, target.id)
+        .once
+
+      # Running perform activates the 72-hour exponential cooldown in Rails.cache
+      described_class.new.perform(target.id)
+
+      # Subsequent engagement events during the 72-hour cooldown do not touch Sidekiq at all
+      expect(described_class.schedule_for_engagement(target.id)).to be(false)
+      Timecop.travel(48.hours.from_now) do
+        expect(described_class.schedule_for_engagement(target.id)).to be(false)
+      end
+      expect(described_class).to have_received(:perform_in).once
+
+      # After the 72-hour cooldown expires, a new engagement event can schedule again
+      Timecop.travel(73.hours.from_now) do
+        expect(described_class.schedule_for_engagement(target.id)).to be(true)
+      end
+      expect(described_class).to have_received(:perform_in).twice
+    end
   end
 
   describe ".schedule_for_article_change" do
@@ -295,6 +335,46 @@ RSpec.describe Articles::UpdateDependentEmbedsWorker, type: :worker do
       described_class.new.perform(target.id)
 
       expect(page.reload.processed_html).to include("Template Updated Title")
+    end
+
+    it "refreshes active Billboards every time while backing off co-dependent archive Articles on engagement" do
+      memory_cache = ActiveSupport::Cache::MemoryStore.new
+      allow(Rails).to receive(:cache).and_return(memory_cache)
+
+      target = create(:article, title: "Shared Target")
+      billboard = create(
+        :billboard,
+        approved: true,
+        published: true,
+        render_mode: :forem_markdown,
+        body_markdown: "{% link #{target.path} %}",
+      )
+      archive_holder = create(:published_article, title: "Old Archive", body_markdown: "{% link #{target.path} %}")
+      archive_holder.update_columns(published_at: 120.days.ago, created_at: 120.days.ago)
+
+      SyncLiquidEmbedReferencesWorker.new.perform("Billboard", billboard.id)
+      SyncLiquidEmbedReferencesWorker.new.perform("Article", archive_holder.id)
+
+      # First engagement burst updates both the live Billboard and the cold archive Article
+      target.update_columns(public_reactions_count: 4_321)
+      described_class.new.perform(target.id, { "engagement" => true })
+      expect(billboard.reload.processed_html).to include("4321")
+      expect(archive_holder.reload.processed_html).to include("4321")
+
+      # Second engagement burst 1 minute later refreshes the Billboard immediately,
+      # while per-record exponential backoff skips re-rendering the 120-day-old archive Article
+      target.update_columns(public_reactions_count: 8_765)
+      described_class.new.perform(target.id, { "engagement" => true })
+      expect(billboard.reload.processed_html).to include("8765")
+      expect(archive_holder.reload.processed_html).not_to include("8765")
+
+      # Authoritative structural edit (title change) bypasses engagement backoff immediately
+      target.update_columns(title: "Renamed Target Post")
+      described_class.new.perform(
+        target.id,
+        { "org_ids" => [], "tags" => [], "membership_changed" => false, "structural" => true },
+      )
+      expect(archive_holder.reload.processed_html).to include("Renamed Target Post", "8765")
     end
   end
 

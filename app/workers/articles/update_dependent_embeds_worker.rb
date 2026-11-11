@@ -6,9 +6,11 @@ module Articles
                     on_conflict: :replace,
                     lock_args_method: :lock_args
 
-    BILLBOARD_ENGAGEMENT_DEBOUNCE = 15.seconds
-    DEFAULT_ENGAGEMENT_DEBOUNCE = 60.seconds
+    BILLBOARD_ENGAGEMENT_DEBOUNCE = LiquidEmbedReference::BILLBOARD_ENGAGEMENT_INTERVAL
+    DEFAULT_ENGAGEMENT_DEBOUNCE = LiquidEmbedReference::ENGAGEMENT_BACKOFF_BASE.seconds
+    COLD_COALESCE_WINDOW = 2.minutes
     PENDING_CONTEXT_TTL = 10.minutes
+    ENGAGEMENT_MARKER_TTL = 2.hours
     RECORD_PRIORITY = %w[Billboard Page Article Comment].freeze
     DYNAMIC_FEED_OPTION_REGEX = /\b(?:sort=(?:reactions|comments|score)|min_reactions=\d+|min_comments=\d+)\b/
 
@@ -26,9 +28,11 @@ module Articles
         article_id,
         organization_ids: normalized_orgs,
         tag_names: normalized_tags,
+        published_only: false,
       )
       return false unless status[:any]
 
+      Rails.cache.delete(engagement_cooldown_key(article_id))
       merged = merge_pending_context!(
         article_id,
         org_ids: normalized_orgs,
@@ -47,11 +51,23 @@ module Articles
 
     def self.schedule_for_engagement(article_id)
       return false if article_id.blank?
+      return false if Rails.cache.exist?(pending_context_key(article_id))
 
-      status = LiquidEmbedReference.dependency_status_for_article(article_id)
+      status = LiquidEmbedReference.dependency_status_for_article(article_id, published_only: true)
       return false unless status[:any]
 
-      delay = status[:billboard] ? BILLBOARD_ENGAGEMENT_DEBOUNCE : DEFAULT_ENGAGEMENT_DEBOUNCE
+      interval = status[:refresh_interval]
+      long_backoff = !status[:billboard] && interval >= LiquidEmbedReference::COOLDOWN_GATE_THRESHOLD
+      return false if long_backoff && Rails.cache.exist?(engagement_cooldown_key(article_id))
+
+      delay = if status[:billboard]
+                BILLBOARD_ENGAGEMENT_DEBOUNCE
+              elsif long_backoff
+                COLD_COALESCE_WINDOW
+              else
+                interval
+              end
+
       debounce_key = engagement_debounce_key(article_id, billboard: status[:billboard])
 
       # Fixed trailing-edge debounce window: the first engagement event schedules a run
@@ -60,6 +76,7 @@ module Articles
       acquired = Rails.cache.write(debounce_key, true, unless_exist: true, expires_in: delay)
       return false if acquired == false
 
+      Rails.cache.write(engagement_marker_key(article_id), interval.to_i, expires_in: delay + ENGAGEMENT_MARKER_TTL)
       perform_in(delay, article_id)
       true
     end
@@ -71,6 +88,18 @@ module Articles
     def self.engagement_debounce_key(article_id, billboard:)
       tier = billboard ? "bb" : "std"
       "update_dependent_embeds:debounce:v1:#{tier}:#{article_id}"
+    end
+
+    def self.engagement_marker_key(article_id)
+      "update_dependent_embeds:eng_marker:v1:#{article_id}"
+    end
+
+    def self.engagement_cooldown_key(article_id)
+      "update_dependent_embeds:cooldown:v1:#{article_id}"
+    end
+
+    def self.record_cooldown_key(record_type, record_id)
+      "update_dependent_embeds:rec_cd:v1:#{record_type}:#{record_id}"
     end
 
     def self.clear_engagement_debounce!(article_id)
@@ -86,13 +115,15 @@ module Articles
                    org_ids: (Array(existing[:org_ids] || existing["org_ids"]) + org_ids).uniq,
                    tags: (Array(existing[:tags] || existing["tags"]) + tags).uniq,
                    membership_changed: boolean_cast(existing[:membership_changed] || existing["membership_changed"]) ||
-                     membership_changed
+                     membership_changed,
+                   structural: true
                  }
                else
                  {
                    org_ids: org_ids,
                    tags: tags,
-                   membership_changed: membership_changed == true
+                   membership_changed: membership_changed == true,
+                   structural: true
                  }
                end
       Rails.cache.write(key, merged, expires_in: PENDING_CONTEXT_TTL)
@@ -109,7 +140,9 @@ module Articles
       return if article_id.blank?
 
       self.class.clear_engagement_debounce!(article_id)
+      scheduled_interval = consume_engagement_marker(article_id)
       pending = consume_pending_context(article_id, options)
+      engagement_only = engagement_only_run?(scheduled_interval, options, pending)
 
       # Only narrow metadata columns are needed; skip hydrating the wide TOASTed article row.
       found_id, organization_id, raw_tag_list = Article
@@ -120,6 +153,15 @@ module Articles
       current_tags = LiquidEmbedReference.parse_tag_list(raw_tag_list)
       all_tag_names = (current_tags + pending[:tags]).uniq
       membership_changed = pending[:membership_changed] || found_id.nil?
+
+      if engagement_only && !membership_changed
+        apply_post_engagement_cooldown!(
+          article_id,
+          scheduled_interval: scheduled_interval,
+          org_ids: org_ids,
+          tag_names: all_tag_names,
+        )
+      end
 
       ref_rows = fetch_matching_reference_rows(article_id, org_ids: org_ids, tag_names: all_tag_names)
       return if ref_rows.empty?
@@ -134,11 +176,49 @@ module Articles
           grouped[record_type],
           article_id: article_id,
           membership_changed: membership_changed,
+          engagement_only: engagement_only && !membership_changed,
         )
       end
     end
 
     private
+
+    def consume_engagement_marker(article_id)
+      key = self.class.engagement_marker_key(article_id)
+      value = Rails.cache.read(key)
+      Rails.cache.delete(key) if value
+      value
+    end
+
+    def engagement_only_run?(scheduled_interval, options, pending)
+      return false if pending[:structural]
+
+      explicit_engagement = options.is_a?(Hash) &&
+        (options["engagement"] == true || options[:engagement] == true)
+      scheduled_interval.present? || explicit_engagement
+    end
+
+    def apply_post_engagement_cooldown!(article_id, scheduled_interval:, org_ids:, tag_names:)
+      interval_seconds = scheduled_interval.to_i
+      if interval_seconds <= 0
+        status = LiquidEmbedReference.dependency_status_for_article(
+          article_id,
+          organization_ids: org_ids,
+          tag_names: tag_names,
+          published_only: true,
+        )
+        return if status[:billboard]
+
+        interval_seconds = status[:refresh_interval].to_i
+      end
+      return if interval_seconds < LiquidEmbedReference::COOLDOWN_GATE_THRESHOLD.to_i
+
+      Rails.cache.write(
+        self.class.engagement_cooldown_key(article_id),
+        true,
+        expires_in: interval_seconds.seconds,
+      )
+    end
 
     def consume_pending_context(article_id, options)
       key = self.class.pending_context_key(article_id)
@@ -148,22 +228,35 @@ module Articles
       opt_hash = options.is_a?(Hash) ? options : {}
       cached_hash = cached.is_a?(Hash) ? cached : {}
 
-      org_ids = (
-        Array(opt_hash["org_ids"] || opt_hash[:org_ids]) +
-        Array(cached_hash["org_ids"] || cached_hash[:org_ids])
-      ).compact.map(&:to_i).uniq
+      org_ids = extract_array_ints(opt_hash, cached_hash, :org_ids)
+      tags = extract_merged_tags(opt_hash, cached_hash)
+      membership_changed = extract_flag(opt_hash, cached_hash, :membership_changed)
+      structural = extract_flag(opt_hash, cached_hash, :structural) ||
+        opt_hash.key?("org_ids") || opt_hash.key?(:org_ids)
 
-      tags = (
-        Array(opt_hash["tags"] || opt_hash[:tags]) +
-        Array(cached_hash["tags"] || cached_hash[:tags])
-      ).flat_map { |entry| LiquidEmbedReference.parse_tag_list(entry) }.uniq
+      {
+        org_ids: org_ids,
+        tags: tags,
+        membership_changed: membership_changed,
+        structural: structural
+      }
+    end
 
-      membership_changed = (opt_hash["membership_changed"] == true) ||
-        (opt_hash[:membership_changed] == true) ||
-        (cached_hash["membership_changed"] == true) ||
-        (cached_hash[:membership_changed] == true)
+    def extract_array_ints(opt_hash, cached_hash, key)
+      str_key = key.to_s
+      (Array(opt_hash[str_key] || opt_hash[key]) + Array(cached_hash[str_key] || cached_hash[key]))
+        .compact.map(&:to_i).uniq
+    end
 
-      { org_ids: org_ids, tags: tags, membership_changed: membership_changed }
+    def extract_merged_tags(opt_hash, cached_hash)
+      (Array(opt_hash["tags"] || opt_hash[:tags]) + Array(cached_hash["tags"] || cached_hash[:tags]))
+        .flat_map { |entry| LiquidEmbedReference.parse_tag_list(entry) }.uniq
+    end
+
+    def extract_flag(opt_hash, cached_hash, key)
+      str_key = key.to_s
+      (opt_hash[str_key] == true) || (opt_hash[key] == true) ||
+        (cached_hash[str_key] == true) || (cached_hash[key] == true)
     end
 
     def fetch_matching_reference_rows(article_id, org_ids:, tag_names:)
@@ -225,44 +318,78 @@ module Articles
       (feed_tags.map(&:downcase) & all_tag_names).empty?
     end
 
-    def process_records_for_type(record_type, entries_by_id, article_id:, membership_changed:)
+    def process_records_for_type(record_type, entries_by_id, article_id:, membership_changed:, engagement_only:)
       ids = entries_by_id.keys
       return if ids.empty?
 
+      ctx = { article_id: article_id, membership_changed: membership_changed, engagement_only: engagement_only }
       case record_type
-      when "Billboard"
-        active_billboards = Billboard.approved_and_published.where(render_mode: :forem_markdown, id: ids)
-        active_billboards.includes(:creator).find_each do |billboard|
-          next if skip_unchanged_recent_feed?(billboard, entries_by_id[billboard.id], article_id, membership_changed)
-
-          safely_refresh(billboard) { billboard.refresh_embedded_markdown! }
-        end
-      when "Page"
-        Page.where(id: ids).includes(:organization, :page_template).find_each do |page|
-          next if skip_unchanged_recent_feed?(page, entries_by_id[page.id], article_id, membership_changed)
-
-          safely_refresh(page) { refresh_page(page) }
-        end
-      when "Article"
-        Article.where(id: ids).includes(:user, :organization).find_each do |article|
-          next if skip_unchanged_recent_feed?(article, entries_by_id[article.id], article_id, membership_changed)
-
-          safely_refresh(article) { refresh_article(article) }
-        end
-      when "Comment"
-        Comment.where(id: ids).includes(:user, :commentable).find_each do |comment|
-          next if skip_unchanged_recent_feed?(comment, entries_by_id[comment.id], article_id, membership_changed)
-
-          safely_refresh(comment) { refresh_comment(comment) }
-        end
-      else
-        klass = record_type.safe_constantize
-        return unless klass
-
-        klass.where(id: ids).find_each do |record|
-          safely_refresh(record) { refresh_generic_record(record) }
-        end
+      when "Billboard" then process_billboards(ids, entries_by_id, ctx)
+      when "Page" then process_pages(ids, entries_by_id, ctx)
+      when "Article" then process_articles(ids, entries_by_id, ctx)
+      when "Comment" then process_comments(ids, entries_by_id, ctx)
+      else process_generic_records(record_type, ids, ctx)
       end
+    end
+
+    def process_billboards(ids, entries_by_id, ctx)
+      Billboard.approved_and_published.where(render_mode: :forem_markdown, id: ids).includes(:creator).find_each do |bb|
+        next if skip_unchanged_recent_feed?(bb, entries_by_id[bb.id], ctx[:article_id], ctx[:membership_changed])
+
+        safely_refresh(bb) { bb.refresh_embedded_markdown! }
+      end
+    end
+
+    def process_pages(ids, entries_by_id, ctx)
+      Page.where(id: ids).includes(:organization, :page_template).find_each do |page|
+        next if skip_unchanged_recent_feed?(page, entries_by_id[page.id], ctx[:article_id], ctx[:membership_changed])
+
+        safely_refresh(page) { refresh_page(page) }
+      end
+    end
+
+    def process_articles(ids, entries_by_id, ctx)
+      scope = Article.where(id: ids)
+      scope = scope.where(published: true) if ctx[:engagement_only]
+      scope.includes(:user, :organization).find_each do |art|
+        next if skip_unchanged_recent_feed?(art, entries_by_id[art.id], ctx[:article_id], ctx[:membership_changed])
+        next if skip_record_for_engagement_backoff?("Article", art, ctx[:engagement_only])
+
+        safely_refresh(art) { refresh_article(art) }
+      end
+    end
+
+    def process_comments(ids, entries_by_id, ctx)
+      Comment.where(id: ids).includes(:user, :commentable).find_each do |cmt|
+        next if skip_unchanged_recent_feed?(cmt, entries_by_id[cmt.id], ctx[:article_id], ctx[:membership_changed])
+        next if skip_record_for_engagement_backoff?("Comment", cmt, ctx[:engagement_only])
+
+        safely_refresh(cmt) { refresh_comment(cmt) }
+      end
+    end
+
+    def process_generic_records(record_type, ids, ctx)
+      klass = record_type.safe_constantize
+      return unless klass
+
+      klass.where(id: ids).find_each do |record|
+        next if skip_record_for_engagement_backoff?(record_type, record, ctx[:engagement_only])
+
+        safely_refresh(record) { refresh_generic_record(record) }
+      end
+    end
+
+    def skip_record_for_engagement_backoff?(record_type, record, engagement_only)
+      key = self.class.record_cooldown_key(record_type, record.id)
+      unless engagement_only
+        Rails.cache.delete(key)
+        return false
+      end
+
+      backoff = LiquidEmbedReference.record_engagement_backoff(record)
+      return false if backoff < LiquidEmbedReference::COOLDOWN_GATE_THRESHOLD
+
+      Rails.cache.write(key, true, unless_exist: true, expires_in: backoff) == false
     end
 
     def skip_unchanged_recent_feed?(record, entries, article_id, membership_changed)

@@ -66,12 +66,26 @@ module LiquidEmbeddable
 
   def should_sync_liquid_embed_metadata?
     return false unless current_markdown_has_liquid_tag?
+    return true if liquid_embed_visibility_changed?
 
-    (respond_to?(:saved_change_to_score?) && saved_change_to_score?) ||
-      (respond_to?(:saved_change_to_published?) && saved_change_to_published?) ||
+    return false unless respond_to?(:saved_change_to_score?) && saved_change_to_score?
+
+    !liquid_embed_score_sync_throttled?
+  end
+
+  def liquid_embed_visibility_changed?
+    (respond_to?(:saved_change_to_published?) && saved_change_to_published?) ||
       (respond_to?(:saved_change_to_published_at?) && saved_change_to_published_at?) ||
       (respond_to?(:saved_change_to_approved?) && saved_change_to_approved?) ||
       (respond_to?(:saved_change_to_expires_at?) && saved_change_to_expires_at?)
+  end
+
+  def liquid_embed_score_sync_throttled?
+    backoff = LiquidEmbedReference.record_engagement_backoff(self)
+    return false if backoff < LiquidEmbedReference::COOLDOWN_GATE_THRESHOLD
+
+    cache_key = "liquid_embed_references:meta_score_cd:v1:#{self.class.name}:#{id}"
+    Rails.cache.write(cache_key, true, unless_exist: true, expires_in: backoff) == false
   end
 
   def sync_liquid_embed_metadata
@@ -80,7 +94,7 @@ module LiquidEmbeddable
     updated_count = liquid_embed_references.update_all(
       score: respond_to?(:score) ? score : 0,
       published: LiquidEmbedReference.record_published?(self),
-      published_at: respond_to?(:published_at) ? published_at : updated_at,
+      published_at: LiquidEmbedReference.record_published_at(self),
     )
     LiquidEmbedReference.bust_feed_targets_cache! if updated_count.positive? && is_a?(Billboard)
   end

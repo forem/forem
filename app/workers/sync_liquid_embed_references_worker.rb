@@ -43,7 +43,7 @@ class SyncLiquidEmbedReferencesWorker
           referenced_id: data[:referenced_id],
           options: data[:options],
           published: is_published,
-          published_at: record.respond_to?(:published_at) ? record.published_at : record.updated_at,
+          published_at: LiquidEmbedReference.record_published_at(record),
           score: record.respond_to?(:score) ? record.score : 0,
           created_at: now,
           updated_at: now
